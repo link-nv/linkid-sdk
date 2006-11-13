@@ -6,8 +6,9 @@
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
 	<packaging>pom</packaging>
-	<name>SafeOnline</name>
 	<version>1.0.0-SNAPSHOT</version>
+	<name>SafeOnline</name>
+	<url>http://localhost/site/safe-online</url>
 	<developers>
 		<developer>
 			<id>fcorneli</id>
@@ -75,7 +76,9 @@
 			</plugin>
 		</plugins>
 	</build>
-	<modules></modules>
+	<modules>
+		<module>safe-online-demo-webapp</module>
+	</modules>
 	<repositories>
 		<repository>
 			<id>local</id>
