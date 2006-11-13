@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.lin-k</groupId>
+		<artifactId>safe-online</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-demo-service</artifactId>
+	<packaging>sar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>SafeOnline Demo Service</name>
+	<description>Provides the Demo Web Application security domain as a service.</description>
+	<url>http://localhost/site/safe-online-demo-service</url>
+	<build>
+		<plugins>
+                        <plugin>
+                                <groupId>org.codehaus.mojo</groupId>
+                                <artifactId>jboss-sar-maven-plugin</artifactId>
+                                <version>${jboss-sar-maven-plugin.version}</version>
+                                <extensions>true</extensions>
+                        </plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jboss-maven-plugin</artifactId>
+				<version>${jboss-maven-plugin.version}</version>
+			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>changes-maven-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>
