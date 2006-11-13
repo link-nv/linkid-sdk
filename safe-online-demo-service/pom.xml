@@ -13,16 +13,18 @@
 	<packaging>sar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Demo Service</name>
-	<description>Provides the Demo Web Application security domain as a service.</description>
+	<description>
+		Provides the Demo Web Application security domain as a service.
+	</description>
 	<url>http://localhost/site/safe-online-demo-service</url>
 	<build>
 		<plugins>
-                        <plugin>
-                                <groupId>org.codehaus.mojo</groupId>
-                                <artifactId>jboss-sar-maven-plugin</artifactId>
-                                <version>${jboss-sar-maven-plugin.version}</version>
-                                <extensions>true</extensions>
-                        </plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jboss-sar-maven-plugin</artifactId>
+				<version>${jboss-sar-maven-plugin.version}</version>
+				<extensions>true</extensions>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jboss-maven-plugin</artifactId>
