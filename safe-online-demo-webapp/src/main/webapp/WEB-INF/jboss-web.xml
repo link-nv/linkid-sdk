@@ -5,6 +5,8 @@
 
 <jboss-web>
 
+	<security-domain>java:/jaas/demo</security-domain>
+
 	<context-root>/demo</context-root>
 
 </jboss-web>
