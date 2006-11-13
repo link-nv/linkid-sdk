@@ -6,5 +6,6 @@
 <body>
 <h1>SafeOnline Demo Web Application</h1>
 <p>Welcome to the SafeOnline Demo Web Application.</p>
+<p><a href="./logout.jsp">Logout</a></p>
 </body>
 </html>

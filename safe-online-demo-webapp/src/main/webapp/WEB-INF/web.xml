@@ -30,7 +30,7 @@
 
 	<login-config>
 		<auth-method>FORM</auth-method>
-		<realm-name>file</realm-name>
+		<realm-name>demo-realm</realm-name>
 		<form-login-config>
 			<form-login-page>/logon.jsp</form-login-page>
 			<form-error-page>/logonError.jsp</form-error-page>
