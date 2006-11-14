@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	targetNamespace="urn:net:lin-k:safe-online:auth:1.0"
+	xmlns:tns="urn:net:lin-k:safe-online:auth:1.0"
+	xmlns:msg="urn:net:lin-k:safe-online:auth:1.0:types"
+	name="SafeOnlineAuthenticationWebService">
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+			<import namespace="urn:net:lin-k:safe-online:auth:1.0:types"
+				schemaLocation="safe-online-auth-types.xsd" />
+		</schema>
+	</types>
+	<message name="EchoRequestMessage">
+		<part name="request" element="msg:EchoRequest" />
+	</message>
+	<message name="EchoResultMessage">
+		<part name="result" element="msg:EchoResult" />
+	</message>
+	<message name="FaultMessage">
+		<part name="fault" element="msg:Fault" />
+	</message>
+	<portType name="SafeOnlineAuthenticationPort">
+		<operation name="Echo">
+			<documentation>
+				This operation is for testing the availability of the
+				service.
+			</documentation>
+			<input message="tns:EchoRequestMessage" />
+			<output message="tns:EchoResultMessage" />
+			<fault name="fault" message="tns:FaultMessage" />
+		</operation>
+	</portType>
+	<binding name="SafeOnlineAuthenticationBinding"
+		type="tns:SafeOnlineAuthenticationPort">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="Echo">
+			<soap:operation soapAction="Echo" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+			<fault name="fault">
+				<soap:fault name="fault" use="literal" />
+			</fault>
+		</operation>
+	</binding>
+	<service name="SafeOnlineAuthenticationService">
+		<port name="SafeOnlineAuthenticationPort"
+			binding="tns:SafeOnlineAuthenticationBinding">
+			<soap:address
+				location="http://localhost:8080/safe-online-auth/" />
+		</port>
+	</service>
+</definitions>

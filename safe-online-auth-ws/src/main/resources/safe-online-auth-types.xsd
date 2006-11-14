@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="urn:net:lin-k:safe-online:auth:1.0:types"
+	xmlns:tns="urn:net:lin-k:safe-online:auth:1.0:types"
+	elementFormDefault="qualified">
+	<import namespace="http://www.w3.org/XML/1998/namespace"
+		schemaLocation="http://www.w3.org/2001/xml.xsd" />
+
+	<element name="EchoRequest" type="xs:string" />
+	<element name="EchoResult" type="xs:string" />
+	<element name="Fault" type="xs:string" />
+
+</schema>
