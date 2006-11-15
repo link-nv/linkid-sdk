@@ -1,5 +1,10 @@
 SafeOnline JBoss Application Server
 
+ This topic describes the setup of the JBoss Application Server as development environment.
+ 
+ <<Do not use this configuration as is for production systems!>>
+ 
+
 * SAAJ
 
  JBoss AS 4.0.5.GA comes with SAAJ 1.2.
@@ -32,4 +37,25 @@ SafeOnline JBoss Application Server
 
  Basically one needs to copy all JARs from the Sun <<<$JAXWS-RI/lib>>> to
  <<<$JBOSS_HOME/server/default/lib/>>>
+ 
+
+* LOG4J
+
+ Add the following to <<<$JBOSS_HOME/server/default/conf/log4j.xml>>>:
+
++---+
+   <appender name="SAFEONLINE" class="org.jboss.logging.appender.FileAppender">
+      <param name="File" value="${jboss.server.home.dir}/log/safe-online.log"/>
+      <param name="Append" value="false"/>
+
+      <layout class="org.apache.log4j.PatternLayout">
+         <param name="ConversionPattern" value="%p [%C] %m%n"/>
+      </layout>
+   </appender>
+
+   <category name="net.link.safeonline">
+     <priority value="DEBUG" />
+     <appender-ref ref="SAFEONLINE" />
+   </category>
++---+
 
