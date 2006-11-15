@@ -82,6 +82,7 @@
 		<module>safe-online-demo-service</module>
 		<module>safe-online-auth-ws</module>
 		<module>safe-online-auth-ws-impl</module>
+		<module>safe-online-sdk</module>
 	</modules>
 	<repositories>
 		<repository>

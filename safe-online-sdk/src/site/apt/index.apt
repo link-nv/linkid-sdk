@@ -1,0 +1,7 @@
+SafeOnline SDK
+
+ This project contains the SafeOnline SDK.
+ 
+ This SDK provides easy to use classes to work with the SafeOnline web services.
+ 
+ It is using the Sun JAX-WS RI as web service stack.
