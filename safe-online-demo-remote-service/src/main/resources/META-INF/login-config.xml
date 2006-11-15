@@ -13,6 +13,19 @@
 					localhost:8080
 				</module-option>
 			</login-module>
+			<login-module
+				code="org.jboss.security.auth.spi.UsersRolesLoginModule"
+				flag="optional">
+				<module-option name="password-stacking">
+					useFirstPass
+				</module-option>
+				<module-option name="usersProperties">
+					users.properties
+				</module-option>
+				<module-option name="rolesProperties">
+					roles.properties
+				</module-option>
+			</login-module>
 		</authentication>
 	</application-policy>
 

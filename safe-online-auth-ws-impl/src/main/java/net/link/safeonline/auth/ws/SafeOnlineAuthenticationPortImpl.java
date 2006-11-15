@@ -15,6 +15,10 @@ public class SafeOnlineAuthenticationPortImpl implements
 	private static Log LOG = LogFactory
 			.getLog(SafeOnlineAuthenticationPortImpl.class);
 
+	public SafeOnlineAuthenticationPortImpl() {
+		LOG.debug("ready");
+	}
+
 	public String echo(String request) throws FaultMessage {
 		LOG.debug("echo: " + request);
 		String result = request;
