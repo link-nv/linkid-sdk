@@ -83,6 +83,7 @@
 		<module>safe-online-auth-ws</module>
 		<module>safe-online-auth-ws-impl</module>
 		<module>safe-online-sdk</module>
+		<module>safe-online-demo-remote-service</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -194,9 +195,9 @@
 		</site>
 	</distributionManagement>
 	<properties>
-		<jboss-sar-maven-plugin.version>
+		<jboss-packaging-maven-plugin.version>
 			2.0-SNAPSHOT
-		</jboss-sar-maven-plugin.version>
+		</jboss-packaging-maven-plugin.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
 		<junit.version>4.0</junit.version>
 		<jaxb-xjc.version>2.0.3</jaxb-xjc.version>

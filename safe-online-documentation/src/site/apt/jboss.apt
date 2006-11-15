@@ -49,7 +49,7 @@ SafeOnline JBoss Application Server
       <param name="Append" value="false"/>
 
       <layout class="org.apache.log4j.PatternLayout">
-         <param name="ConversionPattern" value="%p [%C] %m%n"/>
+         <param name="ConversionPattern" value="%p [%c{1}] %m%n"/>
       </layout>
    </appender>
 
