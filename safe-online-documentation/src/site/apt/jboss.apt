@@ -1,0 +1,35 @@
+SafeOnline JBoss Application Server
+
+* SAAJ
+
+ JBoss AS 4.0.5.GA comes with SAAJ 1.2.
+
+ JAX-WS 2.0 requires SAAJ 1.3 at runtime.
+
+ Remove JBoss SAAJ by deleting the file <<<$JBOSS_HOME/server/default/lib/jboss-saaj.jar>>>.
+
+ Put <<<saaj-api-1.3.jar>>> and <<<saaj-impl-1.3.jar>>> from Sun under <<<$JBOSS_HOME/server/default/lib/>>>.
+
+
+* JAXB
+
+ JBoss AS 4.0.5.GA comes with an older version of JAXB in 
+ <<<jaxb-api.jar>> and <<<jaxb-impl.jar>>> from <<<$JBOSS_HOME/server/default/deploy/jbossws.sar/>>>.
+ 
+ Copy <<<jaxb-api-2.0.jar>>> and <<<jaxb-impl-2.0.3.jar>>> from Sun to <<<$JBOSS_HOME/server/default/lib>>>.
+
+ Better to just remove the entire <<<$JBOSS_HOME/server/default/deploy/jbossws.sar/>>> directory.
+
+
+* JSR181
+
+ JBoss AS 4.0.5.GA EJB3 comes with its own <<<javax.jws>>> Java5 package in the <<<jboss-ejb3.jar>>> JAR. 
+
+ JAX-WS requires a more recent version of JSR181.
+
+
+* Other JAX-WS runtime libraries
+
+ Basically one needs to copy all JARs from the Sun <<<$JAXWS-RI/lib>>> to
+ <<<$JBOSS_HOME/server/default/lib/>>>
+

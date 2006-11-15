@@ -1,0 +1,9 @@
+SafeOnline Container
+
+ This POM artifact represents the dependencies provided by the JBoss Application Server. 
+
+ These dependencies are:
+  
+ * The JBoss AS JARs
+
+ * The JAX-WS JARs

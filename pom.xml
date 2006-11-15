@@ -8,7 +8,7 @@
 	<packaging>pom</packaging>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>SafeOnline</name>
-	<url>http://localhost/site/safe-online</url>
+	<url>http://buildserver/site/safe-online</url>
 	<developers>
 		<developer>
 			<id>fcorneli</id>
@@ -28,10 +28,10 @@
 	</developers>
 	<scm>
 		<connection>
-			scm:svn:svn+ssh://localhost/scm/svn/products/safe-online/trunk
+			scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/trunk
 		</connection>
 		<developerConnection>
-			scm:svn:svn+ssh://localhost/scm/svn/products/safe-online/trunk
+			scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/trunk
 		</developerConnection>
 	</scm>
 	<organization>
@@ -70,7 +70,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
 					<tagBase>
-						scm:svn:svn+ssh://localhost/scm/svn/products/safe-online/tags
+						scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/tags
 					</tagBase>
 				</configuration>
 			</plugin>
@@ -87,7 +87,7 @@
 		<repository>
 			<id>local</id>
 			<name>Local Repository</name>
-			<url>http://localhost/maven2</url>
+			<url>http://buildserver/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -133,7 +133,7 @@
 		<pluginRepository>
 			<id>local</id>
 			<name>Local Plugin Repository</name>
-			<url>http://localhost/maven2</url>
+			<url>http://buildserver/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -181,15 +181,15 @@
 	<distributionManagement>
 		<repository>
 			<id>ssh-repository</id>
-			<url>scp://localhost/maven2</url>
+			<url>scp://buildserver/maven2</url>
 		</repository>
 		<snapshotRepository>
 			<id>ssh-repository</id>
-			<url>scp://localhost/maven2</url>
+			<url>scp://buildserver/maven2</url>
 		</snapshotRepository>
 		<site>
 			<id>site-repository</id>
-			<url>scp://localhost/site/safe-online</url>
+			<url>scp://buildserver/site/safe-online</url>
 		</site>
 	</distributionManagement>
 	<properties>
@@ -201,11 +201,17 @@
 		<jaxb-xjc.version>2.0.3</jaxb-xjc.version>
 		<xfire-jsr181-api.version>1.0-M1</xfire-jsr181-api.version>
 		<jaxb-impl.version>2.0.3</jaxb-impl.version>
+		<jaxb-api.version>2.0</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>
 		<saaj-impl.version>1.3</saaj-impl.version>
 		<jaxws-tools.version>2.0.1-SNAPSHOT</jaxws-tools.version>
+		<jaxws-rt.version>2.0.1-SNAPSHOT</jaxws-rt.version>
 		<jaxws-api.version>2.0</jaxws-api.version>
 		<commons-logging-api.version>1.0.4</commons-logging-api.version>
 		<jboss.version>4.0.5.GA</jboss.version>
+		<sjsxp.version>1.0</sjsxp.version>
+		<commons-logging.version>1.1</commons-logging.version>
+		<log4j.version>1.2.13</log4j.version>
+		<activation.version>1.1</activation.version>
 	</properties>
 </project>

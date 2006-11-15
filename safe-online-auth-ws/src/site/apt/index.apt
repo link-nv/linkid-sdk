@@ -1,0 +1,5 @@
+SafeOnline Authentication Web Service Definition
+
+ This projects contains the WSDL/XSD for the SafeOnline Authentication Web Service.
+ 
+ The generated JAX-WS classes are independent of the Sun JAX-WS RI.

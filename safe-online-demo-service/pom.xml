@@ -16,7 +16,6 @@
 	<description>
 		Provides the Demo Web Application security domain as a service.
 	</description>
-	<url>http://localhost/site/safe-online-demo-service</url>
 	<build>
 		<plugins>
 			<plugin>

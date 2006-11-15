@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoints xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
+	version="2.0">
+
+	<endpoint name="SafeOnline-Authentication-WS"
+		implementation="net.link.safeonline.auth.ws.SafeOnlineAuthenticationPortImpl"
+		url-pattern="/auth/*"
+		interface="net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationPort"
+		service="{urn:net:lin-k:safe-online:auth:1.0}SafeOnlineAuthenticationService"
+		port="{urn:net:lin-k:safe-online:auth:1.0}SafeOnlineAuthenticationPort"
+		enable-mtom="false" />
+
+</endpoints>

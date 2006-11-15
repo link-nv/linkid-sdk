@@ -16,7 +16,6 @@
 	<description>
 		Contains integration tests for the SafeOnline service.
 	</description>
-	<url>http://localhost/site/safe-online/safe-online-test</url>
 	<build>
 		<plugins>
 			<plugin>

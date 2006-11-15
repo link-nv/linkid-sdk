@@ -1,0 +1,3 @@
+SafeOnline Web Service Runtime
+
+ This project creates the Sun JAX-WS RI runtime WAR that hosts all the SafeOnline JAX-WS web services.
