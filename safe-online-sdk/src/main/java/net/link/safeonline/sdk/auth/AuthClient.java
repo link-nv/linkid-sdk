@@ -2,9 +2,10 @@ package net.link.safeonline.sdk.auth;
 
 import javax.xml.ws.BindingProvider;
 
-import net.lin_k.safe_online.auth._1.FaultMessage;
 import net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationPort;
 import net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationService;
+import net.lin_k.safe_online.auth._1_0.types.AuthenticateRequestType;
+import net.lin_k.safe_online.auth._1_0.types.AuthenticateResultType;
 import net.link.safeonline.auth.ws.SafeOnlineAuthenticationServiceFactory;
 
 import org.apache.commons.logging.Log;
@@ -44,7 +45,7 @@ public class AuthClient {
 
 		bindingProvider.getRequestContext().put(
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				"http://" + location + "/safe-online-ws/auth/");
+				"http://" + location + "/safe-online-ws/auth");
 	}
 
 	/**
@@ -56,14 +57,29 @@ public class AuthClient {
 	 * @return the echo of the message.
 	 */
 	public String echo(String message) {
-		String result;
-		try {
-			result = this.port.echo(message);
-		} catch (FaultMessage e) {
-			throw new RuntimeException("Web Service Fault Message: "
-					+ e.getMessage());
-		}
+		String result = this.port.echo(message);
 		LOG.debug("echo result: " + result);
 		return result;
+	}
+
+	/**
+	 * Authenticates the user with password credential.
+	 * 
+	 * @param username
+	 *            the username.
+	 * @param password
+	 *            the password credential.
+	 * @return <code>true</code> if authenticated, <code>false</code>
+	 *         otherwise.
+	 */
+	public boolean authenticate(String username, String password) {
+		AuthenticateRequestType request = new AuthenticateRequestType();
+		request.setUsername(username);
+		request.setPassword(password);
+		LOG.debug("authentication request for user: " + username);
+		AuthenticateResultType result = this.port.authenticate(request);
+		boolean authenticated = result.isAuthenticated();
+		LOG.debug("authentication result: " + authenticated);
+		return authenticated;
 	}
 }

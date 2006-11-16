@@ -80,6 +80,12 @@
 						<groupId>javax.xml.soap</groupId>
 						<artifactId>saaj-api</artifactId>
 						<version>${saaj-api.version}</version>
+						<exclusions>
+							<exclusion>
+								<groupId>javax.activation</groupId>
+								<artifactId>activation</artifactId>
+							</exclusion>
+						</exclusions>
 					</dependency>
 					<dependency>
 						<groupId>com.sun.xml.messaging.saaj</groupId>

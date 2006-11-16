@@ -4,10 +4,9 @@
 
 	<endpoint name="SafeOnline-Authentication-WS"
 		implementation="net.link.safeonline.auth.ws.SafeOnlineAuthenticationPortImpl"
-		url-pattern="/auth/*"
+		url-pattern="/auth"
 		interface="net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationPort"
 		service="{urn:net:lin-k:safe-online:auth:1.0}SafeOnlineAuthenticationService"
-		port="{urn:net:lin-k:safe-online:auth:1.0}SafeOnlineAuthenticationPort"
-		enable-mtom="false" />
+		port="{urn:net:lin-k:safe-online:auth:1.0}SafeOnlineAuthenticationPort" />
 
 </endpoints>

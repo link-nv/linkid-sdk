@@ -9,6 +9,23 @@
 
 	<element name="EchoRequest" type="xs:string" />
 	<element name="EchoResult" type="xs:string" />
-	<element name="Fault" type="xs:string" />
+
+	<element name="AuthenticateRequest"
+		type="tns:AuthenticateRequestType" />
+	<element name="AuthenticateResult"
+		type="tns:AuthenticateResultType" />
+
+	<complexType name="AuthenticateRequestType">
+		<sequence>
+			<element name="Username" type="xs:string" />
+			<element name="Password" type="xs:string" />
+		</sequence>
+	</complexType>
+
+	<complexType name="AuthenticateResultType">
+		<sequence>
+			<element name="Authenticated" type="xs:boolean" />
+		</sequence>
+	</complexType>
 
 </schema>

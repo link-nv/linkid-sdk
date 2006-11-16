@@ -19,8 +19,11 @@
 	<message name="EchoResultMessage">
 		<part name="result" element="msg:EchoResult" />
 	</message>
-	<message name="FaultMessage">
-		<part name="fault" element="msg:Fault" />
+	<message name="AuthenticateRequestMessage">
+		<part name="request" element="msg:AuthenticateRequest" />
+	</message>
+	<message name="AuthenticateResultMessage">
+		<part name="result" element="msg:AuthenticateResult" />
 	</message>
 	<portType name="SafeOnlineAuthenticationPort">
 		<operation name="Echo">
@@ -30,7 +33,14 @@
 			</documentation>
 			<input message="tns:EchoRequestMessage" />
 			<output message="tns:EchoResultMessage" />
-			<fault name="fault" message="tns:FaultMessage" />
+		</operation>
+		<operation name="Authenticate">
+			<documentation>
+				This operations can be used to authenticate a user via
+				SafeOnline.
+			</documentation>
+			<input message="tns:AuthenticateRequestMessage" />
+			<output message="tns:AuthenticateResultMessage" />
 		</operation>
 	</portType>
 	<binding name="SafeOnlineAuthenticationBinding"
@@ -45,16 +55,22 @@
 			<output>
 				<soap:body use="literal" />
 			</output>
-			<fault name="fault">
-				<soap:fault name="fault" use="literal" />
-			</fault>
+		</operation>
+		<operation name="Authenticate">
+			<soap:operation soapAction="Authenticate" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
 		</operation>
 	</binding>
 	<service name="SafeOnlineAuthenticationService">
 		<port name="SafeOnlineAuthenticationPort"
 			binding="tns:SafeOnlineAuthenticationBinding">
 			<soap:address
-				location="http://localhost:8080/safe-online-auth/" />
+				location="http://localhost:8080/safe-online-ws/auth/" />
 		</port>
 	</service>
 </definitions>

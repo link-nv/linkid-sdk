@@ -84,6 +84,7 @@
 		<module>safe-online-auth-ws-impl</module>
 		<module>safe-online-sdk</module>
 		<module>safe-online-demo-remote-service</module>
+		<module>safe-online-ws-runtime</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -200,9 +201,9 @@
 		</jboss-packaging-maven-plugin.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
 		<junit.version>4.0</junit.version>
-		<jaxb-xjc.version>2.0.3</jaxb-xjc.version>
+		<jaxb-xjc.version>2.0.4</jaxb-xjc.version>
+		<jaxb-impl.version>2.0.4</jaxb-impl.version>
 		<xfire-jsr181-api.version>1.0-M1</xfire-jsr181-api.version>
-		<jaxb-impl.version>2.0.3</jaxb-impl.version>
 		<jaxb-api.version>2.0</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>
 		<saaj-impl.version>1.3</saaj-impl.version>

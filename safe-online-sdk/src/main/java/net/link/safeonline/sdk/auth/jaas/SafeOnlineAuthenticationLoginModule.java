@@ -87,18 +87,13 @@ public class SafeOnlineAuthenticationLoginModule implements LoginModule {
 		}
 
 		String username = nameCallback.getName();
+		String password = new String(passwordCallback.getPassword());
 		LOG.debug("username: " + username);
-		LOG.debug("password: " + new String(passwordCallback.getPassword()));
+		LOG.debug("password: " + password);
 
-		/*
-		 * For the moment we authenticate the user if the service is online.
-		 */
-		String message = "hello world";
-		String result = this.authClient.echo(message);
-		if (!message.equals(result)) {
-			String msg = "authentication service is not available";
-			LOG.warn(msg);
-			throw new FailedLoginException(msg);
+		boolean result = this.authClient.authenticate(username, password);
+		if (!result) {
+			throw new FailedLoginException("not authenticated");
 		}
 
 		this.authenticatedPrincipal = new SimplePrincipal(username);
