@@ -2,7 +2,7 @@
 <server>
 
 	<mbean code="org.jboss.security.auth.login.DynamicLoginConfig"
-		name="mycarenet:service=DynamicLoginConfig">
+		name="safeonline:service=DynamicLoginConfig">
 		<attribute name="AuthConfig">
 			META-INF/login-config.xml
 		</attribute>
