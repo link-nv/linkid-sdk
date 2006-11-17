@@ -12,6 +12,12 @@ public class SimplePrincipal implements Principal {
 
 	private final String username;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param username
+	 *            the user name.
+	 */
 	public SimplePrincipal(String username) {
 		this.username = username;
 	}

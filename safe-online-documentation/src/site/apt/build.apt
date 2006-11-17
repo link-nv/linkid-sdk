@@ -1,0 +1,9 @@
+Building SafeOnline
+
+ Goto the parent directory <<<safe-online>>> where the parent POM <<<pom.xml>>> is located and execute:
+ 
++---+
+mvn clean install
++---+
+
+ Afterwards every project will have the artifacts available under their <<<target/>>> directory.

@@ -1,4 +1,5 @@
 SafeOnline Demo Service
 
- This JBoss SAR service dynamically setups the security domain for the demo web application.
+ This JBoss SAR service dynamically setups the security domain <<<safe-online-demo>>> for the demo web application.
+ 
  It is using a simple <<<users.properties>>> and <<<roles.properties>>> file to manage the users within the security domain.

@@ -16,12 +16,16 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
 import net.link.safeonline.sdk.auth.AuthClient;
+import net.link.safeonline.sdk.auth.AuthClientImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * JAAS Login Module using the SafeOnline Authentication.
+ * JAAS Login Module using the SafeOnline Authentication service.
+ * 
+ * This login module can be used by J2EE application to delegate authentication
+ * decisions to SafeOnline.
  * 
  * @author fcorneli
  * 
@@ -55,7 +59,7 @@ public class SafeOnlineAuthenticationLoginModule implements LoginModule {
 			LOG.debug("using default location");
 		}
 		LOG.debug("location: " + location);
-		this.authClient = new AuthClient(location);
+		this.authClient = new AuthClientImpl(location);
 
 		this.subject = subject;
 		this.callbackHandler = callbackHandler;
@@ -87,7 +91,11 @@ public class SafeOnlineAuthenticationLoginModule implements LoginModule {
 		}
 
 		String username = nameCallback.getName();
-		String password = new String(passwordCallback.getPassword());
+		char[] passwd = passwordCallback.getPassword();
+		if (null == passwd) {
+			throw new FailedLoginException("password required");
+		}
+		String password = new String(passwd);
 		LOG.debug("username: " + username);
 		LOG.debug("password: " + password);
 

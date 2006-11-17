@@ -1,7 +1,8 @@
 package test.integ.net.link.safeonline.auth;
 
-import net.link.safeonline.sdk.auth.AuthClient;
 import junit.framework.TestCase;
+import net.link.safeonline.sdk.auth.AuthClient;
+import net.link.safeonline.sdk.auth.AuthClientImpl;
 
 /**
  * Integration test for the SafeOnline authentication web service.
@@ -19,7 +20,7 @@ public class AuthenticationTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		this.authClient = new AuthClient(SAFE_ONLINE_LOCATION);
+		this.authClient = new AuthClientImpl(SAFE_ONLINE_LOCATION);
 	}
 
 	public void testAvailabilityViaEcho() throws Exception {

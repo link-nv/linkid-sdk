@@ -1,0 +1,42 @@
+Deployment of SafeOnline
+
+* Deployable J2EE artifacts
+
+ Every deployable J2EE artifact can be deployed in a locally running JBoss AS by running the following command in the corresponding subproject directory:
+
++---+
+mvn jboss:deploy
++---+
+
+ Undeploy via:
+
++---+
+mvn jboss:undeploy
++---+
+
+
+* Demo Web application
+
+ The demo web application is located in <<<safe-online-demo-webapp>>>. Thus deploy via:
+
++---+
+cd safe-online-demo-webapp
+mvn jboss:deploy
++---+
+
+ The demo web application requires the setup of some login module for it's used security domain: <<<java:/jaas/safe-online-demo>>>
+ 
+ We provide two services for the setup of the demo security domain:
+ 
+ * <<<safe-online-demo-service>>>: is a deployable JBoss J2EE SAR artifact that performs authentication via properties files.
+ 
+ * <<<safe-online-demo-remote-service>>>: is a deployable JBoss J2EE SAR artifact that performs authentication via the SafeOnline authentication web service.
+   The login module of this service requires that the <<<safe-online-ws-runtime>>> deployable J2EE artifact is deployed.
+ 
+ []
+ Only one of then should be active within a JBoss AS.
+
+
+* Authentication Web Service
+
+ The SafeOnline authentication web service is located in <<<safe-online-ws-runtime>>>.

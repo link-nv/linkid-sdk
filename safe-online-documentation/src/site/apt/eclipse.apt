@@ -1,0 +1,24 @@
+Eclipse
+
+ Create the Eclipse project files by executing in the parent directory <<<safe-online>>> the following:
+
++---+
+mvn eclipse:eclipse
++---+
+
+ Before being able to import all the projects in Eclipse one needs to tell Eclipse where to find the dependencies in the local Maven2 repository.
+ 
+ Do this via:
+ 
++---+
+mvn eclipse:add-maven-repo -Declipse.workspace=/the/path/to/your/eclipse/workspace
++---+
+
+ Where you replace <<</the/path/to/your/eclipse/workspace>>>.
+ 
+ When changing a dependency within a <<<pom.xml>>> just reexecute <<<mvn eclipse:eclipse>>> in the parent directory.
+ 
+ Never change a project dependency via Eclipse itself, always go via the Maven2 <<<pom.xml>>> since this is the primary build system.
+ 
+ If you execute <<<mvn eclipse:eclipse>>> in a subproject directory, 
+ the Eclipse inter-project dependency will not point to the sources but to the generated JARs.

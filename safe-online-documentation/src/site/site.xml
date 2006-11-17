@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<project name="SafeOnline">
+<project name="SafeOnline Documentation">
 
 	<bannerLeft>
-		<name>SafeOnline</name>
+		<name>SafeOnline Documentation</name>
 	</bannerLeft>
 
 	<skin>
@@ -14,7 +14,10 @@
 	<body>
 		<menu name="Overview">
 			<item name="Introduction" href="index.html" />
+			<item name="Build" href="build.html" />
 			<item name="JBoss AS" href="jboss.html" />
+			<item name="Deployment" href="deploy.html" />
+			<item name="Eclipse" href="eclipse.html" />
 		</menu>
 	</body>
 

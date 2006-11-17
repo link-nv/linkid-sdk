@@ -4,42 +4,42 @@ SafeOnline JBoss Application Server
  
  <<Do not use this configuration as is for production systems!>>
  
-
-* SAAJ
-
- JBoss AS 4.0.5.GA comes with SAAJ 1.2.
-
- JAX-WS 2.0 requires SAAJ 1.3 at runtime.
-
- Remove JBoss SAAJ by deleting the file <<<$JBOSS_HOME/server/default/lib/jboss-saaj.jar>>>.
-
- Put <<<saaj-api-1.3.jar>>> and <<<saaj-impl-1.3.jar>>> from Sun under <<<$JBOSS_HOME/server/default/lib/>>>.
-
-
-* JAXB
-
- JBoss AS 4.0.5.GA comes with an older version of JAXB in 
- <<<jaxb-api.jar>> and <<<jaxb-impl.jar>>> from <<<$JBOSS_HOME/server/default/deploy/jbossws.sar/>>>.
+ In this document we will use <<<$JBOSS_HOME>>> to denote the installation directory of JBoss AS.
+ It is <<not>> needed to define <<<$JBOSS_HOME>>> as environment variable.
  
- Copy <<<jaxb-api-2.0.jar>>> and <<<jaxb-impl-2.0.3.jar>>> from Sun to <<<$JBOSS_HOME/server/default/lib>>>.
+* Installation
 
- Better to just remove the entire <<<$JBOSS_HOME/server/default/deploy/jbossws.sar/>>> directory.
+** Basic configuration
 
+ Retrieve JEMS from http://labs.jboss.com/portal/jbossas/download/index.html
 
-* JSR181
++---+
+java -jar jems-installer-1.2.0.BETA3.jar
++---+
 
- JBoss AS 4.0.5.GA EJB3 comes with its own <<<javax.jws>>> Java5 package in the <<<jboss-ejb3.jar>>> JAR. 
+ Select the <<<ejb3>>> profile during installation. This is required as SafeOnline is using EJB3.
+ 
+ Deselect the <<<jbossws5>>> pack during installation. Else <<<jboss-saaj.jar>>> (SAAJ 1.2) will conflict with JAX-WS SAAJ (SAAJ 1.3).
 
- JAX-WS requires a more recent version of JSR181.
-
-
-* Other JAX-WS runtime libraries
-
- Basically one needs to copy all JARs from the Sun <<<$JAXWS-RI/lib>>> to
- <<<$JBOSS_HOME/server/default/lib/>>>
+ On the <<<JMX Security>>> page of the setup: unselect all security configurations. Else we cannot use the Maven2 jboss JMX deployer.
+ 
+ Enter an admin password. (does not matter what)
  
 
-* LOG4J
+** JAX-WS runtime libraries
+
+ Download <<<JAXWS2.0.1m1_20060817.jar>>> from https://jax-ws.dev.java.net/jax-ws-201-m1/
+ 
+ Run the installer via:
+ 
++---+
+java -jar JAXWS2.0.1m1_20060817.jar
++---+
+ 
+ Copy all JARs from <<<$JAXWS-RI/lib>>> to <<<$JBOSS_HOME/server/default/lib/>>>.
+ 
+
+** LOG4J
 
  Add the following to <<<$JBOSS_HOME/server/default/conf/log4j.xml>>>:
 
@@ -59,3 +59,23 @@ SafeOnline JBoss Application Server
    </category>
 +---+
 
+
+* Operational
+
+** Starting
+
+ Start the JBoss application server via:
+ 
++---+
+cd $JBOSS_HOME/bin
+./run.sh
++---+
+
+
+** View log
+
+ View the SafeOnline specific logging via:
+ 
++---+
+tail -f $JBOSS_HOME/server/default/log/safe-online.log
++---+
