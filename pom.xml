@@ -85,6 +85,8 @@
 		<module>safe-online-sdk</module>
 		<module>safe-online-demo-remote-service</module>
 		<module>safe-online-ws-runtime</module>
+		<module>safe-online-entity</module>
+		<module>safe-online-deploy</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -219,5 +221,6 @@
 		<stax-ex.version>1.0-SNAPSHOT</stax-ex.version>
 		<streambuffer.version>0.2</streambuffer.version>
 		<easymock.version>2.2</easymock.version>
+		<maven-ear-plugin.version>2.2</maven-ear-plugin.version>
 	</properties>
 </project>
