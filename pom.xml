@@ -87,6 +87,8 @@
 		<module>safe-online-ws-runtime</module>
 		<module>safe-online-entity</module>
 		<module>safe-online-deploy</module>
+		<module>safe-online-model</module>
+		<module>safe-online-test-util</module>
 	</modules>
 	<repositories>
 		<repository>

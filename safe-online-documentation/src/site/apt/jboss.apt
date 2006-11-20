@@ -19,14 +19,15 @@ java -jar jems-installer-1.2.0.BETA3.jar
 
  Select the <<<ejb3>>> profile during installation. This is required as SafeOnline is using EJB3.
  
- Deselect the <<<jbossws5>>> pack during installation. Else <<<jboss-saaj.jar>>> (SAAJ 1.2) will conflict with JAX-WS SAAJ (SAAJ 1.3).
-
  On the <<<JMX Security>>> page of the setup: unselect all security configurations. Else we cannot use the Maven2 jboss JMX deployer.
  
  Enter an admin password. (does not matter what)
  
 
 ** JAX-WS runtime libraries
+
+ The JBoss SAAJ implementation <<<jboss-saaj.jar>>> (SAAJ 1.2) will conflict with JAX-WS SAAJ (SAAJ 1.3). 
+ One needs to remove <<<jboss-saaj.jar>>> from <<<$JBOSS_HOME/server/default/lib>>>.
 
  Download <<<JAXWS2.0.1m1_20060817.jar>>> from https://jax-ws.dev.java.net/jax-ws-201-m1/
  

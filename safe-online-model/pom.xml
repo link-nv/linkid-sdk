@@ -9,35 +9,24 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<groupId>net.lin-k.safe-online</groupId>
-	<artifactId>safe-online-deploy</artifactId>
-	<packaging>ear</packaging>
+	<artifactId>safe-online-model</artifactId>
+	<packaging>ejb</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>SafeOnline Deploy</name>
-	<description>SafeOnline Deployable Application Package</description>
+	<name>SafeOnline Model</name>
+	<description>The SafeOnline Core EJB3 Model.</description>
 	<build>
-		<finalName>SafeOnline</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-ear-plugin</artifactId>
-				<version>${maven-ear-plugin.version}</version>
+				<artifactId>maven-ejb-plugin</artifactId>
 				<configuration>
-					<modules>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-entity</artifactId>
-						</ejbModule>
-						<ejbModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-model</artifactId>
-						</ejbModule>
-					</modules>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+					<generateClient>true</generateClient>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jboss-maven-plugin</artifactId>
-				<version>${jboss-maven-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -52,16 +41,37 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-entity</artifactId>
-			<type>ejb</type>
 			<version>1.0-SNAPSHOT</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-model</artifactId>
-			<type>ejb</type>
+			<artifactId>safe-online-test-util</artifactId>
 			<version>1.0-SNAPSHOT</version>
-			<scope>provided</scope>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>${easymock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>${commons-logging.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<reporting>
@@ -76,6 +86,14 @@
 						</reports>
 					</reportSet>
 				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</reporting>

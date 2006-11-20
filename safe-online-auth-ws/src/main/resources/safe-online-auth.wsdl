@@ -7,7 +7,6 @@
 	name="SafeOnlineAuthenticationWebService">
 	<types>
 		<schema xmlns="http://www.w3.org/2001/XMLSchema"
-			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
 			<import namespace="urn:net:lin-k:safe-online:auth:1.0:types"
 				schemaLocation="safe-online-auth-types.xsd" />

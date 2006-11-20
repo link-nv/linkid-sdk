@@ -18,6 +18,16 @@ public class EntityEntity implements Serializable {
 
 	private String password;
 
+	public EntityEntity() {
+		// required
+	}
+
+	public EntityEntity(String login, String password) {
+		super();
+		this.login = login;
+		this.password = password;
+	}
+
 	@Id
 	public String getLogin() {
 		return this.login;

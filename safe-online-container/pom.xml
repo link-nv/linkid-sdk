@@ -83,5 +83,10 @@
 			<artifactId>ejb3-persistence</artifactId>
 			<version>${jboss.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-ejb3x</artifactId>
+			<version>${jboss.version}</version>
+		</dependency>
 	</dependencies>
 </project>
