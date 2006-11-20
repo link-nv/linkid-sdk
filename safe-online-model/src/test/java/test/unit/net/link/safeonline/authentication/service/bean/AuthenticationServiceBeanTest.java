@@ -1,8 +1,8 @@
 package test.unit.net.link.safeonline.authentication.service.bean;
 
 import junit.framework.TestCase;
-import net.link.safeonline.authentication.dao.EntityDAO;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean;
+import net.link.safeonline.dao.EntityDAO;
 import net.link.safeonline.entity.EntityEntity;
 import net.link.safeonline.test.util.EJBTestUtils;
 

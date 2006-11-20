@@ -1,4 +1,4 @@
-package net.link.safeonline.authentication.model.bean;
+package net.link.safeonline.model.bean;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.Startable;
-import net.link.safeonline.authentication.dao.EntityDAO;
+import net.link.safeonline.dao.EntityDAO;
 import net.link.safeonline.entity.EntityEntity;
 
 import org.apache.commons.logging.Log;
@@ -17,11 +17,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @Local(Startable.class)
-@LocalBinding(jndiBinding = "SafeOnline/startup/AuthenticationStartableBean")
-public class AuthenticationStartableBean implements Startable {
+@LocalBinding(jndiBinding = "SafeOnline/startup/SystemInitializationStartableBean")
+public class SystemInitializationStartableBean implements Startable {
 
 	private static final Log LOG = LogFactory
-			.getLog(AuthenticationStartableBean.class);
+			.getLog(SystemInitializationStartableBean.class);
 
 	private static Map<String, String> authorizedUsers;
 

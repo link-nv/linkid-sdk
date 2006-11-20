@@ -1,11 +1,11 @@
-package net.link.safeonline.authentication.dao.bean;
+package net.link.safeonline.dao.bean;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.dao.EntityDAO;
+import net.link.safeonline.dao.EntityDAO;
 import net.link.safeonline.entity.EntityEntity;
 
 import org.apache.commons.logging.Log;

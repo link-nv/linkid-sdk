@@ -1,4 +1,4 @@
-package net.link.safeonline.authentication.dao;
+package net.link.safeonline.dao;
 
 import javax.ejb.Local;
 

@@ -3,8 +3,8 @@ package net.link.safeonline.authentication.service.bean;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.authentication.dao.EntityDAO;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.dao.EntityDAO;
 import net.link.safeonline.entity.EntityEntity;
 
 import org.apache.commons.logging.Log;
