@@ -25,4 +25,10 @@ public class EntityDAOBean implements EntityDAO {
 				username);
 		return entity;
 	}
+
+	public void addEntity(String username, String password) {
+		LOG.debug("add entity: " + username);
+		EntityEntity entity = new EntityEntity(username, password);
+		this.entityManager.persist(entity);
+	}
 }

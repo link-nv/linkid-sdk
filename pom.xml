@@ -89,6 +89,7 @@
 		<module>safe-online-deploy</module>
 		<module>safe-online-model</module>
 		<module>safe-online-test-util</module>
+		<module>safe-online-startup</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -237,5 +238,6 @@
 			3.2.0.ga
 		</hibernate-entitymanager.version>
 		<derby.version>10.2.1.6</derby.version>
+		<servlet-api.version>2.4</servlet-api.version>
 	</properties>
 </project>
