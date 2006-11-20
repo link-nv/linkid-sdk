@@ -122,6 +122,14 @@
 			</releases>
 		</repository>
 		<repository>
+			<id>codehaus-mule</id>
+			<name>Codehaus Mule Maven Repository</name>
+			<url>http://dist.codehaus.org/mule/dependencies/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
 			<id>java.net</id>
 			<name>java.net Maven Repository</name>
 			<url>
@@ -224,5 +232,10 @@
 		<streambuffer.version>0.2</streambuffer.version>
 		<easymock.version>2.2</easymock.version>
 		<maven-ear-plugin.version>2.2</maven-ear-plugin.version>
+		<commons-io.version>1.2</commons-io.version>
+		<hibernate-entitymanager.version>
+			3.2.0.ga
+		</hibernate-entitymanager.version>
+		<derby.version>10.2.1.6</derby.version>
 	</properties>
 </project>
