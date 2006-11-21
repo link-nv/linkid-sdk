@@ -1,5 +1,10 @@
 package test.unit.net.link.safeonline.auth.ws;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
@@ -10,11 +15,6 @@ import net.lin_k.safe_online.auth._1_0.types.AuthenticateRequestType;
 import net.lin_k.safe_online.auth._1_0.types.AuthenticateResultType;
 import net.link.safeonline.auth.ws.SafeOnlineAuthenticationPortImpl;
 import net.link.safeonline.authentication.service.AuthenticationService;
-
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.easymock.EasyMock.expect;
 
 public class SafeOnlineAuthenticationPortImplTest extends TestCase {
 
@@ -67,18 +67,21 @@ public class SafeOnlineAuthenticationPortImplTest extends TestCase {
 
 	public void testAuthenticate() throws Exception {
 		// setup
+		String applicationName = "test-application";
 		String username = "test-username";
 		String password = "test-password";
 
 		// expectations
-		expect(this.mockAuthenticationService.authenticate(username, password))
-				.andStubReturn(true);
+		expect(
+				this.mockAuthenticationService.authenticate(applicationName,
+						username, password)).andStubReturn(true);
 
 		// prepare
 		replay(this.mockAuthenticationService);
 
 		// operate
 		AuthenticateRequestType request = new AuthenticateRequestType();
+		request.setApplication(applicationName);
 		request.setUsername(username);
 		request.setPassword(password);
 		AuthenticateResultType result = this.testedInstance

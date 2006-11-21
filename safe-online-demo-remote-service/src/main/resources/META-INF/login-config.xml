@@ -12,6 +12,9 @@
 				<module-option name="location">
 					localhost:8080
 				</module-option>
+				<module-option name="application-name">
+					demo-application
+				</module-option>
 			</login-module>
 			<login-module
 				code="org.jboss.security.auth.spi.UsersRolesLoginModule"

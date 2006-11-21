@@ -36,11 +36,13 @@ public class AuthenticationTest extends TestCase {
 
 	public void testAuthenticateFcorneli() throws Exception {
 		// setup
+		String application = "demo-application";
 		String username = "fcorneli";
 		String password = "secret";
 
 		// operate
-		boolean result = this.authClient.authenticate(username, password);
+		boolean result = this.authClient.authenticate(application, username,
+				password);
 
 		// verify
 		assertTrue(result);
@@ -48,11 +50,28 @@ public class AuthenticationTest extends TestCase {
 
 	public void testFoobarNotAuthenticated() throws Exception {
 		// setup
+		String application = "demo-application";
 		String username = "foobar";
 		String password = "foobar";
 
 		// operate
-		boolean result = this.authClient.authenticate(username, password);
+		boolean result = this.authClient.authenticate(application, username,
+				password);
+
+		// verify
+		assertFalse(result);
+	}
+
+	public void testFcorneliNotAuthenticatedForFoobarApplication()
+			throws Exception {
+		// setup
+		String application = "foobar";
+		String username = "fcorneli";
+		String password = "secret";
+
+		// operate
+		boolean result = this.authClient.authenticate(application, username,
+				password);
 
 		// verify
 		assertFalse(result);

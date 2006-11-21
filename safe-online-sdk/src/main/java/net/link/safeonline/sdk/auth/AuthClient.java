@@ -21,6 +21,8 @@ public interface AuthClient {
 	/**
 	 * Authenticates the user with password credential.
 	 * 
+	 * @param application
+	 *            the application.
 	 * @param username
 	 *            the username.
 	 * @param password
@@ -28,5 +30,5 @@ public interface AuthClient {
 	 * @return <code>true</code> if authenticated, <code>false</code>
 	 *         otherwise.
 	 */
-	boolean authenticate(String username, String password);
+	boolean authenticate(String application, String username, String password);
 }

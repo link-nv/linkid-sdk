@@ -4,8 +4,12 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.EntityDAO;
+import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.EntityEntity;
+import net.link.safeonline.entity.SubscriptionEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,8 +23,17 @@ public class AuthenticationServiceBean implements AuthenticationService {
 	@EJB
 	private EntityDAO entityDAO;
 
-	public boolean authenticate(String username, String password) {
-		LOG.debug("authenticate: " + username);
+	@EJB
+	private ApplicationDAO applicationDAO;
+
+	@EJB
+	private SubscriptionDAO subscriptionDAO;
+
+	public boolean authenticate(String applicationName, String username,
+			String password) {
+		LOG.debug("authenticate \"" + username + "\" for \"" + applicationName
+				+ "\"");
+
 		EntityEntity entity = this.entityDAO.findEntity(username);
 		if (null == entity) {
 			LOG.debug("entity not found");
@@ -30,7 +43,23 @@ public class AuthenticationServiceBean implements AuthenticationService {
 			LOG.debug("password not correct");
 			return false;
 		}
-		LOG.debug("authenticated");
+
+		ApplicationEntity application = this.applicationDAO
+				.findApplication(applicationName);
+		if (null == application) {
+			LOG.debug("application not found");
+			return false;
+		}
+
+		SubscriptionEntity subscription = this.subscriptionDAO
+				.findSubscription(entity, application);
+		if (null == subscription) {
+			LOG.debug("subscription not found");
+			return false;
+		}
+
+		LOG.debug("authenticated \"" + username + "\" for \"" + applicationName
+				+ "\"");
 		return true;
 	}
 }

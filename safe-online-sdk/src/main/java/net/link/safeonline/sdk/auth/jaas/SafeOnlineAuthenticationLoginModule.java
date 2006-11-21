@@ -36,6 +36,10 @@ public class SafeOnlineAuthenticationLoginModule implements LoginModule {
 
 	public static final String DEFAULT_LOCATION = "localhost:8080";
 
+	public static final String OPTION_APPLICATION_NAME = "application-name";
+
+	public static final String DEFAULT_APPLICATION_NAME = "demo-application";
+
 	private static final Log LOG = LogFactory
 			.getLog(SafeOnlineAuthenticationLoginModule.class);
 
@@ -49,21 +53,35 @@ public class SafeOnlineAuthenticationLoginModule implements LoginModule {
 
 	private Principal authenticatedPrincipal;
 
+	private String applicationName;
+
+	private String getOptionValue(Map options, String optionName,
+			String defaultOptionValue) {
+		String optionValue = (String) options.get(optionName);
+		if (null == optionValue) {
+			optionValue = defaultOptionValue;
+			LOG.debug("using default option value for " + optionName + " = "
+					+ defaultOptionValue);
+		}
+		return optionValue;
+	}
+
 	@SuppressWarnings("unchecked")
 	public void initialize(Subject subject, CallbackHandler callbackHandler,
 			Map sharedState, Map options) {
 		LOG.debug("initialize");
-		String location = (String) options.get(OPTION_LOCATION);
-		if (null == location) {
-			location = DEFAULT_LOCATION;
-			LOG.debug("using default location");
-		}
+		String location = getOptionValue(options, OPTION_LOCATION,
+				DEFAULT_LOCATION);
 		LOG.debug("location: " + location);
 		this.authClient = new AuthClientImpl(location);
 
 		this.subject = subject;
 		this.callbackHandler = callbackHandler;
 		this.sharedState = sharedState;
+
+		this.applicationName = getOptionValue(options, OPTION_APPLICATION_NAME,
+				DEFAULT_APPLICATION_NAME);
+		LOG.debug("application name: " + applicationName);
 	}
 
 	public boolean login() throws LoginException {
@@ -101,7 +119,8 @@ public class SafeOnlineAuthenticationLoginModule implements LoginModule {
 
 		boolean result;
 		try {
-			result = this.authClient.authenticate(username, password);
+			result = this.authClient.authenticate(this.applicationName,
+					username, password);
 		} catch (Exception e) {
 			String msg = "error invoking authentication service: "
 					+ e.getMessage();

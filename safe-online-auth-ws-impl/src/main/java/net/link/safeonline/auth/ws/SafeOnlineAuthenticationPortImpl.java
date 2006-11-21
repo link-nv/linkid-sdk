@@ -31,15 +31,18 @@ public class SafeOnlineAuthenticationPortImpl implements
 
 	public AuthenticateResultType authenticate(AuthenticateRequestType request) {
 		LOG.debug("authenticate");
+		String application = request.getApplication();
 		String username = request.getUsername();
 		String password = request.getPassword();
 
 		AuthenticationService authenticationService = getService();
-		boolean serviceResult = authenticationService.authenticate(username,
-				password);
+		boolean serviceResult = authenticationService.authenticate(application,
+				username, password);
 
 		AuthenticateResultType result = new AuthenticateResultType();
 		result.setAuthenticated(serviceResult);
+		result.setApplication(application);
+		result.setUsername(username);
 		return result;
 	}
 

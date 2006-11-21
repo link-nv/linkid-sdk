@@ -53,13 +53,14 @@ public class SafeOnlineAuthenticationLoginModuleTest extends TestCase {
 		CallbackHandler testCallbackHandler = new TestCallbackHandler();
 		Map sharedState = new HashMap();
 		Subject subject = new Subject();
-		Map options = new HashMap();
+		Map<String, String> options = new HashMap<String, String>();
+		options.put("application-name", "test-application");
 		AuthClient mockAuthClient = EasyMock.createMock(AuthClient.class);
 
 		// expectations
 		EasyMock.expect(
-				mockAuthClient.authenticate("test-name", "test-password"))
-				.andReturn(true);
+				mockAuthClient.authenticate("test-application", "test-name",
+						"test-password")).andReturn(true);
 
 		// prepare
 		EasyMock.replay(mockAuthClient);

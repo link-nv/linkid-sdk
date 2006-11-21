@@ -17,15 +17,21 @@
 
 	<complexType name="AuthenticateRequestType">
 		<sequence>
-			<element name="Username" type="xs:string" />
+			<element ref="tns:Application" />
+			<element ref="tns:Username" />
 			<element name="Password" type="xs:string" />
 		</sequence>
 	</complexType>
 
 	<complexType name="AuthenticateResultType">
 		<sequence>
+			<element ref="tns:Application" />
+			<element ref="tns:Username" />
 			<element name="Authenticated" type="xs:boolean" />
 		</sequence>
 	</complexType>
+
+	<element name="Application" type="xs:string" />
+	<element name="Username" type="xs:string" />
 
 </schema>
