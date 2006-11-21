@@ -99,7 +99,15 @@ public class SafeOnlineAuthenticationLoginModule implements LoginModule {
 		LOG.debug("username: " + username);
 		LOG.debug("password: " + password);
 
-		boolean result = this.authClient.authenticate(username, password);
+		boolean result;
+		try {
+			result = this.authClient.authenticate(username, password);
+		} catch (Exception e) {
+			String msg = "error invoking authentication service: "
+					+ e.getMessage();
+			LOG.error(msg, e);
+			throw new FailedLoginException(msg);
+		}
 		if (!result) {
 			throw new FailedLoginException("not authenticated");
 		}

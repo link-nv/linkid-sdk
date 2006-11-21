@@ -35,6 +35,13 @@
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-startup</artifactId>
 						</webModule>
+						<webModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>
+								safe-online-ws-runtime
+							</artifactId>
+							<contextRoot>/safe-online-ws</contextRoot>
+						</webModule>
 					</modules>
 				</configuration>
 			</plugin>
@@ -70,6 +77,13 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup</artifactId>
+			<type>war</type>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-ws-runtime</artifactId>
 			<type>war</type>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>

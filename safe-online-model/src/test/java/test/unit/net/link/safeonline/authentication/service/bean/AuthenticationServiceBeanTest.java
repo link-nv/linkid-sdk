@@ -14,6 +14,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 	private EntityDAO mockEntityDAO;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 

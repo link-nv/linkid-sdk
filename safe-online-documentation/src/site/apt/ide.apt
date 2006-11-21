@@ -1,4 +1,9 @@
-Eclipse
+IDE
+
+ Formatting the source code with Eclipse is preferred over NetBeans.
+ 
+
+* Eclipse
 
  Create the Eclipse project files by executing in the parent directory <<<safe-online>>> the following:
 
@@ -22,3 +27,14 @@ mvn eclipse:add-maven-repo -Declipse.workspace=/the/path/to/your/eclipse/workspa
  
  If you execute <<<mvn eclipse:eclipse>>> in a subproject directory, 
  the Eclipse inter-project dependency will not point to the sources but to the generated JARs.
+ 
+ 
+* NetBeans
+
+ Execute the following in the parent directory:
+ 
++---+
+mvn netbeans-freeform:generate-netbeans-project
++---+
+
+ and open the project in NetBeans.

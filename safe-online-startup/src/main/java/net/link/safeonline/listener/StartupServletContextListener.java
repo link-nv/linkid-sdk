@@ -17,6 +17,14 @@ import net.link.safeonline.Startable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * This servlet context listener will start and stop all components registered
+ * in JNDI under the prefix defined by the web.xml context-param
+ * StartableJndiPrefix.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class StartupServletContextListener implements ServletContextListener {
 
 	private static final Log LOG = LogFactory

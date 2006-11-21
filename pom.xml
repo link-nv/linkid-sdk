@@ -239,5 +239,7 @@
 		</hibernate-entitymanager.version>
 		<derby.version>10.2.1.6</derby.version>
 		<servlet-api.version>2.4</servlet-api.version>
+		<shiftone-oocjndi.version>1.2</shiftone-oocjndi.version>
+		<shiftone-arbor.version>1.4</shiftone-arbor.version>
 	</properties>
 </project>

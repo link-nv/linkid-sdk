@@ -2,20 +2,22 @@ package test.unit.net.link.safeonline.entity;
 
 import junit.framework.TestCase;
 import net.link.safeonline.entity.EntityEntity;
-import net.link.safeonline.test.util.TestEntityManager;
+import net.link.safeonline.test.util.EntityTestManager;
 
 public class EntityEntityTest extends TestCase {
 
-	private TestEntityManager testEntityManager;
+	private EntityTestManager entityTestManager;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		this.testEntityManager = new TestEntityManager();
-		this.testEntityManager.setUp(EntityEntity.class);
+		this.entityTestManager = new EntityTestManager();
+		this.entityTestManager.setUp(EntityEntity.class);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
-		this.testEntityManager.tearDown();
+		this.entityTestManager.tearDown();
 		super.tearDown();
 	}
 

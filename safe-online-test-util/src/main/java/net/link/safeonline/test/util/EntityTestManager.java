@@ -12,9 +12,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.ejb.Ejb3Configuration;
 
-public class TestEntityManager {
+public class EntityTestManager {
 
-	private static final Log LOG = LogFactory.getLog(TestEntityManager.class);
+	private static final Log LOG = LogFactory.getLog(EntityTestManager.class);
 
 	private Ejb3Configuration configuration;
 
