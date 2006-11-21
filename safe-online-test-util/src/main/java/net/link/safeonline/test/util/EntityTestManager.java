@@ -77,7 +77,11 @@ public class EntityTestManager {
 			this.configuration.addAnnotatedClass(serializableClass);
 		}
 		this.entityManagerFactory = this.configuration
-				.buildEntityManagerFactory();
+				.createEntityManagerFactory();
+		/*
+		 * createEntityManagerFactory is deprecated, but
+		 * buildEntityManagerFactory doesn't work because of a bug.
+		 */
 		this.entityManager = this.entityManagerFactory.createEntityManager();
 
 		this.entityManager.getTransaction().begin();
@@ -88,7 +92,11 @@ public class EntityTestManager {
 			EntityTransaction entityTransaction = this.entityManager
 					.getTransaction();
 			if (entityTransaction.isActive()) {
-				entityTransaction.commit();
+				if (entityTransaction.getRollbackOnly()) {
+					entityTransaction.rollback();
+				} else {
+					entityTransaction.commit();
+				}
 			}
 			this.entityManager.close();
 		}

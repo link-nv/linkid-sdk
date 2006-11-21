@@ -393,6 +393,11 @@
 				<artifactId>jsr173_api</artifactId>
 				<version>${jsr173_api.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>${commons-lang.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -436,5 +441,6 @@
 		<shiftone-oocjndi.version>1.2</shiftone-oocjndi.version>
 		<shiftone-arbor.version>1.4</shiftone-arbor.version>
 		<jsr173_api.version>1.0</jsr173_api.version>
+		<commons-lang.version>2.2</commons-lang.version>
 	</properties>
 </project>

@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 @Entity
 @Table(name = "entity")
 public class EntityEntity implements Serializable {
@@ -51,5 +54,25 @@ public class EntityEntity implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (false == obj instanceof EntityEntity) {
+			return false;
+		}
+		EntityEntity rhs = (EntityEntity) obj;
+		return new EqualsBuilder().append(this.login, rhs.login).append(
+				this.name, rhs.name).append(this.password, rhs.password)
+				.isEquals();
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("login", this.login).append(
+				"name", this.name).toString();
 	}
 }
