@@ -22,15 +22,10 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jboss-packaging-maven-plugin</artifactId>
-				<version>
-					${jboss-packaging-maven-plugin.version}
-				</version>
-				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jboss-maven-plugin</artifactId>
-				<version>${jboss-maven-plugin.version}</version>
 				<configuration>
 					<fileName>
 						${project.build.directory}/${project.build.finalName}.sar
