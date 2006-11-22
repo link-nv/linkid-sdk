@@ -27,6 +27,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	}
 
 	public void addApplication(String applicationName) {
+		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName);
 		this.entityManager.persist(application);
 	}

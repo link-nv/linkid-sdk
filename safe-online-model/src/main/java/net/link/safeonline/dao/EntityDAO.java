@@ -13,13 +13,15 @@ import net.link.safeonline.entity.EntityEntity;
 @Local
 public interface EntityDAO {
 	/**
-	 * Finds the entity for a given name. Returns <code>null</code> if the
+	 * Finds the entity for a given login. Returns <code>null</code> if the
 	 * entity could not be found.
 	 * 
-	 * @param username
+	 * @param login
 	 * @return
 	 */
-	EntityEntity findEntity(String username);
+	EntityEntity findEntity(String login);
 
-	void addEntity(String username, String password);
+	EntityEntity addEntity(String login, String password);
+
+	EntityEntity addEntity(String login, String password, String name);
 }

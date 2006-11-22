@@ -40,7 +40,8 @@ public class EntityTest extends TestCase {
 
 	public void testAddRemoveEntity() throws Exception {
 		// setup
-		EntityEntity entity = new EntityEntity("test-username", "test-password");
+		EntityEntity entity = new EntityEntity("test-login",
+				"test-password", null);
 
 		// operate: add entity
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -49,7 +50,7 @@ public class EntityTest extends TestCase {
 		// verify: locate the added entity
 		entityManager = this.entityTestManager.refreshEntityManager();
 		EntityEntity resultEntity = entityManager.find(EntityEntity.class,
-				"test-username");
+				"test-login");
 		assertNotNull(resultEntity);
 		assertEquals(entity, resultEntity);
 		LOG.debug("result entity: " + resultEntity);
@@ -58,7 +59,7 @@ public class EntityTest extends TestCase {
 		entityManager.remove(resultEntity);
 
 		// verify
-		assertNull(entityManager.find(EntityEntity.class, "test-username"));
+		assertNull(entityManager.find(EntityEntity.class, "test-login"));
 	}
 
 	public void testAddRemoveApplication() throws Exception {
@@ -112,7 +113,8 @@ public class EntityTest extends TestCase {
 	public void testAddSubscriptionRequiresExistingEntityAndApplication()
 			throws Exception {
 		// setup
-		EntityEntity entity = new EntityEntity("test-username", "test-password");
+		EntityEntity entity = new EntityEntity("test-login",
+				"test-password", null);
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application");
 		SubscriptionEntity subscription = new SubscriptionEntity(entity,
@@ -131,7 +133,8 @@ public class EntityTest extends TestCase {
 
 	public void testAddSubscription() throws Exception {
 		// setup
-		EntityEntity entity = new EntityEntity("test-username", "test-password");
+		EntityEntity entity = new EntityEntity("test-login",
+				"test-password", null);
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application");
 		SubscriptionEntity subscription = new SubscriptionEntity(entity,
@@ -161,7 +164,7 @@ public class EntityTest extends TestCase {
 
 		// verify
 		assertNull(entityManager.find(SubscriptionEntity.class, resultId));
-		assertNotNull(entityManager.find(EntityEntity.class, "test-username"));
+		assertNotNull(entityManager.find(EntityEntity.class, "test-login"));
 		assertNotNull(entityManager.find(ApplicationEntity.class,
 				"test-application"));
 	}

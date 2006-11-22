@@ -43,12 +43,12 @@ public class AuthenticationServiceBeanTest extends TestCase {
 	public void testAuthenticate() throws Exception {
 		// setup
 		String applicationName = "test-application";
-		String username = "test-username";
+		String login = "test-login";
 		String password = "test-password";
 
 		// stubs
-		EntityEntity entity = new EntityEntity(username, password);
-		expect(this.mockEntityDAO.findEntity(username)).andStubReturn(entity);
+		EntityEntity entity = new EntityEntity(login, password);
+		expect(this.mockEntityDAO.findEntity(login)).andStubReturn(entity);
 
 		ApplicationEntity application = new ApplicationEntity(applicationName);
 		expect(this.mockApplicationDAO.findApplication(applicationName))
@@ -64,7 +64,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		// operate
 		boolean result = this.testedInstance.authenticate(applicationName,
-				username, password);
+				login, password);
 
 		// verify
 		verify(this.mockEntityDAO, this.mockApplicationDAO,

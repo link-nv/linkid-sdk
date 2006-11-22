@@ -468,6 +468,11 @@
 				<version>${myfaces-impl.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.myfaces.core</groupId>
+				<artifactId>myfaces-api</artifactId>
+				<version>${myfaces-api.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.myfaces.tomahawk</groupId>
 				<artifactId>tomahawk</artifactId>
 				<version>${tomahawk.version}</version>
@@ -476,6 +481,11 @@
 				<groupId>org.apache.myfaces.tomahawk</groupId>
 				<artifactId>tomahawk-facelets</artifactId>
 				<version>${tomahawk-facelets.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-annotations</artifactId>
+				<version>${hibernate-annotations.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -534,5 +544,9 @@
 		<el-ri.version>1.0</el-ri.version>
 		<tomahawk.version>1.1.3</tomahawk.version>
 		<tomahawk-facelets.version>1.0</tomahawk-facelets.version>
+		<myfaces-api.version>1.1.4</myfaces-api.version>
+		<hibernate-annotations.version>
+			3.2.0.ga
+		</hibernate-annotations.version>
 	</properties>
 </project>

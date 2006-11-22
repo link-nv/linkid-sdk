@@ -25,10 +25,14 @@ public class EntityEntity implements Serializable {
 		// required
 	}
 
-	public EntityEntity(String login, String password) {
-		super();
+	public EntityEntity(String login, String password, String name) {
 		this.login = login;
 		this.password = password;
+		this.name = name;
+	}
+
+	public EntityEntity(String login, String password) {
+		this(login, password, null);
 	}
 
 	@Id

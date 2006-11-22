@@ -10,6 +10,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.EntityDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
@@ -52,6 +53,8 @@ public class SystemInitializationStartableBean implements Startable {
 
 		registeredApplications = new LinkedList<String>();
 		registeredApplications.add("demo-application");
+		registeredApplications
+				.add(UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME);
 
 		subscriptions = new HashMap<String, String>();
 		subscriptions.put("fcorneli", "demo-application");
@@ -72,13 +75,13 @@ public class SystemInitializationStartableBean implements Startable {
 		LOG.debug("start");
 		for (Map.Entry<String, String> authorizedUser : authorizedUsers
 				.entrySet()) {
-			String username = authorizedUser.getKey();
-			EntityEntity entity = this.entityDAO.findEntity(username);
+			String login = authorizedUser.getKey();
+			EntityEntity entity = this.entityDAO.findEntity(login);
 			if (null != entity) {
 				continue;
 			}
 			String password = authorizedUser.getValue();
-			this.entityDAO.addEntity(username, password);
+			this.entityDAO.addEntity(login, password);
 		}
 
 		for (String applicationName : registeredApplications) {
@@ -91,9 +94,9 @@ public class SystemInitializationStartableBean implements Startable {
 		}
 
 		for (Map.Entry<String, String> subscription : subscriptions.entrySet()) {
-			String username = subscription.getKey();
+			String login = subscription.getKey();
 			String applicationName = subscription.getValue();
-			EntityEntity entity = this.entityDAO.findEntity(username);
+			EntityEntity entity = this.entityDAO.findEntity(login);
 			ApplicationEntity application = this.applicationDAO
 					.findApplication(applicationName);
 			SubscriptionEntity subscriptionEntity = this.subscriptionDAO

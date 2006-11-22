@@ -12,7 +12,8 @@
 			<property name="hibernate.dialect"
 				value="${safe-online.dialect}" />
 			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.hbm2ddl.auto"
+				value="${safe-online.hibernate.hbm2ddl.auto}" />
 			<property name="hibernate.use_sql_comments" value="true" />
 			<property name="hibernate.cglib.use_reflection_optimizer"
 				value="true" />

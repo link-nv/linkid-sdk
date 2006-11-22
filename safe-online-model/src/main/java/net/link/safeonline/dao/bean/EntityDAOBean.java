@@ -19,16 +19,22 @@ public class EntityDAOBean implements EntityDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
-	public EntityEntity findEntity(String username) {
-		LOG.debug("find entity: " + username);
-		EntityEntity entity = this.entityManager.find(EntityEntity.class,
-				username);
+	public EntityEntity findEntity(String login) {
+		LOG.debug("find entity: " + login);
+		EntityEntity entity = this.entityManager
+				.find(EntityEntity.class, login);
 		return entity;
 	}
 
-	public void addEntity(String username, String password) {
-		LOG.debug("add entity: " + username);
-		EntityEntity entity = new EntityEntity(username, password);
+	public EntityEntity addEntity(String login, String password) {
+		EntityEntity entity = addEntity(login, password, null);
+		return entity;
+	}
+
+	public EntityEntity addEntity(String login, String password, String name) {
+		LOG.debug("add entity: " + login);
+		EntityEntity entity = new EntityEntity(login, password, name);
 		this.entityManager.persist(entity);
+		return entity;
 	}
 }
