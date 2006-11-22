@@ -7,16 +7,16 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="content">
-		<h1>Register New User</h1>
+		<h2>#{msgs.createAccount}</h2>
 		<h:form>
 			<table>
 				<tr>
-					<th><h:outputLabel for="name" value="Name" />:</th>
+					<th><h:outputLabel for="name" value="#{msgs.name}" />:</th>
 					<td><h:inputText id="name" value="#{register.name}" /></td>
 					<td><h:message for="name" styleClass="error" /></td>
 				</tr>
 				<tr>
-					<th><h:outputLabel for="login" value="Login" />:</th>
+					<th><h:outputLabel for="login" value="#{msgs.login}" />:</th>
 					<td><h:inputText id="login" value="#{register.login}"
 						required="true">
 						<f:validateLength minimum="6" />
@@ -24,7 +24,7 @@
 					<td><h:message for="login" styleClass="error" /></td>
 				</tr>
 				<tr>
-					<th><h:outputLabel for="password" value="Password" />:</th>
+					<th><h:outputLabel for="password" value="#{msgs.password}" />:</th>
 					<td><h:inputSecret id="password" value="#{register.password}"
 						required="true">
 						<f:validateLength minimum="6" />
@@ -32,14 +32,15 @@
 					<td><h:message for="password" styleClass="error" /></td>
 				</tr>
 				<tr>
-					<th><h:outputLabel for="password2" value="Password" />:</th>
+					<th><h:outputLabel for="password2" value="#{msgs.password}" />:</th>
 					<td><h:inputSecret id="password2" required="true">
 						<t:validateEqual for="password" />
 					</h:inputSecret></td>
 					<td><h:message for="password2" styleClass="error" /></td>
 				</tr>
 			</table>
-			<h:commandButton action="#{register.register}" value="Register" />
+			<h:commandButton action="#{register.register}"
+				value="#{msgs.register}" />
 		</h:form>
 	</ui:define>
 </ui:composition>
