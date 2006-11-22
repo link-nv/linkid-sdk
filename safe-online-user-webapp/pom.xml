@@ -9,25 +9,18 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<groupId>net.lin-k.safe-online</groupId>
-	<artifactId>safe-online-model</artifactId>
-	<packaging>ejb</packaging>
+	<artifactId>safe-online-user-webapp</artifactId>
+	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>SafeOnline Model</name>
-	<description>The SafeOnline Core EJB3 Model.</description>
+	<name>SafeOnline User Web Application</name>
+	<description>
+		User web application towards the SafeOnline service.
+	</description>
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-ejb-plugin</artifactId>
-				<configuration>
-					<ejbVersion>3.0</ejbVersion>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-					<generateClient>true</generateClient>
-				</configuration>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jboss-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
@@ -40,31 +33,37 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-entity</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<groupId>org.apache.myfaces.core</groupId>
+			<artifactId>myfaces-impl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-test-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>test</scope>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.jboss.seam</groupId>
+			<artifactId>jboss-seam</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
+			<groupId>com.sun.facelets</groupId>
+			<artifactId>jsf-facelets</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
+			<groupId>javax.el</groupId>
+			<artifactId>el-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>el-impl</groupId>
+			<artifactId>el-ri</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.myfaces.tomahawk</groupId>
+			<artifactId>tomahawk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.myfaces.tomahawk</groupId>
+			<artifactId>tomahawk-facelets</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>
@@ -79,14 +78,6 @@
 						</reports>
 					</reportSet>
 				</reportSets>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</reporting>

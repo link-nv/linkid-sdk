@@ -54,17 +54,17 @@ public class AuthClientImpl implements AuthClient {
 		return result;
 	}
 
-	public boolean authenticate(String application, String username,
+	public boolean authenticate(String applicationName, String username,
 			String password) {
 		AuthenticateRequestType request = new AuthenticateRequestType();
-		request.setApplication(application);
+		request.setApplication(applicationName);
 		request.setUsername(username);
 		request.setPassword(password);
 		LOG.debug("authentication request for user: " + username);
 		AuthenticateResultType result = this.port.authenticate(request);
 		boolean authenticated = result.isAuthenticated();
 		LOG.debug("authentication result: " + authenticated);
-		if (!application.equals(result.getApplication())) {
+		if (!applicationName.equals(result.getApplication())) {
 			throw new RuntimeException("application does not match");
 		}
 		if (!username.equals(result.getUsername())) {

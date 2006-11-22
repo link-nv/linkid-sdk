@@ -9,6 +9,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>SafeOnline</name>
 	<url>http://buildserver/site/safe-online</url>
+	<inceptionYear>2006</inceptionYear>
 	<developers>
 		<developer>
 			<id>fcorneli</id>
@@ -115,6 +116,9 @@
 		<module>safe-online-model</module>
 		<module>safe-online-test-util</module>
 		<module>safe-online-startup</module>
+		<module>safe-online-user-webapp</module>
+		<module>safe-online-documentation</module>
+		<module>safe-online-user</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -165,6 +169,16 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>apache-repo</id>
+			<name>apache-repo</name>
+			<url>
+				http://myfaces.zones.apache.org/dist/maven-repository
+			</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -398,6 +412,71 @@
 				<artifactId>commons-lang</artifactId>
 				<version>${commons-lang.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jstl</artifactId>
+				<version>${jstl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.seam</groupId>
+				<artifactId>jboss-seam</artifactId>
+				<version>${jboss-seam.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>taglibs</groupId>
+				<artifactId>standard</artifactId>
+				<version>${standard.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.facelets</groupId>
+				<artifactId>jsf-facelets</artifactId>
+				<version>${jsf-facelets.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.el</groupId>
+				<artifactId>el-api</artifactId>
+				<version>${el-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>el-impl</groupId>
+				<artifactId>el-impl</artifactId>
+				<version>${el-impl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>el-impl</groupId>
+				<artifactId>el-ri</artifactId>
+				<version>${el-ri.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet.jsp</groupId>
+				<artifactId>jsp-api</artifactId>
+				<version>${jsp-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.faces</groupId>
+				<artifactId>jsf-api</artifactId>
+				<version>${jsf-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.faces</groupId>
+				<artifactId>jsf-impl</artifactId>
+				<version>${jsf-impl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.myfaces.core</groupId>
+				<artifactId>myfaces-impl</artifactId>
+				<version>${myfaces-impl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.myfaces.tomahawk</groupId>
+				<artifactId>tomahawk</artifactId>
+				<version>${tomahawk.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.myfaces.tomahawk</groupId>
+				<artifactId>tomahawk-facelets</artifactId>
+				<version>${tomahawk-facelets.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -442,5 +521,18 @@
 		<shiftone-arbor.version>1.4</shiftone-arbor.version>
 		<jsr173_api.version>1.0</jsr173_api.version>
 		<commons-lang.version>2.2</commons-lang.version>
+		<jstl.version>1.1.2</jstl.version>
+		<jboss-seam.version>1.0.1.GA</jboss-seam.version>
+		<standard.version>1.1.2</standard.version>
+		<jsf-facelets.version>1.1.11</jsf-facelets.version>
+		<el-api.version>1.0</el-api.version>
+		<el-impl.version>1.0</el-impl.version>
+		<jsp-api.version>2.1</jsp-api.version>
+		<jsf-api.version>1.2_02</jsf-api.version>
+		<jsf-impl.version>1.2_02</jsf-impl.version>
+		<myfaces-impl.version>1.1.4</myfaces-impl.version>
+		<el-ri.version>1.0</el-ri.version>
+		<tomahawk.version>1.1.3</tomahawk.version>
+		<tomahawk-facelets.version>1.0</tomahawk-facelets.version>
 	</properties>
 </project>

@@ -1,0 +1,20 @@
+<h:form xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+	<table>
+		<tr>
+			<th>Login:</th>
+			<td><h:inputText value="#{login.username}" /></td>
+		</tr>
+		<tr>
+			<th>Password:</th>
+			<td><h:inputSecret value="#{login.password}" /></td>
+		</tr>
+	</table>
+	<h:commandButton action="#{login.login}" value="Login" />
+	<p><h:commandLink action="register">Create Account</h:commandLink>
+	</p>
+</h:form>

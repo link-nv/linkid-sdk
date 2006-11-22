@@ -6,6 +6,7 @@ SafeOnline JBoss Application Server
  
  In this document we will use <<<$JBOSS_HOME>>> to denote the installation directory of JBoss AS.
  It is <<not>> needed to define <<<$JBOSS_HOME>>> as environment variable.
+
  
 * Installation
 
@@ -22,7 +23,16 @@ java -jar jems-installer-1.2.0.BETA3.jar
  On the <<<JMX Security>>> page of the setup: unselect all security configurations. Else we cannot use the Maven2 jboss JMX deployer.
  
  Enter an admin password. (does not matter what)
- 
+
+
+** JVM Permanent Generation Heap configuration
+
+ Add the following line to <<<$JBOSS_HOME/bin/run.conf>>>:
+
++---+
+JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=128m"
++---+
+
 
 ** JAX-WS runtime libraries
 

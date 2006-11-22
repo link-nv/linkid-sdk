@@ -21,6 +21,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
+/**
+ * This component will initialize the system at startup.
+ * 
+ * For now it creates initial users, applications and subscriptions. This to
+ * allow for admins to gain access to the system.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Stateless
 @Local(Startable.class)
 @LocalBinding(jndiBinding = "SafeOnline/startup/SystemInitializationStartableBean")

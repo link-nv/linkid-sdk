@@ -1,0 +1,5 @@
+SafeOnline User Beans
+
+ This project contains the Seam backing beans used by the user web application.
+ 
+ It is using Seam.

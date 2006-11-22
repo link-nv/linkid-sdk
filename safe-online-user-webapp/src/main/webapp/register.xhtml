@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="body">
+		<h1>Register New User</h1>
+		<h:form>
+			<table>
+				<tr>
+					<th>Name:</th>
+					<td><h:inputText id="name" value="#{register.name}" /></td>
+					<td><h:message for="name" /></td>
+				</tr>
+				<tr>
+					<th>Login:</th>
+					<td><h:inputText id="login" value="#{register.login}"
+						required="true">
+						<f:validateLength minimum="6" />
+					</h:inputText></td>
+					<td><h:message for="login" /></td>
+				</tr>
+				<tr>
+					<th>Password:</th>
+					<td><h:inputSecret id="password" value="#{register.password}"
+						required="true">
+						<f:validateLength minimum="6" />
+					</h:inputSecret></td>
+					<td><h:message for="password" /></td>
+				</tr>
+				<tr>
+					<th>Password:</th>
+					<td><h:inputSecret id="password2" required="true">
+						<t:validateEqual for="password" />
+					</h:inputSecret></td>
+					<td><h:message for="password2" /></td>
+				</tr>
+			</table>
+			<h:commandButton action="#{register.register}" value="Register" />
+		</h:form>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

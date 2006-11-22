@@ -1,0 +1,21 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf"
+	xmlns:h="http://java.sun.com/jsf/html">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="body">
+		<h1>Welcome to SafeOnline</h1>
+		<p>Safe Online is a secure, online, centralised and user-centric
+		identity platform. It allows you to authenticate to your favourite
+		applications, sign transactions, pay and keep your information
+		synchronised. Using Safe Online is free so register today!</p>
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml" />
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>
