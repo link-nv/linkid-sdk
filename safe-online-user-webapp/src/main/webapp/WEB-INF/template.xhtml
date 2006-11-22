@@ -1,29 +1,39 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf"
+	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html">
 <head>
+<link rel="stylesheet" type="text/css" href="./css/style.css" />
 <title>SafeOnline</title>
 </head>
 
 <body>
+<div id="document">
+	<div id="header">
+		<ui:insert name="header">
+			<h1>SafeOnline</h1>
+		</ui:insert>
+	</div>
+	
+	<div id="container">
+		<div id="sidebar">
+			<ui:insert name="sidebar"/>
+		</div>
 
-<ui:insert name="header">
-	<h1>SafeOnline</h1>
-</ui:insert>
-
-<ui:insert name="body">
-Welcome to SafeOnline.
-</ui:insert>
-
-<ui:insert name="sidebar">
-</ui:insert>
-
-<ui:insert name="footer">
-Copyright 2006 - LIN.K N.V.
-</ui:insert>
-
+		<div id="content">
+			<ui:insert name="content">
+				Welcome to SafeOnline.
+			</ui:insert>
+		</div>		
+	</div>
+	
+	<div id="footer">
+		<ui:insert name="footer">
+			Copyright 2006 - LIN.K N.V.
+		</ui:insert>
+	</div>
+</div>
 </body>
 
 </html>

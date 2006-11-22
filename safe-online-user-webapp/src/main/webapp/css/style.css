@@ -1,0 +1,58 @@
+h1 {
+	font-size: 24px;
+	color: #aaaaff;
+}
+
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000000;
+	background-color: #FFFFFF;
+}
+
+/* classes */
+.error {
+	font-family: verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: #FF0000;
+}
+
+/* ids */
+#document {
+	height: 100%;
+}
+
+#header {
+	position: relative;
+	height: 60px;
+	text-align: left;
+	font-size: 36px;
+	font-weight: normal;
+}
+
+#footer {
+	clear: both;
+	float: left;
+	width: 100%;
+	text-align: right;
+	display: block;
+	padding: 10px 5px 5px 5px;
+	border-top: 1px solid #eaeaea;
+	color: #ccc;
+	font-size: x-small;
+}
+
+#container {
+	padding: 15px 5px;
+}
+
+#sidebar {
+	float: right;
+	margin-top: 11px;
+	margin-bottom: 12px;
+	text-align: center;
+}
+
+#content {
+	margin-right: 200px;
+}
