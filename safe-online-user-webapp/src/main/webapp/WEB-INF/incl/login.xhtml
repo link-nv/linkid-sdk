@@ -2,7 +2,8 @@
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
 
 	<table>
 		<tr>
@@ -15,8 +16,8 @@
 			<td><h:inputSecret id="password" value="#{login.password}" required="true" /></td>
 		</tr>
 	</table>
-	<p><h:message for="username" styleClass="error" /></p>
-	<p><h:message for="password" styleClass="error" /></p>
+	<p><t:message for="username" styleClass="error" /></p>
+	<p><t:message for="password" styleClass="error" /></p>
 	<h:commandButton action="#{login.login}" value="#{msgs.login}" />
 	<p><h:commandLink action="register" immediate="true">#{msgs.createAccount}</h:commandLink>
 	</p>

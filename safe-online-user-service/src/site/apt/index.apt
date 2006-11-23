@@ -1,0 +1,5 @@
+SafeOnline User Service
+
+ This JBoss SAR service dynamically setups the security domain for the user web application.
+ 
+ It is using the SafeOnline Authentication JAAS login module that goes via the SafeOnline web service for authentication.

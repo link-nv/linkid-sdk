@@ -91,6 +91,12 @@
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>jboss-sar-maven-plugin</artifactId>
+					<version>${jboss-sar-maven-plugin.version}</version>
+					<extensions>true</extensions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>jboss-maven-plugin</artifactId>
 					<version>${jboss-maven-plugin.version}</version>
 				</plugin>
@@ -119,6 +125,7 @@
 		<module>safe-online-user-webapp</module>
 		<module>safe-online-documentation</module>
 		<module>safe-online-user</module>
+		<module>safe-online-user-service</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -227,6 +234,19 @@
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>maven-snapshot</id>
+			<name>Apache Maven Snapshot Repository</name>
+			<url>
+				http://people.apache.org/maven-snapshot-repository
+			</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
@@ -487,6 +507,16 @@
 				<artifactId>hibernate-annotations</artifactId>
 				<version>${hibernate-annotations.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbosssx-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-j2ee</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -520,7 +550,9 @@
 		<stax-ex.version>1.0-SNAPSHOT</stax-ex.version>
 		<streambuffer.version>0.2</streambuffer.version>
 		<easymock.version>2.2</easymock.version>
-		<maven-ear-plugin.version>2.2</maven-ear-plugin.version>
+		<maven-ear-plugin.version>
+			2.3-SNAPSHOT
+		</maven-ear-plugin.version>
 		<commons-io.version>1.2</commons-io.version>
 		<hibernate-entitymanager.version>
 			3.2.0.ga
@@ -548,5 +580,8 @@
 		<hibernate-annotations.version>
 			3.2.0.ga
 		</hibernate-annotations.version>
+		<jboss-sar-maven-plugin.version>
+			2.0-SNAPSHOT
+		</jboss-sar-maven-plugin.version>
 	</properties>
 </project>

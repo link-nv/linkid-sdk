@@ -89,5 +89,13 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jbosssx-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-j2ee</artifactId>
+		</dependency>
 	</dependencies>
 </project>

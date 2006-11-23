@@ -6,6 +6,8 @@ import javax.ejb.Local;
 public interface Login {
 	String login();
 
+	String logout();
+	
 	String getUsername();
 
 	void setUsername(String username);

@@ -24,6 +24,18 @@
 			<from-outcome>register</from-outcome>
 			<to-view-id>/register.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>login-success</from-outcome>
+			<to-view-id>/overview.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>logout-success</from-outcome>
+			<to-view-id>/main.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>identities</from-action>
+			<to-view-id>/identities.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -33,5 +45,6 @@
 			<to-view-id>/register-complete.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+
 
 </faces-config>
