@@ -7,7 +7,9 @@ import net.link.safeonline.user.Login;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Context;
 
 @Stateless
 @Name("login")
@@ -15,6 +17,9 @@ import org.jboss.seam.annotations.Name;
 public class LoginBean implements Login {
 
 	private static final Log LOG = LogFactory.getLog(LoginBean.class);
+
+	@In
+	Context sessionContext;
 
 	private String username;
 

@@ -20,7 +20,7 @@
 					<td><h:inputText id="login" value="#{register.login}"
 						required="true">
 						<f:validateLength minimum="6" />
-					</h:inputText></td>
+					</h:inputText>*</td>
 					<td><h:message for="login" styleClass="error" /></td>
 				</tr>
 				<tr>
@@ -28,14 +28,14 @@
 					<td><h:inputSecret id="password" value="#{register.password}"
 						required="true">
 						<f:validateLength minimum="6" />
-					</h:inputSecret></td>
+					</h:inputSecret>*</td>
 					<td><h:message for="password" styleClass="error" /></td>
 				</tr>
 				<tr>
 					<th><h:outputLabel for="password2" value="#{msgs.password}" />:</th>
 					<td><h:inputSecret id="password2" required="true">
 						<t:validateEqual for="password" />
-					</h:inputSecret></td>
+					</h:inputSecret>*</td>
 					<td><h:message for="password2" styleClass="error" /></td>
 				</tr>
 			</table>
