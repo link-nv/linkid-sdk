@@ -1,5 +1,4 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
@@ -24,22 +23,22 @@
 					<td><h:message for="login" styleClass="error" /></td>
 				</tr>
 				<tr>
-					<th><h:outputLabel for="password" value="#{msgs.password}" />:</th>
-					<td><h:inputSecret id="password" value="#{register.password}"
+					<th><h:outputLabel for="password1" value="#{msgs.password}" />:</th>
+					<td><h:inputSecret id="password1" value="#{register.password}"
 						required="true">
 						<f:validateLength minimum="6" />
 					</h:inputSecret>*</td>
-					<td><h:message for="password" styleClass="error" /></td>
+					<td><h:message for="password1" styleClass="error" /></td>
 				</tr>
 				<tr>
 					<th><h:outputLabel for="password2" value="#{msgs.password}" />:</th>
 					<td><h:inputSecret id="password2" required="true">
-						<t:validateEqual for="password" />
+						<t:validateEqual for="password1" />
 					</h:inputSecret>*</td>
 					<td><h:message for="password2" styleClass="error" /></td>
 				</tr>
 			</table>
-			<h:commandButton action="#{register.register}"
+			<h:commandButton action="#{register.register}" id="register"
 				value="#{msgs.register}" />
 		</h:form>
 	</ui:define>
