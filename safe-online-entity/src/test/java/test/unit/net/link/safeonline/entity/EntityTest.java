@@ -1,5 +1,7 @@
 package test.unit.net.link.safeonline.entity;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
@@ -8,6 +10,7 @@ import javax.persistence.Query;
 import junit.framework.TestCase;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.EntityEntity;
+import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.test.util.EntityTestManager;
 
@@ -25,7 +28,8 @@ public class EntityTest extends TestCase {
 		super.setUp();
 		this.entityTestManager = new EntityTestManager();
 		this.entityTestManager.setUp(EntityEntity.class,
-				ApplicationEntity.class, SubscriptionEntity.class);
+				ApplicationEntity.class, SubscriptionEntity.class,
+				HistoryEntity.class);
 	}
 
 	@Override
@@ -40,8 +44,8 @@ public class EntityTest extends TestCase {
 
 	public void testAddRemoveEntity() throws Exception {
 		// setup
-		EntityEntity entity = new EntityEntity("test-login",
-				"test-password", null);
+		EntityEntity entity = new EntityEntity("test-login", "test-password",
+				null);
 
 		// operate: add entity
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -113,8 +117,8 @@ public class EntityTest extends TestCase {
 	public void testAddSubscriptionRequiresExistingEntityAndApplication()
 			throws Exception {
 		// setup
-		EntityEntity entity = new EntityEntity("test-login",
-				"test-password", null);
+		EntityEntity entity = new EntityEntity("test-login", "test-password",
+				null);
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application");
 		SubscriptionEntity subscription = new SubscriptionEntity(entity,
@@ -133,8 +137,8 @@ public class EntityTest extends TestCase {
 
 	public void testAddSubscription() throws Exception {
 		// setup
-		EntityEntity entity = new EntityEntity("test-login",
-				"test-password", null);
+		EntityEntity entity = new EntityEntity("test-login", "test-password",
+				null);
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application");
 		SubscriptionEntity subscription = new SubscriptionEntity(entity,
@@ -167,5 +171,26 @@ public class EntityTest extends TestCase {
 		assertNotNull(entityManager.find(EntityEntity.class, "test-login"));
 		assertNotNull(entityManager.find(ApplicationEntity.class,
 				"test-application"));
+	}
+
+	public void testAddHistory() throws Exception {
+		// setup
+		EntityEntity entity = new EntityEntity("test-login", "test-password",
+				null);
+		Date when = new Date();
+		HistoryEntity history = new HistoryEntity(when, entity, "test-event");
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(entity);
+		entityManager.persist(history);
+
+		// verify
+		LOG.debug("history id: " + history.getId());
+		entityManager = this.entityTestManager.refreshEntityManager();
+
+		HistoryEntity resultHistory = entityManager.find(HistoryEntity.class,
+				history.getId());
+		assertNotNull(resultHistory);
 	}
 }

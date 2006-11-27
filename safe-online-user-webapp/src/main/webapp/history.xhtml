@@ -1,7 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -11,7 +12,45 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<p>History</p>
+		<h:form>
+			<t:dataTable id="data" var="item" value="#{history.list}" rows="10"
+				preserveDataModel="false" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2"
+				columnClasses="listingTable_ColumnTop,listingTable_Column">
+
+				<h:column>
+					<f:facet name="header">
+					When
+				</f:facet>
+				#{item.when}
+			</h:column>
+
+				<h:column>
+					<f:facet name="header">
+					Event
+				</f:facet>
+				#{item.event}
+			</h:column>
+			</t:dataTable>
+
+			<t:dataScroller for="data" fastStep="10" pageCountVar="pageCount"
+				pageIndexVar="pageIndex" styleClass="scroller" paginator="true"
+				paginatorMaxPages="9">
+				<f:facet name="first">
+				First
+			</f:facet>
+				<f:facet name="last">
+				Last
+			</f:facet>
+				<f:facet name="previous">
+				Previous
+			</f:facet>
+				<f:facet name="next">
+				Next
+			</f:facet>
+			</t:dataScroller>
+		</h:form>
+
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml" />

@@ -51,7 +51,7 @@ public class UserTest extends TestCase {
 				.click("xpath=//input[@type = 'submit' and contains(@id, 'register')]");
 		this.selenium.waitForPageToLoad(TIMEOUT);
 
-		this.selenium.isTextPresent("successfully");
+		assertTrue(this.selenium.isTextPresent("successfully"));
 
 		// LOGIN
 		this.selenium.type("xpath=//input[contains(@id, 'username')]", login);
@@ -61,8 +61,8 @@ public class UserTest extends TestCase {
 				.click("xpath=//input[@type = 'submit' and contains(@id, 'login')]");
 		this.selenium.waitForPageToLoad(TIMEOUT);
 
-		this.selenium.isTextPresent("Welcome");
-		this.selenium.isTextPresent(login);
+		assertTrue(this.selenium.isTextPresent("Welcome"));
+		assertTrue(this.selenium.isTextPresent(login));
 
 		// EDIT NAME
 		this.selenium.open(USER_LOCATION + "/profile.seam");
@@ -72,13 +72,20 @@ public class UserTest extends TestCase {
 				.click("xpath=//input[@type = 'submit' and contains(@id, 'save')]");
 		this.selenium.waitForPageToLoad(TIMEOUT);
 
-		this.selenium.isTextPresent(name);
+		assertEquals(name, this.selenium
+				.getValue("xpath=//input[contains(@id, 'name')]"));
+
+		// NAVIGATE
+		this.selenium.open(USER_LOCATION + "/applications.seam");
+		this.selenium.open(USER_LOCATION + "/devices.seam");
+		this.selenium.open(USER_LOCATION + "/history.seam");
+		assertTrue(this.selenium.isTextPresent("safe-online-user"));
 
 		// LOGOUT
 		this.selenium
 				.click("xpath=//input[@type = 'submit' and contains(@id, 'logout')]");
 		this.selenium.waitForPageToLoad(TIMEOUT);
 
-		this.selenium.isTextPresent("Login");
+		assertTrue(this.selenium.isTextPresent("Login"));
 	}
 }

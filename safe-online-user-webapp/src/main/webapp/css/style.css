@@ -121,3 +121,25 @@ body {
 	float: right;
 	width: 50%;
 }
+
+.listingTable {
+	border-style: none;
+}
+
+.listingTable_Row1 {
+	background-color: #FFFFE0;
+}
+
+.listingTable_Row2 {
+	background-color: #FFFFE0;
+}
+
+.listingTable_ColumnTop {
+	text-align: left;
+	vertical-align: top;
+	background-color: #D0D0D0;
+}
+
+.listingTable_Column {
+	
+}

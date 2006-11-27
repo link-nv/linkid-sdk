@@ -43,7 +43,18 @@ public class SystemInitializationStartableBean implements Startable {
 
 	private static List<String> registeredApplications;
 
-	private static Map<String, String> subscriptions;
+	private static class Subscription {
+		private String user;
+
+		private String application;
+
+		public Subscription(String user, String application) {
+			this.user = user;
+			this.application = application;
+		}
+	}
+
+	private static List<Subscription> subscriptions;
 
 	static {
 		authorizedUsers = new HashMap<String, String>();
@@ -56,10 +67,16 @@ public class SystemInitializationStartableBean implements Startable {
 		registeredApplications
 				.add(UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME);
 
-		subscriptions = new HashMap<String, String>();
-		subscriptions.put("fcorneli", "demo-application");
-		subscriptions.put("dieter", "demo-application");
-		subscriptions.put("mario", "demo-application");
+		subscriptions = new LinkedList<Subscription>();
+		subscriptions.add(new Subscription("fcorneli", "demo-application"));
+		subscriptions.add(new Subscription("fcorneli",
+				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+		subscriptions.add(new Subscription("dieter", "demo-application"));
+		subscriptions.add(new Subscription("dieter",
+				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+		subscriptions.add(new Subscription("mario", "demo-application"));
+		subscriptions.add(new Subscription("mario",
+				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
 	}
 
 	@EJB
@@ -93,9 +110,9 @@ public class SystemInitializationStartableBean implements Startable {
 			this.applicationDAO.addApplication(applicationName);
 		}
 
-		for (Map.Entry<String, String> subscription : subscriptions.entrySet()) {
-			String login = subscription.getKey();
-			String applicationName = subscription.getValue();
+		for (Subscription subscription : subscriptions) {
+			String login = subscription.user;
+			String applicationName = subscription.application;
 			EntityEntity entity = this.entityDAO.findEntity(login);
 			ApplicationEntity application = this.applicationDAO
 					.findApplication(applicationName);

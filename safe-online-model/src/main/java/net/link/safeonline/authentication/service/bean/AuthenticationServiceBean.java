@@ -1,11 +1,14 @@
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.Date;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.EntityDAO;
+import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.EntityEntity;
@@ -29,6 +32,9 @@ public class AuthenticationServiceBean implements AuthenticationService {
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
 
+	@EJB
+	private HistoryDAO historyDAO;
+
 	public boolean authenticate(String applicationName, String login,
 			String password) {
 		LOG.debug("authenticate \"" + login + "\" for \"" + applicationName
@@ -40,26 +46,40 @@ public class AuthenticationServiceBean implements AuthenticationService {
 			return false;
 		}
 		if (!entity.getPassword().equals(password)) {
-			LOG.debug("password not correct");
+			Date now = new Date();
+			String event = "incorrect password for application: "
+					+ applicationName;
+			this.historyDAO.addHistoryEntry(now, entity, event);
+			LOG.debug(event);
 			return false;
 		}
 
 		ApplicationEntity application = this.applicationDAO
 				.findApplication(applicationName);
 		if (null == application) {
-			LOG.debug("application not found");
+			Date now = new Date();
+			String event = "application not found: " + applicationName;
+			this.historyDAO.addHistoryEntry(now, entity, event);
+			LOG.debug(event);
 			return false;
 		}
 
 		SubscriptionEntity subscription = this.subscriptionDAO
 				.findSubscription(entity, application);
 		if (null == subscription) {
-			LOG.debug("subscription not found");
+			Date now = new Date();
+			String event = "subscription not found for application: "
+					+ applicationName;
+			this.historyDAO.addHistoryEntry(now, entity, event);
+			LOG.debug(event);
 			return false;
 		}
 
 		LOG.debug("authenticated \"" + login + "\" for \"" + applicationName
 				+ "\"");
+		Date now = new Date();
+		this.historyDAO.addHistoryEntry(now, entity,
+				"authenticated for application " + applicationName);
 		return true;
 	}
 }
