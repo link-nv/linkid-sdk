@@ -6,6 +6,6 @@
 	<namespace>urn:net:lin-k:safe-online:taglib:1.0</namespace>
 	<tag>
 		<tag-name>echo</tag-name>
-		<source>echo.xhtml</source>
+		<source>tags/echo.xhtml</source>
 	</tag>
 </facelet-taglib>
