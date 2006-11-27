@@ -5,6 +5,11 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+		</ui:include>
+	</ui:define>
 	<ui:define name="content">
 		<h2>#{msgs.createAccount}</h2>
 		<h:form>

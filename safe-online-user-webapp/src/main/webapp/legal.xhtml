@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="legal" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+		<h1>Terms of use</h1>
+		<p>Copyright 2006 LIN-K N.V. All rights reserved.<br />
+		LIN-K N.V. proprietary/confidential. Use is subject to license terms.</p>
+		<p>The following are terms of a legal agreement between you and
+		LIN-K. By accessing, browsing and/or using this web site, you
+		acknowledge that you have read, understood, and agree, to be bound by
+		these terms and to comply with all applicable laws and regulations,
+		including export and re-export control laws and regulations. If you do
+		not agree to these terms, do not use this web site.</p>
+		<p>This Web site may contain other proprietary notices and
+		copyright information, the terms of which must be observed and
+		followed. Information on this Web site may contain technical
+		inaccuracies or typographical errors.</p>
+		<p>Information may be changed or updated without notice. LIN-K may
+		also make improvements and/or changes in the products and/or the
+		programs described in this information at any time without notice.</p>
+		<p>LIN-K assumes no responsibility regarding the accuracy of the
+		information that is provided by LIN-K and use of such information is
+		at the recipient's own risk. LIN-K provides no assurances that any
+		reported problems may be resolved with the use of any information that
+		LIN-K provides. By furnishing information, LIN-K does not grant any
+		licenses to any copyrights, patents or any other intellectual property
+		rights.</p>
+		<p>LIN-K does not want to receive confidential or proprietary
+		information from you through our Web site. Please note that any
+		information or material sent to LIN-K will be deemed NOT to be
+		confidential. By sending LIN-K any information or material, you grant
+		LIN-K an unrestricted, irrevocable license to use, reproduce, display,
+		perform, modify, transmit and distribute those materials or
+		information, and you also agree that LIN-K is free to use any ideas,
+		concepts, know-how or techniques that you send us for any purpose.
+		However, we will not release your name or otherwise publicize the fact
+		that you submitted materials or other information to us unless: (a) we
+		obtain your permission to use your name; or (b) we first notify you
+		that the materials or other information you submit to a particular
+		part of this site will be published or otherwise used with your name
+		on it; or (c) we are required to do so by law.</p>
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml" />
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

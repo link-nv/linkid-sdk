@@ -1,0 +1,45 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jstl/core">
+<div class="nav">
+<ul>
+	<li id="page_main"><a
+		href="#{facesContext.externalContext.requestContextPath}/main.seam">Home</a></li>
+	<li id="page_about"><a
+		href="#{facesContext.externalContext.requestContextPath}/about.seam">About</a></li>
+	<li id="page_contact"><a
+		href="#{facesContext.externalContext.requestContextPath}/contact.seam">Contact</a></li>
+	<li id="page_legal"><a
+		href="#{facesContext.externalContext.requestContextPath}/legal.seam">Legal</a></li>
+	<li id="page_privacy"><a
+		href="#{facesContext.externalContext.requestContextPath}/privacy.seam">Privacy</a></li>
+</ul>
+</div>
+
+<f:subview rendered="#{username != null and page == 'main'}">
+	<div class="nav">
+	<ul>
+		<li id="subpage_overview"><a
+			href="#{facesContext.externalContext.requestContextPath}/overview.seam">Overview</a></li>
+		<li id="subpage_profile"><a
+			href="#{facesContext.externalContext.requestContextPath}/profile.seam">Profile</a></li>
+		<li id="subpage_applications"><a
+			href="#{facesContext.externalContext.requestContextPath}/applications.seam">Applications</a></li>
+		<li id="subpage_devices"><a
+			href="#{facesContext.externalContext.requestContextPath}/devices.seam">Devices</a></li>
+		<li id="subpage_history"><a
+			href="#{facesContext.externalContext.requestContextPath}/history.seam">History</a></li>
+	</ul>
+	</div>
+</f:subview> <script language="JavaScript">
+        function setClass(id, className) {
+            obj = document.getElementById(id);
+            if (obj != null) {
+                obj.className = className;
+            }
+        }
+        setClass("page_" + "#{page}", "current");
+        setClass("subpage_" + "#{subpage}", "current");
+    </script></div>

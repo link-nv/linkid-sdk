@@ -7,7 +7,7 @@ public interface Login {
 	String login();
 
 	String logout();
-	
+
 	String getUsername();
 
 	void setUsername(String username);
@@ -15,4 +15,8 @@ public interface Login {
 	String getPassword();
 
 	void setPassword(String password);
+
+	boolean isLoggedIn();
+
+	String getLoggedInUsername();
 }

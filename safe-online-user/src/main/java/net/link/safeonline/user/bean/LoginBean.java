@@ -76,4 +76,14 @@ public class LoginBean implements Login {
 		Seam.invalidateSession();
 		return "logout-success";
 	}
+
+	public String getLoggedInUsername() {
+		String username = (String) this.sessionContext.get("username");
+		return username;
+	}
+
+	public boolean isLoggedIn() {
+		String username = (String) this.sessionContext.get("username");
+		return (null != username);
+	}
 }

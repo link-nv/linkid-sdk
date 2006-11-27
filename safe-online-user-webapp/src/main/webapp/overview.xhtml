@@ -4,19 +4,40 @@
 	xmlns:h="http://java.sun.com/jsf/html">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="overview" />
+		</ui:include>
+	</ui:define>
 	<ui:define name="content">
-		<p>Welcome user.</p>
-		<h:form>
-			<ul>
-				<li><h:commandLink action="identities" value="#{msgs.identities}"/></li>
-				<li><h:commandLink action="devices" value="#{msgs.devices}"/></li>
-				<li><h:commandLink action="subscriptions" value="#{msgs.subscriptions}"/></li>
-				<li><h:commandLink action="history" value="#{msgs.history}"/></li>
-			</ul>
-		</h:form>
+		<div class="subcolumn1-2">
+		<h3>Your profile</h3>
+		<p>Manage the details of your identity. This profile will be
+		shared by all applications to which you are subscribed, but you
+		control what details are exposed. <a href="./profile.seam">Click
+		here</a> to edit your profile.</p>
+
+		<h3>Your applications</h3>
+		<p>Search for applications and decide which ones you want to use.
+		Click <a href="./applications.seam">here</a> to search, subscribe to
+		or unsubscribe from applications.</p>
+
+		</div>
+		<div class="subcolumn2-2">
+		<h3>Your devices</h3>
+
+		<p>Configure your new and existing devices so you can use them to
+		authenticate, sign and pay inside your applications. Click <a
+			href="./devices.seam">here</a> to edit your devices.</p>
+
+		<h3>Your history</h3>
+		<p>Click <a href="./history.seam">here</a> to search and view all
+		events about your identity.</p>
+		</div>
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/logout.xhtml" />
+		<ui:include src="/WEB-INF/incl/login.xhtml" />
 	</ui:define>
 </ui:composition>
 </body>
