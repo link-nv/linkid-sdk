@@ -131,6 +131,7 @@
 		<module>safe-online-documentation</module>
 		<module>safe-online-user</module>
 		<module>safe-online-user-service</module>
+		<module>safe-online-taglib</module>
 	</modules>
 	<repositories>
 		<repository>
