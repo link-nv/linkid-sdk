@@ -52,6 +52,18 @@
 		<filter-class>
 			net.link.safeonline.user.filter.JAASLoginFilter
 		</filter-class>
+		<init-param>
+			<param-name>LoginContextName</param-name>
+			<param-value>client-login</param-value>
+		</init-param>
+		<init-param>
+			<param-name>SessionUsernameAttributeName</param-name>
+			<param-value>username</param-value>
+		</init-param>
+		<init-param>
+			<param-name>SessionPasswordAttributeName</param-name>
+			<param-value>password</param-value>
+		</init-param>
 	</filter>
 
 	<filter-mapping>

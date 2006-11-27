@@ -22,11 +22,43 @@ public class JAASLoginFilter implements Filter {
 
 	private static final String SESSION_LOGIN_CONTEXT = "login-context";
 
-	private static final String JBOSS_DOMAIN_CLIENT_LOGIN = "client-login";
+	public static final String LOGIN_CONTEXT_PARAM = "LoginContextName";
 
-	public static final String SESSION_PASSWORD = "password";
+	private static final String DEFAULT_LOGIN_CONTEXT = "client-login";
 
-	public static final String SESSION_USERNAME = "username";
+	public static final String SESSION_USERNAME_PARAM = "SessionUsernameAttributeName";
+
+	public static final String DEFAULT_SESSION_USERNAME = "username";
+
+	public static final String SESSION_PASSWORD_PARAM = "SessionPasswordAttributeName";
+
+	public static final String DEFAULT_SESSION_PASSWORD = "password";
+
+	private String loginContextName;
+
+	private String sessionUsernameAttribute;
+
+	private String sessionPasswordAttribute;
+
+	public void init(FilterConfig config) throws ServletException {
+		LOG.debug("init");
+		this.loginContextName = getInitParameter(config, LOGIN_CONTEXT_PARAM,
+				DEFAULT_LOGIN_CONTEXT);
+		this.sessionUsernameAttribute = getInitParameter(config,
+				SESSION_USERNAME_PARAM, DEFAULT_SESSION_USERNAME);
+		this.sessionPasswordAttribute = getInitParameter(config,
+				SESSION_PASSWORD_PARAM, DEFAULT_SESSION_PASSWORD);
+		LOG.debug("login context: " + this.loginContextName);
+	}
+
+	private String getInitParameter(FilterConfig config, String param,
+			String defaultValue) {
+		String value = config.getInitParameter(param);
+		if (null == value) {
+			value = defaultValue;
+		}
+		return value;
+	}
 
 	public void destroy() {
 		LOG.debug("destroy");
@@ -44,9 +76,9 @@ public class JAASLoginFilter implements Filter {
 
 	private void login(HttpServletRequest request) {
 		String username = (String) request.getSession().getAttribute(
-				SESSION_USERNAME);
+				this.sessionUsernameAttribute);
 		String password = (String) request.getSession().getAttribute(
-				SESSION_PASSWORD);
+				this.sessionPasswordAttribute);
 		if (username == null) {
 			return;
 		}
@@ -57,7 +89,7 @@ public class JAASLoginFilter implements Filter {
 				password.toCharArray());
 		LoginContext loginContext;
 		try {
-			loginContext = new LoginContext(JBOSS_DOMAIN_CLIENT_LOGIN, handler);
+			loginContext = new LoginContext(this.loginContextName, handler);
 			loginContext.login();
 			LOG.debug("login for " + username);
 			request.setAttribute(SESSION_LOGIN_CONTEXT, loginContext);
@@ -75,13 +107,8 @@ public class JAASLoginFilter implements Filter {
 		try {
 			LOG.debug("logout");
 			loginContext.logout();
-			request.setAttribute(SESSION_LOGIN_CONTEXT, null);
 		} catch (LoginException e) {
 			LOG.error("logout error: " + e.getMessage(), e);
 		}
-	}
-
-	public void init(FilterConfig config) throws ServletException {
-		LOG.debug("init");
 	}
 }

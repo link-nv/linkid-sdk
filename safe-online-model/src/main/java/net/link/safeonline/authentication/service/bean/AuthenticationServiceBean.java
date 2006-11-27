@@ -29,12 +29,12 @@ public class AuthenticationServiceBean implements AuthenticationService {
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
 
-	public boolean authenticate(String applicationName, String username,
+	public boolean authenticate(String applicationName, String login,
 			String password) {
-		LOG.debug("authenticate \"" + username + "\" for \"" + applicationName
+		LOG.debug("authenticate \"" + login + "\" for \"" + applicationName
 				+ "\"");
 
-		EntityEntity entity = this.entityDAO.findEntity(username);
+		EntityEntity entity = this.entityDAO.findEntity(login);
 		if (null == entity) {
 			LOG.debug("entity not found");
 			return false;
@@ -58,7 +58,7 @@ public class AuthenticationServiceBean implements AuthenticationService {
 			return false;
 		}
 
-		LOG.debug("authenticated \"" + username + "\" for \"" + applicationName
+		LOG.debug("authenticated \"" + login + "\" for \"" + applicationName
 				+ "\"");
 		return true;
 	}

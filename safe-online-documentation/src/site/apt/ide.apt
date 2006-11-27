@@ -31,6 +31,9 @@ mvn eclipse:add-maven-repo -Declipse.workspace=/the/path/to/your/eclipse/workspa
  
 * NetBeans
 
+ One should definitely install the mevenide2 plugin for NetBeans.
+ This plugin is available from: http://mevenide.codehaus.org
+
  Execute the following in the parent directory:
  
 +---+
