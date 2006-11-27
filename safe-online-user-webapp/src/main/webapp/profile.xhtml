@@ -12,7 +12,20 @@
 	</ui:define>
 	<ui:define name="content">
 		<h1>#{msgs.profile}</h1>
-		<p>Login: #{identity.login}</p>
+		<h:form>
+			<table>
+				<tr>
+					<th>Login:</th>
+					<td>#{identity.login}</td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="name" value="Name" />:</th>
+					<td><h:inputText id="name" value="#{identity.name}" /></td>
+				</tr>
+			</table>
+			<h:commandButton id="save" action="#{identity.save}"
+				value="Save Changes" />
+		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml" />

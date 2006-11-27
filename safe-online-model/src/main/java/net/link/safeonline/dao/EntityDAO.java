@@ -2,6 +2,7 @@ package net.link.safeonline.dao;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.service.EntityNotFoundException;
 import net.link.safeonline.entity.EntityEntity;
 
 /**
@@ -24,4 +25,14 @@ public interface EntityDAO {
 	EntityEntity addEntity(String login, String password);
 
 	EntityEntity addEntity(String login, String password, String name);
+
+	/**
+	 * Gives back the entity for the given login.
+	 * 
+	 * @param login
+	 *            the login of the entity.
+	 * @return the entity.
+	 * @exception EntityNotFoundException
+	 */
+	EntityEntity getEntity(String login) throws EntityNotFoundException;
 }

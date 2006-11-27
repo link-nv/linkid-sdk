@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.service.EntityNotFoundException;
 import net.link.safeonline.dao.EntityDAO;
 import net.link.safeonline.entity.EntityEntity;
 
@@ -35,6 +36,15 @@ public class EntityDAOBean implements EntityDAO {
 		LOG.debug("add entity: " + login);
 		EntityEntity entity = new EntityEntity(login, password, name);
 		this.entityManager.persist(entity);
+		return entity;
+	}
+
+	public EntityEntity getEntity(String login) throws EntityNotFoundException {
+		LOG.debug("get entity: " + login);
+		EntityEntity entity = findEntity(login);
+		if (null == entity) {
+			throw new EntityNotFoundException();
+		}
 		return entity;
 	}
 }

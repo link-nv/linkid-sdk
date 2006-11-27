@@ -6,4 +6,10 @@ import javax.ejb.Local;
 public interface Identity {
 
 	String getLogin();
+
+	String getName();
+
+	void setName(String name);
+	
+	String save();
 }

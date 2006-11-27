@@ -30,10 +30,11 @@ public class UserTest extends TestCase {
 		this.selenium.stop();
 	}
 
-	public void testUserRegistrationLoginLogout() throws Exception {
+	public void testUserRegistrationLoginEditNameLogout() throws Exception {
 		selenium.setContext("Testing the user registration.",
 				SeleniumLogLevels.DEBUG);
 
+		// REGISTER
 		this.selenium.open(USER_LOCATION);
 		this.selenium.waitForPageToLoad(TIMEOUT);
 		this.selenium.click("xpath=//a[contains(@id, 'register')]");
@@ -52,6 +53,7 @@ public class UserTest extends TestCase {
 
 		this.selenium.isTextPresent("successfully");
 
+		// LOGIN
 		this.selenium.type("xpath=//input[contains(@id, 'username')]", login);
 		this.selenium
 				.type("xpath=//input[contains(@id, 'password')]", password);
@@ -60,6 +62,19 @@ public class UserTest extends TestCase {
 		this.selenium.waitForPageToLoad(TIMEOUT);
 
 		this.selenium.isTextPresent("Welcome");
+		this.selenium.isTextPresent(login);
+
+		// EDIT NAME
+		this.selenium.open(USER_LOCATION + "/profile.seam");
+		String name = "name-" + login;
+		this.selenium.type("xpath=//input[contains(@id, 'name')]", name);
+		this.selenium
+				.click("xpath=//input[@type = 'submit' and contains(@id, 'save')]");
+		this.selenium.waitForPageToLoad(TIMEOUT);
+
+		this.selenium.isTextPresent(name);
+
+		// LOGOUT
 		this.selenium
 				.click("xpath=//input[@type = 'submit' and contains(@id, 'logout')]");
 		this.selenium.waitForPageToLoad(TIMEOUT);
