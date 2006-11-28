@@ -46,18 +46,27 @@ public class LoginBean implements Login {
 
 	public String login() {
 		LOG.debug("login with username: " + this.username);
+		try {
+			boolean authenticated = this.authenticationService.authenticate(
+					UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME,
+					this.username, new String(this.password));
+			if (!authenticated) {
+				this.facesMessages.add("username", "login failed");
+				Seam.invalidateSession();
+				return null;
+			}
 
-		boolean authenticated = this.authenticationService.authenticate(
-				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME,
-				this.username, new String(this.password));
-		if (!authenticated) {
-			this.facesMessages.add("username", "login failed");
-			Seam.invalidateSession();
-			return null;
+			this.sessionContext.set("username", this.username);
+			this.sessionContext.set("password", this.password);
+		} finally {
+			/*
+			 * XXX: we have to clear the fields here... else we might leak data
+			 * to other users.
+			 * http://www.jboss.org/index.html?module=bb&op=viewtopic&t=95858
+			 */
+			this.username = null;
+			this.password = null;
 		}
-
-		this.sessionContext.set("username", this.username);
-		this.sessionContext.set("password", this.password);
 
 		return "login-success";
 	}
