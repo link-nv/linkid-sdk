@@ -5,7 +5,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.authentication.service.EntityNotFoundException;
+import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.dao.EntityDAO;
 import net.link.safeonline.dao.HistoryDAO;

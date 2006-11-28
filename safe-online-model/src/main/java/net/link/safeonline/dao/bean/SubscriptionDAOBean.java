@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.service.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.EntityEntity;

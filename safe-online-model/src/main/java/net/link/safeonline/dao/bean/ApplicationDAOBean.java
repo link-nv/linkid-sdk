@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.service.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 

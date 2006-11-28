@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.service.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 
 @Local

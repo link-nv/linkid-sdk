@@ -1,4 +1,4 @@
-package net.link.safeonline.authentication.service;
+package net.link.safeonline.authentication.exception;
 
 import javax.ejb.ApplicationException;
 

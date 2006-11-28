@@ -5,7 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.service.EntityNotFoundException;
+import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.dao.EntityDAO;
 import net.link.safeonline.entity.EntityEntity;
 

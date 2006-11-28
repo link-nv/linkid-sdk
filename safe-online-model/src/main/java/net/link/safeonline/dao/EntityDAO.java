@@ -2,7 +2,7 @@ package net.link.safeonline.dao;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.service.EntityNotFoundException;
+import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.entity.EntityEntity;
 
 /**

@@ -2,6 +2,8 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ExistingUserException;
+
 /**
  * User registration service interface.
  * 

@@ -8,7 +8,7 @@ import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.authentication.service.EntityNotFoundException;
+import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.user.Identity;
 import net.link.safeonline.user.UserConstants;

@@ -3,7 +3,7 @@ package net.link.safeonline.authentication.service.bean;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.authentication.service.ExistingUserException;
+import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.EntityDAO;

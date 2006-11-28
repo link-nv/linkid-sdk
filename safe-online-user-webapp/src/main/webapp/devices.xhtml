@@ -1,7 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -11,7 +12,37 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<p>Devices</p>
+
+		<h1>Username password token</h1>
+
+		<h:form>
+
+			<table>
+				<tr>
+					<th><h:outputLabel for="oldpassword" value="Old password" />:</th>
+					<td><h:inputSecret id="oldpassword"
+						value="#{passwordBean.oldPassword}" required="true" />*</td>
+					<td><h:message for="oldpassword" styleClass="error" /></td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="password1" value="#{msgs.password}" />:</th>
+					<td><h:inputSecret id="password1"
+						value="#{passwordBean.newPassword}" required="true">
+						<f:validateLength minimum="6" />
+					</h:inputSecret>*</td>
+					<td><h:message for="password1" styleClass="error" /></td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="password2" value="#{msgs.password}" />:</th>
+					<td><h:inputSecret id="password2" required="true">
+						<t:validateEqual for="password1" />
+					</h:inputSecret>*</td>
+					<td><h:message for="password2" styleClass="error" /></td>
+				</tr>
+			</table>
+			<h:commandButton action="#{passwordBean.change}" id="change"
+				value="Change Password" />
+		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml" />

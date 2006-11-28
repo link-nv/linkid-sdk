@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.service.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.EntityEntity;
 import net.link.safeonline.entity.SubscriptionEntity;

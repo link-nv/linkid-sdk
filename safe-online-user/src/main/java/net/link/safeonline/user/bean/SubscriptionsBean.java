@@ -9,11 +9,11 @@ import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.authentication.service.AlreadySubscribedException;
-import net.link.safeonline.authentication.service.ApplicationNotFoundException;
-import net.link.safeonline.authentication.service.EntityNotFoundException;
-import net.link.safeonline.authentication.service.PermissionDeniedException;
-import net.link.safeonline.authentication.service.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.exception.AlreadySubscribedException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.EntityNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
