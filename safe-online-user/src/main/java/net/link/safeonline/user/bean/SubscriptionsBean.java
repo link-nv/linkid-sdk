@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
@@ -56,7 +57,7 @@ public class SubscriptionsBean implements Subscriptions {
 	@Out(value = "selectedSubscription", required = false, scope = ScopeType.SESSION)
 	private SubscriptionEntity selectedSubscription;
 
-	// TODO: @RolesAllowed(UserConstants.USER_ROLE)
+	@RolesAllowed(UserConstants.USER_ROLE)
 	@Factory("subscriptionList")
 	public void subscriptionListFactory() {
 		LOG.debug("subscription list factory");
@@ -87,14 +88,14 @@ public class SubscriptionsBean implements Subscriptions {
 		this.applicationList = this.subscriptionService.getApplications();
 	}
 
-	// TODO: @RolesAllowed(UserConstants.USER_ROLE)
+	@RolesAllowed(UserConstants.USER_ROLE)
 	public String viewSubscription() {
 		LOG.debug("view subscription: "
 				+ this.selectedSubscription.getApplication().getName());
 		return "view-subscription";
 	}
 
-	// TODO: @RolesAllowed(UserConstants.USER_ROLE)
+	@RolesAllowed(UserConstants.USER_ROLE)
 	public String unsubscribe() {
 		LOG.debug("unsubscribe from: "
 				+ this.selectedSubscription.getApplication().getName());
@@ -124,6 +125,7 @@ public class SubscriptionsBean implements Subscriptions {
 		return "unsubscribed";
 	}
 
+	@RolesAllowed(UserConstants.USER_ROLE)
 	public String subscribe() {
 		String applicationName = this.selectedApplication.getName();
 		LOG.debug("subscribe on: " + applicationName);

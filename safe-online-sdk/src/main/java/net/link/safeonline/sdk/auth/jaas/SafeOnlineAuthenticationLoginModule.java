@@ -73,8 +73,11 @@ public class SafeOnlineAuthenticationLoginModule implements LoginModule {
 		String location = getOptionValue(options, OPTION_LOCATION,
 				DEFAULT_LOCATION);
 		LOG.debug("location: " + location);
-		this.authClient = new AuthClientImpl(location);
-
+		try {
+			this.authClient = new AuthClientImpl(location);
+		} catch (Exception e) {
+			LOG.error("auth client error: " + e.getMessage(), e);
+		}
 		this.subject = subject;
 		this.callbackHandler = callbackHandler;
 		this.sharedState = sharedState;

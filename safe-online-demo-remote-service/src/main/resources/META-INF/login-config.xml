@@ -17,17 +17,12 @@
 				</module-option>
 			</login-module>
 			<login-module
-				code="org.jboss.security.auth.spi.UsersRolesLoginModule"
+				code="org.jboss.security.auth.spi.IdentityLoginModule"
 				flag="optional">
 				<module-option name="password-stacking">
 					useFirstPass
 				</module-option>
-				<module-option name="usersProperties">
-					users.properties
-				</module-option>
-				<module-option name="rolesProperties">
-					roles.properties
-				</module-option>
+				<module-option name="roles">WebAppUser</module-option>
 			</login-module>
 		</authentication>
 	</application-policy>

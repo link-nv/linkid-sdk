@@ -25,8 +25,9 @@ public class SafeOnlineAuthenticationServiceFactory {
 	 * @return a new instance.
 	 */
 	public static SafeOnlineAuthenticationService newInstance() {
-		URL wsdlUrl = SafeOnlineAuthenticationServiceFactory.class
-				.getResource("/safe-online-auth.wsdl");
+		ClassLoader classLoader = Thread.currentThread()
+				.getContextClassLoader();
+		URL wsdlUrl = classLoader.getResource("safe-online-auth.wsdl");
 		if (null == wsdlUrl) {
 			throw new RuntimeException("safe online WSDL not found");
 		}

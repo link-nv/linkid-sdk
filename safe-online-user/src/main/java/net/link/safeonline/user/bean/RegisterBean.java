@@ -1,5 +1,7 @@
 package net.link.safeonline.user.bean;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -33,7 +35,22 @@ public class RegisterBean implements Register {
 	@In(create = true)
 	FacesMessages facesMessages;
 
+	public RegisterBean() {
+		LOG.debug("constructor");
+	}
+
+	@PostConstruct
+	public void postConstructCallback() {
+		LOG.debug("post construct");
+	}
+
+	@PreDestroy
+	public void preDestroyCallback() {
+		LOG.debug("pre destroy");
+	}
+
 	public String getName() {
+		LOG.debug("get name: " + this.name);
 		return this.name;
 	}
 
@@ -42,6 +59,7 @@ public class RegisterBean implements Register {
 	}
 
 	public String getLogin() {
+		LOG.debug("get login: " + this.login);
 		return this.login;
 	}
 
@@ -53,6 +71,15 @@ public class RegisterBean implements Register {
 		} catch (ExistingUserException e) {
 			this.facesMessages.add("login", "login already exists");
 			return null;
+		} finally {
+			/*
+			 * XXX: we have to clear the fields here... else we might leak data
+			 * to other users.
+			 * http://www.jboss.org/index.html?module=bb&op=viewtopic&t=95858
+			 */
+			this.login = null;
+			this.password = null;
+			this.name = null;
 		}
 		return "success";
 	}

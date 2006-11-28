@@ -32,7 +32,7 @@ public class UserTest extends TestCase {
 		this.selenium.stop();
 	}
 
-	public void testUserRegistrationLoginEditNameSubscribeToDemoLogout()
+	public void testUserRegistrationLoginEditNameSubscribeToDemoLogoutAndDoDemoLoginLogout()
 			throws Exception {
 		selenium.setContext("Testing the user registration.",
 				SeleniumLogLevels.DEBUG);

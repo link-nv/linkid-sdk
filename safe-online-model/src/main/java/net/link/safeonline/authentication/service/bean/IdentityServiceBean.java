@@ -12,8 +12,13 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.EntityEntity;
 import net.link.safeonline.entity.HistoryEntity;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 @Stateless
 public class IdentityServiceBean implements IdentityService {
+
+	private static final Log LOG = LogFactory.getLog(IdentityServiceBean.class);
 
 	@EJB
 	private EntityDAO entityDAO;
@@ -28,6 +33,7 @@ public class IdentityServiceBean implements IdentityService {
 		 */
 		EntityEntity entity = this.entityDAO.getEntity(login);
 		String name = entity.getName();
+		LOG.debug("get name of " + login + ": " + name);
 		return name;
 	}
 
@@ -38,6 +44,7 @@ public class IdentityServiceBean implements IdentityService {
 		 * EntityNotFoundExceptions
 		 */
 		EntityEntity entity = this.entityDAO.getEntity(login);
+		LOG.debug("save name " + name + " for entity with login " + login);
 		entity.setName(name);
 	}
 

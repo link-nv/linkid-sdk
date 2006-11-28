@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
@@ -30,7 +31,7 @@ public class HistoryBean implements History {
 	@Resource
 	private SessionContext context;
 
-	// TODO: @RolesAllowed(UserConstants.USER_ROLE)
+	@RolesAllowed(UserConstants.USER_ROLE)
 	public List<HistoryEntity> getList() {
 		Principal principal = this.context.getCallerPrincipal();
 		String login = principal.getName();
