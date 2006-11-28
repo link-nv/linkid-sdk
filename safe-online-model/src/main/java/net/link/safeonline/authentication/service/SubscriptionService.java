@@ -16,9 +16,10 @@ public interface SubscriptionService {
 	List<ApplicationEntity> getApplications();
 
 	void subscribe(String login, String applicationName)
-			throws ApplicationNotFoundException, EntityNotFoundException;
+			throws ApplicationNotFoundException, EntityNotFoundException,
+			AlreadySubscribedException;
 
 	void unsubscribe(String login, String applicationName)
 			throws ApplicationNotFoundException, EntityNotFoundException,
-			SubscriptionNotFoundException;
+			SubscriptionNotFoundException, PermissionDeniedException;
 }

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,11 +40,15 @@ public class SubscriptionEntity implements Serializable {
 
 	private ApplicationEntity application;
 
+	private SubscriptionOwnerType subscriptionOwnerType;
+
 	public SubscriptionEntity() {
 		// empty
 	}
 
-	public SubscriptionEntity(EntityEntity entity, ApplicationEntity application) {
+	public SubscriptionEntity(SubscriptionOwnerType subscriptionOwnerType,
+			EntityEntity entity, ApplicationEntity application) {
+		this.subscriptionOwnerType = subscriptionOwnerType;
 		this.entity = entity;
 		this.application = application;
 	}
@@ -73,6 +79,16 @@ public class SubscriptionEntity implements Serializable {
 
 	public void setEntity(EntityEntity entity) {
 		this.entity = entity;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public SubscriptionOwnerType getSubscriptionOwnerType() {
+		return subscriptionOwnerType;
+	}
+
+	public void setSubscriptionOwnerType(
+			SubscriptionOwnerType applicationOwnerType) {
+		this.subscriptionOwnerType = applicationOwnerType;
 	}
 
 	@Override

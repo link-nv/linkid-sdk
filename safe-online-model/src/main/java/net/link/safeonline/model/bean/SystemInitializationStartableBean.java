@@ -17,6 +17,7 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.EntityEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.entity.SubscriptionOwnerType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,11 +45,15 @@ public class SystemInitializationStartableBean implements Startable {
 	private static List<String> registeredApplications;
 
 	private static class Subscription {
-		private String user;
+		private final String user;
 
-		private String application;
+		private final String application;
 
-		public Subscription(String user, String application) {
+		private final SubscriptionOwnerType subscriptionOwnerType;
+
+		public Subscription(SubscriptionOwnerType subscriptionOwnerType,
+				String user, String application) {
+			this.subscriptionOwnerType = subscriptionOwnerType;
 			this.user = user;
 			this.application = application;
 		}
@@ -68,14 +73,20 @@ public class SystemInitializationStartableBean implements Startable {
 				.add(UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME);
 
 		subscriptions = new LinkedList<Subscription>();
-		subscriptions.add(new Subscription("fcorneli", "demo-application"));
-		subscriptions.add(new Subscription("fcorneli",
+		subscriptions.add(new Subscription(SubscriptionOwnerType.ENTITY,
+				"fcorneli", "demo-application"));
+		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
+				"fcorneli",
 				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
-		subscriptions.add(new Subscription("dieter", "demo-application"));
-		subscriptions.add(new Subscription("dieter",
+		subscriptions.add(new Subscription(SubscriptionOwnerType.ENTITY,
+				"dieter", "demo-application"));
+		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
+				"dieter",
 				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
-		subscriptions.add(new Subscription("mario", "demo-application"));
-		subscriptions.add(new Subscription("mario",
+		subscriptions.add(new Subscription(SubscriptionOwnerType.ENTITY,
+				"mario", "demo-application"));
+		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
+				"mario",
 				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
 	}
 
@@ -113,6 +124,7 @@ public class SystemInitializationStartableBean implements Startable {
 		for (Subscription subscription : subscriptions) {
 			String login = subscription.user;
 			String applicationName = subscription.application;
+			SubscriptionOwnerType subscriptionOwnerType = subscription.subscriptionOwnerType;
 			EntityEntity entity = this.entityDAO.findEntity(login);
 			ApplicationEntity application = this.applicationDAO
 					.findApplication(applicationName);
@@ -121,7 +133,8 @@ public class SystemInitializationStartableBean implements Startable {
 			if (null != subscriptionEntity) {
 				continue;
 			}
-			this.subscriptionDAO.addSubscription(entity, application);
+			this.subscriptionDAO.addSubscription(subscriptionOwnerType, entity,
+					application);
 		}
 	}
 

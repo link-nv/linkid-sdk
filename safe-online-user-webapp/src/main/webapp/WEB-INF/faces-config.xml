@@ -49,11 +49,27 @@
 	<navigation-rule>
 		<from-view-id>/applications.xhtml</from-view-id>
 		<navigation-case>
-			<from-outcome>view</from-outcome>
+			<from-outcome>view-subscription</from-outcome>
+			<to-view-id>/view-subscription.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-application</from-outcome>
 			<to-view-id>/view-application.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>unsubscribed</from-outcome>
+			<to-view-id>/applications.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>subscribed</from-outcome>
+			<to-view-id>/applications.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/view-subscription.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
 			<to-view-id>/applications.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -65,6 +81,5 @@
 			<to-view-id>/applications.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 
 </faces-config>

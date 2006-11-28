@@ -13,6 +13,7 @@ import net.link.safeonline.dao.EntityDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.EntityEntity;
+import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.test.util.EJBTestUtils;
 
 public class UserRegistrationServiceBeanTest extends TestCase {
@@ -61,7 +62,8 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 						.findApplication(UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME))
 				.andStubReturn(application);
 
-		this.mockSubscriptionDAO.addSubscription(entity, application);
+		this.mockSubscriptionDAO.addSubscription(
+				SubscriptionOwnerType.APPLICATION, entity, application);
 
 		// prepare
 		replay(this.mockEntityDAO, this.mockApplicationDAO,

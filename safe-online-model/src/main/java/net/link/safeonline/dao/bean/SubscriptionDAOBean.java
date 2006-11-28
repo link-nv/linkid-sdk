@@ -13,6 +13,7 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.EntityEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.entity.SubscriptionOwnerType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,12 +41,12 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		return subscription;
 	}
 
-	public void addSubscription(EntityEntity entity,
-			ApplicationEntity application) {
+	public void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
+			EntityEntity entity, ApplicationEntity application) {
 		LOG.debug("add subscription for " + entity.getLogin() + " to "
 				+ application.getName());
-		SubscriptionEntity subscription = new SubscriptionEntity(entity,
-				application);
+		SubscriptionEntity subscription = new SubscriptionEntity(
+				subscriptionOwnerType, entity, application);
 		this.entityManager.persist(subscription);
 	}
 

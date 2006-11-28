@@ -7,7 +7,13 @@ public interface Subscriptions {
 
 	void subscriptionListFactory();
 
-	String view();
+	String viewSubscription();
+
+	String viewApplication();
 
 	String unsubscribe();
+
+	String subscribe();
+
+	void applicationListFactory();
 }

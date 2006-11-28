@@ -9,6 +9,7 @@ import javax.persistence.Query;
 
 import junit.framework.TestCase;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.EntityEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -121,8 +122,8 @@ public class EntityTest extends TestCase {
 				null);
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application");
-		SubscriptionEntity subscription = new SubscriptionEntity(entity,
-				application);
+		SubscriptionEntity subscription = new SubscriptionEntity(
+				SubscriptionOwnerType.ENTITY, entity, application);
 
 		// operate & verify: add subscription requires existing entity and
 		// application
@@ -141,8 +142,8 @@ public class EntityTest extends TestCase {
 				null);
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application");
-		SubscriptionEntity subscription = new SubscriptionEntity(entity,
-				application);
+		SubscriptionEntity subscription = new SubscriptionEntity(
+				SubscriptionOwnerType.ENTITY, entity, application);
 
 		// operate: add subscription
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
