@@ -30,6 +30,7 @@ public class HistoryBean implements History {
 	@Resource
 	private SessionContext context;
 
+	// TODO: @RolesAllowed(UserConstants.USER_ROLE)
 	public List<HistoryEntity> getList() {
 		Principal principal = this.context.getCallerPrincipal();
 		String login = principal.getName();

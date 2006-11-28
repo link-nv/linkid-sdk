@@ -17,15 +17,20 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_ENTITY_AND_APPLICATION;
+import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_ENTITY;
 
 @Entity
 @Table(name = "subscription")
-@NamedQueries( { @NamedQuery(name = QUERY_WHERE_ENTITY_AND_APPLICATION, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.entity = :entity AND subscription.application = :application") })
+@NamedQueries( {
+		@NamedQuery(name = QUERY_WHERE_ENTITY_AND_APPLICATION, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.entity = :entity AND subscription.application = :application"),
+		@NamedQuery(name = QUERY_WHERE_ENTITY, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.entity = :entity") })
 public class SubscriptionEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_WHERE_ENTITY_AND_APPLICATION = "sub.entity.app";
+
+	public static final String QUERY_WHERE_ENTITY = "sub.entity";
 
 	private long id;
 
@@ -97,6 +102,13 @@ public class SubscriptionEntity implements Serializable {
 				.createNamedQuery(QUERY_WHERE_ENTITY_AND_APPLICATION);
 		query.setParameter("entity", entity);
 		query.setParameter("application", application);
+		return query;
+	}
+
+	public static Query createQueryWhereEntity(EntityManager entityManager,
+			EntityEntity entity) {
+		Query query = entityManager.createNamedQuery(QUERY_WHERE_ENTITY);
+		query.setParameter("entity", entity);
 		return query;
 	}
 }

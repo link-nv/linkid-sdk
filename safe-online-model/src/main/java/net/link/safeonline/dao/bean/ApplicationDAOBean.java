@@ -1,10 +1,14 @@
 package net.link.safeonline.dao.bean;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.service.ApplicationNotFoundException;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 
@@ -30,5 +34,21 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName);
 		this.entityManager.persist(application);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ApplicationEntity> getApplications() {
+		Query query = ApplicationEntity.createQueryAll(this.entityManager);
+		List<ApplicationEntity> applications = query.getResultList();
+		return applications;
+	}
+
+	public ApplicationEntity getApplication(String applicationName)
+			throws ApplicationNotFoundException {
+		ApplicationEntity application = findApplication(applicationName);
+		if (null == application) {
+			throw new ApplicationNotFoundException();
+		}
+		return application;
 	}
 }

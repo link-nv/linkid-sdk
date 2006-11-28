@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.service.SubscriptionNotFoundException;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.EntityEntity;
@@ -46,5 +47,23 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		SubscriptionEntity subscription = new SubscriptionEntity(entity,
 				application);
 		this.entityManager.persist(subscription);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<SubscriptionEntity> getSubsciptions(EntityEntity entity) {
+		LOG.debug("get subscriptions for entity: " + entity.getLogin());
+		Query query = SubscriptionEntity.createQueryWhereEntity(
+				this.entityManager, entity);
+		List<SubscriptionEntity> subscriptions = query.getResultList();
+		return subscriptions;
+	}
+
+	public void removeSubscription(EntityEntity entity,
+			ApplicationEntity application) throws SubscriptionNotFoundException {
+		SubscriptionEntity subscription = findSubscription(entity, application);
+		if (null == subscription) {
+			throw new SubscriptionNotFoundException();
+		}
+		this.entityManager.remove(subscription);
 	}
 }

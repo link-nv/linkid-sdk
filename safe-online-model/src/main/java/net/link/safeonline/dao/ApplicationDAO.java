@@ -1,7 +1,10 @@
 package net.link.safeonline.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.service.ApplicationNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 
 @Local
@@ -15,5 +18,10 @@ public interface ApplicationDAO {
 	 */
 	ApplicationEntity findApplication(String applicationName);
 
+	ApplicationEntity getApplication(String applicationName)
+			throws ApplicationNotFoundException;
+
 	void addApplication(String applicationName);
+
+	List<ApplicationEntity> getApplications();
 }
