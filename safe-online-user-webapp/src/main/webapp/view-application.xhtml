@@ -13,10 +13,9 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{selectedSubscription.application.name}</h1>
+		<h1>#{selectedApplication.name}</h1>
 		<p>Description:</p>
-		<p>#{selectedSubscription.application.description}</p>
-		<p>Owner: #{selectedSubscription.subscriptionOwnerType}</p>
+		<p>#{selectedApplication.description}</p>
 
 		<h:form>
 			<h:commandButton value="Back" action="back" />

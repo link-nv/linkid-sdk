@@ -14,7 +14,7 @@
 	<ui:define name="content">
 
 		<h:form>
-			<t:dataTable id="data" var="item" value="#{subscriptionList}"
+			<t:dataTable id="sub-data" var="item" value="#{subscriptionList}"
 				rows="10" preserveDataModel="false" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2"
 				columnClasses="listingTable_ColumnTop,listingTable_Column">
@@ -30,7 +30,7 @@
 				</h:column>
 			</t:dataTable>
 
-			<t:dataScroller for="data" fastStep="10" pageCountVar="pageCount"
+			<t:dataScroller for="sub-data" fastStep="10" pageCountVar="pageCount"
 				pageIndexVar="pageIndex" styleClass="scroller" paginator="true"
 				paginatorMaxPages="9">
 				<f:facet name="first">First</f:facet>
