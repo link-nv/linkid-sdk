@@ -19,4 +19,6 @@ public interface Register {
 	String getName();
 
 	void setName(String name);
+
+	void destroyCallback();
 }

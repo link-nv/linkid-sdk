@@ -16,4 +16,6 @@ public interface Subscriptions {
 	String subscribe();
 
 	void applicationListFactory();
+
+	void destroyCallback();
 }

@@ -52,6 +52,9 @@ body {
 	margin-bottom: 12px;
 	text-align: center;
 	background-color: #E0E0E0;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
 }
 
 #content {

@@ -6,8 +6,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.Remove;
 import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -25,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -33,7 +35,7 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.core.FacesMessages;
 
-@Stateless
+@Stateful
 @Name("subscriptions")
 @LocalBinding(jndiBinding = "SafeOnline/user/SubscriptionsBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
@@ -150,5 +152,10 @@ public class SubscriptionsBean implements Subscriptions {
 	public String viewApplication() {
 		LOG.debug("view application: " + this.selectedApplication.getName());
 		return "view-application";
+	}
+
+	@Remove
+	@Destroy
+	public void destroyCallback() {
 	}
 }

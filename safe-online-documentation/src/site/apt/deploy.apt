@@ -14,6 +14,8 @@ mvn jboss:deploy
 mvn jboss:undeploy
 +---+
 
+ The JBoss Maven2 plugin is using JMX to perform the deploy operations.
+ 
 
 * Demo Web application
 
@@ -35,9 +37,21 @@ mvn jboss:deploy
  
  []
  Only one of then should be active within a JBoss AS.
+ 
+ To make the deployment of the demo web application easier we've created a <<<safe-online-demo-deploy>>> deployable EAR artifact containing:
+ 
+ * <<<safe-online-demo-webapp>>>
+ 
+ * <<<safe-online-demo-remote-service>>>
 
 
 * SafeOnline Core
 
- The deployable SafeOnline core is located in <<<safe-online-deploy>>>. 
- This core hosts the authentication web service which is located in <<<safe-online-ws-runtime>>>.
+ The deployable EAR SafeOnline core is located in <<<safe-online-deploy>>>. 
+ This EAR hosts the following components:
+ 
+ * the authentication web service which is located in <<<safe-online-ws-runtime>>>.
+ 
+ * the SafeOnline core EJB JAR which can be found in <<<safe-online-model>>>, <<<safe-online-entity>>> and <<<safe-online-startup>>>.
+ 
+ * the SafeOnline user web application components <<<safe-online-user-webapp>>>, <<<safe-online-user>>> and <<<safe-online-user-service>>>.

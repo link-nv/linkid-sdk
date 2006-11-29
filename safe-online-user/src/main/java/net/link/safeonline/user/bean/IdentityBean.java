@@ -5,8 +5,9 @@ import java.security.Principal;
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.Remove;
 import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -17,9 +18,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
 
-@Stateless
+@Stateful
 @Name("identity")
 @LocalBinding(jndiBinding = "SafeOnline/user/IdentityBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
@@ -72,5 +74,10 @@ public class IdentityBean implements Identity {
 			throw new RuntimeException("entity not found");
 		}
 		return "success";
+	}
+
+	@Remove
+	@Destroy
+	public void destroyCallback() {
 	}
 }

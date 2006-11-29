@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-demo-service</artifactId>
-	<packaging>jboss-sar</packaging>
+	<packaging>sar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Demo Service</name>
 	<description>
@@ -20,16 +20,11 @@
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jboss-packaging-maven-plugin</artifactId>
+				<artifactId>jboss-sar-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jboss-maven-plugin</artifactId>
-				<configuration>
-					<fileName>
-						${project.build.directory}/${project.build.finalName}.sar
-					</fileName>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

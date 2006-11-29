@@ -5,8 +5,9 @@ import java.security.Principal;
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.Remove;
 import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -18,11 +19,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.FacesMessages;
 
-@Stateless
+@Stateful
 @Name("passwordBean")
 @LocalBinding(jndiBinding = "SafeOnline/user/PasswordBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
@@ -77,5 +79,12 @@ public class PasswordBean implements Password {
 			return null;
 		}
 		return "success";
+	}
+
+	@Remove
+	@Destroy
+	public void destroyCallback() {
+		this.oldPassword = null;
+		this.newPassword = null;
 	}
 }

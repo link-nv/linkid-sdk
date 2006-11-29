@@ -3,7 +3,8 @@ package net.link.safeonline.user.bean;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Remove;
+import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
@@ -12,11 +13,12 @@ import net.link.safeonline.user.Register;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.FacesMessages;
 
-@Stateless
+@Stateful
 @Name("register")
 @LocalBinding(jndiBinding = "SafeOnline/user/RegisterBean/local")
 public class RegisterBean implements Register {
@@ -71,15 +73,6 @@ public class RegisterBean implements Register {
 		} catch (ExistingUserException e) {
 			this.facesMessages.add("login", "login already exists");
 			return null;
-		} finally {
-			/*
-			 * XXX: we have to clear the fields here... else we might leak data
-			 * to other users.
-			 * http://www.jboss.org/index.html?module=bb&op=viewtopic&t=95858
-			 */
-			this.login = null;
-			this.password = null;
-			this.name = null;
 		}
 		return "success";
 	}
@@ -94,5 +87,14 @@ public class RegisterBean implements Register {
 
 	public void setLogin(String login) {
 		this.login = login;
+	}
+
+	@Remove
+	@Destroy
+	public void destroyCallback() {
+		LOG.debug("destroy: " + this);
+		this.name = null;
+		this.login = null;
+		this.password = null;
 	}
 }

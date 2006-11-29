@@ -14,4 +14,6 @@ public interface Password {
 	void setOldPassword(String oldPassword);
 
 	String change();
+
+	void destroyCallback();
 }

@@ -4,6 +4,8 @@
     "http://www.jboss.org/j2ee/dtd/jboss-service_4_0.dtd">
 <server>
 
+	<classpath codebase="." archives="lib/*.jar" />
+
 	<mbean code="org.jboss.security.auth.login.DynamicLoginConfig"
 		name="safeonline.user:service=DynamicLoginConfig">
 		<attribute name="AuthConfig">

@@ -10,6 +10,8 @@ public interface Identity {
 	String getName();
 
 	void setName(String name);
-	
+
 	String save();
+
+	void destroyCallback();
 }

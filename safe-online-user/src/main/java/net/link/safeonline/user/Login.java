@@ -19,4 +19,6 @@ public interface Login {
 	boolean isLoggedIn();
 
 	String getLoggedInUsername();
+
+	void destroyCallback();
 }

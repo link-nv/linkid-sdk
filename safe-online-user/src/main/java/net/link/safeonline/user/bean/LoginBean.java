@@ -1,7 +1,12 @@
 package net.link.safeonline.user.bean;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.PostActivate;
+import javax.ejb.PrePassivate;
+import javax.ejb.Remove;
+import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
@@ -10,14 +15,18 @@ import net.link.safeonline.user.Login;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.Seam;
+import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
 
-@Stateless
+@Stateful
 @Name("login")
+@Scope(ScopeType.SESSION)
 @LocalBinding(jndiBinding = "SafeOnline/user/LoginBean/local")
 public class LoginBean implements Login {
 
@@ -36,50 +45,69 @@ public class LoginBean implements Login {
 	@In(create = true)
 	FacesMessages facesMessages;
 
+	public LoginBean() {
+		LOG.debug("constructor: " + this);
+	}
+
+	@PostConstruct
+	public void postConstructCallback() {
+		LOG.debug("post construct: " + this);
+	}
+
+	@PreDestroy
+	public void preDestroyCallback() {
+		LOG.debug("pre destroy: " + this);
+	}
+
+	@PostActivate
+	public void postActivateCallback() {
+		LOG.debug("post activate: " + this);
+	}
+
+	@PrePassivate
+	public void prePassivateCallback() {
+		LOG.debug("pre passivate: " + this);
+	}
+
 	public String getPassword() {
+		LOG.debug("get password");
 		return "";
 	}
 
 	public String getUsername() {
+		LOG.debug("get username");
 		return this.username;
 	}
 
 	public String login() {
 		LOG.debug("login with username: " + this.username);
-		try {
-			boolean authenticated = this.authenticationService.authenticate(
-					UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME,
-					this.username, new String(this.password));
-			if (!authenticated) {
-				this.facesMessages.add("username", "login failed");
-				Seam.invalidateSession();
-				return null;
-			}
-
-			this.sessionContext.set("username", this.username);
-			this.sessionContext.set("password", this.password);
-		} finally {
-			/*
-			 * XXX: we have to clear the fields here... else we might leak data
-			 * to other users.
-			 * http://www.jboss.org/index.html?module=bb&op=viewtopic&t=95858
-			 */
-			this.username = null;
-			this.password = null;
+		boolean authenticated = this.authenticationService.authenticate(
+				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME,
+				this.username, new String(this.password));
+		if (!authenticated) {
+			this.facesMessages.add("username", "login failed");
+			Seam.invalidateSession();
+			return null;
 		}
+
+		this.sessionContext.set("username", this.username);
+		this.sessionContext.set("password", this.password);
 
 		return "login-success";
 	}
 
 	public void setPassword(String password) {
+		LOG.debug("set password");
 		this.password = password;
 	}
 
 	public void setUsername(String username) {
+		LOG.debug("set username");
 		this.username = username;
 	}
 
 	public String logout() {
+		LOG.debug("logout");
 		this.sessionContext.set("username", null);
 		this.sessionContext.set("password", null);
 		Seam.invalidateSession();
@@ -87,12 +115,22 @@ public class LoginBean implements Login {
 	}
 
 	public String getLoggedInUsername() {
+		LOG.debug("get logged in username");
 		String username = (String) this.sessionContext.get("username");
 		return username;
 	}
 
 	public boolean isLoggedIn() {
+		LOG.debug("is logged in");
 		String username = (String) this.sessionContext.get("username");
 		return (null != username);
+	}
+
+	@Remove
+	@Destroy
+	public void destroyCallback() {
+		LOG.debug("destroy: " + this);
+		this.username = null;
+		this.password = null;
 	}
 }
