@@ -132,6 +132,7 @@
 		<module>safe-online-user</module>
 		<module>safe-online-user-service</module>
 		<module>safe-online-taglib</module>
+		<module>safe-online-demo-deploy</module>
 	</modules>
 	<repositories>
 		<repository>
