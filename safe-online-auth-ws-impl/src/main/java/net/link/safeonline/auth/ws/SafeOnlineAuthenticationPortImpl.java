@@ -53,6 +53,7 @@ public class SafeOnlineAuthenticationPortImpl implements
 		return authenticationService;
 	}
 
+	// TODO: move to safe-online-j2ee-util
 	@SuppressWarnings("unchecked")
 	private <Type> Type getEJB(String jndiName, Class<Type> type) {
 		try {

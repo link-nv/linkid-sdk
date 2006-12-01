@@ -82,4 +82,23 @@ public class AuthenticationServiceBean implements AuthenticationService {
 				"authenticated for application " + applicationName);
 		return true;
 	}
+
+	public boolean authenticate(String login, String password) {
+		LOG.debug("authenticate \"" + login + "\"");
+
+		EntityEntity entity = this.entityDAO.findEntity(login);
+		if (null == entity) {
+			LOG.debug("entity not found");
+			return false;
+		}
+		if (!entity.getPassword().equals(password)) {
+			Date now = new Date();
+			String event = "incorrect password";
+			this.historyDAO.addHistoryEntry(now, entity, event);
+			LOG.debug(event);
+			return false;
+		}
+
+		return true;
+	}
 }

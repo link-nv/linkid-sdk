@@ -8,6 +8,13 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 
 import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -22,7 +29,9 @@ import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
+import org.jboss.security.SimplePrincipal;
 
 @Stateful
 @Name("passwordBean")
@@ -41,6 +50,9 @@ public class PasswordBean implements Password {
 
 	@Resource
 	private SessionContext context;
+
+	@In
+	Context sessionContext;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -78,7 +90,50 @@ public class PasswordBean implements Password {
 			this.facesMessages.add("oldpassword", msg);
 			return null;
 		}
+
+		flushCredentialCache(login);
+
+		this.sessionContext.set("password", this.newPassword);
+
 		return "success";
+	}
+
+	// TODO: move to safe-online-j2ee-util
+	private void flushCredentialCache(String login) {
+		Principal user = new SimplePrincipal(login);
+		ObjectName jaasMgr;
+		try {
+			jaasMgr = new ObjectName(
+					"jboss.security:service=JaasSecurityManager");
+		} catch (MalformedObjectNameException e) {
+			String msg = "ObjectName error: " + e.getMessage();
+			LOG.error(msg);
+			throw new RuntimeException(msg, e);
+		} catch (NullPointerException e) {
+			throw new RuntimeException("NPE: " + e.getMessage(), e);
+		}
+		Object[] params = { UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN,
+				user };
+		String[] signature = { String.class.getName(),
+				Principal.class.getName() };
+		MBeanServer server = (MBeanServer) MBeanServerFactory.findMBeanServer(
+				null).get(0);
+		try {
+			server.invoke(jaasMgr, "flushAuthenticationCache", params,
+					signature);
+		} catch (InstanceNotFoundException e) {
+			String msg = "instance not found: " + e.getMessage();
+			LOG.error(msg);
+			throw new RuntimeException(msg, e);
+		} catch (MBeanException e) {
+			String msg = "mbean error: " + e.getMessage();
+			LOG.error(msg);
+			throw new RuntimeException(msg, e);
+		} catch (ReflectionException e) {
+			String msg = "reflection error: " + e.getMessage();
+			LOG.error(msg);
+			throw new RuntimeException(msg, e);
+		}
 	}
 
 	@Remove

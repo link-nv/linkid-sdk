@@ -133,6 +133,7 @@
 		<module>safe-online-user-service</module>
 		<module>safe-online-taglib</module>
 		<module>safe-online-demo-deploy</module>
+		<module>safe-online-service</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -528,6 +529,11 @@
 			<dependency>
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-j2ee</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jbosssx</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
 		</dependencies>

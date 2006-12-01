@@ -7,7 +7,7 @@
 	<mbean code="org.jboss.security.auth.login.DynamicLoginConfig"
 		name="safeonline.demo:service=DynamicLoginConfig">
 		<attribute name="AuthConfig">
-			META-INF/login-config.xml
+			META-INF/demo-login-config.xml
 		</attribute>
 		<depends optional-attribute-name="LoginConfigService">
 			jboss.security:service=XMLLoginConfig

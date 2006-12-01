@@ -1,7 +1,12 @@
 package net.link.safeonline.user.filter;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.security.acl.Group;
+import java.util.Enumeration;
+import java.util.Set;
 
+import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.Filter;
@@ -92,6 +97,35 @@ public class JAASLoginFilter implements Filter {
 			loginContext = new LoginContext(this.loginContextName, handler);
 			loginContext.login();
 			LOG.debug("login for " + username);
+			Subject subject = loginContext.getSubject();
+			Set<Principal> principals = subject.getPrincipals();
+			for (Principal principal : principals) {
+				LOG.debug("principal: " + principal.getName());
+				/*
+				 * The group "Roles" is only assigned to the principal once we
+				 * enter the server-side security domain. At the client-side we
+				 * only have the "client-login" security domain which does
+				 * nothing more but to cache the credentials for later
+				 * server-side authentication.
+				 */
+				if (principal instanceof Group) {
+					Group group = (Group) principal;
+					LOG.debug("group name: " + group.getName());
+					Enumeration<? extends Principal> members = group.members();
+					while (members.hasMoreElements()) {
+						Principal member = members.nextElement();
+						LOG.debug("group member: " + member.getName());
+					}
+				}
+			}
+			Set<Object> publicCredentials = subject.getPublicCredentials();
+			for (Object publicCredential : publicCredentials) {
+				LOG.debug("public credential: " + publicCredential);
+			}
+			Set<Object> privateCredentials = subject.getPrivateCredentials();
+			for (Object privateCredential : privateCredentials) {
+				LOG.debug("private credential: " + privateCredential);
+			}
 			request.setAttribute(SESSION_LOGIN_CONTEXT, loginContext);
 		} catch (LoginException e) {
 			LOG.error("login error: " + e.getMessage(), e);
