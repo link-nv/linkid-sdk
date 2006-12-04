@@ -97,5 +97,9 @@
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-j2ee</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>tomcat</groupId>
+			<artifactId>catalina</artifactId>
+		</dependency>
 	</dependencies>
 </project>

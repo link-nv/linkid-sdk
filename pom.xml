@@ -537,6 +537,11 @@
 				<artifactId>jbosssx</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>tomcat</groupId>
+				<artifactId>catalina</artifactId>
+				<version>${catalina.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -609,5 +614,6 @@
 		<easymockclassextension.version>
 			2.2.1
 		</easymockclassextension.version>
+		<catalina.version>5.5.15</catalina.version>
 	</properties>
 </project>
