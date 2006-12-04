@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -51,6 +51,8 @@ public class AuthenticationServiceBean implements AuthenticationService {
 					+ applicationName;
 			this.historyDAO.addHistoryEntry(now, subject, event);
 			LOG.debug(event);
+			LOG.debug("current password: " + subject.getPassword()
+					+ "; authentication password: " + password);
 			return false;
 		}
 

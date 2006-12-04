@@ -8,18 +8,12 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanException;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.user.Password;
 import net.link.safeonline.user.UserConstants;
+import net.link.safeonline.util.ee.SecurityManagerUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +24,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
-import org.jboss.security.SimplePrincipal;
 
 @Stateful
 @Name("passwordBean")
@@ -86,56 +79,26 @@ public class PasswordBean implements Password {
 			return null;
 		}
 
-		Principal principal = this.context.getCallerPrincipal();
-		String login = principal.getName();
-		flushCredentialCache(login);
-
 		this.sessionContext.set("password", this.newPassword);
 
 		return "success";
 	}
 
-	// TODO: move to safe-online-j2ee-util
-	private void flushCredentialCache(String login) {
-		Principal user = new SimplePrincipal(login);
-		ObjectName jaasMgr;
-		try {
-			jaasMgr = new ObjectName(
-					"jboss.security:service=JaasSecurityManager");
-		} catch (MalformedObjectNameException e) {
-			String msg = "ObjectName error: " + e.getMessage();
-			LOG.error(msg);
-			throw new RuntimeException(msg, e);
-		} catch (NullPointerException e) {
-			throw new RuntimeException("NPE: " + e.getMessage(), e);
-		}
-		Object[] params = { UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN,
-				user };
-		String[] signature = { String.class.getName(),
-				Principal.class.getName() };
-		MBeanServer server = (MBeanServer) MBeanServerFactory.findMBeanServer(
-				null).get(0);
-		try {
-			server.invoke(jaasMgr, "flushAuthenticationCache", params,
-					signature);
-		} catch (InstanceNotFoundException e) {
-			String msg = "instance not found: " + e.getMessage();
-			LOG.error(msg);
-			throw new RuntimeException(msg, e);
-		} catch (MBeanException e) {
-			String msg = "mbean error: " + e.getMessage();
-			LOG.error(msg);
-			throw new RuntimeException(msg, e);
-		} catch (ReflectionException e) {
-			String msg = "reflection error: " + e.getMessage();
-			LOG.error(msg);
-			throw new RuntimeException(msg, e);
-		}
-	}
-
 	@Remove
 	@Destroy
 	public void destroyCallback() {
+		LOG.debug("destroy callback");
+		/*
+		 * We postpone the flushing of the credential cache of the principal
+		 * until destroy time. Else Seam? will login with the old credentials
+		 * while the security domain is already loaded with the new credentials.
+		 * This could cause an authentication error, leaving the stateful
+		 * password bean in an inconsistent state.
+		 */
+		Principal principal = this.context.getCallerPrincipal();
+		String login = principal.getName();
+		SecurityManagerUtils.flushCredentialCache(login,
+				UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN);
 		this.oldPassword = null;
 		this.newPassword = null;
 	}

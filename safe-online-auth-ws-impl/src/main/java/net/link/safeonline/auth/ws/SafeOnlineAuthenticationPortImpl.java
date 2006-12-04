@@ -8,6 +8,7 @@ import net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationPort;
 import net.lin_k.safe_online.auth._1_0.types.AuthenticateRequestType;
 import net.lin_k.safe_online.auth._1_0.types.AuthenticateResultType;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,27 +48,9 @@ public class SafeOnlineAuthenticationPortImpl implements
 	}
 
 	private AuthenticationService getService() {
-		AuthenticationService authenticationService = getEJB(
+		AuthenticationService authenticationService = EjbUtils.getEJB(
 				"SafeOnline/AuthenticationServiceBean/local",
 				AuthenticationService.class);
 		return authenticationService;
-	}
-
-	// TODO: move to safe-online-j2ee-util
-	@SuppressWarnings("unchecked")
-	private <Type> Type getEJB(String jndiName, Class<Type> type) {
-		try {
-			LOG.debug("ejb jndi lookup: " + jndiName);
-			InitialContext initialContext = new InitialContext();
-			Object obj = initialContext.lookup(jndiName);
-			if (!type.isInstance(obj)) {
-				throw new RuntimeException(jndiName + " is not a "
-						+ type.getName() + " but a " + obj.getClass().getName());
-			}
-			Type instance = (Type) obj;
-			return instance;
-		} catch (NamingException e) {
-			throw new RuntimeException("naming error: " + e.getMessage(), e);
-		}
 	}
 }

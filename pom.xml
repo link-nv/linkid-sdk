@@ -134,6 +134,7 @@
 		<module>safe-online-taglib</module>
 		<module>safe-online-demo-deploy</module>
 		<module>safe-online-service</module>
+		<module>safe-online-j2ee-util</module>
 	</modules>
 	<repositories>
 		<repository>
