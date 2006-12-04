@@ -17,6 +17,13 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Implementation of authentication service interface. This component does not
+ * live within the SafeOnline core security domain (chicken-egg problem).
+ * 
+ * @author fcorneli
+ * 
+ */
 @Stateless
 public class AuthenticationServiceBean implements AuthenticationService {
 

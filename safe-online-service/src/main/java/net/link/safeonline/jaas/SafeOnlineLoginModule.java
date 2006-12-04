@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -21,12 +19,20 @@ import javax.security.auth.spi.LoginModule;
 
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.service.AuthorizationService;
+import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
 
+/**
+ * JAAS login module that performs authentication and authorization used by the
+ * SafeOnline core security domain.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class SafeOnlineLoginModule implements LoginModule {
 
 	private static final Log LOG = LogFactory
@@ -182,26 +188,24 @@ public class SafeOnlineLoginModule implements LoginModule {
 	private AuthenticationService getAuthenticationService()
 			throws LoginException {
 		try {
-			InitialContext initialContext = new InitialContext();
-			AuthenticationService authenticationService = (AuthenticationService) initialContext
-					.lookup(this.authenticationServiceJndiName);
+			AuthenticationService authenticationService = EjbUtils.getEJB(
+					this.authenticationServiceJndiName,
+					AuthenticationService.class);
 			return authenticationService;
-		} catch (NamingException e) {
-			LOG.error("naming error: " + e.getMessage(), e);
-			throw new LoginException("naming error: " + e.getMessage());
+		} catch (RuntimeException e) {
+			throw new LoginException("JNDI lookup error: " + e.getMessage());
 		}
 	}
 
 	private AuthorizationService getAuthorizationService()
 			throws LoginException {
 		try {
-			InitialContext initialContext = new InitialContext();
-			AuthorizationService authorizationService = (AuthorizationService) initialContext
-					.lookup(this.authorizationServiceJndiName);
+			AuthorizationService authorizationService = EjbUtils.getEJB(
+					this.authorizationServiceJndiName,
+					AuthorizationService.class);
 			return authorizationService;
-		} catch (NamingException e) {
-			LOG.error("naming error: " + e.getMessage(), e);
-			throw new LoginException("naming error: " + e.getMessage());
+		} catch (RuntimeException e) {
+			throw new LoginException("JNDI lookup error: " + e.getMessage());
 		}
 	}
 

@@ -14,5 +14,13 @@ import javax.ejb.Local;
 @Local
 public interface AuthorizationService {
 
+	/**
+	 * Gives back a set of roles for a given login. The assignment of these
+	 * roles to a certain principal depends on the security measures against
+	 * attacks of the SafeOnline core.
+	 * 
+	 * @param login
+	 * @return
+	 */
 	Set<String> getRoles(String login);
 }

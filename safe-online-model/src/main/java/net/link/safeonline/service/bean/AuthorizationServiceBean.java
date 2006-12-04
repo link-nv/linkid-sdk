@@ -21,6 +21,14 @@ import net.link.safeonline.service.AuthorizationService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Implementation of the authorization service interface. This component cannot
+ * live within the SafeOnline core security domain since it will be used by a
+ * JAAS login module to perform authorization of a caller principal.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Stateless
 public class AuthorizationServiceBean implements AuthorizationService {
 

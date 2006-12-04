@@ -6,6 +6,12 @@ import javax.naming.NamingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Utils to ease the working with EJBs.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class EjbUtils {
 
 	private static final Log LOG = LogFactory.getLog(EjbUtils.class);
@@ -14,6 +20,14 @@ public class EjbUtils {
 		// empty
 	}
 
+	/**
+	 * Lookup an EJB within JNDI.
+	 * 
+	 * @param <Type>
+	 * @param jndiName
+	 * @param type
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static <Type> Type getEJB(String jndiName, Class<Type> type) {
 		try {

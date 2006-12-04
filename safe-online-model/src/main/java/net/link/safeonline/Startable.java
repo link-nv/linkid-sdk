@@ -9,7 +9,13 @@ package net.link.safeonline;
  */
 public interface Startable {
 
-	void start();
+	/**
+	 * Callback to notify that the SafeOnline system has started.
+	 */
+	void postStart();
 
-	void stop();
+	/**
+	 * Callback to notify that the SafeOnline system is about to be stopped.
+	 */
+	void preStop();
 }

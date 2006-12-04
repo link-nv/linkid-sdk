@@ -7,6 +7,12 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 
+/**
+ * Application entity data access object interface definition.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Local
 public interface ApplicationDAO {
 	/**
@@ -18,10 +24,24 @@ public interface ApplicationDAO {
 	 */
 	ApplicationEntity findApplication(String applicationName);
 
+	/**
+	 * Gives back the application entity for a given application name.
+	 * 
+	 * @param applicationName
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 *             in case the application was not found.
+	 */
 	ApplicationEntity getApplication(String applicationName)
 			throws ApplicationNotFoundException;
 
 	void addApplication(String applicationName);
 
+	/**
+	 * Gives back a list of all application registered within the SafeOnline
+	 * system.
+	 * 
+	 * @return
+	 */
 	List<ApplicationEntity> getApplications();
 }

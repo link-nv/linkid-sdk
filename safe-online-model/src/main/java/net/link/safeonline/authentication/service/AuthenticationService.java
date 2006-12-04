@@ -17,7 +17,8 @@ public interface AuthenticationService {
 	 * @param applicationName
 	 * @param login
 	 * @param password
-	 * @return
+	 * @return <code>true</code> if the user was authenticated correctly,
+	 *         <code>false</code> otherwise.
 	 */
 	boolean authenticate(String applicationName, String login, String password);
 
@@ -27,7 +28,8 @@ public interface AuthenticationService {
 	 * 
 	 * @param login
 	 * @param password
-	 * @return
+	 * @return <code>true</code> if the user was authenticated correctly,
+	 *         <code>false</code> otherwise.
 	 */
 	boolean authenticate(String login, String password);
 }

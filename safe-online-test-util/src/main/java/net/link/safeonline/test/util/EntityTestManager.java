@@ -44,6 +44,7 @@ public class EntityTestManager {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void setUp(Class... serializableClasses) throws Exception {
 		File tmpDbDir = File.createTempFile("derby-", "-db");
 		LOG.debug("tmp db dir: " + tmpDbDir);

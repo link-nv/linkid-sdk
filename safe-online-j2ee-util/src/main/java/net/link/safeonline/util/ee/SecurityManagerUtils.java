@@ -23,6 +23,13 @@ public class SecurityManagerUtils {
 		// empty
 	}
 
+	/**
+	 * Flushes the JBoss security manager credential cache for a certain
+	 * principal. This method is accessing the JBoss security manager via JMX.
+	 * 
+	 * @param login
+	 * @param securityDomain
+	 */
 	public static void flushCredentialCache(String login, String securityDomain) {
 		LOG.debug("flush credential cache for " + login
 				+ " on security domain " + securityDomain);

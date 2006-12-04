@@ -15,6 +15,14 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Implementation of user registration service interface. This component does
+ * not live within the SafeOnline core security domain. This because a user that
+ * is about to register himself is not yet logged on into the system.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Stateless
 public class UserRegistrationServiceBean implements UserRegistrationService {
 

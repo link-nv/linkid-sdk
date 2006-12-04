@@ -27,7 +27,8 @@ import org.jboss.annotation.ejb.LocalBinding;
  * This component will initialize the system at startup.
  * 
  * For now it creates initial users, applications and subscriptions. This to
- * allow for admins to gain access to the system.
+ * allow for admins to gain access to the system and thus to bootstrap the
+ * SafeOnline core.
  * 
  * @author fcorneli
  * 
@@ -99,7 +100,7 @@ public class SystemInitializationStartableBean implements Startable {
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
 
-	public void start() {
+	public void postStart() {
 		LOG.debug("start");
 		for (Map.Entry<String, String> authorizedUser : authorizedUsers
 				.entrySet()) {
@@ -138,7 +139,7 @@ public class SystemInitializationStartableBean implements Startable {
 		}
 	}
 
-	public void stop() {
+	public void preStop() {
 		LOG.debug("stop");
 	}
 }

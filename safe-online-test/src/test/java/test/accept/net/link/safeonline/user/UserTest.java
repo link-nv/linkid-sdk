@@ -8,6 +8,18 @@ import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumLogLevels;
 
+/**
+ * Acceptance test for user web application. This test requires the selenium
+ * server to be up and running:
+ * <code>java -jar selenium-server-0.9.0.jar -port 4455 -interactive</code>
+ * <p>
+ * and that the Safe Online demo web application is also up and running.
+ * <p>
+ * JBoss AS already runs on the default selenium server port 4444.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class UserTest extends TestCase {
 
 	private static final String TIMEOUT = "5000";

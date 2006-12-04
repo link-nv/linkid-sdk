@@ -18,6 +18,14 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.FacesMessages;
 
+/**
+ * Component implementation of the register interface. This component cannot
+ * live within the security domain of the SafeOnline user web application since
+ * the user is not yet logged on onto the system.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Stateful
 @Name("register")
 @LocalBinding(jndiBinding = "SafeOnline/user/RegisterBean/local")

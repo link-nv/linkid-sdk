@@ -24,6 +24,14 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
 
+/**
+ * This Seam components implements the login interface. This component cannot
+ * live within the security domain of the SafeOnline user web application since
+ * the user still has to logon onto the system.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Stateful
 @Name("login")
 @Scope(ScopeType.SESSION)

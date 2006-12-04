@@ -18,7 +18,7 @@ public interface SubjectDAO {
 	 * entity could not be found.
 	 * 
 	 * @param login
-	 * @return
+	 * @return the subject or <code>null</code> if the subject was not found.
 	 */
 	SubjectEntity findSubject(String login);
 
@@ -30,7 +30,7 @@ public interface SubjectDAO {
 	 * Gives back the subject for the given login.
 	 * 
 	 * @param login
-	 *            the login of the entity.
+	 *            the login of the subject.
 	 * @return the subject.
 	 * @exception SubjectNotFoundException
 	 */

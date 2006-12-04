@@ -1,8 +1,6 @@
 package net.link.safeonline.auth.ws;
 
 import javax.jws.WebService;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationPort;
 import net.lin_k.safe_online.auth._1_0.types.AuthenticateRequestType;

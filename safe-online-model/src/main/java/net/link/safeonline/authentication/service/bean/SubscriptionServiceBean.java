@@ -43,6 +43,7 @@ public class SubscriptionServiceBean implements SubscriptionService {
 		return subscriptions;
 	}
 
+	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
 	public List<ApplicationEntity> getApplications() {
 		/*
 		 * Does not really require to live within a security domain. Is a public

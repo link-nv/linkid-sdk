@@ -18,6 +18,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+/**
+ * Implementation of subject manager interface. This component really must live
+ * within the SafeOnline core security domain since it depends on the caller
+ * principal to retrieve its data.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class SubjectManagerBean implements SubjectManager {

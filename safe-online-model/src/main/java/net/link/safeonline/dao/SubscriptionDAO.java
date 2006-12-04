@@ -10,6 +10,12 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 
+/**
+ * Subcription entity data access object interface definition.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Local
 public interface SubscriptionDAO {
 
