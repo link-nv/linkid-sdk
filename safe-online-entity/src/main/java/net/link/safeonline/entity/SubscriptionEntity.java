@@ -18,25 +18,25 @@ import javax.persistence.Table;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_ENTITY_AND_APPLICATION;
-import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_ENTITY;
+import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT_AND_APPLICATION;
+import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT;
 
 @Entity
 @Table(name = "subscription")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_ENTITY_AND_APPLICATION, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.entity = :entity AND subscription.application = :application"),
-		@NamedQuery(name = QUERY_WHERE_ENTITY, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.entity = :entity") })
+		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_APPLICATION, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.subject = :subject AND subscription.application = :application"),
+		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.subject = :subject") })
 public class SubscriptionEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String QUERY_WHERE_ENTITY_AND_APPLICATION = "sub.entity.app";
+	public static final String QUERY_WHERE_SUBJECT_AND_APPLICATION = "sub.subject.app";
 
-	public static final String QUERY_WHERE_ENTITY = "sub.entity";
+	public static final String QUERY_WHERE_SUBJECT = "sub.subject";
 
 	private long id;
 
-	private EntityEntity entity;
+	private SubjectEntity subject;
 
 	private ApplicationEntity application;
 
@@ -47,9 +47,9 @@ public class SubscriptionEntity implements Serializable {
 	}
 
 	public SubscriptionEntity(SubscriptionOwnerType subscriptionOwnerType,
-			EntityEntity entity, ApplicationEntity application) {
+			SubjectEntity subject, ApplicationEntity application) {
 		this.subscriptionOwnerType = subscriptionOwnerType;
-		this.entity = entity;
+		this.subject = subject;
 		this.application = application;
 	}
 
@@ -73,12 +73,12 @@ public class SubscriptionEntity implements Serializable {
 	}
 
 	@ManyToOne(optional = false)
-	public EntityEntity getEntity() {
-		return this.entity;
+	public SubjectEntity getSubject() {
+		return this.subject;
 	}
 
-	public void setEntity(EntityEntity entity) {
-		this.entity = entity;
+	public void setSubject(SubjectEntity subject) {
+		this.subject = subject;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -101,30 +101,31 @@ public class SubscriptionEntity implements Serializable {
 		}
 		SubscriptionEntity rhs = (SubscriptionEntity) obj;
 		return new EqualsBuilder().append(this.id, rhs.id).append(
-				this.application, rhs.application).append(this.entity,
-				rhs.entity).isEquals();
+				this.application, rhs.application).append(this.subject,
+				rhs.subject).isEquals();
 	}
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this).append("id", this.id).append("entity",
-				this.entity).append("application", this.application).toString();
+		return new ToStringBuilder(this).append("id", this.id).append(
+				"subject", this.subject)
+				.append("application", this.application).toString();
 	}
 
 	public static Query createQueryWhereEntityAndApplication(
-			EntityManager entityManager, EntityEntity entity,
+			EntityManager entityManager, SubjectEntity subject,
 			ApplicationEntity application) {
 		Query query = entityManager
-				.createNamedQuery(QUERY_WHERE_ENTITY_AND_APPLICATION);
-		query.setParameter("entity", entity);
+				.createNamedQuery(QUERY_WHERE_SUBJECT_AND_APPLICATION);
+		query.setParameter("subject", subject);
 		query.setParameter("application", application);
 		return query;
 	}
 
 	public static Query createQueryWhereEntity(EntityManager entityManager,
-			EntityEntity entity) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_ENTITY);
-		query.setParameter("entity", entity);
+			SubjectEntity subject) {
+		Query query = entityManager.createNamedQuery(QUERY_WHERE_SUBJECT);
+		query.setParameter("subject", subject);
 		return query;
 	}
 }

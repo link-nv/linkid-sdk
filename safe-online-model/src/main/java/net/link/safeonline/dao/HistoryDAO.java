@@ -5,13 +5,13 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.EntityEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.HistoryEntity;
 
 @Local
 public interface HistoryDAO {
 
-	void addHistoryEntry(Date when, EntityEntity entity, String event);
+	void addHistoryEntry(Date when, SubjectEntity subject, String event);
 
-	List<HistoryEntity> getHistory(EntityEntity entity);
+	List<HistoryEntity> getHistory(SubjectEntity subject);
 }

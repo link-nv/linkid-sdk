@@ -8,13 +8,13 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.EntityNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.EntityDAO;
+import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.EntityEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.service.AuthorizationService;
 
@@ -28,7 +28,7 @@ public class AuthorizationServiceBean implements AuthorizationService {
 			.getLog(AuthorizationServiceBean.class);
 
 	@EJB
-	private EntityDAO entityDAO;
+	private SubjectDAO entityDAO;
 
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
@@ -41,10 +41,10 @@ public class AuthorizationServiceBean implements AuthorizationService {
 
 		LOG.debug("get roles for login: " + login);
 
-		EntityEntity entity;
+		SubjectEntity subject;
 		try {
-			entity = this.entityDAO.getEntity(login);
-		} catch (EntityNotFoundException e) {
+			subject = this.entityDAO.getSubject(login);
+		} catch (SubjectNotFoundException e) {
 			LOG.error("entity not found: " + login);
 			return roles;
 		}
@@ -65,7 +65,7 @@ public class AuthorizationServiceBean implements AuthorizationService {
 		 * later on we could let this decision depend on explicit ACL.
 		 */
 		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(entity, safeOnlineUserApplication);
+				.findSubscription(subject, safeOnlineUserApplication);
 		if (null != subscription) {
 			roles.add(SafeOnlineConstants.USER_ROLE);
 		}

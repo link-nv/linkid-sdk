@@ -6,10 +6,10 @@ import javax.ejb.Stateless;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.EntityDAO;
+import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.EntityEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 
 import org.apache.commons.logging.Log;
@@ -22,7 +22,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 			.getLog(UserRegistrationServiceBean.class);
 
 	@EJB
-	private EntityDAO entityDAO;
+	private SubjectDAO entityDAO;
 
 	@EJB
 	private ApplicationDAO applicationDAO;
@@ -34,17 +34,17 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 			throws ExistingUserException {
 		LOG.debug("register user: " + login);
 
-		EntityEntity existingEntity = this.entityDAO.findEntity(login);
-		if (null != existingEntity) {
+		SubjectEntity existingSubject = this.entityDAO.findSubject(login);
+		if (null != existingSubject) {
 			throw new ExistingUserException();
 		}
-		EntityEntity newEntity = this.entityDAO
-				.addEntity(login, password, name);
+		SubjectEntity newSubject = this.entityDAO.addSubject(login, password,
+				name);
 
 		ApplicationEntity safeOnlineUserApplication = this.applicationDAO
 				.findApplication(UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME);
 
 		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
-				newEntity, safeOnlineUserApplication);
+				newSubject, safeOnlineUserApplication);
 	}
 }

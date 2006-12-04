@@ -2,6 +2,7 @@ package net.link.safeonline.authentication.service.bean;
 
 import java.security.Principal;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.management.InstanceNotFoundException;
@@ -13,34 +14,36 @@ import javax.management.ObjectName;
 import javax.management.ReflectionException;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialService;
-import net.link.safeonline.dao.EntityDAO;
-import net.link.safeonline.entity.EntityEntity;
+import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.model.SubjectManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.security.SimplePrincipal;
 
 @Stateless
+@SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class CredentialServiceBean implements CredentialService {
 
 	private static Log LOG = LogFactory.getLog(CredentialServiceBean.class);
 
 	@EJB
-	private EntityDAO entityDAO;
+	private SubjectManager subjectManager;
 
-	public void changePassword(String login, String oldPassword,
-			String newPassword) throws EntityNotFoundException,
-			PermissionDeniedException {
-		LOG.debug("change password of: " + login);
-		EntityEntity entity = this.entityDAO.getEntity(login);
-		if (!entity.getPassword().equals(oldPassword)) {
+	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
+	public void changePassword(String oldPassword, String newPassword)
+			throws PermissionDeniedException {
+		LOG.debug("change password");
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		if (!subject.getPassword().equals(oldPassword)) {
 			throw new PermissionDeniedException();
 		}
-		entity.setPassword(newPassword);
+		subject.setPassword(newPassword);
 
+		String login = subject.getLogin();
 		flushCredentialCache(login);
 	}
 

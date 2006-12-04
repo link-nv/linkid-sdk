@@ -12,9 +12,10 @@
 	<artifactId>safe-online-test</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>SafeOnline Integration Tests</name>
+	<name>SafeOnline Tests</name>
 	<description>
-		Contains integration tests for the SafeOnline service.
+		Contains integration and acceptance tests for the SafeOnline
+		service.
 	</description>
 	<build>
 		<plugins>

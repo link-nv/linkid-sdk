@@ -7,12 +7,11 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
-import net.link.safeonline.dao.EntityDAO;
 import net.link.safeonline.dao.HistoryDAO;
-import net.link.safeonline.entity.EntityEntity;
 import net.link.safeonline.entity.HistoryEntity;
+import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.model.SubjectManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,44 +24,31 @@ public class IdentityServiceBean implements IdentityService {
 	private static final Log LOG = LogFactory.getLog(IdentityServiceBean.class);
 
 	@EJB
-	private EntityDAO entityDAO;
+	private SubjectManager subjectManager;
 
 	@EJB
 	private HistoryDAO historyDAO;
 
 	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
-	public String getName(String login) throws EntityNotFoundException {
-		/*
-		 * XXX: working via login context should void the need for all the
-		 * EntityNotFoundExceptions
-		 */
-		EntityEntity entity = this.entityDAO.getEntity(login);
-		String name = entity.getName();
-		LOG.debug("get name of " + login + ": " + name);
+	public String getName() {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		String name = subject.getName();
+		LOG.debug("get name of " + subject.getLogin() + ": " + name);
 		return name;
 	}
 
 	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
-	public void saveName(String login, String name)
-			throws EntityNotFoundException {
-		/*
-		 * XXX: working via login context should void the need for all the
-		 * EntityNotFoundExceptions
-		 */
-		EntityEntity entity = this.entityDAO.getEntity(login);
-		LOG.debug("save name " + name + " for entity with login " + login);
-		entity.setName(name);
+	public void saveName(String name) {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		LOG.debug("save name " + name + " for entity with login "
+				+ subject.getLogin());
+		subject.setName(name);
 	}
 
 	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
-	public List<HistoryEntity> getHistory(String login)
-			throws EntityNotFoundException {
-		/*
-		 * XXX: working via login context should void the need for all the
-		 * EntityNotFoundExceptions
-		 */
-		EntityEntity entity = this.entityDAO.getEntity(login);
-		List<HistoryEntity> result = this.historyDAO.getHistory(entity);
+	public List<HistoryEntity> getHistory() {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		List<HistoryEntity> result = this.historyDAO.getHistory(subject);
 		return result;
 	}
 }

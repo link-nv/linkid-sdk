@@ -16,7 +16,6 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 
-import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.user.Password;
@@ -77,13 +76,9 @@ public class PasswordBean implements Password {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String change() {
-		Principal principal = this.context.getCallerPrincipal();
-		String login = principal.getName();
 		try {
-			this.credentialService.changePassword(login, this.oldPassword,
+			this.credentialService.changePassword(this.oldPassword,
 					this.newPassword);
-		} catch (EntityNotFoundException e) {
-			throw new RuntimeException("entity not found");
 		} catch (PermissionDeniedException e) {
 			String msg = "old password not correct";
 			LOG.debug(msg);
@@ -91,6 +86,8 @@ public class PasswordBean implements Password {
 			return null;
 		}
 
+		Principal principal = this.context.getCallerPrincipal();
+		String login = principal.getName();
 		flushCredentialCache(login);
 
 		this.sessionContext.set("password", this.newPassword);

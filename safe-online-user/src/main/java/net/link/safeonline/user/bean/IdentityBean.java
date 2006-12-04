@@ -9,7 +9,6 @@ import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 
-import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.user.Identity;
 import net.link.safeonline.user.UserConstants;
@@ -46,16 +45,8 @@ public class IdentityBean implements Identity {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String getName() {
+		this.name = this.identityService.getName();
 		LOG.debug("get name: " + this.name);
-		String login = getLogin();
-		// TODO: we should propagate the login via the LoginContext instead
-		// of via parameter
-		// XXX: for now we don't cache here since all users share this bean.
-		try {
-			this.name = this.identityService.getName(login);
-		} catch (EntityNotFoundException e) {
-			throw new RuntimeException("entity not found");
-		}
 		return this.name;
 	}
 
@@ -66,13 +57,8 @@ public class IdentityBean implements Identity {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String save() {
-		String login = getLogin();
-		LOG.debug("save identity for " + login);
-		try {
-			this.identityService.saveName(login, this.name);
-		} catch (EntityNotFoundException e) {
-			throw new RuntimeException("entity not found");
-		}
+		LOG.debug("save identity");
+		this.identityService.saveName(this.name);
 		return "success";
 	}
 

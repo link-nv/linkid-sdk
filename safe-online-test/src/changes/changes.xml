@@ -16,6 +16,9 @@
 			<action type="add" dev="fcorneli">
 				Integration test for authentication web service.
 			</action>
+			<action type="add" dev="fcorneli">
+				Acceptance test for user web application.
+			</action>
 		</release>
 
 	</body>

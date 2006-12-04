@@ -11,7 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "entity")
-public class EntityEntity implements Serializable {
+public class SubjectEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,17 +21,17 @@ public class EntityEntity implements Serializable {
 
 	private String password;
 
-	public EntityEntity() {
+	public SubjectEntity() {
 		// required
 	}
 
-	public EntityEntity(String login, String password, String name) {
+	public SubjectEntity(String login, String password, String name) {
 		this.login = login;
 		this.password = password;
 		this.name = name;
 	}
 
-	public EntityEntity(String login, String password) {
+	public SubjectEntity(String login, String password) {
 		this(login, password, null);
 	}
 
@@ -65,10 +65,10 @@ public class EntityEntity implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if (false == obj instanceof EntityEntity) {
+		if (false == obj instanceof SubjectEntity) {
 			return false;
 		}
-		EntityEntity rhs = (EntityEntity) obj;
+		SubjectEntity rhs = (SubjectEntity) obj;
 		return new EqualsBuilder().append(this.login, rhs.login).append(
 				this.name, rhs.name).append(this.password, rhs.password)
 				.isEquals();

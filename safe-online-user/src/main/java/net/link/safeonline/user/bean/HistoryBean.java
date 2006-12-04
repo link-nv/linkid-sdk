@@ -1,15 +1,11 @@
 package net.link.safeonline.user.bean;
 
-import java.security.Principal;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.user.History;
@@ -28,19 +24,9 @@ public class HistoryBean implements History {
 	@EJB
 	private IdentityService identityService;
 
-	@Resource
-	private SessionContext context;
-
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public List<HistoryEntity> getList() {
-		Principal principal = this.context.getCallerPrincipal();
-		String login = principal.getName();
-		List<HistoryEntity> result;
-		try {
-			result = this.identityService.getHistory(login);
-		} catch (EntityNotFoundException e) {
-			throw new RuntimeException("entity not found");
-		}
+		List<HistoryEntity> result = this.identityService.getHistory();
 		return result;
 	}
 }

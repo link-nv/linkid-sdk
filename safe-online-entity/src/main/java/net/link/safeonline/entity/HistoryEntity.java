@@ -15,32 +15,32 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
-import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_ENTITY;
+import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_SUBJECT;
 
 @Entity
 @Table(name = "hist")
-@NamedQueries(@NamedQuery(name = QUERY_WHERE_ENTITY, query = "SELECT history FROM HistoryEntity AS history WHERE history.entity = :entity ORDER BY history.when DESC"))
+@NamedQueries(@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT history FROM HistoryEntity AS history WHERE history.subject = :subject ORDER BY history.when DESC"))
 public class HistoryEntity implements Serializable {
 
-	public static final String QUERY_WHERE_ENTITY = "hist.entity";
+	public static final String QUERY_WHERE_SUBJECT = "hist.subject";
 
 	private static final long serialVersionUID = 1L;
 
 	private long id;
 
-	private EntityEntity entity;
+	private SubjectEntity subject;
 
 	private String event;
 
 	private Date when;
 
 	@ManyToOne(optional = false)
-	public EntityEntity getEntity() {
-		return entity;
+	public SubjectEntity getSubject() {
+		return subject;
 	}
 
-	public void setEntity(EntityEntity entity) {
-		this.entity = entity;
+	public void setSubject(SubjectEntity subject) {
+		this.subject = subject;
 	}
 
 	@Id
@@ -57,9 +57,9 @@ public class HistoryEntity implements Serializable {
 		// empty
 	}
 
-	public HistoryEntity(Date when, EntityEntity entity, String event) {
+	public HistoryEntity(Date when, SubjectEntity subject, String event) {
 		this.event = event;
-		this.entity = entity;
+		this.subject = subject;
 		this.when = when;
 	}
 
@@ -82,9 +82,9 @@ public class HistoryEntity implements Serializable {
 	}
 
 	public static Query createQueryWhereEntity(EntityManager entityManager,
-			EntityEntity entity) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_ENTITY);
-		query.setParameter("entity", entity);
+			SubjectEntity subject) {
+		Query query = entityManager.createNamedQuery(QUERY_WHERE_SUBJECT);
+		query.setParameter("subject", subject);
 		return query;
 	}
 }

@@ -1,18 +1,14 @@
 package net.link.safeonline.user.bean;
 
-import java.security.Principal;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -46,12 +42,10 @@ public class SubscriptionsBean implements Subscriptions {
 	@EJB
 	private SubscriptionService subscriptionService;
 
-	@Resource
-	private SessionContext context;
-
 	@In(create = true)
 	FacesMessages facesMessages;
 
+	@SuppressWarnings("unused")
 	@DataModel
 	private List<SubscriptionEntity> subscriptionList;
 
@@ -63,20 +57,11 @@ public class SubscriptionsBean implements Subscriptions {
 	@Factory("subscriptionList")
 	public void subscriptionListFactory() {
 		LOG.debug("subscription list factory");
-		Principal principal = this.context.getCallerPrincipal();
-		String login = principal.getName();
-		try {
-			this.subscriptionList = this.subscriptionService
-					.getSubscriptions(login);
-		} catch (EntityNotFoundException e) {
-			throw new RuntimeException("entity not found");
-			/*
-			 * XXX: this should not be possible since we're already in the
-			 * security domain
-			 */
-		}
+		this.subscriptionList = this.subscriptionService.getSubscriptions();
+
 	}
 
+	@SuppressWarnings("unused")
 	@DataModel
 	private List<ApplicationEntity> applicationList;
 
@@ -101,18 +86,12 @@ public class SubscriptionsBean implements Subscriptions {
 	public String unsubscribe() {
 		LOG.debug("unsubscribe from: "
 				+ this.selectedSubscription.getApplication().getName());
-		Principal principal = this.context.getCallerPrincipal();
-		String login = principal.getName();
 		String applicationName = this.selectedSubscription.getApplication()
 				.getName();
-		// XXX: unsubscribe should work directly with application
 		try {
-			this.subscriptionService.unsubscribe(login, applicationName);
+			this.subscriptionService.unsubscribe(applicationName);
 		} catch (ApplicationNotFoundException e) {
 			this.facesMessages.add("application not found");
-			return null;
-		} catch (EntityNotFoundException e) {
-			this.facesMessages.add("entity not found");
 			return null;
 		} catch (SubscriptionNotFoundException e) {
 			this.facesMessages.add("subscription not found");
@@ -131,15 +110,10 @@ public class SubscriptionsBean implements Subscriptions {
 	public String subscribe() {
 		String applicationName = this.selectedApplication.getName();
 		LOG.debug("subscribe on: " + applicationName);
-		Principal principal = this.context.getCallerPrincipal();
-		String login = principal.getName();
 		try {
-			this.subscriptionService.subscribe(login, applicationName);
+			this.subscriptionService.subscribe(applicationName);
 		} catch (ApplicationNotFoundException e) {
 			this.facesMessages.add("application not found");
-			return null;
-		} catch (EntityNotFoundException e) {
-			this.facesMessages.add("entity not found");
 			return null;
 		} catch (AlreadySubscribedException e) {
 			this.facesMessages.add("already subscribed to " + applicationName);

@@ -36,7 +36,7 @@
 		</developerConnection>
 	</scm>
 	<organization>
-		<name>LIN-K</name>
+		<name>LIN.K N.V.</name>
 		<url>http://www.lin-k.net</url>
 	</organization>
 	<build>
@@ -137,8 +137,8 @@
 	</modules>
 	<repositories>
 		<repository>
-			<id>local</id>
-			<name>Local Repository</name>
+			<id>buildserver</id>
+			<name>Buildserver Repository</name>
 			<url>http://buildserver/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
@@ -201,8 +201,8 @@
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
-			<id>local</id>
-			<name>Local Plugin Repository</name>
+			<id>buildserver</id>
+			<name>Buildserver Plugin Repository</name>
 			<url>http://buildserver/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
@@ -263,15 +263,15 @@
 	</reporting>
 	<distributionManagement>
 		<repository>
-			<id>ssh-repository</id>
+			<id>buildserver-release-repository</id>
 			<url>scp://buildserver/maven2</url>
 		</repository>
 		<snapshotRepository>
-			<id>ssh-repository</id>
+			<id>buildserver-snapshot-repository</id>
 			<url>scp://buildserver/maven2</url>
 		</snapshotRepository>
 		<site>
-			<id>site-repository</id>
+			<id>buildserver-site-repository</id>
 			<url>scp://buildserver/site/safe-online</url>
 		</site>
 	</distributionManagement>

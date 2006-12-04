@@ -6,21 +6,21 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.EntityEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 
 @Local
 public interface SubscriptionDAO {
 
-	SubscriptionEntity findSubscription(EntityEntity entity,
+	SubscriptionEntity findSubscription(SubjectEntity subject,
 			ApplicationEntity application);
 
 	void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
-			EntityEntity entity, ApplicationEntity application);
+			SubjectEntity subject, ApplicationEntity application);
 
-	List<SubscriptionEntity> getSubsciptions(EntityEntity entity);
+	List<SubscriptionEntity> getSubsciptions(SubjectEntity subject);
 
-	void removeSubscription(EntityEntity entity, ApplicationEntity application)
+	void removeSubscription(SubjectEntity subject, ApplicationEntity application)
 			throws SubscriptionNotFoundException;
 }

@@ -9,10 +9,10 @@ import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.EntityDAO;
+import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.EntityEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.test.util.EJBTestUtils;
 
@@ -20,7 +20,7 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 
 	private UserRegistrationServiceBean testedInstance;
 
-	private EntityDAO mockEntityDAO;
+	private SubjectDAO mockEntityDAO;
 
 	private ApplicationDAO mockApplicationDAO;
 
@@ -32,7 +32,7 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 
 		this.testedInstance = new UserRegistrationServiceBean();
 
-		this.mockEntityDAO = createMock(EntityDAO.class);
+		this.mockEntityDAO = createMock(SubjectDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockEntityDAO);
 
 		this.mockApplicationDAO = createMock(ApplicationDAO.class);
@@ -49,10 +49,10 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		String name = "test-name";
 
 		// stubs
-		expect(this.mockEntityDAO.findEntity(login)).andStubReturn(null);
+		expect(this.mockEntityDAO.findSubject(login)).andStubReturn(null);
 
-		EntityEntity entity = new EntityEntity(login, password);
-		expect(this.mockEntityDAO.addEntity(login, password, name)).andReturn(
+		SubjectEntity entity = new SubjectEntity(login, password);
+		expect(this.mockEntityDAO.addSubject(login, password, name)).andReturn(
 				entity);
 
 		ApplicationEntity application = new ApplicationEntity(
@@ -84,8 +84,8 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		String name = "test-name";
 
 		// stubs
-		EntityEntity existingEntity = new EntityEntity(login, password);
-		expect(this.mockEntityDAO.findEntity(login)).andStubReturn(
+		SubjectEntity existingEntity = new SubjectEntity(login, password);
+		expect(this.mockEntityDAO.findSubject(login)).andStubReturn(
 				existingEntity);
 
 		// prepare

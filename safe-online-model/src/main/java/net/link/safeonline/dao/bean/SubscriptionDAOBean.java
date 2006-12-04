@@ -11,7 +11,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.EntityEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 
@@ -26,12 +26,12 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
-	public SubscriptionEntity findSubscription(EntityEntity entity,
+	public SubscriptionEntity findSubscription(SubjectEntity subject,
 			ApplicationEntity application) {
-		LOG.debug("find subscription for: " + entity.getLogin() + " to "
+		LOG.debug("find subscription for: " + subject.getLogin() + " to "
 				+ application.getName());
 		Query query = SubscriptionEntity.createQueryWhereEntityAndApplication(
-				this.entityManager, entity, application);
+				this.entityManager, subject, application);
 		List resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return null;
@@ -42,26 +42,26 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	}
 
 	public void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
-			EntityEntity entity, ApplicationEntity application) {
-		LOG.debug("add subscription for " + entity.getLogin() + " to "
+			SubjectEntity subject, ApplicationEntity application) {
+		LOG.debug("add subscription for " + subject.getLogin() + " to "
 				+ application.getName());
 		SubscriptionEntity subscription = new SubscriptionEntity(
-				subscriptionOwnerType, entity, application);
+				subscriptionOwnerType, subject, application);
 		this.entityManager.persist(subscription);
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<SubscriptionEntity> getSubsciptions(EntityEntity entity) {
-		LOG.debug("get subscriptions for entity: " + entity.getLogin());
+	public List<SubscriptionEntity> getSubsciptions(SubjectEntity subject) {
+		LOG.debug("get subscriptions for subject: " + subject.getLogin());
 		Query query = SubscriptionEntity.createQueryWhereEntity(
-				this.entityManager, entity);
+				this.entityManager, subject);
 		List<SubscriptionEntity> subscriptions = query.getResultList();
 		return subscriptions;
 	}
 
-	public void removeSubscription(EntityEntity entity,
+	public void removeSubscription(SubjectEntity subject,
 			ApplicationEntity application) throws SubscriptionNotFoundException {
-		SubscriptionEntity subscription = findSubscription(entity, application);
+		SubscriptionEntity subscription = findSubscription(subject, application);
 		if (null == subscription) {
 			throw new SubscriptionNotFoundException();
 		}

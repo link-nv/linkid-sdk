@@ -4,15 +4,14 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.EntityNotFoundException;
 import net.link.safeonline.entity.HistoryEntity;
 
 @Local
 public interface IdentityService {
 
-	String getName(String login) throws EntityNotFoundException;
+	String getName();
 
-	void saveName(String login, String name) throws EntityNotFoundException;
+	void saveName(String name);
 
-	List<HistoryEntity> getHistory(String login) throws EntityNotFoundException;
+	List<HistoryEntity> getHistory();
 }
