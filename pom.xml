@@ -144,6 +144,7 @@
 		<module>safe-online-webapp-base</module>
 		<module>safe-online-oper-webapp</module>
 		<module>safe-online-oper</module>
+		<module>safe-online-oper-service</module>
 	</modules>
 	<repositories>
 		<repository>

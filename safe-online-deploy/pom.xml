@@ -90,6 +90,12 @@
 							</artifactId>
 							<contextRoot>/safe-online-oper</contextRoot>
 						</webModule>
+						<sarModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>
+								safe-online-oper-service
+							</artifactId>
+						</sarModule>
 					</modules>
 					<jboss>
 						<version>4</version>
@@ -188,6 +194,13 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-oper</artifactId>
 			<type>ejb</type>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-oper-service</artifactId>
+			<type>sar</type>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>

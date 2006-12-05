@@ -11,6 +11,7 @@ import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -42,6 +43,9 @@ public class SubscriptionsBean implements Subscriptions {
 	@EJB
 	private SubscriptionService subscriptionService;
 
+	@EJB
+	private ApplicationService applicationService;
+
 	@In(create = true)
 	FacesMessages facesMessages;
 
@@ -72,7 +76,7 @@ public class SubscriptionsBean implements Subscriptions {
 	@Factory("applicationList")
 	public void applicationListFactory() {
 		LOG.debug("application list factory");
-		this.applicationList = this.subscriptionService.getApplications();
+		this.applicationList = this.applicationService.getApplications();
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

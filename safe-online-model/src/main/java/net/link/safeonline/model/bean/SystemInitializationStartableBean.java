@@ -96,6 +96,9 @@ public class SystemInitializationStartableBean implements Startable {
 				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
 
 		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
+				"admin",
+				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
 				"admin", "safe-online-oper"));
 	}
 
