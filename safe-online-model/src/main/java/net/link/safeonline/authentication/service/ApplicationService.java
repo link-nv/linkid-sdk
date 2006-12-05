@@ -21,4 +21,6 @@ public interface ApplicationService {
 	 * @return
 	 */
 	List<ApplicationEntity> getApplications();
+
+	void addApplication(String name, String description);
 }

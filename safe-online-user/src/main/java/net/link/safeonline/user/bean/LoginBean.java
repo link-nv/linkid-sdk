@@ -8,8 +8,8 @@ import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.user.Login;
 
 import org.apache.commons.logging.Log;
@@ -94,7 +94,7 @@ public class LoginBean implements Login {
 	}
 
 	public String login() {
-		String applicationName = UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME;
+		String applicationName = SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME;
 		LOG.debug("login with username: " + this.username + " into "
 				+ applicationName);
 		boolean authenticated = this.authenticationService.authenticate(

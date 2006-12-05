@@ -3,6 +3,7 @@ package net.link.safeonline.authentication.service.bean;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.dao.ApplicationDAO;
@@ -50,7 +51,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 				name);
 
 		ApplicationEntity safeOnlineUserApplication = this.applicationDAO
-				.findApplication(UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME);
+				.findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
 		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
 				newSubject, safeOnlineUserApplication);

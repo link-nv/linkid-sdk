@@ -35,9 +35,15 @@ public class ApplicationBean implements Application {
 	@EJB
 	private ApplicationService applicationService;
 
+	private String name;
+
+	private String description;
+
 	@Remove
 	@Destroy
 	public void destroyCallback() {
+		this.name = null;
+		this.description = null;
 	}
 
 	@SuppressWarnings("unused")
@@ -59,5 +65,28 @@ public class ApplicationBean implements Application {
 	public String view() {
 		LOG.debug("view: " + this.selectedApplication.getName());
 		return null;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String add() {
+		LOG.debug("add application: " + this.name);
+		this.applicationService.addApplication(this.name, this.description);
+		return "success";
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

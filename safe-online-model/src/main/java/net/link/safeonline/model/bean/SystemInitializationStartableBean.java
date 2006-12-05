@@ -9,8 +9,8 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
-import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
@@ -72,7 +72,7 @@ public class SystemInitializationStartableBean implements Startable {
 		registeredApplications = new LinkedList<ApplicationEntity>();
 		registeredApplications.add(new ApplicationEntity("demo-application"));
 		registeredApplications.add(new ApplicationEntity(
-				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 		registeredApplications.add(new ApplicationEntity("safe-online-oper",
 				false));
 
@@ -81,23 +81,26 @@ public class SystemInitializationStartableBean implements Startable {
 				"fcorneli", "demo-application"));
 		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
 				"fcorneli",
-				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
 		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"dieter", "demo-application"));
-		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
-				"dieter",
-				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+		subscriptions
+				.add(new Subscription(SubscriptionOwnerType.APPLICATION,
+						"dieter",
+						SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
 		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"mario", "demo-application"));
-		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
-				"mario",
-				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+		subscriptions
+				.add(new Subscription(SubscriptionOwnerType.APPLICATION,
+						"mario",
+						SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
-		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
-				"admin",
-				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+		subscriptions
+				.add(new Subscription(SubscriptionOwnerType.APPLICATION,
+						"admin",
+						SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
 				"admin", "safe-online-oper"));
 	}

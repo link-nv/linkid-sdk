@@ -34,4 +34,20 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<navigation-rule>
+		<from-view-id>/applications.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>add-application</from-outcome>
+			<to-view-id>/application-add.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/application-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/applications.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
 </faces-config>

@@ -5,8 +5,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import junit.framework.TestCase;
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingUserException;
-import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.SubjectDAO;
@@ -56,10 +56,10 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 				entity);
 
 		ApplicationEntity application = new ApplicationEntity(
-				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME);
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 		expect(
 				this.mockApplicationDAO
-						.findApplication(UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME))
+						.findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME))
 				.andStubReturn(application);
 
 		this.mockSubscriptionDAO.addSubscription(

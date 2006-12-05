@@ -10,4 +10,14 @@ public interface Application {
 	String view();
 
 	void destroyCallback();
+
+	String getName();
+
+	String getDescription();
+
+	void setName(String name);
+
+	void setDescription(String description);
+
+	String add();
 }

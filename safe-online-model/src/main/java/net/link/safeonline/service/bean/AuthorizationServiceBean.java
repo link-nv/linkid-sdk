@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
@@ -57,27 +56,34 @@ public class AuthorizationServiceBean implements AuthorizationService {
 			return roles;
 		}
 
-		ApplicationEntity safeOnlineUserApplication;
-		try {
-			safeOnlineUserApplication = this.applicationDAO
-					.getApplication(UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME);
-		} catch (ApplicationNotFoundException e) {
-			LOG
-					.error("application not found: "
-							+ UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME);
-			return roles;
-		}
-
 		/*
 		 * For now we base the authorization on made subscriptions. Of course,
-		 * later on we could let this decision depend on explicit ACL.
+		 * later on we could let this decision depend on explicit ACL, i.e.,
+		 * have a trust layer to make the decision.
 		 */
-		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(subject, safeOnlineUserApplication);
-		if (null != subscription) {
-			roles.add(SafeOnlineConstants.USER_ROLE);
-		}
+		addRoleIfSubscribed(SafeOnlineConstants.USER_ROLE, subject,
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, roles);
+		addRoleIfSubscribed(SafeOnlineConstants.OPERATOR_ROLE, subject,
+				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
+				roles);
 
 		return roles;
+	}
+
+	private void addRoleIfSubscribed(String roleToAdd, SubjectEntity subject,
+			String applicationName, Set<String> roles) {
+		ApplicationEntity application;
+		try {
+			application = this.applicationDAO.getApplication(applicationName);
+		} catch (ApplicationNotFoundException e) {
+			LOG.error("application not found: " + applicationName);
+			return;
+		}
+		SubscriptionEntity subscription = this.subscriptionDAO
+				.findSubscription(subject, application);
+		if (null == subscription) {
+			return;
+		}
+		roles.add(roleToAdd);
 	}
 }

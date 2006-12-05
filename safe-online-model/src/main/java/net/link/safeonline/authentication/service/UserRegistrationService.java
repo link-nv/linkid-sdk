@@ -17,8 +17,6 @@ import net.link.safeonline.authentication.exception.ExistingUserException;
 @Local
 public interface UserRegistrationService {
 
-	static final String SAFE_ONLINE_USER_APPLICATION_NAME = "safe-online-user";
-
 	void registerUser(String login, String password, String name)
 			throws ExistingUserException;
 }
