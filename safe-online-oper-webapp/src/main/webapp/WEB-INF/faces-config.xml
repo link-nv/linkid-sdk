@@ -34,12 +34,4 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<navigation-rule>
-		<from-view-id>/register.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>success</from-outcome>
-			<to-view-id>/register-complete.seam</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
 </faces-config>

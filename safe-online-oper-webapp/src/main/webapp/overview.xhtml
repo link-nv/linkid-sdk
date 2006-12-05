@@ -1,30 +1,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk">
+	xmlns:h="http://java.sun.com/jsf/html">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="applications" />
+			<ui:param name="subpage" value="overview" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-
-		<h1>#{selectedApplication.name}</h1>
-		<p>Description:</p>
-		<p>#{selectedApplication.description}</p>
-
-		<h:form>
-			<h:commandButton value="Back" action="back" />
-		</h:form>
-
+		<div class="subcolumn1-2">
+		<h3>Your applications</h3>
+		<p>Search for applications and decide which ones you want to use.
+		Click <a href="./applications.seam">here</a> to search, subscribe to
+		or unsubscribe from applications.</p>
+		</div>
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
+			<ui:param name="loginComp" value="#{operLogin}" />
 		</ui:include>
 	</ui:define>
 </ui:composition>

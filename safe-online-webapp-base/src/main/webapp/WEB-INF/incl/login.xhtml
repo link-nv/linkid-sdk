@@ -10,18 +10,18 @@
 			<table>
 				<tr>
 					<th><h:outputLabel for="username" value="#{msgs.login}" />:</th>
-					<td><h:inputText id="username" value="#{login.username}"
+					<td><h:inputText id="username" value="#{loginComp.username}"
 						required="true" /></td>
 				</tr>
 				<tr>
 					<th><h:outputLabel for="password" value="#{msgs.password}" />:</th>
-					<td><h:inputSecret id="password" value="#{login.password}"
+					<td><h:inputSecret id="password" value="#{loginComp.password}"
 						required="true" /></td>
 				</tr>
 			</table>
 			<p><t:message for="username" styleClass="error" /></p>
 			<p><t:message for="password" styleClass="error" /></p>
-			<h:commandButton action="#{login.login}" id="login"
+			<h:commandButton action="#{loginComp.login}" id="login"
 				value="#{msgs.login}" />
 			<p><h:commandLink action="register" id="register"
 				immediate="true">#{msgs.createAccount}</h:commandLink></p>
@@ -30,7 +30,7 @@
 	<c:otherwise>
 		<p>Welcome #{username}.</p>
 		<h:form>
-			<h:commandButton action="#{login.logout}" id="logout"
+			<h:commandButton action="#{loginComp.logout}" id="logout"
 				value="#{msgs.logout}" />
 		</h:form>
 	</c:otherwise>

@@ -16,7 +16,9 @@
 		E: info@lin-k.net</p>
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml" />
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{loginComp}" />
+		</ui:include>
 	</ui:define>
 </ui:composition>
 </body>
