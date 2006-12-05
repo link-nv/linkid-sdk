@@ -9,28 +9,30 @@
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="applications" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<h2>Add Application</h2>
+
+		<h1>#{selectedApplication.name}</h1>
+		<p>Description:</p>
+		<p>#{selectedApplication.description}</p>
+
+		<table>
+			<tr>
+				<th>User allowed to subscribe:</th>
+				<td>#{selectedApplication.allowUserSubscription}</td>
+			</tr>
+			<tr>
+				<th>Number of subscriptions:</th>
+				<td>#{numberOfSubscriptions}</td>
+			</tr>
+		</table>
+
 		<h:form>
-			<table>
-				<tr>
-					<th><h:outputLabel for="name" value="#{msgs.name}" />:</th>
-					<td><h:inputText id="name" value="#{application.name}"
-						required="true" />*</td>
-					<td><h:message for="name" styleClass="error" /></td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="description" value="Description" />:</th>
-					<td><h:inputText id="description"
-						value="#{application.description}" /></td>
-				</tr>
-			</table>
-			<h:commandButton action="back" id="back" value="Back"
-				immediate="true" />
-			<h:commandButton action="#{application.add}" id="add" value="Add" />
+			<h:commandButton value="Back" action="back" />
 		</h:form>
+
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">

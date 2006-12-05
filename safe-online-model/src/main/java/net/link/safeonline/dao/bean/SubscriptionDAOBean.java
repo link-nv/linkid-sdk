@@ -67,4 +67,11 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		}
 		this.entityManager.remove(subscription);
 	}
+
+	public long getNumberOfSubscriptions(ApplicationEntity application) {
+		Query query = SubscriptionEntity.createQueryCountWhereApplication(
+				this.entityManager, application);
+		Long countResult = (Long) query.getSingleResult();
+		return countResult;
+	}
 }

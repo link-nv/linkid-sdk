@@ -7,7 +7,9 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.oper.Application;
 import net.link.safeonline.oper.OperatorConstants;
@@ -19,10 +21,12 @@ import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.core.FacesMessages;
 
 @Stateful
 @Name("application")
@@ -35,9 +39,19 @@ public class ApplicationBean implements Application {
 	@EJB
 	private ApplicationService applicationService;
 
+	@EJB
+	private SubscriptionService subscriptionService;
+
 	private String name;
 
 	private String description;
+
+	@SuppressWarnings("unused")
+	@Out
+	private long numberOfSubscriptions;
+
+	@In(create = true)
+	FacesMessages facesMessages;
 
 	@Remove
 	@Destroy
@@ -63,8 +77,16 @@ public class ApplicationBean implements Application {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String view() {
-		LOG.debug("view: " + this.selectedApplication.getName());
-		return null;
+		String applicationName = this.selectedApplication.getName();
+		LOG.debug("view: " + applicationName);
+		try {
+			this.numberOfSubscriptions = this.subscriptionService
+					.getNumberOfSubscriptions(applicationName);
+		} catch (ApplicationNotFoundException e) {
+			this.facesMessages.add("application not found");
+			return null;
+		}
+		return "view-application";
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

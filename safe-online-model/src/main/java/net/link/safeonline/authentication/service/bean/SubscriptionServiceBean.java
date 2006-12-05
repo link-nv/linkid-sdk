@@ -20,11 +20,16 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.SubjectManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class SubscriptionServiceBean implements SubscriptionService {
+
+	private static final Log LOG = LogFactory
+			.getLog(SubscriptionServiceBean.class);
 
 	@EJB
 	private SubjectManager subjectManager;
@@ -79,5 +84,16 @@ public class SubscriptionServiceBean implements SubscriptionService {
 			throw new PermissionDeniedException();
 		}
 		this.subscriptionDAO.removeSubscription(subject, application);
+	}
+
+	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
+	public long getNumberOfSubscriptions(String applicationName)
+			throws ApplicationNotFoundException {
+		LOG.debug("get number of subscriptions for application: "
+				+ applicationName);
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationName);
+		long count = this.subscriptionDAO.getNumberOfSubscriptions(application);
+		return count;
 	}
 }

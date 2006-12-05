@@ -35,4 +35,7 @@ public interface SubscriptionService {
 	void unsubscribe(String applicationName)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			PermissionDeniedException;
+
+	long getNumberOfSubscriptions(String applicationName)
+			throws ApplicationNotFoundException;
 }

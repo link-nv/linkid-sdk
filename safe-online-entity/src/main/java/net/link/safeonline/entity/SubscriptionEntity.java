@@ -20,12 +20,14 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT_AND_APPLICATION;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT;
+import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_APPLICATION;
 
 @Entity
 @Table(name = "subscription")
 @NamedQueries( {
 		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_APPLICATION, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.subject = :subject AND subscription.application = :application"),
-		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.subject = :subject") })
+		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.subject = :subject"),
+		@NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION, query = "SELECT COUNT(subscription) FROM SubscriptionEntity AS subscription WHERE subscription.application = :application") })
 public class SubscriptionEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -33,6 +35,8 @@ public class SubscriptionEntity implements Serializable {
 	public static final String QUERY_WHERE_SUBJECT_AND_APPLICATION = "sub.subject.app";
 
 	public static final String QUERY_WHERE_SUBJECT = "sub.subject";
+
+	public static final String QUERY_COUNT_WHERE_APPLICATION = "sub.count.app";
 
 	private long id;
 
@@ -126,6 +130,14 @@ public class SubscriptionEntity implements Serializable {
 			SubjectEntity subject) {
 		Query query = entityManager.createNamedQuery(QUERY_WHERE_SUBJECT);
 		query.setParameter("subject", subject);
+		return query;
+	}
+
+	public static Query createQueryCountWhereApplication(
+			EntityManager entityManager, ApplicationEntity application) {
+		Query query = entityManager
+				.createNamedQuery(QUERY_COUNT_WHERE_APPLICATION);
+		query.setParameter("application", application);
 		return query;
 	}
 }

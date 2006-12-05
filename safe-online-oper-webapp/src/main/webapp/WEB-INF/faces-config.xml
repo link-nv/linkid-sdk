@@ -40,12 +40,28 @@
 			<from-outcome>add-application</from-outcome>
 			<to-view-id>/application-add.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-application</from-outcome>
+			<to-view-id>/application-view.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
 		<from-view-id>/application-add.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
+			<to-view-id>/applications.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/applications.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/application-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
 			<to-view-id>/applications.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>

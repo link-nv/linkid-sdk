@@ -29,4 +29,6 @@ public interface SubscriptionDAO {
 
 	void removeSubscription(SubjectEntity subject, ApplicationEntity application)
 			throws SubscriptionNotFoundException;
+
+	long getNumberOfSubscriptions(ApplicationEntity application);
 }
