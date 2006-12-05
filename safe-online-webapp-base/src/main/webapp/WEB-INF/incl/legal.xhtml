@@ -5,6 +5,9 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">
+		#{title}
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="legal" />

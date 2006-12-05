@@ -7,13 +7,13 @@
 <f:loadBundle basename="messages.webapp" var="msgs" />
 <link rel="stylesheet" type="text/css"
 	href="#{facesContext.externalContext.requestContextPath}/css/style.css" />
-<title>SafeOnline</title>
+<title><ui:insert name="title">SafeOnline</ui:insert></title>
 </head>
 
 <body>
 <div id="document">
 <div id="header"><ui:insert name="header">
-	<h1>SafeOnline</h1>
+	<h1><ui:insert name="title">SafeOnline</ui:insert></h1>
 </ui:insert></div>
 
 <div><ui:insert name="topnav" /></div>

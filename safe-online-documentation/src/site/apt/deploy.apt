@@ -55,3 +55,5 @@ mvn jboss:deploy
  * the SafeOnline core EJB JAR which can be found in <<<safe-online-model>>>, <<<safe-online-entity>>> and <<<safe-online-startup>>>.
  
  * the SafeOnline user web application components <<<safe-online-user-webapp>>>, <<<safe-online-user>>> and <<<safe-online-user-service>>>.
+ 
+ * the SafeOnline operator web application components <<<safe-online-oper-webapp>>>, <<<safe-online-oper>>> and <<<safe-online-oper-service>>>.

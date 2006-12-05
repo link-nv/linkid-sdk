@@ -4,6 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Operator</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -12,10 +13,10 @@
 	</ui:define>
 	<ui:define name="content">
 		<div class="subcolumn1-2">
-		<h3>Your applications</h3>
-		<p>Search for applications and decide which ones you want to use.
-		Click <a href="./applications.seam">here</a> to search, subscribe to
-		or unsubscribe from applications.</p>
+		<h3>Applications</h3>
+		<p>Manage the applications for which SafeOnline provides an
+		authentication service. Click <a href="./applications.seam">here</a>
+		to manage applications.</p>
 		</div>
 	</ui:define>
 	<ui:define name="sidebar">

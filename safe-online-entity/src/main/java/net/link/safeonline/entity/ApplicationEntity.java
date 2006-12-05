@@ -28,12 +28,19 @@ public class ApplicationEntity implements Serializable {
 
 	String description;
 
+	boolean allowUserSubscription;
+
 	public ApplicationEntity() {
 		// empty
 	}
 
 	public ApplicationEntity(String name) {
+		this(name, true);
+	}
+
+	public ApplicationEntity(String name, boolean allowUserSubscription) {
 		this.name = name;
+		this.allowUserSubscription = allowUserSubscription;
 	}
 
 	public String getDescription() {
@@ -53,6 +60,14 @@ public class ApplicationEntity implements Serializable {
 		this.name = name;
 	}
 
+	public boolean isAllowUserSubscription() {
+		return this.allowUserSubscription;
+	}
+
+	public void setAllowUserSubscription(boolean allowUserSubscription) {
+		this.allowUserSubscription = allowUserSubscription;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -63,13 +78,16 @@ public class ApplicationEntity implements Serializable {
 		}
 		ApplicationEntity rhs = (ApplicationEntity) obj;
 		return new EqualsBuilder().append(this.name, rhs.name).append(
-				this.description, rhs.description).isEquals();
+				this.description, rhs.description).append(
+				this.allowUserSubscription, rhs.allowUserSubscription)
+				.isEquals();
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("name", this.name).append(
-				"description", this.description).toString();
+				"description", this.description).append(
+				"allowUserSubscription", this.allowUserSubscription).toString();
 	}
 
 	public static Query createQueryAll(EntityManager entityManager) {

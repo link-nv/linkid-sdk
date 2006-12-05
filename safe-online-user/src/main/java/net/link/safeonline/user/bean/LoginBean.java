@@ -15,6 +15,7 @@ import net.link.safeonline.user.Login;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.cache.simple.CacheConfig;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.Destroy;
@@ -29,12 +30,17 @@ import org.jboss.seam.core.FacesMessages;
  * live within the security domain of the SafeOnline user web application since
  * the user still has to logon onto the system.
  * 
+ * Because of http session timeout being set to 5 minutes in web.xml we have to
+ * make sure that the lifecycle of the login bean that has session scope is
+ * longer than 5 minutes. Thus we take 5 + 1 minutes.
+ * 
  * @author fcorneli
  * 
  */
 @Stateful
 @Name("login")
 @Scope(ScopeType.SESSION)
+@CacheConfig(idleTimeoutSeconds = (5 + 1) * 60)
 @LocalBinding(jndiBinding = "SafeOnline/user/LoginBean/local")
 public class LoginBean implements Login {
 

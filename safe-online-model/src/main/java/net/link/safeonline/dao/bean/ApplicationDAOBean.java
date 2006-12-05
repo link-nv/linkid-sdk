@@ -51,4 +51,17 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		}
 		return application;
 	}
+
+	public void addApplication(String applicationName,
+			boolean allowUserSubscription) {
+		LOG.debug("adding application: " + applicationName);
+		ApplicationEntity application = new ApplicationEntity(applicationName,
+				allowUserSubscription);
+		this.entityManager.persist(application);
+	}
+
+	public void addApplication(ApplicationEntity application) {
+		LOG.debug("adding application: " + application.getName());
+		this.entityManager.persist(application);
+	}
 }

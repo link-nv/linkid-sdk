@@ -92,4 +92,8 @@
 		<url-pattern>*.seam</url-pattern>
 	</servlet-mapping>
 
+	<session-config>
+		<session-timeout>5</session-timeout>
+	</session-config>
+
 </web-app>

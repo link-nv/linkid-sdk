@@ -32,7 +32,7 @@ public interface SubscriptionService {
 	List<ApplicationEntity> getApplications();
 
 	void subscribe(String applicationName) throws ApplicationNotFoundException,
-			AlreadySubscribedException;
+			AlreadySubscribedException, PermissionDeniedException;
 
 	/**
 	 * @param applicationName

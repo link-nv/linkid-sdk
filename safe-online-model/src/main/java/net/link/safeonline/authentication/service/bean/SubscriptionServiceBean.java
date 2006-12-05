@@ -6,8 +6,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import org.jboss.annotation.security.SecurityDomain;
-
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -21,6 +19,8 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.SubjectManager;
+
+import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -56,9 +56,13 @@ public class SubscriptionServiceBean implements SubscriptionService {
 
 	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
 	public void subscribe(String applicationName)
-			throws ApplicationNotFoundException, AlreadySubscribedException {
+			throws ApplicationNotFoundException, AlreadySubscribedException,
+			PermissionDeniedException {
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
+		if (!application.isAllowUserSubscription()) {
+			throw new PermissionDeniedException();
+		}
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		SubscriptionEntity subscription = this.subscriptionDAO
 				.findSubscription(subject, application);

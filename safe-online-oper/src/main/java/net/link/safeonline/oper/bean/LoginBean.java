@@ -14,6 +14,7 @@ import net.link.safeonline.oper.Login;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.cache.simple.CacheConfig;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.Destroy;
@@ -33,10 +34,15 @@ import org.jboss.seam.core.FacesMessages;
  * XXX: Seam component name lookup clashes between two WARs. Because of this we
  * have to prefix the user and operator Seam components' names.
  * 
+ * Because of http session timeout being set to 5 minutes in web.xml we have to
+ * make sure that the lifecycle of the login bean that has session scope is
+ * longer than 5 minutes. Thus we take 5 + 1 minutes.
+ * 
  */
 @Stateful
 @Name("operLogin")
 @Scope(ScopeType.SESSION)
+@CacheConfig(idleTimeoutSeconds = (5 + 1) * 60)
 @LocalBinding(jndiBinding = "SafeOnline/oper/LoginBean/local")
 public class LoginBean implements Login {
 

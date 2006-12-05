@@ -43,7 +43,7 @@ public class SystemInitializationStartableBean implements Startable {
 
 	private static Map<String, String> authorizedUsers;
 
-	private static List<String> registeredApplications;
+	private static List<ApplicationEntity> registeredApplications;
 
 	private static class Subscription {
 		private final String user;
@@ -69,11 +69,12 @@ public class SystemInitializationStartableBean implements Startable {
 		authorizedUsers.put("mario", "secret");
 		authorizedUsers.put("admin", "admin");
 
-		registeredApplications = new LinkedList<String>();
-		registeredApplications.add("demo-application");
-		registeredApplications
-				.add(UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME);
-		registeredApplications.add("safe-online-oper");
+		registeredApplications = new LinkedList<ApplicationEntity>();
+		registeredApplications.add(new ApplicationEntity("demo-application"));
+		registeredApplications.add(new ApplicationEntity(
+				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+		registeredApplications.add(new ApplicationEntity("safe-online-oper",
+				false));
 
 		subscriptions = new LinkedList<Subscription>();
 		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
@@ -94,7 +95,7 @@ public class SystemInitializationStartableBean implements Startable {
 				"mario",
 				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
 
-		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
 				"admin", "safe-online-oper"));
 	}
 
@@ -120,13 +121,14 @@ public class SystemInitializationStartableBean implements Startable {
 			this.entityDAO.addSubject(login, password);
 		}
 
-		for (String applicationName : registeredApplications) {
-			ApplicationEntity application = this.applicationDAO
+		for (ApplicationEntity application : registeredApplications) {
+			String applicationName = application.getName();
+			ApplicationEntity existingApplication = this.applicationDAO
 					.findApplication(applicationName);
-			if (null != application) {
+			if (null != existingApplication) {
 				continue;
 			}
-			this.applicationDAO.addApplication(applicationName);
+			this.applicationDAO.addApplication(application);
 		}
 
 		for (Subscription subscription : subscriptions) {

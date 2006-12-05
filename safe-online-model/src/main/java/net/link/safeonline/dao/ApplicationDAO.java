@@ -37,6 +37,10 @@ public interface ApplicationDAO {
 
 	void addApplication(String applicationName);
 
+	void addApplication(String applicationName, boolean allowUserSubscription);
+
+	void addApplication(ApplicationEntity application);
+
 	/**
 	 * Gives back a list of all application registered within the SafeOnline
 	 * system.
