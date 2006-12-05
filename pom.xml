@@ -142,6 +142,8 @@
 		<module>safe-online-service</module>
 		<module>safe-online-j2ee-util</module>
 		<module>safe-online-webapp-base</module>
+		<module>safe-online-oper-webapp</module>
+		<module>safe-online-oper</module>
 	</modules>
 	<repositories>
 		<repository>

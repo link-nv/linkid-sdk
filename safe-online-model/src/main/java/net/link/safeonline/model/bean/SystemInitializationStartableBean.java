@@ -67,11 +67,13 @@ public class SystemInitializationStartableBean implements Startable {
 		authorizedUsers.put("fcorneli", "secret");
 		authorizedUsers.put("dieter", "secret");
 		authorizedUsers.put("mario", "secret");
+		authorizedUsers.put("admin", "admin");
 
 		registeredApplications = new LinkedList<String>();
 		registeredApplications.add("demo-application");
 		registeredApplications
 				.add(UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME);
+		registeredApplications.add("safe-online-oper");
 
 		subscriptions = new LinkedList<Subscription>();
 		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
@@ -79,16 +81,21 @@ public class SystemInitializationStartableBean implements Startable {
 		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
 				"fcorneli",
 				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+
 		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"dieter", "demo-application"));
 		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
 				"dieter",
 				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+
 		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"mario", "demo-application"));
 		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
 				"mario",
 				UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME));
+
+		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"admin", "safe-online-oper"));
 	}
 
 	@EJB

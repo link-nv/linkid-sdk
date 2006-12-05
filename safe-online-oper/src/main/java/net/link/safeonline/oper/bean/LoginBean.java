@@ -1,4 +1,4 @@
-package net.link.safeonline.user.bean;
+package net.link.safeonline.oper.bean;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -9,8 +9,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.authentication.service.UserRegistrationService;
-import net.link.safeonline.user.Login;
+import net.link.safeonline.oper.Login;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,11 +30,14 @@ import org.jboss.seam.core.FacesMessages;
  * 
  * @author fcorneli
  * 
+ * XXX: Seam component name lookup clashes between two WARs. Because of this we
+ * have to prefix the user and operator Seam components' names.
+ * 
  */
 @Stateful
-@Name("login")
+@Name("operLogin")
 @Scope(ScopeType.SESSION)
-@LocalBinding(jndiBinding = "SafeOnline/user/LoginBean/local")
+@LocalBinding(jndiBinding = "SafeOnline/oper/LoginBean/local")
 public class LoginBean implements Login {
 
 	private static final Log LOG = LogFactory.getLog(LoginBean.class);
@@ -88,7 +90,7 @@ public class LoginBean implements Login {
 	}
 
 	public String login() {
-		String applicationName = UserRegistrationService.SAFE_ONLINE_USER_APPLICATION_NAME;
+		String applicationName = "safe-online-oper";
 		LOG.debug("login with username: " + this.username + " into "
 				+ applicationName);
 		boolean authenticated = this.authenticationService.authenticate(
