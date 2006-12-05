@@ -1,4 +1,4 @@
-package net.link.safeonline.user.filter;
+package net.link.safeonline.webapp.filter;
 
 import java.io.IOException;
 import java.security.Principal;

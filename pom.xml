@@ -75,6 +75,7 @@
 						scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/tags
 					</tagBase>
 				</configuration>
+				<inherited>true</inherited>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -110,6 +111,11 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven-surefire-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>${maven-war-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -135,6 +141,7 @@
 		<module>safe-online-demo-deploy</module>
 		<module>safe-online-service</module>
 		<module>safe-online-j2ee-util</module>
+		<module>safe-online-webapp-base</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -615,5 +622,6 @@
 			2.2.1
 		</easymockclassextension.version>
 		<catalina.version>5.5.15</catalina.version>
+		<maven-war-plugin.version>2.0.1</maven-war-plugin.version>
 	</properties>
 </project>

@@ -1,4 +1,4 @@
-package test.unit.net.link.safeonline.user.filter;
+package test.unit.net.link.safeonline.webapp.filter;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.createMock;
@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
-import net.link.safeonline.user.filter.JAASLoginFilter;
+import net.link.safeonline.webapp.filter.JAASLoginFilter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
