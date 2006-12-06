@@ -8,6 +8,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -95,7 +96,14 @@ public class ApplicationBean implements Application {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String add() {
 		LOG.debug("add application: " + this.name);
-		this.applicationService.addApplication(this.name, this.description);
+		try {
+			this.applicationService.addApplication(this.name, this.description);
+		} catch (ExistingApplicationException e) {
+			String msg = "application already exists: " + this.name;
+			LOG.debug(msg);
+			this.facesMessages.add("name", msg);
+			return null;
+		}
 		return "success";
 	}
 

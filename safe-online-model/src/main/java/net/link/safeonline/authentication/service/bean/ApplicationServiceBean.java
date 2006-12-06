@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.dao.ApplicationDAO;
@@ -49,8 +50,14 @@ public class ApplicationServiceBean implements ApplicationService {
 	}
 
 	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
-	public void addApplication(String name, String description) {
+	public void addApplication(String name, String description)
+			throws ExistingApplicationException {
 		LOG.debug("add application: " + name);
+		ApplicationEntity existingApplication = this.applicationDAO
+				.findApplication(name);
+		if (null != existingApplication) {
+			throw new ExistingApplicationException();
+		}
 		ApplicationEntity newApplication = new ApplicationEntity(name);
 		newApplication.setDescription(description);
 		this.applicationDAO.addApplication(newApplication);
