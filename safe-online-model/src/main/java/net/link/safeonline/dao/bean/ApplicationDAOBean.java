@@ -64,4 +64,9 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		LOG.debug("adding application: " + application.getName());
 		this.entityManager.persist(application);
 	}
+
+	public void removeApplication(ApplicationEntity application) {
+		LOG.debug("remove application: " + application.getName());
+		this.entityManager.remove(application);
+	}
 }

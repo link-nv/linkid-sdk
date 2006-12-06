@@ -74,7 +74,7 @@ public class SystemInitializationStartableBean implements Startable {
 		registeredApplications.add(new ApplicationEntity(
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 		registeredApplications.add(new ApplicationEntity("safe-online-oper",
-				false));
+				false, false));
 
 		subscriptions = new LinkedList<Subscription>();
 		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,

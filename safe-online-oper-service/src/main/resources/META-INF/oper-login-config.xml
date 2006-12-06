@@ -13,7 +13,7 @@
 					localhost:8080
 				</module-option>
 				<module-option name="application-name">
-					safe-online-user
+					safe-online-oper
 				</module-option>
 			</login-module>
 			<login-module

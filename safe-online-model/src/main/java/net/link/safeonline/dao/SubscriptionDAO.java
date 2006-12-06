@@ -27,8 +27,12 @@ public interface SubscriptionDAO {
 
 	List<SubscriptionEntity> getSubsciptions(SubjectEntity subject);
 
+	List<SubscriptionEntity> getSubscriptions(ApplicationEntity application);
+
 	void removeSubscription(SubjectEntity subject, ApplicationEntity application)
 			throws SubscriptionNotFoundException;
+
+	void removeSubscription(SubscriptionEntity subscriptionEntity);
 
 	long getNumberOfSubscriptions(ApplicationEntity application);
 }

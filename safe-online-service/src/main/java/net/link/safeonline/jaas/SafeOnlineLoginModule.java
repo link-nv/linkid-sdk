@@ -117,6 +117,9 @@ public class SafeOnlineLoginModule implements LoginModule {
 
 		this.subject = subject;
 		this.callbackHandler = callbackHandler;
+		LOG.debug("subject class: " + this.subject.getClass().getName());
+		LOG.debug("callback handler class: "
+				+ this.callbackHandler.getClass().getName());
 	}
 
 	private Group getGroup(String groupName, Set<Principal> principals) {

@@ -6,11 +6,17 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.SubscriptionEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +38,9 @@ public class ApplicationServiceBean implements ApplicationService {
 	@EJB
 	private ApplicationDAO applicationDAO;
 
+	@EJB
+	private SubscriptionDAO subscriptionDAO;
+
 	@PermitAll
 	public List<ApplicationEntity> getApplications() {
 		List<ApplicationEntity> applications = this.applicationDAO
@@ -45,5 +54,27 @@ public class ApplicationServiceBean implements ApplicationService {
 		ApplicationEntity newApplication = new ApplicationEntity(name);
 		newApplication.setDescription(description);
 		this.applicationDAO.addApplication(newApplication);
+	}
+
+	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void removeApplication(String name)
+			throws ApplicationNotFoundException, PermissionDeniedException {
+		LOG.debug("remove application: " + name);
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(name);
+		if (!application.isRemovable()) {
+			throw new PermissionDeniedException();
+		}
+		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
+				.getSubscriptions(application);
+		/*
+		 * We don't rely on hibernate here to cascade remove the subscriptions
+		 * for the moment.
+		 */
+		for (SubscriptionEntity subscription : subscriptions) {
+			this.subscriptionDAO.removeSubscription(subscription);
+		}
+		this.applicationDAO.removeApplication(application);
 	}
 }

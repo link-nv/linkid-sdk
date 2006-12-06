@@ -30,6 +30,8 @@ public class ApplicationEntity implements Serializable {
 
 	boolean allowUserSubscription;
 
+	boolean removable;
+
 	public ApplicationEntity() {
 		// empty
 	}
@@ -39,8 +41,14 @@ public class ApplicationEntity implements Serializable {
 	}
 
 	public ApplicationEntity(String name, boolean allowUserSubscription) {
+		this(name, true, true);
+	}
+
+	public ApplicationEntity(String name, boolean allowUserSubscription,
+			boolean removable) {
 		this.name = name;
 		this.allowUserSubscription = allowUserSubscription;
+		this.removable = removable;
 	}
 
 	public String getDescription() {
@@ -66,6 +74,14 @@ public class ApplicationEntity implements Serializable {
 
 	public void setAllowUserSubscription(boolean allowUserSubscription) {
 		this.allowUserSubscription = allowUserSubscription;
+	}
+
+	public boolean isRemovable() {
+		return this.removable;
+	}
+
+	public void setRemovable(boolean removable) {
+		this.removable = removable;
 	}
 
 	@Override

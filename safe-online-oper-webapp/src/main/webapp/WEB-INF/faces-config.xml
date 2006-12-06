@@ -53,7 +53,7 @@
 			<to-view-id>/applications.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>back</from-action>
+			<from-action>cancel</from-action>
 			<to-view-id>/applications.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>

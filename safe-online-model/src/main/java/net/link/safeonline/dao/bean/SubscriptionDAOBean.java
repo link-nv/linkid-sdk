@@ -26,18 +26,18 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
+	@SuppressWarnings("unchecked")
 	public SubscriptionEntity findSubscription(SubjectEntity subject,
 			ApplicationEntity application) {
 		LOG.debug("find subscription for: " + subject.getLogin() + " to "
 				+ application.getName());
 		Query query = SubscriptionEntity.createQueryWhereEntityAndApplication(
 				this.entityManager, subject, application);
-		List resultList = query.getResultList();
+		List<SubscriptionEntity> resultList = query.getResultList();
 		if (resultList.isEmpty()) {
 			return null;
 		}
-		SubscriptionEntity subscription = (SubscriptionEntity) resultList
-				.get(0);
+		SubscriptionEntity subscription = resultList.get(0);
 		return subscription;
 	}
 
@@ -73,5 +73,22 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 				this.entityManager, application);
 		Long countResult = (Long) query.getSingleResult();
 		return countResult;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<SubscriptionEntity> getSubscriptions(
+			ApplicationEntity application) {
+		LOG
+				.debug("get subscriptions for application: "
+						+ application.getName());
+		Query query = SubscriptionEntity.createQueryWhereApplication(
+				this.entityManager, application);
+		List<SubscriptionEntity> subscriptions = query.getResultList();
+		return subscriptions;
+	}
+
+	public void removeSubscription(SubscriptionEntity subscriptionEntity) {
+		LOG.debug("remove subscription: " + subscriptionEntity.getId());
+		this.entityManager.remove(subscriptionEntity);
 	}
 }

@@ -48,4 +48,6 @@ public interface ApplicationDAO {
 	 * @return
 	 */
 	List<ApplicationEntity> getApplications();
+
+	void removeApplication(ApplicationEntity application);
 }

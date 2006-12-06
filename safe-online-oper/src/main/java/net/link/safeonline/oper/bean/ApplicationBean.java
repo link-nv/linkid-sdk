@@ -8,6 +8,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -83,7 +84,9 @@ public class ApplicationBean implements Application {
 			this.numberOfSubscriptions = this.subscriptionService
 					.getNumberOfSubscriptions(applicationName);
 		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.add("application not found");
+			String msg = "application not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
 			return null;
 		}
 		return "view-application";
@@ -110,5 +113,29 @@ public class ApplicationBean implements Application {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String removeApplication() {
+		/*
+		 * http://jira.jboss.com/jira/browse/EJBTHREE-786
+		 */
+		String applicationName = this.selectedApplication.getName();
+		LOG.debug("remove application: " + applicationName);
+		try {
+			this.applicationService.removeApplication(applicationName);
+		} catch (ApplicationNotFoundException e) {
+			String msg = "application not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (PermissionDeniedException e) {
+			String msg = "permission denied to remove: " + applicationName;
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		}
+		applicationListFactory();
+		return "success";
 	}
 }

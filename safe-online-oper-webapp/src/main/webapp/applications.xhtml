@@ -24,6 +24,10 @@
 					<f:facet name="header">Application</f:facet>
 					<h:commandLink value="#{item.name}" action="#{application.view}" />
 				</h:column>
+				<h:column>
+					<h:commandLink value="Remove"
+						action="#{application.removeApplication}" />
+				</h:column>
 			</t:dataTable>
 
 			<t:dataScroller for="app-data" fastStep="10" pageCountVar="pageCount"

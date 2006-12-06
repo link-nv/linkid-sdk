@@ -20,4 +20,6 @@ public interface Application {
 	void setDescription(String description);
 
 	String add();
+
+	String removeApplication();
 }
