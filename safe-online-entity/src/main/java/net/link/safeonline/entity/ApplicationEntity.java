@@ -40,13 +40,23 @@ public class ApplicationEntity implements Serializable {
 		this(name, true);
 	}
 
+	public ApplicationEntity(String name, String description) {
+		this(name, description, true, true);
+	}
+
 	public ApplicationEntity(String name, boolean allowUserSubscription) {
 		this(name, true, true);
 	}
 
 	public ApplicationEntity(String name, boolean allowUserSubscription,
 			boolean removable) {
+		this(name, null, allowUserSubscription, removable);
+	}
+
+	public ApplicationEntity(String name, String description,
+			boolean allowUserSubscription, boolean removable) {
 		this.name = name;
+		this.description = description;
 		this.allowUserSubscription = allowUserSubscription;
 		this.removable = removable;
 	}

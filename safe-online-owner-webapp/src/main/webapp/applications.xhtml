@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Application Owner</ui:define>
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="applications" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h:form>
+			<t:dataTable id="app-data" var="item" value="#{ownerApplicationList}"
+				rows="10" preserveDataModel="false" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2"
+				columnClasses="listingTable_ColumnTop,listingTable_Column">
+
+				<h:column>
+					<f:facet name="header">Application</f:facet>
+					<h:commandLink value="#{item.name}"
+						action="#{ownerApplication.view}" />
+				</h:column>
+				<h:column>
+					<h:commandLink value="Edit" action="#{ownerApplication.edit}" />
+				</h:column>
+			</t:dataTable>
+
+			<t:dataScroller for="app-data" fastStep="10" pageCountVar="pageCount"
+				pageIndexVar="pageIndex" styleClass="scroller" paginator="true"
+				paginatorMaxPages="9">
+				<f:facet name="first">First</f:facet>
+				<f:facet name="last">Last</f:facet>
+				<f:facet name="previous">Previous</f:facet>
+				<f:facet name="next">Next</f:facet>
+			</t:dataScroller>
+
+			<h:messages styleClass="error" />
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{ownerLogin}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

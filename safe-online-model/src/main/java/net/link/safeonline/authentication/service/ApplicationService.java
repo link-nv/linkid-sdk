@@ -35,4 +35,7 @@ public interface ApplicationService {
 	 */
 	void removeApplication(String name) throws ApplicationNotFoundException,
 			PermissionDeniedException;
+
+	void setApplicationDescription(String name, String description)
+			throws ApplicationNotFoundException;
 }

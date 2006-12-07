@@ -145,6 +145,9 @@
 		<module>safe-online-oper-webapp</module>
 		<module>safe-online-oper</module>
 		<module>safe-online-oper-service</module>
+		<module>safe-online-owner-webapp</module>
+		<module>safe-online-owner</module>
+		<module>safe-online-owner-service</module>
 	</modules>
 	<repositories>
 		<repository>

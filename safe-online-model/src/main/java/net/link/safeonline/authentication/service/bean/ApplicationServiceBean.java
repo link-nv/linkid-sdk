@@ -84,4 +84,13 @@ public class ApplicationServiceBean implements ApplicationService {
 		}
 		this.applicationDAO.removeApplication(application);
 	}
+
+	@RolesAllowed(SafeOnlineConstants.OWNER_ROLE)
+	public void setApplicationDescription(String name, String description)
+			throws ApplicationNotFoundException {
+		LOG.debug("set application description: " + name);
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(name);
+		application.setDescription(description);
+	}
 }

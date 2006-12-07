@@ -68,13 +68,20 @@ public class SystemInitializationStartableBean implements Startable {
 		authorizedUsers.put("dieter", "secret");
 		authorizedUsers.put("mario", "secret");
 		authorizedUsers.put("admin", "admin");
+		authorizedUsers.put("owner", "secret");
 
 		registeredApplications = new LinkedList<ApplicationEntity>();
 		registeredApplications.add(new ApplicationEntity("demo-application"));
 		registeredApplications.add(new ApplicationEntity(
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
-		registeredApplications.add(new ApplicationEntity("safe-online-oper",
-				false, false));
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+				"The SafeOnline User Web Application."));
+		registeredApplications.add(new ApplicationEntity(
+				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
+				"The SafeOnline Operator Web Application.", false, false));
+		registeredApplications.add(new ApplicationEntity(
+				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
+				"The SafeOnline Application Owner Web Application.", false,
+				false));
 
 		subscriptions = new LinkedList<Subscription>();
 		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
@@ -102,7 +109,17 @@ public class SystemInitializationStartableBean implements Startable {
 						"admin",
 						SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 		subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION,
-				"admin", "safe-online-oper"));
+				"admin",
+				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME));
+
+		subscriptions
+				.add(new Subscription(SubscriptionOwnerType.APPLICATION,
+						"owner",
+						SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+		subscriptions
+				.add(new Subscription(SubscriptionOwnerType.APPLICATION,
+						"owner",
+						SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
 	}
 
 	@EJB
@@ -116,27 +133,14 @@ public class SystemInitializationStartableBean implements Startable {
 
 	public void postStart() {
 		LOG.debug("start");
-		for (Map.Entry<String, String> authorizedUser : authorizedUsers
-				.entrySet()) {
-			String login = authorizedUser.getKey();
-			SubjectEntity subject = this.entityDAO.findSubject(login);
-			if (null != subject) {
-				continue;
-			}
-			String password = authorizedUser.getValue();
-			this.entityDAO.addSubject(login, password);
-		}
+		initSubjects();
 
-		for (ApplicationEntity application : registeredApplications) {
-			String applicationName = application.getName();
-			ApplicationEntity existingApplication = this.applicationDAO
-					.findApplication(applicationName);
-			if (null != existingApplication) {
-				continue;
-			}
-			this.applicationDAO.addApplication(application);
-		}
+		initApplications();
 
+		initSubscriptions();
+	}
+
+	private void initSubscriptions() {
 		for (Subscription subscription : subscriptions) {
 			String login = subscription.user;
 			String applicationName = subscription.application;
@@ -151,6 +155,31 @@ public class SystemInitializationStartableBean implements Startable {
 			}
 			this.subscriptionDAO.addSubscription(subscriptionOwnerType,
 					subject, application);
+		}
+	}
+
+	private void initApplications() {
+		for (ApplicationEntity application : registeredApplications) {
+			String applicationName = application.getName();
+			ApplicationEntity existingApplication = this.applicationDAO
+					.findApplication(applicationName);
+			if (null != existingApplication) {
+				continue;
+			}
+			this.applicationDAO.addApplication(application);
+		}
+	}
+
+	private void initSubjects() {
+		for (Map.Entry<String, String> authorizedUser : authorizedUsers
+				.entrySet()) {
+			String login = authorizedUser.getKey();
+			SubjectEntity subject = this.entityDAO.findSubject(login);
+			if (null != subject) {
+				continue;
+			}
+			String password = authorizedUser.getValue();
+			this.entityDAO.addSubject(login, password);
 		}
 	}
 

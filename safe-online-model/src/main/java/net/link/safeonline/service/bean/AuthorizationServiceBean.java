@@ -66,6 +66,8 @@ public class AuthorizationServiceBean implements AuthorizationService {
 		addRoleIfSubscribed(SafeOnlineConstants.OPERATOR_ROLE, subject,
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
 				roles);
+		addRoleIfSubscribed(SafeOnlineConstants.OWNER_ROLE, subject,
+				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
 
 		return roles;
 	}

@@ -86,7 +86,8 @@ public class SubscriptionServiceBean implements SubscriptionService {
 		this.subscriptionDAO.removeSubscription(subject, application);
 	}
 
-	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
+	@RolesAllowed( { SafeOnlineConstants.OPERATOR_ROLE,
+			SafeOnlineConstants.OWNER_ROLE })
 	public long getNumberOfSubscriptions(String applicationName)
 			throws ApplicationNotFoundException {
 		LOG.debug("get number of subscriptions for application: "

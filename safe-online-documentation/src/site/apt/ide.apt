@@ -1,7 +1,9 @@
 IDE
 
  Formatting the source code with Eclipse is preferred over NetBeans.
- 
+
+ <<Do not commit IDE project files in subversion!>>
+
 
 * Eclipse
 

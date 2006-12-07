@@ -5,6 +5,7 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Application Owner</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -13,12 +14,25 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{selectedSubscription.application.name}</h1>
-		<p>Description:</p>
-		<p><h:outputText
-			value="#{selectedSubscription.application.description}"
+		<h1>#{selectedApplication.name}</h1>
+
+		<p><h:outputText value="#{selectedApplication.description}"
 			escape="false" /></p>
-		<p>Owner: #{selectedSubscription.subscriptionOwnerType}</p>
+
+		<table>
+			<tr>
+				<th>User allowed to subscribe:</th>
+				<td>#{selectedApplication.allowUserSubscription}</td>
+			</tr>
+			<tr>
+				<th>Removable:</th>
+				<td>#{selectedApplication.removable}</td>
+			</tr>
+			<tr>
+				<th>Number of subscriptions:</th>
+				<td>#{numberOfSubscriptions}</td>
+			</tr>
+		</table>
 
 		<h:form>
 			<h:commandButton value="Back" action="back" />
@@ -27,7 +41,7 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
+			<ui:param name="loginComp" value="#{ownerLogin}" />
 		</ui:include>
 	</ui:define>
 </ui:composition>
