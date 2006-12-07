@@ -48,14 +48,15 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 		if (null != existingSubject) {
 			throw new ExistingUserException();
 		}
-		SubjectEntity newSubject = this.entityDAO.addSubject(login, password,
-				name);
 
 		ApplicationEntity safeOnlineUserApplication = this.applicationDAO
 				.findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 		if (null == safeOnlineUserApplication) {
 			throw new ApplicationNotFoundException();
 		}
+
+		SubjectEntity newSubject = this.entityDAO.addSubject(login, password,
+				name);
 
 		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
 				newSubject, safeOnlineUserApplication);

@@ -24,7 +24,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 	private AuthenticationServiceBean testedInstance;
 
-	private SubjectDAO mockEntityDAO;
+	private SubjectDAO mockSubjectDAO;
 
 	private ApplicationDAO mockApplicationDAO;
 
@@ -38,8 +38,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		this.testedInstance = new AuthenticationServiceBean();
 
-		this.mockEntityDAO = createMock(SubjectDAO.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockEntityDAO);
+		this.mockSubjectDAO = createMock(SubjectDAO.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockSubjectDAO);
 
 		this.mockApplicationDAO = createMock(ApplicationDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockApplicationDAO);
@@ -58,22 +58,22 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		String password = "test-password";
 
 		// stubs
-		SubjectEntity entity = new SubjectEntity(login, password);
-		expect(this.mockEntityDAO.findSubject(login)).andStubReturn(entity);
+		SubjectEntity subject = new SubjectEntity(login, password);
+		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(subject);
 
 		ApplicationEntity application = new ApplicationEntity(applicationName);
 		expect(this.mockApplicationDAO.findApplication(applicationName))
 				.andStubReturn(application);
 
 		SubscriptionEntity subscription = new SubscriptionEntity();
-		expect(this.mockSubscriptionDAO.findSubscription(entity, application))
+		expect(this.mockSubscriptionDAO.findSubscription(subject, application))
 				.andStubReturn(subscription);
 
 		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
-				EasyMock.eq(entity), (String) EasyMock.anyObject());
+				EasyMock.eq(subject), (String) EasyMock.anyObject());
 
 		// prepare
-		replay(this.mockEntityDAO, this.mockApplicationDAO,
+		replay(this.mockSubjectDAO, this.mockApplicationDAO,
 				this.mockSubscriptionDAO, this.mockHistoryDAO);
 
 		// operate
@@ -81,8 +81,60 @@ public class AuthenticationServiceBeanTest extends TestCase {
 				login, password);
 
 		// verify
-		verify(this.mockEntityDAO, this.mockApplicationDAO,
+		verify(this.mockSubjectDAO, this.mockApplicationDAO,
 				this.mockSubscriptionDAO, this.mockHistoryDAO);
 		assertTrue(result);
+	}
+
+	public void testAuthenticateWithWrongPasswordFails() throws Exception {
+		// setup
+		String applicationName = "test-application";
+		String login = "test-login";
+		String password = "test-password";
+		String wrongPassword = "foobar";
+
+		// stubs
+		SubjectEntity subject = new SubjectEntity(login, password);
+		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(subject);
+
+		// expectations
+		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
+				EasyMock.eq(subject), (String) EasyMock.anyObject());
+
+		// prepare
+		replay(this.mockSubjectDAO, this.mockApplicationDAO,
+				this.mockSubscriptionDAO, this.mockHistoryDAO);
+
+		// operate
+		boolean result = this.testedInstance.authenticate(applicationName,
+				login, wrongPassword);
+
+		// verify
+		verify(this.mockSubjectDAO, this.mockApplicationDAO,
+				this.mockSubscriptionDAO, this.mockHistoryDAO);
+		assertFalse(result);
+	}
+
+	public void testAuthenticateWithWrongUsernameFails() throws Exception {
+		// setup
+		String applicationName = "test-application";
+		String wrongLogin = "foobar-login";
+		String password = "test-password";
+
+		// stubs
+		expect(this.mockSubjectDAO.findSubject(wrongLogin)).andStubReturn(null);
+
+		// prepare
+		replay(this.mockSubjectDAO, this.mockApplicationDAO,
+				this.mockSubscriptionDAO, this.mockHistoryDAO);
+
+		// operate
+		boolean result = this.testedInstance.authenticate(applicationName,
+				wrongLogin, password);
+
+		// verify
+		verify(this.mockSubjectDAO, this.mockApplicationDAO,
+				this.mockSubscriptionDAO, this.mockHistoryDAO);
+		assertFalse(result);
 	}
 }

@@ -6,6 +6,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
@@ -20,7 +21,7 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 
 	private UserRegistrationServiceBean testedInstance;
 
-	private SubjectDAO mockEntityDAO;
+	private SubjectDAO mockSubjectDAO;
 
 	private ApplicationDAO mockApplicationDAO;
 
@@ -32,8 +33,8 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 
 		this.testedInstance = new UserRegistrationServiceBean();
 
-		this.mockEntityDAO = createMock(SubjectDAO.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockEntityDAO);
+		this.mockSubjectDAO = createMock(SubjectDAO.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockSubjectDAO);
 
 		this.mockApplicationDAO = createMock(ApplicationDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockApplicationDAO);
@@ -49,11 +50,11 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		String name = "test-name";
 
 		// stubs
-		expect(this.mockEntityDAO.findSubject(login)).andStubReturn(null);
+		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(null);
 
-		SubjectEntity entity = new SubjectEntity(login, password);
-		expect(this.mockEntityDAO.addSubject(login, password, name)).andReturn(
-				entity);
+		SubjectEntity subject = new SubjectEntity(login, password);
+		expect(this.mockSubjectDAO.addSubject(login, password, name))
+				.andReturn(subject);
 
 		ApplicationEntity application = new ApplicationEntity(
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
@@ -63,17 +64,17 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 				.andStubReturn(application);
 
 		this.mockSubscriptionDAO.addSubscription(
-				SubscriptionOwnerType.APPLICATION, entity, application);
+				SubscriptionOwnerType.APPLICATION, subject, application);
 
 		// prepare
-		replay(this.mockEntityDAO, this.mockApplicationDAO,
+		replay(this.mockSubjectDAO, this.mockApplicationDAO,
 				this.mockSubscriptionDAO);
 
 		// operate
 		this.testedInstance.registerUser(login, password, name);
 
 		// verify
-		verify(this.mockEntityDAO, this.mockApplicationDAO,
+		verify(this.mockSubjectDAO, this.mockApplicationDAO,
 				this.mockSubscriptionDAO);
 	}
 
@@ -84,12 +85,12 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		String name = "test-name";
 
 		// stubs
-		SubjectEntity existingEntity = new SubjectEntity(login, password);
-		expect(this.mockEntityDAO.findSubject(login)).andStubReturn(
-				existingEntity);
+		SubjectEntity existingSubject = new SubjectEntity(login, password);
+		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(
+				existingSubject);
 
 		// prepare
-		replay(this.mockEntityDAO, this.mockApplicationDAO,
+		replay(this.mockSubjectDAO, this.mockApplicationDAO,
 				this.mockSubscriptionDAO);
 
 		// operate & verify
@@ -98,7 +99,35 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 			fail();
 		} catch (ExistingUserException e) {
 			// expected
-			verify(this.mockEntityDAO, this.mockApplicationDAO,
+			verify(this.mockSubjectDAO, this.mockApplicationDAO,
+					this.mockSubscriptionDAO);
+		}
+	}
+
+	public void testNonExistingSafeOnlineUserApplicationThrowsException()
+			throws Exception {
+		// setup
+		String login = "test-login";
+		String password = "test-password";
+		String name = "test-name";
+
+		// stubs
+		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(null);
+
+		expect(this.mockApplicationDAO.findApplication("safe-online-user"))
+				.andStubReturn(null);
+
+		// prepare
+		replay(this.mockSubjectDAO, this.mockApplicationDAO,
+				this.mockSubscriptionDAO);
+
+		// operate & verify
+		try {
+			this.testedInstance.registerUser(login, password, name);
+			fail();
+		} catch (ApplicationNotFoundException e) {
+			// expected
+			verify(this.mockSubjectDAO, this.mockApplicationDAO,
 					this.mockSubscriptionDAO);
 		}
 	}

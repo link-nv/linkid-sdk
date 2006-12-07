@@ -14,8 +14,15 @@
 	<ui:define name="content">
 
 		<h1>#{selectedApplication.name}</h1>
-		<p>Description:</p>
-		<p>#{selectedApplication.description}</p>
+		<p><h:outputText value="#{selectedApplication.description}"
+			escape="false" /></p>
+
+		<table>
+			<tr>
+				<th>User allowed to subscribe:</th>
+				<td>#{selectedApplication.allowUserSubscription}</td>
+			</tr>
+		</table>
 
 		<h:form>
 			<h:commandButton value="Back" action="back" />

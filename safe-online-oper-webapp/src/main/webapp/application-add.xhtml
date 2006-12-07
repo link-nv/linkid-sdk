@@ -14,19 +14,20 @@
 	<ui:define name="content">
 		<h2>Add Application</h2>
 		<h:form>
-			<table>
-				<tr>
-					<th><h:outputLabel for="name" value="#{msgs.name}" />:</th>
-					<td><h:inputText id="name" value="#{application.name}"
-						required="true" />*</td>
-					<td><h:message for="name" styleClass="error" /></td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="description" value="Description" />:</th>
-					<td><h:inputText id="description"
-						value="#{application.description}" /></td>
-				</tr>
-			</table>
+			<h:panelGrid columns="3">
+				<h:panelGroup>
+					<h:outputLabel for="name" value="#{msgs.name}" />:
+					</h:panelGroup>
+				<h:panelGroup>
+					<h:inputText id="name" value="#{application.name}" required="true" />*
+						</h:panelGroup>
+				<h:message for="name" styleClass="error" />
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<h:outputLabel for="description" value="Description" />
+				<h:inputTextarea id="description" value="#{application.description}"
+					cols="60" rows="10" />
+			</h:panelGrid>
 			<h:commandButton action="#{application.add}" id="add" value="Add" />
 			<h:commandButton action="cancel" id="cancel" value="Cancel"
 				immediate="true" />

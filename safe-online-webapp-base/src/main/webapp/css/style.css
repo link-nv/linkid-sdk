@@ -13,7 +13,6 @@ body {
 
 /* classes */
 .error {
-	font-family: verdana, Geneva, Arial, Helvetica, sans-serif;
 	color: #FF0000;
 }
 
@@ -130,11 +129,11 @@ body {
 }
 
 .listingTable_Row1 {
-	background-color: #FFFFE0;
+	background-color: #FFFFFF;
 }
 
 .listingTable_Row2 {
-	background-color: #FFFFE0;
+	background-color: #F0F0F0;
 }
 
 .listingTable_ColumnTop {
