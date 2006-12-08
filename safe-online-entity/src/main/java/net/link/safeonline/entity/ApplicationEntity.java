@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_ALL;
 
@@ -105,15 +106,16 @@ public class ApplicationEntity implements Serializable {
 		ApplicationEntity rhs = (ApplicationEntity) obj;
 		return new EqualsBuilder().append(this.name, rhs.name).append(
 				this.description, rhs.description).append(
-				this.allowUserSubscription, rhs.allowUserSubscription)
-				.isEquals();
+				this.allowUserSubscription, rhs.allowUserSubscription).append(
+				this.removable, rhs.removable).isEquals();
 	}
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this).append("name", this.name).append(
-				"description", this.description).append(
-				"allowUserSubscription", this.allowUserSubscription).toString();
+		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append(
+				"name", this.name).append("description", this.description)
+				.append("allowUserSubscription", this.allowUserSubscription)
+				.append("removable", this.removable).toString();
 	}
 
 	public static Query createQueryAll(EntityManager entityManager) {

@@ -3,8 +3,8 @@ package test.accept.net.link.safeonline.user;
 import java.util.UUID;
 
 import junit.framework.TestCase;
+import test.accept.net.link.safeonline.AcceptanceTestManager;
 
-import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumLogLevels;
 
@@ -22,26 +22,20 @@ import com.thoughtworks.selenium.SeleniumLogLevels;
  */
 public class UserTest extends TestCase {
 
-	private static final String TIMEOUT = "5000";
-
-	private static final int SELENIUM_SERVER_PORT = 4455;
-
-	private static final String USER_LOCATION = "http://localhost:8080/safe-online/";
-
-	private static final String DEMO_LOCATION = "http://localhost:8080/demo/";
-
 	private Selenium selenium;
+
+	private AcceptanceTestManager acceptanceTestManager;
 
 	@Override
 	public void setUp() throws Exception {
-		this.selenium = new DefaultSelenium("localhost", SELENIUM_SERVER_PORT,
-				"*firefox", USER_LOCATION);
-		this.selenium.start();
+		this.acceptanceTestManager = new AcceptanceTestManager();
+		this.acceptanceTestManager.setUp();
+		this.selenium = this.acceptanceTestManager.getSelenium();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		this.selenium.stop();
+		this.acceptanceTestManager.tearDown();
 	}
 
 	public void testUserRegistrationLoginEditNameSubscribeToDemoLogoutAndDoDemoLoginLogout()
@@ -53,21 +47,21 @@ public class UserTest extends TestCase {
 		String password = "secret";
 		register(login, password);
 
-		userLogin(login, password);
+		this.acceptanceTestManager.userLogon(login, password);
 
 		String name = "name-" + login;
 		editName(name);
 
 		// navigate + check history
-		this.selenium.open(USER_LOCATION + "/applications.seam");
-		this.selenium.open(USER_LOCATION + "/devices.seam");
-		this.selenium.open(USER_LOCATION + "/history.seam");
+		this.acceptanceTestManager.openUserWebApp("/applications.seam");
+		this.acceptanceTestManager.openUserWebApp("/devices.seam");
+		this.acceptanceTestManager.openUserWebApp("/history.seam");
 		assertTrue(this.selenium.isTextPresent("safe-online-user"));
 
 		String applicationName = "demo-application";
 		subscribe(applicationName);
 
-		userLogout();
+		this.acceptanceTestManager.logout();
 
 		demoLogin(login, password);
 
@@ -82,24 +76,24 @@ public class UserTest extends TestCase {
 		String password = "secret";
 		register(login, password);
 
-		userLogin(login, password);
+		this.acceptanceTestManager.userLogon(login, password);
 
 		String applicationName = "demo-application";
 		subscribe(applicationName);
 
-		userLogout();
+		this.acceptanceTestManager.logout();
 
 		demoLogin(login, password);
 
 		demoLogout();
 
-		userLogin(login, password);
+		this.acceptanceTestManager.userLogon(login, password);
 
 		String newPassword = "secret2";
 		changePassword(password, newPassword);
 
-		userLogout();
-		userLogin(login, newPassword);
+		this.acceptanceTestManager.logout();
+		this.acceptanceTestManager.userLogon(login, newPassword);
 
 		demoLogin(login, newPassword);
 
@@ -107,54 +101,38 @@ public class UserTest extends TestCase {
 
 	}
 
-	private void fillInputField(String id, String value) {
-		this.selenium.type("xpath=//input[contains(@id, '" + id + "')]", value);
-	}
-
-	private void clickButton(String id) {
-		this.selenium
-				.click("xpath=//input[@type = 'submit' and contains(@id, '"
-						+ id + "')]");
-	}
-
-	private void clickLink(String id) {
-		this.selenium.click("xpath=//a[contains(@id, '" + id + "')]");
-	}
-
 	private void changePassword(String oldPassword, String newPassword) {
-		this.selenium.open(USER_LOCATION + "/devices.seam");
-		this.selenium.waitForPageToLoad(TIMEOUT);
-		fillInputField("oldpassword", oldPassword);
-		fillInputField("password1", newPassword);
-		fillInputField("password2", newPassword);
+		this.acceptanceTestManager.openUserWebApp("/devices.seam");
+		this.acceptanceTestManager.waitForPageToLoad();
+		this.acceptanceTestManager.fillInputField("oldpassword", oldPassword);
+		this.acceptanceTestManager.fillInputField("password1", newPassword);
+		this.acceptanceTestManager.fillInputField("password2", newPassword);
 
-		clickButton("change");
-		this.selenium.waitForPageToLoad(TIMEOUT);
+		this.acceptanceTestManager.clickButtonAndWait("change");
 	}
 
 	private void register(String login, String password) {
-		this.selenium.open(USER_LOCATION);
-		this.selenium.waitForPageToLoad(TIMEOUT);
-		clickLink("register");
-		this.selenium.waitForPageToLoad(TIMEOUT);
+		this.acceptanceTestManager.openUserWebApp("/");
+		this.acceptanceTestManager.waitForPageToLoad();
+		this.acceptanceTestManager.clickLink("register");
+		this.acceptanceTestManager.waitForPageToLoad();
 
-		fillInputField("login", login);
-		fillInputField("password1", password);
-		fillInputField("password2", password);
-		clickButton("register");
-		this.selenium.waitForPageToLoad(TIMEOUT);
+		this.acceptanceTestManager.fillInputField("login", login);
+		this.acceptanceTestManager.fillInputField("password1", password);
+		this.acceptanceTestManager.fillInputField("password2", password);
+		this.acceptanceTestManager.clickButtonAndWait("register");
 
 		assertTrue(this.selenium.isTextPresent("successfully"));
 	}
 
 	private void demoLogout() {
 		this.selenium.click("//input[@value='Logout']");
-		this.selenium.waitForPageToLoad(TIMEOUT);
+		this.acceptanceTestManager.waitForPageToLoad();
 		assertTrue(this.selenium.isTextPresent("Logon"));
 	}
 
 	private void demoLogin(String login, String password) {
-		this.selenium.open(DEMO_LOCATION);
+		this.acceptanceTestManager.openDemoWebApp("/");
 		assertTrue(this.selenium.isTextPresent("Logon"));
 		assertTrue(this.selenium.isTextPresent("Username"));
 		assertTrue(this.selenium.isTextPresent("Password"));
@@ -162,27 +140,19 @@ public class UserTest extends TestCase {
 		this.selenium.type("j_username", login);
 		this.selenium.type("j_password", password);
 		this.selenium.click("//input[@value='Logon']");
-		this.selenium.waitForPageToLoad(TIMEOUT);
+		this.acceptanceTestManager.waitForPageToLoad();
 
 		assertTrue(this.selenium.isTextPresent("Welcome"));
 		assertTrue(this.selenium.isTextPresent(login));
 		assertFalse(this.selenium.isTextPresent("Invalid"));
 	}
 
-	private void userLogout() {
-		this.selenium
-				.click("xpath=//input[@type = 'submit' and contains(@id, 'logout')]");
-		this.selenium.waitForPageToLoad(TIMEOUT);
-
-		assertTrue(this.selenium.isTextPresent("Login"));
-	}
-
 	private void subscribe(String applicationName) {
-		this.selenium.open(USER_LOCATION + "/applications.seam");
+		this.acceptanceTestManager.openUserWebApp("/applications.seam");
 		this.selenium
 				.click("xpath=//table[contains(@Id, 'app-data')]//tr[./td/a[contains(text(), '"
 						+ applicationName + "')]]/td/a[text() = 'Subscribe']");
-		this.selenium.waitForPageToLoad(TIMEOUT);
+		this.acceptanceTestManager.waitForPageToLoad();
 		String subResult = this.selenium
 				.getText("xpath=//table[contains(@Id, 'sub-data')]//tr/td/a[contains(text(), '"
 						+ applicationName + "')]");
@@ -190,23 +160,12 @@ public class UserTest extends TestCase {
 	}
 
 	private void editName(String name) {
-		this.selenium.open(USER_LOCATION + "/profile.seam");
-		fillInputField("name", name);
-		clickButton("save");
-		this.selenium.waitForPageToLoad(TIMEOUT);
+		this.acceptanceTestManager.openUserWebApp("/profile.seam");
+		this.acceptanceTestManager.fillInputField("name", name);
+		this.acceptanceTestManager.clickButtonAndWait("save");
 
 		assertEquals(name, this.selenium
 				.getValue("xpath=//input[contains(@id, 'name')]"));
 	}
 
-	private void userLogin(String login, String password) {
-		this.selenium.open(USER_LOCATION);
-		fillInputField("username", login);
-		fillInputField("password", password);
-		clickButton("login");
-		this.selenium.waitForPageToLoad(TIMEOUT);
-
-		assertTrue(this.selenium.isTextPresent("Welcome"));
-		assertTrue(this.selenium.isTextPresent(login));
-	}
 }

@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT_AND_APPLICATION;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT;
@@ -115,9 +116,9 @@ public class SubscriptionEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this).append("id", this.id).append(
-				"subject", this.subject)
-				.append("application", this.application).toString();
+		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append(
+				"id", this.id).append("subject", this.subject).append(
+				"application", this.application).toString();
 	}
 
 	public static Query createQueryWhereEntityAndApplication(

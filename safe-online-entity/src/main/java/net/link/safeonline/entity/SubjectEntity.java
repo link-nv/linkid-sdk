@@ -8,6 +8,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 @Entity
 @Table(name = "entity")
@@ -76,7 +77,7 @@ public class SubjectEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this).append("login", this.login).append(
-				"name", this.name).toString();
+		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append(
+				"login", this.login).append("name", this.name).toString();
 	}
 }
