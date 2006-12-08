@@ -282,7 +282,7 @@
 		</repository>
 		<snapshotRepository>
 			<id>buildserver-snapshot-repository</id>
-			<url>scp://buildserver/maven2</url>
+			<url>scp://buildserver/maven2-snapshots</url>
 		</snapshotRepository>
 		<site>
 			<id>buildserver-site-repository</id>
