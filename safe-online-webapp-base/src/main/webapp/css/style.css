@@ -11,9 +11,23 @@ body {
 	background-color: #FFFFFF;
 }
 
+a {
+	text-decoration: none;
+	color: #00f;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:visited {
+	color: #00f;
+}
+
 /* classes */
 .error {
 	color: #FF0000;
+	font-weight: bold;
 }
 
 /* ids */
