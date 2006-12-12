@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.lin-k</groupId>
+		<artifactId>safe-online</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-sql-ddl</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>SafeOnline SQL DDL</name>
+	<description>
+		The SafeOnline SQL Data Definition Language.
+	</description>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sql-ddl</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>Generating SQL DDL...</echo>
+								<taskdef
+									classname="org.hibernate.tool.ant.HibernateToolTask"
+									name="hibernatetool">
+									<classpath>
+										<path
+											refid="maven.compile.classpath" />
+										<path
+											refid="maven.plugin.classpath" />
+									</classpath>
+								</taskdef>
+								<mkdir
+									dir="${project.build.directory}/classes" />
+								<hibernatetool
+									destdir="${project.build.directory}/classes">
+									<!-- jpaconfiguration can directly use the PAR -->
+									<annotationconfiguration
+										configurationfile="${basedir}/src/main/resources/hibernate.cfg.xml" />
+									<hbm2ddl export="false"
+										format="true" outputfilename="safe-online-ddl.sql" />
+								</hibernatetool>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-entity</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-tools</artifactId>
+			<version>3.2.0.beta8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+		</dependency>
+	</dependencies>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>changes-maven-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>

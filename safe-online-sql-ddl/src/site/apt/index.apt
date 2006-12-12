@@ -1,0 +1,4 @@
+SafeOnline SQL DDL
+
+ This project will generate the SQL DDL file out of the EJB3 annotations on the entities.
+ For now it generates an SQL DDL for MySQL.
