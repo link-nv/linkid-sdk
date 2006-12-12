@@ -12,7 +12,6 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
-import javax.persistence.Query;
 
 import junit.framework.TestCase;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -20,6 +19,7 @@ import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.entity.SubscriptionPK;
 import net.link.safeonline.test.util.EntityTestManager;
 
 import org.apache.commons.logging.Log;
@@ -132,13 +132,13 @@ public class EntityTest extends TestCase {
 		SubscriptionEntity subscription = new SubscriptionEntity(
 				SubscriptionOwnerType.SUBJECT, subject, application);
 
-		// operate & verify: add subscription requires existing entity and
-		// application
+		// operate & verify
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(subscription);
 		try {
-			entityManager.persist(subscription);
+			entityManager.flush();
 			fail();
-		} catch (PersistenceException e) {
+		} catch (IllegalStateException e) {
 			// expected
 		}
 	}
@@ -159,23 +159,22 @@ public class EntityTest extends TestCase {
 		entityManager.persist(subscription);
 
 		// verify
-		long resultId = subscription.getId();
-		LOG.debug("subscription id: " + resultId);
 		entityManager = this.entityTestManager.refreshEntityManager();
 		SubscriptionEntity resultSubscription = entityManager.find(
-				SubscriptionEntity.class, resultId);
+				SubscriptionEntity.class, new SubscriptionPK(subject,
+						application));
 		assertNotNull(resultSubscription);
 		assertEquals(subscription, resultSubscription);
 
-		Query query = SubscriptionEntity.createQueryWhereEntityAndApplication(
-				entityManager, subject, application);
-		resultSubscription = (SubscriptionEntity) query.getSingleResult();
+		resultSubscription = entityManager.find(SubscriptionEntity.class,
+				new SubscriptionPK(subject, application));
 
 		// operate: remove subscription
 		entityManager.remove(resultSubscription);
 
 		// verify
-		assertNull(entityManager.find(SubscriptionEntity.class, resultId));
+		assertNull(entityManager.find(SubscriptionEntity.class,
+				new SubscriptionPK(subject, application)));
 		assertNotNull(entityManager.find(SubjectEntity.class, "test-login"));
 		assertNotNull(entityManager.find(ApplicationEntity.class,
 				"test-application"));

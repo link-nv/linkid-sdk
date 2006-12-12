@@ -9,13 +9,15 @@ package net.link.safeonline.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -26,7 +28,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT_AND_APPLICATION;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_APPLICATION;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_APPLICATION;
@@ -34,7 +35,6 @@ import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_AP
 @Entity
 @Table(name = "subscription")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_APPLICATION, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.subject = :subject AND subscription.application = :application"),
 		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.subject = :subject"),
 		@NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION, query = "SELECT COUNT(subscription) FROM SubscriptionEntity AS subscription WHERE subscription.application = :application"),
 		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.application = :application") })
@@ -42,15 +42,13 @@ public class SubscriptionEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String QUERY_WHERE_SUBJECT_AND_APPLICATION = "sub.subject.app";
-
 	public static final String QUERY_WHERE_SUBJECT = "sub.subject";
 
 	public static final String QUERY_COUNT_WHERE_APPLICATION = "sub.count.app";
 
 	public static final String QUERY_WHERE_APPLICATION = "sub.application";
 
-	private long id;
+	private SubscriptionPK pk;
 
 	private SubjectEntity subject;
 
@@ -67,22 +65,23 @@ public class SubscriptionEntity implements Serializable {
 		this.subscriptionOwnerType = subscriptionOwnerType;
 		this.subject = subject;
 		this.application = application;
+		this.pk = new SubscriptionPK(subject, application);
 	}
 
-	/*
-	 * TODO: use a composite primary key (subject, application) here.
-	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public long getId() {
-		return this.id;
+	@EmbeddedId
+	@AttributeOverrides( {
+			@AttributeOverride(name = "application", column = @Column(name = "application")),
+			@AttributeOverride(name = "subject", column = @Column(name = "subject")) })
+	public SubscriptionPK getPk() {
+		return this.pk;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setPk(SubscriptionPK pk) {
+		this.pk = pk;
 	}
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "application", insertable = false, updatable = false)
 	public ApplicationEntity getApplication() {
 		return this.application;
 	}
@@ -92,6 +91,7 @@ public class SubscriptionEntity implements Serializable {
 	}
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "subject", insertable = false, updatable = false)
 	public SubjectEntity getSubject() {
 		return this.subject;
 	}
@@ -119,26 +119,14 @@ public class SubscriptionEntity implements Serializable {
 			return false;
 		}
 		SubscriptionEntity rhs = (SubscriptionEntity) obj;
-		return new EqualsBuilder().append(this.id, rhs.id).append(
-				this.application, rhs.application).append(this.subject,
-				rhs.subject).isEquals();
+		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append(
-				"id", this.id).append("subject", this.subject).append(
-				"application", this.application).toString();
-	}
-
-	public static Query createQueryWhereEntityAndApplication(
-			EntityManager entityManager, SubjectEntity subject,
-			ApplicationEntity application) {
-		Query query = entityManager
-				.createNamedQuery(QUERY_WHERE_SUBJECT_AND_APPLICATION);
-		query.setParameter("subject", subject);
-		query.setParameter("application", application);
-		return query;
+				"pk", this.pk).append("ownerType", this.subscriptionOwnerType)
+				.toString();
 	}
 
 	public static Query createQueryWhereEntity(EntityManager entityManager,

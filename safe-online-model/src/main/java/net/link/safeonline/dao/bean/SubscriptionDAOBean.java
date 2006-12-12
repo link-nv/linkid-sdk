@@ -21,6 +21,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.entity.SubscriptionPK;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,13 +39,9 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 			ApplicationEntity application) {
 		LOG.debug("find subscription for: " + subject.getLogin() + " to "
 				+ application.getName());
-		Query query = SubscriptionEntity.createQueryWhereEntityAndApplication(
-				this.entityManager, subject, application);
-		List<SubscriptionEntity> resultList = query.getResultList();
-		if (resultList.isEmpty()) {
-			return null;
-		}
-		SubscriptionEntity subscription = resultList.get(0);
+		SubscriptionPK subscriptionPK = new SubscriptionPK(subject, application);
+		SubscriptionEntity subscription = this.entityManager.find(
+				SubscriptionEntity.class, subscriptionPK);
 		return subscription;
 	}
 
@@ -95,7 +92,7 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	}
 
 	public void removeSubscription(SubscriptionEntity subscriptionEntity) {
-		LOG.debug("remove subscription: " + subscriptionEntity.getId());
+		LOG.debug("remove subscription: " + subscriptionEntity);
 		this.entityManager.remove(subscriptionEntity);
 	}
 }
