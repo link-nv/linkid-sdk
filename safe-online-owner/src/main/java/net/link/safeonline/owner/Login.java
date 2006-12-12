@@ -9,23 +9,8 @@ package net.link.safeonline.owner;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.ctrl.LoginBase;
+
 @Local
-public interface Login {
-	String login();
-
-	String logout();
-
-	String getUsername();
-
-	void setUsername(String username);
-
-	String getPassword();
-
-	void setPassword(String password);
-
-	boolean isLoggedIn();
-
-	String getLoggedInUsername();
-
-	void destroyCallback();
+public interface Login extends LoginBase {
 }

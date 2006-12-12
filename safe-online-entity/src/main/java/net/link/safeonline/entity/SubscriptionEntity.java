@@ -36,7 +36,7 @@ import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_AP
 @Table(name = "subscription")
 @NamedQueries( {
 		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.subject = :subject"),
-		@NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION, query = "SELECT COUNT(subscription) FROM SubscriptionEntity AS subscription WHERE subscription.application = :application"),
+		@NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION, query = "SELECT COUNT(*) FROM SubscriptionEntity AS subscription WHERE subscription.application = :application"),
 		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT subscription FROM SubscriptionEntity AS subscription WHERE subscription.application = :application") })
 public class SubscriptionEntity implements Serializable {
 

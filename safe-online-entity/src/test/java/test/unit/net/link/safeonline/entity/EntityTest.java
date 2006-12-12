@@ -12,6 +12,7 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 
 import junit.framework.TestCase;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -168,6 +169,12 @@ public class EntityTest extends TestCase {
 
 		resultSubscription = entityManager.find(SubscriptionEntity.class,
 				new SubscriptionPK(subject, application));
+
+		Query countQuery = SubscriptionEntity.createQueryCountWhereApplication(
+				entityManager, application);
+		Long count = (Long) countQuery.getSingleResult();
+		LOG.debug("count: " + count);
+		assertEquals(1, (long) count);
 
 		// operate: remove subscription
 		entityManager.remove(resultSubscription);

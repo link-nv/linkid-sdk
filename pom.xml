@@ -153,6 +153,7 @@
 		<module>safe-online-owner-webapp</module>
 		<module>safe-online-owner</module>
 		<module>safe-online-owner-service</module>
+		<module>safe-online-ctrl-base</module>
 	</modules>
 	<repositories>
 		<repository>
