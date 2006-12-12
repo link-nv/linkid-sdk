@@ -5,20 +5,20 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.user;
+package net.link.safeonline.oper;
 
 import javax.ejb.Local;
 
 @Local
-public interface Identity {
+public interface ApplicationOwner {
+
+	void applicationOwnerListFactory();
+
+	void destroyCallback();
+
+	String add();
 
 	String getLogin();
 
-	String getName();
-
-	void setName(String name);
-
-	String save();
-
-	void destroyCallback();
+	void setLogin(String login);
 }

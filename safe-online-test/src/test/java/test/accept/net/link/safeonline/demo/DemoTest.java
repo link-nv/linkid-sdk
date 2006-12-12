@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package test.accept.net.link.safeonline.demo;
 
 import junit.framework.TestCase;
@@ -7,13 +14,7 @@ import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumLogLevels;
 
 /**
- * Demo Acceptance Test. This test requires the selenium server to be up and
- * running:
- * <code>java -jar selenium-server-0.9.0.jar -port 4455 -interactive</code>
- * <p>
- * and that the Safe Online demo web application is also up and running.
- * <p>
- * JBoss AS already runs on the default selenium server port 4444.
+ * Demo Acceptance Test.
  * 
  * @author fcorneli
  * 

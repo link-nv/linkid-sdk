@@ -1,27 +1,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">SafeOnline Operator</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="overview" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<div class="subcolumn1-2">
-		<h3>Applications</h3>
-		<p>Manage the applications for which SafeOnline provides an
-		authentication service. Click <a href="./applications.seam">here</a>
-		to manage applications.</p>
-		<h3>Application Owners</h3>
-		<p>Manage the application owners that provide the user
-		applications. Click <a href="./owners.seam">here</a> to manage the
-		application owners.</p>
-		</div>
+		<h2>Add Application Owner</h2>
+		<h:form>
+			<h:panelGrid columns="3">
+				<h:panelGroup>
+					<h:outputLabel for="login" value="#{msgs.name}" />:
+					</h:panelGroup>
+				<h:panelGroup>
+					<h:inputText id="login" value="#{applicationOwner.login}"
+						required="true" />*
+						</h:panelGroup>
+				<h:messages styleClass="error" />
+			</h:panelGrid>
+			<h:commandButton action="#{applicationOwner.add}" id="add"
+				value="Add" />
+			<h:commandButton action="cancel" id="cancel" value="Cancel"
+				immediate="true" />
+		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">

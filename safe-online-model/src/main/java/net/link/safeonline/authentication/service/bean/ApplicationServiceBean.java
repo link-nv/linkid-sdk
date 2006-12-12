@@ -1,5 +1,13 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.PermitAll;
@@ -10,14 +18,19 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.entity.SubscriptionOwnerType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,6 +54,9 @@ public class ApplicationServiceBean implements ApplicationService {
 
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
+
+	@EJB
+	private SubjectDAO subjectDAO;
 
 	@PermitAll
 	public List<ApplicationEntity> getApplications() {
@@ -92,5 +108,40 @@ public class ApplicationServiceBean implements ApplicationService {
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(name);
 		application.setDescription(description);
+	}
+
+	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
+	public void registerApplicationOwner(String login)
+			throws SubjectNotFoundException, ApplicationNotFoundException,
+			AlreadySubscribedException {
+		LOG.debug("register application owner: " + login);
+		SubjectEntity subject = this.subjectDAO.getSubject(login);
+		ApplicationEntity ownerApplication = this.applicationDAO
+				.getApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
+		SubscriptionEntity previousSubscription = this.subscriptionDAO
+				.findSubscription(subject, ownerApplication);
+		if (null != previousSubscription) {
+			throw new AlreadySubscribedException();
+		}
+		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
+				subject, ownerApplication);
+	}
+
+	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
+	public List<String> getApplicationOwners() {
+		LOG.debug("get application owners");
+		List<String> applicationOwners = new LinkedList<String>();
+		ApplicationEntity ownerApplication = this.applicationDAO
+				.findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
+		if (null == ownerApplication) {
+			return applicationOwners;
+		}
+		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
+				.getSubscriptions(ownerApplication);
+		for (SubscriptionEntity subscription : subscriptions) {
+			String login = subscription.getSubject().getLogin();
+			applicationOwners.add(login);
+		}
+		return applicationOwners;
 	}
 }

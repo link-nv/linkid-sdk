@@ -16,6 +16,20 @@ mvn jboss:undeploy
 
  The JBoss Maven2 plugin is using JMX to perform the deploy operations.
  
+ One can also use the Cargo Maven2 plugin to perform the deploy/undeploy of deployable J2EE artifacts.
+ 
+ Deploy via:
+ 
++---+
+mvn cargo:deploy
++---+
+
+ Undeploy via:
+ 
++---+
+mvn cargo:undeploy
++---+
+
 
 * Demo Web application
 

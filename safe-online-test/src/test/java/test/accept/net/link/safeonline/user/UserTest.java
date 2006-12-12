@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package test.accept.net.link.safeonline.user;
 
 import java.util.UUID;
@@ -9,13 +16,7 @@ import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumLogLevels;
 
 /**
- * Acceptance test for user web application. This test requires the selenium
- * server to be up and running:
- * <code>java -jar selenium-server-0.9.0.jar -port 4455 -interactive</code>
- * <p>
- * and that the Safe Online demo web application is also up and running.
- * <p>
- * JBoss AS already runs on the default selenium server port 4444.
+ * Acceptance test for user web application.
  * 
  * @author fcorneli
  * 
@@ -28,6 +29,7 @@ public class UserTest extends TestCase {
 
 	@Override
 	public void setUp() throws Exception {
+		super.setUp();
 		this.acceptanceTestManager = new AcceptanceTestManager();
 		this.acceptanceTestManager.setUp();
 		this.selenium = this.acceptanceTestManager.getSelenium();
@@ -36,6 +38,7 @@ public class UserTest extends TestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		this.acceptanceTestManager.tearDown();
+		super.tearDown();
 	}
 
 	public void testUserRegistrationLoginEditNameSubscribeToDemoLogoutAndDoDemoLoginLogout()

@@ -66,4 +66,24 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<navigation-rule>
+		<from-view-id>/owners.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>add-owner</from-outcome>
+			<to-view-id>/owner-add.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/owner-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/owners.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/owners.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
 </faces-config>

@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package test.accept.net.link.safeonline;
 
 import java.io.InputStream;
@@ -6,10 +13,23 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
+import org.openqa.selenium.server.SeleniumServer;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 
+/**
+ * Acceptance test manager based on the Selenium testing framework.
+ * 
+ * This component will launch the selenium server on port 4455.
+ * 
+ * Make sure that the SafeOnline web applications are up and running.
+ * 
+ * Note: JBoss AS already runs on the default selenium server port 4444.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class AcceptanceTestManager {
 
 	private static final String SAFE_ONLINE_USER_WEBAPP_PREFIX = "/safe-online";
@@ -25,6 +45,8 @@ public class AcceptanceTestManager {
 
 	private Selenium selenium;
 
+	private SeleniumServer seleniumServer;
+
 	public static final int SELENIUM_SERVER_PORT = 4455;
 
 	private static final String TIMEOUT = "5000";
@@ -32,6 +54,8 @@ public class AcceptanceTestManager {
 	private String safeOnlineLocation;
 
 	public void setUp() throws Exception {
+		this.seleniumServer = new SeleniumServer(SELENIUM_SERVER_PORT);
+		this.seleniumServer.start();
 		Properties properties = new Properties();
 		InputStream propConfigInputStream = AcceptanceTestManager.class
 				.getResourceAsStream("/test-accept-config.properties");
@@ -46,6 +70,7 @@ public class AcceptanceTestManager {
 
 	public void tearDown() throws Exception {
 		this.selenium.stop();
+		this.seleniumServer.stop();
 	}
 
 	public Selenium getSelenium() {

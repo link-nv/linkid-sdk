@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.util.ee;
 
 import javax.naming.InitialContext;
@@ -24,15 +31,16 @@ public class EjbUtils {
 	 * Lookup an EJB within JNDI.
 	 * 
 	 * @param <Type>
+	 * @param initialContext
 	 * @param jndiName
 	 * @param type
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <Type> Type getEJB(String jndiName, Class<Type> type) {
+	public static <Type> Type getEJB(InitialContext initialContext,
+			String jndiName, Class<Type> type) {
 		try {
 			LOG.debug("ejb jndi lookup: " + jndiName);
-			InitialContext initialContext = new InitialContext();
 			Object obj = initialContext.lookup(jndiName);
 			if (!type.isInstance(obj)) {
 				throw new RuntimeException(jndiName + " is not a "
@@ -43,5 +51,15 @@ public class EjbUtils {
 		} catch (NamingException e) {
 			throw new RuntimeException("naming error: " + e.getMessage(), e);
 		}
+	}
+
+	public static <Type> Type getEJB(String jndiName, Class<Type> type) {
+		InitialContext initialContext;
+		try {
+			initialContext = new InitialContext();
+		} catch (NamingException e) {
+			throw new RuntimeException("naming error: " + e.getMessage(), e);
+		}
+		return getEJB(initialContext, jndiName, type);
 	}
 }

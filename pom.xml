@@ -116,6 +116,11 @@
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${maven-war-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.codehaus.cargo</groupId>
+					<artifactId>cargo-maven2-plugin</artifactId>
+					<version>${cargo-maven2-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -555,6 +560,97 @@
 				<artifactId>catalina</artifactId>
 				<version>${catalina.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jnp-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-common-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-ejb3-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-aspect-jdk50-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-aop-jdk50-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-remoting</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-transaction-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>concurrent</groupId>
+				<artifactId>concurrent</artifactId>
+				<version>${concurrent.version}</version>
+			</dependency>
+			<dependency>
+				<!-- TODO: transitive dependency on xmlsec,commons-codec in pom.xml -->
+				<groupId>org.opensaml</groupId>
+				<artifactId>opensaml</artifactId>
+				<version>${opensaml.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xml-security</groupId>
+				<artifactId>xmlsec</artifactId>
+				<version>${xmlsec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>${commons-codec.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+				<version>${xalan.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>antlr</groupId>
+				<artifactId>antlr</artifactId>
+				<version>${antlr.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>${commons-collections.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-digester</groupId>
+				<artifactId>commons-digester</artifactId>
+				<version>${commons-digester.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>${commons-beanutils.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-el</groupId>
+				<artifactId>commons-el</artifactId>
+				<version>${commons-el.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xml-apis</groupId>
+				<artifactId>xml-apis</artifactId>
+				<version>${xml-apis.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -569,13 +665,14 @@
 			2.0-SNAPSHOT
 		</jboss-packaging-maven-plugin.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
-		<junit.version>4.0</junit.version>
+		<junit.version>4.1</junit.version>
 		<jaxb-xjc.version>2.0.4</jaxb-xjc.version>
 		<jaxb-impl.version>2.0.4</jaxb-impl.version>
 		<xfire-jsr181-api.version>1.0-M1</xfire-jsr181-api.version>
 		<jaxb-api.version>2.0</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>
 		<saaj-impl.version>1.3</saaj-impl.version>
+		<!-- jaxws 2.0_03-SNAPSHOT wsimport does not support nested produces -->
 		<jaxws-tools.version>2.0.1-SNAPSHOT</jaxws-tools.version>
 		<jaxws-rt.version>2.0.1-SNAPSHOT</jaxws-rt.version>
 		<jaxws-api.version>2.0</jaxws-api.version>
@@ -592,9 +689,13 @@
 			2.3-SNAPSHOT
 		</maven-ear-plugin.version>
 		<commons-io.version>1.2</commons-io.version>
+		<!-- hibernate-entitymanager 3.2.1.ga is available, awaiting pom.xml -->
 		<hibernate-entitymanager.version>
 			3.2.0.ga
 		</hibernate-entitymanager.version>
+		<hibernate-annotations.version>
+			3.2.0.ga
+		</hibernate-annotations.version>
 		<derby.version>10.2.1.6</derby.version>
 		<servlet-api.version>2.4</servlet-api.version>
 		<shiftone-oocjndi.version>1.2</shiftone-oocjndi.version>
@@ -604,7 +705,7 @@
 		<jstl.version>1.1.2</jstl.version>
 		<jboss-seam.version>1.0.1.GA</jboss-seam.version>
 		<standard.version>1.1.2</standard.version>
-		<jsf-facelets.version>1.1.11</jsf-facelets.version>
+		<jsf-facelets.version>1.1.12</jsf-facelets.version>
 		<el-api.version>1.0</el-api.version>
 		<el-impl.version>1.0</el-impl.version>
 		<jsp-api.version>2.1</jsp-api.version>
@@ -615,9 +716,6 @@
 		<tomahawk.version>1.1.3</tomahawk.version>
 		<tomahawk-facelets.version>1.0</tomahawk-facelets.version>
 		<myfaces-api.version>1.1.4</myfaces-api.version>
-		<hibernate-annotations.version>
-			3.2.0.ga
-		</hibernate-annotations.version>
 		<jboss-sar-maven-plugin.version>
 			2.0-SNAPSHOT
 		</jboss-sar-maven-plugin.version>
@@ -629,5 +727,19 @@
 		</easymockclassextension.version>
 		<catalina.version>5.5.15</catalina.version>
 		<maven-war-plugin.version>2.0.1</maven-war-plugin.version>
+		<concurrent.version>1.3.4</concurrent.version>
+		<opensaml.version>1.1b</opensaml.version>
+		<xmlsec.version>1.3.0</xmlsec.version>
+		<commons-codec.version>1.3</commons-codec.version>
+		<cargo-maven2-plugin.version>
+			0.3-SNAPSHOT
+		</cargo-maven2-plugin.version>
+		<xalan.version>2.7.0</xalan.version>
+		<antlr.version>2.7.6</antlr.version>
+		<commons-collections.version>3.1</commons-collections.version>
+		<commons-digester.version>1.6</commons-digester.version>
+		<commons-beanutils.version>1.6</commons-beanutils.version>
+		<commons-el.version>1.0</commons-el.version>
+		<xml-apis.version>1.0.b2</xml-apis.version>
 	</properties>
 </project>
