@@ -15,6 +15,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
@@ -54,6 +55,8 @@ public class ApplicationBean implements Application {
 	private String name;
 
 	private String description;
+
+	private String applicationOwner;
 
 	@SuppressWarnings("unused")
 	@Out
@@ -104,11 +107,18 @@ public class ApplicationBean implements Application {
 	public String add() {
 		LOG.debug("add application: " + this.name);
 		try {
-			this.applicationService.addApplication(this.name, this.description);
+			this.applicationService.addApplication(this.name,
+					this.applicationOwner, this.description);
 		} catch (ExistingApplicationException e) {
 			String msg = "application already exists: " + this.name;
 			LOG.debug(msg);
 			this.facesMessages.add("name", msg);
+			return null;
+		} catch (ApplicationOwnerNotFoundException e) {
+			String msg = "application owner not found: "
+					+ this.applicationOwner;
+			LOG.debug(msg);
+			this.facesMessages.add("owner", msg);
 			return null;
 		}
 		return "success";
@@ -128,6 +138,14 @@ public class ApplicationBean implements Application {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getApplicationOwner() {
+		return this.applicationOwner;
+	}
+
+	public void setApplicationOwner(String applicationOwner) {
+		this.applicationOwner = applicationOwner;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

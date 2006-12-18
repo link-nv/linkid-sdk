@@ -10,7 +10,7 @@ package net.link.safeonline.authentication.exception;
 import javax.ejb.ApplicationException;
 
 @ApplicationException(rollback = true)
-public class SubscriptionNotFoundException extends Exception {
+public class SubscriptionNotFoundException extends NotFoundException {
 
 	private static final long serialVersionUID = 1L;
 }

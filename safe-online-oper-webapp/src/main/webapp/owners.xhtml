@@ -21,8 +21,12 @@
 				columnClasses="listingTable_ColumnTop,listingTable_Column">
 
 				<h:column>
-					<f:facet name="header">Application Owner</f:facet>
-					#{item}
+					<f:facet name="header">Application Owner Name</f:facet>
+					#{item.name}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Admin</f:facet>
+					#{item.admin.login}
 				</h:column>
 			</t:dataTable>
 

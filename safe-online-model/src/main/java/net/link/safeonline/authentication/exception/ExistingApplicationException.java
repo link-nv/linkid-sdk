@@ -10,7 +10,7 @@ package net.link.safeonline.authentication.exception;
 import javax.ejb.ApplicationException;
 
 @ApplicationException(rollback = true)
-public class ExistingApplicationException extends Exception {
+public class ExistingApplicationException extends ExistingException {
 
 	private static final long serialVersionUID = 1L;
 

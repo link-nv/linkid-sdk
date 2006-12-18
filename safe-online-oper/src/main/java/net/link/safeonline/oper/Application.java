@@ -26,6 +26,10 @@ public interface Application {
 
 	void setDescription(String description);
 
+	String getApplicationOwner();
+
+	void setApplicationOwner(String applicationOwner);
+
 	String add();
 
 	String removeApplication();

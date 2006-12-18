@@ -21,7 +21,8 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 
 import junit.framework.TestCase;
-import net.link.safeonline.authentication.exception.AlreadySubscribedException;
+import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.CredentialService;
@@ -166,13 +167,26 @@ public class AuthenticationTest extends TestCase {
 				initialContext, "SafeOnline/ApplicationServiceBean/remote",
 				ApplicationService.class);
 
+		final UserRegistrationService userRegistrationService = EjbUtils
+				.getEJB(initialContext,
+						"SafeOnline/UserRegistrationServiceBean/remote",
+						UserRegistrationService.class);
+
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = "password-" + UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
 		Subject subject = login("admin", "admin");
+
+		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
+		applicationService.registerApplicationOwner(appOwnerName, login);
 
 		Subject.doAs(subject, new PrivilegedExceptionAction() {
 			public Object run() throws Exception {
 				String applicationName = "application-"
 						+ UUID.randomUUID().toString();
-				applicationService.addApplication(applicationName, null);
+				applicationService.addApplication(applicationName,
+						appOwnerName, null);
 				return null;
 			}
 		});
@@ -187,43 +201,40 @@ public class AuthenticationTest extends TestCase {
 				initialContext, "SafeOnline/ApplicationServiceBean/remote",
 				ApplicationService.class);
 
-		Subject adminSubject = login("admin", "admin");
-
-		final String applicationName = "application-"
-				+ UUID.randomUUID().toString();
-
-		applicationService.addApplication(applicationName, null);
-		/*
-		 * Subject.doAs(adminSubject, new PrivilegedExceptionAction() { public
-		 * Object run() throws Exception {
-		 * applicationService.addApplication(applicationName, null); return
-		 * null; } });
-		 */
-
 		final UserRegistrationService userRegistrationService = EjbUtils
 				.getEJB(initialContext,
 						"SafeOnline/UserRegistrationServiceBean/remote",
 						UserRegistrationService.class);
-		String login = "login-" + UUID.randomUUID().toString();
-		final String password = "secret";
 
-		userRegistrationService.registerUser(login, password, null);
+		String ownerLogin = "login-" + UUID.randomUUID().toString();
+		String ownerPassword = "password-" + UUID.randomUUID().toString();
+		userRegistrationService.registerUser(ownerLogin, ownerPassword, null);
 
-		final String name = "name-" + UUID.randomUUID().toString();
+		login("admin", "admin");
+
+		final String applicationName = "application-"
+				+ UUID.randomUUID().toString();
+
+		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
+		applicationService.registerApplicationOwner(appOwnerName, ownerLogin);
+
+		applicationService.addApplication(applicationName, appOwnerName, null);
+
+		String userLogin = "login-" + UUID.randomUUID().toString();
+		final String userPassword = "secret";
+
+		userRegistrationService.registerUser(userLogin, userPassword, null);
+
+		final String userName = "name-" + UUID.randomUUID().toString();
 
 		final IdentityService identityService = EjbUtils.getEJB(initialContext,
 				"SafeOnline/IdentityServiceBean/remote", IdentityService.class);
 
-		Subject subject = login(login, password);
-		identityService.saveName(name);
+		login(userLogin, userPassword);
+
+		identityService.saveName(userName);
 		String resultName = identityService.getName();
-		/*
-		 * String resultName = (String) Subject.doAs(subject, new
-		 * PrivilegedExceptionAction<String>() { public String run() throws
-		 * Exception { identityService.saveName(name); return
-		 * identityService.getName(); } });
-		 */
-		assertEquals(name, resultName);
+		assertEquals(userName, resultName);
 
 		final CredentialService credentialService = EjbUtils.getEJB(
 				initialContext, "SafeOnline/CredentialServiceBean/remote",
@@ -231,24 +242,11 @@ public class AuthenticationTest extends TestCase {
 
 		final String newPassword = "secret-" + UUID.randomUUID().toString();
 
-		/*
-		 * Next is not really required.
-		 */
-		Subject.doAs(subject, new PrivilegedExceptionAction() {
-			public Object run() throws Exception {
-				credentialService.changePassword(password, newPassword);
-				return null;
-			}
-		});
+		credentialService.changePassword(userPassword, newPassword);
 
-		subject = login(login, newPassword);
-		resultName = (String) Subject.doAs(subject,
-				new PrivilegedExceptionAction<String>() {
-					public String run() throws Exception {
-						return identityService.getName();
-					}
-				});
-		assertEquals(name, resultName);
+		login(userLogin, newPassword);
+		resultName = identityService.getName();
+		assertEquals(userName, resultName);
 
 		final SubscriptionService subscriptionService = EjbUtils.getEJB(
 				initialContext, "SafeOnline/SubscriptionServiceBean/remote",
@@ -290,10 +288,11 @@ public class AuthenticationTest extends TestCase {
 				ApplicationService.class);
 
 		login("admin", "admin");
-		applicationService.registerApplicationOwner(login);
+		String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
+		applicationService.registerApplicationOwner(appOwnerName, login);
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
-		applicationService.addApplication(applicationName, null);
+		applicationService.addApplication(applicationName, appOwnerName, null);
 
 		login(login, password);
 		applicationService.setApplicationDescription(applicationName,
@@ -301,10 +300,59 @@ public class AuthenticationTest extends TestCase {
 
 		login("admin", "admin");
 		try {
-			applicationService.registerApplicationOwner(login);
+			applicationService.registerApplicationOwner(appOwnerName, login);
 			fail();
-		} catch (AlreadySubscribedException e) {
+		} catch (ExistingApplicationOwnerException e) {
 			// expected
+		}
+	}
+
+	public void testChangingApplicationDescriptionTriggersOwnershipCheck()
+			throws Exception {
+		// setup
+		InitialContext initialContext = getInitialContext();
+		setupLoginConfig();
+
+		// operate: register application owner admin user
+		UserRegistrationService userRegistrationService = EjbUtils.getEJB(
+				initialContext,
+				"SafeOnline/UserRegistrationServiceBean/remote",
+				UserRegistrationService.class);
+		String ownerLogin = "owner-login-" + UUID.randomUUID().toString();
+		String ownerPassword = "owner-password-" + UUID.randomUUID().toString();
+		userRegistrationService.registerUser(ownerLogin, ownerPassword, null);
+
+		// operate: create application owner
+		login("admin", "admin");
+		String applicationOwnerName = "app-owner-"
+				+ UUID.randomUUID().toString();
+		ApplicationService applicationService = EjbUtils.getEJB(initialContext,
+				"SafeOnline/ApplicationServiceBean/remote",
+				ApplicationService.class);
+		applicationService.registerApplicationOwner(applicationOwnerName,
+				ownerLogin);
+
+		// operate: create application
+		String applicationName = "application-" + UUID.randomUUID().toString();
+		applicationService.addApplication(applicationName,
+				applicationOwnerName, null);
+
+		// operate: change application description via application owner
+		login(ownerLogin, ownerPassword);
+		String applicationDescription = "An <b>application description</b>";
+		applicationService.setApplicationDescription(applicationName,
+				applicationDescription);
+
+		// operate: cannot change application description of non-owned
+		// application
+		try {
+			applicationService.setApplicationDescription(
+					SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+					"foobar application description");
+			fail();
+		} catch (RuntimeException e) {
+			// expected
+			LOG.debug("expected exception: " + e.getMessage());
 		}
 	}
 }

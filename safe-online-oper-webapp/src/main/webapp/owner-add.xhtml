@@ -16,13 +16,23 @@
 		<h:form>
 			<h:panelGrid columns="3">
 				<h:panelGroup>
-					<h:outputLabel for="login" value="#{msgs.name}" />:
+					<h:outputLabel for="name" value="#{msgs.name}" />:
+					</h:panelGroup>
+				<h:panelGroup>
+					<h:inputText id="name" value="#{applicationOwner.name}"
+						required="true" />*
+						</h:panelGroup>
+				<h:message for="name" styleClass="error" />
+			</h:panelGrid>
+			<h:panelGrid columns="3">
+				<h:panelGroup>
+					<h:outputLabel for="login" value="Admin:" />:
 					</h:panelGroup>
 				<h:panelGroup>
 					<h:inputText id="login" value="#{applicationOwner.login}"
 						required="true" />*
 						</h:panelGroup>
-				<h:messages styleClass="error" />
+				<h:message for="login" styleClass="error" />
 			</h:panelGrid>
 			<h:commandButton action="#{applicationOwner.add}" id="add"
 				value="Add" />

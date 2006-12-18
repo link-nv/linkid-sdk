@@ -142,6 +142,11 @@
 			<artifactId>commons-codec</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>

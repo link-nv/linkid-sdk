@@ -12,12 +12,14 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 
-import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
+import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 
 /**
  * Interface to service for retrieving information about applications.
@@ -36,8 +38,16 @@ public interface ApplicationService {
 	 */
 	List<ApplicationEntity> getApplications();
 
-	void addApplication(String name, String description)
-			throws ExistingApplicationException;
+	/**
+	 * Gives back the applications owned by the caller principal.
+	 * 
+	 * @return
+	 */
+	List<ApplicationEntity> getOwnedApplications();
+
+	void addApplication(String name, String applicationOwnerName,
+			String description) throws ExistingApplicationException,
+			ApplicationOwnerNotFoundException;
 
 	/**
 	 * Removes an application an all its subscriptions.
@@ -50,9 +60,9 @@ public interface ApplicationService {
 	void setApplicationDescription(String name, String description)
 			throws ApplicationNotFoundException;
 
-	void registerApplicationOwner(String login)
+	void registerApplicationOwner(String name, String login)
 			throws SubjectNotFoundException, ApplicationNotFoundException,
-			AlreadySubscribedException;
+			ExistingApplicationOwnerException;
 
-	List<String> getApplicationOwners();
+	List<ApplicationOwnerEntity> getApplicationOwners();
 }

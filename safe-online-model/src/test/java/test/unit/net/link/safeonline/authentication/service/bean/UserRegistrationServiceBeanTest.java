@@ -20,6 +20,7 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -63,8 +64,14 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		expect(this.mockSubjectDAO.addSubject(login, password, name))
 				.andReturn(subject);
 
+		SubjectEntity adminSubject = new SubjectEntity("admin-login",
+				"admin-password");
+		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
+				"test-application-owner", adminSubject);
+
 		ApplicationEntity application = new ApplicationEntity(
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+				applicationOwner);
 		expect(
 				this.mockApplicationDAO
 						.findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME))

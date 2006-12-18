@@ -26,8 +26,8 @@ import org.jboss.seam.annotations.Scope;
  * 
  * @author fcorneli
  * 
- * XXX: Seam component name lookup clashes between two WARs. Because of this we
- * have to prefix the user and operator Seam components' names.
+ * Seam component name lookup clashes between two WARs. Because of this we have
+ * to prefix the user and operator Seam components' names.
  * 
  * Because of http session timeout being set to 5 minutes in web.xml we have to
  * make sure that the lifecycle of the login bean that has session scope is

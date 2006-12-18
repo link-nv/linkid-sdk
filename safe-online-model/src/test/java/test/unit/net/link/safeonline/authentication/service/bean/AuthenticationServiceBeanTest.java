@@ -21,6 +21,7 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -68,7 +69,13 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		SubjectEntity subject = new SubjectEntity(login, password);
 		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(subject);
 
-		ApplicationEntity application = new ApplicationEntity(applicationName);
+		SubjectEntity adminSubject = new SubjectEntity("admin-login",
+				"admin-password");
+		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
+				"test-application-owner", adminSubject);
+
+		ApplicationEntity application = new ApplicationEntity(applicationName,
+				applicationOwner);
 		expect(this.mockApplicationDAO.findApplication(applicationName))
 				.andStubReturn(application);
 

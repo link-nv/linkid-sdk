@@ -17,9 +17,18 @@
 		<h1>#{selectedApplication.name}</h1>
 
 		<p><h:outputText value="#{selectedApplication.description}"
-			escape="false" /></p>
+			escape="true" /></p>
+		<!-- XSS vulnerability possible: do not set escape="false" -->
 
 		<table>
+			<tr>
+				<th>Application Owner:</th>
+				<td>#{selectedApplication.applicationOwner.name}</td>
+			</tr>
+			<tr>
+				<th>Application Owner Admin:</th>
+				<td>#{selectedApplication.applicationOwner.admin.login}</td>
+			</tr>
 			<tr>
 				<th>User allowed to subscribe:</th>
 				<td>#{selectedApplication.allowUserSubscription}</td>

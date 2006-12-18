@@ -14,10 +14,11 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
-import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.oper.ApplicationOwner;
 import net.link.safeonline.oper.OperatorConstants;
 
@@ -46,12 +47,14 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 
 	@SuppressWarnings("unused")
 	@DataModel("applicationOwnerList")
-	private List<String> applicationOwnerList;
+	private List<ApplicationOwnerEntity> applicationOwnerList;
 
 	@In(create = true)
 	FacesMessages facesMessages;
 
 	private String login;
+
+	private String name;
 
 	public String getLogin() {
 		return this.login;
@@ -61,24 +64,33 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 		this.login = login;
 	}
 
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String add() {
 		LOG.debug("add");
 		try {
-			this.applicationService.registerApplicationOwner(this.login);
+			this.applicationService.registerApplicationOwner(this.name,
+					this.login);
 		} catch (SubjectNotFoundException e) {
 			String msg = "subject not found";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.add("login", msg);
 			return null;
 		} catch (ApplicationNotFoundException e) {
 			String msg = "application not found";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
-		} catch (AlreadySubscribedException e) {
-			String msg = "already subscribed";
+		} catch (ExistingApplicationOwnerException e) {
+			String msg = "application owner already exists";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.add("name", msg);
 			return null;
 		}
 		return "success";

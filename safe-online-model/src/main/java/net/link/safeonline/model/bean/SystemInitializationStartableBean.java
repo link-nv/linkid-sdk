@@ -19,9 +19,11 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -50,7 +52,38 @@ public class SystemInitializationStartableBean implements Startable {
 
 	private static Map<String, String> authorizedUsers;
 
-	private static List<ApplicationEntity> registeredApplications;
+	private static Map<String, String> applicationOwnersAndLogin;
+
+	private static class Application {
+		private final String name;
+
+		private final String description;
+
+		private final String owner;
+
+		private final boolean allowUserSubscription;
+
+		private final boolean removable;
+
+		public Application(String name, String owner, String description,
+				boolean allowUserSubscription, boolean removable) {
+			this.name = name;
+			this.owner = owner;
+			this.description = description;
+			this.allowUserSubscription = allowUserSubscription;
+			this.removable = removable;
+		}
+
+		public Application(String name, String owner, String description) {
+			this(name, owner, description, true, true);
+		}
+
+		public Application(String name, String owner) {
+			this(name, owner, null);
+		}
+	}
+
+	private static List<Application> registeredApplications;
 
 	private static class Subscription {
 		private final String user;
@@ -77,18 +110,23 @@ public class SystemInitializationStartableBean implements Startable {
 		authorizedUsers.put("admin", "admin");
 		authorizedUsers.put("owner", "secret");
 
-		registeredApplications = new LinkedList<ApplicationEntity>();
-		registeredApplications.add(new ApplicationEntity("demo-application"));
-		registeredApplications.add(new ApplicationEntity(
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+		applicationOwnersAndLogin = new HashMap<String, String>();
+		applicationOwnersAndLogin.put("owner", "owner");
+
+		registeredApplications = new LinkedList<Application>();
+		registeredApplications
+				.add(new Application("demo-application", "owner"));
+		registeredApplications.add(new Application(
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
 				"The SafeOnline User Web Application."));
-		registeredApplications.add(new ApplicationEntity(
+		registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
-				"The SafeOnline Operator Web Application.", false, false));
-		registeredApplications.add(new ApplicationEntity(
-				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
-				"The SafeOnline Application Owner Web Application.", false,
+				"owner", "The SafeOnline Operator Web Application.", false,
 				false));
+		registeredApplications.add(new Application(
+				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
+				"owner", "The SafeOnline Application Owner Web Application.",
+				false, false));
 
 		subscriptions = new LinkedList<Subscription>();
 		subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
@@ -130,7 +168,7 @@ public class SystemInitializationStartableBean implements Startable {
 	}
 
 	@EJB
-	private SubjectDAO entityDAO;
+	private SubjectDAO subjectDAO;
 
 	@EJB
 	private ApplicationDAO applicationDAO;
@@ -138,9 +176,14 @@ public class SystemInitializationStartableBean implements Startable {
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
 
+	@EJB
+	private ApplicationOwnerDAO applicationOwnerDAO;
+
 	public void postStart() {
 		LOG.debug("start");
 		initSubjects();
+
+		initApplicationOwners();
 
 		initApplications();
 
@@ -152,7 +195,7 @@ public class SystemInitializationStartableBean implements Startable {
 			String login = subscription.user;
 			String applicationName = subscription.application;
 			SubscriptionOwnerType subscriptionOwnerType = subscription.subscriptionOwnerType;
-			SubjectEntity subject = this.entityDAO.findSubject(login);
+			SubjectEntity subject = this.subjectDAO.findSubject(login);
 			ApplicationEntity application = this.applicationDAO
 					.findApplication(applicationName);
 			SubscriptionEntity subscriptionEntity = this.subscriptionDAO
@@ -165,15 +208,32 @@ public class SystemInitializationStartableBean implements Startable {
 		}
 	}
 
+	private void initApplicationOwners() {
+		for (Map.Entry<String, String> applicationOwnerAndLogin : applicationOwnersAndLogin
+				.entrySet()) {
+			String name = applicationOwnerAndLogin.getKey();
+			String login = applicationOwnerAndLogin.getValue();
+			if (null != this.applicationOwnerDAO.findApplicationOwner(name)) {
+				continue;
+			}
+			SubjectEntity adminSubject = this.subjectDAO.findSubject(login);
+			this.applicationOwnerDAO.addApplicationOwner(name, adminSubject);
+		}
+	}
+
 	private void initApplications() {
-		for (ApplicationEntity application : registeredApplications) {
-			String applicationName = application.getName();
+		for (Application application : registeredApplications) {
+			String applicationName = application.name;
 			ApplicationEntity existingApplication = this.applicationDAO
 					.findApplication(applicationName);
 			if (null != existingApplication) {
 				continue;
 			}
-			this.applicationDAO.addApplication(application);
+			ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
+					.findApplicationOwner(application.owner);
+			this.applicationDAO.addApplication(applicationName,
+					applicationOwner, application.allowUserSubscription,
+					application.removable, application.description);
 		}
 	}
 
@@ -181,12 +241,12 @@ public class SystemInitializationStartableBean implements Startable {
 		for (Map.Entry<String, String> authorizedUser : authorizedUsers
 				.entrySet()) {
 			String login = authorizedUser.getKey();
-			SubjectEntity subject = this.entityDAO.findSubject(login);
+			SubjectEntity subject = this.subjectDAO.findSubject(login);
 			if (null != subject) {
 				continue;
 			}
 			String password = authorizedUser.getValue();
-			this.entityDAO.addSubject(login, password);
+			this.subjectDAO.addSubject(login, password);
 		}
 	}
 

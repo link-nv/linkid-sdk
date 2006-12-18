@@ -14,11 +14,15 @@ public interface ApplicationOwner {
 
 	void applicationOwnerListFactory();
 
-	void destroyCallback();
-
-	String add();
-
 	String getLogin();
 
 	void setLogin(String login);
+
+	String getName();
+
+	void setName(String name);
+
+	String add();
+
+	void destroyCallback();
 }

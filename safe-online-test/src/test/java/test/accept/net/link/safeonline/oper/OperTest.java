@@ -47,6 +47,7 @@ public class OperTest extends TestCase {
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		this.acceptanceTestManager.fillInputField("name", applicationName);
+		this.acceptanceTestManager.fillInputField("owner", "owner");
 		this.acceptanceTestManager.clickButtonAndWait("add");
 		assertTrue(this.selenium.isTextPresent(applicationName));
 

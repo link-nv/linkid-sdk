@@ -653,6 +653,11 @@
 				<artifactId>xml-apis</artifactId>
 				<version>${xml-apis.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -691,13 +696,13 @@
 			2.3-SNAPSHOT
 		</maven-ear-plugin.version>
 		<commons-io.version>1.2</commons-io.version>
-		<!-- hibernate-entitymanager 3.2.1.ga is available, awaiting pom.xml -->
 		<hibernate-entitymanager.version>
 			3.2.0.ga
 		</hibernate-entitymanager.version>
 		<hibernate-annotations.version>
-			3.2.0.ga
+			3.2.1.ga
 		</hibernate-annotations.version>
+		<hibernate.version>3.2.1.ga</hibernate.version>
 		<derby.version>10.2.1.6</derby.version>
 		<servlet-api.version>2.4</servlet-api.version>
 		<shiftone-oocjndi.version>1.2</shiftone-oocjndi.version>

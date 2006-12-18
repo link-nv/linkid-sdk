@@ -21,12 +21,16 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_SUBJECT;
 
 @Entity
 @Table(name = "hist")
-@NamedQueries(@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT history FROM HistoryEntity AS history WHERE history.subject = :subject ORDER BY history.when DESC"))
+@NamedQueries(@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT history "
+		+ "FROM HistoryEntity AS history "
+		+ "WHERE history.subject = :subject " + "ORDER BY history.when DESC"))
 public class HistoryEntity implements Serializable {
 
 	public static final String QUERY_WHERE_SUBJECT = "hist.subject";
@@ -80,6 +84,7 @@ public class HistoryEntity implements Serializable {
 	}
 
 	@Column(name = "whendate", nullable = false)
+	@Temporal(value = TemporalType.TIMESTAMP)
 	public Date getWhen() {
 		return when;
 	}

@@ -23,6 +23,16 @@
 						</h:panelGroup>
 				<h:message for="name" styleClass="error" />
 			</h:panelGrid>
+			<h:panelGrid columns="3">
+				<h:panelGroup>
+					<h:outputLabel for="owner" value="Application Owner" />:
+					</h:panelGroup>
+				<h:panelGroup>
+					<h:inputText id="owner" value="#{application.applicationOwner}"
+						required="true" />*
+						</h:panelGroup>
+				<h:message for="owner" styleClass="error" />
+			</h:panelGrid>
 			<h:panelGrid columns="1">
 				<h:outputLabel for="description" value="Description" />
 				<h:inputTextarea id="description" value="#{application.description}"

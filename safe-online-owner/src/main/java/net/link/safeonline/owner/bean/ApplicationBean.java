@@ -76,7 +76,8 @@ public class ApplicationBean implements Application {
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	public void applicationListFactory() {
 		LOG.debug("application list factory");
-		this.ownerApplicationList = this.applicationService.getApplications();
+		this.ownerApplicationList = this.applicationService
+				.getOwnedApplications();
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)

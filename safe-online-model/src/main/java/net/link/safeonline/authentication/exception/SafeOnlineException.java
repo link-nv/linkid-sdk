@@ -10,7 +10,7 @@ package net.link.safeonline.authentication.exception;
 import javax.ejb.ApplicationException;
 
 @ApplicationException(rollback = true)
-public class SubjectNotFoundException extends NotFoundException {
+public class SafeOnlineException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 }

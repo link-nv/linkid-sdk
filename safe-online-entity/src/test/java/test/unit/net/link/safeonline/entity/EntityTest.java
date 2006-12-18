@@ -16,6 +16,7 @@ import javax.persistence.Query;
 
 import junit.framework.TestCase;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -38,7 +39,7 @@ public class EntityTest extends TestCase {
 		this.entityTestManager = new EntityTestManager();
 		this.entityTestManager.setUp(SubjectEntity.class,
 				ApplicationEntity.class, SubscriptionEntity.class,
-				HistoryEntity.class);
+				HistoryEntity.class, ApplicationOwnerEntity.class);
 	}
 
 	@Override
@@ -77,11 +78,16 @@ public class EntityTest extends TestCase {
 
 	public void testAddRemoveApplication() throws Exception {
 		// setup
+		SubjectEntity admin = new SubjectEntity("test-admin", "secret");
+		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
+				"owner", admin);
 		ApplicationEntity application = new ApplicationEntity(
-				"test-application");
+				"test-application", applicationOwner);
 
 		// operate: add application
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(admin);
+		entityManager.persist(applicationOwner);
 		entityManager.persist(application);
 
 		// verify: locate the added application
@@ -128,8 +134,10 @@ public class EntityTest extends TestCase {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-login",
 				"test-password", null);
+		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
+				"owner", subject);
 		ApplicationEntity application = new ApplicationEntity(
-				"test-application");
+				"test-application", applicationOwner);
 		SubscriptionEntity subscription = new SubscriptionEntity(
 				SubscriptionOwnerType.SUBJECT, subject, application);
 
@@ -148,14 +156,17 @@ public class EntityTest extends TestCase {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-login",
 				"test-password", null);
+		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
+				"owner", subject);
 		ApplicationEntity application = new ApplicationEntity(
-				"test-application");
+				"test-application", applicationOwner);
 		SubscriptionEntity subscription = new SubscriptionEntity(
 				SubscriptionOwnerType.SUBJECT, subject, application);
 
 		// operate: add subscription
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 		entityManager.persist(subject);
+		entityManager.persist(applicationOwner);
 		entityManager.persist(application);
 		entityManager.persist(subscription);
 

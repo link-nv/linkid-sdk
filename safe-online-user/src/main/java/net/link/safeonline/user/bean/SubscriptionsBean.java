@@ -123,11 +123,6 @@ public class SubscriptionsBean implements Subscriptions {
 		LOG.debug("subscribe on: " + applicationName);
 		try {
 			this.subscriptionService.subscribe(applicationName);
-			/*
-			 * TODO: The following catch sequence marks the need to create a
-			 * base exception. That way we would only need a single catch
-			 * statement, of course, what do we do about the i18n thing?
-			 */
 		} catch (ApplicationNotFoundException e) {
 			this.facesMessages.add("application not found");
 			return null;

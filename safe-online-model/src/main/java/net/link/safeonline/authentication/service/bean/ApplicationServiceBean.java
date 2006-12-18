@@ -7,7 +7,6 @@
 
 package net.link.safeonline.authentication.service.bean;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.PermitAll;
@@ -18,19 +17,23 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
+import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.model.ApplicationOwnerManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,25 +61,35 @@ public class ApplicationServiceBean implements ApplicationService {
 	@EJB
 	private SubjectDAO subjectDAO;
 
+	@EJB
+	private ApplicationOwnerDAO applicationOwnerDAO;
+
+	@EJB
+	private ApplicationOwnerManager applicationOwnerManager;
+
 	@PermitAll
 	public List<ApplicationEntity> getApplications() {
+		// XXX: we're passing the admin subjects with password here!
 		List<ApplicationEntity> applications = this.applicationDAO
 				.getApplications();
 		return applications;
 	}
 
 	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
-	public void addApplication(String name, String description)
-			throws ExistingApplicationException {
+	public void addApplication(String name, String applicationOwnerName,
+			String description) throws ExistingApplicationException,
+			ApplicationOwnerNotFoundException {
 		LOG.debug("add application: " + name);
 		ApplicationEntity existingApplication = this.applicationDAO
 				.findApplication(name);
 		if (null != existingApplication) {
 			throw new ExistingApplicationException();
 		}
-		ApplicationEntity newApplication = new ApplicationEntity(name);
-		newApplication.setDescription(description);
-		this.applicationDAO.addApplication(newApplication);
+
+		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
+				.getApplicationOwner(applicationOwnerName);
+
+		this.applicationDAO.addApplication(name, applicationOwner, description);
 	}
 
 	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
@@ -111,37 +124,44 @@ public class ApplicationServiceBean implements ApplicationService {
 	}
 
 	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
-	public void registerApplicationOwner(String login)
+	public void registerApplicationOwner(String name, String login)
 			throws SubjectNotFoundException, ApplicationNotFoundException,
-			AlreadySubscribedException {
-		LOG.debug("register application owner: " + login);
+			ExistingApplicationOwnerException {
+		LOG.debug("register application owner: " + name + " with account "
+				+ login);
+		ApplicationOwnerEntity existingApplicationOwner = this.applicationOwnerDAO
+				.findApplicationOwner(name);
+		if (null != existingApplicationOwner) {
+			throw new ExistingApplicationOwnerException();
+		}
+
 		SubjectEntity subject = this.subjectDAO.getSubject(login);
+
+		this.applicationOwnerDAO.addApplicationOwner(name, subject);
+
 		ApplicationEntity ownerApplication = this.applicationDAO
 				.getApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
-		SubscriptionEntity previousSubscription = this.subscriptionDAO
-				.findSubscription(subject, ownerApplication);
-		if (null != previousSubscription) {
-			throw new AlreadySubscribedException();
-		}
+
 		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
 				subject, ownerApplication);
 	}
 
 	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
-	public List<String> getApplicationOwners() {
+	public List<ApplicationOwnerEntity> getApplicationOwners() {
 		LOG.debug("get application owners");
-		List<String> applicationOwners = new LinkedList<String>();
-		ApplicationEntity ownerApplication = this.applicationDAO
-				.findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
-		if (null == ownerApplication) {
-			return applicationOwners;
-		}
-		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
-				.getSubscriptions(ownerApplication);
-		for (SubscriptionEntity subscription : subscriptions) {
-			String login = subscription.getSubject().getLogin();
-			applicationOwners.add(login);
-		}
+		// XXX: we're passing the admin subjects with password here!
+		List<ApplicationOwnerEntity> applicationOwners = this.applicationOwnerDAO
+				.getApplicationOwners();
 		return applicationOwners;
+	}
+
+	@RolesAllowed(SafeOnlineConstants.OWNER_ROLE)
+	public List<ApplicationEntity> getOwnedApplications() {
+		LOG.debug("get owned applications");
+		ApplicationOwnerEntity applicationOwner = this.applicationOwnerManager
+				.getCallerApplicationOwner();
+		List<ApplicationEntity> applications = this.applicationDAO
+				.getApplications(applicationOwner);
+		return applications;
 	}
 }

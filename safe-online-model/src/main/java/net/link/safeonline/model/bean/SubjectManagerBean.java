@@ -12,6 +12,7 @@ import java.security.Principal;
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
@@ -45,7 +46,8 @@ public class SubjectManagerBean implements SubjectManager {
 	@EJB
 	private SubjectDAO subjectDAO;
 
-	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
+	@RolesAllowed( { SafeOnlineConstants.USER_ROLE,
+			SafeOnlineConstants.OWNER_ROLE })
 	public SubjectEntity getCallerSubject() {
 		Principal principal = this.context.getCallerPrincipal();
 		String login = principal.getName();
@@ -55,7 +57,7 @@ public class SubjectManagerBean implements SubjectManager {
 		} catch (SubjectNotFoundException e) {
 			String msg = "subject not found for called principal: " + login;
 			LOG.fatal(msg, e);
-			throw new RuntimeException(msg, e);
+			throw new EJBException(msg, e);
 		}
 		LOG.debug("get caller subject: " + subject.getLogin());
 		return subject;

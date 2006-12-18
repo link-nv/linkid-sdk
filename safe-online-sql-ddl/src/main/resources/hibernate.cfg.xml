@@ -7,8 +7,10 @@
 		<property name="dialect">
 			org.hibernate.dialect.MySQLDialect
 		</property>
-		<mapping class="net.link.safeonline.entity.ApplicationEntity" />
 		<mapping class="net.link.safeonline.entity.SubjectEntity" />
+		<mapping class="net.link.safeonline.entity.ApplicationEntity" />
+		<mapping
+			class="net.link.safeonline.entity.ApplicationOwnerEntity" />
 		<mapping class="net.link.safeonline.entity.HistoryEntity" />
 		<mapping class="net.link.safeonline.entity.SubscriptionEntity" />
 	</session-factory>
