@@ -96,7 +96,7 @@ tail -f $JBOSS_HOME/server/default/log/safe-online.log
 
  Shutdown a JBoss application server that runs in the foreground via Ctrl-C or if it runs in the background:
  
- +---+
- cd $JBOSS_HOME/bin
- ./shutdown.sh -S
- +---+
++---+
+cd $JBOSS_HOME/bin
+./shutdown.sh -S
++---+

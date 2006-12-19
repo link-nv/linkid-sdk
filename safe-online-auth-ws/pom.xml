@@ -67,9 +67,9 @@
 						<version>${jaxb-xjc.version}</version>
 					</dependency>
 					<dependency>
-						<groupId>xfire</groupId>
-						<artifactId>xfire-jsr181-api</artifactId>
-						<version>${xfire-jsr181-api.version}</version>
+						<groupId>javax.jws</groupId>
+						<artifactId>jsr181-api</artifactId>
+						<version>${jsr181-api.version}</version>
 					</dependency>
 					<dependency>
 						<groupId>com.sun.xml.bind</groupId>
@@ -103,8 +103,8 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>xfire</groupId>
-			<artifactId>xfire-jsr181-api</artifactId>
+			<groupId>javax.jws</groupId>
+			<artifactId>jsr181-api</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<dependency>

@@ -396,9 +396,9 @@
 				<version>${activation.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>xfire</groupId>
-				<artifactId>xfire-jsr181-api</artifactId>
-				<version>${xfire-jsr181-api.version}</version>
+				<groupId>javax.jws</groupId>
+				<artifactId>jsr181-api</artifactId>
+				<version>${jsr181-api.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
@@ -680,7 +680,7 @@
 		<junit.version>4.1</junit.version>
 		<jaxb-xjc.version>2.0.4</jaxb-xjc.version>
 		<jaxb-impl.version>2.0.4</jaxb-impl.version>
-		<xfire-jsr181-api.version>1.0-M1</xfire-jsr181-api.version>
+		<jsr181-api.version>1.0-MR1</jsr181-api.version>
 		<jaxb-api.version>2.0</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>
 		<saaj-impl.version>1.3</saaj-impl.version>

@@ -58,8 +58,8 @@
 			<artifactId>activation</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>xfire</groupId>
-			<artifactId>xfire-jsr181-api</artifactId>
+			<groupId>javax.jws</groupId>
+			<artifactId>jsr181-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>
