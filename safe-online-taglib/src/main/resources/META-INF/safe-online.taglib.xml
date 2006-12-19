@@ -8,4 +8,8 @@
 		<tag-name>echo</tag-name>
 		<source>tags/echo.xhtml</source>
 	</tag>
+	<tag>
+		<tag-name>nbsp</tag-name>
+		<source>tags/nbsp.xhtml</source>
+	</tag>
 </facelet-taglib>

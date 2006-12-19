@@ -3,24 +3,34 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk">
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib">
 	<c:when test="#{username == null}">
 		<h:form>
+
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
 
 			<table>
 				<tr>
 					<th><h:outputLabel for="username" value="#{msgs.login}" />:</th>
-					<td><h:inputText id="username" value="#{loginComp.username}"
-						required="true" /></td>
+					<td><s:decorate>
+						<h:inputText id="username" value="#{loginComp.username}"
+							required="true" />
+					</s:decorate></td>
 				</tr>
 				<tr>
 					<th><h:outputLabel for="password" value="#{msgs.password}" />:</th>
-					<td><h:inputSecret id="password" value="#{loginComp.password}"
-						required="true" /></td>
+					<td><s:decorate>
+						<h:inputSecret id="password" value="#{loginComp.password}"
+							required="true" />
+					</s:decorate></td>
 				</tr>
 			</table>
 			<p><t:message for="username" styleClass="error" /></p>
 			<p><t:message for="password" styleClass="error" /></p>
+			<p><t:messages globalOnly="true" styleClass="error" /></p>
 			<h:commandButton action="#{loginComp.login}" id="login"
 				value="#{msgs.login}" />
 			<p><h:commandLink action="register" id="register"

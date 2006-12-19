@@ -2,7 +2,9 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk">
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">SafeOnline Operator</ui:define>
@@ -14,28 +16,29 @@
 	<ui:define name="content">
 		<h2>Add Application Owner</h2>
 		<h:form>
-			<h:panelGrid columns="3">
-				<h:panelGroup>
-					<h:outputLabel for="name" value="#{msgs.name}" />:
-					</h:panelGroup>
-				<h:panelGroup>
-					<h:inputText id="name" value="#{applicationOwner.name}"
-						required="true" />*
-						</h:panelGroup>
-				<h:message for="name" styleClass="error" />
-			</h:panelGrid>
-			<h:panelGrid columns="3">
-				<h:panelGroup>
-					<h:outputLabel for="login" value="Admin:" />:
-					</h:panelGroup>
-				<h:panelGroup>
-					<h:inputText id="login" value="#{applicationOwner.login}"
-						required="true" />*
-						</h:panelGroup>
-				<h:message for="login" styleClass="error" />
-			</h:panelGrid>
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+			<table>
+				<tr>
+					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
+					<td><s:decorate>
+						<h:inputText id="name" value="#{applicationOwner.name}"
+							required="true" />
+					</s:decorate>* <h:message for="name" styleClass="error" /></td>
+				</tr>
+
+				<tr>
+					<td><h:outputLabel for="login" value="Admin" />:</td>
+					<td><s:decorate>
+						<h:inputText id="login" value="#{applicationOwner.login}"
+							required="true" />
+					</s:decorate>* <h:message for="login" styleClass="error" /></td>
+				</tr>
+			</table>
 			<h:commandButton action="#{applicationOwner.add}" id="add"
 				value="Add" />
+			<so:nbsp />
 			<h:commandButton action="cancel" id="cancel" value="Cancel"
 				immediate="true" />
 		</h:form>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exceptions>
+
+	<exception class="javax.ejb.EJBAccessException">
+		<redirect view-id="/error.xhtml">Unexpected failure</redirect>
+		<end-conversation />
+	</exception>
+
+	<exception>
+		<redirect view-id="/error.xhtml">Unexpected failure</redirect>
+		<end-conversation />
+	</exception>
+
+</exceptions>

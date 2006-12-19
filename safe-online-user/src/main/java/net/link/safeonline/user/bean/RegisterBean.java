@@ -90,7 +90,7 @@ public class RegisterBean implements Register {
 			this.facesMessages.add("login", "login already exists");
 			return null;
 		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.add("login", "application not found");
+			this.facesMessages.add("application not found");
 			return null;
 		}
 		return "success";

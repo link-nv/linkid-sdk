@@ -85,7 +85,7 @@ public class LoginBaseBean implements LoginBase {
 		boolean authenticated = this.authenticationService.authenticate(
 				this.applicationName, this.username, new String(this.password));
 		if (!authenticated) {
-			this.facesMessages.add("username", "login failed");
+			this.facesMessages.add("login failed");
 			Seam.invalidateSession();
 			return null;
 		}

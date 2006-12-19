@@ -16,6 +16,10 @@ a {
 	color: #00f;
 }
 
+input {
+	border: 1px solid;
+}
+
 a:hover {
 	text-decoration: underline;
 }
@@ -28,6 +32,11 @@ a:visited {
 .error {
 	color: #FF0000;
 	font-weight: bold;
+}
+
+.error input {
+	color: #FF0000;
+	border: 1px solid red;
 }
 
 /* ids */
@@ -68,6 +77,7 @@ a:visited {
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-top: 10px;
+	border: 1px solid;
 }
 
 #content {
