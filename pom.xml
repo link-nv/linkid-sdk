@@ -668,6 +668,14 @@
 	<ciManagement>
 		<system>continuum</system>
 		<url>http://buildserver:7080/continuum</url>
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<configuration>
+					<address>frank@lin-k.net</address>
+				</configuration>
+			</notifier>
+		</notifiers>
 	</ciManagement>
 	<prerequisites>
 		<maven>2.0.4</maven>
