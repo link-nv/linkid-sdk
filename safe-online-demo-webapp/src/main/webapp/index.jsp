@@ -5,9 +5,8 @@
 </head>
 <body>
 <h1>SafeOnline Demo Web Application</h1>
-<p>Welcome <%= request.getUserPrincipal().getName() %> to the SafeOnline Demo Web Application.</p>
-<form method="get" action="./logout.jsp">
-	<input type="submit" value="Logout"/>
-</form>
+<p>Welcome to the SafeOnline demo web application.</p>
+<p>Click <a href="./secure/">here</a> to visit the secured section
+of the site.</p>
 </body>
 </html>

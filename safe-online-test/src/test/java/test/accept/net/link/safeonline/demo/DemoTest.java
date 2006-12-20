@@ -41,7 +41,7 @@ public class DemoTest extends TestCase {
 		selenium.setContext("Testing the demo logon and logout",
 				SeleniumLogLevels.DEBUG);
 
-		this.acceptanceTestManager.openDemoWebApp("/");
+		this.acceptanceTestManager.openDemoWebApp("/secure/");
 		assertTrue(this.selenium.isTextPresent("Logon"));
 		assertTrue(this.selenium.isTextPresent("Username"));
 		assertTrue(this.selenium.isTextPresent("Password"));
@@ -57,8 +57,9 @@ public class DemoTest extends TestCase {
 
 		this.selenium.click("//input[@value='Logout']");
 		this.acceptanceTestManager.waitForPageToLoad();
-		assertTrue(this.selenium.isTextPresent("Logon"));
+		assertFalse(this.selenium.isTextPresent("fcorneli"));
 
+		this.acceptanceTestManager.openDemoWebApp("/secure/");
 		this.selenium.type("j_username", "foobar");
 		this.selenium.type("j_password", "foobar");
 		this.selenium.click("//input[@value='Logon']");

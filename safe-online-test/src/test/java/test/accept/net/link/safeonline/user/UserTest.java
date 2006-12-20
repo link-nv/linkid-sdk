@@ -131,11 +131,10 @@ public class UserTest extends TestCase {
 	private void demoLogout() {
 		this.selenium.click("//input[@value='Logout']");
 		this.acceptanceTestManager.waitForPageToLoad();
-		assertTrue(this.selenium.isTextPresent("Logon"));
 	}
 
 	private void demoLogin(String login, String password) {
-		this.acceptanceTestManager.openDemoWebApp("/");
+		this.acceptanceTestManager.openDemoWebApp("/secure/");
 		assertTrue(this.selenium.isTextPresent("Logon"));
 		assertTrue(this.selenium.isTextPresent("Username"));
 		assertTrue(this.selenium.isTextPresent("Password"));

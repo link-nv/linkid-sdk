@@ -116,13 +116,19 @@ public class AuthenticationTest extends TestCase {
 	public void testAuthenticationOverRMI() throws Exception {
 		InitialContext initialContext = getInitialContext();
 
-		AuthenticationService authenticationService = EjbUtils.getEJB(
-				initialContext, "SafeOnline/AuthenticationServiceBean/remote",
-				AuthenticationService.class);
+		AuthenticationService authenticationService = getAuthenticationService(initialContext);
 
 		boolean result = authenticationService.authenticate("fcorneli",
 				"secret");
 		assertTrue(result);
+	}
+
+	private AuthenticationService getAuthenticationService(
+			InitialContext initialContext) {
+		AuthenticationService authenticationService = EjbUtils.getEJB(
+				initialContext, "SafeOnline/AuthenticationServiceBean/remote",
+				AuthenticationService.class);
+		return authenticationService;
 	}
 
 	private void setupLoginConfig() throws Exception {
@@ -163,14 +169,9 @@ public class AuthenticationTest extends TestCase {
 
 		setupLoginConfig();
 
-		final ApplicationService applicationService = EjbUtils.getEJB(
-				initialContext, "SafeOnline/ApplicationServiceBean/remote",
-				ApplicationService.class);
+		final ApplicationService applicationService = getApplicationService(initialContext);
 
-		final UserRegistrationService userRegistrationService = EjbUtils
-				.getEJB(initialContext,
-						"SafeOnline/UserRegistrationServiceBean/remote",
-						UserRegistrationService.class);
+		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "password-" + UUID.randomUUID().toString();
@@ -192,19 +193,31 @@ public class AuthenticationTest extends TestCase {
 		});
 	}
 
+	private UserRegistrationService getUserRegistrationService(
+			InitialContext initialContext) {
+		final UserRegistrationService userRegistrationService = EjbUtils
+				.getEJB(initialContext,
+						"SafeOnline/UserRegistrationServiceBean/remote",
+						UserRegistrationService.class);
+		return userRegistrationService;
+	}
+
+	private ApplicationService getApplicationService(
+			InitialContext initialContext) {
+		final ApplicationService applicationService = EjbUtils.getEJB(
+				initialContext, "SafeOnline/ApplicationServiceBean/remote",
+				ApplicationService.class);
+		return applicationService;
+	}
+
 	public void testBigUseCase() throws Exception {
 		InitialContext initialContext = getInitialContext();
 
 		setupLoginConfig();
 
-		final ApplicationService applicationService = EjbUtils.getEJB(
-				initialContext, "SafeOnline/ApplicationServiceBean/remote",
-				ApplicationService.class);
+		final ApplicationService applicationService = getApplicationService(initialContext);
 
-		final UserRegistrationService userRegistrationService = EjbUtils
-				.getEJB(initialContext,
-						"SafeOnline/UserRegistrationServiceBean/remote",
-						UserRegistrationService.class);
+		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
 		String ownerLogin = "login-" + UUID.randomUUID().toString();
 		String ownerPassword = "password-" + UUID.randomUUID().toString();
@@ -236,9 +249,7 @@ public class AuthenticationTest extends TestCase {
 		String resultName = identityService.getName();
 		assertEquals(userName, resultName);
 
-		final CredentialService credentialService = EjbUtils.getEJB(
-				initialContext, "SafeOnline/CredentialServiceBean/remote",
-				CredentialService.class);
+		final CredentialService credentialService = getCredentialService(initialContext);
 
 		final String newPassword = "secret-" + UUID.randomUUID().toString();
 
@@ -248,9 +259,7 @@ public class AuthenticationTest extends TestCase {
 		resultName = identityService.getName();
 		assertEquals(userName, resultName);
 
-		final SubscriptionService subscriptionService = EjbUtils.getEJB(
-				initialContext, "SafeOnline/SubscriptionServiceBean/remote",
-				SubscriptionService.class);
+		final SubscriptionService subscriptionService = getSubscriptionService(initialContext);
 
 		// JAAS caches the credentials...
 		List<SubscriptionEntity> subscriptions = subscriptionService
@@ -269,23 +278,33 @@ public class AuthenticationTest extends TestCase {
 		}
 	}
 
+	private SubscriptionService getSubscriptionService(
+			InitialContext initialContext) {
+		final SubscriptionService subscriptionService = EjbUtils.getEJB(
+				initialContext, "SafeOnline/SubscriptionServiceBean/remote",
+				SubscriptionService.class);
+		return subscriptionService;
+	}
+
+	private CredentialService getCredentialService(InitialContext initialContext) {
+		final CredentialService credentialService = EjbUtils.getEJB(
+				initialContext, "SafeOnline/CredentialServiceBean/remote",
+				CredentialService.class);
+		return credentialService;
+	}
+
 	public void testCreateApplicationOwner() throws Exception {
 		InitialContext initialContext = getInitialContext();
 
 		setupLoginConfig();
 
-		UserRegistrationService userRegistrationService = EjbUtils.getEJB(
-				initialContext,
-				"SafeOnline/UserRegistrationServiceBean/remote",
-				UserRegistrationService.class);
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
 		userRegistrationService.registerUser(login, password, null);
 
-		ApplicationService applicationService = EjbUtils.getEJB(initialContext,
-				"SafeOnline/ApplicationServiceBean/remote",
-				ApplicationService.class);
+		ApplicationService applicationService = getApplicationService(initialContext);
 
 		login("admin", "admin");
 		String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
@@ -314,10 +333,7 @@ public class AuthenticationTest extends TestCase {
 		setupLoginConfig();
 
 		// operate: register application owner admin user
-		UserRegistrationService userRegistrationService = EjbUtils.getEJB(
-				initialContext,
-				"SafeOnline/UserRegistrationServiceBean/remote",
-				UserRegistrationService.class);
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		String ownerLogin = "owner-login-" + UUID.randomUUID().toString();
 		String ownerPassword = "owner-password-" + UUID.randomUUID().toString();
 		userRegistrationService.registerUser(ownerLogin, ownerPassword, null);
@@ -326,9 +342,7 @@ public class AuthenticationTest extends TestCase {
 		login("admin", "admin");
 		String applicationOwnerName = "app-owner-"
 				+ UUID.randomUUID().toString();
-		ApplicationService applicationService = EjbUtils.getEJB(initialContext,
-				"SafeOnline/ApplicationServiceBean/remote",
-				ApplicationService.class);
+		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.registerApplicationOwner(applicationOwnerName,
 				ownerLogin);
 
