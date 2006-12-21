@@ -6,6 +6,10 @@
 <body>
 <h1>SafeOnline Demo Web Application</h1>
 <p>Welcome to the SafeOnline Demo Web Application.</p>
-<p>This page demonstrates the servlet container security features.</p>
+<p>Login: <%=session.getAttribute("username")%></p>
+<p>This page demonstrates application-managed authentication via
+authentication service-collected credentials.</p>
+<form method="get" action="../logout.jsp"><input type="submit"
+	value="Logout" /></form>
 </body>
 </html>

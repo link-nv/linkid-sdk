@@ -9,11 +9,11 @@
 <table>
 	<tr>
 		<th>Application:</th>
-		<td><%= request.getParameter("application") %></td>
+		<td><%=request.getParameter("application")%></td>
 	</tr>
 	<tr>
 		<th>Target:</th>
-		<td><%= request.getParameter("target") %></td>
+		<td><%=request.getParameter("target")%></td>
 	</tr>
 	<tr>
 		<th>Username:</th>
@@ -24,6 +24,8 @@
 		<td><input type="password" name="password" /></td>
 	</tr>
 </table>
-<input type="submit" value="Logon" /></form>
+<input type="hidden" name="application" value="${param.application}" />
+<input type="hidden" name="target" value="${param.target}" /> <input
+	type="submit" value="Logon" /></form>
 </body>
 </html>

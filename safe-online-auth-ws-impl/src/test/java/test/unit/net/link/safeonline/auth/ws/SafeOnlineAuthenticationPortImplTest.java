@@ -12,15 +12,28 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Endpoint;
+
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.HttpServer;
 
 import junit.framework.TestCase;
+import net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationPort;
+import net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationService;
 import net.lin_k.safe_online.auth._1_0.types.AuthenticateRequestType;
 import net.lin_k.safe_online.auth._1_0.types.AuthenticateResultType;
 import net.link.safeonline.auth.ws.SafeOnlineAuthenticationPortImpl;
+import net.link.safeonline.auth.ws.SafeOnlineAuthenticationServiceFactory;
 import net.link.safeonline.authentication.service.AuthenticationService;
 
 public class SafeOnlineAuthenticationPortImplTest extends TestCase {
@@ -59,6 +72,7 @@ public class SafeOnlineAuthenticationPortImplTest extends TestCase {
 		this.mockAuthenticationService = createMock(AuthenticationService.class);
 		authenticationServiceBeanContext.rebind("local",
 				this.mockAuthenticationService);
+		this.testedInstance.postConstructCallback();
 	}
 
 	public void testEcho() throws Exception {
@@ -98,5 +112,48 @@ public class SafeOnlineAuthenticationPortImplTest extends TestCase {
 		verify(this.mockAuthenticationService);
 		assertNotNull(result);
 		assertTrue(result.isAuthenticated());
+	}
+
+	public void __testEndpointViaJAXWSRI() throws Exception {
+		// setup
+		SafeOnlineAuthenticationPort wsPort = new SafeOnlineAuthenticationPortImpl();
+		Endpoint endpoint = Endpoint.create(wsPort);
+
+		HttpServer httpServer = HttpServer.create();
+		int port = getFreePort();
+		httpServer.bind(new InetSocketAddress(port), 5);
+		ExecutorService executorService = Executors.newFixedThreadPool(5);
+		httpServer.setExecutor(executorService);
+		httpServer.start();
+
+		HttpContext httpContext = httpServer.createContext("/test");
+		endpoint.publish(httpContext);
+
+		// operate
+		SafeOnlineAuthenticationService service = SafeOnlineAuthenticationServiceFactory
+				.newInstance();
+		SafeOnlineAuthenticationPort clientPort = service
+				.getSafeOnlineAuthenticationPort();
+		BindingProvider bindingProvider = (BindingProvider) clientPort;
+		bindingProvider.getRequestContext().put(
+				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+				"http://localhost:" + port + "/test");
+
+		String result = clientPort.echo("hello world");
+
+		// verify
+		assertEquals("hello world", result);
+
+		// cleanup
+		endpoint.stop();
+		httpServer.stop(1);
+		executorService.shutdown();
+	}
+
+	private static int getFreePort() throws Exception {
+		ServerSocket serverSocket = new ServerSocket(0);
+		int port = serverSocket.getLocalPort();
+		serverSocket.close();
+		return port;
 	}
 }

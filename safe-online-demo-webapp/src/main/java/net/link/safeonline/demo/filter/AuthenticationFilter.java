@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.demo.filter;
 
 import java.io.IOException;
@@ -41,7 +48,11 @@ public class AuthenticationFilter implements Filter {
 		LOG.debug("doFilter");
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpSession session = httpRequest.getSession();
-		LOG.debug("request url: " + httpRequest.getRequestURL());
+		String paramUsername = httpRequest.getParameter("username");
+		if (null != paramUsername) {
+			LOG.debug("doing a login via the SafeOnline username token");
+			session.setAttribute("username", paramUsername);
+		}
 		String username = (String) session.getAttribute("username");
 		if (null == username) {
 			outputRedirectPage(httpRequest, response);

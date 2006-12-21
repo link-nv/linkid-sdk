@@ -7,6 +7,7 @@
 
 package net.link.safeonline.auth.ws;
 
+import javax.annotation.PostConstruct;
 import javax.jws.WebService;
 
 import net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationPort;
@@ -25,7 +26,11 @@ public class SafeOnlineAuthenticationPortImpl implements
 	private static Log LOG = LogFactory
 			.getLog(SafeOnlineAuthenticationPortImpl.class);
 
-	public SafeOnlineAuthenticationPortImpl() {
+	private AuthenticationService authenticationService;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.authenticationService = getService();
 		LOG.debug("ready");
 	}
 
@@ -41,9 +46,8 @@ public class SafeOnlineAuthenticationPortImpl implements
 		String username = request.getUsername();
 		String password = request.getPassword();
 
-		AuthenticationService authenticationService = getService();
-		boolean serviceResult = authenticationService.authenticate(application,
-				username, password);
+		boolean serviceResult = this.authenticationService.authenticate(
+				application, username, password);
 
 		AuthenticateResultType result = new AuthenticateResultType();
 		result.setAuthenticated(serviceResult);

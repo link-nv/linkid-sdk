@@ -19,7 +19,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ApplicationName</param-name>
-			<param-value>safe-online-demo</param-value>
+			<param-value>demo-application</param-value>
 		</init-param>
 	</filter>
 
