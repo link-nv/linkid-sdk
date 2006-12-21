@@ -27,6 +27,11 @@ import org.jboss.security.SimplePrincipal;
 /**
  * Implementation of application ownership security constraint.
  * 
+ * This implementation is very dependent on the way the JBoss Application Server
+ * propagates the user's credentials.
+ * 
+ * TODO: use java constants for the roles.
+ * 
  * @author fcorneli
  * 
  */

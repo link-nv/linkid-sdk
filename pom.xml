@@ -155,6 +155,7 @@
 		<module>safe-online-owner-service</module>
 		<module>safe-online-ctrl-base</module>
 		<module>safe-online-sql-ddl</module>
+		<module>safe-online-auth-webapp</module>
 	</modules>
 	<repositories>
 		<repository>

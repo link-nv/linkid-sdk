@@ -6,6 +6,28 @@
 
 	<display-name>SafeOnline Demo Web Application</display-name>
 
+	<filter>
+		<filter-name>Authentication Filter</filter-name>
+		<filter-class>
+			net.link.safeonline.demo.filter.AuthenticationFilter
+		</filter-class>
+		<init-param>
+			<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
+			<param-value>
+				http://localhost:8080/safe-online-auth/
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ApplicationName</param-name>
+			<param-value>safe-online-demo</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>Authentication Filter</filter-name>
+		<url-pattern>/secure2/*</url-pattern>
+	</filter-mapping>
+
 	<security-constraint>
 		<display-name>SecurityConstraint</display-name>
 		<web-resource-collection>
