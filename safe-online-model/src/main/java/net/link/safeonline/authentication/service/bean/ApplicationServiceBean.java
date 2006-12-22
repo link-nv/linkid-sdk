@@ -34,6 +34,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.ApplicationOwnerManager;
+import net.link.safeonline.util.ee.SecurityManagerUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -144,6 +145,14 @@ public class ApplicationServiceBean implements ApplicationService {
 
 		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
 				subject, ownerApplication);
+
+		/*
+		 * We have to flush the credential cache for the login here. Else it's
+		 * possible that the login cannot logon because JAAS is caching the old
+		 * roles that did not include the 'owner' role yet.
+		 */
+		SecurityManagerUtils.flushCredentialCache(login,
+				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
 	}
 
 	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)

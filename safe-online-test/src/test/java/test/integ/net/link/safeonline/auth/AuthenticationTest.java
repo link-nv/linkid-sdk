@@ -369,4 +369,31 @@ public class AuthenticationTest extends TestCase {
 			LOG.debug("expected exception: " + e.getMessage());
 		}
 	}
+
+	public void testCredentialCacheFlushOnSubscription() throws Exception {
+		// setup
+		InitialContext initialContext = getInitialContext();
+		setupLoginConfig();
+
+		// operate: register a new user
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = "password-" + UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		// operate: trigger JAAS on the core
+		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+		login(login, password);
+		subscriptionService.getSubscriptions();
+
+		// operate: create application owner
+		ApplicationService applicationService = getApplicationService(initialContext);
+		login("admin", "admin");
+		String applicationOwner = "owner-" + UUID.randomUUID().toString();
+		applicationService.registerApplicationOwner(applicationOwner, login);
+
+		// operate: get owned applications
+		login(login, password);
+		applicationService.getOwnedApplications();
+	}
 }
