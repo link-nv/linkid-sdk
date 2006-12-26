@@ -9,13 +9,15 @@ package net.link.safeonline.authentication.service.bean;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.common.SafeOnlineRoles;
-import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
 
@@ -32,17 +34,33 @@ public class CredentialServiceBean implements CredentialService {
 	@EJB
 	private SubjectManager subjectManager;
 
+	@EJB
+	private AttributeDAO attributeDAO;
+
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void changePassword(String oldPassword, String newPassword)
 			throws PermissionDeniedException {
 		LOG.debug("change password");
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		if (!subject.getPassword().equals(oldPassword)) {
+		String login = this.subjectManager.getCallerLogin();
+
+		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
+		if (null == passwordAttribute) {
+			throw new EJBException(
+					"password attribute not present for subject: " + login);
+		}
+
+		String currentPassword = passwordAttribute.getStringValue();
+		if (null == currentPassword) {
+			throw new EJBException("current password is null");
+		}
+
+		if (!currentPassword.equals(oldPassword)) {
 			throw new PermissionDeniedException();
 		}
-		subject.setPassword(newPassword);
 
-		String login = subject.getLogin();
+		passwordAttribute.setStringValue(newPassword);
+
 		SecurityManagerUtils.flushCredentialCache(login,
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
 	}

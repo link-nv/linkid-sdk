@@ -34,14 +34,9 @@ public class SubjectDAOBean implements SubjectDAO {
 		return subject;
 	}
 
-	public SubjectEntity addSubject(String login, String password) {
-		SubjectEntity subject = addSubject(login, password, null);
-		return subject;
-	}
-
-	public SubjectEntity addSubject(String login, String password, String name) {
+	public SubjectEntity addSubject(String login) {
 		LOG.debug("add subject: " + login);
-		SubjectEntity subject = new SubjectEntity(login, password, name);
+		SubjectEntity subject = new SubjectEntity(login);
 		this.entityManager.persist(subject);
 		return subject;
 	}

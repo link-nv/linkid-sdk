@@ -12,12 +12,15 @@ import java.util.Date;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 
@@ -49,6 +52,9 @@ public class AuthenticationServiceBean implements AuthenticationService {
 	@EJB
 	private HistoryDAO historyDAO;
 
+	@EJB
+	private AttributeDAO attributeDAO;
+
 	public boolean authenticate(String applicationName, String login,
 			String password) {
 		LOG.debug("authenticate \"" + login + "\" for \"" + applicationName
@@ -59,44 +65,57 @@ public class AuthenticationServiceBean implements AuthenticationService {
 			LOG.debug("subject not found");
 			return false;
 		}
-		if (!subject.getPassword().equals(password)) {
-			Date now = new Date();
+
+		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
+		if (null == passwordAttribute) {
+			String event = "password attribute not present for subject "
+					+ login;
+			addHistoryEntry(subject, event);
+			return false;
+		}
+
+		String actualPassword = passwordAttribute.getStringValue();
+		if (null == actualPassword) {
+			String event = "password is null for subject " + login;
+			addHistoryEntry(subject, event);
+			return false;
+		}
+
+		if (!actualPassword.equals(password)) {
 			String event = "incorrect password for application: "
 					+ applicationName;
-			this.historyDAO.addHistoryEntry(now, subject, event);
-			LOG.debug(event);
-			LOG.debug("current password: " + subject.getPassword()
-					+ "; authentication password: " + password);
+			addHistoryEntry(subject, event);
 			return false;
 		}
 
 		ApplicationEntity application = this.applicationDAO
 				.findApplication(applicationName);
 		if (null == application) {
-			Date now = new Date();
 			String event = "application not found: " + applicationName;
-			this.historyDAO.addHistoryEntry(now, subject, event);
-			LOG.debug(event);
+			addHistoryEntry(subject, event);
 			return false;
 		}
 
 		SubscriptionEntity subscription = this.subscriptionDAO
 				.findSubscription(subject, application);
 		if (null == subscription) {
-			Date now = new Date();
 			String event = "subscription not found for application: "
 					+ applicationName;
-			this.historyDAO.addHistoryEntry(now, subject, event);
-			LOG.debug(event);
+			addHistoryEntry(subject, event);
 			return false;
 		}
 
-		LOG.debug("authenticated \"" + login + "\" for \"" + applicationName
-				+ "\"");
-		Date now = new Date();
-		this.historyDAO.addHistoryEntry(now, subject,
-				"authenticated for application " + applicationName);
+		addHistoryEntry(subject, "authenticated for application "
+				+ applicationName);
+
 		return true;
+	}
+
+	private void addHistoryEntry(SubjectEntity subject, String event) {
+		Date now = new Date();
+		this.historyDAO.addHistoryEntry(now, subject, event);
+		LOG.debug(event);
 	}
 
 	public boolean authenticate(String login, String password) {
@@ -107,7 +126,23 @@ public class AuthenticationServiceBean implements AuthenticationService {
 			LOG.debug("subject not found");
 			return false;
 		}
-		if (!subject.getPassword().equals(password)) {
+
+		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
+		if (null == passwordAttribute) {
+			String event = "incorrect password";
+			addHistoryEntry(subject, event);
+			return false;
+		}
+
+		String actualPassword = passwordAttribute.getStringValue();
+		if (null == actualPassword) {
+			addHistoryEntry(subject, "actual password is null for subject: "
+					+ login);
+			return false;
+		}
+
+		if (!actualPassword.equals(password)) {
 			Date now = new Date();
 			String event = "incorrect password";
 			this.historyDAO.addHistoryEntry(now, subject, event);

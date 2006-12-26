@@ -62,4 +62,11 @@ public class SubjectManagerBean implements SubjectManager {
 		LOG.debug("get caller subject: " + subject.getLogin());
 		return subject;
 	}
+
+	@RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE })
+	public String getCallerLogin() {
+		Principal principal = this.context.getCallerPrincipal();
+		String login = principal.getName();
+		return login;
+	}
 }

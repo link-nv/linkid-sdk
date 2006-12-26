@@ -17,6 +17,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -35,6 +36,8 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 
 	private SubscriptionDAO mockSubscriptionDAO;
 
+	private AttributeDAO mockAttributeDAO;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -49,6 +52,9 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 
 		this.mockSubscriptionDAO = createMock(SubscriptionDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockSubscriptionDAO);
+
+		this.mockAttributeDAO = createMock(AttributeDAO.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockAttributeDAO);
 	}
 
 	public void testRegister() throws Exception {
@@ -60,12 +66,10 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		// stubs
 		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(null);
 
-		SubjectEntity subject = new SubjectEntity(login, password);
-		expect(this.mockSubjectDAO.addSubject(login, password, name))
-				.andReturn(subject);
+		SubjectEntity subject = new SubjectEntity(login);
+		expect(this.mockSubjectDAO.addSubject(login)).andReturn(subject);
 
-		SubjectEntity adminSubject = new SubjectEntity("admin-login",
-				"admin-password");
+		SubjectEntity adminSubject = new SubjectEntity("admin-login");
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"test-application-owner", adminSubject);
 
@@ -77,19 +81,24 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 						.findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME))
 				.andStubReturn(application);
 
+		this.mockAttributeDAO.addAttribute(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login, password);
+		this.mockAttributeDAO.addAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
+				login, name);
+
 		this.mockSubscriptionDAO.addSubscription(
 				SubscriptionOwnerType.APPLICATION, subject, application);
 
 		// prepare
 		replay(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO);
+				this.mockSubscriptionDAO, this.mockAttributeDAO);
 
 		// operate
 		this.testedInstance.registerUser(login, password, name);
 
 		// verify
 		verify(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO);
+				this.mockSubscriptionDAO, this.mockAttributeDAO);
 	}
 
 	public void testRegisteringTwiceFails() throws Exception {
@@ -99,13 +108,13 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		String name = "test-name";
 
 		// stubs
-		SubjectEntity existingSubject = new SubjectEntity(login, password);
+		SubjectEntity existingSubject = new SubjectEntity(login);
 		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(
 				existingSubject);
 
 		// prepare
 		replay(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO);
+				this.mockSubscriptionDAO, this.mockAttributeDAO);
 
 		// operate & verify
 		try {
@@ -114,7 +123,7 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		} catch (ExistingUserException e) {
 			// expected
 			verify(this.mockSubjectDAO, this.mockApplicationDAO,
-					this.mockSubscriptionDAO);
+					this.mockSubscriptionDAO, this.mockAttributeDAO);
 		}
 	}
 
@@ -130,10 +139,10 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 
 		expect(this.mockApplicationDAO.findApplication("safe-online-user"))
 				.andStubReturn(null);
-
+		
 		// prepare
 		replay(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO);
+				this.mockSubscriptionDAO, this.mockAttributeDAO);
 
 		// operate & verify
 		try {
@@ -142,7 +151,7 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		} catch (ApplicationNotFoundException e) {
 			// expected
 			verify(this.mockSubjectDAO, this.mockApplicationDAO,
-					this.mockSubscriptionDAO);
+					this.mockSubscriptionDAO, this.mockAttributeDAO);
 		}
 	}
 }

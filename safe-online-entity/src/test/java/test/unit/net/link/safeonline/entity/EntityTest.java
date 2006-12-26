@@ -17,6 +17,9 @@ import javax.persistence.Query;
 import junit.framework.TestCase;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributePK;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -39,7 +42,8 @@ public class EntityTest extends TestCase {
 		this.entityTestManager = new EntityTestManager();
 		this.entityTestManager.setUp(SubjectEntity.class,
 				ApplicationEntity.class, SubscriptionEntity.class,
-				HistoryEntity.class, ApplicationOwnerEntity.class);
+				HistoryEntity.class, ApplicationOwnerEntity.class,
+				AttributeTypeEntity.class, AttributeEntity.class);
 	}
 
 	@Override
@@ -54,8 +58,7 @@ public class EntityTest extends TestCase {
 
 	public void testAddRemoveEntity() throws Exception {
 		// setup
-		SubjectEntity subject = new SubjectEntity("test-login",
-				"test-password", null);
+		SubjectEntity subject = new SubjectEntity("test-login");
 
 		// operate: add entity
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -78,7 +81,7 @@ public class EntityTest extends TestCase {
 
 	public void testAddRemoveApplication() throws Exception {
 		// setup
-		SubjectEntity admin = new SubjectEntity("test-admin", "secret");
+		SubjectEntity admin = new SubjectEntity("test-admin");
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", admin);
 		ApplicationEntity application = new ApplicationEntity(
@@ -132,8 +135,7 @@ public class EntityTest extends TestCase {
 	public void testAddSubscriptionRequiresExistingEntityAndApplication()
 			throws Exception {
 		// setup
-		SubjectEntity subject = new SubjectEntity("test-login",
-				"test-password", null);
+		SubjectEntity subject = new SubjectEntity("test-login");
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", subject);
 		ApplicationEntity application = new ApplicationEntity(
@@ -154,8 +156,7 @@ public class EntityTest extends TestCase {
 
 	public void testAddSubscription() throws Exception {
 		// setup
-		SubjectEntity subject = new SubjectEntity("test-login",
-				"test-password", null);
+		SubjectEntity subject = new SubjectEntity("test-login");
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", subject);
 		ApplicationEntity application = new ApplicationEntity(
@@ -200,8 +201,7 @@ public class EntityTest extends TestCase {
 
 	public void testAddHistory() throws Exception {
 		// setup
-		SubjectEntity subject = new SubjectEntity("test-login",
-				"test-password", null);
+		SubjectEntity subject = new SubjectEntity("test-login");
 		Date when = new Date();
 		HistoryEntity history = new HistoryEntity(when, subject, "test-event");
 
@@ -217,5 +217,30 @@ public class EntityTest extends TestCase {
 		HistoryEntity resultHistory = entityManager.find(HistoryEntity.class,
 				history.getId());
 		assertNotNull(resultHistory);
+	}
+
+	public void testAddAttribute() throws Exception {
+		// setup
+		SubjectEntity subject = new SubjectEntity("test-login");
+		AttributeTypeEntity attributeType = new AttributeTypeEntity("password",
+				"string");
+		AttributeEntity attribute = new AttributeEntity("password",
+				"test-login", "test-password");
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(subject);
+		entityManager.persist(attributeType);
+		entityManager.persist(attribute);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		AttributeEntity resultAttribute = entityManager.find(
+				AttributeEntity.class,
+				new AttributePK("password", "test-login"));
+		assertNotNull(resultAttribute);
+		assertEquals("test-password", resultAttribute.getStringValue());
+		assertEquals(subject, resultAttribute.getSubject());
+		assertEquals(attributeType, resultAttribute.getAttributeType());
 	}
 }

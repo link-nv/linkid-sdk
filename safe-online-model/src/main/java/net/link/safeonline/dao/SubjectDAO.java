@@ -29,9 +29,7 @@ public interface SubjectDAO {
 	 */
 	SubjectEntity findSubject(String login);
 
-	SubjectEntity addSubject(String login, String password);
-
-	SubjectEntity addSubject(String login, String password, String name);
+	SubjectEntity addSubject(String login);
 
 	/**
 	 * Gives back the subject for the given login.

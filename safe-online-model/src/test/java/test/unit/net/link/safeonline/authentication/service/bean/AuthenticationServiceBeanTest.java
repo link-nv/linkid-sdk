@@ -15,13 +15,16 @@ import static org.easymock.EasyMock.verify;
 import java.util.Date;
 
 import junit.framework.TestCase;
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -40,6 +43,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 	private HistoryDAO mockHistoryDAO;
 
+	private AttributeDAO mockAttributeDAO;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -57,6 +62,9 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		this.mockHistoryDAO = createMock(HistoryDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockHistoryDAO);
+
+		this.mockAttributeDAO = createMock(AttributeDAO.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockAttributeDAO);
 	}
 
 	public void testAuthenticate() throws Exception {
@@ -66,11 +74,10 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		String password = "test-password";
 
 		// stubs
-		SubjectEntity subject = new SubjectEntity(login, password);
+		SubjectEntity subject = new SubjectEntity(login);
 		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(subject);
 
-		SubjectEntity adminSubject = new SubjectEntity("admin-login",
-				"admin-password");
+		SubjectEntity adminSubject = new SubjectEntity("admin-login");
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"test-application-owner", adminSubject);
 
@@ -86,9 +93,17 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
 				EasyMock.eq(subject), (String) EasyMock.anyObject());
 
+		AttributeEntity passwordAttribute = new AttributeEntity(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login, password);
+		expect(
+				this.mockAttributeDAO.findAttribute(
+						SafeOnlineConstants.PASSWORD_ATTRIBUTE, "test-login"))
+				.andStubReturn(passwordAttribute);
+
 		// prepare
 		replay(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO, this.mockHistoryDAO);
+				this.mockSubscriptionDAO, this.mockHistoryDAO,
+				this.mockAttributeDAO);
 
 		// operate
 		boolean result = this.testedInstance.authenticate(applicationName,
@@ -96,7 +111,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		// verify
 		verify(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO, this.mockHistoryDAO);
+				this.mockSubscriptionDAO, this.mockHistoryDAO,
+				this.mockAttributeDAO);
 		assertTrue(result);
 	}
 
@@ -108,8 +124,15 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		String wrongPassword = "foobar";
 
 		// stubs
-		SubjectEntity subject = new SubjectEntity(login, password);
+		SubjectEntity subject = new SubjectEntity(login);
 		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(subject);
+
+		AttributeEntity passwordAttribute = new AttributeEntity(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login, password);
+		expect(
+				this.mockAttributeDAO.findAttribute(
+						SafeOnlineConstants.PASSWORD_ATTRIBUTE, login))
+				.andStubReturn(passwordAttribute);
 
 		// expectations
 		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
@@ -117,7 +140,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		// prepare
 		replay(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO, this.mockHistoryDAO);
+				this.mockSubscriptionDAO, this.mockHistoryDAO,
+				this.mockAttributeDAO);
 
 		// operate
 		boolean result = this.testedInstance.authenticate(applicationName,
@@ -125,7 +149,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		// verify
 		verify(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO, this.mockHistoryDAO);
+				this.mockSubscriptionDAO, this.mockHistoryDAO,
+				this.mockAttributeDAO);
 		assertFalse(result);
 	}
 

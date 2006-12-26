@@ -16,7 +16,9 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
@@ -37,20 +39,39 @@ public class IdentityServiceBean implements IdentityService {
 	@EJB
 	private HistoryDAO historyDAO;
 
+	@EJB
+	private AttributeDAO attributeDAO;
+
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public String getName() {
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		String name = subject.getName();
-		LOG.debug("get name of " + subject.getLogin() + ": " + name);
+		String login = this.subjectManager.getCallerLogin();
+
+		AttributeEntity nameAttribute = this.attributeDAO.findAttribute(
+				SafeOnlineConstants.NAME_ATTRIBUTE, login);
+		if (null == nameAttribute) {
+			return null;
+		}
+
+		String name = nameAttribute.getStringValue();
+
+		LOG.debug("get name of " + login + ": " + name);
 		return name;
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void saveName(String name) {
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		LOG.debug("save name " + name + " for entity with login "
-				+ subject.getLogin());
-		subject.setName(name);
+		String login = this.subjectManager.getCallerLogin();
+		LOG.debug("save name " + name + " for entity with login " + login);
+
+		AttributeEntity nameAttribute = this.attributeDAO.findAttribute(
+				SafeOnlineConstants.NAME_ATTRIBUTE, login);
+		if (null == nameAttribute) {
+			this.attributeDAO.addAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
+					login, name);
+			return;
+		}
+
+		nameAttribute.setStringValue(name);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)

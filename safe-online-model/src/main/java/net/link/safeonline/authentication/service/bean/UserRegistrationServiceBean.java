@@ -15,6 +15,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -47,6 +48,9 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
 
+	@EJB
+	private AttributeDAO attributeDAO;
+
 	public void registerUser(String login, String password, String name)
 			throws ExistingUserException, ApplicationNotFoundException {
 		LOG.debug("register user: " + login);
@@ -62,8 +66,14 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 			throw new ApplicationNotFoundException();
 		}
 
-		SubjectEntity newSubject = this.entityDAO.addSubject(login, password,
-				name);
+		SubjectEntity newSubject = this.entityDAO.addSubject(login);
+
+		this.attributeDAO.addAttribute(SafeOnlineConstants.PASSWORD_ATTRIBUTE,
+				login, password);
+		if (null != name) {
+			this.attributeDAO.addAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
+					login, name);
+		}
 
 		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
 				newSubject, safeOnlineUserApplication);

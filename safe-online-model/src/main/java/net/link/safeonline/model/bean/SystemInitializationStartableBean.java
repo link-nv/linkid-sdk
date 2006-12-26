@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
@@ -20,10 +21,14 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
+import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -102,7 +107,15 @@ public class SystemInitializationStartableBean implements Startable {
 
 	private static List<Subscription> subscriptions;
 
+	private static List<AttributeTypeEntity> attributeTypes;
+
 	static {
+		attributeTypes = new LinkedList<AttributeTypeEntity>();
+		attributeTypes.add(new AttributeTypeEntity(
+				SafeOnlineConstants.NAME_ATTRIBUTE, "string"));
+		attributeTypes.add(new AttributeTypeEntity(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, "string"));
+
 		authorizedUsers = new HashMap<String, String>();
 		authorizedUsers.put("fcorneli", "secret");
 		authorizedUsers.put("dieter", "secret");
@@ -179,15 +192,34 @@ public class SystemInitializationStartableBean implements Startable {
 	@EJB
 	private ApplicationOwnerDAO applicationOwnerDAO;
 
+	@EJB
+	private AttributeTypeDAO attributeTypeDAO;
+
+	@EJB
+	private AttributeDAO attributeDAO;
+
 	public void postStart() {
 		LOG.debug("start");
-		initSubjects();
+		initAttributeTypes();
+
+		initSubjectsAndAttributes();
 
 		initApplicationOwners();
 
 		initApplications();
 
 		initSubscriptions();
+	}
+
+	private void initAttributeTypes() {
+		for (AttributeTypeEntity attributeType : attributeTypes) {
+			if (null != this.attributeTypeDAO.findAttributeType(attributeType
+					.getName())) {
+				continue;
+			}
+			this.attributeTypeDAO.addAttributeType(attributeType.getName(),
+					attributeType.getType());
+		}
 	}
 
 	private void initSubscriptions() {
@@ -237,7 +269,7 @@ public class SystemInitializationStartableBean implements Startable {
 		}
 	}
 
-	private void initSubjects() {
+	private void initSubjectsAndAttributes() {
 		for (Map.Entry<String, String> authorizedUser : authorizedUsers
 				.entrySet()) {
 			String login = authorizedUser.getKey();
@@ -245,8 +277,16 @@ public class SystemInitializationStartableBean implements Startable {
 			if (null != subject) {
 				continue;
 			}
+			subject = this.subjectDAO.addSubject(login);
+			AttributeEntity passwordAttribute = this.attributeDAO
+					.findAttribute(SafeOnlineConstants.PASSWORD_ATTRIBUTE,
+							login);
+			if (null != passwordAttribute) {
+				continue;
+			}
 			String password = authorizedUser.getValue();
-			this.subjectDAO.addSubject(login, password);
+			this.attributeDAO.addAttribute(
+					SafeOnlineConstants.PASSWORD_ATTRIBUTE, login, password);
 		}
 	}
 
