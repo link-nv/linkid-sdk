@@ -13,5 +13,7 @@
 			class="net.link.safeonline.entity.ApplicationOwnerEntity" />
 		<mapping class="net.link.safeonline.entity.HistoryEntity" />
 		<mapping class="net.link.safeonline.entity.SubscriptionEntity" />
+		<mapping class="net.link.safeonline.entity.AttributeTypeEntity" />
+		<mapping class="net.link.safeonline.entity.AttributeEntity" />
 	</session-factory>
 </hibernate-configuration>

@@ -71,7 +71,6 @@ public class ApplicationServiceBean implements ApplicationService {
 
 	@PermitAll
 	public List<ApplicationEntity> getApplications() {
-		// XXX: we're passing the admin subjects with password here!
 		List<ApplicationEntity> applications = this.applicationDAO
 				.getApplications();
 		return applications;
@@ -159,7 +158,6 @@ public class ApplicationServiceBean implements ApplicationService {
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<ApplicationOwnerEntity> getApplicationOwners() {
 		LOG.debug("get application owners");
-		// XXX: we're passing the admin subjects with password here!
 		List<ApplicationOwnerEntity> applicationOwners = this.applicationOwnerDAO
 				.getApplicationOwners();
 		return applicationOwners;

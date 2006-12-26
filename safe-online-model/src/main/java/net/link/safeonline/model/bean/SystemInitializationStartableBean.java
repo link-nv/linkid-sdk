@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
