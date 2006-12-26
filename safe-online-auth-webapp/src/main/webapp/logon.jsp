@@ -24,15 +24,17 @@ logon.logon();
 			}
 			// -->
 		</script>
-<body onLoad="redirectionTimer()">
 <c:choose>
 	<c:when test="${logon.authenticated}">
+		<body onLoad="redirectionTimer()">
 		<h1>Authenticated. Redirecting to application <jsp:getProperty
 			name="logon" property="application" /> ...</h1>
+		</body>
 	</c:when>
 	<c:otherwise>
+		<body>
 		<h1>Not Authenticated. Try again.</h1>
+		</body>
 	</c:otherwise>
 </c:choose>
-</body>
 </html>
