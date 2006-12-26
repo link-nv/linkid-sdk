@@ -8,4 +8,11 @@
 		SafeOnline Authentication Web Application
 	</display-name>
 
+	<error-page>
+		<exception-type>
+			javax.ejb.EJBException
+		</exception-type>
+		<location>/error.jsp</location>
+	</error-page>
+
 </web-app>

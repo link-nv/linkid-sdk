@@ -60,6 +60,15 @@ public class AuthenticationServiceBean implements AuthenticationService {
 		LOG.debug("authenticate \"" + login + "\" for \"" + applicationName
 				+ "\"");
 
+		// TODO: aspectize the input validation
+		if (null == login) {
+			throw new IllegalArgumentException("login is null");
+		}
+
+		if (null == password) {
+			throw new IllegalArgumentException("password is null");
+		}
+
 		SubjectEntity subject = this.entityDAO.findSubject(login);
 		if (null == subject) {
 			LOG.debug("subject not found");
@@ -120,6 +129,15 @@ public class AuthenticationServiceBean implements AuthenticationService {
 
 	public boolean authenticate(String login, String password) {
 		LOG.debug("authenticate \"" + login + "\"");
+
+		// TODO: aspectize the input validation
+		if (null == login) {
+			throw new IllegalArgumentException("login is null");
+		}
+
+		if (null == password) {
+			throw new IllegalArgumentException("password is null");
+		}
 
 		SubjectEntity subject = this.entityDAO.findSubject(login);
 		if (null == subject) {
