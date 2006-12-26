@@ -15,6 +15,7 @@ import javax.ejb.EJBException;
 import javax.persistence.PreUpdate;
 import javax.security.auth.Subject;
 
+import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -30,7 +31,9 @@ import org.jboss.security.SimplePrincipal;
  * This implementation is very dependent on the way the JBoss Application Server
  * propagates the user's credentials.
  * 
- * TODO: use java constants for the roles.
+ * In JBoss 5 they've reworked the SecurityAssociation class as a stack of
+ * SecurityContext(s). See also:
+ * http://wiki.jboss.org/wiki/Wiki.jsp?page=SecurityContextReplaceSecurityAssociation
  * 
  * @author fcorneli
  * 
@@ -75,12 +78,13 @@ public class SecurityApplicationEntityListener {
 			throw new EJBException(msg);
 		}
 
-		boolean isOperator = isCallerInRole(subject, "operator");
+		boolean isOperator = isCallerInRole(subject,
+				SafeOnlineRoles.OPERATOR_ROLE);
 		if (isOperator) {
 			return;
 		}
 
-		boolean isOwner = isCallerInRole(subject, "owner");
+		boolean isOwner = isCallerInRole(subject, SafeOnlineRoles.OWNER_ROLE);
 		if (!isOwner) {
 			String msg = "caller has no owner role";
 			LOG.error(msg);
@@ -94,7 +98,7 @@ public class SecurityApplicationEntityListener {
 		if (login.equals(adminSubject.getLogin())) {
 			return;
 		}
-		String msg = "only application owner admin can change the application";
+		String msg = "only the application owner admin can change the application";
 		LOG.error(msg);
 		throw new EJBException(msg);
 	}

@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
@@ -31,7 +32,7 @@ public class CredentialServiceBean implements CredentialService {
 	@EJB
 	private SubjectManager subjectManager;
 
-	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void changePassword(String oldPassword, String newPassword)
 			throws PermissionDeniedException {
 		LOG.debug("change password");

@@ -18,6 +18,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
@@ -46,8 +47,7 @@ public class SubjectManagerBean implements SubjectManager {
 	@EJB
 	private SubjectDAO subjectDAO;
 
-	@RolesAllowed( { SafeOnlineConstants.USER_ROLE,
-			SafeOnlineConstants.OWNER_ROLE })
+	@RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE })
 	public SubjectEntity getCallerSubject() {
 		Principal principal = this.context.getCallerPrincipal();
 		String login = principal.getName();

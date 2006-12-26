@@ -156,6 +156,7 @@
 		<module>safe-online-ctrl-base</module>
 		<module>safe-online-sql-ddl</module>
 		<module>safe-online-auth-webapp</module>
+		<module>safe-online-common</module>
 	</modules>
 	<repositories>
 		<repository>

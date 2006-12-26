@@ -19,6 +19,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.SubscriptionService;
+import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -47,7 +48,7 @@ public class SubscriptionServiceBean implements SubscriptionService {
 	@EJB
 	private ApplicationDAO applicationDAO;
 
-	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public List<SubscriptionEntity> getSubscriptions() {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
@@ -55,7 +56,7 @@ public class SubscriptionServiceBean implements SubscriptionService {
 		return subscriptions;
 	}
 
-	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void subscribe(String applicationName)
 			throws ApplicationNotFoundException, AlreadySubscribedException,
 			PermissionDeniedException {
@@ -74,7 +75,7 @@ public class SubscriptionServiceBean implements SubscriptionService {
 				subject, application);
 	}
 
-	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void unsubscribe(String applicationName)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			PermissionDeniedException {
@@ -93,8 +94,7 @@ public class SubscriptionServiceBean implements SubscriptionService {
 		this.subscriptionDAO.removeSubscription(subject, application);
 	}
 
-	@RolesAllowed( { SafeOnlineConstants.OPERATOR_ROLE,
-			SafeOnlineConstants.OWNER_ROLE })
+	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
 	public long getNumberOfSubscriptions(String applicationName)
 			throws ApplicationNotFoundException {
 		LOG.debug("get number of subscriptions for application: "

@@ -1,0 +1,21 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
+package net.link.safeonline.common;
+
+public class SafeOnlineRoles {
+
+	private SafeOnlineRoles() {
+		// empty
+	}
+
+	public static final String USER_ROLE = "user";
+
+	public static final String OPERATOR_ROLE = "operator";
+
+	public static final String OWNER_ROLE = "owner";
+}

@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -36,7 +37,7 @@ public class IdentityServiceBean implements IdentityService {
 	@EJB
 	private HistoryDAO historyDAO;
 
-	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public String getName() {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		String name = subject.getName();
@@ -44,7 +45,7 @@ public class IdentityServiceBean implements IdentityService {
 		return name;
 	}
 
-	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void saveName(String name) {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		LOG.debug("save name " + name + " for entity with login "
@@ -52,7 +53,7 @@ public class IdentityServiceBean implements IdentityService {
 		subject.setName(name);
 	}
 
-	@RolesAllowed(SafeOnlineConstants.USER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public List<HistoryEntity> getHistory() {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		List<HistoryEntity> result = this.historyDAO.getHistory(subject);

@@ -24,6 +24,7 @@ import net.link.safeonline.authentication.exception.ExistingApplicationOwnerExce
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.SubjectDAO;
@@ -76,7 +77,7 @@ public class ApplicationServiceBean implements ApplicationService {
 		return applications;
 	}
 
-	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void addApplication(String name, String applicationOwnerName,
 			String description) throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException {
@@ -93,7 +94,7 @@ public class ApplicationServiceBean implements ApplicationService {
 		this.applicationDAO.addApplication(name, applicationOwner, description);
 	}
 
-	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void removeApplication(String name)
 			throws ApplicationNotFoundException, PermissionDeniedException {
@@ -115,7 +116,7 @@ public class ApplicationServiceBean implements ApplicationService {
 		this.applicationDAO.removeApplication(application);
 	}
 
-	@RolesAllowed(SafeOnlineConstants.OWNER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
 	public void setApplicationDescription(String name, String description)
 			throws ApplicationNotFoundException {
 		LOG.debug("set application description: " + name);
@@ -124,7 +125,7 @@ public class ApplicationServiceBean implements ApplicationService {
 		application.setDescription(description);
 	}
 
-	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void registerApplicationOwner(String name, String login)
 			throws SubjectNotFoundException, ApplicationNotFoundException,
 			ExistingApplicationOwnerException {
@@ -155,7 +156,7 @@ public class ApplicationServiceBean implements ApplicationService {
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
 	}
 
-	@RolesAllowed(SafeOnlineConstants.OPERATOR_ROLE)
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<ApplicationOwnerEntity> getApplicationOwners() {
 		LOG.debug("get application owners");
 		// XXX: we're passing the admin subjects with password here!
@@ -164,7 +165,7 @@ public class ApplicationServiceBean implements ApplicationService {
 		return applicationOwners;
 	}
 
-	@RolesAllowed(SafeOnlineConstants.OWNER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
 	public List<ApplicationEntity> getOwnedApplications() {
 		LOG.debug("get owned applications");
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerManager

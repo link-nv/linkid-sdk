@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import org.jboss.annotation.security.SecurityDomain;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -30,7 +31,7 @@ public class ApplicationOwnerManagerBean implements ApplicationOwnerManager {
 	@EJB
 	private ApplicationOwnerDAO applicationOwnerDAO;
 
-	@RolesAllowed(SafeOnlineConstants.OWNER_ROLE)
+	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
 	public ApplicationOwnerEntity getCallerApplicationOwner() {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO

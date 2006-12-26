@@ -16,6 +16,7 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
@@ -68,12 +69,12 @@ public class AuthorizationServiceBean implements AuthorizationService {
 		 * later on we could let this decision depend on explicit ACL, i.e.,
 		 * have a trust layer to make the decision.
 		 */
-		addRoleIfSubscribed(SafeOnlineConstants.USER_ROLE, subject,
+		addRoleIfSubscribed(SafeOnlineRoles.USER_ROLE, subject,
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, roles);
-		addRoleIfSubscribed(SafeOnlineConstants.OPERATOR_ROLE, subject,
+		addRoleIfSubscribed(SafeOnlineRoles.OPERATOR_ROLE, subject,
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
 				roles);
-		addRoleIfSubscribed(SafeOnlineConstants.OWNER_ROLE, subject,
+		addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject,
 				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
 
 		return roles;
