@@ -54,6 +54,14 @@
 			<h:commandButton action="#{passwordBean.change}" id="change"
 				value="Change Password" />
 		</h:form>
+
+		<h1>Belgian eID</h1>
+
+		<h:form>
+			<h:commandButton action="extract" id="extract"
+				value="Extract Identity" />
+		</h:form>
+
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">

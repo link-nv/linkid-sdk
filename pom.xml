@@ -62,8 +62,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
@@ -157,6 +157,10 @@
 		<module>safe-online-sql-ddl</module>
 		<module>safe-online-auth-webapp</module>
 		<module>safe-online-common</module>
+		<module>safe-online-demo-applet</module>
+		<module>safe-online-pkcs11-sc</module>
+		<module>safe-online-pkcs11-sc-beid</module>
+		<module>safe-online-identity-applet</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -684,6 +688,12 @@
 				<artifactId>hibernate</artifactId>
 				<version>${hibernate.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>junit-addons</groupId>
+				<artifactId>junit-addons</artifactId>
+				<version>${junit-addons.version}</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -783,5 +793,6 @@
 		<commons-beanutils.version>1.6</commons-beanutils.version>
 		<commons-el.version>1.0</commons-el.version>
 		<xml-apis.version>1.0.b2</xml-apis.version>
+		<junit-addons.version>1.4</junit-addons.version>
 	</properties>
 </project>

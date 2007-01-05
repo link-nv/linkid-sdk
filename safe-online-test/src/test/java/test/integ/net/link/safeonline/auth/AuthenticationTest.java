@@ -293,6 +293,12 @@ public class AuthenticationTest extends TestCase {
 		return credentialService;
 	}
 
+	/**
+	 * This test is known to fail when running under Java6 because of an issue
+	 * with the JVM class loader.
+	 * 
+	 * @throws Exception
+	 */
 	public void testCreateApplicationOwner() throws Exception {
 		InitialContext initialContext = getInitialContext();
 

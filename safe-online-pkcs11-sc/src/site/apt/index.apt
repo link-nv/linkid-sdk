@@ -1,0 +1,5 @@
+SafeOnline PKCS#11 SmartCard Library
+
+ This project hosts the client-side Java6 library to interact with PKIX PKCS#11-based SmartCard devices.
+ This generic library is not targeting any specific type of smart card.
+ Configuration and code for specific type of smart cards (like for example the Belgium eID card) should be grouped separately.

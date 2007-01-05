@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="urn:net:lin-k:safe-online:pkcs11-sc-config:1.0"
+	xmlns:tns="urn:net:lin-k:safe-online:pkcs11-sc-config:1.0"
+	elementFormDefault="qualified">
+
+	<element name="pkcs11-sc-config" type="tns:pkcs11-sc-configType" />
+
+	<complexType name="pkcs11-sc-configType">
+		<sequence>
+			<element name="atrs" type="tns:atrsType" minOccurs="1" />
+			<element name="pkcs11-keystore-mapping"
+				type="tns:pkcs11-keystore-mappingType" minOccurs="1" />
+			<element name="pkcs11-library" type="tns:pkcs11-libraryType"
+				minOccurs="1" />
+			<element name="identity-extractor"
+				type="tns:identity-extractorType" minOccurs="0" />
+		</sequence>
+		<attribute name="alias" type="xs:string" use="required" />
+		<attribute name="name" type="xs:string" use="required" />
+	</complexType>
+
+	<complexType name="atrsType">
+		<sequence>
+			<element name="atr" type="tns:atrType"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="atrType">
+		<sequence>
+			<element name="byte" type="xs:string" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="pkcs11-keystore-mappingType">
+		<sequence>
+			<element name="key" type="tns:keyType"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="keyType">
+		<simpleContent>
+			<extension base="xs:string">
+				<attribute name="type" type="tns:keyTypeType"
+					use="required" />
+				<attribute name="alias" type="xs:string" use="required" />
+			</extension>
+		</simpleContent>
+	</complexType>
+
+	<simpleType name="keyTypeType">
+		<restriction base="xs:string">
+			<enumeration value="AUTHENTICATION" />
+			<enumeration value="SIGNATURE" />
+		</restriction>
+	</simpleType>
+
+	<complexType name="pkcs11-libraryType">
+		<sequence>
+			<element name="platform" type="tns:platformType"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="platformType">
+		<sequence>
+			<element name="location" type="xs:string" minOccurs="1"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="match" type="xs:string" use="required" />
+		<attribute name="name" type="xs:string" use="required" />
+	</complexType>
+
+	<complexType name="identity-extractorType">
+		<sequence>
+			<any />
+		</sequence>
+		<attribute name="classname" type="xs:string" use="required" />
+	</complexType>
+
+</schema>
