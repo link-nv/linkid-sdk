@@ -15,21 +15,48 @@ import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
 
-public class TestSmartCard implements SmartCard {
+public class SoftwareSmartCard implements SmartCard {
+
+	private final String givenName;
+
+	private final String surname;
+
+	private final String street;
+
+	private final String postalCode;
+
+	private final String city;
+
+	private final PrivateKey authenticationPrivateKey;
+
+	private final X509Certificate authenticationCertificate;
+
+	public SoftwareSmartCard(final String givenName, final String surname,
+			final String street, final String postalCode, final String city,
+			final PrivateKey authenticationPrivateKey,
+			final X509Certificate authenticationCertificate) {
+		this.givenName = givenName;
+		this.surname = surname;
+		this.street = street;
+		this.postalCode = postalCode;
+		this.city = city;
+		this.authenticationPrivateKey = authenticationPrivateKey;
+		this.authenticationCertificate = authenticationCertificate;
+	}
 
 	public void close() {
 	}
 
 	public X509Certificate getAuthenticationCertificate() {
-		return null;
+		return this.authenticationCertificate;
 	}
 
 	public PrivateKey getAuthenticationPrivateKey() {
-		return null;
+		return this.authenticationPrivateKey;
 	}
 
 	public String getCity() {
-		return null;
+		return this.city;
 	}
 
 	public String getCountryCode() {
@@ -37,11 +64,11 @@ public class TestSmartCard implements SmartCard {
 	}
 
 	public String getGivenName() {
-		return null;
+		return this.givenName;
 	}
 
 	public String getPostalCode() {
-		return null;
+		return this.postalCode;
 	}
 
 	public X509Certificate getSignatureCertificate() {
@@ -53,11 +80,11 @@ public class TestSmartCard implements SmartCard {
 	}
 
 	public String getStreet() {
-		return null;
+		return this.street;
 	}
 
 	public String getSurname() {
-		return null;
+		return this.surname;
 	}
 
 	public void init(List<SmartCardConfig> smartCardConfigs) {

@@ -14,13 +14,20 @@
 
 	<complexType name="identity-statementType">
 		<sequence>
+			<element name="identity-data" type="tns:identity-dataType" />
+			<element ref="ds:Signature" />
+		</sequence>
+	</complexType>
+
+	<complexType name="identity-dataType">
+		<sequence>
 			<element name="given-name" type="xs:string" />
 			<element name="surname" type="xs:string" />
 			<element name="street" type="xs:string" />
 			<element name="postal-code" type="xs:string" />
 			<element name="city" type="xs:string" />
-			<element ref="ds:Signature" />
 		</sequence>
+		<attribute name="Id" type="xs:ID" use="required" />
 	</complexType>
 
 </schema>

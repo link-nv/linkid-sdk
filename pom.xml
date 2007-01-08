@@ -694,6 +694,16 @@
 				<version>${junit-addons.version}</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>${joda-time.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>bouncycastle</groupId>
+				<artifactId>bcprov-jdk15</artifactId>
+				<version>${bouncycastle.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -794,5 +804,7 @@
 		<commons-el.version>1.0</commons-el.version>
 		<xml-apis.version>1.0.b2</xml-apis.version>
 		<junit-addons.version>1.4</junit-addons.version>
+		<joda-time.version>1.4</joda-time.version>
+		<bouncycastle.version>135</bouncycastle.version>
 	</properties>
 </project>

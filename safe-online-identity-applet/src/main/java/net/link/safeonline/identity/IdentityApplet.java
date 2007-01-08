@@ -35,6 +35,12 @@ public class IdentityApplet extends JApplet {
 		String givenName = smartCard.getGivenName();
 		outputArea.append("given name: " + givenName + "\n");
 
+		IdentityStatementFactory identityStatementFactory = new IdentityStatementFactory();
+		String identityStatement = identityStatementFactory
+				.createIdentityStatement(smartCard);
+
+		outputArea.append("identity statement: " + identityStatement);
+
 		smartCard.close();
 	}
 }
