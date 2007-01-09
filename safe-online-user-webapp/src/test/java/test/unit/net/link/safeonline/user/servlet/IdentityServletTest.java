@@ -7,8 +7,21 @@
 
 package test.unit.net.link.safeonline.user.servlet;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
 import javax.servlet.http.HttpServletResponse;
 
+import junit.framework.TestCase;
+import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.user.servlet.IdentityServlet;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -16,6 +29,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mortbay.jetty.Connector;
@@ -25,8 +39,6 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletMapping;
-
-import junit.framework.TestCase;
 
 public class IdentityServletTest extends TestCase {
 
@@ -38,9 +50,38 @@ public class IdentityServletTest extends TestCase {
 
 	private HttpClient httpClient;
 
+	private CredentialService mockCredentialServiceBean;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+
+		System.setProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY,
+				"org.shiftone.ooc.InitialContextFactoryImpl");
+
+		InitialContext initialContext = new InitialContext();
+		NamingEnumeration<NameClassPair> list = initialContext.list("");
+		javax.naming.Context safeOnlineContext;
+		if (list.hasMore()) {
+			safeOnlineContext = (javax.naming.Context) initialContext
+					.lookup("SafeOnline");
+		} else {
+			safeOnlineContext = initialContext.createSubcontext("SafeOnline");
+		}
+		list = safeOnlineContext.list("");
+		javax.naming.Context credentialServiceBeanContext;
+		if (list.hasMore()) {
+			credentialServiceBeanContext = (javax.naming.Context) safeOnlineContext
+					.lookup("CredentialServiceBean");
+		} else {
+			credentialServiceBeanContext = safeOnlineContext
+					.createSubcontext("CredentialServiceBean");
+		}
+
+		this.mockCredentialServiceBean = createMock(CredentialService.class);
+		credentialServiceBeanContext.rebind("local",
+				this.mockCredentialServiceBean);
+
 		this.server = new Server();
 		Connector connector = new SelectChannelConnector();
 		connector.setPort(0);
@@ -110,10 +151,49 @@ public class IdentityServletTest extends TestCase {
 				"text/xml", null);
 		postMethod.setRequestEntity(requestEntity);
 
+		// expectations
+		this.mockCredentialServiceBean.mergeIdentityStatement("test-message");
+
+		// prepare
+		replay(this.mockCredentialServiceBean);
+
 		// operate
 		int result = this.httpClient.executeMethod(postMethod);
 
 		// verify
 		assertEquals(HttpServletResponse.SC_OK, result);
+		verify(this.mockCredentialServiceBean);
+	}
+
+	public void testJREOnlyClient() throws Exception {
+		// setup
+		URL url = new URL(this.location);
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url
+				.openConnection();
+
+		httpURLConnection.setRequestMethod("POST");
+		httpURLConnection.setAllowUserInteraction(false);
+		httpURLConnection.setRequestProperty("Content-type", "text/xml");
+		httpURLConnection.setDoOutput(true);
+		OutputStream outputStream = httpURLConnection.getOutputStream();
+		IOUtils.write("test-message", outputStream, null);
+		outputStream.close();
+		httpURLConnection.connect();
+
+		httpURLConnection.disconnect();
+
+		// expectations
+		this.mockCredentialServiceBean.mergeIdentityStatement("test-message");
+
+		// prepare
+		replay(this.mockCredentialServiceBean);
+
+		// operate
+		int responseCode = httpURLConnection.getResponseCode();
+
+		// verify
+		LOG.debug("response code: " + responseCode);
+		assertEquals(HttpServletResponse.SC_OK, responseCode);
+		verify(this.mockCredentialServiceBean);
 	}
 }

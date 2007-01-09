@@ -8,21 +8,48 @@
 package net.link.safeonline.user.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStream;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.util.ee.EjbUtils;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * The identity servlet implementation. This servlet receives its data from the
+ * BeID via the IdentityApplet.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class IdentityServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(IdentityServlet.class);
+
+	private CredentialService credentialService;
+
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+
+		loadCredentialService();
+	}
+
+	private void loadCredentialService() {
+		this.credentialService = EjbUtils.getEJB(
+				"SafeOnline/CredentialServiceBean/local",
+				CredentialService.class);
+	}
 
 	@Override
 	protected void doPost(HttpServletRequest request,
@@ -31,15 +58,20 @@ public class IdentityServlet extends HttpServlet {
 		String contentType = request.getContentType();
 		LOG.debug("content type: " + contentType);
 		if (false == "text/xml".equals(contentType)) {
+			LOG.error("content-type should be text/xml");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
 
-		response.setContentType("text/plain");
+		InputStream contentInputStream = request.getInputStream();
+		String identityStatementStr = IOUtils.toString(contentInputStream);
 
-		response.setStatus(HttpServletResponse.SC_OK);
-		PrintWriter writer = new PrintWriter(response.getOutputStream());
-		writer.println("Hello World");
-		writer.close();
+		try {
+			this.credentialService.mergeIdentityStatement(identityStatementStr);
+			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (Exception e) {
+			LOG.error("credential service error: " + e.getMessage(), e);
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
 	}
 }
