@@ -161,6 +161,7 @@
 		<module>safe-online-pkcs11-sc</module>
 		<module>safe-online-pkcs11-sc-beid</module>
 		<module>safe-online-identity-applet</module>
+		<module>safe-online-shared</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -704,6 +705,22 @@
 				<artifactId>bcprov-jdk15</artifactId>
 				<version>${bouncycastle.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-servlet-tester</artifactId>
+				<version>${jetty-servlet-tester.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-httpclient</groupId>
+				<artifactId>commons-httpclient</artifactId>
+				<version>${commons-httpclient.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -806,5 +823,10 @@
 		<junit-addons.version>1.4</junit-addons.version>
 		<joda-time.version>1.4</joda-time.version>
 		<bouncycastle.version>135</bouncycastle.version>
+		<jetty-servlet-tester.version>
+			6.1.0
+		</jetty-servlet-tester.version>
+		<commons-httpclient.version>3.0.1</commons-httpclient.version>
+		<jetty.version>6.1.0</jetty.version>
 	</properties>
 </project>

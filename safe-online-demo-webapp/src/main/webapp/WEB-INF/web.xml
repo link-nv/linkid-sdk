@@ -28,6 +28,18 @@
 		<url-pattern>/secure2/*</url-pattern>
 	</filter-mapping>
 
+	<servlet>
+		<servlet-name>CallbackServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.demo.servlet.CallbackServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CallbackServlet</servlet-name>
+		<url-pattern>/callback/*</url-pattern>
+	</servlet-mapping>
+
 	<security-constraint>
 		<display-name>SecurityConstraint</display-name>
 		<web-resource-collection>

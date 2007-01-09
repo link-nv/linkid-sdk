@@ -7,6 +7,7 @@
 
 package net.link.safeonline.demo;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,6 +47,9 @@ public class DemoApplet extends JApplet {
 				(byte) 0xA5, 0x03, 0x01, 0x01, 0x01, (byte) 0xAD, 0x13, 0x11 });
 
 		outputArea.append("Hello World\n");
+
+		String sessionId = this.getParameter("sessionid");
+		outputArea.append("session id: " + sessionId + "\n");
 
 		TerminalFactory terminalFactory = TerminalFactory.getDefault();
 
@@ -129,6 +133,10 @@ public class DemoApplet extends JApplet {
 				outputArea.append("card exception: " + e.getMessage() + "\n ");
 				return;
 			}
+
+			URL documentBase = this.getDocumentBase();
+			outputArea.append("document base: " + documentBase);
+			// HttpURLConnection connection = new HttpURLConnection();
 		}
 	}
 

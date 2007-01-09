@@ -16,5 +16,8 @@ application/container-collected credentials.</p>
 the site. This will trigger application-managed authentication via
 authentication service-collected credentials.</p>
 
+<p>Click <a href="./applet.jsp">here</a> to see a demo Java Applet
+in action.</p>
+
 </body>
 </html>
