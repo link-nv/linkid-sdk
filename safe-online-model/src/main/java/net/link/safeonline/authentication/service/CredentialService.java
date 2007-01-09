@@ -24,4 +24,6 @@ public interface CredentialService {
 
 	void changePassword(String oldPassword, String newPassword)
 			throws PermissionDeniedException;
+
+	void mergeIdentityStatement(String identityStatementStr);
 }

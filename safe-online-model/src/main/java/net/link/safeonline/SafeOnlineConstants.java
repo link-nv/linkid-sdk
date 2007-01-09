@@ -23,6 +23,10 @@ public class SafeOnlineConstants {
 
 	public static final String PASSWORD_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:password";
 
+	public static final String SURNAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:surname";
+
+	public static final String GIVENNAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:givenName";
+
 	private SafeOnlineConstants() {
 		// empty
 	}

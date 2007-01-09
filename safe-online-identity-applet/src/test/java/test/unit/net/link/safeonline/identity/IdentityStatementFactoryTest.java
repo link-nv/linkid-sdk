@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.identity;
 
+import java.io.File;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 
@@ -105,6 +106,11 @@ public class IdentityStatementFactoryTest extends TestCase {
 		XMLSignatureFactory factory = XMLSignatureFactory.getInstance("DOM");
 		XMLSignature signature = factory.unmarshalXMLSignature(validateContext);
 		assertTrue(signature.validate(validateContext));
+
+		if (false) {
+			File tmpFile = File.createTempFile("identity-statement-", ".xml");
+			DomTestUtils.saveDocument(resultDocument, tmpFile);
+		}
 
 		// verify: tampered signature
 		Node surnameNode = XPathAPI
