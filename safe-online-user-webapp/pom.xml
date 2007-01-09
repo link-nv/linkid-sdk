@@ -84,6 +84,7 @@
 			<artifactId>safe-online-model</artifactId>
 			<type>ejb-client</type>
 			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
