@@ -101,12 +101,12 @@ public class CredentialServiceBean implements CredentialService {
 
 	private void setOrOverrideAttribute(String attributeName, String login,
 			String value) {
-		AttributeEntity surnameAttribute = this.attributeDAO.findAttribute(
+		AttributeEntity attribute = this.attributeDAO.findAttribute(
 				attributeName, login);
-		if (null == surnameAttribute) {
+		if (null == attribute) {
 			this.attributeDAO.addAttribute(attributeName, login, value);
 		} else {
-			surnameAttribute.setStringValue(value);
+			attribute.setStringValue(value);
 		}
 	}
 

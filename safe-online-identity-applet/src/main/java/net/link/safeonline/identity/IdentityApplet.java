@@ -85,7 +85,6 @@ public class IdentityApplet extends JApplet implements Runnable {
 		}
 
 		output("Done.");
-		// TODO: open other document via default applet browser interface
 		AppletContext appletContext = getAppletContext();
 		URL documentBase = getDocumentBase();
 		appletContext.showDocument(documentBase);
