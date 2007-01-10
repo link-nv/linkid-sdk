@@ -14,7 +14,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 @Local
 public interface AttributeTypeDAO {
 
-	void addAttributeType(String name, String type);
+	void addAttributeType(AttributeTypeEntity attributeType);
 
 	AttributeTypeEntity findAttributeType(String name);
 }

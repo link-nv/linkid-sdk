@@ -23,6 +23,7 @@ import javax.security.auth.login.LoginContext;
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.CredentialService;
@@ -182,7 +183,7 @@ public class AuthenticationTest extends TestCase {
 		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
 		applicationService.registerApplicationOwner(appOwnerName, login);
 
-		Subject.doAs(subject, new PrivilegedExceptionAction() {
+		Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
 			public Object run() throws Exception {
 				String applicationName = "application-"
 						+ UUID.randomUUID().toString();
@@ -208,6 +209,12 @@ public class AuthenticationTest extends TestCase {
 				initialContext, "SafeOnline/ApplicationServiceBean/remote",
 				ApplicationService.class);
 		return applicationService;
+	}
+
+	private IdentityService getIdentityService(InitialContext initialContext) {
+		IdentityService identityService = EjbUtils.getEJB(initialContext,
+				"SafeOnline/IdentityServiceBean/remote", IdentityService.class);
+		return identityService;
 	}
 
 	public void testBigUseCase() throws Exception {
@@ -245,8 +252,10 @@ public class AuthenticationTest extends TestCase {
 
 		login(userLogin, userPassword);
 
-		identityService.saveName(userName);
-		String resultName = identityService.getName();
+		identityService.saveAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
+				userName);
+		String resultName = identityService
+				.findAttribute(SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(userName, resultName);
 
 		final CredentialService credentialService = getCredentialService(initialContext);
@@ -256,7 +265,8 @@ public class AuthenticationTest extends TestCase {
 		credentialService.changePassword(userPassword, newPassword);
 
 		login(userLogin, newPassword);
-		resultName = identityService.getName();
+		resultName = identityService
+				.findAttribute(SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(userName, resultName);
 
 		final SubscriptionService subscriptionService = getSubscriptionService(initialContext);
@@ -293,12 +303,6 @@ public class AuthenticationTest extends TestCase {
 		return credentialService;
 	}
 
-	/**
-	 * This test is known to fail when running under Java6 because of an issue
-	 * with the JVM class loader.
-	 * 
-	 * @throws Exception
-	 */
 	public void testCreateApplicationOwner() throws Exception {
 		InitialContext initialContext = getInitialContext();
 
@@ -401,5 +405,51 @@ public class AuthenticationTest extends TestCase {
 		// operate: get owned applications
 		login(login, password);
 		applicationService.getOwnedApplications();
+	}
+
+	public void testUserCannotRetrieveThePasswordAttribute() throws Exception {
+		// setup
+		InitialContext initialContext = getInitialContext();
+		setupLoginConfig();
+
+		// operate: register a new user
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = "password-" + UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		IdentityService identityService = getIdentityService(initialContext);
+
+		// operate: cannot retrieve password attribute
+		try {
+			identityService
+					.findAttribute(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
+			fail();
+		} catch (PermissionDeniedException e) {
+			// expected
+		}
+	}
+
+	public void testUserCannotEditThePasswordAttribute() throws Exception {
+		// setup
+		InitialContext initialContext = getInitialContext();
+		setupLoginConfig();
+
+		// operate: register a new user
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = "password-" + UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		IdentityService identityService = getIdentityService(initialContext);
+
+		// operate: cannot retrieve password attribute
+		try {
+			identityService.saveAttribute(
+					SafeOnlineConstants.PASSWORD_ATTRIBUTE, "test-password");
+			fail();
+		} catch (PermissionDeniedException e) {
+			// expected
+		}
 	}
 }

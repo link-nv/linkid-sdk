@@ -111,13 +111,17 @@ public class SystemInitializationStartableBean implements Startable {
 	static {
 		attributeTypes = new LinkedList<AttributeTypeEntity>();
 		attributeTypes.add(new AttributeTypeEntity(
-				SafeOnlineConstants.NAME_ATTRIBUTE, "string"));
+				SafeOnlineConstants.NAME_ATTRIBUTE, "string", true, true));
+		attributeTypes
+				.add(new AttributeTypeEntity(
+						SafeOnlineConstants.PASSWORD_ATTRIBUTE, "string",
+						false, false));
+		attributeTypes
+				.add(new AttributeTypeEntity(
+						SafeOnlineConstants.GIVENNAME_ATTRIBUTE, "string",
+						true, false));
 		attributeTypes.add(new AttributeTypeEntity(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, "string"));
-		attributeTypes.add(new AttributeTypeEntity(
-				SafeOnlineConstants.GIVENNAME_ATTRIBUTE, "string"));
-		attributeTypes.add(new AttributeTypeEntity(
-				SafeOnlineConstants.SURNAME_ATTRIBUTE, "string"));
+				SafeOnlineConstants.SURNAME_ATTRIBUTE, "string", true, false));
 
 		authorizedUsers = new HashMap<String, String>();
 		authorizedUsers.put("fcorneli", "secret");
@@ -220,8 +224,7 @@ public class SystemInitializationStartableBean implements Startable {
 					.getName())) {
 				continue;
 			}
-			this.attributeTypeDAO.addAttributeType(attributeType.getName(),
-					attributeType.getType());
+			this.attributeTypeDAO.addAttributeType(attributeType);
 		}
 	}
 

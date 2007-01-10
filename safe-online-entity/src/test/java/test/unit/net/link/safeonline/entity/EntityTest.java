@@ -223,7 +223,7 @@ public class EntityTest extends TestCase {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-login");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity("password",
-				"string");
+				"string", false, false);
 		AttributeEntity attribute = new AttributeEntity("password",
 				"test-login", "test-password");
 

@@ -57,6 +57,17 @@
 
 		<h1>Belgian eID</h1>
 
+		<table>
+			<tr>
+				<th>Given name:</th>
+				<td>${identity.givenName}</td>
+			</tr>
+			<tr>
+				<th>Surname:</th>
+				<td>${identity.surname}</td>
+			</tr>
+		</table>
+
 		<h:form>
 			<h:commandButton action="extract" id="extract"
 				value="Extract Identity" />

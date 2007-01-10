@@ -7,3 +7,73 @@ mvn clean install
 +---+
 
  Afterwards every project will have the artifacts available under their <<<target/>>> directory.
+ 
+ The following topics described patched versions of some 3th party libraries and build plugins required for building SafeOnline.
+
+
+* Jboss Remoting 1.4.5.GA and Java 6
+
+ <<<jboss-remoting.jar>>> that comes with JBoss AS 4.0.5.GA does not work with Java6.
+ 
+ This causes some of the integration tests to fail.
+ 
+ See also: {{http://jira.jboss.com/jira/browse/JBREM-659}}
+ 
+ A patched version has been upload to the <<<buildserver>>> repository under <<<org.jboss:jboss-remoting:1.4.5-safe-online>>>.
+ 
+ To recreate this patched version do:
+ 
++---+
+cvs -d:pserver:anonymous@anoncvs.forge.jboss.com:/cvsroot/jboss checkout -r remoting_1_4_5_GA JBossRemoting
+cd JBossRemoting
+patch -p0 < forname.patch
++---+
+
+ Where <<<forname.patch>>> contains:
+ 
++---+
+Index: ./src/main/org/jboss/remoting/loading/ObjectInputStreamWithClassLoader.java
+===================================================================
+RCS file: /cvsroot/jboss/JBossRemoting/src/main/org/jboss/remoting/loading/ObjectInputStreamWithClassLoader.java,v
+retrieving revision 1.2.4.1
+diff -u -r1.2.4.1 ObjectInputStreamWithClassLoader.java
+--- ./src/main/org/jboss/remoting/loading/ObjectInputStreamWithClassLoader.java 11 May 2006 20:39:42 -0000      1.2.4.1
++++ ./src/main/org/jboss/remoting/loading/ObjectInputStreamWithClassLoader.java 10 Jan 2007 14:18:32 -0000
+@@ -136,7 +136,8 @@
+          // EJBTHREE-440
+          try
+          {
+-            return cl.loadClass(v.getName());
++            // JBREM-659
++            return Class.forName(v.getName(), false, cl);
+          }
+          catch(ClassNotFoundException ex)
+          {
++---+
+
+ Now rebuild via:
+ 
++---+
+chmod +x build.sh
+./build.sh
++---+
+
+ And deploy to the <<<buildserver>>> Maven2 repository via:
+ 
++---+
+mvn deploy:deploy-file -Dfile=output/lib/jboss-remoting.jar -DgroupId=org.jboss \
+-DartifactId=jboss-remoting -Dversion=1.4.5-safe-online -DgeneratePom=true -Dpackaging=jar \
+-DrepositoryId=buildserver -Durl=scp://buildserver/maven2
++---+
+
+
+* Maven WAR Plugin
+
+ To be able to create web application containing Java applets one need to use a patched version of the <<<maven-war-plugin>>>.
+ 
+ A patched version of the Maven2 WAR plugin has been uploaded to the <<<buildserver>>> as <<<org.apache.maven.plugins:maven-war-plugin:2.0.3-safe-online>>>.
+ 
+ The patch is available at: {{http://jira.codehaus.org/browse/MWAR-18}}
+ 
+ Instructions to build the <<<maven-war-plugin>>> can be found at: {{http://maven.apache.org/plugins/maven-war-plugin/index.html}}
+ 

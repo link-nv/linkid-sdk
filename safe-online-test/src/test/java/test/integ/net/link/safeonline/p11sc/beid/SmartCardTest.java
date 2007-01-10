@@ -148,6 +148,7 @@ public class SmartCardTest extends TestCase {
 		assertTrue(enumerationResult.hasMoreElements());
 	}
 
+	@SuppressWarnings("unchecked")
 	public void testSchemaValidBeIDConfiguration() throws Exception {
 		URL url = SmartCardTest.class
 				.getResource("/META-INF/safe-online-pkcs11-sc-config.xml");

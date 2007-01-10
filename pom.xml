@@ -621,7 +621,8 @@
 			<dependency>
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-remoting</artifactId>
-				<version>${jboss.version}</version>
+				<!-- http://jira.jboss.com/jira/browse/JBREM-659 -->
+				<version>1.4.5-safe-online</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>

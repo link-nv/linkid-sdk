@@ -27,9 +27,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
-	public void addAttributeType(String name, String type) {
-		LOG.debug("add attribute type: " + name);
-		AttributeTypeEntity attributeType = new AttributeTypeEntity(name, type);
+	public void addAttributeType(AttributeTypeEntity attributeType) {
+		LOG.debug("add attribute type: " + attributeType.getName());
 		this.entityManager.persist(attributeType);
 	}
 

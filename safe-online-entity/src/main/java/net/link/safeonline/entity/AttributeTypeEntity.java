@@ -26,13 +26,20 @@ public class AttributeTypeEntity implements Serializable {
 
 	private String type;
 
+	private boolean userVisible;
+
+	private boolean userEditable;
+
 	public AttributeTypeEntity() {
 		// empty
 	}
 
-	public AttributeTypeEntity(String name, String type) {
+	public AttributeTypeEntity(String name, String type, boolean userVisible,
+			boolean userEditable) {
 		this.name = name;
 		this.type = type;
+		this.userVisible = userVisible;
+		this.userEditable = userEditable;
 	}
 
 	@Id
@@ -65,5 +72,21 @@ public class AttributeTypeEntity implements Serializable {
 		final AttributeTypeEntity rhs = (AttributeTypeEntity) obj;
 		return new EqualsBuilder().append(this.name, rhs.name).append(
 				this.type, rhs.type).isEquals();
+	}
+
+	public boolean isUserVisible() {
+		return this.userVisible;
+	}
+
+	public void setUserVisible(boolean userVisible) {
+		this.userVisible = userVisible;
+	}
+
+	public boolean isUserEditable() {
+		return this.userEditable;
+	}
+
+	public void setUserEditable(boolean userEditable) {
+		this.userEditable = userEditable;
 	}
 }

@@ -16,6 +16,8 @@ import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 
+import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.user.Identity;
 import net.link.safeonline.user.UserConstants;
@@ -52,7 +54,13 @@ public class IdentityBean implements Identity {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String getName() {
-		this.name = this.identityService.getName();
+		try {
+			this.name = this.identityService
+					.findAttribute(SafeOnlineConstants.NAME_ATTRIBUTE);
+		} catch (PermissionDeniedException e) {
+			LOG.error("user not allowed to view attribute: "
+					+ SafeOnlineConstants.NAME_ATTRIBUTE);
+		}
 		LOG.debug("get name: " + this.name);
 		return this.name;
 	}
@@ -65,12 +73,41 @@ public class IdentityBean implements Identity {
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String save() {
 		LOG.debug("save identity");
-		this.identityService.saveName(this.name);
+		try {
+			this.identityService.saveAttribute(
+					SafeOnlineConstants.NAME_ATTRIBUTE, this.name);
+		} catch (PermissionDeniedException e) {
+			LOG.error("user not allowed to edit attribute: "
+					+ SafeOnlineConstants.NAME_ATTRIBUTE);
+			return null;
+		}
 		return "success";
 	}
 
 	@Remove
 	@Destroy
 	public void destroyCallback() {
+	}
+
+	public String getGivenName() {
+		try {
+			return this.identityService
+					.findAttribute(SafeOnlineConstants.GIVENNAME_ATTRIBUTE);
+		} catch (PermissionDeniedException e) {
+			LOG.error("user not allowed to view attribute: "
+					+ SafeOnlineConstants.GIVENNAME_ATTRIBUTE);
+			return null;
+		}
+	}
+
+	public String getSurname() {
+		try {
+			return this.identityService
+					.findAttribute(SafeOnlineConstants.SURNAME_ATTRIBUTE);
+		} catch (PermissionDeniedException e) {
+			LOG.error("user not allowed to view attribute: "
+					+ SafeOnlineConstants.SURNAME_ATTRIBUTE);
+			return null;
+		}
 	}
 }
