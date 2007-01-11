@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.JApplet;
@@ -87,7 +88,21 @@ public class IdentityApplet extends JApplet implements Runnable {
 		output("Done.");
 		AppletContext appletContext = getAppletContext();
 		URL documentBase = getDocumentBase();
-		appletContext.showDocument(documentBase);
+		String targetPath = getParameter("TargetPath");
+		URL target = transformUrl(documentBase, targetPath);
+		appletContext.showDocument(target);
+	}
+
+	public static URL transformUrl(URL documentBase, String targetPath) {
+		String documentBaseStr = documentBase.toString();
+		int idx = documentBaseStr.lastIndexOf("/");
+		String identityUrlStr = documentBaseStr.substring(0, idx + 1)
+				+ targetPath;
+		try {
+			return new URL(identityUrlStr);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("URL error: " + e.getMessage());
+		}
 	}
 
 	private void sendIdentityStatement(String identityStatement)
@@ -95,7 +110,8 @@ public class IdentityApplet extends JApplet implements Runnable {
 		output("Sending identity statement...");
 		URL documentBase = getDocumentBase();
 		output("document base: " + documentBase);
-		URL url = new URL("http://localhost:8080/safe-online/identity/");
+		String identityServletPath = this.getParameter("IdentityServletPath");
+		URL url = transformUrl(documentBase, identityServletPath);
 		HttpURLConnection httpURLConnection = (HttpURLConnection) url
 				.openConnection();
 
