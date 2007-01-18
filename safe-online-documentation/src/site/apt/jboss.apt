@@ -15,8 +15,10 @@ SafeOnline JBoss Application Server
  Retrieve JEMS from http://labs.jboss.com/portal/jbossas/download/index.html
 
 +---+
-java -jar jems-installer-1.2.0.CR1.jar
+java -jar jems-installer-1.2.0.GA.jar
 +---+
+
+ Select the <<<Advanced>> installer option.
 
  Select the <<<ejb3>>> profile during installation. This is required as SafeOnline is using EJB3.
  

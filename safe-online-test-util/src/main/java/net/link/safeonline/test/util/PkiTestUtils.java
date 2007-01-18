@@ -2,7 +2,7 @@
  * SafeOnline project.
  * 
  * Copyright 2005-2006 Frank Cornelis.
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -18,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.security.spec.RSAKeyGenParameterSpec;
 
@@ -32,6 +33,7 @@ import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.jce.X509Principal;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.joda.time.DateTime;
 
@@ -39,6 +41,17 @@ public class PkiTestUtils {
 
 	private PkiTestUtils() {
 		// empty
+	}
+
+	static {
+		/*
+		 * XXX: It's possible that we need to do something similar later on
+		 * within the SafeOnline application itself, i.e., lifecycle management
+		 * of the BouncyCastle crypto provider.
+		 */
+		if (null == Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {
+			Security.addProvider(new BouncyCastleProvider());
+		}
 	}
 
 	public static KeyPair generateKeyPair() throws NoSuchAlgorithmException,

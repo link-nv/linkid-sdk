@@ -15,5 +15,7 @@
 		<mapping class="net.link.safeonline.entity.SubscriptionEntity" />
 		<mapping class="net.link.safeonline.entity.AttributeTypeEntity" />
 		<mapping class="net.link.safeonline.entity.AttributeEntity" />
+		<mapping class="net.link.safeonline.entity.TrustDomainEntity" />
+		<mapping class="net.link.safeonline.entity.TrustPointEntity" />
 	</session-factory>
 </hibernate-configuration>

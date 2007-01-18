@@ -1,14 +1,18 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package test.unit.net.link.safeonline.entity;
 
+import java.security.KeyPair;
+import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
@@ -25,7 +29,11 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.SubscriptionPK;
+import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.TrustPointEntity;
+import net.link.safeonline.entity.TrustPointPK;
 import net.link.safeonline.test.util.EntityTestManager;
+import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,10 +48,15 @@ public class EntityTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		this.entityTestManager = new EntityTestManager();
+		/*
+		 * If you add entities to this list, also add them to
+		 * safe-online-sql-ddl.
+		 */
 		this.entityTestManager.setUp(SubjectEntity.class,
 				ApplicationEntity.class, SubscriptionEntity.class,
 				HistoryEntity.class, ApplicationOwnerEntity.class,
-				AttributeTypeEntity.class, AttributeEntity.class);
+				AttributeTypeEntity.class, AttributeEntity.class,
+				TrustDomainEntity.class, TrustPointEntity.class);
 	}
 
 	@Override
@@ -242,5 +255,73 @@ public class EntityTest extends TestCase {
 		assertEquals("test-password", resultAttribute.getStringValue());
 		assertEquals(subject, resultAttribute.getSubject());
 		assertEquals(attributeType, resultAttribute.getAttributeType());
+	}
+
+	public void testTrustDomain() throws Exception {
+		// setup
+		String trustDomainName = "test-trust-domain-" + getName();
+		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(trustDomain);
+		LOG.debug("trust domain id: " + trustDomain.getId());
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		Query query = TrustDomainEntity.createQueryWhereName(entityManager,
+				trustDomainName);
+		TrustDomainEntity resultTrustDomain = (TrustDomainEntity) query
+				.getSingleResult();
+		LOG.debug("result trust domain: " + resultTrustDomain);
+		assertEquals(trustDomain, resultTrustDomain);
+
+		// operate & verify: unique constraint
+		TrustDomainEntity secondTrustDomain = new TrustDomainEntity(
+				trustDomainName);
+		entityManager = this.entityTestManager.refreshEntityManager();
+		entityManager.persist(secondTrustDomain);
+		try {
+			entityManager.flush();
+			fail();
+		} catch (EntityExistsException e) {
+			// expected
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void testTrustPoint() throws Exception {
+		// setup
+		String trustDomainName = "test-trust-domain-" + getName();
+		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName);
+
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		String dn = "CN=Test";
+		X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, dn);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(trustDomain);
+		TrustPointEntity trustPoint = new TrustPointEntity(trustDomain,
+				certificate);
+		entityManager.persist(trustPoint);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		TrustPointEntity resultTrustPoint = entityManager.find(
+				TrustPointEntity.class, new TrustPointPK(trustDomain, dn));
+		assertNotNull(resultTrustPoint);
+		assertEquals(trustPoint, resultTrustPoint);
+
+		// operate: query test
+		LOG.debug("trust domain Id: " + trustDomain.getId());
+		Query query = TrustPointEntity.createQueryWhereDomain(entityManager,
+				trustDomain);
+		List<TrustPointEntity> resultTrustPoints = query.getResultList();
+
+		// verify
+		assertEquals(1, resultTrustPoints.size());
+		assertEquals(resultTrustPoint, resultTrustPoints.get(0));
 	}
 }

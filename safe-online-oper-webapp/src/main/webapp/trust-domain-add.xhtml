@@ -11,11 +11,11 @@
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="applications" />
+			<ui:param name="subpage" value="pkix" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<h2>Add Application</h2>
+		<h2>Add Trust Domain</h2>
 		<h:form>
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
@@ -24,23 +24,11 @@
 				<tr>
 					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
 					<td><s:decorate>
-						<h:inputText id="name" value="#{application.name}" required="true" />
+						<h:inputText id="name" value="#{trustDomain.name}" required="true" />
 					</s:decorate>*<h:message for="name" styleClass="error" /></td>
 				</tr>
-				<tr>
-					<td><h:outputLabel for="owner" value="Application Owner" />:</td>
-					<td><s:decorate>
-						<h:inputText id="owner" value="#{application.applicationOwner}"
-							required="true" />
-					</s:decorate>*<h:message for="owner" styleClass="error" /></td>
-				</tr>
 			</table>
-			<h:panelGrid columns="1">
-				<h:outputLabel for="description" value="Description" />
-				<h:inputTextarea id="description" value="#{application.description}"
-					cols="60" rows="10" />
-			</h:panelGrid>
-			<h:commandButton action="#{application.add}" id="add" value="Add" />
+			<h:commandButton action="#{trustDomain.add}" id="add" value="Add" />
 			<so:nbsp />
 			<h:commandButton action="cancel" id="cancel" value="Cancel"
 				immediate="true" />

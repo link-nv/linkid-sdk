@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Operator</ui:define>
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="pkix" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+		<h1>Trust Domain: #{selectedTrustDomain.name}</h1>
+		<h1>Trust Point: #{selectedTrustPoint.pk.subjectName}</h1>
+
+		<table>
+			<tr>
+				<th>Subject:</th>
+				<td>#{selectedTrustPoint.pk.subjectName}</td>
+			</tr>
+			<tr>
+				<th>Issuer:</th>
+				<td>#{selectedTrustPoint.issuerName}</td>
+			</tr>
+			<tr>
+				<th>Version:</th>
+				<td>#{selectedTrustPoint.certificate.version}</td>
+			</tr>
+			<tr>
+				<th>Not Before:</th>
+				<td>#{selectedTrustPoint.certificate.notBefore}</td>
+			</tr>
+			<tr>
+				<th>Not After:</th>
+				<td>#{selectedTrustPoint.certificate.notAfter}</td>
+			</tr>
+			<tr>
+				<th>Serial Number:</th>
+				<td>#{selectedTrustPoint.certificate.serialNumber}</td>
+			</tr>
+		</table>
+
+		<h:outputText value="#{selectedTrustPoint.certificate}" />
+
+		<h:form>
+			<h:commandButton action="#{trustPoint.removeTrustPoint}" id="remove"
+				value="Remove" />
+			<so:nbsp />
+			<h:commandButton action="back" id="back" value="Back"
+				immediate="true" />
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{operLogin}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

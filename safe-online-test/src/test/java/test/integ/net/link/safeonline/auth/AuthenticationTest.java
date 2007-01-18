@@ -1,24 +1,18 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package test.integ.net.link.safeonline.auth;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 import java.security.PrivilegedExceptionAction;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.security.auth.Subject;
-import javax.security.auth.login.LoginContext;
 
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
@@ -37,7 +31,8 @@ import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.security.auth.callback.UsernamePasswordHandler;
+
+import test.accept.net.link.safeonline.IntegrationTestUtils;
 
 /**
  * Integration test for the SafeOnline authentication web service.
@@ -115,7 +110,8 @@ public class AuthenticationTest extends TestCase {
 	}
 
 	public void testAuthenticationOverRMI() throws Exception {
-		InitialContext initialContext = getInitialContext();
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
 
 		AuthenticationService authenticationService = getAuthenticationService(initialContext);
 
@@ -132,43 +128,12 @@ public class AuthenticationTest extends TestCase {
 		return authenticationService;
 	}
 
-	private void setupLoginConfig() throws Exception {
-		File tmpConfigFile = File.createTempFile("jaas-", ".conf");
-		tmpConfigFile.deleteOnExit();
-		PrintWriter configWriter = new PrintWriter(new FileOutputStream(
-				tmpConfigFile), true);
-		configWriter.println("client-login {");
-		configWriter.println("org.jboss.security.ClientLoginModule required");
-		configWriter.println(";");
-		configWriter.println("};");
-		configWriter.close();
-		System.setProperty("java.security.auth.login.config", tmpConfigFile
-				.getAbsolutePath());
-	}
-
-	@SuppressWarnings("unchecked")
-	private InitialContext getInitialContext() throws Exception {
-		Hashtable environment = new Hashtable();
-		environment.put(Context.INITIAL_CONTEXT_FACTORY,
-				"org.jnp.interfaces.NamingContextFactory");
-		environment.put(Context.PROVIDER_URL, "localhost:1099");
-		InitialContext initialContext = new InitialContext(environment);
-		return initialContext;
-	}
-
-	private Subject login(String username, String password) throws Exception {
-		LoginContext loginContext = new LoginContext("client-login",
-				new UsernamePasswordHandler(username, password));
-		loginContext.login();
-		Subject subject = loginContext.getSubject();
-		return subject;
-	}
-
 	public void testAddApplication() throws Exception {
 
-		InitialContext initialContext = getInitialContext();
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
 
-		setupLoginConfig();
+		IntegrationTestUtils.setupLoginConfig();
 
 		final ApplicationService applicationService = getApplicationService(initialContext);
 
@@ -178,7 +143,7 @@ public class AuthenticationTest extends TestCase {
 		String password = "password-" + UUID.randomUUID().toString();
 		userRegistrationService.registerUser(login, password, null);
 
-		Subject subject = login("admin", "admin");
+		Subject subject = IntegrationTestUtils.login("admin", "admin");
 
 		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
 		applicationService.registerApplicationOwner(appOwnerName, login);
@@ -218,9 +183,10 @@ public class AuthenticationTest extends TestCase {
 	}
 
 	public void testBigUseCase() throws Exception {
-		InitialContext initialContext = getInitialContext();
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
 
-		setupLoginConfig();
+		IntegrationTestUtils.setupLoginConfig();
 
 		final ApplicationService applicationService = getApplicationService(initialContext);
 
@@ -230,7 +196,7 @@ public class AuthenticationTest extends TestCase {
 		String ownerPassword = "password-" + UUID.randomUUID().toString();
 		userRegistrationService.registerUser(ownerLogin, ownerPassword, null);
 
-		login("admin", "admin");
+		IntegrationTestUtils.login("admin", "admin");
 
 		final String applicationName = "application-"
 				+ UUID.randomUUID().toString();
@@ -250,7 +216,7 @@ public class AuthenticationTest extends TestCase {
 		final IdentityService identityService = EjbUtils.getEJB(initialContext,
 				"SafeOnline/IdentityServiceBean/remote", IdentityService.class);
 
-		login(userLogin, userPassword);
+		IntegrationTestUtils.login(userLogin, userPassword);
 
 		identityService.saveAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
 				userName);
@@ -264,7 +230,7 @@ public class AuthenticationTest extends TestCase {
 
 		credentialService.changePassword(userPassword, newPassword);
 
-		login(userLogin, newPassword);
+		IntegrationTestUtils.login(userLogin, newPassword);
 		resultName = identityService
 				.findAttribute(SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(userName, resultName);
@@ -304,9 +270,10 @@ public class AuthenticationTest extends TestCase {
 	}
 
 	public void testCreateApplicationOwner() throws Exception {
-		InitialContext initialContext = getInitialContext();
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
 
-		setupLoginConfig();
+		IntegrationTestUtils.setupLoginConfig();
 
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
@@ -316,18 +283,18 @@ public class AuthenticationTest extends TestCase {
 
 		ApplicationService applicationService = getApplicationService(initialContext);
 
-		login("admin", "admin");
+		IntegrationTestUtils.login("admin", "admin");
 		String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
 		applicationService.registerApplicationOwner(appOwnerName, login);
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, appOwnerName, null);
 
-		login(login, password);
+		IntegrationTestUtils.login(login, password);
 		applicationService.setApplicationDescription(applicationName,
 				"test application description");
 
-		login("admin", "admin");
+		IntegrationTestUtils.login("admin", "admin");
 		try {
 			applicationService.registerApplicationOwner(appOwnerName, login);
 			fail();
@@ -339,8 +306,9 @@ public class AuthenticationTest extends TestCase {
 	public void testChangingApplicationDescriptionTriggersOwnershipCheck()
 			throws Exception {
 		// setup
-		InitialContext initialContext = getInitialContext();
-		setupLoginConfig();
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+		IntegrationTestUtils.setupLoginConfig();
 
 		// operate: register application owner admin user
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
@@ -349,7 +317,7 @@ public class AuthenticationTest extends TestCase {
 		userRegistrationService.registerUser(ownerLogin, ownerPassword, null);
 
 		// operate: create application owner
-		login("admin", "admin");
+		IntegrationTestUtils.login("admin", "admin");
 		String applicationOwnerName = "app-owner-"
 				+ UUID.randomUUID().toString();
 		ApplicationService applicationService = getApplicationService(initialContext);
@@ -362,7 +330,7 @@ public class AuthenticationTest extends TestCase {
 				applicationOwnerName, null);
 
 		// operate: change application description via application owner
-		login(ownerLogin, ownerPassword);
+		IntegrationTestUtils.login(ownerLogin, ownerPassword);
 		String applicationDescription = "An <b>application description</b>";
 		applicationService.setApplicationDescription(applicationName,
 				applicationDescription);
@@ -382,8 +350,9 @@ public class AuthenticationTest extends TestCase {
 
 	public void testCredentialCacheFlushOnSubscription() throws Exception {
 		// setup
-		InitialContext initialContext = getInitialContext();
-		setupLoginConfig();
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+		IntegrationTestUtils.setupLoginConfig();
 
 		// operate: register a new user
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
@@ -393,24 +362,25 @@ public class AuthenticationTest extends TestCase {
 
 		// operate: trigger JAAS on the core
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		login(login, password);
+		IntegrationTestUtils.login(login, password);
 		subscriptionService.getSubscriptions();
 
 		// operate: create application owner
 		ApplicationService applicationService = getApplicationService(initialContext);
-		login("admin", "admin");
+		IntegrationTestUtils.login("admin", "admin");
 		String applicationOwner = "owner-" + UUID.randomUUID().toString();
 		applicationService.registerApplicationOwner(applicationOwner, login);
 
 		// operate: get owned applications
-		login(login, password);
+		IntegrationTestUtils.login(login, password);
 		applicationService.getOwnedApplications();
 	}
 
 	public void testUserCannotRetrieveThePasswordAttribute() throws Exception {
 		// setup
-		InitialContext initialContext = getInitialContext();
-		setupLoginConfig();
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+		IntegrationTestUtils.setupLoginConfig();
 
 		// operate: register a new user
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
@@ -432,8 +402,9 @@ public class AuthenticationTest extends TestCase {
 
 	public void testUserCannotEditThePasswordAttribute() throws Exception {
 		// setup
-		InitialContext initialContext = getInitialContext();
-		setupLoginConfig();
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+		IntegrationTestUtils.setupLoginConfig();
 
 		// operate: register a new user
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);

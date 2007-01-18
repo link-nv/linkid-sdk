@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Operator</ui:define>
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="pkix" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+		<h1>Trust Domain: #{selectedTrustDomain.name}</h1>
+
+		<h:form>
+			<t:tree2 value="#{trustPoint.treeModel}" var="node"
+				clientSideToggle="false">
+				<f:facet name="root">
+					<h:outputText value="#{node.description}" />
+				</f:facet>
+				<f:facet name="node">
+					<h:commandLink action="#{trustPoint.view}">#{node.description}</h:commandLink>
+				</f:facet>
+			</t:tree2>
+
+			<h:commandButton action="add" id="add" value="Add" />
+			<so:nbsp />
+			<h:commandButton action="back" id="back" value="Back"
+				immediate="true" />
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{operLogin}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>
