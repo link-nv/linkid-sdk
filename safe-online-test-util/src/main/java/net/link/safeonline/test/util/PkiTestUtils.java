@@ -11,7 +11,9 @@ package net.link.safeonline.test.util;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URI;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -19,19 +21,24 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.security.SignatureException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.security.spec.RSAKeyGenParameterSpec;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
+import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.X509Extensions;
+import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
@@ -67,15 +74,19 @@ public class PkiTestUtils {
 	public static X509Certificate generateSelfSignedCertificate(
 			KeyPair keyPair, String dn, DateTime notBefore, DateTime notAfter,
 			String signatureAlgorithm, boolean caCert,
-			boolean timeStampingPurpose) {
+			boolean timeStampingPurpose) throws CertificateEncodingException,
+			InvalidKeyException, IllegalStateException,
+			NoSuchAlgorithmException, SignatureException, IOException {
 		X509Certificate certificate = generateCertificate(keyPair.getPublic(),
 				dn, keyPair.getPrivate(), null, notBefore, notAfter,
-				signatureAlgorithm, caCert, timeStampingPurpose);
+				signatureAlgorithm, caCert, timeStampingPurpose, null);
 		return certificate;
 	}
 
 	public static X509Certificate generateSelfSignedCertificate(
-			KeyPair keyPair, String dn) {
+			KeyPair keyPair, String dn) throws CertificateEncodingException,
+			InvalidKeyException, IllegalStateException,
+			NoSuchAlgorithmException, SignatureException, IOException {
 		DateTime now = new DateTime();
 		DateTime future = now.plusYears(10);
 		X509Certificate certificate = generateSelfSignedCertificate(keyPair,
@@ -87,7 +98,10 @@ public class PkiTestUtils {
 			PublicKey subjectPublicKey, String subjectDn,
 			PrivateKey issuerPrivateKey, X509Certificate issuerCert,
 			DateTime notBefore, DateTime notAfter, String signatureAlgorithm,
-			boolean caCert, boolean timeStampingPurpose) {
+			boolean caCert, boolean timeStampingPurpose, URI ocspUri)
+			throws IOException, CertificateEncodingException,
+			InvalidKeyException, IllegalStateException,
+			NoSuchAlgorithmException, SignatureException {
 		if (null == signatureAlgorithm) {
 			signatureAlgorithm = "SHA512WithRSAEncryption";
 		}
@@ -109,23 +123,17 @@ public class PkiTestUtils {
 		certificateGenerator.setSerialNumber(new BigInteger(128,
 				new SecureRandom()));
 
-		try {
-			certificateGenerator.addExtension(
-					X509Extensions.SubjectKeyIdentifier, false,
-					createSubjectKeyId(subjectPublicKey));
-			PublicKey issuerPublicKey;
-			if (null != issuerCert) {
-				issuerPublicKey = issuerCert.getPublicKey();
-			} else {
-				issuerPublicKey = subjectPublicKey;
-			}
-			certificateGenerator.addExtension(
-					X509Extensions.AuthorityKeyIdentifier, false,
-					createAuthorityKeyId(issuerPublicKey));
-		} catch (IOException e) {
-			throw new RuntimeException("error adding extensions: "
-					+ e.getMessage(), e);
+		certificateGenerator.addExtension(X509Extensions.SubjectKeyIdentifier,
+				false, createSubjectKeyId(subjectPublicKey));
+		PublicKey issuerPublicKey;
+		if (null != issuerCert) {
+			issuerPublicKey = issuerCert.getPublicKey();
+		} else {
+			issuerPublicKey = subjectPublicKey;
 		}
+		certificateGenerator.addExtension(
+				X509Extensions.AuthorityKeyIdentifier, false,
+				createAuthorityKeyId(issuerPublicKey));
 
 		certificateGenerator.addExtension(X509Extensions.BasicConstraints,
 				false, new BasicConstraints(caCert));
@@ -136,13 +144,18 @@ public class PkiTestUtils {
 							KeyPurposeId.id_kp_timeStamping)));
 		}
 
-		X509Certificate certificate;
-		try {
-			certificate = certificateGenerator.generate(issuerPrivateKey);
-		} catch (Exception e) {
-			throw new RuntimeException("certificate generator error: "
-					+ e.getMessage(), e);
+		if (null != ocspUri) {
+			GeneralName ocspName = new GeneralName(
+					GeneralName.uniformResourceIdentifier, ocspUri.toString());
+			AuthorityInformationAccess authorityInformationAccess = new AuthorityInformationAccess(
+					X509ObjectIdentifiers.ocspAccessMethod, ocspName);
+			certificateGenerator.addExtension(
+					X509Extensions.AuthorityInfoAccess.getId(), false,
+					authorityInformationAccess);
 		}
+
+		X509Certificate certificate = certificateGenerator
+				.generate(issuerPrivateKey);
 		return certificate;
 	}
 

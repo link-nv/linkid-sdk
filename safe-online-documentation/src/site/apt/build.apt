@@ -27,7 +27,7 @@ mvn clean install
  
 +---+
 mvn deploy:deploy-file -Dfile=output/lib/jboss-remoting.jar -DgroupId=org.jboss \
--DartifactId=jboss-remoting -Dversion=1.4.5-safe-online -DgeneratePom=true -Dpackaging=jar \
+-DartifactId=jboss-remoting -Dversion=1.4.6.GA -DgeneratePom=true -Dpackaging=jar \
 -DrepositoryId=buildserver -Durl=scp://buildserver/maven2
 +---+
 

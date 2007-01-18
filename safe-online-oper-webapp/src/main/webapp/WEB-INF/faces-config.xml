@@ -128,6 +128,22 @@
 			<from-outcome>view</from-outcome>
 			<to-view-id>/trust-point-view.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/trust-domain-edit.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/trust-domain-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/trust-domain.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/trust-domain.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>

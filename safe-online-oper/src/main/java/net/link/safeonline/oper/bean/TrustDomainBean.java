@@ -45,6 +45,8 @@ public class TrustDomainBean implements TrustDomain {
 
 	private String name;
 
+	private boolean performOcspCheck;
+
 	@In(create = true)
 	FacesMessages facesMessages;
 
@@ -57,7 +59,7 @@ public class TrustDomainBean implements TrustDomain {
 
 	@DataModelSelection("trustDomainList")
 	@Out(value = "selectedTrustDomain", required = false, scope = ScopeType.SESSION)
-	private TrustDomainEntity selectedtrustDomain;
+	private TrustDomainEntity selectedTrustDomain;
 
 	@Factory("trustDomainList")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -70,7 +72,7 @@ public class TrustDomainBean implements TrustDomain {
 	public String add() {
 		LOG.debug("add trust domain: " + this.name);
 		try {
-			this.pkiService.addTrustDomain(this.name);
+			this.pkiService.addTrustDomain(this.name, this.performOcspCheck);
 		} catch (ExistingTrustDomainException e) {
 			String msg = "existing trust domain";
 			LOG.debug(msg);
@@ -97,16 +99,26 @@ public class TrustDomainBean implements TrustDomain {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public boolean isPerformOcspCheck() {
+		return this.performOcspCheck;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setPerformOcspCheck(boolean performOcspCheck) {
+		this.performOcspCheck = performOcspCheck;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String view() {
-		LOG.debug("view selected trust domain: " + this.selectedtrustDomain);
+		LOG.debug("view selected trust domain: " + this.selectedTrustDomain);
 		return "view";
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String removeTrustDomain() {
-		LOG.debug("remove trust domain: " + this.selectedtrustDomain);
+		LOG.debug("remove trust domain: " + this.selectedTrustDomain);
 		try {
-			this.pkiService.removeTrustDomain(this.selectedtrustDomain
+			this.pkiService.removeTrustDomain(this.selectedTrustDomain
 					.getName());
 		} catch (TrustDomainNotFoundException e) {
 			String msg = "trust domain not found";

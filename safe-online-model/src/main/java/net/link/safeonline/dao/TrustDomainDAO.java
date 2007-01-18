@@ -19,7 +19,7 @@ public interface TrustDomainDAO {
 
 	List<TrustDomainEntity> getTrustDomains();
 
-	void addTrustDomain(String name);
+	void addTrustDomain(String name, boolean performOcspCheck);
 
 	TrustDomainEntity findTrustDomain(String name);
 

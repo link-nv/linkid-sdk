@@ -260,7 +260,8 @@ public class EntityTest extends TestCase {
 	public void testTrustDomain() throws Exception {
 		// setup
 		String trustDomainName = "test-trust-domain-" + getName();
-		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName);
+		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
+				true);
 
 		// operate
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -278,7 +279,7 @@ public class EntityTest extends TestCase {
 
 		// operate & verify: unique constraint
 		TrustDomainEntity secondTrustDomain = new TrustDomainEntity(
-				trustDomainName);
+				trustDomainName, true);
 		entityManager = this.entityTestManager.refreshEntityManager();
 		entityManager.persist(secondTrustDomain);
 		try {
@@ -293,7 +294,8 @@ public class EntityTest extends TestCase {
 	public void testTrustPoint() throws Exception {
 		// setup
 		String trustDomainName = "test-trust-domain-" + getName();
-		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName);
+		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
+				true);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		String dn = "CN=Test";

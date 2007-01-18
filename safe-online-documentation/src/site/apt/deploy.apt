@@ -30,6 +30,8 @@ mvn cargo:deploy
 mvn cargo:undeploy
 +---+
 
+ Hard deployment can be done by copying the deployable J2EE artifacts to <<<$JBOSS_HOME/server/default/deploy/>>>.
+
 
 * Demo Web application
 

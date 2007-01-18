@@ -57,7 +57,7 @@ public class PkiServiceBeanTest extends TestCase {
 
 		// stubs
 		TrustDomainEntity testTrustDomain = new TrustDomainEntity(
-				testTrustDomainName);
+				testTrustDomainName, true);
 		expect(this.mockTrustDomainDAO.getTrustDomain(testTrustDomainName))
 				.andStubReturn(testTrustDomain);
 		expect(this.mockTrustPointDAO.findTrustPoint(testTrustDomain, dn))
@@ -85,7 +85,7 @@ public class PkiServiceBeanTest extends TestCase {
 
 		// stubs
 		TrustDomainEntity testTrustDomain = new TrustDomainEntity(
-				testTrustDomainName);
+				testTrustDomainName, true);
 		expect(this.mockTrustDomainDAO.getTrustDomain(testTrustDomainName))
 				.andStubReturn(testTrustDomain);
 

@@ -47,12 +47,15 @@ public class TrustDomainEntity implements Serializable {
 
 	private String name;
 
+	private boolean performOcspCheck;
+
 	public TrustDomainEntity() {
 		// empty
 	}
 
-	public TrustDomainEntity(String name) {
+	public TrustDomainEntity(String name, boolean performOcspCheck) {
 		this.name = name;
+		this.performOcspCheck = performOcspCheck;
 	}
 
 	@Id
@@ -72,6 +75,20 @@ public class TrustDomainEntity implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Marks whether the certificate validator should perform an OCSP check when
+	 * OCSP access location information is available within a certificate.
+	 * 
+	 * @return
+	 */
+	public boolean isPerformOcspCheck() {
+		return this.performOcspCheck;
+	}
+
+	public void setPerformOcspCheck(boolean performOcspCheck) {
+		this.performOcspCheck = performOcspCheck;
 	}
 
 	public static Query createQueryWhereName(EntityManager entityManager,

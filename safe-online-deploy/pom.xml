@@ -39,6 +39,20 @@
 								true
 							</includeInApplicationXml>
 						</javaModule>
+						<javaModule>
+							<groupId>bouncycastle</groupId>
+							<artifactId>bcprov-jdk15</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</javaModule>
+						<javaModule>
+							<groupId>commons-io</groupId>
+							<artifactId>commons-io</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</javaModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-entity</artifactId>
@@ -309,6 +323,14 @@
 		<dependency>
 			<groupId>org.apache.myfaces.tomahawk</groupId>
 			<artifactId>tomahawk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>bouncycastle</groupId>
+			<artifactId>bcprov-jdk15</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>

@@ -19,10 +19,6 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.security.SecurityDomain;
-
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.CertificateEncodingException;
 import net.link.safeonline.authentication.exception.ExistingTrustDomainException;
@@ -35,6 +31,10 @@ import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.service.PkiService;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -56,13 +56,14 @@ public class PkiServiceBean implements PkiService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void addTrustDomain(String name) throws ExistingTrustDomainException {
+	public void addTrustDomain(String name, boolean performOcspCheck)
+			throws ExistingTrustDomainException {
 		TrustDomainEntity existingTrustDomain = this.trustDomainDAO
 				.findTrustDomain(name);
 		if (null != existingTrustDomain) {
 			throw new ExistingTrustDomainException();
 		}
-		this.trustDomainDAO.addTrustDomain(name);
+		this.trustDomainDAO.addTrustDomain(name, performOcspCheck);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -92,7 +93,6 @@ public class PkiServiceBean implements PkiService {
 		if (null != existingTrustPoint) {
 			throw new ExistingTrustPointException();
 		}
-		// TODO: validate the certificate first
 		this.trustPointDAO.addTrustPoint(trustDomain, certificate);
 	}
 
@@ -141,5 +141,15 @@ public class PkiServiceBean implements PkiService {
 		TrustDomainEntity trustDomain = this.trustDomainDAO
 				.getTrustDomain(trustDomainName);
 		return trustDomain;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void saveTrustDomain(TrustDomainEntity trustDomain)
+			throws TrustDomainNotFoundException {
+		LOG.debug("save trust domain: " + trustDomain);
+		TrustDomainEntity attachedTrustDomain = this.trustDomainDAO
+				.getTrustDomain(trustDomain.getName());
+		attachedTrustDomain.setPerformOcspCheck(trustDomain
+				.isPerformOcspCheck());
 	}
 }

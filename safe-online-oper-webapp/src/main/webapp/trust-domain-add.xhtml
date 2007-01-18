@@ -20,6 +20,7 @@
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
+
 			<table>
 				<tr>
 					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
@@ -28,6 +29,15 @@
 					</s:decorate>*<h:message for="name" styleClass="error" /></td>
 				</tr>
 			</table>
+
+			<h:panelGrid columns="1">
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="performOcspCheck"
+						value="#{trustDomain.performOcspCheck}" />
+					<h:outputText value="Perform OCSP Check" />
+				</h:panelGroup>
+			</h:panelGrid>
+
 			<h:commandButton action="#{trustDomain.add}" id="add" value="Add" />
 			<so:nbsp />
 			<h:commandButton action="cancel" id="cancel" value="Cancel"

@@ -3,6 +3,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
@@ -14,40 +15,22 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<h1>Trust Domain: #{selectedTrustDomain.name}</h1>
-
+		<h2>Edit Trust Domain: #{selectedTrustDomain.name}</h2>
 		<h:form>
+			<h:panelGrid columns="1">
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="performOcspCheck"
+						value="#{editTrustDomain.performOcspCheck}" />
+					<h:outputText value="Perform OCSP Check" />
+				</h:panelGroup>
+			</h:panelGrid>
 
-			<h2>Properties</h2>
-
-			<table>
-				<tr>
-					<th>Perform OCSP check:</th>
-					<td>#{selectedTrustDomain.performOcspCheck}</td>
-				</tr>
-			</table>
-
-			<h2>Content</h2>
-
-			<t:tree2 value="#{trustPoint.treeModel}" var="node"
-				clientSideToggle="false">
-				<f:facet name="root">
-					<h:outputText value="#{node.description}" />
-				</f:facet>
-				<f:facet name="node">
-					<h:commandLink action="#{trustPoint.view}">#{node.description}</h:commandLink>
-				</f:facet>
-			</t:tree2>
-
-			<h:commandButton action="add" id="add" value="Add" />
+			<h:commandButton action="#{editTrustDomain.save}" id="save"
+				value="Save" />
 			<so:nbsp />
-			<h:commandButton action="#{editTrustDomain.edit}" id="edit"
-				value="Edit" />
-			<so:nbsp />
-			<h:commandButton action="back" id="back" value="Back"
-				immediate="true" />
+			<h:commandButton action="#{editTrustDomain.cancel}" id="cancel"
+				value="Cancel" />
 		</h:form>
-
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">

@@ -4,6 +4,8 @@ IDE
 
  <<Do not commit IDE project files in subversion!>>
 
+ Prevent this via <<<svn propedit svn:ignore .>>>
+ 
 
 * Eclipse
 

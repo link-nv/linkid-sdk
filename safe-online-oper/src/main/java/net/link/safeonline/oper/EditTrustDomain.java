@@ -10,21 +10,15 @@ package net.link.safeonline.oper;
 import javax.ejb.Local;
 
 @Local
-public interface TrustDomain {
+public interface EditTrustDomain {
 
-	void trustDomainListFactory();
-
-	String view();
+	String edit();
 
 	void destroyCallback();
 
-	String getName();
+	String save();
 
-	void setName(String name);
-
-	String add();
-
-	String removeTrustDomain();
+	String cancel();
 
 	boolean isPerformOcspCheck();
 
