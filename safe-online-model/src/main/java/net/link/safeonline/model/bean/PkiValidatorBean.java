@@ -88,6 +88,10 @@ public class PkiValidatorBean implements PkiValidator {
 		 * Stupid.
 		 */
 
+		if (null == certificate) {
+			throw new IllegalArgumentException("certificate is null");
+		}
+
 		LOG.debug("validate certificate "
 				+ certificate.getSubjectX500Principal() + " in domain "
 				+ trustDomainName);
@@ -138,6 +142,9 @@ public class PkiValidatorBean implements PkiValidator {
 
 		List<TrustPointEntity> trustPointPath = new LinkedList<TrustPointEntity>();
 
+		LOG.debug("build path for cert: "
+				+ certificate.getSubjectX500Principal());
+
 		X500Principal currentRootCertificateIssuer = certificate
 				.getIssuerX500Principal();
 		while (true) {
@@ -146,12 +153,26 @@ public class PkiValidatorBean implements PkiValidator {
 			if (null == matchingTrustPoint) {
 				break;
 			}
+			LOG.debug("found path node: "
+					+ matchingTrustPoint.getCertificate()
+							.getSubjectX500Principal());
 			trustPointPath.add(0, matchingTrustPoint);
 			currentRootCertificateIssuer = matchingTrustPoint.getCertificate()
 					.getIssuerX500Principal();
+			if (isSelfIssued(matchingTrustPoint.getCertificate())) {
+				break;
+			}
 		}
 
+		LOG.debug("path construction completed");
 		return trustPointPath;
+	}
+
+	private boolean isSelfIssued(X509Certificate certificate) {
+		X500Principal issuer = certificate.getIssuerX500Principal();
+		X500Principal subject = certificate.getSubjectX500Principal();
+		boolean result = subject.equals(issuer);
+		return result;
 	}
 
 	boolean verifyPath(TrustDomainEntity trustDomain,
@@ -170,6 +191,8 @@ public class PkiValidatorBean implements PkiValidator {
 
 		for (TrustPointEntity trustPoint : trustPointPath) {
 			X509Certificate trustPointCertificate = trustPoint.getCertificate();
+			LOG.debug("verifying: "
+					+ trustPointCertificate.getSubjectX500Principal());
 			if (false == checkValidity(trustPointCertificate)) {
 				return false;
 			}
@@ -187,6 +210,7 @@ public class PkiValidatorBean implements PkiValidator {
 			return false;
 		}
 		if (true == performOcspCheck) {
+			LOG.debug("performing OCSP check");
 			if (false == performOcspCheck(certificate, issuerCertificate)) {
 				return false;
 			}
@@ -415,6 +439,9 @@ public class PkiValidatorBean implements PkiValidator {
 			certificate.verify(issuerPublicKey);
 		} catch (InvalidKeyException e) {
 			LOG.debug("invalid key");
+			/*
+			 * This can occcur if a root certificate was not self-signed.
+			 */
 			return false;
 		} catch (CertificateException e) {
 			LOG.debug("cert error: " + e.getMessage());
