@@ -58,7 +58,7 @@ public class PkiServiceTest extends TestCase {
 				.getTrustDomains();
 		int origSize = trustDomains.size();
 		LOG.debug("number of trust domains: " + origSize);
-		this.pkiService.addTrustDomain(trustDomainName);
+		this.pkiService.addTrustDomain(trustDomainName, true);
 		trustDomains = this.pkiService.getTrustDomains();
 		assertEquals(origSize + 1, trustDomains.size());
 		boolean containsAddedTrustDomain = false;
@@ -72,7 +72,7 @@ public class PkiServiceTest extends TestCase {
 
 		// operate: adding twice does not work
 		try {
-			this.pkiService.addTrustDomain(trustDomainName);
+			this.pkiService.addTrustDomain(trustDomainName, true);
 			fail();
 		} catch (Exception e) {
 			// expected
@@ -112,7 +112,7 @@ public class PkiServiceTest extends TestCase {
 
 		// operate: add trust domain
 		IntegrationTestUtils.login("admin", "admin");
-		this.pkiService.addTrustDomain(trustDomainName);
+		this.pkiService.addTrustDomain(trustDomainName, true);
 
 		// operate: add trust point
 		this.pkiService
