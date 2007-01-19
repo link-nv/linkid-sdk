@@ -33,14 +33,12 @@ public class SimplePrincipal implements Principal {
 		return this.username;
 	}
 
-	/*
-	 * This method is required to be able to remove the principal from the
-	 * subject on logout. (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
+		/*
+		 * This method is required to be able to remove the principal from the
+		 * subject on logout.
+		 */
 		if (this == obj) {
 			return true;
 		}

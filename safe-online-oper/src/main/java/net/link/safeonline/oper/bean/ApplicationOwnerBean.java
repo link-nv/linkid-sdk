@@ -35,7 +35,8 @@ import org.jboss.seam.core.FacesMessages;
 
 @Stateful
 @Name("applicationOwner")
-@LocalBinding(jndiBinding = "SafeOnline/oper/ApplicationOwnerBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
+		+ "ApplicationOwnerBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class ApplicationOwnerBean implements ApplicationOwner {
 

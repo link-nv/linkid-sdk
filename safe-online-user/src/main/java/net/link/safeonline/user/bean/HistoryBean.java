@@ -24,7 +24,7 @@ import org.jboss.seam.annotations.Name;
 
 @Stateless
 @Name("history")
-@LocalBinding(jndiBinding = "SafeOnline/user/HistoryBean/local")
+@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "HistoryBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 public class HistoryBean implements History {
 

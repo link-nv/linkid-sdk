@@ -41,7 +41,8 @@ import org.jboss.seam.core.FacesMessages;
 
 @Stateful
 @Name("subscriptions")
-@LocalBinding(jndiBinding = "SafeOnline/user/SubscriptionsBean/local")
+@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX
+		+ "SubscriptionsBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 public class SubscriptionsBean implements Subscriptions {
 

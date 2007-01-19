@@ -9,6 +9,10 @@ package net.link.safeonline.authentication.service.bean;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.Key;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -18,6 +22,19 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.crypto.AlgorithmMethod;
+import javax.xml.crypto.KeySelector;
+import javax.xml.crypto.KeySelectorException;
+import javax.xml.crypto.KeySelectorResult;
+import javax.xml.crypto.MarshalException;
+import javax.xml.crypto.XMLCryptoContext;
+import javax.xml.crypto.XMLStructure;
+import javax.xml.crypto.dsig.XMLSignature;
+import javax.xml.crypto.dsig.XMLSignatureException;
+import javax.xml.crypto.dsig.XMLSignatureFactory;
+import javax.xml.crypto.dsig.dom.DOMValidateContext;
+import javax.xml.crypto.dsig.keyinfo.KeyInfo;
+import javax.xml.crypto.dsig.keyinfo.X509Data;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,6 +48,9 @@ import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.model.PkiProviderManager;
+import net.link.safeonline.model.PkiValidator;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
 
@@ -38,6 +58,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -52,6 +73,12 @@ public class CredentialServiceBean implements CredentialService {
 
 	@EJB
 	private AttributeDAO attributeDAO;
+
+	@EJB
+	private PkiProviderManager pkiProviderManager;
+
+	@EJB
+	private PkiValidator pkiValidator;
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void changePassword(String oldPassword, String newPassword)
@@ -132,8 +159,109 @@ public class CredentialServiceBean implements CredentialService {
 		} catch (IOException e) {
 			throw new RuntimeException("IO error: " + e.getMessage(), e);
 		}
-		// TODO: verify integrity (need PKI component for this)
+
+		NodeList signatureNodeList = document.getElementsByTagNameNS(
+				XMLSignature.XMLNS, "Signature");
+		if (0 == signatureNodeList.getLength()) {
+			String msg = "no signature found in identity statement";
+			LOG.debug(msg);
+			throw new IllegalArgumentException(msg);
+		}
+
+		DOMValidateContext validateContext = new DOMValidateContext(
+				new LocalKeySelector(), signatureNodeList.item(0));
+		XMLSignatureFactory factory = XMLSignatureFactory.getInstance("DOM");
+		XMLSignature signature;
+		try {
+			signature = factory.unmarshalXMLSignature(validateContext);
+		} catch (MarshalException e) {
+			throw new IllegalArgumentException("marshal error: "
+					+ e.getMessage());
+		}
+		try {
+			if (false == signature.validate(validateContext)) {
+				throw new IllegalArgumentException("invalid signature");
+			}
+		} catch (XMLSignatureException e) {
+			throw new IllegalArgumentException("XML signature error: "
+					+ e.getMessage());
+		}
+
+		X509Certificate certificate = findX509Certificate(signature
+				.getKeyInfo());
+		TrustDomainEntity trustDomain = this.pkiProviderManager
+				.findTrustDomain(certificate);
+		if (null == trustDomain) {
+			throw new IllegalArgumentException(
+					"no appropriate PKI provider found");
+		}
+
+		boolean verificationResult = this.pkiValidator.validateCertificate(
+				trustDomain, certificate);
+		if (false == verificationResult) {
+			throw new IllegalArgumentException("invalid certificate");
+		}
+
 		return document;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static X509Certificate findX509Certificate(KeyInfo keyInfo) {
+		List<XMLStructure> keyInfoContent = keyInfo.getContent();
+		for (XMLStructure keyInfoXmlStructure : keyInfoContent) {
+			if (keyInfoXmlStructure instanceof X509Data) {
+				X509Data x509Data = (X509Data) keyInfoXmlStructure;
+				List<Object> x509DataContent = x509Data.getContent();
+				for (Object x509DataObject : x509DataContent) {
+					if (x509DataObject instanceof X509Certificate) {
+						X509Certificate certificate = (X509Certificate) x509DataObject;
+						return certificate;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private static class LocalKeySelector extends KeySelector {
+
+		private static final Log LOG = LogFactory
+				.getLog(LocalKeySelector.class);
+
+		@Override
+		public KeySelectorResult select(KeyInfo keyInfo, Purpose purpose,
+				AlgorithmMethod method, XMLCryptoContext context)
+				throws KeySelectorException {
+			LOG.debug("select key");
+			if (null == keyInfo) {
+				throw new KeySelectorException("Null KeyInfo object!");
+			}
+			X509Certificate certificate = findX509Certificate(keyInfo);
+			if (null == certificate) {
+				throw new KeySelectorException(
+						"no appropriate key info entry found");
+			}
+			LOG
+					.debug("key info cert: "
+							+ certificate.getSubjectX500Principal());
+			KeySelectorResult result = new LocalKeySelectorResult(certificate
+					.getPublicKey());
+			return result;
+
+		}
+	}
+
+	private static class LocalKeySelectorResult implements KeySelectorResult {
+
+		private final PublicKey publicKey;
+
+		public LocalKeySelectorResult(PublicKey publicKey) {
+			this.publicKey = publicKey;
+		}
+
+		public Key getKey() {
+			return this.publicKey;
+		}
 	}
 
 	@SuppressWarnings("unchecked")

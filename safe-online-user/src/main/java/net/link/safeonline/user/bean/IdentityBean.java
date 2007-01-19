@@ -31,7 +31,7 @@ import org.jboss.seam.annotations.Name;
 
 @Stateful
 @Name("identity")
-@LocalBinding(jndiBinding = "SafeOnline/user/IdentityBean/local")
+@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "IdentityBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 public class IdentityBean implements Identity {
 

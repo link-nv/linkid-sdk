@@ -34,7 +34,7 @@ import org.jboss.seam.core.FacesMessages;
 
 @Stateful
 @Name("passwordBean")
-@LocalBinding(jndiBinding = "SafeOnline/user/PasswordBean/local")
+@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "PasswordBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 public class PasswordBean implements Password {
 

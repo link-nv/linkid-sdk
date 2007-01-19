@@ -40,7 +40,8 @@ import org.jboss.seam.core.FacesMessages;
 
 @Stateful
 @Name("application")
-@LocalBinding(jndiBinding = "SafeOnline/oper/ApplicationBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
+		+ "ApplicationBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class ApplicationBean implements Application {
 

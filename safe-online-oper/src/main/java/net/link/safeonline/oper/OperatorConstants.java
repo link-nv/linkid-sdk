@@ -16,4 +16,6 @@ public class OperatorConstants {
 	public static final String SAFE_ONLINE_OPER_SECURITY_DOMAIN = "safe-online-oper";
 
 	public static final String OPERATOR_ROLE = "operator";
+
+	public static final String JNDI_PREFIX = "SafeOnline/oper/";
 }

@@ -16,4 +16,6 @@ public class OwnerConstants {
 	public static final String SAFE_ONLINE_OWNER_SECURITY_DOMAIN = "safe-online-owner";
 
 	public static final String OWNER_ROLE = "owner";
+
+	public static final String JNDI_PREFIX = "SafeOnline/owner/";
 }

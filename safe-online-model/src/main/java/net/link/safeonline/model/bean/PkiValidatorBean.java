@@ -38,8 +38,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.security.auth.x500.X500Principal;
 
-import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
-import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
@@ -75,13 +73,10 @@ public class PkiValidatorBean implements PkiValidator {
 	private static final Log LOG = LogFactory.getLog(PkiValidatorBean.class);
 
 	@EJB
-	private TrustDomainDAO trustDomainDAO;
-
-	@EJB
 	private TrustPointDAO trustPointDAO;
 
-	public boolean validateCertificate(String trustDomainName,
-			X509Certificate certificate) throws TrustDomainNotFoundException {
+	public boolean validateCertificate(TrustDomainEntity trustDomain,
+			X509Certificate certificate) {
 		/*
 		 * We don't use the JDK certificate path builder API here, since it
 		 * doesn't bring anything but unnecessary complexity. Keep It Simple,
@@ -94,9 +89,7 @@ public class PkiValidatorBean implements PkiValidator {
 
 		LOG.debug("validate certificate "
 				+ certificate.getSubjectX500Principal() + " in domain "
-				+ trustDomainName);
-		TrustDomainEntity trustDomain = this.trustDomainDAO
-				.getTrustDomain(trustDomainName);
+				+ trustDomain.getName());
 
 		List<TrustPointEntity> trustPointPath = buildTrustPointPath(
 				trustDomain, certificate);

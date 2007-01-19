@@ -43,7 +43,8 @@ import org.jboss.seam.core.FacesMessages;
 
 @Stateful
 @Name("trustPoint")
-@LocalBinding(jndiBinding = "SafeOnline/oper/TrustPointBean/local")
+@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
+		+ "TrustPointBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class TrustPointBean implements TrustPoint {
 

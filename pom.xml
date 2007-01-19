@@ -121,6 +121,11 @@
 					<artifactId>cargo-maven2-plugin</artifactId>
 					<version>${cargo-maven2-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>com.sun.tools.xjc.maven2</groupId>
+					<artifactId>maven-jaxb-plugin</artifactId>
+					<version>${maven-jaxb-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -784,8 +789,8 @@
 		<commons-logging.version>1.1</commons-logging.version>
 		<log4j.version>1.2.14</log4j.version>
 		<activation.version>1.1</activation.version>
-		<stax-ex.version>1.0-SNAPSHOT</stax-ex.version>
-		<streambuffer.version>0.2</streambuffer.version>
+		<stax-ex.version>1.0</stax-ex.version>
+		<streambuffer.version>0.3</streambuffer.version>
 		<easymock.version>2.2</easymock.version>
 		<maven-ear-plugin.version>
 			2.3-SNAPSHOT
@@ -858,5 +863,6 @@
 		<trinidad-impl.version>
 			incubator-m1-SNAPSHOT
 		</trinidad-impl.version>
+		<maven-jaxb-plugin.version>1.1</maven-jaxb-plugin.version>
 	</properties>
 </project>

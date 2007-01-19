@@ -12,6 +12,7 @@ import javax.ejb.Stateful;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.ctrl.bean.LoginBaseBean;
 import net.link.safeonline.user.Login;
+import net.link.safeonline.user.UserConstants;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.ejb.cache.simple.CacheConfig;
@@ -35,7 +36,7 @@ import org.jboss.seam.annotations.Scope;
 @Name("login")
 @Scope(ScopeType.SESSION)
 @CacheConfig(idleTimeoutSeconds = (5 + 1) * 60)
-@LocalBinding(jndiBinding = "SafeOnline/user/LoginBean/local")
+@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "LoginBean/local")
 public class LoginBean extends LoginBaseBean implements Login {
 
 	public LoginBean() {

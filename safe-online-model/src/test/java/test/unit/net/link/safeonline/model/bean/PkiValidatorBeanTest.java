@@ -9,9 +9,9 @@
 package test.unit.net.link.safeonline.model.bean;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.easymock.EasyMock.expect;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
-import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
@@ -41,6 +40,7 @@ import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.asn1.x509.CRLReason;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.ocsp.BasicOCSPResp;
 import org.bouncycastle.ocsp.BasicOCSPRespGenerator;
@@ -51,6 +51,7 @@ import org.bouncycastle.ocsp.OCSPReq;
 import org.bouncycastle.ocsp.OCSPResp;
 import org.bouncycastle.ocsp.OCSPRespGenerator;
 import org.bouncycastle.ocsp.Req;
+import org.bouncycastle.ocsp.RevokedStatus;
 import org.bouncycastle.util.encoders.Hex;
 import org.joda.time.DateTime;
 import org.mortbay.jetty.Connector;
@@ -68,8 +69,6 @@ public class PkiValidatorBeanTest extends TestCase {
 
 	private PkiValidatorBean testedInstance;
 
-	private TrustDomainDAO mockTrustDomainDAO;
-
 	private TrustPointDAO mockTrustPointDAO;
 
 	private Server server;
@@ -82,10 +81,8 @@ public class PkiValidatorBeanTest extends TestCase {
 
 		this.testedInstance = new PkiValidatorBean();
 
-		this.mockTrustDomainDAO = createMock(TrustDomainDAO.class);
 		this.mockTrustPointDAO = createMock(TrustPointDAO.class);
 
-		EJBTestUtils.inject(this.testedInstance, this.mockTrustDomainDAO);
 		EJBTestUtils.inject(this.testedInstance, this.mockTrustPointDAO);
 		EJBTestUtils.init(this.testedInstance);
 
@@ -216,20 +213,18 @@ public class PkiValidatorBeanTest extends TestCase {
 		List<TrustPointEntity> trustPoints = new LinkedList<TrustPointEntity>();
 
 		// stubs
-		expect(this.mockTrustDomainDAO.getTrustDomain(trustDomainName))
-				.andStubReturn(trustDomain);
 		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 
 		// prepare
-		replay(this.mockTrustDomainDAO, this.mockTrustPointDAO);
+		replay(this.mockTrustPointDAO);
 
 		// operate
-		boolean result = this.testedInstance.validateCertificate(
-				trustDomainName, certificate);
+		boolean result = this.testedInstance.validateCertificate(trustDomain,
+				certificate);
 
 		// verify
-		verify(this.mockTrustDomainDAO, this.mockTrustPointDAO);
+		verify(this.mockTrustPointDAO);
 		assertFalse(result);
 	}
 
@@ -237,7 +232,8 @@ public class PkiValidatorBeanTest extends TestCase {
 			throws Exception {
 		// operate & verify
 		try {
-			this.testedInstance.validateCertificate("trust-domain", null);
+			this.testedInstance.validateCertificate(new TrustDomainEntity(),
+					null);
 			fail();
 		} catch (IllegalArgumentException e) {
 			// expected
@@ -268,22 +264,65 @@ public class PkiValidatorBeanTest extends TestCase {
 		trustPoints.add(new TrustPointEntity(trustDomain, caCertificate));
 
 		// stubs
-		expect(this.mockTrustDomainDAO.getTrustDomain(trustDomainName))
-				.andStubReturn(trustDomain);
 		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 
 		// prepare
-		replay(this.mockTrustDomainDAO, this.mockTrustPointDAO);
+		replay(this.mockTrustPointDAO);
 
 		// operate
-		boolean result = this.testedInstance.validateCertificate(
-				trustDomainName, certificate);
+		boolean result = this.testedInstance.validateCertificate(trustDomain,
+				certificate);
 
 		// verify
-		verify(this.mockTrustDomainDAO, this.mockTrustPointDAO);
+		verify(this.mockTrustPointDAO);
 		assertTrue(result);
 		assertTrue(TestOcspResponderServlet.hasBeenCalled());
+	}
+
+	public void testValidateCertificateFailsIfOCSPRevokes() throws Exception {
+		// setup
+		TestOcspResponderServlet.setCertificateStatus(new RevokedStatus(
+				new Date(), CRLReason.keyCompromise));
+
+		KeyPair caKeyPair = PkiTestUtils.generateKeyPair();
+		DateTime now = new DateTime();
+		DateTime caNotBefore = now.minusDays(10);
+		DateTime caNotAfter = now.plusDays(10);
+		X509Certificate caCertificate = PkiTestUtils
+				.generateSelfSignedCertificate(caKeyPair, "CN=TestCA",
+						caNotBefore, caNotAfter, null, true, false);
+
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		DateTime notBefore = now.minusDays(1);
+		DateTime notAfter = now.plusDays(1);
+		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair
+				.getPublic(), "CN=Test", caKeyPair.getPrivate(), caCertificate,
+				notBefore, notAfter, null, false, false, this.ocspUri);
+
+		String trustDomainName = "test-trust-domain";
+		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
+				true);
+		List<TrustPointEntity> trustPoints = new LinkedList<TrustPointEntity>();
+		trustPoints.add(new TrustPointEntity(trustDomain, caCertificate));
+
+		// stubs
+		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
+				.andStubReturn(trustPoints);
+
+		// prepare
+		replay(this.mockTrustPointDAO);
+
+		// operate
+		boolean result = this.testedInstance.validateCertificate(trustDomain,
+				certificate);
+
+		// verify
+		verify(this.mockTrustPointDAO);
+		assertFalse(result);
+		assertTrue(TestOcspResponderServlet.hasBeenCalled());
+
+		TestOcspResponderServlet.setCertificateStatus(CertificateStatus.GOOD);
 	}
 
 	public void testValidateCertificateRootCaAndInterCa() throws Exception {
@@ -320,20 +359,18 @@ public class PkiValidatorBeanTest extends TestCase {
 		trustPoints.add(new TrustPointEntity(trustDomain, interCaCertificate));
 
 		// stubs
-		expect(this.mockTrustDomainDAO.getTrustDomain(trustDomainName))
-				.andStubReturn(trustDomain);
 		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 
 		// prepare
-		replay(this.mockTrustDomainDAO, this.mockTrustPointDAO);
+		replay(this.mockTrustPointDAO);
 
 		// operate
-		boolean result = this.testedInstance.validateCertificate(
-				trustDomainName, certificate);
+		boolean result = this.testedInstance.validateCertificate(trustDomain,
+				certificate);
 
 		// verify
-		verify(this.mockTrustDomainDAO, this.mockTrustPointDAO);
+		verify(this.mockTrustPointDAO);
 		assertTrue(result);
 		assertTrue(TestOcspResponderServlet.hasBeenCalled());
 	}
@@ -365,20 +402,18 @@ public class PkiValidatorBeanTest extends TestCase {
 		trustPoints.add(new TrustPointEntity(trustDomain, caCertificate));
 
 		// stubs
-		expect(this.mockTrustDomainDAO.getTrustDomain(trustDomainName))
-				.andStubReturn(trustDomain);
 		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 
 		// prepare
-		replay(this.mockTrustDomainDAO, this.mockTrustPointDAO);
+		replay(this.mockTrustPointDAO);
 
 		// operate
-		boolean result = this.testedInstance.validateCertificate(
-				trustDomainName, certificate);
+		boolean result = this.testedInstance.validateCertificate(trustDomain,
+				certificate);
 
 		// verify
-		verify(this.mockTrustDomainDAO, this.mockTrustPointDAO);
+		verify(this.mockTrustPointDAO);
 		assertFalse(result);
 	}
 
@@ -395,8 +430,15 @@ public class PkiValidatorBeanTest extends TestCase {
 
 		private static boolean called;
 
+		private static CertificateStatus certificateStatus = CertificateStatus.GOOD;
+
+		public static void setCertificateStatus(
+				CertificateStatus certificateStatus) {
+			TestOcspResponderServlet.certificateStatus = certificateStatus;
+		}
+
 		public static boolean hasBeenCalled() {
-			return called;
+			return TestOcspResponderServlet.called;
 		}
 
 		@Override
@@ -440,10 +482,9 @@ public class PkiValidatorBeanTest extends TestCase {
 				LOG.debug("issuer key hash: "
 						+ new String(Hex.encode(certificateID
 								.getIssuerKeyHash())));
-				CertificateStatus certificateStatus = CertificateStatus.GOOD;
 				basicOCSPRespGenerator.addResponse(certificateID,
-						certificateStatus);
-				called = true;
+						TestOcspResponderServlet.certificateStatus);
+				TestOcspResponderServlet.called = true;
 			}
 
 			try {
@@ -497,7 +538,7 @@ public class PkiValidatorBeanTest extends TestCase {
 			}
 			this.ocspResponderPrivateKey = keyPair.getPrivate();
 
-			called = false;
+			TestOcspResponderServlet.called = false;
 		}
 	}
 }

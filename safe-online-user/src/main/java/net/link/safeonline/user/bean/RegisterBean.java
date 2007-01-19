@@ -17,6 +17,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.user.Register;
+import net.link.safeonline.user.UserConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,7 +37,7 @@ import org.jboss.seam.core.FacesMessages;
  */
 @Stateful
 @Name("register")
-@LocalBinding(jndiBinding = "SafeOnline/user/RegisterBean/local")
+@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "RegisterBean/local")
 public class RegisterBean implements Register {
 
 	private static final Log LOG = LogFactory.getLog(RegisterBean.class);
