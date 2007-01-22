@@ -46,6 +46,7 @@
 			<location>
 				C:\WINDOWS\system32\Belgium Identity Card PKCS11.dll
 			</location>
+			<location>c:\WINDOWS\system32\beidpkcs11.dll</location>
 		</platform>
 		<platform match="Windows 2000" name="Microsoft Windows 2000">
 			<location>
@@ -57,11 +58,13 @@
 			<location>
 				C:\WINDOWS\system32\Belgium Identity Card PKCS11.dll
 			</location>
+			<location>c:\WINDOWS\system32\beidpkcs11.dll</location>
 		</platform>
 		<platform match="Windows.*" name="Microsoft Windows Platform">
 			<location>
 				C:\WINDOWS\system32\Belgium Identity Card PKCS11.dll
 			</location>
+			<location>c:\WINDOWS\system32\beidpkcs11.dll</location>
 		</platform>
 		<platform match="Mac OS X" name="Apple Mac OS X">
 			<location>

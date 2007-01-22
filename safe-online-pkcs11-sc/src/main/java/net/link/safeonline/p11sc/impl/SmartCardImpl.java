@@ -358,7 +358,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 			}
 		} catch (CardException e) {
 			LOG.error("card error: " + e.getMessage());
-			return null;
+			throw new RuntimeException("card error: " + e.getMessage());
 		}
 		return null;
 	}
