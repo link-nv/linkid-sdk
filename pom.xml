@@ -131,6 +131,11 @@
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>${maven-jar-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugin</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>${maven-assembly-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -870,5 +875,8 @@
 		</trinidad-impl.version>
 		<maven-jaxb-plugin.version>1.1</maven-jaxb-plugin.version>
 		<maven-jar-plugin.version>2.1</maven-jar-plugin.version>
+		<maven-assembly-plugin.version>
+			2.1
+		</maven-assembly-plugin.version>
 	</properties>
 </project>

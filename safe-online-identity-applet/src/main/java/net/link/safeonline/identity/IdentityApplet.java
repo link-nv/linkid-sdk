@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import javax.swing.JApplet;
 import javax.swing.JScrollPane;
@@ -21,6 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
 import net.link.safeonline.p11sc.impl.XmlSmartCardConfigFactory;
@@ -59,10 +61,24 @@ public class IdentityApplet extends JApplet implements Runnable {
 		SmartCard smartCard = SmartCardFactory.newInstance();
 
 		SmartCardConfigFactory configFactory = new XmlSmartCardConfigFactory();
-		smartCard.init(configFactory.getSmartCardConfigs());
+		List<SmartCardConfig> smartCardConfigs = configFactory
+				.getSmartCardConfigs();
+		smartCard.init(smartCardConfigs);
+		for (SmartCardConfig smartCardConfig : smartCardConfigs) {
+			output("smart card config available for: "
+					+ smartCardConfig.getCardAlias());
+		}
 
 		output("Connecting to smart card...");
-		smartCard.open();
+		String osName = System.getProperty("os.name");
+		output("os name: " + osName);
+		try {
+			smartCard.open();
+		} catch (Exception e) {
+			output("error opening the smart card: " + e.getMessage());
+			output("error type: " + e.getClass().getName());
+			return;
+		}
 
 		String givenName = smartCard.getGivenName();
 		String surname = smartCard.getSurname();

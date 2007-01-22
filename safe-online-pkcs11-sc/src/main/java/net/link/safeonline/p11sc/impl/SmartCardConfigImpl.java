@@ -114,6 +114,8 @@ public class SmartCardConfigImpl implements SmartCardConfig {
 			List<String> driverLocations) {
 		Pkcs11Platform platform = new Pkcs11Platform(platformMatch);
 		for (String driverLocation : driverLocations) {
+			// SOS-2: auto-reformatting XML config file can yield whitespaces
+			driverLocation = driverLocation.trim();
 			platform.addDriverLocation(driverLocation);
 		}
 		this.pkcs11DriverLocations.add(platform);

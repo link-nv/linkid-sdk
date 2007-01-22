@@ -24,8 +24,10 @@ import javax.xml.bind.Unmarshaller;
 import junit.framework.TestCase;
 import net.lin_k.safe_online.pkcs11_sc_config._1.ObjectFactory;
 import net.lin_k.safe_online.pkcs11_sc_config._1.Pkcs11ScConfigType;
+import net.link.safeonline.identity.IdentityStatementFactory;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
+import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
 import net.link.safeonline.p11sc.impl.XmlSmartCardConfigFactory;
 
@@ -193,6 +195,52 @@ public class SmartCardTest extends TestCase {
 			}
 		} finally {
 			pkcs11.C_Finalize(null);
+		}
+	}
+
+	public void testIdentityStatement() throws Exception {
+		SmartCard smartCard = SmartCardFactory.newInstance();
+
+		SmartCardConfigFactory configFactory = new XmlSmartCardConfigFactory();
+		smartCard.init(configFactory.getSmartCardConfigs());
+
+		LOG.debug("Connecting to smart card...");
+		smartCard.open();
+
+		String givenName = smartCard.getGivenName();
+		String surname = smartCard.getSurname();
+		LOG.debug("given name: " + givenName);
+		LOG.debug("surname: " + surname);
+
+		LOG.debug("Creating identity statement...");
+		IdentityStatementFactory identityStatementFactory = new IdentityStatementFactory();
+		String identityStatement = identityStatementFactory
+				.createIdentityStatement(smartCard);
+
+		LOG.debug("Disconnecting from smart card...");
+		smartCard.close();
+
+		LOG.debug("identity statement: " + identityStatement);
+	}
+
+	public void testSmartCardConfigForWindowsXP() throws Exception {
+		SmartCardConfigFactory smartCardConfigFactory = new XmlSmartCardConfigFactory();
+		List<SmartCardConfig> smartCardConfigs = smartCardConfigFactory
+				.getSmartCardConfigs();
+		LOG.debug("number of smart card configs: " + smartCardConfigs.size());
+		assertEquals(1, smartCardConfigs.size());
+		SmartCardConfig smartCardConfig = smartCardConfigs.get(0);
+		LOG.debug("smart card config: " + smartCardConfig.getCardAlias());
+		assertEquals("beid", smartCardConfig.getCardAlias());
+
+		String testPlatform = "Windows XP";
+		List<File> pkcs11DriverLocations = smartCardConfig
+				.getPkcs11DriverLocations(testPlatform);
+		LOG.debug("number of PKCS11 driver for platform " + testPlatform
+				+ " = " + pkcs11DriverLocations.size());
+		for (File pkcs11DriverLocation : pkcs11DriverLocations) {
+			LOG.debug("PKCS#11 driver location: " + pkcs11DriverLocation
+					+ " exists " + pkcs11DriverLocation.exists());
 		}
 	}
 }
