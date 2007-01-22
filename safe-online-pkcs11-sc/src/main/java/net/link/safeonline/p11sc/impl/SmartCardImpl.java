@@ -55,7 +55,7 @@ import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
-	private static final Log LOG = LogFactory.getLog(SmartCardImpl.class);
+	private static Log LOG = LogFactory.getLog(SmartCardImpl.class);
 
 	private List<SmartCardConfig> smartCardConfigs;
 
@@ -357,7 +357,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 				}
 			}
 		} catch (CardException e) {
-			LOG.error("card error: " + e.getMessage());
+			LOG.error("card error: " + e.getMessage(), e);
 			throw new RuntimeException("card error: " + e.getMessage(), e);
 		}
 		return null;
@@ -454,5 +454,9 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
 	public String getStreet() {
 		return this.street;
+	}
+
+	public static void setLog(Log log) {
+		SmartCardImpl.LOG = log;
 	}
 }

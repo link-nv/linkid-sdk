@@ -21,10 +21,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.logging.Log;
+
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
+import net.link.safeonline.p11sc.impl.SmartCardImpl;
 import net.link.safeonline.p11sc.impl.XmlSmartCardConfigFactory;
 
 public class IdentityApplet extends JApplet implements Runnable {
@@ -59,6 +62,8 @@ public class IdentityApplet extends JApplet implements Runnable {
 	public void run() {
 		output("Loading smart card component...");
 		SmartCard smartCard = SmartCardFactory.newInstance();
+
+		setupLogging(smartCard);
 
 		SmartCardConfigFactory configFactory = new XmlSmartCardConfigFactory();
 		List<SmartCardConfig> smartCardConfigs = configFactory
@@ -107,6 +112,86 @@ public class IdentityApplet extends JApplet implements Runnable {
 		String targetPath = getParameter("TargetPath");
 		URL target = transformUrl(documentBase, targetPath);
 		appletContext.showDocument(target);
+	}
+
+	private void setupLogging(SmartCard smartCard) {
+		Log log = new AppletLog();
+		SmartCardImpl.setLog(log);
+	}
+
+	private class AppletLog implements Log {
+
+		public void debug(Object message) {
+			IdentityApplet.this.output("DEBUG: " + message);
+		}
+
+		public void debug(Object message, Throwable t) {
+			IdentityApplet.this.output("DEBUG: " + message);
+		}
+
+		public void error(Object message) {
+			IdentityApplet.this.output("ERROR: " + message);
+		}
+
+		public void error(Object message, Throwable t) {
+			IdentityApplet.this.output("ERROR: " + message);
+		}
+
+		public void fatal(Object message) {
+			IdentityApplet.this.output("FATAL: " + message);
+		}
+
+		public void fatal(Object message, Throwable t) {
+			IdentityApplet.this.output("FATAL: " + message);
+		}
+
+		public void info(Object message) {
+			IdentityApplet.this.output("INFO: " + message);
+		}
+
+		public void info(Object message, Throwable t) {
+			IdentityApplet.this.output("INFO: " + message);
+		}
+
+		public boolean isDebugEnabled() {
+			return true;
+		}
+
+		public boolean isErrorEnabled() {
+			return true;
+		}
+
+		public boolean isFatalEnabled() {
+			return true;
+		}
+
+		public boolean isInfoEnabled() {
+			return true;
+		}
+
+		public boolean isTraceEnabled() {
+			return true;
+		}
+
+		public boolean isWarnEnabled() {
+			return true;
+		}
+
+		public void trace(Object message) {
+			IdentityApplet.this.output("TRACE: " + message);
+		}
+
+		public void trace(Object message, Throwable t) {
+			IdentityApplet.this.output("TRACE: " + message);
+		}
+
+		public void warn(Object message) {
+			IdentityApplet.this.output("WARN: " + message);
+		}
+
+		public void warn(Object message, Throwable t) {
+			IdentityApplet.this.output("WARN: " + message);
+		}
 	}
 
 	public static URL transformUrl(URL documentBase, String targetPath) {
