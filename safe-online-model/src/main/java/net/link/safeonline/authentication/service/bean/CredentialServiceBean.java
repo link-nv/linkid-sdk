@@ -137,7 +137,7 @@ public class CredentialServiceBean implements CredentialService {
 		}
 	}
 
-	private Document verifyIntegrity(String identityStatementStr) {
+	private Document getDocument(String documentStr) {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
 				.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
@@ -148,17 +148,20 @@ public class CredentialServiceBean implements CredentialService {
 			throw new RuntimeException(
 					"parser config error: " + e.getMessage(), e);
 		}
-		InputSource inputSource = new InputSource(new StringReader(
-				identityStatementStr));
-		Document document;
+		InputSource inputSource = new InputSource(new StringReader(documentStr));
 		try {
-			document = documentBuilder.parse(inputSource);
+			Document document = documentBuilder.parse(inputSource);
+			return document;
 		} catch (SAXException e) {
 			throw new IllegalArgumentException("identity statement error: "
 					+ e.getMessage());
 		} catch (IOException e) {
 			throw new RuntimeException("IO error: " + e.getMessage(), e);
 		}
+	}
+
+	private Document verifyIntegrity(String identityStatementStr) {
+		Document document = getDocument(identityStatementStr);
 
 		NodeList signatureNodeList = document.getElementsByTagNameNS(
 				XMLSignature.XMLNS, "Signature");
@@ -189,6 +192,13 @@ public class CredentialServiceBean implements CredentialService {
 
 		X509Certificate certificate = findX509Certificate(signature
 				.getKeyInfo());
+		KeySelectorResult keySelectorResult = signature.getKeySelectorResult();
+		if (false == keySelectorResult.getKey().equals(
+				certificate.getPublicKey())) {
+			throw new RuntimeException(
+					"verification key should correspond with the certificate");
+		}
+
 		TrustDomainEntity trustDomain = this.pkiProviderManager
 				.findTrustDomain(certificate);
 		if (null == trustDomain) {
@@ -201,6 +211,8 @@ public class CredentialServiceBean implements CredentialService {
 		if (false == verificationResult) {
 			throw new IllegalArgumentException("invalid certificate");
 		}
+
+		// TODO: check that the correct document node has been signed
 
 		return document;
 	}

@@ -86,6 +86,7 @@ public class PkiValidatorBeanTest extends TestCase {
 		EJBTestUtils.inject(this.testedInstance, this.mockTrustPointDAO);
 		EJBTestUtils.init(this.testedInstance);
 
+		// TODO: move to safe-online-test-util
 		this.server = new Server();
 		Connector connector = new SelectChannelConnector();
 		connector.setPort(0);
