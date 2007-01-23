@@ -38,51 +38,6 @@
 					<verbose>true</verbose>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>keytool-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>genkey</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<keystore>
-						${project.build.directory}/keystore.jks
-					</keystore>
-					<dname>
-						cn=SafeOnline Development, ou=Development,
-						L=SINT-MARTENS-LATEM, ST=VL, o=LIN.K_NV, c=BE
-					</dname>
-					<keypass>secret</keypass>
-					<storepass>secret</storepass>
-					<alias>test</alias>
-					<verbose>true</verbose>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<keystore>
-						${project.build.directory}/keystore.jks
-					</keystore>
-					<alias>test</alias>
-					<storepass>secret</storepass>
-					<keypass>secret</keypass>
-					<verify>true</verify>
-					<verbose>true</verbose>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 	<dependencies>

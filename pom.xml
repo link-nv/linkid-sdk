@@ -136,6 +136,13 @@
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>${maven-assembly-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugin</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>
+						${maven-dependency-plugin.version}
+					</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -178,6 +185,7 @@
 		<module>safe-online-identity-applet</module>
 		<module>safe-online-shared</module>
 		<module>safe-online-model-beid</module>
+		<module>safe-online-identity-applet-package</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -879,5 +887,8 @@
 		<maven-assembly-plugin.version>
 			2.1
 		</maven-assembly-plugin.version>
+		<maven-dependency-plugin.version>
+			2.0-alpha-1
+		</maven-dependency-plugin.version>
 	</properties>
 </project>

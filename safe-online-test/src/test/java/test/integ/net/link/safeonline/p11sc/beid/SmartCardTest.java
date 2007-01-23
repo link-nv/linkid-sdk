@@ -15,6 +15,9 @@ import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.smartcardio.Card;
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.CardTerminals;
 import javax.smartcardio.TerminalFactory;
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
@@ -74,6 +77,18 @@ public class SmartCardTest extends TestCase {
 
 		terminalFactory = TerminalFactory.getDefault();
 		assertEquals(1, terminalFactory.terminals().list().size());
+	}
+
+	public void testSmartCardAPIConnect() throws Exception {
+		TerminalFactory terminalFactory = TerminalFactory.getDefault();
+		CardTerminals cardTerminals = terminalFactory.terminals();
+		List<CardTerminal> cardTerminalList = cardTerminals.list();
+		for (CardTerminal cardTerminal : cardTerminalList) {
+			LOG.debug("card terminal: " + cardTerminal.getName());
+			Card card = cardTerminal.connect("T=0");
+			LOG.debug("protocol: " + card.getProtocol());
+			card.disconnect(true);
+		}
 	}
 
 	public void testIsBeIDCardPresent() throws Exception {
