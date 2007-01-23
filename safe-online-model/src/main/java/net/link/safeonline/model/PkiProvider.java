@@ -21,8 +21,12 @@ import javax.ejb.Local;
 @Local
 public interface PkiProvider {
 
+	public static String PKI_PROVIDER_JNDI = "SafeOnline/pkix";
+
 	/**
-	 * Determines whether this PKI provider could process the given certificate.
+	 * Determines whether this PKI provider COULD process the given certificate.
+	 * This method should not perform a complete certificate validation, that's
+	 * up to the PKI validator component.
 	 * 
 	 * @param certificate
 	 * @return

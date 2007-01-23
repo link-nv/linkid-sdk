@@ -177,6 +177,7 @@
 		<module>safe-online-pkcs11-sc-beid</module>
 		<module>safe-online-identity-applet</module>
 		<module>safe-online-shared</module>
+		<module>safe-online-model-beid</module>
 	</modules>
 	<repositories>
 		<repository>

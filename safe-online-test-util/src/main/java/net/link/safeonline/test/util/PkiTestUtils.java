@@ -10,6 +10,7 @@ package net.link.safeonline.test.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URI;
 import java.security.InvalidAlgorithmParameterException;
@@ -23,9 +24,12 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.RSAKeyGenParameterSpec;
 
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERSequence;
@@ -157,6 +161,27 @@ public class PkiTestUtils {
 		X509Certificate certificate = certificateGenerator
 				.generate(issuerPrivateKey);
 		return certificate;
+	}
+
+	public static X509Certificate loadCertificate(InputStream inputStream)
+			throws CertificateException {
+		CertificateFactory certificateFactory = CertificateFactory
+				.getInstance("X.509");
+		X509Certificate certificate = (X509Certificate) certificateFactory
+				.generateCertificate(inputStream);
+		return certificate;
+	}
+
+	public static X509Certificate loadCertificateFromResource(
+			String resourceName) throws CertificateException {
+		InputStream inputStream = PkiTestUtils.class
+				.getResourceAsStream(resourceName);
+		try {
+			X509Certificate certificate = loadCertificate(inputStream);
+			return certificate;
+		} finally {
+			IOUtils.closeQuietly(inputStream);
+		}
 	}
 
 	private static SubjectKeyIdentifier createSubjectKeyId(PublicKey publicKey)

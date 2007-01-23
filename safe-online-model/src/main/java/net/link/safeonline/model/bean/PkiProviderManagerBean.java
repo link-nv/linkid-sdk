@@ -62,9 +62,9 @@ public class PkiProviderManagerBean implements PkiProviderManager {
 		try {
 			InitialContext initialContext = new InitialContext();
 			Context context = (Context) initialContext
-					.lookup(PKI_PROVIDER_JNDI);
+					.lookup(PkiProvider.PKI_PROVIDER_JNDI);
 			NamingEnumeration<NameClassPair> result = initialContext
-					.list(PKI_PROVIDER_JNDI);
+					.list(PkiProvider.PKI_PROVIDER_JNDI);
 			while (result.hasMore()) {
 				NameClassPair nameClassPair = result.next();
 				String objectName = nameClassPair.getName();

@@ -22,8 +22,6 @@ import net.link.safeonline.entity.TrustDomainEntity;
 @Local
 public interface PkiProviderManager {
 
-	public static String PKI_PROVIDER_JNDI = "SafeOnline/pkix";
-
 	/**
 	 * Finds the trust domain that could possibly validate the given
 	 * certificate. If there exists to trust domain within the system that could

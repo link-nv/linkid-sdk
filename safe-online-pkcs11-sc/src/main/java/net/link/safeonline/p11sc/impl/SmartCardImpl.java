@@ -342,7 +342,13 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 			for (CardTerminal cardTerminal : cardTerminals.list()) {
 				LOG.debug("card terminal name: " + cardTerminal.getName());
 				if (cardTerminal.isCardPresent()) {
-					Card card = cardTerminal.connect("*");
+					Card card;
+					try {
+						card = cardTerminal.connect("*");
+					} catch (Exception e) {
+						LOG.error("connection error: " + e.getMessage());
+						continue;
+					}
 					try {
 						ATR atr = card.getATR();
 						for (SmartCardConfig smartCardConfig : smartCardConfigs) {
