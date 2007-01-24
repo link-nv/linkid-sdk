@@ -6,6 +6,9 @@
 
 	<classpath codebase="." archives="lib/*.jar" />
 
+	<mbean code="net.link.safeonline.service.RuntimeService"
+		name="safeonline:service=Runtime" />
+
 	<mbean code="org.jboss.security.auth.login.DynamicLoginConfig"
 		name="safeonline:service=DynamicLoginConfig">
 		<attribute name="AuthConfig">

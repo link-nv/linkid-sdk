@@ -1,3 +1,0 @@
-SYSTEM "http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" "../resources/xmldsig-core-schema.xsd"
-SYSTEM "http://www.w3.org/2001/XMLSchema.dtd" "../resources/XMLSchema.dtd"
-

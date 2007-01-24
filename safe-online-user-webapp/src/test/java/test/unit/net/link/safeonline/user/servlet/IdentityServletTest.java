@@ -32,6 +32,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.easymock.EasyMock;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
@@ -148,11 +149,12 @@ public class IdentityServletTest extends TestCase {
 		// setup
 		PostMethod postMethod = new PostMethod(this.location);
 		RequestEntity requestEntity = new StringRequestEntity("test-message",
-				"text/xml", null);
+				"application/octet-stream", null);
 		postMethod.setRequestEntity(requestEntity);
 
 		// expectations
-		this.mockCredentialServiceBean.mergeIdentityStatement("test-message");
+		this.mockCredentialServiceBean.mergeIdentityStatement(EasyMock
+				.aryEq("test-message".getBytes()));
 
 		// prepare
 		replay(this.mockCredentialServiceBean);
@@ -173,7 +175,8 @@ public class IdentityServletTest extends TestCase {
 
 		httpURLConnection.setRequestMethod("POST");
 		httpURLConnection.setAllowUserInteraction(false);
-		httpURLConnection.setRequestProperty("Content-type", "text/xml");
+		httpURLConnection.setRequestProperty("Content-type",
+				"application/octet-stream");
 		httpURLConnection.setDoOutput(true);
 		OutputStream outputStream = httpURLConnection.getOutputStream();
 		IOUtils.write("test-message", outputStream, null);
@@ -183,7 +186,8 @@ public class IdentityServletTest extends TestCase {
 		httpURLConnection.disconnect();
 
 		// expectations
-		this.mockCredentialServiceBean.mergeIdentityStatement("test-message");
+		this.mockCredentialServiceBean.mergeIdentityStatement(EasyMock
+				.aryEq("test-message".getBytes()));
 
 		// prepare
 		replay(this.mockCredentialServiceBean);

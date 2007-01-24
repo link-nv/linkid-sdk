@@ -74,7 +74,7 @@ public class CredentialServiceBeanTest extends TestCase {
 
 	public void testUnparsableIdentityStatement() throws Exception {
 		// setup
-		String identityStatementStr = "foobar-identity-statemennt";
+		byte[] identityStatement = "foobar-identity-statemennt".getBytes();
 		String testCallerLogin = "test-caller-login-" + getName();
 
 		// stubs
@@ -86,7 +86,7 @@ public class CredentialServiceBeanTest extends TestCase {
 
 		// operate
 		try {
-			this.testedInstance.mergeIdentityStatement(identityStatementStr);
+			this.testedInstance.mergeIdentityStatement(identityStatement);
 			fail();
 		} catch (IllegalArgumentException e) {
 			// expected
@@ -103,7 +103,7 @@ public class CredentialServiceBeanTest extends TestCase {
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, "CN=Test");
 		SmartCard smartCard = new TestSmartCard(keyPair, certificate);
-		String identityStatementStr = identityStatementFactory
+		byte[] identityStatement = identityStatementFactory
 				.createIdentityStatement(smartCard);
 		String testCallerLogin = "test-caller-login-" + getName();
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
@@ -139,7 +139,7 @@ public class CredentialServiceBeanTest extends TestCase {
 		replay(this.mockObjects);
 
 		// operate
-		this.testedInstance.mergeIdentityStatement(identityStatementStr);
+		this.testedInstance.mergeIdentityStatement(identityStatement);
 
 		// verify
 		verify(this.mockObjects);

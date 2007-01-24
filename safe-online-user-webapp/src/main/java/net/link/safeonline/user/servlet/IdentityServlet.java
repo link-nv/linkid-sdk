@@ -7,6 +7,7 @@
 
 package net.link.safeonline.user.servlet;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -57,17 +58,20 @@ public class IdentityServlet extends HttpServlet {
 		LOG.debug("doPost");
 		String contentType = request.getContentType();
 		LOG.debug("content type: " + contentType);
-		if (false == "text/xml".equals(contentType)) {
-			LOG.error("content-type should be text/xml");
+		if (false == "application/octet-stream".equals(contentType)) {
+			LOG.error("content-type should be application/octet-stream");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
 
 		InputStream contentInputStream = request.getInputStream();
-		String identityStatementStr = IOUtils.toString(contentInputStream);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		IOUtils.copy(contentInputStream, outputStream);
+		byte[] identityStatementData = outputStream.toByteArray();
 
 		try {
-			this.credentialService.mergeIdentityStatement(identityStatementStr);
+			this.credentialService
+					.mergeIdentityStatement(identityStatementData);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (Exception e) {
 			LOG.error("credential service error: " + e.getMessage(), e);

@@ -769,6 +769,16 @@
 				<artifactId>trinidad-impl</artifactId>
 				<version>${trinidad-impl.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-system</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jmx-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>

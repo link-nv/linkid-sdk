@@ -92,7 +92,7 @@ public class IdentityApplet extends JApplet implements Runnable {
 
 		output("Creating identity statement...");
 		IdentityStatementFactory identityStatementFactory = new IdentityStatementFactory();
-		String identityStatement = identityStatementFactory
+		byte[] identityStatement = identityStatementFactory
 				.createIdentityStatement(smartCard);
 
 		output("Disconnecting from smart card...");
@@ -206,7 +206,7 @@ public class IdentityApplet extends JApplet implements Runnable {
 		}
 	}
 
-	private void sendIdentityStatement(String identityStatement)
+	private void sendIdentityStatement(byte[] identityStatement)
 			throws IOException {
 		output("Sending identity statement...");
 		URL documentBase = getDocumentBase();
@@ -218,10 +218,11 @@ public class IdentityApplet extends JApplet implements Runnable {
 
 		httpURLConnection.setRequestMethod("POST");
 		httpURLConnection.setAllowUserInteraction(false);
-		httpURLConnection.setRequestProperty("Content-type", "text/xml");
+		httpURLConnection.setRequestProperty("Content-type",
+				"application/octet-stream");
 		httpURLConnection.setDoOutput(true);
 		OutputStream outputStream = httpURLConnection.getOutputStream();
-		outputStream.write(identityStatement.getBytes());
+		outputStream.write(identityStatement);
 		outputStream.close();
 		httpURLConnection.connect();
 
