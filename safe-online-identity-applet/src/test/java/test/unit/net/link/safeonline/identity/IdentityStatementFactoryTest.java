@@ -36,6 +36,7 @@ public class IdentityStatementFactoryTest extends TestCase {
 
 	public void testCreateIdentityStatement() throws Exception {
 		// setup
+		String testUser = "test-user";
 		String testGivenName = "test-given-name";
 		String testSurname = "test-surname";
 		String testStreet = "test-street";
@@ -49,8 +50,8 @@ public class IdentityStatementFactoryTest extends TestCase {
 						.getPrivate(), testCertificate);
 
 		// operate
-		byte[] result = this.testedInstance
-				.createIdentityStatement(testSmartCard);
+		byte[] result = this.testedInstance.createIdentityStatement(testUser,
+				testSmartCard);
 
 		// verify
 		assertNotNull(result);

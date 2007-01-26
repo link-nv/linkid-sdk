@@ -8,7 +8,10 @@
 package net.link.safeonline.identity;
 
 import java.applet.AppletContext;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
@@ -21,15 +24,22 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.logging.Log;
-
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
-import net.link.safeonline.p11sc.impl.SmartCardImpl;
 import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
+import net.link.safeonline.p11sc.impl.SmartCardImpl;
 
+import org.apache.commons.logging.Log;
+
+/**
+ * The identity applet creates an identity statement at the client-side within
+ * the browser.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class IdentityApplet extends JApplet implements Runnable {
 
 	private static final long serialVersionUID = 1L;
@@ -92,10 +102,12 @@ public class IdentityApplet extends JApplet implements Runnable {
 		output("given name: " + givenName);
 		output("surname: " + surname);
 
-		output("Creating identity statement...");
+		String user = getParameter("User");
+
+		output("Creating identity statement for user " + user + "...");
 		IdentityStatementFactory identityStatementFactory = new IdentityStatementFactory();
 		byte[] identityStatement = identityStatementFactory
-				.createIdentityStatement(smartCard);
+				.createIdentityStatement(user, smartCard);
 
 		output("Disconnecting from smart card...");
 		smartCard.close();
@@ -234,6 +246,15 @@ public class IdentityApplet extends JApplet implements Runnable {
 		if (200 == responseCode) {
 			output("Identity statement successfully transmitted.");
 			return;
+		}
+		if (httpURLConnection.getContentLength() > 0) {
+			InputStream inputStream = httpURLConnection.getInputStream();
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(inputStream));
+			String message = bufferedReader.readLine();
+			if (null != message) {
+				output("Result message: " + message);
+			}
 		}
 		throw new IOException("Response code: " + responseCode);
 	}

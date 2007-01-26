@@ -95,4 +95,8 @@ public class IdentityStatement {
 	public String getSurname() {
 		return this.identityStatementStructure.getSurname();
 	}
+
+	public String getUser() {
+		return this.identityStatementStructure.getUser();
+	}
 }

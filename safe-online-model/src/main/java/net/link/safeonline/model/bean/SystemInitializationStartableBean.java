@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -48,7 +48,8 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @Local(Startable.class)
-@LocalBinding(jndiBinding = "SafeOnline/startup/SystemInitializationStartableBean")
+@LocalBinding(jndiBinding = Startable.JNDI_PREFIX
+		+ "SystemInitializationStartableBean")
 public class SystemInitializationStartableBean implements Startable {
 
 	private static final Log LOG = LogFactory

@@ -29,10 +29,10 @@ public class IdentityStatement {
 	private final DERIdentityStatement derIdentityStatement;
 
 	public IdentityStatement(X509Certificate authenticationCertificate,
-			String givenName, String surname,
+			String user, String givenName, String surname,
 			PrivateKey authenticationPrivateKey) {
 		this.derIdentityStatement = new DERIdentityStatement(
-				authenticationCertificate, givenName, surname);
+				authenticationCertificate, user, givenName, surname);
 		this.authenticationPrivateKey = authenticationPrivateKey;
 	}
 

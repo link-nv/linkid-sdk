@@ -10,6 +10,7 @@ package net.link.safeonline.user.servlet;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -17,6 +18,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -69,13 +73,27 @@ public class IdentityServlet extends HttpServlet {
 		IOUtils.copy(contentInputStream, outputStream);
 		byte[] identityStatementData = outputStream.toByteArray();
 
+		PrintWriter writer = response.getWriter();
 		try {
 			this.credentialService
 					.mergeIdentityStatement(identityStatementData);
 			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (TrustDomainNotFoundException e) {
+			LOG.error("trust domain not found: " + e.getMessage(), e);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			writer.println("trust domain not found");
+		} catch (PermissionDeniedException e) {
+			LOG.error("permission denied: " + e.getMessage(), e);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			writer.println("permission denied");
+		} catch (ArgumentIntegrityException e) {
+			LOG.error("integrity error: " + e.getMessage(), e);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			writer.println("integrity check failed");
 		} catch (Exception e) {
 			LOG.error("credential service error: " + e.getMessage(), e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			writer.println("internal error");
 		}
 	}
 }

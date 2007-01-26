@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -20,6 +20,8 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.bean.CredentialServiceBean;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.entity.TrustDomainEntity;
@@ -31,6 +33,7 @@ import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardNotFoundException;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
+import net.link.safeonline.shared.identity.IdentityStatement;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -89,7 +92,7 @@ public class CredentialServiceBeanTest extends TestCase {
 		try {
 			this.testedInstance.mergeIdentityStatement(identityStatement);
 			fail();
-		} catch (IllegalArgumentException e) {
+		} catch (ArgumentIntegrityException e) {
 			// expected
 		}
 
@@ -104,9 +107,10 @@ public class CredentialServiceBeanTest extends TestCase {
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, "CN=Test");
 		SmartCard smartCard = new TestSmartCard(keyPair, certificate);
+		String user = "test-user";
 		byte[] identityStatement = identityStatementFactory
-				.createIdentityStatement(smartCard);
-		String testCallerLogin = "test-caller-login-" + getName();
+				.createIdentityStatement(user, smartCard);
+		String testCallerLogin = user;
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 
@@ -144,6 +148,154 @@ public class CredentialServiceBeanTest extends TestCase {
 
 		// verify
 		verify(this.mockObjects);
+	}
+
+	public void testMergeIdentityStatementFailsIfLoginAndUserDoNotCorrespond()
+			throws Exception {
+		// setup
+		IdentityStatementFactory identityStatementFactory = new IdentityStatementFactory();
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		SmartCard smartCard = new TestSmartCard(keyPair, certificate);
+		String user = "test-user";
+		byte[] identityStatement = identityStatementFactory
+				.createIdentityStatement(user, smartCard);
+		String testCallerLogin = "test-login";
+		TrustDomainEntity trustDomain = new TrustDomainEntity(
+				"test-trust-domain", true);
+
+		// stubs
+		expect(this.mockSubjectManager.getCallerLogin()).andStubReturn(
+				testCallerLogin);
+
+		expect(
+				this.mockAttributeDAO.findAttribute(
+						SafeOnlineConstants.SURNAME_ATTRIBUTE, testCallerLogin))
+				.andStubReturn(null);
+		expect(
+				this.mockAttributeDAO.findAttribute(
+						SafeOnlineConstants.GIVENNAME_ATTRIBUTE,
+						testCallerLogin)).andStubReturn(null);
+		expect(this.mockPkiProviderManager.findTrustDomain(certificate))
+				.andStubReturn(trustDomain);
+		expect(
+				this.mockPkiValidator.validateCertificate(trustDomain,
+						certificate)).andStubReturn(true);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate & verify
+		try {
+			this.testedInstance.mergeIdentityStatement(identityStatement);
+			fail();
+		} catch (PermissionDeniedException e) {
+			// expected
+			verify(this.mockObjects);
+		}
+
+	}
+
+	public void testMergeIdentityStatementFailsIfNotSignedByClaimedAuthCert()
+			throws Exception {
+		// setup
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		SmartCard smartCard = new TestSmartCard(keyPair, certificate);
+		String user = "test-user";
+		X509Certificate authCert = smartCard.getAuthenticationCertificate();
+
+		KeyPair otherKeyPair = PkiTestUtils.generateKeyPair();
+
+		String givenName = smartCard.getGivenName();
+		String surname = smartCard.getSurname();
+
+		IdentityStatement identityStatement = new IdentityStatement(authCert,
+				user, givenName, surname, otherKeyPair.getPrivate());
+		byte[] identityStatementData = identityStatement
+				.generateIdentityStatement();
+
+		String testCallerLogin = user;
+		TrustDomainEntity trustDomain = new TrustDomainEntity(
+				"test-trust-domain", true);
+
+		// stubs
+		expect(this.mockSubjectManager.getCallerLogin()).andStubReturn(
+				testCallerLogin);
+
+		expect(
+				this.mockAttributeDAO.findAttribute(
+						SafeOnlineConstants.SURNAME_ATTRIBUTE, testCallerLogin))
+				.andStubReturn(null);
+		expect(
+				this.mockAttributeDAO.findAttribute(
+						SafeOnlineConstants.GIVENNAME_ATTRIBUTE,
+						testCallerLogin)).andStubReturn(null);
+		expect(this.mockPkiProviderManager.findTrustDomain(certificate))
+				.andStubReturn(trustDomain);
+		expect(
+				this.mockPkiValidator.validateCertificate(trustDomain,
+						certificate)).andStubReturn(true);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate & verify
+		try {
+			this.testedInstance.mergeIdentityStatement(identityStatementData);
+			fail();
+		} catch (ArgumentIntegrityException e) {
+			// expected
+			verify(this.mockObjects);
+		}
+	}
+
+	public void testMergeIdentityStatementFailsIfCertNotTrusted()
+			throws Exception {
+		// setup
+		IdentityStatementFactory identityStatementFactory = new IdentityStatementFactory();
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		SmartCard smartCard = new TestSmartCard(keyPair, certificate);
+		String user = "test-user";
+		byte[] identityStatement = identityStatementFactory
+				.createIdentityStatement(user, smartCard);
+		String testCallerLogin = user;
+		TrustDomainEntity trustDomain = new TrustDomainEntity(
+				"test-trust-domain", true);
+
+		// stubs
+		expect(this.mockSubjectManager.getCallerLogin()).andStubReturn(
+				testCallerLogin);
+
+		expect(
+				this.mockAttributeDAO.findAttribute(
+						SafeOnlineConstants.SURNAME_ATTRIBUTE, testCallerLogin))
+				.andStubReturn(null);
+		expect(
+				this.mockAttributeDAO.findAttribute(
+						SafeOnlineConstants.GIVENNAME_ATTRIBUTE,
+						testCallerLogin)).andStubReturn(null);
+		expect(this.mockPkiProviderManager.findTrustDomain(certificate))
+				.andStubReturn(trustDomain);
+		expect(
+				this.mockPkiValidator.validateCertificate(trustDomain,
+						certificate)).andStubReturn(false);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		try {
+			this.testedInstance.mergeIdentityStatement(identityStatement);
+			fail();
+		} catch (ArgumentIntegrityException e) {
+			// expected
+			verify(this.mockObjects);
+		}
 	}
 
 	private static class TestSmartCard implements SmartCard {
@@ -219,8 +371,6 @@ public class CredentialServiceBeanTest extends TestCase {
 
 		public void open(String smartCardAlias)
 				throws SmartCardNotFoundException {
-			// TODO Auto-generated method stub
-
 		}
 	}
 }

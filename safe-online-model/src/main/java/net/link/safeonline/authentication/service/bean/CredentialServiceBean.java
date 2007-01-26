@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -15,7 +15,9 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
@@ -77,25 +79,39 @@ public class CredentialServiceBean implements CredentialService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void mergeIdentityStatement(byte[] identityStatementData) {
+	public void mergeIdentityStatement(byte[] identityStatementData)
+			throws TrustDomainNotFoundException, PermissionDeniedException,
+			ArgumentIntegrityException {
 		LOG.debug("merge identity statement");
 		String login = this.subjectManager.getCallerLogin();
 		LOG.debug("login: " + login);
 
-		IdentityStatement identityStatement = new IdentityStatement(
-				identityStatementData);
+		IdentityStatement identityStatement;
+		try {
+			identityStatement = new IdentityStatement(identityStatementData);
+		} catch (IllegalArgumentException e) {
+			throw new ArgumentIntegrityException();
+		}
 
 		X509Certificate certificate = identityStatement.verifyIntegrity();
+		if (null == certificate) {
+			throw new ArgumentIntegrityException();
+		}
+
 		TrustDomainEntity trustDomain = this.pkiProviderManager
 				.findTrustDomain(certificate);
 		if (null == trustDomain) {
-			throw new IllegalArgumentException("no matching trust domain found");
+			throw new TrustDomainNotFoundException();
 		}
 		boolean validationResult = this.pkiValidator.validateCertificate(
 				trustDomain, certificate);
 		if (false == validationResult) {
-			throw new IllegalArgumentException(
-					"certificate not found to be valid");
+			throw new ArgumentIntegrityException();
+		}
+
+		String user = identityStatement.getUser();
+		if (false == login.equals(user)) {
+			throw new PermissionDeniedException();
 		}
 
 		String surname = identityStatement.getSurname();

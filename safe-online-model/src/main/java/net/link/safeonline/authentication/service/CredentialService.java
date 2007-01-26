@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -10,7 +10,9 @@ package net.link.safeonline.authentication.service;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 
 /**
  * Interface of service that manages the credentials of the caller subject.
@@ -40,6 +42,15 @@ public interface CredentialService {
 	 * 
 	 * @param identityStatementData
 	 *            the identity statement.
+	 * @throws TrustDomainNotFoundException
+	 * @throws PermissionDeniedException
+	 *             in case the identity statement user does not correspond with
+	 *             the active principal.
+	 * @throws ArgumentIntegrityException
+	 *             in case the identity statement didn't pass the integrity
+	 *             checks.
 	 */
-	void mergeIdentityStatement(byte[] identityStatementData);
+	void mergeIdentityStatement(byte[] identityStatementData)
+			throws TrustDomainNotFoundException, PermissionDeniedException,
+			ArgumentIntegrityException;
 }

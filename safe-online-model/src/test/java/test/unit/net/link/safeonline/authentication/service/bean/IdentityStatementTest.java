@@ -21,11 +21,12 @@ public class IdentityStatementTest extends TestCase {
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		String user = "test-user";
 		String givenName = "test-given-name";
 		String surname = "test-surname";
 
 		net.link.safeonline.shared.identity.IdentityStatement testIdentityStatement = new net.link.safeonline.shared.identity.IdentityStatement(
-				certificate, givenName, surname, keyPair.getPrivate());
+				certificate, user, givenName, surname, keyPair.getPrivate());
 
 		byte[] encodedIdentityStatement = testIdentityStatement
 				.generateIdentityStatement();

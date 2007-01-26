@@ -23,7 +23,19 @@ public class DERIdentityStatement implements DEREncodable {
 
 	public static final int VERSION = 1;
 
+	public static final int VERSION_IDX = 0;
+
+	public static final int USER_IDX = 1;
+
+	public static final int GIVEN_NAME_IDX = 2;
+
+	public static final int SURNAME_IDX = 3;
+
+	public static final int AUTH_CERT_IDX = 4;
+
 	private final X509Certificate authenticationCertificate;
+
+	private final String user;
 
 	private final String givenName;
 
@@ -32,8 +44,9 @@ public class DERIdentityStatement implements DEREncodable {
 	private byte[] signature;
 
 	public DERIdentityStatement(X509Certificate authenticationCertificate,
-			String givenName, String surname) {
+			String user, String givenName, String surname) {
 		this.authenticationCertificate = authenticationCertificate;
+		this.user = user;
 		this.givenName = givenName;
 		this.surname = surname;
 	}
@@ -42,6 +55,8 @@ public class DERIdentityStatement implements DEREncodable {
 		List<DEREncodable> tbsSequenceList = new LinkedList<DEREncodable>();
 		DERInteger version = new DERInteger(VERSION);
 		tbsSequenceList.add(version);
+		DERVisibleString derUser = new DERVisibleString(this.user);
+		tbsSequenceList.add(derUser);
 		DERVisibleString derGivenName = new DERVisibleString(this.givenName);
 		tbsSequenceList.add(derGivenName);
 		DERVisibleString derSurname = new DERVisibleString(this.surname);

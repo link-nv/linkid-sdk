@@ -31,6 +31,7 @@ public class DERIdentityStatementTest extends TestCase {
 		X509Certificate authCert = PkiTestUtils.generateSelfSignedCertificate(
 				authKeyPair, "CN=AuthTest");
 
+		String user = "user";
 		String givenName = "given-name";
 		String surname = "surname";
 
@@ -38,7 +39,7 @@ public class DERIdentityStatementTest extends TestCase {
 
 		// operate
 		DERIdentityStatement identityStatement = new DERIdentityStatement(
-				authCert, givenName, surname);
+				authCert, user, givenName, surname);
 		identityStatement.setSignature(signature);
 		byte[] result = identityStatement.getEncoded();
 
@@ -47,19 +48,26 @@ public class DERIdentityStatementTest extends TestCase {
 		DERSequence sequence = (DERSequence) DERSequence
 				.getInstance(DERSequence.fromByteArray(result));
 		DERSequence bodySequence = (DERSequence) sequence.getObjectAt(0);
-		DERInteger version = DERInteger
-				.getInstance(bodySequence.getObjectAt(0));
+		DERInteger version = DERInteger.getInstance(bodySequence
+				.getObjectAt(DERIdentityStatement.VERSION_IDX));
 		assertEquals(1, version.getValue().intValue());
 
+		DERVisibleString userString = DERVisibleString.getInstance(bodySequence
+				.getObjectAt(DERIdentityStatement.USER_IDX));
+		assertEquals(user, userString.getString());
+
 		DERVisibleString givenNameString = DERVisibleString
-				.getInstance(bodySequence.getObjectAt(1));
+				.getInstance(bodySequence
+						.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX));
 		assertEquals(givenName, givenNameString.getString());
 
 		DERVisibleString surnameString = DERVisibleString
-				.getInstance(bodySequence.getObjectAt(2));
+				.getInstance(bodySequence
+						.getObjectAt(DERIdentityStatement.SURNAME_IDX));
 		assertEquals(surname, surnameString.getString());
 
-		DEREncodable encodedCert = bodySequence.getObjectAt(3);
+		DEREncodable encodedCert = bodySequence
+				.getObjectAt(DERIdentityStatement.AUTH_CERT_IDX);
 		assertNotNull(encodedCert);
 		byte[] resultEncodedCert = encodedCert.getDERObject().getEncoded();
 		X509Certificate resultCert = (X509Certificate) CertificateFactory

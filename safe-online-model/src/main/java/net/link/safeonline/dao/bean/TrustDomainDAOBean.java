@@ -38,11 +38,13 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
 		return trustDomains;
 	}
 
-	public void addTrustDomain(String name, boolean performOcspCheck) {
+	public TrustDomainEntity addTrustDomain(String name,
+			boolean performOcspCheck) {
 		LOG.debug("add trust domain: " + name);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(name,
 				performOcspCheck);
 		this.entityManager.persist(trustDomain);
+		return trustDomain;
 	}
 
 	@SuppressWarnings("unchecked")

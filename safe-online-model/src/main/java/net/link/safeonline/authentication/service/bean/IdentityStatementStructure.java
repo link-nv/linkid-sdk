@@ -13,6 +13,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import net.link.safeonline.shared.asn1.identity.DERIdentityStatement;
+
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERInteger;
@@ -34,6 +36,8 @@ public class IdentityStatementStructure {
 
 	private final ASN1Sequence authCertificate;
 
+	private final DERVisibleString user;
+
 	public static IdentityStatementStructure getInstance(Object obj) {
 		if (obj instanceof IdentityStatementStructure) {
 			return (IdentityStatementStructure) obj;
@@ -53,18 +57,25 @@ public class IdentityStatementStructure {
 		this.tbsSequence = (ASN1Sequence) this.sequence.getObjectAt(0);
 		this.signature = DERBitString.getInstance(this.sequence.getObjectAt(1));
 
-		if (this.tbsSequence.size() != 4) {
+		if (this.tbsSequence.size() != 5) {
 			throw new IllegalArgumentException(
 					"sequence wrong size of TBS sequence of identity statement");
 		}
 
-		this.version = DERInteger.getInstance(this.tbsSequence.getObjectAt(0));
+		this.version = DERInteger.getInstance(this.tbsSequence
+				.getObjectAt(DERIdentityStatement.VERSION_IDX));
+		if (getVersion() != DERIdentityStatement.VERSION) {
+			throw new IllegalArgumentException(
+					"wrong identity statement version");
+		}
+		this.user = DERVisibleString.getInstance(this.tbsSequence
+				.getObjectAt(DERIdentityStatement.USER_IDX));
 		this.givenName = DERVisibleString.getInstance(this.tbsSequence
-				.getObjectAt(1));
+				.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX));
 		this.surname = DERVisibleString.getInstance(this.tbsSequence
-				.getObjectAt(2));
+				.getObjectAt(DERIdentityStatement.SURNAME_IDX));
 		this.authCertificate = ASN1Sequence.getInstance(this.tbsSequence
-				.getObjectAt(3));
+				.getObjectAt(DERIdentityStatement.AUTH_CERT_IDX));
 	}
 
 	public byte[] getToBeSignedData() {
@@ -85,6 +96,10 @@ public class IdentityStatementStructure {
 
 	public String getSurname() {
 		return this.surname.getString();
+	}
+
+	public String getUser() {
+		return this.user.getString();
 	}
 
 	public X509Certificate getAuthenticationCertificate()
