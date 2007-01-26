@@ -15,29 +15,17 @@ import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.smartcardio.Card;
-import javax.smartcardio.CardTerminal;
-import javax.smartcardio.CardTerminals;
-import javax.smartcardio.TerminalFactory;
-import javax.swing.JOptionPane;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-
 import junit.framework.TestCase;
-import net.lin_k.safe_online.pkcs11_sc_config._1.ObjectFactory;
-import net.lin_k.safe_online.pkcs11_sc_config._1.Pkcs11ScConfigType;
 import net.link.safeonline.identity.IdentityStatementFactory;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
-import net.link.safeonline.p11sc.impl.XmlSmartCardConfigFactory;
+import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
 import sun.security.pkcs11.wrapper.CK_SLOT_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
 
@@ -45,142 +33,74 @@ public class SmartCardTest extends TestCase {
 
 	private static final Log LOG = LogFactory.getLog(SmartCardTest.class);
 
-	public void testCheckPresenceOfSmartCardReader() throws Exception {
-		// setup
-		SmartCard smartCard = SmartCardFactory.newInstance();
-
-		// operate & verify
-		JOptionPane.showMessageDialog(null,
-				"Please disconnect your smart card reader.");
-
-		boolean disconnectResult = smartCard.isReaderPresent();
-		assertFalse(disconnectResult);
-
-		JOptionPane.showMessageDialog(null,
-				"Please connect your smart card reader.");
-
-		boolean connectResult = smartCard.isReaderPresent();
-		assertTrue(connectResult);
-	}
-
-	public void testCheckSmartcardAPI() throws Exception {
-		TerminalFactory terminalFactory;
-
-		JOptionPane.showMessageDialog(null,
-				"Please disconnect your smart card reader.");
-
-		terminalFactory = TerminalFactory.getDefault();
-		assertEquals(0, terminalFactory.terminals().list().size());
-
-		JOptionPane.showMessageDialog(null,
-				"Please connect your smart card reader.");
-
-		terminalFactory = TerminalFactory.getDefault();
-		assertEquals(1, terminalFactory.terminals().list().size());
-	}
-
-	public void testSmartCardAPIConnect() throws Exception {
-		TerminalFactory terminalFactory = TerminalFactory.getDefault();
-		CardTerminals cardTerminals = terminalFactory.terminals();
-		List<CardTerminal> cardTerminalList = cardTerminals.list();
-		for (CardTerminal cardTerminal : cardTerminalList) {
-			LOG.debug("card terminal: " + cardTerminal.getName());
-			Card card = cardTerminal.connect("T=0");
-			LOG.debug("protocol: " + card.getProtocol());
-			card.disconnect(true);
-		}
-	}
-
-	public void testIsBeIDCardPresent() throws Exception {
-		// setup
-		SmartCard smartCard = SmartCardFactory.newInstance();
-		XmlSmartCardConfigFactory factory = new XmlSmartCardConfigFactory();
-
-		smartCard.init(factory.getSmartCardConfigs());
-
-		JOptionPane.showMessageDialog(null, "Insert your BeID card.");
-
-		// operate
-		boolean result = smartCard.isSupportedCardPresent();
-		assertTrue(result);
-	}
-
 	public void testGetCertificatesAndPrivateKeys() throws Exception {
 		// setup
 		SmartCard smartCard = SmartCardFactory.newInstance();
-		XmlSmartCardConfigFactory configFactory = new XmlSmartCardConfigFactory();
+		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
 
 		smartCard.init(configFactory.getSmartCardConfigs());
 
 		// operate
-		smartCard.open();
+		smartCard.open("beid");
 
-		// verify
-		X509Certificate authCertResult = smartCard
-				.getAuthenticationCertificate();
-		X509Certificate signCertResult = smartCard.getSignatureCertificate();
-		PrivateKey authPrivateKey = smartCard.getAuthenticationPrivateKey();
-		PrivateKey signPrivateKey = smartCard.getSignaturePrivateKey();
-		LOG.debug("authentication certificate: " + authCertResult);
-		assertNotNull(authCertResult);
-		assertNotNull(signCertResult);
-		assertNotNull(authPrivateKey);
-		assertNotNull(signPrivateKey);
+		try {
+			// verify
+			X509Certificate authCertResult = smartCard
+					.getAuthenticationCertificate();
+			X509Certificate signCertResult = smartCard
+					.getSignatureCertificate();
+			PrivateKey authPrivateKey = smartCard.getAuthenticationPrivateKey();
+			PrivateKey signPrivateKey = smartCard.getSignaturePrivateKey();
+			LOG.debug("authentication certificate: " + authCertResult);
+			assertNotNull(authCertResult);
+			assertNotNull(signCertResult);
+			assertNotNull(authPrivateKey);
+			assertNotNull(signPrivateKey);
 
-		File tmpCertFile = File.createTempFile("cert-", ".crt");
-		FileOutputStream outputStream = new FileOutputStream(tmpCertFile);
-		outputStream.write(authCertResult.getEncoded());
-		outputStream.close();
+			File tmpCertFile = File.createTempFile("cert-", ".crt");
+			FileOutputStream outputStream = new FileOutputStream(tmpCertFile);
+			outputStream.write(authCertResult.getEncoded());
+			outputStream.close();
 
-		String resultGivenName = smartCard.getGivenName();
-		String resultSurname = smartCard.getSurname();
-		String resultCountryCode = smartCard.getCountryCode();
-		LOG.debug("given name: " + resultGivenName);
-		LOG.debug("sur name: " + resultSurname);
-		LOG.debug("country code: " + resultCountryCode);
-		assertNotNull(resultGivenName);
-		assertNotNull(resultSurname);
-		assertNotNull(resultCountryCode);
-		String resultStreet = smartCard.getStreet();
-		String resultCity = smartCard.getCity();
-		String resultPostalCode = smartCard.getPostalCode();
-		LOG.debug("street: " + resultStreet);
-		LOG.debug("city: " + resultCity);
-		LOG.debug("postal code: " + resultPostalCode);
+			String resultGivenName = smartCard.getGivenName();
+			String resultSurname = smartCard.getSurname();
+			String resultCountryCode = smartCard.getCountryCode();
+			LOG.debug("given name: " + resultGivenName);
+			LOG.debug("sur name: " + resultSurname);
+			LOG.debug("country code: " + resultCountryCode);
+			assertNotNull(resultGivenName);
+			assertNotNull(resultSurname);
+			assertNotNull(resultCountryCode);
+			String resultStreet = smartCard.getStreet();
+			String resultCity = smartCard.getCity();
+			String resultPostalCode = smartCard.getPostalCode();
+			LOG.debug("street: " + resultStreet);
+			LOG.debug("city: " + resultCity);
+			LOG.debug("postal code: " + resultPostalCode);
+		} finally {
+			smartCard.close();
+		}
 	}
 
 	public void testAvailabilityOfBeIDConfiguration() throws Exception {
 		URL url = SmartCardTest.class
-				.getResource("/META-INF/safe-online-pkcs11-sc-config.xml");
+				.getResource("/META-INF/safe-online-pkcs11-sc-config.properties");
 		LOG.debug("URL: " + url);
 		assertNotNull(url);
 		assertTrue(url
 				.toString()
 				.matches(
-						"jar:file:.*safe-online-pkcs11-sc-beid.*\\.jar!/META-INF/safe-online-pkcs11-sc-config.xml"));
+						"jar:file:.*safe-online-pkcs11-sc-beid.*\\.jar!/META-INF/safe-online-pkcs11-sc-config.properties"));
 
 		Enumeration<URL> enumerationResult = Thread.currentThread()
 				.getContextClassLoader().getResources(
-						"META-INF/safe-online-pkcs11-sc-config.xml");
+						"META-INF/safe-online-pkcs11-sc-config.properties");
 		assertTrue(enumerationResult.hasMoreElements());
-	}
-
-	@SuppressWarnings("unchecked")
-	public void testSchemaValidBeIDConfiguration() throws Exception {
-		URL url = SmartCardTest.class
-				.getResource("/META-INF/safe-online-pkcs11-sc-config.xml");
-		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		JAXBElement<Pkcs11ScConfigType> configElement = (JAXBElement<Pkcs11ScConfigType>) unmarshaller
-				.unmarshal(url);
-		assertNotNull(configElement);
-		Pkcs11ScConfigType config = configElement.getValue();
-		assertEquals("beid", config.getAlias());
 	}
 
 	public void testIteratePKCS11Slots() throws Exception {
 		// setup
-		XmlSmartCardConfigFactory configFactory = new XmlSmartCardConfigFactory();
+		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
 		SmartCardConfig beidConfig = configFactory.getSmartCardConfigs().get(0);
 
 		String osName = System.getProperty("os.name");
@@ -196,10 +116,8 @@ public class SmartCardTest extends TestCase {
 		}
 		assertNotNull(existingDriverLocation);
 		LOG.debug("existing driver location: " + existingDriverLocation);
-		CK_C_INITIALIZE_ARGS ck_c_initialize_args = new CK_C_INITIALIZE_ARGS();
 		PKCS11 pkcs11 = PKCS11.getInstance(existingDriverLocation
-				.getAbsolutePath(), "C_GetFunctionList", ck_c_initialize_args,
-				false);
+				.getAbsolutePath(), null, false);
 		assertNotNull(pkcs11);
 		try {
 			long[] slotIds = pkcs11.C_GetSlotList(true);
@@ -216,11 +134,11 @@ public class SmartCardTest extends TestCase {
 	public void testIdentityStatement() throws Exception {
 		SmartCard smartCard = SmartCardFactory.newInstance();
 
-		SmartCardConfigFactory configFactory = new XmlSmartCardConfigFactory();
+		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
 		smartCard.init(configFactory.getSmartCardConfigs());
 
 		LOG.debug("Connecting to smart card...");
-		smartCard.open();
+		smartCard.open("beid");
 
 		String givenName = smartCard.getGivenName();
 		String surname = smartCard.getSurname();
@@ -229,17 +147,16 @@ public class SmartCardTest extends TestCase {
 
 		LOG.debug("Creating identity statement...");
 		IdentityStatementFactory identityStatementFactory = new IdentityStatementFactory();
-		String identityStatement = identityStatementFactory
+		byte[] identityStatement = identityStatementFactory
 				.createIdentityStatement(smartCard);
 
 		LOG.debug("Disconnecting from smart card...");
 		smartCard.close();
-
-		LOG.debug("identity statement: " + identityStatement);
+		assertNotNull(identityStatement);
 	}
 
 	public void testSmartCardConfigForWindowsXP() throws Exception {
-		SmartCardConfigFactory smartCardConfigFactory = new XmlSmartCardConfigFactory();
+		SmartCardConfigFactory smartCardConfigFactory = new SmartCardConfigFactoryImpl();
 		List<SmartCardConfig> smartCardConfigs = smartCardConfigFactory
 				.getSmartCardConfigs();
 		LOG.debug("number of smart card configs: " + smartCardConfigs.size());

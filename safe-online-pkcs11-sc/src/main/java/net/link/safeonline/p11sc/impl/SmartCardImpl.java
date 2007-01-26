@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -22,6 +24,7 @@ import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.security.auth.callback.Callback;
@@ -29,12 +32,6 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.TextOutputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.smartcardio.ATR;
-import javax.smartcardio.Card;
-import javax.smartcardio.CardException;
-import javax.smartcardio.CardTerminal;
-import javax.smartcardio.CardTerminals;
-import javax.smartcardio.TerminalFactory;
 
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
@@ -49,6 +46,7 @@ import org.apache.commons.logging.LogFactory;
 import sun.security.pkcs11.SunPKCS11;
 import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
 import sun.security.pkcs11.wrapper.CK_SLOT_INFO;
+import sun.security.pkcs11.wrapper.CK_TOKEN_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
 import sun.security.pkcs11.wrapper.PKCS11Constants;
 import sun.security.pkcs11.wrapper.PKCS11Exception;
@@ -116,22 +114,29 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		return false;
 	}
 
-	public void open() {
-		SupportedCard supportedCard = getSupportedCard();
-		if (null == supportedCard) {
-			throw new RuntimeException(
-					"no card terminal with supported smart card inserted present");
+	private SmartCardConfig getSmartCardConfig(String smartCardAlias) {
+		if (null == this.smartCardConfigs) {
+			throw new IllegalStateException("call init first");
 		}
-		String name = supportedCard.cardTerminal.getName();
-		LOG.debug("opening PKCS11 slot of card terminal name: " + name);
+		for (SmartCardConfig smartCardConfig : this.smartCardConfigs) {
+			if (smartCardConfig.getCardAlias().equals(smartCardAlias)) {
+				return smartCardConfig;
+			}
+		}
+		throw new IllegalArgumentException("no config found for card: "
+				+ smartCardAlias);
+	}
+
+	public void open(String smartCardAlias) throws SmartCardNotFoundException {
+		SmartCardConfig smartCardConfig = getSmartCardConfig(smartCardAlias);
 
 		String osName = System.getProperty("os.name");
 		LOG.debug("os name: " + osName);
-		List<File> driverLocations = supportedCard.smartCardConfig
+		List<File> driverLocations = smartCardConfig
 				.getPkcs11DriverLocations(osName);
 
 		IdentityDataExtractor identityDataExtractor = null;
-		String identityExtractorClassname = supportedCard.smartCardConfig
+		String identityExtractorClassname = smartCardConfig
 				.getIdentityExtractorClassname();
 		if (null != identityExtractorClassname) {
 			ClassLoader classLoader = Thread.currentThread()
@@ -158,7 +163,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		}
 		if (null != identityDataExtractor) {
 			identityDataExtractor.init(this);
-			identityDataExtractor.prePkcs11(supportedCard.cardTerminal);
+			identityDataExtractor.prePkcs11();
 		}
 
 		File existingDriverLocation = null;
@@ -172,14 +177,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 			throw new RuntimeException("no PKCS#11 driver found");
 		}
 
-		long slotIdx;
-		try {
-			slotIdx = getSlotIndex(existingDriverLocation, name);
-		} catch (IOException e) {
-			throw new RuntimeException("IO error: " + e.getMessage());
-		} catch (PKCS11Exception e) {
-			throw new RuntimeException("PKCS11 error: " + e.getMessage());
-		}
+		long slotIdx = getBestEffortSlotIdx(existingDriverLocation);
 
 		try {
 			loadSecurityProvider(existingDriverLocation, slotIdx);
@@ -194,7 +192,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		}
 
 		try {
-			loadCertificates(supportedCard);
+			loadCertificates(smartCardConfig);
 		} catch (UnrecoverableKeyException e) {
 			throw new RuntimeException("unrecoverable key error: "
 					+ e.getMessage());
@@ -213,7 +211,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		}
 	}
 
-	private void loadCertificates(SupportedCard supportedCard)
+	private void loadCertificates(SmartCardConfig smartCardConfig)
 			throws KeyStoreException, IOException, NoSuchAlgorithmException,
 			CertificateException, UnrecoverableKeyException {
 		CallbackHandler callbackHandler = new PKCS11CallbackHandler(
@@ -226,10 +224,9 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		KeyStore keyStore = builder.getKeyStore();
 		keyStore.load(null, null);
 
-		String authenticationKeyAlias = supportedCard.smartCardConfig
+		String authenticationKeyAlias = smartCardConfig
 				.getAuthenticationKeyAlias();
-		String signatureKeyAlias = supportedCard.smartCardConfig
-				.getSignatureKeyAlias();
+		String signatureKeyAlias = smartCardConfig.getSignatureKeyAlias();
 
 		this.authenticationCertificate = (X509Certificate) keyStore
 				.getCertificate(authenticationKeyAlias);
@@ -262,111 +259,97 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		this.pkcs11Provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
 	}
 
-	private int getSlotIndex(File driverLocation, String slotDescription)
-			throws IOException, PKCS11Exception {
-		CK_C_INITIALIZE_ARGS ck_c_initialize_args = new CK_C_INITIALIZE_ARGS();
-		PKCS11 pkcs11 = PKCS11.getInstance(driverLocation.getAbsolutePath(),
-				"C_GetFunctionList", ck_c_initialize_args, false);
+	private long getBestEffortSlotIdx(File pkcs11LibraryFile)
+			throws SmartCardNotFoundException {
+		String pkcs11Library = pkcs11LibraryFile.getAbsolutePath();
 		try {
-			long[] slotIds = pkcs11.C_GetSlotList(true);
-			for (int slotIdx = 0; slotIdx < slotIds.length; slotIdx++) {
-				long slotId = slotIds[slotIdx];
-				CK_SLOT_INFO slotInfo = pkcs11.C_GetSlotInfo(slotId);
-				LOG.debug("slot description: "
-						+ new String(slotInfo.slotDescription));
-				if (new String(slotInfo.slotDescription)
-						.startsWith(slotDescription)) {
-					LOG.debug("matching slot found");
-					/*
-					 * Now this is a dirty trick: most PKCS#11 driver vendors
-					 * make the slot description the same as the PC/SC card
-					 * terminal name. But don't tell anyone.
-					 */
-					if ((slotInfo.flags & PKCS11Constants.CKF_TOKEN_PRESENT) == 0) {
-						continue;
-					}
-					/*
-					 * Be careful here, it's the slot index, not the slot id.
-					 */
-					return slotIdx;
+			Method[] methods = PKCS11.class.getMethods();
+			PKCS11 pkcs11 = null;
+			for (Method method : methods) {
+				if (!"getInstance".equals(method.getName())) {
+					continue;
 				}
-			}
-			throw new SmartCardNotFoundException(
-					"no slots with expected smart card was found");
-		} finally {
-			pkcs11.C_Finalize(null);
-		}
-	}
-
-	public boolean isReaderPresent() {
-		TerminalFactory terminalFactory = TerminalFactory.getDefault();
-		try {
-			CardTerminals cardTerminals = terminalFactory.terminals();
-			int numberOfReaders = cardTerminals.list().size();
-			LOG.debug("number of readers: " + numberOfReaders);
-			/*
-			 * This does not always seem to work as expected.
-			 */
-			return numberOfReaders != 0;
-		} catch (CardException e) {
-			LOG.error("card error: " + e.getMessage());
-			return false;
-		}
-	}
-
-	public boolean isSupportedCardPresent() {
-		SupportedCard supportedCard = getSupportedCard();
-		boolean result = null != supportedCard;
-		return result;
-	}
-
-	private static final class SupportedCard {
-		private final CardTerminal cardTerminal;
-
-		private final SmartCardConfig smartCardConfig;
-
-		public SupportedCard(CardTerminal cardTerminal,
-				SmartCardConfig smartCardConfig) {
-			this.cardTerminal = cardTerminal;
-			this.smartCardConfig = smartCardConfig;
-		}
-	}
-
-	private SupportedCard getSupportedCard() {
-		if (null == this.smartCardConfigs) {
-			throw new IllegalStateException("call init first");
-		}
-		TerminalFactory terminalFactory = TerminalFactory.getDefault();
-		CardTerminals cardTerminals = terminalFactory.terminals();
-		try {
-			for (CardTerminal cardTerminal : cardTerminals.list()) {
-				LOG.debug("card terminal name: " + cardTerminal.getName());
-				if (cardTerminal.isCardPresent()) {
-					Card card;
+				if ((method.getModifiers() & Modifier.STATIC) == 0) {
+					continue;
+				}
+				LOG.debug("getInstance method found");
+				Class[] paramTypes = method.getParameterTypes();
+				for (Class paramType : paramTypes) {
+					LOG.debug("param: " + paramType.getName());
+				}
+				if (Arrays.equals(new Class[] { String.class,
+						CK_C_INITIALIZE_ARGS.class, Boolean.TYPE }, paramTypes)) {
+					/*
+					 * Java 1.5
+					 */
 					try {
-						card = cardTerminal.connect("*");
+						pkcs11 = (PKCS11) method.invoke(null, new Object[] {
+								pkcs11Library, null, false });
 					} catch (Exception e) {
-						LOG.error("connection error: " + e.getMessage());
-						continue;
+						LOG.error("error: " + e.getMessage(), e);
+						return 0; // best effort
 					}
+					break;
+				}
+				if (Arrays.equals(new Class[] { String.class, String.class,
+						CK_C_INITIALIZE_ARGS.class, Boolean.TYPE }, paramTypes)) {
+					/*
+					 * Java 1.6
+					 */
 					try {
-						ATR atr = card.getATR();
-						for (SmartCardConfig smartCardConfig : smartCardConfigs) {
-							if (smartCardConfig.isSupportedATR(atr)) {
-								return new SupportedCard(cardTerminal,
-										smartCardConfig);
-							}
-						}
-					} finally {
-						card.disconnect(true);
+						CK_C_INITIALIZE_ARGS ck_c_initialize_args = new CK_C_INITIALIZE_ARGS();
+						pkcs11 = (PKCS11) method.invoke(null, new Object[] {
+								pkcs11Library, "C_GetFunctionList",
+								ck_c_initialize_args, false });
+					} catch (Exception e) {
+						LOG.error("error during invocation of getInstance: "
+								+ e.getMessage());
+						return 0; // best effort
 					}
+					break;
 				}
 			}
-		} catch (CardException e) {
-			LOG.error("card error: " + e.getMessage(), e);
-			throw new RuntimeException("card error: " + e.getMessage(), e);
+			if (null == pkcs11) {
+				LOG.warn("no appropriate PKCS11 getInstance method found");
+				return 0; // best effort
+			}
+			try {
+				long[] slotIds = pkcs11.C_GetSlotList(true);
+				LOG.debug("number of PKCS11 slots: " + slotIds.length);
+				for (int currSlotIdx = 0; currSlotIdx < slotIds.length; currSlotIdx++) {
+					LOG.debug("slot idx: " + currSlotIdx);
+					long slotId = slotIds[currSlotIdx];
+					LOG.debug("slot id: " + slotId);
+					CK_SLOT_INFO slotInfo = pkcs11.C_GetSlotInfo(slotId);
+					LOG.debug("slot description: "
+							+ new String(slotInfo.slotDescription));
+					LOG.debug("manufacturer: "
+							+ new String(slotInfo.manufacturerID));
+					if ((slotInfo.flags & PKCS11Constants.CKF_TOKEN_PRESENT) != 0) {
+						CK_TOKEN_INFO tokenInfo = pkcs11.C_GetTokenInfo(slotId);
+						LOG
+								.debug("token label: "
+										+ new String(tokenInfo.label));
+						LOG
+								.debug("token model: "
+										+ new String(tokenInfo.model));
+						LOG.debug("manufacturer Id: "
+								+ new String(tokenInfo.manufacturerID));
+						LOG.debug("Card found in slot Idx: " + currSlotIdx);
+						return currSlotIdx;
+					}
+				}
+				throw new SmartCardNotFoundException();
+			} finally {
+				try {
+					pkcs11.C_Finalize(null);
+				} catch (PKCS11Exception e) {
+					LOG.error("C_Finalize error: " + e.getMessage());
+				}
+			}
+		} catch (PKCS11Exception e) {
+			throw new RuntimeException("PKCS11 error: " + e.getMessage(), e);
 		}
-		return null;
 	}
 
 	private static class PKCS11CallbackHandler implements CallbackHandler {

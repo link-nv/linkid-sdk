@@ -21,16 +21,15 @@ public interface SmartCard {
 	 */
 	void init(List<SmartCardConfig> smartCardConfigs);
 
-	boolean isReaderPresent();
-
-	boolean isSupportedCardPresent();
-
 	void setSmartCardPinCallback(SmartCardPinCallback smartCardPinCallback);
 
 	/**
 	 * Open a connection towards the smart card device.
+	 * 
+	 * @param smartCardAlias
+	 *            the alias of the smart card config that should be used.
 	 */
-	void open();
+	void open(String smartCardAlias) throws SmartCardNotFoundException;
 
 	/**
 	 * Close the connection towards the smart card device.

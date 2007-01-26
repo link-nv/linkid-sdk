@@ -9,13 +9,11 @@ package net.link.safeonline.p11sc.spi;
 
 import java.security.cert.X509Certificate;
 
-import javax.smartcardio.CardTerminal;
-
 public interface IdentityDataExtractor {
 
 	void init(IdentityDataCollector identityDataCollector);
 
-	void prePkcs11(CardTerminal cardTerminal);
+	void prePkcs11();
 
 	void postPkcs11(X509Certificate authenticationCertificate);
 }

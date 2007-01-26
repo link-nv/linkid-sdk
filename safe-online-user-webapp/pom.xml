@@ -71,6 +71,11 @@
 			<artifactId>commons-logging-api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-base</artifactId>
 			<type>war</type>

@@ -29,6 +29,7 @@ import net.link.safeonline.model.PkiValidator;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
+import net.link.safeonline.p11sc.SmartCardNotFoundException;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
@@ -212,19 +213,14 @@ public class CredentialServiceBeanTest extends TestCase {
 			return false;
 		}
 
-		public boolean isReaderPresent() {
-			return false;
-		}
-
-		public boolean isSupportedCardPresent() {
-			return false;
-		}
-
-		public void open() {
-		}
-
 		public void setSmartCardPinCallback(
 				SmartCardPinCallback smartCardPinCallback) {
+		}
+
+		public void open(String smartCardAlias)
+				throws SmartCardNotFoundException {
+			// TODO Auto-generated method stub
+
 		}
 	}
 }

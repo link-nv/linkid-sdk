@@ -8,20 +8,14 @@
 package net.link.safeonline.p11sc.impl;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-
-import javax.smartcardio.ATR;
 
 import net.link.safeonline.p11sc.SmartCardConfig;
 
 public class SmartCardConfigImpl implements SmartCardConfig {
 
 	private String cardAlias;
-
-	private Set<ATR> supportedATRs;
 
 	private String authenticationKeyAlias;
 
@@ -61,26 +55,11 @@ public class SmartCardConfigImpl implements SmartCardConfig {
 
 	public SmartCardConfigImpl(String cardAlias) {
 		this.cardAlias = cardAlias;
-		this.supportedATRs = new HashSet<ATR>();
 		this.pkcs11DriverLocations = new LinkedList<Pkcs11Platform>();
-	}
-
-	public void addSupportedATR(ATR supportedATR) {
-		this.supportedATRs.add(supportedATR);
-	}
-
-	public void addSupportedATR(byte[] atrBytes) {
-		ATR atr = new ATR(atrBytes);
-		addSupportedATR(atr);
 	}
 
 	public String getCardAlias() {
 		return this.cardAlias;
-	}
-
-	public boolean isSupportedATR(ATR atr) {
-		boolean result = this.supportedATRs.contains(atr);
-		return result;
 	}
 
 	public String getAuthenticationKeyAlias() {

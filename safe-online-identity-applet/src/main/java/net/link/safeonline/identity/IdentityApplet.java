@@ -28,7 +28,7 @@ import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
 import net.link.safeonline.p11sc.impl.SmartCardImpl;
-import net.link.safeonline.p11sc.impl.XmlSmartCardConfigFactory;
+import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 
 public class IdentityApplet extends JApplet implements Runnable {
 
@@ -65,7 +65,7 @@ public class IdentityApplet extends JApplet implements Runnable {
 
 		setupLogging(smartCard);
 
-		SmartCardConfigFactory configFactory = new XmlSmartCardConfigFactory();
+		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
 		List<SmartCardConfig> smartCardConfigs = configFactory
 				.getSmartCardConfigs();
 		smartCard.init(smartCardConfigs);
@@ -74,11 +74,13 @@ public class IdentityApplet extends JApplet implements Runnable {
 					+ smartCardConfig.getCardAlias());
 		}
 
+		String smartCardAlias = getParameter("SmartCardConfig");
+
 		output("Connecting to smart card...");
 		String osName = System.getProperty("os.name");
 		output("os name: " + osName);
 		try {
-			smartCard.open();
+			smartCard.open(smartCardAlias);
 		} catch (Exception e) {
 			output("error opening the smart card: " + e.getMessage());
 			output("error type: " + e.getClass().getName());

@@ -12,17 +12,15 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.smartcardio.ATR;
-
 import junit.framework.TestCase;
 import junitx.framework.ListAssert;
 import net.link.safeonline.p11sc.SmartCardConfig;
-import net.link.safeonline.p11sc.impl.XmlSmartCardConfigFactory;
+import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 import net.link.safeonline.test.util.TestClassLoader;
 
-public class XmlSmartCardConfigFactoryTest extends TestCase {
+public class SmartCardConfigFactoryImplTest extends TestCase {
 
-	private XmlSmartCardConfigFactory testedInstance;
+	private SmartCardConfigFactoryImpl testedInstance;
 
 	private TestClassLoader testClassLoader;
 
@@ -37,7 +35,7 @@ public class XmlSmartCardConfigFactoryTest extends TestCase {
 		this.testClassLoader = new TestClassLoader();
 		currentThread.setContextClassLoader(this.testClassLoader);
 
-		this.testedInstance = new XmlSmartCardConfigFactory();
+		this.testedInstance = new SmartCardConfigFactoryImpl();
 	}
 
 	@Override
@@ -60,12 +58,12 @@ public class XmlSmartCardConfigFactoryTest extends TestCase {
 
 	public void testGetSmartCardConfigs() throws Exception {
 		// setup
-		URL testConfigResource = XmlSmartCardConfigFactory.class
-				.getResource("/test-safe-online-pkcs11-sc-config.xml");
+		URL testConfigResource = SmartCardConfigFactoryImpl.class
+				.getResource("/test-safe-online-pkcs11-sc-config.properties");
 
-		this.testClassLoader
-				.addResource("META-INF/safe-online-pkcs11-sc-config.xml",
-						testConfigResource);
+		this.testClassLoader.addResource(
+				"META-INF/safe-online-pkcs11-sc-config.properties",
+				testConfigResource);
 
 		// operate
 		List<SmartCardConfig> results = this.testedInstance
@@ -78,17 +76,6 @@ public class XmlSmartCardConfigFactoryTest extends TestCase {
 		SmartCardConfig resultConfig = results.get(0);
 		assertEquals("test-alias", resultConfig.getCardAlias());
 
-		assertTrue(resultConfig.isSupportedATR(new ATR(new byte[] { 0x01, 0x02,
-				0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C,
-				0x0D })));
-		assertTrue(resultConfig.isSupportedATR(new ATR(
-				new byte[] { (byte) 0xFF, (byte) 0xFE, (byte) 0xFD,
-						(byte) 0xFC, (byte) 0xFB, (byte) 0xFA, (byte) 0xF9,
-						(byte) 0xF8, (byte) 0xF7, (byte) 0xF6, (byte) 0xF5,
-						(byte) 0xF4, (byte) 0xF3 })));
-		assertFalse(resultConfig.isSupportedATR(new ATR(new byte[] {
-				(byte) 0xbabe, (byte) 0x2bad })));
-
 		assertEquals("test-auth-alias", resultConfig
 				.getAuthenticationKeyAlias());
 		assertEquals("test-sign-alias", resultConfig.getSignatureKeyAlias());
@@ -100,7 +87,7 @@ public class XmlSmartCardConfigFactoryTest extends TestCase {
 
 		List<File> expectedDriverLocations = new LinkedList<File>();
 		expectedDriverLocations.add(new File("/test/location"));
-		expectedDriverLocations.add(new File("/another/test/location"));
+		expectedDriverLocations.add(new File("C:\\another\\test\\location"));
 		ListAssert.assertEquals(expectedDriverLocations, resultDriverLocations);
 
 		assertEquals("test.net.link.safeonline.IdentityExtractor", resultConfig

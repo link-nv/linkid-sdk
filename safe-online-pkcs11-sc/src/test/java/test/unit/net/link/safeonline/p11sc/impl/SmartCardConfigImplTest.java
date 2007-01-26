@@ -7,8 +7,6 @@
 
 package test.unit.net.link.safeonline.p11sc.impl;
 
-import javax.smartcardio.ATR;
-
 import junit.framework.TestCase;
 import net.link.safeonline.p11sc.impl.SmartCardConfigImpl;
 
@@ -25,18 +23,6 @@ public class SmartCardConfigImplTest extends TestCase {
 		this.testAlias = "test-alias-" + getName();
 
 		this.testedInstance = new SmartCardConfigImpl(this.testAlias);
-	}
-
-	public void testATREqualsWorks() throws Exception {
-		// setup
-		ATR testAtr = new ATR(new byte[] { 0x01, 0x02, 0x03 });
-
-		// operate
-		this.testedInstance.addSupportedATR(testAtr);
-		boolean result = this.testedInstance.isSupportedATR(testAtr);
-
-		// verify
-		assertTrue(result);
 	}
 
 	public void testGetAlias() throws Exception {

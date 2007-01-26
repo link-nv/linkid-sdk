@@ -10,13 +10,9 @@ package net.link.safeonline.p11sc;
 import java.io.File;
 import java.util.List;
 
-import javax.smartcardio.ATR;
-
 public interface SmartCardConfig {
 
 	String getCardAlias();
-
-	boolean isSupportedATR(ATR atr);
 
 	String getAuthenticationKeyAlias();
 

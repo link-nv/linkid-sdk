@@ -13,6 +13,7 @@ import java.util.List;
 
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
+import net.link.safeonline.p11sc.SmartCardNotFoundException;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
 
 public class SoftwareSmartCard implements SmartCard {
@@ -94,18 +95,10 @@ public class SoftwareSmartCard implements SmartCard {
 		return false;
 	}
 
-	public boolean isReaderPresent() {
-		return false;
-	}
-
-	public boolean isSupportedCardPresent() {
-		return false;
-	}
-
-	public void open() {
-	}
-
 	public void setSmartCardPinCallback(
 			SmartCardPinCallback smartCardPinCallback) {
+	}
+
+	public void open(String smartCardAlias) throws SmartCardNotFoundException {
 	}
 }
