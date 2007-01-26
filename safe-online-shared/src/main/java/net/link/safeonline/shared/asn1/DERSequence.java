@@ -9,6 +9,7 @@ package net.link.safeonline.shared.asn1;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DERSequence implements DEREncodable {
@@ -21,6 +22,14 @@ public class DERSequence implements DEREncodable {
 
 	public DERSequence(List<DEREncodable> sequence) {
 		this.sequence = sequence;
+	}
+
+	public DERSequence() {
+		this(new LinkedList<DEREncodable>());
+	}
+
+	public void add(DEREncodable element) {
+		this.sequence.add(element);
 	}
 
 	public byte[] getEncoded() {

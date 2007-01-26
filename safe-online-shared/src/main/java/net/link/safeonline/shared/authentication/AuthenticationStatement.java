@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.shared.identity;
+package net.link.safeonline.shared.authentication;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -14,31 +14,30 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.X509Certificate;
 
-import net.link.safeonline.shared.asn1.identity.DERIdentityStatement;
+import net.link.safeonline.shared.asn1.authentication.DERAuthenticationStatement;
 
 /**
- * Component for construction of the identity statement.
+ * Component for constructing the authentication statement.
  * 
  * @author fcorneli
  * 
  */
-public class IdentityStatement {
+public class AuthenticationStatement {
+
+	private final DERAuthenticationStatement derAuthenticationStatement;
 
 	private final PrivateKey authenticationPrivateKey;
 
-	private final DERIdentityStatement derIdentityStatement;
-
-	public IdentityStatement(X509Certificate authenticationCertificate,
-			String user, String givenName, String surname,
+	public AuthenticationStatement(String sessionId,
+			X509Certificate authenticationCertificate,
 			PrivateKey authenticationPrivateKey) {
-		this.derIdentityStatement = new DERIdentityStatement(
-				authenticationCertificate, user, givenName, surname);
+		this.derAuthenticationStatement = new DERAuthenticationStatement(
+				sessionId, authenticationCertificate);
 		this.authenticationPrivateKey = authenticationPrivateKey;
 	}
 
-	public byte[] generateIdentityStatement() {
-		// TODO: identity and authentication statement share common structure
-		byte[] tbs = this.derIdentityStatement.getToBeSigned();
+	public byte[] generateAuthenticationStatement() {
+		byte[] tbs = this.derAuthenticationStatement.getToBeSigned();
 		Signature signature;
 		try {
 			signature = Signature.getInstance("SHA1withRSA");
@@ -57,7 +56,7 @@ public class IdentityStatement {
 		} catch (SignatureException e) {
 			throw new RuntimeException("signature error: " + e.getMessage());
 		}
-		this.derIdentityStatement.setSignature(signatureValue);
-		return this.derIdentityStatement.getEncoded();
+		this.derAuthenticationStatement.setSignature(signatureValue);
+		return this.derAuthenticationStatement.getEncoded();
 	}
 }

@@ -40,6 +40,7 @@ public class BeIdPkiProviderTest extends TestCase {
 
 		// verify
 		LOG.debug("certificate: " + certificate);
+		LOG.debug("certificate size: " + certificate.getEncoded().length);
 		assertTrue(result);
 	}
 
