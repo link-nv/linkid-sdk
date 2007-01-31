@@ -13,9 +13,7 @@
 		</filter-class>
 		<init-param>
 			<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
-			<param-value>
-				http://localhost:8080/safe-online-auth/
-			</param-value>
+			<param-value>${auth.webapp.location}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ApplicationName</param-name>

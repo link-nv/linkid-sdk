@@ -8,6 +8,16 @@ mvn clean install
 
  Afterwards every project will have the artifacts available under their <<<target/>>> directory.
  
+ Different profiles can be activated to customize the build results according to different deployment environments.
+ 
+ Per default a development profile is activated to allow for localhost deployment.
+ 
+ To activate the buildserver profile, build via the following command:
+
++---+
+mvn -Denv=buildserver clean install
++---+
+ 
  The following topics described patched versions of some 3th party libraries and build plugins required for building SafeOnline.
 
 
