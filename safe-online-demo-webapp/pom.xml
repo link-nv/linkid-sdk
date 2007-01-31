@@ -66,7 +66,7 @@
 					<webResources>
 						<resource>
 							<directory>
-								src/main/webapp/WEB-INF
+								${basedir}/src/main/webapp/WEB-INF
 							</directory>
 							<targetPath>WEB-INF</targetPath>
 							<filtering>true</filtering>
