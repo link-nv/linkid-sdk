@@ -56,4 +56,18 @@ public class BeIdPkiProviderTest extends TestCase {
 		// verify
 		assertFalse(result);
 	}
+
+	public void testSubjectIdentifier() throws Exception {
+		// setup
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+
+		// operate
+		String result = this.testedInstance.getSubjectIdentifier(certificate);
+
+		// verify
+		assertNotNull(result);
+		LOG.debug("subject identifier: " + result);
+	}
 }

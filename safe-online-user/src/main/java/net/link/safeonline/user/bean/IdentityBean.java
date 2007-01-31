@@ -19,6 +19,7 @@ import javax.ejb.Stateful;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.user.Identity;
 import net.link.safeonline.user.UserConstants;
 
@@ -92,10 +93,10 @@ public class IdentityBean implements Identity {
 	public String getGivenName() {
 		try {
 			return this.identityService
-					.findAttribute(SafeOnlineConstants.GIVENNAME_ATTRIBUTE);
+					.findAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE);
 		} catch (PermissionDeniedException e) {
 			LOG.error("user not allowed to view attribute: "
-					+ SafeOnlineConstants.GIVENNAME_ATTRIBUTE);
+					+ BeIdConstants.GIVENNAME_ATTRIBUTE);
 			return null;
 		}
 	}
@@ -103,10 +104,10 @@ public class IdentityBean implements Identity {
 	public String getSurname() {
 		try {
 			return this.identityService
-					.findAttribute(SafeOnlineConstants.SURNAME_ATTRIBUTE);
+					.findAttribute(BeIdConstants.SURNAME_ATTRIBUTE);
 		} catch (PermissionDeniedException e) {
 			LOG.error("user not allowed to view attribute: "
-					+ SafeOnlineConstants.SURNAME_ATTRIBUTE);
+					+ BeIdConstants.SURNAME_ATTRIBUTE);
 			return null;
 		}
 	}

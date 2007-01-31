@@ -26,6 +26,8 @@ import net.link.safeonline.entity.AttributePK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.SubjectIdentifierEntity;
+import net.link.safeonline.entity.SubjectIdentifierPK;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.SubscriptionPK;
@@ -56,7 +58,8 @@ public class EntityTest extends TestCase {
 				ApplicationEntity.class, SubscriptionEntity.class,
 				HistoryEntity.class, ApplicationOwnerEntity.class,
 				AttributeTypeEntity.class, AttributeEntity.class,
-				TrustDomainEntity.class, TrustPointEntity.class);
+				TrustDomainEntity.class, TrustPointEntity.class,
+				SubjectIdentifierEntity.class);
 	}
 
 	@Override
@@ -325,5 +328,26 @@ public class EntityTest extends TestCase {
 		// verify
 		assertEquals(1, resultTrustPoints.size());
 		assertEquals(resultTrustPoint, resultTrustPoints.get(0));
+	}
+
+	public void testSubjectIdentifier() throws Exception {
+		// setup
+		SubjectEntity subject = new SubjectEntity("test-subject");
+		SubjectIdentifierEntity subjectIdentifier = new SubjectIdentifierEntity(
+				"test-domain", "test-identifier", subject);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(subject);
+		entityManager.persist(subjectIdentifier);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		SubjectIdentifierPK pk = new SubjectIdentifierPK("test-domain",
+				"test-identifier");
+		SubjectIdentifierEntity resultSubjectIdentifier = entityManager.find(
+				SubjectIdentifierEntity.class, pk);
+		assertNotNull(resultSubjectIdentifier);
+		assertEquals(subject, resultSubjectIdentifier.getSubject());
 	}
 }

@@ -22,6 +22,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Index;
 
 import static net.link.safeonline.entity.TrustDomainEntity.QUERY_WHERE_NAME;
 import static net.link.safeonline.entity.TrustDomainEntity.QUERY_ALL;
@@ -69,6 +70,7 @@ public class TrustDomainEntity implements Serializable {
 	}
 
 	@Column(unique = true, nullable = false, length = NAME_SIZE)
+	@Index(name = "trust_domain_name_idx")
 	public String getName() {
 		return this.name;
 	}

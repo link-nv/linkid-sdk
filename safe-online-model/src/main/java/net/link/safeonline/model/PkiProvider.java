@@ -11,6 +11,10 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
+import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
+import net.link.safeonline.entity.TrustDomainEntity;
+
 /**
  * Interface for PKI providers. An example of a PKI provider could be the BeID
  * PKIX provider.
@@ -34,10 +38,41 @@ public interface PkiProvider {
 	boolean accept(X509Certificate certificate);
 
 	/**
-	 * Gives back the name of the trust domain that this PKI provider requires
-	 * for certificate validation.
+	 * Gives back the trust domain that this PKI provider requires for
+	 * certificate validation.
 	 * 
 	 * @return
 	 */
-	String getTrustDomainName();
+	TrustDomainEntity getTrustDomain() throws TrustDomainNotFoundException;
+
+	/**
+	 * Gives back a reference to this EJB session object.
+	 * 
+	 * @return
+	 */
+	PkiProvider getReference();
+
+	/**
+	 * Maps from an identity statement attribute to a core attribute type.
+	 * 
+	 * @param identityStatementAttributes
+	 * @return
+	 */
+	String mapAttribute(IdentityStatementAttributes identityStatementAttributes);
+
+	/**
+	 * Gives back the identifier domain name.
+	 * 
+	 * @return
+	 */
+	String getIdentifierDomainName();
+
+	/**
+	 * Gives back the subject identifier. This identifier should be unique
+	 * within the identifier domain.
+	 * 
+	 * @param certificate
+	 * @return
+	 */
+	String getSubjectIdentifier(X509Certificate certificate);
 }

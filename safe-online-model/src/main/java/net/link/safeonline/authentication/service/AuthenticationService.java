@@ -10,6 +10,9 @@ package net.link.safeonline.authentication.service;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
+
 /**
  * Authentication service interface.
  * 
@@ -32,7 +35,7 @@ public interface AuthenticationService {
 	boolean authenticate(String applicationName, String login, String password);
 
 	/**
-	 * Authenticate a user without any application subscription check. This
+	 * Authenticates a user without any application subscription check. This
 	 * method is used by the SafeOnline core JAAS login module.
 	 * 
 	 * @param login
@@ -41,4 +44,19 @@ public interface AuthenticationService {
 	 *         <code>false</code> otherwise.
 	 */
 	boolean authenticate(String login, String password);
+
+	/**
+	 * Authenticates a user via an authentication statement. The given session
+	 * Id must match the one given in the authentication statement. The session
+	 * Id is managed by the servlet front-end container.
+	 * 
+	 * @param sessionId
+	 * @param authenticationStatementData
+	 * @return the user Id if the authentication was successful,
+	 *         <code>null</code> otherwise.
+	 * @throws ArgumentIntegrityException
+	 * @throws TrustDomainNotFoundException
+	 */
+	String authenticate(String sessionId, byte[] authenticationStatementData)
+			throws ArgumentIntegrityException, TrustDomainNotFoundException;
 }

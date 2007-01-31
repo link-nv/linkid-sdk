@@ -21,8 +21,11 @@ import net.link.safeonline.authentication.exception.TrustDomainNotFoundException
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.model.PkiProvider;
 import net.link.safeonline.model.PkiProviderManager;
 import net.link.safeonline.model.PkiValidator;
 import net.link.safeonline.model.SubjectManager;
@@ -49,6 +52,9 @@ public class CredentialServiceBean implements CredentialService {
 
 	@EJB
 	private PkiValidator pkiValidator;
+
+	@EJB
+	private SubjectIdentifierDAO subjectIdentifierDAO;
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void changePassword(String oldPassword, String newPassword)
@@ -98,11 +104,13 @@ public class CredentialServiceBean implements CredentialService {
 			throw new ArgumentIntegrityException();
 		}
 
-		TrustDomainEntity trustDomain = this.pkiProviderManager
-				.findTrustDomain(certificate);
-		if (null == trustDomain) {
-			throw new TrustDomainNotFoundException();
+		PkiProvider pkiProvider = this.pkiProviderManager
+				.findPkiProvider(certificate);
+		if (null == pkiProvider) {
+			throw new ArgumentIntegrityException();
 		}
+
+		TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
 		boolean validationResult = this.pkiValidator.validateCertificate(
 				trustDomain, certificate);
 		if (false == validationResult) {
@@ -114,17 +122,39 @@ public class CredentialServiceBean implements CredentialService {
 			throw new PermissionDeniedException();
 		}
 
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		String domain = pkiProvider.getIdentifierDomainName();
+		String identifier = pkiProvider.getSubjectIdentifier(certificate);
+		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
+				.findSubject(domain, identifier);
+		if (null == existingMappedSubject) {
+			/*
+			 * In this case we register a new subject identifier within the
+			 * system.
+			 */
+			this.subjectIdentifierDAO.addSubjectIdentifier(domain, identifier,
+					subject);
+		} else if (false == subject.equals(existingMappedSubject)) {
+			/*
+			 * The certificate is already linked to another user.
+			 */
+			throw new PermissionDeniedException();
+		}
+
 		String surname = identityStatement.getSurname();
 		String givenName = identityStatement.getGivenName();
 
-		setOrOverrideAttribute(SafeOnlineConstants.SURNAME_ATTRIBUTE, login,
-				surname);
-		setOrOverrideAttribute(SafeOnlineConstants.GIVENNAME_ATTRIBUTE, login,
-				givenName);
+		setOrOverrideAttribute(IdentityStatementAttributes.SURNAME, login,
+				surname, pkiProvider);
+		setOrOverrideAttribute(IdentityStatementAttributes.GIVEN_NAME, login,
+				givenName, pkiProvider);
 	}
 
-	private void setOrOverrideAttribute(String attributeName, String login,
-			String value) {
+	private void setOrOverrideAttribute(
+			IdentityStatementAttributes identityStatementAttribute,
+			String login, String value, PkiProvider pkiProvider) {
+		String attributeName = pkiProvider
+				.mapAttribute(identityStatementAttribute);
 		AttributeEntity attribute = this.attributeDAO.findAttribute(
 				attributeName, login);
 		if (null == attribute) {

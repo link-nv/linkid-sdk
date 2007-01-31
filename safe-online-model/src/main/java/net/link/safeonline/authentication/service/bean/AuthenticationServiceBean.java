@@ -7,22 +7,30 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.security.cert.X509Certificate;
 import java.util.Date;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectDAO;
+import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.model.PkiProvider;
+import net.link.safeonline.model.PkiProviderManager;
+import net.link.safeonline.model.PkiValidator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,6 +62,15 @@ public class AuthenticationServiceBean implements AuthenticationService {
 
 	@EJB
 	private AttributeDAO attributeDAO;
+
+	@EJB
+	private PkiProviderManager pkiProviderManager;
+
+	@EJB
+	private PkiValidator pkiValidator;
+
+	@EJB
+	private SubjectIdentifierDAO subjectIdentifierDAO;
 
 	public boolean authenticate(String applicationName, String login,
 			String password) {
@@ -169,5 +186,67 @@ public class AuthenticationServiceBean implements AuthenticationService {
 		}
 
 		return true;
+	}
+
+	public String authenticate(String sessionId,
+			byte[] authenticationStatementData)
+			throws ArgumentIntegrityException, TrustDomainNotFoundException {
+		LOG.debug("authenticate session: " + sessionId);
+		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
+				authenticationStatementData);
+
+		X509Certificate certificate = authenticationStatement.verifyIntegrity();
+		if (null == certificate) {
+			throw new ArgumentIntegrityException();
+		}
+
+		PkiProvider pkiProvider = this.pkiProviderManager
+				.findPkiProvider(certificate);
+		if (null == pkiProvider) {
+			throw new ArgumentIntegrityException();
+		}
+		TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
+		boolean validationResult = this.pkiValidator.validateCertificate(
+				trustDomain, certificate);
+		if (false == validationResult) {
+			throw new ArgumentIntegrityException();
+		}
+
+		if (false == sessionId.equals(authenticationStatement.getSessionId())) {
+			throw new ArgumentIntegrityException();
+		}
+
+		String identifierDomainName = pkiProvider.getIdentifierDomainName();
+		String identifier = pkiProvider.getSubjectIdentifier(certificate);
+		SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
+				identifierDomainName, identifier);
+		if (null == subject) {
+			LOG.warn("no subject was found for the given certificate");
+			return null;
+		}
+		LOG.debug("subject: " + subject);
+
+		String applicationId = authenticationStatement.getApplicationId();
+		ApplicationEntity application = this.applicationDAO
+				.findApplication(applicationId);
+		if (null == application) {
+			String event = "application not found: " + applicationId;
+			addHistoryEntry(subject, event);
+			return null;
+		}
+
+		SubscriptionEntity subscription = this.subscriptionDAO
+				.findSubscription(subject, application);
+		if (null == subscription) {
+			String event = "subscription not found for application: "
+					+ applicationId;
+			addHistoryEntry(subject, event);
+			return null;
+		}
+
+		addHistoryEntry(subject, "authenticated subject " + subject
+				+ " for application " + applicationId);
+
+		return subject.getLogin();
 	}
 }

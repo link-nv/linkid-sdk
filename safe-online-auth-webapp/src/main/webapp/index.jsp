@@ -1,31 +1,27 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 <head>
 <title>SafeOnline Authentication Web Application</title>
 </head>
 <body>
+<c:set var="application" value="${param.application}" scope="session" />
+<c:set var="target" value="${param.target}" scope="session" />
 <h1>SafeOnline Authentication Web Application</h1>
-<form action="./logon.jsp">
 <table>
 	<tr>
 		<th>Application:</th>
-		<td><%=request.getParameter("application")%></td>
+		<td>${application}</td>
 	</tr>
 	<tr>
 		<th>Target:</th>
-		<td><%=request.getParameter("target")%></td>
-	</tr>
-	<tr>
-		<th>Username:</th>
-		<td><input type="text" name="username" /></td>
-	</tr>
-	<tr>
-		<th>Password:</th>
-		<td><input type="password" name="password" /></td>
+		<td>${target}</td>
 	</tr>
 </table>
-<input type="hidden" name="application" value="${param.application}" />
-<input type="hidden" name="target" value="${param.target}" /> <input
-	type="submit" value="Logon" /></form>
+<p>Please select an authentication device:</p>
+<ul>
+	<li><a href="./username-password.jsp">Username/password</a></li>
+	<li><a href="./beid.jsp">BeID</a></li>
+</ul>
 </body>
 </html>

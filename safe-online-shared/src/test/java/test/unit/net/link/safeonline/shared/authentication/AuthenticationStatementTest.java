@@ -32,10 +32,11 @@ public class AuthenticationStatementTest extends TestCase {
 				.generateSelfSignedCertificate(keyPair,
 						"CN=AuthenticationCertificate");
 		String sessionId = UUID.randomUUID().toString();
+		String applicationId = UUID.randomUUID().toString();
 
 		// operate
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
-				sessionId, certificate, keyPair.getPrivate());
+				sessionId, applicationId, certificate, keyPair.getPrivate());
 		byte[] resultAuthenticationStatement = authenticationStatement
 				.generateAuthenticationStatement();
 

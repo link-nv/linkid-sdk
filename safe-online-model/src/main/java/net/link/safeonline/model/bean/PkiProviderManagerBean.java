@@ -11,7 +11,6 @@ import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -19,13 +18,11 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import net.link.safeonline.dao.TrustDomainDAO;
-import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.model.PkiProvider;
 import net.link.safeonline.model.PkiProviderManager;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Stateless
 public class PkiProviderManagerBean implements PkiProviderManager {
@@ -33,25 +30,11 @@ public class PkiProviderManagerBean implements PkiProviderManager {
 	private static final Log LOG = LogFactory
 			.getLog(PkiProviderManagerBean.class);
 
-	@EJB
-	private TrustDomainDAO trustDomainDAO;
-
-	public TrustDomainEntity findTrustDomain(X509Certificate certificate) {
-		PkiProvider pkiProvider = findPkiProvider(certificate);
-		if (null == pkiProvider) {
-			return null;
-		}
-		String trustDomainName = pkiProvider.getTrustDomainName();
-		TrustDomainEntity trustDomainEntity = this.trustDomainDAO
-				.findTrustDomain(trustDomainName);
-		return trustDomainEntity;
-	}
-
-	private PkiProvider findPkiProvider(X509Certificate certificate) {
+	public PkiProvider findPkiProvider(X509Certificate certificate) {
 		List<PkiProvider> pkiProviders = getPkiProviders();
 		for (PkiProvider pkiProvider : pkiProviders) {
 			if (pkiProvider.accept(certificate)) {
-				return pkiProvider;
+				return pkiProvider.getReference();
 			}
 		}
 		return null;

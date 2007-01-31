@@ -17,7 +17,9 @@ import java.security.cert.X509Certificate;
 import net.link.safeonline.shared.asn1.authentication.DERAuthenticationStatement;
 
 /**
- * Component for constructing the authentication statement.
+ * Component for constructing the authentication statement. The authentication
+ * statement links the session Id and application Id with an PKIX-based
+ * authentication device.
  * 
  * @author fcorneli
  * 
@@ -28,11 +30,11 @@ public class AuthenticationStatement {
 
 	private final PrivateKey authenticationPrivateKey;
 
-	public AuthenticationStatement(String sessionId,
+	public AuthenticationStatement(String sessionId, String applicationId,
 			X509Certificate authenticationCertificate,
 			PrivateKey authenticationPrivateKey) {
 		this.derAuthenticationStatement = new DERAuthenticationStatement(
-				sessionId, authenticationCertificate);
+				sessionId, applicationId, authenticationCertificate);
 		this.authenticationPrivateKey = authenticationPrivateKey;
 	}
 

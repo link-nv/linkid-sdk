@@ -12,22 +12,33 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.security.KeyPair;
+import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.auth.AuthenticationStatementFactory;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectDAO;
+import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.model.PkiProvider;
+import net.link.safeonline.model.PkiProviderManager;
+import net.link.safeonline.model.PkiValidator;
+import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.test.util.EJBTestUtils;
+import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.easymock.EasyMock;
 
@@ -44,6 +55,14 @@ public class AuthenticationServiceBeanTest extends TestCase {
 	private HistoryDAO mockHistoryDAO;
 
 	private AttributeDAO mockAttributeDAO;
+
+	private PkiProviderManager mockPkiProviderManager;
+
+	private PkiValidator mockPkiValidator;
+
+	private Object[] mockObjects;
+
+	private SubjectIdentifierDAO mockSubjectIdentifierDAO;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -65,6 +84,23 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		this.mockAttributeDAO = createMock(AttributeDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockAttributeDAO);
+
+		this.mockPkiProviderManager = createMock(PkiProviderManager.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockPkiProviderManager);
+
+		this.mockPkiValidator = createMock(PkiValidator.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockPkiValidator);
+
+		this.mockSubjectIdentifierDAO = createMock(SubjectIdentifierDAO.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockSubjectIdentifierDAO);
+
+		EJBTestUtils.init(this.testedInstance);
+
+		this.mockObjects = new Object[] { this.mockSubjectDAO,
+				this.mockApplicationDAO, this.mockSubscriptionDAO,
+				this.mockHistoryDAO, this.mockAttributeDAO,
+				this.mockPkiProviderManager, this.mockPkiValidator,
+				this.mockSubjectIdentifierDAO };
 	}
 
 	public void testAuthenticate() throws Exception {
@@ -101,18 +137,14 @@ public class AuthenticationServiceBeanTest extends TestCase {
 				.andStubReturn(passwordAttribute);
 
 		// prepare
-		replay(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO, this.mockHistoryDAO,
-				this.mockAttributeDAO);
+		replay(this.mockObjects);
 
 		// operate
 		boolean result = this.testedInstance.authenticate(applicationName,
 				login, password);
 
 		// verify
-		verify(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO, this.mockHistoryDAO,
-				this.mockAttributeDAO);
+		verify(this.mockObjects);
 		assertTrue(result);
 	}
 
@@ -139,18 +171,14 @@ public class AuthenticationServiceBeanTest extends TestCase {
 				EasyMock.eq(subject), (String) EasyMock.anyObject());
 
 		// prepare
-		replay(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO, this.mockHistoryDAO,
-				this.mockAttributeDAO);
+		replay(this.mockObjects);
 
 		// operate
 		boolean result = this.testedInstance.authenticate(applicationName,
 				login, wrongPassword);
 
 		// verify
-		verify(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO, this.mockHistoryDAO,
-				this.mockAttributeDAO);
+		verify(this.mockObjects);
 		assertFalse(result);
 	}
 
@@ -164,16 +192,74 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		expect(this.mockSubjectDAO.findSubject(wrongLogin)).andStubReturn(null);
 
 		// prepare
-		replay(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO, this.mockHistoryDAO);
+		replay(this.mockObjects);
 
 		// operate
 		boolean result = this.testedInstance.authenticate(applicationName,
 				wrongLogin, password);
 
 		// verify
-		verify(this.mockSubjectDAO, this.mockApplicationDAO,
-				this.mockSubscriptionDAO, this.mockHistoryDAO);
+		verify(this.mockObjects);
 		assertFalse(result);
+	}
+
+	public void testAuthenticateViaAuthenticationStatement() throws Exception {
+		// setup
+		String sessionId = UUID.randomUUID().toString();
+		String applicationId = "test-application-id";
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(
+				keyPair, "CN=Test");
+		SmartCard smartCard = new SoftwareSmartCard(keyPair, cert);
+		TrustDomainEntity trustDomain = new TrustDomainEntity(
+				"test-trust-domain", true);
+		PkiProvider mockPkiProvider = createMock(PkiProvider.class);
+		String identifierDomain = "test-identifier-domain";
+		String identifier = "test-identifier";
+		String login = "test-subject-login";
+		SubjectEntity subject = new SubjectEntity(login);
+		ApplicationEntity application = new ApplicationEntity(applicationId,
+				null);
+		SubscriptionEntity subscription = new SubscriptionEntity();
+
+		byte[] authenticationStatementData = AuthenticationStatementFactory
+				.createAuthenticationStatement(sessionId, applicationId,
+						smartCard);
+
+		// stubs
+		expect(this.mockPkiProviderManager.findPkiProvider(cert))
+				.andStubReturn(mockPkiProvider);
+		expect(mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
+		expect(this.mockPkiValidator.validateCertificate(trustDomain, cert))
+				.andStubReturn(true);
+		expect(mockPkiProvider.getIdentifierDomainName()).andStubReturn(
+				identifierDomain);
+		expect(mockPkiProvider.getSubjectIdentifier(cert)).andStubReturn(
+				identifier);
+		expect(
+				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
+						identifier)).andStubReturn(subject);
+		expect(this.mockApplicationDAO.findApplication(applicationId))
+				.andStubReturn(application);
+		expect(this.mockSubscriptionDAO.findSubscription(subject, application))
+				.andStubReturn(subscription);
+
+		// expectations
+		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
+				EasyMock.eq(subject), (String) EasyMock.anyObject());
+
+		// prepare
+		replay(this.mockObjects);
+		replay(mockPkiProvider);
+
+		// operate
+		String resultUserId = this.testedInstance.authenticate(sessionId,
+				authenticationStatementData);
+
+		// verify
+		verify(this.mockObjects);
+		verify(mockPkiProvider);
+		assertNotNull(resultUserId);
+		assertEquals(login, resultUserId);
 	}
 }

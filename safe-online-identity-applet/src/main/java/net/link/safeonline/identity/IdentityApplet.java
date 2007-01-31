@@ -105,8 +105,7 @@ public class IdentityApplet extends JApplet implements Runnable {
 		String user = getParameter("User");
 
 		output("Creating identity statement for user " + user + "...");
-		IdentityStatementFactory identityStatementFactory = new IdentityStatementFactory();
-		byte[] identityStatement = identityStatementFactory
+		byte[] identityStatement = IdentityStatementFactory
 				.createIdentityStatement(user, smartCard);
 
 		output("Disconnecting from smart card...");
@@ -258,5 +257,4 @@ public class IdentityApplet extends JApplet implements Runnable {
 		}
 		throw new IOException("Response code: " + responseCode);
 	}
-
 }

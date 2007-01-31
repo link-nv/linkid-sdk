@@ -26,14 +26,6 @@ public class IdentityStatementFactoryTest extends TestCase {
 	private static final Log LOG = LogFactory
 			.getLog(IdentityStatementFactoryTest.class);
 
-	private IdentityStatementFactory testedInstance;
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		this.testedInstance = new IdentityStatementFactory();
-	}
-
 	public void testCreateIdentityStatement() throws Exception {
 		// setup
 		String testUser = "test-user";
@@ -50,8 +42,8 @@ public class IdentityStatementFactoryTest extends TestCase {
 						.getPrivate(), testCertificate);
 
 		// operate
-		byte[] result = this.testedInstance.createIdentityStatement(testUser,
-				testSmartCard);
+		byte[] result = IdentityStatementFactory.createIdentityStatement(
+				testUser, testSmartCard);
 
 		// verify
 		assertNotNull(result);

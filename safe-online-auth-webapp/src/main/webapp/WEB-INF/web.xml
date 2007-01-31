@@ -8,10 +8,20 @@
 		SafeOnline Authentication Web Application
 	</display-name>
 
+	<servlet>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.auth.servlet.AuthenticationServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<url-pattern>/authentication/*</url-pattern>
+	</servlet-mapping>
+
 	<error-page>
-		<exception-type>
-			javax.ejb.EJBException
-		</exception-type>
+		<exception-type>javax.ejb.EJBException</exception-type>
 		<location>/error.jsp</location>
 	</error-page>
 

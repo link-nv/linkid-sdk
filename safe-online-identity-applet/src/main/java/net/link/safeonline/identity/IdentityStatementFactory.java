@@ -21,6 +21,10 @@ import net.link.safeonline.shared.identity.IdentityStatement;
  */
 public class IdentityStatementFactory {
 
+	private IdentityStatementFactory() {
+		// empty
+	}
+
 	/**
 	 * Creates a new identity statement linking the user with the given smart
 	 * card.
@@ -31,7 +35,8 @@ public class IdentityStatementFactory {
 	 *            the smart card component.
 	 * @return the ASN.1 DER encoded identity statement.
 	 */
-	public byte[] createIdentityStatement(String user, SmartCard smartCard) {
+	public static byte[] createIdentityStatement(String user,
+			SmartCard smartCard) {
 		X509Certificate authCert = smartCard.getAuthenticationCertificate();
 		String givenName = smartCard.getGivenName();
 		String surname = smartCard.getSurname();

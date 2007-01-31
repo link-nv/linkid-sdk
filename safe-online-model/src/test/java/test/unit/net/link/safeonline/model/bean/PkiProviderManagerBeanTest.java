@@ -19,8 +19,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import junit.framework.TestCase;
-import net.link.safeonline.dao.TrustDomainDAO;
-import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.model.PkiProvider;
 import net.link.safeonline.model.bean.PkiProviderManagerBean;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -31,8 +29,6 @@ public class PkiProviderManagerBeanTest extends TestCase {
 	private PkiProviderManagerBean testedInstance;
 
 	private PkiProvider mockPkiProvider;
-
-	private TrustDomainDAO mockTrustDomainDAO;
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -47,11 +43,8 @@ public class PkiProviderManagerBeanTest extends TestCase {
 		this.mockPkiProvider = createMock(PkiProvider.class);
 		pkixContext.bind("test-pkix-provider", this.mockPkiProvider);
 
-		this.mockTrustDomainDAO = createMock(TrustDomainDAO.class);
-
 		this.testedInstance = new PkiProviderManagerBean();
 
-		EJBTestUtils.inject(this.testedInstance, this.mockTrustDomainDAO);
 		EJBTestUtils.init(this.testedInstance);
 	}
 
@@ -60,26 +53,21 @@ public class PkiProviderManagerBeanTest extends TestCase {
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		String trustDomainName = "test-trust-domain-name";
-		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
-				false);
 
 		// stubs
 		expect(this.mockPkiProvider.accept(certificate)).andStubReturn(true);
-		expect(this.mockPkiProvider.getTrustDomainName()).andStubReturn(
-				trustDomainName);
-		expect(this.mockTrustDomainDAO.findTrustDomain(trustDomainName))
-				.andStubReturn(trustDomain);
+		expect(this.mockPkiProvider.getReference()).andStubReturn(
+				this.mockPkiProvider);
 
 		// prepare
-		replay(this.mockPkiProvider, this.mockTrustDomainDAO);
+		replay(this.mockPkiProvider);
 
 		// operate
-		TrustDomainEntity resultTrustDomain = this.testedInstance
-				.findTrustDomain(certificate);
+		PkiProvider resultPkiProvider = this.testedInstance
+				.findPkiProvider(certificate);
 
 		// verify
-		verify(this.mockPkiProvider, this.mockTrustDomainDAO);
-		assertNotNull(resultTrustDomain);
+		verify(this.mockPkiProvider);
+		assertEquals(this.mockPkiProvider, resultPkiProvider);
 	}
 }

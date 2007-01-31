@@ -117,12 +117,6 @@ public class SystemInitializationStartableBean implements Startable {
 				.add(new AttributeTypeEntity(
 						SafeOnlineConstants.PASSWORD_ATTRIBUTE, "string",
 						false, false));
-		attributeTypes
-				.add(new AttributeTypeEntity(
-						SafeOnlineConstants.GIVENNAME_ATTRIBUTE, "string",
-						true, false));
-		attributeTypes.add(new AttributeTypeEntity(
-				SafeOnlineConstants.SURNAME_ATTRIBUTE, "string", true, false));
 
 		authorizedUsers = new HashMap<String, String>();
 		authorizedUsers.put("fcorneli", "secret");

@@ -29,17 +29,22 @@ public class DERAuthenticationStatement implements DEREncodable {
 
 	public static final int TBS_SESSION_IDX = 1;
 
-	public static final int TBS_AUTH_CERT_IDX = 2;
+	public static final int TBS_APPLICATION_IDX = 2;
+
+	public static final int TBS_AUTH_CERT_IDX = 3;
 
 	private final String sessionId;
+
+	private final String applicationId;
 
 	private final X509Certificate authenticationCertificate;
 
 	private byte[] signature;
 
-	public DERAuthenticationStatement(String sessionId,
+	public DERAuthenticationStatement(String sessionId, String applicationId,
 			X509Certificate authenticationCertificate) {
 		this.sessionId = sessionId;
+		this.applicationId = applicationId;
 		this.authenticationCertificate = authenticationCertificate;
 	}
 
@@ -49,6 +54,8 @@ public class DERAuthenticationStatement implements DEREncodable {
 		tbsSequence.add(version);
 		DERVisibleString session = new DERVisibleString(this.sessionId);
 		tbsSequence.add(session);
+		DERVisibleString application = new DERVisibleString(this.applicationId);
+		tbsSequence.add(application);
 		DEREncodedData encodedCert;
 		try {
 			encodedCert = new DEREncodedData(this.authenticationCertificate

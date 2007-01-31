@@ -146,8 +146,7 @@ public class SmartCardTest extends TestCase {
 		LOG.debug("surname: " + surname);
 
 		LOG.debug("Creating identity statement...");
-		IdentityStatementFactory identityStatementFactory = new IdentityStatementFactory();
-		byte[] identityStatement = identityStatementFactory
+		byte[] identityStatement = IdentityStatementFactory
 				.createIdentityStatement("beid", smartCard);
 
 		LOG.debug("Disconnecting from smart card...");

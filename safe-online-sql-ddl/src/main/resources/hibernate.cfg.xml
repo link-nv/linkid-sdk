@@ -17,5 +17,7 @@
 		<mapping class="net.link.safeonline.entity.AttributeEntity" />
 		<mapping class="net.link.safeonline.entity.TrustDomainEntity" />
 		<mapping class="net.link.safeonline.entity.TrustPointEntity" />
+		<mapping
+			class="net.link.safeonline.entity.SubjectIdentifierEntity" />
 	</session-factory>
 </hibernate-configuration>

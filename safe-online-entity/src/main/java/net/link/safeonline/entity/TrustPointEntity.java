@@ -51,7 +51,7 @@ public class TrustPointEntity implements Serializable {
 
 	private byte[] encodedCert;
 
-	private X509Certificate certificate;
+	private transient X509Certificate certificate;
 
 	private String issuerName;
 

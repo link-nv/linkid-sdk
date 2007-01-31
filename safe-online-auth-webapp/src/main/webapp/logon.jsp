@@ -6,8 +6,9 @@
 </head>
 <jsp:useBean id="logon"
 	class="net.link.safeonline.auth.webapp.LogonBean" />
-<jsp:setProperty name="logon" property="application" />
-<jsp:setProperty name="logon" property="target" />
+<jsp:setProperty name="logon" property="application"
+	value="${application}" />
+<jsp:setProperty name="logon" property="target" value="${target}" />
 <jsp:setProperty name="logon" property="username" />
 <jsp:setProperty name="logon" property="password" />
 <%

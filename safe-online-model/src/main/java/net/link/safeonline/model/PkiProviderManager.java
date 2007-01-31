@@ -11,8 +11,6 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.TrustDomainEntity;
-
 /**
  * Interface for component that manages the different PKI providers.
  * 
@@ -23,14 +21,14 @@ import net.link.safeonline.entity.TrustDomainEntity;
 public interface PkiProviderManager {
 
 	/**
-	 * Finds the trust domain that could possibly validate the given
-	 * certificate. If there exists to trust domain within the system that could
+	 * Finds the PKI provider that could possibly help in validate the given
+	 * certificate. If there exists no PKI provider within the system that could
 	 * handle the certificate's validation process, this method returns
 	 * <code>null</code>.
 	 * 
 	 * @param certificate
-	 * @return the trust domain, or <code>null</code> if no existing trust
-	 *         domain could handle the certificate's validation.
+	 * @return the PKI provider, or <code>null</code> if no existing PKI
+	 *         provider could handle the certificate's validation.
 	 */
-	TrustDomainEntity findTrustDomain(X509Certificate certificate);
+	PkiProvider findPkiProvider(X509Certificate certificate);
 }
