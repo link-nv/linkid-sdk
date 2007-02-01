@@ -94,7 +94,7 @@ public class IdentityAppletTest extends TestCase {
 		final TestAppletStub appletStub = new TestAppletStub();
 		appletStub.setParameter("SmartCardConfig", "beid");
 		appletStub.setParameter("User", "test-user");
-		appletStub.setParameter("IdentityServletPath", "/whereever");
+		appletStub.setParameter("ServletPath", "/whereever");
 
 		SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {

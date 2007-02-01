@@ -189,6 +189,7 @@
 		<module>safe-online-auth-applet</module>
 		<module>safe-online-auth-applet-package</module>
 		<module>safe-online-keystore</module>
+		<module>safe-online-applet-common</module>
 	</modules>
 	<repositories>
 		<repository>

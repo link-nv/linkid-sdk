@@ -20,7 +20,7 @@
 	code="net.link.safeonline.auth.AuthenticationApplet.class"
 	archive="safe-online-auth-applet-package.jar" width="400" height="400">
 	<param name="SmartCardConfig" value="beid" />
-	<param name="AuthenticationServletPath" value="authentication/" />
+	<param name="ServletPath" value="authentication/" />
 	<param name="TargetPath" value="beid-logon.jsp" />
 	<param name="SessionId" value="<%= session.getId() %>" />
 	<param name="ApplicationId" value="${application}" />
