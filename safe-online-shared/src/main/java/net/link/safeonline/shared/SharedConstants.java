@@ -1,0 +1,31 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
+package net.link.safeonline.shared;
+
+public class SharedConstants {
+
+	public static final String SAFE_ONLINE_ERROR_HTTP_HEADER = "Safe-Online-Error";
+
+	public static final String UNDEFINED_ERROR = "UNDEFINED";
+
+	public static final String SUBJECT_NOT_FOUND_ERROR = "SUBJECT_NOT_FOUND";
+
+	public static final String SUBSCRIPTION_NOT_FOUND_ERROR = "SUBSCRIPTION_NOT_FOUND";
+
+	public static final String TRUST_DOMAIN_NOT_FOUND_ERROR = "TRUST_DOMAIN_NOT_FOUND";
+
+	public static final String TRUST_POINT_NOT_FOUND_ERROR = "TRUST_POINT_NOT_FOUND";
+
+	public static final String APPLICATION_OWNER_NOT_FOUND_ERROR = "APPLICATION_OWNER_NOT_FOUND";
+
+	public static final String PERMISSION_DENIED_ERROR = "PERMISSION_DENIED";
+
+	private SharedConstants() {
+		// empty
+	}
+}

@@ -10,7 +10,10 @@ package net.link.safeonline.authentication.service;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 
 /**
@@ -52,11 +55,18 @@ public interface AuthenticationService {
 	 * 
 	 * @param sessionId
 	 * @param authenticationStatementData
-	 * @return the user Id if the authentication was successful,
-	 *         <code>null</code> otherwise.
+	 * @return the user Id
 	 * @throws ArgumentIntegrityException
 	 * @throws TrustDomainNotFoundException
+	 * @throws SubjectNotFoundException
+	 *             in case the certificate was not linked to any subject.
+	 * @throws SubscriptionNotFoundException
+	 *             in case the subject is not subscribed to the application.
+	 * @throws ApplicationNotFoundException
+	 *             in case the application does not exist.
 	 */
 	String authenticate(String sessionId, byte[] authenticationStatementData)
-			throws ArgumentIntegrityException, TrustDomainNotFoundException;
+			throws ArgumentIntegrityException, TrustDomainNotFoundException,
+			SubjectNotFoundException, SubscriptionNotFoundException,
+			ApplicationNotFoundException;
 }

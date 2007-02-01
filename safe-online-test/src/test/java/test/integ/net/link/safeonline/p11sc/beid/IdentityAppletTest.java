@@ -87,7 +87,7 @@ public class IdentityAppletTest extends TestCase {
 
 		SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
-				AppletFrame appletFrame = new AppletFrame(identityApplet);
+				new AppletFrame(identityApplet);
 			}
 		});
 

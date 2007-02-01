@@ -21,6 +21,22 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>unpack-keystore</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.directory}/safe-online-keystore
+							</outputDirectory>
+							<includeArtifactIds>
+								safe-online-keystore
+							</includeArtifactIds>
+						</configuration>
+					</execution>
+					<execution>
+						<id>unpack-deps</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>unpack-dependencies</goal>
@@ -29,35 +45,12 @@
 							<outputDirectory>
 								${project.build.directory}/classes
 							</outputDirectory>
+							<excludeArtifactIds>
+								safe-online-keystore
+							</excludeArtifactIds>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>keytool-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>clean</goal>
-							<goal>genkey</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<keystore>
-						${project.build.directory}/keystore.jks
-					</keystore>
-					<dname>
-						cn=SafeOnline Development, ou=Development,
-						L=SINT-MARTENS-LATEM, ST=VL, o=LIN.K_NV, c=BE
-					</dname>
-					<keypass>secret</keypass>
-					<storepass>secret</storepass>
-					<alias>test</alias>
-					<verbose>true</verbose>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -71,9 +64,9 @@
 				</executions>
 				<configuration>
 					<keystore>
-						${project.build.directory}/keystore.jks
+						${project.build.directory}/safe-online-keystore/safe-online-keystore.jks
 					</keystore>
-					<alias>test</alias>
+					<alias>safe-online</alias>
 					<storepass>secret</storepass>
 					<keypass>secret</keypass>
 					<verify>true</verify>
@@ -92,6 +85,12 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-pkcs11-sc-beid</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>

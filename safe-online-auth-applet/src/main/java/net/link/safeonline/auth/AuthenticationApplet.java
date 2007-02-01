@@ -30,6 +30,7 @@ import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
 import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 import net.link.safeonline.p11sc.impl.SmartCardImpl;
+import net.link.safeonline.shared.SharedConstants;
 
 import org.apache.commons.logging.Log;
 
@@ -116,7 +117,7 @@ public class AuthenticationApplet extends JApplet implements Runnable {
 		try {
 			sendAuthenticationStatement(authenticationStatement);
 		} catch (IOException e) {
-			output("Error occurred while sending the identity statement");
+			output("Error occurred while sending the authentication statement");
 			output("IO error: " + e.getMessage());
 			return;
 		}
@@ -250,6 +251,15 @@ public class AuthenticationApplet extends JApplet implements Runnable {
 		if (200 == responseCode) {
 			output("Authentication statement successfully transmitted.");
 			return;
+		}
+		String safeOnlineErrorCode = httpURLConnection
+				.getHeaderField(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER);
+		if (SharedConstants.SUBSCRIPTION_NOT_FOUND_ERROR
+				.equals(safeOnlineErrorCode)) {
+			output("YOU ARE NOT SUBSCRIBED TO THE APPLICATION");
+		}
+		if (SharedConstants.SUBJECT_NOT_FOUND_ERROR.equals(safeOnlineErrorCode)) {
+			output("YOU DID NOT REGISTER YOUR EID CARD WITHIN SAFE ONLINE");
 		}
 		if (httpURLConnection.getContentLength() > 0) {
 			InputStream inputStream = httpURLConnection.getInputStream();

@@ -14,7 +14,10 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.dao.ApplicationDAO;
@@ -190,7 +193,9 @@ public class AuthenticationServiceBean implements AuthenticationService {
 
 	public String authenticate(String sessionId,
 			byte[] authenticationStatementData)
-			throws ArgumentIntegrityException, TrustDomainNotFoundException {
+			throws ArgumentIntegrityException, TrustDomainNotFoundException,
+			SubjectNotFoundException, SubscriptionNotFoundException,
+			ApplicationNotFoundException {
 		LOG.debug("authenticate session: " + sessionId);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);
@@ -222,7 +227,7 @@ public class AuthenticationServiceBean implements AuthenticationService {
 				identifierDomainName, identifier);
 		if (null == subject) {
 			LOG.warn("no subject was found for the given certificate");
-			return null;
+			throw new SubjectNotFoundException();
 		}
 		LOG.debug("subject: " + subject);
 
@@ -232,7 +237,7 @@ public class AuthenticationServiceBean implements AuthenticationService {
 		if (null == application) {
 			String event = "application not found: " + applicationId;
 			addHistoryEntry(subject, event);
-			return null;
+			throw new ApplicationNotFoundException();
 		}
 
 		SubscriptionEntity subscription = this.subscriptionDAO
@@ -241,7 +246,7 @@ public class AuthenticationServiceBean implements AuthenticationService {
 			String event = "subscription not found for application: "
 					+ applicationId;
 			addHistoryEntry(subject, event);
-			return null;
+			throw new SubscriptionNotFoundException();
 		}
 
 		addHistoryEntry(subject, "authenticated subject " + subject

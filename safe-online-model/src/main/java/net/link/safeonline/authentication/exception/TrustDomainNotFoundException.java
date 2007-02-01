@@ -9,8 +9,15 @@ package net.link.safeonline.authentication.exception;
 
 import javax.ejb.ApplicationException;
 
+import net.link.safeonline.shared.SharedConstants;
+
+
 @ApplicationException(rollback = true)
 public class TrustDomainNotFoundException extends NotFoundException {
 
 	private static final long serialVersionUID = 1L;
+
+	public TrustDomainNotFoundException() {
+		super(SharedConstants.TRUST_DOMAIN_NOT_FOUND_ERROR);
+	}
 }

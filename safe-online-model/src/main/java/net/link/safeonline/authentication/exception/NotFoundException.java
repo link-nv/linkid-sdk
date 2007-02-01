@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -13,4 +13,8 @@ import javax.ejb.ApplicationException;
 public class NotFoundException extends SafeOnlineException {
 
 	private static final long serialVersionUID = 1L;
+
+	public NotFoundException(String errorCode) {
+		super(errorCode);
+	}
 }

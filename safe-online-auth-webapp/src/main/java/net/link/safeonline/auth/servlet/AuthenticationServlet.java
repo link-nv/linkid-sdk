@@ -19,12 +19,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.shared.SharedConstants;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 
 /**
  * Authentication Servlet that accepts authentication statements from the
@@ -81,17 +88,52 @@ public class AuthenticationServlet extends HttpServlet {
 			String userId = this.authenticationService.authenticate(sessionId,
 					authenticationStatementData);
 			HttpSession session = request.getSession();
-			if (null != userId) {
-				response.setStatus(HttpServletResponse.SC_OK);
-				session.setAttribute("user", userId);
-			} else {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				session.invalidate();
-			}
+			response.setStatus(HttpServletResponse.SC_OK);
+			session.setAttribute("user", userId);
+			/*
+			 * The session attribute 'user' is used to pass the authenticated
+			 * subject to the web application pages.
+			 */
+		} catch (TrustDomainNotFoundException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			/*
+			 * The status is used to mark success or error.
+			 */
+			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+					.getErrorCode());
+			/*
+			 * The error http header is used to allow machine processing of the
+			 * error at the client side.
+			 */
+			writer.println("Trust domain not found");
+			/*
+			 * The error message is meant for human consumption.
+			 */
+		} catch (SubjectNotFoundException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+					.getErrorCode());
+			writer.println("Subject not found");
+		} catch (SubscriptionNotFoundException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+					.getErrorCode());
+			writer.println("Subscription not found");
+		} catch (ArgumentIntegrityException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+					.getErrorCode());
+			writer.println("Argument integrity error");
+		} catch (ApplicationNotFoundException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+					.getErrorCode());
+			writer.println("Application not found");
 		} catch (Exception e) {
 			LOG.error("credential service error: " + e.getMessage(), e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			writer.println("internal error");
 		}
+
 	}
 }
