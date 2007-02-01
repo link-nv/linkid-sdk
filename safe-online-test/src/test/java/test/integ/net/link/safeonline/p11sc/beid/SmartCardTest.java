@@ -28,6 +28,12 @@ import org.apache.commons.logging.LogFactory;
 
 import sun.security.pkcs11.wrapper.CK_SLOT_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
+import be.belgium.eid.BEID_Address;
+import be.belgium.eid.BEID_Certif_Check;
+import be.belgium.eid.BEID_ID_Data;
+import be.belgium.eid.BEID_Long;
+import be.belgium.eid.BEID_Status;
+import be.belgium.eid.eidlib;
 
 public class SmartCardTest extends TestCase {
 
@@ -173,5 +179,37 @@ public class SmartCardTest extends TestCase {
 			LOG.debug("PKCS#11 driver location: " + pkcs11DriverLocation
 					+ " exists " + pkcs11DriverLocation.exists());
 		}
+	}
+
+	public void testJniBeIdLib() throws Exception {
+		Runtime runtime = Runtime.getRuntime();
+		runtime.load("/usr/local/lib/libbeidlibjni.so");
+		BEID_Status oStatus;
+		BEID_Long CardHandle = new BEID_Long();
+
+		oStatus = eidlib.BEID_Init(null, 0, 0, CardHandle);
+
+		if (0 != oStatus.getGeneral()) {
+			return;
+		}
+
+		BEID_Certif_Check certCheck = new BEID_Certif_Check();
+		BEID_ID_Data identityData = new BEID_ID_Data();
+		oStatus = eidlib.BEID_GetID(identityData, certCheck);
+		LOG.debug("birth date: " + identityData.getBirthDate());
+		LOG.debug("birth location: " + identityData.getBirthLocation());
+		LOG.debug("sex: " + identityData.getSex());
+
+		BEID_Address addressData = new BEID_Address();
+		oStatus = eidlib.BEID_GetAddress(addressData, certCheck);
+		LOG.debug("street: " + addressData.getStreet());
+		LOG.debug("streetnumber: " + addressData.getStreetNumber());
+		LOG.debug("municipality: " + addressData.getMunicipality());
+		LOG.debug("ZIP: " + addressData.getZip());
+		LOG.debug("box nr: " + addressData.getBoxNumber());
+
+		oStatus = eidlib.BEID_FlushCache();
+
+		oStatus = eidlib.BEID_Exit();
 	}
 }
