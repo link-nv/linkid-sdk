@@ -37,8 +37,11 @@ import net.link.safeonline.entity.TrustPointPK;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.PkiTestUtils;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.asn1.x509.X509Extensions;
+import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
 public class EntityTest extends TestCase {
 
@@ -304,6 +307,10 @@ public class EntityTest extends TestCase {
 		String dn = "CN=Test";
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, dn);
+		String keyId = new String(Hex
+				.encodeHex(new SubjectKeyIdentifierStructure(certificate
+						.getExtensionValue(X509Extensions.SubjectKeyIdentifier
+								.getId())).getKeyIdentifier()));
 
 		// operate
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -315,7 +322,8 @@ public class EntityTest extends TestCase {
 		// verify
 		entityManager = this.entityTestManager.refreshEntityManager();
 		TrustPointEntity resultTrustPoint = entityManager.find(
-				TrustPointEntity.class, new TrustPointPK(trustDomain, dn));
+				TrustPointEntity.class,
+				new TrustPointPK(trustDomain, dn, keyId));
 		assertNotNull(resultTrustPoint);
 		assertEquals(trustPoint, resultTrustPoint);
 
@@ -349,5 +357,24 @@ public class EntityTest extends TestCase {
 				SubjectIdentifierEntity.class, pk);
 		assertNotNull(resultSubjectIdentifier);
 		assertEquals(subject, resultSubjectIdentifier.getSubject());
+	}
+
+	public void testTrustPointEntityHashCode() throws Exception {
+		// setup
+		TrustDomainEntity trustDomain = new TrustDomainEntity(
+				"trust-domain-name", true);
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		TrustPointEntity trustPoint1 = new TrustPointEntity(trustDomain,
+				certificate);
+		TrustPointEntity trustPoint2 = new TrustPointEntity(trustDomain,
+				certificate);
+
+		// operate & verify
+		assertEquals(trustPoint1, trustPoint2);
+		assertEquals(trustPoint1.getPk().hashCode(), trustPoint2.getPk()
+				.hashCode());
+		assertEquals(trustPoint1.hashCode(), trustPoint2.hashCode());
 	}
 }

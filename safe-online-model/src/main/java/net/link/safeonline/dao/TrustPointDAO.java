@@ -15,6 +15,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.TrustPointNotFoundException;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
+import net.link.safeonline.entity.TrustPointPK;
 
 @Local
 public interface TrustPointDAO {
@@ -25,10 +26,16 @@ public interface TrustPointDAO {
 	List<TrustPointEntity> getTrustPoints(TrustDomainEntity trustDomain);
 
 	TrustPointEntity getTrustPoint(TrustDomainEntity trustDomain,
-			String subjectName) throws TrustPointNotFoundException;
+			String subjectName, String keyId)
+			throws TrustPointNotFoundException;
+
+	TrustPointEntity getTrustPoint(TrustPointPK pk)
+			throws TrustPointNotFoundException;
 
 	TrustPointEntity findTrustPoint(TrustDomainEntity trustDomain,
-			String subjectName);
+			String subjectName, String keyId);
 
 	void removeTrustPoint(TrustPointEntity trustPoint);
+
+	String getSubjectKeyId(X509Certificate certificate);
 }

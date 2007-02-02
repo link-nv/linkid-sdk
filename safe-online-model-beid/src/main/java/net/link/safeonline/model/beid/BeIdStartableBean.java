@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.beid;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -25,6 +26,7 @@ import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
@@ -36,6 +38,8 @@ public class BeIdStartableBean implements Startable {
 
 	private static final Log LOG = LogFactory.getLog(BeIdStartableBean.class);
 
+	public static final String INDEX_RESOURCE = "certs/beid/index.txt";
+
 	@EJB
 	private TrustDomainDAO trustDomainDAO;
 
@@ -44,19 +48,6 @@ public class BeIdStartableBean implements Startable {
 
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
-
-	private static final String[] certResources = {
-			"certs/beid/belgiumrca.crt", "certs/beid/citizen200601.crt",
-			"certs/beid/citizen200602.crt", "certs/beid/citizen200603.crt",
-			"certs/beid/citizen200604.crt", "certs/beid/citizen200605.crt",
-			"certs/beid/citizen200606.crt", "certs/beid/citizen200607.crt",
-			"certs/beid/citizen200608.crt", "certs/beid/citizen200609.crt",
-			"certs/beid/citizen200610.crt", "certs/beid/citizen200611.crt",
-			"certs/beid/citizen200612.crt", "certs/beid/citizen200613.crt",
-			"certs/beid/citizen200614.crt", "certs/beid/citizen200615.crt",
-			"certs/beid/citizen200616.crt", "certs/beid/citizen200617.crt",
-			"certs/beid/citizen200618.crt", "certs/beid/citizen200619.crt",
-			"certs/beid/citizen200620.crt" };
 
 	private static List<AttributeTypeEntity> attributeTypes;
 
@@ -88,6 +79,7 @@ public class BeIdStartableBean implements Startable {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initTrustDomain() {
 		TrustDomainEntity beidTrustDomain = this.trustDomainDAO
 				.findTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME);
@@ -109,19 +101,29 @@ public class BeIdStartableBean implements Startable {
 		ClassLoader classLoader = Thread.currentThread()
 				.getContextClassLoader();
 
-		for (String certResource : certResources) {
-			LOG.debug("loading cert resource: " + certResource);
+		InputStream indexInputStream = classLoader
+				.getResourceAsStream(INDEX_RESOURCE);
+		List<String> lines;
+		try {
+			lines = IOUtils.readLines(indexInputStream);
+		} catch (IOException e) {
+			LOG.error("could not read the BeID certificate index file");
+			return;
+		}
+		IOUtils.closeQuietly(indexInputStream);
+
+		for (String certFilename : lines) {
+			LOG.debug("loading " + certFilename);
 			InputStream certInputStream = classLoader
-					.getResourceAsStream(certResource);
+					.getResourceAsStream("certs/beid/" + certFilename);
 			X509Certificate certificate;
 			try {
 				certificate = (X509Certificate) certificateFactory
 						.generateCertificate(certInputStream);
+				this.trustPointDAO.addTrustPoint(beidTrustDomain, certificate);
 			} catch (CertificateException e) {
 				LOG.error("certificate error: " + e.getMessage(), e);
-				continue;
 			}
-			this.trustPointDAO.addTrustPoint(beidTrustDomain, certificate);
 		}
 	}
 

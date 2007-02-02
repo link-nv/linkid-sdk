@@ -88,8 +88,9 @@ public class PkiServiceBean implements PkiService {
 		X509Certificate certificate = decodeCertificate(encodedCertificate);
 		String subjectName = certificate.getSubjectX500Principal().toString();
 		LOG.debug("subject name: " + subjectName);
+		String keyId = this.trustPointDAO.getSubjectKeyId(certificate);
 		TrustPointEntity existingTrustPoint = this.trustPointDAO
-				.findTrustPoint(trustDomain, subjectName);
+				.findTrustPoint(trustDomain, subjectName, keyId);
 		if (null != existingTrustPoint) {
 			throw new ExistingTrustPointException();
 		}
@@ -127,11 +128,11 @@ public class PkiServiceBean implements PkiService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void removeTrustPoint(TrustDomainEntity trustDomain,
-			String subjectName) throws TrustPointNotFoundException {
-		TrustPointEntity trustPoint = this.trustPointDAO.getTrustPoint(
-				trustDomain, subjectName);
-		this.trustPointDAO.removeTrustPoint(trustPoint);
+	public void removeTrustPoint(TrustPointEntity trustPoint)
+			throws TrustPointNotFoundException {
+		TrustPointEntity attachedTrustPoint = this.trustPointDAO
+				.getTrustPoint(trustPoint.getPk());
+		this.trustPointDAO.removeTrustPoint(attachedTrustPoint);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

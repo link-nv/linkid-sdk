@@ -18,7 +18,7 @@
 
 <applet name="AuthenticationApplet"
 	code="net.link.safeonline.auth.AuthenticationApplet.class"
-	archive="safe-online-auth-applet-package.jar" width="400" height="400">
+	archive="safe-online-auth-applet-package.jar" width="450" height="400">
 	<param name="SmartCardConfig" value="beid" />
 	<param name="ServletPath" value="authentication/" />
 	<param name="TargetPath" value="beid-logon.jsp" />

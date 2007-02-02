@@ -21,6 +21,7 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Index;
 
@@ -124,5 +125,10 @@ public class TrustDomainEntity implements Serializable {
 		}
 		TrustDomainEntity rhs = (TrustDomainEntity) obj;
 		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this.name).toHashCode();
 	}
 }

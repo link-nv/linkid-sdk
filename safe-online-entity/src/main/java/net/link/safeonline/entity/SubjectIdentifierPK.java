@@ -67,6 +67,6 @@ public class SubjectIdentifierPK implements Serializable {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.domain)
-				.append(this.identifier).hashCode();
+				.append(this.identifier).toHashCode();
 	}
 }

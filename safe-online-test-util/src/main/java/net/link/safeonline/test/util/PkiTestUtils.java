@@ -55,11 +55,6 @@ public class PkiTestUtils {
 	}
 
 	static {
-		/*
-		 * XXX: It's possible that we need to do something similar later on
-		 * within the SafeOnline application itself, i.e., lifecycle management
-		 * of the BouncyCastle crypto provider.
-		 */
 		if (null == Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {
 			Security.addProvider(new BouncyCastleProvider());
 		}

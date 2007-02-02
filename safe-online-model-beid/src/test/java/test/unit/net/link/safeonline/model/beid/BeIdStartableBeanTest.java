@@ -80,7 +80,7 @@ public class BeIdStartableBeanTest extends TestCase {
 				trustDomain);
 		this.mockTrustPointDAO.addTrustPoint(EasyMock.eq(trustDomain),
 				(X509Certificate) EasyMock.anyObject());
-		expectLastCall().times(21);
+		expectLastCall().times(1 + 2 + 1 + 15 + 20);
 
 		this.mockAttributeTypeDAO
 				.addAttributeType((AttributeTypeEntity) EasyMock.anyObject());

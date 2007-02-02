@@ -35,7 +35,10 @@
 					<h:outputText value="#{node.description}" />
 				</f:facet>
 				<f:facet name="node">
-					<h:commandLink action="#{trustPoint.view}">#{node.description}</h:commandLink>
+					<h:panelGroup>
+						<h:commandLink action="#{trustPoint.view}">#{node.description}</h:commandLink>
+					(SN: #{node.serialNumber})
+					</h:panelGroup>
 				</f:facet>
 			</t:tree2>
 

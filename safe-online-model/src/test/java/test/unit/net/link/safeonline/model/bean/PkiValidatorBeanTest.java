@@ -262,7 +262,10 @@ public class PkiValidatorBeanTest extends TestCase {
 		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
 				true);
 		List<TrustPointEntity> trustPoints = new LinkedList<TrustPointEntity>();
-		trustPoints.add(new TrustPointEntity(trustDomain, caCertificate));
+		TrustPointEntity caTrustPoint = new TrustPointEntity(trustDomain,
+				caCertificate);
+		LOG.debug("ca key id: " + caTrustPoint.getPk().getKeyId());
+		trustPoints.add(caTrustPoint);
 
 		// stubs
 		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))

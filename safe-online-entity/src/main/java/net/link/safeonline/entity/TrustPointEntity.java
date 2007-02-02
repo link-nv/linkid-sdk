@@ -8,6 +8,7 @@
 package net.link.safeonline.entity;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.security.cert.CertificateEncodingException;
@@ -31,8 +32,12 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.bouncycastle.asn1.x509.X509Extensions;
+import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
 import static net.link.safeonline.entity.TrustPointEntity.QUERY_WHERE_DOMAIN;
 
@@ -72,7 +77,25 @@ public class TrustPointEntity implements Serializable {
 			throw new EJBException("cert encoding error: " + e.getMessage());
 		}
 		String subjectName = certificate.getSubjectX500Principal().toString();
-		this.pk = new TrustPointPK(trustDomain, subjectName);
+
+		byte[] subjectKeyIdData = certificate
+				.getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId());
+		if (null == subjectKeyIdData) {
+			throw new EJBException(
+					"certificate has no subject key identifier extension");
+		}
+		SubjectKeyIdentifierStructure subjectKeyIdentifierStructure;
+		try {
+			subjectKeyIdentifierStructure = new SubjectKeyIdentifierStructure(
+					subjectKeyIdData);
+		} catch (IOException e) {
+			throw new EJBException(
+					"error parsing the subject key identifier certificate extension");
+		}
+		String keyId = new String(Hex.encodeHex(subjectKeyIdentifierStructure
+				.getKeyIdentifier()));
+
+		this.pk = new TrustPointPK(trustDomain, subjectName, keyId);
 	}
 
 	@EmbeddedId
@@ -145,6 +168,11 @@ public class TrustPointEntity implements Serializable {
 		}
 		TrustPointEntity rhs = (TrustPointEntity) obj;
 		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this.pk).toHashCode();
 	}
 
 	@Override

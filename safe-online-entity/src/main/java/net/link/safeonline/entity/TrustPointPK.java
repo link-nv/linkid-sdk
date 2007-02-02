@@ -22,15 +22,19 @@ public class TrustPointPK implements Serializable {
 
 	private String subjectName;
 
+	private String keyId;
+
 	private long domain;
 
 	public TrustPointPK() {
 		// empty
 	}
 
-	public TrustPointPK(TrustDomainEntity trustDomain, String subjectName) {
+	public TrustPointPK(TrustDomainEntity trustDomain, String subjectName,
+			String keyId) {
 		this.domain = trustDomain.getId();
 		this.subjectName = subjectName;
+		this.keyId = keyId;
 	}
 
 	public String getSubjectName() {
@@ -49,6 +53,14 @@ public class TrustPointPK implements Serializable {
 		this.domain = domain;
 	}
 
+	public String getKeyId() {
+		return this.keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -59,18 +71,20 @@ public class TrustPointPK implements Serializable {
 		}
 		TrustPointPK rhs = (TrustPointPK) obj;
 		return new EqualsBuilder().append(this.domain, rhs.domain).append(
-				this.subjectName, rhs.subjectName).isEquals();
+				this.subjectName, rhs.subjectName)
+				.append(this.keyId, rhs.keyId).isEquals();
 	}
 
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.domain).append(
-				this.subjectName).hashCode();
+				this.subjectName).append(this.keyId).toHashCode();
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("domain", this.domain).append(
-				"subject name", this.subjectName).toString();
+				"subject name", this.subjectName).append("key id", this.keyId)
+				.toString();
 	}
 }

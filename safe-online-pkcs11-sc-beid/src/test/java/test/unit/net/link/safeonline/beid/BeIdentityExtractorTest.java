@@ -7,15 +7,13 @@
 
 package test.unit.net.link.safeonline.beid;
 
-import java.io.InputStream;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import junit.framework.TestCase;
 import net.link.safeonline.beid.BeIdentityExtractor;
 import net.link.safeonline.p11sc.spi.IdentityDataCollector;
+import net.link.safeonline.test.util.PkiTestUtils;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -76,26 +74,28 @@ public class BeIdentityExtractorTest extends TestCase {
 
 	public void testPostPkcs11() throws Exception {
 		// setup
-		CertificateFactory certificateFactory = CertificateFactory
-				.getInstance("x.509");
-		InputStream certInputStream = BeIdentityExtractorTest.class
-				.getResourceAsStream("/fcorneli-auth.crt");
-		X509Certificate authCert;
-		try {
-			authCert = (X509Certificate) certificateFactory
-					.generateCertificate(certInputStream);
-		} finally {
-			IOUtils.closeQuietly(certInputStream);
-		}
-		LOG.debug("test authentication certificate: " + authCert);
+		X509Certificate authCert2006 = PkiTestUtils
+				.loadCertificateFromResource("/fcorneli-auth.crt");
+		LOG.debug("test authentication certificate 2006: " + authCert2006);
+		X509Certificate authCert2004 = PkiTestUtils
+				.loadCertificateFromResource("/gdesmedt-auth.crt");
+		LOG.debug("test authentication certificate 2004: " + authCert2004);
 
 		// operate
-		this.testedInstance.postPkcs11(authCert);
+		this.testedInstance.postPkcs11(authCert2006);
 
 		// verify
 		LOG.debug("given name: " + this.testIdentityDataCollector.givenName);
 		assertEquals("Frank Henri", this.testIdentityDataCollector.givenName);
 		assertEquals("Cornelis", this.testIdentityDataCollector.surname);
 		assertEquals("BE", this.testIdentityDataCollector.countryCode);
+
+		// operate
+		this.testedInstance.postPkcs11(authCert2004);
+
+		// verify
+		LOG.debug("given name: " + this.testIdentityDataCollector.givenName);
+		assertEquals("Griet", this.testIdentityDataCollector.givenName);
+		assertEquals("De Smedt", this.testIdentityDataCollector.surname);
 	}
 }

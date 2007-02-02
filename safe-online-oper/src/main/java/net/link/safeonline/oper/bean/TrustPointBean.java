@@ -8,6 +8,7 @@
 package net.link.safeonline.oper.bean;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 
@@ -181,6 +182,10 @@ public class TrustPointBean implements TrustPoint {
 		public TrustPointEntity getTrustPoint() {
 			return this.trustPoint;
 		}
+
+		public BigInteger getSerialNumber() {
+			return this.trustPoint.getCertificate().getSerialNumber();
+		}
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -189,10 +194,8 @@ public class TrustPointBean implements TrustPoint {
 				.getCurrentInstance().getExternalContext().getSessionMap().get(
 						"selectedTrustPoint");
 		LOG.debug("remove trust point: " + selectedTrustPoint);
-		TrustDomainEntity trustDomain = selectedTrustPoint.getTrustDomain();
-		String subjectName = selectedTrustPoint.getPk().getSubjectName();
 		try {
-			this.pkiService.removeTrustPoint(trustDomain, subjectName);
+			this.pkiService.removeTrustPoint(selectedTrustPoint);
 		} catch (TrustPointNotFoundException e) {
 			String msg = "trust point not found";
 			LOG.debug(msg);

@@ -41,8 +41,10 @@ import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
+import net.link.safeonline.entity.TrustPointPK;
 import net.link.safeonline.model.PkiValidator;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,6 +68,7 @@ import org.bouncycastle.ocsp.OCSPReqGenerator;
 import org.bouncycastle.ocsp.OCSPResp;
 import org.bouncycastle.ocsp.OCSPRespStatus;
 import org.bouncycastle.ocsp.SingleResp;
+import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
 
 @Stateless
 public class PkiValidatorBean implements PkiValidator {
@@ -127,10 +130,9 @@ public class PkiValidatorBean implements PkiValidator {
 
 		List<TrustPointEntity> trustPoints = this.trustPointDAO
 				.getTrustPoints(trustDomain);
-		HashMap<X500Principal, TrustPointEntity> trustPointMap = new HashMap<X500Principal, TrustPointEntity>();
+		HashMap<TrustPointPK, TrustPointEntity> trustPointMap = new HashMap<TrustPointPK, TrustPointEntity>();
 		for (TrustPointEntity trustPoint : trustPoints) {
-			trustPointMap.put(trustPoint.getCertificate()
-					.getSubjectX500Principal(), trustPoint);
+			trustPointMap.put(trustPoint.getPk(), trustPoint);
 		}
 
 		List<TrustPointEntity> trustPointPath = new LinkedList<TrustPointEntity>();
@@ -138,21 +140,48 @@ public class PkiValidatorBean implements PkiValidator {
 		LOG.debug("build path for cert: "
 				+ certificate.getSubjectX500Principal());
 
-		X500Principal currentRootCertificateIssuer = certificate
-				.getIssuerX500Principal();
+		X509Certificate currentRootCertificate = certificate;
 		while (true) {
+			byte[] authorityKeyIdentifierData = currentRootCertificate
+					.getExtensionValue(X509Extensions.AuthorityKeyIdentifier
+							.getId());
+			if (null == authorityKeyIdentifierData) {
+				/*
+				 * PKIX RFC allows this for the root CA certificate.
+				 */
+				LOG
+						.warn("certificate has no authority key indentifier extension");
+				break;
+			}
+			AuthorityKeyIdentifierStructure authorityKeyIdentifierStructure;
+			try {
+				authorityKeyIdentifierStructure = new AuthorityKeyIdentifierStructure(
+						authorityKeyIdentifierData);
+			} catch (IOException e) {
+				LOG.error("error parsing authority key identifier structure");
+				break;
+			}
+			String keyId = new String(Hex
+					.encodeHex(authorityKeyIdentifierStructure
+							.getKeyIdentifier()));
+			String issuer = currentRootCertificate.getIssuerX500Principal()
+					.toString();
+			LOG.debug("issuer: " + issuer);
+			LOG.debug("keyId: " + keyId);
+			TrustPointPK trustPointPK = new TrustPointPK(trustDomain, issuer,
+					keyId);
 			TrustPointEntity matchingTrustPoint = trustPointMap
-					.get(currentRootCertificateIssuer);
+					.get(trustPointPK);
 			if (null == matchingTrustPoint) {
+				LOG.debug("no matching trust point found");
 				break;
 			}
 			LOG.debug("found path node: "
 					+ matchingTrustPoint.getCertificate()
 							.getSubjectX500Principal());
 			trustPointPath.add(0, matchingTrustPoint);
-			currentRootCertificateIssuer = matchingTrustPoint.getCertificate()
-					.getIssuerX500Principal();
-			if (isSelfIssued(matchingTrustPoint.getCertificate())) {
+			currentRootCertificate = matchingTrustPoint.getCertificate();
+			if (isSelfIssued(currentRootCertificate)) {
 				break;
 			}
 		}
@@ -513,5 +542,4 @@ public class PkiValidatorBean implements PkiValidator {
 			throw new RuntimeException("URI syntax error: " + e.getMessage(), e);
 		}
 	}
-
 }

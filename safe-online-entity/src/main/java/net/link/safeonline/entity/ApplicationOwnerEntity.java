@@ -88,7 +88,7 @@ public class ApplicationOwnerEntity implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(this.name).hashCode();
+		return new HashCodeBuilder().append(this.name).toHashCode();
 	}
 
 	@Override

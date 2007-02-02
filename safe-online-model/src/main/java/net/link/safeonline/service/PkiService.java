@@ -84,11 +84,10 @@ public interface PkiService {
 	/**
 	 * Removes a trust point from a trust domain.
 	 * 
-	 * @param trustDomain
-	 * @param subjectName
+	 * @param trustPoint
 	 * @throws TrustPointNotFoundException
 	 */
-	void removeTrustPoint(TrustDomainEntity trustDomain, String subjectName)
+	void removeTrustPoint(TrustPointEntity trustPoint)
 			throws TrustPointNotFoundException;
 
 	/**

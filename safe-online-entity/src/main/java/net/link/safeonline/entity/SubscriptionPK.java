@@ -70,7 +70,7 @@ public class SubscriptionPK implements Serializable {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.subject).append(
-				this.application).hashCode();
+				this.application).toHashCode();
 	}
 
 	@Override
