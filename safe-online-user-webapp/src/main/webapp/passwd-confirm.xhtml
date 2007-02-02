@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="devices" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h1>Username password token</h1>
+
+		<p>The password was successfully updated.</p>
+
+		<h:form>
+			<h:commandButton action="back" id="back" value="Back" />
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{login}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

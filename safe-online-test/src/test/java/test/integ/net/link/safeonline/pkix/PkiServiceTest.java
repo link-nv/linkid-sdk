@@ -127,9 +127,7 @@ public class PkiServiceTest extends TestCase {
 		assertEquals(certificate, trustPoints.get(0).getCertificate());
 
 		// operate: remove trust point
-		TrustDomainEntity trustDomain = this.pkiService
-				.getTrustDomain(trustDomainName);
-		this.pkiService.removeTrustPoint(trustDomain, dn);
+		this.pkiService.removeTrustPoint(trustPoints.get(0));
 
 		// operate: remove trust domain
 		this.pkiService.removeTrustDomain(trustDomainName);
