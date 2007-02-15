@@ -114,7 +114,7 @@ public class SafeOnlineAuthenticationPortImplTest extends TestCase {
 		assertTrue(result.isAuthenticated());
 	}
 
-	public void __testEndpointViaJAXWSRI() throws Exception {
+	public void testEndpointViaJAXWSRI() throws Exception {
 		// setup
 		SafeOnlineAuthenticationPort wsPort = new SafeOnlineAuthenticationPortImpl();
 		Endpoint endpoint = Endpoint.create(wsPort);

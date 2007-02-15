@@ -205,6 +205,22 @@
 			</releases>
 		</repository>
 		<repository>
+			<!-- Keep Sun repository second for JAX-WS 2.1 API JAR -->
+			<id>java.net</id>
+			<name>java.net Maven Repository</name>
+			<url>
+				https://maven-repository.dev.java.net/nonav/repository
+			</url>
+			<layout>legacy</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</repository>
+		<repository>
 			<id>central</id>
 			<name>Central Repository</name>
 			<url>http://repo1.maven.org/maven2</url>
@@ -231,21 +247,6 @@
 			<id>codehaus-mule</id>
 			<name>Codehaus Mule Maven Repository</name>
 			<url>http://dist.codehaus.org/mule/dependencies/maven2</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>java.net</id>
-			<name>java.net Maven Repository</name>
-			<url>
-				https://maven-repository.dev.java.net/nonav/repository
-			</url>
-			<layout>legacy</layout>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
@@ -783,6 +784,11 @@
 				<artifactId>jmx-client</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.sun.net</groupId>
+				<artifactId>http</artifactId>
+				<version>${http.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -806,16 +812,15 @@
 		</jboss-packaging-maven-plugin.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
 		<junit.version>4.1</junit.version>
-		<jaxb-xjc.version>2.0.4</jaxb-xjc.version>
-		<jaxb-impl.version>2.0.4</jaxb-impl.version>
+		<jaxb-xjc.version>2.1.2</jaxb-xjc.version>
+		<jaxb-impl.version>2.1.2</jaxb-impl.version>
 		<jsr181-api.version>1.0-MR1</jsr181-api.version>
-		<jaxb-api.version>2.0</jaxb-api.version>
+		<jaxb-api.version>2.1</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>
 		<saaj-impl.version>1.3</saaj-impl.version>
-		<!-- jaxws 2.0_03-SNAPSHOT wsimport does not support nested produces -->
-		<jaxws-tools.version>2.0.1-SNAPSHOT</jaxws-tools.version>
-		<jaxws-rt.version>2.0.1-SNAPSHOT</jaxws-rt.version>
-		<jaxws-api.version>2.0</jaxws-api.version>
+		<jaxws-tools.version>2.1</jaxws-tools.version>
+		<jaxws-rt.version>2.1</jaxws-rt.version>
+		<jaxws-api.version>2.1</jaxws-api.version>
 		<commons-logging-api.version>1.0.4</commons-logging-api.version>
 		<jboss.version>4.0.5.GA</jboss.version>
 		<sjsxp.version>1.0</sjsxp.version>
@@ -823,7 +828,7 @@
 		<log4j.version>1.2.14</log4j.version>
 		<activation.version>1.1</activation.version>
 		<stax-ex.version>1.0</stax-ex.version>
-		<streambuffer.version>0.3</streambuffer.version>
+		<streambuffer.version>0.4</streambuffer.version>
 		<easymock.version>2.2</easymock.version>
 		<maven-ear-plugin.version>
 			2.3-SNAPSHOT
@@ -843,8 +848,8 @@
 		<jsr173_api.version>1.0</jsr173_api.version>
 		<commons-lang.version>2.2</commons-lang.version>
 		<jstl.version>1.1.2</jstl.version>
-		<jboss-seam.version>1.1.1.GA</jboss-seam.version>
-		<jboss-seam-ui.version>1.1.1.GA</jboss-seam-ui.version>
+		<jboss-seam.version>1.1.6.GA</jboss-seam.version>
+		<jboss-seam-ui.version>1.1.6.GA</jboss-seam-ui.version>
 		<standard.version>1.1.2</standard.version>
 		<jsf-facelets.version>1.1.12</jsf-facelets.version>
 		<el-api.version>1.0</el-api.version>
@@ -904,5 +909,6 @@
 		<maven-dependency-plugin.version>
 			2.0-alpha-2-SNAPSHOT
 		</maven-dependency-plugin.version>
+		<http.version>2.1</http.version>
 	</properties>
 </project>

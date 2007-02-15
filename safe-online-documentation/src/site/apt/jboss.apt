@@ -36,17 +36,17 @@ JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=128m"
 +---+
 
 
-** JAX-WS runtime libraries
+** JAX-WS 2.1 RI runtime libraries
 
  The JBoss SAAJ implementation <<<jboss-saaj.jar>>> (SAAJ 1.2) will conflict with JAX-WS SAAJ (SAAJ 1.3). 
  One needs to remove <<<jboss-saaj.jar>>> from <<<$JBOSS_HOME/server/default/lib>>>.
 
- Download <<<JAXWS2.0.1m1_20060817.jar>>> from https://jax-ws.dev.java.net/jax-ws-201-m1/
+ Download <<<JAXWS2.1FCS_20070202.jar>>> from https://jax-ws.dev.java.net/2.1/
  
  Run the installer via:
  
 +---+
-java -jar JAXWS2.0.1m1_20060817.jar
+java -jar JAXWS2.1FCS_20070202.jar
 +---+
  
  Copy all JARs from <<<$JAXWS-RI/lib>>> to <<<$JBOSS_HOME/server/default/lib/>>>.

@@ -47,6 +47,20 @@
 							</includeInApplicationXml>
 						</javaModule>
 						<javaModule>
+							<groupId>javax.el</groupId>
+							<artifactId>el-api</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</javaModule>
+						<javaModule>
+							<groupId>el-impl</groupId>
+							<artifactId>el-ri</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</javaModule>
+						<javaModule>
 							<groupId>commons-io</groupId>
 							<artifactId>commons-io</artifactId>
 							<includeInApplicationXml>
@@ -355,6 +369,14 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>el-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>el-impl</groupId>
+			<artifactId>el-ri</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>
