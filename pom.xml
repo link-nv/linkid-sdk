@@ -804,7 +804,7 @@
 		</notifiers>
 	</ciManagement>
 	<prerequisites>
-		<maven>2.0.4</maven>
+		<maven>2.0.5</maven>
 	</prerequisites>
 	<properties>
 		<jboss-packaging-maven-plugin.version>

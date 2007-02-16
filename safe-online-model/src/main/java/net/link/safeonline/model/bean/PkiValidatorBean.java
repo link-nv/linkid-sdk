@@ -48,6 +48,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
@@ -55,6 +56,7 @@ import org.bouncycastle.asn1.DERObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
+import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
@@ -69,6 +71,7 @@ import org.bouncycastle.ocsp.OCSPResp;
 import org.bouncycastle.ocsp.OCSPRespStatus;
 import org.bouncycastle.ocsp.SingleResp;
 import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
+import org.bouncycastle.x509.extension.X509ExtensionUtil;
 
 @Stateless
 public class PkiValidatorBean implements PkiValidator {
@@ -221,6 +224,10 @@ public class PkiValidatorBean implements PkiValidator {
 			if (false == verifySignature(trustPointCertificate, issuerPublicKey)) {
 				return false;
 			}
+			if (false == verifyConstraints(trustPointCertificate)) {
+				LOG.debug("verify constraints did not pass");
+				return false;
+			}
 			issuerCertificate = trustPointCertificate;
 			issuerPublicKey = issuerCertificate.getPublicKey();
 		}
@@ -238,6 +245,35 @@ public class PkiValidatorBean implements PkiValidator {
 			}
 		}
 
+		return true;
+	}
+
+	private boolean verifyConstraints(X509Certificate certificate) {
+		byte[] basicConstraintsValue = certificate
+				.getExtensionValue(X509Extensions.BasicConstraints.getId());
+		if (null == basicConstraintsValue) {
+			LOG.debug("no basic contraints extension present");
+			return false;
+		}
+		ASN1Encodable basicConstraintsDecoded;
+		try {
+			basicConstraintsDecoded = X509ExtensionUtil
+					.fromExtensionValue(basicConstraintsValue);
+		} catch (IOException e) {
+			LOG.error("IO error: " + e.getMessage(), e);
+			return false;
+		}
+		if (false == basicConstraintsDecoded instanceof ASN1Sequence) {
+			LOG.debug("basic constraints extension is not an ASN1 sequence");
+			return false;
+		}
+		ASN1Sequence basicConstraintsSequence = (ASN1Sequence) basicConstraintsDecoded;
+		BasicConstraints basicConstraints = new BasicConstraints(
+				basicConstraintsSequence);
+		if (false == basicConstraints.isCA()) {
+			LOG.debug("basic contraints says not a CA");
+			return false;
+		}
 		return true;
 	}
 
@@ -462,7 +498,7 @@ public class PkiValidatorBean implements PkiValidator {
 		} catch (InvalidKeyException e) {
 			LOG.debug("invalid key");
 			/*
-			 * This can occcur if a root certificate was not self-signed.
+			 * This can occur if a root certificate was not self-signed.
 			 */
 			return false;
 		} catch (CertificateException e) {

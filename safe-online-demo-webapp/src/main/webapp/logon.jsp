@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
 <html>
 <head>
-<title>Logon</title>
+<title>${initParam.title}</title>
 </head>
 <body>
 <h1>Logon</h1>

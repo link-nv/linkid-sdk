@@ -116,6 +116,8 @@ public class PkiValidatorBeanTest extends TestCase {
 
 		String ocspServletLocation = "http://localhost:" + port + "/";
 		this.ocspUri = new URI(ocspServletLocation);
+
+		TestOcspResponderServlet.called = false;
 	}
 
 	@Override
@@ -345,7 +347,7 @@ public class PkiValidatorBeanTest extends TestCase {
 		X509Certificate interCaCertificate = PkiTestUtils.generateCertificate(
 				interCaKeyPair.getPublic(), "CN=TestInterCA", rootCaKeyPair
 						.getPrivate(), rootCaCertificate, interCaNotBefore,
-				interCaNotAfter, null, false, false, null);
+				interCaNotAfter, null, true, false, null);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		DateTime notBefore = now.minusDays(1);
@@ -377,6 +379,56 @@ public class PkiValidatorBeanTest extends TestCase {
 		verify(this.mockTrustPointDAO);
 		assertTrue(result);
 		assertTrue(TestOcspResponderServlet.hasBeenCalled());
+	}
+
+	public void testValidationFailsIfTrustPointIsNotCA() throws Exception {
+		// setup
+		KeyPair rootCaKeyPair = PkiTestUtils.generateKeyPair();
+		DateTime now = new DateTime();
+		DateTime rootCaNotBefore = now.minusDays(10);
+		DateTime rootCaNotAfter = now.plusDays(10);
+		X509Certificate rootCaCertificate = PkiTestUtils
+				.generateSelfSignedCertificate(rootCaKeyPair, "CN=TestRootCA",
+						rootCaNotBefore, rootCaNotAfter, null, true, false);
+
+		KeyPair interCaKeyPair = PkiTestUtils.generateKeyPair();
+		DateTime interCaNotBefore = now.minusDays(5);
+		DateTime interCaNotAfter = now.plusDays(5);
+		X509Certificate interCaCertificate = PkiTestUtils.generateCertificate(
+				interCaKeyPair.getPublic(), "CN=TestInterCA", rootCaKeyPair
+						.getPrivate(), rootCaCertificate, interCaNotBefore,
+				interCaNotAfter, null, false, false, null);
+
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		DateTime notBefore = now.minusDays(1);
+		DateTime notAfter = now.plusDays(1);
+		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair
+				.getPublic(), "CN=Test", interCaKeyPair.getPrivate(),
+				interCaCertificate, notBefore, notAfter, null, false, false,
+				this.ocspUri);
+
+		String trustDomainName = "test-trust-domain";
+		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
+				true);
+		List<TrustPointEntity> trustPoints = new LinkedList<TrustPointEntity>();
+		trustPoints.add(new TrustPointEntity(trustDomain, rootCaCertificate));
+		trustPoints.add(new TrustPointEntity(trustDomain, interCaCertificate));
+
+		// stubs
+		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
+				.andStubReturn(trustPoints);
+
+		// prepare
+		replay(this.mockTrustPointDAO);
+
+		// operate
+		boolean result = this.testedInstance.validateCertificate(trustDomain,
+				certificate);
+
+		// verify
+		verify(this.mockTrustPointDAO);
+		assertFalse(result);
+		assertFalse(TestOcspResponderServlet.hasBeenCalled());
 	}
 
 	public void testValidateCertificateIfRootIsNotSelfSignedFails()

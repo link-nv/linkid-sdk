@@ -6,6 +6,11 @@
 
 	<display-name>SafeOnline Demo Web Application</display-name>
 
+	<context-param>
+		<param-name>title</param-name>
+		<param-value>SafeOnline Test Web Application</param-value>
+	</context-param>
+
 	<filter>
 		<filter-name>Authentication Filter</filter-name>
 		<filter-class>
