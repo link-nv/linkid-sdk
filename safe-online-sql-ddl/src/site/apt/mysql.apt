@@ -1,0 +1,17 @@
+SafeOnline MySQL Database
+
+* Create a SafeOnline database user account
+
+ A SafeOnline MySQL DBMS account can be created via the <<<mysql-create-account.sql>>> SQL script.
+ 
+* Create the SafeOnline database
+
+ Use the <<<mysql-create-database.sql>>> SQL script.
+ 
+* Create the SafeOnline tables.
+
+ Use the <<<safe-online-ddl.sql>>> SQL script as follows:
+
++---+
+mysql -u safeonline -p safeonline < safe-online-ddl.sql
++---+

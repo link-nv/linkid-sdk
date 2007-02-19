@@ -3,7 +3,7 @@
 <head>
 <title>${initParam.title}</title>
 </head>
-<body>
+<body bgcolor="#aaffaa">
 <h1>${initParam.title}</h1>
 
 <p>Welcome to the ${initParam.title}.</p>
