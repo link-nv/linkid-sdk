@@ -191,6 +191,7 @@
 		<module>safe-online-keystore</module>
 		<module>safe-online-applet-common</module>
 		<module>safe-online-attrib-ws</module>
+		<module>safe-online-attrib-ws-impl</module>
 	</modules>
 	<repositories>
 		<repository>
