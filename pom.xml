@@ -190,6 +190,7 @@
 		<module>safe-online-auth-applet-package</module>
 		<module>safe-online-keystore</module>
 		<module>safe-online-applet-common</module>
+		<module>safe-online-attrib-ws</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -785,7 +786,7 @@
 				<version>${jboss.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.sun.net</groupId>
+				<groupId>com.sun.xml.ws</groupId>
 				<artifactId>http</artifactId>
 				<version>${http.version}</version>
 			</dependency>

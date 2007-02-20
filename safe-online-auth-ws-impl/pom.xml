@@ -73,17 +73,11 @@
 		<dependency>
 			<groupId>com.sun.xml.ws</groupId>
 			<artifactId>http</artifactId>
-			<version>1.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jvnet.staxex</groupId>
 			<artifactId>stax-ex</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.net</groupId>
-			<artifactId>http</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
