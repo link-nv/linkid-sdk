@@ -9,4 +9,11 @@
 		service="{urn:net:lin-k:safe-online:auth:1.0}SafeOnlineAuthenticationService"
 		port="{urn:net:lin-k:safe-online:auth:1.0}SafeOnlineAuthenticationPort" />
 
+	<endpoint name="SafeOnline-Attribute-WS"
+		implementation="net.link.safeonline.attrib.ws.SAMLAttributePortImpl"
+		url-pattern="/attrib"
+		interface="oasis.names.tc.saml._2_0.protocol.SAMLAttributePort"
+		service="{urn:oasis:names:tc:SAML:2.0:protocol}SAMLAttributeService"
+		port="{urn:oasis:names:tc:SAML:2.0:protocol}SAMLAttributePort" />
+
 </endpoints>

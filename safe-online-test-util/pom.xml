@@ -59,6 +59,18 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>http</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge</groupId>
+			<artifactId>shiftone-oocjndi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge</groupId>
+			<artifactId>shiftone-arbor</artifactId>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>

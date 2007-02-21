@@ -25,6 +25,8 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.sdk.attrib.AttributeClient;
+import net.link.safeonline.sdk.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.AuthClientImpl;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -48,11 +50,15 @@ public class AuthenticationTest extends TestCase {
 
 	private AuthClient authClient;
 
+	private AttributeClient attributeClient;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
 		this.authClient = new AuthClientImpl(SAFE_ONLINE_LOCATION);
+
+		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION);
 	}
 
 	public void testAvailabilityViaEcho() throws Exception {
@@ -420,6 +426,60 @@ public class AuthenticationTest extends TestCase {
 					SafeOnlineConstants.PASSWORD_ATTRIBUTE, "test-password");
 			fail();
 		} catch (PermissionDeniedException e) {
+			// expected
+		}
+	}
+
+	public void testAttributeService() throws Exception {
+		// setup
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+
+		IntegrationTestUtils.setupLoginConfig();
+
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		IdentityService identityService = getIdentityService(initialContext);
+
+		String testName = "test-name";
+
+		// operate: register user
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		// operate: save name attribute
+		IntegrationTestUtils.login(login, password);
+		identityService.saveAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
+				testName);
+
+		// operate: retrieve name attribute
+		String result = this.attributeClient.getAttributeValue(login,
+				SafeOnlineConstants.NAME_ATTRIBUTE);
+
+		// verify
+		LOG.debug("result attribute value: " + result);
+		assertEquals(testName, result);
+	}
+
+	public void testRetrieveNonExistingAttribute() throws Exception {
+		// setup
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+		IntegrationTestUtils.setupLoginConfig();
+
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+
+		// operate: register user
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		// operate & verify: retrieve name attribute
+		try {
+			this.attributeClient.getAttributeValue(login,
+					"foo-bar-attribute-name");
+			fail();
+		} catch (RuntimeException e) {
 			// expected
 		}
 	}

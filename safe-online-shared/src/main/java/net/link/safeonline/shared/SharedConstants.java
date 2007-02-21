@@ -25,6 +25,8 @@ public class SharedConstants {
 
 	public static final String PERMISSION_DENIED_ERROR = "PERMISSION_DENIED";
 
+	public static final String ATTRIBUTE_NOT_FOUND_ERROR = "ATTRIBUTE_NOT_FOUND";
+
 	private SharedConstants() {
 		// empty
 	}
