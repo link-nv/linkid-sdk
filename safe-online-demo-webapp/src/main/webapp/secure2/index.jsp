@@ -9,6 +9,7 @@
 <p>Login: <%=session.getAttribute("username")%></p>
 <p>This page demonstrates application-managed authentication via
 authentication service-collected credentials.</p>
+<p><a href="./attrib.jsp">Attribute Demo</a></p>
 <form method="get" action="../logout.jsp"><input type="submit"
 	value="Logout" /></form>
 </body>
