@@ -2,7 +2,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk">
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">SafeOnline Operator</ui:define>
@@ -44,6 +45,8 @@
 			<h:messages styleClass="error" />
 
 			<h:commandButton value="Add" id="add" action="add" />
+			<so:nbsp />
+			<h:commandButton value="Clear OCSP cache" id="clear-cache" action="#{trustDomain.clearOcspCache}" />
 		</h:form>
 
 	</ui:define>

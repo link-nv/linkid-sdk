@@ -51,13 +51,21 @@ public class TrustDomainEntity implements Serializable {
 
 	private boolean performOcspCheck;
 
+	private long ocspCacheTimeOutMillis;
+
 	public TrustDomainEntity() {
 		// empty
 	}
 
 	public TrustDomainEntity(String name, boolean performOcspCheck) {
+		this(name, performOcspCheck, 0);
+	}
+
+	public TrustDomainEntity(String name, boolean performOcspCheck,
+			long ocspCacheTimeOutMillis) {
 		this.name = name;
 		this.performOcspCheck = performOcspCheck;
+		this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
 	}
 
 	@Id
@@ -92,6 +100,19 @@ public class TrustDomainEntity implements Serializable {
 
 	public void setPerformOcspCheck(boolean performOcspCheck) {
 		this.performOcspCheck = performOcspCheck;
+	}
+
+	/**
+	 * Indicates how long a cached OCSP lookup stays valid.
+	 * 
+	 * @return
+	 */
+	public long getOcspCacheTimeOutMillis() {
+		return this.ocspCacheTimeOutMillis;
+	}
+
+	public void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis) {
+		this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
 	}
 
 	public static Query createQueryWhereName(EntityManager entityManager,

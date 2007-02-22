@@ -116,7 +116,11 @@ public class EntityTestManager {
 			EntityTransaction entityTransaction = this.entityManager
 					.getTransaction();
 			if (entityTransaction.isActive()) {
-				entityTransaction.commit();
+				if (entityTransaction.getRollbackOnly()) {
+					entityTransaction.rollback();
+				} else {
+					entityTransaction.commit();
+				}
 			}
 			this.entityManager.close();
 		}

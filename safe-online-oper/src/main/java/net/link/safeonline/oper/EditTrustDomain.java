@@ -23,4 +23,9 @@ public interface EditTrustDomain {
 	boolean isPerformOcspCheck();
 
 	void setPerformOcspCheck(boolean performOcspCheck);
+
+	long getOcspCacheTimeOutMillis();
+
+	void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis);
+
 }

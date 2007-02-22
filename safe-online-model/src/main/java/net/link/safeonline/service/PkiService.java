@@ -51,6 +51,21 @@ public interface PkiService {
 			throws ExistingTrustDomainException;
 
 	/**
+	 * Adds a trust domain with the given name.
+	 * 
+	 * @param name
+	 * @param performOcspCheck
+	 * @param ocspCacheTimeOutMillis
+	 * 
+	 * <code>true</code> is the certificate validator should perform an OCSP
+	 * check when OCSP access location information is available within a
+	 * certificate.
+	 * @throws ExistingTrustDomainException
+	 */
+	void addTrustDomain(String name, boolean performOcspCheck,
+			long ocspCacheTimeOutMillis) throws ExistingTrustDomainException;
+
+	/**
 	 * Removes a trust domain with the given name.
 	 * 
 	 * @param name
@@ -102,4 +117,8 @@ public interface PkiService {
 
 	void saveTrustDomain(TrustDomainEntity trustDomain)
 			throws TrustDomainNotFoundException;
+
+	void clearOcspCache();
+
+	void clearOcspCachePerTrustDomain(TrustDomainEntity trustDomain);
 }

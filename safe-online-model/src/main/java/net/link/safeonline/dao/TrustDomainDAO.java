@@ -21,6 +21,9 @@ public interface TrustDomainDAO {
 
 	TrustDomainEntity addTrustDomain(String name, boolean performOcspCheck);
 
+	TrustDomainEntity addTrustDomain(String name, boolean performOcspCheck,
+			long ocspCachetimeOutMillis);
+
 	TrustDomainEntity findTrustDomain(String name);
 
 	TrustDomainEntity getTrustDomain(String name)

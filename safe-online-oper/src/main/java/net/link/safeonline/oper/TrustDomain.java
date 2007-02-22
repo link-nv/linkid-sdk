@@ -29,4 +29,13 @@ public interface TrustDomain {
 	boolean isPerformOcspCheck();
 
 	void setPerformOcspCheck(boolean performOcspCheck);
+
+	long getOcspCacheTimeOutMillis();
+
+	void setOcspCacheTimeOutMillis(long ocspCachetimeOutMillis);
+	
+	String clearOcspCache();
+	
+	String clearOcspCachePerTrustDomain();
+
 }

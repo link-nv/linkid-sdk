@@ -158,6 +158,18 @@ public class PkiTestUtils {
 		return certificate;
 	}
 
+	public static X509Certificate generateTestSelfSignedCert(URI ocspUri)
+			throws Exception {
+		KeyPair keyPair = generateKeyPair();
+		DateTime now = new DateTime();
+		DateTime notBefore = now.minusDays(1);
+		DateTime notAfter = now.plusDays(1);
+		X509Certificate certificate = generateCertificate(keyPair.getPublic(),
+				"CN=Test", keyPair.getPrivate(), null, notBefore, notAfter,
+				null, true, false, ocspUri);
+		return certificate;
+	}
+
 	public static X509Certificate loadCertificate(InputStream inputStream)
 			throws CertificateException {
 		CertificateFactory certificateFactory = CertificateFactory

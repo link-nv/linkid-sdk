@@ -48,6 +48,8 @@ public class TrustDomainBean implements TrustDomain {
 
 	private boolean performOcspCheck;
 
+	private long ocspCacheTimeOutMillis;
+
 	@In(create = true)
 	FacesMessages facesMessages;
 
@@ -60,6 +62,7 @@ public class TrustDomainBean implements TrustDomain {
 
 	@DataModelSelection("trustDomainList")
 	@Out(value = "selectedTrustDomain", required = false, scope = ScopeType.SESSION)
+	@In(required = false)
 	private TrustDomainEntity selectedTrustDomain;
 
 	@Factory("trustDomainList")
@@ -73,7 +76,8 @@ public class TrustDomainBean implements TrustDomain {
 	public String add() {
 		LOG.debug("add trust domain: " + this.name);
 		try {
-			this.pkiService.addTrustDomain(this.name, this.performOcspCheck);
+			this.pkiService.addTrustDomain(this.name, this.performOcspCheck,
+					this.ocspCacheTimeOutMillis);
 		} catch (ExistingTrustDomainException e) {
 			String msg = "existing trust domain";
 			LOG.debug(msg);
@@ -110,6 +114,16 @@ public class TrustDomainBean implements TrustDomain {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public long getOcspCacheTimeOutMillis() {
+		return this.ocspCacheTimeOutMillis;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis) {
+		this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String view() {
 		LOG.debug("view selected trust domain: " + this.selectedTrustDomain);
 		return "view";
@@ -130,4 +144,20 @@ public class TrustDomainBean implements TrustDomain {
 		trustDomainListFactory();
 		return "removed";
 	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String clearOcspCache() {
+		LOG.debug("Clearing OCSP cache for all trust domains");
+		this.pkiService.clearOcspCache();
+		return "clear-cache";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String clearOcspCachePerTrustDomain() {
+		LOG.debug("Clearing OCSP cache for trust domain: "
+				+ this.selectedTrustDomain.getName());
+		this.pkiService.clearOcspCachePerTrustDomain(this.selectedTrustDomain);
+		return "clear-cache";
+	}
+
 }

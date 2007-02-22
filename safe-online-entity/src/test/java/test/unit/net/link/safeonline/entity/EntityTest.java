@@ -24,6 +24,7 @@ import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributePK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CachedOcspResponseEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
@@ -62,7 +63,7 @@ public class EntityTest extends TestCase {
 				HistoryEntity.class, ApplicationOwnerEntity.class,
 				AttributeTypeEntity.class, AttributeEntity.class,
 				TrustDomainEntity.class, TrustPointEntity.class,
-				SubjectIdentifierEntity.class);
+				SubjectIdentifierEntity.class, CachedOcspResponseEntity.class);
 	}
 
 	@Override
@@ -377,4 +378,48 @@ public class EntityTest extends TestCase {
 				.hashCode());
 		assertEquals(trustPoint1.hashCode(), trustPoint2.hashCode());
 	}
+
+	public void testCachedOcspResponse() throws Exception {
+		// setup
+		String trustDomainName = "test-trust-domain-" + getName();
+		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
+				true);
+		String key = "1234";
+		CachedOcspResponseEntity cachedOcspResponse = new CachedOcspResponseEntity(
+				key, true, trustDomain);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(trustDomain);
+		LOG.debug("trust domain id: " + trustDomain.getId());
+		entityManager.persist(cachedOcspResponse);
+		LOG.debug("ocsp response id: " + cachedOcspResponse.getId());
+
+		// verify store and find
+		entityManager = this.entityTestManager.refreshEntityManager();
+		Query query = CachedOcspResponseEntity.createQueryWhereKey(
+				entityManager, key);
+		CachedOcspResponseEntity resultCachedOcspResponse = (CachedOcspResponseEntity) query
+				.getResultList().get(0);
+		assertEquals(cachedOcspResponse, resultCachedOcspResponse);
+
+		// operate
+		entityManager = this.entityTestManager.refreshEntityManager();
+		entityManager.persist(new CachedOcspResponseEntity(key, true,
+				trustDomain));
+		// verify unique constraint
+		try {
+			entityManager.flush();
+			fail();
+		} catch (EntityExistsException e) {
+			// expected
+		}
+
+		// operate + verify cache purge
+		entityManager = this.entityTestManager.refreshEntityManager();
+		query = CachedOcspResponseEntity.createQueryDeleteAll(entityManager);
+		int result = query.executeUpdate();
+		assertEquals(result, 1);
+	}
+
 }

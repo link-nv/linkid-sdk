@@ -100,6 +100,10 @@
 			<from-outcome>removed</from-outcome>
 			<to-view-id>/pkix.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>clear-cache</from-outcome>
+			<to-view-id>/pkix.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -131,6 +135,10 @@
 		<navigation-case>
 			<from-outcome>edit</from-outcome>
 			<to-view-id>/trust-domain-edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>clear-cache</from-outcome>
+			<to-view-id>/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

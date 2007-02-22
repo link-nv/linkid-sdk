@@ -26,6 +26,7 @@ import net.link.safeonline.authentication.exception.ExistingTrustPointException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.exception.TrustPointNotFoundException;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.CachedOcspResponseDAO;
 import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.TrustDomainEntity;
@@ -48,6 +49,9 @@ public class PkiServiceBean implements PkiService {
 	@EJB
 	private TrustPointDAO trustPointDAO;
 
+	@EJB
+	private CachedOcspResponseDAO cachedOcspResponseDAO;
+
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<TrustDomainEntity> getTrustDomains() {
 		List<TrustDomainEntity> trustDomains = this.trustDomainDAO
@@ -64,6 +68,18 @@ public class PkiServiceBean implements PkiService {
 			throw new ExistingTrustDomainException();
 		}
 		this.trustDomainDAO.addTrustDomain(name, performOcspCheck);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void addTrustDomain(String name, boolean performOcspCheck,
+			long ocspCacheTimeOutMillis) throws ExistingTrustDomainException {
+		TrustDomainEntity existingTrustDomain = this.trustDomainDAO
+				.findTrustDomain(name);
+		if (null != existingTrustDomain) {
+			throw new ExistingTrustDomainException();
+		}
+		this.trustDomainDAO.addTrustDomain(name, performOcspCheck,
+				ocspCacheTimeOutMillis);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -152,5 +168,18 @@ public class PkiServiceBean implements PkiService {
 				.getTrustDomain(trustDomain.getName());
 		attachedTrustDomain.setPerformOcspCheck(trustDomain
 				.isPerformOcspCheck());
+		attachedTrustDomain.setOcspCacheTimeOutMillis(trustDomain
+				.getOcspCacheTimeOutMillis());
 	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void clearOcspCache() {
+		this.cachedOcspResponseDAO.clearOcspCache();
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void clearOcspCachePerTrustDomain(TrustDomainEntity trustDomain) {
+		this.cachedOcspResponseDAO.clearOcspCachePerTrustDomain(trustDomain);
+	}
+
 }

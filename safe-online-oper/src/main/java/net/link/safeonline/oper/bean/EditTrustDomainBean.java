@@ -40,6 +40,8 @@ public class EditTrustDomainBean implements EditTrustDomain {
 
 	private boolean performOcspCheck;
 
+	private long ocspCacheTimeOutMillis;
+
 	@In(create = true)
 	FacesMessages facesMessages;
 
@@ -54,6 +56,7 @@ public class EditTrustDomainBean implements EditTrustDomain {
 	public String save() {
 		LOG.debug("saving " + this.selectedTrustDomain);
 		this.selectedTrustDomain.setPerformOcspCheck(this.performOcspCheck);
+		this.selectedTrustDomain.setOcspCacheTimeOutMillis(this.ocspCacheTimeOutMillis);
 		try {
 			this.pkiService.saveTrustDomain(this.selectedTrustDomain);
 		} catch (TrustDomainNotFoundException e) {
@@ -82,10 +85,21 @@ public class EditTrustDomainBean implements EditTrustDomain {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public long getOcspCacheTimeOutMillis() {
+		return this.ocspCacheTimeOutMillis;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis) {
+		this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@Begin
 	public String edit() {
 		LOG.debug("view selected trust domain: " + this.selectedTrustDomain);
 		this.performOcspCheck = this.selectedTrustDomain.isPerformOcspCheck();
+		this.ocspCacheTimeOutMillis = this.selectedTrustDomain.getOcspCacheTimeOutMillis();
 		return "edit";
 	}
 

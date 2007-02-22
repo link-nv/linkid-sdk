@@ -19,9 +19,14 @@
 		<h:form>
 			<h:panelGrid columns="1">
 				<h:panelGroup>
+					<h:outputText value="Perform OCSP Check" />
 					<h:selectBooleanCheckbox id="performOcspCheck"
 						value="#{editTrustDomain.performOcspCheck}" />
-					<h:outputText value="Perform OCSP Check" />
+				</h:panelGroup>
+				<h:panelGroup>
+					<h:outputText value="OCSP cache time-out (ms)" />
+					<h:inputText id="ocspCacheTimeOutMillis"
+						value="#{editTrustDomain.ocspCacheTimeOutMillis}" required="true" />
 				</h:panelGroup>
 			</h:panelGrid>
 

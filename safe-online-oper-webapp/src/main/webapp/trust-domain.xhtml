@@ -25,6 +25,10 @@
 					<th>Perform OCSP check:</th>
 					<td>#{selectedTrustDomain.performOcspCheck}</td>
 				</tr>
+				<tr>
+					<th>OCSP cache time-out (ms):</th>
+					<td>#{selectedTrustDomain.ocspCacheTimeOutMillis}</td>
+				</tr>
 			</table>
 
 			<h2>Content</h2>
@@ -46,6 +50,8 @@
 			<so:nbsp />
 			<h:commandButton action="#{editTrustDomain.edit}" id="edit"
 				value="Edit" />
+			<so:nbsp />
+			<h:commandButton value="Clear OCSP cache" id="clear-cache" action="#{trustDomain.clearOcspCachePerTrustDomain}" />
 			<so:nbsp />
 			<h:commandButton action="back" id="back" value="Back"
 				immediate="true" />

@@ -47,6 +47,15 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
 		return trustDomain;
 	}
 
+	public TrustDomainEntity addTrustDomain(String name,
+			boolean performOcspCheck, long ocspCacheTimeOutMillis) {
+		LOG.debug("add trust domain: " + name);
+		TrustDomainEntity trustDomain = new TrustDomainEntity(name,
+				performOcspCheck, ocspCacheTimeOutMillis);
+		this.entityManager.persist(trustDomain);
+		return trustDomain;
+	}
+
 	@SuppressWarnings("unchecked")
 	public TrustDomainEntity findTrustDomain(String name) {
 		LOG.debug("find trust domain: " + name);

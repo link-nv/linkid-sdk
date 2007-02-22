@@ -26,6 +26,18 @@
 				<private-email>info@frankcornelis.be</private-email>
 			</properties>
 		</developer>
+		<developer>
+			<id>dhouthoo</id>
+			<name>Dieter Houthooft</name>
+			<email>dieter@lin-k.net</email>
+			<roles>
+				<role>development</role>
+			</roles>
+			<timezone>+1</timezone>
+			<properties>
+				<msn>ddekunst@hotmail.com</msn>
+			</properties>
+		</developer>
 	</developers>
 	<scm>
 		<connection>
