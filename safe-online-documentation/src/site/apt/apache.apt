@@ -6,4 +6,23 @@ Apache HTTP Server
  
 * SSL configuration
 
- To enable server-side SSL we use the Apache Module named =mod_ssl=.
+ To enable server-side SSL we use the Apache Module named <<<mod_ssl>>>.
+ 
+ On Fedora Core Linux the configuration for the SSL module is located in <<</etc/httpd/conf.d/ssl.conf>>>.
+ 
+ Fedora Core comes with test SSL certificates.
+ 
+* Proxy AJP
+
+ The Apache HTTP Server is linked to the Apache Tomcat Servlet Container that is part of the JBoss Application Server via AJP.
+ 
+ On Fedora Core the <<<proxy_ajp>>> Apache Module can be configured via <<</etc/httpd/conf.d/proxy_ajp.conf>>>.
+ 
++---+
+ProxyPass /safe-online/ ajp://localhost:8009/safe-online/
+ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
++---+
+
+ Per default the JBoss Tomcat accepts AJP connections.
+ 
+ The configuration for this is located in <<<$JBOSS_HOME/server/default/deploy/jbossweb-tomcat55.sar/server.xml>>>.
