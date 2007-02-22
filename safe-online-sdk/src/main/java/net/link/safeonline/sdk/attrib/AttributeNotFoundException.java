@@ -7,8 +7,7 @@
 
 package net.link.safeonline.sdk.attrib;
 
-public interface AttributeClient {
+public class AttributeNotFoundException extends Exception {
 
-	String getAttributeValue(String subjectLogin, String attributeName)
-			throws AttributeNotFoundException;
+	private static final long serialVersionUID = 1L;
 }

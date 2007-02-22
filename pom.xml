@@ -813,7 +813,7 @@
 			2.0-SNAPSHOT
 		</jboss-packaging-maven-plugin.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
-		<junit.version>4.1</junit.version>
+		<junit.version>4.2</junit.version>
 		<jaxb-xjc.version>2.1.2</jaxb-xjc.version>
 		<jaxb-impl.version>2.1.2</jaxb-impl.version>
 		<jsr181-api.version>1.0-MR1</jsr181-api.version>
@@ -835,20 +835,20 @@
 		<maven-ear-plugin.version>
 			2.3-SNAPSHOT
 		</maven-ear-plugin.version>
-		<commons-io.version>1.2</commons-io.version>
+		<commons-io.version>1.3.1</commons-io.version>
 		<hibernate-entitymanager.version>
 			3.2.1.ga
 		</hibernate-entitymanager.version>
 		<hibernate-annotations.version>
 			3.2.1.ga
 		</hibernate-annotations.version>
-		<hibernate.version>3.2.1.ga</hibernate.version>
+		<hibernate.version>3.2.2.ga</hibernate.version>
 		<derby.version>10.2.2.0</derby.version>
 		<servlet-api.version>2.4</servlet-api.version>
 		<shiftone-oocjndi.version>1.2</shiftone-oocjndi.version>
 		<shiftone-arbor.version>1.4</shiftone-arbor.version>
 		<jsr173_api.version>1.0</jsr173_api.version>
-		<commons-lang.version>2.2</commons-lang.version>
+		<commons-lang.version>2.3</commons-lang.version>
 		<jstl.version>1.1.2</jstl.version>
 		<jboss-seam.version>1.1.6.GA</jboss-seam.version>
 		<jboss-seam-ui.version>1.1.6.GA</jboss-seam-ui.version>
@@ -893,10 +893,10 @@
 		<joda-time.version>1.4</joda-time.version>
 		<bouncycastle.version>135</bouncycastle.version>
 		<jetty-servlet-tester.version>
-			6.1.0
+			6.1.1
 		</jetty-servlet-tester.version>
 		<commons-httpclient.version>3.0.1</commons-httpclient.version>
-		<jetty.version>6.1.0</jetty.version>
+		<jetty.version>6.1.1</jetty.version>
 		<trinidad-api.version>
 			incubator-m1-SNAPSHOT
 		</trinidad-api.version>

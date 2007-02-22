@@ -27,6 +27,7 @@ import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.sdk.attrib.AttributeClient;
 import net.link.safeonline.sdk.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
 import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.AuthClientImpl;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -479,7 +480,7 @@ public class AuthenticationTest extends TestCase {
 			this.attributeClient.getAttributeValue(login,
 					"foo-bar-attribute-name");
 			fail();
-		} catch (RuntimeException e) {
+		} catch (AttributeNotFoundException e) {
 			// expected
 		}
 	}

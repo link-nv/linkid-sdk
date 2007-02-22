@@ -43,7 +43,8 @@ public class AttributeClientImpl implements AttributeClient {
 		setEndpointAddress(location);
 	}
 
-	public String getAttributeValue(String subjectLogin, String attributeName) {
+	public String getAttributeValue(String subjectLogin, String attributeName)
+			throws AttributeNotFoundException {
 		LOG.debug("get attribute value for subject " + subjectLogin
 				+ " attribute name " + attributeName);
 
@@ -71,6 +72,13 @@ public class AttributeClientImpl implements AttributeClient {
 				.equals(statusCodeValue)) {
 			LOG.error("status code: " + statusCodeValue);
 			LOG.error("status message: " + status.getStatusMessage());
+			StatusCodeType secondLevelStatusCode = statusCode.getStatusCode();
+			if (null != secondLevelStatusCode) {
+				if ("urn:oasis:names:tc:SAML:2.0:status:InvalidAttrNameOrValue"
+						.equals(secondLevelStatusCode.getValue())) {
+					throw new AttributeNotFoundException();
+				}
+			}
 			throw new RuntimeException();
 		}
 

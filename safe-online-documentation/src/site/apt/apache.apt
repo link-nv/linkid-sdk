@@ -1,0 +1,9 @@
+Apache HTTP Server
+
+ We will use the Apache HTTP Server to provide server-side SSL functionality.
+ 
+ {{{http://http://httpd.apache.org/}Apache HTTP Server homepage}}
+ 
+* SSL configuration
+
+ To enable server-side SSL we use the Apache Module named =mod_ssl=.

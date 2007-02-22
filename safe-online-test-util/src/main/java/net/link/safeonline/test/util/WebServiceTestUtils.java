@@ -40,8 +40,8 @@ public class WebServiceTestUtils {
 
 		this.httpServer = HttpServer.create();
 		this.port = getFreePort();
-		this.httpServer.bind(new InetSocketAddress(port), 5);
-		this.executorService = Executors.newFixedThreadPool(5);
+		this.httpServer.bind(new InetSocketAddress(port), 1);
+		this.executorService = Executors.newFixedThreadPool(1);
 		this.httpServer.setExecutor(this.executorService);
 		this.httpServer.start();
 
