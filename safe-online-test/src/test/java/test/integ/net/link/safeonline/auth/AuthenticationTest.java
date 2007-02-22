@@ -59,7 +59,7 @@ public class AuthenticationTest extends TestCase {
 
 		this.authClient = new AuthClientImpl(SAFE_ONLINE_LOCATION);
 
-		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION);
+		this.attributeClient = new AttributeClientImpl("localhost");
 	}
 
 	public void testAvailabilityViaEcho() throws Exception {

@@ -7,8 +7,16 @@
 
 package net.link.safeonline.sdk.attrib;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.xml.ws.BindingProvider;
 
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
@@ -63,6 +71,8 @@ public class AttributeClientImpl implements AttributeClient {
 		attribute.setName(attributeName);
 		attributes.add(attribute);
 
+		configureSsl();
+
 		ResponseType response = this.port.attributeQuery(request);
 
 		StatusType status = response.getStatus();
@@ -105,6 +115,36 @@ public class AttributeClientImpl implements AttributeClient {
 
 		bindingProvider.getRequestContext().put(
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				"http://" + location + "/safe-online-ws/attrib");
+				"https://" + location + "/safe-online-ws/attrib");
+	}
+
+	private void configureSsl() {
+		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			public X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
+
+			public void checkClientTrusted(X509Certificate[] certs,
+					String authType) {
+			}
+
+			public void checkServerTrusted(X509Certificate[] certs,
+					String authType) {
+				LOG.debug("server cert: " + certs[0]);
+				LOG.debug("authentication type: " + authType);
+				// TODO: verify certificate against trust repository
+			}
+		} };
+
+		try {
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(null, trustAllCerts, new SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext
+					.getSocketFactory());
+		} catch (KeyManagementException e) {
+			LOG.error("key management error: " + e.getMessage(), e);
+		} catch (NoSuchAlgorithmException e) {
+			LOG.error("SSL algo not present: " + e.getMessage(), e);
+		}
 	}
 }

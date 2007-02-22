@@ -13,11 +13,10 @@
 <jsp:setProperty name="attrib" property="subjectLogin"
 	value="<%=session.getAttribute("username")%>" />
 <jsp:setProperty name="attrib" property="attributeWebServiceLocation"
-	value="localhost:8080" />
+	value="localhost" />
 <p>Attribute value: <jsp:getProperty name="attrib"
 	property="attributeValue" /></p>
-<form method="get" action="../logout.jsp"><input type="submit"
-	value="Logout" /></form>
+<form method="get" action="./"><input type="submit" value="Back" /></form>
 </body>
 </html>
 
