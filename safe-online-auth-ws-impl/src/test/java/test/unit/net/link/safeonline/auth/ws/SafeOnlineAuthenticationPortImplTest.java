@@ -12,6 +12,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import javax.swing.JOptionPane;
 import javax.xml.ws.BindingProvider;
 
 import junit.framework.TestCase;
@@ -112,6 +113,8 @@ public class SafeOnlineAuthenticationPortImplTest extends TestCase {
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 
 		String result = clientPort.echo("hello world");
+
+		//JOptionPane.showMessageDialog(null, "Press OK to continue.");
 
 		// verify
 		assertEquals("hello world", result);
