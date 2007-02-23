@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
+import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -42,6 +43,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @WebService(endpointInterface = "oasis.names.tc.saml._2_0.protocol.SAMLAttributePort")
+@HandlerChain(file = "saml-attrib-ws-handlers.xml")
 public class SAMLAttributePortImpl implements SAMLAttributePort {
 
 	private static final Log LOG = LogFactory

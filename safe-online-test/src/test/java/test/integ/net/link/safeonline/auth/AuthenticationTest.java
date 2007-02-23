@@ -7,7 +7,9 @@
 
 package test.integ.net.link.safeonline.auth;
 
+import java.security.KeyPair;
 import java.security.PrivilegedExceptionAction;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +32,7 @@ import net.link.safeonline.sdk.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
 import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.AuthClientImpl;
+import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -59,7 +62,12 @@ public class AuthenticationTest extends TestCase {
 
 		this.authClient = new AuthClientImpl(SAFE_ONLINE_LOCATION);
 
-		this.attributeClient = new AttributeClientImpl("localhost");
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+
+		this.attributeClient = new AttributeClientImpl("localhost",
+				certificate, keyPair.getPrivate());
 	}
 
 	public void testAvailabilityViaEcho() throws Exception {

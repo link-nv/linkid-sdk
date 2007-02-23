@@ -209,6 +209,7 @@
 		<module>safe-online-applet-common</module>
 		<module>safe-online-attrib-ws</module>
 		<module>safe-online-attrib-ws-impl</module>
+		<module>safe-online-demo-keystore</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -808,6 +809,11 @@
 				<artifactId>http</artifactId>
 				<version>${http.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>wss4j</groupId>
+				<artifactId>wss4j</artifactId>
+				<version>${wss4j.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -930,5 +936,6 @@
 		</maven-dependency-plugin.version>
 		<http.version>2.1</http.version>
 		<maven-antrun-plugin.version>1.1</maven-antrun-plugin.version>
+		<wss4j.version>1.5.1</wss4j.version>
 	</properties>
 </project>
