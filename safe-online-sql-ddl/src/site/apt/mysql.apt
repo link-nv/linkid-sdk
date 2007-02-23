@@ -15,3 +15,12 @@ SafeOnline MySQL Database
 +---+
 mysql -u safeonline -p safeonline < safe-online-ddl.sql
 +---+
+
+* Add MySQL driver to JBoss configuration
+
+ Download the mysql connector from <<<http://www.mysql.com/products/connector/j/>>> and
+ copy the included jar file to <<<$JBOSS_HOME/server/default/lib>>>
+
+ * Add MySQL datasource configuration to JBoss configuration
+ 
+  Copy the <<<buildserver-ds.xml>>> file into <<<$JBOSS_HOME/server/default/deploy>>>
