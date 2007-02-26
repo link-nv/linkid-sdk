@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.annotation.security.PermitAll;
@@ -19,6 +20,7 @@ import javax.ejb.TransactionAttributeType;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
+import net.link.safeonline.authentication.exception.CertificateEncodingException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -35,6 +37,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.ApplicationOwnerManager;
+import net.link.safeonline.model.PkiUtils;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
 
 import org.apache.commons.logging.Log;
@@ -78,8 +81,9 @@ public class ApplicationServiceBean implements ApplicationService {
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void addApplication(String name, String applicationOwnerName,
-			String description) throws ExistingApplicationException,
-			ApplicationOwnerNotFoundException {
+			String description, byte[] encodedCertificate)
+			throws ExistingApplicationException,
+			ApplicationOwnerNotFoundException, CertificateEncodingException {
 		LOG.debug("add application: " + name);
 		ApplicationEntity existingApplication = this.applicationDAO
 				.findApplication(name);
@@ -87,10 +91,14 @@ public class ApplicationServiceBean implements ApplicationService {
 			throw new ExistingApplicationException();
 		}
 
+		X509Certificate certificate = PkiUtils
+				.decodeCertificate(encodedCertificate);
+
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
 				.getApplicationOwner(applicationOwnerName);
 
-		this.applicationDAO.addApplication(name, applicationOwner, description);
+		this.applicationDAO.addApplication(name, applicationOwner, description,
+				certificate);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

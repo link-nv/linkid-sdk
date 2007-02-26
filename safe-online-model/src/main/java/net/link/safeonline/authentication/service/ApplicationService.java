@@ -14,6 +14,7 @@ import javax.ejb.Remote;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
+import net.link.safeonline.authentication.exception.CertificateEncodingException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -45,9 +46,20 @@ public interface ApplicationService {
 	 */
 	List<ApplicationEntity> getOwnedApplications();
 
+	/**
+	 * @param name
+	 * @param applicationOwnerName
+	 * @param description
+	 * @param encodedCertificate
+	 *            the optional application certificate.
+	 * @throws ExistingApplicationException
+	 * @throws ApplicationOwnerNotFoundException
+	 * @throws CertificateEncodingException
+	 */
 	void addApplication(String name, String applicationOwnerName,
-			String description) throws ExistingApplicationException,
-			ApplicationOwnerNotFoundException;
+			String description, byte[] encodedCertificate)
+			throws ExistingApplicationException,
+			ApplicationOwnerNotFoundException, CertificateEncodingException;
 
 	/**
 	 * Removes an application an all its subscriptions.

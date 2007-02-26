@@ -16,10 +16,11 @@
 	</ui:define>
 	<ui:define name="content">
 		<h2>Add Application</h2>
-		<h:form>
+		<h:form enctype="multipart/form-data">
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
+
 			<table>
 				<tr>
 					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
@@ -35,11 +36,24 @@
 					</s:decorate>*<h:message for="owner" styleClass="error" /></td>
 				</tr>
 			</table>
+
 			<h:panelGrid columns="1">
 				<h:outputLabel for="description" value="Description" />
 				<h:inputTextarea id="description" value="#{application.description}"
 					cols="60" rows="10" />
 			</h:panelGrid>
+
+			<h:panelGrid columns="1">
+				<h:panelGroup>
+					Certificate:
+					<s:decorate>
+						<t:inputFileUpload id="fileupload" value="#{application.upFile}"
+							storage="file" maxlength="200000" />
+					</s:decorate>
+					<h:message for="fileupload" styleClass="error" />
+				</h:panelGroup>
+			</h:panelGrid>
+
 			<h:commandButton action="#{application.add}" id="add" value="Add" />
 			<so:nbsp />
 			<h:commandButton action="cancel" id="cancel" value="Cancel"

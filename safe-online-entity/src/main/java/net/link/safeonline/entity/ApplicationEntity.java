@@ -7,18 +7,27 @@
 
 package net.link.safeonline.entity;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
+import javax.ejb.EJBException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import net.link.safeonline.entity.listener.SecurityApplicationEntityListener;
 
@@ -55,6 +64,10 @@ public class ApplicationEntity implements Serializable {
 
 	private ApplicationOwnerEntity applicationOwner;
 
+	private byte[] encodedCert;
+
+	private transient X509Certificate certificate;
+
 	public ApplicationEntity() {
 		// empty
 	}
@@ -66,7 +79,13 @@ public class ApplicationEntity implements Serializable {
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description) {
-		this(name, applicationOwner, description, true, true);
+		this(name, applicationOwner, description, true, true, null);
+	}
+
+	public ApplicationEntity(String name,
+			ApplicationOwnerEntity applicationOwner, String description,
+			X509Certificate certificate) {
+		this(name, applicationOwner, description, true, true, certificate);
 	}
 
 	public ApplicationEntity(String name,
@@ -78,17 +97,34 @@ public class ApplicationEntity implements Serializable {
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable) {
-		this(name, applicationOwner, null, allowUserSubscription, removable);
+		this(name, applicationOwner, null, allowUserSubscription, removable,
+				null);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description,
-			boolean allowUserSubscription, boolean removable) {
+			boolean allowUserSubscription, boolean removable,
+			X509Certificate certificate) {
 		this.name = name;
 		this.applicationOwner = applicationOwner;
 		this.description = description;
 		this.allowUserSubscription = allowUserSubscription;
 		this.removable = removable;
+		if (null != certificate) {
+			try {
+				this.encodedCert = certificate.getEncoded();
+			} catch (CertificateEncodingException e) {
+				throw new EJBException("certificate encoding error: "
+						+ e.getMessage(), e);
+			}
+		}
+	}
+
+	public ApplicationEntity(String applicationName,
+			ApplicationOwnerEntity applicationOwner, String description,
+			boolean allowUserSubscription, boolean removable) {
+		this(applicationName, applicationOwner, description,
+				allowUserSubscription, removable, null);
 	}
 
 	public String getDescription() {
@@ -132,6 +168,36 @@ public class ApplicationEntity implements Serializable {
 
 	public void setApplicationOwner(ApplicationOwnerEntity applicationOwner) {
 		this.applicationOwner = applicationOwner;
+	}
+
+	@Lob
+	@Column(length = 4 * 1024, nullable = true)
+	public byte[] getEncodedCert() {
+		return this.encodedCert;
+	}
+
+	public void setEncodedCert(byte[] encodedCert) {
+		this.encodedCert = encodedCert;
+	}
+
+	@Transient
+	public X509Certificate getCertificate() {
+		if (null != this.certificate) {
+			return certificate;
+		}
+		if (null == this.encodedCert) {
+			return null;
+		}
+		try {
+			CertificateFactory certificateFactory = CertificateFactory
+					.getInstance("X.509");
+			InputStream inputStream = new ByteArrayInputStream(this.encodedCert);
+			this.certificate = (X509Certificate) certificateFactory
+					.generateCertificate(inputStream);
+		} catch (CertificateException e) {
+			throw new EJBException("cert factory error: " + e.getMessage());
+		}
+		return this.certificate;
 	}
 
 	@Override

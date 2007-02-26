@@ -7,16 +7,11 @@
 
 package net.link.safeonline.service.bean;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -31,6 +26,7 @@ import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
+import net.link.safeonline.model.PkiUtils;
 import net.link.safeonline.service.PkiService;
 
 import org.apache.commons.logging.Log;
@@ -101,7 +97,8 @@ public class PkiServiceBean implements PkiService {
 			ExistingTrustPointException {
 		TrustDomainEntity trustDomain = this.trustDomainDAO
 				.getTrustDomain(domainName);
-		X509Certificate certificate = decodeCertificate(encodedCertificate);
+		X509Certificate certificate = PkiUtils
+				.decodeCertificate(encodedCertificate);
 		String subjectName = certificate.getSubjectX500Principal().toString();
 		LOG.debug("subject name: " + subjectName);
 		TrustPointEntity existingTrustPoint = this.trustPointDAO
@@ -110,26 +107,6 @@ public class PkiServiceBean implements PkiService {
 			throw new ExistingTrustPointException();
 		}
 		this.trustPointDAO.addTrustPoint(trustDomain, certificate);
-	}
-
-	private X509Certificate decodeCertificate(byte[] encodedCertificate)
-			throws CertificateEncodingException {
-		CertificateFactory certificateFactory;
-		try {
-			certificateFactory = CertificateFactory.getInstance("X.509");
-		} catch (CertificateException e) {
-			throw new EJBException("certificate factory error: "
-					+ e.getMessage());
-		}
-		InputStream certInputStream = new ByteArrayInputStream(
-				encodedCertificate);
-		try {
-			X509Certificate certificate = (X509Certificate) certificateFactory
-					.generateCertificate(certInputStream);
-			return certificate;
-		} catch (CertificateException e) {
-			throw new CertificateEncodingException();
-		}
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

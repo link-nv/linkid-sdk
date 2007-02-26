@@ -7,6 +7,7 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -39,10 +40,11 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	}
 
 	public void addApplication(String applicationName,
-			ApplicationOwnerEntity applicationOwner, String description) {
+			ApplicationOwnerEntity applicationOwner, String description,
+			X509Certificate certificate) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
-				applicationOwner, description);
+				applicationOwner, description, certificate);
 		this.entityManager.persist(application);
 	}
 

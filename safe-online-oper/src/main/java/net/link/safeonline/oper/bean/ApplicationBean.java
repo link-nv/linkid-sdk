@@ -1,12 +1,13 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.oper.bean;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -16,6 +17,7 @@ import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
+import net.link.safeonline.authentication.exception.CertificateEncodingException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
@@ -26,6 +28,7 @@ import net.link.safeonline.oper.OperatorConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
@@ -58,6 +61,8 @@ public class ApplicationBean implements Application {
 	private String description;
 
 	private String applicationOwner;
+
+	private UploadedFile upFile;
 
 	@SuppressWarnings("unused")
 	@Out
@@ -108,8 +113,15 @@ public class ApplicationBean implements Application {
 	public String add() {
 		LOG.debug("add application: " + this.name);
 		try {
-			this.applicationService.addApplication(this.name,
-					this.applicationOwner, this.description);
+			byte[] encodedCertificate;
+			if (null != this.upFile) {
+				encodedCertificate = this.upFile.getBytes();
+			} else {
+				encodedCertificate = null;
+			}
+			this.applicationService
+					.addApplication(this.name, this.applicationOwner,
+							this.description, encodedCertificate);
 		} catch (ExistingApplicationException e) {
 			String msg = "application already exists: " + this.name;
 			LOG.debug(msg);
@@ -121,8 +133,28 @@ public class ApplicationBean implements Application {
 			LOG.debug(msg);
 			this.facesMessages.add("owner", msg);
 			return null;
+		} catch (IOException e) {
+			String msg = "IO error";
+			LOG.debug(msg);
+			this.facesMessages.add("fileupload", msg);
+			return null;
+		} catch (CertificateEncodingException e) {
+			String msg = "X509 certificate encoding error";
+			LOG.debug(msg);
+			this.facesMessages.add("fileupload", msg);
+			return null;
 		}
 		return "success";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public UploadedFile getUpFile() {
+		return this.upFile;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setUpFile(UploadedFile uploadedFile) {
+		this.upFile = uploadedFile;
 	}
 
 	public String getDescription() {

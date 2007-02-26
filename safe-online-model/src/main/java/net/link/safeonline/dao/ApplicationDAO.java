@@ -7,6 +7,7 @@
 
 package net.link.safeonline.dao;
 
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -44,7 +45,8 @@ public interface ApplicationDAO {
 			throws ApplicationNotFoundException;
 
 	void addApplication(String applicationName,
-			ApplicationOwnerEntity applicationOwner, String description);
+			ApplicationOwnerEntity applicationOwner, String description,
+			X509Certificate certificate);
 
 	void addApplication(String applicationName,
 			ApplicationOwnerEntity applicationOwner,
