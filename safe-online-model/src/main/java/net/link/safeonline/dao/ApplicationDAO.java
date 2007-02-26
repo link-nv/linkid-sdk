@@ -50,7 +50,8 @@ public interface ApplicationDAO {
 
 	void addApplication(String applicationName,
 			ApplicationOwnerEntity applicationOwner,
-			boolean allowUserSubscription, boolean removable, String description);
+			boolean allowUserSubscription, boolean removable,
+			String description, X509Certificate certificate);
 
 	/**
 	 * Gives back a list of all application registered within the SafeOnline

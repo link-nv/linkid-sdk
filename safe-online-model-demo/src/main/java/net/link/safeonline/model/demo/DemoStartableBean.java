@@ -42,9 +42,6 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.authorizedUsers.put("dieter", "secret");
 		this.authorizedUsers.put("mario", "secret");
 
-		this.registeredApplications.add(new Application("demo-application",
-				"owner"));
-
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"fcorneli", "demo-application"));
 		this.subscriptions.add(new Subscription(
@@ -68,12 +65,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		return Startable.PRIORITY_DONT_CARE;
 	}
 
-	private void addDemoCertificateAsTrustPoint() {
-		PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtils
-				.getPrivateKeyEntry();
-		X509Certificate certificate = (X509Certificate) privateKeyEntry
-				.getCertificate();
-
+	private void addDemoCertificateAsTrustPoint(X509Certificate certificate) {
 		TrustDomainEntity applicationTrustDomain = this.trustDomainDAO
 				.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 		if (null == applicationTrustDomain) {
@@ -92,7 +84,16 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	@Override
 	public void postStart() {
+		PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtils
+				.getPrivateKeyEntry();
+		X509Certificate certificate = (X509Certificate) privateKeyEntry
+				.getCertificate();
+
+		this.registeredApplications.add(new Application("demo-application",
+				"owner", certificate));
+
 		super.postStart();
-		addDemoCertificateAsTrustPoint();
+
+		addDemoCertificateAsTrustPoint(certificate);
 	}
 }

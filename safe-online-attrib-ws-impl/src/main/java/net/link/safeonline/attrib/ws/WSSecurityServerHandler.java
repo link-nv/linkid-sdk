@@ -7,8 +7,10 @@
 
 package net.link.safeonline.attrib.ws;
 
+import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
@@ -19,6 +21,10 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ws.security.WSSecurityEngine;
+import org.apache.ws.security.WSSecurityEngineResult;
+import org.apache.ws.security.WSSecurityException;
+import org.apache.ws.security.components.crypto.Crypto;
 import org.w3c.dom.Document;
 
 /**
@@ -31,6 +37,8 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 
 	private static final Log LOG = LogFactory
 			.getLog(WSSecurityServerHandler.class);
+
+	public static final String CERTIFICATE_PROPERTY = "net.link.safeonline.x509";
 
 	@SuppressWarnings("unchecked")
 	public Set getHeaders() {
@@ -64,13 +72,34 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 		SOAPMessage soapMessage = soapMessageContext.getMessage();
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 
-		handleDocument(soapPart);
+		handleDocument(soapPart, soapMessageContext);
 
 		return true;
 	}
 
-	private void handleDocument(Document document) {
-		// TODO: validate the WS-Security SOAP header
-		LOG.debug("verification of WS-Security SOAP header: to be implemented");
+	@SuppressWarnings("unchecked")
+	private void handleDocument(Document document,
+			SOAPMessageContext soapMessageContext) {
+		LOG.debug("WS-Security header validation");
+		WSSecurityEngine securityEngine = WSSecurityEngine.getInstance();
+		Crypto crypto = new ServerCrypto();
+
+		Vector<WSSecurityEngineResult> wsSecurityEngineResults;
+		try {
+			wsSecurityEngineResults = securityEngine.processSecurityHeader(
+					document, null, null, crypto);
+		} catch (WSSecurityException e) {
+			throw new RuntimeException("WS-Security error");
+		}
+		LOG.debug("results: " + wsSecurityEngineResults);
+		if (null == wsSecurityEngineResults) {
+			throw new RuntimeException("missing WS-Security header");
+		}
+		for (WSSecurityEngineResult result : wsSecurityEngineResults) {
+			X509Certificate certificate = result.getCertificate();
+			if (null != certificate) {
+				soapMessageContext.put(CERTIFICATE_PROPERTY, certificate);
+			}
+		}
 	}
 }

@@ -66,10 +66,12 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
 	public void addApplication(String applicationName,
 			ApplicationOwnerEntity applicationOwner,
-			boolean allowUserSubscription, boolean removable, String description) {
+			boolean allowUserSubscription, boolean removable,
+			String description, X509Certificate certificate) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
-				applicationOwner, description, allowUserSubscription, removable);
+				applicationOwner, description, allowUserSubscription,
+				removable, certificate);
 		this.entityManager.persist(application);
 	}
 

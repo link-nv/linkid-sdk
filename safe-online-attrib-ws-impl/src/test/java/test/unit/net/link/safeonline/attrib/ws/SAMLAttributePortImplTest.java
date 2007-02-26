@@ -13,18 +13,25 @@ import static org.easymock.EasyMock.verify;
 import static org.easymock.EasyMock.expect;
 
 import java.io.StringWriter;
+import java.security.KeyPair;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
+import javax.xml.ws.Binding;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.handler.Handler;
 
 import junit.framework.TestCase;
 import net.link.safeonline.attrib.ws.SAMLAttributePortImpl;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
+import net.link.safeonline.sdk.attrib.WSSecurityClientHandler;
 import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -79,6 +86,19 @@ public class SAMLAttributePortImplTest extends TestCase {
 				.newInstance();
 		this.clientPort = service.getSAMLAttributePort();
 		this.webServiceTestUtils.setEndpointAddress(clientPort);
+
+		BindingProvider bindingProvider = (BindingProvider) clientPort;
+		Binding binding = bindingProvider.getBinding();
+		List<Handler> handlerChain = binding.getHandlerChain();
+
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+
+		Handler wsSecurityHandler = new WSSecurityClientHandler(certificate,
+				keyPair.getPrivate());
+		handlerChain.add(wsSecurityHandler);
+		binding.setHandlerChain(handlerChain);
 	}
 
 	@Override

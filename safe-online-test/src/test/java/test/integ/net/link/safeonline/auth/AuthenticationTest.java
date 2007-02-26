@@ -168,7 +168,7 @@ public class AuthenticationTest extends TestCase {
 				String applicationName = "application-"
 						+ UUID.randomUUID().toString();
 				applicationService.addApplication(applicationName,
-						appOwnerName, null);
+						appOwnerName, null, null);
 				return null;
 			}
 		});
@@ -219,7 +219,8 @@ public class AuthenticationTest extends TestCase {
 		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
 		applicationService.registerApplicationOwner(appOwnerName, ownerLogin);
 
-		applicationService.addApplication(applicationName, appOwnerName, null);
+		applicationService.addApplication(applicationName, appOwnerName, null,
+				null);
 
 		String userLogin = "login-" + UUID.randomUUID().toString();
 		final String userPassword = "secret";
@@ -303,7 +304,8 @@ public class AuthenticationTest extends TestCase {
 		applicationService.registerApplicationOwner(appOwnerName, login);
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
-		applicationService.addApplication(applicationName, appOwnerName, null);
+		applicationService.addApplication(applicationName, appOwnerName, null,
+				null);
 
 		IntegrationTestUtils.login(login, password);
 		applicationService.setApplicationDescription(applicationName,
@@ -342,7 +344,7 @@ public class AuthenticationTest extends TestCase {
 		// operate: create application
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName,
-				applicationOwnerName, null);
+				applicationOwnerName, null, null);
 
 		// operate: change application description via application owner
 		IntegrationTestUtils.login(ownerLogin, ownerPassword);

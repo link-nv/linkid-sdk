@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.bean;
 
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,21 +55,41 @@ public abstract class AbstractInitBean implements Startable {
 
 		private final boolean removable;
 
+		private final X509Certificate certificate;
+
 		public Application(String name, String owner, String description,
-				boolean allowUserSubscription, boolean removable) {
+				boolean allowUserSubscription, boolean removable,
+				X509Certificate certificate) {
 			this.name = name;
 			this.owner = owner;
 			this.description = description;
 			this.allowUserSubscription = allowUserSubscription;
 			this.removable = removable;
+			this.certificate = certificate;
+		}
+
+		public Application(String name, String owner, String description,
+				boolean allowUserSubscription, boolean removable) {
+			this(name, owner, description, allowUserSubscription, removable,
+					null);
 		}
 
 		public Application(String name, String owner, String description) {
 			this(name, owner, description, true, true);
 		}
 
+		public Application(String name, String owner, String description,
+				X509Certificate certificate) {
+			this(name, owner, description, true, true, certificate);
+		}
+
 		public Application(String name, String owner) {
-			this(name, owner, null);
+			this(name, owner, (String) null);
+		}
+
+		public Application(String name, String owner,
+				X509Certificate certificate) {
+			this(name, owner, null, certificate);
 		}
 	}
 
@@ -204,7 +225,7 @@ public abstract class AbstractInitBean implements Startable {
 					.findApplicationOwner(application.owner);
 			this.applicationDAO.addApplication(applicationName,
 					applicationOwner, application.allowUserSubscription,
-					application.removable, application.description);
+					application.removable, application.description, application.certificate);
 		}
 	}
 

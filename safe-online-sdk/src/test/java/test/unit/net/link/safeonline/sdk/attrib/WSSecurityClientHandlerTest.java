@@ -7,21 +7,22 @@
 
 package test.unit.net.link.safeonline.sdk.attrib;
 
+import java.io.File;
 import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.namespace.QName;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPConstants;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
-import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
+
+import junit.framework.TestCase;
+import net.link.safeonline.sdk.attrib.WSSecurityClientHandler;
+import net.link.safeonline.test.util.DomTestUtils;
+import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.TestSOAPMessageContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,11 +30,6 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import net.link.safeonline.sdk.attrib.WSSecurityClientHandler;
-import net.link.safeonline.test.util.DomTestUtils;
-import net.link.safeonline.test.util.PkiTestUtils;
-import junit.framework.TestCase;
 
 public class WSSecurityClientHandlerTest extends TestCase {
 
@@ -63,9 +59,8 @@ public class WSSecurityClientHandlerTest extends TestCase {
 		SOAPMessage message = messageFactory.createMessage(null,
 				testSoapMessageInputStream);
 
-		TestSOAPMessageContext soapMessageContext = new TestSOAPMessageContext(
-				true);
-		soapMessageContext.setMessage(message);
+		SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(
+				message, true);
 
 		// operate
 		this.testedInstance.handleMessage(soapMessageContext);
@@ -91,88 +86,8 @@ public class WSSecurityClientHandlerTest extends TestCase {
 						"/soap:Envelope/soap:Header/wsse:Security[@soap:mustUnderstand = '1']",
 						nsElement);
 		assertNotNull(resultNode);
-	}
 
-	private static class TestSOAPMessageContext implements SOAPMessageContext {
-
-		private SOAPMessage message;
-
-		private final boolean outbound;
-
-		public TestSOAPMessageContext(boolean outbound) {
-			this.outbound = outbound;
-		}
-
-		public Object[] getHeaders(QName arg0, JAXBContext arg1, boolean arg2) {
-			return null;
-		}
-
-		public SOAPMessage getMessage() {
-			return this.message;
-		}
-
-		public Set<String> getRoles() {
-			return null;
-		}
-
-		public void setMessage(SOAPMessage message) {
-			this.message = message;
-		}
-
-		public Scope getScope(String arg0) {
-			return null;
-		}
-
-		public void setScope(String arg0, Scope arg1) {
-		}
-
-		public void clear() {
-		}
-
-		public boolean containsKey(Object key) {
-			return false;
-		}
-
-		public boolean containsValue(Object value) {
-			return false;
-		}
-
-		public Set<java.util.Map.Entry<String, Object>> entrySet() {
-			return null;
-		}
-
-		public Object get(Object key) {
-			if (MessageContext.MESSAGE_OUTBOUND_PROPERTY.equals(key)) {
-				return this.outbound;
-			}
-			return null;
-		}
-
-		public boolean isEmpty() {
-			return false;
-		}
-
-		public Set<String> keySet() {
-			return null;
-		}
-
-		public Object put(String key, Object value) {
-			return null;
-		}
-
-		public void putAll(Map<? extends String, ? extends Object> t) {
-		}
-
-		public Object remove(Object key) {
-			return null;
-		}
-
-		public int size() {
-			return 0;
-		}
-
-		public Collection<Object> values() {
-			return null;
-		}
+		File tmpFile = File.createTempFile("ws-security-message-", ".xml");
+		DomTestUtils.saveDocument(resultSoapPart, tmpFile);
 	}
 }
