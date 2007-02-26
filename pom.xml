@@ -828,6 +828,12 @@
 					<address>frank@lin-k.net</address>
 				</configuration>
 			</notifier>
+			<notifier>
+				<type>mail</type>
+				<configuration>
+					<address>dieter@lin-k.net</address>
+				</configuration>
+			</notifier>
 		</notifiers>
 	</ciManagement>
 	<prerequisites>
