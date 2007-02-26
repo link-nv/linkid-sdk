@@ -197,7 +197,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
 		NameIDType issuerName = new NameIDType();
 		issuerName.setValue("safe-online");
-		// TODO: make issuer name configurable
+		// TODO: make issuer name configurable. need global config component for
+		// this
 		assertion.setIssuer(issuerName);
 
 		List<StatementAbstractType> statements = assertion

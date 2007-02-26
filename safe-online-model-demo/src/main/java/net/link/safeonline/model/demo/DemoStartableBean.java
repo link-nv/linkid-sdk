@@ -16,11 +16,12 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
-import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
+import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
+import net.link.safeonline.model.bean.AbstractInitBean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,28 +30,42 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Stateless
 @Local(Startable.class)
 @LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "DemoStartableBean")
-public class DemoStartableBean implements Startable {
+public class DemoStartableBean extends AbstractInitBean {
 
 	private static final Log LOG = LogFactory.getLog(DemoStartableBean.class);
 
 	@EJB
-	private TrustDomainDAO trustDomainDAO;
-
-	@EJB
 	private TrustPointDAO trustPointDAO;
+
+	public DemoStartableBean() {
+		this.authorizedUsers.put("fcorneli", "secret");
+		this.authorizedUsers.put("dieter", "secret");
+		this.authorizedUsers.put("mario", "secret");
+
+		this.registeredApplications.add(new Application("demo-application",
+				"owner"));
+
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"fcorneli", "demo-application"));
+		this.subscriptions.add(new Subscription(
+				SubscriptionOwnerType.APPLICATION, "fcorneli",
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"dieter", "demo-application"));
+		this.subscriptions.add(new Subscription(
+				SubscriptionOwnerType.APPLICATION, "dieter",
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"mario", "demo-application"));
+		this.subscriptions.add(new Subscription(
+				SubscriptionOwnerType.APPLICATION, "mario",
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+	}
 
 	public int getPriority() {
 		return Startable.PRIORITY_DONT_CARE;
-	}
-
-	public void postStart() {
-		LOG.debug("postStart");
-		addDemoCertificateAsTrustPoint();
-		// TODO: move demo related init from systemInitialization to here
-	}
-
-	public void preStop() {
-		LOG.debug("preStop");
 	}
 
 	private void addDemoCertificateAsTrustPoint() {
@@ -73,5 +88,11 @@ public class DemoStartableBean implements Startable {
 		}
 
 		this.trustPointDAO.addTrustPoint(applicationTrustDomain, certificate);
+	}
+
+	@Override
+	public void postStart() {
+		super.postStart();
+		addDemoCertificateAsTrustPoint();
 	}
 }
