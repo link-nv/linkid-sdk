@@ -104,9 +104,8 @@ public class PkiServiceBean implements PkiService {
 		X509Certificate certificate = decodeCertificate(encodedCertificate);
 		String subjectName = certificate.getSubjectX500Principal().toString();
 		LOG.debug("subject name: " + subjectName);
-		String keyId = this.trustPointDAO.getSubjectKeyId(certificate);
 		TrustPointEntity existingTrustPoint = this.trustPointDAO
-				.findTrustPoint(trustDomain, subjectName, keyId);
+				.findTrustPoint(trustDomain, certificate);
 		if (null != existingTrustPoint) {
 			throw new ExistingTrustPointException();
 		}
@@ -164,6 +163,7 @@ public class PkiServiceBean implements PkiService {
 	public void saveTrustDomain(TrustDomainEntity trustDomain)
 			throws TrustDomainNotFoundException {
 		LOG.debug("save trust domain: " + trustDomain);
+		// TODO: use EntityManager.merge instead
 		TrustDomainEntity attachedTrustDomain = this.trustDomainDAO
 				.getTrustDomain(trustDomain.getName());
 		attachedTrustDomain.setPerformOcspCheck(trustDomain
@@ -181,5 +181,4 @@ public class PkiServiceBean implements PkiService {
 	public void clearOcspCachePerTrustDomain(TrustDomainEntity trustDomain) {
 		this.cachedOcspResponseDAO.clearOcspCachePerTrustDomain(trustDomain);
 	}
-
 }

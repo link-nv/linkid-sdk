@@ -7,13 +7,19 @@
 
 package net.link.safeonline.entity;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 
+import javax.ejb.EJBException;
 import javax.persistence.Embeddable;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.bouncycastle.asn1.x509.X509Extensions;
+import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
 @Embeddable
 public class TrustPointPK implements Serializable {
@@ -35,6 +41,43 @@ public class TrustPointPK implements Serializable {
 		this.domain = trustDomain.getId();
 		this.subjectName = subjectName;
 		this.keyId = keyId;
+	}
+
+	public TrustPointPK(TrustDomainEntity trustDomain,
+			X509Certificate certificate) {
+		String subjectName = getSubjectName(certificate);
+		String keyId = getSubjectKeyId(certificate);
+
+		this.domain = trustDomain.getId();
+		this.subjectName = subjectName;
+		this.keyId = keyId;
+	}
+
+	private String getSubjectName(X509Certificate certificate) {
+		String subjectName = certificate.getSubjectX500Principal().toString();
+		return subjectName;
+	}
+
+	public static String getSubjectKeyId(X509Certificate certificate) {
+		byte[] subjectKeyIdData = certificate
+				.getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId());
+		if (null == subjectKeyIdData) {
+			/*
+			 * NULL is not allowed as value for persistence.
+			 */
+			return "";
+		}
+		SubjectKeyIdentifierStructure subjectKeyIdentifierStructure;
+		try {
+			subjectKeyIdentifierStructure = new SubjectKeyIdentifierStructure(
+					subjectKeyIdData);
+		} catch (IOException e) {
+			throw new EJBException(
+					"error parsing the subject key identifier certificate extension");
+		}
+		String keyId = new String(Hex.encodeHex(subjectKeyIdentifierStructure
+				.getKeyIdentifier()));
+		return keyId;
 	}
 
 	public String getSubjectName() {

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.attrib;
+package net.link.safeonline.sdk;
 
 import java.io.InputStream;
 import java.security.KeyStore;

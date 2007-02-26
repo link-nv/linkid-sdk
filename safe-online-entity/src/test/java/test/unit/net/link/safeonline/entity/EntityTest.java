@@ -339,6 +339,46 @@ public class EntityTest extends TestCase {
 		assertEquals(resultTrustPoint, resultTrustPoints.get(0));
 	}
 
+	@SuppressWarnings("unchecked")
+	public void testTrustPointWithEmptyKeyId() throws Exception {
+		// setup
+		String trustDomainName = "test-trust-domain-" + getName();
+		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
+				true);
+
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		String dn = "CN=Test";
+		X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, dn);
+		String keyId = "";
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(trustDomain);
+		TrustPointEntity trustPoint = new TrustPointEntity(trustDomain,
+				certificate);
+		trustPoint.getPk().setKeyId(keyId);
+		entityManager.persist(trustPoint);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		TrustPointEntity resultTrustPoint = entityManager.find(
+				TrustPointEntity.class,
+				new TrustPointPK(trustDomain, dn, keyId));
+		assertNotNull(resultTrustPoint);
+		assertEquals(trustPoint, resultTrustPoint);
+
+		// operate: query test
+		LOG.debug("trust domain Id: " + trustDomain.getId());
+		Query query = TrustPointEntity.createQueryWhereDomain(entityManager,
+				trustDomain);
+		List<TrustPointEntity> resultTrustPoints = query.getResultList();
+
+		// verify
+		assertEquals(1, resultTrustPoints.size());
+		assertEquals(resultTrustPoint, resultTrustPoints.get(0));
+	}
+
 	public void testSubjectIdentifier() throws Exception {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-subject");

@@ -121,25 +121,31 @@ public class PkiValidatorBean implements PkiValidator {
 			byte[] authorityKeyIdentifierData = currentRootCertificate
 					.getExtensionValue(X509Extensions.AuthorityKeyIdentifier
 							.getId());
+			String keyId;
 			if (null == authorityKeyIdentifierData) {
 				/*
 				 * PKIX RFC allows this for the root CA certificate.
 				 */
 				LOG
 						.warn("certificate has no authority key indentifier extension");
-				break;
+				/*
+				 * NULL is not allowed for persistence.
+				 */
+				keyId = "";
+			} else {
+				AuthorityKeyIdentifierStructure authorityKeyIdentifierStructure;
+				try {
+					authorityKeyIdentifierStructure = new AuthorityKeyIdentifierStructure(
+							authorityKeyIdentifierData);
+				} catch (IOException e) {
+					LOG
+							.error("error parsing authority key identifier structure");
+					break;
+				}
+				keyId = new String(Hex
+						.encodeHex(authorityKeyIdentifierStructure
+								.getKeyIdentifier()));
 			}
-			AuthorityKeyIdentifierStructure authorityKeyIdentifierStructure;
-			try {
-				authorityKeyIdentifierStructure = new AuthorityKeyIdentifierStructure(
-						authorityKeyIdentifierData);
-			} catch (IOException e) {
-				LOG.error("error parsing authority key identifier structure");
-				break;
-			}
-			String keyId = new String(Hex
-					.encodeHex(authorityKeyIdentifierStructure
-							.getKeyIdentifier()));
 			String issuer = currentRootCertificate.getIssuerX500Principal()
 					.toString();
 			LOG.debug("issuer: " + issuer);

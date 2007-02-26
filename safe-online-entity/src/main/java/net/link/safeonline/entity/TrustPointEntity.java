@@ -8,7 +8,6 @@
 package net.link.safeonline.entity;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.security.cert.CertificateEncodingException;
@@ -32,12 +31,9 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.bouncycastle.asn1.x509.X509Extensions;
-import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
 import static net.link.safeonline.entity.TrustPointEntity.QUERY_WHERE_DOMAIN;
 
@@ -76,32 +72,14 @@ public class TrustPointEntity implements Serializable {
 		} catch (CertificateEncodingException e) {
 			throw new EJBException("cert encoding error: " + e.getMessage());
 		}
-		String subjectName = certificate.getSubjectX500Principal().toString();
-
-		byte[] subjectKeyIdData = certificate
-				.getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId());
-		if (null == subjectKeyIdData) {
-			throw new EJBException(
-					"certificate has no subject key identifier extension");
-		}
-		SubjectKeyIdentifierStructure subjectKeyIdentifierStructure;
-		try {
-			subjectKeyIdentifierStructure = new SubjectKeyIdentifierStructure(
-					subjectKeyIdData);
-		} catch (IOException e) {
-			throw new EJBException(
-					"error parsing the subject key identifier certificate extension");
-		}
-		String keyId = new String(Hex.encodeHex(subjectKeyIdentifierStructure
-				.getKeyIdentifier()));
-
-		this.pk = new TrustPointPK(trustDomain, subjectName, keyId);
+		this.pk = new TrustPointPK(trustDomain, certificate);
 	}
 
 	@EmbeddedId
 	@AttributeOverrides( {
 			@AttributeOverride(name = "domain", column = @Column(name = "domain")),
-			@AttributeOverride(name = "subjectName", column = @Column(name = "subjectName")) })
+			@AttributeOverride(name = "subjectName", column = @Column(name = "subjectName")),
+			@AttributeOverride(name = "keyId", column = @Column(name = "keyId", nullable = true)) })
 	public TrustPointPK getPk() {
 		return this.pk;
 	}

@@ -148,6 +148,47 @@ public class PkiValidatorBeanTest extends TestCase {
 		assertTrue(result);
 	}
 
+	public void testValidateTrustPointCertificate() throws Exception {
+		// setup
+		KeyPair caKeyPair = PkiTestUtils.generateKeyPair();
+		DateTime now = new DateTime();
+		DateTime caNotBefore = now.minusDays(10);
+		DateTime caNotAfter = now.plusDays(10);
+		X509Certificate caCertificate = PkiTestUtils
+				.generateSelfSignedCertificate(caKeyPair, "CN=TestCA",
+						caNotBefore, caNotAfter, null, true, false);
+
+		String trustDomainName = "test-trust-domain";
+		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
+				true);
+		List<TrustPointEntity> trustPoints = new LinkedList<TrustPointEntity>();
+		TrustPointEntity caTrustPoint = new TrustPointEntity(trustDomain,
+				caCertificate);
+		LOG.debug("ca key id: " + caTrustPoint.getPk().getKeyId());
+		trustPoints.add(caTrustPoint);
+
+		// stubs
+		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
+				.andStubReturn(trustPoints);
+		expect(
+				this.mockCachedOcspValidatorBean.performCachedOcspCheck(
+						trustDomain, caCertificate, caCertificate)).andReturn(
+				true);
+
+		// prepare
+		replay(this.mockTrustPointDAO);
+		replay(this.mockCachedOcspValidatorBean);
+
+		// operate
+		boolean result = this.testedInstance.validateCertificate(trustDomain,
+				caCertificate);
+
+		// verify
+		verify(this.mockTrustPointDAO);
+		verify(this.mockCachedOcspValidatorBean);
+		assertTrue(result);
+	}
+
 	public void testValidateCertificateFailsIfOCSPRevokes() throws Exception {
 		// setup
 		KeyPair caKeyPair = PkiTestUtils.generateKeyPair();

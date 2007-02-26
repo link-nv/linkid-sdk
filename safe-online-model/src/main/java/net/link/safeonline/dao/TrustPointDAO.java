@@ -33,9 +33,7 @@ public interface TrustPointDAO {
 			throws TrustPointNotFoundException;
 
 	TrustPointEntity findTrustPoint(TrustDomainEntity trustDomain,
-			String subjectName, String keyId);
+			X509Certificate certificate);
 
 	void removeTrustPoint(TrustPointEntity trustPoint);
-
-	String getSubjectKeyId(X509Certificate certificate);
 }

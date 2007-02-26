@@ -7,6 +7,8 @@
 
 package net.link.safeonline.listener;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,9 +43,10 @@ public class StartupServletContextListener implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent event) {
 		LOG.debug("context initialized");
-		List<Startable> startables = getStartables(event);
+		List<Startable> startables = getStartables(event, true);
 		for (Startable startable : startables) {
-			LOG.debug("starting: " + startable);
+			LOG.debug("starting: " + startable + " (priority "
+					+ startable.getPriority() + ")");
 			try {
 				startable.postStart();
 			} catch (Exception e) {
@@ -56,14 +59,41 @@ public class StartupServletContextListener implements ServletContextListener {
 
 	public void contextDestroyed(ServletContextEvent event) {
 		LOG.debug("context destroyed");
-		List<Startable> startables = getStartables(event);
+		List<Startable> startables = getStartables(event, false);
 		for (Startable startable : startables) {
-			LOG.debug("stopping: " + startable);
+			LOG.debug("stopping: " + startable + " (priority "
+					+ startable.getPriority() + ")");
 			startable.preStop();
 		}
 	}
 
-	private List<Startable> getStartables(ServletContextEvent event) {
+	private List<Startable> getStartables(ServletContextEvent event,
+			boolean priorityDescSort) {
+		List<Startable> startables = getUnsortedStartables(event);
+		Comparator<Startable> startableComparator = new StartablePriorityComparator(
+				priorityDescSort);
+		Collections.sort(startables, startableComparator);
+		return startables;
+	}
+
+	private static class StartablePriorityComparator implements
+			Comparator<Startable> {
+
+		private final boolean priorityDescSort;
+
+		public StartablePriorityComparator(boolean priorityDescSort) {
+			this.priorityDescSort = priorityDescSort;
+		}
+
+		public int compare(Startable startable1, Startable startable2) {
+			if (false == this.priorityDescSort) {
+				return startable1.getPriority() - startable2.getPriority();
+			}
+			return startable2.getPriority() - startable1.getPriority();
+		}
+	}
+
+	private List<Startable> getUnsortedStartables(ServletContextEvent event) {
 		ServletContext servletContext = event.getServletContext();
 		String startableJnidPrefix = servletContext
 				.getInitParameter("StartableJndiPrefix");
@@ -89,6 +119,8 @@ public class StartupServletContextListener implements ServletContextListener {
 				}
 				Startable startable = (Startable) object;
 				startables.add(startable);
+				LOG.debug(objectName + " has priority "
+						+ startable.getPriority());
 			}
 			return startables;
 		} catch (NamingException e) {

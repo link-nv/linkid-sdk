@@ -9,6 +9,10 @@ package net.link.safeonline.model.beid;
 
 public class BeIdConstants {
 
+	private BeIdConstants() {
+		// empty
+	}
+
 	public static final String SURNAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:beid:surname";
 
 	public static final String GIVENNAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:beid:givenName";

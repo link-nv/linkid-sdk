@@ -9,6 +9,7 @@ package net.link.safeonline.util.ee;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.rmi.PortableRemoteObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,12 +42,8 @@ public class EjbUtils {
 			String jndiName, Class<Type> type) {
 		try {
 			LOG.debug("ejb jndi lookup: " + jndiName);
-			Object obj = initialContext.lookup(jndiName);
-			if (!type.isInstance(obj)) {
-				throw new RuntimeException(jndiName + " is not a "
-						+ type.getName() + " but a " + obj.getClass().getName());
-			}
-			Type instance = (Type) obj;
+			Object object = initialContext.lookup(jndiName);
+			Type instance = (Type) PortableRemoteObject.narrow(object, type);
 			return instance;
 		} catch (NamingException e) {
 			throw new RuntimeException("naming error: " + e.getMessage(), e);
@@ -54,12 +51,17 @@ public class EjbUtils {
 	}
 
 	public static <Type> Type getEJB(String jndiName, Class<Type> type) {
+		InitialContext initialContext = getInitialContext();
+		return getEJB(initialContext, jndiName, type);
+	}
+
+	private static InitialContext getInitialContext() {
 		InitialContext initialContext;
 		try {
 			initialContext = new InitialContext();
 		} catch (NamingException e) {
 			throw new RuntimeException("naming error: " + e.getMessage(), e);
 		}
-		return getEJB(initialContext, jndiName, type);
+		return initialContext;
 	}
 }

@@ -13,6 +13,8 @@ public class SafeOnlineConstants {
 
 	public static final String SAFE_ONLINE_SECURITY_DOMAIN = "safe-online";
 
+	public static final String SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN = "applications";
+
 	public static final String SAFE_ONLINE_USER_APPLICATION_NAME = "safe-online-user";
 
 	public static final String SAFE_ONLINE_OPERATOR_APPLICATION_NAME = "safe-online-oper";

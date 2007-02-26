@@ -76,6 +76,7 @@
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
+					<fork>true</fork>
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
@@ -210,6 +211,7 @@
 		<module>safe-online-attrib-ws</module>
 		<module>safe-online-attrib-ws-impl</module>
 		<module>safe-online-demo-keystore</module>
+		<module>safe-online-model-demo</module>
 	</modules>
 	<repositories>
 		<repository>

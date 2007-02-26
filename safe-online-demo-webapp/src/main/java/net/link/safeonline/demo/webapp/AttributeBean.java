@@ -7,24 +7,21 @@
 
 package net.link.safeonline.demo.webapp;
 
-import java.io.InputStream;
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
 import net.link.safeonline.sdk.attrib.AttributeClient;
 import net.link.safeonline.sdk.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
-import net.link.safeonline.sdk.attrib.KeyStoreUtils;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class AttributeBean {
 
 	private static final Log LOG = LogFactory.getLog(AttributeBean.class);
-
-	public static final String KEYSTORE_RESOURCE = "safe-online-demo-keystore.jks";
 
 	private String attributeName;
 
@@ -63,27 +60,19 @@ public class AttributeBean {
 		this.attributeWebServiceLocation = attributeWebServiceLocation;
 	}
 
-	public void loadCertificate() {
-		ClassLoader classLoader = Thread.currentThread()
-				.getContextClassLoader();
-		InputStream keyStoreInputStream = classLoader
-				.getResourceAsStream(KEYSTORE_RESOURCE);
-		if (null == keyStoreInputStream) {
-			throw new RuntimeException("keystore not found: "
-					+ KEYSTORE_RESOURCE);
-		}
-		PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(
-				"jks", keyStoreInputStream, "secret", "secret");
-		this.privateKey = privateKeyEntry.getPrivateKey();
-		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-	}
-
 	public X509Certificate getCertificate() {
 		return this.certificate;
 	}
 
 	public PrivateKey getPrivateKey() {
 		return this.privateKey;
+	}
+
+	private void loadCertificate() {
+		PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtils
+				.getPrivateKeyEntry();
+		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
+		this.privateKey = privateKeyEntry.getPrivateKey();
 	}
 
 	public String getAttributeValue() {

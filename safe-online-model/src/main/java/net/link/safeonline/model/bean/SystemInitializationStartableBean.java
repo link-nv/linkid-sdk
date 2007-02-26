@@ -24,6 +24,7 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
@@ -31,6 +32,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.entity.TrustDomainEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -200,17 +202,30 @@ public class SystemInitializationStartableBean implements Startable {
 	@EJB
 	private AttributeDAO attributeDAO;
 
+	@EJB
+	private TrustDomainDAO trustDomainDAO;
+
 	public void postStart() {
 		LOG.debug("start");
+		initTrustDomains();
 		initAttributeTypes();
-
 		initSubjectsAndAttributes();
-
 		initApplicationOwners();
-
 		initApplications();
-
 		initSubscriptions();
+	}
+
+	private void initTrustDomains() {
+		TrustDomainEntity applicationsTrustDomain = this.trustDomainDAO
+				.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+		if (null != applicationsTrustDomain) {
+			return;
+		}
+
+		applicationsTrustDomain = this.trustDomainDAO
+				.addTrustDomain(
+						SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+						true);
 	}
 
 	private void initAttributeTypes() {
@@ -293,5 +308,9 @@ public class SystemInitializationStartableBean implements Startable {
 
 	public void preStop() {
 		LOG.debug("stop");
+	}
+
+	public int getPriority() {
+		return Startable.PRIORITY_BOOTSTRAP;
 	}
 }

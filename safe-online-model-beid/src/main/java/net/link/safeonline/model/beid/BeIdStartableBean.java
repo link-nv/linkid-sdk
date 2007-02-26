@@ -130,4 +130,8 @@ public class BeIdStartableBean implements Startable {
 	public void preStop() {
 		LOG.debug("pre stop");
 	}
+
+	public int getPriority() {
+		return Startable.PRIORITY_DONT_CARE;
+	}
 }

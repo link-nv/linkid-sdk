@@ -54,18 +54,15 @@ public class PkiServiceBeanTest extends TestCase {
 				.generateSelfSignedCertificate(testKeyPair, dn);
 		String testTrustDomainName = "test-trust-domain-name-" + getName();
 		byte[] encodedTestCertificate = testCertificate.getEncoded();
-		String keyId = "test-key-id";
 
 		// stubs
 		TrustDomainEntity testTrustDomain = new TrustDomainEntity(
 				testTrustDomainName, true);
 		expect(this.mockTrustDomainDAO.getTrustDomain(testTrustDomainName))
 				.andStubReturn(testTrustDomain);
-		expect(this.mockTrustPointDAO.getSubjectKeyId(testCertificate))
-				.andStubReturn(keyId);
 		expect(
-				this.mockTrustPointDAO.findTrustPoint(testTrustDomain, dn,
-						keyId)).andStubReturn(null);
+				this.mockTrustPointDAO.findTrustPoint(testTrustDomain,
+						testCertificate)).andStubReturn(null);
 
 		// expectations
 		this.mockTrustPointDAO.addTrustPoint(testTrustDomain, testCertificate);
