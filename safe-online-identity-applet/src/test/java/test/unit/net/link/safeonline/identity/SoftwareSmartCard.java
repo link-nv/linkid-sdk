@@ -101,4 +101,8 @@ public class SoftwareSmartCard implements SmartCard {
 
 	public void open(String smartCardAlias) throws SmartCardNotFoundException {
 	}
+
+	public List<X509Certificate> getAuthenticationCertificatePath() {
+		return null;
+	}
 }

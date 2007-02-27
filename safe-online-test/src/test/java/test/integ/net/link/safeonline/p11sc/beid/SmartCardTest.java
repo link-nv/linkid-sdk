@@ -23,6 +23,7 @@ import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
 import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,6 +39,36 @@ import be.belgium.eid.eidlib;
 public class SmartCardTest extends TestCase {
 
 	private static final Log LOG = LogFactory.getLog(SmartCardTest.class);
+
+	public void testGetCertificatePath() throws Exception {
+		// setup
+		SmartCard smartCard = SmartCardFactory.newInstance();
+		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
+
+		smartCard.init(configFactory.getSmartCardConfigs());
+
+		// operate
+		smartCard.open("beid");
+		try {
+			List<X509Certificate> resultPath = smartCard
+					.getAuthenticationCertificatePath();
+
+			// verify
+			assertNotNull(resultPath);
+			LOG.debug("result path size: " + resultPath.size());
+			assertTrue(resultPath.size() > 1);
+
+			for (X509Certificate resultCert : resultPath) {
+				LOG.debug("cert subject: "
+						+ resultCert.getSubjectX500Principal().toString());
+				File tmpFile = File.createTempFile("cert-", ".crt");
+				FileUtils
+						.writeByteArrayToFile(tmpFile, resultCert.getEncoded());
+			}
+		} finally {
+			smartCard.close();
+		}
+	}
 
 	public void testGetCertificatesAndPrivateKeys() throws Exception {
 		// setup

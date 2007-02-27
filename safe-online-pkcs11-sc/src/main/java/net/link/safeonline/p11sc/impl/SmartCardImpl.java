@@ -25,6 +25,8 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.security.auth.callback.Callback;
@@ -62,6 +64,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 	private SmartCardPinCallback smartCardPinCallback;
 
 	private X509Certificate authenticationCertificate;
+
+	private List<X509Certificate> authenticationCertificatePath;
 
 	private PrivateKey authenticationPrivateKey;
 
@@ -237,6 +241,55 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 				.getCertificate(signatureKeyAlias);
 		this.signaturePrivateKey = (PrivateKey) keyStore.getKey(
 				signatureKeyAlias, null);
+
+		List<X509Certificate> certificates = new LinkedList<X509Certificate>();
+		Enumeration<String> aliases = keyStore.aliases();
+		while (aliases.hasMoreElements()) {
+			String alias = aliases.nextElement();
+			X509Certificate cert = (X509Certificate) keyStore
+					.getCertificate(alias);
+			certificates.add(cert);
+		}
+
+		this.authenticationCertificatePath = constructCertificatePath(
+				this.authenticationCertificate, certificates);
+	}
+
+	private List<X509Certificate> constructCertificatePath(
+			X509Certificate certificate, List<X509Certificate> certificateRepo) {
+		List<X509Certificate> certificatePath = new LinkedList<X509Certificate>();
+		certificatePath.add(certificate);
+		X509Certificate currCert = certificate;
+
+		while (null != currCert) {
+			X509Certificate issuerCert = findIssuerCertificate(currCert,
+					certificateRepo);
+			if (null != issuerCert) {
+				certificatePath.add(issuerCert);
+				if (isSelfSignedCertificate(issuerCert)) {
+					break;
+				}
+			}
+			currCert = issuerCert;
+		}
+
+		return certificatePath;
+	}
+
+	private boolean isSelfSignedCertificate(X509Certificate certificate) {
+		return certificate.getIssuerX500Principal().equals(
+				certificate.getSubjectX500Principal());
+	}
+
+	private X509Certificate findIssuerCertificate(X509Certificate certificate,
+			List<X509Certificate> certificateRepo) {
+		for (X509Certificate repoCert : certificateRepo) {
+			if (certificate.getIssuerX500Principal().equals(
+					repoCert.getSubjectX500Principal())) {
+				return repoCert;
+			}
+		}
+		return null;
 	}
 
 	private void loadSecurityProvider(File existingDriverLocation, long slotIdx)
@@ -447,5 +500,9 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
 	public static void setLog(Log log) {
 		SmartCardImpl.LOG = log;
+	}
+
+	public List<X509Certificate> getAuthenticationCertificatePath() {
+		return this.authenticationCertificatePath;
 	}
 }

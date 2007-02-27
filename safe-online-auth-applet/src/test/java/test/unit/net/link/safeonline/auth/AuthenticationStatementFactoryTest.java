@@ -120,5 +120,9 @@ public class AuthenticationStatementFactoryTest extends TestCase {
 		public void setSmartCardPinCallback(
 				SmartCardPinCallback smartCardPinCallback) {
 		}
+
+		public List<X509Certificate> getAuthenticationCertificatePath() {
+			return null;
+		}
 	}
 }

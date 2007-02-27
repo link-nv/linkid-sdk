@@ -72,6 +72,8 @@ public interface SmartCard {
 	 */
 	X509Certificate getAuthenticationCertificate();
 
+	List<X509Certificate> getAuthenticationCertificatePath();
+
 	String getGivenName();
 
 	String getSurname();
