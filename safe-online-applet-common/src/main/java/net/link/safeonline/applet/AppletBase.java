@@ -61,9 +61,27 @@ public abstract class AppletBase extends JApplet implements Runnable {
 
 	private JProgressBar progressBar;
 
-	public AppletBase() {
-		setupScreen();
-		new Thread(this).start();
+	@Override
+	public void init() {
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					setupScreen();
+				}
+			});
+		} catch (Exception e) {
+			throw new RuntimeException("could not setup the GUI");
+		}
+		Thread thread = new Thread(this);
+		thread.start();
+	}
+
+	@Override
+	public void start() {
+	}
+
+	@Override
+	public void stop() {
 	}
 
 	private void setupScreen() {
