@@ -15,7 +15,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
