@@ -8,15 +8,20 @@
 package test.unit.net.link.safeonline.attrib.ws;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.easymock.EasyMock.expect;
 
 import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
 
+import javax.security.auth.Subject;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.login.LoginException;
+import javax.security.auth.spi.LoginModule;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
@@ -29,7 +34,9 @@ import net.link.safeonline.attrib.ws.SAMLAttributePortImpl;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
+import net.link.safeonline.model.PkiValidator;
 import net.link.safeonline.sdk.attrib.WSSecurityClientHandler;
+import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
@@ -48,6 +55,7 @@ import oasis.names.tc.saml._2_0.protocol.StatusType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.easymock.EasyMock;
 
 public class SAMLAttributePortImplTest extends TestCase {
 
@@ -62,6 +70,8 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 	private AttributeService mockAttributeService;
 
+	private PkiValidator mockPkiValidator;
+
 	private Object[] mockObjects;
 
 	@Override
@@ -72,12 +82,23 @@ public class SAMLAttributePortImplTest extends TestCase {
 		this.jndiTestUtils.setUp();
 
 		this.mockAttributeService = createMock(AttributeService.class);
+		this.mockPkiValidator = createMock(PkiValidator.class);
 
-		this.mockObjects = new Object[] { this.mockAttributeService };
+		this.mockObjects = new Object[] { this.mockAttributeService,
+				this.mockPkiValidator };
 
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/AttributeServiceBean/local",
 				this.mockAttributeService);
+		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
+				this.mockPkiValidator);
+
+		expect(
+				this.mockPkiValidator.validateCertificate((String) EasyMock
+						.anyObject(), (X509Certificate) EasyMock.anyObject()))
+				.andStubReturn(true);
+
+		JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
 
 		SAMLAttributePort wsPort = new SAMLAttributePortImpl();
 		this.webServiceTestUtils = new WebServiceTestUtils();
@@ -133,7 +154,6 @@ public class SAMLAttributePortImplTest extends TestCase {
 		expect(
 				this.mockAttributeService.getAttribute(testSubjectLogin,
 						testAttributeName)).andReturn(testAttributeValue);
-
 		// prepare
 		replay(this.mockObjects);
 
@@ -225,4 +245,28 @@ public class SAMLAttributePortImplTest extends TestCase {
 		assertEquals("urn:oasis:names:tc:SAML:2.0:status:Requester",
 				resultStatus.getStatusCode().getValue());
 	}
+
+	public static class TestLoginModule implements LoginModule {
+
+		public boolean abort() throws LoginException {
+			return true;
+		}
+
+		public boolean commit() throws LoginException {
+			return true;
+		}
+
+		public void initialize(Subject subject,
+				CallbackHandler callbackHandler, Map<String, ?> sharedState,
+				Map<String, ?> options) {
+		}
+
+		public boolean login() throws LoginException {
+			return true;
+		}
+
+		public boolean logout() throws LoginException {
+			return true;
+		}
+	};
 }

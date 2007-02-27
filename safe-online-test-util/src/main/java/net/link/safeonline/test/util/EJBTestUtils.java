@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.Stateless;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -148,10 +147,6 @@ public final class EJBTestUtils {
 			IllegalAccessException, InvocationTargetException {
 		LOG.debug("Initializing: " + bean);
 		Class clazz = bean.getClass();
-		Stateless stateless = (Stateless) clazz.getAnnotation(Stateless.class);
-		if (null == stateless) {
-			LOG.warn("no Stateless annotation found on class");
-		}
 		Method[] methods = clazz.getMethods();
 		for (Method method : methods) {
 			PostConstruct postConstruct = method

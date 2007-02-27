@@ -16,6 +16,7 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import junit.framework.TestCase;
+import net.link.safeonline.attrib.ws.ApplicationCertificateLoginHandler;
 import net.link.safeonline.attrib.ws.WSSecurityServerHandler;
 import net.link.safeonline.test.util.TestSOAPMessageContext;
 
@@ -23,6 +24,7 @@ public class WSSecurityServerHandlerTest extends TestCase {
 
 	private WSSecurityServerHandler testedInstance;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
@@ -47,7 +49,7 @@ public class WSSecurityServerHandlerTest extends TestCase {
 
 		// verify
 		X509Certificate resultCertificate = (X509Certificate) soapMessageContext
-				.get(WSSecurityServerHandler.CERTIFICATE_PROPERTY);
+				.get(ApplicationCertificateLoginHandler.CERTIFICATE_PROPERTY);
 		assertNotNull(resultCertificate);
 	}
 }

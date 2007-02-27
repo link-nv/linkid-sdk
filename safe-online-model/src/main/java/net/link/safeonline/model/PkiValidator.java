@@ -11,6 +11,7 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.entity.TrustDomainEntity;
 
 /**
@@ -32,4 +33,7 @@ public interface PkiValidator {
 	 */
 	boolean validateCertificate(TrustDomainEntity trustDomain,
 			X509Certificate certificate);
+
+	boolean validateCertificate(String trustDomainName,
+			X509Certificate certificate) throws TrustDomainNotFoundException;
 }

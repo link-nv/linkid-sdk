@@ -38,10 +38,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 	private static final Log LOG = LogFactory
 			.getLog(WSSecurityServerHandler.class);
 
-	public static final String CERTIFICATE_PROPERTY = "net.link.safeonline.x509";
-
-	@SuppressWarnings("unchecked")
-	public Set getHeaders() {
+	public Set<QName> getHeaders() {
 		Set<QName> headers = new HashSet<QName>();
 		headers
 				.add(new QName(
@@ -98,7 +95,10 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 		for (WSSecurityEngineResult result : wsSecurityEngineResults) {
 			X509Certificate certificate = result.getCertificate();
 			if (null != certificate) {
-				soapMessageContext.put(CERTIFICATE_PROPERTY, certificate);
+				soapMessageContext
+						.put(
+								ApplicationCertificateLoginHandler.CERTIFICATE_PROPERTY,
+								certificate);
 			}
 		}
 	}

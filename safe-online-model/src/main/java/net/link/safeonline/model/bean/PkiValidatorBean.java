@@ -26,6 +26,8 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.security.auth.x500.X500Principal;
 
+import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
+import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
@@ -50,6 +52,9 @@ public class PkiValidatorBean implements PkiValidator {
 
 	@EJB
 	private TrustPointDAO trustPointDAO;
+
+	@EJB
+	private TrustDomainDAO trustDomainDAO;
 
 	@EJB
 	private CachedOcspValidator cachedOcspValidator;
@@ -233,7 +238,10 @@ public class PkiValidatorBean implements PkiValidator {
 				.getExtensionValue(X509Extensions.BasicConstraints.getId());
 		if (null == basicConstraintsValue) {
 			LOG.debug("no basic contraints extension present");
-			return false;
+			/*
+			 * A basic constraints extension is optional.
+			 */
+			return true;
 		}
 		ASN1Encodable basicConstraintsDecoded;
 		try {
@@ -277,9 +285,17 @@ public class PkiValidatorBean implements PkiValidator {
 			LOG.debug("provider error");
 			return false;
 		} catch (SignatureException e) {
-			LOG.debug("sign error");
+			LOG.debug("sign error: " + e.getMessage(), e);
 			return false;
 		}
 		return true;
+	}
+
+	public boolean validateCertificate(String trustDomainName,
+			X509Certificate certificate) throws TrustDomainNotFoundException {
+		TrustDomainEntity trustDomain = this.trustDomainDAO
+				.getTrustDomain(trustDomainName);
+		boolean result = validateCertificate(trustDomain, certificate);
+		return result;
 	}
 }
