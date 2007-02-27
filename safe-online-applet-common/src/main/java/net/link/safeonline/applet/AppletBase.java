@@ -97,15 +97,15 @@ public abstract class AppletBase extends JApplet implements Runnable {
 	}
 
 	protected void outputDetailMessage(final String message) {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					AppletBase.this.outputArea.append(message + "\n");
-				}
-			});
-		} catch (InterruptedException e) {
-		} catch (InvocationTargetException e) {
-		}
+		/*
+		 * We used to have invokeAndWait here, but this sometimes causes a
+		 * deadlock between: RunnableQueue-0 and AWT-EventQueue-0.
+		 */
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				AppletBase.this.outputArea.append(message + "\n");
+			}
+		});
 	}
 
 	protected static enum InfoLevel {
@@ -114,29 +114,24 @@ public abstract class AppletBase extends JApplet implements Runnable {
 
 	protected void outputInfoMessage(final InfoLevel infoLevel,
 			final String message) {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					AppletBase.this.infoLabel.setText(message);
-					if (AppletBase.this.infoLevel != infoLevel) {
-						AppletBase.this.infoLevel = infoLevel;
-						switch (infoLevel) {
-						case NORMAL:
-							AppletBase.this.infoLabel
-									.setForeground(Color.BLACK);
-							AppletBase.this.progressBar.setIndeterminate(true);
-							break;
-						case ERROR:
-							AppletBase.this.infoLabel.setForeground(Color.RED);
-							AppletBase.this.progressBar.setIndeterminate(false);
-							break;
-						}
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				AppletBase.this.infoLabel.setText(message);
+				if (AppletBase.this.infoLevel != infoLevel) {
+					AppletBase.this.infoLevel = infoLevel;
+					switch (infoLevel) {
+					case NORMAL:
+						AppletBase.this.infoLabel.setForeground(Color.BLACK);
+						AppletBase.this.progressBar.setIndeterminate(true);
+						break;
+					case ERROR:
+						AppletBase.this.infoLabel.setForeground(Color.RED);
+						AppletBase.this.progressBar.setIndeterminate(false);
+						break;
 					}
 				}
-			});
-		} catch (InterruptedException e) {
-		} catch (InvocationTargetException e) {
-		}
+			}
+		});
 	}
 
 	public void run() {
