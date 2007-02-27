@@ -20,7 +20,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.SignatureException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 
 import javax.ejb.Stateless;
@@ -53,10 +59,17 @@ import org.bouncycastle.ocsp.SingleResp;
 
 import net.link.safeonline.model.OcspValidator;
 
+/**
+ * OCSP Validator Bean. Specification available at:
+ * http://www.ietf.org/rfc/rfc2560.txt
+ * 
+ * @author fcorneli
+ * 
+ */
 @Stateless
 public class OcspValidatorBean implements OcspValidator {
 
-	private static final Log LOG = LogFactory.getLog(PkiValidatorBean.class);
+	private static final Log LOG = LogFactory.getLog(OcspValidatorBean.class);
 
 	public boolean performOcspCheck(X509Certificate certificate,
 			X509Certificate issuerCertificate) {
@@ -92,14 +105,6 @@ public class OcspValidatorBean implements OcspValidator {
 		}
 		int ocspStatus = resp.getStatus();
 		LOG.debug("OCSP result status: " + ocspStatus);
-		LOG.debug("OCSP malformed request: "
-				+ (OCSPRespStatus.MALFORMED_REQUEST == ocspStatus));
-		LOG.debug("OCSP unauthorized request: "
-				+ (OCSPRespStatus.UNAUTHORIZED == ocspStatus));
-		LOG.debug("OCSP internal error request: "
-				+ (OCSPRespStatus.INTERNAL_ERROR == ocspStatus));
-		LOG.debug("OCSP successful: "
-				+ (OCSPRespStatus.SUCCESSFUL == ocspStatus));
 		if (OCSPRespStatus.SUCCESSFUL != ocspStatus) {
 			return OcspResult.FAILED;
 		}
@@ -109,12 +114,14 @@ public class OcspValidatorBean implements OcspValidator {
 		} catch (OCSPException e) {
 			throw new RuntimeException("OCSP error: " + e.getMessage(), e);
 		}
-		LOG.debug("response object class: "
-				+ responseObject.getClass().getName());
 		BasicOCSPResp basicOCSPResp = (BasicOCSPResp) responseObject;
 		LOG
 				.debug("OCSP response produced at: "
 						+ basicOCSPResp.getProducedAt());
+		/*
+		 * Do not perform any check on productedAt since RFC 2560 - 2.5 allows
+		 * for Response Pre-production.
+		 */
 		LOG.debug("OCSP version: " + basicOCSPResp.getVersion());
 		LOG.debug("signature alg oid: " + basicOCSPResp.getSignatureAlgOID());
 		basicOCSPResp.getResponderId();
@@ -128,54 +135,109 @@ public class OcspValidatorBean implements OcspValidator {
 			throw new RuntimeException("OCSP error: " + e.getMessage(), e);
 		}
 		if (null == certs) {
+			/*
+			 * Although the sequence of certificates is optional according to
+			 * RFC 2560 we require it for OCSP Response validation.
+			 */
 			LOG.debug("certs is null");
 			return OcspResult.FAILED;
 		}
-		for (X509Certificate cert : certs) {
-			String subjectName = cert.getSubjectDN().getName();
-			LOG.debug("cert subject: " + subjectName);
-			LOG.debug("cert: " + cert);
-			if (subjectName.matches(".*OCSP.*")) {
-				boolean verifyResult;
-				try {
-					verifyResult = basicOCSPResp.verify(cert.getPublicKey(),
-							BouncyCastleProvider.PROVIDER_NAME);
-				} catch (NoSuchProviderException e) {
-					throw new RuntimeException("no such provider error: "
-							+ e.getMessage(), e);
-				} catch (OCSPException e) {
-					throw new RuntimeException("OCSP error: " + e.getMessage(),
-							e);
-				}
-				LOG.debug("verify result: " + verifyResult);
-				if (!verifyResult) {
-					LOG.debug("verify result was false");
-					return OcspResult.FAILED;
-				}
-			}
+		if (0 == certs.length) {
+			LOG.debug("number of response certs is zero");
+			return OcspResult.FAILED;
 		}
-		SingleResp[] singleResps = basicOCSPResp.getResponses();
-		LOG.debug("single responses: " + singleResps.length);
-		for (SingleResp singleResp : singleResps) {
-			LOG.debug("this update: " + singleResp.getThisUpdate());
-			LOG.debug("next update: " + singleResp.getNextUpdate());
-			LOG.debug("cert serial nr: "
-					+ singleResp.getCertID().getSerialNumber());
-			if (!certificate.getSerialNumber().equals(
-					singleResp.getCertID().getSerialNumber())) {
-				LOG.debug("certificate serial number does not correspond");
+		LOG.debug("number of response certificates: " + certs.length);
+		X509Certificate ocspResponderCertificate = certs[0];
+		/*
+		 * It's possible that the OCSP Responder gives us the entire certificate
+		 * chain.
+		 */
+		LOG.debug("OCSP Responder Certificate: " + ocspResponderCertificate);
+		try {
+			boolean verifyResult = basicOCSPResp.verify(
+					ocspResponderCertificate.getPublicKey(),
+					BouncyCastleProvider.PROVIDER_NAME);
+			LOG.debug("verify result: " + verifyResult);
+			if (!verifyResult) {
+				LOG.debug("verify result was false");
 				return OcspResult.FAILED;
 			}
-			LOG.debug("cert status: " + singleResp.getCertStatus());
-			CertificateStatus status = (CertificateStatus) singleResp
-					.getCertStatus();
-			if (null == status) {
-				return OcspResult.GOOD;
-			} else if (status instanceof RevokedStatus) {
-				return OcspResult.REVOKED;
-			} else if (status instanceof UnknownStatus) {
-				return OcspResult.SUSPENDED;
+		} catch (NoSuchProviderException e) {
+			throw new RuntimeException("no such provider error: "
+					+ e.getMessage(), e);
+		} catch (OCSPException e) {
+			throw new RuntimeException("OCSP error: " + e.getMessage(), e);
+		}
+		try {
+			ocspResponderCertificate.checkValidity();
+		} catch (CertificateExpiredException e) {
+			LOG.error("OCSP Responder certificate expired");
+			return OcspResult.FAILED;
+		} catch (CertificateNotYetValidException e) {
+			LOG.error("OCSP Responder certificate not yet valid");
+			return OcspResult.FAILED;
+		}
+		/*
+		 * Verify the OCSP Responder certificate according to RFC 2560 - 2.6
+		 * OCSP Signature Authority Delegation. Here we assume that the OCSP
+		 * Responder certificate is issued by the issuer CA. It's also possible
+		 * that the issuer CA certificate itself did generate the OCSP Response
+		 * signature. In that case we don't need to check the OCSP Responder
+		 * certificate.
+		 */
+		try {
+			if (false == issuerCertificate.equals(ocspResponderCertificate)) {
+				ocspResponderCertificate.verify(issuerCertificate
+						.getPublicKey());
 			}
+		} catch (InvalidKeyException e) {
+			LOG.error("Invalid Issuer CA key");
+			return OcspResult.FAILED;
+		} catch (CertificateException e) {
+			LOG.error("Certificate error: " + e.getMessage());
+			return OcspResult.FAILED;
+		} catch (NoSuchAlgorithmException e) {
+			LOG.error("No such algo: " + e.getMessage());
+			return OcspResult.FAILED;
+		} catch (NoSuchProviderException e) {
+			LOG.error("no such provider");
+			return OcspResult.FAILED;
+		} catch (SignatureException e) {
+			LOG.error("OCSP Responder certificate signature error");
+			return OcspResult.FAILED;
+		}
+
+		SingleResp[] singleResps = basicOCSPResp.getResponses();
+		if (1 != singleResps.length) {
+			LOG.error("number of single responses: " + singleResps.length);
+			return OcspResult.FAILED;
+		}
+		SingleResp singleResp = singleResps[0];
+		LOG.debug("this update: " + singleResp.getThisUpdate());
+		LOG.debug("next update: " + singleResp.getNextUpdate());
+		/*
+		 * TODO: if nextUpdate is not null (see RFC 2560 - 2.4) we should use
+		 * min(OCSP cache config expiration, nextUpdate) for OCSP cache timeout
+		 * value. Of course we could allow the operator to override the OCSP
+		 * hint to reduce the load on the OCSP responder.
+		 */
+		LOG
+				.debug("cert serial nr: "
+						+ singleResp.getCertID().getSerialNumber());
+		if (!certificate.getSerialNumber().equals(
+				singleResp.getCertID().getSerialNumber())) {
+			LOG.debug("certificate serial number does not correspond");
+			return OcspResult.FAILED;
+		}
+		LOG.debug("cert status: " + singleResp.getCertStatus());
+		CertificateStatus status = (CertificateStatus) singleResp
+				.getCertStatus();
+		if (null == status) {
+			return OcspResult.GOOD;
+		} else if (status instanceof RevokedStatus) {
+			return OcspResult.REVOKED;
+		} else if (status instanceof UnknownStatus) {
+			return OcspResult.SUSPENDED;
 		}
 		return OcspResult.FAILED;
 	}

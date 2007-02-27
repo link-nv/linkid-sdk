@@ -13,6 +13,12 @@ import javax.naming.NameNotFoundException;
 import junit.framework.TestCase;
 import net.link.safeonline.test.util.JndiTestUtils;
 
+/**
+ * Who will guard the guards.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class JndiTestUtilsTest extends TestCase {
 
 	public void testBindComponent() throws Exception {

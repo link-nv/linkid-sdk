@@ -59,6 +59,10 @@ public class OcspValidatorBeanTest extends TestCase {
 
 	private URI ocspUri;
 
+	private KeyPair caKeyPair;
+
+	private X509Certificate caCertificate;
+
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
@@ -95,6 +99,21 @@ public class OcspValidatorBeanTest extends TestCase {
 
 		String ocspServletLocation = "http://localhost:" + port + "/";
 		this.ocspUri = new URI(ocspServletLocation);
+
+		this.caKeyPair = PkiTestUtils.generateKeyPair();
+		this.caCertificate = PkiTestUtils.generateSelfSignedCertificate(
+				this.caKeyPair, "CN=TestCA");
+
+		KeyPair ocspResponderKeyPair = PkiTestUtils.generateKeyPair();
+
+		TestOcspResponderServlet.certificate = PkiTestUtils
+				.generateCertificate(ocspResponderKeyPair.getPublic(),
+						"CN=TestOCSPResponder", this.caKeyPair.getPrivate(),
+						this.caCertificate, new DateTime(this.caCertificate
+								.getNotBefore()), new DateTime(
+								this.caCertificate.getNotAfter()), null, false,
+						false, null);
+		TestOcspResponderServlet.privateKey = ocspResponderKeyPair.getPrivate();
 
 		TestOcspResponderServlet.called = false;
 
@@ -165,12 +184,16 @@ public class OcspValidatorBeanTest extends TestCase {
 
 	public void testPerformOcspCheck() throws Exception {
 		// setup
-		X509Certificate certificate = PkiTestUtils
-				.generateTestSelfSignedCert(this.ocspUri);
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair
+				.getPublic(), "CN=Test", this.caKeyPair.getPrivate(),
+				this.caCertificate, new DateTime(this.caCertificate
+						.getNotBefore()), new DateTime(this.caCertificate
+						.getNotAfter()), null, false, false, this.ocspUri);
 
 		// operate
 		boolean result = this.testedInstance.performOcspCheck(certificate,
-				certificate);
+				this.caCertificate);
 
 		// verify
 		assertTrue(result);
@@ -184,9 +207,9 @@ public class OcspValidatorBeanTest extends TestCase {
 		private static final Log LOG = LogFactory
 				.getLog(TestOcspResponderServlet.class);
 
-		private X509Certificate ocspResponderCertificate;
+		private static X509Certificate certificate;
 
-		private PrivateKey ocspResponderPrivateKey;
+		private static PrivateKey privateKey;
 
 		private static boolean called;
 
@@ -216,7 +239,7 @@ public class OcspValidatorBeanTest extends TestCase {
 			BasicOCSPRespGenerator basicOCSPRespGenerator;
 			try {
 				basicOCSPRespGenerator = new BasicOCSPRespGenerator(
-						this.ocspResponderCertificate.getPublicKey());
+						TestOcspResponderServlet.certificate.getPublicKey());
 			} catch (OCSPException e) {
 				throw new UnavailableException(
 						"cound not create basic OCSP response generator");
@@ -248,9 +271,12 @@ public class OcspValidatorBeanTest extends TestCase {
 			}
 
 			try {
-				BasicOCSPResp basicOCSPResp = basicOCSPRespGenerator.generate(
-						"SHA1WITHRSA", this.ocspResponderPrivateKey, null,
-						new Date(), BouncyCastleProvider.PROVIDER_NAME);
+				BasicOCSPResp basicOCSPResp = basicOCSPRespGenerator
+						.generate(
+								"SHA1WITHRSA",
+								TestOcspResponderServlet.privateKey,
+								new X509Certificate[] { TestOcspResponderServlet.certificate },
+								new Date(), BouncyCastleProvider.PROVIDER_NAME);
 				OCSPRespGenerator ocspRespGenerator = new OCSPRespGenerator();
 				OCSPResp ocspResp = ocspRespGenerator.generate(
 						OCSPRespGenerator.SUCCESSFUL, basicOCSPResp);
@@ -279,27 +305,7 @@ public class OcspValidatorBeanTest extends TestCase {
 			super.init();
 			LOG.debug("init");
 
-			KeyPair keyPair;
-			try {
-				keyPair = PkiTestUtils.generateKeyPair();
-			} catch (Exception e) {
-				throw new UnavailableException("error: " + e.getMessage());
-			}
-			DateTime now = new DateTime();
-			DateTime notBefore = now.minusDays(1);
-			DateTime notAfter = now.plusDays(1);
-			try {
-				this.ocspResponderCertificate = PkiTestUtils
-						.generateSelfSignedCertificate(keyPair,
-								"CN=TestOCSPResponder", notBefore, notAfter,
-								null, false, true);
-			} catch (Exception e) {
-				throw new UnavailableException("error: " + e.getMessage());
-			}
-			this.ocspResponderPrivateKey = keyPair.getPrivate();
-
 			TestOcspResponderServlet.called = false;
 		}
 	}
-
 }
