@@ -32,6 +32,7 @@ import net.link.safeonline.sdk.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
 import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.AuthClientImpl;
+import net.link.safeonline.service.PkiService;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -56,6 +57,8 @@ public class AuthenticationTest extends TestCase {
 
 	private AttributeClient attributeClient;
 
+	private X509Certificate certificate;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -63,11 +66,11 @@ public class AuthenticationTest extends TestCase {
 		this.authClient = new AuthClientImpl(SAFE_ONLINE_LOCATION);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
+				"CN=Test");
 
 		this.attributeClient = new AttributeClientImpl("localhost",
-				certificate, keyPair.getPrivate());
+				this.certificate, keyPair.getPrivate());
 	}
 
 	public void testAvailabilityViaEcho() throws Exception {
@@ -237,7 +240,7 @@ public class AuthenticationTest extends TestCase {
 		identityService.saveAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
 				userName);
 		String resultName = identityService
-				.findAttribute(SafeOnlineConstants.NAME_ATTRIBUTE);
+				.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(userName, resultName);
 
 		final CredentialService credentialService = getCredentialService(initialContext);
@@ -248,7 +251,7 @@ public class AuthenticationTest extends TestCase {
 
 		IntegrationTestUtils.login(userLogin, newPassword);
 		resultName = identityService
-				.findAttribute(SafeOnlineConstants.NAME_ATTRIBUTE);
+				.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(userName, resultName);
 
 		final SubscriptionService subscriptionService = getSubscriptionService(initialContext);
@@ -283,6 +286,12 @@ public class AuthenticationTest extends TestCase {
 				initialContext, "SafeOnline/CredentialServiceBean/remote",
 				CredentialService.class);
 		return credentialService;
+	}
+
+	private PkiService getPkiService(InitialContext initialContext) {
+		final PkiService pkiService = EjbUtils.getEJB(initialContext,
+				"SafeOnline/PkiServiceBean/remote", PkiService.class);
+		return pkiService;
 	}
 
 	public void testCreateApplicationOwner() throws Exception {
@@ -410,7 +419,7 @@ public class AuthenticationTest extends TestCase {
 		// operate: cannot retrieve password attribute
 		try {
 			identityService
-					.findAttribute(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
+					.findAttributeValue(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
@@ -463,7 +472,14 @@ public class AuthenticationTest extends TestCase {
 		identityService.saveAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
 				testName);
 
-		// operate: retrieve name attribute
+		// operate: register certificate as application trust point
+		PkiService pkiService = getPkiService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		pkiService.addTrustPoint(
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+				this.certificate.getEncoded());
+
+		// operate: retrieve name attribute via web service
 		String result = this.attributeClient.getAttributeValue(login,
 				SafeOnlineConstants.NAME_ATTRIBUTE);
 
@@ -485,7 +501,14 @@ public class AuthenticationTest extends TestCase {
 		String password = UUID.randomUUID().toString();
 		userRegistrationService.registerUser(login, password, null);
 
-		// operate & verify: retrieve name attribute
+		// operate: register certificate as application trust point
+		PkiService pkiService = getPkiService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		pkiService.addTrustPoint(
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+				this.certificate.getEncoded());
+
+		// operate & verify: retrieve name attribute via web service
 		try {
 			this.attributeClient.getAttributeValue(login,
 					"foo-bar-attribute-name");
