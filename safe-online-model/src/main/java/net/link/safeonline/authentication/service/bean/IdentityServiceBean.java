@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -15,6 +16,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
@@ -56,7 +58,7 @@ public class IdentityServiceBean implements IdentityService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public String findAttribute(String attributeName)
+	public String findAttributeValue(String attributeName)
 			throws PermissionDeniedException {
 		String subjectLogin = this.subjectManager.getCallerLogin();
 		LOG.debug("get attribute " + attributeName + " for user with login "
@@ -94,9 +96,34 @@ public class IdentityServiceBean implements IdentityService {
 				attributeName, login);
 		if (null == attribute) {
 			this.attributeDAO
-					.addAttribute(attributeName, login, attributeValue);
+					.addAttribute(attributeType, login, attributeValue);
 			return;
 		}
 		attribute.setStringValue(attributeValue);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public List<AttributeDO> getAttributes() {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		LOG.debug("get attributes for " + subject.getLogin());
+		List<AttributeEntity> attributes = this.attributeDAO
+				.getAttributes(subject);
+		LOG.debug("number of attributes: " + attributes.size());
+		List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
+		for (AttributeEntity attribute : attributes) {
+			LOG.debug("attribute pk type: "
+					+ attribute.getPk().getAttributeType());
+			AttributeTypeEntity attributeType = attribute.getAttributeType();
+			LOG.debug("attribute type: " + attributeType.getName());
+			if (false == attributeType.isUserVisible()) {
+				LOG.debug("attribute not user visible");
+				continue;
+			}
+			String name = attributeType.getName();
+			String value = attribute.getStringValue();
+			AttributeDO attributeView = new AttributeDO(name, value);
+			attributesView.add(attributeView);
+		}
+		return attributesView;
 	}
 }

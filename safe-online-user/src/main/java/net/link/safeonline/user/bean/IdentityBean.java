@@ -8,6 +8,7 @@
 package net.link.safeonline.user.bean;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -18,6 +19,7 @@ import javax.ejb.Stateful;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.user.Identity;
@@ -28,7 +30,9 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.datamodel.DataModel;
 
 @Stateful
 @Name("identity")
@@ -46,6 +50,10 @@ public class IdentityBean implements Identity {
 	@EJB
 	private IdentityService identityService;
 
+	@SuppressWarnings("unused")
+	@DataModel
+	private List<AttributeDO> attributeList;
+
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String getLogin() {
 		Principal principal = this.context.getCallerPrincipal();
@@ -57,7 +65,7 @@ public class IdentityBean implements Identity {
 	public String getName() {
 		try {
 			this.name = this.identityService
-					.findAttribute(SafeOnlineConstants.NAME_ATTRIBUTE);
+					.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
 		} catch (PermissionDeniedException e) {
 			LOG.error("user not allowed to view attribute: "
 					+ SafeOnlineConstants.NAME_ATTRIBUTE);
@@ -82,6 +90,7 @@ public class IdentityBean implements Identity {
 					+ SafeOnlineConstants.NAME_ATTRIBUTE);
 			return null;
 		}
+		this.attributeList = this.identityService.getAttributes();
 		return "success";
 	}
 
@@ -93,7 +102,7 @@ public class IdentityBean implements Identity {
 	public String getGivenName() {
 		try {
 			return this.identityService
-					.findAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE);
+					.findAttributeValue(BeIdConstants.GIVENNAME_ATTRIBUTE);
 		} catch (PermissionDeniedException e) {
 			LOG.error("user not allowed to view attribute: "
 					+ BeIdConstants.GIVENNAME_ATTRIBUTE);
@@ -104,11 +113,18 @@ public class IdentityBean implements Identity {
 	public String getSurname() {
 		try {
 			return this.identityService
-					.findAttribute(BeIdConstants.SURNAME_ATTRIBUTE);
+					.findAttributeValue(BeIdConstants.SURNAME_ATTRIBUTE);
 		} catch (PermissionDeniedException e) {
 			LOG.error("user not allowed to view attribute: "
 					+ BeIdConstants.SURNAME_ATTRIBUTE);
 			return null;
 		}
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	@Factory("attributeList")
+	public void attributeListFactory() {
+		LOG.debug("attributeListFactory");
+		this.attributeList = this.identityService.getAttributes();
 	}
 }

@@ -21,8 +21,10 @@ public interface Identity {
 	String save();
 
 	void destroyCallback();
-	
+
 	String getGivenName();
-	
+
 	String getSurname();
+
+	void attributeListFactory();
 }

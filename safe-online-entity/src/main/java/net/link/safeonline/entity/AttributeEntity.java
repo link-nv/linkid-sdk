@@ -14,15 +14,25 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 import javax.persistence.Table;
+
+import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT;
 
 @Entity
 @Table(name = "attribute")
+@NamedQueries( { @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT attribute FROM AttributeEntity AS attribute "
+		+ "WHERE attribute.subject = :subject") })
 public class AttributeEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String QUERY_WHERE_SUBJECT = "attr.subject";
 
 	private AttributePK pk;
 
@@ -80,5 +90,12 @@ public class AttributeEntity implements Serializable {
 
 	public void setStringValue(String stringValue) {
 		this.stringValue = stringValue;
+	}
+
+	public static Query createQueryWhereSubject(EntityManager entityManager,
+			SubjectEntity subject) {
+		Query query = entityManager.createNamedQuery(QUERY_WHERE_SUBJECT);
+		query.setParameter("subject", subject);
+		return query;
 	}
 }

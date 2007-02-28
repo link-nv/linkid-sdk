@@ -7,9 +7,12 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -37,5 +40,13 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		AttributeTypeEntity attributeType = this.entityManager.find(
 				AttributeTypeEntity.class, name);
 		return attributeType;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AttributeTypeEntity> getAttributeTypes() {
+		LOG.debug("get attribute types");
+		Query query = AttributeTypeEntity.createQueryAll(this.entityManager);
+		List<AttributeTypeEntity> attributeTypes = query.getResultList();
+		return attributeTypes;
 	}
 }

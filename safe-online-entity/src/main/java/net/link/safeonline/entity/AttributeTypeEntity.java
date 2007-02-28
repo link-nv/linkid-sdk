@@ -11,14 +11,23 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 
+import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_ALL;
+
 @Entity
 @Table(name = "attribute_type")
+@NamedQueries( { @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM AttributeTypeEntity") })
 public class AttributeTypeEntity implements Serializable {
+
+	public static final String QUERY_WHERE_ALL = "at.all";
 
 	private static final long serialVersionUID = 1L;
 
@@ -88,5 +97,10 @@ public class AttributeTypeEntity implements Serializable {
 
 	public void setUserEditable(boolean userEditable) {
 		this.userEditable = userEditable;
+	}
+
+	public static Query createQueryAll(EntityManager entityManager) {
+		Query query = entityManager.createNamedQuery(QUERY_WHERE_ALL);
+		return query;
 	}
 }

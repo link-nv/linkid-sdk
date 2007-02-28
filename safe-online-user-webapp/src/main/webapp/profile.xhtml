@@ -27,9 +27,26 @@
 					<td><h:inputText id="name" value="#{identity.name}" /></td>
 				</tr>
 			</table>
+
 			<h:commandButton id="save" action="#{identity.save}"
 				value="Save Changes" />
 		</h:form>
+
+		<h:dataTable id="data" var="item" value="#{attributeList}"
+			preserveDataModel="false" styleClass="listingTable"
+			rowClasses="listingTable_Row1,listingTable_Row2">
+
+			<h:column>
+				<f:facet name="header">Name</f:facet>
+				<h:outputText value="#{item.name}" />
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">Value</f:facet>
+				<h:outputText value="#{item.value}" />
+			</h:column>
+		</h:dataTable>
+
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
@@ -38,5 +55,4 @@
 	</ui:define>
 </ui:composition>
 </body>
-
 </html>

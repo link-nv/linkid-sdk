@@ -43,7 +43,8 @@ public interface IdentityService {
 	 * @throws PermissionDeniedException
 	 *             if the user is not allowed to view the attribute.
 	 */
-	String findAttribute(String attributeName) throws PermissionDeniedException;
+	String findAttributeValue(String attributeName)
+			throws PermissionDeniedException;
 
 	/**
 	 * Saves a (new) attribute value for the current user.
@@ -57,4 +58,6 @@ public interface IdentityService {
 	 */
 	void saveAttribute(String attributeName, String attributeValue)
 			throws PermissionDeniedException;
+
+	List<AttributeDO> getAttributes();
 }

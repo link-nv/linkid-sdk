@@ -7,9 +7,13 @@
 
 package net.link.safeonline.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.SubjectEntity;
 
 @Local
 public interface AttributeDAO {
@@ -18,4 +22,9 @@ public interface AttributeDAO {
 
 	void addAttribute(String attributeTypeName, String subjectLogin,
 			String stringValue);
+
+	void addAttribute(AttributeTypeEntity attributeType, String subjectLogin,
+			String stringValue);
+
+	List<AttributeEntity> getAttributes(SubjectEntity subject);
 }
