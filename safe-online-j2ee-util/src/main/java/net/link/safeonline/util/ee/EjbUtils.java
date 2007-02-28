@@ -124,15 +124,15 @@ public class EjbUtils {
 			InitialContext initialContext, String jndiPrefix, Class<Type> type) {
 		LOG.debug("get component names at " + jndiPrefix);
 		HashMap<String, Type> names = new HashMap<String, Type>();
+		NamingEnumeration<NameClassPair> result;
 		try {
 			Context context;
 			try {
 				context = (Context) initialContext.lookup(jndiPrefix);
+				result = initialContext.list(jndiPrefix);
 			} catch (NameNotFoundException e) {
 				return names;
 			}
-			NamingEnumeration<NameClassPair> result = initialContext
-					.list(jndiPrefix);
 
 			while (result.hasMore()) {
 				NameClassPair nameClassPair = result.next();

@@ -18,6 +18,10 @@
 		<mapping class="net.link.safeonline.entity.TrustDomainEntity" />
 		<mapping class="net.link.safeonline.entity.TrustPointEntity" />
 		<mapping
-			class="net.link.safeonline.entity.SubjectIdentifierEntity" /><mapping class="net.link.safeonline.entity.CachedOcspResponseEntity"/>
+			class="net.link.safeonline.entity.SubjectIdentifierEntity" />
+		<mapping
+			class="net.link.safeonline.entity.CachedOcspResponseEntity" />
+		<mapping class="net.link.safeonline.entity.TaskEntity" />
+		<mapping class="net.link.safeonline.entity.SchedulingEntity" />
 	</session-factory>
 </hibernate-configuration>

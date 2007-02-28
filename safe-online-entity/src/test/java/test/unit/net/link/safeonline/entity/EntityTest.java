@@ -9,6 +9,7 @@ package test.unit.net.link.safeonline.entity;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -26,12 +27,14 @@ import net.link.safeonline.entity.AttributePK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CachedOcspResponseEntity;
 import net.link.safeonline.entity.HistoryEntity;
+import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubjectIdentifierPK;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.SubscriptionPK;
+import net.link.safeonline.entity.TaskEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.entity.TrustPointPK;
@@ -63,7 +66,8 @@ public class EntityTest extends TestCase {
 				HistoryEntity.class, ApplicationOwnerEntity.class,
 				AttributeTypeEntity.class, AttributeEntity.class,
 				TrustDomainEntity.class, TrustPointEntity.class,
-				SubjectIdentifierEntity.class, CachedOcspResponseEntity.class);
+				SubjectIdentifierEntity.class, CachedOcspResponseEntity.class,
+				TaskEntity.class, SchedulingEntity.class);
 	}
 
 	@Override
@@ -462,4 +466,63 @@ public class EntityTest extends TestCase {
 		assertEquals(result, 1);
 	}
 
+	public void testTaskScheduling() {
+		// setup
+		SchedulingEntity schedulingEntity = new SchedulingEntity("default",
+				"0 0 3 * * ?", null);
+		TaskEntity taskEntity = new TaskEntity("id", "name", schedulingEntity);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(schedulingEntity);
+		entityManager.persist(taskEntity);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		TaskEntity resultTask = entityManager.find(TaskEntity.class, "id");
+		SchedulingEntity resultScheduling = resultTask.getSchedulingEntity();
+		assertNotNull(resultTask);
+		assertNotNull(resultScheduling);
+		assertEquals(taskEntity, resultTask);
+		assertEquals(schedulingEntity, resultScheduling);
+
+		entityManager = this.entityTestManager.refreshEntityManager();
+		resultScheduling = entityManager
+				.find(SchedulingEntity.class, "default");
+		Collection collection = resultScheduling.getTaskEntities();
+		LOG.debug("schedulings returned: " + collection.size());
+		resultTask = (TaskEntity) resultScheduling.getTaskEntities().toArray()[0];
+		assertNotNull(resultTask);
+		assertNotNull(resultScheduling);
+		assertEquals(taskEntity, resultTask);
+		assertEquals(schedulingEntity, resultScheduling);
+	}
+
+	public void testAddRemoveTaskScheduling() {
+		// setup
+		SchedulingEntity schedulingEntity = new SchedulingEntity("default",
+				"0 0 3 * * ?", null);
+		TaskEntity taskEntity = new TaskEntity("id", "name", schedulingEntity);
+		TaskEntity taskEntity2 = new TaskEntity("id2", "name2",
+				schedulingEntity);
+
+		// operate + verify
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(schedulingEntity);
+		entityManager.persist(taskEntity);
+
+		entityManager.remove(taskEntity2);
+		entityManager.flush();
+
+		entityManager.remove(schedulingEntity);
+		try {
+			entityManager.flush();
+			fail();
+		} catch (Exception e) {
+			// empty
+		}
+		taskEntity.setSchedulingEntity(null);
+		entityManager.flush();
+		entityManager.remove(taskEntity);
+	}
 }

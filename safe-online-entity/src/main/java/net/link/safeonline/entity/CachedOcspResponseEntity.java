@@ -40,7 +40,7 @@ import static net.link.safeonline.entity.CachedOcspResponseEntity.QUERY_DELETE_P
 		@NamedQuery(name = QUERY_DELETE_ALL, query = "DELETE FROM CachedOcspResponseEntity"),
 		@NamedQuery(name = QUERY_DELETE_PER_DOMAIN, query = "DELETE "
 				+ "FROM CachedOcspResponseEntity AS CachedOcspResponse "
-				+ "WHERE CachedOcspResponse.trustDomain = :trustDomain")})
+				+ "WHERE CachedOcspResponse.trustDomain = :trustDomain") })
 public class CachedOcspResponseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -48,7 +48,7 @@ public class CachedOcspResponseEntity implements Serializable {
 	public static final String QUERY_WHERE_KEY = "cor.key";
 
 	public static final String QUERY_DELETE_ALL = "cor.delall";
-	
+
 	public static final String QUERY_DELETE_PER_DOMAIN = "cor.deldomain";
 
 	private static final int KEY_SIZE = 128;
@@ -132,12 +132,13 @@ public class CachedOcspResponseEntity implements Serializable {
 		return query;
 	}
 
-	public static Query createQueryDeletePerDomain(EntityManager entityManager,TrustDomainEntity trustDomain) {
+	public static Query createQueryDeletePerDomain(EntityManager entityManager,
+			TrustDomainEntity trustDomain) {
 		Query query = entityManager.createNamedQuery(QUERY_DELETE_PER_DOMAIN);
 		query.setParameter("trustDomain", trustDomain);
 		return query;
 	}
-	
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("id", this.id).append("key",
