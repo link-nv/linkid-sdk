@@ -60,6 +60,10 @@
 					<groupId>net.lin-k.safe-online</groupId>
 					<artifactId>safe-online-model</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>net.lin-k.safe-online</groupId>
+					<artifactId>safe-online-j2ee-util</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -71,6 +75,10 @@
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
 					<artifactId>safe-online-model</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.lin-k.safe-online</groupId>
+					<artifactId>safe-online-j2ee-util</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
