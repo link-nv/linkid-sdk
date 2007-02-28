@@ -10,10 +10,12 @@ package net.link.safeonline.util.ee;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.rmi.PortableRemoteObject;
@@ -76,11 +78,16 @@ public class EjbUtils {
 	public static <Type> List<Type> getComponents(
 			InitialContext initialContext, String jndiPrefix, Class<Type> type) {
 		LOG.debug("get components at " + jndiPrefix);
+		List<Type> components = new LinkedList<Type>();
 		try {
-			Context context = (Context) initialContext.lookup(jndiPrefix);
+			Context context;
+			try {
+				context = (Context) initialContext.lookup(jndiPrefix);
+			} catch (NameNotFoundException e) {
+				return components;
+			}
 			NamingEnumeration<NameClassPair> result = initialContext
 					.list(jndiPrefix);
-			List<Type> components = new LinkedList<Type>();
 			while (result.hasMore()) {
 				NameClassPair nameClassPair = result.next();
 				String objectName = nameClassPair.getName();
@@ -113,14 +120,20 @@ public class EjbUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <Type> HashMap<String, Type> getComponentNames(
+	public static <Type> Map<String, Type> getComponentNames(
 			InitialContext initialContext, String jndiPrefix, Class<Type> type) {
 		LOG.debug("get component names at " + jndiPrefix);
+		HashMap<String, Type> names = new HashMap<String, Type>();
 		try {
-			Context context = (Context) initialContext.lookup(jndiPrefix);
+			Context context;
+			try {
+				context = (Context) initialContext.lookup(jndiPrefix);
+			} catch (NameNotFoundException e) {
+				return names;
+			}
 			NamingEnumeration<NameClassPair> result = initialContext
 					.list(jndiPrefix);
-			HashMap<String, Type> names = new HashMap<String, Type>();
+
 			while (result.hasMore()) {
 				NameClassPair nameClassPair = result.next();
 				String objectName = nameClassPair.getName();
@@ -141,8 +154,8 @@ public class EjbUtils {
 		}
 	}
 
-	public static <Type> HashMap<String, Type> getComponentNames(
-			String jndiPrefix, Class<Type> type) {
+	public static <Type> Map<String, Type> getComponentNames(String jndiPrefix,
+			Class<Type> type) {
 		InitialContext initialContext;
 		try {
 			initialContext = new InitialContext();
