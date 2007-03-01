@@ -27,6 +27,15 @@ import net.link.safeonline.authentication.exception.ExistingUserException;
 @Remote
 public interface UserRegistrationService {
 
+	/**
+	 * Registers a new user within the system.
+	 * 
+	 * @param login
+	 * @param password
+	 * @param name
+	 * @throws ExistingUserException
+	 * @throws ApplicationNotFoundException
+	 */
 	void registerUser(String login, String password, String name)
 			throws ExistingUserException, ApplicationNotFoundException;
 }

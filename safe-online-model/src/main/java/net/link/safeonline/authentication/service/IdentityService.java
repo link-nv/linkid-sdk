@@ -59,5 +59,11 @@ public interface IdentityService {
 	void saveAttribute(String attributeName, String attributeValue)
 			throws PermissionDeniedException;
 
+	/**
+	 * Gives back a list of attributes for the current user. Only the attributes
+	 * that are user visible will be returned.
+	 * 
+	 * @return
+	 */
 	List<AttributeDO> getAttributes();
 }

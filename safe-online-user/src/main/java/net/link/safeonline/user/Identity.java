@@ -18,7 +18,7 @@ public interface Identity {
 
 	void setName(String name);
 
-	String save();
+	String saveName();
 
 	void destroyCallback();
 
@@ -27,4 +27,8 @@ public interface Identity {
 	String getSurname();
 
 	void attributeListFactory();
+
+	String edit();
+
+	String save();
 }

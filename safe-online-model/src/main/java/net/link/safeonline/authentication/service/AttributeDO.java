@@ -24,9 +24,12 @@ public class AttributeDO implements Serializable {
 
 	private String value;
 
-	public AttributeDO(String name, String value) {
+	private boolean editable;
+
+	public AttributeDO(String name, String value, boolean editable) {
 		this.name = name;
 		this.value = value;
+		this.editable = editable;
 	}
 
 	public String getName() {
@@ -43,5 +46,13 @@ public class AttributeDO implements Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public boolean isEditable() {
+		return this.editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 }

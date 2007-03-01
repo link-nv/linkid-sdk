@@ -29,10 +29,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 
 @Stateful
 @Name("identity")
@@ -53,6 +57,11 @@ public class IdentityBean implements Identity {
 	@SuppressWarnings("unused")
 	@DataModel
 	private List<AttributeDO> attributeList;
+
+	@DataModelSelection
+	@Out(required = false, scope = ScopeType.SESSION)
+	@In(required = false)
+	private AttributeDO selectedAttribute;
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String getLogin() {
@@ -80,8 +89,8 @@ public class IdentityBean implements Identity {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public String save() {
-		LOG.debug("save identity");
+	public String saveName() {
+		LOG.debug("save name");
 		try {
 			this.identityService.saveAttribute(
 					SafeOnlineConstants.NAME_ATTRIBUTE, this.name);
@@ -126,5 +135,25 @@ public class IdentityBean implements Identity {
 	public void attributeListFactory() {
 		LOG.debug("attributeListFactory");
 		this.attributeList = this.identityService.getAttributes();
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String edit() {
+		LOG.debug("edit attribute: " + this.selectedAttribute.getName());
+		return "edit";
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String save() {
+		String name = this.selectedAttribute.getName();
+		LOG.debug("save attribute: " + name);
+		String value = this.selectedAttribute.getValue();
+		try {
+			this.identityService.saveAttribute(name, value);
+		} catch (PermissionDeniedException e) {
+			LOG.error("user not allowed to edit value for attribute: " + name);
+			return null;
+		}
+		return "success";
 	}
 }

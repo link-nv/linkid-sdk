@@ -28,24 +28,28 @@
 				</tr>
 			</table>
 
-			<h:commandButton id="save" action="#{identity.save}"
-				value="Save Changes" />
+			<h:commandButton id="save" action="#{identity.saveName}"
+				value="Save Name" />
+
+			<h:dataTable id="data" var="item" value="#{attributeList}"
+				preserveDataModel="false" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2"
+				rendered="#{0 != attributeList.rowCount}">
+
+				<h:column>
+					<f:facet name="header">Name</f:facet>
+					<h:outputText value="#{item.name}" rendered="#{!item.editable}" />
+					<h:commandLink value="#{item.name}" action="#{identity.edit}"
+						rendered="#{item.editable}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">Value</f:facet>
+					<h:outputText value="#{item.value}" />
+				</h:column>
+			</h:dataTable>
+
 		</h:form>
-
-		<h:dataTable id="data" var="item" value="#{attributeList}"
-			preserveDataModel="false" styleClass="listingTable"
-			rowClasses="listingTable_Row1,listingTable_Row2">
-
-			<h:column>
-				<f:facet name="header">Name</f:facet>
-				<h:outputText value="#{item.name}" />
-			</h:column>
-
-			<h:column>
-				<f:facet name="header">Value</f:facet>
-				<h:outputText value="#{item.value}" />
-			</h:column>
-		</h:dataTable>
 
 	</ui:define>
 	<ui:define name="sidebar">

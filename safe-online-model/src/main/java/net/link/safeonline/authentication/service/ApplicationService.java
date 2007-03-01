@@ -69,12 +69,36 @@ public interface ApplicationService {
 	void removeApplication(String name) throws ApplicationNotFoundException,
 			PermissionDeniedException;
 
+	/**
+	 * Sets the application description.
+	 * 
+	 * @param name
+	 *            the name of the application.
+	 * @param description
+	 * @throws ApplicationNotFoundException
+	 */
 	void setApplicationDescription(String name, String description)
 			throws ApplicationNotFoundException;
 
+	/**
+	 * Registers an application owner.
+	 * 
+	 * @param name
+	 *            the name of the application.
+	 * @param login
+	 *            the admin subject login.
+	 * @throws SubjectNotFoundException
+	 * @throws ApplicationNotFoundException
+	 * @throws ExistingApplicationOwnerException
+	 */
 	void registerApplicationOwner(String name, String login)
 			throws SubjectNotFoundException, ApplicationNotFoundException,
 			ExistingApplicationOwnerException;
 
+	/**
+	 * Gives back a list of all application owners within the system.
+	 * 
+	 * @return
+	 */
 	List<ApplicationOwnerEntity> getApplicationOwners();
 }

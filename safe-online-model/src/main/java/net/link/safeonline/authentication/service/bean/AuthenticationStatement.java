@@ -19,6 +19,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.ASN1Sequence;
 
+/**
+ * Authentication Statement object class. Holds the structure and parser for the
+ * client-side generated authentication statement. Can also verify the signature
+ * on the statement.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class AuthenticationStatement {
 
 	private static final Log LOG = LogFactory
@@ -43,7 +51,13 @@ public class AuthenticationStatement {
 				sequence);
 	}
 
-	// TODO: factor out common code with identity statement
+	/**
+	 * Verifies the integrity of the statement.
+	 * 
+	 * TODO: factor out common code with identity statement
+	 * 
+	 * @return
+	 */
 	public X509Certificate verifyIntegrity() {
 		X509Certificate authCert;
 		try {

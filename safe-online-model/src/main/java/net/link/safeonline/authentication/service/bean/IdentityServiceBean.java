@@ -32,6 +32,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+/**
+ * Implementation of identity service.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class IdentityServiceBean implements IdentityService {
@@ -121,7 +127,8 @@ public class IdentityServiceBean implements IdentityService {
 			}
 			String name = attributeType.getName();
 			String value = attribute.getStringValue();
-			AttributeDO attributeView = new AttributeDO(name, value);
+			boolean editable = attributeType.isUserEditable();
+			AttributeDO attributeView = new AttributeDO(name, value, editable);
 			attributesView.add(attributeView);
 		}
 		return attributesView;

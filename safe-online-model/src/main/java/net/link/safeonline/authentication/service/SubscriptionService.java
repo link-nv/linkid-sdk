@@ -45,6 +45,13 @@ public interface SubscriptionService {
 			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			PermissionDeniedException;
 
+	/**
+	 * Gives back the number of subscriptions for a given application.
+	 * 
+	 * @param applicationName
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 */
 	long getNumberOfSubscriptions(String applicationName)
 			throws ApplicationNotFoundException;
 }

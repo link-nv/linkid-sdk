@@ -12,6 +12,13 @@ import javax.ejb.Remote;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 
+/**
+ * Attribute Service. To be used by applications to retrieve attributes of their
+ * users.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Local
 @Remote
 public interface AttributeService {

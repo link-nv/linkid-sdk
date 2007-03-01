@@ -35,6 +35,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
+/**
+ * Implementation of the credential service interface.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class CredentialServiceBean implements CredentialService {
