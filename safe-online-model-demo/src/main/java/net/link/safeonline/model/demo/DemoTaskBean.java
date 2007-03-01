@@ -7,6 +7,8 @@
 
 package net.link.safeonline.model.demo;
 
+import java.util.Date;
+
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
@@ -28,7 +30,7 @@ public class DemoTaskBean implements Task {
 	}
 
 	public void perform() {
-		LOG.debug("Demo task perform");
+		Date now = new Date();
+		LOG.debug("Demo task perform: " + now);
 	}
-
 }

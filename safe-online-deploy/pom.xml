@@ -23,14 +23,14 @@
 				<configuration>
 					<version>1.4</version>
 					<modules>
-						<javaModule>
+						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-common</artifactId>
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
-						<javaModule>
+						</jarModule>
+						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>
 								safe-online-demo-keystore
@@ -38,8 +38,8 @@
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
-						<javaModule>
+						</jarModule>
+						<jarModule>
 							<groupId>
 								org.apache.myfaces.tomahawk
 							</groupId>
@@ -47,42 +47,42 @@
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
-						<javaModule>
+						</jarModule>
+						<jarModule>
 							<groupId>bouncycastle</groupId>
 							<artifactId>bcprov-jdk15</artifactId>
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
-						<javaModule>
+						</jarModule>
+						<jarModule>
 							<groupId>javax.el</groupId>
 							<artifactId>el-api</artifactId>
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
-						<javaModule>
+						</jarModule>
+						<jarModule>
 							<groupId>el-impl</groupId>
 							<artifactId>el-ri</artifactId>
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
-						<javaModule>
+						</jarModule>
+						<jarModule>
 							<groupId>commons-io</groupId>
 							<artifactId>commons-io</artifactId>
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
-						<javaModule>
+						</jarModule>
+						<jarModule>
 							<groupId>commons-codec</groupId>
 							<artifactId>commons-codec</artifactId>
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
+						</jarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-entity</artifactId>
@@ -114,16 +114,20 @@
 							</artifactId>
 							<contextRoot>/safe-online-ws</contextRoot>
 						</webModule>
-						<javaModule>
+						<jarModule>
 							<groupId>org.jboss.seam</groupId>
 							<artifactId>jboss-seam</artifactId>
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
+						</jarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-user</artifactId>
+						</ejbModule>
+						<ejbModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>safe-online-auth</artifactId>
 						</ejbModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
@@ -142,7 +146,7 @@
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-service</artifactId>
 						</sarModule>
-						<javaModule>
+						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>
 								safe-online-j2ee-util
@@ -150,7 +154,7 @@
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
+						</jarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-oper</artifactId>
@@ -187,7 +191,7 @@
 								safe-online-owner-service
 							</artifactId>
 						</sarModule>
-						<javaModule>
+						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>
 								safe-online-ctrl-base
@@ -195,7 +199,7 @@
 							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-						</javaModule>
+						</jarModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>
@@ -291,6 +295,13 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-user</artifactId>
+			<type>ejb</type>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-auth</artifactId>
 			<type>ejb</type>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>

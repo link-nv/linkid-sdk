@@ -8,6 +8,68 @@
 		SafeOnline Authentication Web Application
 	</display-name>
 
+	<listener>
+		<listener-class>
+			org.jboss.seam.servlet.SeamListener
+		</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>
+			org.apache.myfaces.webapp.StartupServletContextListener
+		</listener-class>
+	</listener>
+
+	<context-param>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>client</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+		<param-value>.xhtml</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>facelets.DEVELOPMENT</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<filter>
+		<filter-name>Seam Exception Filter</filter-name>
+		<filter-class>
+			org.jboss.seam.servlet.SeamExceptionFilter
+		</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>Seam Redirect Filter</filter-name>
+		<filter-class>
+			org.jboss.seam.servlet.SeamRedirectFilter
+		</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>Seam Exception Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>Seam Redirect Filter</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.seam</url-pattern>
+	</servlet-mapping>
+
 	<servlet>
 		<servlet-name>AuthenticationServlet</servlet-name>
 		<servlet-class>
@@ -20,9 +82,20 @@
 		<url-pattern>/authentication/*</url-pattern>
 	</servlet-mapping>
 
-	<error-page>
-		<exception-type>javax.ejb.EJBException</exception-type>
-		<location>/error.jsp</location>
-	</error-page>
+	<servlet>
+		<servlet-name>LogonRedirectServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.auth.servlet.LogonRedirectServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>LogonRedirectServlet</servlet-name>
+		<url-pattern>/logon-redirect</url-pattern>
+	</servlet-mapping>
+
+	<session-config>
+		<session-timeout>5</session-timeout>
+	</session-config>
 
 </web-app>

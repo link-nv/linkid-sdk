@@ -32,7 +32,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 /**
  * Authentication Servlet that accepts authentication statements from the
  * client-side browser applet.
@@ -89,11 +88,12 @@ public class AuthenticationServlet extends HttpServlet {
 					authenticationStatementData);
 			HttpSession session = request.getSession();
 			response.setStatus(HttpServletResponse.SC_OK);
-			session.setAttribute("user", userId);
 			/*
-			 * The session attribute 'user' is used to pass the authenticated
-			 * subject to the web application pages.
+			 * Next session attribute is used to communicate the authentication
+			 * event to the redirect servlet.
 			 */
+			session.setAttribute(LogonRedirectServlet.USER_SESSION_ATTRIBUTE,
+					userId);
 		} catch (TrustDomainNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			/*

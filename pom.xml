@@ -216,6 +216,7 @@
 		<module>safe-online-attrib-ws-impl</module>
 		<module>safe-online-demo-keystore</module>
 		<module>safe-online-model-demo</module>
+		<module>safe-online-auth</module>
 	</modules>
 	<repositories>
 		<repository>

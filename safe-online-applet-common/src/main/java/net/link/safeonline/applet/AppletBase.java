@@ -46,6 +46,8 @@ import org.apache.commons.logging.Log;
 /**
  * The base class for both the identity and the authentication applet.
  * 
+ * TODO: refactor and apply MVC pattern.
+ * 
  * @author fcorneli
  * 
  */
@@ -211,16 +213,14 @@ public abstract class AppletBase extends JApplet implements Runnable {
 				return;
 			}
 		} catch (IOException e) {
-			outputDetailMessage("Error occurred while sending the identity statement");
+			outputDetailMessage("Error occurred while sending the statement");
 			outputDetailMessage("IO error: " + e.getMessage());
-			outputInfoMessage(InfoLevel.ERROR,
-					"Error sending the identity statement.");
+			outputInfoMessage(InfoLevel.ERROR, "Error sending the statement.");
 			return;
 		} catch (Exception e) {
-			outputDetailMessage("Error occurred while sending the identity statement");
+			outputDetailMessage("Error occurred while sending the statement");
 			outputDetailMessage("Error: " + e.getMessage());
-			outputInfoMessage(InfoLevel.ERROR,
-					"Error sending the identity statement.");
+			outputInfoMessage(InfoLevel.ERROR, "Error sending the statement.");
 			return;
 		}
 		outputInfoMessage(InfoLevel.NORMAL, "Done.");

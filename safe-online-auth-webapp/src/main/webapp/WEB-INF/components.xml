@@ -1,0 +1,16 @@
+<components>
+
+	<component name="org.jboss.seam.core.init">
+		<property name="debug">true</property>
+		<property name="myFacesLifecycleBug">true</property>
+		<property name="jndiPattern">
+			SafeOnline/auth/#{ejbName}/local
+		</property>
+	</component>
+
+	<!-- 120 second conversation timeout -->
+	<component name="org.jboss.seam.core.manager">
+		<property name="conversationTimeout">120000</property>
+	</component>
+
+</components>
