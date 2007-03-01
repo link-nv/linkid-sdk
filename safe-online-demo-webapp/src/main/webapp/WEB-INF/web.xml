@@ -14,7 +14,7 @@
 	<filter>
 		<filter-name>Authentication Filter</filter-name>
 		<filter-class>
-			net.link.safeonline.demo.filter.AuthenticationFilter
+			net.link.safeonline.sdk.auth.filter.AuthenticationFilter
 		</filter-class>
 		<init-param>
 			<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
@@ -30,18 +30,6 @@
 		<filter-name>Authentication Filter</filter-name>
 		<url-pattern>/secure2/*</url-pattern>
 	</filter-mapping>
-
-	<servlet>
-		<servlet-name>CallbackServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.demo.servlet.CallbackServlet
-		</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>CallbackServlet</servlet-name>
-		<url-pattern>/callback/*</url-pattern>
-	</servlet-mapping>
 
 	<security-constraint>
 		<display-name>SecurityConstraint</display-name>
