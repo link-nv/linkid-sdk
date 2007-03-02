@@ -28,7 +28,8 @@ import org.apache.commons.logging.LogFactory;
  * SafeOnline Authentication Filter. This filter can be used by servlet
  * container based web application for authentication via SafeOnline. The
  * configuration of this filter should be managed via the web.xml deployment
- * descriptor.
+ * descriptor. This filter both initiates the authentication request and
+ * processes the authentication response.
  * 
  * @author fcorneli
  * 

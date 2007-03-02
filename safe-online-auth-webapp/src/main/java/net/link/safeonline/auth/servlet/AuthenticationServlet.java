@@ -134,6 +134,5 @@ public class AuthenticationServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			writer.println("internal error");
 		}
-
 	}
 }

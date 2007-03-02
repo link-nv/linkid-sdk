@@ -44,11 +44,8 @@ public class TrustDomainBean implements TrustDomain {
 
 	private static final Log LOG = LogFactory.getLog(TrustDomainBean.class);
 
-	private String name;
-
-	private boolean performOcspCheck;
-
-	private long ocspCacheTimeOutMillis;
+	@In(required = false)
+	private TrustDomainEntity newTrustDomain;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -74,10 +71,18 @@ public class TrustDomainBean implements TrustDomain {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String add() {
-		LOG.debug("add trust domain: " + this.name);
+		LOG.debug("add trust domain");
 		try {
-			this.pkiService.addTrustDomain(this.name, this.performOcspCheck,
-					this.ocspCacheTimeOutMillis);
+			/*
+			 * this.pkiService.addTrustDomain(this.name, this.performOcspCheck,
+			 * this.ocspCacheTimeOutMillis);
+			 */
+			String name = this.newTrustDomain.getName();
+			boolean performOcspCheck = this.newTrustDomain.isPerformOcspCheck();
+			long ocspCacheTimeOutMillis = this.newTrustDomain
+					.getOcspCacheTimeOutMillis();
+			this.pkiService.addTrustDomain(name, performOcspCheck,
+					ocspCacheTimeOutMillis);
 		} catch (ExistingTrustDomainException e) {
 			String msg = "existing trust domain";
 			LOG.debug(msg);
@@ -91,36 +96,6 @@ public class TrustDomainBean implements TrustDomain {
 	@Destroy
 	public void destroyCallback() {
 		// empty
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getName() {
-		return this.name;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public boolean isPerformOcspCheck() {
-		return this.performOcspCheck;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setPerformOcspCheck(boolean performOcspCheck) {
-		this.performOcspCheck = performOcspCheck;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public long getOcspCacheTimeOutMillis() {
-		return this.ocspCacheTimeOutMillis;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis) {
-		this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -160,4 +135,8 @@ public class TrustDomainBean implements TrustDomain {
 		return "clear-cache";
 	}
 
+	@Factory
+	public TrustDomainEntity getNewTrustDomain() {
+		return new TrustDomainEntity();
+	}
 }

@@ -25,7 +25,8 @@
 				<tr>
 					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
 					<td><s:decorate>
-						<h:inputText id="name" value="#{trustDomain.name}" required="true" />
+						<h:inputText id="name" value="#{newTrustDomain.name}"
+							required="true" />
 					</s:decorate>*<h:message for="name" styleClass="error" /></td>
 				</tr>
 			</table>
@@ -34,12 +35,12 @@
 				<h:panelGroup>
 					<h:outputText value="Perform OCSP Check" />
 					<h:selectBooleanCheckbox id="performOcspCheck"
-						value="#{trustDomain.performOcspCheck}" />
+						value="#{newTrustDomain.performOcspCheck}" />
 				</h:panelGroup>
 				<h:panelGroup>
 					<h:outputText value="OCSP cache time-out (ms)" />
 					<h:inputText id="ocspCacheTimeOutMillis"
-						value="#{trustDomain.ocspCacheTimeOutMillis}" required="true" />
+						value="#{newTrustDomain.ocspCacheTimeOutMillis}" required="true" />
 				</h:panelGroup>
 			</h:panelGrid>
 

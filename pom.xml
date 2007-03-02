@@ -891,8 +891,8 @@
 		<jsr173_api.version>1.0</jsr173_api.version>
 		<commons-lang.version>2.3</commons-lang.version>
 		<jstl.version>1.1.2</jstl.version>
-		<jboss-seam.version>1.1.6.GA</jboss-seam.version>
-		<jboss-seam-ui.version>1.1.6.GA</jboss-seam-ui.version>
+		<jboss-seam.version>1.2.0.PATCH1</jboss-seam.version>
+		<jboss-seam-ui.version>1.2.0.PATCH1</jboss-seam-ui.version>
 		<standard.version>1.1.2</standard.version>
 		<jsf-facelets.version>1.1.12</jsf-facelets.version>
 		<el-api.version>1.0</el-api.version>

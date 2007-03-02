@@ -39,7 +39,7 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 
 @Stateful
-@Name("identity")
+@Name("identityBean")
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "IdentityBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 public class IdentityBean implements Identity {

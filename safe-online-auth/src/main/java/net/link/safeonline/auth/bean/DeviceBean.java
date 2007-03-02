@@ -56,6 +56,9 @@ public class DeviceBean implements Device {
 			this.facesMessages.add(msg);
 			return null;
 		}
+		/*
+		 * Later on we could make next list dynamic somehow.
+		 */
 		if ("password".equals(this.selection)) {
 			return "/username-password.xhtml";
 		}

@@ -9,6 +9,8 @@ package net.link.safeonline.oper;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.entity.TrustDomainEntity;
+
 @Local
 public interface TrustDomain {
 
@@ -18,24 +20,13 @@ public interface TrustDomain {
 
 	void destroyCallback();
 
-	String getName();
-
-	void setName(String name);
-
 	String add();
 
 	String removeTrustDomain();
 
-	boolean isPerformOcspCheck();
-
-	void setPerformOcspCheck(boolean performOcspCheck);
-
-	long getOcspCacheTimeOutMillis();
-
-	void setOcspCacheTimeOutMillis(long ocspCachetimeOutMillis);
-	
 	String clearOcspCache();
-	
+
 	String clearOcspCachePerTrustDomain();
 
+	TrustDomainEntity getNewTrustDomain();
 }
