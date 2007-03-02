@@ -59,11 +59,23 @@ public class TaskSchedulerBean implements TaskScheduler {
 		String schedulingName = (String) timer.getInfo();
 		SchedulingEntity scheduling = this.schedulingDAO
 				.findSchedulingByName(schedulingName);
+
+		// the scheduling does not exist anymore
+		// we just return without setting this timer again
 		if (scheduling == null) {
-			LOG.debug("Could not find scheduling for: " + schedulingName);
+			LOG.debug("Could not find scheduling for timer: " + schedulingName);
 			return;
 		}
-		List<TaskEntity> taskEntities = this.taskDAO.listTaskEntities();
+
+		// the scheduling apparantly has another timer still running
+		// we just return without setting this timer again
+		if (!scheduling.getTimerHandle().equals(timer.getHandle())) {
+			LOG.debug("Ignoring duplicate timer for scheduling: "
+					+ scheduling.getName());
+			return;
+		}
+
+		Collection<TaskEntity> taskEntities = scheduling.getTaskEntities();
 
 		LOG.debug("Scheduling tasks in " + scheduling.getName());
 		// perform the tasks

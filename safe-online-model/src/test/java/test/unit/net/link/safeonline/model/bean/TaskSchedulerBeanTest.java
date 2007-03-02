@@ -25,30 +25,36 @@ import static org.easymock.EasyMock.anyObject;
 public class TaskSchedulerBeanTest extends TestCase {
 
 	private TaskSchedulerBean testedInstance;
-	
+
 	private TimerService mockTimerService;
+
 	private Timer mockTimer;
-	
+
 	@Override
 	public void setUp() throws Exception {
 		this.mockTimerService = createMock(TimerService.class);
 		this.mockTimer = createMock(Timer.class);
 		this.testedInstance = new TaskSchedulerBean();
 		EJBTestUtils.inject(this.testedInstance, this.mockTimerService);
-		
+
 	}
-	
+
 	public void testSetTimer() {
 		// setup
-		SchedulingEntity scheduling = new SchedulingEntity("test","0 0/5 * * * ?",null);
-		
-		expect(this.mockTimerService.createTimer((Date) anyObject(), (String) anyObject())).andReturn(this.mockTimer);
+		SchedulingEntity scheduling = new SchedulingEntity("test",
+				"0 0/5 * * * ?", null);
+
+		expect(
+				this.mockTimerService.createTimer((Date) anyObject(),
+						(String) anyObject())).andReturn(this.mockTimer);
 		expect(this.mockTimer.getHandle()).andReturn(null);
-		expect(this.mockTimerService.createTimer((Date) anyObject(), (String) anyObject())).andReturn(this.mockTimer);
+		expect(
+				this.mockTimerService.createTimer((Date) anyObject(),
+						(String) anyObject())).andReturn(this.mockTimer);
 		expect(this.mockTimer.getHandle()).andReturn(null);
 		replay(this.mockTimerService);
 		replay(this.mockTimer);
-		
+
 		// operate
 		this.testedInstance.setTimer(scheduling);
 		Date firstDate = scheduling.getFireDate();
@@ -56,5 +62,5 @@ public class TaskSchedulerBeanTest extends TestCase {
 		Date nextDate = scheduling.getFireDate();
 		assertFalse(firstDate.equals(nextDate));
 	}
-	
+
 }
