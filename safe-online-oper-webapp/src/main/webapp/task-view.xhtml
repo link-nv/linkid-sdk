@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Operator</ui:define>
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="tasks" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h1>Task: #{selectedTask.name}</h1>
+
+		<h:form>
+			<table>
+				<tr>
+					<th>Name:</th>
+					<td>#{selectedTask.name}</td>
+				</tr>
+				<tr>
+					<th>JNDI Name:</th>
+					<td>#{selectedTask.jndiName}</td>
+				</tr>
+				<tr>
+					<th>Scheduling:</th>
+					<td><h:commandLink value="#{selectedTask.scheduling.name}"
+						action="#{scheduling.viewSchedulingForTask}" /></td>
+				</tr>
+			</table>
+
+
+			<h:commandButton action="back" id="back" value="Back"
+				immediate="true" />
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{operLogin}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

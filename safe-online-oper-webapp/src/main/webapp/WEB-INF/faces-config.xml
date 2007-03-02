@@ -178,4 +178,52 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<navigation-rule>
+		<from-view-id>/tasks.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>taskview</from-outcome>
+			<to-view-id>/task-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>schedulingview</from-outcome>
+			<to-view-id>/scheduling-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>schedulings</from-action>
+			<to-view-id>/schedulings.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/task-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/tasks.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>schedulingview</from-outcome>
+			<to-view-id>/scheduling-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/schedulings.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/tasks.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>schedulingview</from-outcome>
+			<to-view-id>/scheduling-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/scheduling-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/schedulings.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>taskview</from-outcome>
+			<to-view-id>/task-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 </faces-config>

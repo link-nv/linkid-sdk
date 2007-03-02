@@ -60,7 +60,7 @@ public class SchedulingEntity implements Serializable {
 
 	private Date fireDate;
 
-	private Collection<TaskEntity> taskEntities = new ArrayList<TaskEntity>();
+	private Collection<TaskEntity> tasks = new ArrayList<TaskEntity>();
 
 	public SchedulingEntity() {
 		// required
@@ -90,13 +90,13 @@ public class SchedulingEntity implements Serializable {
 		this.timerHandle = timerHandle;
 	}
 
-	@OneToMany(mappedBy = "schedulingEntity")
-	public Collection<TaskEntity> getTaskEntities() {
-		return this.taskEntities;
+	@OneToMany(mappedBy = "scheduling")
+	public Collection<TaskEntity> getTasks() {
+		return this.tasks;
 	}
 
-	public void setTaskEntities(Collection<TaskEntity> taskEntities) {
-		this.taskEntities = taskEntities;
+	public void setTasks(Collection<TaskEntity> taskEntities) {
+		this.tasks = taskEntities;
 	}
 
 	@Id
@@ -117,10 +117,9 @@ public class SchedulingEntity implements Serializable {
 	}
 
 	public void addTaskEntity(TaskEntity taskEntity) {
-		ArrayList<TaskEntity> list = (ArrayList<TaskEntity>) this
-				.getTaskEntities();
+		ArrayList<TaskEntity> list = (ArrayList<TaskEntity>) this.getTasks();
 		list.add(taskEntity);
-		this.setTaskEntities(list);
+		this.setTasks(list);
 	}
 
 	public static Query createQueryWhereName(EntityManager entityManager,

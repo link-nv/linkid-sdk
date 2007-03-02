@@ -75,7 +75,7 @@ public class TaskSchedulerBean implements TaskScheduler {
 			return;
 		}
 
-		Collection<TaskEntity> taskEntities = scheduling.getTaskEntities();
+		Collection<TaskEntity> taskEntities = scheduling.getTasks();
 
 		LOG.debug("Scheduling tasks in " + scheduling.getName());
 		// perform the tasks
@@ -112,7 +112,7 @@ public class TaskSchedulerBean implements TaskScheduler {
 				.listSchedulings();
 		for (SchedulingEntity scheduling : schedulings) {
 			// check if the task still exists
-			Collection<TaskEntity> tasks = scheduling.getTaskEntities();
+			Collection<TaskEntity> tasks = scheduling.getTasks();
 			for (TaskEntity taskEntity : tasks) {
 				try {
 					EjbUtils.getEJB(taskEntity.getJndiName(), Task.class);

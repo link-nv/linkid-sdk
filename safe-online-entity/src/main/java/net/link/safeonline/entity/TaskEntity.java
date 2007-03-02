@@ -45,7 +45,7 @@ public class TaskEntity implements Serializable {
 
 	private String name;
 
-	private SchedulingEntity schedulingEntity;
+	private SchedulingEntity scheduling;
 
 	public TaskEntity() {
 		// required
@@ -55,7 +55,7 @@ public class TaskEntity implements Serializable {
 			SchedulingEntity schedulingEntity) {
 		this.name = name;
 		this.jndiName = jndiName;
-		this.schedulingEntity = schedulingEntity;
+		this.scheduling = schedulingEntity;
 	}
 
 	public String getName() {
@@ -76,12 +76,12 @@ public class TaskEntity implements Serializable {
 	}
 
 	@ManyToOne
-	public SchedulingEntity getSchedulingEntity() {
-		return this.schedulingEntity;
+	public SchedulingEntity getScheduling() {
+		return this.scheduling;
 	}
 
-	public void setSchedulingEntity(SchedulingEntity schedulingEntity) {
-		this.schedulingEntity = schedulingEntity;
+	public void setScheduling(SchedulingEntity schedulingEntity) {
+		this.scheduling = schedulingEntity;
 	}
 
 	public static Query createQueryWhereJndiName(EntityManager entityManager,
@@ -100,7 +100,7 @@ public class TaskEntity implements Serializable {
 	public String toString() {
 		return new ToStringBuilder(this).append("jndiName", this.jndiName)
 				.append("name", this.name).append("schedulingEntity",
-						this.schedulingEntity.getName()).toString();
+						this.scheduling.getName()).toString();
 	}
 
 	@Override

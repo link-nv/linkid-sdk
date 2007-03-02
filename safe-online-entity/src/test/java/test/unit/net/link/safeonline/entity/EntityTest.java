@@ -480,7 +480,7 @@ public class EntityTest extends TestCase {
 		// verify
 		entityManager = this.entityTestManager.refreshEntityManager();
 		TaskEntity resultTask = entityManager.find(TaskEntity.class, "id");
-		SchedulingEntity resultScheduling = resultTask.getSchedulingEntity();
+		SchedulingEntity resultScheduling = resultTask.getScheduling();
 		assertNotNull(resultTask);
 		assertNotNull(resultScheduling);
 		assertEquals(taskEntity, resultTask);
@@ -489,9 +489,9 @@ public class EntityTest extends TestCase {
 		entityManager = this.entityTestManager.refreshEntityManager();
 		resultScheduling = entityManager
 				.find(SchedulingEntity.class, "default");
-		Collection collection = resultScheduling.getTaskEntities();
+		Collection collection = resultScheduling.getTasks();
 		LOG.debug("schedulings returned: " + collection.size());
-		resultTask = (TaskEntity) resultScheduling.getTaskEntities().toArray()[0];
+		resultTask = (TaskEntity) resultScheduling.getTasks().toArray()[0];
 		assertNotNull(resultTask);
 		assertNotNull(resultScheduling);
 		assertEquals(taskEntity, resultTask);
@@ -521,7 +521,7 @@ public class EntityTest extends TestCase {
 		} catch (Exception e) {
 			// empty
 		}
-		taskEntity.setSchedulingEntity(null);
+		taskEntity.setScheduling(null);
 		entityManager.flush();
 		entityManager.remove(taskEntity);
 	}
