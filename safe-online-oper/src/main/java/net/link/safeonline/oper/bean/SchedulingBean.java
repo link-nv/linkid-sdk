@@ -90,8 +90,8 @@ public class SchedulingBean implements Scheduling {
 		// empty
 	}
 
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String view() {
 		return "schedulingview";
 	}
-
 }

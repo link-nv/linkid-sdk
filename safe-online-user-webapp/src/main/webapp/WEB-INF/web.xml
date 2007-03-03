@@ -19,6 +19,11 @@
 	</listener>
 
 	<context-param>
+		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
+		<param-value>${auth.webapp.location}</param-value>
+	</context-param>
+
+	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>
 	</context-param>
@@ -32,6 +37,13 @@
 		<param-name>facelets.DEVELOPMENT</param-name>
 		<param-value>true</param-value>
 	</context-param>
+
+	<filter>
+		<filter-name>SafeOnlineLoginFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.sdk.auth.filter.LoginFilter
+		</filter-class>
+	</filter>
 
 	<filter>
 		<filter-name>Seam Exception Filter</filter-name>
@@ -60,10 +72,6 @@
 			<param-name>SessionUsernameAttributeName</param-name>
 			<param-value>username</param-value>
 		</init-param>
-		<init-param>
-			<param-name>SessionPasswordAttributeName</param-name>
-			<param-value>password</param-value>
-		</init-param>
 	</filter>
 
 	<filter-mapping>
@@ -84,6 +92,11 @@
 	<filter-mapping>
 		<filter-name>Login Filter</filter-name>
 		<servlet-name>IdentityServlet</servlet-name>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>SafeOnlineLoginFilter</filter-name>
+		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
 	<servlet>

@@ -28,10 +28,11 @@ import org.apache.commons.logging.LogFactory;
  * SafeOnline Authentication Filter. This filter can be used by servlet
  * container based web application for authentication via SafeOnline. The
  * configuration of this filter should be managed via the web.xml deployment
- * descriptor. This filter both initiates the authentication request and
- * processes the authentication response.
+ * descriptor. This filter initiates the authentication request. The handling of
+ * the authentication response is done via the LoginFilter.
  * 
  * @author fcorneli
+ * @see LoginFilter
  * 
  */
 public class AuthenticationFilter implements Filter {
@@ -73,12 +74,6 @@ public class AuthenticationFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpSession session = httpRequest.getSession();
 
-		String paramUsername = httpRequest.getParameter("username");
-		if (null != paramUsername) {
-			LOG.debug("doing a login via the SafeOnline username token");
-			session.setAttribute("username", paramUsername);
-		}
-
 		String username = (String) session.getAttribute("username");
 		if (null == username) {
 			outputRedirectPage(httpRequest, response);
@@ -90,13 +85,13 @@ public class AuthenticationFilter implements Filter {
 	private void outputRedirectPage(HttpServletRequest request,
 			ServletResponse response) throws IOException {
 		LOG.debug("redirecting to: " + this.safeOnlineAuthenticationServiceUrl);
+		String targetUrl = request.getRequestURL().toString();
+		LOG.debug("target url: " + targetUrl);
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String redirectUrl = this.safeOnlineAuthenticationServiceUrl
 				+ "?application="
-				+ URLEncoder.encode(this.applicationName, "UTF-8")
-				+ "&target="
-				+ URLEncoder
-						.encode(request.getRequestURL().toString(), "UTF-8");
+				+ URLEncoder.encode(this.applicationName, "UTF-8") + "&target="
+				+ URLEncoder.encode(targetUrl, "UTF-8");
 		httpServletResponse.sendRedirect(redirectUrl);
 	}
 

@@ -12,7 +12,7 @@
 	</context-param>
 
 	<filter>
-		<filter-name>Authentication Filter</filter-name>
+		<filter-name>AuthenticationFilter</filter-name>
 		<filter-class>
 			net.link.safeonline.sdk.auth.filter.AuthenticationFilter
 		</filter-class>
@@ -26,8 +26,20 @@
 		</init-param>
 	</filter>
 
+	<filter>
+		<filter-name>LoginFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.sdk.auth.filter.LoginFilter
+		</filter-class>
+	</filter>
+
 	<filter-mapping>
-		<filter-name>Authentication Filter</filter-name>
+		<filter-name>LoginFilter</filter-name>
+		<url-pattern>/secure2/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
 		<url-pattern>/secure2/*</url-pattern>
 	</filter-mapping>
 

@@ -1,20 +1,25 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.ctrl.bean;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.EJB;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
-import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.ctrl.LoginBase;
 
 import org.apache.commons.logging.Log;
@@ -32,20 +37,12 @@ public class LoginBaseBean implements LoginBase {
 	@In
 	Context sessionContext;
 
-	private String username;
-
-	private String password;
-
-	@EJB
-	private AuthenticationService authenticationService;
-
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	private String applicationName;
+	private final String applicationName;
 
 	public LoginBaseBean(String applicationName) {
-		LOG.debug("constructor: " + this);
 		this.applicationName = applicationName;
 	}
 
@@ -69,41 +66,45 @@ public class LoginBaseBean implements LoginBase {
 		LOG.debug("pre passivate: " + this);
 	}
 
-	public String getPassword() {
-		LOG.debug("get password");
-		return "";
-	}
-
-	public String getUsername() {
-		LOG.debug("get username");
-		return this.username;
-	}
-
 	public String login() {
-		LOG.debug("login with username: " + this.username + " into "
-				+ this.applicationName);
-		boolean authenticated = this.authenticationService.authenticate(
-				this.applicationName, this.username, new String(this.password));
-		if (!authenticated) {
-			this.facesMessages.add("login failed");
-			Seam.invalidateSession();
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		String safeOnlineAuthenticationServiceUrl = externalContext
+				.getInitParameter("SafeOnlineAuthenticationServiceUrl");
+		LOG.debug("redirecting to: " + safeOnlineAuthenticationServiceUrl);
+		HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext
+				.getRequest();
+		String requestUrl = httpServletRequest.getRequestURL().toString();
+		String targetUrl = getOverviewTargetUrl(requestUrl);
+		LOG.debug("target url: " + targetUrl);
+		String redirectUrl;
+		try {
+			redirectUrl = safeOnlineAuthenticationServiceUrl + "?application="
+					+ URLEncoder.encode(this.applicationName, "UTF-8")
+					+ "&target=" + URLEncoder.encode(targetUrl, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			String msg = "UnsupportedEncoding: " + e.getMessage();
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
 			return null;
 		}
-
-		this.sessionContext.set("username", this.username);
-		this.sessionContext.set("password", this.password);
+		try {
+			externalContext.redirect(redirectUrl);
+		} catch (IOException e) {
+			String msg = "IO error: " + e.getMessage();
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		}
 
 		return "login-success";
 	}
 
-	public void setPassword(String password) {
-		LOG.debug("set password");
-		this.password = password;
-	}
-
-	public void setUsername(String username) {
-		LOG.debug("set username");
-		this.username = username;
+	public String getOverviewTargetUrl(String requestUrl) {
+		int lastSlashIdx = requestUrl.lastIndexOf("/");
+		String prefix = requestUrl.substring(0, lastSlashIdx);
+		String targetUrl = prefix + "/" + "overview.seam";
+		return targetUrl;
 	}
 
 	public String logout() {
@@ -130,7 +131,5 @@ public class LoginBaseBean implements LoginBase {
 	@Destroy
 	public void destroyCallback() {
 		LOG.debug("destroy: " + this);
-		this.username = null;
-		this.password = null;
 	}
 }

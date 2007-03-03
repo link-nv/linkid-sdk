@@ -18,13 +18,10 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.service.AuthorizationService;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -48,12 +45,6 @@ public class SafeOnlineLoginModule implements LoginModule {
 	private Subject subject;
 
 	private CallbackHandler callbackHandler;
-
-	public static final String OPTION_AUTHENTICATION_SERVICE_JNDI_NAME = "authenticationServiceJndiName";
-
-	public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = "SafeOnline/AuthenticationServiceBean/local";
-
-	private String authenticationServiceJndiName;
 
 	public static final String OPTION_AUTHORIZATION_SERVICE_JNDI_NAME = "authorizationServiceJndiName";
 
@@ -114,10 +105,6 @@ public class SafeOnlineLoginModule implements LoginModule {
 			Map sharedState, Map options) {
 		LOG.debug("initialize");
 
-		this.authenticationServiceJndiName = getOptionValue(options,
-				OPTION_AUTHENTICATION_SERVICE_JNDI_NAME,
-				DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME);
-
 		this.authorizationServiceJndiName = getOptionValue(options,
 				OPTION_AUTHORIZATION_SERVICE_JNDI_NAME,
 				DEFAULT_AUTHORIZATION_SERVICE_JNDI_NAME);
@@ -150,9 +137,8 @@ public class SafeOnlineLoginModule implements LoginModule {
 		LOG.debug("login");
 		// retrieve credentials
 		NameCallback nameCallback = new NameCallback("username");
-		PasswordCallback passwordCallback = new PasswordCallback("password",
-				true);
-		Callback[] callbacks = new Callback[] { nameCallback, passwordCallback };
+		// TODO: we should verify a SAML assertion here
+		Callback[] callbacks = new Callback[] { nameCallback };
 
 		try {
 			this.callbackHandler.handle(callbacks);
@@ -167,22 +153,10 @@ public class SafeOnlineLoginModule implements LoginModule {
 		}
 
 		String username = nameCallback.getName();
-		char[] passwd = passwordCallback.getPassword();
-		if (null == passwd) {
-			throw new FailedLoginException("password required");
-		}
-		String password = new String(passwd);
 		LOG.debug("username: " + username);
-		LOG.debug("password: " + password);
 
 		// authenticate
-		AuthenticationService authenticationService = getAuthenticationService();
-
-		boolean authenticated = authenticationService.authenticate(username,
-				password);
-		if (!authenticated) {
-			throw new LoginException("not authenticated");
-		}
+		// TODO: authenticate here again via SAML assertion
 		LOG.debug("authenticated");
 
 		this.authenticatedPrincipal = new SimplePrincipal(username);
@@ -193,18 +167,6 @@ public class SafeOnlineLoginModule implements LoginModule {
 		this.roles = authorizationService.getRoles(username);
 
 		return true;
-	}
-
-	private AuthenticationService getAuthenticationService()
-			throws LoginException {
-		try {
-			AuthenticationService authenticationService = EjbUtils.getEJB(
-					this.authenticationServiceJndiName,
-					AuthenticationService.class);
-			return authenticationService;
-		} catch (RuntimeException e) {
-			throw new LoginException("JNDI lookup error: " + e.getMessage());
-		}
 	}
 
 	private AuthorizationService getAuthorizationService()

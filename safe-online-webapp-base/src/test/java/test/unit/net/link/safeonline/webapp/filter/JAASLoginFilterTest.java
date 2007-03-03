@@ -5,17 +5,13 @@ import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
@@ -27,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
+import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.webapp.filter.JAASLoginFilter;
 
 import org.apache.commons.logging.Log;
@@ -42,8 +39,6 @@ import org.easymock.classextension.EasyMock;
  */
 public class JAASLoginFilterTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(JAASLoginFilterTest.class);
-
 	private JAASLoginFilter testedInstance;
 
 	private HttpServletRequest mockHttpServletRequest;
@@ -56,9 +51,6 @@ public class JAASLoginFilterTest extends TestCase {
 
 	private FilterConfig mockFilterConfig;
 
-	private static final String TEST_LOGIN_CONFIG = "test-login";
-
-	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
@@ -72,22 +64,7 @@ public class JAASLoginFilterTest extends TestCase {
 				this.mockHttpSession);
 		this.mockFilterConfig = createMock(FilterConfig.class);
 
-		setupLoginConfig();
-	}
-
-	private void setupLoginConfig() throws Exception {
-		File tmpConfigFile = File.createTempFile("jaas-", ".conf");
-		tmpConfigFile.deleteOnExit();
-		PrintWriter configWriter = new PrintWriter(new FileOutputStream(
-				tmpConfigFile), true);
-		configWriter.println(TEST_LOGIN_CONFIG + " {");
-		LOG.debug("jaas login module: " + TestLoginModule.class.getName());
-		configWriter.println(TestLoginModule.class.getName() + " required");
-		configWriter.println(";");
-		configWriter.println("};");
-		configWriter.close();
-		System.setProperty("java.security.auth.login.config", tmpConfigFile
-				.getAbsolutePath());
+		JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
 	}
 
 	public static class TestLoginModule implements LoginModule {
@@ -114,11 +91,8 @@ public class JAASLoginFilterTest extends TestCase {
 			LOG.debug("initialize");
 
 			NameCallback nameCallback = new NameCallback("name");
-			PasswordCallback passwordCallback = new PasswordCallback(
-					"password", false);
 
-			Callback[] callbacks = new Callback[] { nameCallback,
-					passwordCallback };
+			Callback[] callbacks = new Callback[] { nameCallback };
 			try {
 				callbackHandler.handle(callbacks);
 			} catch (IOException e) {
@@ -131,9 +105,6 @@ public class JAASLoginFilterTest extends TestCase {
 			String name = nameCallback.getName();
 			LOG.debug("name: " + name);
 			assertNotNull(name);
-			char[] password = passwordCallback.getPassword();
-			assertNotNull(password);
-			LOG.debug("password: " + new String(password));
 		}
 
 		public boolean login() throws LoginException {
@@ -156,15 +127,11 @@ public class JAASLoginFilterTest extends TestCase {
 		expect(
 				this.mockFilterConfig
 						.getInitParameter(JAASLoginFilter.LOGIN_CONTEXT_PARAM))
-				.andStubReturn(TEST_LOGIN_CONFIG);
+				.andStubReturn("client-login");
 		expect(
 				this.mockFilterConfig
 						.getInitParameter(JAASLoginFilter.SESSION_USERNAME_PARAM))
 				.andStubReturn(testUsernameAttributeName);
-		expect(
-				this.mockFilterConfig
-						.getInitParameter(JAASLoginFilter.SESSION_PASSWORD_PARAM))
-				.andStubReturn(testPasswordAttributeName);
 
 		expect(this.mockHttpSession.getAttribute(testUsernameAttributeName))
 				.andStubReturn("test-username");

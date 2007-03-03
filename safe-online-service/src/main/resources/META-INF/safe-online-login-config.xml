@@ -9,9 +9,6 @@
 			<login-module
 				code="net.link.safeonline.jaas.SafeOnlineLoginModule"
 				flag="required">
-				<module-option name="authenticationServiceJndiName">
-					SafeOnline/AuthenticationServiceBean/local
-				</module-option>
 				<module-option name="authorizationServiceJndiName">
 					SafeOnline/AuthorizationServiceBean/local
 				</module-option>

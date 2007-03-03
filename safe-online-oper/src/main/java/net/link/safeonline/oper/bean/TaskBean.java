@@ -44,7 +44,6 @@ public class TaskBean implements Task {
 
 	@DataModelSelection("taskList")
 	@Out(value = "selectedTask", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
 	private TaskEntity selectedTask;
 
 	@Out(value = "selectedScheduling", required = false, scope = ScopeType.SESSION)
@@ -61,6 +60,22 @@ public class TaskBean implements Task {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void taskListFactory() {
 		this.taskList = this.schedulingService.getTaskList();
+		for (TaskEntity task : this.taskList) {
+			/*
+			 * Because of the default lazy-loading on one-to-many relationships
+			 * we explicitly fetch the scheduling of each task here now that the
+			 * entity is still attached.
+			 */
+			for (TaskEntity schedTask : task.getScheduling().getTasks()) {
+				/*
+				 * TODO: eager load the tasks on the scheduling entity.
+				 * 
+				 * Here you clearly see that lazy-loading does not make sense
+				 * for the tasks list on the scheduling entity.
+				 */
+				schedTask.getName();
+			}
+		}
 	}
 
 	@Remove
@@ -76,10 +91,11 @@ public class TaskBean implements Task {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String viewSchedulingForTask() {
-		if (selectedTask == null) {
-			return null;
-		}
-		this.selectedScheduling = selectedTask.getScheduling();
+		this.selectedScheduling = this.selectedTask.getScheduling();
+		/*
+		 * The selectedTask is a detached entity here that we received from
+		 * Seam, but luckily we fetched the scheduling during taskListFactory.
+		 */
 		return "schedulingview";
 	}
 }
