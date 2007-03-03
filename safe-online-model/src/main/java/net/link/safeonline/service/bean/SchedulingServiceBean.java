@@ -41,7 +41,8 @@ public class SchedulingServiceBean implements SchedulingService {
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<TaskEntity> getTaskList() {
-		return this.taskDAO.listTaskEntities();
+		List<TaskEntity> taskList = this.taskDAO.listTaskEntities();
+		return taskList;
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

@@ -15,6 +15,7 @@ import java.util.Date;
 import javax.ejb.TimerHandle;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
@@ -90,7 +91,7 @@ public class SchedulingEntity implements Serializable {
 		this.timerHandle = timerHandle;
 	}
 
-	@OneToMany(mappedBy = "scheduling")
+	@OneToMany(mappedBy = "scheduling", fetch = FetchType.EAGER)
 	public Collection<TaskEntity> getTasks() {
 		return this.tasks;
 	}

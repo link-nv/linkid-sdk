@@ -34,10 +34,9 @@
 
 		<h:form>
 			<t:dataTable id="task-data" var="item"
-				value="#{taskListSelectedScheduling}" rows="10"
+				value="#{selectedScheduling.tasks}" rows="10"
 				preserveDataModel="false" styleClass="listingTable"
-				rowClasses="listingTable_Row1,listingTable_Row2"
-				columnClasses="listingTable_ColumnTop,listingTable_Column">
+				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
 					<f:facet name="header">Name</f:facet>
