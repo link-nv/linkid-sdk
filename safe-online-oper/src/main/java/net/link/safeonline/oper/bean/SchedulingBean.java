@@ -14,6 +14,12 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
+import net.link.safeonline.entity.SchedulingEntity;
+import net.link.safeonline.entity.TaskEntity;
+import net.link.safeonline.oper.OperatorConstants;
+import net.link.safeonline.oper.Scheduling;
+import net.link.safeonline.service.SchedulingService;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
@@ -27,12 +33,6 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.core.FacesMessages;
-
-import net.link.safeonline.entity.SchedulingEntity;
-import net.link.safeonline.entity.TaskEntity;
-import net.link.safeonline.oper.OperatorConstants;
-import net.link.safeonline.oper.Scheduling;
-import net.link.safeonline.service.SchedulingService;
 
 @Stateful
 @Name("scheduling")
@@ -77,11 +77,8 @@ public class SchedulingBean implements Scheduling {
 	@Factory("taskListSelectedScheduling")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void taskListSelectedSchedulingFactory() {
-		this.taskListSelectedScheduling = this.schedulingService
-				.getTaskListForScheduling(selectedScheduling);
-		for (TaskEntity task : taskListSelectedScheduling) {
-			LOG.debug("task: " + task.getName());
-		}
+		LOG.debug("taskListSelectedSchedulingFactory");
+		this.taskListSelectedScheduling = this.selectedScheduling.getTasks();
 	}
 
 	@Remove

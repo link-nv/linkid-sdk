@@ -8,9 +8,9 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.ejb.TimerHandle;
 import javax.persistence.Entity;
@@ -61,14 +61,15 @@ public class SchedulingEntity implements Serializable {
 
 	private Date fireDate;
 
-	private Collection<TaskEntity> tasks = new ArrayList<TaskEntity>();
+	private List<TaskEntity> tasks;
 
 	public SchedulingEntity() {
-		// required
+		this(null, null, null);
 	}
 
 	public SchedulingEntity(String name, String cronExpression,
 			TimerHandle timerHandle) {
+		this.tasks = new LinkedList<TaskEntity>();
 		this.name = name;
 		this.cronExpression = cronExpression;
 		this.timerHandle = timerHandle;
@@ -92,11 +93,11 @@ public class SchedulingEntity implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "scheduling", fetch = FetchType.EAGER)
-	public Collection<TaskEntity> getTasks() {
+	public List<TaskEntity> getTasks() {
 		return this.tasks;
 	}
 
-	public void setTasks(Collection<TaskEntity> taskEntities) {
+	public void setTasks(List<TaskEntity> taskEntities) {
 		this.tasks = taskEntities;
 	}
 
@@ -118,9 +119,7 @@ public class SchedulingEntity implements Serializable {
 	}
 
 	public void addTaskEntity(TaskEntity taskEntity) {
-		ArrayList<TaskEntity> list = (ArrayList<TaskEntity>) this.getTasks();
-		list.add(taskEntity);
-		this.setTasks(list);
+		this.tasks.add(taskEntity);
 	}
 
 	public static Query createQueryWhereName(EntityManager entityManager,
