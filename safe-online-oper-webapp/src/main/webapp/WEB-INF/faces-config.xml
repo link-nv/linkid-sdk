@@ -229,4 +229,25 @@
 			<to-view-id>/task-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/attributes.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>add</from-action>
+			<to-view-id>/attribute-add.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/attribute-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/attributes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
 </faces-config>

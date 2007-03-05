@@ -19,6 +19,7 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_ALL;
 
@@ -81,6 +82,11 @@ public class AttributeTypeEntity implements Serializable {
 		final AttributeTypeEntity rhs = (AttributeTypeEntity) obj;
 		return new EqualsBuilder().append(this.name, rhs.name).append(
 				this.type, rhs.type).isEquals();
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("name", this.name).toString();
 	}
 
 	public boolean isUserVisible() {

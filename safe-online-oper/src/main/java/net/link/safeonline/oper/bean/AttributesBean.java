@@ -14,6 +14,7 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
+import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.oper.Attributes;
 import net.link.safeonline.oper.OperatorConstants;
@@ -25,8 +26,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.core.FacesMessages;
 
 @Stateful
 @Name("attributes")
@@ -44,6 +47,9 @@ public class AttributesBean implements Attributes {
 	@DataModel
 	private List<AttributeTypeEntity> attributeTypeList;
 
+	@In(required = false)
+	private AttributeTypeEntity newAttributeType;
+
 	@Factory("attributeTypeList")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void attributeTypeListFactory() {
@@ -54,5 +60,31 @@ public class AttributesBean implements Attributes {
 	@Remove
 	@Destroy
 	public void destroyCallback() {
+	}
+
+	@In(create = true)
+	FacesMessages facesMessages;
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	// TODO: global operator role should also be used here
+	// TODO: configure roles same way as the core
+	public String add() {
+		LOG.debug("add: " + this.newAttributeType);
+		this.newAttributeType.setType("string");
+		try {
+			this.attributeTypeService.add(this.newAttributeType);
+		} catch (ExistingAttributeTypeException e) {
+			String msg = "existing attribute type";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		}
+		return "success";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	@Factory("newAttributeType")
+	public AttributeTypeEntity newAttributeTypeFactory() {
+		return new AttributeTypeEntity();
 	}
 }

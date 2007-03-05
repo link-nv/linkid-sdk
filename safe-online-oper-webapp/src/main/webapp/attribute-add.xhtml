@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Operator</ui:define>
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="attributes" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h1>Add Attribute</h1>
+
+		<h:form>
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+
+			<table>
+				<tr>
+					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
+					<td><s:decorate>
+						<h:inputText id="name" value="#{newAttributeType.name}"
+							required="true" />
+					</s:decorate>*<h:message for="name" styleClass="error" /></td>
+				</tr>
+			</table>
+
+			<h:panelGrid columns="1">
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="userVisible"
+						value="#{newAttributeType.userVisible}" />
+					<h:outputText value="User Visible" />
+				</h:panelGroup>
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="userEditable"
+						value="#{newAttributeType.userEditable}" />
+					<h:outputText value="User Editable" />
+				</h:panelGroup>
+			</h:panelGrid>
+
+			<h:messages styleClass="error" globalOnly="true" />
+
+			<h:commandButton value="Add" id="add" action="#{attributes.add}" />
+			<so:nbsp />
+			<h:commandButton action="cancel" id="cancel" value="Cancel"
+				immediate="true" />
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{operLogin}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

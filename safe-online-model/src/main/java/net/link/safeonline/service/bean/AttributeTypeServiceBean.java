@@ -13,9 +13,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -25,6 +28,9 @@ import net.link.safeonline.service.AttributeTypeService;
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class AttributeTypeServiceBean implements AttributeTypeService {
 
+	private static final Log LOG = LogFactory
+			.getLog(AttributeTypeServiceBean.class);
+
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
 
@@ -33,5 +39,18 @@ public class AttributeTypeServiceBean implements AttributeTypeService {
 		List<AttributeTypeEntity> attributeTypes = this.attributeTypeDAO
 				.getAttributeTypes();
 		return attributeTypes;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE)
+	public void add(AttributeTypeEntity attributeType)
+			throws ExistingAttributeTypeException {
+		LOG.debug("add: " + attributeType);
+		String name = attributeType.getName();
+		AttributeTypeEntity existingAttributeType = this.attributeTypeDAO
+				.findAttributeType(name);
+		if (null != existingAttributeType) {
+			throw new ExistingAttributeTypeException();
+		}
+		this.attributeTypeDAO.addAttributeType(attributeType);
 	}
 }
