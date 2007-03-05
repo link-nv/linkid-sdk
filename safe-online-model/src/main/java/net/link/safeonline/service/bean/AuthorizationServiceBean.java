@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -10,6 +10,7 @@ package net.link.safeonline.service.bean;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -51,6 +52,9 @@ public class AuthorizationServiceBean implements AuthorizationService {
 	@EJB
 	private ApplicationDAO applicationDAO;
 
+	@Resource(name = "isGlobalOperator")
+	private boolean isGlobalOperator = false;
+
 	public Set<String> getRoles(String login) {
 		Set<String> roles = new HashSet<String>();
 
@@ -71,11 +75,19 @@ public class AuthorizationServiceBean implements AuthorizationService {
 		 */
 		addRoleIfSubscribed(SafeOnlineRoles.USER_ROLE, subject,
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, roles);
+
+		addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject,
+				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
+
+		if (true == this.isGlobalOperator) {
+			LOG.debug("assigning global operator role");
+			addRoleIfSubscribed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, subject,
+					SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
+					roles);
+		}
 		addRoleIfSubscribed(SafeOnlineRoles.OPERATOR_ROLE, subject,
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
 				roles);
-		addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject,
-				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
 
 		return roles;
 	}

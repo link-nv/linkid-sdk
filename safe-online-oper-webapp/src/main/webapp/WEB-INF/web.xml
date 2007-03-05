@@ -39,6 +39,13 @@
 	</context-param>
 
 	<filter>
+		<filter-name>ServletLoginFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.webapp.filter.ServletLoginFilter
+		</filter-class>
+	</filter>
+
+	<filter>
 		<filter-name>SafeOnlineLoginFilter</filter-name>
 		<filter-class>
 			net.link.safeonline.sdk.auth.filter.LoginFilter
@@ -60,7 +67,7 @@
 	</filter>
 
 	<filter>
-		<filter-name>Login Filter</filter-name>
+		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class>
 			net.link.safeonline.webapp.filter.JAASLoginFilter
 		</filter-class>
@@ -71,10 +78,6 @@
 		<init-param>
 			<param-name>SessionUsernameAttributeName</param-name>
 			<param-value>username</param-value>
-		</init-param>
-		<init-param>
-			<param-name>SessionPasswordAttributeName</param-name>
-			<param-value>password</param-value>
 		</init-param>
 	</filter>
 
@@ -96,12 +99,17 @@
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>Login Filter</filter-name>
+		<filter-name>SafeOnlineLoginFilter</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>SafeOnlineLoginFilter</filter-name>
+		<filter-name>ServletLoginFilter</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
@@ -129,5 +137,15 @@
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>
+
+	<security-role>
+		<description>The Operator User Role</description>
+		<role-name>operator</role-name>
+	</security-role>
+
+	<security-role>
+		<description>The Global Operator User Role</description>
+		<role-name>operator-global</role-name>
+	</security-role>
 
 </web-app>

@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 import net.link.safeonline.model.bean.OcspValidatorBean;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.test.util.ServletTestManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,22 +41,10 @@ import org.bouncycastle.ocsp.OCSPRespGenerator;
 import org.bouncycastle.ocsp.Req;
 import org.bouncycastle.util.encoders.Hex;
 import org.joda.time.DateTime;
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHandler;
-import org.mortbay.jetty.servlet.ServletHolder;
-import org.mortbay.jetty.servlet.ServletMapping;
 
 public class OcspValidatorBeanTest extends TestCase {
 
-	private static final Log LOG = LogFactory
-			.getLog(OcspValidatorBeanTest.class);
-
 	private OcspValidatorBean testedInstance;
-
-	private Server server;
 
 	private URI ocspUri;
 
@@ -63,42 +52,19 @@ public class OcspValidatorBeanTest extends TestCase {
 
 	private X509Certificate caCertificate;
 
+	private ServletTestManager servletTestManager;
+
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
 		this.testedInstance = new OcspValidatorBean();
 
-		// TODO: move to safe-online-test-util
-		this.server = new Server();
-		Connector connector = new SelectChannelConnector();
-		connector.setPort(0);
-		this.server.addConnector(connector);
+		this.servletTestManager = new ServletTestManager();
 
-		Context context = new Context();
-		context.setContextPath("/");
-		this.server.addHandler(context);
+		this.servletTestManager.setUp(TestOcspResponderServlet.class);
 
-		ServletHandler handler = context.getServletHandler();
-
-		ServletHolder servletHolder = new ServletHolder();
-		servletHolder.setClassName(TestOcspResponderServlet.class.getName());
-		String servletName = "TestOCSPResponderServlet";
-		servletHolder.setName(servletName);
-		handler.addServlet(servletHolder);
-
-		ServletMapping servletMapping = new ServletMapping();
-		servletMapping.setServletName(servletName);
-		servletMapping.setPathSpecs(new String[] { "/*" });
-		handler.addServletMapping(servletMapping);
-
-		this.server.start();
-
-		int port = connector.getLocalPort();
-		LOG.debug("port: " + port);
-
-		String ocspServletLocation = "http://localhost:" + port + "/";
-		this.ocspUri = new URI(ocspServletLocation);
+		this.ocspUri = new URI(this.servletTestManager.getServletLocation());
 
 		this.caKeyPair = PkiTestUtils.generateKeyPair();
 		this.caCertificate = PkiTestUtils.generateSelfSignedCertificate(
@@ -121,7 +87,7 @@ public class OcspValidatorBeanTest extends TestCase {
 
 	@Override
 	public void tearDown() throws Exception {
-		this.server.stop();
+		this.servletTestManager.tearDown();
 
 		super.tearDown();
 	}

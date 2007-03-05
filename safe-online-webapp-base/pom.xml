@@ -25,6 +25,13 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model</artifactId>
+			<type>ejb-client</type>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.myfaces.core</groupId>
 			<artifactId>myfaces-impl</artifactId>
 			<scope>runtime</scope>
@@ -136,6 +143,11 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-test-util</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

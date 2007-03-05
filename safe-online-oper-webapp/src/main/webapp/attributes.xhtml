@@ -54,6 +54,21 @@
 			</t:dataScroller>
 		</h:form>
 
+		<table>
+			<tr>
+				<th>User Principal</th>
+				<td>#{userPrincipal}</td>
+			</tr>
+			<tr>
+				<th>Is User In Role operator:</th>
+				<td>#{isUserInRole['operator']}</td>
+			</tr>
+			<tr>
+				<th>Is User In Role global-operator:</th>
+				<td>#{isUserInRole['global-operator']}</td>
+			</tr>
+		</table>
+
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
