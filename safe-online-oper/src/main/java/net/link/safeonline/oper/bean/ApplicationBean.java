@@ -8,23 +8,29 @@
 package net.link.safeonline.oper.bean;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.CertificateEncodingException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.oper.Application;
 import net.link.safeonline.oper.OperatorConstants;
+import net.link.safeonline.service.AttributeTypeService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,6 +62,9 @@ public class ApplicationBean implements Application {
 	@EJB
 	private SubscriptionService subscriptionService;
 
+	@EJB
+	private AttributeTypeService attributeTypeService;
+
 	private String name;
 
 	private String description;
@@ -71,6 +80,9 @@ public class ApplicationBean implements Application {
 	@In(create = true)
 	FacesMessages facesMessages;
 
+	@In(value = "selectedNewApplicationAttributeTypes", required = false)
+	private String[] selectedAttributeTypes;
+
 	@Remove
 	@Destroy
 	public void destroyCallback() {
@@ -85,6 +97,10 @@ public class ApplicationBean implements Application {
 	@DataModelSelection("operApplicationList")
 	@Out(value = "selectedApplication", required = false, scope = ScopeType.SESSION)
 	private ApplicationEntity selectedApplication;
+
+	@SuppressWarnings("unused")
+	@Out(value = "applicationIdentityAttributeTypeList", required = false)
+	private List<AttributeTypeEntity> applicationIdentityAttributeTypeList;
 
 	@Factory("operApplicationList")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -106,12 +122,31 @@ public class ApplicationBean implements Application {
 			this.facesMessages.add(msg);
 			return null;
 		}
+
+		try {
+			this.applicationIdentityAttributeTypeList = this.applicationService
+					.getCurrentApplicationIdentity(applicationName);
+		} catch (ApplicationNotFoundException e) {
+			String msg = "application not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (ApplicationIdentityNotFoundException e) {
+			String msg = "application identity not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		}
+
 		return "view-application";
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String add() {
 		LOG.debug("add application: " + this.name);
+		for (String item : this.selectedAttributeTypes) {
+			LOG.debug("selected attribute type: " + item);
+		}
 		try {
 			byte[] encodedCertificate;
 			if (null != this.upFile) {
@@ -119,29 +154,34 @@ public class ApplicationBean implements Application {
 			} else {
 				encodedCertificate = null;
 			}
-			this.applicationService
-					.addApplication(this.name, this.applicationOwner,
-							this.description, encodedCertificate);
+			this.applicationService.addApplication(this.name,
+					this.applicationOwner, this.description,
+					encodedCertificate, this.selectedAttributeTypes);
 		} catch (ExistingApplicationException e) {
 			String msg = "application already exists: " + this.name;
 			LOG.debug(msg);
-			this.facesMessages.add("name", msg);
+			this.facesMessages.add(msg);
 			return null;
 		} catch (ApplicationOwnerNotFoundException e) {
 			String msg = "application owner not found: "
 					+ this.applicationOwner;
 			LOG.debug(msg);
-			this.facesMessages.add("owner", msg);
+			this.facesMessages.add(msg);
 			return null;
 		} catch (IOException e) {
 			String msg = "IO error";
 			LOG.debug(msg);
-			this.facesMessages.add("fileupload", msg);
+			this.facesMessages.add(msg);
 			return null;
 		} catch (CertificateEncodingException e) {
 			String msg = "X509 certificate encoding error";
 			LOG.debug(msg);
-			this.facesMessages.add("fileupload", msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (AttributeTypeNotFoundException e) {
+			String msg = "attribute type not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
 			return null;
 		}
 		return "success";
@@ -203,5 +243,24 @@ public class ApplicationBean implements Application {
 		}
 		applicationListFactory();
 		return "success";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	@Factory("newApplicationAttributeTypeList")
+	public List<SelectItem> newApplicationAttributeTypeListFactory() {
+		List<AttributeTypeEntity> attributeTypes = this.attributeTypeService
+				.getAttributeTypes();
+		List<SelectItem> itemList = new LinkedList<SelectItem>();
+		for (AttributeTypeEntity attributeType : attributeTypes) {
+			SelectItem item = new SelectItem(attributeType.getName());
+			itemList.add(item);
+		}
+		return itemList;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	@Factory("selectedNewApplicationAttributeTypes")
+	public String[] selectedNewApplicationAttributeTypesFactory() {
+		return new String[] {};
 	}
 }

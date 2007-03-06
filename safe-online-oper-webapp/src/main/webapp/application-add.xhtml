@@ -54,6 +54,14 @@
 				</h:panelGroup>
 			</h:panelGrid>
 
+			Initial Application Identity:
+			<h:selectManyCheckbox layout="pageDirection"
+				value="#{selectedNewApplicationAttributeTypes}">
+				<f:selectItems value="#{newApplicationAttributeTypeList}" />
+			</h:selectManyCheckbox>
+
+			<t:messages styleClass="error" globalOnly="true" />
+
 			<h:commandButton action="#{application.add}" id="add" value="Add" />
 			<so:nbsp />
 			<h:commandButton action="cancel" id="cancel" value="Cancel"

@@ -39,13 +39,14 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		return application;
 	}
 
-	public void addApplication(String applicationName,
+	public ApplicationEntity addApplication(String applicationName,
 			ApplicationOwnerEntity applicationOwner, String description,
 			X509Certificate certificate) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
 				applicationOwner, description, certificate);
 		this.entityManager.persist(application);
+		return application;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -64,15 +65,17 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		return application;
 	}
 
-	public void addApplication(String applicationName,
+	public ApplicationEntity addApplication(String applicationName,
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable,
-			String description, X509Certificate certificate) {
+			String description, X509Certificate certificate,
+			long initialIdentityVersion) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
 				applicationOwner, description, allowUserSubscription,
-				removable, certificate);
+				removable, certificate, initialIdentityVersion);
 		this.entityManager.persist(application);
+		return application;
 	}
 
 	public void removeApplication(ApplicationEntity application) {

@@ -44,14 +44,15 @@ public interface ApplicationDAO {
 	ApplicationEntity getApplication(String applicationName)
 			throws ApplicationNotFoundException;
 
-	void addApplication(String applicationName,
+	ApplicationEntity addApplication(String applicationName,
 			ApplicationOwnerEntity applicationOwner, String description,
 			X509Certificate certificate);
 
-	void addApplication(String applicationName,
+	ApplicationEntity addApplication(String applicationName,
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable,
-			String description, X509Certificate certificate);
+			String description, X509Certificate certificate,
+			long initialIdentityVersion);
 
 	/**
 	 * Gives back a list of all application registered within the SafeOnline

@@ -23,5 +23,7 @@
 			class="net.link.safeonline.entity.CachedOcspResponseEntity" />
 		<mapping class="net.link.safeonline.entity.TaskEntity" />
 		<mapping class="net.link.safeonline.entity.SchedulingEntity" />
+		<mapping
+			class="net.link.safeonline.entity.ApplicationIdentityEntity" />
 	</session-factory>
 </hibernate-configuration>

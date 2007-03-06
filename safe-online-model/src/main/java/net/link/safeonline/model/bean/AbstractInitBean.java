@@ -18,6 +18,7 @@ import javax.ejb.EJB;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -25,6 +26,7 @@ import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -159,6 +161,9 @@ public abstract class AbstractInitBean implements Startable {
 	@EJB
 	protected TrustDomainDAO trustDomainDAO;
 
+	@EJB
+	private ApplicationIdentityDAO applicationIdentityDAO;
+
 	private void initTrustDomains() {
 		TrustDomainEntity applicationsTrustDomain = this.trustDomainDAO
 				.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
@@ -223,9 +228,15 @@ public abstract class AbstractInitBean implements Startable {
 			}
 			ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
 					.findApplicationOwner(application.owner);
-			this.applicationDAO.addApplication(applicationName,
-					applicationOwner, application.allowUserSubscription,
-					application.removable, application.description, application.certificate);
+			long identityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
+			ApplicationEntity newApplication = this.applicationDAO
+					.addApplication(applicationName, applicationOwner,
+							application.allowUserSubscription,
+							application.removable, application.description,
+							application.certificate, identityVersion);
+
+			this.applicationIdentityDAO.addApplicationIdentity(newApplication,
+					identityVersion, null);
 		}
 	}
 

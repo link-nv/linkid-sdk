@@ -166,15 +166,19 @@ public class AuthenticationTest extends TestCase {
 		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
 		applicationService.registerApplicationOwner(appOwnerName, login);
 
+		final String applicationName = "application-"
+				+ UUID.randomUUID().toString();
+
 		Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
 			public Object run() throws Exception {
-				String applicationName = "application-"
-						+ UUID.randomUUID().toString();
+
 				applicationService.addApplication(applicationName,
-						appOwnerName, null, null);
+						appOwnerName, null, null, new String[] {});
 				return null;
 			}
 		});
+
+		applicationService.removeApplication(applicationName);
 	}
 
 	private UserRegistrationService getUserRegistrationService(
@@ -223,7 +227,7 @@ public class AuthenticationTest extends TestCase {
 		applicationService.registerApplicationOwner(appOwnerName, ownerLogin);
 
 		applicationService.addApplication(applicationName, appOwnerName, null,
-				null);
+				null, new String[] {});
 
 		String userLogin = "login-" + UUID.randomUUID().toString();
 		final String userPassword = "secret";
@@ -314,7 +318,7 @@ public class AuthenticationTest extends TestCase {
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, appOwnerName, null,
-				null);
+				null, new String[] {});
 
 		IntegrationTestUtils.login(login, password);
 		applicationService.setApplicationDescription(applicationName,
@@ -353,7 +357,7 @@ public class AuthenticationTest extends TestCase {
 		// operate: create application
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName,
-				applicationOwnerName, null, null);
+				applicationOwnerName, null, null, new String[] {});
 
 		// operate: change application description via application owner
 		IntegrationTestUtils.login(ownerLogin, ownerPassword);

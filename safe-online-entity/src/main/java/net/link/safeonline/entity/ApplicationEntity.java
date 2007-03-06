@@ -66,6 +66,8 @@ public class ApplicationEntity implements Serializable {
 
 	private byte[] encodedCert;
 
+	private long currentApplicationIdentity;
+
 	private transient X509Certificate certificate;
 
 	public ApplicationEntity() {
@@ -79,13 +81,13 @@ public class ApplicationEntity implements Serializable {
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description) {
-		this(name, applicationOwner, description, true, true, null);
+		this(name, applicationOwner, description, true, true, null, 0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description,
 			X509Certificate certificate) {
-		this(name, applicationOwner, description, true, true, certificate);
+		this(name, applicationOwner, description, true, true, certificate, 0);
 	}
 
 	public ApplicationEntity(String name,
@@ -98,18 +100,19 @@ public class ApplicationEntity implements Serializable {
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable) {
 		this(name, applicationOwner, null, allowUserSubscription, removable,
-				null);
+				null, 0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description,
 			boolean allowUserSubscription, boolean removable,
-			X509Certificate certificate) {
+			X509Certificate certificate, long identityVersion) {
 		this.name = name;
 		this.applicationOwner = applicationOwner;
 		this.description = description;
 		this.allowUserSubscription = allowUserSubscription;
 		this.removable = removable;
+		this.currentApplicationIdentity = identityVersion;
 		if (null != certificate) {
 			try {
 				this.encodedCert = certificate.getEncoded();
@@ -124,7 +127,7 @@ public class ApplicationEntity implements Serializable {
 			ApplicationOwnerEntity applicationOwner, String description,
 			boolean allowUserSubscription, boolean removable) {
 		this(applicationName, applicationOwner, description,
-				allowUserSubscription, removable, null);
+				allowUserSubscription, removable, null, 0);
 	}
 
 	public String getDescription() {
@@ -178,6 +181,14 @@ public class ApplicationEntity implements Serializable {
 
 	public void setEncodedCert(byte[] encodedCert) {
 		this.encodedCert = encodedCert;
+	}
+
+	public long getCurrentApplicationIdentity() {
+		return this.currentApplicationIdentity;
+	}
+
+	public void setCurrentApplicationIdentity(long currentApplicationIdentity) {
+		this.currentApplicationIdentity = currentApplicationIdentity;
 	}
 
 	@Transient

@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.PermitAll;
@@ -18,8 +19,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.CertificateEncodingException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
@@ -28,11 +31,16 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityEntity;
+import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -72,6 +80,12 @@ public class ApplicationServiceBean implements ApplicationService {
 	@EJB
 	private ApplicationOwnerManager applicationOwnerManager;
 
+	@EJB
+	private AttributeTypeDAO attributeTypeDAO;
+
+	@EJB
+	private ApplicationIdentityDAO applicationIdentityDAO;
+
 	@PermitAll
 	public List<ApplicationEntity> getApplications() {
 		List<ApplicationEntity> applications = this.applicationDAO
@@ -80,10 +94,13 @@ public class ApplicationServiceBean implements ApplicationService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void addApplication(String name, String applicationOwnerName,
-			String description, byte[] encodedCertificate)
+			String description, byte[] encodedCertificate,
+			String[] initialApplicationIdentityAttributeTypes)
 			throws ExistingApplicationException,
-			ApplicationOwnerNotFoundException, CertificateEncodingException {
+			ApplicationOwnerNotFoundException, CertificateEncodingException,
+			AttributeTypeNotFoundException {
 		LOG.debug("add application: " + name);
 		ApplicationEntity existingApplication = this.applicationDAO
 				.findApplication(name);
@@ -97,8 +114,20 @@ public class ApplicationServiceBean implements ApplicationService {
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
 				.getApplicationOwner(applicationOwnerName);
 
-		this.applicationDAO.addApplication(name, applicationOwner, description,
-				certificate);
+		List<AttributeTypeEntity> identityAttributeTypes = new LinkedList<AttributeTypeEntity>();
+		for (String initialApplicationIdentityAttributeType : initialApplicationIdentityAttributeTypes) {
+			AttributeTypeEntity attributeType = this.attributeTypeDAO
+					.getAttributeType(initialApplicationIdentityAttributeType);
+			identityAttributeTypes.add(attributeType);
+		}
+
+		ApplicationEntity application = this.applicationDAO.addApplication(
+				name, applicationOwner, description, certificate);
+
+		long initialIdentityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
+		this.applicationIdentityDAO.addApplicationIdentity(application,
+				initialIdentityVersion, identityAttributeTypes);
+		application.setCurrentApplicationIdentity(initialIdentityVersion);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -115,11 +144,20 @@ public class ApplicationServiceBean implements ApplicationService {
 				.getSubscriptions(application);
 		/*
 		 * We don't rely on hibernate here to cascade remove the subscriptions
-		 * for the moment.
+		 * and application identities for the moment. Postpone this until be
+		 * understand better what data needs to be preserved.
 		 */
 		for (SubscriptionEntity subscription : subscriptions) {
 			this.subscriptionDAO.removeSubscription(subscription);
 		}
+
+		List<ApplicationIdentityEntity> applicationIdentities = this.applicationIdentityDAO
+				.getApplicationIdentities(application);
+		for (ApplicationIdentityEntity applicationIdentity : applicationIdentities) {
+			this.applicationIdentityDAO
+					.removeApplicationIdentity(applicationIdentity);
+		}
+
 		this.applicationDAO.removeApplication(application);
 	}
 
@@ -179,5 +217,20 @@ public class ApplicationServiceBean implements ApplicationService {
 		List<ApplicationEntity> applications = this.applicationDAO
 				.getApplications(applicationOwner);
 		return applications;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public List<AttributeTypeEntity> getCurrentApplicationIdentity(
+			String applicationName) throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException {
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationName);
+		long currentIdentityVersion = application
+				.getCurrentApplicationIdentity();
+		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
+				.getApplicationIdentity(application, currentIdentityVersion);
+		List<AttributeTypeEntity> attributeTypes = applicationIdentity
+				.getAttributeTypes();
+		return attributeTypes;
 	}
 }

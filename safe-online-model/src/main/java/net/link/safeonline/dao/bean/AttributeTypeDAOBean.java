@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -15,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
@@ -48,5 +49,15 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		Query query = AttributeTypeEntity.createQueryAll(this.entityManager);
 		List<AttributeTypeEntity> attributeTypes = query.getResultList();
 		return attributeTypes;
+	}
+
+	public AttributeTypeEntity getAttributeType(String name)
+			throws AttributeTypeNotFoundException {
+		LOG.debug("get attribute type: " + name);
+		AttributeTypeEntity attributeType = findAttributeType(name);
+		if (null == attributeType) {
+			throw new AttributeTypeNotFoundException();
+		}
+		return attributeType;
 	}
 }
