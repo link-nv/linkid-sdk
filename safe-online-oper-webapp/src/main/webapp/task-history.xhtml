@@ -15,25 +15,36 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>Tasks</h1>
+		<h1>Task History: #{selectedTask.name}</h1>
 
 		<h:form>
-			<t:dataTable id="task-data" var="item" value="#{taskList}" rows="10"
-				preserveDataModel="false" styleClass="listingTable"
+			<t:dataTable id="task-history-data" var="item"
+				value="#{taskHistoryList}" rows="10" preserveDataModel="false"
+				styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">Name</f:facet>
-					<h:commandLink value="#{item.name}" action="#{scheduling.taskView}" />
+					<f:facet name="header">Execution Date</f:facet>
+					#{item.executionDate}
 				</h:column>
 				<h:column>
-					<f:facet name="header">Scheduling</f:facet>
-					<h:commandLink value="#{item.scheduling.name}"
-						action="#{scheduling.schedulingView}" />
+					<f:facet name="header">Execution Time</f:facet>
+					#{item.executionTime}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Message</f:facet>
+					#{item.message}
+				</h:column>
+				<h:column>
+					<f:facet name="header">Result</f:facet>
+					<h:outputText value="#{item.result}"
+						style="background-color: green" rendered="#{item.result}" />
+					<h:outputText value="#{item.result}" style="background-color: red"
+						rendered="#{!item.result}" />
 				</h:column>
 			</t:dataTable>
 
-			<t:dataScroller for="task-data" fastStep="10"
+			<t:dataScroller for="task-history-data" fastStep="10"
 				pageCountVar="pageCount" pageIndexVar="pageIndex"
 				styleClass="scroller" paginator="true" paginatorMaxPages="9">
 				<f:facet name="first">First</f:facet>
@@ -42,15 +53,11 @@
 				<f:facet name="next">Next</f:facet>
 			</t:dataScroller>
 
-			<h:messages styleClass="error" />
-
-			<h:commandButton action="#{scheduling.schedulingListView}"
-				id="schedulings" value="Schedulings" immediate="true" />
+			<h:commandButton action="#{scheduling.taskView}" id="back"
+				value="Back" immediate="true" />
 			<so:nbsp />
-			<h:commandButton action="#{scheduling.clearAllTasksHistory}"
-				id="clearalltaskhistory" value="Clear Task Histories"
-				immediate="true" />
-
+			<h:commandButton action="#{scheduling.clearTaskHistory}"
+				id="cleartaskhistory" value="Clear Task History" immediate="true" />
 		</h:form>
 
 	</ui:define>
@@ -63,3 +70,4 @@
 </body>
 
 </html>
+

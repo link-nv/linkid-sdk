@@ -12,12 +12,30 @@ import javax.ejb.Local;
 @Local
 public interface Scheduling {
 
-	String view();
-
 	void schedulingListFactory();
 
-	void taskListSelectedSchedulingFactory();
+	void taskListFactory();
+
+	void taskHistoryListFactory();
 
 	void destroyCallback();
+
+	String schedulingListView();
+
+	String schedulingView();
+
+	String taskListView();
+
+	String taskView();
+
+	String taskHistoryView();
+
+	String performTask();
+
+	String performScheduling();
+
+	String clearTaskHistory();
+
+	String clearAllTasksHistory();
 
 }

@@ -38,6 +38,7 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.SubscriptionPK;
 import net.link.safeonline.entity.TaskEntity;
+import net.link.safeonline.entity.TaskHistoryEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.entity.TrustPointPK;
@@ -71,7 +72,7 @@ public class EntityTest extends TestCase {
 				TrustDomainEntity.class, TrustPointEntity.class,
 				SubjectIdentifierEntity.class, CachedOcspResponseEntity.class,
 				TaskEntity.class, SchedulingEntity.class,
-				ApplicationIdentityEntity.class);
+				TaskHistoryEntity.class, ApplicationIdentityEntity.class);
 	}
 
 	@Override
@@ -528,6 +529,69 @@ public class EntityTest extends TestCase {
 		taskEntity.setScheduling(null);
 		entityManager.flush();
 		entityManager.remove(taskEntity);
+	}
+
+	public void testAddRemoveTaskHistory() {
+		// setup
+		TaskEntity taskEntity = new TaskEntity("id", "name", null);
+		long time = System.currentTimeMillis();
+		TaskHistoryEntity history = new TaskHistoryEntity(taskEntity,
+				"message", true, new Date(time), new Date(time + 1000));
+		taskEntity.addTaskHistoryEntity(history);
+		TaskHistoryEntity history2 = new TaskHistoryEntity(taskEntity,
+				"message", true, new Date(time), new Date(time + 1000));
+		taskEntity.addTaskHistoryEntity(history2);
+
+		// operate + verify
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(taskEntity);
+		entityManager.persist(history);
+		entityManager.persist(history2);
+
+		// try to remove a history entity
+		entityManager.remove(history);
+		entityManager.find(TaskEntity.class, "id").getTaskHistory().remove(
+				history);
+		entityManager.flush();
+
+		// can the history entity be found?
+		TaskEntity taskEntity2 = entityManager.find(TaskEntity.class, "id");
+		assertEquals(taskEntity2.getTaskHistory().get(0), history2);
+
+		// try to remove the task without cleaning all history entities
+		entityManager.remove(taskEntity);
+		try {
+			entityManager.flush();
+			fail();
+		} catch (Exception e) {
+			// empty
+		}
+
+		// clean the history entities and try to remove the task
+		entityManager.remove(history2);
+		entityManager.flush();
+		entityManager.remove(taskEntity);
+	}
+
+	public void testTaskHistoryClearing() {
+		// setup
+		TaskEntity taskEntity = new TaskEntity("id", "name", null);
+		long time = System.currentTimeMillis();
+		TaskHistoryEntity history = new TaskHistoryEntity(taskEntity,
+				"message", true, new Date(time), new Date(time + 1000));
+		taskEntity.addTaskHistoryEntity(history);
+
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(taskEntity);
+		entityManager.persist(history);
+		entityManager.flush();
+
+		TaskHistoryEntity.createQueryDeleteWhereTask(entityManager, taskEntity)
+				.executeUpdate();
+		entityManager = this.entityTestManager.refreshEntityManager();
+
+		TaskEntity task = entityManager.find(TaskEntity.class, "id");
+		assertEquals(0, task.getTaskHistory().size());
 	}
 
 	public void testAddApplicationIdentity() throws Exception {

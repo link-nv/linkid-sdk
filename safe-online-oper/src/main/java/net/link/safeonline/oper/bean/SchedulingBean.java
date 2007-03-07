@@ -16,12 +16,11 @@ import javax.ejb.Stateful;
 
 import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.TaskEntity;
+import net.link.safeonline.entity.TaskHistoryEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.Scheduling;
 import net.link.safeonline.service.SchedulingService;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
@@ -41,26 +40,29 @@ import org.jboss.seam.core.FacesMessages;
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class SchedulingBean implements Scheduling {
 
-	private static final Log LOG = LogFactory.getLog(SchedulingBean.class);
-
 	@DataModel("schedulingList")
 	@SuppressWarnings("unused")
 	private List<SchedulingEntity> schedulingList;
 
 	@DataModelSelection("schedulingList")
 	@Out(value = "selectedScheduling", required = false, scope = ScopeType.SESSION)
-	@In(required = false)
+	@In(value = "selectedScheduling", required = false)
+	@SuppressWarnings("unused")
 	private SchedulingEntity selectedScheduling;
 
-	@DataModel("taskListSelectedScheduling")
-	@SuppressWarnings("unused")
-	private List<TaskEntity> taskListSelectedScheduling;
-
-	@DataModelSelection("taskListSelectedScheduling")
+	@DataModelSelection("taskList")
 	@Out(value = "selectedTask", required = false, scope = ScopeType.SESSION)
 	@In(value = "selectedTask", required = false)
 	@SuppressWarnings("unused")
 	private TaskEntity selectedTask;
+
+	@DataModel("taskList")
+	@SuppressWarnings("unused")
+	private List<TaskEntity> taskList;
+
+	@DataModel("taskHistoryList")
+	@SuppressWarnings("unused")
+	private List<TaskHistoryEntity> taskHistoryList;
 
 	@EJB
 	private SchedulingService schedulingService;
@@ -74,11 +76,21 @@ public class SchedulingBean implements Scheduling {
 		this.schedulingList = this.schedulingService.getSchedulingList();
 	}
 
-	@Factory("taskListSelectedScheduling")
+	@Factory("taskList")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void taskListSelectedSchedulingFactory() {
-		LOG.debug("taskListSelectedSchedulingFactory");
-		this.taskListSelectedScheduling = this.selectedScheduling.getTasks();
+	public void taskListFactory() {
+		if (selectedScheduling == null) {
+			this.taskList = this.schedulingService.getTaskList();
+		} else {
+			this.taskList = this.selectedScheduling.getTasks();
+		}
+	}
+
+	@Factory("taskHistoryList")
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void taskHistoryListFactory() {
+		this.taskHistoryList = this.schedulingService
+				.getTaskHistoryList(this.selectedTask);
 	}
 
 	@Remove
@@ -88,7 +100,56 @@ public class SchedulingBean implements Scheduling {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
+	public String schedulingListView() {
+		this.selectedTask = null;
+		return "schedulinglistview";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String schedulingView() {
+		if (this.selectedScheduling == null) {
+			this.selectedScheduling = this.selectedTask.getScheduling();
+		}
 		return "schedulingview";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String taskListView() {
+		this.selectedScheduling = null;
+		return "tasklistview";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String taskView() {
+		return "taskview";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String taskHistoryView() {
+		return "taskhistoryview";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String performTask() {
+		this.schedulingService.performTask(selectedTask);
+		return this.taskHistoryView();
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String performScheduling() {
+		this.schedulingService.performScheduling(selectedScheduling);
+		return this.schedulingView();
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String clearTaskHistory() {
+		this.schedulingService.clearTaskHistory(selectedTask);
+		return this.taskView();
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String clearAllTasksHistory() {
+		this.schedulingService.clearAllTasksHistory();
+		return this.taskView();
 	}
 }

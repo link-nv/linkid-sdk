@@ -7,37 +7,40 @@
 
 package net.link.safeonline.service.bean;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.SchedulingDAO;
 import net.link.safeonline.dao.TaskDAO;
+import net.link.safeonline.dao.TaskHistoryDAO;
 import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.TaskEntity;
+import net.link.safeonline.entity.TaskHistoryEntity;
+import net.link.safeonline.model.TaskScheduler;
 import net.link.safeonline.service.SchedulingService;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class SchedulingServiceBean implements SchedulingService {
 
-	private static final Log LOG = LogFactory
-			.getLog(SchedulingServiceBean.class);
-
 	@EJB
 	private TaskDAO taskDAO;
 
 	@EJB
 	private SchedulingDAO schedulingDAO;
+
+	@EJB
+	private TaskHistoryDAO taskHistoryDAO;
+
+	@EJB
+	private TaskScheduler taskScheduler;
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<TaskEntity> getTaskList() {
@@ -46,23 +49,36 @@ public class SchedulingServiceBean implements SchedulingService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<TaskEntity> getTaskListForScheduling(SchedulingEntity scheduling) {
-		SchedulingEntity attachedScheduling = this.schedulingDAO
-				.findSchedulingByName(scheduling.getName());
-		if (attachedScheduling == null) {
-			return new ArrayList<TaskEntity>();
-		}
-		try {
-			return (List<TaskEntity>) attachedScheduling.getTasks();
-		} catch (RuntimeException e) {
-			LOG.debug("getting tasks of scheduling "
-					+ attachedScheduling.getName() + " failed!");
-			throw (e);
-		}
+	public List<SchedulingEntity> getSchedulingList() {
+		return this.schedulingDAO.listSchedulings();
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<SchedulingEntity> getSchedulingList() {
-		return this.schedulingDAO.listSchedulings();
+	public List<TaskHistoryEntity> getTaskHistoryList(TaskEntity task) {
+		return taskHistoryDAO.getTaskHistory(task);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void performTask(TaskEntity task) {
+		TaskEntity attachedEntity = this.taskDAO.findTaskEntity(task
+				.getJndiName());
+		this.taskScheduler.performTask(attachedEntity);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void performScheduling(SchedulingEntity scheduling) {
+		SchedulingEntity attachedEntity = this.schedulingDAO
+				.findSchedulingByName(scheduling.getName());
+		this.taskScheduler.performScheduling(attachedEntity);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void clearTaskHistory(TaskEntity task) {
+		this.taskHistoryDAO.clearTaskHistory(task);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void clearAllTasksHistory() {
+		this.taskHistoryDAO.clearAllTasksHistory();
 	}
 }

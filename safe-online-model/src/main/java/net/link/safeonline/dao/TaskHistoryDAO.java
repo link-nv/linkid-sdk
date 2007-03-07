@@ -5,30 +5,23 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.service;
+package net.link.safeonline.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Local;
-import javax.ejb.Remote;
 
-import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.TaskEntity;
 import net.link.safeonline.entity.TaskHistoryEntity;
 
 @Local
-@Remote
-public interface SchedulingService {
+public interface TaskHistoryDAO {
 
-	List<TaskEntity> getTaskList();
+	TaskHistoryEntity addTaskHistoryEntity(TaskEntity task, String message,
+			boolean result, Date startDate, Date endDate);
 
-	List<SchedulingEntity> getSchedulingList();
-
-	List<TaskHistoryEntity> getTaskHistoryList(TaskEntity task);
-
-	void performTask(TaskEntity task);
-
-	void performScheduling(SchedulingEntity scheduling);
+	List<TaskHistoryEntity> getTaskHistory(TaskEntity task);
 
 	void clearTaskHistory(TaskEntity task);
 

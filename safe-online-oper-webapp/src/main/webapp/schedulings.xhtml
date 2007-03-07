@@ -25,7 +25,8 @@
 
 				<h:column>
 					<f:facet name="header">Name</f:facet>
-					<h:commandLink value="#{item.name}" action="#{scheduling.view}" />
+					<h:commandLink value="#{item.name}"
+						action="#{scheduling.schedulingView}" />
 				</h:column>
 				<h:column>
 					<f:facet name="header">Cron</f:facet>
@@ -44,8 +45,8 @@
 
 			<h:messages styleClass="error" />
 
-			<h:commandButton action="back" id="back" value="Back"
-				immediate="true" />
+			<h:commandButton action="#{scheduling.taskListView}" id="back"
+				value="Back" immediate="true" />
 
 		</h:form>
 

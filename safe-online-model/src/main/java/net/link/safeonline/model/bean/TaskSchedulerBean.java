@@ -31,6 +31,7 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.Task;
 import net.link.safeonline.dao.SchedulingDAO;
 import net.link.safeonline.dao.TaskDAO;
+import net.link.safeonline.dao.TaskHistoryDAO;
 import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.TaskEntity;
 import net.link.safeonline.model.TaskScheduler;
@@ -47,6 +48,9 @@ public class TaskSchedulerBean implements TaskScheduler {
 
 	@EJB
 	private SchedulingDAO schedulingDAO;
+
+	@EJB
+	private TaskHistoryDAO taskHistoryDAO;
 
 	@Resource
 	private TimerService timerService;
@@ -75,24 +79,41 @@ public class TaskSchedulerBean implements TaskScheduler {
 			return;
 		}
 
+		// do the job
+		this.performScheduling(scheduling);
+
+		// restore the timer
+		this.setTimer(scheduling);
+
+	}
+
+	public void performTask(TaskEntity taskEntity) {
+		Date startDate = null;
+		Date endDate = null;
+		try {
+			Task task = EjbUtils.getEJB(taskEntity.getJndiName(), Task.class);
+			LOG.debug("Firing task " + task.getName());
+			startDate = new Date(System.currentTimeMillis());
+			task.perform();
+			endDate = new Date(System.currentTimeMillis());
+		} catch (Exception e) {
+			endDate = new Date(System.currentTimeMillis());
+			LOG.debug("Could not get Task: " + taskEntity.getJndiName());
+			this.taskHistoryDAO.addTaskHistoryEntity(taskEntity,
+					e.getMessage(), false, startDate, endDate);
+		}
+		this.taskHistoryDAO.addTaskHistoryEntity(taskEntity, "", true,
+				startDate, endDate);
+	}
+
+	public void performScheduling(SchedulingEntity scheduling) {
 		Collection<TaskEntity> taskEntities = scheduling.getTasks();
 
 		LOG.debug("Scheduling tasks in " + scheduling.getName());
 		// perform the tasks
 		for (TaskEntity taskEntity : taskEntities) {
-			try {
-				Task task = EjbUtils.getEJB(taskEntity.getJndiName(),
-						Task.class);
-				LOG.debug("Firing task " + task.getName());
-				task.perform();
-			} catch (Exception e) {
-				LOG.debug("Could not get Task: " + taskEntity.getJndiName());
-			}
+			this.performTask(taskEntity);
 		}
-
-		// restore the timer
-		this.setTimer(scheduling);
-
 	}
 
 	public void postStart() {

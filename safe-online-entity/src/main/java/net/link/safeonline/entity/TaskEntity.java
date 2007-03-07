@@ -8,6 +8,8 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -15,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
@@ -47,8 +50,10 @@ public class TaskEntity implements Serializable {
 
 	private SchedulingEntity scheduling;
 
+	private List<TaskHistoryEntity> taskHistory;
+
 	public TaskEntity() {
-		// required
+		this(null, null, null);
 	}
 
 	public TaskEntity(String jndiName, String name,
@@ -56,6 +61,7 @@ public class TaskEntity implements Serializable {
 		this.name = name;
 		this.jndiName = jndiName;
 		this.scheduling = schedulingEntity;
+		this.taskHistory = new LinkedList<TaskHistoryEntity>();
 	}
 
 	public String getName() {
@@ -82,6 +88,19 @@ public class TaskEntity implements Serializable {
 
 	public void setScheduling(SchedulingEntity schedulingEntity) {
 		this.scheduling = schedulingEntity;
+	}
+
+	@OneToMany(mappedBy = "task")
+	public List<TaskHistoryEntity> getTaskHistory() {
+		return this.taskHistory;
+	}
+
+	public void setTaskHistory(List<TaskHistoryEntity> taskHistory) {
+		this.taskHistory = taskHistory;
+	}
+
+	public void addTaskHistoryEntity(TaskHistoryEntity taskHistoryEntity) {
+		this.taskHistory.add(taskHistoryEntity);
 	}
 
 	public static Query createQueryWhereJndiName(EntityManager entityManager,

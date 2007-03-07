@@ -11,6 +11,8 @@ import javax.ejb.Local;
 import javax.ejb.Timer;
 
 import net.link.safeonline.Startable;
+import net.link.safeonline.entity.SchedulingEntity;
+import net.link.safeonline.entity.TaskEntity;
 
 @Local
 public interface TaskScheduler extends Startable {
@@ -21,5 +23,9 @@ public interface TaskScheduler extends Startable {
 	 * @param timer
 	 */
 	void timeOut(Timer timer);
+
+	void performTask(TaskEntity task);
+
+	void performScheduling(SchedulingEntity scheduling);
 
 }

@@ -30,13 +30,21 @@
 				<tr>
 					<th>Scheduling:</th>
 					<td><h:commandLink value="#{selectedTask.scheduling.name}"
-						action="#{scheduling.viewSchedulingForTask}" /></td>
+						action="#{scheduling.schedulingView}" /></td>
 				</tr>
 			</table>
 
-
-			<h:commandButton action="back" id="back" value="Back"
-				immediate="true" />
+			<h:commandButton action="#{scheduling.taskListView}" id="back"
+				value="Back" immediate="true" />
+			<so:nbsp />
+			<h:commandButton action="#{scheduling.taskHistoryView}"
+				id="taskhistoryview" value="Task History" immediate="true" />
+			<so:nbsp />
+			<h:commandButton action="#{scheduling.performTask}" id="performtask"
+				value="Perform Task" immediate="true" />
+			<so:nbsp />
+			<h:commandButton action="#{scheduling.clearTaskHistory}"
+				id="cleartaskhistory" value="Clear Task History" immediate="true" />
 		</h:form>
 
 	</ui:define>
