@@ -61,8 +61,24 @@
 	<navigation-rule>
 		<from-view-id>/application-view.xhtml</from-view-id>
 		<navigation-case>
-			<from-outcome>back</from-outcome>
+			<from-action>back</from-action>
 			<to-view-id>/applications.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/application-edit.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/application-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/application-view.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/application-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

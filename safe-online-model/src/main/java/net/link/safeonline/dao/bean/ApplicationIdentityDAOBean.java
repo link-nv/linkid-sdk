@@ -14,6 +14,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
@@ -25,14 +28,26 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 @Stateless
 public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
 
+	private static final Log LOG = LogFactory
+			.getLog(ApplicationIdentityDAOBean.class);
+
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
 	public void addApplicationIdentity(ApplicationEntity application,
 			long identityVersion, List<AttributeTypeEntity> attributeTypes) {
+		LOG.debug("add application identity: " + application.getName()
+				+ ", version: " + identityVersion);
+		if (null != attributeTypes) {
+			for (AttributeTypeEntity attributeType : attributeTypes) {
+				LOG.debug("identity attribute: " + attributeType.getName());
+			}
+		}
 		ApplicationIdentityEntity applicationIdentity = new ApplicationIdentityEntity(
 				application, identityVersion, attributeTypes);
 		this.entityManager.persist(applicationIdentity);
+		LOG.debug("flushing the persistence context");
+		this.entityManager.flush();
 	}
 
 	public ApplicationIdentityEntity getApplicationIdentity(

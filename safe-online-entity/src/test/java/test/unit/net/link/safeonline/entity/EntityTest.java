@@ -565,4 +565,29 @@ public class EntityTest extends TestCase {
 		assertEquals(1, resultAttributeTypes.size());
 		assertEquals(attributeType, resultAttributeTypes.get(0));
 	}
+
+	public void testMultipleApplicationIdentities() throws Exception {
+		// setup
+		SubjectEntity admin = new SubjectEntity("test-admin");
+		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
+				"owner", admin);
+		ApplicationEntity application = new ApplicationEntity(
+				"test-application", applicationOwner);
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				"test-attribute-type", "string", true, true);
+		ApplicationIdentityEntity applicationIdentity1 = new ApplicationIdentityEntity(
+				application, 1, Collections.singletonList(attributeType));
+		ApplicationIdentityEntity applicationIdentity2 = new ApplicationIdentityEntity(
+				application, 2, Collections.singletonList(attributeType));
+
+		// operate: add entities
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(admin);
+		entityManager.persist(applicationOwner);
+		entityManager.persist(application);
+		entityManager.persist(attributeType);
+		entityManager.persist(applicationIdentity1);
+		entityManager.persist(applicationIdentity2);
+		entityManager.getTransaction().commit();
+	}
 }

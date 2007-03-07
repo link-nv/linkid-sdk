@@ -83,6 +83,10 @@ public class ApplicationBean implements Application {
 	@In(value = "selectedNewApplicationAttributeTypes", required = false)
 	private String[] selectedAttributeTypes;
 
+	@Out(value = "selectedApplicationIdentityAttributeTypeList", required = false)
+	@In(required = false)
+	private String[] selectedApplicationIdentityAttributeTypeList;
+
 	@Remove
 	@Destroy
 	public void destroyCallback() {
@@ -96,6 +100,7 @@ public class ApplicationBean implements Application {
 
 	@DataModelSelection("operApplicationList")
 	@Out(value = "selectedApplication", required = false, scope = ScopeType.SESSION)
+	@In(required = false)
 	private ApplicationEntity selectedApplication;
 
 	@SuppressWarnings("unused")
@@ -246,8 +251,8 @@ public class ApplicationBean implements Application {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory("newApplicationAttributeTypeList")
-	public List<SelectItem> newApplicationAttributeTypeListFactory() {
+	@Factory("applicationAttributeTypeList")
+	public List<SelectItem> applicationAttributeTypeListFactory() {
 		List<AttributeTypeEntity> attributeTypes = this.attributeTypeService
 				.getAttributeTypes();
 		List<SelectItem> itemList = new LinkedList<SelectItem>();
@@ -262,5 +267,68 @@ public class ApplicationBean implements Application {
 	@Factory("selectedNewApplicationAttributeTypes")
 	public String[] selectedNewApplicationAttributeTypesFactory() {
 		return new String[] {};
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String edit() {
+		List<AttributeTypeEntity> identityAttributeTypes;
+		try {
+			identityAttributeTypes = this.applicationService
+					.getCurrentApplicationIdentity(this.selectedApplication
+							.getName());
+		} catch (ApplicationNotFoundException e) {
+			String msg = "application not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (ApplicationIdentityNotFoundException e) {
+			String msg = "application identity not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		}
+		this.selectedApplicationIdentityAttributeTypeList = new String[identityAttributeTypes
+				.size()];
+		for (int idx = 0; idx < this.selectedApplicationIdentityAttributeTypeList.length; idx++) {
+			this.selectedApplicationIdentityAttributeTypeList[idx] = identityAttributeTypes
+					.get(idx).getName();
+		}
+		return "edit";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String save() {
+		String applicationId = this.selectedApplication.getName();
+		LOG.debug("save application: " + applicationId);
+		for (String item : this.selectedApplicationIdentityAttributeTypeList) {
+			LOG.debug("application identity attribute type: " + item);
+		}
+		try {
+			this.applicationService.updateApplicationIdentity(applicationId,
+					this.selectedApplicationIdentityAttributeTypeList);
+			/*
+			 * Refresh the selected application.
+			 */
+			this.selectedApplication = this.applicationService
+					.getApplication(applicationId);
+			this.applicationIdentityAttributeTypeList = this.applicationService
+					.getCurrentApplicationIdentity(applicationId);
+		} catch (ApplicationNotFoundException e) {
+			String msg = "application not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (ApplicationIdentityNotFoundException e) {
+			String msg = "application identity not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (AttributeTypeNotFoundException e) {
+			String msg = "attribute type not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		}
+		return "success";
 	}
 }

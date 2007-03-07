@@ -80,8 +80,7 @@ public class AttributeTypeEntity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		final AttributeTypeEntity rhs = (AttributeTypeEntity) obj;
-		return new EqualsBuilder().append(this.name, rhs.name).append(
-				this.type, rhs.type).isEquals();
+		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
 	}
 
 	@Override

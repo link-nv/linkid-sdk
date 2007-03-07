@@ -43,7 +43,11 @@ public interface Application {
 
 	UploadedFile getUpFile();
 
-	List<SelectItem> newApplicationAttributeTypeListFactory();
+	List<SelectItem> applicationAttributeTypeListFactory();
 
 	String[] selectedNewApplicationAttributeTypesFactory();
+
+	String edit();
+
+	String save();
 }

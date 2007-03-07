@@ -81,6 +81,7 @@ public class SecurityApplicationEntityListener {
 		boolean isOperator = isCallerInRole(subject,
 				SafeOnlineRoles.OPERATOR_ROLE);
 		if (isOperator) {
+			LOG.debug("operator ok");
 			return;
 		}
 

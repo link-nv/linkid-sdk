@@ -42,6 +42,9 @@ public interface ApplicationService {
 	 */
 	List<ApplicationEntity> getApplications();
 
+	ApplicationEntity getApplication(String applicationName)
+			throws ApplicationNotFoundException;
+
 	/**
 	 * Gives back the applications owned by the caller principal.
 	 * 
@@ -123,4 +126,23 @@ public interface ApplicationService {
 	List<AttributeTypeEntity> getCurrentApplicationIdentity(
 			String applicationName) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException;
+
+	/**
+	 * Updates the application identity for the given application using the
+	 * given set of attribute type names. The current application identity
+	 * version will only be changed if the new set of attribute types is a
+	 * superset of the current attribute type set that makes up the application
+	 * identity.
+	 * 
+	 * @param applicationId
+	 * @param applicationIdentityAttributeTypes
+	 * @throws ApplicationNotFoundException
+	 * @throws ApplicationIdentityNotFoundException
+	 * @throws AttributeTypeNotFoundException
+	 */
+	void updateApplicationIdentity(String applicationId,
+			String[] applicationIdentityAttributeTypes)
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException,
+			AttributeTypeNotFoundException;
 }
