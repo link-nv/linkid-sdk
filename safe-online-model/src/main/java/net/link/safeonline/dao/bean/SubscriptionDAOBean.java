@@ -95,4 +95,13 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		LOG.debug("remove subscription: " + subscriptionEntity);
 		this.entityManager.remove(subscriptionEntity);
 	}
+
+	public SubscriptionEntity getSubscription(SubjectEntity subject,
+			ApplicationEntity application) throws SubscriptionNotFoundException {
+		SubscriptionEntity subscription = findSubscription(subject, application);
+		if (null == subscription) {
+			throw new SubscriptionNotFoundException();
+		}
+		return subscription;
+	}
 }

@@ -14,19 +14,10 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h1>BeID authentication</h1>
+		<h1>Identity Rejection</h1>
 
-		<applet name="AuthenticationApplet"
-			code="net.link.safeonline.auth.AuthenticationApplet.class"
-			archive="safe-online-auth-applet-package.jar" width="450"
-			height="400">
-			<param name="SmartCardConfig" value="beid" />
-			<param name="ServletPath" value="authentication/" />
-			<param name="TargetPath" value="login" />
-			<param name="SessionId"
-				value="#{facesContext.externalContext.request.session.id}" />
-			<param name="ApplicationId" value="${applicationId}" />
-		</applet>
+		<p>You did not agree with the usage of the attributes required by
+		the application.</p>
 
 	</ui:define>
 

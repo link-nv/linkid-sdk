@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Authentication</ui:define>
+
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
+	</ui:define>
+
+	<ui:define name="content">
+		<h1>Identity confirmation</h1>
+
+		<p>You have been authenticated successfully. Before continuing to
+		the application you need to confirm the usage of the following
+		attributes by the application.</p>
+
+		<h:dataTable var="item" value="#{identityConfirmationList}"
+			preserveDataModel="false" styleClass="listingTable"
+			rowClasses="listingTable_Row1,listingTable_Row2">
+
+			<h:column>
+				<f:facet name="header">Attribute Name</f:facet>
+				<h:outputText value="#{item.name}" />
+			</h:column>
+
+		</h:dataTable>
+
+		<h:form>
+			<h:commandButton action="#{identityConfirmation.agree}" id="agree"
+				value="Agree" />
+			<so:nbsp />
+			<h:commandButton action="reject" id="reject" value="Reject"
+				immediate="true" />
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/appinfo.xhtml" />
+	</ui:define>
+</ui:composition>
+</body>
+</html>

@@ -92,8 +92,7 @@ public class AuthenticationServlet extends HttpServlet {
 			 * Next session attribute is used to communicate the authentication
 			 * event to the redirect servlet.
 			 */
-			session.setAttribute(LogonRedirectServlet.USER_SESSION_ATTRIBUTE,
-					userId);
+			session.setAttribute("username", userId);
 		} catch (TrustDomainNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			/*

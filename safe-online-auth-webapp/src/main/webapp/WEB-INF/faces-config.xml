@@ -19,4 +19,12 @@
 		</phase-listener>
 	</lifecycle>
 
+	<navigation-rule>
+		<from-view-id>/identity-confirmation.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>reject</from-action>
+			<to-view-id>/identity-rejection.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
 </faces-config>

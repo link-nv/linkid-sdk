@@ -8,8 +8,6 @@
 package net.link.safeonline.auth.bean;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import javax.ejb.EJB;
 import javax.ejb.Remove;
@@ -17,17 +15,19 @@ import javax.ejb.Stateful;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.LocalBinding;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.core.FacesMessages;
-
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.UsernamePasswordLogon;
 import net.link.safeonline.authentication.service.AuthenticationService;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
+import org.jboss.seam.core.FacesMessages;
 
 @Stateful
 @Name("usernamePasswordLogon")
@@ -45,11 +45,12 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 	@In(value = "applicationId", required = true)
 	private String application;
 
-	@In(required = true)
-	private String target;
-
 	@In(create = true)
 	FacesMessages facesMessages;
+
+	@SuppressWarnings("unused")
+	@Out(value = "username", required = false, scope = ScopeType.SESSION)
+	private String authenticatedUsername;
 
 	@EJB
 	private AuthenticationService authenticationService;
@@ -83,29 +84,27 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 			return null;
 		}
 
+		LOG.debug("setting session username: " + this.username);
+		this.authenticatedUsername = this.username;
+
+		redirectToLogin();
+
+		return null;
+	}
+
+	private void redirectToLogin() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		LOG.debug("redirecting to:  " + this.target);
-		String redirectUrl;
-		try {
-			redirectUrl = this.target + "?username="
-					+ URLEncoder.encode(this.username, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			String msg = "UnsupportedEncoding: " + e.getMessage();
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
+		String redirectUrl = "./login";
+		LOG.debug("redirecting to: " + redirectUrl);
 		try {
 			externalContext.redirect(redirectUrl);
 		} catch (IOException e) {
 			String msg = "IO error: " + e.getMessage();
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
-			return null;
+			return;
 		}
-
-		return null;
 	}
 
 	public void setPassword(String password) {

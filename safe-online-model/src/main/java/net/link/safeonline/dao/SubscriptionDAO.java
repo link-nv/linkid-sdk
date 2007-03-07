@@ -29,6 +29,9 @@ public interface SubscriptionDAO {
 	SubscriptionEntity findSubscription(SubjectEntity subject,
 			ApplicationEntity application);
 
+	SubscriptionEntity getSubscription(SubjectEntity subject,
+			ApplicationEntity application) throws SubscriptionNotFoundException;
+
 	void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
 			SubjectEntity subject, ApplicationEntity application);
 

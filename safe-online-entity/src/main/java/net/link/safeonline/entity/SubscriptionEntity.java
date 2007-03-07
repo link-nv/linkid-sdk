@@ -62,6 +62,8 @@ public class SubscriptionEntity implements Serializable {
 
 	private SubscriptionOwnerType subscriptionOwnerType;
 
+	private Long confirmedIdentityVersion;
+
 	public SubscriptionEntity() {
 		// empty
 	}
@@ -114,6 +116,14 @@ public class SubscriptionEntity implements Serializable {
 	public void setSubscriptionOwnerType(
 			SubscriptionOwnerType applicationOwnerType) {
 		this.subscriptionOwnerType = applicationOwnerType;
+	}
+
+	public Long getConfirmedIdentityVersion() {
+		return this.confirmedIdentityVersion;
+	}
+
+	public void setConfirmedIdentityVersion(Long confirmedIdentityVersion) {
+		this.confirmedIdentityVersion = confirmedIdentityVersion;
 	}
 
 	@Override

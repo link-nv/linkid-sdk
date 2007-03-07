@@ -12,7 +12,11 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEntity;
 
 /**
@@ -66,4 +70,39 @@ public interface IdentityService {
 	 * @return
 	 */
 	List<AttributeDO> getAttributes();
+
+	/**
+	 * Checks whether confirmation is required over the usage of the identity
+	 * attributes use by the given application.
+	 * 
+	 * @param applicationName
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 * @throws SubscriptionNotFoundException
+	 * @throws ApplicationIdentityNotFoundException
+	 */
+	boolean isConfirmationRequired(String applicationName)
+			throws ApplicationNotFoundException, SubscriptionNotFoundException,
+			ApplicationIdentityNotFoundException;
+
+	/**
+	 * Confirm the current identity for the given application.
+	 * 
+	 * TODO: add version to be confirmed.
+	 * 
+	 * To make this method really bullet proof we would have to pass the version
+	 * number itself. This because it's possible that the operator is changing
+	 * the identity while the user is confirming it. This would make the user to
+	 * confirm a more recent identity version that the one he was presented.
+	 * 
+	 * @param applicationName
+	 * @throws ApplicationNotFoundException
+	 * @throws SubscriptionNotFoundException
+	 */
+	void confirmIdentity(String applicationName)
+			throws ApplicationNotFoundException, SubscriptionNotFoundException;
+
+	List<AttributeTypeEntity> getIdentityAttributesToConfirm(
+			String applicationName) throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, SubscriptionNotFoundException;
 }
