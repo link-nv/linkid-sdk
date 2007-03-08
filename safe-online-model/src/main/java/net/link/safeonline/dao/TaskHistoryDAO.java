@@ -27,4 +27,5 @@ public interface TaskHistoryDAO {
 
 	void clearAllTasksHistory();
 
+	void clearAllTasksHistory(long ageInMillis);
 }

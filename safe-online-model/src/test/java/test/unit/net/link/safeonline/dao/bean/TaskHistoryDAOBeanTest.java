@@ -9,12 +9,15 @@ package test.unit.net.link.safeonline.dao.bean;
 
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+
+import net.link.safeonline.dao.TaskDAO;
+import net.link.safeonline.dao.TaskHistoryDAO;
 import net.link.safeonline.dao.bean.TaskDAOBean;
 import net.link.safeonline.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.TaskEntity;
 import net.link.safeonline.entity.TaskHistoryEntity;
-import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import junit.framework.TestCase;
 
@@ -22,9 +25,9 @@ public class TaskHistoryDAOBeanTest extends TestCase {
 
 	private EntityTestManager entityTestManager;
 
-	private TaskHistoryDAOBean testedInstance;
+	private TaskHistoryDAO testedInstance;
 
-	private TaskDAOBean taskDAO;
+	private TaskDAO taskDAO;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -37,13 +40,9 @@ public class TaskHistoryDAOBeanTest extends TestCase {
 		this.entityTestManager.setUp(TaskEntity.class, TaskHistoryEntity.class,
 				SchedulingEntity.class);
 
-		this.taskDAO = new TaskDAOBean();
-		this.testedInstance = new TaskHistoryDAOBean();
-
-		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
-				.getEntityManager());
-		EJBTestUtils.inject(this.taskDAO, this.entityTestManager
-				.getEntityManager());
+		this.taskDAO = this.entityTestManager.newInstance(TaskDAOBean.class);
+		this.testedInstance = this.entityTestManager
+				.newInstance(TaskHistoryDAOBean.class);
 	}
 
 	@Override
@@ -66,4 +65,35 @@ public class TaskHistoryDAOBeanTest extends TestCase {
 				.getTaskHistory(task2).get(0);
 		assertEquals(taskHistoryEntity1, taskHistoryEntity2);
 	}
+
+	public void testTaskHistoryClearing() {
+
+		// setup
+		TaskEntity task = this.taskDAO.addTaskEntity("jndi", "name", null);
+		Date startDate = new Date(System.currentTimeMillis());
+		Date endDate = new Date(System.currentTimeMillis() + 1000);
+		TaskHistoryEntity taskHistoryEntity = this.testedInstance
+				.addTaskHistoryEntity(task, "", true, startDate, endDate);
+
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		// operate
+		this.testedInstance.clearAllTasksHistory(System.currentTimeMillis());
+		entityManager.flush();
+
+		// verify
+		TaskEntity resultTask = this.taskDAO.findTaskEntity("jndi");
+		TaskHistoryEntity result = this.testedInstance.getTaskHistory(resultTask).get(0);
+		assertEquals(result, taskHistoryEntity);
+
+		// operate
+		this.testedInstance.clearAllTasksHistory(0);
+		entityManager.flush();
+
+		// verify
+		resultTask = this.taskDAO.findTaskEntity("jndi");
+		int size = this.testedInstance.getTaskHistory(resultTask).size();
+		assertEquals(size,0);
+	}
+
 }

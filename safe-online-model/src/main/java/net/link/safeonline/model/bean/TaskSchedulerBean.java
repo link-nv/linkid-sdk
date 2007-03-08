@@ -21,6 +21,8 @@ import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerHandle;
 import javax.ejb.TimerService;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.Startable;
 import net.link.safeonline.Task;
@@ -56,9 +58,10 @@ public class TaskSchedulerBean implements TaskScheduler {
 	private TimerService timerService;
 
 	// private static String defaultCronExpression = "0 0 3 * * ?";
-	private static String defaultCronExpression = "0 0/5 * * * ?";
+	private static String defaultCronExpression = "0 * * * * ?";
 
 	@Timeout
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void timeOut(Timer timer) {
 		String schedulingName = (String) timer.getInfo();
 		SchedulingEntity scheduling = this.schedulingDAO
@@ -80,7 +83,12 @@ public class TaskSchedulerBean implements TaskScheduler {
 		}
 
 		// do the job
-		this.performScheduling(scheduling);
+		try {
+			this.performScheduling(scheduling);
+		} catch (Exception e) {
+			LOG.debug("Exception while performing scheduling: "
+					+ e.getMessage());
+		}
 
 		// restore the timer
 		this.setTimer(scheduling);
@@ -186,8 +194,9 @@ public class TaskSchedulerBean implements TaskScheduler {
 				fireDate = cronTrigger.getNextFireTime();
 			}
 			LOG.debug("Setting timer at: " + fireDate);
-			scheduling.setTimerHandle(timerService.createTimer(fireDate,
-					scheduling.getName()).getHandle());
+			Timer timer = timerService.createTimer(fireDate, scheduling
+					.getName());
+			scheduling.setTimerHandle(timer.getHandle());
 			scheduling.setFireDate(fireDate);
 		} catch (Exception e) {
 			throw new EJBException(e);
@@ -197,5 +206,4 @@ public class TaskSchedulerBean implements TaskScheduler {
 	public int getPriority() {
 		return Startable.PRIORITY_DONT_CARE;
 	}
-
 }

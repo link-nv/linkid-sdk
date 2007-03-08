@@ -39,11 +39,6 @@ public class ConfigurationServiceBean implements ConfigurationService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public ConfigItemEntity getConfigItem(String name) {
-		return this.configItemDAO.findConfigItem(name);
-	}
-
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void saveConfigItem(ConfigItemEntity configItem) {
 		this.configItemDAO.saveConfigItem(configItem);
 	}
@@ -57,5 +52,4 @@ public class ConfigurationServiceBean implements ConfigurationService {
 			}
 		}
 	}
-
 }

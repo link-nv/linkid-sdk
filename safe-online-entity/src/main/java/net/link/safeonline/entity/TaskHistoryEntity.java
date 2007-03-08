@@ -27,6 +27,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import static net.link.safeonline.entity.TaskHistoryEntity.QUERY_DELETE_WHERE_TASK;
 import static net.link.safeonline.entity.TaskHistoryEntity.QUERY_DELETE;
+import static net.link.safeonline.entity.TaskHistoryEntity.QUERY_DELETE_WHERE_OLDER;
 
 @Entity
 @Table(name = "task_history")
@@ -35,7 +36,10 @@ import static net.link.safeonline.entity.TaskHistoryEntity.QUERY_DELETE;
 				+ "FROM TaskHistoryEntity AS taskHistory "
 				+ "WHERE taskHistory.task = :task"),
 		@NamedQuery(name = QUERY_DELETE, query = "DELETE "
-				+ "FROM TaskHistoryEntity") })
+				+ "FROM TaskHistoryEntity"),
+		@NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE "
+				+ "FROM TaskHistoryEntity AS taskHistory "
+				+ "WHERE taskHistory.executionDate < :ageLimit") })
 public class TaskHistoryEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -43,6 +47,8 @@ public class TaskHistoryEntity implements Serializable {
 	public static final String QUERY_DELETE_WHERE_TASK = "the.deltask";
 
 	public static final String QUERY_DELETE = "the.del";
+
+	public static final String QUERY_DELETE_WHERE_OLDER = "the.old";
 
 	private long id;
 
@@ -129,6 +135,14 @@ public class TaskHistoryEntity implements Serializable {
 
 	public static Query createQueryDelete(EntityManager entityManager) {
 		Query query = entityManager.createNamedQuery(QUERY_DELETE);
+		return query;
+	}
+
+	public static Query createQueryDeleteWhereOlder(
+			EntityManager entityManager, long ageInMillis) {
+		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_OLDER);
+		Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
+		query.setParameter("ageLimit", ageLimit);
 		return query;
 	}
 

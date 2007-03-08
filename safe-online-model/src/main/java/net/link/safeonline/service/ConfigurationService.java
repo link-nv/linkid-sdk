@@ -23,8 +23,5 @@ public interface ConfigurationService {
 
 	void saveConfiguration(List<ConfigGroupEntity> configGroupList);
 
-	ConfigItemEntity getConfigItem(String name);
-
 	void saveConfigItem(ConfigItemEntity configItem);
-
 }

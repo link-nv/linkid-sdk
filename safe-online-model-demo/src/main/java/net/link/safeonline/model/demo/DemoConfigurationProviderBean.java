@@ -20,12 +20,12 @@ import net.link.safeonline.ConfigurationProvider;
 @Stateless
 @Local(ConfigurationProvider.class)
 @LocalBinding(jndiBinding = ConfigurationProvider.JNDI_PREFIX + "/"
-		+ "DemoTaskBean")
-public class DemoConfigurationProvider implements ConfigurationProvider {
+		+ "DemoConfigurationProviderBean")
+public class DemoConfigurationProviderBean implements ConfigurationProvider {
 
 	private Map<String, String> config = null;
 
-	public DemoConfigurationProvider() {
+	public DemoConfigurationProviderBean() {
 		// a Treemap to keep the entries sorted
 		this.config = new TreeMap<String, String>();
 		this.config.put("To be or not to be?", "yes");
@@ -39,5 +39,4 @@ public class DemoConfigurationProvider implements ConfigurationProvider {
 	public Map<String, String> getConfigurationParameters() {
 		return this.config;
 	}
-
 }

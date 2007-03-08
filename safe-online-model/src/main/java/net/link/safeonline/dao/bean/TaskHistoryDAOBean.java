@@ -68,4 +68,12 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
 		query.executeUpdate();
 	}
 
+	public void clearAllTasksHistory(long ageInMillis) {
+		LOG.debug("Clearing history older than " + ageInMillis
+				+ "for all tasks");
+
+		Query query = TaskHistoryEntity.createQueryDeleteWhereOlder(
+				this.entityManager, ageInMillis);
+		query.executeUpdate();
+	}
 }
