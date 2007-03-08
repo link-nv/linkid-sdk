@@ -300,8 +300,8 @@ public class EntityTest extends TestCase {
 		TrustDomainEntity secondTrustDomain = new TrustDomainEntity(
 				trustDomainName, true);
 		entityManager = this.entityTestManager.refreshEntityManager();
-		entityManager.persist(secondTrustDomain);
 		try {
+			entityManager.persist(secondTrustDomain);
 			entityManager.flush();
 			fail();
 		} catch (EntityExistsException e) {
@@ -457,10 +457,10 @@ public class EntityTest extends TestCase {
 
 		// operate
 		entityManager = this.entityTestManager.refreshEntityManager();
-		entityManager.persist(new CachedOcspResponseEntity(key, true,
-				trustDomain));
 		// verify unique constraint
 		try {
+			entityManager.persist(new CachedOcspResponseEntity(key, true,
+					trustDomain));
 			entityManager.flush();
 			fail();
 		} catch (EntityExistsException e) {
@@ -573,7 +573,6 @@ public class EntityTest extends TestCase {
 		// clean the history entities and try to remove the task
 		entityManager.remove(history2);
 		entityManager.flush();
-		entityManager.remove(taskEntity);
 	}
 
 	public void testTaskHistoryClearing() {

@@ -12,18 +12,30 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.security.Identity;
+import java.security.Principal;
+import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import javax.ejb.EJBHome;
+import javax.ejb.EJBLocalHome;
+import javax.ejb.EJBLocalObject;
+import javax.ejb.EJBObject;
 import javax.ejb.Local;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+import javax.xml.rpc.handler.MessageContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.security.SimplePrincipal;
 
 /**
  * Util class for EJB3 unit testing.
@@ -166,9 +178,21 @@ public final class EJBTestUtils {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
 			EntityManager entityManager) {
+		return newInstance(clazz, container, entityManager, (String) null);
+	}
+
+	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
+			EntityManager entityManager, String callerPrincipalName) {
+		TestSessionContext testSessionContext = new TestSessionContext(
+				callerPrincipalName);
+		return newInstance(clazz, container, entityManager, testSessionContext);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
+			EntityManager entityManager, SessionContext sessionContext) {
 		Type instance;
 		try {
 			instance = clazz.newInstance();
@@ -177,14 +201,14 @@ public final class EJBTestUtils {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException("illegal access error");
 		}
-		InvocationHandler transactionInvocationHandler = new TestContainerInvocationHandler(
-				instance, container, entityManager);
+		InvocationHandler testContainerInvocationHandler = new TestContainerInvocationHandler(
+				instance, container, entityManager, sessionContext);
 		Class[] interfaces = clazz.getInterfaces();
 		if (0 == interfaces.length) {
 			interfaces = clazz.getSuperclass().getInterfaces();
 		}
 		Type proxy = (Type) Proxy.newProxyInstance(clazz.getClassLoader(),
-				interfaces, transactionInvocationHandler);
+				interfaces, testContainerInvocationHandler);
 		return proxy;
 	}
 
@@ -207,22 +231,23 @@ public final class EJBTestUtils {
 
 		private final EntityManager entityManager;
 
+		private final SessionContext sessionContext;
+
 		public TestContainerInvocationHandler(Object object, Class[] container,
-				EntityManager entityManager) {
+				EntityManager entityManager, SessionContext sessionContext) {
 			this.object = object;
 			this.container = container;
 			this.entityManager = entityManager;
+			this.sessionContext = sessionContext;
 		}
 
 		public Object invoke(Object proxy, Method method, Object[] args)
 				throws Throwable {
 			checkSessionBean();
 			Class clazz = this.object.getClass();
-			Class superClass = clazz.getSuperclass();
 			injectDependencies(clazz);
-			injectDependencies(superClass);
 			injectEntityManager(clazz);
-			injectEntityManager(superClass);
+			injectResources(clazz);
 			try {
 				Object result = method.invoke(this.object, args);
 				return result;
@@ -241,8 +266,32 @@ public final class EJBTestUtils {
 			}
 		}
 
+		private void injectResources(Class clazz) {
+			if (false == clazz.equals(Object.class)) {
+				injectResources(clazz.getSuperclass());
+			}
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field field : fields) {
+				Resource resourceAnnotation = field
+						.getAnnotation(Resource.class);
+				if (null == resourceAnnotation) {
+					continue;
+				}
+				Class fieldType = field.getType();
+				if (true == SessionContext.class.isAssignableFrom(fieldType)) {
+					setField(field, this.sessionContext);
+					return;
+				}
+				throw new EJBException("unsupported resource type: "
+						+ fieldType.getName());
+			}
+		}
+
 		@SuppressWarnings("unchecked")
 		private void injectDependencies(Class clazz) {
+			if (false == clazz.equals(Object.class)) {
+				injectDependencies(clazz.getSuperclass());
+			}
 			Field[] fields = clazz.getDeclaredFields();
 			for (Field field : fields) {
 				EJB ejbAnnotation = field.getAnnotation(EJB.class);
@@ -261,8 +310,9 @@ public final class EJBTestUtils {
 									+ fieldType.getName());
 				}
 				Class beanType = getBeanType(fieldType);
-				Object bean = EJBTestUtils.newInstance(beanType,
-						this.container, this.entityManager);
+				Object bean = EJBTestUtils
+						.newInstance(beanType, this.container,
+								this.entityManager, this.sessionContext);
 				setField(field, bean);
 			}
 		}
@@ -280,6 +330,9 @@ public final class EJBTestUtils {
 		}
 
 		private void injectEntityManager(Class clazz) {
+			if (false == clazz.equals(Object.class)) {
+				injectEntityManager(clazz.getSuperclass());
+			}
 			Field[] fields = clazz.getDeclaredFields();
 			for (Field field : fields) {
 				PersistenceContext persistenceContextAnnotation = field
@@ -305,6 +358,93 @@ public final class EJBTestUtils {
 			}
 			throw new EJBException("did not find a container class for type: "
 					+ interfaceType.getName());
+		}
+	}
+
+	private static class TestSessionContext implements SessionContext {
+
+		private final Principal principal;
+
+		public TestSessionContext(String principalName) {
+			if (null != principalName) {
+				this.principal = new SimplePrincipal(principalName);
+			} else {
+				this.principal = null;
+			}
+		}
+
+		public Object getBusinessObject(Class arg0)
+				throws IllegalStateException {
+			return null;
+		}
+
+		public EJBLocalObject getEJBLocalObject() throws IllegalStateException {
+			return null;
+		}
+
+		public EJBObject getEJBObject() throws IllegalStateException {
+			return null;
+		}
+
+		public Class getInvokedBusinessInterface() throws IllegalStateException {
+			return null;
+		}
+
+		public MessageContext getMessageContext() throws IllegalStateException {
+			return null;
+		}
+
+		@SuppressWarnings("deprecation")
+		public Identity getCallerIdentity() {
+			return null;
+		}
+
+		public Principal getCallerPrincipal() {
+			if (null == this.principal) {
+				throw new EJBException("caller principal not set");
+			}
+			return this.principal;
+		}
+
+		public EJBHome getEJBHome() {
+			return null;
+		}
+
+		public EJBLocalHome getEJBLocalHome() {
+			return null;
+		}
+
+		public Properties getEnvironment() {
+			return null;
+		}
+
+		public boolean getRollbackOnly() throws IllegalStateException {
+			return false;
+		}
+
+		public TimerService getTimerService() throws IllegalStateException {
+			return null;
+		}
+
+		public UserTransaction getUserTransaction()
+				throws IllegalStateException {
+			return null;
+		}
+
+		@SuppressWarnings("deprecation")
+		public boolean isCallerInRole(Identity arg0) {
+			return false;
+		}
+
+		public boolean isCallerInRole(String arg0) {
+			return false;
+		}
+
+		public Object lookup(String arg0) {
+			return null;
+		}
+
+		public void setRollbackOnly() throws IllegalStateException {
 		}
 	}
 }

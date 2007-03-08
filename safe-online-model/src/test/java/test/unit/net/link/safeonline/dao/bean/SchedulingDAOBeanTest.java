@@ -12,6 +12,7 @@ import java.util.List;
 import net.link.safeonline.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.TaskEntity;
+import net.link.safeonline.entity.TaskHistoryEntity;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import junit.framework.TestCase;
@@ -30,7 +31,8 @@ public class SchedulingDAOBeanTest extends TestCase {
 		 * If you add entities to this list, also add them to
 		 * safe-online-sql-ddl.
 		 */
-		this.entityTestManager.setUp(TaskEntity.class, SchedulingEntity.class);
+		this.entityTestManager.setUp(TaskEntity.class, SchedulingEntity.class,
+				TaskHistoryEntity.class);
 
 		this.testedInstance = new SchedulingDAOBean();
 

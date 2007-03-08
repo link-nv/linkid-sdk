@@ -7,8 +7,6 @@
 
 package net.link.safeonline.test.util;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +18,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.ejb.Ejb3Configuration;
@@ -33,58 +30,21 @@ public class EntityTestManager {
 
 	private EntityManager entityManager;
 
-	private static final class DatabaseShutdownHook extends Thread {
-
-		private static final Log LOG = LogFactory
-				.getLog(DatabaseShutdownHook.class);
-
-		private File tmpDbDir;
-
-		public DatabaseShutdownHook(File tmpDbDir) {
-			this.tmpDbDir = tmpDbDir;
-		}
-
-		@Override
-		public void run() {
-			LOG.debug("run database shutdown hook");
-			try {
-				FileUtils.deleteDirectory(this.tmpDbDir);
-			} catch (IOException e) {
-				LOG.error("could not delete directory: " + e.getMessage(), e);
-			}
-		}
-	}
-
 	@SuppressWarnings("deprecation")
 	public void setUp(Class... serializableClasses) throws Exception {
-		File tmpDbDir = File.createTempFile("derby-", "-db");
-		LOG.debug("tmp db dir: " + tmpDbDir);
-		if (!tmpDbDir.delete()) {
-			throw new RuntimeException("Could not delete "
-					+ tmpDbDir.getAbsolutePath());
-		}
-		if (!tmpDbDir.mkdirs()) {
-			throw new RuntimeException("Could not mkdirs: "
-					+ tmpDbDir.getAbsolutePath());
-		}
-		if (!tmpDbDir.isDirectory()) {
-			throw new RuntimeException("Is not a directory: "
-					+ tmpDbDir.getAbsolutePath());
-		}
-		System.setProperty("derby.system.home", tmpDbDir.getAbsolutePath());
-		Runtime.getRuntime()
-				.addShutdownHook(new DatabaseShutdownHook(tmpDbDir));
-
 		Ejb3Configuration configuration = new Ejb3Configuration();
 		configuration.setProperty("hibernate.dialect",
-				"org.hibernate.dialect.DerbyDialect");
+				"org.hibernate.dialect.HSQLDialect");
 		configuration.setProperty("hibernate.show_sql", "true");
-		configuration.setProperty("hibernate.hbm2ddl.auto", "create");
+		configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+		configuration.setProperty("hibernate.connection.username", "sa");
+		configuration.setProperty("hibernate.connection.password", "");
 		configuration.setProperty("hibernate.connection.driver_class",
-				"org.apache.derby.jdbc.EmbeddedDriver");
-		String dbName = "Test_DB_" + System.currentTimeMillis();
-		configuration.setProperty("hibernate.connection.url", "jdbc:derby:"
-				+ dbName + ";create=true");
+				"org.hsqldb.jdbcDriver");
+		configuration.setProperty("hibernate.connection.url",
+				"jdbc:hsqldb:mem:test");
+		configuration.setProperty("hibernate.transaction.factory_class",
+				"org.hibernate.transaction.JDBCTransactionFactory");
 		for (Class serializableClass : serializableClasses) {
 			LOG.debug("adding annotated class: " + serializableClass.getName());
 			configuration.addAnnotatedClass(serializableClass);

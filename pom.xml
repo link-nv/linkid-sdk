@@ -826,6 +826,16 @@
 				<artifactId>quartz</artifactId>
 				<version>${quartz.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-jaxrpc</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>${hsqldb.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -956,5 +966,6 @@
 		<maven-antrun-plugin.version>1.1</maven-antrun-plugin.version>
 		<wss4j.version>1.5.1</wss4j.version>
 		<quartz.version>1.5.2</quartz.version>
+		<hsqldb.version>1.8.0.7</hsqldb.version>
 	</properties>
 </project>

@@ -140,5 +140,9 @@
 			<groupId>org.jboss</groupId>
 			<artifactId>jmx-client</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-jaxrpc</artifactId>
+		</dependency>
 	</dependencies>
 </project>

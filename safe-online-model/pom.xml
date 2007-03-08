@@ -162,6 +162,11 @@
 			<version>1.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-common-client</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>
