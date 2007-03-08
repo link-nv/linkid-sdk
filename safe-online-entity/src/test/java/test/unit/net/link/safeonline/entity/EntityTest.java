@@ -29,6 +29,8 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributePK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CachedOcspResponseEntity;
+import net.link.safeonline.entity.ConfigGroupEntity;
+import net.link.safeonline.entity.ConfigItemEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -72,7 +74,8 @@ public class EntityTest extends TestCase {
 				TrustDomainEntity.class, TrustPointEntity.class,
 				SubjectIdentifierEntity.class, CachedOcspResponseEntity.class,
 				TaskEntity.class, SchedulingEntity.class,
-				TaskHistoryEntity.class, ApplicationIdentityEntity.class);
+				TaskHistoryEntity.class, ApplicationIdentityEntity.class,
+				ConfigItemEntity.class, ConfigGroupEntity.class);
 	}
 
 	@Override
@@ -653,5 +656,16 @@ public class EntityTest extends TestCase {
 		entityManager.persist(applicationIdentity1);
 		entityManager.persist(applicationIdentity2);
 		entityManager.getTransaction().commit();
+	}
+
+	public void testAddRemoveConfig() {
+		// setup
+		ConfigGroupEntity group = new ConfigGroupEntity("group 1");
+		ConfigItemEntity item = new ConfigItemEntity("name 1", "value 1", group);
+
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(group);
+		entityManager.persist(item);
+		entityManager.flush();
 	}
 }

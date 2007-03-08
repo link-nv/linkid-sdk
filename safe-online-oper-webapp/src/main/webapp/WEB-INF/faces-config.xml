@@ -281,4 +281,16 @@
 			<to-view-id>/attributes.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/configuration.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>saved</from-outcome>
+			<to-view-id>/overview.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/overview.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 </faces-config>
