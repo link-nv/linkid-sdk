@@ -10,12 +10,12 @@ package net.link.safeonline.test.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.Identity;
 import java.security.Principal;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.EJBHome;
@@ -37,6 +37,7 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.security.SimplePrincipal;
 
 /**
@@ -186,9 +187,16 @@ public final class EJBTestUtils {
 	}
 
 	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
+			EntityManager entityManager, String callerPrincipalName, String role) {
+		TestSessionContext testSessionContext = new TestSessionContext(
+				callerPrincipalName, role);
+		return newInstance(clazz, container, entityManager, testSessionContext);
+	}
+
+	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
 			EntityManager entityManager, String callerPrincipalName) {
 		TestSessionContext testSessionContext = new TestSessionContext(
-				callerPrincipalName);
+				callerPrincipalName, null);
 		return newInstance(clazz, container, entityManager, testSessionContext);
 	}
 
@@ -245,6 +253,7 @@ public final class EJBTestUtils {
 				MethodProxy proxy) throws Throwable {
 			checkSessionBean();
 			Class clazz = this.object.getClass();
+			checkSecurity(clazz, method);
 			injectDependencies(clazz);
 			injectEntityManager(clazz);
 			injectResources(clazz);
@@ -254,6 +263,43 @@ public final class EJBTestUtils {
 			} catch (InvocationTargetException e) {
 				throw e.getTargetException();
 			}
+		}
+
+		@SuppressWarnings("unchecked")
+		private void checkSecurity(Class clazz, Method method) {
+			SecurityDomain securityDomainAnnotation = (SecurityDomain) clazz
+					.getAnnotation(SecurityDomain.class);
+			if (null == securityDomainAnnotation) {
+				return;
+			}
+			LOG.debug("security domain: " + securityDomainAnnotation.value());
+			Principal callerPrincipal = this.sessionContext
+					.getCallerPrincipal();
+			if (null == callerPrincipal) {
+				throw new EJBException("caller principal should not be null");
+			}
+			LOG.debug("caller principal: " + callerPrincipal.getName());
+			RolesAllowed rolesAllowedAnnotation = method
+					.getAnnotation(RolesAllowed.class);
+			if (rolesAllowedAnnotation == null) {
+				return;
+			}
+			String[] roles = rolesAllowedAnnotation.value();
+			LOG.debug("number of roles: " + roles.length);
+			for (String role : roles) {
+				LOG.debug("checking role: " + role);
+				if (true == this.sessionContext.isCallerInRole(role)) {
+					return;
+				}
+			}
+			StringBuffer message = new StringBuffer();
+			message
+					.append("user is not allowed to invoke the method. [allowed roles: ");
+			for (String role : roles) {
+				message.append("\"" + role + "\" ");
+			}
+			message.append("]");
+			throw new EJBException(message.toString());
 		}
 
 		@SuppressWarnings("unchecked")
@@ -366,11 +412,15 @@ public final class EJBTestUtils {
 
 		private final Principal principal;
 
-		public TestSessionContext(String principalName) {
+		private final String role;
+
+		public TestSessionContext(String principalName, String role) {
 			if (null != principalName) {
 				this.principal = new SimplePrincipal(principalName);
+				this.role = role;
 			} else {
 				this.principal = null;
+				this.role = null;
 			}
 		}
 
@@ -396,7 +446,7 @@ public final class EJBTestUtils {
 		}
 
 		@SuppressWarnings("deprecation")
-		public Identity getCallerIdentity() {
+		public java.security.Identity getCallerIdentity() {
 			return null;
 		}
 
@@ -433,11 +483,17 @@ public final class EJBTestUtils {
 		}
 
 		@SuppressWarnings("deprecation")
-		public boolean isCallerInRole(Identity arg0) {
+		public boolean isCallerInRole(java.security.Identity arg0) {
 			return false;
 		}
 
-		public boolean isCallerInRole(String arg0) {
+		public boolean isCallerInRole(String expectedRole) {
+			if (null == role) {
+				return false;
+			}
+			if (true == role.equals(expectedRole)) {
+				return true;
+			}
 			return false;
 		}
 

@@ -159,20 +159,23 @@ public class IdentityServiceBeanTest extends TestCase {
 		userRegistrationService.registerUser(login, password, name);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class, container, entityManager);
+				ApplicationServiceBean.class, container, entityManager,
+				"test-operator", "operator");
 		userRegistrationService.registerUser("test-application-owner-login",
 				"password", null);
 		applicationService.registerApplicationOwner(
 				"test-application-owner-name", "test-application-owner-login");
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
-				AttributeTypeServiceBean.class, container, entityManager);
+				AttributeTypeServiceBean.class, container, entityManager,
+				"test-global-operator", "global-operator");
 		attributeTypeService.add(new AttributeTypeEntity("test-attribute-type",
 				"string", false, false));
 		applicationService.addApplication(applicationName,
 				"test-application-owner-name", null, null,
 				new String[] { "test-attribute-type" });
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
-				SubscriptionServiceBean.class, container, entityManager, login);
+				SubscriptionServiceBean.class, container, entityManager, login,
+				"user");
 		subscriptionService.subscribe(applicationName);
 
 		Principal principal = new SimplePrincipal(
@@ -186,7 +189,8 @@ public class IdentityServiceBeanTest extends TestCase {
 		SecurityAssociation.setSubject(subject);
 
 		IdentityService identityService = EJBTestUtils.newInstance(
-				IdentityServiceBean.class, container, entityManager, login);
+				IdentityServiceBean.class, container, entityManager, login,
+				"user");
 
 		// operate
 		boolean result = identityService
@@ -222,7 +226,8 @@ public class IdentityServiceBeanTest extends TestCase {
 		userRegistrationService.registerUser(login, password, name);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class, container, entityManager);
+				ApplicationServiceBean.class, container, entityManager,
+				"test-operator", "operator");
 		userRegistrationService.registerUser("test-application-owner-login",
 				"password", null);
 		applicationService.registerApplicationOwner(
@@ -241,7 +246,8 @@ public class IdentityServiceBeanTest extends TestCase {
 		SecurityAssociation.setSubject(subject);
 
 		IdentityService identityService = EJBTestUtils.newInstance(
-				IdentityServiceBean.class, container, entityManager, login);
+				IdentityServiceBean.class, container, entityManager, login,
+				"user");
 
 		// operate
 		boolean result = identityService
