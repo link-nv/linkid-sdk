@@ -8,10 +8,8 @@
 package net.link.safeonline.test.util;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.security.Identity;
 import java.security.Principal;
 import java.util.Properties;
@@ -32,6 +30,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 import javax.xml.rpc.handler.MessageContext;
+
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -201,29 +203,27 @@ public final class EJBTestUtils {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException("illegal access error");
 		}
-		InvocationHandler testContainerInvocationHandler = new TestContainerInvocationHandler(
+		TestContainerMethodInterceptor testContainerMethodInterceptor = new TestContainerMethodInterceptor(
 				instance, container, entityManager, sessionContext);
-		Class[] interfaces = clazz.getInterfaces();
-		if (0 == interfaces.length) {
-			interfaces = clazz.getSuperclass().getInterfaces();
-		}
-		Type proxy = (Type) Proxy.newProxyInstance(clazz.getClassLoader(),
-				interfaces, testContainerInvocationHandler);
-		return proxy;
+		Enhancer enhancer = new Enhancer();
+		enhancer.setSuperclass(clazz);
+		enhancer.setCallback(testContainerMethodInterceptor);
+		Type object = (Type) enhancer.create();
+		return object;
 	}
 
 	/**
-	 * Test EJB3 Container invocation handler. Be careful here not to start
+	 * Test EJB3 Container method interceptor. Be careful here not to start
 	 * writing an entire EJB3 container.
 	 * 
 	 * @author fcorneli
 	 * 
 	 */
-	private static class TestContainerInvocationHandler implements
-			InvocationHandler {
+	private static class TestContainerMethodInterceptor implements
+			MethodInterceptor {
 
 		private static final Log LOG = LogFactory
-				.getLog(TestContainerInvocationHandler.class);
+				.getLog(TestContainerMethodInterceptor.class);
 
 		private final Object object;
 
@@ -233,7 +233,7 @@ public final class EJBTestUtils {
 
 		private final SessionContext sessionContext;
 
-		public TestContainerInvocationHandler(Object object, Class[] container,
+		public TestContainerMethodInterceptor(Object object, Class[] container,
 				EntityManager entityManager, SessionContext sessionContext) {
 			this.object = object;
 			this.container = container;
@@ -241,8 +241,8 @@ public final class EJBTestUtils {
 			this.sessionContext = sessionContext;
 		}
 
-		public Object invoke(Object proxy, Method method, Object[] args)
-				throws Throwable {
+		public Object intercept(Object obj, Method method, Object[] args,
+				MethodProxy proxy) throws Throwable {
 			checkSessionBean();
 			Class clazz = this.object.getClass();
 			injectDependencies(clazz);
@@ -359,6 +359,7 @@ public final class EJBTestUtils {
 			throw new EJBException("did not find a container class for type: "
 					+ interfaceType.getName());
 		}
+
 	}
 
 	private static class TestSessionContext implements SessionContext {

@@ -8,15 +8,17 @@
 package net.link.safeonline.test.util;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
+
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -117,15 +119,17 @@ public class EntityTestManager {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException("illegal access error");
 		}
-		InvocationHandler transactionInvocationHandler = new TransactionInvocationHandler(
+		TransactionMethodInterceptor transactionInvocationHandler = new TransactionMethodInterceptor(
 				instance, this.entityManagerFactory);
-		Type proxy = (Type) Proxy.newProxyInstance(clazz.getClassLoader(),
-				clazz.getInterfaces(), transactionInvocationHandler);
-		return proxy;
+		Enhancer enhancer = new Enhancer();
+		enhancer.setSuperclass(clazz);
+		enhancer.setCallback(transactionInvocationHandler);
+		Type object = (Type) enhancer.create();
+		return object;
 	}
 
-	private static class TransactionInvocationHandler implements
-			InvocationHandler {
+	private static class TransactionMethodInterceptor implements
+			MethodInterceptor {
 
 		private final Object object;
 
@@ -133,7 +137,7 @@ public class EntityTestManager {
 
 		private final Field field;
 
-		public TransactionInvocationHandler(Object object,
+		public TransactionMethodInterceptor(Object object,
 				EntityManagerFactory entityManagerFactory) {
 			this.object = object;
 			this.entityManagerFactory = entityManagerFactory;
@@ -160,10 +164,10 @@ public class EntityTestManager {
 		}
 
 		private static final Log LOG = LogFactory
-				.getLog(TransactionInvocationHandler.class);
+				.getLog(TransactionMethodInterceptor.class);
 
-		public Object invoke(Object proxy, Method method, Object[] args)
-				throws Throwable {
+		public Object intercept(Object obj, Method method, Object[] args,
+				MethodProxy proxy) throws Throwable {
 			EntityManager entityManager = this.entityManagerFactory
 					.createEntityManager();
 			try {
@@ -185,5 +189,6 @@ public class EntityTestManager {
 				entityManager.close();
 			}
 		}
+
 	}
 }

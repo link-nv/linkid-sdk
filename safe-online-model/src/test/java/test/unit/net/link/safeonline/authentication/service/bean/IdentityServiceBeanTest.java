@@ -8,6 +8,7 @@
 package test.unit.net.link.safeonline.authentication.service.bean;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -27,9 +28,11 @@ import junit.framework.TestCase;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.authentication.service.bean.IdentityServiceBean;
+import net.link.safeonline.authentication.service.bean.SubscriptionServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
@@ -51,6 +54,8 @@ import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
+import net.link.safeonline.service.AttributeTypeService;
+import net.link.safeonline.service.bean.AttributeTypeServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 
@@ -140,7 +145,70 @@ public class IdentityServiceBeanTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testIsConfirmationRequired() throws Exception {
+	public void testConfirmation() throws Exception {
+		// setup
+		String login = "test-login";
+		String password = "test-password";
+		String name = "test-name";
+		String applicationName = "test-application";
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		UserRegistrationServiceBean userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class, container,
+						entityManager);
+		userRegistrationService.registerUser(login, password, name);
+
+		ApplicationService applicationService = EJBTestUtils.newInstance(
+				ApplicationServiceBean.class, container, entityManager);
+		userRegistrationService.registerUser("test-application-owner-login",
+				"password", null);
+		applicationService.registerApplicationOwner(
+				"test-application-owner-name", "test-application-owner-login");
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class, container, entityManager);
+		attributeTypeService.add(new AttributeTypeEntity("test-attribute-type",
+				"string", false, false));
+		applicationService.addApplication(applicationName,
+				"test-application-owner-name", null, null,
+				new String[] { "test-attribute-type" });
+		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
+				SubscriptionServiceBean.class, container, entityManager, login);
+		subscriptionService.subscribe(applicationName);
+
+		Principal principal = new SimplePrincipal(
+				"test-application-owner-login");
+		SecurityAssociation.setPrincipal(principal);
+		Subject subject = new Subject();
+		subject.getPrincipals().add(principal);
+		SimpleGroup rolesGroup = new SimpleGroup("Roles");
+		rolesGroup.addMember(new SimplePrincipal("owner"));
+		subject.getPrincipals().add(rolesGroup);
+		SecurityAssociation.setSubject(subject);
+
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class, container, entityManager, login);
+
+		// operate
+		boolean result = identityService
+				.isConfirmationRequired(applicationName);
+		assertTrue(result);
+
+		List<AttributeTypeEntity> attribsToConfirm = identityService
+				.getIdentityAttributesToConfirm(applicationName);
+		assertEquals(1, attribsToConfirm.size());
+		assertEquals("test-attribute-type", attribsToConfirm.get(0).getName());
+		identityService.confirmIdentity(applicationName);
+		this.entityTestManager.getEntityManager().flush();
+		assertFalse(identityService.isConfirmationRequired(applicationName));
+
+		List<AttributeTypeEntity> currentIdentity = applicationService
+				.getCurrentApplicationIdentity(applicationName);
+		assertEquals(1, currentIdentity.size());
+		assertEquals("test-attribute-type", currentIdentity.get(0).getName());
+	}
+
+	public void testIsConfirmationRequiredOnEmptyIdentityGivesFalse()
+			throws Exception {
 		// setup
 		String login = "test-login";
 		String password = "test-password";
