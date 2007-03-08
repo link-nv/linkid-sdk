@@ -5,30 +5,27 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.service.bean;
+package test.unit.net.link.safeonline.authentication.service.bean;
 
-import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
 import junit.framework.TestCase;
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
-import net.link.safeonline.authentication.exception.CertificateEncodingException;
-import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
+import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
-import net.link.safeonline.dao.bean.CachedOcspResponseDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.dao.bean.TrustDomainDAOBean;
-import net.link.safeonline.dao.bean.TrustPointDAOBean;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
@@ -37,17 +34,13 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
-import net.link.safeonline.service.PkiService;
-import net.link.safeonline.service.bean.PkiServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import net.link.safeonline.test.util.PkiTestUtils;
 
-public class PkiServiceBeanTest extends TestCase {
+public class ApplicationServiceBeanTest extends TestCase {
 
 	private EntityTestManager entityTestManager;
 
@@ -57,8 +50,7 @@ public class PkiServiceBeanTest extends TestCase {
 			TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class,
 			AttributeTypeDAOBean.class, ApplicationIdentityDAOBean.class,
 			SubjectManagerBean.class, HistoryDAOBean.class,
-			ApplicationOwnerManagerBean.class, TrustPointDAOBean.class,
-			CachedOcspResponseDAOBean.class };
+			ApplicationOwnerManagerBean.class };
 
 	@Override
 	protected void setUp() throws Exception {
@@ -69,7 +61,7 @@ public class PkiServiceBeanTest extends TestCase {
 				ApplicationEntity.class, ApplicationOwnerEntity.class,
 				AttributeEntity.class, AttributeTypeEntity.class,
 				SubscriptionEntity.class, TrustDomainEntity.class,
-				ApplicationIdentityEntity.class, TrustPointEntity.class);
+				ApplicationIdentityEntity.class);
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
 		Startable systemStartable = EJBTestUtils.newInstance(
@@ -85,61 +77,29 @@ public class PkiServiceBeanTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testAddRemoveTrustDomain() throws Exception {
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class,
-				container, entityManager, "test-operator",
-				SafeOnlineRoles.OPERATOR_ROLE);
-
-		pkiService.addTrustDomain("test-trust-domain", true);
-		TrustDomainEntity trustDomain = pkiService
-				.getTrustDomain("test-trust-domain");
-		assertEquals("test-trust-domain", trustDomain.getName());
-		pkiService.removeTrustDomain("test-trust-domain");
-		try {
-			pkiService.getTrustDomain("test-trust-domain");
-			fail();
-		} catch (TrustDomainNotFoundException e) {
-			// expected
-		}
-	}
-
-	public void testAddTrustPointWithFakeCertificateThrowsException()
-			throws Exception {
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class,
-				container, entityManager, "test-operator",
-				SafeOnlineRoles.OPERATOR_ROLE);
-
-		pkiService.addTrustDomain("test-trust-domain", true);
-		try {
-			pkiService.addTrustPoint("test-trust-domain", "foobar".getBytes());
-			fail();
-		} catch (CertificateEncodingException e) {
-			// expected
-		}
-	}
-
-	public void testAddRemoveTrustPoint() throws Exception {
+	public void testApplicationIdentityUseCase() throws Exception {
 		// setup
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-		PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class,
-				container, entityManager, "test-operator",
-				SafeOnlineRoles.OPERATOR_ROLE);
+		EJBTestUtils.setJBossPrincipal("test-operator", "operator");
 
-		pkiService.addTrustDomain("test-trust-domain", true);
-		List<TrustPointEntity> result = pkiService
-				.getTrustPoints("test-trust-domain");
-		assertNotNull(result);
+		// operate
+		ApplicationService applicationService = EJBTestUtils.newInstance(
+				ApplicationServiceBean.class, container, entityManager,
+				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+		List<AttributeTypeEntity> result = applicationService
+				.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 		assertTrue(result.isEmpty());
-		pkiService.addTrustPoint("test-trust-domain", certificate.getEncoded());
-		pkiService.getTrustPoints("test-trust-domain");
-		result = pkiService.getTrustPoints("test-trust-domain");
+		String[] applicationIdentityAttributeTypeNames = new String[] { SafeOnlineConstants.NAME_ATTRIBUTE };
+		applicationService.updateApplicationIdentity(
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+				applicationIdentityAttributeTypeNames);
+		result = applicationService
+				.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+
+		// verify
 		assertEquals(1, result.size());
-		assertEquals(certificate, result.get(0).getCertificate());
+		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.get(0)
+				.getName());
 	}
 }

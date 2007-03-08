@@ -28,6 +28,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.security.auth.Subject;
 import javax.transaction.UserTransaction;
 import javax.xml.rpc.handler.MessageContext;
 
@@ -38,6 +39,8 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.security.SecurityAssociation;
+import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
 
 /**
@@ -179,6 +182,17 @@ public final class EJBTestUtils {
 			}
 			method.invoke(bean, new Object[] {});
 		}
+	}
+
+	public static void setJBossPrincipal(String principalName, String role) {
+		Principal principal = new SimplePrincipal(principalName);
+		SecurityAssociation.setPrincipal(principal);
+		Subject subject = new Subject();
+		subject.getPrincipals().add(principal);
+		SimpleGroup rolesGroup = new SimpleGroup("Roles");
+		rolesGroup.addMember(new SimplePrincipal(role));
+		subject.getPrincipals().add(rolesGroup);
+		SecurityAssociation.setSubject(subject);
 	}
 
 	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,

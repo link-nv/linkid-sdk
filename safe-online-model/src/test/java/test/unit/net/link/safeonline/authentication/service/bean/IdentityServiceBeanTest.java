@@ -7,7 +7,6 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
-import java.security.Principal;
 import java.util.List;
 
 import javax.management.Attribute;
@@ -22,7 +21,6 @@ import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.persistence.EntityManager;
-import javax.security.auth.Subject;
 
 import junit.framework.TestCase;
 import net.link.safeonline.Startable;
@@ -61,9 +59,6 @@ import net.link.safeonline.test.util.EntityTestManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.security.SecurityAssociation;
-import org.jboss.security.SimpleGroup;
-import org.jboss.security.SimplePrincipal;
 
 public class IdentityServiceBeanTest extends TestCase {
 
@@ -170,6 +165,8 @@ public class IdentityServiceBeanTest extends TestCase {
 				"test-global-operator", "global-operator");
 		attributeTypeService.add(new AttributeTypeEntity("test-attribute-type",
 				"string", false, false));
+		attributeTypeService.add(new AttributeTypeEntity(
+				"test-attribute-type-2", "string", false, false));
 		applicationService.addApplication(applicationName,
 				"test-application-owner-name", null, null,
 				new String[] { "test-attribute-type" });
@@ -178,15 +175,7 @@ public class IdentityServiceBeanTest extends TestCase {
 				"user");
 		subscriptionService.subscribe(applicationName);
 
-		Principal principal = new SimplePrincipal(
-				"test-application-owner-login");
-		SecurityAssociation.setPrincipal(principal);
-		Subject subject = new Subject();
-		subject.getPrincipals().add(principal);
-		SimpleGroup rolesGroup = new SimpleGroup("Roles");
-		rolesGroup.addMember(new SimplePrincipal("owner"));
-		subject.getPrincipals().add(rolesGroup);
-		SecurityAssociation.setSubject(subject);
+		EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");
 
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class, container, entityManager, login,
@@ -205,10 +194,26 @@ public class IdentityServiceBeanTest extends TestCase {
 		this.entityTestManager.getEntityManager().flush();
 		assertFalse(identityService.isConfirmationRequired(applicationName));
 
+		attribsToConfirm = identityService
+				.getIdentityAttributesToConfirm(applicationName);
+		assertTrue(attribsToConfirm.isEmpty());
+
 		List<AttributeTypeEntity> currentIdentity = applicationService
 				.getCurrentApplicationIdentity(applicationName);
 		assertEquals(1, currentIdentity.size());
 		assertEquals("test-attribute-type", currentIdentity.get(0).getName());
+
+		applicationService
+				.updateApplicationIdentity(applicationName, new String[] {
+						"test-attribute-type", "test-attribute-type-2" });
+		assertTrue(identityService.isConfirmationRequired(applicationName));
+
+		attribsToConfirm = identityService
+				.getIdentityAttributesToConfirm(applicationName);
+		assertEquals(1, attribsToConfirm.size());
+		assertEquals("test-attribute-type-2", attribsToConfirm.get(0).getName());
+		identityService.confirmIdentity(applicationName);
+		assertFalse(identityService.isConfirmationRequired(applicationName));
 	}
 
 	public void testIsConfirmationRequiredOnEmptyIdentityGivesFalse()
@@ -235,15 +240,7 @@ public class IdentityServiceBeanTest extends TestCase {
 		applicationService.addApplication(applicationName,
 				"test-application-owner-name", null, null, new String[] {});
 
-		Principal principal = new SimplePrincipal(
-				"test-application-owner-login");
-		SecurityAssociation.setPrincipal(principal);
-		Subject subject = new Subject();
-		subject.getPrincipals().add(principal);
-		SimpleGroup rolesGroup = new SimpleGroup("Roles");
-		rolesGroup.addMember(new SimplePrincipal("owner"));
-		subject.getPrincipals().add(rolesGroup);
-		SecurityAssociation.setSubject(subject);
+		EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");
 
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class, container, entityManager, login,
