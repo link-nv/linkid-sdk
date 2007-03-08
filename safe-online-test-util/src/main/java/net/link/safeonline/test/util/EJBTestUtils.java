@@ -8,11 +8,19 @@
 package net.link.safeonline.test.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.EJBException;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -155,6 +163,148 @@ public final class EJBTestUtils {
 				continue;
 			}
 			method.invoke(bean, new Object[] {});
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
+			EntityManager entityManager) {
+		Type instance;
+		try {
+			instance = clazz.newInstance();
+		} catch (InstantiationException e) {
+			throw new RuntimeException("instantiation error");
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("illegal access error");
+		}
+		InvocationHandler transactionInvocationHandler = new TestContainerInvocationHandler(
+				instance, container, entityManager);
+		Class[] interfaces = clazz.getInterfaces();
+		if (0 == interfaces.length) {
+			interfaces = clazz.getSuperclass().getInterfaces();
+		}
+		Type proxy = (Type) Proxy.newProxyInstance(clazz.getClassLoader(),
+				interfaces, transactionInvocationHandler);
+		return proxy;
+	}
+
+	/**
+	 * Test EJB3 Container invocation handler. Be careful here not to start
+	 * writing an entire EJB3 container.
+	 * 
+	 * @author fcorneli
+	 * 
+	 */
+	private static class TestContainerInvocationHandler implements
+			InvocationHandler {
+
+		private static final Log LOG = LogFactory
+				.getLog(TestContainerInvocationHandler.class);
+
+		private final Object object;
+
+		private final Class[] container;
+
+		private final EntityManager entityManager;
+
+		public TestContainerInvocationHandler(Object object, Class[] container,
+				EntityManager entityManager) {
+			this.object = object;
+			this.container = container;
+			this.entityManager = entityManager;
+		}
+
+		public Object invoke(Object proxy, Method method, Object[] args)
+				throws Throwable {
+			checkSessionBean();
+			Class clazz = this.object.getClass();
+			Class superClass = clazz.getSuperclass();
+			injectDependencies(clazz);
+			injectDependencies(superClass);
+			injectEntityManager(clazz);
+			injectEntityManager(superClass);
+			try {
+				Object result = method.invoke(this.object, args);
+				return result;
+			} catch (InvocationTargetException e) {
+				throw e.getTargetException();
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		private void checkSessionBean() {
+			Class clazz = this.object.getClass();
+			Stateless statelessAnnotation = (Stateless) clazz
+					.getAnnotation(Stateless.class);
+			if (null == statelessAnnotation) {
+				throw new EJBException("no @Stateless annotation found");
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		private void injectDependencies(Class clazz) {
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field field : fields) {
+				EJB ejbAnnotation = field.getAnnotation(EJB.class);
+				if (null == ejbAnnotation) {
+					continue;
+				}
+				Class fieldType = field.getType();
+				if (false == fieldType.isInterface()) {
+					throw new EJBException("field is not an interface type");
+				}
+				Local localAnnotation = (Local) fieldType
+						.getAnnotation(Local.class);
+				if (null == localAnnotation) {
+					throw new EJBException(
+							"interface has no @Local annotation: "
+									+ fieldType.getName());
+				}
+				Class beanType = getBeanType(fieldType);
+				Object bean = EJBTestUtils.newInstance(beanType,
+						this.container, this.entityManager);
+				setField(field, bean);
+			}
+		}
+
+		private void setField(Field field, Object value) {
+			field.setAccessible(true);
+			try {
+				LOG.debug("injecting " + value + " into " + this.object);
+				field.set(this.object, value);
+			} catch (IllegalArgumentException e) {
+				throw new EJBException("illegal argument error");
+			} catch (IllegalAccessException e) {
+				throw new EJBException("illegal access error");
+			}
+		}
+
+		private void injectEntityManager(Class clazz) {
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field field : fields) {
+				PersistenceContext persistenceContextAnnotation = field
+						.getAnnotation(PersistenceContext.class);
+				if (null == persistenceContextAnnotation) {
+					continue;
+				}
+				Class fieldType = field.getType();
+				if (false == EntityManager.class.isAssignableFrom(fieldType)) {
+					throw new EJBException("field type not correct");
+				}
+				setField(field, this.entityManager);
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		private Class getBeanType(Class interfaceType) {
+			for (Class containerClass : this.container) {
+				if (false == interfaceType.isAssignableFrom(containerClass)) {
+					continue;
+				}
+				return containerClass;
+			}
+			throw new EJBException("did not find a container class for type: "
+					+ interfaceType.getName());
 		}
 	}
 }

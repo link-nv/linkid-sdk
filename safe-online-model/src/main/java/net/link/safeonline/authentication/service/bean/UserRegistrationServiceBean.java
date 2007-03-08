@@ -40,7 +40,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 			.getLog(UserRegistrationServiceBean.class);
 
 	@EJB
-	private SubjectDAO entityDAO;
+	private SubjectDAO subjectDAO;
 
 	@EJB
 	private ApplicationDAO applicationDAO;
@@ -55,7 +55,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 			throws ExistingUserException, ApplicationNotFoundException {
 		LOG.debug("register user: " + login);
 
-		SubjectEntity existingSubject = this.entityDAO.findSubject(login);
+		SubjectEntity existingSubject = this.subjectDAO.findSubject(login);
 		if (null != existingSubject) {
 			throw new ExistingUserException();
 		}
@@ -66,7 +66,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 			throw new ApplicationNotFoundException();
 		}
 
-		SubjectEntity newSubject = this.entityDAO.addSubject(login);
+		SubjectEntity newSubject = this.subjectDAO.addSubject(login);
 
 		this.attributeDAO.addAttribute(SafeOnlineConstants.PASSWORD_ATTRIBUTE,
 				login, password);

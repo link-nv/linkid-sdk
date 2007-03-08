@@ -11,20 +11,36 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+
+import javax.persistence.EntityManager;
+
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
+import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.dao.bean.ApplicationDAOBean;
+import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
+import net.link.safeonline.dao.bean.AttributeDAOBean;
+import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
+import net.link.safeonline.dao.bean.SubjectDAOBean;
+import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.test.util.EJBTestUtils;
+import net.link.safeonline.test.util.EntityTestManager;
 
 public class UserRegistrationServiceBeanTest extends TestCase {
 
@@ -139,7 +155,7 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 
 		expect(this.mockApplicationDAO.findApplication("safe-online-user"))
 				.andStubReturn(null);
-		
+
 		// prepare
 		replay(this.mockSubjectDAO, this.mockApplicationDAO,
 				this.mockSubscriptionDAO, this.mockAttributeDAO);
@@ -153,5 +169,55 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 			verify(this.mockSubjectDAO, this.mockApplicationDAO,
 					this.mockSubscriptionDAO, this.mockAttributeDAO);
 		}
+	}
+
+	public void testRegisterViaEjb3TestMicroContainer() throws Exception {
+		String login = "login";
+		String password = "password";
+		String name = "name";
+		Class[] container = new Class[] { SubjectDAOBean.class,
+				ApplicationDAOBean.class, SubscriptionDAOBean.class,
+				AttributeDAOBean.class };
+
+		EntityTestManager entityTestManager = new EntityTestManager();
+		entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class,
+				ApplicationOwnerEntity.class, AttributeEntity.class,
+				AttributeTypeEntity.class, SubscriptionEntity.class);
+		EntityManager entityManager = entityTestManager.getEntityManager();
+
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class, container,
+						entityManager);
+
+		/*
+		 * Basically we're doing the work of SystemInitializationStartableBean
+		 * here.
+		 */
+		ApplicationDAO applicationDAO = entityTestManager
+				.newInstance(ApplicationDAOBean.class);
+		ApplicationOwnerDAO applicationOwnerDAO = entityTestManager
+				.newInstance(ApplicationOwnerDAOBean.class);
+		SubjectDAO subjectDAO = entityTestManager
+				.newInstance(SubjectDAOBean.class);
+		SubjectEntity testAdmin = subjectDAO.addSubject("test-admin");
+		applicationOwnerDAO.addApplicationOwner("test-owner", testAdmin);
+		ApplicationOwnerEntity applicationOwner = applicationOwnerDAO
+				.findApplicationOwner("test-owner");
+		AttributeTypeDAO attributeTypeDAO = entityTestManager
+				.newInstance(AttributeTypeDAOBean.class);
+		attributeTypeDAO
+				.addAttributeType(new AttributeTypeEntity(
+						SafeOnlineConstants.PASSWORD_ATTRIBUTE, "string",
+						false, false));
+		attributeTypeDAO.addAttributeType(new AttributeTypeEntity(
+				SafeOnlineConstants.NAME_ATTRIBUTE, "string", false, false));
+
+		applicationDAO.addApplication(
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+				applicationOwner, null, null);
+
+		userRegistrationService.registerUser(login, password, name);
+
+		entityTestManager.tearDown();
 	}
 }
