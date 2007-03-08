@@ -137,6 +137,16 @@ public class EntityTestManager {
 		return this.entityManager;
 	}
 
+	/**
+	 * Create a new instance of the given class that has the test transaction
+	 * entity manager handler applied to it. The transaction semantics are:
+	 * 
+	 * <code>@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)</code>
+	 * 
+	 * @param <Type>
+	 * @param clazz
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public <Type> Type newInstance(Class<Type> clazz) {
 		Type instance;
