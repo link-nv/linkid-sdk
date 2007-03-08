@@ -9,10 +9,16 @@ package net.link.safeonline.test.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -22,8 +28,6 @@ import org.hibernate.ejb.Ejb3Configuration;
 public class EntityTestManager {
 
 	private static final Log LOG = LogFactory.getLog(EntityTestManager.class);
-
-	private Ejb3Configuration configuration;
 
 	private EntityManagerFactory entityManagerFactory;
 
@@ -71,21 +75,21 @@ public class EntityTestManager {
 		Runtime.getRuntime()
 				.addShutdownHook(new DatabaseShutdownHook(tmpDbDir));
 
-		this.configuration = new Ejb3Configuration();
-		this.configuration.setProperty("hibernate.dialect",
+		Ejb3Configuration configuration = new Ejb3Configuration();
+		configuration.setProperty("hibernate.dialect",
 				"org.hibernate.dialect.DerbyDialect");
-		this.configuration.setProperty("hibernate.show_sql", "true");
-		this.configuration.setProperty("hibernate.hbm2ddl.auto", "create");
-		this.configuration.setProperty("hibernate.connection.driver_class",
+		configuration.setProperty("hibernate.show_sql", "true");
+		configuration.setProperty("hibernate.hbm2ddl.auto", "create");
+		configuration.setProperty("hibernate.connection.driver_class",
 				"org.apache.derby.jdbc.EmbeddedDriver");
-		this.configuration.setProperty("hibernate.connection.url",
-				"jdbc:derby:Test_Db;create=true");
+		String dbName = "Test_DB_" + System.currentTimeMillis();
+		configuration.setProperty("hibernate.connection.url", "jdbc:derby:"
+				+ dbName + ";create=true");
 		for (Class serializableClass : serializableClasses) {
 			LOG.debug("adding annotated class: " + serializableClass.getName());
-			this.configuration.addAnnotatedClass(serializableClass);
+			configuration.addAnnotatedClass(serializableClass);
 		}
-		this.entityManagerFactory = this.configuration
-				.createEntityManagerFactory();
+		this.entityManagerFactory = configuration.createEntityManagerFactory();
 		/*
 		 * createEntityManagerFactory is deprecated, but
 		 * buildEntityManagerFactory doesn't work because of a bug.
@@ -131,5 +135,85 @@ public class EntityTestManager {
 
 	public EntityManager getEntityManager() {
 		return this.entityManager;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <Type> Type newInstance(Class<Type> clazz) {
+		Type instance;
+		try {
+			instance = clazz.newInstance();
+		} catch (InstantiationException e) {
+			throw new RuntimeException("instantiation error");
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("illegal access error");
+		}
+		InvocationHandler transactionInvocationHandler = new TransactionInvocationHandler(
+				instance, this.entityManagerFactory);
+		Type proxy = (Type) Proxy.newProxyInstance(clazz.getClassLoader(),
+				clazz.getInterfaces(), transactionInvocationHandler);
+		return proxy;
+	}
+
+	private static class TransactionInvocationHandler implements
+			InvocationHandler {
+
+		private final Object object;
+
+		private final EntityManagerFactory entityManagerFactory;
+
+		private final Field field;
+
+		public TransactionInvocationHandler(Object object,
+				EntityManagerFactory entityManagerFactory) {
+			this.object = object;
+			this.entityManagerFactory = entityManagerFactory;
+			this.field = getEntityManagerField(object);
+		}
+
+		private Field getEntityManagerField(Object object) {
+			Class clazz = object.getClass();
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field field : fields) {
+				PersistenceContext persistenceContextAnnotation = field
+						.getAnnotation(PersistenceContext.class);
+				if (null == persistenceContextAnnotation) {
+					continue;
+				}
+				if (false == EntityManager.class.isAssignableFrom(field
+						.getType())) {
+					throw new RuntimeException("field type not correct");
+				}
+				field.setAccessible(true);
+				return field;
+			}
+			throw new RuntimeException("no entity manager field found");
+		}
+
+		private static final Log LOG = LogFactory
+				.getLog(TransactionInvocationHandler.class);
+
+		public Object invoke(Object proxy, Method method, Object[] args)
+				throws Throwable {
+			EntityManager entityManager = this.entityManagerFactory
+					.createEntityManager();
+			try {
+				this.field.set(this.object, entityManager);
+				LOG.debug("begin transaction");
+				entityManager.getTransaction().begin();
+				Object result = method.invoke(this.object, args);
+				LOG.debug("commit transaction");
+				entityManager.getTransaction().commit();
+				return result;
+			} catch (InvocationTargetException e) {
+				LOG.debug("rollback transaction");
+				entityManager.getTransaction().rollback();
+				throw e.getTargetException();
+			} catch (Exception e) {
+				LOG.error("exception received");
+				throw e;
+			} finally {
+				entityManager.close();
+			}
+		}
 	}
 }

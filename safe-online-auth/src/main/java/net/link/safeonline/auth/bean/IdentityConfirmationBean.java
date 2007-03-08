@@ -35,6 +35,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
+// TODO: use the user webapp security domain here
 @Stateful
 @Name("identityConfirmation")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
