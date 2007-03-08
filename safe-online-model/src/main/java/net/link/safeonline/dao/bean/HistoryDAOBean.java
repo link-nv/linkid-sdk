@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -31,6 +33,7 @@ public class HistoryDAOBean implements HistoryDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void addHistoryEntry(Date when, SubjectEntity subject, String event) {
 		LOG.debug("add history entry: " + when + "; subject: "
 				+ subject.getLogin() + "; event: " + event);

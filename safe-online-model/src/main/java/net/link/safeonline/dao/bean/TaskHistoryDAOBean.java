@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -31,6 +33,7 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public TaskHistoryEntity addTaskHistoryEntity(TaskEntity task,
 			String message, boolean result, Date startDate, Date endDate) {
 		TaskHistoryEntity taskHistoryEntity = new TaskHistoryEntity(task,

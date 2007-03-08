@@ -22,11 +22,6 @@ import javax.ejb.Timer;
 import javax.ejb.TimerHandle;
 import javax.ejb.TimerService;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.LocalBinding;
-import org.quartz.CronTrigger;
-
 import net.link.safeonline.Startable;
 import net.link.safeonline.Task;
 import net.link.safeonline.dao.SchedulingDAO;
@@ -36,6 +31,11 @@ import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.TaskEntity;
 import net.link.safeonline.model.TaskScheduler;
 import net.link.safeonline.util.ee.EjbUtils;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
+import org.quartz.CronTrigger;
 
 @Stateless
 @LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "TaskSchedulerBean")
@@ -101,6 +101,7 @@ public class TaskSchedulerBean implements TaskScheduler {
 			LOG.debug("Could not get Task: " + taskEntity.getJndiName());
 			this.taskHistoryDAO.addTaskHistoryEntity(taskEntity,
 					e.getMessage(), false, startDate, endDate);
+			return;
 		}
 		this.taskHistoryDAO.addTaskHistoryEntity(taskEntity, "", true,
 				startDate, endDate);
