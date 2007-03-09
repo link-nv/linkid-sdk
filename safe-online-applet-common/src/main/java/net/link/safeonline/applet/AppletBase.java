@@ -25,7 +25,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JApplet;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -37,6 +39,7 @@ import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
 import net.link.safeonline.p11sc.SmartCardNotFoundException;
+import net.link.safeonline.p11sc.SmartCardPinCallback;
 import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 import net.link.safeonline.p11sc.impl.SmartCardImpl;
 import net.link.safeonline.shared.SharedConstants;
@@ -51,7 +54,8 @@ import org.apache.commons.logging.Log;
  * @author fcorneli
  * 
  */
-public abstract class AppletBase extends JApplet implements Runnable {
+public abstract class AppletBase extends JApplet implements Runnable,
+		SmartCardPinCallback {
 
 	private static final long serialVersionUID = 1L;
 
@@ -174,6 +178,9 @@ public abstract class AppletBase extends JApplet implements Runnable {
 		outputDetailMessage("Connecting to smart card...");
 		String osName = System.getProperty("os.name");
 		outputDetailMessage("os name: " + osName);
+
+		smartCard.setSmartCardPinCallback(this);
+
 		try {
 			smartCard.open(smartCardAlias);
 		} catch (SmartCardNotFoundException e) {
@@ -186,6 +193,12 @@ public abstract class AppletBase extends JApplet implements Runnable {
 			outputDetailMessage("error type: " + e.getClass().getName());
 			outputInfoMessage(InfoLevel.ERROR,
 					"Could not connect to the smart card.");
+			for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+				outputDetailMessage(stackTraceElement.getClassName() + "."
+						+ stackTraceElement.getMethodName() + " ("
+						+ stackTraceElement.getFileName() + ":"
+						+ stackTraceElement.getLineNumber() + ")");
+			}
 			return;
 		}
 
@@ -375,5 +388,26 @@ public abstract class AppletBase extends JApplet implements Runnable {
 			return false;
 		}
 		throw new IOException("Response code: " + responseCode);
+	}
+
+	public char[] getPin() {
+		JLabel promptLabel = new JLabel("Give your PIN:");
+
+		JPasswordField passwordField = new JPasswordField(8);
+		passwordField.setEchoChar('*');
+
+		Box passwordPanel = Box.createHorizontalBox();
+		passwordPanel.add(promptLabel);
+		passwordPanel.add(Box.createHorizontalStrut(5));
+		passwordPanel.add(passwordField);
+
+		int result = JOptionPane.showOptionDialog(null, passwordPanel,
+				"PIN Required", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, null, null);
+		if (result == JOptionPane.OK_OPTION) {
+			char[] pin = passwordField.getPassword();
+			return pin;
+		}
+		return null;
 	}
 }

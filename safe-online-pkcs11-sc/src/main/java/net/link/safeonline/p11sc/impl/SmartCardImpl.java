@@ -20,6 +20,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
+import java.security.ProviderException;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
@@ -138,6 +139,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		LOG.debug("os name: " + osName);
 		List<File> driverLocations = smartCardConfig
 				.getPkcs11DriverLocations(osName);
+		LOG.debug("test debug message");
 
 		IdentityDataExtractor identityDataExtractor = null;
 		String identityExtractorClassname = smartCardConfig
@@ -172,6 +174,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
 		File existingDriverLocation = null;
 		for (File driverLocation : driverLocations) {
+			LOG.debug("checking driver: " + driverLocation.getAbsolutePath());
 			if (driverLocation.exists()) {
 				existingDriverLocation = driverLocation;
 				break;
@@ -309,7 +312,22 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		if (null != provider) {
 			throw new RuntimeException("Smart Card provider already active");
 		}
-		this.pkcs11Provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
+		try {
+			this.pkcs11Provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
+		} catch (ProviderException e) {
+			LOG.error("provider exception: " + e.getMessage());
+			Throwable cause = e.getCause();
+			if (null != cause) {
+				LOG.error("" + cause.getMessage());
+				StackTraceElement[] stackTraceElements = cause.getStackTrace();
+				for (StackTraceElement stackTraceElement : stackTraceElements) {
+					LOG.error(stackTraceElement.getClassName() + "."
+							+ stackTraceElement.getMethodName() + " ("
+							+ stackTraceElement.getFileName() + ":"
+							+ stackTraceElement.getLineNumber() + ")");
+				}
+			}
+		}
 	}
 
 	private long getBestEffortSlotIdx(File pkcs11LibraryFile)
@@ -366,40 +384,35 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 				LOG.warn("no appropriate PKCS11 getInstance method found");
 				return 0; // best effort
 			}
-			try {
-				long[] slotIds = pkcs11.C_GetSlotList(true);
-				LOG.debug("number of PKCS11 slots: " + slotIds.length);
-				for (int currSlotIdx = 0; currSlotIdx < slotIds.length; currSlotIdx++) {
-					LOG.debug("slot idx: " + currSlotIdx);
-					long slotId = slotIds[currSlotIdx];
-					LOG.debug("slot id: " + slotId);
-					CK_SLOT_INFO slotInfo = pkcs11.C_GetSlotInfo(slotId);
-					LOG.debug("slot description: "
-							+ new String(slotInfo.slotDescription));
-					LOG.debug("manufacturer: "
-							+ new String(slotInfo.manufacturerID));
-					if ((slotInfo.flags & PKCS11Constants.CKF_TOKEN_PRESENT) != 0) {
-						CK_TOKEN_INFO tokenInfo = pkcs11.C_GetTokenInfo(slotId);
-						LOG
-								.debug("token label: "
-										+ new String(tokenInfo.label));
-						LOG
-								.debug("token model: "
-										+ new String(tokenInfo.model));
-						LOG.debug("manufacturer Id: "
-								+ new String(tokenInfo.manufacturerID));
-						LOG.debug("Card found in slot Idx: " + currSlotIdx);
-						return currSlotIdx;
-					}
-				}
-				throw new SmartCardNotFoundException();
-			} finally {
-				try {
-					pkcs11.C_Finalize(null);
-				} catch (PKCS11Exception e) {
-					LOG.error("C_Finalize error: " + e.getMessage());
+			long[] slotIds = pkcs11.C_GetSlotList(true);
+			LOG.debug("number of PKCS11 slots: " + slotIds.length);
+			for (int currSlotIdx = 0; currSlotIdx < slotIds.length; currSlotIdx++) {
+				LOG.debug("slot idx: " + currSlotIdx);
+				long slotId = slotIds[currSlotIdx];
+				LOG.debug("slot id: " + slotId);
+				CK_SLOT_INFO slotInfo = pkcs11.C_GetSlotInfo(slotId);
+				LOG.debug("slot description: "
+						+ new String(slotInfo.slotDescription));
+				LOG.debug("manufacturer: "
+						+ new String(slotInfo.manufacturerID));
+				if ((slotInfo.flags & PKCS11Constants.CKF_TOKEN_PRESENT) != 0) {
+					CK_TOKEN_INFO tokenInfo = pkcs11.C_GetTokenInfo(slotId);
+					LOG.debug("token label: " + new String(tokenInfo.label));
+					LOG.debug("token model: " + new String(tokenInfo.model));
+					LOG.debug("manufacturer Id: "
+							+ new String(tokenInfo.manufacturerID));
+					LOG.debug("Card found in slot Idx: " + currSlotIdx);
+					return currSlotIdx;
 				}
 			}
+			throw new SmartCardNotFoundException();
+			/*
+			 * Do not call pkcs11.C_Finalize(null) here since this could trigger
+			 * a CKR_CRYPTOKI_NOT_INITIALIZED error when using the OpenSC PKCS11
+			 * driver. The PKCS11 class is caching the PKCS11 wrappers on a
+			 * per-driver-path basis. If you finalize the PKCS11 wrapper you're
+			 * finished using it.
+			 */
 		} catch (PKCS11Exception e) {
 			throw new RuntimeException("PKCS11 error: " + e.getMessage(), e);
 		}
@@ -438,8 +451,12 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 						throw new RuntimeException(
 								"no smart card PIN call back was provided");
 					}
-					passwordCallback.setPassword(this.smartCardPinCallback
-							.getPin());
+					char[] pin = this.smartCardPinCallback.getPin();
+					if (null == pin) {
+						throw new UnsupportedCallbackException(callback,
+								"User canceled PIN input");
+					}
+					passwordCallback.setPassword(pin);
 				}
 			}
 		}
@@ -447,6 +464,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
 	public void setSmartCardPinCallback(
 			SmartCardPinCallback smartCardPinCallback) {
+		LOG.debug("setting smart card pin callback");
 		this.smartCardPinCallback = smartCardPinCallback;
 	}
 

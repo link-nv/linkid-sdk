@@ -9,11 +9,26 @@ package test.integ.net.link.safeonline.p11sc.beid;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
+import java.security.KeyStore;
 import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.Security;
+import java.security.KeyStore.ProtectionParameter;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.List;
+
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 
 import junit.framework.TestCase;
 import net.link.safeonline.identity.IdentityStatementFactory;
@@ -27,6 +42,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import sun.security.pkcs11.SunPKCS11;
 import sun.security.pkcs11.wrapper.CK_SLOT_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
 import be.belgium.eid.BEID_Address;
@@ -242,5 +258,82 @@ public class SmartCardTest extends TestCase {
 		oStatus = eidlib.BEID_FlushCache();
 
 		oStatus = eidlib.BEID_Exit();
+	}
+
+	public void testOpenscPkcs11Driver() throws Exception {
+		File tmpConfigFile = File.createTempFile("pkcs11", "conf");
+		tmpConfigFile.deleteOnExit();
+		PrintWriter configWriter = new PrintWriter(new FileOutputStream(
+				tmpConfigFile), true);
+		String name = "TestSmartCard";
+		configWriter.println("name=" + name);
+		configWriter.println("library=/usr/lib/opensc-pkcs11.so");
+		configWriter.println("slotListIndex=0");
+		configWriter.close();
+		Provider provider = Security.getProvider("SunPKCS11-" + name);
+		if (null != provider) {
+			throw new RuntimeException("Smart Card provider already active");
+		}
+		provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
+		if (-1 == Security.addProvider(provider)) {
+			throw new RuntimeException("could not add the security provider");
+		}
+		String providerName = provider.getName();
+
+		CallbackHandler callbackHandler = new TestCallbackHandler();
+		ProtectionParameter protectionParameter = new KeyStore.CallbackHandlerProtection(
+				callbackHandler);
+		KeyStore.Builder builder = KeyStore.Builder.newInstance("PKCS11",
+				provider, protectionParameter);
+
+		KeyStore keyStore = builder.getKeyStore();
+		keyStore.load(null, null);
+
+		Security.removeProvider(providerName);
+	}
+
+	private static class TestCallbackHandler implements CallbackHandler {
+
+		private static final Log LOG = LogFactory
+				.getLog(TestCallbackHandler.class);
+
+		public void handle(Callback[] callbacks) throws IOException,
+				UnsupportedCallbackException {
+			for (Callback callback : callbacks) {
+				LOG.debug("callback type: " + callback.getClass().getName());
+				if (callback instanceof PasswordCallback) {
+					PasswordCallback passwordCallback = (PasswordCallback) callback;
+					LOG.debug("password required");
+					char[] pin = getPin();
+					if (null == pin) {
+						throw new UnsupportedCallbackException(callback,
+								"User canceled PIN input.");
+					}
+					passwordCallback.setPassword(pin);
+				}
+			}
+		}
+	}
+
+	private static char[] getPin() {
+		JLabel promptLabel = new JLabel("Give your PIN:");
+
+		JPasswordField passwordField = new JPasswordField(8);
+		passwordField.setEchoChar('*');
+
+		Box passwordPanel = Box.createHorizontalBox();
+		passwordPanel.add(promptLabel);
+		passwordPanel.add(Box.createHorizontalStrut(5));
+		passwordPanel.add(passwordField);
+
+		int result = JOptionPane.showOptionDialog(null, passwordPanel,
+				"PIN Required", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, null, null);
+		if (result == JOptionPane.OK_OPTION) {
+			char[] pin = passwordField.getPassword();
+			return pin;
+		}
+
+		return null;
 	}
 }

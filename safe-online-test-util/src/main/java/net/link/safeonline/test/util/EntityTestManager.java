@@ -45,8 +45,6 @@ public class EntityTestManager {
 				"org.hsqldb.jdbcDriver");
 		configuration.setProperty("hibernate.connection.url",
 				"jdbc:hsqldb:mem:test");
-		configuration.setProperty("hibernate.transaction.factory_class",
-				"org.hibernate.transaction.JDBCTransactionFactory");
 		for (Class serializableClass : serializableClasses) {
 			LOG.debug("adding annotated class: " + serializableClass.getName());
 			configuration.addAnnotatedClass(serializableClass);
