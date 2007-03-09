@@ -9,6 +9,8 @@ package net.link.safeonline.authentication.service.bean;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -256,5 +258,59 @@ public class IdentityServiceBean implements IdentityService {
 		 */
 		toConfirmAttributes.removeAll(confirmedAttributeTypes);
 		return toConfirmAttributes;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public boolean hasMissingAttributes(String applicationName)
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException {
+		LOG.debug("hasMissingAttributes for application: " + applicationName);
+		Set<String> missingAttributes = getMissingAttributes(applicationName);
+		return false == missingAttributes.isEmpty();
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public Set<String> getMissingAttributes(String applicationName)
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException {
+		LOG.debug("get missing attribute for application: " + applicationName);
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationName);
+		long currentApplicationIdentityVersion = application
+				.getCurrentApplicationIdentity();
+		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
+				.getApplicationIdentity(application,
+						currentApplicationIdentityVersion);
+		List<AttributeTypeEntity> applicationAttributeTypes = applicationIdentity
+				.getAttributeTypes();
+
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		List<AttributeEntity> userAttributes = this.attributeDAO
+				.getAttributes(subject);
+
+		Set<String> missingAttributeNames = new TreeSet<String>();
+		for (AttributeTypeEntity applicationAttributeType : applicationAttributeTypes) {
+			missingAttributeNames.add(applicationAttributeType.getName());
+		}
+
+		for (AttributeEntity userAttribute : userAttributes) {
+			if (null == userAttribute.getStringValue()) {
+				/*
+				 * In this case the user still needs to input a value for the
+				 * field.
+				 */
+				continue;
+			}
+			if (userAttribute.getStringValue().length() == 0) {
+				/*
+				 * Even empty attributes must be marked as missing.
+				 */
+				continue;
+			}
+			String attributeName = userAttribute.getAttributeType().getName();
+			missingAttributeNames.remove(attributeName);
+		}
+
+		return missingAttributeNames;
 	}
 }

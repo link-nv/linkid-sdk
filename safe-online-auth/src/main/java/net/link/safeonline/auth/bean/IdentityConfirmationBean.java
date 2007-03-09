@@ -7,16 +7,20 @@
 
 package net.link.safeonline.auth.bean;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+
+import net.link.safeonline.auth.AuthenticationConstants;
+import net.link.safeonline.auth.AuthenticationUtils;
+import net.link.safeonline.auth.IdentityConfirmation;
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.entity.AttributeTypeEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,14 +30,6 @@ import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.FacesMessages;
-
-import net.link.safeonline.auth.AuthenticationConstants;
-import net.link.safeonline.auth.IdentityConfirmation;
-import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.authentication.service.IdentityService;
-import net.link.safeonline.entity.AttributeTypeEntity;
 
 // TODO: use the user webapp security domain here
 @Stateful
@@ -62,8 +58,11 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 
 	public String agree() {
 		LOG.debug("agree");
+		boolean hasMissingAttributes;
 		try {
 			this.identityService.confirmIdentity(this.application);
+			hasMissingAttributes = this.identityService
+					.hasMissingAttributes(this.application);
 		} catch (SubscriptionNotFoundException e) {
 			String msg = "subscription not found.";
 			LOG.debug(msg);
@@ -74,35 +73,21 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
-		}
-
-		redirectToApplication();
-
-		return "success";
-	}
-
-	private void redirectToApplication() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		LOG.debug("redirecting to:  " + this.target);
-		String redirectUrl;
-		try {
-			redirectUrl = this.target + "?username="
-					+ URLEncoder.encode(this.username, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			String msg = "UnsupportedEncoding: " + e.getMessage();
+		} catch (ApplicationIdentityNotFoundException e) {
+			String msg = "application identity not found.";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
-			return;
+			return null;
 		}
-		try {
-			externalContext.redirect(redirectUrl);
-		} catch (IOException e) {
-			String msg = "IO error: " + e.getMessage();
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return;
+
+		if (true == hasMissingAttributes) {
+			return "missing-attributes";
 		}
+
+		AuthenticationUtils.redirectToApplication(this.target, this.username,
+				this.facesMessages);
+
+		return null;
 	}
 
 	@Remove

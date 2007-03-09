@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -105,4 +106,31 @@ public interface IdentityService {
 	List<AttributeTypeEntity> getIdentityAttributesToConfirm(
 			String applicationName) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, SubscriptionNotFoundException;
+
+	/**
+	 * Checks whether the current user still needs to fill in some attribute
+	 * values for being able to use the given application.
+	 * 
+	 * @param applicationName
+	 * @return <code>true</code> if there are missing attributes,
+	 *         <code>false</code> otherwise.
+	 * @throws ApplicationNotFoundException
+	 * @throws ApplicationIdentityNotFoundException
+	 */
+	boolean hasMissingAttributes(String applicationName)
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException;
+
+	/**
+	 * Gives back a list of the user's missing attributes for the given
+	 * application.
+	 * 
+	 * @param applicationName
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 * @throws ApplicationIdentityNotFoundException
+	 */
+	Set<String> getMissingAttributes(String applicationName)
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException;
 }

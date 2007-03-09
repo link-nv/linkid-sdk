@@ -82,9 +82,30 @@ public class LoginServlet extends HttpServlet {
 		LOG.debug("confirmation required: " + confirmationRequired);
 		if (true == confirmationRequired) {
 			redirectToIdentityConfirmation(response);
-		} else {
-			redirectToApplication(request, response);
+			return;
 		}
+
+		boolean hasMissingAttributes;
+		try {
+			hasMissingAttributes = this.identityService
+					.hasMissingAttributes(applicationId);
+		} catch (ApplicationNotFoundException e) {
+			throw new ServletException("application not found");
+		} catch (ApplicationIdentityNotFoundException e) {
+			throw new ServletException("application identity not found");
+		}
+		if (true == hasMissingAttributes) {
+			redirectToMissingAttributes(response);
+			return;
+		}
+
+		redirectToApplication(request, response);
+	}
+
+	private void redirectToMissingAttributes(HttpServletResponse response)
+			throws IOException {
+		String redirectUrl = "./missing-attributes.seam";
+		response.sendRedirect(redirectUrl);
 	}
 
 	private void redirectToIdentityConfirmation(HttpServletResponse response)

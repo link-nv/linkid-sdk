@@ -14,40 +14,41 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h1>Username password authentication</h1>
+		<h1>Missing Attributes</h1>
+
+		<p>You have been authenticated successfully. Before continuing to
+		the application you need to fill in the following attributes that are
+		required by the application.</p>
 
 		<h:form>
 
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
+			<f:facet name="afterInvalidField">Enter a value.</f:facet>
 
-			<table>
-				<tr>
-					<th><h:outputLabel for="username" value="#{msgs.login}" />:</th>
-					<td><s:decorate>
-						<h:inputText id="username"
-							value="#{usernamePasswordLogon.username}" required="true" />
-					</s:decorate></td>
-					<td><t:message for="username" styleClass="error" /></td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="password" value="#{msgs.password}" />:</th>
-					<td><s:decorate>
-						<h:inputSecret id="password"
-							value="#{usernamePasswordLogon.password}" required="true" />
-					</s:decorate></td>
-					<td><t:message for="password" styleClass="error" /></td>
-				</tr>
-			</table>
+			<h:dataTable var="item" value="#{missingAttributeList}"
+				preserveDataModel="false" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+
+				<h:column>
+					<f:facet name="header">Attribute Name</f:facet>
+					<h:outputText value="#{item.name}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">Attribute Value</f:facet>
+					<s:decorate>
+						<h:inputText value="#{item.value}" required="true" />
+					</s:decorate>
+				</h:column>
+
+			</h:dataTable>
 
 			<p><t:messages globalOnly="true" styleClass="error" /></p>
 
-			<h:commandButton action="#{usernamePasswordLogon.login}" id="login"
-				value="Login" />
-			<so:nbsp />
-			<h:commandButton action="back" id="back" value="Back"
-				immediate="true" />
+			<h:commandButton action="#{missingAttributes.save}" id="save"
+				value="Save" />
 		</h:form>
 
 	</ui:define>
