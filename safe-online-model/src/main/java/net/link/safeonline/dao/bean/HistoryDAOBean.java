@@ -49,4 +49,13 @@ public class HistoryDAOBean implements HistoryDAO {
 		List<HistoryEntity> result = query.getResultList();
 		return result;
 	}
+
+	public void clearAllHistory(long ageInMillis) {
+		LOG
+				.debug("clearing subject history entries older than: "
+						+ ageInMillis);
+		Query query = HistoryEntity.createQueryDeleteWhereOlder(
+				this.entityManager, ageInMillis);
+		query.executeUpdate();
+	}
 }

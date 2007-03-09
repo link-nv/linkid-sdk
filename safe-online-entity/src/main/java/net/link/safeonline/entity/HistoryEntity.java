@@ -25,15 +25,23 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_SUBJECT;
+import static net.link.safeonline.entity.HistoryEntity.QUERY_DELETE_WHERE_OLDER;
 
 @Entity
 @Table(name = "hist")
-@NamedQueries(@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT history "
-		+ "FROM HistoryEntity AS history "
-		+ "WHERE history.subject = :subject " + "ORDER BY history.when DESC"))
+@NamedQueries( {
+		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT history "
+				+ "FROM HistoryEntity AS history "
+				+ "WHERE history.subject = :subject "
+				+ "ORDER BY history.when DESC"),
+		@NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE "
+				+ "FROM HistoryEntity AS history "
+				+ "WHERE history.when < :ageLimit") })
 public class HistoryEntity implements Serializable {
 
 	public static final String QUERY_WHERE_SUBJECT = "hist.subject";
+
+	public static final String QUERY_DELETE_WHERE_OLDER = "hist.old";
 
 	private static final long serialVersionUID = 1L;
 
@@ -97,6 +105,14 @@ public class HistoryEntity implements Serializable {
 			SubjectEntity subject) {
 		Query query = entityManager.createNamedQuery(QUERY_WHERE_SUBJECT);
 		query.setParameter("subject", subject);
+		return query;
+	}
+
+	public static Query createQueryDeleteWhereOlder(
+			EntityManager entityManager, long ageInMillis) {
+		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_OLDER);
+		Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
+		query.setParameter("ageLimit", ageLimit);
 		return query;
 	}
 }

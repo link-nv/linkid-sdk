@@ -34,4 +34,11 @@ public interface HistoryDAO {
 	 *         entries exist yet.
 	 */
 	List<HistoryEntity> getHistory(SubjectEntity subject);
+
+	/**
+	 * Deletes all history entries older than a given age in milliseconds
+	 * 
+	 * @param ageInMillis
+	 */
+	void clearAllHistory(long ageInMillis);
 }
