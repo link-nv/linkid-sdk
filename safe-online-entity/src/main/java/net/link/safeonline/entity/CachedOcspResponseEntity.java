@@ -30,6 +30,7 @@ import org.hibernate.annotations.Index;
 import static net.link.safeonline.entity.CachedOcspResponseEntity.QUERY_WHERE_KEY;
 import static net.link.safeonline.entity.CachedOcspResponseEntity.QUERY_DELETE_ALL;
 import static net.link.safeonline.entity.CachedOcspResponseEntity.QUERY_DELETE_PER_DOMAIN;
+import static net.link.safeonline.entity.CachedOcspResponseEntity.QUERY_DELETE_EXPIRED;
 
 @Entity
 @Table(name = "cached_ocsp_responses")
@@ -40,7 +41,11 @@ import static net.link.safeonline.entity.CachedOcspResponseEntity.QUERY_DELETE_P
 		@NamedQuery(name = QUERY_DELETE_ALL, query = "DELETE FROM CachedOcspResponseEntity"),
 		@NamedQuery(name = QUERY_DELETE_PER_DOMAIN, query = "DELETE "
 				+ "FROM CachedOcspResponseEntity AS CachedOcspResponse "
-				+ "WHERE CachedOcspResponse.trustDomain = :trustDomain") })
+				+ "WHERE CachedOcspResponse.trustDomain = :trustDomain"),
+		@NamedQuery(name = QUERY_DELETE_EXPIRED, query = "DELETE "
+				+ "FROM CachedOcspResponseEntity AS CachedOcspResponse "
+				+ "WHERE CachedOcspResponse.entryDate < :expiryTime "
+				+ "AND CachedOcspResponse.trustDomain = :trustDomain") })
 public class CachedOcspResponseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -50,6 +55,8 @@ public class CachedOcspResponseEntity implements Serializable {
 	public static final String QUERY_DELETE_ALL = "cor.delall";
 
 	public static final String QUERY_DELETE_PER_DOMAIN = "cor.deldomain";
+
+	public static final String QUERY_DELETE_EXPIRED = "cor.expired";
 
 	private static final int KEY_SIZE = 128;
 
@@ -135,6 +142,15 @@ public class CachedOcspResponseEntity implements Serializable {
 	public static Query createQueryDeletePerDomain(EntityManager entityManager,
 			TrustDomainEntity trustDomain) {
 		Query query = entityManager.createNamedQuery(QUERY_DELETE_PER_DOMAIN);
+		query.setParameter("trustDomain", trustDomain);
+		return query;
+	}
+
+	public static Query createQueryDeleteExpired(EntityManager entityManager,
+			TrustDomainEntity trustDomain) {
+		Query query = entityManager.createNamedQuery(QUERY_DELETE_EXPIRED);
+		query.setParameter("expiryTime", new Date(System.currentTimeMillis()
+				- trustDomain.getOcspCacheTimeOutMillis()));
 		query.setParameter("trustDomain", trustDomain);
 		return query;
 	}

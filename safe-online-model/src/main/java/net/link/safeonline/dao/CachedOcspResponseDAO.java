@@ -26,4 +26,6 @@ public interface CachedOcspResponseDAO {
 
 	void clearOcspCachePerTrustDomain(TrustDomainEntity trustDomain);
 
+	void clearOcspCacheExpiredForTrustDomain(TrustDomainEntity trustDomain);
+
 }

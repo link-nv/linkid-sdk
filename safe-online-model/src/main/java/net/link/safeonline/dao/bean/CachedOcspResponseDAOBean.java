@@ -83,4 +83,13 @@ public class CachedOcspResponseDAOBean implements CachedOcspResponseDAO {
 		query.executeUpdate();
 	}
 
+	public void clearOcspCacheExpiredForTrustDomain(
+			TrustDomainEntity trustDomain) {
+		LOG.debug("clearing expired ocsp cache entries");
+
+		Query query = CachedOcspResponseEntity.createQueryDeleteExpired(
+				this.entityManager, trustDomain);
+		query.executeUpdate();
+	}
+
 }

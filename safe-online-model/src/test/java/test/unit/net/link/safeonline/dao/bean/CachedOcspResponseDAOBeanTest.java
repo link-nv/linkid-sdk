@@ -7,7 +7,9 @@
 
 package test.unit.net.link.safeonline.dao.bean;
 
+import javax.persistence.EntityManager;
 
+import net.link.safeonline.dao.CachedOcspResponseDAO;
 import net.link.safeonline.dao.bean.CachedOcspResponseDAOBean;
 import net.link.safeonline.entity.CachedOcspResponseEntity;
 
@@ -19,9 +21,9 @@ import junit.framework.TestCase;
 public class CachedOcspResponseDAOBeanTest extends TestCase {
 
 	private EntityTestManager entityTestManager;
-	
-	private CachedOcspResponseDAOBean testedInstance;
-	
+
+	private CachedOcspResponseDAO testedInstance;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -30,29 +32,58 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
 		 * If you add entities to this list, also add them to
 		 * safe-online-sql-ddl.
 		 */
-		this.entityTestManager.setUp(TrustDomainEntity.class, CachedOcspResponseEntity.class);
-		
-		this.testedInstance = new CachedOcspResponseDAOBean();
-		
-		EJBTestUtils.inject(this.testedInstance,this.entityTestManager.getEntityManager());
+		this.entityTestManager.setUp(TrustDomainEntity.class,
+				CachedOcspResponseEntity.class);
+
+		this.testedInstance = this.entityTestManager
+				.newInstance(CachedOcspResponseDAOBean.class);
 	}
-	
+
 	@Override
 	protected void tearDown() throws Exception {
 		this.entityTestManager.tearDown();
 		super.tearDown();
 	}
-	
+
 	public void testAddRemoveCachedOcspResponse() throws Exception {
 		String key = "1234";
 		boolean result = true;
-		CachedOcspResponseEntity cachedOcspResponse = this.testedInstance.addCachedOcspResponse(key, result, null);
-		EJBTestUtils.inject(this.testedInstance,this.entityTestManager.refreshEntityManager());
+		CachedOcspResponseEntity cachedOcspResponse = this.testedInstance
+				.addCachedOcspResponse(key, result, null);
+		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
+				.refreshEntityManager());
 		cachedOcspResponse = this.testedInstance.findCachedOcspResponse(key);
 		this.testedInstance.removeCachedOcspResponse(cachedOcspResponse);
-		EJBTestUtils.inject(this.testedInstance,this.entityTestManager.refreshEntityManager());
+		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
+				.refreshEntityManager());
 		this.testedInstance.addCachedOcspResponse(key, result, null);
-		
+
 	}
-	
+
+	public void testClearOcspCacheExpired() {
+		TrustDomainEntity trustDomainExpired = new TrustDomainEntity(
+				"trustdomainExpired", true, 0);
+		TrustDomainEntity trustDomainNotExpired = new TrustDomainEntity(
+				"trustdomainNotExpired", true, System.currentTimeMillis());
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(trustDomainExpired);
+		entityManager.persist(trustDomainNotExpired);
+		String keyExpired = "1234";
+		String keyNotExpired = "4321";
+		this.testedInstance.addCachedOcspResponse(keyExpired, true,
+				trustDomainExpired);
+		this.testedInstance.addCachedOcspResponse(keyNotExpired, true,
+				trustDomainNotExpired);
+		entityManager.flush();
+
+		this.testedInstance
+				.clearOcspCacheExpiredForTrustDomain(trustDomainExpired);
+		this.testedInstance
+				.clearOcspCacheExpiredForTrustDomain(trustDomainNotExpired);
+		CachedOcspResponseEntity result = this.testedInstance
+				.findCachedOcspResponse(keyExpired);
+		assertNull(result);
+		result = this.testedInstance.findCachedOcspResponse(keyNotExpired);
+		assertNotNull(result);
+	}
 }
