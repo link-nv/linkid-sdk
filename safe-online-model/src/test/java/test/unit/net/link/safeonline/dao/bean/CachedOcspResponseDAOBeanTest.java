@@ -9,7 +9,6 @@ package test.unit.net.link.safeonline.dao.bean;
 
 import javax.persistence.EntityManager;
 
-import net.link.safeonline.dao.CachedOcspResponseDAO;
 import net.link.safeonline.dao.bean.CachedOcspResponseDAOBean;
 import net.link.safeonline.entity.CachedOcspResponseEntity;
 
@@ -22,7 +21,7 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
 
 	private EntityTestManager entityTestManager;
 
-	private CachedOcspResponseDAO testedInstance;
+	private CachedOcspResponseDAOBean testedInstance;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -35,8 +34,9 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
 		this.entityTestManager.setUp(TrustDomainEntity.class,
 				CachedOcspResponseEntity.class);
 
-		this.testedInstance = this.entityTestManager
-				.newInstance(CachedOcspResponseDAOBean.class);
+		this.testedInstance = new CachedOcspResponseDAOBean();
+		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
+				.getEntityManager());
 	}
 
 	@Override
