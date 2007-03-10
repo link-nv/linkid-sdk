@@ -54,6 +54,13 @@ public class SystemInitializationStartableBeanTest extends TestCase {
 
 		// operate
 		testedInstance.postStart();
+		entityManager.getTransaction().commit();
+		entityManager.getTransaction().begin();
+		/*
+		 * We run postStart twice since the system must be capable of rebooting
+		 * using an persistent database.
+		 */
+		testedInstance.postStart();
 		entityTestManager.tearDown();
 	}
 }

@@ -7,10 +7,13 @@
 
 package net.link.safeonline.test.util;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.Principal;
+import java.util.Collection;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
@@ -23,10 +26,16 @@ import javax.ejb.EJBLocalHome;
 import javax.ejb.EJBLocalObject;
 import javax.ejb.EJBObject;
 import javax.ejb.Local;
+import javax.ejb.NoSuchObjectLocalException;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.Timer;
+import javax.ejb.TimerHandle;
 import javax.ejb.TimerService;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.security.auth.Subject;
 import javax.transaction.UserTransaction;
@@ -271,11 +280,37 @@ public final class EJBTestUtils {
 			injectDependencies(clazz);
 			injectEntityManager(clazz);
 			injectResources(clazz);
+			manageTransaction(method);
 			try {
 				Object result = method.invoke(this.object, args);
 				return result;
 			} catch (InvocationTargetException e) {
 				throw e.getTargetException();
+			}
+		}
+
+		private void manageTransaction(Method method) {
+			TransactionAttribute transactionAttributeAnnotation = method
+					.getAnnotation(TransactionAttribute.class);
+			if (null == transactionAttributeAnnotation) {
+				return;
+			}
+			TransactionAttributeType transactionAttributeType = transactionAttributeAnnotation
+					.value();
+			switch (transactionAttributeType) {
+			case REQUIRES_NEW:
+				EntityTransaction entityTransaction = this.entityManager
+						.getTransaction();
+				/*
+				 * The following is not 100% correct, but will do for most of
+				 * the tests.
+				 */
+				LOG.debug("transaction management: REQUIRED_NEW");
+				entityTransaction.commit();
+				entityTransaction.begin();
+				break;
+			default:
+				break;
 			}
 		}
 
@@ -342,6 +377,11 @@ public final class EJBTestUtils {
 					setField(field, this.sessionContext);
 					return;
 				}
+				if (true == TimerService.class.isAssignableFrom(fieldType)) {
+					TimerService testTimerService = new TestTimerService();
+					setField(field, testTimerService);
+					return;
+				}
 				throw new EJBException("unsupported resource type: "
 						+ fieldType.getName());
 			}
@@ -380,7 +420,6 @@ public final class EJBTestUtils {
 		private void setField(Field field, Object value) {
 			field.setAccessible(true);
 			try {
-				LOG.debug("injecting " + value + " into " + this.object);
 				field.set(this.object, value);
 			} catch (IllegalArgumentException e) {
 				throw new EJBException("illegal argument error");
@@ -516,6 +555,70 @@ public final class EJBTestUtils {
 		}
 
 		public void setRollbackOnly() throws IllegalStateException {
+		}
+	}
+
+	private static class TestTimer implements Timer {
+
+		public void cancel() throws IllegalStateException,
+				NoSuchObjectLocalException, EJBException {
+		}
+
+		public TimerHandle getHandle() throws IllegalStateException,
+				NoSuchObjectLocalException, EJBException {
+			return null;
+		}
+
+		public Serializable getInfo() throws IllegalStateException,
+				NoSuchObjectLocalException, EJBException {
+			return null;
+		}
+
+		public Date getNextTimeout() throws IllegalStateException,
+				NoSuchObjectLocalException, EJBException {
+			return null;
+		}
+
+		public long getTimeRemaining() throws IllegalStateException,
+				NoSuchObjectLocalException, EJBException {
+			return 0;
+		}
+	}
+
+	private static class TestTimerService implements TimerService {
+
+		private static final Log LOG = LogFactory
+				.getLog(TestTimerService.class);
+
+		public Timer createTimer(long arg0, Serializable arg1)
+				throws IllegalArgumentException, IllegalStateException,
+				EJBException {
+			return null;
+		}
+
+		public Timer createTimer(Date arg0, Serializable arg1)
+				throws IllegalArgumentException, IllegalStateException,
+				EJBException {
+			LOG.debug("createTimer");
+			Timer testTimer = new TestTimer();
+			return testTimer;
+		}
+
+		public Timer createTimer(long arg0, long arg1, Serializable arg2)
+				throws IllegalArgumentException, IllegalStateException,
+				EJBException {
+			return null;
+		}
+
+		public Timer createTimer(Date arg0, long arg1, Serializable arg2)
+				throws IllegalArgumentException, IllegalStateException,
+				EJBException {
+			return null;
+		}
+
+		public Collection getTimers() throws IllegalStateException,
+				EJBException {
+			return null;
 		}
 	}
 }

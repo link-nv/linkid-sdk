@@ -10,6 +10,8 @@ package net.link.safeonline.dao.bean;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -41,7 +43,7 @@ public class TaskDAOBean implements TaskDAO {
 
 	@SuppressWarnings("unchecked")
 	public TaskEntity findTaskEntity(String jndiName) {
-		LOG.debug("Looking for task entity: " + jndiName);
+		LOG.debug("find task entity: " + jndiName);
 
 		Query query = TaskEntity.createQueryWhereJndiName(this.entityManager,
 				jndiName);
@@ -66,5 +68,4 @@ public class TaskDAOBean implements TaskDAO {
 
 		this.entityManager.remove(taskEntity);
 	}
-
 }

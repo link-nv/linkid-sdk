@@ -76,6 +76,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		TrustPointEntity demoTrustPoint = this.trustPointDAO.findTrustPoint(
 				applicationTrustDomain, certificate);
 		if (null != demoTrustPoint) {
+			// TODO: should update the certificate instead
 			return;
 		}
 

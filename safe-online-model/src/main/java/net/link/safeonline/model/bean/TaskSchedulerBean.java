@@ -141,13 +141,16 @@ public class TaskSchedulerBean implements TaskScheduler {
 		List<SchedulingEntity> schedulings = this.schedulingDAO
 				.listSchedulings();
 		for (SchedulingEntity scheduling : schedulings) {
+			LOG.debug("checking scheduling: " + scheduling.getName());
 			// check if the task still exists
 			Collection<TaskEntity> tasks = scheduling.getTasks();
 			for (TaskEntity taskEntity : tasks) {
+				LOG.debug("persistent task found: " + taskEntity.getJndiName());
 				try {
 					EjbUtils.getEJB(taskEntity.getJndiName(), Task.class);
 				} catch (Exception e) {
-					LOG.debug("Removing task entity: " + taskEntity.getName());
+					LOG.debug("Removing task entity: "
+							+ taskEntity.getJndiName());
 					this.taskDAO.removeTaskEntity(taskEntity);
 				}
 			}
@@ -168,13 +171,14 @@ public class TaskSchedulerBean implements TaskScheduler {
 		Map<String, Task> taskNameMap = EjbUtils.getComponentNames(
 				Task.JNDI_PREFIX, Task.class);
 		for (Entry<String, Task> taskEntry : taskNameMap.entrySet()) {
-			String taskJndiName = taskEntry.getKey();
+			String taskJndiName = Task.JNDI_PREFIX + "/" + taskEntry.getKey();
 			String taskName = taskEntry.getValue().getName();
 			TaskEntity taskEntity = this.taskDAO.findTaskEntity(taskJndiName);
 			if (taskEntity == null) {
 				LOG.debug("Found new task: " + taskJndiName);
-				taskEntity = this.taskDAO.addTaskEntity(Task.JNDI_PREFIX + "/"
-						+ taskJndiName, taskName, defaultScheduling);
+				taskEntity = this.taskDAO.addTaskEntity(taskJndiName, taskName,
+						defaultScheduling);
+				defaultScheduling.addTaskEntity(taskEntity);
 			}
 		}
 
