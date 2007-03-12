@@ -10,19 +10,17 @@ package net.link.safeonline.dao.bean;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.TaskDAO;
 import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.TaskEntity;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Stateless
 public class TaskDAOBean implements TaskDAO {

@@ -217,6 +217,7 @@
 		<module>safe-online-demo-keystore</module>
 		<module>safe-online-model-demo</module>
 		<module>safe-online-auth</module>
+		<module>safe-online-demo-ticket-webapp</module>
 	</modules>
 	<repositories>
 		<repository>
