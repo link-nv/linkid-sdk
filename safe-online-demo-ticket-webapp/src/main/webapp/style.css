@@ -1,0 +1,171 @@
+h1 {
+	font-size: 24px;
+	color: #aaaaff;
+}
+
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000000;
+	background-color: #FFFFFF;
+}
+
+a {
+	text-decoration: none;
+	color: #00f;
+}
+
+input {
+	border: 1px solid;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:visited {
+	color: #00f;
+}
+
+/* classes */
+.error {
+	color: #FF0000;
+	font-weight: bold;
+}
+
+.error input {
+	color: #FF0000;
+	border: 1px solid red;
+}
+
+/* ids */
+#document {
+	height: 100%;
+}
+
+#header {
+	position: relative;
+	height: 60px;
+	text-align: left;
+	font-size: 36px;
+	font-weight: normal;
+}
+
+#footer {
+	clear: both;
+	float: left;
+	width: 100%;
+	text-align: right;
+	display: block;
+	padding: 10px 5px 5px 5px;
+	border-top: 1px solid #eaeaea;
+	color: #ccc;
+	font-size: x-small;
+}
+
+#container {
+	padding: 15px 5px;
+}
+
+#sidebar {
+	float: right;
+	margin-top: 11px;
+	margin-bottom: 12px;
+	text-align: center;
+	background-color: #E0E0E0;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
+	border: 1px solid;
+}
+
+#content {
+	margin-right: 200px;
+}
+
+.nav {
+	position: relative;
+	padding: 1px 20px 0 20px;
+	border-top: 1px solid #c0c0c0;
+	border-bottom: 1px solid #c0c0c0;
+	line-height: normal;
+	height: 25px;
+}
+
+.nav ul {
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	margin-top: 1px;
+	list-style: none;
+	text-align: center;
+}
+
+.nav li {
+	float: left;
+	margin: 0px;
+	margin-right: 2px;
+	padding: 0 0 0 4px;
+}
+
+.nav li a {
+	display: block;
+	padding: 6px 20px 6px 16px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	text-decoration: none;
+	color: #333;
+}
+
+.nav li a:hover {
+	color: #044c9c;
+	background-color: #eee;
+}
+
+.nav .current {
+	border-bottom: 1px solid #fff;
+	background-color: #eee;
+}
+
+.nav .current a {
+	color: #aaaaff;
+	background: #eee;
+}
+
+.nav .current a {
+	text-decoration: none;
+}
+
+.subcolumn1-2 {
+	float: left;
+	width: 50%;
+}
+
+.subcolumn2-2 {
+	float: right;
+	width: 50%;
+}
+
+.listingTable {
+	border-style: none;
+}
+
+.listingTable_Row1 {
+	background-color: #FFFFFF;
+}
+
+.listingTable_Row2 {
+	background-color: #F0F0F0;
+}
+
+.listingTable_ColumnTop {
+	text-align: left;
+	vertical-align: top;
+	background-color: #D0D0D0;
+}
+
+.listingTable_Column {
+	
+}

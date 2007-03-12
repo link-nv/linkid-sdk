@@ -16,6 +16,9 @@
 			<action type="add" dev="fcorneli">
 				Basic demo remote service.
 			</action>
+			<action type="add" dev="fcorneli">
+				Demo Ticket Web Application + Seam runtime.
+			</action>
 		</release>
 
 	</body>

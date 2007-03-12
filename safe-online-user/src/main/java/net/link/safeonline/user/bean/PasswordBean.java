@@ -82,7 +82,7 @@ public class PasswordBean implements Password {
 		} catch (PermissionDeniedException e) {
 			String msg = "old password not correct";
 			LOG.debug(msg);
-			this.facesMessages.add("oldpassword", msg);
+			this.facesMessages.addToControl("oldpassword", msg);
 			return null;
 		}
 

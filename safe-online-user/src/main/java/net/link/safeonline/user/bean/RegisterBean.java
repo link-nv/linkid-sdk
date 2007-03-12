@@ -88,7 +88,7 @@ public class RegisterBean implements Register {
 			this.userRegistrationService.registerUser(this.login,
 					this.password, this.name);
 		} catch (ExistingUserException e) {
-			this.facesMessages.add("login", "login already exists");
+			this.facesMessages.addToControl("login", "login already exists");
 			return null;
 		} catch (ApplicationNotFoundException e) {
 			this.facesMessages.add("application not found");

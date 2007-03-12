@@ -114,13 +114,6 @@
 							</artifactId>
 							<contextRoot>/safe-online-ws</contextRoot>
 						</webModule>
-						<jarModule>
-							<groupId>org.jboss.seam</groupId>
-							<artifactId>jboss-seam</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
-						</jarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-user</artifactId>
@@ -210,6 +203,18 @@
 					</modules>
 					<jboss>
 						<version>4</version>
+						<!--
+							Need to apply the patch from:
+							http://jira.codehaus.org/browse/MEAR-50
+							to maven-ear-plugin.
+							
+							<loader-repository>
+							safeonline:loader=SafeOnline.ear
+							</loader-repository>
+							
+							This does not work because of class loading 
+							issues in the web applications.
+						-->
 					</jboss>
 				</configuration>
 			</plugin>
@@ -311,11 +316,6 @@
 			<artifactId>safe-online-user-webapp</artifactId>
 			<type>war</type>
 			<version>1.0-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

@@ -37,10 +37,16 @@
 								safe-online-demo-remote-service
 							</artifactId>
 						</sarModule>
+						<webModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>
+								safe-online-demo-ticket-webapp
+							</artifactId>
+							<contextRoot>/demo-ticket</contextRoot>
+						</webModule>
 					</modules>
 					<jboss>
 						<version>4</version>
-						<security-domain></security-domain>
 					</jboss>
 				</configuration>
 			</plugin>
@@ -79,6 +85,13 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-remote-service</artifactId>
 			<type>sar</type>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-ticket-webapp</artifactId>
+			<type>war</type>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>

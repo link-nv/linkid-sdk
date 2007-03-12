@@ -165,13 +165,13 @@ public class ApplicationBean implements Application {
 		} catch (ExistingApplicationException e) {
 			String msg = "application already exists: " + this.name;
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addToControl("name", msg);
 			return null;
 		} catch (ApplicationOwnerNotFoundException e) {
 			String msg = "application owner not found: "
 					+ this.applicationOwner;
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addToControl("owner", msg);
 			return null;
 		} catch (IOException e) {
 			String msg = "IO error";
@@ -181,7 +181,7 @@ public class ApplicationBean implements Application {
 		} catch (CertificateEncodingException e) {
 			String msg = "X509 certificate encoding error";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addToControl("fileupload", msg);
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
 			String msg = "attribute type not found";

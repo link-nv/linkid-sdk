@@ -52,6 +52,14 @@ java -jar JAXWS2.1FCS_20070202.jar
  Copy all JARs from <<<$JAXWS-RI/lib>>> to <<<$JBOSS_HOME/server/default/lib/>>>.
  
 
+** JBoss Seam
+
+ Because SafeOnline consists out of multiple EARs, each hosting Seam based web application,
+ the Seam runtime must be available at the top level class loader repository.
+
+ Copy <<<jboss-seam.jar>>> from the JBoss Seam package (1.2.0.PATCH1) to <<<$JBOSS_HOME/server/default/lib/>>>.
+
+
 ** LOG4J
 
  Add the following to <<<$JBOSS_HOME/server/default/conf/log4j.xml>>>:

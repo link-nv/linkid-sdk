@@ -81,7 +81,7 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 		} catch (SubjectNotFoundException e) {
 			String msg = "subject not found";
 			LOG.debug(msg);
-			this.facesMessages.add("login", msg);
+			this.facesMessages.addToControl("login", msg);
 			return null;
 		} catch (ApplicationNotFoundException e) {
 			String msg = "application not found";
@@ -91,7 +91,7 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 		} catch (ExistingApplicationOwnerException e) {
 			String msg = "application owner already exists";
 			LOG.debug(msg);
-			this.facesMessages.add("name", msg);
+			this.facesMessages.addToControl("name", msg);
 			return null;
 		}
 		return "success";

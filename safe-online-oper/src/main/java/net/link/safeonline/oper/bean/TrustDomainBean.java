@@ -86,7 +86,7 @@ public class TrustDomainBean implements TrustDomain {
 		} catch (ExistingTrustDomainException e) {
 			String msg = "existing trust domain";
 			LOG.debug(msg);
-			this.facesMessages.add("name", msg);
+			this.facesMessages.addToControl("name", msg);
 			return null;
 		}
 		return "success";

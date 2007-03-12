@@ -76,7 +76,7 @@ public class AttributesBean implements Attributes {
 		} catch (ExistingAttributeTypeException e) {
 			String msg = "existing attribute type";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addToControl("name", msg);
 			return null;
 		}
 		return "success";

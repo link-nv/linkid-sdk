@@ -123,22 +123,22 @@ public class TrustPointBean implements TrustPoint {
 		} catch (IOException e) {
 			String msg = "IO error: " + e.getMessage();
 			LOG.debug(msg);
-			this.facesMessages.add("fileupload", msg);
+			this.facesMessages.addToControl("fileupload", msg);
 			return null;
 		} catch (TrustDomainNotFoundException e) {
 			String msg = "trust domain not found";
 			LOG.debug(msg);
-			this.facesMessages.add("fileupload", msg);
+			this.facesMessages.addToControl("fileupload", msg);
 			return null;
 		} catch (CertificateEncodingException e) {
 			String msg = "certificate encoding error";
 			LOG.debug(msg);
-			this.facesMessages.add("fileupload", msg);
+			this.facesMessages.addToControl("fileupload", msg);
 			return null;
 		} catch (ExistingTrustPointException e) {
 			String msg = "existing trust point";
 			LOG.debug(msg);
-			this.facesMessages.add("fileupload", msg);
+			this.facesMessages.addToControl("fileupload", msg);
 			return null;
 		}
 		return "success";
