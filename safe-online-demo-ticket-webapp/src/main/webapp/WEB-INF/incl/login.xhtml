@@ -6,14 +6,14 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib">
-	<c:when test="#{username == null}">
+	<c:when test="#{userPrincipal == null}">
 		<h:form>
 			<h:commandButton action="#{ticketLogon.login}" id="login"
 				value="Login" />
 		</h:form>
 	</c:when>
 	<c:otherwise>
-		<p>Welcome #{username}.</p>
+		<p>Welcome #{userPrincipal.name}.</p>
 		<h:form>
 			<h:commandButton action="#{ticketLogon.logout}" id="logout"
 				value="Logout" />

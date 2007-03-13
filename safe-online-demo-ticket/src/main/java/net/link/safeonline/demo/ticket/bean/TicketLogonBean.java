@@ -5,34 +5,44 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.ctrl.bean;
+package net.link.safeonline.demo.ticket.bean;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.ejb.PostActivate;
-import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
+import javax.ejb.Stateful;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
-import net.link.safeonline.ctrl.LoginBase;
+import net.link.safeonline.demo.ticket.TicketLogon;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.cache.simple.CacheConfig;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
+import org.jboss.seam.log.Log;
 
-public class LoginBaseBean implements LoginBase {
+@Stateful
+@Name("ticketLogon")
+@Scope(ScopeType.SESSION)
+@CacheConfig(idleTimeoutSeconds = (5 + 1) * 60)
+@LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketLogonBean/local")
+public class TicketLogonBean implements TicketLogon {
 
-	private static final Log LOG = LogFactory.getLog(LoginBaseBean.class);
+	public static final String APPLICATION_NAME = "safe-online-demo-ticket";
+
+	@Logger
+	private Log log;
 
 	@In
 	Context sessionContext;
@@ -40,51 +50,26 @@ public class LoginBaseBean implements LoginBase {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	private final String applicationName;
-
-	public LoginBaseBean(String applicationName) {
-		this.applicationName = applicationName;
-	}
-
-	@PostConstruct
-	public void postConstructCallback() {
-		LOG.debug("post construct: " + this);
-	}
-
-	@PreDestroy
-	public void preDestroyCallback() {
-		LOG.debug("pre destroy: " + this);
-	}
-
-	@PostActivate
-	public void postActivateCallback() {
-		LOG.debug("post activate: " + this);
-	}
-
-	@PrePassivate
-	public void prePassivateCallback() {
-		LOG.debug("pre passivate: " + this);
-	}
-
 	public String login() {
+		log.debug("login");
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		String safeOnlineAuthenticationServiceUrl = externalContext
 				.getInitParameter("SafeOnlineAuthenticationServiceUrl");
-		LOG.debug("redirecting to: " + safeOnlineAuthenticationServiceUrl);
+		log.debug("redirecting to #0: ", safeOnlineAuthenticationServiceUrl);
 		HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext
 				.getRequest();
 		String requestUrl = httpServletRequest.getRequestURL().toString();
 		String targetUrl = getOverviewTargetUrl(requestUrl);
-		LOG.debug("target url: " + targetUrl);
+		log.debug("target url: #0", targetUrl);
 		String redirectUrl;
 		try {
 			redirectUrl = safeOnlineAuthenticationServiceUrl + "?application="
-					+ URLEncoder.encode(this.applicationName, "UTF-8")
-					+ "&target=" + URLEncoder.encode(targetUrl, "UTF-8");
+					+ URLEncoder.encode(APPLICATION_NAME, "UTF-8") + "&target="
+					+ URLEncoder.encode(targetUrl, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			String msg = "UnsupportedEncoding: " + e.getMessage();
-			LOG.debug(msg);
+			log.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
 		}
@@ -92,12 +77,11 @@ public class LoginBaseBean implements LoginBase {
 			externalContext.redirect(redirectUrl);
 		} catch (IOException e) {
 			String msg = "IO error: " + e.getMessage();
-			LOG.debug(msg);
+			log.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
 		}
-
-		return "login-success";
+		return null;
 	}
 
 	public String getOverviewTargetUrl(String requestUrl) {
@@ -108,27 +92,15 @@ public class LoginBaseBean implements LoginBase {
 	}
 
 	public String logout() {
-		LOG.debug("logout");
+		log.debug("logout");
 		this.sessionContext.set("username", null);
 		Seam.invalidateSession();
 		return "logout-success";
 	}
 
-	public String getLoggedInUsername() {
-		LOG.debug("get logged in username");
-		String username = (String) this.sessionContext.get("username");
-		return username;
-	}
-
-	public boolean isLoggedIn() {
-		LOG.debug("is logged in");
-		String username = (String) this.sessionContext.get("username");
-		return (null != username);
-	}
-
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		LOG.debug("destroy: " + this);
+		log.debug("destroy: #0", this);
 	}
 }

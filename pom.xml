@@ -165,6 +165,11 @@
 					<artifactId>maven-antrun-plugin</artifactId>
 					<version>${maven-antrun-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-ejb-plugin</artifactId>
+					<version>${maven-ejb-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -218,6 +223,7 @@
 		<module>safe-online-model-demo</module>
 		<module>safe-online-auth</module>
 		<module>safe-online-demo-ticket-webapp</module>
+		<module>safe-online-demo-ticket</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -978,5 +984,6 @@
 		<hsqldb.version>1.8.0.7</hsqldb.version>
 		<dom4j.version>1.6.1</dom4j.version>
 		<cglib.version>2.1_3</cglib.version>
+		<maven-ejb-plugin.version>2.1</maven-ejb-plugin.version>
 	</properties>
 </project>

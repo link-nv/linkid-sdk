@@ -34,6 +34,10 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	private static final Log LOG = LogFactory.getLog(DemoStartableBean.class);
 
+	private static final String DEMO_APPLICATION_NAME = "demo-application";
+
+	private static final String DEMO_TICKET_APPLICATION_NAME = "safe-online-demo-ticket";
+
 	@EJB
 	private TrustPointDAO trustPointDAO;
 
@@ -43,19 +47,25 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.authorizedUsers.put("mario", "secret");
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
-				"fcorneli", "demo-application"));
+				"fcorneli", DEMO_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"fcorneli", DEMO_TICKET_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "fcorneli",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
-				"dieter", "demo-application"));
+				"dieter", DEMO_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"dieter", DEMO_TICKET_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "dieter",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
-				"mario", "demo-application"));
+				"mario", DEMO_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"mario", DEMO_TICKET_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "mario",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
@@ -90,8 +100,11 @@ public class DemoStartableBean extends AbstractInitBean {
 		X509Certificate certificate = (X509Certificate) privateKeyEntry
 				.getCertificate();
 
-		this.registeredApplications.add(new Application("demo-application",
+		this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME,
 				"owner", certificate));
+
+		this.registeredApplications.add(new Application(
+				DEMO_TICKET_APPLICATION_NAME, "owner", certificate));
 
 		super.postStart();
 

@@ -63,7 +63,7 @@ public class ServletLoginFilter implements Filter {
 			return;
 		}
 
-		// TODO: cache roles in http session context
+		// TODO: cache roles in http request context
 		Set<String> roles = this.authorizationService.getRoles(username);
 
 		Principal userPrincipal = new SimplePrincipal(username);
