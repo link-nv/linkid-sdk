@@ -62,7 +62,7 @@
 	<filter>
 		<filter-name>Login Filter</filter-name>
 		<filter-class>
-			net.link.safeonline.webapp.filter.JAASLoginFilter
+			net.link.safeonline.sdk.auth.filter.JAASLoginFilter
 		</filter-class>
 		<init-param>
 			<param-name>LoginContextName</param-name>

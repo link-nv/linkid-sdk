@@ -133,6 +133,8 @@ public class LoginServlet extends HttpServlet {
 		String redirectUrl = target + "?username="
 				+ URLEncoder.encode(userId, "UTF-8");
 
+		session.invalidate();
+
 		LOG.debug("redirecting to: " + redirectUrl);
 		response.sendRedirect(redirectUrl);
 	}

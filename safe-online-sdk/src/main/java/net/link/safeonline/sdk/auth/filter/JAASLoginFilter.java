@@ -1,4 +1,4 @@
-package net.link.safeonline.webapp.filter;
+package net.link.safeonline.sdk.auth.filter;
 
 import java.io.IOException;
 

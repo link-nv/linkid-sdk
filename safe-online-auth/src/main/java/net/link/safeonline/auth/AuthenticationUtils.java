@@ -16,6 +16,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.seam.Seam;
 import org.jboss.seam.core.FacesMessages;
 
 public class AuthenticationUtils {
@@ -28,6 +29,9 @@ public class AuthenticationUtils {
 
 	public static void redirectToApplication(String target, String username,
 			FacesMessages facesMessages) {
+
+		Seam.invalidateSession();
+
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		LOG.debug("redirecting to:  " + target);
