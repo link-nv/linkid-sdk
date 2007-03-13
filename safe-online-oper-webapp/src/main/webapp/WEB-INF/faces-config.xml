@@ -208,6 +208,10 @@
 			<from-outcome>schedulinglistview</from-outcome>
 			<to-view-id>/schedulings.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>successclearalltaskshistory</from-outcome>
+			<to-view-id>/schedulings.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -224,6 +228,30 @@
 			<from-outcome>taskhistoryview</from-outcome>
 			<to-view-id>/task-history.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>successcleartaskhistory</from-outcome>
+			<to-view-id>/task-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>successperformtask</from-outcome>
+			<to-view-id>/task-history.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>taskeditview</from-outcome>
+			<to-view-id>/task-edit.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/task-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>taskview</from-outcome>
+			<to-view-id>/task-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>successsavetask</from-outcome>
+			<to-view-id>/task-view.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -235,6 +263,10 @@
 		<navigation-case>
 			<from-outcome>schedulingview</from-outcome>
 			<to-view-id>/scheduling-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>addschedulingview</from-outcome>
+			<to-view-id>/scheduling-add.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
@@ -252,6 +284,38 @@
 			<from-outcome>tasklistview</from-outcome>
 			<to-view-id>/tasks.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>schedulingedit</from-outcome>
+			<to-view-id>/scheduling-edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>successperformscheduling</from-outcome>
+			<to-view-id>/scheduling-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/scheduling-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>schedulingview</from-outcome>
+			<to-view-id>/scheduling-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>successsavescheduling</from-outcome>
+			<to-view-id>/scheduling-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/scheduling-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>schedulinglistview</from-outcome>
+			<to-view-id>/schedulings.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>successaddscheduling</from-outcome>
+			<to-view-id>/schedulings.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -259,6 +323,10 @@
 		<navigation-case>
 			<from-outcome>taskview</from-outcome>
 			<to-view-id>/task-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>successcleartaskhistory</from-outcome>
+			<to-view-id>/task-history.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

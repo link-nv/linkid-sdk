@@ -7,7 +7,10 @@
 
 package net.link.safeonline.oper;
 
+import java.util.List;
+
 import javax.ejb.Local;
+import javax.faces.model.SelectItem;
 
 @Local
 public interface Scheduling {
@@ -18,7 +21,11 @@ public interface Scheduling {
 
 	void taskHistoryListFactory();
 
+	void newSchedulingFactory();
+
 	void destroyCallback();
+
+	List<SelectItem> selectSchedulingListFactory();
 
 	String schedulingListView();
 
@@ -37,5 +44,17 @@ public interface Scheduling {
 	String clearTaskHistory();
 
 	String clearAllTasksHistory();
+
+	String saveScheduling();
+
+	String saveTask();
+
+	String editSchedulingView();
+
+	String addSchedulingView();
+
+	String addScheduling();
+
+	String taskEditView();
 
 }

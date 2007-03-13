@@ -12,6 +12,8 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 
+import net.link.safeonline.authentication.exception.ExistingSchedulingException;
+import net.link.safeonline.authentication.exception.InvalidCronExpressionException;
 import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.TaskEntity;
 import net.link.safeonline.entity.TaskHistoryEntity;
@@ -33,5 +35,13 @@ public interface SchedulingService {
 	void clearTaskHistory(TaskEntity task);
 
 	void clearAllTasksHistory();
+
+	void saveScheduling(SchedulingEntity scheduling)
+			throws InvalidCronExpressionException;
+
+	void addScheduling(SchedulingEntity scheduling)
+			throws InvalidCronExpressionException, ExistingSchedulingException;
+
+	void saveTask(TaskEntity task);
 
 }

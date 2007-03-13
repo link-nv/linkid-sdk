@@ -15,7 +15,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>Schedulings</h1>
+		<h1>#{msgs.schedulings}</h1>
 
 		<h:form>
 			<t:dataTable id="scheduling-data" var="item"
@@ -24,12 +24,12 @@
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">Name</f:facet>
+					<f:facet name="header">#{msgs.name}</f:facet>
 					<h:commandLink value="#{item.name}"
 						action="#{scheduling.schedulingView}" />
 				</h:column>
 				<h:column>
-					<f:facet name="header">Cron</f:facet>
+					<f:facet name="header">#{msgs.cron}</f:facet>
 					#{item.cronExpression}
 				</h:column>
 			</t:dataTable>
@@ -37,16 +37,19 @@
 			<t:dataScroller for="scheduling-data" fastStep="10"
 				pageCountVar="pageCount" pageIndexVar="pageIndex"
 				styleClass="scroller" paginator="true" paginatorMaxPages="9">
-				<f:facet name="first">First</f:facet>
-				<f:facet name="last">Last</f:facet>
-				<f:facet name="previous">Previous</f:facet>
-				<f:facet name="next">Next</f:facet>
+				<f:facet name="first">#{msgs.first}</f:facet>
+				<f:facet name="last">#{msgs.last}</f:facet>
+				<f:facet name="previous">#{msgs.previous}</f:facet>
+				<f:facet name="next">#{msgs.next}</f:facet>
 			</t:dataScroller>
 
 			<h:messages styleClass="error" />
 
 			<h:commandButton action="#{scheduling.taskListView}" id="back"
-				value="Back" immediate="true" />
+				value="#{msgs.backaction}" immediate="true" />
+			<so:nbsp />
+			<h:commandButton action="#{scheduling.addSchedulingView}" id="add"
+				value="#{msgs.addaction}" immediate="true" />
 
 		</h:form>
 

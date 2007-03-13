@@ -26,6 +26,7 @@ import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.Startable;
 import net.link.safeonline.Task;
+import net.link.safeonline.authentication.exception.InvalidCronExpressionException;
 import net.link.safeonline.dao.SchedulingDAO;
 import net.link.safeonline.dao.TaskDAO;
 import net.link.safeonline.dao.TaskHistoryDAO;
@@ -91,7 +92,11 @@ public class TaskSchedulerBean implements TaskScheduler {
 		}
 
 		// restore the timer
-		this.setTimer(scheduling);
+		try {
+			this.setTimer(scheduling);
+		} catch (Exception ex) {
+			LOG.debug("Exception while setting timer on: " + ex.getMessage());
+		}
 
 	}
 
@@ -133,7 +138,10 @@ public class TaskSchedulerBean implements TaskScheduler {
 		if (defaultScheduling == null) {
 			defaultScheduling = this.schedulingDAO.addScheduling("default",
 					defaultCronExpression);
-			this.setTimer(defaultScheduling);
+			try {
+				this.setTimer(defaultScheduling);
+			} catch (Exception ex) {
+			}
 		}
 
 		// check condition of current scheduling and tasks
@@ -162,7 +170,10 @@ public class TaskSchedulerBean implements TaskScheduler {
 				timerHandle.getTimer();
 			} catch (Exception e) {
 				LOG.debug("Resetting timer on " + scheduling.getName());
-				this.setTimer(scheduling);
+				try {
+					this.setTimer(scheduling);
+				} catch (Exception ex) {
+				}
 			}
 		}
 
@@ -188,10 +199,16 @@ public class TaskSchedulerBean implements TaskScheduler {
 		// empty
 	}
 
-	public void setTimer(SchedulingEntity scheduling) {
+	public void setTimer(SchedulingEntity scheduling)
+			throws InvalidCronExpressionException {
+		CronTrigger cronTrigger = null;
 		try {
-			CronTrigger cronTrigger = new CronTrigger("name", "group",
-					scheduling.getCronExpression());
+			cronTrigger = new CronTrigger("name", "group", scheduling
+					.getCronExpression());
+		} catch (Exception e) {
+			throw new InvalidCronExpressionException();
+		}
+		try {
 			Date fireDate = cronTrigger.computeFirstFireTime(null);
 			if (fireDate.equals(scheduling.getFireDate())) {
 				cronTrigger.triggered(null);

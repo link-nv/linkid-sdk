@@ -16,6 +16,8 @@ import javax.ejb.Stateless;
 import org.jboss.annotation.security.SecurityDomain;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ExistingSchedulingException;
+import net.link.safeonline.authentication.exception.InvalidCronExpressionException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.SchedulingDAO;
 import net.link.safeonline.dao.TaskDAO;
@@ -80,5 +82,36 @@ public class SchedulingServiceBean implements SchedulingService {
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void clearAllTasksHistory() {
 		this.taskHistoryDAO.clearAllTasksHistory();
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void saveScheduling(SchedulingEntity scheduling)
+			throws InvalidCronExpressionException {
+		SchedulingEntity attachedScheduling = this.schedulingDAO
+				.findSchedulingByName(scheduling.getName());
+		attachedScheduling.setCronExpression(scheduling.getCronExpression());
+		attachedScheduling.setName(scheduling.getName());
+		this.taskScheduler.setTimer(scheduling);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void addScheduling(SchedulingEntity scheduling)
+			throws InvalidCronExpressionException, ExistingSchedulingException {
+		SchedulingEntity existingScheduling = this.schedulingDAO
+				.findSchedulingByName(scheduling.getName());
+		if (null != existingScheduling) {
+			throw new ExistingSchedulingException();
+		}
+
+		this.schedulingDAO.addScheduling(scheduling.getName(), scheduling
+				.getCronExpression());
+		this.taskScheduler.setTimer(scheduling);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void saveTask(TaskEntity task) {
+		TaskEntity attachedTask = this.taskDAO.findTaskEntity(task
+				.getJndiName());
+		attachedTask.setScheduling(task.getScheduling());
 	}
 }

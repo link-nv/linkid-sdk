@@ -15,19 +15,19 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>Scheduling: #{selectedScheduling.name}</h1>
+		<h1>#{msgs.scheduling}: #{selectedScheduling.name}</h1>
 
 		<table>
 			<tr>
-				<th>Name:</th>
+				<th>#{msgs.name}:</th>
 				<td>#{selectedScheduling.name}</td>
 			</tr>
 			<tr>
-				<th>Cron:</th>
+				<th>#{msgs.cron}:</th>
 				<td>#{selectedScheduling.cronExpression}</td>
 			</tr>
 			<tr>
-				<th>Last:</th>
+				<th>#{msgs.last}:</th>
 				<td>#{selectedScheduling.fireDate}</td>
 			</tr>
 		</table>
@@ -38,7 +38,7 @@
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">Name</f:facet>
+					<f:facet name="header">#{msgs.name}</f:facet>
 					<h:commandLink value="#{item.name}" action="#{scheduling.taskView}" />
 				</h:column>
 			</t:dataTable>
@@ -46,16 +46,21 @@
 			<t:dataScroller for="task-data" fastStep="10"
 				pageCountVar="pageCount" pageIndexVar="pageIndex"
 				styleClass="scroller" paginator="true" paginatorMaxPages="9">
-				<f:facet name="first">First</f:facet>
-				<f:facet name="last">Last</f:facet>
-				<f:facet name="previous">Previous</f:facet>
-				<f:facet name="next">Next</f:facet>
+				<f:facet name="first">#{msgs.first}</f:facet>
+				<f:facet name="last">#{msgs.last}</f:facet>
+				<f:facet name="previous">#{msgs.previous}</f:facet>
+				<f:facet name="next">#{msgs.next}</f:facet>
 			</t:dataScroller>
 			<h:commandButton action="#{scheduling.taskListView}" id="back"
-				value="Back" immediate="true" />
+				value="#{msgs.backaction}" immediate="true" />
 			<so:nbsp />
 			<h:commandButton action="#{scheduling.performScheduling}"
-				id="performscheduling" value="Perform Scheduling" immediate="true" />
+				id="performscheduling" value="#{msgs.performschedulingaction}"
+				immediate="true" />
+			<so:nbsp />
+			<h:commandButton action="#{scheduling.editSchedulingView}"
+				id="editscheduling" value="#{msgs.editschedulingaction}"
+				immediate="true" />
 		</h:form>
 
 	</ui:define>

@@ -120,7 +120,7 @@ public class TaskSchedulerBeanTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testSetTimer() {
+	public void testSetTimer() throws Exception {
 		// setup
 		SchedulingEntity scheduling = new SchedulingEntity("test",
 				"0 0/5 * * * ?", null);
