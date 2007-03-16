@@ -8,20 +8,28 @@
 package net.link.safeonline.demo.ticket.bean;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.demo.ticket.TicketOverview;
+import net.link.safeonline.demo.ticket.entity.Ticket;
+import net.link.safeonline.demo.ticket.entity.User;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
+import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -35,6 +43,27 @@ public class TicketOverviewBean implements TicketOverview {
 
 	@Resource
 	private SessionContext sessionContext;
+
+	@PersistenceContext(unitName = "DemoTicketEntityManager")
+	private EntityManager entityManager;
+
+	@DataModel("ticketList")
+	@Out(value = "ticketList")
+	@SuppressWarnings("unused")
+	private List<Ticket> ticketList;
+
+	@Factory("ticketList")
+	@RolesAllowed("user")
+	@SuppressWarnings("unchecked")
+	public void ticketListFactory() {
+		User user = this.entityManager.find(User.class, this.getUsername());
+		if (user == null) {
+			user = new User(this.getUsername());
+			this.entityManager.persist(user);
+		}
+		this.ticketList = user.getTickets();
+		log.debug("Ticket List: " + this.ticketList.size());
+	}
 
 	@RolesAllowed("user")
 	public String getUsername() {

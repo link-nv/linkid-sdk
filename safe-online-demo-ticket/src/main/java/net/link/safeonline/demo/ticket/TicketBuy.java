@@ -7,14 +7,28 @@
 
 package net.link.safeonline.demo.ticket;
 
+import java.util.List;
+
 import javax.ejb.Local;
+import javax.faces.model.SelectItem;
 
 @Local
-public interface TicketOverview {
+public interface TicketBuy {
 
 	String getUsername();
 
 	void destroyCallback();
 
-	void ticketListFactory();
+	boolean getReturnTicket();
+
+	void setReturnTicket(boolean returnTicket);
+
+	List<SelectItem> siteListFactory();
+
+	List<SelectItem> dateListFactory();
+
+	String checkOut();
+
+	String confirm();
+
 }

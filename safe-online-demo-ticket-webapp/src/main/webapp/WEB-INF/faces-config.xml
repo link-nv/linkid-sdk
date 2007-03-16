@@ -20,6 +20,26 @@
 			<to-view-id>/main.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+		<navigation-case>
+			<from-action>add</from-action>
+			<to-view-id>/add.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>overview</from-action>
+			<to-view-id>/overview.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>list</from-action>
+			<to-view-id>/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>list</from-outcome>
+			<to-view-id>/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>pay</from-outcome>
+			<to-view-id>/pay.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 </faces-config>

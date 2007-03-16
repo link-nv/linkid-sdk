@@ -1,6 +1,10 @@
 h1 {
 	font-size: 24px;
-	color: #aaaaff;
+	color: #000099;
+}
+
+h2 {
+	color: #000099;
 }
 
 body {
@@ -41,7 +45,9 @@ a:visited {
 
 /* ids */
 #document {
+	margin: 30px auto;
 	height: 100%;
+	width: 800px;
 }
 
 #header {
@@ -55,7 +61,7 @@ a:visited {
 #footer {
 	clear: both;
 	float: left;
-	width: 100%;
+	width: 800px;
 	text-align: right;
 	display: block;
 	padding: 10px 5px 5px 5px;
@@ -65,6 +71,7 @@ a:visited {
 }
 
 #container {
+	width: 800px;
 	padding: 15px 5px;
 }
 
@@ -73,7 +80,7 @@ a:visited {
 	margin-top: 11px;
 	margin-bottom: 12px;
 	text-align: center;
-	background-color: #E0E0E0;
+	background-color: #FFE400;
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-top: 10px;

@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="content">
+		<h2>Buy a ticket</h2>
+
+		<h:form>
+			<table>
+				<tr>
+					<th>From:</th>
+					<td><h:selectOneMenu id="from" value="#{from}">
+						<f:selectItems value="#{siteList}" />
+					</h:selectOneMenu></td>
+				</tr>
+				<tr>
+					<th>To:</th>
+					<td><h:selectOneMenu id="to" value="#{to}">
+						<f:selectItems value="#{siteList}" />
+					</h:selectOneMenu></td>
+				</tr>
+				<tr>
+					<th>Valid until:</th>
+					<td><h:selectOneMenu id="validuntil" value="#{validUntil}">
+						<f:selectItems value="#{dateList}" />
+					</h:selectOneMenu></td>
+				</tr>
+				<tr>
+					<th>Return Ticket:</th>
+					<td><h:selectBooleanCheckbox id="returnticket" value="#{returnTicket}"/></td>
+				</tr>
+			</table>
+
+			<h:commandButton action="#{ticketBuy.checkOut}" id="checkout"
+				value="Checkout" />
+			<so:nbsp />
+			<h:commandButton action="list" id="cancel" value="Cancel"
+				immediate="true" />
+			<so:nbsp />
+			<h:commandButton action="overview" id="overview" value="Home"
+				immediate="true" />
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml" />
+	</ui:define>
+</ui:composition>
+</body>
+</html>

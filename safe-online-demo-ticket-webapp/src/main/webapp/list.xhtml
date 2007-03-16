@@ -2,14 +2,48 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="content">
-		<h1>Pass Overview</h1>
+		<h2>List of tickets</h2>
 
-		<p>Implement me.</p>
-		<p>#{ticketOverview.username}</p>
+		<t:dataTable id="ticket-data" var="ticket" value="#{ticketList}"
+			rows="10" preserveDataModel="false" styleClass="listingTable"
+			rowClasses="listingTable_Row1,listingTable_Row2">
+
+			<h:column>
+				<f:facet name="header">From</f:facet>
+					#{ticket.start}
+				</h:column>
+			<h:column>
+				<f:facet name="header">To</f:facet>
+					#{ticket.destination}
+				</h:column>
+			<h:column>
+				<f:facet name="header">Valid from</f:facet>
+					#{ticket.validFrom}
+				</h:column>
+			<h:column>
+				<f:facet name="header">Valid until</f:facet>
+					#{ticket.validTo}
+				</h:column>
+			<h:column>
+				<f:facet name="header">Return ticket</f:facet>
+					#{ticket.biDirectional}
+				</h:column>
+		</t:dataTable>
+
+		<t:dataScroller for="ticket-data" fastStep="10"
+			pageCountVar="pageCount" pageIndexVar="pageIndex"
+			styleClass="scroller" paginator="true" paginatorMaxPages="9">
+			<f:facet name="first">First</f:facet>
+			<f:facet name="last">Last</f:facet>
+			<f:facet name="previous">Previous</f:facet>
+			<f:facet name="next">Next</f:facet>
+		</t:dataScroller>
+		<p><a href="./add.seam">Click here to buy a new ticket.</a></p>
 	</ui:define>
 
 	<ui:define name="sidebar">
