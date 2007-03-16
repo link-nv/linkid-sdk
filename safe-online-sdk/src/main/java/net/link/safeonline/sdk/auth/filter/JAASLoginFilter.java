@@ -1,7 +1,9 @@
 package net.link.safeonline.sdk.auth.filter;
 
 import java.io.IOException;
+import java.security.Principal;
 
+import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.Filter;
@@ -84,8 +86,14 @@ public class JAASLoginFilter implements Filter {
 		LoginContext loginContext;
 		try {
 			loginContext = new LoginContext(this.loginContextName, handler);
+			LOG.debug("login to " + this.loginContextName + " with " + username
+					+ " for " + request.getRequestURL());
 			loginContext.login();
-			LOG.debug("login for " + username);
+			Subject subject = loginContext.getSubject();
+			for (Principal principal : subject.getPrincipals()) {
+				LOG.debug("subject principal: " + principal);
+			}
+			LOG.debug("after login");
 			request.setAttribute(SESSION_LOGIN_CONTEXT, loginContext);
 		} catch (LoginException e) {
 			LOG.error("login error: " + e.getMessage(), e);

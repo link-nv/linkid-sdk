@@ -138,6 +138,9 @@ public class JAASLoginFilterTest extends TestCase {
 		expect(this.mockHttpSession.getAttribute(testPasswordAttributeName))
 				.andStubReturn("test-password");
 
+		expect(this.mockHttpServletRequest.getRequestURL()).andStubReturn(
+				new StringBuffer("test-url"));
+
 		// expectation
 		this.mockHttpServletRequest.setAttribute(EasyMock.eq("login-context"),
 				EasyMock.anyObject());

@@ -39,8 +39,8 @@ public class LoginFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 
-		LOG.debug("doFilter");
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		LOG.debug("doFilter: " + httpRequest.getRequestURL());
 		HttpSession session = httpRequest.getSession();
 
 		String paramUsername = httpRequest.getParameter("username");

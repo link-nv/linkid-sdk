@@ -18,7 +18,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class ContainerLoginFilter implements Filter {
+
+	private static final Log LOG = LogFactory
+			.getLog(ContainerLoginFilter.class);
 
 	private static final String ALREADY_PROCESSED = ContainerLoginFilter.class
 			.getName()
@@ -45,6 +51,8 @@ public class ContainerLoginFilter implements Filter {
 		}
 		request.setAttribute(ALREADY_PROCESSED, Boolean.TRUE);
 
+		LOG.debug("container login " + username + " for "
+				+ httpServletRequest.getRequestURL());
 		LoginHttpServletRequestWrapper wrapper = new LoginHttpServletRequestWrapper(
 				httpServletRequest, username);
 

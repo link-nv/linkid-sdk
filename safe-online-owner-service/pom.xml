@@ -144,6 +144,26 @@
 					<groupId>javax.jws</groupId>
 					<artifactId>jsr181-api</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.jboss</groupId>
+					<artifactId>jbosssx-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>hsqldb</groupId>
+					<artifactId>hsqldb</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>jetty</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>joda-time</groupId>
+					<artifactId>joda-time</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 	</dependencies>

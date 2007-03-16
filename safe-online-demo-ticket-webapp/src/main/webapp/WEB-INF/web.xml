@@ -74,14 +74,12 @@
 		</init-param>
 	</filter>
 
-	<!-- 
-		<filter>
+	<filter>
 		<filter-name>ContainerLoginFilter</filter-name>
 		<filter-class>
-		net.link.safeonline.sdk.auth.filter.ContainerLoginFilter
+			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter
 		</filter-class>
-		</filter>
-	-->
+	</filter>
 
 	<filter-mapping>
 		<filter-name>Seam Exception Filter</filter-name>
@@ -94,21 +92,19 @@
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-
-	<filter-mapping>
 		<filter-name>LoginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<!-- 
-		<filter-mapping>
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
 		<filter-name>ContainerLoginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-		</filter-mapping>
-	-->
+	</filter-mapping>
 
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
