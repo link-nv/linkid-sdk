@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name="Demo Ticket Client" default="build" basedir=".">
+
+	<property name="nant.settings.currentframework" value="netcf-2.0" />
+
+	<target name="build">
+		<csc target="winexe" output="demo-ticket-client.exe">
+			<sources>
+				<include name="**/*.cs" />
+			</sources>
+			<references>
+				<include name="mscorlib.dll"/>
+				<include name="System.dll" />
+				<include name="System.Data.dll"/>
+				<include name="Microsoft.WindowsCE.Forms.dll"/>
+				<include name="System.Drawing.dll"/>
+				<include name="System.Windows.Forms.dll"/>
+			</references>
+		</csc>
+	</target>
+
+	<target name="clean">
+		<delete file="demo-ticket-client.exe"/>
+	</target>
+</project>
