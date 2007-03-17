@@ -38,6 +38,11 @@
 		<param-value>true</param-value>
 	</context-param>
 
+	<context-param>
+		<param-name>org.jboss.seam.core.init.debug</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
 	<filter>
 		<filter-name>LoginFilter</filter-name>
 		<filter-class>

@@ -12,8 +12,6 @@ import javax.ejb.Local;
 @Local
 public interface TicketOverview {
 
-	String getUsername();
-
 	void destroyCallback();
 
 	void ticketListFactory();

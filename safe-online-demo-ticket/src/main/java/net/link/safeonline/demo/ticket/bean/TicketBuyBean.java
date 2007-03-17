@@ -30,11 +30,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.log.Log;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
 
 @Stateful
 @Name("ticketBuy")
@@ -51,47 +51,61 @@ public class TicketBuyBean implements TicketBuy {
 	@PersistenceContext(unitName = "DemoTicketEntityManager")
 	private EntityManager entityManager;
 
-	public enum Period {
-		DAY("one day", 24), WEEK("one week", 168), MONTH("one month", 5208);
+	public enum TicketPeriod {
+		DAY("one day", Period.days(1)), WEEK("one week", Period.weeks(1)), MONTH(
+				"one month", Period.months(1));
 
 		private final String name;
 
-		private final long duration;
+		private final Period period;
 
-		Period(String name, long duration) {
+		TicketPeriod(String name, Period period) {
 			this.name = name;
-			this.duration = duration;
+			this.period = period;
 		}
 
 		public String getName() {
 			return this.name;
 		}
 
-		public long getDuration() {
-			return this.duration;
+		public Date getEndDate(Date beginDate) {
+			DateTime begin = new DateTime(beginDate);
+			DateTime endDate = begin.plus(this.period);
+			return endDate.toDate();
 		}
-
 	}
 
-	@In(required = false)
-	@Out(required = false)
 	private String from;
 
-	@In(required = false)
-	@Out(required = false)
 	private String to;
 
-	@In(required = false)
-	@Out(required = false)
 	private String validUntil;
 
-	// @In(required = false)
-	// @Out(required = false)
 	private boolean returnTicket;
 
-	@Out(value = "ticketList", required = false)
-	@SuppressWarnings("unused")
-	private List<Ticket> ticketList;
+	public String getFrom() {
+		return this.from;
+	}
+
+	public void setFrom(String from) {
+		this.from = from;
+	}
+
+	public String getTo() {
+		return this.to;
+	}
+
+	public void setTo(String to) {
+		this.to = to;
+	}
+
+	public String getValidUntil() {
+		return this.validUntil;
+	}
+
+	public void setValidUntil(String validUntil) {
+		this.validUntil = validUntil;
+	}
 
 	public boolean getReturnTicket() {
 		return this.returnTicket;
@@ -101,8 +115,7 @@ public class TicketBuyBean implements TicketBuy {
 		this.returnTicket = returnTicket;
 	}
 
-	@RolesAllowed("user")
-	public String getUsername() {
+	private String getUsername() {
 		Principal principal = this.sessionContext.getCallerPrincipal();
 		String name = principal.getName();
 		log.debug("username #0", name);
@@ -121,7 +134,7 @@ public class TicketBuyBean implements TicketBuy {
 	@Factory("dateList")
 	public List<SelectItem> dateListFactory() {
 		List<SelectItem> result = new ArrayList<SelectItem>();
-		for (Period period : Period.values()) {
+		for (TicketPeriod period : TicketPeriod.values()) {
 			result.add(new SelectItem(period.toString(), period.getName()));
 		}
 		return result;
@@ -134,15 +147,13 @@ public class TicketBuyBean implements TicketBuy {
 			user = new User(this.getUsername());
 			this.entityManager.persist(user);
 		}
-		Period valid = Period.valueOf(this.validUntil);
-		long duration = valid.getDuration() * 3600;
-		Date startDate = new Date(System.currentTimeMillis());
-		Date endDate = new Date(System.currentTimeMillis() + duration);
+		TicketPeriod valid = TicketPeriod.valueOf(this.validUntil);
+		Date startDate = new Date();
+		Date endDate = valid.getEndDate(startDate);
 		Ticket ticket = new Ticket(user, Site.valueOf(from), Site.valueOf(to),
 				startDate, endDate, this.returnTicket);
 		user.getTickets().add(ticket);
 		this.entityManager.persist(ticket);
-		this.ticketList = user.getTickets();
 		return "list";
 	}
 

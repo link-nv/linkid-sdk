@@ -63,8 +63,7 @@ public class TicketOverviewBean implements TicketOverview {
 		log.debug("Ticket List: " + this.ticketList.size());
 	}
 
-	@RolesAllowed("user")
-	public String getUsername() {
+	private String getUsername() {
 		Principal principal = this.sessionContext.getCallerPrincipal();
 		String name = principal.getName();
 		log.debug("username #0", name);

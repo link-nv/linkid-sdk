@@ -15,20 +15,45 @@ import javax.faces.model.SelectItem;
 @Local
 public interface TicketBuy {
 
-	String getUsername();
+	/*
+	 * Field accessors.
+	 */
 
-	void destroyCallback();
+	String getFrom();
+
+	void setFrom(String from);
+
+	String getTo();
+
+	void setTo(String to);
+
+	String getValidUntil();
+
+	void setValidUntil(String validUntil);
 
 	boolean getReturnTicket();
 
 	void setReturnTicket(boolean returnTicket);
 
+	/*
+	 * Factories
+	 */
+
 	List<SelectItem> siteListFactory();
 
 	List<SelectItem> dateListFactory();
+
+	/*
+	 * Actions
+	 */
 
 	String checkOut();
 
 	String confirm();
 
+	/*
+	 * Lifecycle
+	 */
+
+	void destroyCallback();
 }

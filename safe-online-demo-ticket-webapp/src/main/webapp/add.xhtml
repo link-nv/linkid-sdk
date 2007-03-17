@@ -14,25 +14,27 @@
 			<table>
 				<tr>
 					<th>From:</th>
-					<td><h:selectOneMenu id="from" value="#{from}">
+					<td><h:selectOneMenu id="from" value="#{ticketBuy.from}">
 						<f:selectItems value="#{siteList}" />
 					</h:selectOneMenu></td>
 				</tr>
 				<tr>
 					<th>To:</th>
-					<td><h:selectOneMenu id="to" value="#{to}">
+					<td><h:selectOneMenu id="to" value="#{ticketBuy.to}">
 						<f:selectItems value="#{siteList}" />
 					</h:selectOneMenu></td>
 				</tr>
 				<tr>
 					<th>Valid until:</th>
-					<td><h:selectOneMenu id="validuntil" value="#{validUntil}">
+					<td><h:selectOneMenu id="validuntil"
+						value="#{ticketBuy.validUntil}">
 						<f:selectItems value="#{dateList}" />
 					</h:selectOneMenu></td>
 				</tr>
 				<tr>
 					<th>Return Ticket:</th>
-					<td><h:selectBooleanCheckbox id="returnticket" value="#{returnTicket}"/></td>
+					<td><h:selectBooleanCheckbox id="returnticket"
+						value="#{ticketBuy.returnTicket}" /></td>
 				</tr>
 			</table>
 

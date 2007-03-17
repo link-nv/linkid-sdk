@@ -46,6 +46,13 @@
 							</includeInApplicationXml>
 						</jarModule>
 						<jarModule>
+							<groupId>joda-time</groupId>
+							<artifactId>joda-time</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
 							<groupId>commons-codec</groupId>
 							<artifactId>commons-codec</artifactId>
 							<includeInApplicationXml>
@@ -151,6 +158,10 @@
 		<dependency>
 			<groupId>el-impl</groupId>
 			<artifactId>el-ri</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>
