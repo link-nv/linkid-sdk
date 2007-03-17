@@ -28,7 +28,6 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.log.Log;
 
@@ -48,7 +47,6 @@ public class TicketOverviewBean implements TicketOverview {
 	private EntityManager entityManager;
 
 	@DataModel("ticketList")
-	@Out(value = "ticketList")
 	@SuppressWarnings("unused")
 	private List<Ticket> ticketList;
 

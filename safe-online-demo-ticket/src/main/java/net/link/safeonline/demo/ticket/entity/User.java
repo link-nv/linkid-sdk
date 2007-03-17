@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -44,7 +45,7 @@ public class User implements Serializable {
 		this.safeOnlineUserName = safeOnlineUserName;
 	}
 
-	@OneToMany(mappedBy = "owner")
+	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
 	public List<Ticket> getTickets() {
 		return tickets;
 	}
