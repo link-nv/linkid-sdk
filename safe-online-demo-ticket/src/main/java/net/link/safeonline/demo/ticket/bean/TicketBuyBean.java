@@ -11,6 +11,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -28,16 +29,21 @@ import net.link.safeonline.demo.ticket.entity.Ticket.Site;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 @Stateful
 @Name("ticketBuy")
+@Scope(ScopeType.CONVERSATION)
 @LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketBuyBean/local")
 @SecurityDomain("demo-ticket")
 public class TicketBuyBean implements TicketBuy {
@@ -50,6 +56,22 @@ public class TicketBuyBean implements TicketBuy {
 
 	@PersistenceContext(unitName = "DemoTicketEntityManager")
 	private EntityManager entityManager;
+
+	@SuppressWarnings("unused")
+	@Out(required = false)
+	private double ticketPrice;
+
+	@SuppressWarnings("unused")
+	@Out(required = false)
+	private String visaNumber;
+
+	@SuppressWarnings("unused")
+	@Out(required = false)
+	private Date startDate;
+
+	@SuppressWarnings("unused")
+	@Out(required = false)
+	private Date endDate;
 
 	public enum TicketPeriod {
 		DAY("one day", Period.days(1)), WEEK("one week", Period.weeks(1)), MONTH(
@@ -142,23 +164,29 @@ public class TicketBuyBean implements TicketBuy {
 
 	@RolesAllowed("user")
 	public String checkOut() {
+		this.ticketPrice = 100;
+		// TODO: retrieve VISA data from SafeOnline
+		this.visaNumber = UUID.randomUUID().toString();
+		TicketPeriod valid = TicketPeriod.valueOf(this.validUntil);
+		this.startDate = new Date();
+		this.endDate = valid.getEndDate(this.startDate);
+		return "checkout";
+	}
+
+	@RolesAllowed("user")
+	@End
+	// conversation begin via pages.xml
+	public String confirm() {
 		User user = this.entityManager.find(User.class, this.getUsername());
 		if (user == null) {
 			user = new User(this.getUsername());
 			this.entityManager.persist(user);
 		}
-		TicketPeriod valid = TicketPeriod.valueOf(this.validUntil);
-		Date startDate = new Date();
-		Date endDate = valid.getEndDate(startDate);
-		Ticket ticket = new Ticket(user, Site.valueOf(from), Site.valueOf(to),
-				startDate, endDate, this.returnTicket);
+		Ticket ticket = new Ticket(user, Site.valueOf(this.from), Site
+				.valueOf(this.to), this.startDate, this.endDate,
+				this.returnTicket);
 		user.getTickets().add(ticket);
 		this.entityManager.persist(ticket);
-		return "list";
-	}
-
-	@RolesAllowed("user")
-	public String confirm() {
 		return "list";
 	}
 

@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="content">
+		<h2>Confirmation for ticket</h2>
+
+		<h:form>
+			<table>
+				<tr>
+					<th>From:</th>
+					<td>#{ticketBuy.from}</td>
+				</tr>
+				<tr>
+					<th>To:</th>
+					<td>#{ticketBuy.to}</td>
+				</tr>
+				<tr>
+					<th>Valid until:</th>
+					<td>#{ticketBuy.validUntil}</td>
+				</tr>
+				<tr>
+					<th>Start date:</th>
+					<td>#{startDate}</td>
+				</tr>
+				<tr>
+					<th>End date:</th>
+					<td>#{endDate}</td>
+				</tr>
+				<tr>
+					<th>Return Ticket:</th>
+					<td>#{ticketBuy.returnTicket}</td>
+				</tr>
+				<tr>
+					<th>Ticket price:</th>
+					<td>#{ticketPrice}</td>
+				</tr>
+				<tr>
+					<th>VISA number:</th>
+					<td>#{visaNumber}</td>
+				</tr>
+			</table>
+
+			<h:commandButton action="#{ticketBuy.confirm}" id="confirm"
+				value="Confirm" />
+			<so:nbsp />
+			<h:commandButton action="list" id="cancel" value="Cancel"
+				immediate="true" />
+			<so:nbsp />
+			<h:commandButton action="overview" id="overview" value="Home"
+				immediate="true" />
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml" />
+	</ui:define>
+</ui:composition>
+</body>
+</html>
