@@ -44,8 +44,8 @@ namespace demo_ticket_client
 			this.statusLabelLabel = new System.Windows.Forms.Label();
 			this.statusLabel = new System.Windows.Forms.Label();
 			this.serverAddressTextBox = new System.Windows.Forms.TextBox();
-			this.scanButton = new System.Windows.Forms.Button();
 			this.outputTextBox = new System.Windows.Forms.TextBox();
+			this.clearLogButton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// fromLabel
@@ -92,7 +92,7 @@ namespace demo_ticket_client
 			// 
 			this.statusLabel.Location = new System.Drawing.Point(118, 90);
 			this.statusLabel.Name = "statusLabel";
-			this.statusLabel.Size = new System.Drawing.Size(295, 23);
+			this.statusLabel.Size = new System.Drawing.Size(295, 38);
 			this.statusLabel.Text = "Started";
 			// 
 			// serverAddressTextBox
@@ -101,29 +101,29 @@ namespace demo_ticket_client
 			this.serverAddressTextBox.Name = "serverAddressTextBox";
 			this.serverAddressTextBox.Size = new System.Drawing.Size(154, 20);
 			// 
-			// scanButton
-			// 
-			this.scanButton.Location = new System.Drawing.Point(338, 226);
-			this.scanButton.Name = "scanButton";
-			this.scanButton.Size = new System.Drawing.Size(75, 23);
-			this.scanButton.Text = "Scan";
-			this.scanButton.Click += new System.EventHandler(this.ScanButtonClick);
-			// 
 			// outputTextBox
 			// 
-			this.outputTextBox.Location = new System.Drawing.Point(12, 116);
+			this.outputTextBox.Location = new System.Drawing.Point(12, 131);
 			this.outputTextBox.Multiline = true;
 			this.outputTextBox.Name = "outputTextBox";
 			this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.outputTextBox.Size = new System.Drawing.Size(401, 104);
+			this.outputTextBox.Size = new System.Drawing.Size(401, 89);
+			// 
+			// clearLogButton
+			// 
+			this.clearLogButton.Location = new System.Drawing.Point(338, 226);
+			this.clearLogButton.Name = "clearLogButton";
+			this.clearLogButton.Size = new System.Drawing.Size(75, 23);
+			this.clearLogButton.Text = "Clear Log";
+			this.clearLogButton.Click += new System.EventHandler(this.ClearLogButtonClick);
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.ClientSize = new System.Drawing.Size(425, 261);
+			this.Controls.Add(this.clearLogButton);
 			this.Controls.Add(this.outputTextBox);
-			this.Controls.Add(this.scanButton);
 			this.Controls.Add(this.serverAddressTextBox);
 			this.Controls.Add(this.statusLabel);
 			this.Controls.Add(this.statusLabelLabel);
@@ -136,8 +136,8 @@ namespace demo_ticket_client
 			this.Text = "Demo Ticket Client";
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button clearLogButton;
 		private System.Windows.Forms.TextBox outputTextBox;
-		private System.Windows.Forms.Button scanButton;
 		private System.Windows.Forms.TextBox serverAddressTextBox;
 		private System.Windows.Forms.Label statusLabel;
 		private System.Windows.Forms.Label statusLabelLabel;

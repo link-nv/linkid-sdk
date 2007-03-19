@@ -19,7 +19,7 @@ namespace dZine.Zineon
         public const uint NONZEROLHND = LMEM_MOVEABLE;
         public const uint NONZEROLPTR = LMEM_FIXED;
 
-        private const uint INVALID_HANDLE_VALUE = 0xFFFFFFFF;
+        public const uint INVALID_HANDLE_VALUE = 0xFFFFFFFF;
 
         /// <summary>
         /// Creation Dispostions for CreateFile
