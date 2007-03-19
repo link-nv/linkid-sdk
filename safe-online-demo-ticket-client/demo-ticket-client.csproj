@@ -34,10 +34,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="CoreDll.cs" />
+    <Compile Include="EID.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ZineonApi.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.Designer.cs</DependentUpon>
     </EmbeddedResource>

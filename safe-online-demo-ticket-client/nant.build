@@ -4,7 +4,7 @@
 	<property name="nant.settings.currentframework" value="netcf-2.0" />
 
 	<target name="build">
-		<csc target="winexe" output="demo-ticket-client.exe">
+		<csc target="winexe" output="demo-ticket-client.exe" unsafe="true" verbose="false">
 			<sources>
 				<include name="**/*.cs" />
 			</sources>
