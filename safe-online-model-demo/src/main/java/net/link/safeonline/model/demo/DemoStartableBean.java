@@ -18,6 +18,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
@@ -69,6 +70,14 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "mario",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				"urn:net:lin-k:safe-online:attribute:visaCardNumber", "string",
+				true, true);
+		this.attributeTypes.add(attributeType);
+		String[] attributeTypes = { attributeType.getName() };
+		this.identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME,
+				attributeTypes));
 	}
 
 	public int getPriority() {

@@ -34,6 +34,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.model.ApplicationIdentityService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -112,9 +113,25 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
+	protected static class Identity {
+		private final String application;
+
+		private final String[] attributeTypes;
+
+		public Identity(String application, String[] attributeTypes) {
+			this.application = application;
+			this.attributeTypes = attributeTypes;
+		}
+	}
+
 	protected List<Subscription> subscriptions;
 
 	protected List<AttributeTypeEntity> attributeTypes;
+
+	protected List<Identity> identities;
+
+	@EJB
+	private ApplicationIdentityService applicationIdentityService;
 
 	public abstract int getPriority();
 
@@ -124,6 +141,7 @@ public abstract class AbstractInitBean implements Startable {
 		this.authorizedUsers = new HashMap<String, String>();
 		this.registeredApplications = new LinkedList<Application>();
 		this.subscriptions = new LinkedList<Subscription>();
+		this.identities = new LinkedList<Identity>();
 	}
 
 	public void postStart() {
@@ -134,6 +152,7 @@ public abstract class AbstractInitBean implements Startable {
 		initApplicationOwners();
 		initApplications();
 		initSubscriptions();
+		initIdentities();
 	}
 
 	public void preStop() {
@@ -260,4 +279,16 @@ public abstract class AbstractInitBean implements Startable {
 					SafeOnlineConstants.PASSWORD_ATTRIBUTE, login, password);
 		}
 	}
+
+	private void initIdentities() {
+		for (Identity identity : this.identities) {
+			try {
+				this.applicationIdentityService.updateApplicationIdentity(
+						identity.application, identity.attributeTypes);
+			} catch (Exception e) {
+				LOG.debug("Could not update application identity");
+			}
+		}
+	}
+
 }
