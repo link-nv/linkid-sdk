@@ -49,6 +49,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
@@ -70,7 +71,8 @@ public class IdentityServiceBeanTest extends TestCase {
 			TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class,
 			AttributeTypeDAOBean.class, ApplicationIdentityDAOBean.class,
 			SubjectManagerBean.class, HistoryDAOBean.class,
-			ApplicationOwnerManagerBean.class };
+			ApplicationOwnerManagerBean.class,
+			ApplicationIdentityServiceBean.class };
 
 	@Override
 	protected void setUp() throws Exception {

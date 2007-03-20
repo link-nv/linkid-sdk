@@ -18,7 +18,7 @@ public interface Startable {
 
 	public static final String JNDI_PREFIX = "SafeOnline/startup/";
 
-	public static final int PRIORITY_DONT_CARE = 0;
+	public static final int PRIORITY_DONT_CARE = 1000;
 
 	public static final int PRIORITY_BOOTSTRAP = 10000;
 

@@ -27,6 +27,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
@@ -39,7 +40,8 @@ public class SystemInitializationStartableBeanTest extends TestCase {
 				ApplicationDAOBean.class, SubscriptionDAOBean.class,
 				AttributeDAOBean.class, TrustDomainDAOBean.class,
 				ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
-				ApplicationIdentityDAOBean.class };
+				ApplicationIdentityDAOBean.class,
+				ApplicationIdentityServiceBean.class };
 
 		EntityTestManager entityTestManager = new EntityTestManager();
 		entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class,

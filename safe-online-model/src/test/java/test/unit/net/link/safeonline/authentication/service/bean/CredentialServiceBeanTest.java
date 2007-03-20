@@ -165,6 +165,7 @@ public class CredentialServiceBeanTest extends TestCase {
 		expect(
 				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
 						identifier)).andStubReturn(null);
+		this.mockPkiProvider.storeAdditionalAttributes(certificate);
 
 		// expectations
 		this.mockAttributeDAO.addAttribute(surnameAttribute, user,

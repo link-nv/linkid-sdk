@@ -18,9 +18,12 @@ import javax.security.auth.x500.X500Principal;
 
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
+import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.TrustDomainDAO;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.model.PkiProvider;
+import net.link.safeonline.model.SubjectManager;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
@@ -42,6 +45,12 @@ public class BeIdPkiProvider implements PkiProvider {
 
 	@EJB
 	private TrustDomainDAO trustDomainDAO;
+
+	@EJB
+	private AttributeDAO attributeDAO;
+
+	@EJB
+	private SubjectManager subjectManager;
 
 	public boolean accept(X509Certificate certificate) {
 		X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
@@ -68,7 +77,7 @@ public class BeIdPkiProvider implements PkiProvider {
 
 	public PkiProvider getReference() {
 		LOG.debug("get reference");
-		PkiProvider reference = (PkiProvider) context
+		PkiProvider reference = (PkiProvider) this.context
 				.getBusinessObject(PkiProvider.class);
 		return reference;
 	}
@@ -102,5 +111,48 @@ public class BeIdPkiProvider implements PkiProvider {
 		}
 		String identifier = DigestUtils.shaHex(data);
 		return identifier;
+	}
+
+	public void storeAdditionalAttributes(X509Certificate certificate) {
+		String subjectName = getSubjectName(certificate);
+		String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
+		String login = this.subjectManager.getCallerLogin();
+		setOrOverrideAttribute(BeIdConstants.NRN_ATTRIBUTE, login, nrn);
+	}
+
+	private void setOrOverrideAttribute(String attributeName, String login,
+			String value) {
+		AttributeEntity attribute = this.attributeDAO.findAttribute(
+				attributeName, login);
+		if (null == attribute) {
+			this.attributeDAO.addAttribute(attributeName, login, value);
+		} else {
+			attribute.setStringValue(value);
+		}
+	}
+
+	private String getSubjectName(X509Certificate certificate) {
+		X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
+		String subjectName = subjectPrincipal.toString();
+		return subjectName;
+	}
+
+	private String getAttributeFromSubjectName(String subjectName,
+			String attributeName) {
+		int attributeBegin = subjectName.indexOf(attributeName + "=");
+		if (-1 == attributeBegin) {
+			throw new IllegalArgumentException(
+					"attribute name does not occur in subject: "
+							+ attributeName);
+		}
+		attributeBegin += attributeName.length() + 1; // "attributeName="
+		int attributeEnd = subjectName.indexOf(",", attributeBegin);
+		if (-1 == attributeEnd) {
+			// last field has no trailing ","
+			attributeEnd = subjectName.length();
+		}
+		String attributeValue = subjectName.substring(attributeBegin,
+				attributeEnd);
+		return attributeValue;
 	}
 }

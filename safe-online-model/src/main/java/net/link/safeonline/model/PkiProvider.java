@@ -61,6 +61,15 @@ public interface PkiProvider {
 	String mapAttribute(IdentityStatementAttributes identityStatementAttributes);
 
 	/**
+	 * Stores additional attributes. This callback method allows for PKI
+	 * providers to store additional attributes related to their specific
+	 * device.
+	 * 
+	 * @param certificate
+	 */
+	void storeAdditionalAttributes(X509Certificate certificate);
+
+	/**
 	 * Gives back the identifier domain name.
 	 * 
 	 * @return

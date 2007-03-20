@@ -28,6 +28,7 @@ import javax.ejb.EJBObject;
 import javax.ejb.Local;
 import javax.ejb.NoSuchObjectLocalException;
 import javax.ejb.SessionContext;
+import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.ejb.Timer;
 import javax.ejb.TimerHandle;
@@ -48,6 +49,7 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.security.SecurityAssociation;
 import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
@@ -280,6 +282,7 @@ public final class EJBTestUtils {
 			injectDependencies(clazz);
 			injectEntityManager(clazz);
 			injectResources(clazz);
+			injectSeamLogger(clazz);
 			manageTransaction(method);
 			try {
 				Object result = method.invoke(this.object, args);
@@ -356,8 +359,11 @@ public final class EJBTestUtils {
 			Class clazz = this.object.getClass();
 			Stateless statelessAnnotation = (Stateless) clazz
 					.getAnnotation(Stateless.class);
-			if (null == statelessAnnotation) {
-				throw new EJBException("no @Stateless annotation found");
+			Stateful statefulAnnotation = (Stateful) clazz
+					.getAnnotation(Stateful.class);
+			if (null == statelessAnnotation && statefulAnnotation == null) {
+				throw new EJBException(
+						"no @Stateless nor @Stateful annotation found");
 			}
 		}
 
@@ -375,15 +381,35 @@ public final class EJBTestUtils {
 				Class fieldType = field.getType();
 				if (true == SessionContext.class.isAssignableFrom(fieldType)) {
 					setField(field, this.sessionContext);
-					return;
+					continue;
 				}
 				if (true == TimerService.class.isAssignableFrom(fieldType)) {
 					TimerService testTimerService = new TestTimerService();
 					setField(field, testTimerService);
-					return;
+					continue;
 				}
 				throw new EJBException("unsupported resource type: "
 						+ fieldType.getName());
+			}
+		}
+
+		private void injectSeamLogger(Class clazz) {
+			if (false == clazz.equals(Object.class)) {
+				injectSeamLogger(clazz.getSuperclass());
+			}
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field field : fields) {
+				Logger loggerAnnotation = field.getAnnotation(Logger.class);
+				if (null == loggerAnnotation) {
+					continue;
+				}
+				Class fieldType = field.getType();
+				if (true == org.jboss.seam.log.Log.class
+						.isAssignableFrom(fieldType)) {
+					org.jboss.seam.log.Log log = new TestLog();
+					setField(field, log);
+					continue;
+				}
 			}
 		}
 
@@ -619,6 +645,69 @@ public final class EJBTestUtils {
 		public Collection getTimers() throws IllegalStateException,
 				EJBException {
 			return null;
+		}
+	}
+
+	private static class TestLog implements org.jboss.seam.log.Log {
+
+		public void debug(Object obj, Object... aobj) {
+		}
+
+		public void debug(Object obj, Throwable throwable, Object... aobj) {
+		}
+
+		public void error(Object obj, Object... aobj) {
+		}
+
+		public void error(Object obj, Throwable throwable, Object... aobj) {
+		}
+
+		public void fatal(Object obj, Object... aobj) {
+		}
+
+		public void fatal(Object obj, Throwable throwable, Object... aobj) {
+		}
+
+		public void info(Object obj, Object... aobj) {
+		}
+
+		public void info(Object obj, Throwable throwable, Object... aobj) {
+		}
+
+		public boolean isDebugEnabled() {
+			return false;
+		}
+
+		public boolean isErrorEnabled() {
+			return false;
+		}
+
+		public boolean isFatalEnabled() {
+			return false;
+		}
+
+		public boolean isInfoEnabled() {
+			return false;
+		}
+
+		public boolean isTraceEnabled() {
+			return false;
+		}
+
+		public boolean isWarnEnabled() {
+			return false;
+		}
+
+		public void trace(Object obj, Object... aobj) {
+		}
+
+		public void trace(Object obj, Throwable throwable, Object... aobj) {
+		}
+
+		public void warn(Object obj, Object... aobj) {
+		}
+
+		public void warn(Object obj, Throwable throwable, Object... aobj) {
 		}
 	}
 }

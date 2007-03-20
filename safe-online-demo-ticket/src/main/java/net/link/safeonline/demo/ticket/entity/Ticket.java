@@ -11,18 +11,28 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 import javax.persistence.Table;
+
+import static net.link.safeonline.demo.ticket.entity.Ticket.QUERY_WHERE_OWNER;
 
 @Entity
 @Table(name = "demo_ticket")
+@NamedQueries(@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT ticket FROM Ticket AS ticket "
+		+ "WHERE ticket.owner = :owner"))
 public class Ticket implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String QUERY_WHERE_OWNER = "ticket.where.owner";
 
 	public enum Site {
 		GENT("Gent"), BRUSSEL("Brussel"), ANTWERPEN("Antwerpen"), HERZELE(
@@ -128,4 +138,10 @@ public class Ticket implements Serializable {
 		this.id = id;
 	}
 
+	public static Query createQueryWhereOwner(EntityManager entityManager,
+			User owner) {
+		Query query = entityManager.createNamedQuery(QUERY_WHERE_OWNER);
+		query.setParameter("owner", owner);
+		return query;
+	}
 }

@@ -36,6 +36,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.model.ConfigStartable;
+import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
 import net.link.safeonline.model.bean.ConfigStartableBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -50,7 +51,7 @@ public class ConfigStartableBeanTest extends TestCase {
 			AttributeDAOBean.class, TrustDomainDAOBean.class,
 			ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
 			ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class,
-			ConfigItemDAOBean.class };
+			ConfigItemDAOBean.class, ApplicationIdentityServiceBean.class };
 
 	private EntityTestManager entityTestManager;
 

@@ -154,6 +154,8 @@ public class CredentialServiceBean implements CredentialService {
 				surname, pkiProvider);
 		setOrOverrideAttribute(IdentityStatementAttributes.GIVEN_NAME, login,
 				givenName, pkiProvider);
+
+		pkiProvider.storeAdditionalAttributes(certificate);
 	}
 
 	private void setOrOverrideAttribute(

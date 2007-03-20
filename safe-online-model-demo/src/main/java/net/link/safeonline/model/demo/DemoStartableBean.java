@@ -23,6 +23,7 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.model.bean.AbstractInitBean;
+import net.link.safeonline.model.beid.BeIdConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,17 +72,18 @@ public class DemoStartableBean extends AbstractInitBean {
 				SubscriptionOwnerType.APPLICATION, "mario",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
-		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+		AttributeTypeEntity visaAttributeType = new AttributeTypeEntity(
 				"urn:net:lin-k:safe-online:attribute:visaCardNumber", "string",
 				true, true);
-		this.attributeTypes.add(attributeType);
-		String[] attributeTypes = { attributeType.getName() };
+		this.attributeTypes.add(visaAttributeType);
+		String[] attributeTypes = { visaAttributeType.getName(),
+				BeIdConstants.NRN_ATTRIBUTE };
 		this.identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME,
 				attributeTypes));
 	}
 
 	public int getPriority() {
-		return Startable.PRIORITY_DONT_CARE;
+		return BeIdConstants.BEID_BOOT_PRIORITY - 1;
 	}
 
 	private void addDemoCertificateAsTrustPoint(X509Certificate certificate) {

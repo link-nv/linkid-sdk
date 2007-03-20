@@ -8,6 +8,7 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
@@ -46,7 +47,7 @@ public class ApplicationIdentityEntity implements Serializable {
 	private List<AttributeTypeEntity> attributeTypes;
 
 	public ApplicationIdentityEntity() {
-		// empty
+		this.attributeTypes = new LinkedList<AttributeTypeEntity>();
 	}
 
 	public ApplicationIdentityEntity(ApplicationEntity application,

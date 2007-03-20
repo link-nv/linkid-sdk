@@ -38,6 +38,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
+import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
@@ -58,7 +59,8 @@ public class PkiServiceBeanTest extends TestCase {
 			AttributeTypeDAOBean.class, ApplicationIdentityDAOBean.class,
 			SubjectManagerBean.class, HistoryDAOBean.class,
 			ApplicationOwnerManagerBean.class, TrustPointDAOBean.class,
-			CachedOcspResponseDAOBean.class };
+			CachedOcspResponseDAOBean.class,
+			ApplicationIdentityServiceBean.class };
 
 	@Override
 	protected void setUp() throws Exception {

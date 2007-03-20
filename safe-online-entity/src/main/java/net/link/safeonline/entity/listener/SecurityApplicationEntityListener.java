@@ -35,6 +35,9 @@ import org.jboss.security.SimplePrincipal;
  * SecurityContext(s). See also:
  * http://wiki.jboss.org/wiki/Wiki.jsp?page=SecurityContextReplaceSecurityAssociation
  * 
+ * XXX: we cannot use this pattern within SafeOnline because of the startables
+ * that require access to the application entity for startup.
+ * 
  * @author fcorneli
  * 
  */

@@ -105,6 +105,8 @@ public class TicketBuyBean implements TicketBuy {
 
 	private boolean returnTicket;
 
+	private String nrn;
+
 	public String getFrom() {
 		return this.from;
 	}
@@ -165,8 +167,9 @@ public class TicketBuyBean implements TicketBuy {
 	@RolesAllowed("user")
 	public String checkOut() {
 		this.ticketPrice = 100;
-		// TODO: retrieve VISA data from SafeOnline
+		// TODO: retrieve VISA and NRN data from SafeOnline
 		this.visaNumber = UUID.randomUUID().toString();
+		this.nrn = UUID.randomUUID().toString();
 		TicketPeriod valid = TicketPeriod.valueOf(this.validUntil);
 		this.startDate = new Date();
 		this.endDate = valid.getEndDate(this.startDate);
@@ -179,9 +182,10 @@ public class TicketBuyBean implements TicketBuy {
 	public String confirm() {
 		User user = this.entityManager.find(User.class, this.getUsername());
 		if (user == null) {
-			user = new User(this.getUsername());
+			user = new User(this.getUsername(), this.nrn);
 			this.entityManager.persist(user);
 		}
+		user.setNrn(this.nrn);
 		Ticket ticket = new Ticket(user, Site.valueOf(this.from), Site
 				.valueOf(this.to), this.startDate, this.endDate,
 				this.returnTicket);

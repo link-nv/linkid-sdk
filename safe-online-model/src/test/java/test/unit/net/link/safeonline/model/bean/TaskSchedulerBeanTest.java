@@ -47,6 +47,7 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TaskEntity;
 import net.link.safeonline.entity.TaskHistoryEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.model.bean.TaskSchedulerBean;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -70,7 +71,8 @@ public class TaskSchedulerBeanTest extends TestCase {
 			ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
 			ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class,
 			ConfigItemDAOBean.class, TaskDAOBean.class,
-			SchedulingDAOBean.class, TaskHistoryDAOBean.class };
+			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
+			ApplicationIdentityServiceBean.class };
 
 	private EntityTestManager entityTestManager;
 

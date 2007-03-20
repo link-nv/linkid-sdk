@@ -18,7 +18,6 @@ import java.security.cert.X509Certificate;
 import javax.ejb.EJBException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -29,8 +28,6 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import net.link.safeonline.entity.listener.SecurityApplicationEntityListener;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -38,6 +35,14 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_ALL;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
 
+/**
+ * Application Entity. We're not using the SecurityApplicationEntityListener
+ * anymore for application ownership checking since this prevents the system
+ * from initializing itself.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Entity
 @Table(name = "application")
 @NamedQueries( {
@@ -45,7 +50,7 @@ import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
 		@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT application "
 				+ "FROM ApplicationEntity AS application "
 				+ "WHERE application.applicationOwner = :applicationOwner") })
-@EntityListeners(SecurityApplicationEntityListener.class)
+// @EntityListeners(SecurityApplicationEntityListener.class)
 public class ApplicationEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

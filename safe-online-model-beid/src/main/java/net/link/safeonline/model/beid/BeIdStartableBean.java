@@ -59,7 +59,8 @@ public class BeIdStartableBean implements Startable {
 				BeIdConstants.SURNAME_ATTRIBUTE, "string", true, false));
 		attributeTypes.add(new AttributeTypeEntity(
 				BeIdConstants.AUTH_CERT_ATTRIBUTE, "blob", true, false));
-
+		attributeTypes.add(new AttributeTypeEntity(BeIdConstants.NRN_ATTRIBUTE,
+				"string", true, false));
 	}
 
 	public void postStart() {
@@ -132,6 +133,6 @@ public class BeIdStartableBean implements Startable {
 	}
 
 	public int getPriority() {
-		return Startable.PRIORITY_DONT_CARE;
+		return BeIdConstants.BEID_BOOT_PRIORITY;
 	}
 }

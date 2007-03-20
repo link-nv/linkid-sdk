@@ -84,7 +84,7 @@ public class BeIdStartableBeanTest extends TestCase {
 
 		this.mockAttributeTypeDAO
 				.addAttributeType((AttributeTypeEntity) EasyMock.anyObject());
-		expectLastCall().times(3);
+		expectLastCall().times(4);
 
 		// prepare
 		replay(this.mockObjects);

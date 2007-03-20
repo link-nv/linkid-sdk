@@ -287,6 +287,9 @@ public abstract class AbstractInitBean implements Startable {
 						identity.application, identity.attributeTypes);
 			} catch (Exception e) {
 				LOG.debug("Could not update application identity");
+				throw new RuntimeException(
+						"could not update the application identity: "
+								+ e.getMessage(), e);
 			}
 		}
 	}

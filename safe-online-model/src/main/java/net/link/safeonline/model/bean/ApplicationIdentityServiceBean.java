@@ -59,9 +59,8 @@ public class ApplicationIdentityServiceBean implements
 				.getApplicationIdentity(application, currentIdentityVersion);
 		List<AttributeTypeEntity> currentAttributeTypes = applicationIdentity
 				.getAttributeTypes();
-		for (AttributeTypeEntity currentAttributeType : currentAttributeTypes) {
-			LOG.debug("current identity attribute: "
-					+ currentAttributeType.getName());
+		if (null == currentAttributeTypes) {
+			currentAttributeTypes = new LinkedList<AttributeTypeEntity>();
 		}
 		List<AttributeTypeEntity> newAttributeTypes = new LinkedList<AttributeTypeEntity>();
 		for (String newAttributeTypeName : applicationIdentityAttributeTypes) {

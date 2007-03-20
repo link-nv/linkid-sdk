@@ -7,6 +7,8 @@
 
 package net.link.safeonline.model.beid;
 
+import net.link.safeonline.Startable;
+
 public class BeIdConstants {
 
 	private BeIdConstants() {
@@ -18,4 +20,8 @@ public class BeIdConstants {
 	public static final String GIVENNAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:beid:givenName";
 
 	public static final String AUTH_CERT_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:beid:authcert";
+
+	public static final String NRN_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:beid:nrn";
+
+	public static final int BEID_BOOT_PRIORITY = Startable.PRIORITY_BOOTSTRAP - 1;
 }
