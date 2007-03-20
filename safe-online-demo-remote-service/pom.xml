@@ -164,6 +164,14 @@
 					<groupId>javax.servlet</groupId>
 					<artifactId>servlet-api</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.jboss.seam</groupId>
+					<artifactId>jboss-seam</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.lin-k.safe-online</groupId>
+					<artifactId>safe-online-test-util</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 	</dependencies>
