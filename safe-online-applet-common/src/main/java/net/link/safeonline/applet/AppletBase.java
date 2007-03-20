@@ -9,10 +9,14 @@ package net.link.safeonline.applet;
 
 import java.applet.AppletContext;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -24,6 +28,7 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JApplet;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -55,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  */
 public abstract class AppletBase extends JApplet implements Runnable,
-		SmartCardPinCallback {
+		SmartCardPinCallback, ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -66,6 +71,16 @@ public abstract class AppletBase extends JApplet implements Runnable,
 	private InfoLevel infoLevel;
 
 	private JProgressBar progressBar;
+
+	private JPanel cards;
+
+	private JButton hideButton;
+
+	private static enum State {
+		HIDE, SHOW
+	};
+
+	private State state = State.HIDE;
 
 	@Override
 	public void init() {
@@ -91,6 +106,7 @@ public abstract class AppletBase extends JApplet implements Runnable,
 	}
 
 	private void setupScreen() {
+
 		setLayout(new BorderLayout());
 		Container container = getContentPane();
 
@@ -106,17 +122,42 @@ public abstract class AppletBase extends JApplet implements Runnable,
 		font = font.deriveFont((float) 16);
 		this.infoLabel.setFont(font);
 		this.infoLabel.setText("Starting...");
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		this.hideButton = new JButton();
+		this.hideButton.addActionListener(this);
 		textPanel.add(this.infoLabel);
+		buttonPanel.add(this.hideButton);
 		infoPanel.add(textPanel);
 		infoPanel.add(this.progressBar);
 		infoPanel.add(Box.createVerticalStrut(10));
+		infoPanel.add(buttonPanel);
+		infoPanel.add(Box.createVerticalStrut(10));
 
+		this.cards = new JPanel(new CardLayout());
 		this.outputArea = new JTextArea();
 		this.outputArea.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(this.outputArea);
 		scrollPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		container.add(scrollPane, BorderLayout.CENTER);
+		this.cards.add(scrollPane, "details");
+		JPanel emptyPanel = new JPanel();
+		this.cards.add(emptyPanel, "empty");
+		container.add(this.cards, BorderLayout.CENTER);
+
+		// syncing state
+		actionPerformed(null);
+		actionPerformed(null);
+
+		// background color
+		String c = getParameter("bgcolor");
+		Color color = null;
+		try {
+			color = Color.decode(c);
+		} catch (Exception e) {
+			color = Color.WHITE;
+		}
+		iterateBackground(container.getComponents(), color);
+
 	}
 
 	protected void outputDetailMessage(final String message) {
@@ -410,4 +451,36 @@ public abstract class AppletBase extends JApplet implements Runnable,
 		}
 		return null;
 	}
+
+	private void setButtonLabel(JButton button) {
+		if (this.state == State.HIDE) {
+			button.setText("Show details");
+		} else {
+			button.setText("Hide details");
+		}
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		CardLayout cl = (CardLayout) (this.cards.getLayout());
+		if (this.state == State.HIDE) {
+			cl.show(this.cards, "details");
+			this.state = State.SHOW;
+			setButtonLabel(this.hideButton);
+		} else {
+			cl.show(this.cards, "empty");
+			this.state = State.HIDE;
+			setButtonLabel(this.hideButton);
+		}
+	}
+
+	private void iterateBackground(Component[] components, Color color) {
+		for (Component comp : components) {
+			if (comp instanceof Container) {
+				Container container = (Container) comp;
+				iterateBackground(container.getComponents(), color);
+			}
+			comp.setBackground(color);
+		}
+	}
+
 }
