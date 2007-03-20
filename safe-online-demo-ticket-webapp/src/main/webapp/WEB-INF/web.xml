@@ -117,9 +117,21 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
+	<servlet>
+		<servlet-name>TicketServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.demo.ticket.servlet.TicketServlet
+		</servlet-class>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.seam</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>TicketServlet</servlet-name>
+		<url-pattern>/TicketServlet/*</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

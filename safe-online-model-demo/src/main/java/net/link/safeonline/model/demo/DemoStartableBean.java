@@ -8,6 +8,7 @@
 package net.link.safeonline.model.demo;
 
 import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
 import javax.ejb.EJB;
@@ -18,6 +19,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
+import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.TrustDomainEntity;
@@ -97,7 +99,14 @@ public class DemoStartableBean extends AbstractInitBean {
 		TrustPointEntity demoTrustPoint = this.trustPointDAO.findTrustPoint(
 				applicationTrustDomain, certificate);
 		if (null != demoTrustPoint) {
-			// TODO: should update the certificate instead
+			try {
+				/*
+				 * In this case we still update the certificate.
+				 */
+				demoTrustPoint.setEncodedCert(certificate.getEncoded());
+			} catch (CertificateEncodingException e) {
+				LOG.error("cert encoding error");
+			}
 			return;
 		}
 
@@ -106,19 +115,25 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	@Override
 	public void postStart() {
-		PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtils
+		PrivateKeyEntry demoPrivateKeyEntry = DemoKeyStoreUtils
 				.getPrivateKeyEntry();
-		X509Certificate certificate = (X509Certificate) privateKeyEntry
+		X509Certificate demoCertificate = (X509Certificate) demoPrivateKeyEntry
+				.getCertificate();
+
+		PrivateKeyEntry demoTicketPrivateKeyEntry = DemoTicketKeyStoreUtils
+				.getPrivateKeyEntry();
+		X509Certificate demoTicketCertificate = (X509Certificate) demoTicketPrivateKeyEntry
 				.getCertificate();
 
 		this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME,
-				"owner", certificate));
+				"owner", demoCertificate));
 
 		this.registeredApplications.add(new Application(
-				DEMO_TICKET_APPLICATION_NAME, "owner", certificate));
+				DEMO_TICKET_APPLICATION_NAME, "owner", demoTicketCertificate));
 
 		super.postStart();
 
-		addDemoCertificateAsTrustPoint(certificate);
+		addDemoCertificateAsTrustPoint(demoCertificate);
+		addDemoCertificateAsTrustPoint(demoTicketCertificate);
 	}
 }

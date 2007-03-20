@@ -8,13 +8,18 @@
 package net.link.safeonline.demo.ticket.bean;
 
 import java.security.Principal;
+import java.security.PrivateKey;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.PostActivate;
+import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
@@ -26,6 +31,10 @@ import net.link.safeonline.demo.ticket.TicketBuy;
 import net.link.safeonline.demo.ticket.entity.Ticket;
 import net.link.safeonline.demo.ticket.entity.User;
 import net.link.safeonline.demo.ticket.entity.Ticket.Site;
+import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
+import net.link.safeonline.sdk.attrib.AttributeClient;
+import net.link.safeonline.sdk.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -33,10 +42,12 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -47,6 +58,8 @@ import org.joda.time.Period;
 @LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketBuyBean/local")
 @SecurityDomain("demo-ticket")
 public class TicketBuyBean implements TicketBuy {
+
+	public static final String SAFE_ONLINE_LOCATION = "localhost";
 
 	@Logger
 	private Log log;
@@ -72,6 +85,37 @@ public class TicketBuyBean implements TicketBuy {
 	@SuppressWarnings("unused")
 	@Out(required = false)
 	private Date endDate;
+
+	private transient AttributeClient attributeClient;
+
+	private PrivateKey privateKey;
+
+	private X509Certificate certificate;
+
+	@In(create = true)
+	FacesMessages facesMessages;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils
+				.getPrivateKeyEntry();
+		this.privateKey = privateKeyEntry.getPrivateKey();
+		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
+		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION,
+				this.certificate, this.privateKey);
+	}
+
+	@PrePassivate
+	public void prePassivateCallback() {
+		// next is not really required
+		this.attributeClient = null;
+	}
+
+	@PostActivate
+	public void postActivateCallback() {
+		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION,
+				this.certificate, this.privateKey);
+	}
 
 	public enum TicketPeriod {
 		DAY("one day", Period.days(1)), WEEK("one week", Period.weeks(1)), MONTH(
@@ -167,9 +211,18 @@ public class TicketBuyBean implements TicketBuy {
 	@RolesAllowed("user")
 	public String checkOut() {
 		this.ticketPrice = 100;
-		// TODO: retrieve VISA and NRN data from SafeOnline
-		this.visaNumber = UUID.randomUUID().toString();
-		this.nrn = UUID.randomUUID().toString();
+		String username = getUsername();
+		try {
+			this.nrn = this.attributeClient.getAttributeValue(username,
+					"urn:net:lin-k:safe-online:attribute:beid:nrn");
+			this.visaNumber = this.attributeClient.getAttributeValue(username,
+					"urn:net:lin-k:safe-online:attribute:visaCardNumber");
+		} catch (AttributeNotFoundException e) {
+			String msg = "attribute not found: " + e.getMessage();
+			log.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		}
 		TicketPeriod valid = TicketPeriod.valueOf(this.validUntil);
 		this.startDate = new Date();
 		this.endDate = valid.getEndDate(this.startDate);
