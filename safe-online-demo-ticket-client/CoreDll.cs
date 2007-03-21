@@ -105,6 +105,17 @@ namespace dZine.Zineon
         [DllImport("coredll.dll", EntryPoint="CloseHandle", SetLastError=true)]
         private static extern int CloseHandleUnsafe( IntPtr hObject);
 
+        [DllImport("coredll.dll", EntryPoint="GetTickCount")]
+        public static extern uint GetTickCount();
+        
+        
+        public const uint SIPF_OFF = 0x0;
+		public const uint SIPF_ON = 0x1; 
+
+		[DllImport("coredll.dll")] 
+		public extern static void SipShowIM(uint dwFlag); 
+
+		
         [DllImport("coredll.dll", EntryPoint="DeviceIoControl", SetLastError=true)]
         private static extern Int32 DeviceIoControlUnsafe
         (

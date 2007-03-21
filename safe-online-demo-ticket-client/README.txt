@@ -27,3 +27,9 @@ Execute the following command:
 === 4. Installation
 
 Just copy demo-ticket-client.exe onto an SD or Flash memory card.
+
+
+=== 5. Usage
+
+A connection will be made to the demo ticket service on port 8080.
+Make sure the firewall on the server allows those incoming connections.

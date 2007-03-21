@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Net;
 
 using dZine.Zineon;
 
@@ -45,16 +46,20 @@ namespace demo_ticket_client
 		
 		private void LoadData() {
 			Object[] places = new Object[] {
-				"Aalst",
-				"Gent",
-				"Brussel"
+				"GENT",
+				"BRUSSEL",
+				"ANTWERPEN",
+				"HERZELE",
+				"MELLE",
+				"GENTBRUGGE"
 			};
+			
 			foreach (Object place in places) {
 				this.fromComboBox.Items.Add(place);
 				this.toComboBox.Items.Add(place);
 			}
 			
-			this.serverAddressTextBox.Text = "192.168.1.100";
+			this.serverAddressTextBox.Text = "192.168.5.100";
 		}
 		
 		public void SmartCardThreadProc() {
@@ -104,6 +109,21 @@ namespace demo_ticket_client
 					return;
 				}
 				
+			byte[] atr10 = {0x3B, 0x98, 0x94, 0x40,
+				0x0A,  0xA5, 0x03, 0x01, 0x01, 0x01, 0xAD, 0x13,
+				0x10};
+			byte[] atr11 = { 0x3B, 0x98, 0x13, 0x40, 0x0A,
+				0xA5, 0x03, 0x01, 0x01, 0x01, 0xAD, 0x13, 0x11};
+				
+			byte[] pBuffer = new byte[20];
+			byte[] pCommandChangeTC1 = {0x12, 0x40, 0x94, 0x20, 0xFF, 0x00};
+					
+			byte[] pPath = { 0x3f, 0x00, 0xdf, 0x01 };
+					
+			byte[] pPersonalDataIndex = { 0x40, 0x31 };	
+				
+			byte[] data = new byte[500];
+				
 			while (true) {
 				byte[] pAtr = new byte[20];
 				//AppendOutputMessage("POWERUP");
@@ -114,21 +134,20 @@ namespace demo_ticket_client
 					Thread.Sleep(100);
 					continue;
 				}
+				uint begin = CoreDll.GetTickCount();
+				
+				string from = this.GetFrom();
+				string to = this.GetTo();
+				
 				SetStatusLabel("Reading smart card data...");
 				
-				byte[] atr10 = {0x3B, 0x98, 0x94, 0x40,
-					0x0A,  0xA5, 0x03, 0x01, 0x01, 0x01, 0xAD, 0x13,
-					0x10};
-				byte[] atr11 = { 0x3B, 0x98, 0x13, 0x40, 0x0A,
-					0xA5, 0x03, 0x01, 0x01, 0x01, 0xAD, 0x13, 0x11};
 				bool applet11 = false;
 				if (EqualArrays(atr11, pAtr)) {
 					applet11 = true;
 				}
 				
 				if (false == applet11) {
-					byte[] pBuffer = new byte[20];
-					byte[] pCommandChangeTC1 = {0x12, 0x40, 0x94, 0x20, 0xFF, 0x00};
+					
 					result = CoreDll.DeviceIoControl(hDevice, IOCTL_SMARTCARD_COMMAND, pCommandChangeTC1, 6, pBuffer, 20, out nBytes, IntPtr.Zero);
 					if (0 == result) {
 						AppendOutputMessage("COMMAND failed");
@@ -142,7 +161,7 @@ namespace demo_ticket_client
 				}
 				
 				// select dedicated file
-				byte[] pPath = { 0x3f, 0x00, 0xdf, 0x01 };
+				
 				result = CoreDll.DeviceIoControl(hDevice, IOCTL_SMARTCARD_7816_SELECT_DF, pPath, 4, null, 0, out nBytes, IntPtr.Zero);
 				if (0 == result) {
 					AppendOutputMessage("SELECT_DF failed");
@@ -150,7 +169,7 @@ namespace demo_ticket_client
 					continue;
 				}
 				
-				byte[] pPersonalDataIndex = { 0x40, 0x31 };
+				
 				result = CoreDll.DeviceIoControl(hDevice, IOCTL_SMARTCARD_7816_SELECT_EF, pPersonalDataIndex, 2, null, 0, out nBytes, IntPtr.Zero);
 				if (0 == result) {
 					AppendOutputMessage("SELECT_EF failed");
@@ -158,7 +177,7 @@ namespace demo_ticket_client
 					continue;
 				}
 				
-				byte[] data = new byte[500];
+				
 				result = CoreDll.DeviceIoControl(hDevice, IOCTL_SMARTCARD_7816_READ_BINARY, null, 0, data, 500, out nBytes, IntPtr.Zero);
 				if (0 == result) {
 					AppendOutputMessage("READ_BINARY failed");
@@ -198,7 +217,50 @@ namespace demo_ticket_client
 				} while (fieldIdx < maxFieldIdx);
 				SetStatusLabel("Checking status for " + name + " " + givenNames + " ...");
 				
-				// TODO: contact demo-ticket application;
+				
+				
+				string serverAddress = this.GetServerAddress();
+				
+				string location = "http://" + serverAddress + ":8080/demo-ticket/TicketServlet/?NRN=" + nrn 
+					+ "&FROM=" + from + "&TO=" + to;
+				HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(location);
+				httpWebRequest.Timeout = 1000 * 2;
+				try {
+					HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+					/*
+					 * Don't forget to disable the firewall port 8080 here...
+					 */
+					if (HttpStatusCode.OK == httpWebResponse.StatusCode) {
+						SetStatusLabel("User has valid ticket.", Color.Green);
+					}
+					else {
+						// if (statusCode != OK) => WebException
+						SetStatusLabel("User has NO valid ticket.", Color.Red);
+					}
+					//AppendOutputMessage("Status: " + httpWebResponse.StatusDescription);
+					httpWebResponse.Close();
+				}
+				catch (WebException e) {
+					if (WebExceptionStatus.ProtocolError == e.Status) {
+						HttpWebResponse response = (HttpWebResponse) e.Response;
+						if (HttpStatusCode.Unauthorized == response.StatusCode) {
+							SetStatusLabel("User has NO valid ticket.", Color.Red);
+						}
+						else {
+							SetStatusLabel("Protocol error: " + response.StatusCode);
+							AppendOutputMessage("Status message: " + response.StatusDescription);
+						}
+					}
+					else if (WebExceptionStatus.Timeout == e.Status) {
+						SetStatusLabel("Cannot connect to server.");
+					}
+					else {
+						SetStatusLabel("Connection error.");
+						AppendOutputMessage("Error Status: " + e.Status);
+					}
+				}
+				uint end = CoreDll.GetTickCount();
+				AppendOutputMessage("Duration: " + (end - begin) + " ms.");
 				
 				do {
 					result = CoreDll.DeviceIoControl(hDevice, IOCTL_SMARTCARD_7816_POWERUP, null, 0, pAtr, 20, out nBytes, IntPtr.Zero);
@@ -227,6 +289,41 @@ namespace demo_ticket_client
 				return;
 			}
 			this.statusLabel.Text = value;
+			this.statusLabel.ForeColor = Color.Black;
+		}
+		
+		delegate void StringColorParameterDelegate(String value, Color color);
+		
+		private void SetStatusLabel(string value, Color color) {
+			if (InvokeRequired) {
+				BeginInvoke(new StringColorParameterDelegate(SetStatusLabel), new Object[] {value, color});
+				return;
+			}
+			this.statusLabel.Text = value;
+			this.statusLabel.ForeColor = color;
+		}
+		
+		delegate string GetStringDelegate();
+		
+		private string GetServerAddress() {
+			if (InvokeRequired) {
+				return (string) Invoke(new GetStringDelegate(GetServerAddress));
+			}
+			return this.serverAddressTextBox.Text;
+		}
+		
+		private string GetFrom() {
+			if (InvokeRequired) {
+				return (string) Invoke(new GetStringDelegate(GetFrom));
+			}
+			return this.fromComboBox.Text;
+		}
+		
+		private string GetTo() {
+			if (InvokeRequired) {
+				return (string) Invoke(new GetStringDelegate(GetTo));
+			}
+			return this.toComboBox.Text;
 		}
 		
 		private void AppendOutputMessage(String message) {
@@ -247,6 +344,11 @@ namespace demo_ticket_client
 		void ClearLogButtonClick(object sender, System.EventArgs e)
 		{
 			this.outputTextBox.Text = "";
+		}
+		
+		void ServerAddressTextBoxGotFocus(object sender, System.EventArgs e)
+		{
+			CoreDll.SipShowIM(CoreDll.SIPF_ON);
 		}
  	}
 }

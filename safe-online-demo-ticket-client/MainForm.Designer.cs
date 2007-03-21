@@ -46,27 +46,28 @@ namespace demo_ticket_client
 			this.serverAddressTextBox = new System.Windows.Forms.TextBox();
 			this.outputTextBox = new System.Windows.Forms.TextBox();
 			this.clearLogButton = new System.Windows.Forms.Button();
+			this.logLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// fromLabel
 			// 
-			this.fromLabel.Location = new System.Drawing.Point(12, 9);
+			this.fromLabel.Location = new System.Drawing.Point(12, 13);
 			this.fromLabel.Name = "fromLabel";
-			this.fromLabel.Size = new System.Drawing.Size(100, 23);
+			this.fromLabel.Size = new System.Drawing.Size(100, 14);
 			this.fromLabel.Text = "From:";
 			// 
 			// toLabel
 			// 
-			this.toLabel.Location = new System.Drawing.Point(12, 32);
+			this.toLabel.Location = new System.Drawing.Point(12, 37);
 			this.toLabel.Name = "toLabel";
-			this.toLabel.Size = new System.Drawing.Size(100, 23);
+			this.toLabel.Size = new System.Drawing.Size(100, 13);
 			this.toLabel.Text = "To:";
 			// 
 			// serverAddressLabel
 			// 
-			this.serverAddressLabel.Location = new System.Drawing.Point(12, 55);
+			this.serverAddressLabel.Location = new System.Drawing.Point(12, 63);
 			this.serverAddressLabel.Name = "serverAddressLabel";
-			this.serverAddressLabel.Size = new System.Drawing.Size(100, 23);
+			this.serverAddressLabel.Size = new System.Drawing.Size(100, 14);
 			this.serverAddressLabel.Text = "Server address:";
 			// 
 			// fromComboBox
@@ -85,7 +86,7 @@ namespace demo_ticket_client
 			// 
 			this.statusLabelLabel.Location = new System.Drawing.Point(12, 90);
 			this.statusLabelLabel.Name = "statusLabelLabel";
-			this.statusLabelLabel.Size = new System.Drawing.Size(100, 23);
+			this.statusLabelLabel.Size = new System.Drawing.Size(100, 16);
 			this.statusLabelLabel.Text = "Status:";
 			// 
 			// statusLabel
@@ -99,29 +100,38 @@ namespace demo_ticket_client
 			// 
 			this.serverAddressTextBox.Location = new System.Drawing.Point(118, 60);
 			this.serverAddressTextBox.Name = "serverAddressTextBox";
-			this.serverAddressTextBox.Size = new System.Drawing.Size(154, 20);
+			this.serverAddressTextBox.Size = new System.Drawing.Size(170, 20);
+			this.serverAddressTextBox.GotFocus += new System.EventHandler(this.ServerAddressTextBoxGotFocus);
 			// 
 			// outputTextBox
 			// 
-			this.outputTextBox.Location = new System.Drawing.Point(12, 131);
+			this.outputTextBox.Location = new System.Drawing.Point(12, 144);
 			this.outputTextBox.Multiline = true;
 			this.outputTextBox.Name = "outputTextBox";
 			this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.outputTextBox.Size = new System.Drawing.Size(401, 89);
+			this.outputTextBox.Size = new System.Drawing.Size(401, 100);
 			// 
 			// clearLogButton
 			// 
-			this.clearLogButton.Location = new System.Drawing.Point(338, 226);
+			this.clearLogButton.Location = new System.Drawing.Point(338, 250);
 			this.clearLogButton.Name = "clearLogButton";
 			this.clearLogButton.Size = new System.Drawing.Size(75, 23);
 			this.clearLogButton.Text = "Clear Log";
 			this.clearLogButton.Click += new System.EventHandler(this.ClearLogButtonClick);
 			// 
+			// logLabel
+			// 
+			this.logLabel.Location = new System.Drawing.Point(12, 121);
+			this.logLabel.Name = "logLabel";
+			this.logLabel.Size = new System.Drawing.Size(48, 20);
+			this.logLabel.Text = "Log:";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.ClientSize = new System.Drawing.Size(425, 261);
+			this.ClientSize = new System.Drawing.Size(426, 285);
+			this.Controls.Add(this.logLabel);
 			this.Controls.Add(this.clearLogButton);
 			this.Controls.Add(this.outputTextBox);
 			this.Controls.Add(this.serverAddressTextBox);
@@ -136,6 +146,7 @@ namespace demo_ticket_client
 			this.Text = "Demo Ticket Client";
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label logLabel;
 		private System.Windows.Forms.Button clearLogButton;
 		private System.Windows.Forms.TextBox outputTextBox;
 		private System.Windows.Forms.TextBox serverAddressTextBox;
