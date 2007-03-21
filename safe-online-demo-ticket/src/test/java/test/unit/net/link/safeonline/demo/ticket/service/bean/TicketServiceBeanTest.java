@@ -119,4 +119,25 @@ public class TicketServiceBeanTest extends TestCase {
 		// verify
 		assertTrue(result);
 	}
+
+	public void testInvalidFrom() throws Exception {
+		// setup
+		String testNrn = UUID.randomUUID().toString();
+		String testFrom = "foobar-from";
+		String testTo = Site.BRUSSEL.name();
+		String testUser = "test-user";
+
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		TicketService ticketService = EJBTestUtils.newInstance(
+				TicketServiceBean.class, null, entityManager);
+
+		User user = new User(testUser, testNrn);
+		entityManager.persist(user);
+
+		// operate
+		boolean result = ticketService.hasValidPass(testNrn, testTo, testFrom);
+
+		// verify
+		assertFalse(result);
+	}
 }

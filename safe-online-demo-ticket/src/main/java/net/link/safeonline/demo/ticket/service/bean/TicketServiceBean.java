@@ -47,8 +47,15 @@ public class TicketServiceBean implements TicketService {
 		User user = users.get(0);
 		LOG.debug("user located: " + user.getSafeOnlineUserName());
 
-		Site start = Site.valueOf(from);
-		Site destination = Site.valueOf(to);
+		Site start;
+		Site destination;
+		try {
+			start = Site.valueOf(from);
+			destination = Site.valueOf(to);
+		} catch (IllegalArgumentException e) {
+			LOG.debug("illegal argument: " + e.getMessage());
+			return false;
+		}
 		Query ticketQuery = Ticket.createQueryWhereOwner(this.entityManager,
 				user);
 		List<Ticket> tickets = ticketQuery.getResultList();
