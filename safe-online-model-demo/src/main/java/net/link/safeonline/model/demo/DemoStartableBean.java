@@ -38,7 +38,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	private static final Log LOG = LogFactory.getLog(DemoStartableBean.class);
 
-	private static final String DEMO_APPLICATION_NAME = "demo-application";
+	public static final String DEMO_APPLICATION_NAME = "demo-application";
 
 	private static final String DEMO_TICKET_APPLICATION_NAME = "safe-online-demo-ticket";
 

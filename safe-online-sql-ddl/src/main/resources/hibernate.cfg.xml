@@ -28,5 +28,8 @@
 			class="net.link.safeonline.entity.ApplicationIdentityEntity" />
 		<mapping class="net.link.safeonline.entity.ConfigGroupEntity" />
 		<mapping class="net.link.safeonline.entity.ConfigItemEntity" />
+		<mapping class="net.link.safeonline.entity.StatisticEntity" />
+		<mapping
+			class="net.link.safeonline.entity.StatisticDataPointEntity" />
 	</session-factory>
 </hibernate-configuration>

@@ -33,6 +33,8 @@ import net.link.safeonline.entity.ConfigGroupEntity;
 import net.link.safeonline.entity.ConfigItemEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SchedulingEntity;
+import net.link.safeonline.entity.StatisticDataPointEntity;
+import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubjectIdentifierPK;
@@ -75,7 +77,8 @@ public class EntityTest extends TestCase {
 				SubjectIdentifierEntity.class, CachedOcspResponseEntity.class,
 				TaskEntity.class, SchedulingEntity.class,
 				TaskHistoryEntity.class, ApplicationIdentityEntity.class,
-				ConfigItemEntity.class, ConfigGroupEntity.class);
+				ConfigItemEntity.class, ConfigGroupEntity.class,
+				StatisticEntity.class, StatisticDataPointEntity.class);
 	}
 
 	@Override
@@ -666,5 +669,27 @@ public class EntityTest extends TestCase {
 		entityManager.persist(group);
 		entityManager.persist(item);
 		entityManager.flush();
+	}
+
+	public void testAddRemoveStatistic() {
+		// setup
+		StatisticEntity stat = new StatisticEntity("stat 1", null, new Date(
+				System.currentTimeMillis()));
+		StatisticDataPointEntity data = new StatisticDataPointEntity("point 1",
+				stat, new Date(System.currentTimeMillis()), 1, 2, 3);
+		stat.getStatisticDataPoints().add(data);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(stat);
+		entityManager.persist(data);
+		entityManager.flush();
+		entityManager.remove(stat);
+		entityManager.flush();
+
+		StatisticDataPointEntity result = entityManager.find(
+				StatisticDataPointEntity.class, data.getName());
+		assertNull(result);
+
 	}
 }

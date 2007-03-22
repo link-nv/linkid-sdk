@@ -27,6 +27,8 @@ public class SharedConstants {
 
 	public static final String ATTRIBUTE_NOT_FOUND_ERROR = "ATTRIBUTE_NOT_FOUND";
 
+	public static final String STATISTIC_NOT_FOUND_ERROR = "STATISTIC_NOT_FOUND";
+
 	private SharedConstants() {
 		// empty
 	}

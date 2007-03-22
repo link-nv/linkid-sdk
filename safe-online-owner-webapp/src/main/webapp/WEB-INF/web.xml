@@ -97,6 +97,11 @@
 	</filter-mapping>
 
 	<filter-mapping>
+		<filter-name>Login Filter</filter-name>
+		<servlet-name>Chart Servlet</servlet-name>
+	</filter-mapping>
+
+	<filter-mapping>
 		<filter-name>SafeOnlineLoginFilter</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
@@ -110,6 +115,19 @@
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.seam</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Chart Servlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.owner.webapp.ChartServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Chart Servlet</servlet-name>
+		<url-pattern>*.chart</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

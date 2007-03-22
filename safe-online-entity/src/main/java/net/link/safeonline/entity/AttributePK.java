@@ -11,6 +11,10 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 @Embeddable
 public class AttributePK implements Serializable {
 
@@ -43,5 +47,30 @@ public class AttributePK implements Serializable {
 
 	public void setSubject(String subject) {
 		this.subject = subject;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (false == obj instanceof SubscriptionPK) {
+			return false;
+		}
+		AttributePK rhs = (AttributePK) obj;
+		return new EqualsBuilder().append(this.subject, rhs.subject).append(
+				this.attributeType, rhs.attributeType).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this.subject).append(
+				this.attributeType).toHashCode();
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("subject", this.subject)
+				.append("attributeType", this.attributeType).toString();
 	}
 }

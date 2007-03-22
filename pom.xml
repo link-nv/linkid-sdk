@@ -859,6 +859,16 @@
 				<artifactId>cglib</artifactId>
 				<version>${cglib.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>jfree</groupId>
+				<artifactId>jfreechart</artifactId>
+				<version>${jfreechart.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>jfree</groupId>
+				<artifactId>jcommon</artifactId>
+				<version>${jcommon.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -992,5 +1002,7 @@
 		<dom4j.version>1.6.1</dom4j.version>
 		<cglib.version>2.1_3</cglib.version>
 		<maven-ejb-plugin.version>2.1</maven-ejb-plugin.version>
+		<jfreechart.version>1.0.4</jfreechart.version>
+		<jcommon.version>1.0.8</jcommon.version>
 	</properties>
 </project>
