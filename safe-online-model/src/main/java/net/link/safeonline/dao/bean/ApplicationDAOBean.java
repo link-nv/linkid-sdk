@@ -93,4 +93,17 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		List<ApplicationEntity> applications = query.getResultList();
 		return applications;
 	}
+
+	@SuppressWarnings("unchecked")
+	public ApplicationEntity getApplication(X509Certificate certificate)
+			throws ApplicationNotFoundException {
+		Query query = ApplicationEntity.createQueryWhereCertificate(
+				this.entityManager, certificate);
+		List<ApplicationEntity> applications = query.getResultList();
+		if (applications.isEmpty()) {
+			throw new ApplicationNotFoundException();
+		}
+		ApplicationEntity application = applications.get(0);
+		return application;
+	}
 }

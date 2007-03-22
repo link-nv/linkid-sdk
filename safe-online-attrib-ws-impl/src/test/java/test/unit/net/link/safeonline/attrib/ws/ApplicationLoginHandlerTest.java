@@ -7,11 +7,6 @@
 
 package test.unit.net.link.safeonline.attrib.ws;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.Principal;
@@ -21,6 +16,7 @@ import java.util.Map;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
@@ -28,44 +24,29 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import junit.framework.TestCase;
-import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.attrib.ws.ApplicationCertificateLoginHandler;
-import net.link.safeonline.model.PkiValidator;
-import net.link.safeonline.test.util.EJBTestUtils;
+import net.link.safeonline.attrib.ws.ApplicationCertificateValidatorHandler;
+import net.link.safeonline.attrib.ws.ApplicationLoginHandler;
 import net.link.safeonline.test.util.JaasTestUtils;
-import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.TestSOAPMessageContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SimplePrincipal;
-import org.jboss.security.auth.callback.ObjectCallback;
 
-public class ApplicationCertificateLoginHandlerTest extends TestCase {
+public class ApplicationLoginHandlerTest extends TestCase {
 
-	private JndiTestUtils jndiTestUtils;
+	private ApplicationLoginHandler testedInstance;
 
-	private ApplicationCertificateLoginHandler testedInstance;
-
-	private PkiValidator mockPkiValidator;
-
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		this.jndiTestUtils = new JndiTestUtils();
-		this.jndiTestUtils.setUp();
-
-		this.mockPkiValidator = createMock(PkiValidator.class);
-		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
-				this.mockPkiValidator);
-
-		this.testedInstance = new ApplicationCertificateLoginHandler();
-		EJBTestUtils.init(this.testedInstance);
+		this.testedInstance = new ApplicationLoginHandler();
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
-		this.jndiTestUtils.tearDown();
 		super.tearDown();
 	}
 
@@ -73,23 +54,18 @@ public class ApplicationCertificateLoginHandlerTest extends TestCase {
 		// setup
 		SOAPMessageContext context = new TestSOAPMessageContext(null, false);
 
+		String testApplicationName = "test-application-name-" + getName();
+		context.put(ApplicationLoginHandler.APPLICATION_NAME_PROPERTY,
+				testApplicationName);
+
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		context.put(ApplicationCertificateLoginHandler.CERTIFICATE_PROPERTY,
+		context.put(
+				ApplicationCertificateValidatorHandler.CERTIFICATE_PROPERTY,
 				certificate);
 
 		JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
-
-		// expectations
-		expect(
-				this.mockPkiValidator
-						.validateCertificate(
-								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-								certificate)).andReturn(true);
-
-		// prepare
-		replay(this.mockPkiValidator);
 
 		// operate
 		this.testedInstance.handleMessage(context);
@@ -97,7 +73,6 @@ public class ApplicationCertificateLoginHandlerTest extends TestCase {
 		this.testedInstance.handleMessage(context);
 
 		// verify
-		verify(this.mockPkiValidator);
 	}
 
 	public static class TestLoginModule implements LoginModule {
@@ -131,8 +106,9 @@ public class ApplicationCertificateLoginHandlerTest extends TestCase {
 
 		public boolean login() throws LoginException {
 			LOG.debug("login");
-			ObjectCallback objectCallback = new ObjectCallback("X509");
-			Callback[] callbacks = new Callback[] { objectCallback };
+			PasswordCallback passwordCallback = new PasswordCallback("X509",
+					false);
+			Callback[] callbacks = new Callback[] { passwordCallback };
 			try {
 				this.callbackHandler.handle(callbacks);
 			} catch (IOException e) {
@@ -141,11 +117,7 @@ public class ApplicationCertificateLoginHandlerTest extends TestCase {
 				throw new LoginException("unsupported callback: "
 						+ e.getMessage());
 			}
-			Object credential = objectCallback.getCredential();
-			X509Certificate certificate = (X509Certificate) credential;
-			LOG.debug("certificate: " + certificate);
-			this.authenticatedPrincipal = new SimplePrincipal(certificate
-					.getIssuerX500Principal().toString());
+			this.authenticatedPrincipal = new SimplePrincipal("test");
 			return true;
 		}
 

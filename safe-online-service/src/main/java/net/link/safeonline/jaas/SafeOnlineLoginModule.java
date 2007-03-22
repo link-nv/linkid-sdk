@@ -195,6 +195,7 @@ public class SafeOnlineLoginModule implements LoginModule {
 		/*
 		 * maybe we should also remove the "Roles" group. JBoss
 		 * AbstractServerLoginModule is also not doing this.
+		 * XXX: we should remove the roles here!!!
 		 */
 		return true;
 	}

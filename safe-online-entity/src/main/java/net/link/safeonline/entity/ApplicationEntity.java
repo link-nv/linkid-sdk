@@ -28,12 +28,15 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.hibernate.annotations.Index;
 
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_ALL;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
+import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_CERTID;
 
 /**
  * Application Entity. We're not using the SecurityApplicationEntityListener
@@ -49,7 +52,10 @@ import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
 		@NamedQuery(name = QUERY_WHERE_ALL, query = "FROM ApplicationEntity"),
 		@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT application "
 				+ "FROM ApplicationEntity AS application "
-				+ "WHERE application.applicationOwner = :applicationOwner") })
+				+ "WHERE application.applicationOwner = :applicationOwner"),
+		@NamedQuery(name = QUERY_WHERE_CERTID, query = "SELECT application "
+				+ "FROM ApplicationEntity AS application "
+				+ "WHERE application.certificateIdentifier = :certificateIdentifier") })
 // @EntityListeners(SecurityApplicationEntityListener.class)
 public class ApplicationEntity implements Serializable {
 
@@ -58,6 +64,8 @@ public class ApplicationEntity implements Serializable {
 	public static final String QUERY_WHERE_ALL = "app.all";
 
 	public static final String QUERY_WHERE_OWNER = "app.owner";
+
+	public static final String QUERY_WHERE_CERTID = "app.certid";
 
 	String name;
 
@@ -74,6 +82,8 @@ public class ApplicationEntity implements Serializable {
 	private long currentApplicationIdentity;
 
 	private transient X509Certificate certificate;
+
+	private String certificateIdentifier;
 
 	public ApplicationEntity() {
 		// empty
@@ -125,6 +135,7 @@ public class ApplicationEntity implements Serializable {
 				throw new EJBException("certificate encoding error: "
 						+ e.getMessage(), e);
 			}
+			this.certificateIdentifier = toCertificateIdentifier(this.encodedCert);
 		}
 	}
 
@@ -143,6 +154,12 @@ public class ApplicationEntity implements Serializable {
 		this.description = description;
 	}
 
+	/**
+	 * The unique name of the application. This field is used as primary key on
+	 * the application entity.
+	 * 
+	 * @return
+	 */
 	@Id
 	@Column(name = "name")
 	public String getName() {
@@ -153,6 +170,13 @@ public class ApplicationEntity implements Serializable {
 		this.name = name;
 	}
 
+	/**
+	 * Marks whether a user is allowed to subscribe himself onto this
+	 * application. This field prevents users from subscribing themselves onto
+	 * the operator web application or the application owner web application.
+	 * 
+	 * @return
+	 */
 	public boolean isAllowUserSubscription() {
 		return this.allowUserSubscription;
 	}
@@ -161,6 +185,15 @@ public class ApplicationEntity implements Serializable {
 		this.allowUserSubscription = allowUserSubscription;
 	}
 
+	/**
+	 * Marks whether the operator can remove this application. This prevents the
+	 * operator from removing critical application like the SafeOnline user web
+	 * application, the SafeOnline application owner web application, the
+	 * SafeOnline authentication web application and the SafeOnline operator web
+	 * application.
+	 * 
+	 * @return
+	 */
 	public boolean isRemovable() {
 		return this.removable;
 	}
@@ -169,6 +202,13 @@ public class ApplicationEntity implements Serializable {
 		this.removable = removable;
 	}
 
+	/**
+	 * Gives back the application owner of this application. Each application
+	 * has an application owner. The application owner is allowed to perform
+	 * certain operations regarding this application.
+	 * 
+	 * @return
+	 */
 	@ManyToOne(optional = false)
 	public ApplicationOwnerEntity getApplicationOwner() {
 		return this.applicationOwner;
@@ -178,6 +218,13 @@ public class ApplicationEntity implements Serializable {
 		this.applicationOwner = applicationOwner;
 	}
 
+	/**
+	 * Gives back the encoded application certificate. Each application has a
+	 * corresponding certificate. This certificate is used for web service
+	 * authentication by the application.
+	 * 
+	 * @return
+	 */
 	@Lob
 	@Column(length = 4 * 1024, nullable = true)
 	public byte[] getEncodedCert() {
@@ -188,12 +235,37 @@ public class ApplicationEntity implements Serializable {
 		this.encodedCert = encodedCert;
 	}
 
+	/**
+	 * Gives back the current application identity version number. Each
+	 * application can have multiple application identities. Each application
+	 * identity has a version number. This field marks the currently active
+	 * application identity version.
+	 * 
+	 * @return
+	 */
 	public long getCurrentApplicationIdentity() {
 		return this.currentApplicationIdentity;
 	}
 
 	public void setCurrentApplicationIdentity(long currentApplicationIdentity) {
 		this.currentApplicationIdentity = currentApplicationIdentity;
+	}
+
+	/**
+	 * The certificate identifier is used during application authentication
+	 * phase to associate a given certificate with it's corresponding
+	 * application.
+	 * 
+	 * @return
+	 */
+	@Column(unique = true)
+	@Index(name = "app_id")
+	public String getCertificateIdentifier() {
+		return this.certificateIdentifier;
+	}
+
+	public void setCertificateIdentifier(String certificateIdentifier) {
+		this.certificateIdentifier = certificateIdentifier;
 	}
 
 	@Transient
@@ -246,5 +318,32 @@ public class ApplicationEntity implements Serializable {
 		Query query = entityManager.createNamedQuery(QUERY_WHERE_OWNER);
 		query.setParameter("applicationOwner", applicationOwner);
 		return query;
+	}
+
+	public static Query createQueryWhereCertificate(
+			EntityManager entityManager, X509Certificate certificate) {
+		byte[] encodedCertificate;
+		try {
+			encodedCertificate = certificate.getEncoded();
+		} catch (CertificateEncodingException e) {
+			throw new EJBException("Certificate encoding error: "
+					+ e.getMessage(), e);
+		}
+		String certificateIdentifier = toCertificateIdentifier(encodedCertificate);
+		Query query = entityManager.createNamedQuery(QUERY_WHERE_CERTID);
+		query.setParameter("certificateIdentifier", certificateIdentifier);
+		return query;
+	}
+
+	/**
+	 * Gives back the certificate identifier for a given encoded X509
+	 * certificate.
+	 * 
+	 * @param encodedCertificate
+	 * @return
+	 */
+	public static String toCertificateIdentifier(byte[] encodedCertificate) {
+		String certificateIdentifier = DigestUtils.shaHex(encodedCertificate);
+		return certificateIdentifier;
 	}
 }

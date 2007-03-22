@@ -72,4 +72,15 @@ public interface ApplicationDAO {
 			ApplicationOwnerEntity applicationOwner);
 
 	void removeApplication(ApplicationEntity application);
+
+	/**
+	 * Gives back an application entity.
+	 * 
+	 * @param certificate
+	 *            the application certificate.
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 */
+	ApplicationEntity getApplication(X509Certificate certificate)
+			throws ApplicationNotFoundException;
 }

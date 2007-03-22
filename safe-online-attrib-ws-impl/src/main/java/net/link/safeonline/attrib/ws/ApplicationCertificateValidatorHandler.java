@@ -11,8 +11,6 @@ import java.security.cert.X509Certificate;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
 import javax.xml.namespace.QName;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
@@ -27,22 +25,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Application Certificate JAX-WS Login Handler. This JAX-WS SOAP handler will
- * validate the incoming certificate as being a trusted application certificate
- * and will perform the JAAS login.
+ * Application Certificate Validator JAX-WS Handler. This JAX-WS SOAP handler
+ * will validate the incoming certificate as being a trusted application
+ * certificate.
  * 
  * @author fcorneli
  * 
  */
-public class ApplicationCertificateLoginHandler implements
+public class ApplicationCertificateValidatorHandler implements
 		SOAPHandler<SOAPMessageContext> {
 
 	private static final Log LOG = LogFactory
-			.getLog(ApplicationCertificateLoginHandler.class);
+			.getLog(ApplicationCertificateValidatorHandler.class);
 
 	public static final String CERTIFICATE_PROPERTY = "net.link.safeonline.x509";
-
-	private static final String LOGINCONTEXT_PROPERTY = "net.link.safeonline.logincontext";
 
 	private PkiValidator pkiValidator;
 
@@ -87,37 +83,15 @@ public class ApplicationCertificateLoginHandler implements
 			result = this.pkiValidator.validateCertificate(
 					SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 					certificate);
-		} catch (TrustDomainNotFoundException e1) {
+		} catch (TrustDomainNotFoundException e) {
 			throw new RuntimeException("application trust domain not found");
 		}
 		if (false == result) {
 			throw new RuntimeException("certificate not trusted");
 		}
-		X509CertificateCallbackHandler callbackHandler = new X509CertificateCallbackHandler(
-				certificate);
-		try {
-			LoginContext loginContext = new LoginContext("client-login",
-					callbackHandler);
-			LOG.debug("performing login...");
-			loginContext.login();
-			context.put(LOGINCONTEXT_PROPERTY, loginContext);
-		} catch (LoginException e) {
-			throw new RuntimeException("JAAS login error: " + e.getMessage());
-		}
 	}
 
 	private void logout(SOAPMessageContext context) {
 		LOG.debug("logout");
-		LoginContext loginContext = (LoginContext) context
-				.get(LOGINCONTEXT_PROPERTY);
-		if (null == loginContext) {
-			throw new RuntimeException(
-					"no JAAS login context present on the JAX-WS context");
-		}
-		try {
-			loginContext.logout();
-		} catch (LoginException e) {
-			throw new RuntimeException("JAAS logout error");
-		}
 	}
 }

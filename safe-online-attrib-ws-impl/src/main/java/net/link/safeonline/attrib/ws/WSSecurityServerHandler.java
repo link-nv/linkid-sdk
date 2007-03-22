@@ -94,12 +94,14 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 		}
 		for (WSSecurityEngineResult result : wsSecurityEngineResults) {
 			X509Certificate certificate = result.getCertificate();
-			if (null != certificate) {
-				soapMessageContext
-						.put(
-								ApplicationCertificateLoginHandler.CERTIFICATE_PROPERTY,
-								certificate);
+			if (null == certificate) {
+				continue;
 			}
+			soapMessageContext
+					.put(
+							ApplicationCertificateValidatorHandler.CERTIFICATE_PROPERTY,
+							certificate);
+			break;
 		}
 	}
 }

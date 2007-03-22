@@ -465,6 +465,7 @@ public class AuthenticationTest extends TestCase {
 		IdentityService identityService = getIdentityService(initialContext);
 
 		String testName = "test-name";
+		String testApplicationName = UUID.randomUUID().toString();
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
@@ -483,12 +484,19 @@ public class AuthenticationTest extends TestCase {
 				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 				this.certificate.getEncoded());
 
+		// operate: add application with certificate
+		ApplicationService applicationService = getApplicationService(initialContext);
+		applicationService.addApplication(testApplicationName, "owner", null,
+				this.certificate.getEncoded(),
+				new String[] { SafeOnlineConstants.NAME_ATTRIBUTE });
+
 		// operate: retrieve name attribute via web service
 		String result = this.attributeClient.getAttributeValue(login,
 				SafeOnlineConstants.NAME_ATTRIBUTE);
 
 		// verify
 		LOG.debug("result attribute value: " + result);
+		LOG.debug("application name: " + testApplicationName);
 		assertEquals(testName, result);
 	}
 
@@ -520,5 +528,22 @@ public class AuthenticationTest extends TestCase {
 		} catch (AttributeNotFoundException e) {
 			// expected
 		}
+	}
+
+	public void testFindAttributeValue() throws Exception {
+		// setup
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+		IntegrationTestUtils.setupLoginConfig();
+		IdentityService identityService = getIdentityService(initialContext);
+
+		// operate
+		IntegrationTestUtils.login("fcorneli", "secret");
+
+		String result = identityService
+				.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
+
+		// verify
+		LOG.debug("result: " + result);
 	}
 }

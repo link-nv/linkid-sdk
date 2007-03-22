@@ -254,4 +254,13 @@ public class AuthenticationServiceBean implements AuthenticationService {
 
 		return subject.getLogin();
 	}
+
+	public String authenticate(X509Certificate certificate)
+			throws ApplicationNotFoundException {
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(certificate);
+		String applicationName = application.getName();
+		LOG.debug("authenticated application: " + applicationName);
+		return applicationName;
+	}
 }

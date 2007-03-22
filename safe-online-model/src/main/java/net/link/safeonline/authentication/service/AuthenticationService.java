@@ -7,6 +7,8 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.security.cert.X509Certificate;
+
 import javax.ejb.Local;
 import javax.ejb.Remote;
 
@@ -17,7 +19,8 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 
 /**
- * Authentication service interface.
+ * Authentication service interface. This service can authentication both users
+ * and applications.
  * 
  * @author fcorneli
  * 
@@ -69,4 +72,16 @@ public interface AuthenticationService {
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException, SubscriptionNotFoundException,
 			ApplicationNotFoundException;
+
+	/**
+	 * Authenticates an application given an application certificate. At this
+	 * point the application certificate already passed the PKI validation.
+	 * 
+	 * @param certificate
+	 *            the trusted X509 application certificate.
+	 * @return the application name of the authentication application.
+	 * @throws ApplicationNotFoundException
+	 */
+	String authenticate(X509Certificate certificate)
+			throws ApplicationNotFoundException;
 }

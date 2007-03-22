@@ -34,6 +34,7 @@ import net.link.safeonline.attrib.ws.SAMLAttributePortImpl;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
+import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.model.PkiValidator;
 import net.link.safeonline.sdk.attrib.WSSecurityClientHandler;
 import net.link.safeonline.test.util.JaasTestUtils;
@@ -72,7 +73,11 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 	private PkiValidator mockPkiValidator;
 
+	private AuthenticationService mockAuthenticationService;
+
 	private Object[] mockObjects;
+
+	private X509Certificate certificate;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -83,15 +88,19 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 		this.mockAttributeService = createMock(AttributeService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
+		this.mockAuthenticationService = createMock(AuthenticationService.class);
 
 		this.mockObjects = new Object[] { this.mockAttributeService,
-				this.mockPkiValidator };
+				this.mockPkiValidator, this.mockAuthenticationService };
 
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/AttributeServiceBean/local",
 				this.mockAttributeService);
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/AuthenticationServiceBean/local",
+				this.mockAuthenticationService);
 
 		expect(
 				this.mockPkiValidator.validateCertificate((String) EasyMock
@@ -108,14 +117,13 @@ public class SAMLAttributePortImplTest extends TestCase {
 		this.clientPort = service.getSAMLAttributePort();
 		this.webServiceTestUtils.setEndpointAddress(clientPort);
 
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
+				"CN=Test");
+
 		BindingProvider bindingProvider = (BindingProvider) clientPort;
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
-
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-
 		Handler wsSecurityHandler = new WSSecurityClientHandler(certificate,
 				keyPair.getPrivate());
 		handlerChain.add(wsSecurityHandler);
@@ -154,6 +162,9 @@ public class SAMLAttributePortImplTest extends TestCase {
 		expect(
 				this.mockAttributeService.getAttribute(testSubjectLogin,
 						testAttributeName)).andReturn(testAttributeValue);
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn("test-application-name");
+
 		// prepare
 		replay(this.mockObjects);
 
@@ -229,6 +240,8 @@ public class SAMLAttributePortImplTest extends TestCase {
 				this.mockAttributeService.getAttribute(testSubjectLogin,
 						testAttributeName)).andThrow(
 				new AttributeNotFoundException());
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn("test-application-name");
 
 		// prepare
 		replay(this.mockObjects);

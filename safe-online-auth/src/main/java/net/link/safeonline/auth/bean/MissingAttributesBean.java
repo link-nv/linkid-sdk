@@ -95,7 +95,7 @@ public class MissingAttributesBean implements MissingAttributes {
 			try {
 				this.identityService.saveAttribute(name, value);
 			} catch (PermissionDeniedException e) {
-				String msg = "permissing denied for attribute: " + name;
+				String msg = "permission denied for attribute: " + name;
 				LOG.debug(msg);
 				this.facesMessages.add(msg);
 				return null;
