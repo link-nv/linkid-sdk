@@ -688,7 +688,7 @@ public class EntityTest extends TestCase {
 		entityManager.flush();
 
 		StatisticDataPointEntity result = entityManager.find(
-				StatisticDataPointEntity.class, data.getName());
+				StatisticDataPointEntity.class, data.getId());
 		assertNull(result);
 
 	}
