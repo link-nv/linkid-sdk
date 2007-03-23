@@ -288,6 +288,19 @@ public class ApplicationEntity implements Serializable {
 		return this.certificate;
 	}
 
+	@Transient
+	public void setCertificate(X509Certificate certificate) {
+		byte[] encodedCertificate;
+		try {
+			encodedCertificate = certificate.getEncoded();
+		} catch (CertificateEncodingException e) {
+			throw new EJBException("certificate encoding error");
+		}
+		this.setEncodedCert(encodedCertificate);
+		String certificateIdentifier = toCertificateIdentifier(encodedCertificate);
+		this.setCertificateIdentifier(certificateIdentifier);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

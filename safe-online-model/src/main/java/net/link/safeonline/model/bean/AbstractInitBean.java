@@ -7,7 +7,6 @@
 
 package net.link.safeonline.model.bean;
 
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -245,13 +244,7 @@ public abstract class AbstractInitBean implements Startable {
 					.findApplication(applicationName);
 			if (null != existingApplication) {
 				if (null != application.certificate) {
-					try {
-						existingApplication
-								.setEncodedCert(application.certificate
-										.getEncoded());
-					} catch (CertificateEncodingException e) {
-						LOG.fatal("cert encoding error: " + e.getMessage());
-					}
+					existingApplication.setCertificate(application.certificate);
 				}
 				continue;
 			}
