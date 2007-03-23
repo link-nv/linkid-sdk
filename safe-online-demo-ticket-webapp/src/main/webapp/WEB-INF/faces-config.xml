@@ -5,6 +5,12 @@
 <faces-config>
 
 	<application>
+		<message-bundle>messages.webapp</message-bundle>
+		<locale-config>
+			<default-locale>en</default-locale>
+			<supported-locale>en</supported-locale>
+			<supported-locale>nl</supported-locale>
+		</locale-config>
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
 	</application>
 

@@ -8,31 +8,31 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="content">
-		<h2>Buy a ticket</h2>
+		<h2>#{msgs.buyTicket}</h2>
 
 		<h:form>
 			<table>
 				<tr>
-					<th>From:</th>
+					<th>#{msgs.from}:</th>
 					<td><h:selectOneMenu id="from" value="#{ticketBuy.from}">
 						<f:selectItems value="#{siteList}" />
 					</h:selectOneMenu></td>
 				</tr>
 				<tr>
-					<th>To:</th>
+					<th>#{msgs.to}:</th>
 					<td><h:selectOneMenu id="to" value="#{ticketBuy.to}">
 						<f:selectItems value="#{siteList}" />
 					</h:selectOneMenu></td>
 				</tr>
 				<tr>
-					<th>Valid until:</th>
+					<th>#{msgs.validUntil}:</th>
 					<td><h:selectOneMenu id="validuntil"
 						value="#{ticketBuy.validUntil}">
 						<f:selectItems value="#{dateList}" />
 					</h:selectOneMenu></td>
 				</tr>
 				<tr>
-					<th>Return Ticket:</th>
+					<th>#{msgs.bidirectional}:</th>
 					<td><h:selectBooleanCheckbox id="returnticket"
 						value="#{ticketBuy.returnTicket}" /></td>
 				</tr>
@@ -41,10 +41,10 @@
 			<h:commandButton action="#{ticketBuy.checkOut}" id="checkout"
 				value="Checkout" />
 			<so:nbsp />
-			<h:commandButton action="list" id="cancel" value="Cancel"
-				immediate="true" />
+			<h:commandButton action="list" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" />
 			<so:nbsp />
-			<h:commandButton action="overview" id="overview" value="Home"
+			<h:commandButton action="overview" id="overview" value="#{msgs.overview}"
 				immediate="true" />
 		</h:form>
 

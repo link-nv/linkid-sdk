@@ -82,6 +82,7 @@ public class AttributeServiceBean implements AttributeService {
 		SubscriptionEntity subscription = this.subscriptionDAO
 				.findSubscription(subject, application);
 		if (null == subscription) {
+			LOG.debug("subject is not subscribed");
 			throw new PermissionDeniedException();
 		}
 
@@ -91,6 +92,7 @@ public class AttributeServiceBean implements AttributeService {
 		Long confirmedIdentityVersion = subscription
 				.getConfirmedIdentityVersion();
 		if (null == confirmedIdentityVersion) {
+			LOG.debug("subject has no confirmed identity version");
 			throw new PermissionDeniedException();
 		}
 
@@ -108,12 +110,14 @@ public class AttributeServiceBean implements AttributeService {
 				.getAttributeTypes();
 		boolean hasAttribute = false;
 		for (AttributeTypeEntity attributeType : attributeTypes) {
+			LOG.debug("identity attribute: " + attributeType.getName());
 			if (attributeType.getName().equals(attributeName)) {
 				hasAttribute = true;
+				break;
 			}
-			break;
 		}
 		if (false == hasAttribute) {
+			LOG.debug("attribute not in set of confirmed identity attributes");
 			throw new PermissionDeniedException();
 		}
 
