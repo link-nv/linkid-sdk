@@ -21,4 +21,6 @@ public interface Application {
 	String edit();
 
 	String save();
+
+	String viewStats();
 }

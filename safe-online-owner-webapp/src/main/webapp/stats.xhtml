@@ -15,29 +15,24 @@
 	<ui:define name="content">
 
 		<h:form>
-			<t:dataTable id="app-data" var="item" value="#{ownerApplicationList}"
-				rows="10" preserveDataModel="false" styleClass="listingTable"
+			<t:dataTable id="stat-data" var="item" value="#{statList}" rows="10"
+				preserveDataModel="false" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2"
 				columnClasses="listingTable_ColumnTop,listingTable_Column">
 
 				<h:column>
-					<f:facet name="header">#{msgs.application}</f:facet>
-					<h:commandLink value="#{item.name}"
-						action="#{ownerApplication.view}" />
+					<f:facet name="header">#{msgs.statistic}</f:facet>
+					<h:commandLink value="#{item.name}" action="#{chart.viewStat}" />
 				</h:column>
 				<h:column>
-					<h:commandLink value="#{msgs.edit}"
-						action="#{ownerApplication.edit}" />
-				</h:column>
-				<h:column>
-					<h:commandLink value="#{msgs.statistic}"
-						action="#{ownerApplication.viewStats}" />
+					<f:facet name="header">#{msgs.lastUpdate}</f:facet>
+					#{item.creationTime}
 				</h:column>
 			</t:dataTable>
 
-			<t:dataScroller for="app-data" fastStep="10" pageCountVar="pageCount"
-				pageIndexVar="pageIndex" styleClass="scroller" paginator="true"
-				paginatorMaxPages="9">
+			<t:dataScroller for="stat-data" fastStep="10"
+				pageCountVar="pageCount" pageIndexVar="pageIndex"
+				styleClass="scroller" paginator="true" paginatorMaxPages="9">
 				<f:facet name="first">#{msgs.first}</f:facet>
 				<f:facet name="last">#{msgs.last}</f:facet>
 				<f:facet name="previous">#{msgs.previous}</f:facet>
@@ -45,6 +40,9 @@
 			</t:dataScroller>
 
 			<h:messages styleClass="error" />
+
+			<h:commandButton value="#{msgs.backaction}" action="back" />
+
 		</h:form>
 
 	</ui:define>

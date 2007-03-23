@@ -1,7 +1,11 @@
 package net.link.safeonline.service.bean;
 
+import java.util.List;
+
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
 import org.apache.commons.logging.Log;
@@ -9,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.StatisticNotFoundException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
@@ -31,13 +36,22 @@ public class StatisticServiceBean implements StatisticService {
 	@EJB
 	private StatisticDAO statisticDAO;
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@Resource
+	private SessionContext sessionContext;
+
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public StatisticEntity getStatistic(String statisticName,
-			String applicationName) throws StatisticNotFoundException {
+			String applicationName) throws StatisticNotFoundException,
+			PermissionDeniedException {
+
 		ApplicationEntity application = null;
 		if (applicationName != null) {
 			LOG.debug("finding application");
 			application = this.applicationDAO.findApplication(applicationName);
+		}
+
+		if (!accessControl(application)) {
+			throw new PermissionDeniedException();
 		}
 
 		LOG.debug("finding statistic");
@@ -53,6 +67,34 @@ public class StatisticServiceBean implements StatisticService {
 			dp.getId();
 		}
 		return statistic;
+	}
+
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
+	public List<StatisticEntity> getStatistics(ApplicationEntity application)
+			throws PermissionDeniedException {
+		if (!accessControl(application)) {
+			throw new PermissionDeniedException();
+		}
+		List<StatisticEntity> result = this.statisticDAO
+				.listStatistics(application);
+		return result;
+	}
+
+	private boolean accessControl(ApplicationEntity application) {
+		boolean isOperator = this.sessionContext
+				.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE);
+		if (isOperator) {
+			return true;
+		}
+		if (application == null) {
+			return false;
+		}
+		String subjectName = this.sessionContext.getCallerPrincipal().getName();
+		if (application.getApplicationOwner().getAdmin().getLogin().equals(
+				subjectName)) {
+			return true;
+		}
+		return false;
 	}
 
 }

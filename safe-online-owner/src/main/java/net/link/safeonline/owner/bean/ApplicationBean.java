@@ -120,4 +120,9 @@ public class ApplicationBean implements Application {
 		}
 		return "saved";
 	}
+
+	@RolesAllowed(OwnerConstants.OWNER_ROLE)
+	public String viewStats() {
+		return "viewstats";
+	}
 }

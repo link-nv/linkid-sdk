@@ -44,6 +44,10 @@
 			<from-outcome>edit-application</from-outcome>
 			<to-view-id>/application-edit.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>viewstats</from-outcome>
+			<to-view-id>/stats.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -63,6 +67,26 @@
 		<navigation-case>
 			<from-outcome>saved</from-outcome>
 			<to-view-id>/applications.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/stats.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/applications.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>viewstat</from-outcome>
+			<to-view-id>/stat-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/stat-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/stats.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

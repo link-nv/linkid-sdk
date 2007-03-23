@@ -28,7 +28,9 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_AND_APPLICATION;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_APPLICATION;
 import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_AND_NULL;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_ALL;
 
 @Entity
 @Table(name = "statistic", uniqueConstraints = @UniqueConstraint(columnNames = {
@@ -39,7 +41,12 @@ import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_AND_NU
 				+ "WHERE Statistic.name = :name AND Statistic.application = :application"),
 		@NamedQuery(name = QUERY_WHERE_NAME_AND_NULL, query = "SELECT Statistic "
 				+ "FROM StatisticEntity AS Statistic "
-				+ "WHERE Statistic.name = :name AND Statistic.application IS NULL") })
+				+ "WHERE Statistic.name = :name AND Statistic.application IS NULL"),
+		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT Statistic "
+				+ "FROM StatisticEntity AS Statistic "
+				+ "WHERE Statistic.application = :application"),
+		@NamedQuery(name = QUERY_ALL, query = "SELECT Statistic "
+				+ "FROM StatisticEntity AS Statistic") })
 public class StatisticEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -47,6 +54,10 @@ public class StatisticEntity implements Serializable {
 	public static final String QUERY_WHERE_NAME_AND_APPLICATION = "stat.naa";
 
 	public static final String QUERY_WHERE_NAME_AND_NULL = "stat.nan";
+
+	public static final String QUERY_WHERE_APPLICATION = "stat.app";
+
+	public static final String QUERY_ALL = "stat.all";
 
 	private long id;
 
@@ -129,6 +140,18 @@ public class StatisticEntity implements Serializable {
 				.createNamedQuery(QUERY_WHERE_NAME_AND_APPLICATION);
 
 		query.setParameter("name", name);
+		query.setParameter("application", application);
+		return query;
+	}
+
+	public static Query createQueryWhereApplication(
+			EntityManager entityManager, ApplicationEntity application) {
+		Query query = null;
+		if (application == null) {
+			query = entityManager.createNamedQuery(QUERY_ALL);
+			return query;
+		}
+		query = entityManager.createNamedQuery(QUERY_WHERE_APPLICATION);
 		query.setParameter("application", application);
 		return query;
 	}

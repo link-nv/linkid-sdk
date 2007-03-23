@@ -59,12 +59,12 @@ public class DemoStatTaskBean implements Task {
 		Random generator = new Random();
 		statisticDataPointDAO.cleanStatisticDataPoints(statistic);
 		this.statisticDataPointDAO.addStatisticDataPoint("cat A", statistic,
-				generator.nextInt(), 0, 0);
+				generator.nextInt(), generator.nextInt(), generator.nextInt());
 		this.statisticDataPointDAO.addStatisticDataPoint("cat B", statistic,
-				generator.nextInt(), 0, 0);
+				generator.nextInt(), generator.nextInt(), generator.nextInt());
 		this.statisticDataPointDAO.addStatisticDataPoint("cat C", statistic,
-				generator.nextInt(), 0, 0);
+				generator.nextInt(), generator.nextInt(), generator.nextInt());
 		this.statisticDataPointDAO.addStatisticDataPoint("cat D", statistic,
-				generator.nextInt(), 0, 0);
+				generator.nextInt(), generator.nextInt(), generator.nextInt());
 	}
 }

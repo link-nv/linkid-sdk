@@ -7,6 +7,8 @@
 
 package net.link.safeonline.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.ApplicationEntity;
@@ -21,5 +23,7 @@ public interface StatisticDAO {
 
 	StatisticEntity findStatisticByNameAndApplication(String name,
 			ApplicationEntity application);
+
+	List<StatisticEntity> listStatistics(ApplicationEntity application);
 
 }

@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Application Owner</ui:define>
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="applications" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h1>#{selectedStat.name}</h1>
+
+		<table>
+			<tr>
+				<th>#{msgs.lastUpdate}:</th>
+				<td>#{selectedStat.creationTime}</td>
+			</tr>
+		</table>
+
+		<img src="#{chartURL}" />
+
+		<h:form>
+			<h:commandButton value="#{msgs.backaction}" action="back" />
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{ownerLogin}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

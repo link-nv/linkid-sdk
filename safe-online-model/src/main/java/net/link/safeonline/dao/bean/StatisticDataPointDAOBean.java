@@ -31,6 +31,7 @@ public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
 				name, statistic, new Date(), x, y, z);
 		this.entityManager.persist(statisticDataPoint);
 		statistic.getStatisticDataPoints().add(statisticDataPoint);
+		statistic.setCreationTime(new Date());
 		return statisticDataPoint;
 	}
 

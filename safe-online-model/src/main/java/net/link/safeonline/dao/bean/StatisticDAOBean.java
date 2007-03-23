@@ -8,6 +8,7 @@
 package net.link.safeonline.dao.bean;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -51,4 +52,13 @@ public class StatisticDAOBean implements StatisticDAO {
 		}
 		return result;
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<StatisticEntity> listStatistics(ApplicationEntity application) {
+		Query query = StatisticEntity.createQueryWhereApplication(
+				this.entityManager, application);
+		List<StatisticEntity> result = query.getResultList();
+		return result;
+	}
+
 }
