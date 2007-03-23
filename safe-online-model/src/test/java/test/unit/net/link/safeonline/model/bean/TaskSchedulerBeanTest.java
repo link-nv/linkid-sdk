@@ -7,6 +7,11 @@
 
 package test.unit.net.link.safeonline.model.bean;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+
 import java.util.Date;
 import java.util.List;
 
@@ -15,64 +20,28 @@ import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import junit.framework.TestCase;
 import net.link.safeonline.Startable;
 import net.link.safeonline.Task;
 import net.link.safeonline.dao.SchedulingDAO;
-import net.link.safeonline.dao.bean.ApplicationDAOBean;
-import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
-import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
-import net.link.safeonline.dao.bean.AttributeDAOBean;
-import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
-import net.link.safeonline.dao.bean.ConfigGroupDAOBean;
-import net.link.safeonline.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.bean.SchedulingDAOBean;
-import net.link.safeonline.dao.bean.SubjectDAOBean;
-import net.link.safeonline.dao.bean.SubscriptionDAOBean;
-import net.link.safeonline.dao.bean.TaskDAOBean;
-import net.link.safeonline.dao.bean.TaskHistoryDAOBean;
-import net.link.safeonline.dao.bean.TrustDomainDAOBean;
-import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.ApplicationIdentityEntity;
-import net.link.safeonline.entity.ApplicationOwnerEntity;
-import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.ConfigGroupEntity;
-import net.link.safeonline.entity.ConfigItemEntity;
 import net.link.safeonline.entity.SchedulingEntity;
-import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TaskEntity;
-import net.link.safeonline.entity.TaskHistoryEntity;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.model.bean.TaskSchedulerBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JndiTestUtils;
-import junit.framework.TestCase;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.anyObject;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class TaskSchedulerBeanTest extends TestCase {
 
 	private static final Log LOG = LogFactory
 			.getLog(TaskSchedulerBeanTest.class);
-
-	private static Class[] container = new Class[] { SubjectDAOBean.class,
-			ApplicationDAOBean.class, SubscriptionDAOBean.class,
-			AttributeDAOBean.class, TrustDomainDAOBean.class,
-			ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
-			ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class,
-			ConfigItemDAOBean.class, TaskDAOBean.class,
-			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
-			ApplicationIdentityServiceBean.class };
 
 	private EntityTestManager entityTestManager;
 
@@ -92,18 +61,12 @@ public class TaskSchedulerBeanTest extends TestCase {
 		EJBTestUtils.inject(this.testedInstance, this.mockTimerService);
 
 		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SubjectEntity.class,
-				ApplicationEntity.class, ApplicationOwnerEntity.class,
-				AttributeEntity.class, AttributeTypeEntity.class,
-				SubscriptionEntity.class, TrustDomainEntity.class,
-				ApplicationIdentityEntity.class, ConfigGroupEntity.class,
-				ConfigItemEntity.class, SchedulingEntity.class,
-				TaskEntity.class, TaskHistoryEntity.class);
+		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
 		Startable systemStartable = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class, container,
-				entityManager);
+				SystemInitializationStartableBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
 
 		systemStartable.postStart();
 
@@ -150,7 +113,7 @@ public class TaskSchedulerBeanTest extends TestCase {
 		// setup
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 		this.testedInstance = EJBTestUtils.newInstance(TaskSchedulerBean.class,
-				container, entityManager);
+				SafeOnlineTestContainer.sessionBeans, entityManager);
 
 		Task testTaskComponent = new TestTask();
 		String testTaskJndiName = "SafeOnline/task/TestTaskComponent";
@@ -165,7 +128,8 @@ public class TaskSchedulerBeanTest extends TestCase {
 		entityTransaction.begin();
 
 		SchedulingDAO schedulingDAO = EJBTestUtils.newInstance(
-				SchedulingDAOBean.class, container, entityManager);
+				SchedulingDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
 		SchedulingEntity defaultScheduling = schedulingDAO
 				.findSchedulingByName("default");
 		assertNotNull(defaultScheduling);

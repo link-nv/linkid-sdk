@@ -32,26 +32,7 @@ import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.authentication.service.bean.IdentityServiceBean;
 import net.link.safeonline.authentication.service.bean.SubscriptionServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
-import net.link.safeonline.dao.bean.ApplicationDAOBean;
-import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
-import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
-import net.link.safeonline.dao.bean.AttributeDAOBean;
-import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
-import net.link.safeonline.dao.bean.HistoryDAOBean;
-import net.link.safeonline.dao.bean.SubjectDAOBean;
-import net.link.safeonline.dao.bean.SubscriptionDAOBean;
-import net.link.safeonline.dao.bean.TrustDomainDAOBean;
-import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.ApplicationIdentityEntity;
-import net.link.safeonline.entity.ApplicationOwnerEntity;
-import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.SubscriptionEntity;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
-import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
-import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.bean.AttributeTypeServiceBean;
@@ -61,34 +42,23 @@ import net.link.safeonline.test.util.EntityTestManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import test.unit.net.link.safeonline.SafeOnlineTestContainer;
+
 public class IdentityServiceBeanTest extends TestCase {
 
 	private EntityTestManager entityTestManager;
-
-	private static final Class[] container = new Class[] {
-			SubjectDAOBean.class, ApplicationDAOBean.class,
-			SubscriptionDAOBean.class, AttributeDAOBean.class,
-			TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class,
-			AttributeTypeDAOBean.class, ApplicationIdentityDAOBean.class,
-			SubjectManagerBean.class, HistoryDAOBean.class,
-			ApplicationOwnerManagerBean.class,
-			ApplicationIdentityServiceBean.class };
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
 		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SubjectEntity.class,
-				ApplicationEntity.class, ApplicationOwnerEntity.class,
-				AttributeEntity.class, AttributeTypeEntity.class,
-				SubscriptionEntity.class, TrustDomainEntity.class,
-				ApplicationIdentityEntity.class);
+		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
 		Startable systemStartable = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class, container,
-				entityManager);
+				SystemInitializationStartableBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
 		systemStartable.postStart();
 
 		MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
@@ -151,19 +121,21 @@ public class IdentityServiceBeanTest extends TestCase {
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
 		UserRegistrationServiceBean userRegistrationService = EJBTestUtils
-				.newInstance(UserRegistrationServiceBean.class, container,
-						entityManager);
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
 		userRegistrationService.registerUser(login, password, name);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class, container, entityManager,
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
 		userRegistrationService.registerUser("test-application-owner-login",
 				"password", null);
 		applicationService.registerApplicationOwner(
 				"test-application-owner-name", "test-application-owner-login");
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
-				AttributeTypeServiceBean.class, container, entityManager,
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-global-operator", "global-operator");
 		attributeTypeService.add(new AttributeTypeEntity("test-attribute-type",
 				"string", false, false));
@@ -173,14 +145,16 @@ public class IdentityServiceBeanTest extends TestCase {
 				"test-application-owner-name", null, null,
 				new String[] { "test-attribute-type" });
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
-				SubscriptionServiceBean.class, container, entityManager, login,
+				SubscriptionServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
 				"user");
 		subscriptionService.subscribe(applicationName);
 
 		EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");
 
 		IdentityService identityService = EJBTestUtils.newInstance(
-				IdentityServiceBean.class, container, entityManager, login,
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
 				"user");
 
 		// operate
@@ -228,12 +202,13 @@ public class IdentityServiceBeanTest extends TestCase {
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
 		UserRegistrationService userRegistrationService = EJBTestUtils
-				.newInstance(UserRegistrationServiceBean.class, container,
-						entityManager);
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
 		userRegistrationService.registerUser(login, password, name);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class, container, entityManager,
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
 		userRegistrationService.registerUser("test-application-owner-login",
 				"password", null);
@@ -245,7 +220,8 @@ public class IdentityServiceBeanTest extends TestCase {
 		EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");
 
 		IdentityService identityService = EJBTestUtils.newInstance(
-				IdentityServiceBean.class, container, entityManager, login,
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
 				"user");
 
 		// operate

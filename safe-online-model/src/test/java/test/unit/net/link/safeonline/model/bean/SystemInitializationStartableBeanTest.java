@@ -11,48 +11,22 @@ import javax.persistence.EntityManager;
 
 import junit.framework.TestCase;
 import net.link.safeonline.Startable;
-import net.link.safeonline.dao.bean.ApplicationDAOBean;
-import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
-import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
-import net.link.safeonline.dao.bean.AttributeDAOBean;
-import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
-import net.link.safeonline.dao.bean.SubjectDAOBean;
-import net.link.safeonline.dao.bean.SubscriptionDAOBean;
-import net.link.safeonline.dao.bean.TrustDomainDAOBean;
-import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.ApplicationIdentityEntity;
-import net.link.safeonline.entity.ApplicationOwnerEntity;
-import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.SubscriptionEntity;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class SystemInitializationStartableBeanTest extends TestCase {
 
 	public void testPostStart() throws Exception {
 		// setup
-		Class[] container = new Class[] { SubjectDAOBean.class,
-				ApplicationDAOBean.class, SubscriptionDAOBean.class,
-				AttributeDAOBean.class, TrustDomainDAOBean.class,
-				ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
-				ApplicationIdentityDAOBean.class,
-				ApplicationIdentityServiceBean.class };
-
 		EntityTestManager entityTestManager = new EntityTestManager();
-		entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class,
-				ApplicationOwnerEntity.class, AttributeEntity.class,
-				AttributeTypeEntity.class, SubscriptionEntity.class,
-				TrustDomainEntity.class, ApplicationIdentityEntity.class);
+		entityTestManager.setUp(SafeOnlineTestContainer.entities);
 		EntityManager entityManager = entityTestManager.getEntityManager();
 
 		Startable testedInstance = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class, container,
-				entityManager);
+				SystemInitializationStartableBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
 
 		// operate
 		testedInstance.postStart();

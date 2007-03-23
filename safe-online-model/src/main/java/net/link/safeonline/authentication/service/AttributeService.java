@@ -11,6 +11,8 @@ import javax.ejb.Local;
 import javax.ejb.Remote;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 /**
  * Attribute Service. To be used by applications to retrieve attributes of their
@@ -23,6 +25,19 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 @Remote
 public interface AttributeService {
 
+	/**
+	 * Gives back the value of an attribute of a certain subject. The subject
+	 * must have confirmed attribute usage before the application is allowed to
+	 * access the attribute value.
+	 * 
+	 * @param subjectLogin
+	 * @param attributeName
+	 * @return
+	 * @throws AttributeNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
+	 */
 	String getAttribute(String subjectLogin, String attributeName)
-			throws AttributeNotFoundException;
+			throws AttributeNotFoundException, PermissionDeniedException,
+			SubjectNotFoundException;
 }

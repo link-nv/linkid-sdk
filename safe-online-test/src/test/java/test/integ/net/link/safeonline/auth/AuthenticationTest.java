@@ -29,7 +29,6 @@ import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.sdk.attrib.AttributeClient;
 import net.link.safeonline.sdk.attrib.AttributeClientImpl;
-import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
 import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.AuthClientImpl;
 import net.link.safeonline.service.PkiService;
@@ -372,7 +371,7 @@ public class AuthenticationTest extends TestCase {
 					SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
 					"foobar application description");
 			fail();
-		} catch (RuntimeException e) {
+		} catch (PermissionDeniedException e) {
 			// expected
 			LOG.debug("expected exception: " + e.getMessage());
 		}
@@ -490,6 +489,12 @@ public class AuthenticationTest extends TestCase {
 				this.certificate.getEncoded(),
 				new String[] { SafeOnlineConstants.NAME_ATTRIBUTE });
 
+		// operate: subscribe onto the application and confirm identity usage
+		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+		IntegrationTestUtils.login(login, password);
+		subscriptionService.subscribe(testApplicationName);
+		identityService.confirmIdentity(testApplicationName);
+
 		// operate: retrieve name attribute via web service
 		String result = this.attributeClient.getAttributeValue(login,
 				SafeOnlineConstants.NAME_ATTRIBUTE);
@@ -498,36 +503,6 @@ public class AuthenticationTest extends TestCase {
 		LOG.debug("result attribute value: " + result);
 		LOG.debug("application name: " + testApplicationName);
 		assertEquals(testName, result);
-	}
-
-	public void testRetrieveNonExistingAttribute() throws Exception {
-		// setup
-		InitialContext initialContext = IntegrationTestUtils
-				.getInitialContext();
-		IntegrationTestUtils.setupLoginConfig();
-
-		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
-
-		// operate: register user
-		String login = "login-" + UUID.randomUUID().toString();
-		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
-
-		// operate: register certificate as application trust point
-		PkiService pkiService = getPkiService(initialContext);
-		IntegrationTestUtils.login("admin", "admin");
-		pkiService.addTrustPoint(
-				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-				this.certificate.getEncoded());
-
-		// operate & verify: retrieve name attribute via web service
-		try {
-			this.attributeClient.getAttributeValue(login,
-					"foo-bar-attribute-name");
-			fail();
-		} catch (AttributeNotFoundException e) {
-			// expected
-		}
 	}
 
 	public void testFindAttributeValue() throws Exception {

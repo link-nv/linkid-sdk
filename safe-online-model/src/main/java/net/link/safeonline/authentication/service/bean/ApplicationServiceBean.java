@@ -47,6 +47,7 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.ApplicationIdentityService;
 import net.link.safeonline.model.ApplicationOwnerManager;
 import net.link.safeonline.model.PkiUtils;
+import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
 
 import org.apache.commons.logging.Log;
@@ -89,6 +90,9 @@ public class ApplicationServiceBean implements ApplicationService {
 
 	@EJB
 	private ApplicationIdentityService applicationIdentityService;
+
+	@EJB
+	private SubjectManager subjectManager;
 
 	@PermitAll
 	public List<ApplicationEntity> getApplications() {
@@ -141,6 +145,7 @@ public class ApplicationServiceBean implements ApplicationService {
 		LOG.debug("remove application: " + name);
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(name);
+
 		if (!application.isRemovable()) {
 			throw new PermissionDeniedException();
 		}
@@ -165,12 +170,34 @@ public class ApplicationServiceBean implements ApplicationService {
 		this.applicationDAO.removeApplication(application);
 	}
 
+	/**
+	 * Check write permission on the given application. Only the subject
+	 * corresponding with the application owner of the application is allowed to
+	 * write to the application entity.
+	 * 
+	 * @param application
+	 * @throws PermissionDeniedException
+	 */
+	public void checkWritePermission(ApplicationEntity application)
+			throws PermissionDeniedException {
+		ApplicationOwnerEntity applicationOwner = application
+				.getApplicationOwner();
+		SubjectEntity requiredSubject = applicationOwner.getAdmin();
+		SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
+		if (false == requiredSubject.equals(actualSubject)) {
+			throw new PermissionDeniedException();
+		}
+	}
+
 	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
 	public void setApplicationDescription(String name, String description)
-			throws ApplicationNotFoundException {
+			throws ApplicationNotFoundException, PermissionDeniedException {
 		LOG.debug("set application description: " + name);
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(name);
+
+		checkWritePermission(application);
+
 		application.setDescription(description);
 	}
 

@@ -24,6 +24,8 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.util.ee.EjbUtils;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
@@ -119,6 +121,12 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 						+ " for subject " + subjectLogin);
 				ResponseType attributeNotFoundResponse = createAttributeNotFoundResponse(attributeName);
 				return attributeNotFoundResponse;
+			} catch (SubjectNotFoundException e) {
+				ResponseType subjectNotFoundResponse = createUnknownPrincipalResponse(subjectLogin);
+				return subjectNotFoundResponse;
+			} catch (PermissionDeniedException e) {
+				ResponseType requestDeniedResponse = createRequestDeniedResponse();
+				return requestDeniedResponse;
 			}
 		}
 
@@ -165,14 +173,35 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 	}
 
 	private ResponseType createAttributeNotFoundResponse(String attributeName) {
-		ResponseType response = createGenericResponse(SamlpTopLevelErrorCode.REQUESTER);
-		StatusCodeType secondLevelStatusCode = new StatusCodeType();
-		secondLevelStatusCode
-				.setValue("urn:oasis:names:tc:SAML:2.0:status:InvalidAttrNameOrValue");
-		response.getStatus().getStatusCode().setStatusCode(
-				secondLevelStatusCode);
-		response.getStatus().setStatusMessage(
+		ResponseType response = createRequesterErrorResponse(
+				"urn:oasis:names:tc:SAML:2.0:status:InvalidAttrNameOrValue",
 				"Attribute not found: " + attributeName);
+		return response;
+	}
+
+	private ResponseType createUnknownPrincipalResponse(String subjectLogin) {
+		ResponseType response = createRequesterErrorResponse(
+				"urn:oasis:names:tc:SAML:2.0:status:UnknownPrincipal",
+				"Subject not found: " + subjectLogin);
+		return response;
+	}
+
+	private ResponseType createRequestDeniedResponse() {
+		ResponseType response = createRequesterErrorResponse(
+				"urn:oasis:names:tc:SAML:2.0:status:RequestDenied", null);
+		return response;
+	}
+
+	private ResponseType createRequesterErrorResponse(
+			String secondLevelStatusCode, String statusMessage) {
+		ResponseType response = createGenericResponse(SamlpTopLevelErrorCode.REQUESTER);
+		StatusCodeType jaxbSecondLevelStatusCode = new StatusCodeType();
+		jaxbSecondLevelStatusCode.setValue(secondLevelStatusCode);
+		response.getStatus().getStatusCode().setStatusCode(
+				jaxbSecondLevelStatusCode);
+		if (null != statusMessage) {
+			response.getStatus().setStatusMessage(statusMessage);
+		}
 		return response;
 	}
 

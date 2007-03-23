@@ -17,58 +17,27 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
-import net.link.safeonline.dao.bean.ApplicationDAOBean;
-import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
-import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
-import net.link.safeonline.dao.bean.AttributeDAOBean;
-import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
-import net.link.safeonline.dao.bean.HistoryDAOBean;
-import net.link.safeonline.dao.bean.SubjectDAOBean;
-import net.link.safeonline.dao.bean.SubscriptionDAOBean;
-import net.link.safeonline.dao.bean.TrustDomainDAOBean;
-import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.ApplicationIdentityEntity;
-import net.link.safeonline.entity.ApplicationOwnerEntity;
-import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.SubscriptionEntity;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
-import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
-import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class ApplicationServiceBeanTest extends TestCase {
 
 	private EntityTestManager entityTestManager;
-
-	private static final Class[] container = new Class[] {
-			SubjectDAOBean.class, ApplicationDAOBean.class,
-			SubscriptionDAOBean.class, AttributeDAOBean.class,
-			TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class,
-			AttributeTypeDAOBean.class, ApplicationIdentityDAOBean.class,
-			SubjectManagerBean.class, HistoryDAOBean.class,
-			ApplicationOwnerManagerBean.class,
-			ApplicationIdentityServiceBean.class };
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
 		this.entityTestManager = new EntityTestManager();
-		this.entityTestManager.setUp(SubjectEntity.class,
-				ApplicationEntity.class, ApplicationOwnerEntity.class,
-				AttributeEntity.class, AttributeTypeEntity.class,
-				SubscriptionEntity.class, TrustDomainEntity.class,
-				ApplicationIdentityEntity.class);
+		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
 		Startable systemStartable = EJBTestUtils.newInstance(
-				SystemInitializationStartableBean.class, container,
-				entityManager);
+				SystemInitializationStartableBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
 		systemStartable.postStart();
 		this.entityTestManager.refreshEntityManager();
 	}
@@ -87,7 +56,8 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 		// operate
 		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class, container, entityManager,
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
 		List<AttributeTypeEntity> result = applicationService
 				.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);

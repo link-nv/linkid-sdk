@@ -15,6 +15,7 @@ import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
 import net.link.safeonline.sdk.attrib.AttributeClient;
 import net.link.safeonline.sdk.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
+import net.link.safeonline.sdk.attrib.RequestDeniedException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -87,6 +88,9 @@ public class AttributeBean {
 			} catch (AttributeNotFoundException e) {
 				LOG.error("attribute not found: " + e.getMessage());
 				return "[attribute not found]";
+			} catch (RequestDeniedException e) {
+				LOG.error("request denied");
+				return "[request denied]";
 			}
 		}
 		return this.attributeValue;

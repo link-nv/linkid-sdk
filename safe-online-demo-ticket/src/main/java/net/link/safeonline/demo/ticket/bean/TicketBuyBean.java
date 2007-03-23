@@ -35,6 +35,7 @@ import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
 import net.link.safeonline.sdk.attrib.AttributeClient;
 import net.link.safeonline.sdk.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
+import net.link.safeonline.sdk.attrib.RequestDeniedException;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -219,6 +220,11 @@ public class TicketBuyBean implements TicketBuy {
 					"urn:net:lin-k:safe-online:attribute:visaCardNumber");
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found: " + e.getMessage();
+			log.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (RequestDeniedException e) {
+			String msg = "request denied";
 			log.debug(msg);
 			this.facesMessages.add(msg);
 			return null;

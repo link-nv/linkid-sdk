@@ -68,7 +68,7 @@ public class AttributeClientImpl implements AttributeClient {
 	}
 
 	public String getAttributeValue(String subjectLogin, String attributeName)
-			throws AttributeNotFoundException {
+			throws AttributeNotFoundException, RequestDeniedException {
 		LOG.debug("get attribute value for subject " + subjectLogin
 				+ " attribute name " + attributeName);
 
@@ -100,10 +100,17 @@ public class AttributeClientImpl implements AttributeClient {
 			LOG.error("status message: " + status.getStatusMessage());
 			StatusCodeType secondLevelStatusCode = statusCode.getStatusCode();
 			if (null != secondLevelStatusCode) {
+				String secondLevelStatusCodeValue = secondLevelStatusCode
+						.getValue();
 				if ("urn:oasis:names:tc:SAML:2.0:status:InvalidAttrNameOrValue"
-						.equals(secondLevelStatusCode.getValue())) {
+						.equals(secondLevelStatusCodeValue)) {
 					throw new AttributeNotFoundException();
+				} else if ("urn:oasis:names:tc:SAML:2.0:status:RequestDenied"
+						.equals(secondLevelStatusCodeValue)) {
+					throw new RequestDeniedException();
 				}
+				LOG.debug("second level status code: "
+						+ secondLevelStatusCode.getValue());
 			}
 			throw new RuntimeException();
 		}

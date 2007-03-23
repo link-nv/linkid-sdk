@@ -88,9 +88,10 @@ public interface ApplicationService {
 	 *            the name of the application.
 	 * @param description
 	 * @throws ApplicationNotFoundException
+	 * @throws PermissionDeniedException
 	 */
 	void setApplicationDescription(String name, String description)
-			throws ApplicationNotFoundException;
+			throws ApplicationNotFoundException, PermissionDeniedException;
 
 	/**
 	 * Registers an application owner.

@@ -15,6 +15,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -114,6 +115,11 @@ public class ApplicationBean implements Application {
 					applicationDescription);
 		} catch (ApplicationNotFoundException e) {
 			String msg = "application not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (PermissionDeniedException e) {
+			String msg = "permission denied";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
