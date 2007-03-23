@@ -123,10 +123,11 @@ public interface ApplicationService {
 	 *            the name of the application.
 	 * @return
 	 * @throws ApplicationIdentityNotFoundException
+	 * @throws PermissionDeniedException
 	 */
 	List<AttributeTypeEntity> getCurrentApplicationIdentity(
 			String applicationName) throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException;
+			ApplicationIdentityNotFoundException, PermissionDeniedException;
 
 	/**
 	 * Updates the application identity for the given application using the

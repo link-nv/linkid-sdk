@@ -18,13 +18,15 @@
 		<h1>#{selectedApplication.name}</h1>
 
 		<h:form>
-			<p>Description:</p>
+			<p>#{msgs.description}:</p>
 			<p><h:inputTextarea value="#{selectedApplication.description}"
 				escape="false" cols="60" rows="10" /></p>
 
-			<h:commandButton value="Save" action="#{ownerApplication.save}" />
+			<h:commandButton value="#{msgs.saveaction}"
+				action="#{ownerApplication.save}" />
 			<so:nbsp />
-			<h:commandButton value="Cancel" action="cancel" immediate="true" />
+			<h:commandButton value="#{msgs.cancelaction}" action="cancel"
+				immediate="true" />
 		</h:form>
 
 	</ui:define>

@@ -121,14 +121,6 @@ public class ApplicationBean implements Application {
 		try {
 			this.numberOfSubscriptions = this.subscriptionService
 					.getNumberOfSubscriptions(applicationName);
-		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
-
-		try {
 			this.applicationIdentityAttributeTypeList = this.applicationService
 					.getCurrentApplicationIdentity(applicationName);
 		} catch (ApplicationNotFoundException e) {
@@ -138,6 +130,11 @@ public class ApplicationBean implements Application {
 			return null;
 		} catch (ApplicationIdentityNotFoundException e) {
 			String msg = "application identity not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (PermissionDeniedException e) {
+			String msg = "permission denied";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
@@ -286,6 +283,11 @@ public class ApplicationBean implements Application {
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
+		} catch (PermissionDeniedException e) {
+			String msg = "permission denied";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
 		}
 		this.selectedApplicationIdentityAttributeTypeList = new String[identityAttributeTypes
 				.size()];
@@ -325,6 +327,11 @@ public class ApplicationBean implements Application {
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
 			String msg = "attribute type not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (PermissionDeniedException e) {
+			String msg = "permission denied";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
 			return null;

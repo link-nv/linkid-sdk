@@ -14,11 +14,13 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.owner.Application;
 import net.link.safeonline.owner.OwnerConstants;
 
@@ -74,6 +76,10 @@ public class ApplicationBean implements Application {
 	@In(value = "selectedApplication", required = false)
 	private ApplicationEntity editApplication;
 
+	@Out(value = "selectedApplicationIdentity", required = false)
+	@SuppressWarnings("unused")
+	private List<AttributeTypeEntity> selectedApplicationIdentity;
+
 	@Factory("ownerApplicationList")
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	public void applicationListFactory() {
@@ -89,12 +95,25 @@ public class ApplicationBean implements Application {
 		try {
 			this.numberOfSubscriptions = this.subscriptionService
 					.getNumberOfSubscriptions(applicationName);
+			this.selectedApplicationIdentity = this.applicationService
+					.getCurrentApplicationIdentity(applicationName);
 		} catch (ApplicationNotFoundException e) {
 			String msg = "application not found";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
+		} catch (ApplicationIdentityNotFoundException e) {
+			String msg = "application identity not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (PermissionDeniedException e) {
+			String msg = "permission denied";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
 		}
+
 		return "view-application";
 	}
 

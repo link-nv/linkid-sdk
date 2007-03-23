@@ -15,7 +15,7 @@
 		</h:form>
 	</c:when>
 	<c:otherwise>
-		<p>Welcome #{username}.</p>
+		<p>#{msgs.welcome} #{username}.</p>
 		<h:form>
 			<h:commandButton action="#{loginComp.logout}" id="logout"
 				value="#{msgs.logout}" />

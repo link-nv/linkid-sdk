@@ -11,9 +11,11 @@ import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -93,6 +95,9 @@ public class ApplicationServiceBean implements ApplicationService {
 
 	@EJB
 	private SubjectManager subjectManager;
+
+	@Resource
+	private SessionContext sessionContext;
 
 	@PermitAll
 	public List<ApplicationEntity> getApplications() {
@@ -250,12 +255,15 @@ public class ApplicationServiceBean implements ApplicationService {
 		return applications;
 	}
 
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
 	public List<AttributeTypeEntity> getCurrentApplicationIdentity(
 			String applicationName) throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException {
+			ApplicationIdentityNotFoundException, PermissionDeniedException {
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
+
+		checkReadPermission(application);
+
 		long currentIdentityVersion = application
 				.getCurrentApplicationIdentity();
 		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
@@ -263,6 +271,20 @@ public class ApplicationServiceBean implements ApplicationService {
 		List<AttributeTypeEntity> attributeTypes = applicationIdentity
 				.getAttributeTypes();
 		return attributeTypes;
+	}
+
+	private void checkReadPermission(ApplicationEntity application)
+			throws PermissionDeniedException {
+		if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)) {
+			return;
+		}
+		ApplicationOwnerEntity applicationOwner = application
+				.getApplicationOwner();
+		SubjectEntity expectedSubject = applicationOwner.getAdmin();
+		SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
+		if (false == expectedSubject.equals(actualSubject)) {
+			throw new PermissionDeniedException();
+		}
 	}
 
 	@SuppressWarnings("unchecked")

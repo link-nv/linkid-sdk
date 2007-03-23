@@ -9,8 +9,10 @@ package net.link.safeonline.authentication.service.bean;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -23,6 +25,7 @@ import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -47,6 +50,9 @@ public class SubscriptionServiceBean implements SubscriptionService {
 
 	@EJB
 	private ApplicationDAO applicationDAO;
+
+	@Resource
+	private SessionContext sessionContext;
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public List<SubscriptionEntity> getSubscriptions() {
@@ -96,12 +102,29 @@ public class SubscriptionServiceBean implements SubscriptionService {
 
 	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
 	public long getNumberOfSubscriptions(String applicationName)
-			throws ApplicationNotFoundException {
+			throws ApplicationNotFoundException, PermissionDeniedException {
 		LOG.debug("get number of subscriptions for application: "
 				+ applicationName);
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
+
+		checkReadPermission(application);
+
 		long count = this.subscriptionDAO.getNumberOfSubscriptions(application);
 		return count;
+	}
+
+	private void checkReadPermission(ApplicationEntity application)
+			throws PermissionDeniedException {
+		if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)) {
+			return;
+		}
+		ApplicationOwnerEntity applicationOwner = application
+				.getApplicationOwner();
+		SubjectEntity expectedSubject = applicationOwner.getAdmin();
+		SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
+		if (false == expectedSubject.equals(actualSubject)) {
+			throw new PermissionDeniedException();
+		}
 	}
 }

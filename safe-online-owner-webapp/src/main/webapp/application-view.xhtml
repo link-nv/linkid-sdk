@@ -21,7 +21,7 @@
 
 		<table>
 			<tr>
-				<th>Application Owner:</th>
+				<th>#{msgs.owner}:</th>
 				<td>#{selectedApplication.applicationOwner.name}</td>
 			</tr>
 			<tr>
@@ -29,17 +29,33 @@
 				<td>#{selectedApplication.allowUserSubscription}</td>
 			</tr>
 			<tr>
-				<th>Removable:</th>
+				<th>#{msgs.removable}:</th>
 				<td>#{selectedApplication.removable}</td>
 			</tr>
 			<tr>
 				<th>Number of subscriptions:</th>
 				<td>#{numberOfSubscriptions}</td>
 			</tr>
+			<tr>
+				<th>#{msgs.identityVersion}:</th>
+				<td>#{selectedApplication.currentApplicationIdentity}</td>
+			</tr>
 		</table>
 
+		#{msgs.certificate}:
+		<pre>
+		<h:outputText value="#{selectedApplication.certificate}" />
+		</pre>
+
+		<h:dataTable value="#{selectedApplicationIdentity}" var="item">
+			<h:column>
+				<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
+				<h:outputText value="#{item.name}" />
+			</h:column>
+		</h:dataTable>
+
 		<h:form>
-			<h:commandButton value="Back" action="back" />
+			<h:commandButton value="#{msgs.backaction}" action="back" />
 		</h:form>
 
 	</ui:define>
