@@ -5,6 +5,7 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
+
 	<ui:define name="title">SafeOnline Authentication</ui:define>
 
 	<ui:define name="topnav">
@@ -12,7 +13,7 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<p>Please select your authentication device:</p>
+		<p>#{msgs.selectDevice}:</p>
 
 		<h:form>
 			<h:selectOneRadio value="#{device.selection}" layout="pageDirection">
@@ -23,7 +24,8 @@
 
 			<h:messages styleClass="error" />
 
-			<h:commandButton action="#{device.next}" id="next" value="Next" />
+			<h:commandButton action="#{device.next}" id="next"
+				value="#{msgs.next}" />
 		</h:form>
 
 	</ui:define>

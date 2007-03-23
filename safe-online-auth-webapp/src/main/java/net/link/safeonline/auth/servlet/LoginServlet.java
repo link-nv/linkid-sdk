@@ -133,6 +133,9 @@ public class LoginServlet extends HttpServlet {
 		String redirectUrl = target + "?username="
 				+ URLEncoder.encode(userId, "UTF-8");
 
+		/*
+		 * Seam.invalidateSession does not work from within a servlet.
+		 */
 		session.invalidate();
 
 		LOG.debug("redirecting to: " + redirectUrl);

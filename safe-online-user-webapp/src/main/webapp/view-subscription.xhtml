@@ -14,14 +14,14 @@
 	<ui:define name="content">
 
 		<h1>#{selectedSubscription.application.name}</h1>
-		<p>Description:</p>
+		<p>#{msgs.description}:</p>
 		<p><h:outputText
 			value="#{selectedSubscription.application.description}"
 			escape="false" /></p>
 		<p>Owner: #{selectedSubscription.subscriptionOwnerType}</p>
 
 		<h:form>
-			<h:commandButton value="Back" action="back" />
+			<h:commandButton value="#{msgs.backaction}" action="back" />
 		</h:form>
 
 	</ui:define>

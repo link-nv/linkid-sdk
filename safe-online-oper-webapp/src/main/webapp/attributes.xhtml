@@ -15,7 +15,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>Attributes</h1>
+		<h1>#{msgs.attributes}</h1>
 
 		<h:form>
 			<t:dataTable id="attributes-data" var="item"
@@ -24,7 +24,7 @@
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">Name</f:facet>
+					<f:facet name="header">#{msgs.name}</f:facet>
 					<h:outputText value="#{item.name}" />
 				</h:column>
 
@@ -47,13 +47,13 @@
 			<t:dataScroller for="attributes-data" fastStep="10"
 				pageCountVar="pageCount" pageIndexVar="pageIndex"
 				styleClass="scroller" paginator="true" paginatorMaxPages="9">
-				<f:facet name="first">First</f:facet>
-				<f:facet name="last">Last</f:facet>
-				<f:facet name="previous">Previous</f:facet>
-				<f:facet name="next">Next</f:facet>
+				<f:facet name="first">#{msgs.first}</f:facet>
+				<f:facet name="last">#{msgs.last}</f:facet>
+				<f:facet name="previous">#{msgs.previous}</f:facet>
+				<f:facet name="next">#{msgs.next}</f:facet>
 			</t:dataScroller>
 
-			<h:commandButton value="Add" id="add" action="add"
+			<h:commandButton value="#{msgs.addaction}" id="add" action="add"
 				rendered="#{isUserInRole['global-operator']}" />
 		</h:form>
 

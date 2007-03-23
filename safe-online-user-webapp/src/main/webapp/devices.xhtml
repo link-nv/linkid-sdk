@@ -24,7 +24,8 @@
 
 			<table>
 				<tr>
-					<th><h:outputLabel for="oldpassword" value="Old password" />:</th>
+					<th><h:outputLabel for="oldpassword"
+						value="#{msgs.oldPassword}" />:</th>
 					<td><s:decorate>
 						<h:inputSecret id="oldpassword"
 							value="#{passwordBean.oldPassword}" required="true" />
@@ -52,18 +53,18 @@
 				</tr>
 			</table>
 			<h:commandButton action="#{passwordBean.change}" id="change"
-				value="Change Password" />
+				value="#{msgs.changePassword}" />
 		</h:form>
 
 		<h1>Belgian eID</h1>
 
 		<table>
 			<tr>
-				<th>Given name:</th>
+				<th>#{msgs.givenName}:</th>
 				<td>${identityBean.givenName}</td>
 			</tr>
 			<tr>
-				<th>Surname:</th>
+				<th>#{msgs.surname}:</th>
 				<td>${identityBean.surname}</td>
 			</tr>
 		</table>

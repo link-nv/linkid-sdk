@@ -14,7 +14,7 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<h2>Add Application Owner</h2>
+		<h2>#{msgs.addApplicationOwner}</h2>
 		<h:form>
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
@@ -37,10 +37,10 @@
 				</tr>
 			</table>
 			<h:commandButton action="#{applicationOwner.add}" id="add"
-				value="Add" />
+				value="#{msgs.addaction}" />
 			<so:nbsp />
-			<h:commandButton action="cancel" id="cancel" value="Cancel"
-				immediate="true" />
+			<h:commandButton action="cancel" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" />
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">

@@ -15,11 +15,7 @@
 		<h:form>
 			<table>
 				<tr>
-					<th>Principal:</th>
-					<td>#{userPrincipal}</td>
-				</tr>
-				<tr>
-					<th>Login:</th>
+					<th>#{msgs.login}:</th>
 					<td>#{identityBean.login}</td>
 				</tr>
 				<tr>
@@ -37,14 +33,14 @@
 				rendered="#{0 != attributeList.rowCount}">
 
 				<h:column>
-					<f:facet name="header">Name</f:facet>
+					<f:facet name="header">#{msgs.name}</f:facet>
 					<h:outputText value="#{item.name}" rendered="#{!item.editable}" />
 					<h:commandLink value="#{item.name}" action="#{identityBean.edit}"
 						rendered="#{item.editable}" />
 				</h:column>
 
 				<h:column>
-					<f:facet name="header">Value</f:facet>
+					<f:facet name="header">#{msgs.value}</f:facet>
 					<h:outputText value="#{item.value}" />
 				</h:column>
 			</h:dataTable>

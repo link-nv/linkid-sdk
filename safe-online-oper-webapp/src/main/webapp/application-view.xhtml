@@ -23,7 +23,7 @@
 
 		<table>
 			<tr>
-				<th>Application Owner:</th>
+				<th>#{msgs.applicationOwner}:</th>
 				<td>#{selectedApplication.applicationOwner.name}</td>
 			</tr>
 			<tr>
@@ -35,7 +35,7 @@
 				<td>#{selectedApplication.allowUserSubscription}</td>
 			</tr>
 			<tr>
-				<th>Removable:</th>
+				<th>#{msgs.removable}:</th>
 				<td>#{selectedApplication.removable}</td>
 			</tr>
 			<tr>
@@ -52,15 +52,16 @@
 		<h:dataTable value="#{applicationIdentityAttributeTypeList}"
 			var="item">
 			<h:column>
-				<f:facet name="header">Application Identity</f:facet>
+				<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
 				<h:outputText value="#{item.name}" />
 			</h:column>
 		</h:dataTable>
 
 		<h:form>
-			<h:commandButton value="Back" id="back" action="back" />
+			<h:commandButton value="#{msgs.backaction}" id="back" action="back" />
 			<so:nbsp />
-			<h:commandButton action="#{application.edit}" id="edit" value="Edit" />
+			<h:commandButton action="#{application.edit}" id="edit"
+				value="#{msgs.editaction}" />
 		</h:form>
 
 	</ui:define>

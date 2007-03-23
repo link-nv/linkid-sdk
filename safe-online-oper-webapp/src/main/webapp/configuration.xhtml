@@ -16,7 +16,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>Configuration</h1>
+		<h1>#{msgs.configuration}</h1>
 
 		<h:form>
 			<t:dataTable id="group-data" var="group" value="#{configGroupList}"
@@ -29,11 +29,11 @@
 						value="#{group.configItems}" preserveDataModel="false"
 						styleClass="listingTable">
 						<h:column>
-							<f:facet name="header">Name</f:facet>
+							<f:facet name="header">#{msgs.name}</f:facet>
 							#{item.name}
 						</h:column>
 						<h:column>
-							<f:facet name="header">Value</f:facet>
+							<f:facet name="header">#{msgs.value}</f:facet>
 							<h:inputText value="#{item.value}" required="true" />
 						</h:column>
 					</t:dataTable>
@@ -42,10 +42,11 @@
 
 			<h:messages styleClass="error" />
 
-			<h:commandButton value="Save" id="save"
+			<h:commandButton value="#{msgs.saveaction}" id="save"
 				action="#{configuration.save}" />
 			<so:nbsp />
-			<h:commandButton value="Cancel" id="cancel" action="cancel" />
+			<h:commandButton value="#{msgs.cancelaction}" id="cancel"
+				action="cancel" />
 			<so:nbsp />
 
 		</h:form>

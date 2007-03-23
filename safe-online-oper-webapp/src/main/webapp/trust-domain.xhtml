@@ -46,14 +46,15 @@
 				</f:facet>
 			</t:tree2>
 
-			<h:commandButton action="add" id="add" value="Add" />
+			<h:commandButton action="add" id="add" value="#{msgs.addaction}" />
 			<so:nbsp />
 			<h:commandButton action="#{editTrustDomain.edit}" id="edit"
-				value="Edit" />
+				value="#{msgs.editaction}" />
 			<so:nbsp />
-			<h:commandButton value="Clear OCSP cache" id="clear-cache" action="#{trustDomain.clearOcspCachePerTrustDomain}" />
+			<h:commandButton value="#{msgs.clearOcspCache}" id="clear-cache"
+				action="#{trustDomain.clearOcspCachePerTrustDomain}" />
 			<so:nbsp />
-			<h:commandButton action="back" id="back" value="Back"
+			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
 				immediate="true" />
 		</h:form>
 

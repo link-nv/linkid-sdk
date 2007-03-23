@@ -9,7 +9,7 @@
 	<c:when test="#{username == null}">
 		<h:form>
 			<h:commandButton action="#{loginComp.login}" id="login"
-				value="#{msgs.login}" />
+				value="#{msgs.loginaction}" />
 			<p><h:commandLink action="register" id="register"
 				immediate="true">#{msgs.createAccount}</h:commandLink></p>
 		</h:form>

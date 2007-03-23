@@ -16,7 +16,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>Add Attribute</h1>
+		<h1>#{msgs.addAttribute}</h1>
 
 		<h:form>
 			<f:facet name="aroundInvalidField">
@@ -48,10 +48,11 @@
 
 			<h:messages styleClass="error" globalOnly="true" />
 
-			<h:commandButton value="Add" id="add" action="#{attributes.add}" />
+			<h:commandButton value="#{msgs.addaction}" id="add"
+				action="#{attributes.add}" />
 			<so:nbsp />
-			<h:commandButton action="cancel" id="cancel" value="Cancel"
-				immediate="true" />
+			<h:commandButton action="cancel" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" />
 		</h:form>
 
 	</ui:define>

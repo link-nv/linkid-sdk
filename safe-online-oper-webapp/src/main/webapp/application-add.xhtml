@@ -15,7 +15,7 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<h2>Add Application</h2>
+		<h2>#{msgs.addApplication}</h2>
 		<h:form enctype="multipart/form-data">
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
@@ -29,7 +29,8 @@
 					</s:decorate>*<h:message for="name" styleClass="error" /></td>
 				</tr>
 				<tr>
-					<td><h:outputLabel for="owner" value="Application Owner" />:</td>
+					<td><h:outputLabel for="owner"
+						value="#{msgs.applicationOwner}" />:</td>
 					<td><s:decorate>
 						<h:inputText id="owner" value="#{application.applicationOwner}"
 							required="true" />
@@ -45,7 +46,7 @@
 
 			<h:panelGrid columns="1">
 				<h:panelGroup>
-					Certificate:
+					#{msgs.certificate}:
 					<s:decorate>
 						<t:inputFileUpload id="fileupload" value="#{application.upFile}"
 							storage="file" maxlength="200000" />
@@ -54,7 +55,7 @@
 				</h:panelGroup>
 			</h:panelGrid>
 
-			Initial Application Identity:
+			#{msgs.applicationIdentity}:
 			<h:selectManyCheckbox layout="pageDirection"
 				value="#{selectedNewApplicationAttributeTypes}">
 				<f:selectItems value="#{applicationAttributeTypeList}" />
@@ -62,10 +63,11 @@
 
 			<t:messages styleClass="error" globalOnly="true" />
 
-			<h:commandButton action="#{application.add}" id="add" value="Add" />
+			<h:commandButton action="#{application.add}" id="add"
+				value="#{msgs.addaction}" />
 			<so:nbsp />
-			<h:commandButton action="cancel" id="cancel" value="Cancel"
-				immediate="true" />
+			<h:commandButton action="cancel" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" />
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">

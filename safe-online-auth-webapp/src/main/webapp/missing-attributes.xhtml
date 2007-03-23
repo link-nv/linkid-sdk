@@ -14,11 +14,9 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h1>Missing Attributes</h1>
+		<h1>#{msgs.missingAttributes}</h1>
 
-		<p>You have been authenticated successfully. Before continuing to
-		the application you need to fill in the following attributes that are
-		required by the application.</p>
+		<p>#{msgs.missingAttributesMsg}</p>
 
 		<h:form>
 
@@ -32,12 +30,12 @@
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">Attribute Name</f:facet>
+					<f:facet name="header">#{msgs.attributeName}</f:facet>
 					<h:outputText value="#{item.name}" />
 				</h:column>
 
 				<h:column>
-					<f:facet name="header">Attribute Value</f:facet>
+					<f:facet name="header">#{msgs.attributeValue}</f:facet>
 					<s:decorate>
 						<h:inputText value="#{item.value}" required="true" />
 					</s:decorate>
@@ -48,7 +46,7 @@
 			<p><t:messages globalOnly="true" styleClass="error" /></p>
 
 			<h:commandButton action="#{missingAttributes.save}" id="save"
-				value="Save" />
+				value="#{msgs.saveaction}" />
 		</h:form>
 
 	</ui:define>

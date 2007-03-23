@@ -13,24 +13,25 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>Edit Attribute</h1>
+		<h1>#{msgs.editAttribute}</h1>
 
 		<h:form>
 			<table>
 				<tr>
-					<th>Name:</th>
+					<th>#{msgs.name}:</th>
 					<td>#{selectedAttribute.name}</td>
 				</tr>
 				<tr>
-					<th><h:outputLabel for="value" value="Value" />:</th>
+					<th><h:outputLabel for="value" value="#{msgs.value}" />:</th>
 					<td><h:inputText id="value" value="#{selectedAttribute.value}" /></td>
 				</tr>
 			</table>
 
 			<h:commandButton id="save" action="#{identityBean.save}"
-				value="Save Changes" />
+				value="#{msgs.saveaction}" />
 			<so:nbsp />
-			<h:commandButton action="cancel" id="cancel" value="Cancel" />
+			<h:commandButton action="cancel" id="cancel"
+				value="#{msgs.cancelaction}" />
 		</h:form>
 
 	</ui:define>

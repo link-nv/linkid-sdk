@@ -14,18 +14,16 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h1>Identity confirmation</h1>
+		<h1>#{msgs.identityConfirmation}</h1>
 
-		<p>You have been authenticated successfully. Before continuing to
-		the application you need to confirm the usage of the following
-		attributes by the application.</p>
+		<p>#{msgs.identityConfirmationMsg}</p>
 
 		<h:dataTable var="item" value="#{identityConfirmationList}"
 			preserveDataModel="false" styleClass="listingTable"
 			rowClasses="listingTable_Row1,listingTable_Row2">
 
 			<h:column>
-				<f:facet name="header">Attribute Name</f:facet>
+				<f:facet name="header">#{msgs.attributeName}</f:facet>
 				<h:outputText value="#{item.name}" />
 			</h:column>
 
@@ -33,9 +31,9 @@
 
 		<h:form>
 			<h:commandButton action="#{identityConfirmation.agree}" id="agree"
-				value="Agree" />
+				value="#{msgs.agree}" />
 			<so:nbsp />
-			<h:commandButton action="reject" id="reject" value="Reject"
+			<h:commandButton action="reject" id="reject" value="#{msgs.reject}"
 				immediate="true" />
 		</h:form>
 
