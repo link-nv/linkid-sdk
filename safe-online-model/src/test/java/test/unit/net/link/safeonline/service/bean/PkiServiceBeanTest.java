@@ -38,7 +38,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
-import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
+import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
@@ -60,7 +60,7 @@ public class PkiServiceBeanTest extends TestCase {
 			SubjectManagerBean.class, HistoryDAOBean.class,
 			ApplicationOwnerManagerBean.class, TrustPointDAOBean.class,
 			CachedOcspResponseDAOBean.class,
-			ApplicationIdentityServiceBean.class };
+			ApplicationIdentityManagerBean.class };
 
 	@Override
 	protected void setUp() throws Exception {
@@ -135,12 +135,12 @@ public class PkiServiceBeanTest extends TestCase {
 
 		pkiService.addTrustDomain("test-trust-domain", true);
 		List<TrustPointEntity> result = pkiService
-				.getTrustPoints("test-trust-domain");
+				.listTrustPoints("test-trust-domain");
 		assertNotNull(result);
 		assertTrue(result.isEmpty());
 		pkiService.addTrustPoint("test-trust-domain", certificate.getEncoded());
-		pkiService.getTrustPoints("test-trust-domain");
-		result = pkiService.getTrustPoints("test-trust-domain");
+		pkiService.listTrustPoints("test-trust-domain");
+		result = pkiService.listTrustPoints("test-trust-domain");
 		assertEquals(1, result.size());
 		assertEquals(certificate, result.get(0).getCertificate());
 	}

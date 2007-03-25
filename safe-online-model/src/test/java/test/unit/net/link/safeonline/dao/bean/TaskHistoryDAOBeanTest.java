@@ -62,7 +62,7 @@ public class TaskHistoryDAOBeanTest extends TestCase {
 		// try to fetch history list from a detached task
 		TaskEntity task2 = new TaskEntity("jndi", "name", null);
 		TaskHistoryEntity taskHistoryEntity2 = this.testedInstance
-				.getTaskHistory(task2).get(0);
+				.listTaskHistory(task2).get(0);
 		assertEquals(taskHistoryEntity1, taskHistoryEntity2);
 	}
 
@@ -83,7 +83,7 @@ public class TaskHistoryDAOBeanTest extends TestCase {
 
 		// verify
 		TaskEntity resultTask = this.taskDAO.findTaskEntity("jndi");
-		TaskHistoryEntity result = this.testedInstance.getTaskHistory(resultTask).get(0);
+		TaskHistoryEntity result = this.testedInstance.listTaskHistory(resultTask).get(0);
 		assertEquals(result, taskHistoryEntity);
 
 		// operate
@@ -92,7 +92,7 @@ public class TaskHistoryDAOBeanTest extends TestCase {
 
 		// verify
 		resultTask = this.taskDAO.findTaskEntity("jndi");
-		int size = this.testedInstance.getTaskHistory(resultTask).size();
+		int size = this.testedInstance.listTaskHistory(resultTask).size();
 		assertEquals(size,0);
 	}
 

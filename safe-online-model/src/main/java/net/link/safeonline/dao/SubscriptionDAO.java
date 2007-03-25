@@ -35,9 +35,9 @@ public interface SubscriptionDAO {
 	void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
 			SubjectEntity subject, ApplicationEntity application);
 
-	List<SubscriptionEntity> getSubsciptions(SubjectEntity subject);
+	List<SubscriptionEntity> listSubsciptions(SubjectEntity subject);
 
-	List<SubscriptionEntity> getSubscriptions(ApplicationEntity application);
+	List<SubscriptionEntity> listSubscriptions(ApplicationEntity application);
 
 	void removeSubscription(SubjectEntity subject, ApplicationEntity application)
 			throws SubscriptionNotFoundException;

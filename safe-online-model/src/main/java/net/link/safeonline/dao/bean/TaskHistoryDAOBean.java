@@ -43,7 +43,7 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
 		return taskHistoryEntity;
 	}
 
-	public List<TaskHistoryEntity> getTaskHistory(TaskEntity task) {
+	public List<TaskHistoryEntity> listTaskHistory(TaskEntity task) {
 		TaskEntity attachedTask = this.entityManager.find(TaskEntity.class,
 				task.getJndiName());
 		List<TaskHistoryEntity> taskHistoryList = attachedTask.getTaskHistory();

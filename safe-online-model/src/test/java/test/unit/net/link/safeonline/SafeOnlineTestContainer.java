@@ -34,7 +34,7 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TaskEntity;
 import net.link.safeonline.entity.TaskHistoryEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
+import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
 import net.link.safeonline.model.bean.ApplicationManagerBean;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
@@ -58,7 +58,7 @@ public class SafeOnlineTestContainer {
 			AttributeTypeDAOBean.class, ApplicationIdentityDAOBean.class,
 			SubjectManagerBean.class, HistoryDAOBean.class,
 			ApplicationOwnerManagerBean.class,
-			ApplicationIdentityServiceBean.class, ConfigGroupDAOBean.class,
+			ApplicationIdentityManagerBean.class, ConfigGroupDAOBean.class,
 			ConfigItemDAOBean.class, TaskDAOBean.class,
 			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
 			ApplicationManagerBean.class };

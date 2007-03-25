@@ -110,7 +110,7 @@ public class PkiValidatorBean implements PkiValidator {
 			TrustDomainEntity trustDomain, X509Certificate certificate) {
 
 		List<TrustPointEntity> trustPoints = this.trustPointDAO
-				.getTrustPoints(trustDomain);
+				.listTrustPoints(trustDomain);
 		HashMap<TrustPointPK, TrustPointEntity> trustPointMap = new HashMap<TrustPointPK, TrustPointEntity>();
 		for (TrustPointEntity trustPoint : trustPoints) {
 			trustPointMap.put(trustPoint.getPk(), trustPoint);

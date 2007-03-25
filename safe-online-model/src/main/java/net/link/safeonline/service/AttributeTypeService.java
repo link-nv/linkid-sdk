@@ -19,7 +19,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 @Remote
 public interface AttributeTypeService {
 
-	List<AttributeTypeEntity> getAttributeTypes();
+	List<AttributeTypeEntity> listAttributeTypes();
 
 	void add(AttributeTypeEntity attributeType)
 			throws ExistingAttributeTypeException;

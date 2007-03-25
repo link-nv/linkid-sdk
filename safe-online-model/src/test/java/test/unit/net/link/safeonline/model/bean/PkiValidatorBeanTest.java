@@ -73,7 +73,7 @@ public class PkiValidatorBeanTest extends TestCase {
 		List<TrustPointEntity> trustPoints = new LinkedList<TrustPointEntity>();
 
 		// stubs
-		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
+		expect(this.mockTrustPointDAO.listTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 
 		// prepare
@@ -127,7 +127,7 @@ public class PkiValidatorBeanTest extends TestCase {
 		trustPoints.add(caTrustPoint);
 
 		// stubs
-		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
+		expect(this.mockTrustPointDAO.listTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 		expect(
 				this.mockCachedOcspValidatorBean.performCachedOcspCheck(
@@ -168,7 +168,7 @@ public class PkiValidatorBeanTest extends TestCase {
 		trustPoints.add(caTrustPoint);
 
 		// stubs
-		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
+		expect(this.mockTrustPointDAO.listTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 		expect(
 				this.mockCachedOcspValidatorBean.performCachedOcspCheck(
@@ -213,7 +213,7 @@ public class PkiValidatorBeanTest extends TestCase {
 		trustPoints.add(new TrustPointEntity(trustDomain, caCertificate));
 
 		// stubs
-		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
+		expect(this.mockTrustPointDAO.listTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 		expect(
 				this.mockCachedOcspValidatorBean.performCachedOcspCheck(
@@ -268,7 +268,7 @@ public class PkiValidatorBeanTest extends TestCase {
 		trustPoints.add(new TrustPointEntity(trustDomain, interCaCertificate));
 
 		// stubs
-		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
+		expect(this.mockTrustPointDAO.listTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 		expect(
 				this.mockCachedOcspValidatorBean.performCachedOcspCheck(
@@ -323,7 +323,7 @@ public class PkiValidatorBeanTest extends TestCase {
 		trustPoints.add(new TrustPointEntity(trustDomain, interCaCertificate));
 
 		// stubs
-		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
+		expect(this.mockTrustPointDAO.listTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 		expect(
 				this.mockCachedOcspValidatorBean.performCachedOcspCheck(
@@ -371,7 +371,7 @@ public class PkiValidatorBeanTest extends TestCase {
 		trustPoints.add(new TrustPointEntity(trustDomain, caCertificate));
 
 		// stubs
-		expect(this.mockTrustPointDAO.getTrustPoints(trustDomain))
+		expect(this.mockTrustPointDAO.listTrustPoints(trustDomain))
 				.andStubReturn(trustPoints);
 
 		// prepare

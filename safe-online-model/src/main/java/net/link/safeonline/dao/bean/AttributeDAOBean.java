@@ -52,7 +52,7 @@ public class AttributeDAOBean implements AttributeDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<AttributeEntity> getAttributes(SubjectEntity subject) {
+	public List<AttributeEntity> listAttributes(SubjectEntity subject) {
 		LOG.debug("get attributes for subject " + subject.getLogin());
 		Query query = AttributeEntity.createQueryWhereSubject(
 				this.entityManager, subject);
@@ -67,5 +67,16 @@ public class AttributeDAOBean implements AttributeDAO {
 				attributeType.getName(), subjectLogin, stringValue);
 		attribute.setAttributeType(attributeType);
 		this.entityManager.persist(attribute);
+	}
+
+	public void addOrUpdateAttribute(String attributeTypeName,
+			String subjectLogin, String stringValue) {
+		AttributeEntity attribute = findAttribute(attributeTypeName,
+				subjectLogin);
+		if (null != attribute) {
+			attribute.setStringValue(stringValue);
+			return;
+		}
+		addAttribute(attributeTypeName, subjectLogin, stringValue);
 	}
 }

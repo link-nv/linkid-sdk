@@ -65,6 +65,10 @@ public class AuthorizationServiceBean implements AuthorizationService {
 			subject = this.entityDAO.getSubject(login);
 		} catch (SubjectNotFoundException e) {
 			LOG.error("entity not found: " + login);
+			/*
+			 * In case the subjet was not found we don't assign the user any
+			 * roles.
+			 */
 			return roles;
 		}
 

@@ -40,8 +40,15 @@ public interface ApplicationService {
 	 * 
 	 * @return
 	 */
-	List<ApplicationEntity> getApplications();
+	List<ApplicationEntity> listApplications();
 
+	/**
+	 * Gives back the application entity for a given application name.
+	 * 
+	 * @param applicationName
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 */
 	ApplicationEntity getApplication(String applicationName)
 			throws ApplicationNotFoundException;
 
@@ -96,24 +103,22 @@ public interface ApplicationService {
 	/**
 	 * Registers an application owner.
 	 * 
-	 * @param name
-	 *            the name of the application.
-	 * @param login
+	 * @param ownerName
+	 *            the name of the application owner.
+	 * @param adminLogin
 	 *            the admin subject login.
 	 * @throws SubjectNotFoundException
-	 * @throws ApplicationNotFoundException
 	 * @throws ExistingApplicationOwnerException
 	 */
-	void registerApplicationOwner(String name, String login)
-			throws SubjectNotFoundException, ApplicationNotFoundException,
-			ExistingApplicationOwnerException;
+	void registerApplicationOwner(String ownerName, String adminLogin)
+			throws SubjectNotFoundException, ExistingApplicationOwnerException;
 
 	/**
 	 * Gives back a list of all application owners within the system.
 	 * 
 	 * @return
 	 */
-	List<ApplicationOwnerEntity> getApplicationOwners();
+	List<ApplicationOwnerEntity> listApplicationOwners();
 
 	/**
 	 * Gives back a list of attribute types that make up the current application

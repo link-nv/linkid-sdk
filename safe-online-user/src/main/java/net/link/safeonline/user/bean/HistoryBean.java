@@ -33,7 +33,7 @@ public class HistoryBean implements History {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public List<HistoryEntity> getList() {
-		List<HistoryEntity> result = this.identityService.getHistory();
+		List<HistoryEntity> result = this.identityService.listHistory();
 		return result;
 	}
 }

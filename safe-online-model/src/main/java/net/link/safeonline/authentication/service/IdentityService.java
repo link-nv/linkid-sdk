@@ -37,7 +37,7 @@ public interface IdentityService {
 	 * 
 	 * @return a list of history entries.
 	 */
-	List<HistoryEntity> getHistory();
+	List<HistoryEntity> listHistory();
 
 	/**
 	 * Gives back the value of the attribute for the current user.
@@ -70,7 +70,7 @@ public interface IdentityService {
 	 * 
 	 * @return
 	 */
-	List<AttributeDO> getAttributes();
+	List<AttributeDO> listAttributes();
 
 	/**
 	 * Checks whether confirmation is required over the usage of the identity
@@ -103,7 +103,18 @@ public interface IdentityService {
 	void confirmIdentity(String applicationName)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
-	List<AttributeTypeEntity> getIdentityAttributesToConfirm(
+	/**
+	 * Gives back a list of identity attributes that need to be confirmed by
+	 * this user in order to be in-line with the latest identity requirement of
+	 * the given application.
+	 * 
+	 * @param applicationName
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 * @throws ApplicationIdentityNotFoundException
+	 * @throws SubscriptionNotFoundException
+	 */
+	List<AttributeTypeEntity> listIdentityAttributesToConfirm(
 			String applicationName) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, SubscriptionNotFoundException;
 

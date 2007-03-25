@@ -57,7 +57,7 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ApplicationOwnerEntity> getApplicationOwners() {
+	public List<ApplicationOwnerEntity> listApplicationOwners() {
 		Query query = ApplicationOwnerEntity.createQueryAll(this.entityManager);
 		List<ApplicationOwnerEntity> applicationOwners = query.getResultList();
 		return applicationOwners;

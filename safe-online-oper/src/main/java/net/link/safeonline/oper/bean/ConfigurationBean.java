@@ -48,7 +48,7 @@ public class ConfigurationBean implements Configuration {
 	@Factory("configGroupList")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void configGroupListFactory() {
-		this.configGroupList = this.configurationService.getConfigGroups();
+		this.configGroupList = this.configurationService.listConfigGroups();
 	}
 
 	@Remove

@@ -64,7 +64,7 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ApplicationIdentityEntity> getApplicationIdentities(
+	public List<ApplicationIdentityEntity> listApplicationIdentities(
 			ApplicationEntity application) {
 		Query query = ApplicationIdentityEntity.createQueryWhereApplication(
 				this.entityManager, application);

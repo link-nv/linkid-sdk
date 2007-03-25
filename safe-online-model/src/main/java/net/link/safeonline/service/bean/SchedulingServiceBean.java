@@ -45,7 +45,7 @@ public class SchedulingServiceBean implements SchedulingService {
 	private TaskScheduler taskScheduler;
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<TaskEntity> getTaskList() {
+	public List<TaskEntity> listTaskList() {
 		List<TaskEntity> taskList = this.taskDAO.listTaskEntities();
 		return taskList;
 	}
@@ -57,7 +57,7 @@ public class SchedulingServiceBean implements SchedulingService {
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<TaskHistoryEntity> getTaskHistoryList(TaskEntity task) {
-		return taskHistoryDAO.getTaskHistory(task);
+		return taskHistoryDAO.listTaskHistory(task);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

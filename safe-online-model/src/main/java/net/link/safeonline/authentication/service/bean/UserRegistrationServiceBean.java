@@ -8,10 +8,10 @@
 package net.link.safeonline.authentication.service.bean;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.dao.ApplicationDAO;
@@ -52,30 +52,47 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 	private AttributeDAO attributeDAO;
 
 	public void registerUser(String login, String password, String name)
-			throws ExistingUserException, ApplicationNotFoundException {
+			throws ExistingUserException {
 		LOG.debug("register user: " + login);
 
-		SubjectEntity existingSubject = this.subjectDAO.findSubject(login);
-		if (null != existingSubject) {
-			throw new ExistingUserException();
-		}
+		checkExistingUser(login);
 
-		ApplicationEntity safeOnlineUserApplication = this.applicationDAO
-				.findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
-		if (null == safeOnlineUserApplication) {
-			throw new ApplicationNotFoundException();
-		}
+		ApplicationEntity safeOnlineUserApplication = getSafeOnlineUserApplication();
 
 		SubjectEntity newSubject = this.subjectDAO.addSubject(login);
 
+		setAttributes(login, password, name);
+
+		/*
+		 * Make sure the user can at least login into the SafeOnline user web
+		 * application.
+		 */
+		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
+				newSubject, safeOnlineUserApplication);
+	}
+
+	private void setAttributes(String login, String password, String name) {
 		this.attributeDAO.addAttribute(SafeOnlineConstants.PASSWORD_ATTRIBUTE,
 				login, password);
 		if (null != name) {
 			this.attributeDAO.addAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
 					login, name);
 		}
+	}
 
-		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
-				newSubject, safeOnlineUserApplication);
+	private ApplicationEntity getSafeOnlineUserApplication() {
+		ApplicationEntity safeOnlineUserApplication = this.applicationDAO
+				.findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+		if (null == safeOnlineUserApplication) {
+			throw new EJBException("SafeOnline user application not found");
+		}
+		return safeOnlineUserApplication;
+	}
+
+	private void checkExistingUser(String login) throws ExistingUserException {
+		SubjectEntity existingSubject = this.subjectDAO.findSubject(login);
+		if (null != existingSubject) {
+			throw new ExistingUserException();
+		}
 	}
 }

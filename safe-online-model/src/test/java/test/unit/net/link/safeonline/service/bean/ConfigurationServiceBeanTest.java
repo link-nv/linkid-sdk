@@ -76,7 +76,7 @@ public class ConfigurationServiceBeanTest extends TestCase {
 		this.testedInstance.saveConfiguration(groupList);
 
 		// verify
-		groupList = this.testedInstance.getConfigGroups();
+		groupList = this.testedInstance.listConfigGroups();
 		String result = groupList.get(0).getConfigItems().get(0).getValue();
 		assertEquals(result, "value 2");
 	}

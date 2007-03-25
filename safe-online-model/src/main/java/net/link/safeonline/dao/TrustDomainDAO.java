@@ -17,7 +17,7 @@ import net.link.safeonline.entity.TrustDomainEntity;
 @Local
 public interface TrustDomainDAO {
 
-	List<TrustDomainEntity> getTrustDomains();
+	List<TrustDomainEntity> listTrustDomains();
 
 	TrustDomainEntity addTrustDomain(String name, boolean performOcspCheck);
 

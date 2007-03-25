@@ -49,9 +49,9 @@ public class PkiServiceBean implements PkiService {
 	private CachedOcspResponseDAO cachedOcspResponseDAO;
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<TrustDomainEntity> getTrustDomains() {
+	public List<TrustDomainEntity> listTrustDomains() {
 		List<TrustDomainEntity> trustDomains = this.trustDomainDAO
-				.getTrustDomains();
+				.listTrustDomains();
 		return trustDomains;
 	}
 
@@ -84,7 +84,7 @@ public class PkiServiceBean implements PkiService {
 		TrustDomainEntity trustDomain = this.trustDomainDAO
 				.getTrustDomain(name);
 		List<TrustPointEntity> trustPoints = this.trustPointDAO
-				.getTrustPoints(trustDomain);
+				.listTrustPoints(trustDomain);
 		for (TrustPointEntity trustPoint : trustPoints) {
 			this.trustPointDAO.removeTrustPoint(trustPoint);
 		}
@@ -110,12 +110,12 @@ public class PkiServiceBean implements PkiService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<TrustPointEntity> getTrustPoints(String domainName)
+	public List<TrustPointEntity> listTrustPoints(String domainName)
 			throws TrustDomainNotFoundException {
 		TrustDomainEntity trustDomain = this.trustDomainDAO
 				.getTrustDomain(domainName);
 		List<TrustPointEntity> trustPoints = this.trustPointDAO
-				.getTrustPoints(trustDomain);
+				.listTrustPoints(trustDomain);
 		return trustPoints;
 	}
 

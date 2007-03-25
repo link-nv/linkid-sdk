@@ -99,7 +99,7 @@ public class IdentityBean implements Identity {
 					+ SafeOnlineConstants.NAME_ATTRIBUTE);
 			return null;
 		}
-		this.attributeList = this.identityService.getAttributes();
+		this.attributeList = this.identityService.listAttributes();
 		return "success";
 	}
 
@@ -134,7 +134,7 @@ public class IdentityBean implements Identity {
 	@Factory("attributeList")
 	public void attributeListFactory() {
 		LOG.debug("attributeListFactory");
-		this.attributeList = this.identityService.getAttributes();
+		this.attributeList = this.identityService.listAttributes();
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

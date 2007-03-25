@@ -92,7 +92,7 @@ public class SchedulingBean implements Scheduling {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void taskListFactory() {
 		if (selectedScheduling == null) {
-			this.taskList = this.schedulingService.getTaskList();
+			this.taskList = this.schedulingService.listTaskList();
 		} else {
 			this.taskList = this.selectedScheduling.getTasks();
 		}
@@ -147,7 +147,7 @@ public class SchedulingBean implements Scheduling {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String taskListView() {
 		this.selectedScheduling = null;
-		this.taskList = this.schedulingService.getTaskList();
+		this.taskList = this.schedulingService.listTaskList();
 		return "tasklistview";
 	}
 

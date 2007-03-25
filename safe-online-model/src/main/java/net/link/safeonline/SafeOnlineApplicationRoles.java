@@ -7,11 +7,20 @@
 
 package net.link.safeonline;
 
+/**
+ * Defines the SafeOnline Application Roles.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class SafeOnlineApplicationRoles {
 
 	private SafeOnlineApplicationRoles() {
 		// empty
 	}
 
+	/**
+	 * Role for regular SafeOnline Relying Party Applications.
+	 */
 	public static final String APPLICATION_ROLE = "application";
 }

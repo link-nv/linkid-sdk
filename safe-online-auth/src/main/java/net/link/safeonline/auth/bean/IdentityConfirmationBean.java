@@ -100,7 +100,7 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 		LOG.debug("identityConfirmationList factory");
 		try {
 			List<AttributeTypeEntity> confirmationList = this.identityService
-					.getIdentityAttributesToConfirm(this.application);
+					.listIdentityAttributesToConfirm(this.application);
 			return confirmationList;
 		} catch (SubscriptionNotFoundException e) {
 			String msg = "subscription not found.";

@@ -11,8 +11,20 @@ import javax.ejb.Local;
 
 import net.link.safeonline.entity.ApplicationEntity;
 
+/**
+ * Interface for the application manager component.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Local
 public interface ApplicationManager {
 
+	/**
+	 * Gives back the caller application. Calling this method only makes sense
+	 * in the context of an application login (via an application web service).
+	 * 
+	 * @return
+	 */
 	ApplicationEntity getCallerApplication();
 }

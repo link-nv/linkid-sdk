@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -46,7 +47,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
-import net.link.safeonline.model.ApplicationIdentityService;
+import net.link.safeonline.model.ApplicationIdentityManager;
 import net.link.safeonline.model.ApplicationOwnerManager;
 import net.link.safeonline.model.PkiUtils;
 import net.link.safeonline.model.SubjectManager;
@@ -91,7 +92,7 @@ public class ApplicationServiceBean implements ApplicationService {
 	private ApplicationIdentityDAO applicationIdentityDAO;
 
 	@EJB
-	private ApplicationIdentityService applicationIdentityService;
+	private ApplicationIdentityManager applicationIdentityService;
 
 	@EJB
 	private SubjectManager subjectManager;
@@ -100,9 +101,9 @@ public class ApplicationServiceBean implements ApplicationService {
 	private SessionContext sessionContext;
 
 	@PermitAll
-	public List<ApplicationEntity> getApplications() {
+	public List<ApplicationEntity> listApplications() {
 		List<ApplicationEntity> applications = this.applicationDAO
-				.getApplications();
+				.listApplications();
 		return applications;
 	}
 
@@ -115,11 +116,7 @@ public class ApplicationServiceBean implements ApplicationService {
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
 			AttributeTypeNotFoundException {
 		LOG.debug("add application: " + name);
-		ApplicationEntity existingApplication = this.applicationDAO
-				.findApplication(name);
-		if (null != existingApplication) {
-			throw new ExistingApplicationException();
-		}
+		checkExistingApplication(name);
 
 		X509Certificate certificate = PkiUtils
 				.decodeCertificate(encodedCertificate);
@@ -127,20 +124,43 @@ public class ApplicationServiceBean implements ApplicationService {
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
 				.getApplicationOwner(applicationOwnerName);
 
+		ApplicationEntity application = this.applicationDAO.addApplication(
+				name, applicationOwner, description, certificate);
+
+		setInitialApplicationIdentity(initialApplicationIdentityAttributeTypes,
+				application);
+	}
+
+	private void setInitialApplicationIdentity(
+			String[] initialApplicationIdentityAttributeTypes,
+			ApplicationEntity application)
+			throws AttributeTypeNotFoundException {
+		List<AttributeTypeEntity> identityAttributeTypes = loadIdentityAttributeTypes(initialApplicationIdentityAttributeTypes);
+		long initialIdentityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
+		this.applicationIdentityDAO.addApplicationIdentity(application,
+				initialIdentityVersion, identityAttributeTypes);
+		application.setCurrentApplicationIdentity(initialIdentityVersion);
+	}
+
+	private List<AttributeTypeEntity> loadIdentityAttributeTypes(
+			String[] initialApplicationIdentityAttributeTypes)
+			throws AttributeTypeNotFoundException {
 		List<AttributeTypeEntity> identityAttributeTypes = new LinkedList<AttributeTypeEntity>();
 		for (String initialApplicationIdentityAttributeType : initialApplicationIdentityAttributeTypes) {
 			AttributeTypeEntity attributeType = this.attributeTypeDAO
 					.getAttributeType(initialApplicationIdentityAttributeType);
 			identityAttributeTypes.add(attributeType);
 		}
+		return identityAttributeTypes;
+	}
 
-		ApplicationEntity application = this.applicationDAO.addApplication(
-				name, applicationOwner, description, certificate);
-
-		long initialIdentityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
-		this.applicationIdentityDAO.addApplicationIdentity(application,
-				initialIdentityVersion, identityAttributeTypes);
-		application.setCurrentApplicationIdentity(initialIdentityVersion);
+	private void checkExistingApplication(String name)
+			throws ExistingApplicationException {
+		ApplicationEntity existingApplication = this.applicationDAO
+				.findApplication(name);
+		if (null != existingApplication) {
+			throw new ExistingApplicationException();
+		}
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -151,11 +171,12 @@ public class ApplicationServiceBean implements ApplicationService {
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(name);
 
-		if (!application.isRemovable()) {
+		if (false == application.isRemovable()) {
 			throw new PermissionDeniedException();
 		}
+
 		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
-				.getSubscriptions(application);
+				.listSubscriptions(application);
 		/*
 		 * We don't rely on hibernate here to cascade remove the subscriptions
 		 * and application identities for the moment. Postpone this until be
@@ -166,7 +187,7 @@ public class ApplicationServiceBean implements ApplicationService {
 		}
 
 		List<ApplicationIdentityEntity> applicationIdentities = this.applicationIdentityDAO
-				.getApplicationIdentities(application);
+				.listApplicationIdentities(application);
 		for (ApplicationIdentityEntity applicationIdentity : applicationIdentities) {
 			this.applicationIdentityDAO
 					.removeApplicationIdentity(applicationIdentity);
@@ -207,41 +228,52 @@ public class ApplicationServiceBean implements ApplicationService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void registerApplicationOwner(String name, String login)
-			throws SubjectNotFoundException, ApplicationNotFoundException,
-			ExistingApplicationOwnerException {
-		LOG.debug("register application owner: " + name + " with account "
-				+ login);
-		ApplicationOwnerEntity existingApplicationOwner = this.applicationOwnerDAO
-				.findApplicationOwner(name);
-		if (null != existingApplicationOwner) {
-			throw new ExistingApplicationOwnerException();
-		}
+	public void registerApplicationOwner(String ownerName, String adminLogin)
+			throws SubjectNotFoundException, ExistingApplicationOwnerException {
+		LOG.debug("register application owner: " + ownerName + " with account "
+				+ adminLogin);
+		checkExistingOwner(ownerName);
 
-		SubjectEntity subject = this.subjectDAO.getSubject(login);
+		SubjectEntity adminSubject = this.subjectDAO.getSubject(adminLogin);
 
-		this.applicationOwnerDAO.addApplicationOwner(name, subject);
+		this.applicationOwnerDAO.addApplicationOwner(ownerName, adminSubject);
 
 		ApplicationEntity ownerApplication = this.applicationDAO
-				.getApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
+				.findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
+		if (null == ownerApplication) {
+			throw new EJBException("SafeOnline owner application not found");
+		}
 
+		/*
+		 * Subscribe the new application owner to the SafeOnline owner web
+		 * application so he can do it's job.
+		 */
 		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
-				subject, ownerApplication);
+				adminSubject, ownerApplication);
 
 		/*
 		 * We have to flush the credential cache for the login here. Else it's
 		 * possible that the login cannot logon because JAAS is caching the old
 		 * roles that did not include the 'owner' role yet.
 		 */
-		SecurityManagerUtils.flushCredentialCache(login,
+		SecurityManagerUtils.flushCredentialCache(adminLogin,
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
 	}
 
+	private void checkExistingOwner(String name)
+			throws ExistingApplicationOwnerException {
+		ApplicationOwnerEntity existingApplicationOwner = this.applicationOwnerDAO
+				.findApplicationOwner(name);
+		if (null != existingApplicationOwner) {
+			throw new ExistingApplicationOwnerException();
+		}
+	}
+
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<ApplicationOwnerEntity> getApplicationOwners() {
+	public List<ApplicationOwnerEntity> listApplicationOwners() {
 		LOG.debug("get application owners");
 		List<ApplicationOwnerEntity> applicationOwners = this.applicationOwnerDAO
-				.getApplicationOwners();
+				.listApplicationOwners();
 		return applicationOwners;
 	}
 
@@ -251,7 +283,7 @@ public class ApplicationServiceBean implements ApplicationService {
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerManager
 				.getCallerApplicationOwner();
 		List<ApplicationEntity> applications = this.applicationDAO
-				.getApplications(applicationOwner);
+				.listApplications(applicationOwner);
 		return applications;
 	}
 

@@ -12,11 +12,11 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import javax.ejb.EJBException;
 import javax.persistence.EntityManager;
 
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
@@ -164,7 +164,7 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		try {
 			this.testedInstance.registerUser(login, password, name);
 			fail();
-		} catch (ApplicationNotFoundException e) {
+		} catch (EJBException e) {
 			// expected
 			verify(this.mockSubjectDAO, this.mockApplicationDAO,
 					this.mockSubscriptionDAO, this.mockAttributeDAO);

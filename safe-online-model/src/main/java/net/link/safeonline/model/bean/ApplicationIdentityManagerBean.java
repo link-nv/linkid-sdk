@@ -26,14 +26,14 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.model.ApplicationIdentityService;
+import net.link.safeonline.model.ApplicationIdentityManager;
 
 @Stateless
-public class ApplicationIdentityServiceBean implements
-		ApplicationIdentityService {
+public class ApplicationIdentityManagerBean implements
+		ApplicationIdentityManager {
 
 	private static final Log LOG = LogFactory
-			.getLog(ApplicationIdentityServiceBean.class);
+			.getLog(ApplicationIdentityManagerBean.class);
 
 	@EJB
 	private ApplicationDAO applicationDAO;

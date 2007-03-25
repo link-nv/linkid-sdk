@@ -26,5 +26,8 @@ public interface AttributeDAO {
 	void addAttribute(AttributeTypeEntity attributeType, String subjectLogin,
 			String stringValue);
 
-	List<AttributeEntity> getAttributes(SubjectEntity subject);
+	List<AttributeEntity> listAttributes(SubjectEntity subject);
+
+	void addOrUpdateAttribute(String attributeTypeName, String subjectLogin,
+			String stringValue);
 }

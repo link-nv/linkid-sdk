@@ -77,7 +77,7 @@ public class IdentityServiceBean implements IdentityService {
 	private ApplicationIdentityDAO applicationIdentityDAO;
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<HistoryEntity> getHistory() {
+	public List<HistoryEntity> listHistory() {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		List<HistoryEntity> result = this.historyDAO.getHistory(subject);
 		return result;
@@ -118,22 +118,16 @@ public class IdentityServiceBean implements IdentityService {
 			throw new PermissionDeniedException();
 		}
 
-		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeName, login);
-		if (null == attribute) {
-			this.attributeDAO
-					.addAttribute(attributeType, login, attributeValue);
-			return;
-		}
-		attribute.setStringValue(attributeValue);
+		this.attributeDAO.addOrUpdateAttribute(attributeName, login,
+				attributeValue);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<AttributeDO> getAttributes() {
+	public List<AttributeDO> listAttributes() {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		LOG.debug("get attributes for " + subject.getLogin());
 		List<AttributeEntity> attributes = this.attributeDAO
-				.getAttributes(subject);
+				.listAttributes(subject);
 		LOG.debug("number of attributes: " + attributes.size());
 		List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
 		for (AttributeEntity attribute : attributes) {
@@ -215,7 +209,7 @@ public class IdentityServiceBean implements IdentityService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<AttributeTypeEntity> getIdentityAttributesToConfirm(
+	public List<AttributeTypeEntity> listIdentityAttributesToConfirm(
 			String applicationName) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, SubscriptionNotFoundException {
 		LOG
@@ -286,7 +280,7 @@ public class IdentityServiceBean implements IdentityService {
 
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		List<AttributeEntity> userAttributes = this.attributeDAO
-				.getAttributes(subject);
+				.listAttributes(subject);
 
 		Set<String> missingAttributeNames = new TreeSet<String>();
 		for (AttributeTypeEntity applicationAttributeType : applicationAttributeTypes) {

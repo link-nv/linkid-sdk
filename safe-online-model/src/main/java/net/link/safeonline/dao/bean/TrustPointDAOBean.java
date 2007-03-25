@@ -43,26 +43,12 @@ public class TrustPointDAOBean implements TrustPointDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<TrustPointEntity> getTrustPoints(TrustDomainEntity trustDomain) {
+	public List<TrustPointEntity> listTrustPoints(TrustDomainEntity trustDomain) {
 		LOG.debug("get trust points for domain: " + trustDomain.getName());
 		Query query = TrustPointEntity.createQueryWhereDomain(
 				this.entityManager, trustDomain);
 		List<TrustPointEntity> trustPoints = query.getResultList();
 		return trustPoints;
-	}
-
-	public TrustPointEntity getTrustPoint(TrustDomainEntity trustDomain,
-			String subjectName, String keyId)
-			throws TrustPointNotFoundException {
-		LOG.debug("get trust point for domain " + trustDomain.getName()
-				+ " and subject name " + subjectName);
-		TrustPointPK pk = new TrustPointPK(trustDomain, subjectName, keyId);
-		TrustPointEntity trustPoint = this.entityManager.find(
-				TrustPointEntity.class, pk);
-		if (null == trustPoint) {
-			throw new TrustPointNotFoundException();
-		}
-		return trustPoint;
 	}
 
 	public void removeTrustPoint(TrustPointEntity trustPoint) {

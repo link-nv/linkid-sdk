@@ -22,7 +22,7 @@ import net.link.safeonline.entity.TaskHistoryEntity;
 @Remote
 public interface SchedulingService {
 
-	List<TaskEntity> getTaskList();
+	List<TaskEntity> listTaskList();
 
 	List<SchedulingEntity> getSchedulingList();
 

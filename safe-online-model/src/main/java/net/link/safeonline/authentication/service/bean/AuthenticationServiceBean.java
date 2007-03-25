@@ -104,14 +104,14 @@ public class AuthenticationServiceBean implements AuthenticationService {
 			return false;
 		}
 
-		String actualPassword = passwordAttribute.getStringValue();
-		if (null == actualPassword) {
-			String event = "password is null for subject " + login;
+		String expectedPassword = passwordAttribute.getStringValue();
+		if (null == expectedPassword) {
+			String event = "actual password is null for subject " + login;
 			addHistoryEntry(subject, event);
 			return false;
 		}
 
-		if (!actualPassword.equals(password)) {
+		if (!expectedPassword.equals(password)) {
 			String event = "incorrect password for application: "
 					+ applicationName;
 			addHistoryEntry(subject, event);
@@ -144,51 +144,6 @@ public class AuthenticationServiceBean implements AuthenticationService {
 	private void addHistoryEntry(SubjectEntity subject, String event) {
 		Date now = new Date();
 		this.historyDAO.addHistoryEntry(now, subject, event);
-		LOG.debug(event);
-	}
-
-	public boolean authenticate(String login, String password) {
-		LOG.debug("authenticate \"" + login + "\"");
-
-		// TODO: aspectize the input validation
-		if (null == login) {
-			throw new IllegalArgumentException("login is null");
-		}
-
-		if (null == password) {
-			throw new IllegalArgumentException("password is null");
-		}
-
-		SubjectEntity subject = this.entityDAO.findSubject(login);
-		if (null == subject) {
-			LOG.debug("subject not found");
-			return false;
-		}
-
-		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
-		if (null == passwordAttribute) {
-			String event = "incorrect password";
-			addHistoryEntry(subject, event);
-			return false;
-		}
-
-		String actualPassword = passwordAttribute.getStringValue();
-		if (null == actualPassword) {
-			addHistoryEntry(subject, "actual password is null for subject: "
-					+ login);
-			return false;
-		}
-
-		if (!actualPassword.equals(password)) {
-			Date now = new Date();
-			String event = "incorrect password";
-			this.historyDAO.addHistoryEntry(now, subject, event);
-			LOG.debug(event);
-			return false;
-		}
-
-		return true;
 	}
 
 	public String authenticate(String sessionId,
@@ -226,7 +181,9 @@ public class AuthenticationServiceBean implements AuthenticationService {
 		SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
 				identifierDomainName, identifier);
 		if (null == subject) {
-			LOG.warn("no subject was found for the given certificate");
+			String event = "no subject was found for the given user certificate";
+			LOG.warn(event);
+			addHistoryEntry(subject, event);
 			throw new SubjectNotFoundException();
 		}
 		LOG.debug("subject: " + subject);

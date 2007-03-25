@@ -163,7 +163,7 @@ public class IdentityServiceBeanTest extends TestCase {
 		assertTrue(result);
 
 		List<AttributeTypeEntity> attribsToConfirm = identityService
-				.getIdentityAttributesToConfirm(applicationName);
+				.listIdentityAttributesToConfirm(applicationName);
 		assertEquals(1, attribsToConfirm.size());
 		assertEquals("test-attribute-type", attribsToConfirm.get(0).getName());
 		identityService.confirmIdentity(applicationName);
@@ -171,7 +171,7 @@ public class IdentityServiceBeanTest extends TestCase {
 		assertFalse(identityService.isConfirmationRequired(applicationName));
 
 		attribsToConfirm = identityService
-				.getIdentityAttributesToConfirm(applicationName);
+				.listIdentityAttributesToConfirm(applicationName);
 		assertTrue(attribsToConfirm.isEmpty());
 
 		List<AttributeTypeEntity> currentIdentity = applicationService
@@ -185,7 +185,7 @@ public class IdentityServiceBeanTest extends TestCase {
 		assertTrue(identityService.isConfirmationRequired(applicationName));
 
 		attribsToConfirm = identityService
-				.getIdentityAttributesToConfirm(applicationName);
+				.listIdentityAttributesToConfirm(applicationName);
 		assertEquals(1, attribsToConfirm.size());
 		assertEquals("test-attribute-type-2", attribsToConfirm.get(0).getName());
 		identityService.confirmIdentity(applicationName);

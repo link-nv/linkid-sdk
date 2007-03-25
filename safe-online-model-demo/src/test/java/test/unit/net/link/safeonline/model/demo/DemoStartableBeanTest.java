@@ -39,7 +39,7 @@ import net.link.safeonline.entity.TaskEntity;
 import net.link.safeonline.entity.TaskHistoryEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
-import net.link.safeonline.model.bean.ApplicationIdentityServiceBean;
+import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.model.beid.BeIdStartableBean;
 import net.link.safeonline.model.demo.DemoStartableBean;
@@ -58,7 +58,7 @@ public class DemoStartableBeanTest extends TestCase {
 			ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class,
 			ConfigItemDAOBean.class, TaskDAOBean.class,
 			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
-			ApplicationIdentityServiceBean.class, TrustPointDAOBean.class };
+			ApplicationIdentityManagerBean.class, TrustPointDAOBean.class };
 
 	@Override
 	protected void setUp() throws Exception {

@@ -66,7 +66,7 @@ public class TrustDomainBean implements TrustDomain {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void trustDomainListFactory() {
 		LOG.debug("application list factory");
-		this.trustDomainList = this.pkiService.getTrustDomains();
+		this.trustDomainList = this.pkiService.listTrustDomains();
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

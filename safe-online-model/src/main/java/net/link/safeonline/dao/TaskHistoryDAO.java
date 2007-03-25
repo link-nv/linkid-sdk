@@ -21,7 +21,7 @@ public interface TaskHistoryDAO {
 	TaskHistoryEntity addTaskHistoryEntity(TaskEntity task, String message,
 			boolean result, Date startDate, Date endDate);
 
-	List<TaskHistoryEntity> getTaskHistory(TaskEntity task);
+	List<TaskHistoryEntity> listTaskHistory(TaskEntity task);
 
 	void clearTaskHistory(TaskEntity task);
 

@@ -79,7 +79,7 @@ public class TrustPointBean implements TrustPoint {
 		String domainName = this.selectedTrustDomain.getName();
 		List<TrustPointEntity> trustPoints;
 		try {
-			trustPoints = this.pkiService.getTrustPoints(domainName);
+			trustPoints = this.pkiService.listTrustPoints(domainName);
 		} catch (TrustDomainNotFoundException e) {
 			LOG.error("trust domain not found");
 			TreeNode rootNode = new TreeNodeBase(ROOT_NODE_TYPE,

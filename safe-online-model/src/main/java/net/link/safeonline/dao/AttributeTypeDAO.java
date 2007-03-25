@@ -14,6 +14,12 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
+/**
+ * Interface for attribute type data access object.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Local
 public interface AttributeTypeDAO {
 
@@ -24,5 +30,5 @@ public interface AttributeTypeDAO {
 	AttributeTypeEntity getAttributeType(String name)
 			throws AttributeTypeNotFoundException;
 
-	List<AttributeTypeEntity> getAttributeTypes();
+	List<AttributeTypeEntity> listAttributeTypes();
 }

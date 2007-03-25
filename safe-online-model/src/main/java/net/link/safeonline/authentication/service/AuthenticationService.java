@@ -41,17 +41,6 @@ public interface AuthenticationService {
 	boolean authenticate(String applicationName, String login, String password);
 
 	/**
-	 * Authenticates a user without any application subscription check. This
-	 * method is used by the SafeOnline core JAAS login module.
-	 * 
-	 * @param login
-	 * @param password
-	 * @return <code>true</code> if the user was authenticated correctly,
-	 *         <code>false</code> otherwise.
-	 */
-	boolean authenticate(String login, String password);
-
-	/**
 	 * Authenticates a user via an authentication statement. The given session
 	 * Id must match the one given in the authentication statement. The session
 	 * Id is managed by the servlet front-end container.

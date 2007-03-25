@@ -69,7 +69,7 @@ public class SubscriptionsBean implements Subscriptions {
 	@Factory("subscriptionList")
 	public void subscriptionListFactory() {
 		LOG.debug("subscription list factory");
-		this.subscriptionList = this.subscriptionService.getSubscriptions();
+		this.subscriptionList = this.subscriptionService.listSubscriptions();
 
 	}
 
@@ -84,7 +84,7 @@ public class SubscriptionsBean implements Subscriptions {
 	@Factory("applicationList")
 	public void applicationListFactory() {
 		LOG.debug("application list factory");
-		this.applicationList = this.applicationService.getApplications();
+		this.applicationList = this.applicationService.listApplications();
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

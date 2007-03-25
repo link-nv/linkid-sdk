@@ -7,14 +7,35 @@
 
 package net.link.safeonline;
 
+/**
+ * Defines various SafeOnline constants.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class SafeOnlineConstants {
 
+	/**
+	 * The SafeOnline JPA entity manager unit name.
+	 */
 	public static final String SAFE_ONLINE_ENTITY_MANAGER = "SafeOnlineEntityManager";
 
+	/**
+	 * The JBoss AS security domain for the SafeOnline components that need to
+	 * be accessible by users.
+	 */
 	public static final String SAFE_ONLINE_SECURITY_DOMAIN = "safe-online";
 
+	/**
+	 * The JBoss AS security domain for the SafeOnline components that need to
+	 * be accessible by applications.
+	 */
 	public static final String SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN = "safe-online-application";
 
+	/**
+	 * The PKI trust domain name for the SafeOnline application owner
+	 * applications.
+	 */
 	public static final String SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN = "applications";
 
 	public static final String SAFE_ONLINE_USER_APPLICATION_NAME = "safe-online-user";

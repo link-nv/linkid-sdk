@@ -111,7 +111,7 @@ public class ApplicationBean implements Application {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void applicationListFactory() {
 		LOG.debug("application list factory");
-		this.operApplicationList = this.applicationService.getApplications();
+		this.operApplicationList = this.applicationService.listApplications();
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -251,7 +251,7 @@ public class ApplicationBean implements Application {
 	@Factory("applicationAttributeTypeList")
 	public List<SelectItem> applicationAttributeTypeListFactory() {
 		List<AttributeTypeEntity> attributeTypes = this.attributeTypeService
-				.getAttributeTypes();
+				.listAttributeTypes();
 		List<SelectItem> itemList = new LinkedList<SelectItem>();
 		for (AttributeTypeEntity attributeType : attributeTypes) {
 			SelectItem item = new SelectItem(attributeType.getName());

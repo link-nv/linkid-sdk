@@ -34,7 +34,7 @@ public class ConfigurationServiceBean implements ConfigurationService {
 	private ConfigItemDAO configItemDAO;
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<ConfigGroupEntity> getConfigGroups() {
+	public List<ConfigGroupEntity> listConfigGroups() {
 		return this.configGroupDAO.listConfigGroups();
 	}
 

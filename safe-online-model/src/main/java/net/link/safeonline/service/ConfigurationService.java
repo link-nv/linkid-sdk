@@ -19,7 +19,7 @@ import net.link.safeonline.entity.ConfigItemEntity;
 @Remote
 public interface ConfigurationService {
 
-	List<ConfigGroupEntity> getConfigGroups();
+	List<ConfigGroupEntity> listConfigGroups();
 
 	void saveConfiguration(List<ConfigGroupEntity> configGroupList);
 

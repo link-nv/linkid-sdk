@@ -55,7 +55,7 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<SubscriptionEntity> getSubsciptions(SubjectEntity subject) {
+	public List<SubscriptionEntity> listSubsciptions(SubjectEntity subject) {
 		LOG.debug("get subscriptions for subject: " + subject.getLogin());
 		Query query = SubscriptionEntity.createQueryWhereEntity(
 				this.entityManager, subject);
@@ -80,7 +80,7 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<SubscriptionEntity> getSubscriptions(
+	public List<SubscriptionEntity> listSubscriptions(
 			ApplicationEntity application) {
 		LOG
 				.debug("get subscriptions for application: "

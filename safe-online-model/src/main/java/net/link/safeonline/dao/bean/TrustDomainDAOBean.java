@@ -31,7 +31,7 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
 	private EntityManager entityManager;
 
 	@SuppressWarnings("unchecked")
-	public List<TrustDomainEntity> getTrustDomains() {
+	public List<TrustDomainEntity> listTrustDomains() {
 		LOG.debug("get trust domains");
 		Query query = TrustDomainEntity.createQueryAll(this.entityManager);
 		List<TrustDomainEntity> trustDomains = query.getResultList();

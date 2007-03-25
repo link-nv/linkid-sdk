@@ -34,7 +34,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.model.ApplicationIdentityService;
+import net.link.safeonline.model.ApplicationIdentityManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -131,7 +131,7 @@ public abstract class AbstractInitBean implements Startable {
 	protected List<Identity> identities;
 
 	@EJB
-	private ApplicationIdentityService applicationIdentityService;
+	private ApplicationIdentityManager applicationIdentityService;
 
 	public abstract int getPriority();
 

@@ -35,9 +35,9 @@ public class AttributeTypeServiceBean implements AttributeTypeService {
 	private AttributeTypeDAO attributeTypeDAO;
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public List<AttributeTypeEntity> getAttributeTypes() {
+	public List<AttributeTypeEntity> listAttributeTypes() {
 		List<AttributeTypeEntity> attributeTypes = this.attributeTypeDAO
-				.getAttributeTypes();
+				.listAttributeTypes();
 		return attributeTypes;
 	}
 
@@ -46,11 +46,15 @@ public class AttributeTypeServiceBean implements AttributeTypeService {
 			throws ExistingAttributeTypeException {
 		LOG.debug("add: " + attributeType);
 		String name = attributeType.getName();
+		checkExistingAttributeType(name);
+		this.attributeTypeDAO.addAttributeType(attributeType);
+	}
+
+	private void checkExistingAttributeType(String name) throws ExistingAttributeTypeException {
 		AttributeTypeEntity existingAttributeType = this.attributeTypeDAO
 				.findAttributeType(name);
 		if (null != existingAttributeType) {
 			throw new ExistingAttributeTypeException();
 		}
-		this.attributeTypeDAO.addAttributeType(attributeType);
 	}
 }

@@ -26,7 +26,7 @@ public interface ApplicationIdentityDAO {
 			ApplicationEntity application, long identityVersion)
 			throws ApplicationIdentityNotFoundException;
 
-	List<ApplicationIdentityEntity> getApplicationIdentities(
+	List<ApplicationIdentityEntity> listApplicationIdentities(
 			ApplicationEntity application);
 
 	void removeApplicationIdentity(ApplicationIdentityEntity applicationIdentity);

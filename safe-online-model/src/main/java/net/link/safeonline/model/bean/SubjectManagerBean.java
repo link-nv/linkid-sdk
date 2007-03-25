@@ -49,18 +49,15 @@ public class SubjectManagerBean implements SubjectManager {
 
 	@RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE })
 	public SubjectEntity getCallerSubject() {
-		Principal principal = this.context.getCallerPrincipal();
-		String login = principal.getName();
-		SubjectEntity subject;
+		String login = getCallerLogin();
 		try {
-			subject = this.subjectDAO.getSubject(login);
+			SubjectEntity subject = this.subjectDAO.getSubject(login);
+			return subject;
 		} catch (SubjectNotFoundException e) {
 			String msg = "subject not found for called principal: " + login;
 			LOG.fatal(msg, e);
 			throw new EJBException(msg, e);
 		}
-		LOG.debug("get caller subject: " + subject.getLogin());
-		return subject;
 	}
 
 	@RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE })

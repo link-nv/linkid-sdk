@@ -10,7 +10,6 @@ package net.link.safeonline.authentication.service;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 
 /**
@@ -34,8 +33,7 @@ public interface UserRegistrationService {
 	 * @param password
 	 * @param name
 	 * @throws ExistingUserException
-	 * @throws ApplicationNotFoundException
 	 */
 	void registerUser(String login, String password, String name)
-			throws ExistingUserException, ApplicationNotFoundException;
+			throws ExistingUserException;
 }

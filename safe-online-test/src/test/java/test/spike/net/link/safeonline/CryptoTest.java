@@ -87,4 +87,8 @@ public class CryptoTest extends TestCase {
 		ASN1Object resultObject = ASN1Object.fromByteArray(encodedObject);
 		LOG.debug("result object type: " + resultObject.getClass().getName());
 	}
+	
+	public void testCustomSecurityProvider() throws Exception {
+		
+	}
 }

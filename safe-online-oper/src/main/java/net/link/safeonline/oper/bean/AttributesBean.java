@@ -54,7 +54,7 @@ public class AttributesBean implements Attributes {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void attributeTypeListFactory() {
 		LOG.debug("attributeTypeListFactory");
-		this.attributeTypeList = this.attributeTypeService.getAttributeTypes();
+		this.attributeTypeList = this.attributeTypeService.listAttributeTypes();
 	}
 
 	@Remove

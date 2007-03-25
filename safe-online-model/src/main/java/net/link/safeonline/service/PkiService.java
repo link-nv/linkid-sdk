@@ -35,7 +35,7 @@ public interface PkiService {
 	 * 
 	 * @return
 	 */
-	List<TrustDomainEntity> getTrustDomains();
+	List<TrustDomainEntity> listTrustDomains();
 
 	/**
 	 * Adds a trust domain with the given name.
@@ -93,7 +93,7 @@ public interface PkiService {
 	 * @return
 	 * @throws TrustDomainNotFoundException
 	 */
-	List<TrustPointEntity> getTrustPoints(String domainName)
+	List<TrustPointEntity> listTrustPoints(String domainName)
 			throws TrustDomainNotFoundException;
 
 	/**

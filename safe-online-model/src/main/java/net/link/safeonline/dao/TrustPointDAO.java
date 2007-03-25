@@ -23,11 +23,7 @@ public interface TrustPointDAO {
 	void addTrustPoint(TrustDomainEntity trustDomain,
 			X509Certificate certificate);
 
-	List<TrustPointEntity> getTrustPoints(TrustDomainEntity trustDomain);
-
-	TrustPointEntity getTrustPoint(TrustDomainEntity trustDomain,
-			String subjectName, String keyId)
-			throws TrustPointNotFoundException;
+	List<TrustPointEntity> listTrustPoints(TrustDomainEntity trustDomain);
 
 	TrustPointEntity getTrustPoint(TrustPointPK pk)
 			throws TrustPointNotFoundException;

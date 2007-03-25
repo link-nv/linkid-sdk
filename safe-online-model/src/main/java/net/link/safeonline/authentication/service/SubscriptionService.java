@@ -29,12 +29,27 @@ import net.link.safeonline.entity.SubscriptionEntity;
 @Remote
 public interface SubscriptionService {
 
-	List<SubscriptionEntity> getSubscriptions();
+	/**
+	 * Gives back a list of all application subscriptions of the caller user.
+	 * 
+	 * @return
+	 */
+	List<SubscriptionEntity> listSubscriptions();
 
+	/**
+	 * Subscribe the caller user to the given application.
+	 * 
+	 * @param applicationName
+	 * @throws ApplicationNotFoundException
+	 * @throws AlreadySubscribedException
+	 * @throws PermissionDeniedException
+	 */
 	void subscribe(String applicationName) throws ApplicationNotFoundException,
 			AlreadySubscribedException, PermissionDeniedException;
 
 	/**
+	 * Unsubscribe the caller user from the given application.
+	 * 
 	 * @param applicationName
 	 * @throws ApplicationNotFoundException
 	 * @throws SubscriptionNotFoundException

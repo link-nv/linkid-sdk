@@ -55,10 +55,10 @@ public class SubscriptionServiceBean implements SubscriptionService {
 	private SessionContext sessionContext;
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<SubscriptionEntity> getSubscriptions() {
+	public List<SubscriptionEntity> listSubscriptions() {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
-				.getSubsciptions(subject);
+				.listSubsciptions(subject);
 		return subscriptions;
 	}
 

@@ -60,7 +60,7 @@ public interface ApplicationDAO {
 	 * 
 	 * @return
 	 */
-	List<ApplicationEntity> getApplications();
+	List<ApplicationEntity> listApplications();
 
 	/**
 	 * Gives back the application owned by the given application owner.
@@ -68,7 +68,7 @@ public interface ApplicationDAO {
 	 * @param applicationOwner
 	 * @return
 	 */
-	List<ApplicationEntity> getApplications(
+	List<ApplicationEntity> listApplications(
 			ApplicationOwnerEntity applicationOwner);
 
 	void removeApplication(ApplicationEntity application);

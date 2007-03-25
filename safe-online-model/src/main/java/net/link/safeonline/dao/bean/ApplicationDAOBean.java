@@ -50,7 +50,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ApplicationEntity> getApplications() {
+	public List<ApplicationEntity> listApplications() {
 		Query query = ApplicationEntity.createQueryAll(this.entityManager);
 		List<ApplicationEntity> applications = query.getResultList();
 		return applications;
@@ -84,7 +84,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ApplicationEntity> getApplications(
+	public List<ApplicationEntity> listApplications(
 			ApplicationOwnerEntity applicationOwner) {
 		LOG.debug("get application for application owner: "
 				+ applicationOwner.getName());

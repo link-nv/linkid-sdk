@@ -13,7 +13,6 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.user.Register;
@@ -89,9 +88,6 @@ public class RegisterBean implements Register {
 					this.password, this.name);
 		} catch (ExistingUserException e) {
 			this.facesMessages.addToControl("login", "login already exists");
-			return null;
-		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.add("application not found");
 			return null;
 		}
 		return "success";

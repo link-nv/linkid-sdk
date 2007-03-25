@@ -150,25 +150,19 @@ public class CredentialServiceBean implements CredentialService {
 		String surname = identityStatement.getSurname();
 		String givenName = identityStatement.getGivenName();
 
-		setOrOverrideAttribute(IdentityStatementAttributes.SURNAME, login,
+		setOrUpdateAttribute(IdentityStatementAttributes.SURNAME, login,
 				surname, pkiProvider);
-		setOrOverrideAttribute(IdentityStatementAttributes.GIVEN_NAME, login,
+		setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME, login,
 				givenName, pkiProvider);
 
 		pkiProvider.storeAdditionalAttributes(certificate);
 	}
 
-	private void setOrOverrideAttribute(
+	private void setOrUpdateAttribute(
 			IdentityStatementAttributes identityStatementAttribute,
 			String login, String value, PkiProvider pkiProvider) {
 		String attributeName = pkiProvider
 				.mapAttribute(identityStatementAttribute);
-		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeName, login);
-		if (null == attribute) {
-			this.attributeDAO.addAttribute(attributeName, login, value);
-		} else {
-			attribute.setStringValue(value);
-		}
+		this.attributeDAO.addOrUpdateAttribute(attributeName, login, value);
 	}
 }

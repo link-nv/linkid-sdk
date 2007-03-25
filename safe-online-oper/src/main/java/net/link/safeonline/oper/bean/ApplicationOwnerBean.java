@@ -14,7 +14,6 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
@@ -83,11 +82,6 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 			LOG.debug(msg);
 			this.facesMessages.addToControl("login", msg);
 			return null;
-		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
 		} catch (ExistingApplicationOwnerException e) {
 			String msg = "application owner already exists";
 			LOG.debug(msg);
@@ -102,7 +96,7 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 	public void applicationOwnerListFactory() {
 		LOG.debug("application owner list factory");
 		this.applicationOwnerList = this.applicationService
-				.getApplicationOwners();
+				.listApplicationOwners();
 	}
 
 	@Remove

@@ -25,7 +25,7 @@ public interface ApplicationOwnerDAO {
 
 	void addApplicationOwner(String name, SubjectEntity admin);
 
-	List<ApplicationOwnerEntity> getApplicationOwners();
+	List<ApplicationOwnerEntity> listApplicationOwners();
 
 	ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject);
 }

@@ -44,7 +44,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<AttributeTypeEntity> getAttributeTypes() {
+	public List<AttributeTypeEntity> listAttributeTypes() {
 		LOG.debug("get attribute types");
 		Query query = AttributeTypeEntity.createQueryAll(this.entityManager);
 		List<AttributeTypeEntity> attributeTypes = query.getResultList();
