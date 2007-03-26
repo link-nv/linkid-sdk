@@ -132,8 +132,8 @@ public class AuthenticationTest extends TestCase {
 
 		AuthenticationService authenticationService = getAuthenticationService(initialContext);
 
-		boolean result = authenticationService.authenticate("fcorneli",
-				"secret");
+		boolean result = authenticationService.authenticate("safe-online-user",
+				"fcorneli", "secret");
 		assertTrue(result);
 	}
 
@@ -261,7 +261,7 @@ public class AuthenticationTest extends TestCase {
 
 		// JAAS caches the credentials...
 		List<SubscriptionEntity> subscriptions = subscriptionService
-				.getSubscriptions();
+				.listSubscriptions();
 		for (SubscriptionEntity subscription : subscriptions) {
 			LOG.debug("subscription: " + subscription);
 		}
@@ -269,7 +269,7 @@ public class AuthenticationTest extends TestCase {
 
 		subscriptionService.subscribe(applicationName);
 
-		subscriptions = subscriptionService.getSubscriptions();
+		subscriptions = subscriptionService.listSubscriptions();
 		assertEquals(2, subscriptions.size());
 		for (SubscriptionEntity subscription : subscriptions) {
 			LOG.debug("subscription: " + subscription);
@@ -392,7 +392,7 @@ public class AuthenticationTest extends TestCase {
 		// operate: trigger JAAS on the core
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
 		IntegrationTestUtils.login(login, password);
-		subscriptionService.getSubscriptions();
+		subscriptionService.listSubscriptions();
 
 		// operate: create application owner
 		ApplicationService applicationService = getApplicationService(initialContext);

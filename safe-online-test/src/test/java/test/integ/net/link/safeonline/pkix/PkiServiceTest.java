@@ -55,11 +55,11 @@ public class PkiServiceTest extends TestCase {
 		// operate
 		IntegrationTestUtils.login("admin", "admin");
 		List<TrustDomainEntity> trustDomains = this.pkiService
-				.getTrustDomains();
+				.listTrustDomains();
 		int origSize = trustDomains.size();
 		LOG.debug("number of trust domains: " + origSize);
 		this.pkiService.addTrustDomain(trustDomainName, true);
-		trustDomains = this.pkiService.getTrustDomains();
+		trustDomains = this.pkiService.listTrustDomains();
 		assertEquals(origSize + 1, trustDomains.size());
 		boolean containsAddedTrustDomain = false;
 		for (TrustDomainEntity trustDomain : trustDomains) {
@@ -83,7 +83,7 @@ public class PkiServiceTest extends TestCase {
 		this.pkiService.removeTrustDomain(trustDomainName);
 
 		// verify
-		trustDomains = this.pkiService.getTrustDomains();
+		trustDomains = this.pkiService.listTrustDomains();
 		containsAddedTrustDomain = false;
 		for (TrustDomainEntity trustDomain : trustDomains) {
 			LOG.debug(trustDomain.toString());
@@ -120,7 +120,7 @@ public class PkiServiceTest extends TestCase {
 
 		// operate: get trust points
 		List<TrustPointEntity> trustPoints = this.pkiService
-				.getTrustPoints(trustDomainName);
+				.listTrustPoints(trustDomainName);
 
 		// verify
 		assertEquals(1, trustPoints.size());
