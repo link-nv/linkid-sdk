@@ -168,9 +168,9 @@ public class CredentialServiceBeanTest extends TestCase {
 		this.mockPkiProvider.storeAdditionalAttributes(certificate);
 
 		// expectations
-		this.mockAttributeDAO.addAttribute(surnameAttribute, user,
+		this.mockAttributeDAO.addOrUpdateAttribute(surnameAttribute, user,
 				this.smartCard.getSurname());
-		this.mockAttributeDAO.addAttribute(givenNameAttribute, user,
+		this.mockAttributeDAO.addOrUpdateAttribute(givenNameAttribute, user,
 				this.smartCard.getGivenName());
 		this.mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain,
 				identifier, this.testSubject);
