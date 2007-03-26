@@ -193,10 +193,12 @@ public class SafeOnlineLoginModule implements LoginModule {
 			throw new LoginException("could not remove authenticated principal");
 		}
 		/*
-		 * maybe we should also remove the "Roles" group. JBoss
-		 * AbstractServerLoginModule is also not doing this.
-		 * XXX: we should remove the roles here!!!
+		 * Despite the fact that JBoss AbstractServerLoginModule is not removing
+		 * the roles on the subject, we clear here all data on the subject.
 		 */
+		this.subject.getPrincipals().clear();
+		this.subject.getPublicCredentials().clear();
+		this.subject.getPrivateCredentials().clear();
 		return true;
 	}
 }

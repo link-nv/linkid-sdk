@@ -68,6 +68,11 @@ public class SecurityApplicationEntityListener {
 		LOG.debug("pre update callback on application: "
 				+ application.getName());
 
+		/*
+		 * To make this JBoss AS independent, we could try to use JACC:
+		 * PolicyContext.getContext("javax.security.auth.Subject.container")
+		 * 
+		 */
 		Principal principal = SecurityAssociation.getPrincipal();
 		Subject subject = SecurityAssociation.getSubject();
 		if (null == subject) {
