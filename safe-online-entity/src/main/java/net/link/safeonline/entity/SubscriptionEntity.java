@@ -8,6 +8,7 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -31,6 +32,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_APPLICATION;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_APPLICATION;
+import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE;
 
 @Entity
 @Table(name = "subscription")
@@ -41,6 +43,10 @@ import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_AP
 		@NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION, query = "SELECT COUNT(*) "
 				+ "FROM SubscriptionEntity AS subscription "
 				+ "WHERE subscription.application = :application"),
+		@NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE, query = "SELECT COUNT(*) "
+				+ "FROM SubscriptionEntity AS subscription "
+				+ "WHERE subscription.application = :application "
+				+ "AND subscription.lastLogin > :lastLogin"),
 		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT subscription "
 				+ "FROM SubscriptionEntity AS subscription "
 				+ "WHERE subscription.application = :application") })
@@ -51,6 +57,8 @@ public class SubscriptionEntity implements Serializable {
 	public static final String QUERY_WHERE_SUBJECT = "sub.subject";
 
 	public static final String QUERY_COUNT_WHERE_APPLICATION = "sub.count.app";
+
+	public static final String QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE = "sub.count.app.active";
 
 	public static final String QUERY_WHERE_APPLICATION = "sub.application";
 
@@ -63,6 +71,8 @@ public class SubscriptionEntity implements Serializable {
 	private SubscriptionOwnerType subscriptionOwnerType;
 
 	private Long confirmedIdentityVersion;
+
+	private Date lastLogin;
 
 	public SubscriptionEntity() {
 		// empty
@@ -126,6 +136,14 @@ public class SubscriptionEntity implements Serializable {
 		this.confirmedIdentityVersion = confirmedIdentityVersion;
 	}
 
+	public Date getLastLogin() {
+		return lastLogin;
+	}
+
+	public void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -164,6 +182,17 @@ public class SubscriptionEntity implements Serializable {
 			EntityManager entityManager, ApplicationEntity application) {
 		Query query = entityManager.createNamedQuery(QUERY_WHERE_APPLICATION);
 		query.setParameter("application", application);
+		return query;
+	}
+
+	public static Query createQueryCountWhereApplicationAndActive(
+			EntityManager entityManager, ApplicationEntity application,
+			long activeLimitInMillis) {
+		Query query = entityManager
+				.createNamedQuery(QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE);
+		query.setParameter("application", application);
+		query.setParameter("lastLogin", new Date(System.currentTimeMillis()
+				- activeLimitInMillis));
 		return query;
 	}
 }

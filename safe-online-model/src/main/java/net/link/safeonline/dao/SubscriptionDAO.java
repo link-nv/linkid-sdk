@@ -45,4 +45,10 @@ public interface SubscriptionDAO {
 	void removeSubscription(SubscriptionEntity subscriptionEntity);
 
 	long getNumberOfSubscriptions(ApplicationEntity application);
+
+	long getActiveNumberOfSubscriptions(ApplicationEntity application,
+			long activeLimitInMillis);
+
+	void loggedIn(SubscriptionEntity subscription);
+
 }

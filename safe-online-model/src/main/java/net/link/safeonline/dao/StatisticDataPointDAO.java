@@ -7,6 +7,8 @@
 
 package net.link.safeonline.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.StatisticDataPointEntity;
@@ -18,6 +20,14 @@ public interface StatisticDataPointDAO {
 	StatisticDataPointEntity addStatisticDataPoint(String name,
 			StatisticEntity statistic, long x, long y, long z);
 
+	List<StatisticDataPointEntity> listStatisticDataPoints(String name,
+			StatisticEntity statistic);
+
+	StatisticDataPointEntity findOrAddStatisticDataPoint(String name,
+			StatisticEntity statistic);
+
 	void cleanStatisticDataPoints(StatisticEntity statistic);
+
+	void cleanStatisticDataPoints(StatisticEntity statistic, long ageInMillis);
 
 }

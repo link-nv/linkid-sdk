@@ -53,6 +53,16 @@ public class StatisticDAOBean implements StatisticDAO {
 		return result;
 	}
 
+	public StatisticEntity findOrAddStatisticByNameAndApplication(String name,
+			ApplicationEntity application) {
+		StatisticEntity statistic = this.findStatisticByNameAndApplication(
+				name, application);
+		if (statistic == null) {
+			statistic = this.addStatistic(name, application);
+		}
+		return statistic;
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<StatisticEntity> listStatistics(ApplicationEntity application) {
 		Query query = StatisticEntity.createQueryWhereApplication(

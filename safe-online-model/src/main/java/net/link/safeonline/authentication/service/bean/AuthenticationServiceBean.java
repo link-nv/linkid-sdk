@@ -23,11 +23,15 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.dao.StatisticDAO;
+import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.StatisticDataPointEntity;
+import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
@@ -37,6 +41,11 @@ import net.link.safeonline.model.PkiValidator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
+import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter;
+
+;
 
 /**
  * Implementation of authentication service interface. This component does not
@@ -74,6 +83,12 @@ public class AuthenticationServiceBean implements AuthenticationService {
 
 	@EJB
 	private SubjectIdentifierDAO subjectIdentifierDAO;
+
+	@EJB
+	private StatisticDAO statisticDAO;
+
+	@EJB
+	private StatisticDataPointDAO statisticDataPointDAO;
 
 	public boolean authenticate(String applicationName, String login,
 			String password) {
@@ -137,6 +152,9 @@ public class AuthenticationServiceBean implements AuthenticationService {
 
 		addHistoryEntry(subject, "authenticated for application "
 				+ applicationName);
+
+		this.subscriptionDAO.loggedIn(subscription);
+		this.addLoginTick(application);
 
 		return true;
 	}
@@ -209,6 +227,9 @@ public class AuthenticationServiceBean implements AuthenticationService {
 		addHistoryEntry(subject, "authenticated subject " + subject
 				+ " for application " + applicationId);
 
+		this.subscriptionDAO.loggedIn(subscription);
+		this.addLoginTick(application);
+
 		return subject.getLogin();
 	}
 
@@ -220,4 +241,17 @@ public class AuthenticationServiceBean implements AuthenticationService {
 		LOG.debug("authenticated application: " + applicationName);
 		return applicationName;
 	}
+
+	private void addLoginTick(ApplicationEntity application) {
+		StatisticEntity statistic = this.statisticDAO
+				.findOrAddStatisticByNameAndApplication(statisticName,
+						application);
+
+		StatisticDataPointEntity dp = this.statisticDataPointDAO
+				.findOrAddStatisticDataPoint(loginCounter, statistic);
+
+		long count = dp.getX();
+		dp.setX(count + 1);
+	}
+
 }

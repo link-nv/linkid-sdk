@@ -7,6 +7,7 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -104,4 +105,18 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		}
 		return subscription;
 	}
+
+	public long getActiveNumberOfSubscriptions(ApplicationEntity application,
+			long activeLimitInMillis) {
+		Query query = SubscriptionEntity
+				.createQueryCountWhereApplicationAndActive(this.entityManager,
+						application, activeLimitInMillis);
+		Long countResult = (Long) query.getSingleResult();
+		return countResult;
+	}
+
+	public void loggedIn(SubscriptionEntity subscription) {
+		subscription.setLastLogin(new Date());
+	}
+
 }

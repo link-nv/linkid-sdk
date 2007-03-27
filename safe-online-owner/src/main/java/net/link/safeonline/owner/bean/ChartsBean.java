@@ -23,8 +23,13 @@ import org.jboss.seam.core.FacesMessages;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.StatisticNotFoundException;
@@ -42,6 +47,8 @@ import net.link.safeonline.service.StatisticService;
 public class ChartsBean implements Charts {
 
 	private static final Log LOG = LogFactory.getLog(ChartsBean.class);
+
+	private static final String usageStatistic = "Usage statistic";
 
 	@EJB
 	private StatisticService statisticService;
@@ -102,6 +109,9 @@ public class ChartsBean implements Charts {
 		// hook specific chart generation functions here
 		if (chartName.equals("blah")) {
 			chart = specificChart(statistic);
+		}
+		if (chartName.equals(usageStatistic)) {
+			chart = usageChart(statistic);
 		} else {
 			chart = defaultChart(statistic);
 		}
@@ -146,4 +156,38 @@ public class ChartsBean implements Charts {
 		return this.defaultChart(statistic);
 	}
 
+	private JFreeChart usageChart(StatisticEntity statistic) {
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		XYSeries numberOfUsers = new XYSeries("Number of Users");
+		XYSeries numberOfActiveUsers = new XYSeries("Number of Active Users");
+		XYSeries numberOfLogins = new XYSeries("Number of Logins");
+
+		for (StatisticDataPointEntity dp : statistic.getStatisticDataPoints()) {
+			if (dp.getName().equals(usageStatistic)) {
+				numberOfUsers.add(dp.getCreationTime().getTime(), dp.getX());
+				numberOfActiveUsers.add(dp.getCreationTime().getTime(), dp
+						.getY());
+				numberOfLogins.add(dp.getCreationTime().getTime(), dp.getZ());
+			}
+		}
+
+		dataset.addSeries(numberOfUsers);
+		dataset.addSeries(numberOfActiveUsers);
+		dataset.addSeries(numberOfLogins);
+
+		JFreeChart chart = ChartFactory.createXYLineChart(statistic.getName(),
+				"Time", "Number", dataset, PlotOrientation.VERTICAL, true,
+				true, false);
+
+		chart.getXYPlot().setDomainAxis(new DateAxis());
+		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+		renderer.setSeriesShapesVisible(0, true);
+		renderer.setSeriesShapesVisible(1, true);
+		renderer.setSeriesShapesVisible(2, true);
+		chart.getXYPlot().setRenderer(renderer);
+		chart.getXYPlot().getRangeAxis().setStandardTickUnits(
+				NumberAxis.createIntegerTickUnits());
+
+		return chart;
+	}
 }

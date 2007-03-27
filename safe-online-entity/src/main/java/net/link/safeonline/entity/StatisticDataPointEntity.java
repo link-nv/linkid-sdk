@@ -21,20 +21,31 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import static net.link.safeonline.entity.StatisticDataPointEntity.DELETE_WHERE_STATISTIC;
+import static net.link.safeonline.entity.StatisticDataPointEntity.QUERY_WHERE_NAME_AND_STATISTIC;
+import static net.link.safeonline.entity.StatisticDataPointEntity.DELETE_WHERE_STATISTIC_EXPIRED;
 
 @Entity
-@Table(name = "statistic_data_point", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"name", "statistic" }))
-@NamedQueries( { @NamedQuery(name = DELETE_WHERE_STATISTIC, query = "DELETE FROM StatisticDataPointEntity "
-		+ "WHERE statistic = :statistic") })
+@Table(name = "statistic_data_point")
+@NamedQueries( {
+		@NamedQuery(name = DELETE_WHERE_STATISTIC, query = "DELETE FROM StatisticDataPointEntity "
+				+ "WHERE statistic = :statistic"),
+		@NamedQuery(name = QUERY_WHERE_NAME_AND_STATISTIC, query = "SELECT dp FROM StatisticDataPointEntity "
+				+ "AS dp WHERE dp.statistic = :statistic "
+				+ "AND dp.name = :name"),
+		@NamedQuery(name = DELETE_WHERE_STATISTIC_EXPIRED, query = "DELETE FROM StatisticDataPointEntity "
+				+ "WHERE statistic = :statistic "
+				+ "AND creationTime < :ageLimit") })
 public class StatisticDataPointEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String DELETE_WHERE_STATISTIC = "sdp.del";
+
+	public static final String QUERY_WHERE_NAME_AND_STATISTIC = "sdp.stat.name";
+
+	public static final String DELETE_WHERE_STATISTIC_EXPIRED = "sdp.del.exp";
 
 	private long id;
 
@@ -128,6 +139,26 @@ public class StatisticDataPointEntity implements Serializable {
 			EntityManager entityManager, StatisticEntity statistic) {
 		Query query = entityManager.createNamedQuery(DELETE_WHERE_STATISTIC);
 		query.setParameter("statistic", statistic);
+		return query;
+	}
+
+	public static Query createQueryWhereNameAndStatistic(
+			EntityManager entityManager, String name, StatisticEntity statistic) {
+		Query query = entityManager
+				.createNamedQuery(QUERY_WHERE_NAME_AND_STATISTIC);
+		query.setParameter("statistic", statistic);
+		query.setParameter("name", name);
+		return query;
+	}
+
+	public static Query createQueryDeleteWhereStatisticExpired(
+			EntityManager entityManager, StatisticEntity statistic,
+			long ageInMillis) {
+		Query query = entityManager
+				.createNamedQuery(DELETE_WHERE_STATISTIC_EXPIRED);
+		query.setParameter("statistic", statistic);
+		query.setParameter("ageLimit", new Date(System.currentTimeMillis()
+				- ageInMillis));
 		return query;
 	}
 

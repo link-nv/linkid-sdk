@@ -8,6 +8,7 @@
 package net.link.safeonline.dao.bean;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -35,9 +36,40 @@ public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
 		return statisticDataPoint;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<StatisticDataPointEntity> listStatisticDataPoints(String name,
+			StatisticEntity statistic) {
+		Query query = StatisticDataPointEntity
+				.createQueryWhereNameAndStatistic(this.entityManager, name,
+						statistic);
+		return query.getResultList();
+
+	}
+
+	public StatisticDataPointEntity findOrAddStatisticDataPoint(String name,
+			StatisticEntity statistic) {
+		StatisticDataPointEntity dp = null;
+		List<StatisticDataPointEntity> dps = this.listStatisticDataPoints(name,
+				statistic);
+		if (dps.size() > 0) {
+			dp = dps.get(0);
+		} else {
+			dp = this.addStatisticDataPoint(name, statistic, 0, 0, 0);
+		}
+		return dp;
+	}
+
 	public void cleanStatisticDataPoints(StatisticEntity statistic) {
 		Query query = StatisticDataPointEntity.createQueryDeleteWhereStatistic(
 				this.entityManager, statistic);
+		query.executeUpdate();
+	}
+
+	public void cleanStatisticDataPoints(StatisticEntity statistic,
+			long ageInMillis) {
+		Query query = StatisticDataPointEntity
+				.createQueryDeleteWhereStatisticExpired(this.entityManager,
+						statistic, ageInMillis);
 		query.executeUpdate();
 	}
 
