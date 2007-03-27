@@ -50,7 +50,12 @@
 		<h:dataTable value="#{selectedApplicationIdentity}" var="item">
 			<h:column>
 				<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
-				<h:outputText value="#{item.name}" />
+				<h:outputText value="#{item.attributeTypeName}" />
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">#{msgs.required}</f:facet>
+				<h:outputText value="#{item.required}" />
 			</h:column>
 		</h:dataTable>
 

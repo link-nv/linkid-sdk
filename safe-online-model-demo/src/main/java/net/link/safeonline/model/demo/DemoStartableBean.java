@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
@@ -78,10 +79,12 @@ public class DemoStartableBean extends AbstractInitBean {
 				"urn:net:lin-k:safe-online:attribute:visaCardNumber", "string",
 				true, true);
 		this.attributeTypes.add(visaAttributeType);
-		String[] attributeTypes = { visaAttributeType.getName(),
-				BeIdConstants.NRN_ATTRIBUTE };
 		this.identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME,
-				attributeTypes));
+				new IdentityAttributeTypeDO[] {
+						new IdentityAttributeTypeDO(
+								visaAttributeType.getName(), true),
+						new IdentityAttributeTypeDO(
+								BeIdConstants.NRN_ATTRIBUTE, true) }));
 	}
 
 	public int getPriority() {

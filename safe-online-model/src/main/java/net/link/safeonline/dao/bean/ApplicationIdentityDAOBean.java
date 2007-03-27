@@ -14,16 +14,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Stateless
 public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
@@ -34,20 +35,14 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
-	public void addApplicationIdentity(ApplicationEntity application,
-			long identityVersion, List<AttributeTypeEntity> attributeTypes) {
+	public ApplicationIdentityEntity addApplicationIdentity(
+			ApplicationEntity application, long identityVersion) {
 		LOG.debug("add application identity: " + application.getName()
 				+ ", version: " + identityVersion);
-		if (null != attributeTypes) {
-			for (AttributeTypeEntity attributeType : attributeTypes) {
-				LOG.debug("identity attribute: " + attributeType.getName());
-			}
-		}
 		ApplicationIdentityEntity applicationIdentity = new ApplicationIdentityEntity(
-				application, identityVersion, attributeTypes);
+				application, identityVersion);
 		this.entityManager.persist(applicationIdentity);
-		LOG.debug("flushing the persistence context");
-		this.entityManager.flush();
+		return applicationIdentity;
 	}
 
 	public ApplicationIdentityEntity getApplicationIdentity(
@@ -76,5 +71,29 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
 	public void removeApplicationIdentity(
 			ApplicationIdentityEntity applicationIdentity) {
 		this.entityManager.remove(applicationIdentity);
+	}
+
+	public ApplicationIdentityAttributeEntity addApplicationIdentityAttribute(
+			ApplicationIdentityEntity applicationIdentity,
+			AttributeTypeEntity attributeType, boolean required) {
+		LOG.debug("add application identity attribute: "
+				+ attributeType.getName() + " to application "
+				+ applicationIdentity.getApplication().getName()
+				+ "; id version: " + applicationIdentity.getIdentityVersion());
+		ApplicationIdentityAttributeEntity applicationIdentityAttribute = new ApplicationIdentityAttributeEntity(
+				applicationIdentity, attributeType, required);
+		this.entityManager.persist(applicationIdentityAttribute);
+		/*
+		 * Update both sides of the relationship.
+		 */
+		applicationIdentity.getAttributes().add(applicationIdentityAttribute);
+		return applicationIdentityAttribute;
+	}
+
+	public void removeApplicationIdentityAttribute(
+			ApplicationIdentityAttributeEntity applicationIdentityAttribute) {
+		applicationIdentityAttribute.getApplicationIdentity().getAttributes()
+				.remove(applicationIdentityAttribute);
+		this.entityManager.remove(applicationIdentityAttribute);
 	}
 }

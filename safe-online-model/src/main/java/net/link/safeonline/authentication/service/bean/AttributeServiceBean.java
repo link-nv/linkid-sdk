@@ -26,9 +26,9 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.ApplicationManager;
@@ -106,12 +106,14 @@ public class AttributeServiceBean implements AttributeService {
 					"application identity not found for version: "
 							+ confirmedIdentityVersion);
 		}
-		List<AttributeTypeEntity> attributeTypes = confirmedApplicationIdentity
-				.getAttributeTypes();
+		List<ApplicationIdentityAttributeEntity> attributes = confirmedApplicationIdentity
+				.getAttributes();
 		boolean hasAttribute = false;
-		for (AttributeTypeEntity attributeType : attributeTypes) {
-			LOG.debug("identity attribute: " + attributeType.getName());
-			if (attributeType.getName().equals(attributeName)) {
+		for (ApplicationIdentityAttributeEntity attribute : attributes) {
+			LOG
+					.debug("identity attribute: "
+							+ attribute.getAttributeTypeName());
+			if (attribute.getAttributeTypeName().equals(attributeName)) {
 				hasAttribute = true;
 				break;
 			}

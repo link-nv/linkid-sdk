@@ -8,6 +8,7 @@
 package net.link.safeonline.model.bean;
 
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +18,7 @@ import javax.ejb.EJB;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
@@ -116,11 +118,12 @@ public abstract class AbstractInitBean implements Startable {
 	protected static class Identity {
 		private final String application;
 
-		private final String[] attributeTypes;
+		private final IdentityAttributeTypeDO[] identityAttributes;
 
-		public Identity(String application, String[] attributeTypes) {
+		public Identity(String application,
+				IdentityAttributeTypeDO[] identityAttributes) {
 			this.application = application;
-			this.attributeTypes = attributeTypes;
+			this.identityAttributes = identityAttributes;
 		}
 	}
 
@@ -258,7 +261,7 @@ public abstract class AbstractInitBean implements Startable {
 							application.certificate, identityVersion);
 
 			this.applicationIdentityDAO.addApplicationIdentity(newApplication,
-					identityVersion, null);
+					identityVersion);
 		}
 	}
 
@@ -287,7 +290,8 @@ public abstract class AbstractInitBean implements Startable {
 		for (Identity identity : this.identities) {
 			try {
 				this.applicationIdentityService.updateApplicationIdentity(
-						identity.application, identity.attributeTypes);
+						identity.application, Arrays
+								.asList(identity.identityAttributes));
 			} catch (Exception e) {
 				LOG.debug("Could not update application identity");
 				throw new RuntimeException(

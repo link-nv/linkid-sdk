@@ -41,7 +41,7 @@
 			<to-view-id>/application-add.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-outcome>view-application</from-outcome>
+			<from-outcome>view</from-outcome>
 			<to-view-id>/application-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -65,7 +65,7 @@
 			<to-view-id>/applications.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-outcome>edit</from-outcome>
+			<from-action>edit</from-action>
 			<to-view-id>/application-edit.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>

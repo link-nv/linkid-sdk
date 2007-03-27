@@ -22,8 +22,8 @@ import net.link.safeonline.authentication.exception.ExistingApplicationOwnerExce
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
 
 /**
  * Interface to service for retrieving information about applications.
@@ -65,7 +65,7 @@ public interface ApplicationService {
 	 * @param description
 	 * @param encodedCertificate
 	 *            the optional application certificate.
-	 * @param initialApplicationIdentityAttributeTypes
+	 * @param initialApplicationIdentityAttributes
 	 *            the attribute types that make up the initial application
 	 *            identity.
 	 * @throws ExistingApplicationException
@@ -75,7 +75,7 @@ public interface ApplicationService {
 	 */
 	void addApplication(String name, String applicationOwnerName,
 			String description, byte[] encodedCertificate,
-			String[] initialApplicationIdentityAttributeTypes)
+			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
 			AttributeTypeNotFoundException;
@@ -130,7 +130,7 @@ public interface ApplicationService {
 	 * @throws ApplicationIdentityNotFoundException
 	 * @throws PermissionDeniedException
 	 */
-	List<AttributeTypeEntity> getCurrentApplicationIdentity(
+	List<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
 			String applicationName) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, PermissionDeniedException;
 
@@ -142,13 +142,13 @@ public interface ApplicationService {
 	 * identity.
 	 * 
 	 * @param applicationId
-	 * @param applicationIdentityAttributeTypes
+	 * @param applicationIdentityAttributes
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
 	 * @throws AttributeTypeNotFoundException
 	 */
 	void updateApplicationIdentity(String applicationId,
-			String[] applicationIdentityAttributeTypes)
+			List<IdentityAttributeTypeDO> applicationIdentityAttributes)
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException,
 			AttributeTypeNotFoundException;

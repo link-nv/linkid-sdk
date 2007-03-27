@@ -10,7 +10,6 @@ package test.unit.net.link.safeonline.entity;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +21,7 @@ import javax.persistence.Query;
 
 import junit.framework.TestCase;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
@@ -76,9 +76,11 @@ public class EntityTest extends TestCase {
 				TrustDomainEntity.class, TrustPointEntity.class,
 				SubjectIdentifierEntity.class, CachedOcspResponseEntity.class,
 				TaskEntity.class, SchedulingEntity.class,
-				TaskHistoryEntity.class, ApplicationIdentityEntity.class,
-				ConfigItemEntity.class, ConfigGroupEntity.class,
-				StatisticEntity.class, StatisticDataPointEntity.class);
+				TaskHistoryEntity.class, ConfigItemEntity.class,
+				ConfigGroupEntity.class, StatisticEntity.class,
+				StatisticDataPointEntity.class,
+				ApplicationIdentityEntity.class,
+				ApplicationIdentityAttributeEntity.class);
 	}
 
 	@Override
@@ -606,20 +608,28 @@ public class EntityTest extends TestCase {
 				"owner", admin);
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application", applicationOwner);
-		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				"test-attribute-type", "string", true, true);
+		AttributeTypeEntity attributeType1 = new AttributeTypeEntity(
+				"test-attribute-type-1", "string", true, true);
+		AttributeTypeEntity attributeType2 = new AttributeTypeEntity(
+				"test-attribute-type-2", "string", true, true);
 		long identityVersion = 10;
 		ApplicationIdentityEntity applicationIdentity = new ApplicationIdentityEntity(
-				application, identityVersion, Collections
-						.singletonList(attributeType));
+				application, identityVersion);
+		ApplicationIdentityAttributeEntity applicationIdentityAttribute1 = new ApplicationIdentityAttributeEntity(
+				applicationIdentity, attributeType1, true);
+		ApplicationIdentityAttributeEntity applicationIdentityAttribute2 = new ApplicationIdentityAttributeEntity(
+				applicationIdentity, attributeType2, true);
 
 		// operate: add entities
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 		entityManager.persist(admin);
 		entityManager.persist(applicationOwner);
 		entityManager.persist(application);
-		entityManager.persist(attributeType);
+		entityManager.persist(attributeType1);
+		entityManager.persist(attributeType2);
 		entityManager.persist(applicationIdentity);
+		entityManager.persist(applicationIdentityAttribute1);
+		entityManager.persist(applicationIdentityAttribute2);
 
 		// verify
 		entityManager = this.entityTestManager.refreshEntityManager();
@@ -628,15 +638,30 @@ public class EntityTest extends TestCase {
 						new ApplicationIdentityPK(application.getName(),
 								identityVersion));
 		assertNotNull(resultApplicationIdentity);
-		List<AttributeTypeEntity> resultAttributeTypes = resultApplicationIdentity
-				.getAttributeTypes();
-		assertNotNull(resultAttributeTypes);
-		assertEquals(1, resultAttributeTypes.size());
-		assertEquals(attributeType, resultAttributeTypes.get(0));
+		List<ApplicationIdentityAttributeEntity> resultIdentityAttributes = resultApplicationIdentity
+				.getAttributes();
+		assertNotNull(resultIdentityAttributes);
+		assertEquals(2, resultIdentityAttributes.size());
+
+		boolean hasType1 = false, hasType2 = false;
+
+		for (ApplicationIdentityAttributeEntity resultIdentityAttribute : resultIdentityAttributes) {
+			AttributeTypeEntity resultAttributeType = resultIdentityAttribute
+					.getAttributeType();
+			if (attributeType1.equals(resultAttributeType)) {
+				hasType1 = true;
+			} else if (attributeType2.equals(resultAttributeType)) {
+				hasType2 = true;
+			}
+			assertEquals(application.getName(), resultIdentityAttribute
+					.getApplicationName());
+		}
+
+		assertTrue(hasType1);
+		assertTrue(hasType2);
 	}
 
 	public void testMultipleApplicationIdentities() throws Exception {
-		// setup
 		SubjectEntity admin = new SubjectEntity("test-admin");
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", admin);
@@ -645,9 +670,9 @@ public class EntityTest extends TestCase {
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
 				"test-attribute-type", "string", true, true);
 		ApplicationIdentityEntity applicationIdentity1 = new ApplicationIdentityEntity(
-				application, 1, Collections.singletonList(attributeType));
+				application, 1);
 		ApplicationIdentityEntity applicationIdentity2 = new ApplicationIdentityEntity(
-				application, 2, Collections.singletonList(attributeType));
+				application, 2);
 
 		// operate: add entities
 		EntityManager entityManager = this.entityTestManager.getEntityManager();

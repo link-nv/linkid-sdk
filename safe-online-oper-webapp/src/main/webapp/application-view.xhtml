@@ -49,19 +49,21 @@
 		<h:outputText value="#{selectedApplication.certificate}" />
 		</pre>
 
-		<h:dataTable value="#{applicationIdentityAttributeTypeList}"
-			var="item">
+		<h:dataTable value="#{applicationIdentityAttributes}" var="item">
 			<h:column>
 				<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
-				<h:outputText value="#{item.name}" />
+				<h:outputText value="#{item.attributeTypeName}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">#{msgs.required}</f:facet>
+				<h:outputText value="#{item.required}" />
 			</h:column>
 		</h:dataTable>
 
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" id="back" action="back" />
 			<so:nbsp />
-			<h:commandButton action="#{application.edit}" id="edit"
-				value="#{msgs.editaction}" />
+			<h:commandButton action="edit" id="edit" value="#{msgs.editaction}" />
 		</h:form>
 
 	</ui:define>

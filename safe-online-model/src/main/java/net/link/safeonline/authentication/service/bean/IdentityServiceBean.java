@@ -31,6 +31,7 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -162,8 +163,8 @@ public class IdentityServiceBean implements IdentityService {
 				.getCurrentApplicationIdentity();
 		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
 				.getApplicationIdentity(application, currentIdentityVersion);
-		List<AttributeTypeEntity> identityAttributeTypes = applicationIdentity
-				.getAttributeTypes();
+		List<ApplicationIdentityAttributeEntity> identityAttributeTypes = applicationIdentity
+				.getAttributes();
 		if (true == identityAttributeTypes.isEmpty()) {
 			/*
 			 * If the identity is empty, the user does not need to do the
@@ -222,8 +223,8 @@ public class IdentityServiceBean implements IdentityService {
 		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
 				.getApplicationIdentity(application,
 						currentApplicationIdentityVersion);
-		List<AttributeTypeEntity> currentIdentityAttributeTypes = applicationIdentity
-				.getAttributeTypes();
+		List<ApplicationIdentityAttributeEntity> currentIdentityAttributes = applicationIdentity
+				.getAttributes();
 
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		SubscriptionEntity subscription = this.subscriptionDAO.getSubscription(
@@ -234,9 +235,13 @@ public class IdentityServiceBean implements IdentityService {
 		if (null == confirmedIdentityVersion) {
 			/*
 			 * If no identity version was confirmed previously, then the user
-			 * needs to confirm the current application identity.
+			 * needs to confirm the current application identity attributes.
 			 */
-			return currentIdentityAttributeTypes;
+			List<AttributeTypeEntity> resultAttributeTypes = new LinkedList<AttributeTypeEntity>();
+			for (ApplicationIdentityAttributeEntity identityAttribute : currentIdentityAttributes) {
+				resultAttributeTypes.add(identityAttribute.getAttributeType());
+			}
+			return resultAttributeTypes;
 		}
 
 		ApplicationIdentityEntity confirmedApplicationIdentity = this.applicationIdentityDAO
@@ -245,7 +250,7 @@ public class IdentityServiceBean implements IdentityService {
 				.getAttributeTypes();
 
 		List<AttributeTypeEntity> toConfirmAttributes = new LinkedList<AttributeTypeEntity>();
-		toConfirmAttributes.addAll(currentIdentityAttributeTypes);
+		toConfirmAttributes.addAll(applicationIdentity.getAttributeTypes());
 		/*
 		 * Be careful here not to edit the currentIdentityAttributeTypes list
 		 * itself.
@@ -275,15 +280,15 @@ public class IdentityServiceBean implements IdentityService {
 		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
 				.getApplicationIdentity(application,
 						currentApplicationIdentityVersion);
-		List<AttributeTypeEntity> applicationAttributeTypes = applicationIdentity
-				.getAttributeTypes();
+		List<AttributeTypeEntity> requiredApplicationAttributeTypes = applicationIdentity
+				.getRequiredAttributeTypes();
 
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		List<AttributeEntity> userAttributes = this.attributeDAO
 				.listAttributes(subject);
 
 		Set<String> missingAttributeNames = new TreeSet<String>();
-		for (AttributeTypeEntity applicationAttributeType : applicationAttributeTypes) {
+		for (AttributeTypeEntity applicationAttributeType : requiredApplicationAttributeTypes) {
 			missingAttributeNames.add(applicationAttributeType.getName());
 		}
 

@@ -20,7 +20,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.owner.Application;
 import net.link.safeonline.owner.OwnerConstants;
 
@@ -78,7 +78,7 @@ public class ApplicationBean implements Application {
 
 	@Out(value = "selectedApplicationIdentity", required = false)
 	@SuppressWarnings("unused")
-	private List<AttributeTypeEntity> selectedApplicationIdentity;
+	private List<ApplicationIdentityAttributeEntity> selectedApplicationIdentity;
 
 	@Factory("ownerApplicationList")
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)

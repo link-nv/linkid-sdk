@@ -8,14 +8,15 @@
 package net.link.safeonline.oper.bean;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -25,10 +26,13 @@ import net.link.safeonline.authentication.exception.CertificateEncodingException
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.oper.Application;
+import net.link.safeonline.oper.IdentityAttribute;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.service.AttributeTypeService;
 
@@ -80,12 +84,15 @@ public class ApplicationBean implements Application {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	@In(value = "selectedNewApplicationAttributeTypes", required = false)
-	private String[] selectedAttributeTypes;
+	public static final String NEW_IDENTITY_ATTRIBUTES_NAME = "newIdentityAttributes";
 
-	@Out(value = "selectedApplicationIdentityAttributeTypeList", required = false)
-	@In(required = false)
-	private String[] selectedApplicationIdentityAttributeTypeList;
+	@DataModel(NEW_IDENTITY_ATTRIBUTES_NAME)
+	private List<IdentityAttribute> newIdentityAttributes;
+
+	public static final String IDENTITY_ATTRIBUTES_NAME = "identityAttributes";
+
+	@DataModel(value = IDENTITY_ATTRIBUTES_NAME)
+	private List<IdentityAttribute> identityAttributes;
 
 	@Remove
 	@Destroy
@@ -94,60 +101,71 @@ public class ApplicationBean implements Application {
 		this.description = null;
 	}
 
+	public static final String OPER_APPLICATION_LIST_NAME = "operApplicationList";
+
 	@SuppressWarnings("unused")
-	@DataModel
+	@DataModel(OPER_APPLICATION_LIST_NAME)
 	private List<ApplicationEntity> operApplicationList;
 
-	@DataModelSelection("operApplicationList")
+	@DataModelSelection(OPER_APPLICATION_LIST_NAME)
 	@Out(value = "selectedApplication", required = false, scope = ScopeType.SESSION)
 	@In(required = false)
 	private ApplicationEntity selectedApplication;
 
-	@SuppressWarnings("unused")
-	@Out(value = "applicationIdentityAttributeTypeList", required = false)
-	private List<AttributeTypeEntity> applicationIdentityAttributeTypeList;
+	public static final String APPLICATION_IDENTITY_ATTRIBUTES_NAME = "applicationIdentityAttributes";
 
-	@Factory("operApplicationList")
+	@SuppressWarnings("unused")
+	@DataModel(value = APPLICATION_IDENTITY_ATTRIBUTES_NAME)
+	private List<ApplicationIdentityAttributeEntity> applicationIdentityAttributes;
+
+	@Factory(OPER_APPLICATION_LIST_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void applicationListFactory() {
 		LOG.debug("application list factory");
 		this.operApplicationList = this.applicationService.listApplications();
 	}
 
+	@Factory(APPLICATION_IDENTITY_ATTRIBUTES_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
+	public void applicationIdentityAttributesFactory() {
+		LOG.debug("application identity attributes factory");
 		String applicationName = this.selectedApplication.getName();
-		LOG.debug("view: " + applicationName);
 		try {
+			this.applicationIdentityAttributes = this.applicationService
+					.getCurrentApplicationIdentity(applicationName);
 			this.numberOfSubscriptions = this.subscriptionService
 					.getNumberOfSubscriptions(applicationName);
-			this.applicationIdentityAttributeTypeList = this.applicationService
-					.getCurrentApplicationIdentity(applicationName);
 		} catch (ApplicationNotFoundException e) {
 			String msg = "application not found";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
-			return null;
+			return;
 		} catch (ApplicationIdentityNotFoundException e) {
 			String msg = "application identity not found";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
-			return null;
+			return;
 		} catch (PermissionDeniedException e) {
 			String msg = "permission denied";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
-			return null;
+			return;
 		}
-
-		return "view-application";
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String add() {
 		LOG.debug("add application: " + this.name);
-		for (String item : this.selectedAttributeTypes) {
-			LOG.debug("selected attribute type: " + item);
+		List<IdentityAttributeTypeDO> identityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+		for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
+			if (false == viewIdentityAttribute.isIncluded()) {
+				continue;
+			}
+			LOG.debug("include attribute: " + viewIdentityAttribute.getName());
+			IdentityAttributeTypeDO identityAttribute = new IdentityAttributeTypeDO(
+					viewIdentityAttribute.getName(), viewIdentityAttribute
+							.isRequired());
+			identityAttributes.add(identityAttribute);
 		}
 		try {
 			byte[] encodedCertificate;
@@ -158,7 +176,7 @@ public class ApplicationBean implements Application {
 			}
 			this.applicationService.addApplication(this.name,
 					this.applicationOwner, this.description,
-					encodedCertificate, this.selectedAttributeTypes);
+					encodedCertificate, identityAttributes);
 		} catch (ExistingApplicationException e) {
 			String msg = "application already exists: " + this.name;
 			LOG.debug(msg);
@@ -248,72 +266,98 @@ public class ApplicationBean implements Application {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory("applicationAttributeTypeList")
-	public List<SelectItem> applicationAttributeTypeListFactory() {
+	@Factory(NEW_IDENTITY_ATTRIBUTES_NAME)
+	public void newIdentityAttributesFactory() {
+		this.newIdentityAttributes = new LinkedList<IdentityAttribute>();
 		List<AttributeTypeEntity> attributeTypes = this.attributeTypeService
 				.listAttributeTypes();
-		List<SelectItem> itemList = new LinkedList<SelectItem>();
 		for (AttributeTypeEntity attributeType : attributeTypes) {
-			SelectItem item = new SelectItem(attributeType.getName());
-			itemList.add(item);
+			IdentityAttribute identityAttribute = new IdentityAttribute(
+					attributeType.getName());
+			this.newIdentityAttributes.add(identityAttribute);
 		}
-		return itemList;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory("selectedNewApplicationAttributeTypes")
-	public String[] selectedNewApplicationAttributeTypesFactory() {
-		return new String[] {};
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String edit() {
-		List<AttributeTypeEntity> identityAttributeTypes;
+	@Factory(IDENTITY_ATTRIBUTES_NAME)
+	public void identityAttributesFactory() {
+		List<ApplicationIdentityAttributeEntity> currentIdentityAttributes;
 		try {
-			identityAttributeTypes = this.applicationService
+			currentIdentityAttributes = this.applicationService
 					.getCurrentApplicationIdentity(this.selectedApplication
 							.getName());
 		} catch (ApplicationNotFoundException e) {
 			String msg = "application not found";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
-			return null;
+			return;
 		} catch (ApplicationIdentityNotFoundException e) {
 			String msg = "application identity not found";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
-			return null;
+			return;
 		} catch (PermissionDeniedException e) {
 			String msg = "permission denied";
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
-			return null;
+			return;
 		}
-		this.selectedApplicationIdentityAttributeTypeList = new String[identityAttributeTypes
-				.size()];
-		for (int idx = 0; idx < this.selectedApplicationIdentityAttributeTypeList.length; idx++) {
-			this.selectedApplicationIdentityAttributeTypeList[idx] = identityAttributeTypes
-					.get(idx).getName();
+
+		/*
+		 * Construct a map for fast lookup. The key is the attribute type name.
+		 */
+		Map<String, ApplicationIdentityAttributeEntity> currentIdentity = new HashMap<String, ApplicationIdentityAttributeEntity>();
+		for (ApplicationIdentityAttributeEntity applicationIdentityAttribute : currentIdentityAttributes) {
+			currentIdentity.put(applicationIdentityAttribute
+					.getAttributeTypeName(), applicationIdentityAttribute);
 		}
-		return "edit";
+
+		/*
+		 * The view receives a full attribute list, annotated with included and
+		 * required flags.
+		 */
+		this.identityAttributes = new LinkedList<IdentityAttribute>();
+		List<AttributeTypeEntity> attributeTypes = this.attributeTypeService
+				.listAttributeTypes();
+		for (AttributeTypeEntity attributeType : attributeTypes) {
+			boolean included = false;
+			boolean required = false;
+			ApplicationIdentityAttributeEntity currentIdentityAttribute = currentIdentity
+					.get(attributeType.getName());
+			if (null != currentIdentityAttribute) {
+				included = true;
+				if (currentIdentityAttribute.isRequired()) {
+					required = true;
+				}
+			}
+			IdentityAttribute identityAttribute = new IdentityAttribute(
+					attributeType.getName(), included, required);
+			this.identityAttributes.add(identityAttribute);
+		}
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String save() {
 		String applicationId = this.selectedApplication.getName();
 		LOG.debug("save application: " + applicationId);
-		for (String item : this.selectedApplicationIdentityAttributeTypeList) {
-			LOG.debug("application identity attribute type: " + item);
+		List<IdentityAttributeTypeDO> newIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+		for (IdentityAttribute identityAttribute : this.identityAttributes) {
+			if (false == identityAttribute.isIncluded()) {
+				continue;
+			}
+			IdentityAttributeTypeDO newIdentityAttribute = new IdentityAttributeTypeDO(
+					identityAttribute.getName(), identityAttribute.isRequired());
+			newIdentityAttributes.add(newIdentityAttribute);
 		}
 		try {
 			this.applicationService.updateApplicationIdentity(applicationId,
-					this.selectedApplicationIdentityAttributeTypeList);
+					newIdentityAttributes);
 			/*
 			 * Refresh the selected application.
 			 */
 			this.selectedApplication = this.applicationService
 					.getApplication(applicationId);
-			this.applicationIdentityAttributeTypeList = this.applicationService
+			this.applicationIdentityAttributes = this.applicationService
 					.getCurrentApplicationIdentity(applicationId);
 		} catch (ApplicationNotFoundException e) {
 			String msg = "application not found";
@@ -337,5 +381,14 @@ public class ApplicationBean implements Application {
 			return null;
 		}
 		return "success";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String view() {
+		/*
+		 * To set the selected application.
+		 */
+		LOG.debug("view application: " + this.selectedApplication.getName());
+		return "view";
 	}
 }

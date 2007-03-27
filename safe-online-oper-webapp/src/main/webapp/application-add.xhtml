@@ -56,10 +56,17 @@
 			</h:panelGrid>
 
 			#{msgs.applicationIdentity}:
-			<h:selectManyCheckbox layout="pageDirection"
-				value="#{selectedNewApplicationAttributeTypes}">
-				<f:selectItems value="#{applicationAttributeTypeList}" />
-			</h:selectManyCheckbox>
+			<h:dataTable value="#{newIdentityAttributes}" var="item">
+				<h:column>
+					<f:facet name="header">#{msgs.name}</f:facet>
+					<h:selectBooleanCheckbox value="#{item.included}" id="included" />
+					<h:outputLabel for="included" value="#{item.name}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.required}</f:facet>
+					<h:selectBooleanCheckbox value="#{item.required}" />
+				</h:column>
+			</h:dataTable>
 
 			<t:messages styleClass="error" globalOnly="true" />
 

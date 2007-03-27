@@ -24,12 +24,16 @@ import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.dao.StatisticDAO;
+import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.StatisticDataPointEntity;
+import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
@@ -64,6 +68,10 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 	private SubjectIdentifierDAO mockSubjectIdentifierDAO;
 
+	private StatisticDAO mockStatisticDAO;
+
+	private StatisticDataPointDAO mockStatisticDataPointDAO;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -94,13 +102,21 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		this.mockSubjectIdentifierDAO = createMock(SubjectIdentifierDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockSubjectIdentifierDAO);
 
+		this.mockStatisticDAO = createMock(StatisticDAO.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockStatisticDAO);
+
+		this.mockStatisticDataPointDAO = createMock(StatisticDataPointDAO.class);
+		EJBTestUtils
+				.inject(this.testedInstance, this.mockStatisticDataPointDAO);
+
 		EJBTestUtils.init(this.testedInstance);
 
 		this.mockObjects = new Object[] { this.mockSubjectDAO,
 				this.mockApplicationDAO, this.mockSubscriptionDAO,
 				this.mockHistoryDAO, this.mockAttributeDAO,
 				this.mockPkiProviderManager, this.mockPkiValidator,
-				this.mockSubjectIdentifierDAO };
+				this.mockSubjectIdentifierDAO, this.mockStatisticDAO,
+				this.mockStatisticDataPointDAO };
 	}
 
 	public void testAuthenticate() throws Exception {
@@ -135,6 +151,17 @@ public class AuthenticationServiceBeanTest extends TestCase {
 				this.mockAttributeDAO.findAttribute(
 						SafeOnlineConstants.PASSWORD_ATTRIBUTE, "test-login"))
 				.andStubReturn(passwordAttribute);
+		this.mockSubscriptionDAO.loggedIn(subscription);
+
+		StatisticEntity statistic = new StatisticEntity();
+		expect(
+				this.mockStatisticDAO.findOrAddStatisticByNameAndApplication(
+						"Usage statistic", application)).andStubReturn(
+				statistic);
+		StatisticDataPointEntity dataPoint = new StatisticDataPointEntity();
+		expect(
+				this.mockStatisticDataPointDAO.findOrAddStatisticDataPoint(
+						"Login counter", statistic)).andStubReturn(dataPoint);
 
 		// prepare
 		replay(this.mockObjects);
@@ -244,9 +271,20 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		expect(this.mockSubscriptionDAO.findSubscription(subject, application))
 				.andStubReturn(subscription);
 
+		StatisticEntity statistic = new StatisticEntity();
+		expect(
+				this.mockStatisticDAO.findOrAddStatisticByNameAndApplication(
+						"Usage statistic", application)).andStubReturn(
+				statistic);
+		StatisticDataPointEntity dataPoint = new StatisticDataPointEntity();
+		expect(
+				this.mockStatisticDataPointDAO.findOrAddStatisticDataPoint(
+						"Login counter", statistic)).andStubReturn(dataPoint);
+
 		// expectations
 		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
 				EasyMock.eq(subject), (String) EasyMock.anyObject());
+		this.mockSubscriptionDAO.loggedIn(subscription);
 
 		// prepare
 		replay(this.mockObjects);

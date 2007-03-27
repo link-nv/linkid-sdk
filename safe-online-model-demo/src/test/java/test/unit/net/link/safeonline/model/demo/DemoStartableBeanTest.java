@@ -26,6 +26,7 @@ import net.link.safeonline.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.dao.bean.TrustPointDAOBean;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
@@ -72,7 +73,8 @@ public class DemoStartableBeanTest extends TestCase {
 				ApplicationIdentityEntity.class, ConfigGroupEntity.class,
 				ConfigItemEntity.class, SchedulingEntity.class,
 				TaskEntity.class, TaskHistoryEntity.class,
-				TrustPointEntity.class);
+				TrustPointEntity.class,
+				ApplicationIdentityAttributeEntity.class);
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 

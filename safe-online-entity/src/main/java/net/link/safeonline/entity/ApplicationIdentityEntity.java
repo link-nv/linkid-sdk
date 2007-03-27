@@ -19,10 +19,10 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -44,24 +44,28 @@ public class ApplicationIdentityEntity implements Serializable {
 
 	private ApplicationEntity application;
 
-	private List<AttributeTypeEntity> attributeTypes;
+	private List<ApplicationIdentityAttributeEntity> attributes;
 
 	public ApplicationIdentityEntity() {
-		this.attributeTypes = new LinkedList<AttributeTypeEntity>();
+		this.attributes = new LinkedList<ApplicationIdentityAttributeEntity>();
 	}
 
 	public ApplicationIdentityEntity(ApplicationEntity application,
-			long identityVersion, List<AttributeTypeEntity> attributeTypes) {
+			long identityVersion) {
 		this.pk = new ApplicationIdentityPK(application.getName(),
 				identityVersion);
 		this.application = application;
-		this.attributeTypes = attributeTypes;
+		this.attributes = new LinkedList<ApplicationIdentityAttributeEntity>();
 	}
+
+	public static final String APPLICATION_COLUMN_NAME = "application";
+
+	public static final String IDENTITY_VERSION_COLUMN_NAME = "identityVersion";
 
 	@EmbeddedId
 	@AttributeOverrides( {
-			@AttributeOverride(name = "application", column = @Column(name = "application")),
-			@AttributeOverride(name = "identityVersion", column = @Column(name = "identityVersion")) })
+			@AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
+			@AttributeOverride(name = "identityVersion", column = @Column(name = IDENTITY_VERSION_COLUMN_NAME)) })
 	public ApplicationIdentityPK getPk() {
 		return this.pk;
 	}
@@ -76,7 +80,7 @@ public class ApplicationIdentityEntity implements Serializable {
 	}
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "application", insertable = false, updatable = false)
+	@JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false)
 	public ApplicationEntity getApplication() {
 		return this.application;
 	}
@@ -85,13 +89,41 @@ public class ApplicationIdentityEntity implements Serializable {
 		this.application = application;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	public List<AttributeTypeEntity> getAttributeTypes() {
-		return this.attributeTypes;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationIdentity")
+	public List<ApplicationIdentityAttributeEntity> getAttributes() {
+		return this.attributes;
 	}
 
-	public void setAttributeTypes(List<AttributeTypeEntity> attributeTypes) {
-		this.attributeTypes = attributeTypes;
+	public void setAttributes(
+			List<ApplicationIdentityAttributeEntity> attributes) {
+		this.attributes = attributes;
+	}
+
+	@Transient
+	public List<AttributeTypeEntity> getAttributeTypes() {
+		List<AttributeTypeEntity> attributeTypes = new LinkedList<AttributeTypeEntity>();
+		for (ApplicationIdentityAttributeEntity attribute : this
+				.getAttributes()) {
+			attributeTypes.add(attribute.getAttributeType());
+		}
+		return attributeTypes;
+	}
+
+	@Transient
+	public List<AttributeTypeEntity> getRequiredAttributeTypes() {
+		List<AttributeTypeEntity> requiredAttributeTypes = new LinkedList<AttributeTypeEntity>();
+		for (ApplicationIdentityAttributeEntity attribute : this
+				.getAttributes()) {
+			/*
+			 * This could be optimized via an SQL query, though the identity
+			 * attribute set will always be limited.
+			 */
+			if (false == attribute.isRequired()) {
+				continue;
+			}
+			requiredAttributeTypes.add(attribute.getAttributeType());
+		}
+		return requiredAttributeTypes;
 	}
 
 	public static Query createQueryWhereApplication(

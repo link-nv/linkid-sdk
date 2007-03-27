@@ -1,0 +1,57 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
+package net.link.safeonline.oper;
+
+import java.io.Serializable;
+
+public class IdentityAttribute implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private String name;
+
+	private boolean included;
+
+	private boolean required;
+
+	public IdentityAttribute(String name) {
+		this.name = name;
+		this.included = false;
+		this.required = false;
+	}
+
+	public IdentityAttribute(String name, boolean included, boolean required) {
+		this.name = name;
+		this.included = included;
+		this.required = required;
+	}
+
+	public boolean isIncluded() {
+		return this.included;
+	}
+
+	public void setIncluded(boolean included) {
+		this.included = included;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isRequired() {
+		return this.required;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
+}

@@ -8,7 +8,6 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.security.cert.X509Certificate;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -32,6 +31,7 @@ import net.link.safeonline.authentication.exception.ExistingApplicationOwnerExce
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
@@ -40,6 +40,7 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
@@ -111,7 +112,7 @@ public class ApplicationServiceBean implements ApplicationService {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void addApplication(String name, String applicationOwnerName,
 			String description, byte[] encodedCertificate,
-			String[] initialApplicationIdentityAttributeTypes)
+			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
 			AttributeTypeNotFoundException {
@@ -127,31 +128,34 @@ public class ApplicationServiceBean implements ApplicationService {
 		ApplicationEntity application = this.applicationDAO.addApplication(
 				name, applicationOwner, description, certificate);
 
-		setInitialApplicationIdentity(initialApplicationIdentityAttributeTypes,
+		setInitialApplicationIdentity(initialApplicationIdentityAttributes,
 				application);
 	}
 
 	private void setInitialApplicationIdentity(
-			String[] initialApplicationIdentityAttributeTypes,
+			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributeTypes,
 			ApplicationEntity application)
 			throws AttributeTypeNotFoundException {
-		List<AttributeTypeEntity> identityAttributeTypes = loadIdentityAttributeTypes(initialApplicationIdentityAttributeTypes);
 		long initialIdentityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
-		this.applicationIdentityDAO.addApplicationIdentity(application,
-				initialIdentityVersion, identityAttributeTypes);
+		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
+				.addApplicationIdentity(application, initialIdentityVersion);
 		application.setCurrentApplicationIdentity(initialIdentityVersion);
+
+		addIdentityAttributes(applicationIdentity,
+				initialApplicationIdentityAttributeTypes);
 	}
 
-	private List<AttributeTypeEntity> loadIdentityAttributeTypes(
-			String[] initialApplicationIdentityAttributeTypes)
+	private void addIdentityAttributes(
+			ApplicationIdentityEntity applicationIdentity,
+			List<IdentityAttributeTypeDO> applicationIdentityAttributes)
 			throws AttributeTypeNotFoundException {
-		List<AttributeTypeEntity> identityAttributeTypes = new LinkedList<AttributeTypeEntity>();
-		for (String initialApplicationIdentityAttributeType : initialApplicationIdentityAttributeTypes) {
+		for (IdentityAttributeTypeDO identityAttribute : applicationIdentityAttributes) {
 			AttributeTypeEntity attributeType = this.attributeTypeDAO
-					.getAttributeType(initialApplicationIdentityAttributeType);
-			identityAttributeTypes.add(attributeType);
+					.getAttributeType(identityAttribute.getName());
+			this.applicationIdentityDAO.addApplicationIdentityAttribute(
+					applicationIdentity, attributeType, identityAttribute
+							.isRequired());
 		}
-		return identityAttributeTypes;
 	}
 
 	private void checkExistingApplication(String name)
@@ -288,9 +292,10 @@ public class ApplicationServiceBean implements ApplicationService {
 	}
 
 	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
-	public List<AttributeTypeEntity> getCurrentApplicationIdentity(
+	public List<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
 			String applicationName) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, PermissionDeniedException {
+		LOG.debug("get current application identity: " + applicationName);
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
 
@@ -300,9 +305,12 @@ public class ApplicationServiceBean implements ApplicationService {
 				.getCurrentApplicationIdentity();
 		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
 				.getApplicationIdentity(application, currentIdentityVersion);
-		List<AttributeTypeEntity> attributeTypes = applicationIdentity
-				.getAttributeTypes();
-		return attributeTypes;
+		List<ApplicationIdentityAttributeEntity> attributes = applicationIdentity
+				.getAttributes();
+		for (ApplicationIdentityAttributeEntity attribute : attributes) {
+			LOG.debug("attribute: " + attribute);
+		}
+		return attributes;
 	}
 
 	private void checkReadPermission(ApplicationEntity application)
@@ -322,12 +330,12 @@ public class ApplicationServiceBean implements ApplicationService {
 	@SuppressWarnings("unchecked")
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void updateApplicationIdentity(String applicationId,
-			String[] applicationIdentityAttributeTypes)
+			List<IdentityAttributeTypeDO> applicationIdentityAttributes)
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException,
 			AttributeTypeNotFoundException {
 		this.applicationIdentityService.updateApplicationIdentity(
-				applicationId, applicationIdentityAttributeTypes);
+				applicationId, applicationIdentityAttributes);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

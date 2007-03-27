@@ -7,11 +7,14 @@
 
 package net.link.safeonline.model;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 
 /**
  * Interface for the application identity manager component. This component
@@ -30,13 +33,13 @@ public interface ApplicationIdentityManager {
 	 * attributes.
 	 * 
 	 * @param applicationId
-	 * @param applicationIdentityAttributeTypes
+	 * @param applicationIdentityAttributes
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
 	 * @throws AttributeTypeNotFoundException
 	 */
 	void updateApplicationIdentity(String applicationId,
-			String[] applicationIdentityAttributeTypes)
+			List<IdentityAttributeTypeDO> applicationIdentityAttributes)
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException,
 			AttributeTypeNotFoundException;

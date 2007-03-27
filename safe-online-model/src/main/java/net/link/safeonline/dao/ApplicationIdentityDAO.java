@@ -13,14 +13,15 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
 @Local
 public interface ApplicationIdentityDAO {
 
-	void addApplicationIdentity(ApplicationEntity application,
-			long identityVersion, List<AttributeTypeEntity> attributeTypes);
+	ApplicationIdentityEntity addApplicationIdentity(
+			ApplicationEntity application, long identityVersion);
 
 	ApplicationIdentityEntity getApplicationIdentity(
 			ApplicationEntity application, long identityVersion)
@@ -30,4 +31,11 @@ public interface ApplicationIdentityDAO {
 			ApplicationEntity application);
 
 	void removeApplicationIdentity(ApplicationIdentityEntity applicationIdentity);
+
+	ApplicationIdentityAttributeEntity addApplicationIdentityAttribute(
+			ApplicationIdentityEntity applicationIdentity,
+			AttributeTypeEntity attributeType, boolean required);
+
+	void removeApplicationIdentityAttribute(
+			ApplicationIdentityAttributeEntity applicationIdentityAttribute);
 }

@@ -7,23 +7,31 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
-import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class ApplicationServiceBeanTest extends TestCase {
+
+	private static final Log LOG = LogFactory
+			.getLog(ApplicationServiceBeanTest.class);
 
 	private EntityTestManager entityTestManager;
 
@@ -52,26 +60,50 @@ public class ApplicationServiceBeanTest extends TestCase {
 		// setup
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
-		EJBTestUtils.setJBossPrincipal("test-operator", "operator");
-
 		// operate
 		ApplicationService applicationService = EJBTestUtils.newInstance(
 				ApplicationServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
-		List<AttributeTypeEntity> result = applicationService
+		List<ApplicationIdentityAttributeEntity> result = applicationService
 				.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+
+		// verify
 		assertTrue(result.isEmpty());
-		String[] applicationIdentityAttributeTypeNames = new String[] { SafeOnlineConstants.NAME_ATTRIBUTE };
+
+		// operate
+		IdentityAttributeTypeDO[] applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+				SafeOnlineConstants.NAME_ATTRIBUTE, false) };
+		LOG.debug("---------- UPDATING APPLICATION IDENTITY ----------");
 		applicationService.updateApplicationIdentity(
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-				applicationIdentityAttributeTypeNames);
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, Arrays
+						.asList(applicationIdentityAttributes));
 		result = applicationService
 				.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
 		// verify
 		assertEquals(1, result.size());
 		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.get(0)
-				.getName());
+				.getAttributeTypeName());
+		assertFalse(result.get(0).isRequired());
+
+		// operate
+		applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+				SafeOnlineConstants.NAME_ATTRIBUTE, true) };
+		entityManager.getTransaction().commit();
+		entityManager.getTransaction().begin();
+		applicationService.updateApplicationIdentity(
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, Arrays
+						.asList(applicationIdentityAttributes));
+		entityManager.getTransaction().commit();
+		entityManager.getTransaction().begin();
+		result = applicationService
+				.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+
+		// verify
+		assertEquals(1, result.size());
+		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.get(0)
+				.getAttributeTypeName());
+		assertTrue(result.get(0).isRequired());
 	}
 }

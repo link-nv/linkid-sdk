@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -17,6 +18,7 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AttributeService;
+import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
@@ -89,8 +91,15 @@ public class AttributeServiceBeanTest extends TestCase {
 				ApplicationServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
-		applicationService.addApplication(testApplicationName, "owner", null,
-				null, new String[] { testAttributeName });
+		applicationService
+				.addApplication(
+						testApplicationName,
+						"owner",
+						null,
+						null,
+						Arrays
+								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+										testAttributeName, true) }));
 
 		AttributeService attributeService = EJBTestUtils.newInstance(
 				AttributeServiceBean.class,
@@ -131,8 +140,15 @@ public class AttributeServiceBeanTest extends TestCase {
 				ApplicationServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
-		applicationService.addApplication(testApplicationName, "owner", null,
-				null, new String[] { testAttributeName });
+		applicationService
+				.addApplication(
+						testApplicationName,
+						"owner",
+						null,
+						null,
+						Arrays
+								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+										testAttributeName, true) }));
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -180,8 +196,15 @@ public class AttributeServiceBeanTest extends TestCase {
 				ApplicationServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
-		applicationService.addApplication(testApplicationName, "owner", null,
-				null, new String[] { testAttributeName });
+		applicationService
+				.addApplication(
+						testApplicationName,
+						"owner",
+						null,
+						null,
+						Arrays
+								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+										testAttributeName, true) }));
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -240,8 +263,15 @@ public class AttributeServiceBeanTest extends TestCase {
 				ApplicationServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
-		applicationService.addApplication(testApplicationName, "owner", null,
-				null, new String[] { testAttributeName });
+		applicationService
+				.addApplication(
+						testApplicationName,
+						"owner",
+						null,
+						null,
+						Arrays
+								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+										testAttributeName, true) }));
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,

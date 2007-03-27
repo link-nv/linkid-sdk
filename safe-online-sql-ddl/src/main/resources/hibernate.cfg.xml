@@ -26,6 +26,8 @@
 		<mapping class="net.link.safeonline.entity.TaskHistoryEntity" />
 		<mapping
 			class="net.link.safeonline.entity.ApplicationIdentityEntity" />
+		<mapping
+			class="net.link.safeonline.entity.ApplicationIdentityAttributeEntity" />
 		<mapping class="net.link.safeonline.entity.ConfigGroupEntity" />
 		<mapping class="net.link.safeonline.entity.ConfigItemEntity" />
 		<mapping class="net.link.safeonline.entity.StatisticEntity" />
