@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -12,13 +12,16 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 
@@ -51,6 +54,9 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 	@EJB
 	private AttributeDAO attributeDAO;
 
+	@EJB
+	private AttributeTypeDAO attributeTypeDAO;
+
 	public void registerUser(String login, String password, String name)
 			throws ExistingUserException {
 		LOG.debug("register user: " + login);
@@ -61,7 +67,11 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 
 		SubjectEntity newSubject = this.subjectDAO.addSubject(login);
 
-		setAttributes(login, password, name);
+		try {
+			setAttributes(newSubject, password, name);
+		} catch (AttributeTypeNotFoundException e) {
+			throw new EJBException("attribute type not found");
+		}
 
 		/*
 		 * Make sure the user can at least login into the SafeOnline user web
@@ -71,12 +81,16 @@ public class UserRegistrationServiceBean implements UserRegistrationService {
 				newSubject, safeOnlineUserApplication);
 	}
 
-	private void setAttributes(String login, String password, String name) {
-		this.attributeDAO.addAttribute(SafeOnlineConstants.PASSWORD_ATTRIBUTE,
-				login, password);
+	private void setAttributes(SubjectEntity subject, String password,
+			String name) throws AttributeTypeNotFoundException {
+		AttributeTypeEntity passwordAttributeType = this.attributeTypeDAO
+				.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
+		this.attributeDAO
+				.addAttribute(passwordAttributeType, subject, password);
 		if (null != name) {
-			this.attributeDAO.addAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
-					login, name);
+			AttributeTypeEntity nameAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.NAME_ATTRIBUTE);
+			this.attributeDAO.addAttribute(nameAttributeType, subject, name);
 		}
 	}
 

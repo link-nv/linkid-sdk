@@ -15,9 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
@@ -281,8 +283,15 @@ public abstract class AbstractInitBean implements Startable {
 				continue;
 			}
 			String password = authorizedUser.getValue();
-			this.attributeDAO.addAttribute(
-					SafeOnlineConstants.PASSWORD_ATTRIBUTE, login, password);
+			AttributeTypeEntity passwordAttributeType;
+			try {
+				passwordAttributeType = this.attributeTypeDAO
+						.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
+			} catch (AttributeTypeNotFoundException e) {
+				throw new EJBException("attribute type not found");
+			}
+			this.attributeDAO.addAttribute(passwordAttributeType, subject,
+					password);
 		}
 	}
 

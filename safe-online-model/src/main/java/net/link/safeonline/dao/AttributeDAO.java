@@ -20,14 +20,11 @@ public interface AttributeDAO {
 
 	AttributeEntity findAttribute(String attributeTypeName, String subjectLogin);
 
-	void addAttribute(String attributeTypeName, String subjectLogin,
-			String stringValue);
-
-	void addAttribute(AttributeTypeEntity attributeType, String subjectLogin,
+	void addAttribute(AttributeTypeEntity attributeType, SubjectEntity subject,
 			String stringValue);
 
 	List<AttributeEntity> listAttributes(SubjectEntity subject);
 
-	void addOrUpdateAttribute(String attributeTypeName, String subjectLogin,
-			String stringValue);
+	void addOrUpdateAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, String stringValue);
 }

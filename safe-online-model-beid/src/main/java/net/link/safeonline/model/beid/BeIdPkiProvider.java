@@ -12,15 +12,20 @@ import java.security.cert.X509Certificate;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.security.auth.x500.X500Principal;
 
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.model.PkiProvider;
 import net.link.safeonline.model.SubjectManager;
@@ -48,6 +53,9 @@ public class BeIdPkiProvider implements PkiProvider {
 
 	@EJB
 	private AttributeDAO attributeDAO;
+
+	@EJB
+	private AttributeTypeDAO attributeTypeDAO;
 
 	@EJB
 	private SubjectManager subjectManager;
@@ -116,16 +124,23 @@ public class BeIdPkiProvider implements PkiProvider {
 	public void storeAdditionalAttributes(X509Certificate certificate) {
 		String subjectName = getSubjectName(certificate);
 		String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
-		String login = this.subjectManager.getCallerLogin();
-		setOrOverrideAttribute(BeIdConstants.NRN_ATTRIBUTE, login, nrn);
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		setOrOverrideAttribute(BeIdConstants.NRN_ATTRIBUTE, subject, nrn);
 	}
 
-	private void setOrOverrideAttribute(String attributeName, String login,
-			String value) {
+	private void setOrOverrideAttribute(String attributeName,
+			SubjectEntity subject, String value) {
 		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeName, login);
+				attributeName, subject.getLogin());
 		if (null == attribute) {
-			this.attributeDAO.addAttribute(attributeName, login, value);
+			AttributeTypeEntity attributeType;
+			try {
+				attributeType = this.attributeTypeDAO
+						.getAttributeType(attributeName);
+			} catch (AttributeTypeNotFoundException e) {
+				throw new EJBException("attribute type not found");
+			}
+			this.attributeDAO.addAttribute(attributeType, subject, value);
 		} else {
 			attribute.setStringValue(value);
 		}

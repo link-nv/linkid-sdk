@@ -32,6 +32,7 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -145,8 +146,9 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
 				EasyMock.eq(subject), (String) EasyMock.anyObject());
 
+		AttributeTypeEntity passwordAttributeType = new AttributeTypeEntity();
 		AttributeEntity passwordAttribute = new AttributeEntity(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login, password);
+				passwordAttributeType, subject, password);
 		expect(
 				this.mockAttributeDAO.findAttribute(
 						SafeOnlineConstants.PASSWORD_ATTRIBUTE, "test-login"))
@@ -186,8 +188,9 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		SubjectEntity subject = new SubjectEntity(login);
 		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(subject);
 
+		AttributeTypeEntity passwordAttributeType = new AttributeTypeEntity();
 		AttributeEntity passwordAttribute = new AttributeEntity(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login, password);
+				passwordAttributeType, subject, password);
 		expect(
 				this.mockAttributeDAO.findAttribute(
 						SafeOnlineConstants.PASSWORD_ATTRIBUTE, login))

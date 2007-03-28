@@ -46,10 +46,12 @@ public class AttributeEntity implements Serializable {
 		// empty
 	}
 
-	public AttributeEntity(String attributeTypeName, String subjectLogin,
-			String stringValue) {
+	public AttributeEntity(AttributeTypeEntity attributeType,
+			SubjectEntity subject, String stringValue) {
 		this.stringValue = stringValue;
-		this.pk = new AttributePK(attributeTypeName, subjectLogin);
+		this.attributeType = attributeType;
+		this.subject = subject;
+		this.pk = new AttributePK(attributeType.getName(), subject.getLogin());
 	}
 
 	@EmbeddedId

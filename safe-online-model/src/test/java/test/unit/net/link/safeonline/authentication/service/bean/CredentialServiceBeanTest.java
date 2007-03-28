@@ -21,7 +21,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.bean.CredentialServiceBean;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.identity.IdentityStatementFactory;
@@ -60,6 +62,8 @@ public class CredentialServiceBeanTest extends TestCase {
 
 	private SubjectIdentifierDAO mockSubjectIdentifierDAO;
 
+	private AttributeTypeDAO mockAttributeTypeDAO;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -83,10 +87,13 @@ public class CredentialServiceBeanTest extends TestCase {
 		this.mockSubjectIdentifierDAO = createMock(SubjectIdentifierDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockSubjectIdentifierDAO);
 
+		this.mockAttributeTypeDAO = createMock(AttributeTypeDAO.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockAttributeTypeDAO);
+
 		this.mockObjects = new Object[] { this.mockSubjectManager,
 				this.mockAttributeDAO, this.mockPkiProviderManager,
 				this.mockPkiValidator, this.mockPkiProvider,
-				this.mockSubjectIdentifierDAO };
+				this.mockSubjectIdentifierDAO, this.mockAttributeTypeDAO };
 
 		EJBTestUtils.init(this.testedInstance);
 
@@ -167,11 +174,18 @@ public class CredentialServiceBeanTest extends TestCase {
 						identifier)).andStubReturn(null);
 		this.mockPkiProvider.storeAdditionalAttributes(certificate);
 
+		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
+		expect(this.mockAttributeTypeDAO.getAttributeType(surnameAttribute))
+				.andStubReturn(surnameAttributeType);
+		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity();
+		expect(this.mockAttributeTypeDAO.getAttributeType(givenNameAttribute))
+				.andStubReturn(givenNameAttributeType);
+
 		// expectations
-		this.mockAttributeDAO.addOrUpdateAttribute(surnameAttribute, user,
-				this.smartCard.getSurname());
-		this.mockAttributeDAO.addOrUpdateAttribute(givenNameAttribute, user,
-				this.smartCard.getGivenName());
+		this.mockAttributeDAO.addOrUpdateAttribute(surnameAttributeType,
+				this.testSubject, this.smartCard.getSurname());
+		this.mockAttributeDAO.addOrUpdateAttribute(givenNameAttributeType,
+				this.testSubject, this.smartCard.getGivenName());
 		this.mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain,
 				identifier, this.testSubject);
 

@@ -263,8 +263,8 @@ public class EntityTest extends TestCase {
 		SubjectEntity subject = new SubjectEntity("test-login");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity("password",
 				"string", false, false);
-		AttributeEntity attribute = new AttributeEntity("password",
-				"test-login", "test-password");
+		AttributeEntity attribute = new AttributeEntity(attributeType, subject,
+				"test-password");
 
 		// operate
 		EntityManager entityManager = this.entityTestManager.getEntityManager();

@@ -105,9 +105,9 @@ public class IdentityServiceBean implements IdentityService {
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void saveAttribute(String attributeName, String attributeValue)
 			throws PermissionDeniedException {
-		String login = this.subjectManager.getCallerLogin();
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		LOG.debug("save attribute " + attributeName + " for entity with login "
-				+ login);
+				+ subject);
 
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.findAttributeType(attributeName);
@@ -119,7 +119,7 @@ public class IdentityServiceBean implements IdentityService {
 			throw new PermissionDeniedException();
 		}
 
-		this.attributeDAO.addOrUpdateAttribute(attributeName, login,
+		this.attributeDAO.addOrUpdateAttribute(attributeType, subject,
 				attributeValue);
 	}
 

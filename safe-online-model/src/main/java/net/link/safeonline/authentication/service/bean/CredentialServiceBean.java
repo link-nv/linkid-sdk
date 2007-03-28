@@ -16,13 +16,16 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.model.PkiProvider;
@@ -52,6 +55,9 @@ public class CredentialServiceBean implements CredentialService {
 
 	@EJB
 	private AttributeDAO attributeDAO;
+
+	@EJB
+	private AttributeTypeDAO attributeTypeDAO;
 
 	@EJB
 	private PkiProviderManager pkiProviderManager;
@@ -93,7 +99,7 @@ public class CredentialServiceBean implements CredentialService {
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void mergeIdentityStatement(byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException {
+			ArgumentIntegrityException, AttributeTypeNotFoundException {
 		LOG.debug("merge identity statement");
 		String login = this.subjectManager.getCallerLogin();
 		LOG.debug("login: " + login);
@@ -150,9 +156,9 @@ public class CredentialServiceBean implements CredentialService {
 		String surname = identityStatement.getSurname();
 		String givenName = identityStatement.getGivenName();
 
-		setOrUpdateAttribute(IdentityStatementAttributes.SURNAME, login,
+		setOrUpdateAttribute(IdentityStatementAttributes.SURNAME, subject,
 				surname, pkiProvider);
-		setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME, login,
+		setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME, subject,
 				givenName, pkiProvider);
 
 		pkiProvider.storeAdditionalAttributes(certificate);
@@ -160,9 +166,12 @@ public class CredentialServiceBean implements CredentialService {
 
 	private void setOrUpdateAttribute(
 			IdentityStatementAttributes identityStatementAttribute,
-			String login, String value, PkiProvider pkiProvider) {
+			SubjectEntity subject, String value, PkiProvider pkiProvider)
+			throws AttributeTypeNotFoundException {
 		String attributeName = pkiProvider
 				.mapAttribute(identityStatementAttribute);
-		this.attributeDAO.addOrUpdateAttribute(attributeName, login, value);
+		AttributeTypeEntity attributeType = this.attributeTypeDAO
+				.getAttributeType(attributeName);
+		this.attributeDAO.addOrUpdateAttribute(attributeType, subject, value);
 	}
 }

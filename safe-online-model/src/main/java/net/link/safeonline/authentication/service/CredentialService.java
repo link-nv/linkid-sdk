@@ -11,6 +11,7 @@ import javax.ejb.Local;
 import javax.ejb.Remote;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 
@@ -49,8 +50,9 @@ public interface CredentialService {
 	 * @throws ArgumentIntegrityException
 	 *             in case the identity statement didn't pass the integrity
 	 *             checks.
+	 * @throws AttributeTypeNotFoundException
 	 */
 	void mergeIdentityStatement(byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException;
+			ArgumentIntegrityException, AttributeTypeNotFoundException;
 }

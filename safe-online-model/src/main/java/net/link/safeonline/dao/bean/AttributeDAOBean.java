@@ -32,12 +32,12 @@ public class AttributeDAOBean implements AttributeDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
-	public void addAttribute(String attributeTypeName, String subjectLogin,
-			String stringValue) {
-		LOG.debug("add attribute " + attributeTypeName + " for subject "
-				+ subjectLogin + " with value: " + stringValue);
-		AttributeEntity attribute = new AttributeEntity(attributeTypeName,
-				subjectLogin, stringValue);
+	public void addAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, String stringValue) {
+		LOG.debug("add attribute " + attributeType + " for subject " + subject
+				+ " with value: " + stringValue);
+		AttributeEntity attribute = new AttributeEntity(attributeType, subject,
+				stringValue);
 		this.entityManager.persist(attribute);
 	}
 
@@ -60,23 +60,14 @@ public class AttributeDAOBean implements AttributeDAO {
 		return attributes;
 	}
 
-	public void addAttribute(AttributeTypeEntity attributeType,
-			String subjectLogin, String stringValue) {
-		LOG.debug("add attribute " + attributeType.getName());
-		AttributeEntity attribute = new AttributeEntity(
-				attributeType.getName(), subjectLogin, stringValue);
-		attribute.setAttributeType(attributeType);
-		this.entityManager.persist(attribute);
-	}
-
-	public void addOrUpdateAttribute(String attributeTypeName,
-			String subjectLogin, String stringValue) {
-		AttributeEntity attribute = findAttribute(attributeTypeName,
-				subjectLogin);
+	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, String stringValue) {
+		AttributeEntity attribute = findAttribute(attributeType.getName(),
+				subject.getLogin());
 		if (null != attribute) {
 			attribute.setStringValue(stringValue);
 			return;
 		}
-		addAttribute(attributeTypeName, subjectLogin, stringValue);
+		addAttribute(attributeType, subject, stringValue);
 	}
 }
