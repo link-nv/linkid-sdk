@@ -21,4 +21,6 @@ public interface Attributes {
 	AttributeTypeEntity newAttributeTypeFactory();
 
 	String add();
+	
+	String view();
 }

@@ -149,6 +149,9 @@ public class ApplicationServiceBean implements ApplicationService {
 			ApplicationIdentityEntity applicationIdentity,
 			List<IdentityAttributeTypeDO> applicationIdentityAttributes)
 			throws AttributeTypeNotFoundException {
+		if (null == applicationIdentityAttributes) {
+			return;
+		}
 		for (IdentityAttributeTypeDO identityAttribute : applicationIdentityAttributes) {
 			AttributeTypeEntity attributeType = this.attributeTypeDAO
 					.getAttributeType(identityAttribute.getName());

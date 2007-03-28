@@ -10,6 +10,7 @@ package test.integ.net.link.safeonline.auth;
 import java.security.KeyPair;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +24,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
@@ -172,7 +174,7 @@ public class AuthenticationTest extends TestCase {
 			public Object run() throws Exception {
 
 				applicationService.addApplication(applicationName,
-						appOwnerName, null, null, new String[] {});
+						appOwnerName, null, null, null);
 				return null;
 			}
 		});
@@ -226,7 +228,7 @@ public class AuthenticationTest extends TestCase {
 		applicationService.registerApplicationOwner(appOwnerName, ownerLogin);
 
 		applicationService.addApplication(applicationName, appOwnerName, null,
-				null, new String[] {});
+				null, null);
 
 		String userLogin = "login-" + UUID.randomUUID().toString();
 		final String userPassword = "secret";
@@ -317,7 +319,7 @@ public class AuthenticationTest extends TestCase {
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, appOwnerName, null,
-				null, new String[] {});
+				null, null);
 
 		IntegrationTestUtils.login(login, password);
 		applicationService.setApplicationDescription(applicationName,
@@ -356,7 +358,7 @@ public class AuthenticationTest extends TestCase {
 		// operate: create application
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName,
-				applicationOwnerName, null, null, new String[] {});
+				applicationOwnerName, null, null, null);
 
 		// operate: change application description via application owner
 		IntegrationTestUtils.login(ownerLogin, ownerPassword);
@@ -485,9 +487,15 @@ public class AuthenticationTest extends TestCase {
 
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
-		applicationService.addApplication(testApplicationName, "owner", null,
-				this.certificate.getEncoded(),
-				new String[] { SafeOnlineConstants.NAME_ATTRIBUTE });
+		applicationService
+				.addApplication(
+						testApplicationName,
+						"owner",
+						null,
+						this.certificate.getEncoded(),
+						Arrays
+								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+										SafeOnlineConstants.NAME_ATTRIBUTE) }));
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);

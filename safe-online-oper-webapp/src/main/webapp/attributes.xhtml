@@ -25,21 +25,21 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
-					<h:outputText value="#{item.name}" />
+					<h:commandLink value="#{item.name}" action="#{attributes.view}" />
 				</h:column>
 
 				<h:column>
-					<f:facet name="header">Type</f:facet>
+					<f:facet name="header">#{msgs.type}</f:facet>
 					<h:outputText value="#{item.type}" />
 				</h:column>
 
 				<h:column>
-					<f:facet name="header">User Visible</f:facet>
+					<f:facet name="header">#{msgs.userVisible}</f:facet>
 					<h:outputText value="#{item.userVisible}" />
 				</h:column>
 
 				<h:column>
-					<f:facet name="header">User Editable</f:facet>
+					<f:facet name="header">#{msgs.userEditable}</f:facet>
 					<h:outputText value="#{item.userEditable}" />
 				</h:column>
 			</t:dataTable>

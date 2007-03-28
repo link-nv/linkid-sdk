@@ -27,6 +27,7 @@ import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributePK;
+import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CachedOcspResponseEntity;
 import net.link.safeonline.entity.ConfigGroupEntity;
@@ -80,7 +81,8 @@ public class EntityTest extends TestCase {
 				ConfigGroupEntity.class, StatisticEntity.class,
 				StatisticDataPointEntity.class,
 				ApplicationIdentityEntity.class,
-				ApplicationIdentityAttributeEntity.class);
+				ApplicationIdentityAttributeEntity.class,
+				AttributeTypeDescriptionEntity.class);
 	}
 
 	@Override

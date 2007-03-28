@@ -16,7 +16,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.addAttribute}</h1>
+		<h1>#{msgs.addAttributeDescription}</h1>
 
 		<h:form>
 			<f:facet name="aroundInvalidField">
@@ -25,31 +25,35 @@
 
 			<table>
 				<tr>
-					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
+					<th>#{msgs.attributeName}:</th>
+					<td>#{selectedAttributeType.name}</td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="language" value="#{msgs.language}" />:</th>
 					<td><s:decorate>
-						<h:inputText id="name" value="#{newAttributeType.name}"
+						<h:inputText id="language"
+							value="#{newAttributeTypeDescription.language}" required="true" />
+					</s:decorate>*<h:message for="language" styleClass="error" /></td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="name" value="#{msgs.name}" />:</th>
+					<td><s:decorate>
+						<h:inputText id="name" value="#{newAttributeTypeDescription.name}"
 							required="true" />
 					</s:decorate>*<h:message for="name" styleClass="error" /></td>
 				</tr>
+				<tr>
+					<th><h:outputLabel for="description"
+						value="#{msgs.description}" />:</th>
+					<td><h:inputText id="description"
+						value="#{newAttributeTypeDescription.description}" /></td>
+				</tr>
 			</table>
-
-			<h:panelGrid columns="1">
-				<h:panelGroup>
-					<h:selectBooleanCheckbox id="userVisible"
-						value="#{newAttributeType.userVisible}" />
-					<h:outputText value="#{msgs.userVisible}" />
-				</h:panelGroup>
-				<h:panelGroup>
-					<h:selectBooleanCheckbox id="userEditable"
-						value="#{newAttributeType.userEditable}" />
-					<h:outputText value="#{msgs.userEditable}" />
-				</h:panelGroup>
-			</h:panelGrid>
 
 			<h:messages styleClass="error" globalOnly="true" />
 
 			<h:commandButton value="#{msgs.addaction}" id="add"
-				action="#{attributes.add}" />
+				action="#{attributeDesc.add}" />
 			<so:nbsp />
 			<h:commandButton action="cancel" id="cancel"
 				value="#{msgs.cancelaction}" immediate="true" />

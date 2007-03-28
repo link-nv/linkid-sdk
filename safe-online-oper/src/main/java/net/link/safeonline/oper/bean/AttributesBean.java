@@ -24,11 +24,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.core.FacesMessages;
 
 @Stateful
@@ -46,6 +49,11 @@ public class AttributesBean implements Attributes {
 	@SuppressWarnings("unused")
 	@DataModel
 	private List<AttributeTypeEntity> attributeTypeList;
+
+	@SuppressWarnings("unused")
+	@DataModelSelection
+	@Out(value = "selectedAttributeType", required = false, scope = ScopeType.SESSION)
+	private AttributeTypeEntity selectedAttributeType;
 
 	@In(required = false)
 	private AttributeTypeEntity newAttributeType;
@@ -86,5 +94,11 @@ public class AttributesBean implements Attributes {
 	@Factory("newAttributeType")
 	public AttributeTypeEntity newAttributeTypeFactory() {
 		return new AttributeTypeEntity();
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String view() {
+		LOG.debug("view: " + this.selectedAttributeType.getName());
+		return "view";
 	}
 }

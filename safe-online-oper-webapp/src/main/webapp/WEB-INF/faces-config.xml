@@ -336,6 +336,54 @@
 			<from-action>add</from-action>
 			<to-view-id>/attribute-add.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>view</from-outcome>
+			<to-view-id>/attribute-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/attribute-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>add</from-action>
+			<to-view-id>/attribute-desc-add.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/attribute-desc-edit.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/attribute-desc-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>cancel</from-outcome>
+			<to-view-id>/attribute-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saved</from-outcome>
+			<to-view-id>/attribute-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>removed</from-outcome>
+			<to-view-id>/attribute-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/attribute-desc-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/attribute-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/attribute-view.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>

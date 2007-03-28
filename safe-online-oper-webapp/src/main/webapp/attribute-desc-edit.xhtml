@@ -16,7 +16,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.addAttribute}</h1>
+		<h1>#{msgs.editAttributeDescription}</h1>
 
 		<h:form>
 			<f:facet name="aroundInvalidField">
@@ -25,33 +25,37 @@
 
 			<table>
 				<tr>
-					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
+					<th>#{msgs.attributeName}:</th>
+					<td>#{selectedAttributeType.name}</td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="language" value="#{msgs.language}" />:</th>
+					<td>#{editAttributeTypeDescription.language}</td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="name" value="#{msgs.name}" />:</th>
 					<td><s:decorate>
-						<h:inputText id="name" value="#{newAttributeType.name}"
-							required="true" />
+						<h:inputText id="name"
+							value="#{editAttributeTypeDescription.name}" required="true" />
 					</s:decorate>*<h:message for="name" styleClass="error" /></td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="description"
+						value="#{msgs.description}" />:</th>
+					<td><h:inputText id="description"
+						value="#{editAttributeTypeDescription.description}" /></td>
 				</tr>
 			</table>
 
-			<h:panelGrid columns="1">
-				<h:panelGroup>
-					<h:selectBooleanCheckbox id="userVisible"
-						value="#{newAttributeType.userVisible}" />
-					<h:outputText value="#{msgs.userVisible}" />
-				</h:panelGroup>
-				<h:panelGroup>
-					<h:selectBooleanCheckbox id="userEditable"
-						value="#{newAttributeType.userEditable}" />
-					<h:outputText value="#{msgs.userEditable}" />
-				</h:panelGroup>
-			</h:panelGrid>
-
 			<h:messages styleClass="error" globalOnly="true" />
 
-			<h:commandButton value="#{msgs.addaction}" id="add"
-				action="#{attributes.add}" />
+			<h:commandButton value="#{msgs.saveaction}" id="save"
+				action="#{attributeDesc.save}" />
 			<so:nbsp />
-			<h:commandButton action="cancel" id="cancel"
+			<h:commandButton action="#{attributeDesc.removeDescription}"
+				id="remove" value="#{msgs.removeaction}" immediate="true" />
+			<so:nbsp />
+			<h:commandButton action="#{attributeDesc.cancelEdit}" id="cancel"
 				value="#{msgs.cancelaction}" immediate="true" />
 		</h:form>
 

@@ -35,6 +35,12 @@ public class IdentityAttributeTypeDO implements Serializable {
 		this.required = required;
 	}
 
+	/**
+	 * Convenience constructor. This will make for a required identity
+	 * attribute.
+	 * 
+	 * @param name
+	 */
 	public IdentityAttributeTypeDO(String name) {
 		this(name, true);
 	}

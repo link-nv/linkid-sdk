@@ -15,8 +15,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
+import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
 import org.apache.commons.logging.Log;
@@ -59,5 +62,50 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 			throw new AttributeTypeNotFoundException();
 		}
 		return attributeType;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AttributeTypeDescriptionEntity> listDescriptions(
+			AttributeTypeEntity attributeType) {
+		Query query = AttributeTypeDescriptionEntity
+				.createQueryWhereAttributeType(this.entityManager,
+						attributeType);
+		List<AttributeTypeDescriptionEntity> descriptions = query
+				.getResultList();
+		return descriptions;
+	}
+
+	public void addAttributeTypeDescription(AttributeTypeEntity attributeType,
+			AttributeTypeDescriptionEntity newAttributeTypeDescription) {
+		/*
+		 * Manage relationships.
+		 */
+		newAttributeTypeDescription.setAttributeType(attributeType);
+		/*
+		 * Persist.
+		 */
+		this.entityManager.persist(newAttributeTypeDescription);
+	}
+
+	public void removeDescription(
+			AttributeTypeDescriptionEntity attributeTypeDescription) {
+		this.entityManager.remove(attributeTypeDescription);
+	}
+
+	public void saveDescription(
+			AttributeTypeDescriptionEntity attributeTypeDescription) {
+		this.entityManager.merge(attributeTypeDescription);
+	}
+
+	public AttributeTypeDescriptionEntity getDescription(
+			AttributeTypeDescriptionPK attributeTypeDescriptionPK)
+			throws AttributeTypeDescriptionNotFoundException {
+		AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager
+				.find(AttributeTypeDescriptionEntity.class,
+						attributeTypeDescriptionPK);
+		if (null == attributeTypeDescription) {
+			throw new AttributeTypeDescriptionNotFoundException();
+		}
+		return attributeTypeDescription;
 	}
 }

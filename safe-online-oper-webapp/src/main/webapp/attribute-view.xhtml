@@ -1,0 +1,80 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Operator</ui:define>
+
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="attributes" />
+		</ui:include>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h1>#{msgs.attribute} #{selectedAttributeType.name}</h1>
+
+		<table>
+			<tr>
+				<th>#{msgs.name}:</th>
+				<td><h:outputText value="#{selectedAttributeType.name}" /></td>
+			</tr>
+			<tr>
+				<th>#{msgs.type}:</th>
+				<td><h:outputText value="#{selectedAttributeType.type}" /></td>
+			</tr>
+			<tr>
+				<th>#{msgs.userVisible}:</th>
+				<td><h:outputText value="#{selectedAttributeType.userVisible}" /></td>
+			</tr>
+			<tr>
+				<th>#{msgs.userEditable}:</th>
+				<td><h:outputText value="#{selectedAttributeType.userEditable}" /></td>
+			</tr>
+		</table>
+
+		<h:form>
+			<h2>#{msgs.description}</h2>
+			<h:dataTable id="desc-data" var="item"
+				value="#{attributeTypeDescriptions}" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+				<h:column>
+					<f:facet name="header">#{msgs.language}</f:facet>
+					<h:commandLink value="#{item.language}"
+						action="#{attributeDesc.edit}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.name}</f:facet>
+					<h:outputText value="#{item.name}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.description}</f:facet>
+					<h:outputText value="#{item.description}" />
+				</h:column>
+			</h:dataTable>
+
+			<h:messages styleClass="error" globalOnly="true" />
+
+			<h:commandButton action="add" id="add" value="#{msgs.addaction}" />
+			<so:nbsp />
+			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
+				immediate="true" />
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{operLogin}" />
+		</ui:include>
+	</ui:define>
+
+</ui:composition>
+</body>
+</html>

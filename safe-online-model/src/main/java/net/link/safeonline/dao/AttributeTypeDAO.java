@@ -11,7 +11,10 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
+import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
 /**
@@ -31,4 +34,25 @@ public interface AttributeTypeDAO {
 			throws AttributeTypeNotFoundException;
 
 	List<AttributeTypeEntity> listAttributeTypes();
+
+	List<AttributeTypeDescriptionEntity> listDescriptions(
+			AttributeTypeEntity attributeType);
+
+	void addAttributeTypeDescription(AttributeTypeEntity attributeType,
+			AttributeTypeDescriptionEntity newAttributeTypeDescription);
+
+	/**
+	 * Removes an attribute type description. The entity parameter should be an
+	 * attached entity.
+	 * 
+	 * @param attributeTypeDescription
+	 */
+	void removeDescription(
+			AttributeTypeDescriptionEntity attributeTypeDescription);
+
+	void saveDescription(AttributeTypeDescriptionEntity attributeTypeDescription);
+
+	AttributeTypeDescriptionEntity getDescription(
+			AttributeTypeDescriptionPK attributeTypeDescriptionPK)
+			throws AttributeTypeDescriptionNotFoundException;
 }

@@ -37,5 +37,8 @@ citizen200617.crt
 citizen200618.crt
 citizen200619.crt
 citizen200620.crt
+citizen200701.crt
+foreigner200601.crt
+foreigner200701.crt
 specimen-citizen.crt
 specimen-rca.crt

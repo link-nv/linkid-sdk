@@ -66,8 +66,8 @@ public interface ApplicationService {
 	 * @param encodedCertificate
 	 *            the optional application certificate.
 	 * @param initialApplicationIdentityAttributes
-	 *            the attribute types that make up the initial application
-	 *            identity.
+	 *            the optional attribute types that make up the initial
+	 *            application identity. Can be <code>null</code>.
 	 * @throws ExistingApplicationException
 	 * @throws ApplicationOwnerNotFoundException
 	 * @throws CertificateEncodingException
