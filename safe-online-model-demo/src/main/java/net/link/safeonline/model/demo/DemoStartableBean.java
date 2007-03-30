@@ -60,6 +60,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				"fcorneli", DEMO_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"fcorneli", DEMO_TICKET_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"fcorneli", DEMO_PAYMENT_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "fcorneli",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
@@ -68,6 +70,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				"dieter", DEMO_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"dieter", DEMO_TICKET_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"dieter", DEMO_PAYMENT_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "dieter",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
@@ -76,6 +80,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				"mario", DEMO_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"mario", DEMO_TICKET_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"mario", DEMO_PAYMENT_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "mario",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
@@ -95,6 +101,9 @@ public class DemoStartableBean extends AbstractInitBean {
 								visaAttributeType.getName(), true),
 						new IdentityAttributeTypeDO(
 								BeIdConstants.NRN_ATTRIBUTE, true) }));
+		this.identities.add(new Identity(DEMO_PAYMENT_APPLICATION_NAME,
+				new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+						visaAttributeType.getName(), true) }));
 	}
 
 	public int getPriority() {

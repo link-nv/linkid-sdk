@@ -43,7 +43,7 @@ public class PaymentOverviewBean implements PaymentOverview {
 	@Resource
 	private SessionContext sessionContext;
 
-	@PersistenceContext(unitName = "DemoTicketEntityManager")
+	@PersistenceContext(unitName = "DemoPaymentEntityManager")
 	private EntityManager entityManager;
 
 	public static final String PAYMENT_LIST_NAME = "paymentList";

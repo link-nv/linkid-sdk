@@ -26,7 +26,7 @@ import static net.link.safeonline.demo.payment.entity.PaymentEntity.QUERY_WHERE_
 @Entity
 @Table(name = "demo_payment")
 @NamedQueries(@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT payment FROM PaymentEntity AS payment "
-		+ "WHERE payment.owner = :owner"))
+		+ "WHERE payment.owner = :owner " + "ORDER BY payment.paymentDate DESC"))
 public class PaymentEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -45,15 +45,18 @@ public class PaymentEntity implements Serializable {
 
 	private String visa;
 
+	private double amount;
+
 	public PaymentEntity() {
 		// empty
 	}
 
 	public PaymentEntity(UserEntity owner, Date paymentDate, String visa,
-			String recipient, String message) {
+			double amount, String recipient, String message) {
 		this.owner = owner;
 		this.paymentDate = paymentDate;
 		this.visa = visa;
+		this.amount = amount;
 		this.recipient = recipient;
 		this.message = message;
 	}
@@ -109,6 +112,14 @@ public class PaymentEntity implements Serializable {
 
 	public void setVisa(String visa) {
 		this.visa = visa;
+	}
+
+	public double getAmount() {
+		return this.amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
 
 	public static Query createQueryWhereOwner(EntityManager entityManager,

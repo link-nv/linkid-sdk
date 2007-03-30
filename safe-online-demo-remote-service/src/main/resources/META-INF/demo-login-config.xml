@@ -37,4 +37,14 @@
 		</authentication>
 	</application-policy>
 
+	<application-policy name="demo-payment">
+		<authentication>
+			<login-module
+				code="org.jboss.security.auth.spi.IdentityLoginModule"
+				flag="required">
+				<module-option name="roles">user</module-option>
+			</login-module>
+		</authentication>
+	</application-policy>
+
 </policy>

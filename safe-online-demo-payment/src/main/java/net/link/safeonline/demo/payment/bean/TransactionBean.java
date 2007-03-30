@@ -33,6 +33,7 @@ import net.link.safeonline.sdk.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
 import net.link.safeonline.sdk.attrib.RequestDeniedException;
 
+import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
@@ -46,13 +47,16 @@ import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
-@Name("transaction")
+@Name("transactionBean")
 @Scope(ScopeType.CONVERSATION)
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/TransactionBean/local")
 @SecurityDomain("demo-payment")
 public class TransactionBean implements Transaction {
 
 	public static final String SAFE_ONLINE_LOCATION = "localhost";
+
+	private static final org.apache.commons.logging.Log LOG = LogFactory
+			.getLog(TransactionBean.class);
 
 	@Logger
 	private Log log;
@@ -108,6 +112,8 @@ public class TransactionBean implements Transaction {
 
 	@RolesAllowed("user")
 	public String confirm() {
+		log.debug("confirm");
+		LOG.debug("confirm");
 		String username = getUsername();
 		String visaNumber;
 		try {
@@ -148,7 +154,7 @@ public class TransactionBean implements Transaction {
 		log.debug("destroy: #0", this);
 	}
 
-	@Factory()
+	@Factory(NEW_PAYMENT_NAME)
 	public PaymentEntity newPaymentEntityFactory() {
 		return new PaymentEntity();
 	}
