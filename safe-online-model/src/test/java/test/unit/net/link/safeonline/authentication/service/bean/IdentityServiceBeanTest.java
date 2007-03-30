@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -28,6 +29,7 @@ import javax.persistence.EntityManager;
 import junit.framework.TestCase;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -168,16 +170,17 @@ public class IdentityServiceBeanTest extends TestCase {
 				.isConfirmationRequired(applicationName);
 		assertTrue(result);
 
-		List<AttributeTypeEntity> attribsToConfirm = identityService
-				.listIdentityAttributesToConfirm(applicationName);
+		List<AttributeDO> attribsToConfirm = identityService
+				.listIdentityAttributesToConfirm(applicationName, Locale
+						.getDefault());
 		assertEquals(1, attribsToConfirm.size());
 		assertEquals("test-attribute-type", attribsToConfirm.get(0).getName());
 		identityService.confirmIdentity(applicationName);
 		this.entityTestManager.getEntityManager().flush();
 		assertFalse(identityService.isConfirmationRequired(applicationName));
 
-		attribsToConfirm = identityService
-				.listIdentityAttributesToConfirm(applicationName);
+		attribsToConfirm = identityService.listIdentityAttributesToConfirm(
+				applicationName, Locale.getDefault());
 		assertTrue(attribsToConfirm.isEmpty());
 
 		List<ApplicationIdentityAttributeEntity> currentIdentity = applicationService
@@ -195,8 +198,8 @@ public class IdentityServiceBeanTest extends TestCase {
 										"test-attribute-type-2") }));
 		assertTrue(identityService.isConfirmationRequired(applicationName));
 
-		attribsToConfirm = identityService
-				.listIdentityAttributesToConfirm(applicationName);
+		attribsToConfirm = identityService.listIdentityAttributesToConfirm(
+				applicationName, Locale.getDefault());
 		assertEquals(1, attribsToConfirm.size());
 		assertEquals("test-attribute-type-2", attribsToConfirm.get(0).getName());
 		identityService.confirmIdentity(applicationName);

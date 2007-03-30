@@ -22,16 +22,28 @@ public class AttributeDO implements Serializable {
 
 	private String name;
 
+	private String humanReadableName;
+
+	private String description;
+
 	private String value;
 
 	private boolean editable;
 
-	public AttributeDO(String name, String value, boolean editable) {
+	public AttributeDO(String name, String humanReadableName,
+			String description, String value, boolean editable) {
 		this.name = name;
+		this.humanReadableName = humanReadableName;
+		this.description = description;
 		this.value = value;
 		this.editable = editable;
 	}
 
+	/**
+	 * Gives back the URN name of the attribute type.
+	 * 
+	 * @return
+	 */
 	public String getName() {
 		return this.name;
 	}
@@ -54,5 +66,21 @@ public class AttributeDO implements Serializable {
 
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getHumanReadableName() {
+		return this.humanReadableName;
+	}
+
+	public void setHumanReadableName(String humanReadableName) {
+		this.humanReadableName = humanReadableName;
 	}
 }

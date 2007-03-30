@@ -28,6 +28,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.ConfigGroupEntity;
 import net.link.safeonline.entity.ConfigItemEntity;
@@ -41,6 +42,7 @@ import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
 import net.link.safeonline.model.bean.ApplicationManagerBean;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
+import net.link.safeonline.model.bean.AttributeTypeDescriptionDecoratorBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
 
 /**
@@ -66,7 +68,8 @@ public class SafeOnlineTestContainer {
 			ConfigItemDAOBean.class, TaskDAOBean.class,
 			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
 			ApplicationManagerBean.class, TrustPointDAOBean.class,
-			CachedOcspResponseDAOBean.class };
+			CachedOcspResponseDAOBean.class,
+			AttributeTypeDescriptionDecoratorBean.class };
 
 	public static final Class[] entities = new Class[] { SubjectEntity.class,
 			ApplicationEntity.class, ApplicationOwnerEntity.class,
@@ -75,5 +78,5 @@ public class SafeOnlineTestContainer {
 			ApplicationIdentityEntity.class, ConfigGroupEntity.class,
 			ConfigItemEntity.class, TaskEntity.class, SchedulingEntity.class,
 			TaskHistoryEntity.class, ApplicationIdentityAttributeEntity.class,
-			TrustPointEntity.class };
+			TrustPointEntity.class, AttributeTypeDescriptionEntity.class };
 }

@@ -31,7 +31,10 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.attributeName}</f:facet>
-					<h:outputText value="#{item.name}" />
+					<h:outputText value="#{item.name}"
+						rendered="#{empty item.humanReadableName}" />
+					<h:outputText value="#{item.humanReadableName}"
+						rendered="#{!empty item.humanReadableName}" />
 				</h:column>
 
 				<h:column>

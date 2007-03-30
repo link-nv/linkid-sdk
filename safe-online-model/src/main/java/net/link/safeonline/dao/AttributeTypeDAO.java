@@ -55,4 +55,7 @@ public interface AttributeTypeDAO {
 	AttributeTypeDescriptionEntity getDescription(
 			AttributeTypeDescriptionPK attributeTypeDescriptionPK)
 			throws AttributeTypeDescriptionNotFoundException;
+
+	AttributeTypeDescriptionEntity findDescription(
+			AttributeTypeDescriptionPK attributeTypeDescriptionPK);
 }

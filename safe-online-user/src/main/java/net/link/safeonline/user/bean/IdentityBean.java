@@ -9,6 +9,7 @@ package net.link.safeonline.user.bean;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -16,6 +17,7 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
+import javax.faces.context.FacesContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -99,7 +101,7 @@ public class IdentityBean implements Identity {
 					+ SafeOnlineConstants.NAME_ATTRIBUTE);
 			return null;
 		}
-		this.attributeList = this.identityService.listAttributes();
+		attributeListFactory();
 		return "success";
 	}
 
@@ -134,7 +136,9 @@ public class IdentityBean implements Identity {
 	@Factory("attributeList")
 	public void attributeListFactory() {
 		LOG.debug("attributeListFactory");
-		this.attributeList = this.identityService.listAttributes();
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
+		this.attributeList = this.identityService.listAttributes(viewLocale);
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

@@ -19,7 +19,10 @@
 			<table>
 				<tr>
 					<th>#{msgs.name}:</th>
-					<td>#{selectedAttribute.name}</td>
+					<td><h:outputText value="#{selectedAttribute.name}"
+						rendered="#{empty selectedAttribute.humanReadableName}" /> <h:outputText
+						value="#{selectedAttribute.humanReadableName}"
+						rendered="#{!empty selectedAttribute.humanReadableName}" /></td>
 				</tr>
 				<tr>
 					<th><h:outputLabel for="value" value="#{msgs.value}" />:</th>

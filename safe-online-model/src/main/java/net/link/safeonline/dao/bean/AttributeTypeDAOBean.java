@@ -108,4 +108,12 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		}
 		return attributeTypeDescription;
 	}
+
+	public AttributeTypeDescriptionEntity findDescription(
+			AttributeTypeDescriptionPK attributeTypeDescriptionPK) {
+		AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager
+				.find(AttributeTypeDescriptionEntity.class,
+						attributeTypeDescriptionPK);
+		return attributeTypeDescription;
+	}
 }

@@ -8,10 +8,12 @@
 package net.link.safeonline.auth.bean;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
@@ -19,8 +21,8 @@ import net.link.safeonline.auth.IdentityConfirmation;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
-import net.link.safeonline.entity.AttributeTypeEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -96,11 +98,14 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 	}
 
 	@Factory("identityConfirmationList")
-	public List<AttributeTypeEntity> identityConfirmationListFactory() {
+	public List<AttributeDO> identityConfirmationListFactory() {
 		LOG.debug("identityConfirmationList factory");
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
 		try {
-			List<AttributeTypeEntity> confirmationList = this.identityService
-					.listIdentityAttributesToConfirm(this.application);
+			List<AttributeDO> confirmationList = this.identityService
+					.listIdentityAttributesToConfirm(this.application,
+							viewLocale);
 			return confirmationList;
 		} catch (SubscriptionNotFoundException e) {
 			String msg = "subscription not found.";

@@ -34,9 +34,16 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
-					<h:outputText value="#{item.name}" rendered="#{!item.editable}" />
+					<h:outputText value="#{item.name}"
+						rendered="#{!item.editable and (empty item.humanReadableName)}" />
+					<h:outputText value="#{item.humanReadableName}"
+						rendered="#{!item.editable and (!empty item.humanReadableName)}" />
+
 					<h:commandLink value="#{item.name}" action="#{identityBean.edit}"
-						rendered="#{item.editable}" />
+						rendered="#{item.editable and (empty item.humanReadableName)}" />
+					<h:commandLink value="#{item.humanReadableName}"
+						action="#{identityBean.edit}"
+						rendered="#{item.editable and (!empty item.humanReadableName)}" />
 				</h:column>
 
 				<h:column>

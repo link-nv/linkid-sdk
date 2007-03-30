@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.authentication.service.AttributeDO;
 
 @Local
 public interface IdentityConfirmation {
@@ -20,5 +20,5 @@ public interface IdentityConfirmation {
 
 	void destroyCallback();
 
-	List<AttributeTypeEntity> identityConfirmationListFactory();
+	List<AttributeDO> identityConfirmationListFactory();
 }

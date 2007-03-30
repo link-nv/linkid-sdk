@@ -9,6 +9,7 @@ package net.link.safeonline.authentication.service.bean;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -34,10 +35,13 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
+import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.model.AttributeTypeDescriptionDecorator;
 import net.link.safeonline.model.SubjectManager;
 
 import org.apache.commons.logging.Log;
@@ -76,6 +80,9 @@ public class IdentityServiceBean implements IdentityService {
 
 	@EJB
 	private ApplicationIdentityDAO applicationIdentityDAO;
+
+	@EJB
+	AttributeTypeDescriptionDecorator attributeTypeDescriptionDecorator;
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public List<HistoryEntity> listHistory() {
@@ -124,7 +131,7 @@ public class IdentityServiceBean implements IdentityService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<AttributeDO> listAttributes() {
+	public List<AttributeDO> listAttributes(Locale locale) {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		LOG.debug("get attributes for " + subject.getLogin());
 		List<AttributeEntity> attributes = this.attributeDAO
@@ -143,7 +150,24 @@ public class IdentityServiceBean implements IdentityService {
 			String name = attributeType.getName();
 			String value = attribute.getStringValue();
 			boolean editable = attributeType.isUserEditable();
-			AttributeDO attributeView = new AttributeDO(name, value, editable);
+
+			String humanReadableName = null;
+			String description = null;
+			if (null != locale) {
+				String language = locale.getLanguage();
+				LOG.debug("trying language: " + language);
+				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+						.findDescription(new AttributeTypeDescriptionPK(name,
+								language));
+				if (null != attributeTypeDescription) {
+					LOG.debug("found description");
+					humanReadableName = attributeTypeDescription.getName();
+					description = attributeTypeDescription.getDescription();
+				}
+			}
+
+			AttributeDO attributeView = new AttributeDO(name,
+					humanReadableName, description, value, editable);
 			attributesView.add(attributeView);
 		}
 		return attributesView;
@@ -210,8 +234,9 @@ public class IdentityServiceBean implements IdentityService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<AttributeTypeEntity> listIdentityAttributesToConfirm(
-			String applicationName) throws ApplicationNotFoundException,
+	public List<AttributeDO> listIdentityAttributesToConfirm(
+			String applicationName, Locale locale)
+			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, SubscriptionNotFoundException {
 		LOG
 				.debug("get identity to confirm for application: "
@@ -237,11 +262,11 @@ public class IdentityServiceBean implements IdentityService {
 			 * If no identity version was confirmed previously, then the user
 			 * needs to confirm the current application identity attributes.
 			 */
-			List<AttributeTypeEntity> resultAttributeTypes = new LinkedList<AttributeTypeEntity>();
-			for (ApplicationIdentityAttributeEntity identityAttribute : currentIdentityAttributes) {
-				resultAttributeTypes.add(identityAttribute.getAttributeType());
-			}
-			return resultAttributeTypes;
+
+			List<AttributeDO> resultAttributes = this.attributeTypeDescriptionDecorator
+					.addDescriptionFromIdentityAttributes(
+							currentIdentityAttributes, locale);
+			return resultAttributes;
 		}
 
 		ApplicationIdentityEntity confirmedApplicationIdentity = this.applicationIdentityDAO
@@ -256,7 +281,9 @@ public class IdentityServiceBean implements IdentityService {
 		 * itself.
 		 */
 		toConfirmAttributes.removeAll(confirmedAttributeTypes);
-		return toConfirmAttributes;
+		List<AttributeDO> resultAttributes = this.attributeTypeDescriptionDecorator
+				.addDescriptionFromAttributeTypes(toConfirmAttributes, locale);
+		return resultAttributes;
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -264,13 +291,14 @@ public class IdentityServiceBean implements IdentityService {
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException {
 		LOG.debug("hasMissingAttributes for application: " + applicationName);
-		Set<String> missingAttributes = getMissingAttributes(applicationName);
+		List<AttributeDO> missingAttributes = getMissingAttributes(
+				applicationName, null);
 		return false == missingAttributes.isEmpty();
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public Set<String> getMissingAttributes(String applicationName)
-			throws ApplicationNotFoundException,
+	public List<AttributeDO> getMissingAttributes(String applicationName,
+			Locale locale) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException {
 		LOG.debug("get missing attribute for application: " + applicationName);
 		ApplicationEntity application = this.applicationDAO
@@ -310,6 +338,33 @@ public class IdentityServiceBean implements IdentityService {
 			missingAttributeNames.remove(attributeName);
 		}
 
-		return missingAttributeNames;
+		/*
+		 * Construct the result view.
+		 */
+		List<AttributeDO> missingAttributes = new LinkedList<AttributeDO>();
+		for (String missingAttributeName : missingAttributeNames) {
+			String humanReadableName = null;
+			String description = null;
+			String value = null;
+			boolean editable = true;
+			if (null != locale) {
+				String language = locale.getLanguage();
+				LOG.debug("trying language: " + language);
+				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+						.findDescription(new AttributeTypeDescriptionPK(
+								missingAttributeName, language));
+				if (null != attributeTypeDescription) {
+					LOG.debug("found description");
+					humanReadableName = attributeTypeDescription.getName();
+					description = attributeTypeDescription.getDescription();
+				}
+			}
+			AttributeDO missingAttribute = new AttributeDO(
+					missingAttributeName, humanReadableName, description,
+					value, editable);
+			missingAttributes.add(missingAttribute);
+		}
+
+		return missingAttributes;
 	}
 }

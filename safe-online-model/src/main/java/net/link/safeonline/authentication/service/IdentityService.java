@@ -8,7 +8,7 @@
 package net.link.safeonline.authentication.service;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -17,7 +17,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEntity;
 
 /**
@@ -68,9 +67,12 @@ public interface IdentityService {
 	 * Gives back a list of attributes for the current user. Only the attributes
 	 * that are user visible will be returned.
 	 * 
+	 * @param locale
+	 *            the optional locale that should be used to i18n the response.
+	 * 
 	 * @return
 	 */
-	List<AttributeDO> listAttributes();
+	List<AttributeDO> listAttributes(Locale locale);
 
 	/**
 	 * Checks whether confirmation is required over the usage of the identity
@@ -109,13 +111,15 @@ public interface IdentityService {
 	 * the given application.
 	 * 
 	 * @param applicationName
+	 * @param locale
+	 *            the optional locale to be applied to the result.
 	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
 	 * @throws SubscriptionNotFoundException
 	 */
-	List<AttributeTypeEntity> listIdentityAttributesToConfirm(
-			String applicationName) throws ApplicationNotFoundException,
+	List<AttributeDO> listIdentityAttributesToConfirm(String applicationName,
+			Locale locale) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, SubscriptionNotFoundException;
 
 	/**
@@ -137,11 +141,13 @@ public interface IdentityService {
 	 * application.
 	 * 
 	 * @param applicationName
+	 * @param locale
+	 *            the optional locale for i18n of the result.
 	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
 	 */
-	Set<String> getMissingAttributes(String applicationName)
+	List<AttributeDO> getMissingAttributes(String applicationName, Locale locale)
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException;
 }

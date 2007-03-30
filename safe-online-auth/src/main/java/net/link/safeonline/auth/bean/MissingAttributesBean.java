@@ -7,13 +7,22 @@
 
 package net.link.safeonline.auth.bean;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.context.FacesContext;
+
+import net.link.safeonline.auth.AuthenticationConstants;
+import net.link.safeonline.auth.AuthenticationUtils;
+import net.link.safeonline.auth.MissingAttributes;
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.AttributeDO;
+import net.link.safeonline.authentication.service.IdentityService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,15 +33,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.core.FacesMessages;
-
-import net.link.safeonline.auth.AuthenticationConstants;
-import net.link.safeonline.auth.AuthenticationUtils;
-import net.link.safeonline.auth.MissingAttributes;
-import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.AttributeDO;
-import net.link.safeonline.authentication.service.IdentityService;
 
 @Stateful
 @Name("missingAttributes")
@@ -64,10 +64,11 @@ public class MissingAttributesBean implements MissingAttributes {
 	@Factory("missingAttributeList")
 	public void missingAttributeListFactory() {
 		LOG.debug("missing attribute list factory");
-		Set<String> missingAttributeNames;
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
 		try {
-			missingAttributeNames = this.identityService
-					.getMissingAttributes(this.application);
+			this.missingAttributeList = this.identityService
+					.getMissingAttributes(this.application, viewLocale);
 		} catch (ApplicationNotFoundException e) {
 			String msg = "application not found.";
 			LOG.debug(msg);
@@ -78,12 +79,6 @@ public class MissingAttributesBean implements MissingAttributes {
 			LOG.debug(msg);
 			this.facesMessages.add(msg);
 			return;
-		}
-		this.missingAttributeList = new LinkedList<AttributeDO>();
-		for (String missingAttributeName : missingAttributeNames) {
-			AttributeDO missingAttribute = new AttributeDO(
-					missingAttributeName, null, true);
-			this.missingAttributeList.add(missingAttribute);
 		}
 	}
 
