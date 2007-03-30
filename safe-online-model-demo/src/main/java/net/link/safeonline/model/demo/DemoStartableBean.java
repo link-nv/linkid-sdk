@@ -21,6 +21,7 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
+import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -43,7 +44,9 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	public static final String DEMO_APPLICATION_NAME = "demo-application";
 
-	private static final String DEMO_TICKET_APPLICATION_NAME = "safe-online-demo-ticket";
+	public static final String DEMO_TICKET_APPLICATION_NAME = "safe-online-demo-ticket";
+
+	public static final String DEMO_PAYMENT_APPLICATION_NAME = "safe-online-demo-payment";
 
 	@EJB
 	private TrustPointDAO trustPointDAO;
@@ -98,7 +101,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		return BeIdConstants.BEID_BOOT_PRIORITY - 1;
 	}
 
-	private void addDemoCertificateAsTrustPoint(X509Certificate certificate) {
+	private void addCertificateAsTrustPoint(X509Certificate certificate) {
 		TrustDomainEntity applicationTrustDomain = this.trustDomainDAO
 				.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 		if (null == applicationTrustDomain) {
@@ -129,21 +132,28 @@ public class DemoStartableBean extends AbstractInitBean {
 				.getPrivateKeyEntry();
 		X509Certificate demoCertificate = (X509Certificate) demoPrivateKeyEntry
 				.getCertificate();
+		this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME,
+				"owner", demoCertificate));
 
 		PrivateKeyEntry demoTicketPrivateKeyEntry = DemoTicketKeyStoreUtils
 				.getPrivateKeyEntry();
 		X509Certificate demoTicketCertificate = (X509Certificate) demoTicketPrivateKeyEntry
 				.getCertificate();
-
-		this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME,
-				"owner", demoCertificate));
-
 		this.registeredApplications.add(new Application(
 				DEMO_TICKET_APPLICATION_NAME, "owner", demoTicketCertificate));
 
+		PrivateKeyEntry demoPaymentPrivateKeyEntry = DemoPaymentKeyStoreUtils
+				.getPrivateKeyEntry();
+		X509Certificate demoPaymentCertificate = (X509Certificate) demoPaymentPrivateKeyEntry
+				.getCertificate();
+		this.registeredApplications
+				.add(new Application(DEMO_PAYMENT_APPLICATION_NAME, "owner",
+						demoPaymentCertificate));
+
 		super.postStart();
 
-		addDemoCertificateAsTrustPoint(demoCertificate);
-		addDemoCertificateAsTrustPoint(demoTicketCertificate);
+		addCertificateAsTrustPoint(demoCertificate);
+		addCertificateAsTrustPoint(demoTicketCertificate);
+		addCertificateAsTrustPoint(demoPaymentCertificate);
 	}
 }
