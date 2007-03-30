@@ -226,6 +226,7 @@
 		<module>safe-online-demo-ticket</module>
 		<module>safe-online-demo-ticket-keystore</module>
 		<module>safe-online-demo-payment-keystore</module>
+		<module>safe-online-demo-payment</module>
 	</modules>
 	<repositories>
 		<repository>
