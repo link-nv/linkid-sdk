@@ -9,23 +9,21 @@ package test.unit.net.link.safeonline.model.beid;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.easymock.EasyMock.expectLastCall;
 
 import java.security.cert.X509Certificate;
 
-import org.easymock.EasyMock;
-
 import junit.framework.TestCase;
-import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.TrustPointDAO;
-import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.model.beid.BeIdPkiProvider;
 import net.link.safeonline.model.beid.BeIdStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
+
+import org.easymock.EasyMock;
 
 public class BeIdStartableBeanTest extends TestCase {
 
@@ -34,8 +32,6 @@ public class BeIdStartableBeanTest extends TestCase {
 	private TrustDomainDAO mockTrustDomainDAO;
 
 	private TrustPointDAO mockTrustPointDAO;
-
-	private AttributeTypeDAO mockAttributeTypeDAO;
 
 	private Object[] mockObjects;
 
@@ -50,16 +46,13 @@ public class BeIdStartableBeanTest extends TestCase {
 		this.mockTrustPointDAO = createMock(TrustPointDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockTrustPointDAO);
 
-		this.mockAttributeTypeDAO = createMock(AttributeTypeDAO.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockAttributeTypeDAO);
-
 		EJBTestUtils.init(this.testedInstance);
 
 		this.mockObjects = new Object[] { this.mockTrustDomainDAO,
-				this.mockTrustPointDAO, this.mockAttributeTypeDAO };
+				this.mockTrustPointDAO };
 	}
 
-	public void testStart() throws Exception {
+	public void testInitTrustDomain() throws Exception {
 		// setup
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				BeIdPkiProvider.TRUST_DOMAIN_NAME, true);
@@ -69,9 +62,6 @@ public class BeIdStartableBeanTest extends TestCase {
 				this.mockTrustDomainDAO
 						.findTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME))
 				.andStubReturn(null);
-		expect(
-				this.mockAttributeTypeDAO.findAttributeType((String) EasyMock
-						.anyObject())).andStubReturn(null);
 
 		// expectations
 		expect(
@@ -82,15 +72,11 @@ public class BeIdStartableBeanTest extends TestCase {
 				(X509Certificate) EasyMock.anyObject());
 		expectLastCall().times(1 + 2 + 1 + 15 + 20 + 1 + 1 + 1 + 1 + 1);
 
-		this.mockAttributeTypeDAO
-				.addAttributeType((AttributeTypeEntity) EasyMock.anyObject());
-		expectLastCall().times(4);
-
 		// prepare
 		replay(this.mockObjects);
 
 		// operate
-		this.testedInstance.postStart();
+		this.testedInstance.initTrustDomain();
 
 		// verify
 		verify(this.mockObjects);

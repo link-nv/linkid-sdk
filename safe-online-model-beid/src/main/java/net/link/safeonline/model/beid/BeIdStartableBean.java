@@ -12,19 +12,20 @@ import java.io.InputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.Startable;
-import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.TrustPointDAO;
+import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.model.bean.AbstractInitBean;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -34,7 +35,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Stateless
 @Local(Startable.class)
 @LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "BeIdStartableBean")
-public class BeIdStartableBean implements Startable {
+public class BeIdStartableBean extends AbstractInitBean {
 
 	private static final Log LOG = LogFactory.getLog(BeIdStartableBean.class);
 
@@ -46,42 +47,48 @@ public class BeIdStartableBean implements Startable {
 	@EJB
 	private TrustPointDAO trustPointDAO;
 
-	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
+	public BeIdStartableBean() {
+		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(
+				BeIdConstants.GIVENNAME_ATTRIBUTE, "string", true, false);
+		this.attributeTypes.add(givenNameAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				givenNameAttributeType, Locale.ENGLISH.getLanguage(),
+				"Given name (BeID)", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				givenNameAttributeType, "nl", "Naam (BeID)", null));
 
-	private static List<AttributeTypeEntity> attributeTypes;
+		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(
+				BeIdConstants.SURNAME_ATTRIBUTE, "string", true, false);
+		this.attributeTypes.add(surnameAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				surnameAttributeType, Locale.ENGLISH.getLanguage(),
+				"Surname (BeID)", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				surnameAttributeType, "nl", "Achternaam (BeID)", null));
 
-	static {
-		BeIdStartableBean.attributeTypes = new LinkedList<AttributeTypeEntity>();
-		attributeTypes.add(new AttributeTypeEntity(
-				BeIdConstants.GIVENNAME_ATTRIBUTE, "string", true, false));
-		attributeTypes.add(new AttributeTypeEntity(
-				BeIdConstants.SURNAME_ATTRIBUTE, "string", true, false));
-		attributeTypes.add(new AttributeTypeEntity(
+		this.attributeTypes.add(new AttributeTypeEntity(
 				BeIdConstants.AUTH_CERT_ATTRIBUTE, "blob", true, false));
-		attributeTypes.add(new AttributeTypeEntity(BeIdConstants.NRN_ATTRIBUTE,
-				"string", true, false));
+
+		AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(
+				BeIdConstants.NRN_ATTRIBUTE, "string", true, false);
+		this.attributeTypes.add(nrnAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				nrnAttributeType, Locale.ENGLISH.getLanguage(),
+				"Identification number of the National Register", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				nrnAttributeType, "nl",
+				"Identificatienummer van het Rijksregister", null));
+
 	}
 
 	public void postStart() {
 		LOG.debug("post start");
+		super.postStart();
 		initTrustDomain();
-		initAttributeTypes();
-	}
-
-	private void initAttributeTypes() {
-		for (AttributeTypeEntity attributeType : BeIdStartableBean.attributeTypes) {
-			AttributeTypeEntity existingAttributeType = this.attributeTypeDAO
-					.findAttributeType(attributeType.getName());
-			if (null != existingAttributeType) {
-				continue;
-			}
-			this.attributeTypeDAO.addAttributeType(attributeType);
-		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initTrustDomain() {
+	public void initTrustDomain() {
 		TrustDomainEntity beidTrustDomain = this.trustDomainDAO
 				.findTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME);
 		if (null != beidTrustDomain) {

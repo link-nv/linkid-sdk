@@ -10,6 +10,7 @@ package net.link.safeonline.model.demo;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -21,6 +22,7 @@ import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
+import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.TrustDomainEntity;
@@ -79,6 +81,11 @@ public class DemoStartableBean extends AbstractInitBean {
 				"urn:net:lin-k:safe-online:attribute:visaCardNumber", "string",
 				true, true);
 		this.attributeTypes.add(visaAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				visaAttributeType, Locale.ENGLISH.getLanguage(), "VISA number",
+				null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				visaAttributeType, "nl", "VISA-nummer", null));
 		this.identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME,
 				new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(

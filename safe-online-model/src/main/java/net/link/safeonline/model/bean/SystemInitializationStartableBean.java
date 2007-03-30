@@ -7,11 +7,14 @@
 
 package net.link.safeonline.model.bean;
 
+import java.util.Locale;
+
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 
@@ -34,12 +37,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 public class SystemInitializationStartableBean extends AbstractInitBean {
 
 	public SystemInitializationStartableBean() {
-		this.attributeTypes.add(new AttributeTypeEntity(
-				SafeOnlineConstants.NAME_ATTRIBUTE, "string", true, true));
-		this.attributeTypes
-				.add(new AttributeTypeEntity(
-						SafeOnlineConstants.PASSWORD_ATTRIBUTE, "string",
-						false, false));
+		configureAttributeTypes();
 
 		this.authorizedUsers.put("admin", "admin");
 		this.authorizedUsers.put("owner", "secret");
@@ -71,6 +69,25 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "owner",
 				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
+	}
+
+	private void configureAttributeTypes() {
+		AttributeTypeEntity nameAttributeType = new AttributeTypeEntity(
+				SafeOnlineConstants.NAME_ATTRIBUTE, "string", true, true);
+		this.attributeTypes.add(nameAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				nameAttributeType, Locale.ENGLISH.getLanguage(), "Name", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				nameAttributeType, "nl", "Naam", null));
+
+		AttributeTypeEntity passwordAttributeType = new AttributeTypeEntity(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, "string", false, false);
+		this.attributeTypes.add(passwordAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				passwordAttributeType, Locale.ENGLISH.getLanguage(),
+				"Password", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				passwordAttributeType, "nl", "Wachtwoord", null));
 	}
 
 	public int getPriority() {

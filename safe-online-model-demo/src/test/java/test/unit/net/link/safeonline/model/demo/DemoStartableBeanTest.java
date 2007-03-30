@@ -30,6 +30,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.ConfigGroupEntity;
 import net.link.safeonline.entity.ConfigItemEntity;
@@ -74,7 +75,8 @@ public class DemoStartableBeanTest extends TestCase {
 				ConfigItemEntity.class, SchedulingEntity.class,
 				TaskEntity.class, TaskHistoryEntity.class,
 				TrustPointEntity.class,
-				ApplicationIdentityAttributeEntity.class);
+				ApplicationIdentityAttributeEntity.class,
+				AttributeTypeDescriptionEntity.class);
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 

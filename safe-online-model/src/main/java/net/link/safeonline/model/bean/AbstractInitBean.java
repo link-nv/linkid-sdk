@@ -33,6 +33,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -133,6 +134,8 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected List<AttributeTypeEntity> attributeTypes;
 
+	protected List<AttributeTypeDescriptionEntity> attributeTypeDescriptions;
+
 	protected List<Identity> identities;
 
 	@EJB
@@ -147,12 +150,14 @@ public abstract class AbstractInitBean implements Startable {
 		this.registeredApplications = new LinkedList<Application>();
 		this.subscriptions = new LinkedList<Subscription>();
 		this.identities = new LinkedList<Identity>();
+		this.attributeTypeDescriptions = new LinkedList<AttributeTypeDescriptionEntity>();
 	}
 
 	public void postStart() {
 		LOG.debug("postStart");
 		initTrustDomains();
 		initAttributeTypes();
+		initAttributeTypeDescriptions();
 		initSubjectsAndAttributes();
 		initApplicationOwners();
 		initApplications();
@@ -208,6 +213,27 @@ public abstract class AbstractInitBean implements Startable {
 				continue;
 			}
 			this.attributeTypeDAO.addAttributeType(attributeType);
+		}
+	}
+
+	private void initAttributeTypeDescriptions() {
+		for (AttributeTypeDescriptionEntity attributeTypeDescription : attributeTypeDescriptions) {
+			AttributeTypeDescriptionEntity existingDescription = this.attributeTypeDAO
+					.findDescription(attributeTypeDescription.getPk());
+			if (null != existingDescription) {
+				continue;
+			}
+			AttributeTypeEntity attributeType;
+			try {
+				attributeType = this.attributeTypeDAO
+						.getAttributeType(attributeTypeDescription
+								.getAttributeTypeName());
+			} catch (AttributeTypeNotFoundException e) {
+				throw new EJBException("attribute type not found: "
+						+ attributeTypeDescription.getAttributeTypeName());
+			}
+			this.attributeTypeDAO.addAttributeTypeDescription(attributeType,
+					attributeTypeDescription);
 		}
 	}
 
