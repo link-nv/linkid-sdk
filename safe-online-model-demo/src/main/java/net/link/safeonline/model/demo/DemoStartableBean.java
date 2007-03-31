@@ -96,11 +96,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				visaAttributeType, "nl", "VISA-nummer", null));
 		this.identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME,
-				new IdentityAttributeTypeDO[] {
-						new IdentityAttributeTypeDO(
-								visaAttributeType.getName(), true),
-						new IdentityAttributeTypeDO(
-								BeIdConstants.NRN_ATTRIBUTE, true) }));
+				new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+						BeIdConstants.NRN_ATTRIBUTE, true) }));
 		this.identities.add(new Identity(DEMO_PAYMENT_APPLICATION_NAME,
 				new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
 						visaAttributeType.getName(), true) }));

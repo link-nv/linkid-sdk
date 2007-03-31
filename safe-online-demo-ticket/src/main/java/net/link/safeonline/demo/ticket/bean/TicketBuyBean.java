@@ -7,6 +7,9 @@
 
 package net.link.safeonline.demo.ticket.bean;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -23,9 +26,12 @@ import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.demo.ticket.TicketBuy;
 import net.link.safeonline.demo.ticket.entity.Ticket;
@@ -250,7 +256,50 @@ public class TicketBuyBean implements TicketBuy {
 				this.returnTicket);
 		user.getTickets().add(ticket);
 		this.entityManager.persist(ticket);
+
+		redirectToPaymentService(ticket);
+
 		return "list";
+	}
+
+	private void redirectToPaymentService(Ticket ticket) {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = facesContext.getExternalContext();
+
+		String user = getUsername();
+		String recipient = "De Lijn";
+		String message = "Ticket " + ticket.getId();
+		String target = "http://localhost:8080/demo-ticket/list.seam";
+		HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext
+				.getResponse();
+		target = httpServletResponse.encodeRedirectURL(target);
+
+		String redirectUrl;
+		try {
+			redirectUrl = "http://localhost:8080/demo-payment/entry.seam?user="
+					+ URLEncoder.encode(user, "UTF-8")
+					+ "&recipient="
+					+ URLEncoder.encode(recipient, "UTF-8")
+					+ "&amount="
+					+ URLEncoder.encode(Double.toString(this.ticketPrice),
+							"UTF-8") + "&message="
+					+ URLEncoder.encode(message, "UTF-8") + "&target="
+					+ URLEncoder.encode(target, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			String msg = "URL encoding error";
+			log.debug(msg);
+			this.facesMessages.add(msg);
+			return;
+		}
+
+		try {
+			externalContext.redirect(redirectUrl);
+		} catch (IOException e) {
+			String msg = "IO redirect error";
+			log.debug(msg);
+			this.facesMessages.add(msg);
+			return;
+		}
 	}
 
 	@Remove
