@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="content">
+		<h2>#{msgs.newPayment}</h2>
+
+		<h:form>
+			<table>
+				<tr>
+					<th><h:outputText value="#{msgs.recipient}" />:</th>
+					<td><h:outputText value="#{recipient}" /></td>
+				</tr>
+				<tr>
+					<th><h:outputText value="#{msgs.amount}" />:</th>
+					<td><h:outputText value="#{amount}" /> euro</td>
+				</tr>
+				<tr>
+					<th><h:outputText value="#{msgs.message}" />:</th>
+					<td><h:outputText value="#{message}" /></td>
+				</tr>
+			</table>
+
+			<h:messages styleClass="error" globalOnly="true" />
+
+			<h:commandButton action="#{paymentServiceProcess.confirm}"
+				id="confirm" value="#{msgs.confirm}" />
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+</body>
+</html>

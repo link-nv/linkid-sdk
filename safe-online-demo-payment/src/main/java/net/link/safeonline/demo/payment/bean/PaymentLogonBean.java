@@ -16,6 +16,7 @@ import javax.ejb.Stateful;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.demo.payment.PaymentLogon;
 
@@ -52,15 +53,29 @@ public class PaymentLogonBean implements PaymentLogon {
 
 	public String login() {
 		log.debug("login");
+		String result = performLogin(this.facesMessages, this.log,
+				"overview.seam");
+		return result;
+	}
+
+	public static String performLogin(FacesMessages facesMessages, Log log,
+			String targetPage) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		String safeOnlineAuthenticationServiceUrl = externalContext
 				.getInitParameter("SafeOnlineAuthenticationServiceUrl");
-		log.debug("redirecting to #0: ", safeOnlineAuthenticationServiceUrl);
+		log.debug("redirecting to #0", safeOnlineAuthenticationServiceUrl);
 		HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext
 				.getRequest();
+		HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext
+				.getResponse();
 		String requestUrl = httpServletRequest.getRequestURL().toString();
-		String targetUrl = getOverviewTargetUrl(requestUrl);
+		String targetUrl = getOverviewTargetUrl(requestUrl, targetPage);
+		/*
+		 * Next is required to preserve the session if browser does not support
+		 * cookies.
+		 */
+		targetUrl = httpServletResponse.encodeRedirectURL(targetUrl);
 		log.debug("target url: #0", targetUrl);
 		String redirectUrl;
 		try {
@@ -70,7 +85,7 @@ public class PaymentLogonBean implements PaymentLogon {
 		} catch (UnsupportedEncodingException e) {
 			String msg = "UnsupportedEncoding: " + e.getMessage();
 			log.debug(msg);
-			this.facesMessages.add(msg);
+			facesMessages.add(msg);
 			return null;
 		}
 		try {
@@ -78,16 +93,17 @@ public class PaymentLogonBean implements PaymentLogon {
 		} catch (IOException e) {
 			String msg = "IO error: " + e.getMessage();
 			log.debug(msg);
-			this.facesMessages.add(msg);
+			facesMessages.add(msg);
 			return null;
 		}
 		return null;
 	}
 
-	public String getOverviewTargetUrl(String requestUrl) {
+	public static String getOverviewTargetUrl(String requestUrl,
+			String targetPage) {
 		int lastSlashIdx = requestUrl.lastIndexOf("/");
 		String prefix = requestUrl.substring(0, lastSlashIdx);
-		String targetUrl = prefix + "/" + "overview.seam";
+		String targetUrl = prefix + "/" + targetPage;
 		return targetUrl;
 	}
 
