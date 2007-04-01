@@ -83,10 +83,6 @@ public class TicketBuyBean implements TicketBuy {
 
 	@SuppressWarnings("unused")
 	@Out(required = false)
-	private String visaNumber;
-
-	@SuppressWarnings("unused")
-	@Out(required = false)
 	private Date startDate;
 
 	@SuppressWarnings("unused")
@@ -231,8 +227,6 @@ public class TicketBuyBean implements TicketBuy {
 		try {
 			this.nrn = this.attributeClient.getAttributeValue(username,
 					"urn:net:lin-k:safe-online:attribute:beid:nrn");
-			this.visaNumber = this.attributeClient.getAttributeValue(username,
-					"urn:net:lin-k:safe-online:attribute:visaCardNumber");
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found: " + e.getMessage();
 			log.debug(msg);

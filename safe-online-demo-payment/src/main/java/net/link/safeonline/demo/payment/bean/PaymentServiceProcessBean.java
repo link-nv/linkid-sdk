@@ -38,6 +38,7 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
@@ -79,6 +80,9 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 
 	@In("target")
 	private String target;
+
+	@Out(value = "visaNumber", required = false)
+	private String visaNumber;
 
 	private transient AttributeClient attributeClient;
 
@@ -132,9 +136,8 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 			this.entityManager.persist(user);
 		}
 
-		String visaNumber;
 		try {
-			visaNumber = this.attributeClient.getAttributeValue(username,
+			this.visaNumber = this.attributeClient.getAttributeValue(username,
 					"urn:net:lin-k:safe-online:attribute:visaCardNumber");
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found: " + e.getMessage();
@@ -154,7 +157,7 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 		newPayment.setAmount(this.amount);
 		newPayment.setMessage(this.message);
 		newPayment.setPaymentDate(paymentDate);
-		newPayment.setVisa(visaNumber);
+		newPayment.setVisa(this.visaNumber);
 		newPayment.setOwner(user);
 
 		this.entityManager.persist(newPayment);

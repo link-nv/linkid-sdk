@@ -10,29 +10,32 @@
 	<ui:define name="content">
 		<h2>#{msgs.paymentCompleted}</h2>
 
+		<table>
+			<tr>
+				<th><h:outputText value="#{msgs.username}" />:</th>
+				<td><h:outputText value="#{username}" /></td>
+			</tr>
+			<tr>
+				<th><h:outputText value="#{msgs.recipient}" />:</th>
+				<td><h:outputText value="#{recipient}" /></td>
+			</tr>
+			<tr>
+				<th><h:outputText value="#{msgs.amount}" />:</th>
+				<td><h:outputText value="#{amount}" /> euro</td>
+			</tr>
+			<tr>
+				<th><h:outputText value="#{msgs.message}" />:</th>
+				<td><h:outputText value="#{message}" /></td>
+			</tr>
+			<tr>
+				<th><h:outputText value="#{msgs.VISA}" /></th>
+				<td><h:outputText value="#{visaNumber}" /></td>
+			</tr>
+		</table>
+
+		<h:messages styleClass="error" globalOnly="true" />
+
 		<h:form>
-			<table>
-				<tr>
-					<th><h:outputText value="#{msgs.username}" />:</th>
-					<td><h:outputText value="#{username}" /></td>
-				</tr>
-				<tr>
-					<th><h:outputText value="#{msgs.recipient}" />:</th>
-					<td><h:outputText value="#{recipient}" /></td>
-				</tr>
-				<tr>
-					<th><h:outputText value="#{msgs.amount}" />:</th>
-					<td><h:outputText value="#{amount}" /> euro</td>
-				</tr>
-				<tr>
-					<th><h:outputText value="#{msgs.message}" />:</th>
-					<td><h:outputText value="#{message}" /></td>
-				</tr>
-			</table>
-
-			<h:messages styleClass="error" globalOnly="true" />
-
-			<so:nbsp />
 			<h:commandButton action="#{paymentServiceProcess.done}" id="continue"
 				value="#{msgs.continue}" immediate="true" />
 		</h:form>

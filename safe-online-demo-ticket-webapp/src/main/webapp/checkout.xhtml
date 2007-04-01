@@ -40,11 +40,9 @@
 					<th>#{msgs.ticketPrice}:</th>
 					<td>#{ticketPrice}</td>
 				</tr>
-				<tr>
-					<th>#{msgs.visaNr}:</th>
-					<td>#{visaNumber}</td>
-				</tr>
 			</table>
+
+			<h:messages styleClass="error" globalOnly="true" />
 
 			<h:commandButton action="#{ticketBuy.confirm}" id="confirm"
 				value="#{msgs.confirmaction}" />
