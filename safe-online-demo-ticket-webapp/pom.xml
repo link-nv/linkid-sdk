@@ -26,6 +26,7 @@
 				<auth.webapp.location>
 					http://localhost:8080/safe-online-auth/
 				</auth.webapp.location>
+				<local.host.name>localhost</local.host.name>
 			</properties>
 		</profile>
 		<profile>
@@ -40,6 +41,7 @@
 				<auth.webapp.location>
 					http://buildserver:8080/safe-online-auth/
 				</auth.webapp.location>
+				<local.host.name>buildserver</local.host.name>
 			</properties>
 		</profile>
 	</profiles>

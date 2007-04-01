@@ -102,6 +102,8 @@ public class TicketBuyBean implements TicketBuy {
 	@In(create = true)
 	FacesMessages facesMessages;
 
+	private String localHostName;
+
 	@PostConstruct
 	public void postConstructCallback() {
 		PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils
@@ -110,11 +112,18 @@ public class TicketBuyBean implements TicketBuy {
 		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
 		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION,
 				this.certificate, this.privateKey);
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		this.localHostName = externalContext.getInitParameter("LocalHostName");
 	}
 
 	@PrePassivate
 	public void prePassivateCallback() {
-		// next is not really required
+		/*
+		 * Next is not really required since the attributeClient field is marked
+		 * as transient anyway.
+		 */
 		this.attributeClient = null;
 	}
 
@@ -269,14 +278,17 @@ public class TicketBuyBean implements TicketBuy {
 		String user = getUsername();
 		String recipient = "De Lijn";
 		String message = "Ticket " + ticket.getId();
-		String target = "http://localhost:8080/demo-ticket/list.seam";
+		String target = "http://" + this.localHostName
+				+ ":8080/demo-ticket/list.seam";
 		HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext
 				.getResponse();
 		target = httpServletResponse.encodeRedirectURL(target);
 
 		String redirectUrl;
 		try {
-			redirectUrl = "http://localhost:8080/demo-payment/entry.seam?user="
+			redirectUrl = "http://"
+					+ this.localHostName
+					+ ":8080/demo-payment/entry.seam?user="
 					+ URLEncoder.encode(user, "UTF-8")
 					+ "&recipient="
 					+ URLEncoder.encode(recipient, "UTF-8")
