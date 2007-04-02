@@ -21,7 +21,7 @@
 		<h1>Edit application: #{selectedApplication.name}</h1>
 
 		<h:form>
-			#{msgs.applicationIdentity}:
+			<h2>#{msgs.applicationIdentity}:</h2>
 			<h:dataTable value="#{identityAttributes}" var="item">
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>

@@ -28,20 +28,6 @@
 					<h:commandLink value="#{item.name}" action="#{attributes.view}" />
 				</h:column>
 
-				<h:column>
-					<f:facet name="header">#{msgs.type}</f:facet>
-					<h:outputText value="#{item.type}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">#{msgs.userVisible}</f:facet>
-					<h:outputText value="#{item.userVisible}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">#{msgs.userEditable}</f:facet>
-					<h:outputText value="#{item.userEditable}" />
-				</h:column>
 			</t:dataTable>
 
 			<t:dataScroller for="attributes-data" fastStep="10"

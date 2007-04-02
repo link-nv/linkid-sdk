@@ -26,7 +26,8 @@ import org.mortbay.jetty.servlet.ServletMapping;
 import org.mortbay.jetty.servlet.SessionHandler;
 
 /**
- * Servlet Test Manager. This manager allows one to unit test servlets.
+ * Servlet Test Manager. This test manager allows one to unit test servlets. It
+ * is using the embeddable Jetty servlet container.
  * 
  * @author fcorneli
  * 
@@ -39,8 +40,8 @@ public class ServletTestManager {
 
 	private String servletLocation;
 
-	public void setUp(Class<?> servletClass) throws Exception {
-		setUp(servletClass, null, null);
+	public String setUp(Class<?> servletClass) throws Exception {
+		return setUp(servletClass, null, null);
 	}
 
 	private static class LocalHashSessionManager extends HashSessionManager {
@@ -71,7 +72,7 @@ public class ServletTestManager {
 		}
 	}
 
-	public void setUp(Class<?> servletClass, Class<?> filterClass,
+	public String setUp(Class<?> servletClass, Class<?> filterClass,
 			Map<String, String> initialSessionAttributes) throws Exception {
 		this.server = new Server();
 		Connector connector = new SelectChannelConnector();
@@ -109,6 +110,7 @@ public class ServletTestManager {
 		LOG.debug("port: " + port);
 
 		this.servletLocation = "http://localhost:" + port + "/";
+		return this.servletLocation;
 	}
 
 	public String getServletLocation() {

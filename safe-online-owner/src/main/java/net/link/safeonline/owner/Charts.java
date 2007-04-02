@@ -1,26 +1,29 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.owner;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.StatisticNotFoundException;
-import net.link.safeonline.entity.StatisticEntity;
-
-import org.jfree.chart.JFreeChart;
-
 @Local
 public interface Charts {
 
-	void statListFactory() throws PermissionDeniedException;
+	/*
+	 * Factories
+	 */
+	void statListFactory();
 
+	/*
+	 * Actions.
+	 */
 	String viewStat();
 
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
-
-	byte[] getChart(String chartName, String applicationName, int width,
-			int height) throws StatisticNotFoundException,
-			PermissionDeniedException;
-
-	JFreeChart defaultChart(StatisticEntity statistic);
-
 }

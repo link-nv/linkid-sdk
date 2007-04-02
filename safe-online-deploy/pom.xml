@@ -101,20 +101,6 @@
 								true
 							</includeInApplicationXml>
 						</jarModule>
-						<jarModule>
-							<groupId>jfree</groupId>
-							<artifactId>jfreechart</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
-						</jarModule>
-						<jarModule>
-							<groupId>jfree</groupId>
-							<artifactId>jcommon</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
-						</jarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-entity</artifactId>
