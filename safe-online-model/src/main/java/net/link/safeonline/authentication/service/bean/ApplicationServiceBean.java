@@ -348,4 +348,18 @@ public class ApplicationServiceBean implements ApplicationService {
 				.getApplication(applicationName);
 		return application;
 	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void updateApplicationCertificate(String applicationName,
+			byte[] certificateData) throws CertificateEncodingException,
+			ApplicationNotFoundException {
+		LOG.debug("updating application certificate for " + applicationName);
+		X509Certificate certificate = PkiUtils
+				.decodeCertificate(certificateData);
+
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationName);
+
+		application.setCertificate(certificate);
+	}
 }

@@ -152,4 +152,16 @@ public interface ApplicationService {
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException,
 			AttributeTypeNotFoundException;
+
+	/**
+	 * Updates the X509 certificate of the given application.
+	 * 
+	 * @param applicationName
+	 * @param certificateData
+	 * @throws CertificateEncodingException
+	 * @throws ApplicationNotFoundException
+	 */
+	void updateApplicationCertificate(String applicationName,
+			byte[] certificateData) throws CertificateEncodingException,
+			ApplicationNotFoundException;
 }

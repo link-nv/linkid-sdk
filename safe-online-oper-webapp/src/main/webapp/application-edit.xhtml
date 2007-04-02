@@ -20,7 +20,7 @@
 
 		<h1>Edit application: #{selectedApplication.name}</h1>
 
-		<h:form>
+		<h:form enctype="multipart/form-data">
 			<h2>#{msgs.applicationIdentity}:</h2>
 			<h:dataTable value="#{identityAttributes}" var="item">
 				<h:column>
@@ -33,6 +33,11 @@
 					<h:selectBooleanCheckbox value="#{item.required}" />
 				</h:column>
 			</h:dataTable>
+
+			<h2>#{msgs.certificate}</h2>
+			<p><h:outputLabel for="certificate" value="#{msgs.certificate}" />
+			<t:inputFileUpload id="certificate" value="#{application.upFile}"
+				storage="file" maxlength="200000" /></p>
 
 			<t:messages styleClass="error" globalOnly="true" />
 

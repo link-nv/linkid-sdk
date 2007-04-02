@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -231,6 +231,13 @@ public class ApplicationEntity implements Serializable {
 		return this.encodedCert;
 	}
 
+	/**
+	 * Sets the encoded certificate data. Do not use this method directly. Use
+	 * {@link #setCertificate(X509Certificate)} instead. This method should only
+	 * be used by JPA.
+	 * 
+	 * @param encodedCert
+	 */
 	public void setEncodedCert(byte[] encodedCert) {
 		this.encodedCert = encodedCert;
 	}
@@ -264,6 +271,14 @@ public class ApplicationEntity implements Serializable {
 		return this.certificateIdentifier;
 	}
 
+	/**
+	 * Sets the certificate identifier. Do not use this method directly. Use
+	 * {@link #setCertificate(X509Certificate) setCertificate} instead. JPA
+	 * requires this setter.
+	 * 
+	 * @param certificateIdentifier
+	 * @see #setCertificate(X509Certificate)
+	 */
 	public void setCertificateIdentifier(String certificateIdentifier) {
 		this.certificateIdentifier = certificateIdentifier;
 	}
@@ -288,6 +303,13 @@ public class ApplicationEntity implements Serializable {
 		return this.certificate;
 	}
 
+	/**
+	 * Sets the X509 certificate of the application. Use this method to update
+	 * the application certificate since this method keeps the certificate
+	 * identifier in sync with the certificate.
+	 * 
+	 * @param certificate
+	 */
 	@Transient
 	public void setCertificate(X509Certificate certificate) {
 		byte[] encodedCertificate;

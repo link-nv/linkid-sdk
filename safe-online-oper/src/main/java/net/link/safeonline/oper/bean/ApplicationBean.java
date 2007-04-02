@@ -340,6 +340,30 @@ public class ApplicationBean implements Application {
 	public String save() {
 		String applicationId = this.selectedApplication.getName();
 		LOG.debug("save application: " + applicationId);
+
+		if (null != this.upFile) {
+			LOG.debug("updating application certificate");
+			try {
+				this.applicationService.updateApplicationCertificate(
+						applicationId, this.upFile.getBytes());
+			} catch (CertificateEncodingException e) {
+				String msg = "certificate encoding error";
+				LOG.debug(msg);
+				this.facesMessages.add(msg);
+				return null;
+			} catch (ApplicationNotFoundException e) {
+				String msg = "application not found";
+				LOG.debug(msg);
+				this.facesMessages.add(msg);
+				return null;
+			} catch (IOException e) {
+				String msg = "IO error: " + e.getMessage();
+				LOG.debug(msg);
+				this.facesMessages.add(msg);
+				return null;
+			}
+		}
+
 		List<IdentityAttributeTypeDO> newIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
 		for (IdentityAttribute identityAttribute : this.identityAttributes) {
 			if (false == identityAttribute.isIncluded()) {
