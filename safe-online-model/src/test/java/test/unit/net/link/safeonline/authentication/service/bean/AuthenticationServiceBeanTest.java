@@ -20,6 +20,7 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationStatementFactory;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
@@ -128,7 +129,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		// stubs
 		SubjectEntity subject = new SubjectEntity(login);
-		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(subject);
+		expect(this.mockSubjectDAO.getSubject(login)).andStubReturn(subject);
 
 		SubjectEntity adminSubject = new SubjectEntity("admin-login");
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
@@ -186,7 +187,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		// stubs
 		SubjectEntity subject = new SubjectEntity(login);
-		expect(this.mockSubjectDAO.findSubject(login)).andStubReturn(subject);
+		expect(this.mockSubjectDAO.getSubject(login)).andStubReturn(subject);
 
 		AttributeTypeEntity passwordAttributeType = new AttributeTypeEntity();
 		AttributeEntity passwordAttribute = new AttributeEntity(
@@ -219,18 +220,23 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		String password = "test-password";
 
 		// stubs
-		expect(this.mockSubjectDAO.findSubject(wrongLogin)).andStubReturn(null);
+		expect(this.mockSubjectDAO.getSubject(wrongLogin)).andStubThrow(
+				new SubjectNotFoundException());
 
 		// prepare
 		replay(this.mockObjects);
 
 		// operate
-		boolean result = this.testedInstance.authenticate(applicationName,
-				wrongLogin, password);
+		try {
+			this.testedInstance.authenticate(applicationName, wrongLogin,
+					password);
+			fail();
+		} catch (SubjectNotFoundException e) {
+			// expected
+		}
 
 		// verify
 		verify(this.mockObjects);
-		assertFalse(result);
 	}
 
 	public void testAuthenticateViaAuthenticationStatement() throws Exception {
