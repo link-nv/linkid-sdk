@@ -9,6 +9,7 @@ package net.link.safeonline.demo.ticket.bean;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.security.PrivateKey;
@@ -235,6 +236,17 @@ public class TicketBuyBean implements TicketBuy {
 		} catch (RequestDeniedException e) {
 			String msg = "request denied";
 			log.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (ConnectException e) {
+			String msg = "Connection error. Check your SSL setup.";
+			log.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (Exception e) {
+			String msg = "Error occurred: " + e.getMessage();
+			log.debug(msg);
+			log.debug("exception type: " + e.getClass().getName());
 			this.facesMessages.add(msg);
 			return null;
 		}

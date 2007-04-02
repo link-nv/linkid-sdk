@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.attrib;
 
+import java.net.ConnectException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -40,6 +41,15 @@ import oasis.names.tc.saml._2_0.protocol.StatusType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.sun.xml.ws.client.ClientTransportException;
+
+/**
+ * Implementation of attribute client. This class is using JAX-WS, secured via
+ * WS-Security and server-side SSL.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class AttributeClientImpl implements AttributeClient {
 
 	private static final Log LOG = LogFactory.getLog(AttributeClientImpl.class);
@@ -68,7 +78,8 @@ public class AttributeClientImpl implements AttributeClient {
 	}
 
 	public String getAttributeValue(String subjectLogin, String attributeName)
-			throws AttributeNotFoundException, RequestDeniedException {
+			throws AttributeNotFoundException, RequestDeniedException,
+			ConnectException {
 		LOG.debug("get attribute value for subject " + subjectLogin
 				+ " attribute name " + attributeName);
 
@@ -89,7 +100,12 @@ public class AttributeClientImpl implements AttributeClient {
 
 		configureSsl();
 
-		ResponseType response = this.port.attributeQuery(request);
+		ResponseType response;
+		try {
+			response = this.port.attributeQuery(request);
+		} catch (ClientTransportException e) {
+			throw new ConnectException(e.getMessage());
+		}
 
 		StatusType status = response.getStatus();
 		StatusCodeType statusCode = status.getStatusCode();

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.demo.webapp;
 
+import java.net.ConnectException;
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
@@ -91,6 +92,9 @@ public class AttributeBean {
 			} catch (RequestDeniedException e) {
 				LOG.error("request denied");
 				return "[request denied]";
+			} catch (ConnectException e) {
+				LOG.error("connection error. check your SSL setup");
+				return "[connection error. check your SSL setup]";
 			}
 		}
 		return this.attributeValue;

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.demo.payment.bean;
 
+import java.net.ConnectException;
 import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -126,6 +127,11 @@ public class TransactionBean implements Transaction {
 			return null;
 		} catch (RequestDeniedException e) {
 			String msg = "request denied";
+			log.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (ConnectException e) {
+			String msg = "Connection error. Check your SSL setup.";
 			log.debug(msg);
 			this.facesMessages.add(msg);
 			return null;

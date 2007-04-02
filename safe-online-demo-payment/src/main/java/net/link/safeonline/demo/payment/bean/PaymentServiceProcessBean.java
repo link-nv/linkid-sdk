@@ -8,6 +8,7 @@
 package net.link.safeonline.demo.payment.bean;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
@@ -146,6 +147,11 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 			return;
 		} catch (RequestDeniedException e) {
 			String msg = "request denied";
+			log.debug(msg);
+			this.facesMessages.add(msg);
+			return;
+		} catch (ConnectException e) {
+			String msg = "Connection error. Check your SSL ";
 			log.debug(msg);
 			this.facesMessages.add(msg);
 			return;
