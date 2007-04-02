@@ -13,6 +13,9 @@ import javax.jws.WebService;
 import net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationPort;
 import net.lin_k.safe_online.auth._1_0.types.AuthenticateRequestType;
 import net.lin_k.safe_online.auth._1_0.types.AuthenticateResultType;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -46,8 +49,17 @@ public class SafeOnlineAuthenticationPortImpl implements
 		String username = request.getUsername();
 		String password = request.getPassword();
 
-		boolean serviceResult = this.authenticationService.authenticate(
-				application, username, password);
+		boolean serviceResult;
+		try {
+			serviceResult = this.authenticationService.authenticate(
+					application, username, password);
+		} catch (SubjectNotFoundException e) {
+			serviceResult = false;
+		} catch (SubscriptionNotFoundException e) {
+			serviceResult = false;
+		} catch (ApplicationNotFoundException e) {
+			serviceResult = false;
+		}
 
 		AuthenticateResultType result = new AuthenticateResultType();
 		result.setAuthenticated(serviceResult);

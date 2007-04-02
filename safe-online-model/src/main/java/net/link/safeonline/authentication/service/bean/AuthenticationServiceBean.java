@@ -11,6 +11,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -91,7 +92,8 @@ public class AuthenticationServiceBean implements AuthenticationService {
 	private StatisticDataPointDAO statisticDataPointDAO;
 
 	public boolean authenticate(String applicationName, String login,
-			String password) {
+			String password) throws SubjectNotFoundException,
+			ApplicationNotFoundException, SubscriptionNotFoundException {
 		LOG.debug("authenticate \"" + login + "\" for \"" + applicationName
 				+ "\"");
 
@@ -104,11 +106,7 @@ public class AuthenticationServiceBean implements AuthenticationService {
 			throw new IllegalArgumentException("password is null");
 		}
 
-		SubjectEntity subject = this.entityDAO.findSubject(login);
-		if (null == subject) {
-			LOG.debug("subject not found");
-			return false;
-		}
+		SubjectEntity subject = this.entityDAO.getSubject(login);
 
 		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
 				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
@@ -116,7 +114,7 @@ public class AuthenticationServiceBean implements AuthenticationService {
 			String event = "password attribute not present for subject "
 					+ login;
 			addHistoryEntry(subject, event);
-			return false;
+			throw new EJBException(event);
 		}
 
 		String expectedPassword = passwordAttribute.getStringValue();
@@ -138,7 +136,7 @@ public class AuthenticationServiceBean implements AuthenticationService {
 		if (null == application) {
 			String event = "application not found: " + applicationName;
 			addHistoryEntry(subject, event);
-			return false;
+			throw new ApplicationNotFoundException();
 		}
 
 		SubscriptionEntity subscription = this.subscriptionDAO
@@ -147,7 +145,7 @@ public class AuthenticationServiceBean implements AuthenticationService {
 			String event = "subscription not found for application: "
 					+ applicationName;
 			addHistoryEntry(subject, event);
-			return false;
+			throw new SubscriptionNotFoundException();
 		}
 
 		addHistoryEntry(subject, "authenticated for application "

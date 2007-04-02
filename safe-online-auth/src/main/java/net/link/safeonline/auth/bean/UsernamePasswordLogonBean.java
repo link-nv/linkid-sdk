@@ -12,11 +12,15 @@ import java.io.IOException;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.UsernamePasswordLogon;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 
 import org.apache.commons.logging.Log;
@@ -74,13 +78,28 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 		LOG.debug("login: " + this.username + " to application "
 				+ this.application);
 
-		boolean authenticated = this.authenticationService.authenticate(
-				this.application, this.username, this.password);
+		this.authenticatedUsername = null;
 
-		if (false == authenticated) {
-			String msg = "Authentication failed.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+		try {
+			boolean authenticated = this.authenticationService.authenticate(
+					this.application, this.username, this.password);
+			if (false == authenticated) {
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+				return null;
+			}
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addToControlFromResourceBundle("username",
+					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");
+			return null;
+		} catch (SubscriptionNotFoundException e) {
+			this.facesMessages.addToControlFromResourceBundle("username",
+					FacesMessage.SEVERITY_ERROR, "subscriptionNotFoundMsg",
+					this.application);
+			return null;
+		} catch (ApplicationNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "applicationNotFoundMsg");
 			return null;
 		}
 

@@ -37,8 +37,13 @@ public interface AuthenticationService {
 	 * @param password
 	 * @return <code>true</code> if the user was authenticated correctly,
 	 *         <code>false</code> otherwise.
+	 * @throws SubjectNotFoundException
+	 * @throws ApplicationNotFoundException
+	 * @throws SubscriptionNotFoundException
 	 */
-	boolean authenticate(String applicationName, String login, String password);
+	boolean authenticate(String applicationName, String login, String password)
+			throws SubjectNotFoundException, ApplicationNotFoundException,
+			SubscriptionNotFoundException;
 
 	/**
 	 * Authenticates a user via an authentication statement. The given session
