@@ -106,6 +106,22 @@ public interface IdentityService {
 			throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
 	/**
+	 * Lists the attributes for which the user has confirmed an identity on the
+	 * given application.
+	 * 
+	 * @param applicationName
+	 * @param locale
+	 *            the optional locale.
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 * @throws SubscriptionNotFoundException
+	 * @throws ApplicationIdentityNotFoundException
+	 */
+	List<AttributeDO> listConfirmedIdentity(String applicationName,
+			Locale locale) throws ApplicationNotFoundException,
+			SubscriptionNotFoundException, ApplicationIdentityNotFoundException;
+
+	/**
 	 * Gives back a list of identity attributes that need to be confirmed by
 	 * this user in order to be in-line with the latest identity requirement of
 	 * the given application.

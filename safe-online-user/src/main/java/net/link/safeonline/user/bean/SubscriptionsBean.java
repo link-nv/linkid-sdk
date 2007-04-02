@@ -8,17 +8,22 @@
 package net.link.safeonline.user.bean;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.AttributeDO;
+import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -54,6 +59,9 @@ public class SubscriptionsBean implements Subscriptions {
 	@EJB
 	private ApplicationService applicationService;
 
+	@EJB
+	private IdentityService identityService;
+
 	@In(create = true)
 	FacesMessages facesMessages;
 
@@ -64,6 +72,10 @@ public class SubscriptionsBean implements Subscriptions {
 	@DataModelSelection("subscriptionList")
 	@Out(value = "selectedSubscription", required = false, scope = ScopeType.SESSION)
 	private SubscriptionEntity selectedSubscription;
+
+	@SuppressWarnings("unused")
+	@Out(value = "confirmedIdentityAttributes", required = false)
+	private List<AttributeDO> confirmedIdentityAttributes;
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	@Factory("subscriptionList")
@@ -89,8 +101,24 @@ public class SubscriptionsBean implements Subscriptions {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String viewSubscription() {
-		LOG.debug("view subscription: "
-				+ this.selectedSubscription.getApplication().getName());
+		String applicationName = this.selectedSubscription.getApplication()
+				.getName();
+		LOG.debug("view subscription: " + applicationName);
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
+		try {
+			this.confirmedIdentityAttributes = this.identityService
+					.listConfirmedIdentity(applicationName, viewLocale);
+		} catch (SubscriptionNotFoundException e) {
+			this.facesMessages.add("subscription not found");
+			return null;
+		} catch (ApplicationNotFoundException e) {
+			this.facesMessages.add("application not found");
+			return null;
+		} catch (ApplicationIdentityNotFoundException e) {
+			this.facesMessages.add("application identity not found");
+			return null;
+		}
 		return "view-subscription";
 	}
 

@@ -13,12 +13,29 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{selectedSubscription.application.name}</h1>
+		<h1>#{msgs.subscription} #{selectedSubscription.application.name}</h1>
 		<p>#{msgs.description}:</p>
 		<p><h:outputText
 			value="#{selectedSubscription.application.description}"
 			escape="false" /></p>
 		<p>Owner: #{selectedSubscription.subscriptionOwnerType}</p>
+
+		<h2>#{msgs.confirmedIdentity}</h2>
+
+		<h:dataTable id="data" var="item"
+			value="#{confirmedIdentityAttributes}" preserveDataModel="false"
+			styleClass="listingTable"
+			rowClasses="listingTable_Row1,listingTable_Row2">
+
+			<h:column>
+				<f:facet name="header">#{msgs.name}</f:facet>
+				<h:outputText value="#{item.name}"
+					rendered="#{empty item.humanReadableName}" />
+				<h:outputText value="#{item.humanReadableName}"
+					rendered="#{!empty item.humanReadableName}" />
+			</h:column>
+
+		</h:dataTable>
 
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" action="back" />

@@ -367,4 +367,28 @@ public class IdentityServiceBean implements IdentityService {
 
 		return missingAttributes;
 	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public List<AttributeDO> listConfirmedIdentity(String applicationName,
+			Locale locale) throws ApplicationNotFoundException,
+			SubscriptionNotFoundException, ApplicationIdentityNotFoundException {
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationName);
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		SubscriptionEntity subscription = this.subscriptionDAO.getSubscription(
+				subject, application);
+		Long confirmedIdentityVersion = subscription
+				.getConfirmedIdentityVersion();
+		if (null == confirmedIdentityVersion) {
+			return new LinkedList<AttributeDO>();
+		}
+		ApplicationIdentityEntity confirmedIdentity = this.applicationIdentityDAO
+				.getApplicationIdentity(application, confirmedIdentityVersion);
+		List<AttributeTypeEntity> confirmedAttributeTypes = confirmedIdentity
+				.getAttributeTypes();
+		List<AttributeDO> confirmedAttributes = this.attributeTypeDescriptionDecorator
+				.addDescriptionFromAttributeTypes(confirmedAttributeTypes,
+						locale);
+		return confirmedAttributes;
+	}
 }
