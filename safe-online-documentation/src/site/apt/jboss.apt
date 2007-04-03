@@ -81,6 +81,25 @@ java -jar JAXWS2.1FCS_20070202.jar
 +---+
 
 
+
+** JMX JVM Agent
+
+ To enable the JMX agent of the Sun JVM add the following line to <<<$JBOSS_HOME/bin/run.conf>>>:
+
++---+
+JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote \
+-Dcom.sun.management.jmxremote.port=7777 \
+-Dcom.sun.management.jmxremote.authenticate=false \
+-Dcom.sun.management.jmxremote.ssl=false"
++---+
+
+ Login using the Java5 <<<jconsole>>> tool via:
+
++---+
+jconsole buildserver:7777
++---+ 
+
+
 * Operational
 
 ** Starting
