@@ -47,7 +47,7 @@ public class TaskHistoryCleanerTaskBean implements Task {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void perform() {
 		ConfigItemEntity configItem = this.configurationManager
-				.getConfigItem(configAgeInMillis);
+				.findConfigItem(configAgeInMillis);
 		long ageInMillis = Integer.parseInt(configItem.getValue());
 
 		this.taskHistoryDAO.clearAllTasksHistory(ageInMillis);

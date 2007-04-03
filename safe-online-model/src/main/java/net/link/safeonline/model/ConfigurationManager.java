@@ -21,5 +21,5 @@ import net.link.safeonline.entity.ConfigItemEntity;
 @Local
 public interface ConfigurationManager {
 
-	ConfigItemEntity getConfigItem(String name);
+	ConfigItemEntity findConfigItem(String name);
 }

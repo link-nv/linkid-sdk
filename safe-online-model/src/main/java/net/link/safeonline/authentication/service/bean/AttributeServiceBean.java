@@ -8,6 +8,8 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -72,6 +74,35 @@ public class AttributeServiceBean implements AttributeService {
 		LOG.debug("get attribute " + attributeName + " for login "
 				+ subjectLogin);
 
+		List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
+
+		checkAttributeReadPermission(attributeName, confirmedAttributes);
+
+		AttributeEntity attribute = this.attributeDAO.getAttribute(
+				attributeName, subjectLogin);
+
+		String value = attribute.getStringValue();
+		return value;
+	}
+
+	private void checkAttributeReadPermission(String attributeName,
+			List<ApplicationIdentityAttributeEntity> attributes)
+			throws PermissionDeniedException {
+		for (ApplicationIdentityAttributeEntity attribute : attributes) {
+			LOG
+					.debug("identity attribute: "
+							+ attribute.getAttributeTypeName());
+			if (attribute.getAttributeTypeName().equals(attributeName)) {
+				return;
+			}
+		}
+		LOG.debug("attribute not in set of confirmed identity attributes");
+		throw new PermissionDeniedException();
+	}
+
+	private List<ApplicationIdentityAttributeEntity> getConfirmedIdentityAttributes(
+			String subjectLogin) throws SubjectNotFoundException,
+			PermissionDeniedException {
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 		ApplicationEntity application = this.applicationManager
 				.getCallerApplication();
@@ -108,28 +139,21 @@ public class AttributeServiceBean implements AttributeService {
 		}
 		List<ApplicationIdentityAttributeEntity> attributes = confirmedApplicationIdentity
 				.getAttributes();
-		boolean hasAttribute = false;
-		for (ApplicationIdentityAttributeEntity attribute : attributes) {
-			LOG
-					.debug("identity attribute: "
-							+ attribute.getAttributeTypeName());
-			if (attribute.getAttributeTypeName().equals(attributeName)) {
-				hasAttribute = true;
-				break;
-			}
-		}
-		if (false == hasAttribute) {
-			LOG.debug("attribute not in set of confirmed identity attributes");
-			throw new PermissionDeniedException();
-		}
+		return attributes;
+	}
 
-		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeName, subjectLogin);
-		if (null == attribute) {
-			throw new AttributeNotFoundException();
+	public Map<String, String> getConfirmedAttributes(String subjectLogin)
+			throws SubjectNotFoundException, PermissionDeniedException,
+			AttributeNotFoundException {
+		LOG.debug("get confirmed attributes for subject: " + subjectLogin);
+		List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
+		Map<String, String> resultAttributes = new TreeMap<String, String>();
+		for (ApplicationIdentityAttributeEntity confirmedAttribute : confirmedAttributes) {
+			String attributeName = confirmedAttribute.getAttributeTypeName();
+			AttributeEntity attribute = this.attributeDAO.getAttribute(
+					attributeName, subjectLogin);
+			resultAttributes.put(attributeName, attribute.getStringValue());
 		}
-
-		String value = attribute.getStringValue();
-		return value;
+		return resultAttributes;
 	}
 }

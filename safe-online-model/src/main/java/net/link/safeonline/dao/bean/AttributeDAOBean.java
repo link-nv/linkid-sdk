@@ -15,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributePK;
@@ -69,5 +70,15 @@ public class AttributeDAOBean implements AttributeDAO {
 			return;
 		}
 		addAttribute(attributeType, subject, stringValue);
+	}
+
+	public AttributeEntity getAttribute(String attributeTypeName,
+			String subjectLogin) throws AttributeNotFoundException {
+		AttributeEntity attribute = findAttribute(attributeTypeName,
+				subjectLogin);
+		if (null == attribute) {
+			throw new AttributeNotFoundException();
+		}
+		return attribute;
 	}
 }

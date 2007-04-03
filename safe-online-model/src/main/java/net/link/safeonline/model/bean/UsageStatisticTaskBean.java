@@ -58,8 +58,8 @@ public class UsageStatisticTaskBean implements Task {
 		List<ApplicationEntity> applicationList = this.applicationDAO
 				.listApplications();
 		long activeLimit = Long.parseLong(this.configurationManager
-				.getConfigItem(activeLimitInMillis).getValue());
-		long age = Long.parseLong(this.configurationManager.getConfigItem(
+				.findConfigItem(activeLimitInMillis).getValue());
+		long age = Long.parseLong(this.configurationManager.findConfigItem(
 				ageInMillis).getValue());
 
 		for (ApplicationEntity application : applicationList) {

@@ -35,6 +35,7 @@ import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.model.PkiValidator;
 import net.link.safeonline.sdk.attrib.WSSecurityClientHandler;
 import net.link.safeonline.test.util.JaasTestUtils;
@@ -75,6 +76,8 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 	private AuthenticationService mockAuthenticationService;
 
+	private SamlAuthorityService mockSamlAuthorityService;
+
 	private Object[] mockObjects;
 
 	private X509Certificate certificate;
@@ -89,9 +92,11 @@ public class SAMLAttributePortImplTest extends TestCase {
 		this.mockAttributeService = createMock(AttributeService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.mockAuthenticationService = createMock(AuthenticationService.class);
+		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
 
 		this.mockObjects = new Object[] { this.mockAttributeService,
-				this.mockPkiValidator, this.mockAuthenticationService };
+				this.mockPkiValidator, this.mockAuthenticationService,
+				this.mockSamlAuthorityService };
 
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/AttributeServiceBean/local",
@@ -101,6 +106,9 @@ public class SAMLAttributePortImplTest extends TestCase {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/AuthenticationServiceBean/local",
 				this.mockAuthenticationService);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/SamlAuthorityServiceBean/local",
+				this.mockSamlAuthorityService);
 
 		expect(
 				this.mockPkiValidator.validateCertificate((String) EasyMock
@@ -157,6 +165,11 @@ public class SAMLAttributePortImplTest extends TestCase {
 		attributes.add(attribute);
 
 		String testAttributeValue = "test-attribute-value";
+		String testIssuerName = "test-issuer-name";
+
+		// stubs
+		expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
+				testIssuerName);
 
 		// expectations
 		expect(

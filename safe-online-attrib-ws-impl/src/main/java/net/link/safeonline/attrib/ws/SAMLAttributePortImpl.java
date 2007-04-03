@@ -27,6 +27,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
+import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.util.ee.EjbUtils;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -53,11 +54,14 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
 	private AttributeService attributeService;
 
+	private SamlAuthorityService samlAuthorityService;
+
 	private DatatypeFactory datatypeFactory;
 
 	@PostConstruct
 	public void postConstructCallback() {
 		this.attributeService = getAttributeService();
+		this.samlAuthorityService = getSamlAuthorityService();
 
 		try {
 			this.datatypeFactory = DatatypeFactory.newInstance();
@@ -66,6 +70,13 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		}
 
 		LOG.debug("ready");
+	}
+
+	private SamlAuthorityService getSamlAuthorityService() {
+		SamlAuthorityService samlAuthorityService = EjbUtils.getEJB(
+				"SafeOnline/SamlAuthorityServiceBean/local",
+				SamlAuthorityService.class);
+		return samlAuthorityService;
 	}
 
 	private AttributeService getAttributeService() {
@@ -98,35 +109,47 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		String subjectLogin = findSubjectLogin(request);
 		if (null == subjectLogin) {
 			LOG.debug("no subject login");
-			// TODO: return an error status
-			return null;
+			ResponseType errorResponse = createRequesterErrorResponse(null,
+					"no subject found");
+			return errorResponse;
 		}
 		LOG.debug("subject login: " + subjectLogin);
 
 		List<AttributeType> attributes = request.getAttribute();
-		if (null == attributes) {
-			LOG.debug("no attributes");
-			// TODO: return all allowed attributes
-			return null;
-		}
 		Map<String, String> attributeMap = new HashMap<String, String>();
-		for (AttributeType attribute : attributes) {
-			String attributeName = attribute.getName();
+		if (null == attributes) {
 			try {
-				String attributeValue = this.attributeService.getAttribute(
-						subjectLogin, attributeName);
-				attributeMap.put(attributeName, attributeValue);
-			} catch (AttributeNotFoundException e) {
-				LOG.error("attribute not found: " + attributeName
-						+ " for subject " + subjectLogin);
-				ResponseType attributeNotFoundResponse = createAttributeNotFoundResponse(attributeName);
-				return attributeNotFoundResponse;
+				attributeMap = this.attributeService
+						.getConfirmedAttributes(subjectLogin);
 			} catch (SubjectNotFoundException e) {
 				ResponseType subjectNotFoundResponse = createUnknownPrincipalResponse(subjectLogin);
 				return subjectNotFoundResponse;
 			} catch (PermissionDeniedException e) {
 				ResponseType requestDeniedResponse = createRequestDeniedResponse();
 				return requestDeniedResponse;
+			} catch (AttributeNotFoundException e) {
+				ResponseType attributeNotFoundResponse = createAttributeNotFoundResponse(null);
+				return attributeNotFoundResponse;
+			}
+		} else {
+			for (AttributeType attribute : attributes) {
+				String attributeName = attribute.getName();
+				try {
+					String attributeValue = this.attributeService.getAttribute(
+							subjectLogin, attributeName);
+					attributeMap.put(attributeName, attributeValue);
+				} catch (AttributeNotFoundException e) {
+					LOG.error("attribute not found: " + attributeName
+							+ " for subject " + subjectLogin);
+					ResponseType attributeNotFoundResponse = createAttributeNotFoundResponse(attributeName);
+					return attributeNotFoundResponse;
+				} catch (SubjectNotFoundException e) {
+					ResponseType subjectNotFoundResponse = createUnknownPrincipalResponse(subjectLogin);
+					return subjectNotFoundResponse;
+				} catch (PermissionDeniedException e) {
+					ResponseType requestDeniedResponse = createRequestDeniedResponse();
+					return requestDeniedResponse;
+				}
 			}
 		}
 
@@ -172,10 +195,21 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		}
 	}
 
+	/**
+	 * @param attributeName
+	 *            the optional attribute name.
+	 * @return
+	 */
 	private ResponseType createAttributeNotFoundResponse(String attributeName) {
+		String detailMessage;
+		if (null == attributeName) {
+			detailMessage = "Attribute not found.";
+		} else {
+			detailMessage = "Attribute not found: " + attributeName;
+		}
 		ResponseType response = createRequesterErrorResponse(
 				"urn:oasis:names:tc:SAML:2.0:status:InvalidAttrNameOrValue",
-				"Attribute not found: " + attributeName);
+				detailMessage);
 		return response;
 	}
 
@@ -192,13 +226,24 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		return response;
 	}
 
+	/**
+	 * @param secondLevelStatusCode
+	 *            the optional second-level status code.
+	 * @param statusMessage
+	 *            the optional status message.
+	 * @return
+	 */
 	private ResponseType createRequesterErrorResponse(
 			String secondLevelStatusCode, String statusMessage) {
 		ResponseType response = createGenericResponse(SamlpTopLevelErrorCode.REQUESTER);
-		StatusCodeType jaxbSecondLevelStatusCode = new StatusCodeType();
-		jaxbSecondLevelStatusCode.setValue(secondLevelStatusCode);
-		response.getStatus().getStatusCode().setStatusCode(
-				jaxbSecondLevelStatusCode);
+
+		if (null != secondLevelStatusCode) {
+			StatusCodeType jaxbSecondLevelStatusCode = new StatusCodeType();
+			jaxbSecondLevelStatusCode.setValue(secondLevelStatusCode);
+			response.getStatus().getStatusCode().setStatusCode(
+					jaxbSecondLevelStatusCode);
+		}
+
 		if (null != statusMessage) {
 			response.getStatus().setStatusMessage(statusMessage);
 		}
@@ -225,9 +270,9 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		assertion.setIssueInstant(currentXmlGregorianCalendar);
 
 		NameIDType issuerName = new NameIDType();
-		issuerName.setValue("safe-online");
-		// TODO: make issuer name configurable. need global config component for
-		// this
+		String samlAuthorityIssuerName = this.samlAuthorityService
+				.getIssuerName();
+		issuerName.setValue(samlAuthorityIssuerName);
 		assertion.setIssuer(issuerName);
 
 		List<StatementAbstractType> statements = assertion

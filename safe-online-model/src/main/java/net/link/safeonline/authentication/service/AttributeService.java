@@ -7,6 +7,8 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.util.Map;
+
 import javax.ejb.Local;
 import javax.ejb.Remote;
 
@@ -40,4 +42,20 @@ public interface AttributeService {
 	String getAttribute(String subjectLogin, String attributeName)
 			throws AttributeNotFoundException, PermissionDeniedException,
 			SubjectNotFoundException;
+
+	/**
+	 * Returns a map of attributes with values of the given subject. Of course
+	 * the subject needs to be subscribed onto the current caller application
+	 * and the attributes returned are those that have been confirmed by the
+	 * user.
+	 * 
+	 * @param subjectLogin
+	 * @return
+	 * @throws SubjectNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws AttributeNotFoundException
+	 */
+	Map<String, String> getConfirmedAttributes(String subjectLogin)
+			throws SubjectNotFoundException, PermissionDeniedException,
+			AttributeNotFoundException;
 }

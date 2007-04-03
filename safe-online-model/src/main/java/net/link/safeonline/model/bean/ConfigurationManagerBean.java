@@ -20,7 +20,7 @@ public class ConfigurationManagerBean implements ConfigurationManager {
 	@EJB
 	private ConfigItemDAO configItemDAO;
 
-	public ConfigItemEntity getConfigItem(String name) {
+	public ConfigItemEntity findConfigItem(String name) {
 		return this.configItemDAO.findConfigItem(name);
 	}
 }
