@@ -5,9 +5,13 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.attrib;
+package net.link.safeonline.sdk.ws.attrib;
 
 import java.net.ConnectException;
+
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.RequestDeniedException;
+
 
 /**
  * Interface for attribute client.

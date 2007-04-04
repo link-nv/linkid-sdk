@@ -19,7 +19,7 @@ import javax.xml.soap.SOAPPart;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import junit.framework.TestCase;
-import net.link.safeonline.sdk.attrib.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.TestSOAPMessageContext;

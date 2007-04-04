@@ -13,10 +13,10 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
 import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
-import net.link.safeonline.sdk.attrib.AttributeClient;
-import net.link.safeonline.sdk.attrib.AttributeClientImpl;
-import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
-import net.link.safeonline.sdk.attrib.RequestDeniedException;
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.attrib.AttributeClient;
+import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

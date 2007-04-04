@@ -29,10 +29,12 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.SubscriptionEntity;
-import net.link.safeonline.sdk.attrib.AttributeClient;
-import net.link.safeonline.sdk.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.AuthClientImpl;
+import net.link.safeonline.sdk.ws.attrib.AttributeClient;
+import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.ws.data.DataClient;
+import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.service.PkiService;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -58,6 +60,8 @@ public class AuthenticationTest extends TestCase {
 
 	private AttributeClient attributeClient;
 
+	private DataClient dataClient;
+
 	private X509Certificate certificate;
 
 	@Override
@@ -72,6 +76,9 @@ public class AuthenticationTest extends TestCase {
 
 		this.attributeClient = new AttributeClientImpl("localhost",
 				this.certificate, keyPair.getPrivate());
+
+		this.dataClient = new DataClientImpl("localhost", this.certificate,
+				keyPair.getPrivate());
 	}
 
 	public void testAvailabilityViaEcho() throws Exception {
@@ -528,5 +535,52 @@ public class AuthenticationTest extends TestCase {
 
 		// verify
 		LOG.debug("result: " + result);
+	}
+
+	public void testDataServiceModify() throws Exception {
+		// setup
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+
+		IntegrationTestUtils.setupLoginConfig();
+
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		IdentityService identityService = getIdentityService(initialContext);
+
+		String testApplicationName = UUID.randomUUID().toString();
+
+		// operate: register user
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		// operate: register certificate as application trust point
+		PkiService pkiService = getPkiService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		pkiService.addTrustPoint(
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+				this.certificate.getEncoded());
+
+		// operate: add application with certificate
+		ApplicationService applicationService = getApplicationService(initialContext);
+		applicationService
+				.addApplication(
+						testApplicationName,
+						"owner",
+						null,
+						this.certificate.getEncoded(),
+						Arrays
+								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+										SafeOnlineConstants.NAME_ATTRIBUTE) }));
+
+		// operate: subscribe onto the application and confirm identity usage
+		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+		IntegrationTestUtils.login(login, password);
+		subscriptionService.subscribe(testApplicationName);
+		identityService.confirmIdentity(testApplicationName);
+
+		// operate
+		this.dataClient.setAttributeValue(login, "test-attribute-name",
+				"test-attribute-value");
 	}
 }

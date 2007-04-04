@@ -37,7 +37,7 @@ import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.model.PkiValidator;
-import net.link.safeonline.sdk.attrib.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;

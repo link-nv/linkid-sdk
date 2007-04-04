@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.attrib;
+package net.link.safeonline.sdk.ws;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;

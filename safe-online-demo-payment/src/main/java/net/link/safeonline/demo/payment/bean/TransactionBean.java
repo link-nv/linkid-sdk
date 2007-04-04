@@ -29,10 +29,10 @@ import net.link.safeonline.demo.payment.Transaction;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.UserEntity;
 import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
-import net.link.safeonline.sdk.attrib.AttributeClient;
-import net.link.safeonline.sdk.attrib.AttributeClientImpl;
-import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
-import net.link.safeonline.sdk.attrib.RequestDeniedException;
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.attrib.AttributeClient;
+import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;

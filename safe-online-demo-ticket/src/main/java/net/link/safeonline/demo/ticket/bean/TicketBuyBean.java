@@ -39,10 +39,10 @@ import net.link.safeonline.demo.ticket.entity.Ticket;
 import net.link.safeonline.demo.ticket.entity.User;
 import net.link.safeonline.demo.ticket.entity.Ticket.Site;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
-import net.link.safeonline.sdk.attrib.AttributeClient;
-import net.link.safeonline.sdk.attrib.AttributeClientImpl;
-import net.link.safeonline.sdk.attrib.AttributeNotFoundException;
-import net.link.safeonline.sdk.attrib.RequestDeniedException;
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.attrib.AttributeClient;
+import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
