@@ -16,4 +16,11 @@
 		service="{urn:oasis:names:tc:SAML:2.0:protocol}SAMLAttributeService"
 		port="{urn:oasis:names:tc:SAML:2.0:protocol}SAMLAttributePort" />
 
+	<endpoint name="SafeOnline-Data-WS"
+		implementation="net.link.safeonline.data.ws.DataServicePortImpl"
+		url-pattern="/data"
+		interface="liberty.dst._2006_08.ref.DataServicePort"
+		service="{urn:liberty:dst:2006-08:ref}DataService"
+		port="{urn:liberty:dst:2006-08:ref}DataServicePort" />
+
 </endpoints>

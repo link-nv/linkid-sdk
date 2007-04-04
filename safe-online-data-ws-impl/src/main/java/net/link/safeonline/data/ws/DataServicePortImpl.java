@@ -7,6 +7,9 @@
 
 package net.link.safeonline.data.ws;
 
+import javax.jws.HandlerChain;
+import javax.jws.WebService;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,6 +23,8 @@ import liberty.dst._2006_08.ref.ModifyType;
 import liberty.dst._2006_08.ref.QueryResponseType;
 import liberty.dst._2006_08.ref.QueryType;
 
+@WebService(endpointInterface = "liberty.dst._2006_08.ref.DataServicePort")
+@HandlerChain(file = "app-auth-ws-handlers.xml")
 public class DataServicePortImpl implements DataServicePort {
 
 	private static final Log LOG = LogFactory.getLog(DataServicePortImpl.class);
