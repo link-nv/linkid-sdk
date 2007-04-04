@@ -229,6 +229,7 @@
 		<module>safe-online-demo-payment</module>
 		<module>safe-online-demo-payment-webapp</module>
 		<module>safe-online-data-ws</module>
+		<module>safe-online-data-ws-impl</module>
 	</modules>
 	<repositories>
 		<repository>
