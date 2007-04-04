@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<policy xmlns="urn:jboss:security-config:4.1"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="urn:jboss:security-config:4.1 resource:security-config_4_1.xsd"
-	version="4.1">
+<!DOCTYPE policy PUBLIC
+      "-//JBoss//DTD JBOSS Security Config 3.0//EN"
+      "http://www.jboss.org/j2ee/dtd/security_config.dtd">
+<policy>
 
 	<application-policy name="safe-online-demo">
 		<authentication>
