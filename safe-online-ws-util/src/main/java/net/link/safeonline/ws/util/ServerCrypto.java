@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.attrib.ws;
+package net.link.safeonline.ws.util;
 
 import java.io.InputStream;
 import java.math.BigInteger;

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.attrib.ws;
+package test.unit.net.link.safeonline.ws.util;
 
 import java.io.IOException;
 import java.security.KeyPair;
@@ -24,11 +24,11 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import junit.framework.TestCase;
-import net.link.safeonline.attrib.ws.ApplicationCertificateValidatorHandler;
-import net.link.safeonline.attrib.ws.ApplicationLoginHandler;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.TestSOAPMessageContext;
+import net.link.safeonline.ws.util.ApplicationCertificateValidatorHandler;
+import net.link.safeonline.ws.util.ApplicationLoginHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.attrib.ws;
+package test.unit.net.link.safeonline.ws.util;
 
 import java.io.InputStream;
 import java.security.cert.X509Certificate;
@@ -16,9 +16,9 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import junit.framework.TestCase;
-import net.link.safeonline.attrib.ws.ApplicationCertificateMapperHandler;
-import net.link.safeonline.attrib.ws.WSSecurityServerHandler;
 import net.link.safeonline.test.util.TestSOAPMessageContext;
+import net.link.safeonline.ws.util.ApplicationCertificateMapperHandler;
+import net.link.safeonline.ws.util.WSSecurityServerHandler;
 
 public class WSSecurityServerHandlerTest extends TestCase {
 
@@ -37,6 +37,7 @@ public class WSSecurityServerHandlerTest extends TestCase {
 				.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
 		InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class
 				.getResourceAsStream("/test-ws-security-message.xml");
+		assertNotNull(testSoapMessageInputStream);
 
 		SOAPMessage message = messageFactory.createMessage(null,
 				testSoapMessageInputStream);

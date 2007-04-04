@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.attrib.ws;
+package net.link.safeonline.ws.util;
 
 import java.security.cert.X509Certificate;
 import java.util.Set;
@@ -16,35 +16,36 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
+import net.link.safeonline.model.PkiValidator;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Application Certificate JAX-WS Login Handler. This JAX-WS SOAP handler maps a
- * trusted certificate to an application name.
+ * Application Certificate Validator JAX-WS Handler. This JAX-WS SOAP handler
+ * will validate the incoming certificate as being a trusted application
+ * certificate.
  * 
  * @author fcorneli
  * 
  */
-public class ApplicationCertificateMapperHandler implements
+public class ApplicationCertificateValidatorHandler implements
 		SOAPHandler<SOAPMessageContext> {
 
 	private static final Log LOG = LogFactory
-			.getLog(ApplicationCertificateMapperHandler.class);
+			.getLog(ApplicationCertificateValidatorHandler.class);
 
 	public static final String CERTIFICATE_PROPERTY = "net.link.safeonline.x509";
 
-	private AuthenticationService authenticationService;
+	private PkiValidator pkiValidator;
 
 	@PostConstruct
 	public void postConstructCallback() {
-		this.authenticationService = EjbUtils.getEJB(
-				"SafeOnline/AuthenticationServiceBean/local",
-				AuthenticationService.class);
+		this.pkiValidator = EjbUtils.getEJB(
+				"SafeOnline/PkiValidatorBean/local", PkiValidator.class);
 	}
 
 	public Set<QName> getHeaders() {
@@ -77,16 +78,17 @@ public class ApplicationCertificateMapperHandler implements
 			throw new RuntimeException(
 					"no client certificate found on JAX-WS context");
 		}
-		String applicationName;
+		boolean result;
 		try {
-			applicationName = this.authenticationService
-					.authenticate(certificate);
-		} catch (ApplicationNotFoundException e) {
-			throw new RuntimeException("unknown application");
+			result = this.pkiValidator.validateCertificate(
+					SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+					certificate);
+		} catch (TrustDomainNotFoundException e) {
+			throw new RuntimeException("application trust domain not found");
 		}
-
-		context.put(ApplicationLoginHandler.APPLICATION_NAME_PROPERTY,
-				applicationName);
+		if (false == result) {
+			throw new RuntimeException("certificate not trusted");
+		}
 	}
 
 	private void logout(SOAPMessageContext context) {
