@@ -12,6 +12,7 @@ import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.naming.InitialContext;
@@ -28,6 +29,7 @@ import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.AuthClientImpl;
@@ -35,6 +37,7 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.PkiService;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -196,6 +199,14 @@ public class AuthenticationTest extends TestCase {
 						"SafeOnline/UserRegistrationServiceBean/remote",
 						UserRegistrationService.class);
 		return userRegistrationService;
+	}
+
+	private AttributeTypeService getAttributeTypeService(
+			InitialContext initialContext) {
+		final AttributeTypeService attributeTypeService = EjbUtils.getEJB(
+				initialContext, "SafeOnline/AttributeTypeServiceBean/remote",
+				AttributeTypeService.class);
+		return attributeTypeService;
 	}
 
 	private ApplicationService getApplicationService(
@@ -475,6 +486,9 @@ public class AuthenticationTest extends TestCase {
 		String testName = "test-name";
 		String testApplicationName = UUID.randomUUID().toString();
 
+		String testAttributeName = UUID.randomUUID().toString();
+		String testAttributeValue = "test-attribute-value";
+
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
@@ -485,6 +499,13 @@ public class AuthenticationTest extends TestCase {
 		identityService.saveAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
 				testName);
 
+		// operate: register new attribute type
+		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				testAttributeName, "string", true, true);
+		attributeTypeService.add(attributeType);
+
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);
 		IntegrationTestUtils.login("admin", "admin");
@@ -494,15 +515,12 @@ public class AuthenticationTest extends TestCase {
 
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
-		applicationService
-				.addApplication(
-						testApplicationName,
-						"owner",
-						null,
-						this.certificate.getEncoded(),
-						Arrays
-								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										SafeOnlineConstants.NAME_ATTRIBUTE) }));
+		applicationService.addApplication(testApplicationName, "owner", null,
+				this.certificate.getEncoded(),
+				Arrays.asList(new IdentityAttributeTypeDO[] {
+						new IdentityAttributeTypeDO(
+								SafeOnlineConstants.NAME_ATTRIBUTE),
+						new IdentityAttributeTypeDO(testAttributeName) }));
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
@@ -518,6 +536,24 @@ public class AuthenticationTest extends TestCase {
 		LOG.debug("result attribute value: " + result);
 		LOG.debug("application name: " + testApplicationName);
 		assertEquals(testName, result);
+
+		// operate: retrieve all accessible attributes.
+		Map<String, String> resultAttributes = this.attributeClient
+				.getAttributeValues(login);
+
+		// verify
+		result = resultAttributes.get(SafeOnlineConstants.NAME_ATTRIBUTE);
+		assertEquals(testName, result);
+		assertNull(resultAttributes.get(testAttributeName));
+
+		// operate: set attribute
+		IntegrationTestUtils.login(login, password);
+		identityService.saveAttribute(testAttributeName, testAttributeValue);
+
+		// operate: retrieve all attributes
+		resultAttributes = this.attributeClient.getAttributeValues(login);
+		assertEquals(testAttributeValue, resultAttributes
+				.get(testAttributeName));
 	}
 
 	public void testFindAttributeValue() throws Exception {

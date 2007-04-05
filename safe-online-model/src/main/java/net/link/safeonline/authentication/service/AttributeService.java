@@ -47,15 +47,15 @@ public interface AttributeService {
 	 * Returns a map of attributes with values of the given subject. Of course
 	 * the subject needs to be subscribed onto the current caller application
 	 * and the attributes returned are those that have been confirmed by the
-	 * user.
+	 * user. It is possible that a user already confirmed an attribute usage
+	 * over an attribute that he still needs to define. In this case the
+	 * resulting map will not contain an entry for the missing attribute.
 	 * 
 	 * @param subjectLogin
 	 * @return
 	 * @throws SubjectNotFoundException
 	 * @throws PermissionDeniedException
-	 * @throws AttributeNotFoundException
 	 */
 	Map<String, String> getConfirmedAttributes(String subjectLogin)
-			throws SubjectNotFoundException, PermissionDeniedException,
-			AttributeNotFoundException;
+			throws SubjectNotFoundException, PermissionDeniedException;
 }

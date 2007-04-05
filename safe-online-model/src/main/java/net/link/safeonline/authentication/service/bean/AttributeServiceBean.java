@@ -143,15 +143,17 @@ public class AttributeServiceBean implements AttributeService {
 	}
 
 	public Map<String, String> getConfirmedAttributes(String subjectLogin)
-			throws SubjectNotFoundException, PermissionDeniedException,
-			AttributeNotFoundException {
+			throws SubjectNotFoundException, PermissionDeniedException {
 		LOG.debug("get confirmed attributes for subject: " + subjectLogin);
 		List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
 		Map<String, String> resultAttributes = new TreeMap<String, String>();
 		for (ApplicationIdentityAttributeEntity confirmedAttribute : confirmedAttributes) {
 			String attributeName = confirmedAttribute.getAttributeTypeName();
-			AttributeEntity attribute = this.attributeDAO.getAttribute(
+			AttributeEntity attribute = this.attributeDAO.findAttribute(
 					attributeName, subjectLogin);
+			if (null == attribute) {
+				continue;
+			}
 			resultAttributes.put(attributeName, attribute.getStringValue());
 		}
 		return resultAttributes;

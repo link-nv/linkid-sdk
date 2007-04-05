@@ -69,9 +69,13 @@ public class ApplicationAuthenticationUtils {
 			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext
 					.getSocketFactory());
 		} catch (KeyManagementException e) {
-			LOG.error("key management error: " + e.getMessage(), e);
+			String msg = "key management error: " + e.getMessage();
+			LOG.error(msg, e);
+			throw new RuntimeException(msg, e);
 		} catch (NoSuchAlgorithmException e) {
-			LOG.error("SSL algo not present: " + e.getMessage(), e);
+			String msg = "TLS algo not present: " + e.getMessage();
+			LOG.error(msg, e);
+			throw new RuntimeException(msg, e);
 		}
 	}
 }

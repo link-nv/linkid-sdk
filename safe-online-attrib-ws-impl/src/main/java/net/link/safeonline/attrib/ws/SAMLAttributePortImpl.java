@@ -117,7 +117,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
 		List<AttributeType> attributes = request.getAttribute();
 		Map<String, String> attributeMap = new HashMap<String, String>();
-		if (null == attributes) {
+		if (0 == attributes.size()) {
 			try {
 				attributeMap = this.attributeService
 						.getConfirmedAttributes(subjectLogin);
@@ -127,9 +127,6 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			} catch (PermissionDeniedException e) {
 				ResponseType requestDeniedResponse = createRequestDeniedResponse();
 				return requestDeniedResponse;
-			} catch (AttributeNotFoundException e) {
-				ResponseType attributeNotFoundResponse = createAttributeNotFoundResponse(null);
-				return attributeNotFoundResponse;
 			}
 		} else {
 			for (AttributeType attribute : attributes) {
