@@ -1,0 +1,9 @@
+SafeOnline Data Service
+
+ This web service is using the Liberty ID-WSF DST specification version 2.1, 
+ deduced to our usage domain via the schema file <<<liberty-idwsf-dst-ref-v2.1-safe-online.xsd>>>.
+ 
+ This XML schema file is basically a copy of the reference schema in which we changed the definition of the 
+ <<<SelectType>>> XML element to fit our search domain.
+ 
+ See {{http://www.projectliberty.org/}} for more information about the used specification.

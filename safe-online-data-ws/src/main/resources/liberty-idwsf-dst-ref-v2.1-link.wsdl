@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions name="id-wsf-ps_2006-08_wsdl_interface"
-	targetNamespace="urn:liberty:dst:2006-08:ref"
-	xmlns:tns="urn:liberty:dst:2006-08:ref"
-	xmlns:dstref="urn:liberty:dst:2006-08:ref"
+	targetNamespace="urn:liberty:dst:2006-08:ref:safe-online"
+	xmlns:tns="urn:liberty:dst:2006-08:ref:safe-online"
+	xmlns:dstref="urn:liberty:dst:2006-08:ref:safe-online"
 	xmlns="http://schemas.xmlsoap.org/wsdl/"
 	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -19,8 +19,8 @@
 
 	<types>
 		<xsd:schema>
-			<xsd:import namespace="urn:liberty:dst:2006-08:ref"
-				schemaLocation="liberty-idwsf-dst-ref-v2.1.xsd" />
+			<xsd:import namespace="urn:liberty:dst:2006-08:ref:safe-online"
+				schemaLocation="liberty-idwsf-dst-ref-v2.1-safe-online.xsd" />
 		</xsd:schema>
 	</types>
 

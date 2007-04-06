@@ -81,4 +81,11 @@ public class AttributeDAOBean implements AttributeDAO {
 		}
 		return attribute;
 	}
+
+	public AttributeEntity findAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject) {
+		AttributeEntity attribute = this.entityManager.find(
+				AttributeEntity.class, new AttributePK(attributeType, subject));
+		return attribute;
+	}
 }

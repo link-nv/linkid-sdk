@@ -33,5 +33,7 @@
 		<mapping class="net.link.safeonline.entity.StatisticEntity" />
 		<mapping
 			class="net.link.safeonline.entity.StatisticDataPointEntity" />
+		<mapping
+			class="net.link.safeonline.entity.AttributeProviderEntity" />
 	</session-factory>
 </hibernate-configuration>

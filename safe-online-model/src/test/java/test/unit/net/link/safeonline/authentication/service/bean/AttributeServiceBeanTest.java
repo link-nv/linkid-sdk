@@ -108,7 +108,7 @@ public class AttributeServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			attributeService.getAttribute(testSubjectLogin, testAttributeName);
+			attributeService.getConfirmedAttribute(testSubjectLogin, testAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
@@ -163,7 +163,7 @@ public class AttributeServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			attributeService.getAttribute(testSubjectLogin, testAttributeName);
+			attributeService.getConfirmedAttribute(testSubjectLogin, testAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
@@ -226,7 +226,7 @@ public class AttributeServiceBeanTest extends TestCase {
 				testApplicationName, "application");
 
 		// operate
-		String result = attributeService.getAttribute(testSubjectLogin,
+		String result = attributeService.getConfirmedAttribute(testSubjectLogin,
 				testAttributeName);
 
 		// verify
@@ -294,7 +294,7 @@ public class AttributeServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			attributeService.getAttribute(testSubjectLogin,
+			attributeService.getConfirmedAttribute(testSubjectLogin,
 					unconfirmedAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {

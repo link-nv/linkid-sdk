@@ -27,6 +27,8 @@ import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributePK;
+import net.link.safeonline.entity.AttributeProviderEntity;
+import net.link.safeonline.entity.AttributeProviderPK;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CachedOcspResponseEntity;
@@ -82,7 +84,8 @@ public class EntityTest extends TestCase {
 				StatisticDataPointEntity.class,
 				ApplicationIdentityEntity.class,
 				ApplicationIdentityAttributeEntity.class,
-				AttributeTypeDescriptionEntity.class);
+				AttributeTypeDescriptionEntity.class,
+				AttributeProviderEntity.class);
 	}
 
 	@Override
@@ -717,6 +720,34 @@ public class EntityTest extends TestCase {
 		StatisticDataPointEntity result = entityManager.find(
 				StatisticDataPointEntity.class, data.getId());
 		assertNull(result);
+	}
 
+	public void testAddRemoveAttributeProvider() throws Exception {
+		// setup
+		SubjectEntity admin = new SubjectEntity("test-admin");
+		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
+				"owner", admin);
+		ApplicationEntity application = new ApplicationEntity(
+				"test-application", applicationOwner);
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				"test-attribute-type", "string", false, false);
+		AttributeProviderEntity attributeProvider = new AttributeProviderEntity(
+				application, attributeType);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(admin);
+		entityManager.persist(applicationOwner);
+		entityManager.persist(application);
+		entityManager.persist(attributeType);
+		entityManager.persist(attributeProvider);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		AttributeProviderEntity resultAttributeProvider = entityManager.find(
+				AttributeProviderEntity.class, new AttributeProviderPK(
+						application, attributeType));
+		assertNotNull(resultAttributeProvider);
+		assertEquals(resultAttributeProvider, attributeProvider);
 	}
 }

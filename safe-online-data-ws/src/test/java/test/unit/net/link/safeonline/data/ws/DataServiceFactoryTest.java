@@ -7,12 +7,12 @@
 
 package test.unit.net.link.safeonline.data.ws;
 
+import junit.framework.TestCase;
+import liberty.dst._2006_08.ref.safe_online.DataService;
+import net.link.safeonline.data.ws.DataServiceFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import net.link.safeonline.data.ws.DataServiceFactory;
-import junit.framework.TestCase;
-import liberty.dst._2006_08.ref.DataService;
 
 public class DataServiceFactoryTest extends TestCase {
 

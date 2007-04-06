@@ -33,6 +33,11 @@ public class AttributePK implements Serializable {
 		this.subject = subject;
 	}
 
+	public AttributePK(AttributeTypeEntity attributeType, SubjectEntity subject) {
+		this.attributeType = attributeType.getName();
+		this.subject = subject.getLogin();
+	}
+
 	public String getAttributeType() {
 		return this.attributeType;
 	}

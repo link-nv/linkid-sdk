@@ -11,7 +11,7 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
-import liberty.dst._2006_08.ref.DataService;
+import liberty.dst._2006_08.ref.safe_online.DataService;
 
 public class DataServiceFactory {
 
@@ -29,7 +29,7 @@ public class DataServiceFactory {
 		}
 
 		DataService dataService = new DataService(wsdlUrl, new QName(
-				"urn:liberty:dst:2006-08:ref", "DataService"));
+				"urn:liberty:dst:2006-08:ref:safe-online", "DataService"));
 		return dataService;
 	}
 }

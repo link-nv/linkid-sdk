@@ -31,4 +31,7 @@ public interface AttributeDAO {
 
 	void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, String stringValue);
+
+	AttributeEntity findAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject);
 }

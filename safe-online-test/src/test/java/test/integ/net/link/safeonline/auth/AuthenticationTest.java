@@ -33,6 +33,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.AuthClientImpl;
+import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;
@@ -573,7 +574,7 @@ public class AuthenticationTest extends TestCase {
 		LOG.debug("result: " + result);
 	}
 
-	public void testDataServiceModify() throws Exception {
+	public void testDataService() throws Exception {
 		// setup
 		InitialContext initialContext = IntegrationTestUtils
 				.getInitialContext();
@@ -615,8 +616,13 @@ public class AuthenticationTest extends TestCase {
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
-		// operate
-		this.dataClient.setAttributeValue(login, "test-attribute-name",
-				"test-attribute-value");
+		// operate & verify
+		try {
+			this.dataClient.getAttributeValue(login,
+					SafeOnlineConstants.NAME_ATTRIBUTE);
+			fail();
+		} catch (RequestDeniedException e) {
+			// expected
+		}
 	}
 }

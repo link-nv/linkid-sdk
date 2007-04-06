@@ -19,8 +19,8 @@
 	<endpoint name="SafeOnline-Data-WS"
 		implementation="net.link.safeonline.data.ws.DataServicePortImpl"
 		url-pattern="/data"
-		interface="liberty.dst._2006_08.ref.DataServicePort"
-		service="{urn:liberty:dst:2006-08:ref}DataService"
-		port="{urn:liberty:dst:2006-08:ref}DataServicePort" />
+		interface="liberty.dst._2006_08.ref.safe_online.DataServicePort"
+		service="{urn:liberty:dst:2006-08:ref:safe-online}DataService"
+		port="{urn:liberty:dst:2006-08:ref:safe-online}DataServicePort" />
 
 </endpoints>

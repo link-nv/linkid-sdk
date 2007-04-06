@@ -68,9 +68,9 @@ public class AttributeServiceBean implements AttributeService {
 	private SubjectDAO subjectDAO;
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public String getAttribute(String subjectLogin, String attributeName)
-			throws AttributeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException {
+	public String getConfirmedAttribute(String subjectLogin,
+			String attributeName) throws AttributeNotFoundException,
+			PermissionDeniedException, SubjectNotFoundException {
 		LOG.debug("get attribute " + attributeName + " for login "
 				+ subjectLogin);
 
@@ -142,6 +142,7 @@ public class AttributeServiceBean implements AttributeService {
 		return attributes;
 	}
 
+	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public Map<String, String> getConfirmedAttributes(String subjectLogin)
 			throws SubjectNotFoundException, PermissionDeniedException {
 		LOG.debug("get confirmed attributes for subject: " + subjectLogin);

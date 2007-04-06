@@ -173,7 +173,7 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 		// expectations
 		expect(
-				this.mockAttributeService.getAttribute(testSubjectLogin,
+				this.mockAttributeService.getConfirmedAttribute(testSubjectLogin,
 						testAttributeName)).andReturn(testAttributeValue);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn("test-application-name");
@@ -250,7 +250,7 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 		// expectations
 		expect(
-				this.mockAttributeService.getAttribute(testSubjectLogin,
+				this.mockAttributeService.getConfirmedAttribute(testSubjectLogin,
 						testAttributeName)).andThrow(
 				new AttributeNotFoundException());
 		expect(this.mockAuthenticationService.authenticate(this.certificate))

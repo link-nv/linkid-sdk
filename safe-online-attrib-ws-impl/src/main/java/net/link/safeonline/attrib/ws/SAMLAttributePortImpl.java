@@ -45,6 +45,17 @@ import oasis.names.tc.saml._2_0.protocol.StatusType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Implementation of SAML attribute web service using JAX-WS.
+ * 
+ * Specification: Assertions and Protocols for the OASIS Security Assertion
+ * Markup Language (SAML) V2.0.
+ * 
+ * OASIS Standard, 15 March 2005
+ * 
+ * @author fcorneli
+ * 
+ */
 @WebService(endpointInterface = "oasis.names.tc.saml._2_0.protocol.SAMLAttributePort")
 @HandlerChain(file = "app-auth-ws-handlers.xml")
 public class SAMLAttributePortImpl implements SAMLAttributePort {
@@ -132,8 +143,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			for (AttributeType attribute : attributes) {
 				String attributeName = attribute.getName();
 				try {
-					String attributeValue = this.attributeService.getAttribute(
-							subjectLogin, attributeName);
+					String attributeValue = this.attributeService
+							.getConfirmedAttribute(subjectLogin, attributeName);
 					attributeMap.put(attributeName, attributeValue);
 				} catch (AttributeNotFoundException e) {
 					LOG.error("attribute not found: " + attributeName

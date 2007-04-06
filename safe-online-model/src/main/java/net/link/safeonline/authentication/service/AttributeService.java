@@ -18,7 +18,8 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 /**
  * Attribute Service. To be used by applications to retrieve attributes of their
- * users.
+ * users. Applications can only retrieve attributes for which the user did
+ * confirm the corresponding application identity.
  * 
  * @author fcorneli
  * 
@@ -39,7 +40,7 @@ public interface AttributeService {
 	 * @throws PermissionDeniedException
 	 * @throws SubjectNotFoundException
 	 */
-	String getAttribute(String subjectLogin, String attributeName)
+	String getConfirmedAttribute(String subjectLogin, String attributeName)
 			throws AttributeNotFoundException, PermissionDeniedException,
 			SubjectNotFoundException;
 
