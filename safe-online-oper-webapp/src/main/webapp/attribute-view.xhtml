@@ -58,10 +58,26 @@
 					<h:outputText value="#{item.description}" />
 				</h:column>
 			</h:dataTable>
+			<h:commandButton action="add" id="add" value="#{msgs.addaction}" />
+
+			<h2>#{msgs.attributeProviders}</h2>
+			<h:dataTable id="atttrib-prov" var="item"
+				value="#{attributeProviders}" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+				<h:column>
+					<f:facet name="header">#{msgs.application}</f:facet>
+					<h:outputText value="#{item.applicationName}" />
+				</h:column>
+				<h:column>
+					<h:commandLink value="#{msgs.removeaction}"
+						action="#{attributeProvider.removeProvider}" />
+				</h:column>
+			</h:dataTable>
+			<h:commandButton action="add-provider" id="add-provider"
+				value="#{msgs.addaction}" />
 
 			<h:messages styleClass="error" globalOnly="true" />
 
-			<h:commandButton action="add" id="add" value="#{msgs.addaction}" />
 			<so:nbsp />
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
 				immediate="true" />

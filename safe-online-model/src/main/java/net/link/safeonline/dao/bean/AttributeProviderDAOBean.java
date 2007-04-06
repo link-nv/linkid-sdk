@@ -7,9 +7,12 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.AttributeProviderDAO;
@@ -31,5 +34,27 @@ public class AttributeProviderDAOBean implements AttributeProviderDAO {
 		AttributeProviderEntity attributeProvider = this.entityManager.find(
 				AttributeProviderEntity.class, pk);
 		return attributeProvider;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AttributeProviderEntity> listAttributeProviders(
+			AttributeTypeEntity attributeType) {
+		Query query = AttributeProviderEntity.createQueryWhereAttributeType(
+				this.entityManager, attributeType);
+		List<AttributeProviderEntity> attributeProviders = query
+				.getResultList();
+		return attributeProviders;
+	}
+
+	public void removeAttributeProvider(
+			AttributeProviderEntity attributeProvider) {
+		this.entityManager.remove(attributeProvider);
+	}
+
+	public void addAttributeProvider(ApplicationEntity application,
+			AttributeTypeEntity attributeType) {
+		AttributeProviderEntity attributeProvider = new AttributeProviderEntity(
+				application, attributeType);
+		this.entityManager.persist(attributeProvider);
 	}
 }

@@ -55,9 +55,9 @@ public class AttributeProviderServiceBean implements AttributeProviderService {
 	private SubjectDAO subjectDAO;
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public String getAttribute(String subjectLogin, String attributeName)
-			throws AttributeTypeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException {
+	public AttributeEntity getAttribute(String subjectLogin,
+			String attributeName) throws AttributeTypeNotFoundException,
+			PermissionDeniedException, SubjectNotFoundException {
 
 		LOG.debug("get attribute " + attributeName + " for subject "
 				+ subjectLogin);
@@ -66,12 +66,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService {
 
 		AttributeEntity attribute = this.attributeDAO.findAttribute(
 				attributeType, subject);
-		if (null == attribute) {
-			return null;
-		}
-
-		String value = attribute.getStringValue();
-		return value;
+		return attribute;
 	}
 
 	private AttributeTypeEntity checkAttributeProviderPermission(

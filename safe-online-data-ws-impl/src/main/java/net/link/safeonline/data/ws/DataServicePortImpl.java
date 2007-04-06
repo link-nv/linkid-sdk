@@ -30,6 +30,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -104,9 +105,9 @@ public class DataServicePortImpl implements DataServicePort {
 		String userId = select.getUserId();
 		String attributeName = select.getAttributeName();
 		LOG.debug("query user " + userId + " for attribute " + attributeName);
-		String value;
+		AttributeEntity attribute;
 		try {
-			value = this.attributeProviderService.getAttribute(userId,
+			attribute = this.attributeProviderService.getAttribute(userId,
 					attributeName);
 		} catch (AttributeTypeNotFoundException e) {
 			QueryResponseType failedResponseType = createFailedQueryResponse(
@@ -126,8 +127,15 @@ public class DataServicePortImpl implements DataServicePort {
 		status.setCode(TopLevelStatusCode.OK.getCode());
 		queryResponse.setStatus(status);
 		List<DataType> dataList = queryResponse.getData();
-		if (null != value) {
+		if (null != attribute) {
 			DataType data = new DataType();
+			String value = attribute.getStringValue();
+			/*
+			 * Notice that value can be null. In that case we send an empty Data
+			 * element. No Data element means that the attribute provider still
+			 * needs to create the attribute.
+			 */
+			data.setValue(value);
 			dataList.add(data);
 		}
 		return queryResponse;

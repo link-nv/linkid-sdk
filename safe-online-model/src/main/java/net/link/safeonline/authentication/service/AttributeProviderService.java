@@ -13,6 +13,7 @@ import javax.ejb.Remote;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.entity.AttributeEntity;
 
 /**
  * Interface for attribute provider service component. The application using
@@ -39,7 +40,7 @@ public interface AttributeProviderService {
 	 *             the given attribute.
 	 * @throws SubjectNotFoundException
 	 */
-	String getAttribute(String subjectLogin, String attributeName)
+	AttributeEntity getAttribute(String subjectLogin, String attributeName)
 			throws AttributeTypeNotFoundException, PermissionDeniedException,
 			SubjectNotFoundException;
 }

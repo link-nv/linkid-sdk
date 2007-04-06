@@ -7,6 +7,8 @@
 
 package net.link.safeonline.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.ApplicationEntity;
@@ -18,4 +20,12 @@ public interface AttributeProviderDAO {
 
 	AttributeProviderEntity findAttributeProvider(
 			ApplicationEntity application, AttributeTypeEntity attributeType);
+
+	List<AttributeProviderEntity> listAttributeProviders(
+			AttributeTypeEntity attributeType);
+
+	void removeAttributeProvider(AttributeProviderEntity attributeProvider);
+
+	void addAttributeProvider(ApplicationEntity application,
+			AttributeTypeEntity attributeType);
 }

@@ -14,12 +14,19 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import static net.link.safeonline.entity.AttributeProviderEntity.QUERY_WHERE_ATTRIBUTE_TYPE;
 
 /**
  * Definition of the attribute provider entity. This entity manages the write
@@ -30,9 +37,13 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 @Entity
 @Table(name = "attribute_provider")
+@NamedQueries( { @NamedQuery(name = QUERY_WHERE_ATTRIBUTE_TYPE, query = "SELECT attributeProvider FROM AttributeProviderEntity AS attributeProvider "
+		+ "WHERE attributeProvider.attributeType = :attributeType") })
 public class AttributeProviderEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String QUERY_WHERE_ATTRIBUTE_TYPE = "ape.at";
 
 	private AttributeProviderPK pk;
 
@@ -87,6 +98,11 @@ public class AttributeProviderEntity implements Serializable {
 		this.attributeType = attributeType;
 	}
 
+	@Transient
+	public String getApplicationName() {
+		return this.pk.getApplicationName();
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -105,5 +121,13 @@ public class AttributeProviderEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.pk).toHashCode();
+	}
+
+	public static Query createQueryWhereAttributeType(
+			EntityManager entityManager, AttributeTypeEntity attributeType) {
+		Query query = entityManager
+				.createNamedQuery(QUERY_WHERE_ATTRIBUTE_TYPE);
+		query.setParameter("attributeType", attributeType);
+		return query;
 	}
 }

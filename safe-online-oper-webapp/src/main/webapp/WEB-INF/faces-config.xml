@@ -356,6 +356,26 @@
 			<from-outcome>edit</from-outcome>
 			<to-view-id>/attribute-desc-edit.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-action>add-provider</from-action>
+			<to-view-id>/attribute-provider-add.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>provider-removed</from-outcome>
+			<to-view-id>/attribute-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/attribute-provider-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>cancel</from-outcome>
+			<to-view-id>/attribute-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/attribute-view.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
