@@ -15,6 +15,7 @@ import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
+import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.dao.bean.ConfigItemDAOBean;
@@ -30,6 +31,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.ConfigGroupEntity;
@@ -60,7 +62,8 @@ public class DemoStartableBeanTest extends TestCase {
 			ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class,
 			ConfigItemDAOBean.class, TaskDAOBean.class,
 			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
-			ApplicationIdentityManagerBean.class, TrustPointDAOBean.class };
+			ApplicationIdentityManagerBean.class, TrustPointDAOBean.class,
+			AttributeProviderDAOBean.class };
 
 	@Override
 	protected void setUp() throws Exception {
@@ -76,7 +79,8 @@ public class DemoStartableBeanTest extends TestCase {
 				TaskEntity.class, TaskHistoryEntity.class,
 				TrustPointEntity.class,
 				ApplicationIdentityAttributeEntity.class,
-				AttributeTypeDescriptionEntity.class);
+				AttributeTypeDescriptionEntity.class,
+				AttributeProviderEntity.class);
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 

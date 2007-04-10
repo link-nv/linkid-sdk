@@ -77,6 +77,15 @@
 								true
 							</includeInApplicationXml>
 						</jarModule>
+						<jarModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>
+								safe-online-demo-lawyer-keystore
+							</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>
@@ -196,6 +205,11 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-payment-keystore</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-lawyer-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

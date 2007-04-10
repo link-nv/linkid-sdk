@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.bean;
 
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,20 +26,24 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.TrustDomainDAO;
+import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
 
 import org.apache.commons.logging.Log;
@@ -138,6 +143,10 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected List<Identity> identities;
 
+	protected List<X509Certificate> trustedCertificates;
+
+	protected List<AttributeProviderEntity> attributeProviders;
+
 	@EJB
 	private ApplicationIdentityManager applicationIdentityService;
 
@@ -151,6 +160,8 @@ public abstract class AbstractInitBean implements Startable {
 		this.subscriptions = new LinkedList<Subscription>();
 		this.identities = new LinkedList<Identity>();
 		this.attributeTypeDescriptions = new LinkedList<AttributeTypeDescriptionEntity>();
+		this.trustedCertificates = new LinkedList<X509Certificate>();
+		this.attributeProviders = new LinkedList<AttributeProviderEntity>();
 	}
 
 	public void postStart() {
@@ -163,6 +174,8 @@ public abstract class AbstractInitBean implements Startable {
 		initApplications();
 		initSubscriptions();
 		initIdentities();
+		initApplicationTrustPoints();
+		initAttributeProviders();
 	}
 
 	public void preStop() {
@@ -191,7 +204,70 @@ public abstract class AbstractInitBean implements Startable {
 	protected TrustDomainDAO trustDomainDAO;
 
 	@EJB
+	private TrustPointDAO trustPointDAO;
+
+	@EJB
 	private ApplicationIdentityDAO applicationIdentityDAO;
+
+	@EJB
+	private AttributeProviderDAO attributeProviderDAO;
+
+	private void initApplicationTrustPoints() {
+		for (X509Certificate certificate : this.trustedCertificates) {
+			addCertificateAsTrustPoint(certificate);
+		}
+	}
+
+	private void initAttributeProviders() {
+		for (AttributeProviderEntity attributeProvider : this.attributeProviders) {
+			String applicationName = attributeProvider.getApplicationName();
+			String attributeName = attributeProvider.getAttributeTypeName();
+			ApplicationEntity application = this.applicationDAO
+					.findApplication(applicationName);
+			if (null == application) {
+				throw new EJBException("application not found: "
+						+ applicationName);
+			}
+			AttributeTypeEntity attributeType = this.attributeTypeDAO
+					.findAttributeType(attributeName);
+			if (null == attributeType) {
+				throw new EJBException("attribute type not found: "
+						+ attributeName);
+			}
+			AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO
+					.findAttributeProvider(application, attributeType);
+			if (null != existingAttributeProvider) {
+				continue;
+			}
+			this.attributeProviderDAO.addAttributeProvider(application,
+					attributeType);
+		}
+	}
+
+	private void addCertificateAsTrustPoint(X509Certificate certificate) {
+		TrustDomainEntity applicationTrustDomain = this.trustDomainDAO
+				.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+		if (null == applicationTrustDomain) {
+			LOG.fatal("application trust domain not found");
+			return;
+		}
+
+		TrustPointEntity demoTrustPoint = this.trustPointDAO.findTrustPoint(
+				applicationTrustDomain, certificate);
+		if (null != demoTrustPoint) {
+			try {
+				/*
+				 * In this case we still update the certificate.
+				 */
+				demoTrustPoint.setEncodedCert(certificate.getEncoded());
+			} catch (CertificateEncodingException e) {
+				LOG.error("cert encoding error");
+			}
+			return;
+		}
+
+		this.trustPointDAO.addTrustPoint(applicationTrustDomain, certificate);
+	}
 
 	private void initTrustDomains() {
 		TrustDomainEntity applicationsTrustDomain = this.trustDomainDAO
@@ -335,5 +411,4 @@ public abstract class AbstractInitBean implements Startable {
 			}
 		}
 	}
-
 }

@@ -103,6 +103,11 @@ public class AttributeProviderEntity implements Serializable {
 		return this.pk.getApplicationName();
 	}
 
+	@Transient
+	public String getAttributeTypeName() {
+		return this.pk.getAttributeTypeName();
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

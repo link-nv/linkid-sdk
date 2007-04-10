@@ -11,6 +11,7 @@ import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
+import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.CachedOcspResponseDAOBean;
 import net.link.safeonline.dao.bean.ConfigGroupDAOBean;
@@ -69,7 +70,8 @@ public class SafeOnlineTestContainer {
 			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
 			ApplicationManagerBean.class, TrustPointDAOBean.class,
 			CachedOcspResponseDAOBean.class,
-			AttributeTypeDescriptionDecoratorBean.class };
+			AttributeTypeDescriptionDecoratorBean.class,
+			AttributeProviderDAOBean.class };
 
 	public static final Class[] entities = new Class[] { SubjectEntity.class,
 			ApplicationEntity.class, ApplicationOwnerEntity.class,
