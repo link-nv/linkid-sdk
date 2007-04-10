@@ -231,6 +231,7 @@
 		<module>safe-online-data-ws</module>
 		<module>safe-online-data-ws-impl</module>
 		<module>safe-online-ws-util</module>
+		<module>safe-online-demo-lawyer-keystore</module>
 	</modules>
 	<repositories>
 		<repository>
