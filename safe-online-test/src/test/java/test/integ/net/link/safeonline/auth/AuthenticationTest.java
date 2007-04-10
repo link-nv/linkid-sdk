@@ -23,6 +23,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.AttributeProviderManagerService;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
@@ -38,6 +39,7 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.sdk.ws.data.DataValue;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.PkiService;
 import net.link.safeonline.test.util.PkiTestUtils;
@@ -303,6 +305,16 @@ public class AuthenticationTest extends TestCase {
 				initialContext, "SafeOnline/SubscriptionServiceBean/remote",
 				SubscriptionService.class);
 		return subscriptionService;
+	}
+
+	private AttributeProviderManagerService getAttributeProviderManagerService(
+			InitialContext initialContext) {
+		final AttributeProviderManagerService attributeProviderManagerService = EjbUtils
+				.getEJB(
+						initialContext,
+						"SafeOnline/AttributeProviderManagerServiceBean/remote",
+						AttributeProviderManagerService.class);
+		return attributeProviderManagerService;
 	}
 
 	private CredentialService getCredentialService(InitialContext initialContext) {
@@ -576,6 +588,7 @@ public class AuthenticationTest extends TestCase {
 
 	public void testDataService() throws Exception {
 		// setup
+		String testName = "test-name";
 		InitialContext initialContext = IntegrationTestUtils
 				.getInitialContext();
 
@@ -624,5 +637,27 @@ public class AuthenticationTest extends TestCase {
 		} catch (RequestDeniedException e) {
 			// expected
 		}
+
+		// operate: add attribute provider
+		AttributeProviderManagerService attributeProviderManagerService = getAttributeProviderManagerService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		attributeProviderManagerService.addAttributeProvider(
+				testApplicationName, SafeOnlineConstants.NAME_ATTRIBUTE);
+
+		DataValue result = this.dataClient.getAttributeValue(login,
+				SafeOnlineConstants.NAME_ATTRIBUTE);
+		LOG.debug("result: " + result);
+		assertNull(result);
+
+		this.dataClient.createAttribute(login,
+				SafeOnlineConstants.NAME_ATTRIBUTE);
+		this.dataClient.setAttributeValue(login,
+				SafeOnlineConstants.NAME_ATTRIBUTE, testName);
+
+		result = this.dataClient.getAttributeValue(login,
+				SafeOnlineConstants.NAME_ATTRIBUTE);
+		LOG.debug("result: " + result);
+		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.getName());
+		assertEquals(testName, result.getValue());
 	}
 }

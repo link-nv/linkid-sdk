@@ -14,18 +14,25 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 public interface DataClient {
 
 	/**
+	 * Sets the value of an attribute. Please notice that the attribute should
+	 * already be defined via: {@link #createAttribute(String, String)}.
+	 * 
 	 * @param subjectLogin
 	 * @param attributeName
 	 * @param attributeValue
-	 * @return
 	 * @throws ConnectException
 	 *             in case the service could not be contacted. Can happen if the
 	 *             SSL was not setup correctly.
+	 * @see #createAttribute(String, String)
 	 */
-	String setAttributeValue(String subjectLogin, String attributeName,
+	void setAttributeValue(String subjectLogin, String attributeName,
 			String attributeValue) throws ConnectException;
 
 	/**
+	 * Gives back the attribute value of an attribute. We return a
+	 * {@link DataValue} object to be able to make a distinction between a
+	 * missing attribute and a <code>null<code> attribute value.
+	 * 
 	 * @param subjectLogin
 	 * @param attributeName
 	 * @return
@@ -34,6 +41,9 @@ public interface DataClient {
 	 *             SSL was not setup correctly.
 	 * @throws RequestDeniedException
 	 */
-	String getAttributeValue(String subjectLogin, String attributeName)
+	DataValue getAttributeValue(String subjectLogin, String attributeName)
 			throws ConnectException, RequestDeniedException;
+
+	void createAttribute(String subjectLogin, String attributeName)
+			throws ConnectException;
 }

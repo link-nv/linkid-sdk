@@ -34,4 +34,7 @@ public interface AttributeDAO {
 
 	AttributeEntity findAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject);
+
+	AttributeEntity getAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject) throws AttributeNotFoundException;
 }

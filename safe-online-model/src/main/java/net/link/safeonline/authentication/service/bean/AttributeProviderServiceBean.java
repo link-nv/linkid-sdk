@@ -17,6 +17,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 import net.link.safeonline.SafeOnlineApplicationRoles;
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -82,5 +83,28 @@ public class AttributeProviderServiceBean implements AttributeProviderService {
 			throw new PermissionDeniedException();
 		}
 		return attributeType;
+	}
+
+	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+	public void createAttribute(String subjectLogin, String attributeName,
+			String attributeValue) throws AttributeTypeNotFoundException,
+			PermissionDeniedException, SubjectNotFoundException {
+		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+
+		this.attributeDAO.addAttribute(attributeType, subject, attributeValue);
+	}
+
+	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+	public void setAttribute(String subjectLogin, String attributeName,
+			String attributeValue) throws AttributeTypeNotFoundException,
+			PermissionDeniedException, SubjectNotFoundException,
+			AttributeNotFoundException {
+		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+
+		AttributeEntity attribute = this.attributeDAO.getAttribute(
+				attributeType, subject);
+		attribute.setStringValue(attributeValue);
 	}
 }

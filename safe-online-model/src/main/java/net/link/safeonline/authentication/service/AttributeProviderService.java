@@ -10,6 +10,7 @@ package net.link.safeonline.authentication.service;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -43,4 +44,34 @@ public interface AttributeProviderService {
 	AttributeEntity getAttribute(String subjectLogin, String attributeName)
 			throws AttributeTypeNotFoundException, PermissionDeniedException,
 			SubjectNotFoundException;
+
+	/**
+	 * Create a new attribute for the given user.
+	 * 
+	 * @param subjectLogin
+	 * @param attributeName
+	 * @param attributeValue
+	 * @throws AttributeTypeNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
+	 */
+	void createAttribute(String subjectLogin, String attributeName,
+			String attributeValue) throws AttributeTypeNotFoundException,
+			PermissionDeniedException, SubjectNotFoundException;
+
+	/**
+	 * Sets an attribute for the given user.
+	 * 
+	 * @param subjectLogin
+	 * @param attributeName
+	 * @param attributeValue
+	 * @throws PermissionDeniedException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws SubjectNotFoundException
+	 * @throws AttributeNotFoundException
+	 */
+	void setAttribute(String subjectLogin, String attributeName,
+			String attributeValue) throws AttributeTypeNotFoundException,
+			PermissionDeniedException, SubjectNotFoundException,
+			AttributeNotFoundException;
 }

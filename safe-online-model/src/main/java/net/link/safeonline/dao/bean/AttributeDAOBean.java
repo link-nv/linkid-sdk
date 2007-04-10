@@ -88,4 +88,14 @@ public class AttributeDAOBean implements AttributeDAO {
 				AttributeEntity.class, new AttributePK(attributeType, subject));
 		return attribute;
 	}
+
+	public AttributeEntity getAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject) throws AttributeNotFoundException {
+		AttributeEntity attribute = this.entityManager.find(
+				AttributeEntity.class, new AttributePK(attributeType, subject));
+		if (null == attribute) {
+			throw new AttributeNotFoundException();
+		}
+		return attribute;
+	}
 }

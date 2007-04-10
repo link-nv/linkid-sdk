@@ -52,9 +52,11 @@ Version 2.1
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="AppDataType">
-    <xs:simpleContent>
-      <xs:extension base="xs:string"/>
-    </xs:simpleContent>
+    <xs:sequence>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element name="AttributeName" type="xs:string"/>
+      <xs:element name="AttributeValue" type="xs:string"/>
+    </xs:sequence>
   </xs:complexType>
 <!--endsec(redefs)-->
 <!--sec(create)-->

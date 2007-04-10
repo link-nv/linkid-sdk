@@ -13,7 +13,8 @@ import java.util.Map;
 public enum SecondLevelStatusCode {
 	NOT_AUTHORIZED("ActionNotAuthorized"), UNSUPPORTED_OBJECT_TYPE(
 			"UnsupportedObjectType"), NO_MULTIPLE_ALLOWED("NoMultipleAllowed"), PAGINATION_NOT_SUPPORTED(
-			"PaginationNotSupported"), DOES_NOT_EXIST("DoesNotExist");
+			"PaginationNotSupported"), DOES_NOT_EXIST("DoesNotExist"), MISSING_OBJECT_TYPE(
+			"MissingObjectType");
 
 	private String code;
 
