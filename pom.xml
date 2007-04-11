@@ -274,6 +274,7 @@
 		<module>safe-online-ws-util</module>
 		<module>safe-online-demo-lawyer-keystore</module>
 		<module>safe-online-demo-lawyer</module>
+		<module>safe-online-demo-lawyer-webapp</module>
 	</modules>
 	<repositories>
 		<repository>
