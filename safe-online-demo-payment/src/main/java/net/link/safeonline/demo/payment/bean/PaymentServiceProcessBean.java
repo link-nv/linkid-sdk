@@ -28,6 +28,7 @@ import net.link.safeonline.demo.payment.PaymentServiceProcess;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.UserEntity;
 import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -115,7 +116,7 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 
 	public String confirm() {
 		log.debug("confirm");
-		String result = PaymentLogonBean.performLogin(this.facesMessages,
+		String result = SafeOnlineLoginUtils.login(this.facesMessages,
 				this.log, "completed.seam");
 		return result;
 	}

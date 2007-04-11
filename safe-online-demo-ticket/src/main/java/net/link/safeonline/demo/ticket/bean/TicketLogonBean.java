@@ -7,17 +7,11 @@
 
 package net.link.safeonline.demo.ticket.bean;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.demo.ticket.TicketLogon;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.ejb.cache.simple.CacheConfig;
@@ -52,43 +46,9 @@ public class TicketLogonBean implements TicketLogon {
 
 	public String login() {
 		log.debug("login");
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		String safeOnlineAuthenticationServiceUrl = externalContext
-				.getInitParameter("SafeOnlineAuthenticationServiceUrl");
-		log.debug("redirecting to #0: ", safeOnlineAuthenticationServiceUrl);
-		HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext
-				.getRequest();
-		String requestUrl = httpServletRequest.getRequestURL().toString();
-		String targetUrl = getOverviewTargetUrl(requestUrl);
-		log.debug("target url: #0", targetUrl);
-		String redirectUrl;
-		try {
-			redirectUrl = safeOnlineAuthenticationServiceUrl + "?application="
-					+ URLEncoder.encode(APPLICATION_NAME, "UTF-8") + "&target="
-					+ URLEncoder.encode(targetUrl, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			String msg = "UnsupportedEncoding: " + e.getMessage();
-			log.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
-		try {
-			externalContext.redirect(redirectUrl);
-		} catch (IOException e) {
-			String msg = "IO error: " + e.getMessage();
-			log.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
-		return null;
-	}
 
-	public String getOverviewTargetUrl(String requestUrl) {
-		int lastSlashIdx = requestUrl.lastIndexOf("/");
-		String prefix = requestUrl.substring(0, lastSlashIdx);
-		String targetUrl = prefix + "/" + "overview.seam";
-		return targetUrl;
+		return SafeOnlineLoginUtils.login(this.facesMessages, this.log,
+				"overview.seam");
 	}
 
 	public String logout() {

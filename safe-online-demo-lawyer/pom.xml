@@ -9,13 +9,40 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<groupId>net.lin-k.safe-online</groupId>
-	<artifactId>safe-online-ctrl-base</artifactId>
-	<packaging>jar</packaging>
+	<artifactId>safe-online-demo-lawyer</artifactId>
+	<packaging>ejb</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>SafeOnline Control Base</name>
+	<name>SafeOnline Demo Lawyer Beans</name>
 	<description>
-		The SafeOnline EJB3 Seam Control Backing Beans Base.
+		The EJB3 Seam Backing Beans for the SafeOnline Demo Lawyer
+		Beans.
 	</description>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ejb-plugin</artifactId>
+				<configuration>
+					<ejbVersion>3.0</ejbVersion>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+					<generateClient>true</generateClient>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jboss-maven-plugin</artifactId>
+				<configuration>
+					<fileName>
+						${project.build.directory}/${project.build.finalName}.jar
+					</fileName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -25,25 +52,28 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-model</artifactId>
-			<type>ejb-client</type>
-			<version>1.0-SNAPSHOT</version>
+			<groupId>org.jboss.seam</groupId>
+			<artifactId>jboss-seam</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-j2ee-util</artifactId>
+			<artifactId>safe-online-demo-lawyer-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.seam</groupId>
-			<artifactId>jboss-seam</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -61,28 +91,11 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-test-util</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>changes-maven-plugin</artifactId>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>changes-report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</reporting>
 </project>

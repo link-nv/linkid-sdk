@@ -7,32 +7,24 @@
 
 package net.link.safeonline.ctrl.bean;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.ctrl.LoginBase;
+import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
+import org.jboss.seam.log.Log;
 
 public class LoginBaseBean implements LoginBase {
-
-	private static final Log LOG = LogFactory.getLog(LoginBaseBean.class);
 
 	@In
 	Context sessionContext;
@@ -40,88 +32,49 @@ public class LoginBaseBean implements LoginBase {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	private final String applicationName;
-
-	public LoginBaseBean(String applicationName) {
-		this.applicationName = applicationName;
-	}
+	@Logger
+	private Log log;
 
 	@PostConstruct
 	public void postConstructCallback() {
-		LOG.debug("post construct: " + this);
+		log.debug("post construct: #0", this);
 	}
 
 	@PreDestroy
 	public void preDestroyCallback() {
-		LOG.debug("pre destroy: " + this);
+		log.debug("pre destroy: #0", this);
 	}
 
 	@PostActivate
 	public void postActivateCallback() {
-		LOG.debug("post activate: " + this);
+		log.debug("post activate: #0", this);
 	}
 
 	@PrePassivate
 	public void prePassivateCallback() {
-		LOG.debug("pre passivate: " + this);
+		log.debug("pre passivate: #0", this);
 	}
 
 	public String login() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		String safeOnlineAuthenticationServiceUrl = externalContext
-				.getInitParameter("SafeOnlineAuthenticationServiceUrl");
-		LOG.debug("redirecting to: " + safeOnlineAuthenticationServiceUrl);
-		HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext
-				.getRequest();
-		String requestUrl = httpServletRequest.getRequestURL().toString();
-		String targetUrl = getOverviewTargetUrl(requestUrl);
-		LOG.debug("target url: " + targetUrl);
-		String redirectUrl;
-		try {
-			redirectUrl = safeOnlineAuthenticationServiceUrl + "?application="
-					+ URLEncoder.encode(this.applicationName, "UTF-8")
-					+ "&target=" + URLEncoder.encode(targetUrl, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			String msg = "UnsupportedEncoding: " + e.getMessage();
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
-		try {
-			externalContext.redirect(redirectUrl);
-		} catch (IOException e) {
-			String msg = "IO error: " + e.getMessage();
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
-
-		return "login-success";
-	}
-
-	public String getOverviewTargetUrl(String requestUrl) {
-		int lastSlashIdx = requestUrl.lastIndexOf("/");
-		String prefix = requestUrl.substring(0, lastSlashIdx);
-		String targetUrl = prefix + "/" + "overview.seam";
-		return targetUrl;
+		return SafeOnlineLoginUtils.login(this.facesMessages, this.log,
+				"overview.seam");
 	}
 
 	public String logout() {
-		LOG.debug("logout");
+		log.debug("logout");
 		this.sessionContext.set("username", null);
 		Seam.invalidateSession();
 		return "logout-success";
 	}
 
 	public String getLoggedInUsername() {
-		LOG.debug("get logged in username");
+		log.debug("get logged in username");
 		String username = (String) this.sessionContext.get("username");
 		return username;
 	}
 
 	public boolean isLoggedIn() {
-		LOG.debug("is logged in");
+		log.debug("is logged in");
 		String username = (String) this.sessionContext.get("username");
 		return (null != username);
 	}
@@ -129,6 +82,6 @@ public class LoginBaseBean implements LoginBase {
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		LOG.debug("destroy: " + this);
+		log.debug("destroy: #0", this);
 	}
 }

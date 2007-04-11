@@ -31,7 +31,7 @@ public interface DataClient {
 	/**
 	 * Gives back the attribute value of an attribute. We return a
 	 * {@link DataValue} object to be able to make a distinction between a
-	 * missing attribute and a <code>null<code> attribute value.
+	 * missing attribute and a <code>null</code> attribute value.
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
