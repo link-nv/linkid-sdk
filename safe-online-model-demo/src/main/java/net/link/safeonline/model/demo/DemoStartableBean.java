@@ -21,6 +21,8 @@ import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
+import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributePK;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeProviderPK;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
@@ -48,8 +50,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		configDemoUsers();
 
 		AttributeTypeEntity visaAttributeType = new AttributeTypeEntity(
-				"urn:net:lin-k:safe-online:attribute:visaCardNumber", "string",
-				true, true);
+				DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, "string", true, true);
 		this.attributeTypes.add(visaAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				visaAttributeType, Locale.ENGLISH.getLanguage(), "VISA number",
@@ -92,8 +93,6 @@ public class DemoStartableBean extends AbstractInitBean {
 		configLawyerDemo();
 	}
 
-	public static final String BAR_ADMIN_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:baradmin";
-
 	private void configLawyerDemo() {
 		this.authorizedUsers.put("baradmin", "secret");
 
@@ -107,15 +106,70 @@ public class DemoStartableBean extends AbstractInitBean {
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"baradmin", DEMO_LAWYER_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(
+				SubscriptionOwnerType.APPLICATION, "baradmin",
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
-		AttributeTypeEntity barAdminType = new AttributeTypeEntity(
-				BAR_ADMIN_ATTRIBUTE, "string", true, false);
-		this.attributeTypes.add(barAdminType);
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"fcorneli", DEMO_LAWYER_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"dieter", DEMO_LAWYER_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"mario", DEMO_LAWYER_APPLICATION_NAME));
 
-		AttributeProviderEntity barAdminProvider = new AttributeProviderEntity();
-		barAdminProvider.setPk(new AttributeProviderPK(
-				DEMO_LAWYER_APPLICATION_NAME, BAR_ADMIN_ATTRIBUTE));
-		this.attributeProviders.add(barAdminProvider);
+		configLawyerDemoAttribute(
+				DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
+				"Bar administrator", "Baliebeheerder");
+		configLawyerDemoAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME,
+				"Lawyer", "Advocaat");
+		configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME,
+				"Bar", "Balie");
+		configLawyerDemoAttribute(
+				DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, "Suspended",
+				"Geschorst");
+
+		this.identities
+				.add(new Identity(
+						DEMO_LAWYER_APPLICATION_NAME,
+						new IdentityAttributeTypeDO[] {
+								new IdentityAttributeTypeDO(
+										DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
+										false),
+								new IdentityAttributeTypeDO(
+										DemoConstants.LAWYER_ATTRIBUTE_NAME,
+										false),
+								new IdentityAttributeTypeDO(
+										DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME,
+										false),
+								new IdentityAttributeTypeDO(
+										DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
+										false) }));
+
+		/*
+		 * Also make sure the baradmin is marked as such.
+		 */
+		AttributeEntity barAdminBarAdminAttribute = new AttributeEntity();
+		barAdminBarAdminAttribute.setPk(new AttributePK(
+				DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, "baradmin"));
+		barAdminBarAdminAttribute.setStringValue("true");
+		this.attributes.add(barAdminBarAdminAttribute);
+	}
+
+	private void configLawyerDemoAttribute(String attributeName, String enName,
+			String nlName) {
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				attributeName, "string", true, false);
+		this.attributeTypes.add(attributeType);
+		AttributeProviderEntity attributeProvider = new AttributeProviderEntity();
+		attributeProvider.setPk(new AttributeProviderPK(
+				DEMO_LAWYER_APPLICATION_NAME, attributeName));
+		this.attributeProviders.add(attributeProvider);
+
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				attributeType, Locale.ENGLISH.getLanguage(), enName, null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				attributeType, "nl", nlName, null));
+
 	}
 
 	private void configDemoUsers() {

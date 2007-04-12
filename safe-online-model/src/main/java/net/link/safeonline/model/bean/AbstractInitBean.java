@@ -21,6 +21,7 @@ import javax.ejb.EJBException;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
@@ -152,6 +153,8 @@ public abstract class AbstractInitBean implements Startable {
 
 	public abstract int getPriority();
 
+	protected List<AttributeEntity> attributes;
+
 	public AbstractInitBean() {
 		this.applicationOwnersAndLogin = new HashMap<String, String>();
 		this.attributeTypes = new LinkedList<AttributeTypeEntity>();
@@ -162,6 +165,7 @@ public abstract class AbstractInitBean implements Startable {
 		this.attributeTypeDescriptions = new LinkedList<AttributeTypeDescriptionEntity>();
 		this.trustedCertificates = new LinkedList<X509Certificate>();
 		this.attributeProviders = new LinkedList<AttributeProviderEntity>();
+		this.attributes = new LinkedList<AttributeEntity>();
 	}
 
 	public void postStart() {
@@ -169,13 +173,14 @@ public abstract class AbstractInitBean implements Startable {
 		initTrustDomains();
 		initAttributeTypes();
 		initAttributeTypeDescriptions();
-		initSubjectsAndAttributes();
+		initSubjects();
 		initApplicationOwners();
 		initApplications();
 		initSubscriptions();
 		initIdentities();
 		initApplicationTrustPoints();
 		initAttributeProviders();
+		initAttributes();
 	}
 
 	public void preStop() {
@@ -215,6 +220,34 @@ public abstract class AbstractInitBean implements Startable {
 	private void initApplicationTrustPoints() {
 		for (X509Certificate certificate : this.trustedCertificates) {
 			addCertificateAsTrustPoint(certificate);
+		}
+	}
+
+	private void initAttributes() {
+		for (AttributeEntity attribute : this.attributes) {
+			String attributeTypeName = attribute.getPk().getAttributeType();
+			String subjectLogin = attribute.getPk().getSubject();
+			AttributeEntity existingAttribute = this.attributeDAO
+					.findAttribute(attributeTypeName, subjectLogin);
+			if (null != existingAttribute) {
+				continue;
+			}
+			AttributeTypeEntity attributeType;
+			try {
+				attributeType = this.attributeTypeDAO
+						.getAttributeType(attributeTypeName);
+			} catch (AttributeTypeNotFoundException e) {
+				throw new EJBException("attribute type not found: "
+						+ attributeTypeName);
+			}
+			SubjectEntity subject;
+			try {
+				subject = this.subjectDAO.getSubject(subjectLogin);
+			} catch (SubjectNotFoundException e) {
+				throw new EJBException("subject not found: " + subjectLogin);
+			}
+			String stringValue = attribute.getStringValue();
+			this.attributeDAO.addAttribute(attributeType, subject, stringValue);
 		}
 	}
 
@@ -369,7 +402,7 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
-	private void initSubjectsAndAttributes() {
+	private void initSubjects() {
 		for (Map.Entry<String, String> authorizedUser : this.authorizedUsers
 				.entrySet()) {
 			String login = authorizedUser.getKey();
