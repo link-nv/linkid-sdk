@@ -7,30 +7,28 @@
 
 package net.link.safeonline.demo.lawyer.bean;
 
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.demo.lawyer.LawyerConstants;
+import net.link.safeonline.demo.lawyer.LawyerSearch;
 import net.link.safeonline.demo.lawyer.LawyerStatus;
-import net.link.safeonline.demo.lawyer.LawyerStatusManager;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
-import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
-@Name("lawyerStatusManager")
-@LocalBinding(jndiBinding = "SafeOnlineLawyerDemo/LawyerStatusManagerBean/local")
+@Name("lawyerSearch")
+@LocalBinding(jndiBinding = "SafeOnlineLawyerDemo/LawyerSearchBean/local")
 @SecurityDomain(LawyerConstants.SECURITY_DOMAIN)
-public class LawyerStatusManagerBean extends AbstractLawyerDataClientBean
-		implements LawyerStatusManager {
+public class LawyerSearchBean extends AbstractLawyerDataClientBean implements
+		LawyerSearch {
 
 	@Logger
 	private Log log;
@@ -38,19 +36,22 @@ public class LawyerStatusManagerBean extends AbstractLawyerDataClientBean
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	@Resource
-	private SessionContext sessionContext;
+	@In("name")
+	@Out
+	private String name;
 
-	@Factory("lawyerStatus")
-	@RolesAllowed(LawyerConstants.USER_ROLE)
-	public LawyerStatus lawyerStatusFactory() {
-		log.debug("lawyerStatusFactory");
-		String subjectLogin = this.sessionContext.getCallerPrincipal()
-				.getName();
-		LawyerStatus lawyerStatus = getLawyerStatus(subjectLogin);
+	@SuppressWarnings("unused")
+	@Out(value = "lawyerStatus", required = false)
+	private LawyerStatus lawyerStatus;
+
+	@RolesAllowed(LawyerConstants.ADMIN_ROLE)
+	public String search() {
+		log.debug("search: " + this.name);
+		LawyerStatus lawyerStatus = getLawyerStatus(this.name);
 		if (null == lawyerStatus) {
-			lawyerStatus = new LawyerStatus();
+			return null;
 		}
-		return lawyerStatus;
+		this.lawyerStatus = lawyerStatus;
+		return "success";
 	}
 }

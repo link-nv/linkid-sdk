@@ -8,10 +8,31 @@
 
 	<ui:define name="content">
 
-		<h1>#{msgs.overview}</h1>
+		<h1>#{msgs.searchResult}</h1>
+
+		<h2>#{msgs.status}</h2>
+
+		<table>
+			<tr>
+				<th>#{msgs.name}:</th>
+				<td>#{name}</td>
+			</tr>
+			<tr>
+				<th>#{msgs.lawyer}:</th>
+				<td>#{lawyerStatus.lawyer}</td>
+			</tr>
+			<tr>
+				<th>#{msgs.suspended}:</th>
+				<td>#{lawyerStatus.suspended}</td>
+			</tr>
+			<tr>
+				<th>#{msgs.bar}:</th>
+				<td>#{lawyerStatus.bar}</td>
+			</tr>
+		</table>
 
 		<h:form>
-			<h:commandLink id="search" value="#{msgs.search}" action="search" />
+			<h:commandButton id="back" value="#{msgs.back}" action="back" />
 		</h:form>
 
 	</ui:define>

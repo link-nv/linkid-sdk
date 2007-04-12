@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.ws.data;
 import java.net.ConnectException;
 
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 
 public interface DataClient {
 
@@ -40,9 +41,11 @@ public interface DataClient {
 	 *             in case the service could not be contacted. Can happen if the
 	 *             SSL was not setup correctly.
 	 * @throws RequestDeniedException
+	 * @throws SubjectNotFoundException
 	 */
 	DataValue getAttributeValue(String subjectLogin, String attributeName)
-			throws ConnectException, RequestDeniedException;
+			throws ConnectException, RequestDeniedException,
+			SubjectNotFoundException;
 
 	void createAttribute(String subjectLogin, String attributeName)
 			throws ConnectException;

@@ -23,6 +23,7 @@ import net.link.safeonline.demo.lawyer.LawyerConstants;
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.data.DataValue;
@@ -80,6 +81,8 @@ public class LoginServlet extends HttpServlet {
 					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME);
 		} catch (RequestDeniedException e) {
 			throw new ServletException("count not retrieve baradmin attribute");
+		} catch (SubjectNotFoundException e) {
+			throw new ServletException("subject not found");
 		}
 
 		if (null == barAdminAttribute) {

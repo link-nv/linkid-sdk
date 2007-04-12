@@ -10,10 +10,10 @@ package net.link.safeonline.demo.lawyer;
 import javax.ejb.Local;
 
 @Local
-public interface LawyerStatusManager extends AbstractLawyerDataClient {
+public interface LawyerSearch extends AbstractLawyerDataClient {
 
 	/*
-	 * Factory.
+	 * Actions.
 	 */
-	LawyerStatus lawyerStatusFactory();
+	String search();
 }

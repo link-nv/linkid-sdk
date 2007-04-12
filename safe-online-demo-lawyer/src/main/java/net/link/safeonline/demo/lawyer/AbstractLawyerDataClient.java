@@ -7,13 +7,16 @@
 
 package net.link.safeonline.demo.lawyer;
 
-import javax.ejb.Local;
-
-@Local
-public interface LawyerStatusManager extends AbstractLawyerDataClient {
+public interface AbstractLawyerDataClient {
 
 	/*
-	 * Factory.
+	 * Lifecycle.
 	 */
-	LawyerStatus lawyerStatusFactory();
+	void destroyCallback();
+
+	void postConstructCallback();
+
+	void postActivateCallback();
+
+	void prePassivateCallback();
 }

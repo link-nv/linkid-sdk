@@ -13,6 +13,8 @@ public class LawyerConstants {
 		// empty
 	}
 
+	public static final String SECURITY_DOMAIN = "demo-lawyer";
+
 	public static final String USER_ROLE = "user";
 
 	public static final String ADMIN_ROLE = "admin";

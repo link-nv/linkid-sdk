@@ -39,6 +39,7 @@ import net.link.safeonline.data.ws.DataServiceFactory;
 import net.link.safeonline.data.ws.SecondLevelStatusCode;
 import net.link.safeonline.data.ws.TopLevelStatusCode;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.ApplicationAuthenticationUtils;
 
 public class DataClientImpl implements DataClient {
@@ -104,7 +105,8 @@ public class DataClientImpl implements DataClient {
 	}
 
 	public DataValue getAttributeValue(String subjectLogin, String attributeName)
-			throws ConnectException, RequestDeniedException {
+			throws ConnectException, RequestDeniedException,
+			SubjectNotFoundException {
 		QueryType query = new QueryType();
 
 		List<QueryItemType> queryItems = query.getQueryItem();
@@ -144,7 +146,7 @@ public class DataClientImpl implements DataClient {
 				throw new RequestDeniedException();
 			}
 			if (SecondLevelStatusCode.DOES_NOT_EXIST == secondLevelStatusCode) {
-				throw new IllegalStateException("entity does not exist");
+				throw new SubjectNotFoundException();
 			}
 			throw new RuntimeException("unknown error occurred");
 		case OK:
