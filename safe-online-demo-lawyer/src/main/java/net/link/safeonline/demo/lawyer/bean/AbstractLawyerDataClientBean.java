@@ -114,9 +114,11 @@ public abstract class AbstractLawyerDataClientBean implements
 		boolean lawyer = false;
 		boolean suspended = false;
 		String bar = null;
+		boolean barAdmin = false;
 		DataValue lawyerAttribute;
 		DataValue suspendedAttribute;
 		DataValue barAttribute;
+		DataValue barAdminAttribute;
 		DataClient dataClient = getDataClient();
 		try {
 			lawyerAttribute = dataClient.getAttributeValue(subjectLogin,
@@ -125,6 +127,8 @@ public abstract class AbstractLawyerDataClientBean implements
 					DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME);
 			barAttribute = dataClient.getAttributeValue(subjectLogin,
 					DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME);
+			barAdminAttribute = dataClient.getAttributeValue(subjectLogin,
+					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());
 			return null;
@@ -146,7 +150,12 @@ public abstract class AbstractLawyerDataClientBean implements
 		if (null != barAttribute) {
 			bar = barAttribute.getValue();
 		}
-		LawyerStatus lawyerStatus = new LawyerStatus(lawyer, suspended, bar);
+		if (null != barAdminAttribute
+				&& "true".equals(barAdminAttribute.getValue())) {
+			barAdmin = true;
+		}
+		LawyerStatus lawyerStatus = new LawyerStatus(lawyer, suspended, bar,
+				barAdmin);
 		return lawyerStatus;
 	}
 }

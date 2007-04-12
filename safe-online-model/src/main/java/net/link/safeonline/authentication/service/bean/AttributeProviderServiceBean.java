@@ -89,6 +89,9 @@ public class AttributeProviderServiceBean implements AttributeProviderService {
 	public void createAttribute(String subjectLogin, String attributeName,
 			String attributeValue) throws AttributeTypeNotFoundException,
 			PermissionDeniedException, SubjectNotFoundException {
+		LOG
+				.debug("create attribute: " + attributeName + " for "
+						+ subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 
@@ -100,6 +103,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService {
 			String attributeValue) throws AttributeTypeNotFoundException,
 			PermissionDeniedException, SubjectNotFoundException,
 			AttributeNotFoundException {
+		LOG.debug("set attribute " + attributeName + " for " + subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 

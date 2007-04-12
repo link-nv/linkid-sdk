@@ -57,7 +57,10 @@ public class ApplicationAuthenticationUtils {
 
 			public void checkServerTrusted(X509Certificate[] certs,
 					String authType) {
-				LOG.debug("server cert: " + certs[0]);
+				X509Certificate serverCertificate = certs[0];
+				LOG.debug("server X509 subject: "
+						+ serverCertificate.getSubjectX500Principal()
+								.toString());
 				LOG.debug("authentication type: " + authType);
 				// TODO: verify certificate against trust repository
 			}

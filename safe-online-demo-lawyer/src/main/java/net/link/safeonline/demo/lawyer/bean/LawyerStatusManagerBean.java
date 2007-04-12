@@ -42,7 +42,7 @@ public class LawyerStatusManagerBean extends AbstractLawyerDataClientBean
 	private SessionContext sessionContext;
 
 	@Factory("lawyerStatus")
-	@RolesAllowed(LawyerConstants.USER_ROLE)
+	@RolesAllowed( { LawyerConstants.USER_ROLE, LawyerConstants.ADMIN_ROLE })
 	public LawyerStatus lawyerStatusFactory() {
 		log.debug("lawyerStatusFactory");
 		String subjectLogin = this.sessionContext.getCallerPrincipal()

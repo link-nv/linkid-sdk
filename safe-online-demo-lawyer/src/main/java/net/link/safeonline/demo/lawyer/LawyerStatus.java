@@ -13,33 +13,56 @@ public class LawyerStatus implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final boolean lawyer;
+	private boolean lawyer;
 
-	private final boolean suspended;
+	private boolean suspended;
 
-	private final String bar;
+	private boolean barAdmin;
+
+	private String bar;
 
 	public String getBar() {
-		return bar;
+		return this.bar;
 	}
 
 	public boolean isLawyer() {
-		return lawyer;
+		return this.lawyer;
 	}
 
 	public boolean isSuspended() {
-		return suspended;
+		return this.suspended;
+	}
+
+	public boolean isBarAdmin() {
+		return this.barAdmin;
 	}
 
 	public LawyerStatus() {
-		this(false, false, null);
+		this(false, false, null, false);
+	}
+
+	public void setBar(String bar) {
+		this.bar = bar;
+	}
+
+	public void setBarAdmin(boolean barAdmin) {
+		this.barAdmin = barAdmin;
+	}
+
+	public void setLawyer(boolean lawyer) {
+		this.lawyer = lawyer;
+	}
+
+	public void setSuspended(boolean suspended) {
+		this.suspended = suspended;
 	}
 
 	public LawyerStatus(final boolean lawyer, final boolean suspended,
-			final String bar) {
+			final String bar, final boolean barAdmin) {
 		super();
 		this.lawyer = lawyer;
 		this.suspended = suspended;
 		this.bar = bar;
+		this.barAdmin = barAdmin;
 	}
 }

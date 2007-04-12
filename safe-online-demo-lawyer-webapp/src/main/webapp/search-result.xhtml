@@ -12,27 +12,40 @@
 
 		<h2>#{msgs.status}</h2>
 
-		<table>
-			<tr>
-				<th>#{msgs.name}:</th>
-				<td>#{name}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.lawyer}:</th>
-				<td>#{lawyerStatus.lawyer}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.suspended}:</th>
-				<td>#{lawyerStatus.suspended}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.bar}:</th>
-				<td>#{lawyerStatus.bar}</td>
-			</tr>
-		</table>
-
 		<h:form>
-			<h:commandButton id="back" value="#{msgs.back}" action="back" />
+			<table>
+				<tr>
+					<th>#{msgs.name}:</th>
+					<td>#{name}</td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="lawyer" value="#{msgs.lawyer}" />:</th>
+					<td><h:selectBooleanCheckbox id="lawyer"
+						value="#{lawyerEditableStatus.lawyer}" /></td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="suspended" value="#{msgs.suspended}" />:</th>
+					<td><h:selectBooleanCheckbox id="suspended"
+						value="#{lawyerEditableStatus.suspended}" /></td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="bar" value="#{msgs.bar}" />:</th>
+					<td><h:inputText id="bar" value="#{lawyerEditableStatus.bar}" /></td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="baradmin" value="#{msgs.barAdmin}" />:</th>
+					<td><h:selectBooleanCheckbox id="baradmin"
+						value="#{lawyerEditableStatus.barAdmin}" /></td>
+				</tr>
+			</table>
+
+			<h:messages styleClass="error" globalOnly="true" />
+
+			<h:commandButton id="save" value="#{msgs.save}"
+				action="#{lawyerEdit.persist}" />
+			<f:verbatim>&amp;nbsp;</f:verbatim>
+			<h:commandButton id="back" value="#{msgs.back}" action="back"
+				immediate="true" />
 		</h:form>
 
 	</ui:define>

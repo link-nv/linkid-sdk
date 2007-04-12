@@ -16,6 +16,7 @@ import net.link.safeonline.demo.lawyer.LawyerStatus;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -37,11 +38,11 @@ public class LawyerSearchBean extends AbstractLawyerDataClientBean implements
 	FacesMessages facesMessages;
 
 	@In("name")
-	@Out
+	@Out(scope = ScopeType.SESSION)
 	private String name;
 
 	@SuppressWarnings("unused")
-	@Out(value = "lawyerStatus", required = false)
+	@Out(value = "lawyerEditableStatus", required = false, scope = ScopeType.SESSION)
 	private LawyerStatus lawyerStatus;
 
 	@RolesAllowed(LawyerConstants.ADMIN_ROLE)
