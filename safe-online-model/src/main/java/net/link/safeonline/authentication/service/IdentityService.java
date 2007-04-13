@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.Local;
-import javax.ejb.Remote;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -27,7 +26,6 @@ import net.link.safeonline.entity.HistoryEntity;
  * 
  */
 @Local
-@Remote
 public interface IdentityService {
 
 	/**

@@ -23,6 +23,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
+import net.link.safeonline.authentication.service.AttributeServiceRemote;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.SubjectDAO;
@@ -47,7 +48,8 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
-public class AttributeServiceBean implements AttributeService {
+public class AttributeServiceBean implements AttributeService,
+		AttributeServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(AttributeServiceBean.class);
@@ -155,6 +157,7 @@ public class AttributeServiceBean implements AttributeService {
 			if (null == attribute) {
 				continue;
 			}
+			LOG.debug("confirmed attribute: " + attributeName);
 			resultAttributes.put(attributeName, attribute.getStringValue());
 		}
 		return resultAttributes;

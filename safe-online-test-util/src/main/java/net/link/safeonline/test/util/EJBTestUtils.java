@@ -27,6 +27,7 @@ import javax.ejb.EJBLocalObject;
 import javax.ejb.EJBObject;
 import javax.ejb.Local;
 import javax.ejb.NoSuchObjectLocalException;
+import javax.ejb.Remote;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
@@ -434,6 +435,12 @@ public final class EJBTestUtils {
 					throw new EJBException(
 							"interface has no @Local annotation: "
 									+ fieldType.getName());
+				}
+				Remote remoteAnnotation = (Remote) fieldType
+						.getAnnotation(Remote.class);
+				if (null != remoteAnnotation) {
+					throw new EJBException(
+							"interface cannot have both @Local and @Remote annotation");
 				}
 				Class beanType = getBeanType(fieldType);
 				Object bean = EJBTestUtils

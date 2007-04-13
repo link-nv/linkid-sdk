@@ -23,6 +23,7 @@ import net.link.safeonline.authentication.exception.AttributeProviderNotFoundExc
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeProviderException;
 import net.link.safeonline.authentication.service.AttributeProviderManagerService;
+import net.link.safeonline.authentication.service.AttributeProviderManagerServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
@@ -34,7 +35,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class AttributeProviderManagerServiceBean implements
-		AttributeProviderManagerService {
+		AttributeProviderManagerService, AttributeProviderManagerServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(AttributeProviderManagerServiceBean.class);

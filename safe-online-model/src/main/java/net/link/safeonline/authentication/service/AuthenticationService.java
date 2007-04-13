@@ -10,7 +10,6 @@ package net.link.safeonline.authentication.service;
 import java.security.cert.X509Certificate;
 
 import javax.ejb.Local;
-import javax.ejb.Remote;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
@@ -26,7 +25,6 @@ import net.link.safeonline.authentication.exception.TrustDomainNotFoundException
  * 
  */
 @Local
-@Remote
 public interface AuthenticationService {
 	/**
 	 * Authenticates a user for a certain application. This method is used by

@@ -10,7 +10,6 @@ package net.link.safeonline.authentication.service;
 import java.util.Map;
 
 import javax.ejb.Local;
-import javax.ejb.Remote;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -25,7 +24,6 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
  * 
  */
 @Local
-@Remote
 public interface AttributeService {
 
 	/**

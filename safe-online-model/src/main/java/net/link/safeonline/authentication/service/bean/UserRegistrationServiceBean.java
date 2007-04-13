@@ -15,6 +15,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -37,7 +38,8 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateless
-public class UserRegistrationServiceBean implements UserRegistrationService {
+public class UserRegistrationServiceBean implements UserRegistrationService,
+		UserRegistrationServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(UserRegistrationServiceBean.class);

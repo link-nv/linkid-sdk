@@ -25,6 +25,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.service.AuthorizationService;
+import net.link.safeonline.service.AuthorizationServiceRemote;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +39,8 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateless
-public class AuthorizationServiceBean implements AuthorizationService {
+public class AuthorizationServiceBean implements AuthorizationService,
+		AuthorizationServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(AuthorizationServiceBean.class);

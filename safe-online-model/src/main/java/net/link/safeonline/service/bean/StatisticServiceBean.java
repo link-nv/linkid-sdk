@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.service.bean;
 
 import java.util.List;
@@ -22,10 +29,12 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.service.StatisticService;
+import net.link.safeonline.service.StatisticServiceRemote;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class StatisticServiceBean implements StatisticService {
+public class StatisticServiceBean implements StatisticService,
+		StatisticServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(StatisticServiceBean.class);

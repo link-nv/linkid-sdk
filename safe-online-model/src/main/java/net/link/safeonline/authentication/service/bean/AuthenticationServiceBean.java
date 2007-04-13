@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
@@ -56,7 +57,8 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter
  * 
  */
 @Stateless
-public class AuthenticationServiceBean implements AuthenticationService {
+public class AuthenticationServiceBean implements AuthenticationService,
+		AuthenticationServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(AuthenticationServiceBean.class);

@@ -28,6 +28,7 @@ import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.model.PkiUtils;
 import net.link.safeonline.service.PkiService;
+import net.link.safeonline.service.PkiServiceRemote;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +36,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class PkiServiceBean implements PkiService {
+public class PkiServiceBean implements PkiService, PkiServiceRemote {
 
 	private static final Log LOG = LogFactory.getLog(PkiServiceBean.class);
 

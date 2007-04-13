@@ -20,6 +20,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.authentication.service.CredentialServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -46,7 +47,8 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class CredentialServiceBean implements CredentialService {
+public class CredentialServiceBean implements CredentialService,
+		CredentialServiceRemote {
 
 	private static Log LOG = LogFactory.getLog(CredentialServiceBean.class);
 

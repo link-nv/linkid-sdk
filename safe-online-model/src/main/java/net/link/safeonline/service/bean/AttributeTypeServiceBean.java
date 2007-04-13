@@ -26,10 +26,12 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.service.AttributeTypeService;
+import net.link.safeonline.service.AttributeTypeServiceRemote;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class AttributeTypeServiceBean implements AttributeTypeService {
+public class AttributeTypeServiceBean implements AttributeTypeService,
+		AttributeTypeServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(AttributeTypeServiceBean.class);

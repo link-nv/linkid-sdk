@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.SubscriptionService;
+import net.link.safeonline.authentication.service.SubscriptionServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
@@ -37,7 +38,8 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class SubscriptionServiceBean implements SubscriptionService {
+public class SubscriptionServiceBean implements SubscriptionService,
+		SubscriptionServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(SubscriptionServiceBean.class);

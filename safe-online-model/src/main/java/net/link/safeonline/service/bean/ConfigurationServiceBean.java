@@ -22,10 +22,12 @@ import net.link.safeonline.dao.ConfigItemDAO;
 import net.link.safeonline.entity.ConfigGroupEntity;
 import net.link.safeonline.entity.ConfigItemEntity;
 import net.link.safeonline.service.ConfigurationService;
+import net.link.safeonline.service.ConfigurationServiceRemote;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class ConfigurationServiceBean implements ConfigurationService {
+public class ConfigurationServiceBean implements ConfigurationService,
+		ConfigurationServiceRemote {
 
 	@EJB
 	private ConfigGroupDAO configGroupDAO;

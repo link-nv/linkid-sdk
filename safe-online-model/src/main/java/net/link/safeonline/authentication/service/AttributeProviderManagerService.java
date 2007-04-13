@@ -10,7 +10,6 @@ package net.link.safeonline.authentication.service;
 import java.util.List;
 
 import javax.ejb.Local;
-import javax.ejb.Remote;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
@@ -19,7 +18,6 @@ import net.link.safeonline.authentication.exception.ExistingAttributeProviderExc
 import net.link.safeonline.entity.AttributeProviderEntity;
 
 @Local
-@Remote
 public interface AttributeProviderManagerService {
 
 	List<AttributeProviderEntity> getAttributeProviders(String attributeName)

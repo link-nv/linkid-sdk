@@ -8,7 +8,6 @@
 package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
-import javax.ejb.Remote;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -22,7 +21,6 @@ import net.link.safeonline.authentication.exception.TrustDomainNotFoundException
  * 
  */
 @Local
-@Remote
 public interface CredentialService {
 
 	/**

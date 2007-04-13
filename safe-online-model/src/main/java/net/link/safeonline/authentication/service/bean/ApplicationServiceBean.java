@@ -31,6 +31,7 @@ import net.link.safeonline.authentication.exception.ExistingApplicationOwnerExce
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.ApplicationServiceRemote;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
@@ -66,7 +67,8 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class ApplicationServiceBean implements ApplicationService {
+public class ApplicationServiceBean implements ApplicationService,
+		ApplicationServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(ApplicationServiceBean.class);

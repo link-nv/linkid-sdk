@@ -110,6 +110,13 @@
 								true
 							</includeInApplicationXml>
 						</jarModule>
+						<jarModule>
+							<groupId>commons-lang</groupId>
+							<artifactId>commons-lang</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-entity</artifactId>
@@ -483,6 +490,10 @@
 		<dependency>
 			<groupId>el-impl</groupId>
 			<artifactId>el-ri</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>

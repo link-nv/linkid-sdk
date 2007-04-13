@@ -285,20 +285,20 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
 		List<StatementAbstractType> statements = assertion
 				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
+		AttributeStatementType attributeStatement = new AttributeStatementType();
+		statements.add(attributeStatement);
+		List<Object> statementAttributes = attributeStatement
+				.getAttributeOrEncryptedAttribute();
 		for (Map.Entry<String, String> attribute : attributes.entrySet()) {
 			String attributeName = attribute.getKey();
 			String attributeValue = attribute.getValue();
 
-			AttributeStatementType attributeStatement = new AttributeStatementType();
-			List<Object> statementAttributes = attributeStatement
-					.getAttributeOrEncryptedAttribute();
 			AttributeType statementAttribute = new AttributeType();
 			statementAttribute.setName(attributeName);
 			List<Object> attributeValues = statementAttribute
 					.getAttributeValue();
 			attributeValues.add(attributeValue);
 			statementAttributes.add(statementAttribute);
-			statements.add(attributeStatement);
 		}
 		return assertion;
 	}

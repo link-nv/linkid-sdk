@@ -25,6 +25,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AttributeProviderManagerService;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -156,7 +157,7 @@ public class AuthenticationTest extends TestCase {
 			InitialContext initialContext) {
 		AuthenticationService authenticationService = EjbUtils.getEJB(
 				initialContext, "SafeOnline/AuthenticationServiceBean/remote",
-				AuthenticationService.class);
+				AuthenticationServiceRemote.class);
 		return authenticationService;
 	}
 
@@ -496,15 +497,15 @@ public class AuthenticationTest extends TestCase {
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
 
-		String testName = "test-name";
+		String testName = "test-name-" + UUID.randomUUID().toString();
 		String testApplicationName = UUID.randomUUID().toString();
 
-		String testAttributeName = UUID.randomUUID().toString();
+		String testAttributeName = "attr-" + UUID.randomUUID().toString();
 		String testAttributeValue = "test-attribute-value";
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
-		String password = UUID.randomUUID().toString();
+		String password = "pwd-" + UUID.randomUUID().toString();
 		userRegistrationService.registerUser(login, password, null);
 
 		// operate: save name attribute
@@ -555,6 +556,8 @@ public class AuthenticationTest extends TestCase {
 				.getAttributeValues(login);
 
 		// verify
+		assertEquals(2, resultAttributes.size());
+		LOG.debug("resultAttributes: " + resultAttributes);
 		result = resultAttributes.get(SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(testName, result);
 		assertNull(resultAttributes.get(testAttributeName));
@@ -647,10 +650,9 @@ public class AuthenticationTest extends TestCase {
 		DataValue result = this.dataClient.getAttributeValue(login,
 				SafeOnlineConstants.NAME_ATTRIBUTE);
 		LOG.debug("result: " + result);
-		assertNull(result);
+		assertNotNull(result);
+		assertNull(result.getValue());
 
-		this.dataClient.createAttribute(login,
-				SafeOnlineConstants.NAME_ATTRIBUTE);
 		this.dataClient.setAttributeValue(login,
 				SafeOnlineConstants.NAME_ATTRIBUTE, testName);
 

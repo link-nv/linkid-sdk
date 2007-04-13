@@ -22,6 +22,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
+import net.link.safeonline.authentication.service.AttributeProviderServiceRemote;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -35,7 +36,8 @@ import net.link.safeonline.model.ApplicationManager;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
-public class AttributeProviderServiceBean implements AttributeProviderService {
+public class AttributeProviderServiceBean implements AttributeProviderService,
+		AttributeProviderServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(AttributeProviderServiceBean.class);

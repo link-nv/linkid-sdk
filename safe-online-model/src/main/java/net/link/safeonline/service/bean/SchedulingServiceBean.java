@@ -27,10 +27,12 @@ import net.link.safeonline.entity.TaskEntity;
 import net.link.safeonline.entity.TaskHistoryEntity;
 import net.link.safeonline.model.TaskScheduler;
 import net.link.safeonline.service.SchedulingService;
+import net.link.safeonline.service.SchedulingServiceRemote;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
-public class SchedulingServiceBean implements SchedulingService {
+public class SchedulingServiceBean implements SchedulingService,
+		SchedulingServiceRemote {
 
 	@EJB
 	private TaskDAO taskDAO;
