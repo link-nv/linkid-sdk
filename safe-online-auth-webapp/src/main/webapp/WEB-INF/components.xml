@@ -10,4 +10,10 @@
 	<!-- 120 second conversation timeout -->
 	<core:manager conversation-timeout="120000" />
 
+	<core:resource-bundle>
+		<core:bundle-names>
+			<value>messages/webapp</value>
+		</core:bundle-names>
+	</core:resource-bundle>
+
 </components>
