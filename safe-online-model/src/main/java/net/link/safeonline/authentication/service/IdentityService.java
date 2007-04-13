@@ -101,9 +101,11 @@ public interface IdentityService {
 	 * @param applicationName
 	 * @throws ApplicationNotFoundException
 	 * @throws SubscriptionNotFoundException
+	 * @throws ApplicationIdentityNotFoundException
 	 */
 	void confirmIdentity(String applicationName)
-			throws ApplicationNotFoundException, SubscriptionNotFoundException;
+			throws ApplicationNotFoundException, SubscriptionNotFoundException,
+			ApplicationIdentityNotFoundException;
 
 	/**
 	 * Lists the attributes for which the user has confirmed an identity on the

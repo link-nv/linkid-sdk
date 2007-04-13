@@ -218,7 +218,8 @@ public class IdentityServiceBean implements IdentityService {
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void confirmIdentity(String applicationName)
-			throws ApplicationNotFoundException, SubscriptionNotFoundException {
+			throws ApplicationNotFoundException, SubscriptionNotFoundException,
+			ApplicationIdentityNotFoundException {
 		LOG.debug("confirm identity for application: " + applicationName);
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
@@ -231,6 +232,37 @@ public class IdentityServiceBean implements IdentityService {
 
 		subscription
 				.setConfirmedIdentityVersion(currentApplicationIdentityVersion);
+
+		manageIdentityAttributeVisibility(application, subject, subscription);
+	}
+
+	/**
+	 * Manages the visibility of the identity attributes towards the subject.
+	 * This is done by creating the non-existing attribute entities for the
+	 * confirmed identity.
+	 * 
+	 * @param application
+	 * @param subject
+	 * @param subscription
+	 * @throws ApplicationIdentityNotFoundException
+	 */
+	private void manageIdentityAttributeVisibility(
+			ApplicationEntity application, SubjectEntity subject,
+			SubscriptionEntity subscription)
+			throws ApplicationIdentityNotFoundException {
+		ApplicationIdentityEntity confirmedApplicationIdentity = this.applicationIdentityDAO
+				.getApplicationIdentity(application, subscription
+						.getConfirmedIdentityVersion());
+		List<AttributeTypeEntity> attributeTypes = confirmedApplicationIdentity
+				.getAttributeTypes();
+		for (AttributeTypeEntity attributeType : attributeTypes) {
+			AttributeEntity existingAttribute = this.attributeDAO
+					.findAttribute(attributeType, subject);
+			if (null != existingAttribute) {
+				continue;
+			}
+			this.attributeDAO.addAttribute(attributeType, subject, null);
+		}
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
