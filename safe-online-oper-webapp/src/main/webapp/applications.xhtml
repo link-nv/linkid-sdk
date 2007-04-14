@@ -24,11 +24,12 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.application}</f:facet>
-					<h:commandLink value="#{item.name}" action="#{application.view}" />
+					<h:commandLink value="#{item.name}"
+						action="#{operApplication.view}" />
 				</h:column>
 				<h:column>
 					<h:commandLink value="#{msgs.removeaction}"
-						action="#{application.removeApplication}" />
+						action="#{operApplication.removeApplication}" />
 				</h:column>
 			</t:dataTable>
 

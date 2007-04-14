@@ -5,7 +5,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib">
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 	<c:when test="#{username == null}">
 		<h:form>
 			<h:commandButton action="#{loginComp.login}" id="login"
@@ -20,5 +21,6 @@
 			<h:commandButton action="#{loginComp.logout}" id="logout"
 				value="#{msgs.logout}" />
 		</h:form>
+		<so:nbsp />
 	</c:otherwise>
 </c:choose></div>

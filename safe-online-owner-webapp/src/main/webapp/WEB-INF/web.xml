@@ -16,7 +16,7 @@
 
 	<listener>
 		<listener-class>
-			org.apache.myfaces.webapp.StartupServletContextListener
+			com.sun.faces.config.ConfigureListener
 		</listener-class>
 	</listener>
 

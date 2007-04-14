@@ -52,7 +52,7 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.core.FacesMessages;
 
 @Stateful
-@Name("application")
+@Name("operApplication")
 @LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX
 		+ "ApplicationBean/local")
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)

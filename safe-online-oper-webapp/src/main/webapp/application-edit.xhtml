@@ -35,13 +35,13 @@
 			</h:dataTable>
 
 			<h2>#{msgs.certificate}</h2>
-			<p><h:outputLabel for="certificate" value="#{msgs.certificate}" />
-			<t:inputFileUpload id="certificate" value="#{application.upFile}"
+			<p><h:outputLabel for="certificate" value="#{msgs.certificate}" />:
+			<t:inputFileUpload id="certificate" value="#{operApplication.upFile}"
 				storage="file" maxlength="200000" /></p>
 
 			<t:messages styleClass="error" globalOnly="true" />
 
-			<h:commandButton action="#{application.save}" id="save"
+			<h:commandButton action="#{operApplication.save}" id="save"
 				value="#{msgs.saveaction}" />
 			<so:nbsp />
 			<h:commandButton action="cancel" id="cancel"

@@ -60,6 +60,14 @@ java -jar JAXWS2.1FCS_20070202.jar
  Copy <<<jboss-seam.jar>>> from the JBoss Seam package (1.2.1.GA) to <<<$JBOSS_HOME/server/default/lib/>>>.
 
 
+** Java Server Faces
+
+ Since JBoss AS 4.2 comes with the Sun JSF 1.2 RI we also use the Sun implementation on JBoss AS 4.0.
+ Replace <<<myfaces-api.jar>>> and <<<myfaces-impl.jar>>> within
+ <<<$JBOSS_HOME/server/default/deploy/jbossweb-tomcat55.sar/jsf-libs/>>>
+ with <<<jsf-api>>> and <<<jsf-impl>>> from https://maven-repository.dev.java.net/repository/javax.faces/jars/.
+
+
 ** LOG4J
 
  Add the following to <<<$JBOSS_HOME/server/default/conf/log4j.xml>>>:

@@ -11,6 +11,7 @@
 			<h:commandButton action="#{ticketLogon.login}" id="login"
 				value="Login" />
 		</h:form>
+		<f:verbatim>&#160;</f:verbatim>
 	</c:when>
 	<c:otherwise>
 		<p>Welcome #{userPrincipal.name}.</p>
@@ -18,5 +19,6 @@
 			<h:commandButton action="#{ticketLogon.logout}" id="logout"
 				value="Logout" />
 		</h:form>
+		<f:verbatim>&#160;</f:verbatim>
 	</c:otherwise>
 </c:choose></div>

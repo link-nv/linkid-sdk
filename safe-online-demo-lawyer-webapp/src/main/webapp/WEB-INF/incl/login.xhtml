@@ -11,6 +11,7 @@
 			<h:commandButton action="#{lawyerLogon.login}" id="login"
 				value="Login" />
 		</h:form>
+		<f:verbatim>&#160;</f:verbatim>
 	</c:when>
 	<c:otherwise>
 		<p>#{msgs.welcome} #{userPrincipal.name}.</p>
@@ -18,5 +19,6 @@
 			<h:commandButton action="#{lawyerLogon.logout}" id="logout"
 				value="Logout" />
 		</h:form>
+		<f:verbatim>&#160;</f:verbatim>
 	</c:otherwise>
 </c:choose></div>
