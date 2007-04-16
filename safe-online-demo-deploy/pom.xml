@@ -25,20 +25,6 @@
 					<version>1.4</version>
 					<modules>
 						<jarModule>
-							<groupId>javax.el</groupId>
-							<artifactId>el-api</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
-						</jarModule>
-						<jarModule>
-							<groupId>el-impl</groupId>
-							<artifactId>el-ri</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
-						</jarModule>
-						<jarModule>
 							<groupId>commons-io</groupId>
 							<artifactId>commons-io</artifactId>
 							<includeInApplicationXml>
@@ -259,14 +245,6 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>el-impl</groupId>
-			<artifactId>el-ri</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>

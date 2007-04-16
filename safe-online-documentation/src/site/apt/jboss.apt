@@ -68,6 +68,13 @@ java -jar JAXWS2.1FCS_20070202.jar
  with <<<jsf-api>>> and <<<jsf-impl>>> from https://maven-repository.dev.java.net/repository/javax.faces/jars/.
 
 
+** Expression Language (EL)
+
+ Copy <<<el-api>>> from https://maven-repository.dev.java.net/repository/javax.el/jars/ to <<<$JBOSS_HOME/server/default/lib>>>.
+ 
+ Copy <<<el-impl>>> from https://maven-repository.dev.java.net/repository/el-impl/jars/ to <<<$JBOSS_HOME/server/default/lib>>>.
+
+
 ** LOG4J
 
  Add the following to <<<$JBOSS_HOME/server/default/conf/log4j.xml>>>:
