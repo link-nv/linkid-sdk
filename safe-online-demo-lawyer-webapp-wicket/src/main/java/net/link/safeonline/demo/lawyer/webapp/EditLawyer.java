@@ -41,7 +41,7 @@ public class EditLawyer extends Layout {
 
 		public final void onSubmit() {
 			// Get the lawyer from the form
-			Lawyer lawyer = (Lawyer) getModelObject();
+			// Lawyer lawyer = (Lawyer) getModelObject();
 
 			// TODO: Save the lawyer
 			info("Lawyer saved");
