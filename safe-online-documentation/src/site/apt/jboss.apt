@@ -41,7 +41,7 @@ JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=128m"
  The JBoss SAAJ implementation <<<jboss-saaj.jar>>> (SAAJ 1.2) will conflict with JAX-WS SAAJ (SAAJ 1.3). 
  One needs to remove <<<jboss-saaj.jar>>> from <<<$JBOSS_HOME/server/default/lib>>>.
 
- Download <<<JAXWS2.1FCS_20070202.jar>>> from https://jax-ws.dev.java.net/2.1/
+ Download <<<JAXWS2.1FCS_20070202.jar>>> from {{https://jax-ws.dev.java.net/2.1/}}.
  
  Run the installer via:
  
@@ -65,14 +65,14 @@ java -jar JAXWS2.1FCS_20070202.jar
  Since JBoss AS 4.2 comes with the Sun JSF 1.2 RI we also use the Sun implementation on JBoss AS 4.0.
  Replace <<<myfaces-api.jar>>> and <<<myfaces-impl.jar>>> within
  <<<$JBOSS_HOME/server/default/deploy/jbossweb-tomcat55.sar/jsf-libs/>>>
- with <<<jsf-api>>> and <<<jsf-impl>>> from https://maven-repository.dev.java.net/repository/javax.faces/jars/.
+ with <<<jsf-api>>> and <<<jsf-impl>>> from {{https://maven-repository.dev.java.net/repository/javax.faces/jars/}}.
 
 
 ** Expression Language (EL)
 
- Copy <<<el-api>>> from https://maven-repository.dev.java.net/repository/javax.el/jars/ to <<<$JBOSS_HOME/server/default/lib>>>.
+ Copy <<<el-api>>> from {{https://maven-repository.dev.java.net/repository/javax.el/jars/}} to <<<$JBOSS_HOME/server/default/lib>>>.
  
- Copy <<<el-impl>>> from https://maven-repository.dev.java.net/repository/el-impl/jars/ to <<<$JBOSS_HOME/server/default/lib>>>.
+ Copy <<<el-impl>>> from {{https://maven-repository.dev.java.net/repository/el-impl/jars/}} to <<<$JBOSS_HOME/server/default/lib>>>.
 
 
 ** LOG4J
