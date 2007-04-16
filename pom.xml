@@ -926,6 +926,16 @@
 				<artifactId>jcommon</artifactId>
 				<version>${jcommon.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>wicket</groupId>
+				<artifactId>wicket</artifactId>
+				<version>${wicket.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>wicket</groupId>
+				<artifactId>wicket-extensions</artifactId>
+				<version>${wicket.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1065,5 +1075,6 @@
 		</maven-enforcer-plugin.version>
 		<maven-deploy-plugin.version>2.3</maven-deploy-plugin.version>
 		<taglist-maven-plugin.version>2.0</taglist-maven-plugin.version>
+		<wicket.version>1.2.5</wicket.version>
 	</properties>
 </project>
