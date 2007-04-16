@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+<head></head>
+<body>
+<wicket:extend>
+<span wicket:id="navigation"></span>
+<div id="content">
+	<span wicket:id="feedback" /><br/>
+	<form wicket:id="editLawyerForm">
+		<table>
+		<tr><td>Id:</td><td><span wicket:id="safeonlineId">Id</span></td></tr>
+		<tr><td>Name:</td><td><span wicket:id="name">Id</span></td></tr>
+		<tr><td>Bar:</td><td><input wicket:id="bar" id="bar" type="text" size="40" /></td></tr>
+		<tr><td>Is Lawyer:</td><td><input type="checkbox" wicket:id="isLawyer"/></td></tr>
+		<tr><td>Is Admin:</td><td><input type="checkbox" wicket:id="isAdmin"/></td></tr>
+		<tr><td><input type="submit" value="Submit"/></td></tr>
+		</table>
+	</form>
+</div>
+</wicket:extend>
+</body>
+</html>
