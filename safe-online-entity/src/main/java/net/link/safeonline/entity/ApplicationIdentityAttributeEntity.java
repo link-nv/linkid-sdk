@@ -26,6 +26,8 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
 
 	private boolean required;
 
+	private boolean dataMining;
+
 	private ApplicationIdentityEntity applicationIdentity;
 
 	private AttributeTypeEntity attributeType;
@@ -42,7 +44,8 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
 
 	public ApplicationIdentityAttributeEntity(
 			ApplicationIdentityEntity applicationIdentity,
-			AttributeTypeEntity attributeType, boolean required) {
+			AttributeTypeEntity attributeType, boolean required,
+			boolean dataMining) {
 		String applicationName = applicationIdentity.getApplication().getName();
 		long identityVersion = applicationIdentity.getIdentityVersion();
 		String attributeTypeName = attributeType.getName();
@@ -50,6 +53,7 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
 				identityVersion, attributeTypeName);
 		this.attributeType = attributeType;
 		this.required = required;
+		this.dataMining = dataMining;
 	}
 
 	@EmbeddedId
@@ -129,5 +133,13 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.pk).toHashCode();
+	}
+
+	public boolean isDataMining() {
+		return dataMining;
+	}
+
+	public void setDataMining(boolean dataMining) {
+		this.dataMining = dataMining;
 	}
 }

@@ -71,6 +71,10 @@
 					<f:facet name="header">#{msgs.required}</f:facet>
 					<h:selectBooleanCheckbox value="#{item.required}" />
 				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.dataMining}</f:facet>
+					<h:selectBooleanCheckbox value="#{item.dataMining}" />
+				</h:column>
 			</h:dataTable>
 
 			<t:messages styleClass="error" globalOnly="true" />

@@ -151,7 +151,7 @@ public class IdentityServiceBeanTest extends TestCase {
 		applicationService.addApplication(applicationName,
 				"test-application-owner-name", null, null, Collections
 						.singletonList(new IdentityAttributeTypeDO(
-								"test-attribute-type", true)));
+								"test-attribute-type", true, false)));
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager, login,

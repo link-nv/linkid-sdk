@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -139,8 +140,16 @@ public class AttributeServiceBean implements AttributeService,
 					"application identity not found for version: "
 							+ confirmedIdentityVersion);
 		}
-		List<ApplicationIdentityAttributeEntity> attributes = confirmedApplicationIdentity
-				.getAttributes();
+		
+		/*
+		 * Filter the datamining attributes
+		 */
+		List<ApplicationIdentityAttributeEntity> attributes = new ArrayList<ApplicationIdentityAttributeEntity>();
+		for (ApplicationIdentityAttributeEntity attribute : confirmedApplicationIdentity.getAttributes()) {
+			if (!attribute.isDataMining()) {
+				attributes.add(attribute);
+			}
+		}
 		return attributes;
 	}
 

@@ -59,10 +59,10 @@ public class DemoStartableBean extends AbstractInitBean {
 				visaAttributeType, "nl", "VISA-nummer", null));
 		this.identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME,
 				new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-						BeIdConstants.NRN_ATTRIBUTE, true) }));
+						BeIdConstants.NRN_ATTRIBUTE, true, false) }));
 		this.identities.add(new Identity(DEMO_PAYMENT_APPLICATION_NAME,
 				new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-						visaAttributeType.getName(), true) }));
+						visaAttributeType.getName(), true, false) }));
 
 		PrivateKeyEntry demoPrivateKeyEntry = DemoKeyStoreUtils
 				.getPrivateKeyEntry();
@@ -128,22 +128,20 @@ public class DemoStartableBean extends AbstractInitBean {
 				DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, "Suspended",
 				"Geschorst");
 
-		this.identities
-				.add(new Identity(
-						DEMO_LAWYER_APPLICATION_NAME,
-						new IdentityAttributeTypeDO[] {
-								new IdentityAttributeTypeDO(
-										DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
-										false),
-								new IdentityAttributeTypeDO(
-										DemoConstants.LAWYER_ATTRIBUTE_NAME,
-										false),
-								new IdentityAttributeTypeDO(
-										DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME,
-										false),
-								new IdentityAttributeTypeDO(
-										DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
-										false) }));
+		this.identities.add(new Identity(DEMO_LAWYER_APPLICATION_NAME,
+				new IdentityAttributeTypeDO[] {
+						new IdentityAttributeTypeDO(
+								DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
+								false, false),
+						new IdentityAttributeTypeDO(
+								DemoConstants.LAWYER_ATTRIBUTE_NAME, false,
+								false),
+						new IdentityAttributeTypeDO(
+								DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, false,
+								false),
+						new IdentityAttributeTypeDO(
+								DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
+								false, false) }));
 
 		/*
 		 * Also make sure the baradmin is marked as such.

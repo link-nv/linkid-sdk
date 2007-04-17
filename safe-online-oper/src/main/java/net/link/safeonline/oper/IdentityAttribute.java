@@ -19,16 +19,28 @@ public class IdentityAttribute implements Serializable {
 
 	private boolean required;
 
+	private boolean dataMining;
+
+	public boolean isDataMining() {
+		return dataMining;
+	}
+
+	public void setDataMining(boolean dataMining) {
+		this.dataMining = dataMining;
+	}
+
 	public IdentityAttribute(String name) {
 		this.name = name;
 		this.included = false;
 		this.required = false;
 	}
 
-	public IdentityAttribute(String name, boolean included, boolean required) {
+	public IdentityAttribute(String name, boolean included, boolean required,
+			boolean dataMining) {
 		this.name = name;
 		this.included = included;
 		this.required = required;
+		this.dataMining = dataMining;
 	}
 
 	public boolean isIncluded() {

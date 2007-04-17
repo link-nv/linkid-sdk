@@ -73,7 +73,7 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 		// operate
 		IdentityAttributeTypeDO[] applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-				SafeOnlineConstants.NAME_ATTRIBUTE, false) };
+				SafeOnlineConstants.NAME_ATTRIBUTE, false, false) };
 		LOG.debug("---------- UPDATING APPLICATION IDENTITY ----------");
 		applicationService.updateApplicationIdentity(
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, Arrays
@@ -89,7 +89,7 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 		// operate
 		applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-				SafeOnlineConstants.NAME_ATTRIBUTE, true) };
+				SafeOnlineConstants.NAME_ATTRIBUTE, true, false) };
 		entityManager.getTransaction().commit();
 		entityManager.getTransaction().begin();
 		applicationService.updateApplicationIdentity(

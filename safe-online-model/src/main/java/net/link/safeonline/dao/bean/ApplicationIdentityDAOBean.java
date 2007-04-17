@@ -75,13 +75,14 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
 
 	public ApplicationIdentityAttributeEntity addApplicationIdentityAttribute(
 			ApplicationIdentityEntity applicationIdentity,
-			AttributeTypeEntity attributeType, boolean required) {
+			AttributeTypeEntity attributeType, boolean required,
+			boolean dataMining) {
 		LOG.debug("add application identity attribute: "
 				+ attributeType.getName() + " to application "
 				+ applicationIdentity.getApplication().getName()
 				+ "; id version: " + applicationIdentity.getIdentityVersion());
 		ApplicationIdentityAttributeEntity applicationIdentityAttribute = new ApplicationIdentityAttributeEntity(
-				applicationIdentity, attributeType, required);
+				applicationIdentity, attributeType, required, dataMining);
 		this.entityManager.persist(applicationIdentityAttribute);
 		/*
 		 * Update both sides of the relationship.

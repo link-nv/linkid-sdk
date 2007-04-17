@@ -99,7 +99,7 @@ public class AttributeServiceBeanTest extends TestCase {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true) }));
+										testAttributeName, true, false) }));
 
 		AttributeService attributeService = EJBTestUtils.newInstance(
 				AttributeServiceBean.class,
@@ -108,7 +108,8 @@ public class AttributeServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			attributeService.getConfirmedAttribute(testSubjectLogin, testAttributeName);
+			attributeService.getConfirmedAttribute(testSubjectLogin,
+					testAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
@@ -148,7 +149,7 @@ public class AttributeServiceBeanTest extends TestCase {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true) }));
+										testAttributeName, true, false) }));
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -163,7 +164,8 @@ public class AttributeServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			attributeService.getConfirmedAttribute(testSubjectLogin, testAttributeName);
+			attributeService.getConfirmedAttribute(testSubjectLogin,
+					testAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
@@ -204,7 +206,7 @@ public class AttributeServiceBeanTest extends TestCase {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true) }));
+										testAttributeName, true, false) }));
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -226,8 +228,8 @@ public class AttributeServiceBeanTest extends TestCase {
 				testApplicationName, "application");
 
 		// operate
-		String result = attributeService.getConfirmedAttribute(testSubjectLogin,
-				testAttributeName);
+		String result = attributeService.getConfirmedAttribute(
+				testSubjectLogin, testAttributeName);
 
 		// verify
 		assertEquals(testAttributeValue, result);
@@ -271,7 +273,7 @@ public class AttributeServiceBeanTest extends TestCase {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true) }));
+										testAttributeName, true, false) }));
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -301,4 +303,71 @@ public class AttributeServiceBeanTest extends TestCase {
 			// expected
 		}
 	}
+
+	public void testGetAttributeFailsIfDataMining() throws Exception {
+		// setup
+		String testSubjectLogin = UUID.randomUUID().toString();
+		String testAttributeName = UUID.randomUUID().toString();
+		String testApplicationName = UUID.randomUUID().toString();
+		String testAttributeValue = UUID.randomUUID().toString();
+
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(testSubjectLogin, null, null);
+
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-admin", "global-operator");
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				testAttributeName, "string", true, true);
+		attributeTypeService.add(attributeType);
+
+		ApplicationService applicationService = EJBTestUtils.newInstance(
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-operator", "operator");
+		applicationService
+				.addApplication(
+						testApplicationName,
+						"owner",
+						null,
+						null,
+						Arrays
+								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+										testAttributeName, true, true) }));
+
+		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
+				SubscriptionServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				testSubjectLogin, "user");
+		subscriptionService.subscribe(testApplicationName);
+
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				testSubjectLogin, "user");
+		identityService.confirmIdentity(testApplicationName);
+
+		identityService.saveAttribute(testAttributeName, testAttributeValue);
+
+		AttributeService attributeService = EJBTestUtils.newInstance(
+				AttributeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				testApplicationName, "application");
+
+		// operate & verify
+		try {
+			attributeService.getConfirmedAttribute(testSubjectLogin,
+					testAttributeName);
+			fail();
+		} catch (PermissionDeniedException e) {
+			// expected
+		}
+
+	}
+
 }

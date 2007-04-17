@@ -159,7 +159,7 @@ public class ApplicationServiceBean implements ApplicationService,
 					.getAttributeType(identityAttribute.getName());
 			this.applicationIdentityDAO.addApplicationIdentityAttribute(
 					applicationIdentity, attributeType, identityAttribute
-							.isRequired());
+							.isRequired(), identityAttribute.isDataMining());
 		}
 	}
 

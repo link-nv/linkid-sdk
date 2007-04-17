@@ -34,7 +34,8 @@ public interface ApplicationIdentityDAO {
 
 	ApplicationIdentityAttributeEntity addApplicationIdentityAttribute(
 			ApplicationIdentityEntity applicationIdentity,
-			AttributeTypeEntity attributeType, boolean required);
+			AttributeTypeEntity attributeType, boolean required,
+			boolean dataMining);
 
 	void removeApplicationIdentityAttribute(
 			ApplicationIdentityAttributeEntity applicationIdentityAttribute);

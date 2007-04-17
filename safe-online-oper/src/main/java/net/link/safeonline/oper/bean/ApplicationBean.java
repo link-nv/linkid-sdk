@@ -164,7 +164,7 @@ public class ApplicationBean implements Application {
 			LOG.debug("include attribute: " + viewIdentityAttribute.getName());
 			IdentityAttributeTypeDO identityAttribute = new IdentityAttributeTypeDO(
 					viewIdentityAttribute.getName(), viewIdentityAttribute
-							.isRequired());
+							.isRequired(), viewIdentityAttribute.isDataMining());
 			identityAttributes.add(identityAttribute);
 		}
 		try {
@@ -322,6 +322,7 @@ public class ApplicationBean implements Application {
 		for (AttributeTypeEntity attributeType : attributeTypes) {
 			boolean included = false;
 			boolean required = false;
+			boolean dataMining = false;
 			ApplicationIdentityAttributeEntity currentIdentityAttribute = currentIdentity
 					.get(attributeType.getName());
 			if (null != currentIdentityAttribute) {
@@ -329,9 +330,12 @@ public class ApplicationBean implements Application {
 				if (currentIdentityAttribute.isRequired()) {
 					required = true;
 				}
+				if (currentIdentityAttribute.isDataMining()) {
+					dataMining = true;
+				}
 			}
 			IdentityAttribute identityAttribute = new IdentityAttribute(
-					attributeType.getName(), included, required);
+					attributeType.getName(), included, required, dataMining);
 			this.identityAttributes.add(identityAttribute);
 		}
 	}
@@ -370,7 +374,9 @@ public class ApplicationBean implements Application {
 				continue;
 			}
 			IdentityAttributeTypeDO newIdentityAttribute = new IdentityAttributeTypeDO(
-					identityAttribute.getName(), identityAttribute.isRequired());
+					identityAttribute.getName(),
+					identityAttribute.isRequired(), identityAttribute
+							.isDataMining());
 			newIdentityAttributes.add(newIdentityAttribute);
 		}
 		try {

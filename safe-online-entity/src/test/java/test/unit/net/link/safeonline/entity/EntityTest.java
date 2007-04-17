@@ -621,9 +621,9 @@ public class EntityTest extends TestCase {
 		ApplicationIdentityEntity applicationIdentity = new ApplicationIdentityEntity(
 				application, identityVersion);
 		ApplicationIdentityAttributeEntity applicationIdentityAttribute1 = new ApplicationIdentityAttributeEntity(
-				applicationIdentity, attributeType1, true);
+				applicationIdentity, attributeType1, true, false);
 		ApplicationIdentityAttributeEntity applicationIdentityAttribute2 = new ApplicationIdentityAttributeEntity(
-				applicationIdentity, attributeType2, true);
+				applicationIdentity, attributeType2, true, false);
 
 		// operate: add entities
 		EntityManager entityManager = this.entityTestManager.getEntityManager();

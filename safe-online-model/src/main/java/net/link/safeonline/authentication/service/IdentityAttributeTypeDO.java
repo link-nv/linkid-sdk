@@ -24,15 +24,19 @@ public class IdentityAttributeTypeDO implements Serializable {
 
 	private boolean required;
 
+	private boolean dataMining;
+
 	/**
 	 * Main constructor.
 	 * 
 	 * @param name
 	 * @param required
 	 */
-	public IdentityAttributeTypeDO(String name, boolean required) {
+	public IdentityAttributeTypeDO(String name, boolean required,
+			boolean dataMining) {
 		this.name = name;
 		this.required = required;
+		this.dataMining = dataMining;
 	}
 
 	/**
@@ -42,7 +46,7 @@ public class IdentityAttributeTypeDO implements Serializable {
 	 * @param name
 	 */
 	public IdentityAttributeTypeDO(String name) {
-		this(name, true);
+		this(name, true, false);
 	}
 
 	/**
@@ -70,5 +74,18 @@ public class IdentityAttributeTypeDO implements Serializable {
 
 	public void setRequired(boolean editable) {
 		this.required = editable;
+	}
+
+	/**
+	 * Returns whether this attribute can only be accessed in an anonymous way
+	 * 
+	 * @return
+	 */
+	public boolean isDataMining() {
+		return dataMining;
+	}
+
+	public void setDataMining(boolean dataMining) {
+		this.dataMining = dataMining;
 	}
 }

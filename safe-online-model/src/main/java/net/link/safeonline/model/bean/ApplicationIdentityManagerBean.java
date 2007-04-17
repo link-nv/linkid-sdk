@@ -89,8 +89,10 @@ public class ApplicationIdentityManagerBean implements
 				AttributeTypeEntity attributeType = this.attributeTypeDAO
 						.getAttributeType(attribute.getName());
 				boolean required = attribute.isRequired();
+				boolean dataMining = attribute.isDataMining();
 				this.applicationIdentityDAO.addApplicationIdentityAttribute(
-						applicationIdentity, attributeType, required);
+						applicationIdentity, attributeType, required,
+						dataMining);
 			}
 			LOG.debug("setting new identity version on application: "
 					+ newIdentityVersion);
