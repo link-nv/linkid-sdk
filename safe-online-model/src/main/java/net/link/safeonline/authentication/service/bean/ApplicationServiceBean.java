@@ -37,6 +37,7 @@ import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
+import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
@@ -93,6 +94,9 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	@EJB
 	private ApplicationIdentityDAO applicationIdentityDAO;
+
+	@EJB
+	private AttributeProviderDAO attributeProviderDAO;
 
 	@EJB
 	private ApplicationIdentityManager applicationIdentityService;
@@ -201,6 +205,8 @@ public class ApplicationServiceBean implements ApplicationService,
 			this.applicationIdentityDAO
 					.removeApplicationIdentity(applicationIdentity);
 		}
+
+		this.attributeProviderDAO.removeAttributeProviders(application);
 
 		this.applicationDAO.removeApplication(application);
 	}

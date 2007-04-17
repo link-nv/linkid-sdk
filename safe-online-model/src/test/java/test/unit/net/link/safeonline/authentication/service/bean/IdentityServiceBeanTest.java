@@ -13,17 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.management.Attribute;
-import javax.management.AttributeList;
-import javax.management.AttributeNotFoundException;
-import javax.management.DynamicMBean;
-import javax.management.InvalidAttributeValueException;
-import javax.management.MBeanException;
-import javax.management.MBeanInfo;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
 import javax.persistence.EntityManager;
 
 import junit.framework.TestCase;
@@ -45,10 +34,7 @@ import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.bean.AttributeTypeServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import net.link.safeonline.test.util.JmxTestUtils;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class IdentityServiceBeanTest extends TestCase {
@@ -68,49 +54,7 @@ public class IdentityServiceBeanTest extends TestCase {
 				SafeOnlineTestContainer.sessionBeans, entityManager);
 		systemStartable.postStart();
 
-		MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
-		ObjectName jaasManagerName = new ObjectName(
-				"jboss.security:service=JaasSecurityManager");
-		Object jaasManager = new TestDynamicMBean();
-		mbeanServer.registerMBean(jaasManager, jaasManagerName);
-	}
-
-	public static class TestDynamicMBean implements DynamicMBean {
-
-		private static final Log LOG = LogFactory
-				.getLog(TestDynamicMBean.class);
-
-		public Object getAttribute(String attribute)
-				throws AttributeNotFoundException, MBeanException,
-				ReflectionException {
-			return null;
-		}
-
-		public AttributeList getAttributes(String[] attributes) {
-			return null;
-		}
-
-		public MBeanInfo getMBeanInfo() {
-			return new MBeanInfo(this.getClass().getName(), "test", null, null,
-					null, null);
-		}
-
-		public Object invoke(String actionName, Object[] params,
-				String[] signature) throws MBeanException, ReflectionException {
-			LOG.debug("invoked");
-			return null;
-		}
-
-		public void setAttribute(Attribute attribute)
-				throws AttributeNotFoundException,
-				InvalidAttributeValueException, MBeanException,
-				ReflectionException {
-		}
-
-		public AttributeList setAttributes(AttributeList attributes) {
-			return null;
-		}
-
+		JmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 	}
 
 	@Override

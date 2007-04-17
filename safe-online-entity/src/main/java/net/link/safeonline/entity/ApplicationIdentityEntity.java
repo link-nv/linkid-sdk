@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -89,7 +90,7 @@ public class ApplicationIdentityEntity implements Serializable {
 		this.application = application;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationIdentity")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationIdentity", cascade = CascadeType.REMOVE)
 	public List<ApplicationIdentityAttributeEntity> getAttributes() {
 		return this.attributes;
 	}

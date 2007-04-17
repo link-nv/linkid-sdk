@@ -30,6 +30,12 @@ public interface ApplicationIdentityDAO {
 	List<ApplicationIdentityEntity> listApplicationIdentities(
 			ApplicationEntity application);
 
+	/**
+	 * Removes an application identity. This will also remove the application
+	 * identity attributes of this application identity.
+	 * 
+	 * @param applicationIdentity
+	 */
 	void removeApplicationIdentity(ApplicationIdentityEntity applicationIdentity);
 
 	ApplicationIdentityAttributeEntity addApplicationIdentityAttribute(

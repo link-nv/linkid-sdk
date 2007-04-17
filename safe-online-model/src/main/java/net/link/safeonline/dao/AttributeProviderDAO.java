@@ -28,4 +28,11 @@ public interface AttributeProviderDAO {
 
 	void addAttributeProvider(ApplicationEntity application,
 			AttributeTypeEntity attributeType);
+
+	/**
+	 * Remove all attribute providers for the given application.
+	 * 
+	 * @param application
+	 */
+	void removeAttributeProviders(ApplicationEntity application);
 }

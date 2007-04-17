@@ -29,6 +29,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.ConfigGroupEntity;
@@ -80,5 +81,6 @@ public class SafeOnlineTestContainer {
 			ApplicationIdentityEntity.class, ConfigGroupEntity.class,
 			ConfigItemEntity.class, TaskEntity.class, SchedulingEntity.class,
 			TaskHistoryEntity.class, ApplicationIdentityAttributeEntity.class,
-			TrustPointEntity.class, AttributeTypeDescriptionEntity.class };
+			TrustPointEntity.class, AttributeTypeDescriptionEntity.class,
+			AttributeProviderEntity.class };
 }

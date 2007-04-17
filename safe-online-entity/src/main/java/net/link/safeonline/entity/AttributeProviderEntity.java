@@ -27,6 +27,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import static net.link.safeonline.entity.AttributeProviderEntity.QUERY_WHERE_ATTRIBUTE_TYPE;
+import static net.link.safeonline.entity.AttributeProviderEntity.DELETE_WHERE_APPLICATION;
 
 /**
  * Definition of the attribute provider entity. This entity manages the write
@@ -37,13 +38,18 @@ import static net.link.safeonline.entity.AttributeProviderEntity.QUERY_WHERE_ATT
  */
 @Entity
 @Table(name = "attribute_provider")
-@NamedQueries( { @NamedQuery(name = QUERY_WHERE_ATTRIBUTE_TYPE, query = "SELECT attributeProvider FROM AttributeProviderEntity AS attributeProvider "
-		+ "WHERE attributeProvider.attributeType = :attributeType") })
+@NamedQueries( {
+		@NamedQuery(name = QUERY_WHERE_ATTRIBUTE_TYPE, query = "SELECT attributeProvider FROM AttributeProviderEntity AS attributeProvider "
+				+ "WHERE attributeProvider.attributeType = :attributeType"),
+		@NamedQuery(name = DELETE_WHERE_APPLICATION, query = "DELETE FROM AttributeProviderEntity AS attributeProvider "
+				+ "WHERE attributeProvider.application = :application") })
 public class AttributeProviderEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_WHERE_ATTRIBUTE_TYPE = "ape.at";
+
+	public static final String DELETE_WHERE_APPLICATION = "ape.del.app";
 
 	private AttributeProviderPK pk;
 
@@ -133,6 +139,13 @@ public class AttributeProviderEntity implements Serializable {
 		Query query = entityManager
 				.createNamedQuery(QUERY_WHERE_ATTRIBUTE_TYPE);
 		query.setParameter("attributeType", attributeType);
+		return query;
+	}
+
+	public static Query createDeleteWhereApplication(
+			EntityManager entityManager, ApplicationEntity application) {
+		Query query = entityManager.createNamedQuery(DELETE_WHERE_APPLICATION);
+		query.setParameter("application", application);
 		return query;
 	}
 }
