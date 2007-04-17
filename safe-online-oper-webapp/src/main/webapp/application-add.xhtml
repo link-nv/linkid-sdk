@@ -17,7 +17,7 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h2>#{msgs.addApplication}</h2>
+		<h1>#{msgs.addApplication}</h1>
 
 		<h:form enctype="multipart/form-data">
 			<f:facet name="aroundInvalidField">
@@ -60,7 +60,7 @@
 				</h:panelGroup>
 			</h:panelGrid>
 
-			#{msgs.applicationIdentity}:
+			<h2>#{msgs.applicationIdentity}</h2>
 			<h:dataTable value="#{newIdentityAttributes}" var="item">
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>

@@ -20,65 +20,84 @@
 
 		<h1>#{msgs.attribute} #{selectedAttributeType.name}</h1>
 
-		<table>
-			<tr>
-				<th>#{msgs.name}:</th>
-				<td><h:outputText value="#{selectedAttributeType.name}" /></td>
-			</tr>
-			<tr>
-				<th>#{msgs.type}:</th>
-				<td><h:outputText value="#{selectedAttributeType.type}" /></td>
-			</tr>
-			<tr>
-				<th>#{msgs.userVisible}:</th>
-				<td><h:outputText value="#{selectedAttributeType.userVisible}" /></td>
-			</tr>
-			<tr>
-				<th>#{msgs.userEditable}:</th>
-				<td><h:outputText value="#{selectedAttributeType.userEditable}" /></td>
-			</tr>
-		</table>
+		<t:saveState value="#{attributeViewTabControl}" />
+
+		<f:subview>
+			<t:panelTabbedPane id="tabs">
+				<t:panelTab id="generic-tab" label="#{msgs.generic}"
+					rendered="#{attributeViewTabControl.genericVisible}">
+					<table>
+						<tr>
+							<th>#{msgs.name}:</th>
+							<td><h:outputText value="#{selectedAttributeType.name}" /></td>
+						</tr>
+						<tr>
+							<th>#{msgs.type}:</th>
+							<td><h:outputText value="#{selectedAttributeType.type}" /></td>
+						</tr>
+						<tr>
+							<th>#{msgs.userVisible}:</th>
+							<td><h:outputText
+								value="#{selectedAttributeType.userVisible}" /></td>
+						</tr>
+						<tr>
+							<th>#{msgs.userEditable}:</th>
+							<td><h:outputText
+								value="#{selectedAttributeType.userEditable}" /></td>
+						</tr>
+					</table>
+				</t:panelTab>
+
+				<t:panelTab id="description-tab" label="#{msgs.description}"
+					rendered="#{attributeViewTabControl.descriptionVisible}">
+					<h:form>
+						<h:dataTable id="desc-data" var="item"
+							value="#{attributeTypeDescriptions}" styleClass="listingTable"
+							rowClasses="listingTable_Row1,listingTable_Row2">
+							<h:column>
+								<f:facet name="header">#{msgs.language}</f:facet>
+								<h:commandLink value="#{item.language}"
+									action="#{attributeDesc.edit}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">#{msgs.name}</f:facet>
+								<h:outputText value="#{item.name}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">#{msgs.description}</f:facet>
+								<h:outputText value="#{item.description}" />
+							</h:column>
+						</h:dataTable>
+						<h:commandButton action="add" id="add" value="#{msgs.addaction}" />
+					</h:form>
+				</t:panelTab>
+
+				<t:panelTab id="providers-tab" label="#{msgs.attributeProviders}"
+					rendered="#{attributeViewTabControl.providersVisible}">
+					<h:form>
+						<h:dataTable id="atttrib-prov" var="item"
+							value="#{attributeProviders}" styleClass="listingTable"
+							rowClasses="listingTable_Row1,listingTable_Row2">
+							<h:column>
+								<f:facet name="header">#{msgs.application}</f:facet>
+								<h:outputText value="#{item.applicationName}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">#{msgs.action}</f:facet>
+								<h:commandLink value="#{msgs.removeaction}"
+									action="#{attributeProvider.removeProvider}" />
+							</h:column>
+						</h:dataTable>
+						<h:commandButton action="add-provider" id="add-provider"
+							value="#{msgs.addaction}" />
+
+						<h:messages styleClass="error" globalOnly="true" />
+					</h:form>
+				</t:panelTab>
+			</t:panelTabbedPane>
+		</f:subview>
 
 		<h:form>
-			<h2>#{msgs.description}</h2>
-			<h:dataTable id="desc-data" var="item"
-				value="#{attributeTypeDescriptions}" styleClass="listingTable"
-				rowClasses="listingTable_Row1,listingTable_Row2">
-				<h:column>
-					<f:facet name="header">#{msgs.language}</f:facet>
-					<h:commandLink value="#{item.language}"
-						action="#{attributeDesc.edit}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.name}</f:facet>
-					<h:outputText value="#{item.name}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.description}</f:facet>
-					<h:outputText value="#{item.description}" />
-				</h:column>
-			</h:dataTable>
-			<h:commandButton action="add" id="add" value="#{msgs.addaction}" />
-
-			<h2>#{msgs.attributeProviders}</h2>
-			<h:dataTable id="atttrib-prov" var="item"
-				value="#{attributeProviders}" styleClass="listingTable"
-				rowClasses="listingTable_Row1,listingTable_Row2">
-				<h:column>
-					<f:facet name="header">#{msgs.application}</f:facet>
-					<h:outputText value="#{item.applicationName}" />
-				</h:column>
-				<h:column>
-					<h:commandLink value="#{msgs.removeaction}"
-						action="#{attributeProvider.removeProvider}" />
-				</h:column>
-			</h:dataTable>
-			<h:commandButton action="add-provider" id="add-provider"
-				value="#{msgs.addaction}" />
-
-			<h:messages styleClass="error" globalOnly="true" />
-
-			<so:nbsp />
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
 				immediate="true" />
 		</h:form>

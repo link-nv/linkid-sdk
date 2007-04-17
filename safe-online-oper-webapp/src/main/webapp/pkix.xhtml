@@ -20,14 +20,14 @@
 		<h:form>
 			<t:dataTable id="pkix-data" var="item" value="#{trustDomainList}"
 				rows="10" preserveDataModel="false" styleClass="listingTable"
-				rowClasses="listingTable_Row1,listingTable_Row2"
-				columnClasses="listingTable_ColumnTop,listingTable_Column">
+				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
 					<h:commandLink value="#{item.name}" action="#{trustDomain.view}" />
 				</h:column>
 				<h:column>
+					<f:facet name="header">#{msgs.action}</f:facet>
 					<h:commandLink value="#{msgs.removeaction}"
 						action="#{trustDomain.removeTrustDomain}" />
 				</h:column>

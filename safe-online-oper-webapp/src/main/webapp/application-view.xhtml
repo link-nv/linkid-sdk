@@ -17,52 +17,60 @@
 
 		<h1>#{selectedApplication.name}</h1>
 
-		<p><h:outputText value="#{selectedApplication.description}"
-			escape="true" /></p>
-		<!-- XSS vulnerability possible: do not set escape="false" -->
+		<t:panelTabbedPane>
 
-		<table>
-			<tr>
-				<th>#{msgs.applicationOwner}:</th>
-				<td>#{selectedApplication.applicationOwner.name}</td>
-			</tr>
-			<tr>
-				<th>Application Owner Admin:</th>
-				<td>#{selectedApplication.applicationOwner.admin.login}</td>
-			</tr>
-			<tr>
-				<th>User allowed to subscribe:</th>
-				<td>#{selectedApplication.allowUserSubscription}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.removable}:</th>
-				<td>#{selectedApplication.removable}</td>
-			</tr>
-			<tr>
-				<th>Number of subscriptions:</th>
-				<td>#{numberOfSubscriptions}</td>
-			</tr>
-		</table>
+			<t:panelTab label="#{msgs.generic}">
+				<table>
+					<tr>
+						<th>#{msgs.applicationOwner}:</th>
+						<td>#{selectedApplication.applicationOwner.name}</td>
+					</tr>
+					<tr>
+						<th>Application Owner Admin:</th>
+						<td>#{selectedApplication.applicationOwner.admin.login}</td>
+					</tr>
+					<tr>
+						<th>User allowed to subscribe:</th>
+						<td>#{selectedApplication.allowUserSubscription}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.removable}:</th>
+						<td>#{selectedApplication.removable}</td>
+					</tr>
+					<tr>
+						<th>Number of subscriptions:</th>
+						<td>#{numberOfSubscriptions}</td>
+					</tr>
+				</table>
+			</t:panelTab>
 
-		<h2>#{msgs.certificate}:</h2>
-		<pre>
-		<h:outputText value="#{selectedApplication.certificate}" />
-		</pre>
+			<t:panelTab label="#{msgs.description}">
+				<p><h:outputText value="#{selectedApplication.description}"
+					escape="true" /></p>
+				<!-- XSS vulnerability possible: do not set escape="false" -->
+			</t:panelTab>
 
-		<h:dataTable value="#{applicationIdentityAttributes}" var="item">
-			<h:column>
-				<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
-				<h:outputText value="#{item.attributeTypeName}" />
-			</h:column>
-			<h:column>
-				<f:facet name="header">#{msgs.required}</f:facet>
-				<h:outputText value="#{item.required}" />
-			</h:column>
-			<h:column>
-				<f:facet name="header">#{msgs.dataMining}</f:facet>
-				<h:outputText value="#{item.dataMining}" />
-			</h:column>
-		</h:dataTable>
+			<t:panelTab label="#{msgs.certificate}">
+				<pre><h:outputText value="#{selectedApplication.certificate}" /></pre>
+			</t:panelTab>
+
+			<t:panelTab label="#{msgs.applicationIdentity}">
+				<h:dataTable value="#{applicationIdentityAttributes}" var="item">
+					<h:column>
+						<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
+						<h:outputText value="#{item.attributeTypeName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{msgs.required}</f:facet>
+						<h:outputText value="#{item.required}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{msgs.dataMining}</f:facet>
+						<h:outputText value="#{item.dataMining}" />
+					</h:column>
+				</h:dataTable>
+			</t:panelTab>
+		</t:panelTabbedPane>
 
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" id="back" action="back" />

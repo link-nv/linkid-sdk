@@ -19,6 +19,14 @@
 		</phase-listener>
 	</lifecycle>
 
+	<managed-bean>
+		<managed-bean-name>attributeViewTabControl</managed-bean-name>
+		<managed-bean-class>
+			net.link.safeonline.oper.bean.AttributeViewTabControlBean
+		</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>register</from-outcome>

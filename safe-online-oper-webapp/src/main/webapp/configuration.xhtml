@@ -4,6 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
@@ -17,6 +18,10 @@
 	<ui:define name="content">
 
 		<h1>#{msgs.configuration}</h1>
+
+		<f:facet name="aroundInvalidField">
+			<s:span styleClass="error" />
+		</f:facet>
 
 		<h:form>
 			<t:dataTable id="group-data" var="group" value="#{configGroupList}"
@@ -34,13 +39,18 @@
 						</h:column>
 						<h:column>
 							<f:facet name="header">#{msgs.value}</f:facet>
-							<h:inputText value="#{item.value}" required="true" />
+							<h:panelGroup>
+								<s:decorate>
+									<h:inputText value="#{item.value}" required="true" id="value" />
+									<h:message for="value" styleClass="error" />
+								</s:decorate>
+							</h:panelGroup>
 						</h:column>
 					</t:dataTable>
 				</h:column>
 			</t:dataTable>
 
-			<h:messages styleClass="error" />
+			<h:messages styleClass="error" globalOnly="true" />
 
 			<h:commandButton value="#{msgs.saveaction}" id="save"
 				action="#{configuration.save}" />
