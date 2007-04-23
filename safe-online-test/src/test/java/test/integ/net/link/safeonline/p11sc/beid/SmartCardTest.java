@@ -23,6 +23,7 @@ import java.security.Security;
 import java.security.Signature;
 import java.security.KeyStore.ProtectionParameter;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
+import net.link.safeonline.p11sc.SmartCardPinCallback;
 import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 
 import org.apache.commons.io.FileUtils;
@@ -49,6 +51,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import sun.security.pkcs11.SunPKCS11;
+import sun.security.pkcs11.wrapper.CK_INFO;
 import sun.security.pkcs11.wrapper.CK_SLOT_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
 import sun.security.pkcs11.wrapper.PKCS11Exception;
@@ -180,11 +183,16 @@ public class SmartCardTest extends TestCase {
 				.getAbsolutePath(), null, false);
 		assertNotNull(pkcs11);
 		try {
+			CK_INFO info = pkcs11.C_GetInfo();
+			String manufacturerId = new String(info.manufacturerID).trim();
+			LOG.debug("manufacturer ID: " + manufacturerId);
+			LOG.debug("manufacturer ID size: " + manufacturerId.length());
 			long[] slotIds = pkcs11.C_GetSlotList(true);
 			for (long slotId : slotIds) {
 				CK_SLOT_INFO slotInfo = pkcs11.C_GetSlotInfo(slotId);
 				LOG.debug("slot description: "
 						+ new String(slotInfo.slotDescription));
+
 			}
 		} finally {
 			pkcs11.C_Finalize(null);
@@ -219,6 +227,12 @@ public class SmartCardTest extends TestCase {
 
 		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
 		smartCard.init(configFactory.getSmartCardConfigs());
+		smartCard.setSmartCardPinCallback(new SmartCardPinCallback() {
+
+			public char[] getPin() {
+				return SmartCardTest.getPin();
+			}
+		});
 
 		LOG.debug("Connecting to smart card...");
 
@@ -326,7 +340,8 @@ public class SmartCardTest extends TestCase {
 				tmpConfigFile), true);
 		String name = "TestSmartCard";
 		configWriter.println("name=" + name);
-		// configWriter.println("library=/usr/lib/opensc-pkcs11.so.tmp");
+		configWriter.println("library=/usr/lib/opensc-pkcs11.so");
+		// configWriter.println("library=/usr/local/lib/libbeidpkcs11.so");
 		configWriter.println("slotListIndex=0");
 		configWriter.println("showInfo=true");
 		configWriter.close();
@@ -366,7 +381,7 @@ public class SmartCardTest extends TestCase {
 		JOptionPane.showMessageDialog(null,
 				"Please remove and reinsert your BeID smart card.");
 
-		resetPKCS11Driver();
+		// resetPKCS11Driver();
 
 		provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
 		if (-1 == Security.addProvider(provider)) {
@@ -391,14 +406,41 @@ public class SmartCardTest extends TestCase {
 		plain = "Hello World";
 		plainData = plain.getBytes();
 		signature.update(plainData);
-		signature.sign();
+		try {
+			signature.sign();
+		} catch (ProviderException e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof PKCS11Exception) {
+				Security.removeProvider(providerName);
+				resetPKCS11Driver();
+				provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
+				if (-1 == Security.addProvider(provider)) {
+					throw new RuntimeException(
+							"could not add the security provider");
+				}
+				builder = KeyStore.Builder.newInstance("PKCS11", provider,
+						protectionParameter);
+
+				keyStore = builder.getKeyStore();
+				keyStore.load(null, null);
+
+				signature = Signature.getInstance("SHA1withRSA");
+				privateKey = (PrivateKey) keyStore.getKey("Authentication",
+						null);
+				LOG.debug("private key: " + privateKey);
+				signature.initSign(privateKey);
+				plainData = plain.getBytes();
+				signature.update(plainData);
+				signature.sign();
+			}
+		}
 
 		Security.removeProvider(providerName);
 	}
 
 	private void resetPKCS11Driver() throws NoSuchFieldException,
 			IllegalAccessException, NoSuchMethodException,
-			InvocationTargetException {
+			InvocationTargetException, PKCS11Exception {
 		Field moduleMapField = PKCS11.class.getDeclaredField("moduleMap");
 		moduleMapField.setAccessible(true);
 		Map<String, Object> moduleMap = (Map) moduleMapField.get(null);
@@ -406,10 +448,15 @@ public class SmartCardTest extends TestCase {
 		for (Map.Entry<String, Object> entry : moduleMap.entrySet()) {
 			LOG.debug("finalizing " + entry.getKey());
 			PKCS11 pkcs11 = (PKCS11) entry.getValue();
-			Method disconnectMethod = PKCS11.class.getDeclaredMethod(
-					"disconnect", new Class[] {});
-			disconnectMethod.setAccessible(true);
-			disconnectMethod.invoke(pkcs11, new Object[] {});
+			CK_INFO info = pkcs11.C_GetInfo();
+			if ("Zetes".equals(new String(info.manufacturerID).trim())) {
+				Method disconnectMethod = PKCS11.class.getDeclaredMethod(
+						"disconnect", new Class[] {});
+				disconnectMethod.setAccessible(true);
+				disconnectMethod.invoke(pkcs11, new Object[] {});
+			} else {
+				pkcs11.C_Finalize(null);
+			}
 			LOG.debug("done");
 		}
 		moduleMap.clear();
