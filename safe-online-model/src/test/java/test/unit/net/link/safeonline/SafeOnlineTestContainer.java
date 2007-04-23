@@ -44,6 +44,7 @@ import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
 import net.link.safeonline.model.bean.ApplicationManagerBean;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
+import net.link.safeonline.model.bean.ApplicationsBean;
 import net.link.safeonline.model.bean.AttributeTypeDescriptionDecoratorBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
 
@@ -72,7 +73,7 @@ public class SafeOnlineTestContainer {
 			ApplicationManagerBean.class, TrustPointDAOBean.class,
 			CachedOcspResponseDAOBean.class,
 			AttributeTypeDescriptionDecoratorBean.class,
-			AttributeProviderDAOBean.class };
+			AttributeProviderDAOBean.class, ApplicationsBean.class };
 
 	public static final Class[] entities = new Class[] { SubjectEntity.class,
 			ApplicationEntity.class, ApplicationOwnerEntity.class,
