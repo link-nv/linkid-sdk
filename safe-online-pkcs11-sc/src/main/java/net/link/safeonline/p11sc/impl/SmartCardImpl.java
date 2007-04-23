@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.KeyStore;
@@ -29,6 +31,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -312,6 +315,9 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		if (null != provider) {
 			throw new RuntimeException("Smart Card provider already active");
 		}
+
+		resetPKCS11Driver();
+
 		try {
 			this.pkcs11Provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
 		} catch (ProviderException e) {
@@ -327,6 +333,48 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 							+ stackTraceElement.getLineNumber() + ")");
 				}
 			}
+		}
+	}
+
+	/**
+	 * Resets the PKCS11 drivers used by the SunPKCS11 security provider. This
+	 * fixes the issue we have when the smart card gets removed and reinserted.
+	 */
+	@SuppressWarnings("unchecked")
+	private void resetPKCS11Driver() {
+		try {
+			Field moduleMapField = PKCS11.class.getDeclaredField("moduleMap");
+			moduleMapField.setAccessible(true);
+			Map<String, Object> moduleMap = (Map) moduleMapField.get(null);
+			LOG.debug("moduleMap size: " + moduleMap.size());
+			for (Map.Entry<String, Object> entry : moduleMap.entrySet()) {
+				LOG.debug("finalizing " + entry.getKey());
+				PKCS11 pkcs11 = (PKCS11) entry.getValue();
+				Method disconnectMethod = PKCS11.class.getDeclaredMethod(
+						"disconnect", new Class[] {});
+				disconnectMethod.setAccessible(true);
+				disconnectMethod.invoke(pkcs11, new Object[] {});
+				LOG.debug("done");
+			}
+			moduleMap.clear();
+		} catch (SecurityException e) {
+			LOG.error("security error: " + e.getMessage());
+			throw new RuntimeException("security error");
+		} catch (NoSuchFieldException e) {
+			LOG.error("no such field error: " + e.getMessage());
+			throw new RuntimeException("no such field error");
+		} catch (IllegalArgumentException e) {
+			LOG.error("illegal argument error: " + e.getMessage());
+			throw new RuntimeException("illegal argument error");
+		} catch (IllegalAccessException e) {
+			LOG.error("illegal access error: " + e.getMessage());
+			throw new RuntimeException("illegal access error");
+		} catch (NoSuchMethodException e) {
+			LOG.error("nu such method error: " + e.getMessage());
+			throw new RuntimeException("no such error");
+		} catch (InvocationTargetException e) {
+			LOG.error("invocation target error: " + e.getMessage());
+			throw new RuntimeException("invocation target error");
 		}
 	}
 

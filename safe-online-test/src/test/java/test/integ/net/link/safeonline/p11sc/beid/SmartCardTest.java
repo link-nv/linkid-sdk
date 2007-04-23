@@ -11,15 +11,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.Security;
+import java.security.Signature;
 import java.security.KeyStore.ProtectionParameter;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -207,6 +212,46 @@ public class SmartCardTest extends TestCase {
 		assertNotNull(identityStatement);
 	}
 
+	public void testCardRemoval() throws Exception {
+		SmartCard smartCard = SmartCardFactory.newInstance();
+
+		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
+		smartCard.init(configFactory.getSmartCardConfigs());
+
+		LOG.debug("Connecting to smart card...");
+
+		JOptionPane.showMessageDialog(null,
+				"Please insert your BeID smart card.");
+
+		smartCard.open("beid");
+
+		String givenName = smartCard.getGivenName();
+		String surname = smartCard.getSurname();
+		LOG.debug("given name: " + givenName);
+		LOG.debug("surname: " + surname);
+
+		LOG.debug("Creating identity statement...");
+		byte[] identityStatement = IdentityStatementFactory
+				.createIdentityStatement("beid", smartCard);
+
+		LOG.debug("Disconnecting from smart card...");
+		smartCard.close();
+		assertNotNull(identityStatement);
+
+		/*
+		 * Try to create an identity statement after removing/reinserting the
+		 * smart card.
+		 */
+		JOptionPane.showMessageDialog(null,
+				"Please remove and reinsert your BeID smart card.");
+		smartCard.open("beid");
+		PrivateKey privateKey = smartCard.getAuthenticationPrivateKey();
+		LOG.debug("private key type: " + privateKey.getClass().getName());
+		identityStatement = IdentityStatementFactory.createIdentityStatement(
+				"beid", smartCard);
+		smartCard.close();
+	}
+
 	public void testSmartCardConfigForWindowsXP() throws Exception {
 		SmartCardConfigFactory smartCardConfigFactory = new SmartCardConfigFactoryImpl();
 		List<SmartCardConfig> smartCardConfigs = smartCardConfigFactory
@@ -267,13 +312,16 @@ public class SmartCardTest extends TestCase {
 				tmpConfigFile), true);
 		String name = "TestSmartCard";
 		configWriter.println("name=" + name);
-		configWriter.println("library=/usr/lib/opensc-pkcs11.so");
+		configWriter.println("library=/usr/local/lib/libbeidpkcs11.so");
 		configWriter.println("slotListIndex=0");
+		configWriter.println("showInfo=true");
 		configWriter.close();
-		Provider provider = Security.getProvider("SunPKCS11-" + name);
+		SunPKCS11 provider = (SunPKCS11) Security.getProvider("SunPKCS11-"
+				+ name);
 		if (null != provider) {
 			throw new RuntimeException("Smart Card provider already active");
 		}
+		resetPKCS11Driver();
 		provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
 		if (-1 == Security.addProvider(provider)) {
 			throw new RuntimeException("could not add the security provider");
@@ -289,7 +337,66 @@ public class SmartCardTest extends TestCase {
 		KeyStore keyStore = builder.getKeyStore();
 		keyStore.load(null, null);
 
+		Signature signature = Signature.getInstance("SHA1withRSA");
+		PrivateKey privateKey = (PrivateKey) keyStore.getKey("Authentication",
+				null);
+		LOG.debug("private key: " + privateKey);
+		signature.initSign(privateKey);
+		String plain = "Hello World";
+		byte[] plainData = plain.getBytes();
+		signature.update(plainData);
+		signature.sign();
+
 		Security.removeProvider(providerName);
+
+		JOptionPane.showMessageDialog(null,
+				"Please remove and reinsert your BeID smart card.");
+
+		resetPKCS11Driver();
+
+		provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
+		if (-1 == Security.addProvider(provider)) {
+			throw new RuntimeException("could not add the security provider");
+		}
+
+		// provider.login(null, callbackHandler);
+
+		callbackHandler = new TestCallbackHandler();
+		protectionParameter = new KeyStore.CallbackHandlerProtection(
+				callbackHandler);
+		builder = KeyStore.Builder.newInstance("PKCS11", provider,
+				protectionParameter);
+
+		keyStore = builder.getKeyStore();
+		keyStore.load(null, null);
+
+		signature = Signature.getInstance("SHA1withRSA");
+		privateKey = (PrivateKey) keyStore.getKey("Authentication", null);
+		LOG.debug("private key: " + privateKey);
+		signature.initSign(privateKey);
+		plain = "Hello World";
+		plainData = plain.getBytes();
+		signature.update(plainData);
+		signature.sign();
+
+		Security.removeProvider(providerName);
+	}
+
+	private void resetPKCS11Driver() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+		Field moduleMapField = PKCS11.class.getDeclaredField("moduleMap");
+		moduleMapField.setAccessible(true);
+		Map<String, Object> moduleMap = (Map) moduleMapField.get(null);
+		LOG.debug("moduleMap size: " + moduleMap.size());
+		for (Map.Entry<String, Object> entry : moduleMap.entrySet()) {
+			LOG.debug("finalizing " + entry.getKey());
+			PKCS11 pkcs11 = (PKCS11) entry.getValue();
+			Method disconnectMethod = PKCS11.class.getDeclaredMethod(
+					"disconnect", new Class[] {});
+			disconnectMethod.setAccessible(true);
+			disconnectMethod.invoke(pkcs11, new Object[] {});
+			LOG.debug("done");
+		}
+		moduleMap.clear();
 	}
 
 	private static class TestCallbackHandler implements CallbackHandler {
