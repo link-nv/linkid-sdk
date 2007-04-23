@@ -91,4 +91,12 @@ public interface SmartCard {
 	String getPostalCode();
 
 	String getCity();
+
+	/**
+	 * Resets the PKCS11 drivers cached by the SunPKCS11 security provider.
+	 * 
+	 * This fixes the issue we have when the smart card gets removed and
+	 * reinserted.
+	 */
+	void resetPKCS11Driver();
 }

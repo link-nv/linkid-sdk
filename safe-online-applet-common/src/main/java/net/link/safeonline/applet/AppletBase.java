@@ -51,6 +51,8 @@ import net.link.safeonline.shared.SharedConstants;
 
 import org.apache.commons.logging.Log;
 
+import sun.security.pkcs11.wrapper.PKCS11Exception;
+
 /**
  * The base class for both the identity and the authentication applet.
  * 
@@ -247,10 +249,27 @@ public abstract class AppletBase extends JApplet implements Runnable,
 		try {
 			statement = createStatement(smartCard);
 		} catch (ProviderException e) {
-			outputInfoMessage(InfoLevel.ERROR, "Could not sign the statement.");
-			outputDetailMessage("error signing the statement: "
-					+ e.getMessage());
-			return;
+			Throwable cause = e.getCause();
+			if (cause instanceof PKCS11Exception) {
+				smartCard.close();
+				smartCard.resetPKCS11Driver();
+				try {
+					smartCard.open(smartCardAlias);
+					statement = createStatement(smartCard);
+				} catch (Exception e2) {
+					outputInfoMessage(InfoLevel.ERROR,
+							"Could not sign the statement.");
+					outputDetailMessage("error signing the statement: "
+							+ e2.getMessage());
+					return;
+				}
+			} else {
+				outputInfoMessage(InfoLevel.ERROR,
+						"Could not sign the statement.");
+				outputDetailMessage("error signing the statement: "
+						+ e.getMessage());
+				return;
+			}
 		} catch (Exception e) {
 			outputInfoMessage(InfoLevel.ERROR,
 					"Could not create the statement.");

@@ -14,7 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.KeyStore;
@@ -51,6 +50,7 @@ import org.apache.commons.logging.LogFactory;
 
 import sun.security.pkcs11.SunPKCS11;
 import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
+import sun.security.pkcs11.wrapper.CK_INFO;
 import sun.security.pkcs11.wrapper.CK_SLOT_INFO;
 import sun.security.pkcs11.wrapper.CK_TOKEN_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
@@ -316,7 +316,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 			throw new RuntimeException("Smart Card provider already active");
 		}
 
-		//resetPKCS11Driver();
+		// resetPKCS11Driver();
 
 		try {
 			this.pkcs11Provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
@@ -336,12 +336,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		}
 	}
 
-	/**
-	 * Resets the PKCS11 drivers used by the SunPKCS11 security provider. This
-	 * fixes the issue we have when the smart card gets removed and reinserted.
-	 */
 	@SuppressWarnings("unchecked")
-	private void resetPKCS11Driver() {
+	public void resetPKCS11Driver() {
 		try {
 			Field moduleMapField = PKCS11.class.getDeclaredField("moduleMap");
 			moduleMapField.setAccessible(true);
@@ -350,31 +346,21 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 			for (Map.Entry<String, Object> entry : moduleMap.entrySet()) {
 				LOG.debug("finalizing " + entry.getKey());
 				PKCS11 pkcs11 = (PKCS11) entry.getValue();
-				Method disconnectMethod = PKCS11.class.getDeclaredMethod(
-						"disconnect", new Class[] {});
-				disconnectMethod.setAccessible(true);
-				disconnectMethod.invoke(pkcs11, new Object[] {});
+				CK_INFO info = pkcs11.C_GetInfo();
+				if ("Zetes".equals(new String(info.manufacturerID).trim())) {
+					Method disconnectMethod = PKCS11.class.getDeclaredMethod(
+							"disconnect", new Class[] {});
+					disconnectMethod.setAccessible(true);
+					disconnectMethod.invoke(pkcs11, new Object[] {});
+				} else {
+					pkcs11.C_Finalize(null);
+				}
 				LOG.debug("done");
 			}
 			moduleMap.clear();
-		} catch (SecurityException e) {
-			LOG.error("security error: " + e.getMessage());
-			throw new RuntimeException("security error");
-		} catch (NoSuchFieldException e) {
-			LOG.error("no such field error: " + e.getMessage());
-			throw new RuntimeException("no such field error");
-		} catch (IllegalArgumentException e) {
-			LOG.error("illegal argument error: " + e.getMessage());
-			throw new RuntimeException("illegal argument error");
-		} catch (IllegalAccessException e) {
-			LOG.error("illegal access error: " + e.getMessage());
-			throw new RuntimeException("illegal access error");
-		} catch (NoSuchMethodException e) {
-			LOG.error("nu such method error: " + e.getMessage());
-			throw new RuntimeException("no such error");
-		} catch (InvocationTargetException e) {
-			LOG.error("invocation target error: " + e.getMessage());
-			throw new RuntimeException("invocation target error");
+		} catch (Exception e) {
+			LOG.error("error: " + e.getMessage());
+			throw new RuntimeException("error: " + e.getMessage());
 		}
 	}
 
