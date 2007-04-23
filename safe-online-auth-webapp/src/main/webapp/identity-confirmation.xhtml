@@ -29,6 +29,10 @@
 				<h:outputText value="#{item.humanReadableName}"
 					rendered="#{!empty item.humanReadableName}" />
 			</h:column>
+			<h:column>
+				<f:facet name="header">#{msgs.dataMining}</f:facet>
+				<h:outputText value="#{item.dataMining}" />
+			</h:column>
 
 		</h:dataTable>
 

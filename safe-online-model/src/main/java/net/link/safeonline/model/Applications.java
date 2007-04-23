@@ -1,0 +1,24 @@
+package net.link.safeonline.model;
+
+import java.util.List;
+
+import javax.ejb.Local;
+
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
+
+@Local
+public interface Applications {
+
+	public ApplicationEntity getApplication(String applicationName)
+			throws ApplicationNotFoundException;
+
+	public List<ApplicationEntity> listApplications();
+
+	public List<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
+			ApplicationEntity application)
+			throws ApplicationIdentityNotFoundException;
+
+}

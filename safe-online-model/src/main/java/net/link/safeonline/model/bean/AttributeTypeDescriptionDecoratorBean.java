@@ -50,7 +50,7 @@ public class AttributeTypeDescriptionDecoratorBean implements
 				}
 			}
 			AttributeDO attribute = new AttributeDO(name, humanReadableName,
-					description, null, attributeType.isUserEditable());
+					description, null, attributeType.isUserEditable(), true);
 			attributes.add(attribute);
 		}
 		return attributes;
@@ -79,7 +79,7 @@ public class AttributeTypeDescriptionDecoratorBean implements
 			}
 			AttributeDO attribute = new AttributeDO(name, humanReadableName,
 					description, null, identityAttribute.getAttributeType()
-							.isUserEditable());
+							.isUserEditable(), identityAttribute.isDataMining());
 			attributes.add(attribute);
 		}
 		return attributes;

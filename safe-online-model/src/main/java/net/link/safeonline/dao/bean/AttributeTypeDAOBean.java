@@ -7,7 +7,10 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -18,6 +21,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -116,4 +120,18 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 						attributeTypeDescriptionPK);
 		return attributeTypeDescription;
 	}
+
+	public Map<String, Long> categorize(ApplicationEntity application,
+			AttributeTypeEntity attributeType) {
+		Query query = AttributeTypeEntity.createQueryCategorize(entityManager,
+				application, attributeType);
+		List results = query.getResultList();
+		Map<String, Long> result = new HashMap<String, Long>();
+		for (Iterator iter = results.iterator(); iter.hasNext();) {
+			Object[] values = (Object[]) iter.next();
+			result.put((String) values[0], (Long) values[1]);
+		}
+		return result;
+	}
+
 }

@@ -703,8 +703,8 @@ public class EntityTest extends TestCase {
 
 	public void testAddRemoveStatistic() {
 		// setup
-		StatisticEntity stat = new StatisticEntity("stat 1", null, new Date(
-				System.currentTimeMillis()));
+		StatisticEntity stat = new StatisticEntity("stat 1", "domain", null,
+				new Date(System.currentTimeMillis()));
 		StatisticDataPointEntity data = new StatisticDataPointEntity("point 1",
 				stat, new Date(System.currentTimeMillis()), 1, 2, 3);
 		stat.getStatisticDataPoints().add(data);
@@ -750,4 +750,5 @@ public class EntityTest extends TestCase {
 		assertNotNull(resultAttributeProvider);
 		assertEquals(resultAttributeProvider, attributeProvider);
 	}
+
 }

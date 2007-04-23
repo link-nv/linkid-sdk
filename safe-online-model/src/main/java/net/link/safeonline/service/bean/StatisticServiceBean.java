@@ -50,8 +50,8 @@ public class StatisticServiceBean implements StatisticService,
 
 	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public StatisticEntity getStatistic(String statisticName,
-			String applicationName) throws StatisticNotFoundException,
-			PermissionDeniedException {
+			String statisticDomain, String applicationName)
+			throws StatisticNotFoundException, PermissionDeniedException {
 
 		ApplicationEntity application = null;
 		if (applicationName != null) {
@@ -65,7 +65,8 @@ public class StatisticServiceBean implements StatisticService,
 
 		LOG.debug("finding statistic");
 		StatisticEntity statistic = this.statisticDAO
-				.findStatisticByNameAndApplication(statisticName, application);
+				.findStatisticByNameDomainAndApplication(statisticName,
+						statisticDomain, application);
 		if (statistic == null) {
 			throw new StatisticNotFoundException();
 		}

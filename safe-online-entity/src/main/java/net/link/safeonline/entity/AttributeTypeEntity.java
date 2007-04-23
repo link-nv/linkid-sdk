@@ -22,13 +22,28 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_ALL;
+import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE;
 
 @Entity
 @Table(name = "attribute_type")
-@NamedQueries( { @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM AttributeTypeEntity") })
+@NamedQueries( {
+		@NamedQuery(name = QUERY_WHERE_ALL, query = "FROM AttributeTypeEntity"),
+		@NamedQuery(name = QUERY_CATEGORIZE, query = "SELECT a.stringValue, COUNT(a.stringValue) "
+				+ "FROM AttributeEntity a, SubscriptionEntity s, "
+				+ "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+				+ "WHERE a.subject = s.subject "
+				+ "AND s.confirmedIdentityVersion = i.pk.identityVersion "
+				+ "AND s.application = i.application "
+				+ "AND :application = s.application "
+				+ "AND aia.applicationIdentity = i "
+				+ "AND :attributeType = aia.attributeType "
+				+ "AND aia.attributeType = a.attributeType "
+				+ "GROUP BY a.stringValue") })
 public class AttributeTypeEntity implements Serializable {
 
 	public static final String QUERY_WHERE_ALL = "at.all";
+
+	public static final String QUERY_CATEGORIZE = "at.cat";
 
 	private static final long serialVersionUID = 1L;
 
@@ -108,4 +123,13 @@ public class AttributeTypeEntity implements Serializable {
 		Query query = entityManager.createNamedQuery(QUERY_WHERE_ALL);
 		return query;
 	}
+
+	public static Query createQueryCategorize(EntityManager entityManager,
+			ApplicationEntity application, AttributeTypeEntity attributeType) {
+		Query query = entityManager.createNamedQuery(QUERY_CATEGORIZE);
+		query.setParameter("attributeType", attributeType);
+		query.setParameter("application", application);
+		return query;
+	}
+
 }

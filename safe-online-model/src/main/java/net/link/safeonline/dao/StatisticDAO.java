@@ -17,16 +17,19 @@ import net.link.safeonline.entity.StatisticEntity;
 @Local
 public interface StatisticDAO {
 
-	StatisticEntity addStatistic(String name, ApplicationEntity application);
+	StatisticEntity addStatistic(String name, String domain,
+			ApplicationEntity application);
 
 	StatisticEntity findStatisticById(long statisticId);
 
-	StatisticEntity findStatisticByNameAndApplication(String name,
-			ApplicationEntity application);
+	StatisticEntity findStatisticByNameDomainAndApplication(String name,
+			String domain, ApplicationEntity application);
 
-	StatisticEntity findOrAddStatisticByNameAndApplication(String name,
-			ApplicationEntity application);
+	StatisticEntity findOrAddStatisticByNameDomainAndApplication(String name,
+			String domain, ApplicationEntity application);
 
 	List<StatisticEntity> listStatistics(ApplicationEntity application);
+
+	void cleanDomain(String domain);
 
 }

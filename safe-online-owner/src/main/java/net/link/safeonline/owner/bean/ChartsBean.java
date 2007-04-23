@@ -88,6 +88,7 @@ public class ChartsBean implements Charts {
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	public String viewStat() {
 		this.chartURL = "view.chart?chartname=" + this.selectedStat.getName()
+				+ "&domain=" + this.selectedStat.getDomain()
 				+ "&applicationname=" + this.selectedApplication.getName();
 		return "viewstat";
 	}

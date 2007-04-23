@@ -39,6 +39,8 @@ public class UsageStatisticTaskBean implements Task {
 
 	public static final String statisticName = "Usage statistic";
 
+	public static final String statisticDomain = "Usage statistic domain";
+
 	public static final String loginCounter = "Login counter";
 
 	@EJB
@@ -61,7 +63,7 @@ public class UsageStatisticTaskBean implements Task {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() {
+	public void perform() throws Exception {
 		List<ApplicationEntity> applicationList = this.applicationDAO
 				.listApplications();
 		long activeLimit = Long.parseLong(this.configurationManager
@@ -76,8 +78,8 @@ public class UsageStatisticTaskBean implements Task {
 					.getActiveNumberOfSubscriptions(application, activeLimit);
 
 			StatisticEntity statistic = this.statisticDAO
-					.findOrAddStatisticByNameAndApplication(statisticName,
-							application);
+					.findOrAddStatisticByNameDomainAndApplication(
+							statisticName, statisticDomain, application);
 
 			StatisticDataPointEntity loginCounterDP = this.statisticDataPointDAO
 					.findOrAddStatisticDataPoint(loginCounter, statistic);

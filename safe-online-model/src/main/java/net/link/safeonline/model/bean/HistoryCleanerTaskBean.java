@@ -44,7 +44,7 @@ public class HistoryCleanerTaskBean implements Task {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void perform() {
+	public void perform() throws Exception {
 		ConfigItemEntity configItem = this.configurationManager
 				.findConfigItem(configAgeInMillis);
 		long ageInMillis = Integer.parseInt(configItem.getValue());

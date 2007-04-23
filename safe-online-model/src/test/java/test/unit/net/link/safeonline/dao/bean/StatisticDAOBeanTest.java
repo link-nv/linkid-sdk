@@ -76,19 +76,24 @@ public class StatisticDAOBeanTest extends TestCase {
 
 		// operate
 		StatisticEntity original = this.testedInstance.addStatistic("test",
-				application);
+				"domain", application);
 		StatisticEntity result = this.testedInstance.findStatisticById(original
 				.getId());
 		assertEquals(original, result);
-		result = this.testedInstance.findStatisticByNameAndApplication("test",
-				application);
+		result = this.testedInstance.findStatisticByNameDomainAndApplication(
+				"test", "domain", application);
 		assertEquals(original, result);
-		
-		original = this.testedInstance.addStatistic("test2",
-				null);
-		result = this.testedInstance.findStatisticByNameAndApplication("test2",
-				null);
+
+		original = this.testedInstance.addStatistic("test2", "domain", null);
+		result = this.testedInstance.findStatisticByNameDomainAndApplication(
+				"test2", "domain", null);
 		assertEquals(original, result);
+
+		this.testedInstance.cleanDomain("domain");
+		result = this.testedInstance.findStatisticByNameDomainAndApplication(
+				"test2", "domain", null);
+		assertNull(result);
+
 	}
 
 }

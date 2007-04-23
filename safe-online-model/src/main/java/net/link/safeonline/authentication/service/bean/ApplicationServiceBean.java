@@ -52,6 +52,7 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.ApplicationIdentityManager;
 import net.link.safeonline.model.ApplicationOwnerManager;
+import net.link.safeonline.model.Applications;
 import net.link.safeonline.model.PkiUtils;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
@@ -102,6 +103,9 @@ public class ApplicationServiceBean implements ApplicationService,
 	private ApplicationIdentityManager applicationIdentityService;
 
 	@EJB
+	private Applications applications;
+
+	@EJB
 	private SubjectManager subjectManager;
 
 	@Resource
@@ -109,9 +113,7 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	@PermitAll
 	public List<ApplicationEntity> listApplications() {
-		List<ApplicationEntity> applications = this.applicationDAO
-				.listApplications();
-		return applications;
+		return this.applications.listApplications();
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -306,22 +308,13 @@ public class ApplicationServiceBean implements ApplicationService,
 	public List<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
 			String applicationName) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, PermissionDeniedException {
-		LOG.debug("get current application identity: " + applicationName);
-		ApplicationEntity application = this.applicationDAO
+
+		ApplicationEntity application = this.applications
 				.getApplication(applicationName);
 
 		checkReadPermission(application);
 
-		long currentIdentityVersion = application
-				.getCurrentApplicationIdentity();
-		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
-				.getApplicationIdentity(application, currentIdentityVersion);
-		List<ApplicationIdentityAttributeEntity> attributes = applicationIdentity
-				.getAttributes();
-		for (ApplicationIdentityAttributeEntity attribute : attributes) {
-			LOG.debug("attribute: " + attribute);
-		}
-		return attributes;
+		return this.applications.getCurrentApplicationIdentity(application);
 	}
 
 	private void checkReadPermission(ApplicationEntity application)

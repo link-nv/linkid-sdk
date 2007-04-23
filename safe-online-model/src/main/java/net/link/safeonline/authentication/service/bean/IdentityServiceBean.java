@@ -169,7 +169,7 @@ public class IdentityServiceBean implements IdentityService,
 			}
 
 			AttributeDO attributeView = new AttributeDO(name,
-					humanReadableName, description, value, editable);
+					humanReadableName, description, value, editable, true);
 			attributesView.add(attributeView);
 		}
 		return attributesView;
@@ -395,7 +395,7 @@ public class IdentityServiceBean implements IdentityService,
 			}
 			AttributeDO missingAttribute = new AttributeDO(
 					missingAttributeName, humanReadableName, description,
-					value, editable);
+					value, editable, true);
 			missingAttributes.add(missingAttribute);
 		}
 

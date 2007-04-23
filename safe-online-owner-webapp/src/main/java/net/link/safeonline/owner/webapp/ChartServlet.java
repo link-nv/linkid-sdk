@@ -33,6 +33,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -67,6 +68,7 @@ public class ChartServlet extends HttpServlet {
 		OutputStream out = response.getOutputStream();
 
 		String chartName = request.getParameter("chartname");
+		String domainName = request.getParameter("domain");
 		String applicationName = request.getParameter("applicationname");
 
 		if (null == chartName) {
@@ -82,7 +84,7 @@ public class ChartServlet extends HttpServlet {
 
 		byte[] buffer = null;
 		try {
-			buffer = getChart(chartName, applicationName, 800, 600);
+			buffer = getChart(chartName, domainName, applicationName, 800, 600);
 		} catch (Exception e) {
 			LOG.debug("exception: " + e.getMessage());
 			throw new ServletException(e.getMessage(), e);
@@ -93,13 +95,13 @@ public class ChartServlet extends HttpServlet {
 
 	}
 
-	public byte[] getChart(String chartName, String applicationName, int width,
-			int heigth) throws StatisticNotFoundException,
-			PermissionDeniedException {
+	public byte[] getChart(String chartName, String domainName,
+			String applicationName, int width, int heigth)
+			throws StatisticNotFoundException, PermissionDeniedException {
 		LOG.debug("finding statistic: " + chartName + " for application: "
 				+ applicationName);
 		StatisticEntity statistic = this.statisticService.getStatistic(
-				chartName, applicationName);
+				chartName, domainName, applicationName);
 
 		JFreeChart chart = null;
 
@@ -110,6 +112,9 @@ public class ChartServlet extends HttpServlet {
 		}
 		if (chartName.equals(usageStatistic)) {
 			chart = usageChart(statistic);
+		}
+		if (domainName.equals("Data Mining Domain")) {
+			chart = dataMiningChart(statistic);
 		} else {
 			chart = defaultChart(statistic);
 		}
@@ -188,4 +193,18 @@ public class ChartServlet extends HttpServlet {
 
 		return chart;
 	}
+
+	private JFreeChart dataMiningChart(StatisticEntity statistic) {
+
+		DefaultPieDataset dataset = new DefaultPieDataset();
+		for (StatisticDataPointEntity dp : statistic.getStatisticDataPoints()) {
+			dataset.setValue(dp.getName(), dp.getX());
+		}
+
+		JFreeChart chart = ChartFactory.createPieChart(statistic.getName(),
+				dataset, true, true, false);
+
+		return chart;
+	}
+
 }

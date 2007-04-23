@@ -48,6 +48,9 @@ import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.easymock.EasyMock;
 
+import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
+import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
+
 public class AuthenticationServiceBeanTest extends TestCase {
 
 	private AuthenticationServiceBean testedInstance;
@@ -158,9 +161,10 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		StatisticEntity statistic = new StatisticEntity();
 		expect(
-				this.mockStatisticDAO.findOrAddStatisticByNameAndApplication(
-						"Usage statistic", application)).andStubReturn(
-				statistic);
+				this.mockStatisticDAO
+						.findOrAddStatisticByNameDomainAndApplication(
+								statisticName, statisticDomain, application))
+				.andStubReturn(statistic);
 		StatisticDataPointEntity dataPoint = new StatisticDataPointEntity();
 		expect(
 				this.mockStatisticDataPointDAO.findOrAddStatisticDataPoint(
@@ -282,9 +286,10 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		StatisticEntity statistic = new StatisticEntity();
 		expect(
-				this.mockStatisticDAO.findOrAddStatisticByNameAndApplication(
-						"Usage statistic", application)).andStubReturn(
-				statistic);
+				this.mockStatisticDAO
+						.findOrAddStatisticByNameDomainAndApplication(
+								statisticName, statisticDomain, application))
+				.andStubReturn(statistic);
 		StatisticDataPointEntity dataPoint = new StatisticDataPointEntity();
 		expect(
 				this.mockStatisticDataPointDAO.findOrAddStatisticDataPoint(

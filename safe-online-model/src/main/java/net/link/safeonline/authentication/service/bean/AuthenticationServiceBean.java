@@ -45,6 +45,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
+import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter;
 
 ;
@@ -244,8 +245,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	private void addLoginTick(ApplicationEntity application) {
 		StatisticEntity statistic = this.statisticDAO
-				.findOrAddStatisticByNameAndApplication(statisticName,
-						application);
+				.findOrAddStatisticByNameDomainAndApplication(statisticName,
+						statisticDomain, application);
 
 		StatisticDataPointEntity dp = this.statisticDataPointDAO
 				.findOrAddStatisticDataPoint(loginCounter, statistic);

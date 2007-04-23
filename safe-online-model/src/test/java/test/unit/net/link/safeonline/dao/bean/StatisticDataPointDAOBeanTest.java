@@ -51,8 +51,8 @@ public class StatisticDataPointDAOBeanTest extends TestCase {
 	public void testStatisticDataPoint() {
 		// setup
 		Random generator = new Random();
-		StatisticEntity statistic = this.statisticDAO
-				.addStatistic("test", null);
+		StatisticEntity statistic = this.statisticDAO.addStatistic("test",
+				"domain", null);
 
 		// operate
 		this.testedInstance.addStatisticDataPoint("cat A", statistic, generator

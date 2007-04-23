@@ -8,11 +8,13 @@
 package net.link.safeonline.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -58,4 +60,15 @@ public interface AttributeTypeDAO {
 
 	AttributeTypeDescriptionEntity findDescription(
 			AttributeTypeDescriptionPK attributeTypeDescriptionPK);
+
+	/**
+	 * Returns a map containing a list of unique values of an attribute with a
+	 * count of how many times these values occur
+	 * 
+	 * @param attributeType
+	 * @return
+	 */
+	Map<String, Long> categorize(ApplicationEntity application,
+			AttributeTypeEntity attributeType);
+
 }

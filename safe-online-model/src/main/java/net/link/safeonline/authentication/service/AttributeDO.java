@@ -30,13 +30,17 @@ public class AttributeDO implements Serializable {
 
 	private boolean editable;
 
+	private boolean dataMining;
+
 	public AttributeDO(String name, String humanReadableName,
-			String description, String value, boolean editable) {
+			String description, String value, boolean editable,
+			boolean dataMining) {
 		this.name = name;
 		this.humanReadableName = humanReadableName;
 		this.description = description;
 		this.value = value;
 		this.editable = editable;
+		this.dataMining = dataMining;
 	}
 
 	/**
@@ -82,5 +86,13 @@ public class AttributeDO implements Serializable {
 
 	public void setHumanReadableName(String humanReadableName) {
 		this.humanReadableName = humanReadableName;
+	}
+
+	public boolean isDataMining() {
+		return dataMining;
+	}
+
+	public void setDataMining(boolean dataMining) {
+		this.dataMining = dataMining;
 	}
 }

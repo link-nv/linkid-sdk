@@ -84,8 +84,8 @@ public class ChartServletTest extends TestCase {
 
 	public void testChartGeneration() throws Exception {
 		// setup
-		StatisticEntity statistic = new StatisticEntity("Test Stat", null,
-				new Date());
+		StatisticEntity statistic = new StatisticEntity("Test Stat", "domain",
+				null, new Date());
 		Random generator = new Random();
 		StatisticDataPointEntity dp = new StatisticDataPointEntity("Cat A",
 				statistic, new Date(), generator.nextInt(),
@@ -116,9 +116,11 @@ public class ChartServletTest extends TestCase {
 		HttpClient httpClient = new HttpClient();
 		GetMethod getMethod = new GetMethod(this.servletLocation);
 		String testChartName = "test-chart-name-" + getName();
+		String testDomain = "test-domain-" + getName();
 		String testApplicationName = "test-application-name-" + getName();
 		getMethod.setQueryString(new NameValuePair[] {
 				new NameValuePair("chartname", testChartName),
+				new NameValuePair("domain", testDomain),
 				new NameValuePair("applicationname", testApplicationName) });
 		StatisticEntity statistic = new StatisticEntity();
 		statistic.setName("test-statistic-name");
@@ -132,7 +134,8 @@ public class ChartServletTest extends TestCase {
 		// stubs
 		expect(
 				this.mockStatisticService.getStatistic(testChartName,
-						testApplicationName)).andStubReturn(statistic);
+						testDomain, testApplicationName)).andStubReturn(
+				statistic);
 
 		// prepare
 		replay(this.mockObjects);

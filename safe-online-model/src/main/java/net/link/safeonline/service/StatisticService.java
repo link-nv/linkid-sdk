@@ -20,8 +20,8 @@ import net.link.safeonline.entity.StatisticEntity;
 public interface StatisticService {
 
 	public StatisticEntity getStatistic(String statisticName,
-			String applicationName) throws StatisticNotFoundException,
-			PermissionDeniedException;
+			String statisticDomain, String applicationName)
+			throws StatisticNotFoundException, PermissionDeniedException;
 
 	public List<StatisticEntity> getStatistics(ApplicationEntity application)
 			throws PermissionDeniedException;

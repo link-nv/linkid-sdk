@@ -27,41 +27,51 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_AND_APPLICATION;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION;
 import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_APPLICATION;
-import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_AND_NULL;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_DOMAIN_AND_NULL;
 import static net.link.safeonline.entity.StatisticEntity.QUERY_ALL;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_DELETE_WHERE_DOMAIN;
 
 @Entity
 @Table(name = "statistic", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"name", "application" }))
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_NAME_AND_APPLICATION, query = "SELECT Statistic "
+		@NamedQuery(name = QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION, query = "SELECT Statistic "
 				+ "FROM StatisticEntity AS Statistic "
-				+ "WHERE Statistic.name = :name AND Statistic.application = :application"),
-		@NamedQuery(name = QUERY_WHERE_NAME_AND_NULL, query = "SELECT Statistic "
+				+ "WHERE Statistic.name = :name AND Statistic.application = :application "
+				+ "AND Statistic.domain = :domain"),
+		@NamedQuery(name = QUERY_WHERE_NAME_DOMAIN_AND_NULL, query = "SELECT Statistic "
 				+ "FROM StatisticEntity AS Statistic "
-				+ "WHERE Statistic.name = :name AND Statistic.application IS NULL"),
+				+ "WHERE Statistic.name = :name AND Statistic.application IS NULL "
+				+ "AND Statistic.domain = :domain"),
 		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT Statistic "
 				+ "FROM StatisticEntity AS Statistic "
 				+ "WHERE Statistic.application = :application"),
 		@NamedQuery(name = QUERY_ALL, query = "SELECT Statistic "
-				+ "FROM StatisticEntity AS Statistic") })
+				+ "FROM StatisticEntity AS Statistic"),
+		@NamedQuery(name = QUERY_DELETE_WHERE_DOMAIN, query = "DELETE "
+				+ "FROM StatisticEntity AS Statistic "
+				+ "WHERE Statistic.domain = :domain") })
 public class StatisticEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String QUERY_WHERE_NAME_AND_APPLICATION = "stat.naa";
+	public static final String QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION = "stat.naa";
 
-	public static final String QUERY_WHERE_NAME_AND_NULL = "stat.nan";
+	public static final String QUERY_WHERE_NAME_DOMAIN_AND_NULL = "stat.nan";
 
 	public static final String QUERY_WHERE_APPLICATION = "stat.app";
 
 	public static final String QUERY_ALL = "stat.all";
 
+	public static final String QUERY_DELETE_WHERE_DOMAIN = "stat.deldomain";
+
 	private long id;
 
 	private String name;
+
+	private String domain;
 
 	private ApplicationEntity application;
 
@@ -70,12 +80,13 @@ public class StatisticEntity implements Serializable {
 	private Date creationTime;
 
 	public StatisticEntity() {
-		this(null, null, null);
+		this(null, null, null, null);
 	}
 
-	public StatisticEntity(String name, ApplicationEntity application,
-			Date creationTime) {
+	public StatisticEntity(String name, String domain,
+			ApplicationEntity application, Date creationTime) {
 		this.name = name;
+		this.domain = domain;
 		this.application = application;
 		this.creationTime = creationTime;
 		this.statisticDataPoints = new LinkedList<StatisticDataPointEntity>();
@@ -127,20 +138,31 @@ public class StatisticEntity implements Serializable {
 		this.name = name;
 	}
 
-	public static Query createQueryWhereNameAndApplication(
-			EntityManager entityManager, String name,
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	public static Query createQueryWhereNameDomainAndApplication(
+			EntityManager entityManager, String name, String domain,
 			ApplicationEntity application) {
 		Query query = null;
 		if (application == null) {
-			query = entityManager.createNamedQuery(QUERY_WHERE_NAME_AND_NULL);
+			query = entityManager
+					.createNamedQuery(QUERY_WHERE_NAME_DOMAIN_AND_NULL);
 			query.setParameter("name", name);
+			query.setParameter("domain", domain);
 			return query;
 		}
 		query = entityManager
-				.createNamedQuery(QUERY_WHERE_NAME_AND_APPLICATION);
-
+				.createNamedQuery(QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION);
+		query.setParameter("domain", domain);
 		query.setParameter("name", name);
 		query.setParameter("application", application);
+
 		return query;
 	}
 
@@ -153,6 +175,13 @@ public class StatisticEntity implements Serializable {
 		}
 		query = entityManager.createNamedQuery(QUERY_WHERE_APPLICATION);
 		query.setParameter("application", application);
+		return query;
+	}
+
+	public static Query createQueryDeleteWhereDomain(
+			EntityManager entityManager, String domain) {
+		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_DOMAIN);
+		query.setParameter("domain", domain);
 		return query;
 	}
 

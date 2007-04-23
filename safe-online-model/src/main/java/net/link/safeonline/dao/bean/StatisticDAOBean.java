@@ -26,10 +26,10 @@ public class StatisticDAOBean implements StatisticDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
-	public StatisticEntity addStatistic(String name,
+	public StatisticEntity addStatistic(String name, String domain,
 			ApplicationEntity application) {
-		StatisticEntity statistic = new StatisticEntity(name, application,
-				new Date());
+		StatisticEntity statistic = new StatisticEntity(name, domain,
+				application, new Date());
 		this.entityManager.persist(statistic);
 		return statistic;
 	}
@@ -40,10 +40,10 @@ public class StatisticDAOBean implements StatisticDAO {
 		return result;
 	}
 
-	public StatisticEntity findStatisticByNameAndApplication(String name,
-			ApplicationEntity application) {
-		Query query = StatisticEntity.createQueryWhereNameAndApplication(
-				this.entityManager, name, application);
+	public StatisticEntity findStatisticByNameDomainAndApplication(String name,
+			String domain, ApplicationEntity application) {
+		Query query = StatisticEntity.createQueryWhereNameDomainAndApplication(
+				this.entityManager, name, domain, application);
 		StatisticEntity result = null;
 		try {
 			result = (StatisticEntity) query.getSingleResult();
@@ -53,12 +53,13 @@ public class StatisticDAOBean implements StatisticDAO {
 		return result;
 	}
 
-	public StatisticEntity findOrAddStatisticByNameAndApplication(String name,
-			ApplicationEntity application) {
-		StatisticEntity statistic = this.findStatisticByNameAndApplication(
-				name, application);
+	public StatisticEntity findOrAddStatisticByNameDomainAndApplication(
+			String name, String domain, ApplicationEntity application) {
+		StatisticEntity statistic = this
+				.findStatisticByNameDomainAndApplication(name, domain,
+						application);
 		if (statistic == null) {
-			statistic = this.addStatistic(name, application);
+			statistic = this.addStatistic(name, domain, application);
 		}
 		return statistic;
 	}
@@ -69,6 +70,12 @@ public class StatisticDAOBean implements StatisticDAO {
 				this.entityManager, application);
 		List<StatisticEntity> result = query.getResultList();
 		return result;
+	}
+
+	public void cleanDomain(String domain) {
+		Query query = StatisticEntity.createQueryDeleteWhereDomain(
+				this.entityManager, domain);
+		query.executeUpdate();
 	}
 
 }

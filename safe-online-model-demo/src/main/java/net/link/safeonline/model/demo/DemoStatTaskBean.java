@@ -40,6 +40,8 @@ public class DemoStatTaskBean implements Task {
 
 	private final static String STAT_NAME = "demo stat";
 
+	private final static String STAT_DOMAIN = "demo stat domain";
+
 	public String getName() {
 		return "Demo statistic generator";
 	}
@@ -52,9 +54,11 @@ public class DemoStatTaskBean implements Task {
 			return;
 		}
 		StatisticEntity statistic = statisticDAO
-				.findStatisticByNameAndApplication(STAT_NAME, application);
+				.findStatisticByNameDomainAndApplication(STAT_NAME,
+						STAT_DOMAIN, application);
 		if (statistic == null) {
-			statistic = this.statisticDAO.addStatistic(STAT_NAME, application);
+			statistic = this.statisticDAO.addStatistic(STAT_NAME, STAT_DOMAIN,
+					application);
 		}
 		Random generator = new Random();
 		statisticDataPointDAO.cleanStatisticDataPoints(statistic);
