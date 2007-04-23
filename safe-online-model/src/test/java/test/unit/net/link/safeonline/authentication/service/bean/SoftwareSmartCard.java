@@ -95,4 +95,7 @@ public class SoftwareSmartCard implements SmartCard {
 	public List<X509Certificate> getAuthenticationCertificatePath() {
 		return null;
 	}
+
+	public void resetPKCS11Driver() {
+	}
 }

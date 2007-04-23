@@ -124,5 +124,8 @@ public class AuthenticationStatementFactoryTest extends TestCase {
 		public List<X509Certificate> getAuthenticationCertificatePath() {
 			return null;
 		}
+
+		public void resetPKCS11Driver() {
+		}
 	}
 }
