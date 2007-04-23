@@ -316,7 +316,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 			throw new RuntimeException("Smart Card provider already active");
 		}
 
-		resetPKCS11Driver();
+		//resetPKCS11Driver();
 
 		try {
 			this.pkcs11Provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());

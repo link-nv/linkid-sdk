@@ -18,6 +18,7 @@ import java.net.URL;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Provider;
+import java.security.ProviderException;
 import java.security.Security;
 import java.security.Signature;
 import java.security.KeyStore.ProtectionParameter;
@@ -50,6 +51,7 @@ import org.apache.commons.logging.LogFactory;
 import sun.security.pkcs11.SunPKCS11;
 import sun.security.pkcs11.wrapper.CK_SLOT_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
+import sun.security.pkcs11.wrapper.PKCS11Exception;
 import be.belgium.eid.BEID_Address;
 import be.belgium.eid.BEID_Certif_Check;
 import be.belgium.eid.BEID_ID_Data;
@@ -247,8 +249,20 @@ public class SmartCardTest extends TestCase {
 		smartCard.open("beid");
 		PrivateKey privateKey = smartCard.getAuthenticationPrivateKey();
 		LOG.debug("private key type: " + privateKey.getClass().getName());
-		identityStatement = IdentityStatementFactory.createIdentityStatement(
-				"beid", smartCard);
+		try {
+			identityStatement = IdentityStatementFactory
+					.createIdentityStatement("beid", smartCard);
+		} catch (ProviderException e) {
+			Throwable t = e.getCause();
+			if (t instanceof PKCS11Exception) {
+				smartCard.close();
+				resetPKCS11Driver();
+				smartCard.open("beid");
+				privateKey = smartCard.getAuthenticationPrivateKey();
+				identityStatement = IdentityStatementFactory
+						.createIdentityStatement("beid", smartCard);
+			}
+		}
 		smartCard.close();
 	}
 
@@ -312,7 +326,7 @@ public class SmartCardTest extends TestCase {
 				tmpConfigFile), true);
 		String name = "TestSmartCard";
 		configWriter.println("name=" + name);
-		configWriter.println("library=/usr/local/lib/libbeidpkcs11.so");
+		// configWriter.println("library=/usr/lib/opensc-pkcs11.so.tmp");
 		configWriter.println("slotListIndex=0");
 		configWriter.println("showInfo=true");
 		configWriter.close();
@@ -382,7 +396,9 @@ public class SmartCardTest extends TestCase {
 		Security.removeProvider(providerName);
 	}
 
-	private void resetPKCS11Driver() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+	private void resetPKCS11Driver() throws NoSuchFieldException,
+			IllegalAccessException, NoSuchMethodException,
+			InvocationTargetException {
 		Field moduleMapField = PKCS11.class.getDeclaredField("moduleMap");
 		moduleMapField.setAccessible(true);
 		Map<String, Object> moduleMap = (Map) moduleMapField.get(null);
