@@ -7,7 +7,11 @@
 
 package net.link.safeonline.identity;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import net.link.safeonline.applet.AppletBase;
+import net.link.safeonline.applet.InfoLevel;
 import net.link.safeonline.p11sc.SmartCard;
 
 /**
@@ -22,9 +26,13 @@ public class IdentityApplet extends AppletBase {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected byte[] createStatement(SmartCard smartCard) {
-		outputInfoMessage(InfoLevel.NORMAL,
-				"Creating the identity statement...");
+	public byte[] createStatement(SmartCard smartCard) {
+
+		Locale locale = getLocale();
+		ResourceBundle messages = ResourceBundle.getBundle(
+				"net.link.safeonline.identity.IdentityMessages", locale);
+
+		outputInfoMessage(InfoLevel.NORMAL, messages.getString("creatingStmt"));
 		String user = getParameter("User");
 		outputDetailMessage("User: " + user);
 		byte[] identityStatement = IdentityStatementFactory

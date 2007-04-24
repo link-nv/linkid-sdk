@@ -17,13 +17,11 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.PrivateKey;
-import java.security.Provider;
 import java.security.ProviderException;
 import java.security.Security;
 import java.security.Signature;
 import java.security.KeyStore.ProtectionParameter;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -438,6 +436,7 @@ public class SmartCardTest extends TestCase {
 		Security.removeProvider(providerName);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void resetPKCS11Driver() throws NoSuchFieldException,
 			IllegalAccessException, NoSuchMethodException,
 			InvocationTargetException, PKCS11Exception {
