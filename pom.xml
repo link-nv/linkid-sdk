@@ -211,6 +211,11 @@
 					<artifactId>taglist-maven-plugin</artifactId>
 					<version>${taglist-maven-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -1076,5 +1081,8 @@
 		<maven-deploy-plugin.version>2.3</maven-deploy-plugin.version>
 		<taglist-maven-plugin.version>2.0</taglist-maven-plugin.version>
 		<wicket.version>1.2.5</wicket.version>
+		<maven-compiler-plugin.version>
+			2.0.2
+		</maven-compiler-plugin.version>
 	</properties>
 </project>
