@@ -3,28 +3,30 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html">
-<head>
-<f:loadBundle basename="messages.webapp" var="msgs" />
-<link rel="stylesheet" type="text/css"
-	href="#{facesContext.externalContext.requestContextPath}/style.css" />
-<title><ui:insert name="title">Payment Demo</ui:insert></title>
-</head>
+<f:view contentType="text/html">
+	<head>
+	<f:loadBundle basename="messages.webapp" var="msgs" />
+	<link rel="stylesheet" type="text/css"
+		href="#{facesContext.externalContext.requestContextPath}/style.css" />
+	<title><ui:insert name="title">Payment Demo</ui:insert></title>
+	</head>
 
-<body>
-<div id="document">
-<div id="header"><ui:insert name="header">
-	<h1><ui:insert name="title">Payment Demo</ui:insert></h1>
-</ui:insert></div>
+	<body>
+	<div id="document">
+	<div id="header"><ui:insert name="header">
+		<h1><ui:insert name="title">Payment Demo</ui:insert></h1>
+	</ui:insert></div>
 
-<div><ui:insert name="topnav" /></div>
+	<div><ui:insert name="topnav" /></div>
 
-<div id="container"><ui:insert name="sidebar" /></div>
+	<div id="container"><ui:insert name="sidebar" /></div>
 
-<div id="content"><ui:insert name="content">Welcome to the online payment service.</ui:insert></div>
+	<div id="content"><ui:insert name="content">Welcome to the online payment service.</ui:insert></div>
 
-<div id="footer"><ui:insert name="footer">
+	<div id="footer"><ui:insert name="footer">
 			Copyright 2006-2007 Lin.k N.V.
 		</ui:insert></div>
-</div>
-</body>
+	</div>
+	</body>
+</f:view>
 </html>
