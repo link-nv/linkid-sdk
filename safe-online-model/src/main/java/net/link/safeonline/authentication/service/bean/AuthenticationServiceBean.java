@@ -202,7 +202,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		if (null == subject) {
 			String event = "no subject was found for the given user certificate";
 			LOG.warn(event);
-			addHistoryEntry(subject, event);
 			throw new SubjectNotFoundException();
 		}
 		LOG.debug("subject: " + subject);
