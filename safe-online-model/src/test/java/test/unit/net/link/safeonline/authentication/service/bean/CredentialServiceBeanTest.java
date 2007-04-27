@@ -188,6 +188,8 @@ public class CredentialServiceBeanTest extends TestCase {
 				this.testSubject, this.smartCard.getGivenName());
 		this.mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain,
 				identifier, this.testSubject);
+		this.mockSubjectIdentifierDAO.removeOtherSubjectIdentifiers(
+				identifierDomain, identifier, this.testSubject);
 
 		// prepare
 		replay(this.mockObjects);

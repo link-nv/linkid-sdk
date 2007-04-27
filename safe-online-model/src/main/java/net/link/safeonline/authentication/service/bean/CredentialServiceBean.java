@@ -106,6 +106,9 @@ public class CredentialServiceBean implements CredentialService,
 		String login = this.subjectManager.getCallerLogin();
 		LOG.debug("login: " + login);
 
+		/*
+		 * First check integrity of the received identity statement.
+		 */
 		IdentityStatement identityStatement;
 		try {
 			identityStatement = new IdentityStatement(identityStatementData);
@@ -131,6 +134,10 @@ public class CredentialServiceBean implements CredentialService,
 			throw new ArgumentIntegrityException();
 		}
 
+		/*
+		 * Check whether the identity statement is owned by the authenticated
+		 * user.
+		 */
 		String user = identityStatement.getUser();
 		if (false == login.equals(user)) {
 			throw new PermissionDeniedException();
@@ -154,7 +161,21 @@ public class CredentialServiceBean implements CredentialService,
 			 */
 			throw new PermissionDeniedException();
 		}
+		/*
+		 * The user can only have one subject identifier for the domain. We
+		 * don't want the user to block identifiers of cards that he is no
+		 * longer using since there is the possibility that these cards are to
+		 * be used by other subjects. Such a strategy of course only makes sense
+		 * for authentication devices for which a subject can have only one.
+		 * This is for example the case for BeID identity cards.
+		 */
+		this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(domain,
+				identifier, subject);
 
+		/*
+		 * Store some additional attributes retrieved from the identity
+		 * statement.
+		 */
 		String surname = identityStatement.getSurname();
 		String givenName = identityStatement.getGivenName();
 

@@ -10,15 +10,16 @@ package net.link.safeonline.dao.bean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubjectIdentifierPK;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Stateless
 public class SubjectIdentifierDAOBean implements SubjectIdentifierDAO {
@@ -47,5 +48,14 @@ public class SubjectIdentifierDAOBean implements SubjectIdentifierDAO {
 		}
 		SubjectEntity subject = subjectIdentifierEntity.getSubject();
 		return subject;
+	}
+
+	public void removeOtherSubjectIdentifiers(String domain, String identifier,
+			SubjectEntity subject) {
+		Query query = SubjectIdentifierEntity
+				.createDeleteWhereOtherIdentifiers(this.entityManager, domain,
+						identifier, subject);
+		int count = query.executeUpdate();
+		LOG.debug("number of removed subject identifiers: " + count);
 	}
 }

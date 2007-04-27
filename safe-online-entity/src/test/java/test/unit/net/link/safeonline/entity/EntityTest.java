@@ -404,8 +404,10 @@ public class EntityTest extends TestCase {
 	public void testSubjectIdentifier() throws Exception {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-subject");
+		String domain = "test-domain";
+		String identifier = "test-identifier";
 		SubjectIdentifierEntity subjectIdentifier = new SubjectIdentifierEntity(
-				"test-domain", "test-identifier", subject);
+				domain, identifier, subject);
 
 		// operate
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -414,12 +416,40 @@ public class EntityTest extends TestCase {
 
 		// verify
 		entityManager = this.entityTestManager.refreshEntityManager();
-		SubjectIdentifierPK pk = new SubjectIdentifierPK("test-domain",
-				"test-identifier");
+		SubjectIdentifierPK pk = new SubjectIdentifierPK(domain, identifier);
 		SubjectIdentifierEntity resultSubjectIdentifier = entityManager.find(
 				SubjectIdentifierEntity.class, pk);
 		assertNotNull(resultSubjectIdentifier);
 		assertEquals(subject, resultSubjectIdentifier.getSubject());
+
+		/*
+		 * Check that the delete query is not deleting our new identifier.
+		 */
+		Query query = SubjectIdentifierEntity
+				.createDeleteWhereOtherIdentifiers(entityManager, domain,
+						identifier, subject);
+		query.executeUpdate();
+		resultSubjectIdentifier = entityManager.find(
+				SubjectIdentifierEntity.class, pk);
+		assertNotNull(resultSubjectIdentifier);
+
+		/*
+		 * Check whether the delete query can delete other identifiers.
+		 */
+		String anotherIdentifier = identifier + "-something-else";
+		query = SubjectIdentifierEntity.createDeleteWhereOtherIdentifiers(
+				entityManager, domain, anotherIdentifier, subject);
+		query.executeUpdate();
+
+		/*
+		 * We have to clear the entity cache before being able to make useful
+		 * queries.
+		 */
+		entityManager.clear();
+
+		resultSubjectIdentifier = entityManager.find(
+				SubjectIdentifierEntity.class, pk);
+		assertNull(resultSubjectIdentifier);
 	}
 
 	public void testTrustPointEntityHashCode() throws Exception {

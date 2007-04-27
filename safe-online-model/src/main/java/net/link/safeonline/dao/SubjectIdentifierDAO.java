@@ -18,4 +18,15 @@ public interface SubjectIdentifierDAO {
 			SubjectEntity subject);
 
 	SubjectEntity findSubject(String domain, String subjectIdentifier);
+
+	/**
+	 * Removes subject identifiers within the given domain for the given user
+	 * that have a different identifier than the given identifier.
+	 * 
+	 * @param domain
+	 * @param identifier
+	 * @param subject
+	 */
+	void removeOtherSubjectIdentifiers(String domain, String identifier,
+			SubjectEntity subject);
 }
