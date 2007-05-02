@@ -283,6 +283,8 @@
 		<module>safe-online-demo-lawyer-service</module>
 		<module>safe-online-demo-prescription-keystore</module>
 		<module>safe-online-demo-util</module>
+		<module>safe-online-demo-prescription</module>
+		<module>safe-online-demo-prescription-webapp</module>
 	</modules>
 	<repositories>
 		<repository>
