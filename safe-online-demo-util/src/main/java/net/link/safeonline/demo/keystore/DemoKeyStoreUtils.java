@@ -15,16 +15,14 @@ import java.util.Enumeration;
 
 public class DemoKeyStoreUtils {
 
-	public static final String KEYSTORE_RESOURCE = "safe-online-demo-keystore.jks";
-
-	public static PrivateKeyEntry getPrivateKeyEntry() {
+	public static PrivateKeyEntry getPrivateKeyEntry(String keyStoreResource) {
 		ClassLoader classLoader = Thread.currentThread()
 				.getContextClassLoader();
 		InputStream keyStoreInputStream = classLoader
-				.getResourceAsStream(KEYSTORE_RESOURCE);
+				.getResourceAsStream(keyStoreResource);
 		if (null == keyStoreInputStream) {
 			throw new RuntimeException("keystore not found: "
-					+ KEYSTORE_RESOURCE);
+					+ keyStoreResource);
 		}
 		PrivateKeyEntry privateKeyEntry = loadPrivateKeyEntry("jks",
 				keyStoreInputStream, "secret", "secret");

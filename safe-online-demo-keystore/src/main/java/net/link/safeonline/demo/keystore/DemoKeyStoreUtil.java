@@ -5,15 +5,13 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.demo.payment.keystore;
+package net.link.safeonline.demo.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
+public class DemoKeyStoreUtil {
 
-public class DemoPaymentKeyStoreUtils {
-
-	public static final String KEYSTORE_RESOURCE = "safe-online-demo-payment-keystore.jks";
+	public static final String KEYSTORE_RESOURCE = "safe-online-demo-keystore.jks";
 
 	public static PrivateKeyEntry getPrivateKeyEntry() {
 		return DemoKeyStoreUtils.getPrivateKeyEntry(KEYSTORE_RESOURCE);

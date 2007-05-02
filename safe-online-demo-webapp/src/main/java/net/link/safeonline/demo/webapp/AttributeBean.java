@@ -12,7 +12,7 @@ import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
-import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
+import net.link.safeonline.demo.keystore.DemoKeyStoreUtil;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -71,7 +71,7 @@ public class AttributeBean {
 	}
 
 	private void loadCertificate() {
-		PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtils
+		PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtil
 				.getPrivateKeyEntry();
 		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
 		this.privateKey = privateKeyEntry.getPrivateKey();

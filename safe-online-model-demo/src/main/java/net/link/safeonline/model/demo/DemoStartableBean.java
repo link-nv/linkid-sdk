@@ -17,9 +17,10 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
-import net.link.safeonline.demo.keystore.DemoKeyStoreUtils;
+import net.link.safeonline.demo.keystore.DemoKeyStoreUtil;
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
+import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStoreUtils;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributePK;
@@ -46,6 +47,8 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	public static final String DEMO_LAWYER_APPLICATION_NAME = "safe-online-demo-lawyer";
 
+	public static final String DEMO_PRESCRIPTION_APPLICATION_NAME = "safe-online-demo-prescription";
+
 	public DemoStartableBean() {
 		configDemoUsers();
 
@@ -64,7 +67,7 @@ public class DemoStartableBean extends AbstractInitBean {
 				new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
 						visaAttributeType.getName(), true, false) }));
 
-		PrivateKeyEntry demoPrivateKeyEntry = DemoKeyStoreUtils
+		PrivateKeyEntry demoPrivateKeyEntry = DemoKeyStoreUtil
 				.getPrivateKeyEntry();
 		X509Certificate demoCertificate = (X509Certificate) demoPrivateKeyEntry
 				.getCertificate();
@@ -91,6 +94,84 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.trustedCertificates.add(demoPaymentCertificate);
 
 		configLawyerDemo();
+
+		configPrescriptionDemo();
+	}
+
+	private void configPrescriptionDemo() {
+		String prescriptionAdmin = "prescription-admin";
+		this.authorizedUsers.put(prescriptionAdmin, "secret");
+
+		/*
+		 * Register the prescription demo application within SafeOnline.
+		 */
+		PrivateKeyEntry demoPrescriptionPrivateKeyEntry = DemoPrescriptionKeyStoreUtils
+				.getPrivateKeyEntry();
+		X509Certificate demoPrescriptionCertificate = (X509Certificate) demoPrescriptionPrivateKeyEntry
+				.getCertificate();
+		this.trustedCertificates.add(demoPrescriptionCertificate);
+		this.registeredApplications.add(new Application(
+				DEMO_PRESCRIPTION_APPLICATION_NAME, "owner",
+				demoPrescriptionCertificate));
+
+		/*
+		 * Subscribe the prescription admin.
+		 */
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				prescriptionAdmin, DEMO_PRESCRIPTION_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(
+				SubscriptionOwnerType.APPLICATION, prescriptionAdmin,
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+
+		/*
+		 * Subscribe the demo users to the prescription demo application.
+		 */
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"fcorneli", DEMO_PRESCRIPTION_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"dieter", DEMO_PRESCRIPTION_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"mario", DEMO_PRESCRIPTION_APPLICATION_NAME));
+
+		/*
+		 * Attribute Types.
+		 */
+		configDemoAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
+				DEMO_PRESCRIPTION_APPLICATION_NAME, "Prescription Admin",
+				"Voorschriftbeheerder");
+		configDemoAttribute(
+				DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
+				DEMO_PRESCRIPTION_APPLICATION_NAME, "Care Provider", "Dokter");
+		configDemoAttribute(
+				DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
+				DEMO_PRESCRIPTION_APPLICATION_NAME, "Pharmacist", "Apotheker");
+
+		/*
+		 * Application Identities.
+		 */
+		this.identities
+				.add(new Identity(
+						DEMO_PRESCRIPTION_APPLICATION_NAME,
+						new IdentityAttributeTypeDO[] {
+								new IdentityAttributeTypeDO(
+										DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
+										false, false),
+								new IdentityAttributeTypeDO(
+										DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
+										false, false),
+								new IdentityAttributeTypeDO(
+										DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
+										false, false) }));
+
+		/*
+		 * Also make sure the admin is marked as such.
+		 */
+		AttributeEntity barAdminBarAdminAttribute = new AttributeEntity();
+		barAdminBarAdminAttribute.setPk(new AttributePK(
+				DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
+				prescriptionAdmin));
+		barAdminBarAdminAttribute.setStringValue(Boolean.TRUE.toString());
+		this.attributes.add(barAdminBarAdminAttribute);
 	}
 
 	private void configLawyerDemo() {
@@ -155,19 +236,27 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	private void configLawyerDemoAttribute(String attributeName, String enName,
 			String nlName) {
+		configDemoAttribute(attributeName, DEMO_LAWYER_APPLICATION_NAME,
+				enName, nlName);
+	}
+
+	private void configDemoAttribute(String attributeName,
+			String attributeProviderName, String enName, String nlName) {
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
 				attributeName, "string", true, false);
 		this.attributeTypes.add(attributeType);
-		AttributeProviderEntity attributeProvider = new AttributeProviderEntity();
-		attributeProvider.setPk(new AttributeProviderPK(
-				DEMO_LAWYER_APPLICATION_NAME, attributeName));
-		this.attributeProviders.add(attributeProvider);
+
+		if (null != attributeProviderName) {
+			AttributeProviderEntity attributeProvider = new AttributeProviderEntity();
+			attributeProvider.setPk(new AttributeProviderPK(
+					attributeProviderName, attributeName));
+			this.attributeProviders.add(attributeProvider);
+		}
 
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				attributeType, Locale.ENGLISH.getLanguage(), enName, null));
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				attributeType, "nl", nlName, null));
-
 	}
 
 	private void configDemoUsers() {
