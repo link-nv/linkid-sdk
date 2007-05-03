@@ -8,6 +8,7 @@
 package net.link.safeonline.demo.prescription.servlet;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
@@ -35,6 +36,9 @@ import org.apache.commons.logging.LogFactory;
  * Login handling servlet. After SafeOnline performed its authentication it will
  * redirect to this servlet. This servlet will retrieve the 'admin' attribute.
  * Depending on the value of this attribute we redirect to a different page.
+ * 
+ * If the user has multiple roles active this servlet will redirect to a page
+ * where the user can select the role under which he would like to operate.
  * 
  * @author fcorneli
  * 
@@ -77,16 +81,58 @@ public class LoginServlet extends HttpServlet {
 		 */
 		LOG.debug("username: " + username);
 
-		DataValue adminAttribute;
-		DataValue careProviderAttribute;
-		DataValue pharmacistAttribute;
+		boolean admin = getBoolean(username,
+				DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
+		boolean careProvider = getBoolean(username,
+				DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
+		boolean pharmacist = getBoolean(username,
+				DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
+
+		int rolesCount = 0;
+		if (admin) {
+			rolesCount++;
+		}
+		if (careProvider) {
+			rolesCount++;
+		}
+		if (pharmacist) {
+			rolesCount++;
+		}
+
+		if (rolesCount == 0) {
+			redirectToPatientPage(session, response);
+			return;
+		}
+
+		if (rolesCount > 1) {
+			/*
+			 * In this case we let the user first pick the role under which he
+			 * wants to operate.
+			 */
+			redirectToRolesPage(session, response);
+			return;
+		}
+
+		if (admin) {
+			redirectToAdminPage(session, response);
+			return;
+		}
+		if (careProvider) {
+			redirectToCareProviderPage(session, response);
+			return;
+		}
+		if (pharmacist) {
+			redirectToPharmacistPage(session, response);
+			return;
+		}
+	}
+
+	private boolean getBoolean(String username, String attributeName)
+			throws ServletException, ConnectException {
+		DataValue attribute;
 		try {
-			adminAttribute = this.dataClient.getAttributeValue(username,
-					DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
-			careProviderAttribute = this.dataClient.getAttributeValue(username,
-					DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
-			pharmacistAttribute = this.dataClient.getAttributeValue(username,
-					DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
+			attribute = this.dataClient.getAttributeValue(username,
+					attributeName);
 		} catch (RequestDeniedException e) {
 			throw new ServletException(
 					"count not retrieve prescription admin attribute");
@@ -94,54 +140,47 @@ public class LoginServlet extends HttpServlet {
 			throw new ServletException("subject not found");
 		}
 
-		if (null != adminAttribute) {
-			String adminValue = adminAttribute.getValue();
-			if (Boolean.valueOf(adminValue)) {
-				redirectToAdminPage(session, response);
-				return;
-			}
+		if (null == attribute) {
+			return false;
 		}
 
-		if (null != careProviderAttribute) {
-			String careProviderValue = careProviderAttribute.getValue();
-			if (Boolean.valueOf(careProviderValue)) {
-				redirectToCareProviderPage(session, response);
-				return;
-			}
-		}
+		String attributeValue = attribute.getValue();
 
-		if (null != pharmacistAttribute) {
-			String pharmacistValue = pharmacistAttribute.getValue();
-			if (Boolean.valueOf(pharmacistValue)) {
-				redirectToPharmacistPage(session, response);
-				return;
-			}
-		}
+		return Boolean.valueOf(attributeValue);
+	}
 
-		redirectToPatientPage(session, response);
+	private void redirectToPage(String page, String role, HttpSession session,
+			HttpServletResponse response) throws IOException {
+		session.setAttribute("role", role);
+		response.sendRedirect(page);
 	}
 
 	private void redirectToCareProviderPage(HttpSession session,
 			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", PrescriptionConstants.CARE_PROVIDER_ROLE);
-		response.sendRedirect("./care-provider.seam");
+		redirectToPage("./care-provider.seam",
+				PrescriptionConstants.CARE_PROVIDER_ROLE, session, response);
 	}
 
 	private void redirectToPharmacistPage(HttpSession session,
 			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", PrescriptionConstants.PHARMACIST_ROLE);
-		response.sendRedirect("./pharmacist.seam");
+		redirectToPage("./pharmacist.seam",
+				PrescriptionConstants.PHARMACIST_ROLE, session, response);
 	}
 
 	private void redirectToPatientPage(HttpSession session,
 			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", PrescriptionConstants.PATIENT_ROLE);
-		response.sendRedirect("./patient.seam");
+		redirectToPage("./patient.seam", PrescriptionConstants.PATIENT_ROLE,
+				session, response);
+	}
+
+	private void redirectToRolesPage(HttpSession session,
+			HttpServletResponse response) throws IOException {
+		response.sendRedirect("./roles.seam");
 	}
 
 	private void redirectToAdminPage(HttpSession session,
 			HttpServletResponse response) throws IOException {
-		session.setAttribute("role", PrescriptionConstants.ADMIN_ROLE);
-		response.sendRedirect("./admin.seam");
+		redirectToPage("./admin.seam", PrescriptionConstants.ADMIN_ROLE,
+				session, response);
 	}
 }
