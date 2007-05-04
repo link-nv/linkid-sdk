@@ -13,6 +13,17 @@
 
 		<p>Patient: #{patient}</p>
 
+		<h:form>
+			<p>#{msgs.medicines}</p>
+			<h:selectManyCheckbox id="medicines" layout="pageDirection"
+				value="#{prescriptionCreate.selectedMedicines}">
+				<f:selectItems value="#{medicines}" />
+			</h:selectManyCheckbox>
+
+			<h:commandButton value="#{msgs.create}"
+				action="#{prescriptionCreate.create}" />
+		</h:form>
+
 	</ui:define>
 
 	<ui:define name="sidebar">
