@@ -19,7 +19,6 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 import javax.faces.context.FacesContext;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -51,8 +50,6 @@ public class IdentityBean implements Identity {
 	@Resource
 	private SessionContext context;
 
-	private String name;
-
 	@EJB
 	private IdentityService identityService;
 
@@ -70,39 +67,6 @@ public class IdentityBean implements Identity {
 		Principal principal = this.context.getCallerPrincipal();
 		String login = principal.getName();
 		return login;
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String getName() {
-		try {
-			this.name = this.identityService
-					.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
-		} catch (PermissionDeniedException e) {
-			LOG.error("user not allowed to view attribute: "
-					+ SafeOnlineConstants.NAME_ATTRIBUTE);
-		}
-		LOG.debug("get name: " + this.name);
-		return this.name;
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String saveName() {
-		LOG.debug("save name");
-		try {
-			this.identityService.saveAttribute(
-					SafeOnlineConstants.NAME_ATTRIBUTE, this.name);
-		} catch (PermissionDeniedException e) {
-			LOG.error("user not allowed to edit attribute: "
-					+ SafeOnlineConstants.NAME_ATTRIBUTE);
-			return null;
-		}
-		attributeListFactory();
-		return "success";
 	}
 
 	@Remove

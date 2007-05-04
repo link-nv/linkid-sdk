@@ -14,12 +14,6 @@ public interface Identity {
 
 	String getLogin();
 
-	String getName();
-
-	void setName(String name);
-
-	String saveName();
-
 	void destroyCallback();
 
 	String getGivenName();

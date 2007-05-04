@@ -18,14 +18,7 @@
 					<th>#{msgs.login}:</th>
 					<td>#{identityBean.login}</td>
 				</tr>
-				<tr>
-					<th><h:outputLabel for="name" value="Name" />:</th>
-					<td><h:inputText id="name" value="#{identityBean.name}" /></td>
-				</tr>
 			</table>
-
-			<h:commandButton id="save" action="#{identityBean.saveName}"
-				value="Save Name" />
 
 			<h:dataTable id="data" var="item" value="#{attributeList}"
 				preserveDataModel="false" styleClass="listingTable"
