@@ -18,4 +18,10 @@ public interface PrescriptionLogon {
 	String login();
 
 	String logout();
+
+	String activateAdminRole();
+
+	String activateCareProviderRole();
+
+	String activatePharmacistRole();
 }

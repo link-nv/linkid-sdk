@@ -8,7 +8,9 @@
 package net.link.safeonline.demo.prescription.bean;
 
 import javax.ejb.Stateless;
+import javax.faces.context.FacesContext;
 
+import net.link.safeonline.demo.prescription.PrescriptionConstants;
 import net.link.safeonline.demo.prescription.PrescriptionLogon;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
@@ -42,5 +44,25 @@ public class PrescriptionLogonBean implements PrescriptionLogon {
 		log.debug("logout");
 		Seam.invalidateSession();
 		return "logout-success";
+	}
+
+	private void activateRole(String role) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().put("role", role);
+	}
+
+	public String activateAdminRole() {
+		activateRole(PrescriptionConstants.ADMIN_ROLE);
+		return "admin";
+	}
+
+	public String activateCareProviderRole() {
+		activateRole(PrescriptionConstants.CARE_PROVIDER_ROLE);
+		return "careProvider";
+	}
+
+	public String activatePharmacistRole() {
+		activateRole(PrescriptionConstants.PHARMACIST_ROLE);
+		return "pharmacist";
 	}
 }

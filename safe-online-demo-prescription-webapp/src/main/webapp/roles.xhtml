@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="content">
+		<h1>#{msgs.selectRole}</h1>
+
+		<h:form>
+			<h:commandButton value="#{msgs.admin}"
+				action="#{prescriptionLogon.activateAdminRole}"
+				rendered="#{adminRole == 'true'}" />
+
+			<h:commandButton value="#{msgs.careProvider}"
+				action="#{prescriptionLogon.activateCareProviderRole}"
+				rendered="#{careProviderRole == 'true'}" />
+
+			<h:commandButton value="#{msgs.pharmacist}"
+				action="#{prescriptionLogon.activatePharmacistRole}"
+				rendered="#{pharmacistRole == 'true'}" />
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml" />
+	</ui:define>
+</ui:composition>
+</body>
+</html>

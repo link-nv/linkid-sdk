@@ -90,12 +90,15 @@ public class LoginServlet extends HttpServlet {
 
 		int rolesCount = 0;
 		if (admin) {
+			session.setAttribute("adminRole", "true");
 			rolesCount++;
 		}
 		if (careProvider) {
+			session.setAttribute("careProviderRole", "true");
 			rolesCount++;
 		}
 		if (pharmacist) {
+			session.setAttribute("pharmacistRole", "true");
 			rolesCount++;
 		}
 
