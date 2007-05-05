@@ -13,11 +13,11 @@
 			<h:commandButton value="#{msgs.admin}"
 				action="#{prescriptionLogon.activateAdminRole}"
 				rendered="#{adminRole == 'true'}" />
-
+			<f:verbatim>&#160;</f:verbatim>
 			<h:commandButton value="#{msgs.careProvider}"
 				action="#{prescriptionLogon.activateCareProviderRole}"
 				rendered="#{careProviderRole == 'true'}" />
-
+			<f:verbatim>&#160;</f:verbatim>
 			<h:commandButton value="#{msgs.pharmacist}"
 				action="#{prescriptionLogon.activatePharmacistRole}"
 				rendered="#{pharmacistRole == 'true'}" />

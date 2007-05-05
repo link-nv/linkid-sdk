@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<h1>#{msgs.patient}</h1>
+
+		<h2>#{msgs.prescription}</h2>
+
+		<table>
+			<tr>
+				<th>#{msgs.creationDate}:</th>
+				<td>#{selectedPrescription.creationDate}</td>
+			</tr>
+			<tr>
+				<th>#{msgs.careProvider}:</th>
+				<td>#{selectedPrescription.careProvider}</td>
+			</tr>
+			<tr>
+				<th>#{msgs.filled}:</th>
+				<td>#{selectedPrescription.filled}</td>
+			</tr>
+			<tr>
+				<th>#{msgs.pharmacist}:</th>
+				<td>#{selectedPrescription.pharmacist}</td>
+			</tr>
+			<tr>
+				<th>#{msgs.filledDate}:</th>
+				<td>#{selectedPrescription.filledDate}</td>
+			</tr>
+			<tr>
+				<th>#{msgs.medicines}:</th>
+				<td>
+				<table>
+					<ui:repeat value="#{selectedPrescription.medicines}" var="item">
+						<tr>
+							<td>#{item.name}</td>
+						</tr>
+					</ui:repeat>
+				</table>
+				</td>
+			</tr>
+		</table>
+
+		<h:form>
+			<h:commandButton value="#{msgs.back}" action="back" />
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml" />
+	</ui:define>
+</ui:composition>
+</body>
+</html>
