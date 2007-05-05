@@ -3,19 +3,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 
 	<ui:define name="content">
-		<h1>#{msgs.admin}</h1>
+		<h1>#{msgs.pharmacist}</h1>
 
-		<h2>#{msgs.overview}</h2>
+		<h2>#{msgs.fillPrescription}</h2>
 
 		<h:form>
-			<h:commandLink id="search" value="#{msgs.search}" action="search" />
-		</h:form>
+			<p>#{msgs.insertCard}</p>
 
+			<h:commandButton value="#{msgs.authenticate}"
+				action="#{prescriptionAuthentication.authenticate('prescription-fill-authenticated.seam')}" />
+			<f:verbatim>&#160;</f:verbatim>
+			<h:commandButton id="back" value="#{msgs.back}" action="back"
+				immediate="true" />
+		</h:form>
 
 	</ui:define>
 

@@ -8,14 +8,13 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 
 	<ui:define name="content">
-		<h1>#{msgs.admin}</h1>
+		<h1>#{msgs.pharmacist}</h1>
 
 		<h2>#{msgs.overview}</h2>
 
-		<h:form>
-			<h:commandLink id="search" value="#{msgs.search}" action="search" />
-		</h:form>
-
+		<ul>
+			<li><a href="./prescription-fill.seam">#{msgs.fillPrescription}</a></li>
+		</ul>
 
 	</ui:define>
 

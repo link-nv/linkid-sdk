@@ -31,10 +31,10 @@ public class PrescriptionAuthenticationBean implements
 	@In(create = true)
 	private FacesMessages facesMessages;
 
-	public String authenticate() {
-		log.debug("authentication");
+	public String authenticate(String target) {
+		log.debug("authentication for target: #0", target);
 		String result = SafeOnlineLoginUtils.login(this.facesMessages,
-				this.log, "prescription-authenticated.seam");
+				this.log, target);
 		return result;
 	}
 }

@@ -12,6 +12,9 @@
 			<supported-locale>nl</supported-locale>
 		</locale-config>
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+		<view-handler>
+			org.jboss.seam.ui.facelet.SeamFaceletViewHandler
+		</view-handler>
 	</application>
 
 	<lifecycle>
@@ -73,6 +76,44 @@
 		<navigation-case>
 			<from-outcome>created</from-outcome>
 			<to-view-id>/care-provider.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/prescription-fill.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/pharmacist.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>
+			/prescription-fill-authenticated.xhtml
+		</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/prescription-fill.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view</from-outcome>
+			<to-view-id>/prescription-fill-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/prescription-fill-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>
+				/prescription-fill-authenticated.xhtml
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>filled</from-outcome>
+			<to-view-id>
+				/prescription-fill-authenticated.xhtml
+			</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

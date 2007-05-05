@@ -8,17 +8,28 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 
 	<ui:define name="content">
-		<h1>#{msgs.admin}</h1>
+		<h1>#{msgs.careProvider}</h1>
 
-		<h2>#{msgs.overview}</h2>
+		<h2>#{msgs.fillPrescription}</h2>
+
+		<p>#{msgs.patient}: #{patient}</p>
 
 		<h:form>
-			<h:commandLink id="search" value="#{msgs.search}" action="search" />
+			<h:dataTable value="#{prescriptions}" var="item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{msgs.prescriptions}" />
+					</f:facet>
+					<h:commandLink
+						value="#{item.id}, #{item.creationDate}, #{item.careProvider}"
+						action="#{prescriptionFill.view}" />
+				</h:column>
+			</h:dataTable>
+
+			<h:commandButton value="#{msgs.back}" action="back" />
 		</h:form>
 
-
 	</ui:define>
-
 
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml" />

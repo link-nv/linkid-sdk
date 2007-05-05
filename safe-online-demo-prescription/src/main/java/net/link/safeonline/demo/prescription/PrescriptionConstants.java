@@ -22,4 +22,6 @@ public class PrescriptionConstants {
 	public static final String CARE_PROVIDER_ROLE = "care-provider";
 
 	public static final String PHARMACIST_ROLE = "pharmacist";
+
+	public static final String ENTITY_MANAGER = "DemoPrescriptionEntityManager";
 }

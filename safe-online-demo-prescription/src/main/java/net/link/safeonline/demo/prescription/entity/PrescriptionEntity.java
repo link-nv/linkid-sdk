@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,6 +47,10 @@ public class PrescriptionEntity implements Serializable {
 	private String careProvider;
 
 	private boolean filled;
+
+	private String pharmacist;
+
+	private Date filledDate;
 
 	private List<PrescriptionMedicineEntity> medicines;
 
@@ -93,12 +98,29 @@ public class PrescriptionEntity implements Serializable {
 		this.patient = patient;
 	}
 
-	@OneToMany(mappedBy = "prescription", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "prescription", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 	public List<PrescriptionMedicineEntity> getMedicines() {
 		return this.medicines;
 	}
 
 	public void setMedicines(List<PrescriptionMedicineEntity> medicines) {
 		this.medicines = medicines;
+	}
+
+	public String getPharmacist() {
+		return this.pharmacist;
+	}
+
+	public void setPharmacist(String pharmacist) {
+		this.pharmacist = pharmacist;
+	}
+
+	@Temporal(value = TemporalType.TIMESTAMP)
+	public Date getFilledDate() {
+		return this.filledDate;
+	}
+
+	public void setFilledDate(Date filledDate) {
+		this.filledDate = filledDate;
 	}
 }

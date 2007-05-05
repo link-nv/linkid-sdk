@@ -1,8 +1,10 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:s="http://jboss.com/products/seam/taglib">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 
@@ -15,7 +17,7 @@
 			<p>#{msgs.insertCard}</p>
 
 			<h:commandButton value="#{msgs.authenticate}"
-				action="#{prescriptionAuthentication.authenticate}" />
+				action="#{prescriptionAuthentication.authenticate('prescription-authenticated.seam')}" />
 			<f:verbatim>&#160;</f:verbatim>
 			<h:commandButton id="back" value="#{msgs.back}" action="back"
 				immediate="true" />

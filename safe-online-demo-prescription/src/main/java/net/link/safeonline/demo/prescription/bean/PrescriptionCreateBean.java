@@ -75,7 +75,7 @@ public class PrescriptionCreateBean implements PrescriptionCreate {
 	@In(value = "patient", required = false)
 	private String patient;
 
-	@PersistenceContext(unitName = "DemoPrescriptionEntityManager")
+	@PersistenceContext(unitName = PrescriptionConstants.ENTITY_MANAGER)
 	private EntityManager entityManager;
 
 	@Resource
