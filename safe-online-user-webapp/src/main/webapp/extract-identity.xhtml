@@ -14,12 +14,12 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>Extract Identity from Belgian eID Card</h1>
+		<h2>Extract Identity from Belgian eID Card</h2>
 
 		<applet name="IdentityApplet"
 			code="net.link.safeonline.identity.IdentityApplet.class"
 			archive="safe-online-identity-applet-package.jar" width="400"
-			height="400">
+			height="200">
 			<param name="SmartCardConfig" value="beid" />
 			<param name="ServletPath" value="identity/" />
 			<param name="TargetPath" value="devices.seam" />

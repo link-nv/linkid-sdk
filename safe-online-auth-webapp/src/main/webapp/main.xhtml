@@ -13,6 +13,10 @@
 	</ui:define>
 
 	<ui:define name="content">
+		<div class="infobox">
+			<ui:include src="/WEB-INF/incl/appinfo.xhtml" />
+		</div>
+		<div>
 		<p>#{msgs.selectDevice}:</p>
 
 		<h:form>
@@ -26,12 +30,7 @@
 
 			<h:commandButton action="#{device.next}" id="next"
 				value="#{msgs.next}" />
-		</h:form>
-
-	</ui:define>
-
-	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/appinfo.xhtml" />
+		</h:form></div>
 	</ui:define>
 </ui:composition>
 </body>

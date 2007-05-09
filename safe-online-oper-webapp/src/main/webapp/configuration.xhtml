@@ -17,7 +17,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.configuration}</h1>
+		<h2>#{msgs.configuration}</h2>
 
 		<f:facet name="aroundInvalidField">
 			<s:span styleClass="error" />
@@ -25,14 +25,14 @@
 
 		<h:form>
 			<t:dataTable id="group-data" var="group" value="#{configGroupList}"
-				preserveDataModel="false" styleClass="listingTable">
+				preserveDataModel="false" styleClass="configTable" columnClasses="configColumn">
 				<h:column>
 					<h2>#{group.name}</h2>
 				</h:column>
 				<h:column>
 					<t:dataTable id="config-data" var="item"
 						value="#{group.configItems}" preserveDataModel="false"
-						styleClass="listingTable">
+						styleClass="configTable" columnClasses="configColumn">
 						<h:column>
 							<f:facet name="header">#{msgs.name}</f:facet>
 							#{item.name}

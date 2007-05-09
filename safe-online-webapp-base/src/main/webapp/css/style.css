@@ -1,6 +1,11 @@
 h1 {
 	font-size: 24px;
-	color: #aaaaff;
+	color: #90e027;
+}
+
+h2 {
+	font-size: 12px;
+	color: #90e027;
 }
 
 body {
@@ -8,16 +13,20 @@ body {
 	font-size: 12px;
 	font-weight: normal;
 	color: #000000;
-	background-color: #FFFFFF;
+	background-color: #fffff3;
 }
 
 a {
 	text-decoration: none;
-	color: #00f;
+	color: #fffff3;
 }
 
 input {
 	border: 1px solid;
+}
+
+table {
+	font-size: 12px;
 }
 
 a:hover {
@@ -42,30 +51,41 @@ a:visited {
 /* ids */
 #document {
 	height: 100%;
+	width: 820px;
+	position: relative;
+	margin-right: auto;
+	margin-left: auto;
 }
 
 #header {
-	position: relative;
 	height: 60px;
 	text-align: left;
 	font-size: 36px;
 	font-weight: normal;
+	padding-left: 50px;
+	background: url(file:///Users/woody/Desktop/border-top.png) no-repeat 0 30px;
+	margin-bottom: 5px;
+	position: relative;
+	top: 14px;
 }
 
 #footer {
 	clear: both;
 	float: left;
-	width: 100%;
-	text-align: right;
+	width: 820px;
+	text-align: center;
 	display: block;
-	padding: 10px 5px 5px 5px;
-	border-top: 1px solid #eaeaea;
 	color: #ccc;
 	font-size: x-small;
+	background: url(../img/border-bottom.png) no-repeat;
+	padding: 35px 5px 5px;
 }
 
 #container {
-	padding: 15px 5px;
+	width: 815px;
+	background: url(../img/border-straight.png) repeat-y;
+	height: 300px;
+	padding: 15px 5px 15px 30px;
 }
 
 #sidebar {
@@ -73,24 +93,31 @@ a:visited {
 	margin-top: 11px;
 	margin-bottom: 12px;
 	text-align: center;
-	background-color: #E0E0E0;
-	padding-left: 10px;
-	padding-right: 10px;
-	padding-top: 10px;
-	border: 1px solid;
+	background-color: #90e027;
+	border-style: dotted;
+	border-width: 1px;
+	padding: 10px;
+	margin-right: 50px;
+	width: 15%;
 }
 
 #content {
-	margin-right: 200px;
+	text-align: justify;
+	overflow: auto;
+	height: 100%;
+	visibility: visible;
+	margin-right: 15px;
+}
+
+#sidebar a {
+	color: #fffff3;
 }
 
 .nav {
-	position: relative;
-	padding: 1px 20px 0 20px;
-	border-top: 1px solid #c0c0c0;
-	border-bottom: 1px solid #c0c0c0;
-	line-height: normal;
 	height: 25px;
+	width: 820px;
+	padding-left: 10px;
+	background: url(../img/border-straight.png) repeat-y 0 0;
 }
 
 .nav ul {
@@ -120,52 +147,81 @@ a:visited {
 }
 
 .nav li a:hover {
-	color: #044c9c;
-	background-color: #eee;
-}
-
-.nav .current {
-	border-bottom: 1px solid #fff;
-	background-color: #eee;
+	color: #90e027;
+	text-decoration: underline;
 }
 
 .nav .current a {
-	color: #aaaaff;
-	background: #eee;
-}
-
-.nav .current a {
-	text-decoration: none;
+	color: #90e027;
+	text-decoration: underline;
 }
 
 .subcolumn1-2 {
 	float: left;
-	width: 50%;
+	width: 48%;
+	text-align: left;
+}
+
+.subcolumn1-2 a {
+	color:  #90e027;
+}
+
+.subcolumn1-2 a:hover {
+	text-decoration: underline;
 }
 
 .subcolumn2-2 {
 	float: right;
-	width: 50%;
+	width: 48%;
+}
+
+.subcolumn2-2 a {
+	color:  #90e027;
+}
+
+.subcolumn2-2 a:hover {
+	text-decoration: underline;
 }
 
 .listingTable {
-	border-style: none;
+	background-color:  #FFFFFF;
+	color:  #000000;
+	font-size: 12px;
+	border: 1px dotted #90e027;
 }
 
-.listingTable_Row1 {
-	background-color: #FFFFFF;
+.ListingTable a {
+	color: #000000;	
 }
 
-.listingTable_Row2 {
-	background-color: #F0F0F0;
+.ListingTable a:hover {
+	color: #90e027;	
 }
 
-.listingTable_ColumnTop {
-	text-align: left;
-	vertical-align: top;
-	background-color: #D0D0D0;
+.ListingTable_Row1:hover {
+	background-color: #eeede3;
+	border: 1px solid #90e027;
 }
 
-.listingTable_Column {
-	
+.ListingTable_Row2:hover {
+	background-color: #eeede3;
+	border: 1px solid #90e027;
+}
+
+.myFaces_panelTabbedPane {
+	width: 100%;
+}
+
+.infobox {
+	width: 500px;
+	border: 1px dotted #90e027;
+}
+
+.configTable {
+	width:  100%;
+	border: 1px dotted #90e027;
+}
+
+.configColumn {
+	width: 50%;
 }
