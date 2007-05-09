@@ -15,6 +15,7 @@ import javax.faces.component.UIInput;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.faces.validator.Validator;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.AttributeDO;
@@ -37,6 +38,8 @@ public class AttributeInputComponent extends UIInput {
 
 	public AttributeInputComponent() {
 		setRendererType(null);
+		Validator attributeValidator = new AttributeValidator();
+		addValidator(attributeValidator);
 	}
 
 	@Override

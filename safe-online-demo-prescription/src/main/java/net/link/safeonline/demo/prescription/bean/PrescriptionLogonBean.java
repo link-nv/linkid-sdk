@@ -46,6 +46,7 @@ public class PrescriptionLogonBean implements PrescriptionLogon {
 		return "logout-success";
 	}
 
+	@SuppressWarnings("unchecked")
 	private void activateRole(String role) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().put("role", role);

@@ -23,6 +23,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.AttributeProviderManagerService;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
@@ -264,8 +265,10 @@ public class AuthenticationTest extends TestCase {
 
 		IntegrationTestUtils.login(userLogin, userPassword);
 
-		identityService.saveAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
-				userName);
+		AttributeDO attribute = new AttributeDO(
+				SafeOnlineConstants.NAME_ATTRIBUTE, "string");
+		attribute.setStringValue(userName);
+		identityService.saveAttribute(attribute);
 		String resultName = identityService
 				.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(userName, resultName);
@@ -478,9 +481,11 @@ public class AuthenticationTest extends TestCase {
 		IdentityService identityService = getIdentityService(initialContext);
 
 		// operate: cannot retrieve password attribute
+		AttributeDO attribute = new AttributeDO(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, "string");
+		attribute.setStringValue("test-password");
 		try {
-			identityService.saveAttribute(
-					SafeOnlineConstants.PASSWORD_ATTRIBUTE, "test-password");
+			identityService.saveAttribute(attribute);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
@@ -510,8 +515,10 @@ public class AuthenticationTest extends TestCase {
 
 		// operate: save name attribute
 		IntegrationTestUtils.login(login, password);
-		identityService.saveAttribute(SafeOnlineConstants.NAME_ATTRIBUTE,
-				testName);
+		AttributeDO attribute = new AttributeDO(
+				SafeOnlineConstants.NAME_ATTRIBUTE, "string");
+		attribute.setStringValue(testName);
+		identityService.saveAttribute(attribute);
 
 		// operate: register new attribute type
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
@@ -564,7 +571,9 @@ public class AuthenticationTest extends TestCase {
 
 		// operate: set attribute
 		IntegrationTestUtils.login(login, password);
-		identityService.saveAttribute(testAttributeName, testAttributeValue);
+		AttributeDO attributeDO = new AttributeDO(testAttributeName, "string");
+		attribute.setStringValue(testAttributeValue);
+		identityService.saveAttribute(attributeDO);
 
 		// operate: retrieve all attributes
 		resultAttributes = this.attributeClient.getAttributeValues(login);

@@ -22,4 +22,11 @@
 		</component-class>
 	</component>
 
+	<validator>
+		<validator-id>net.link.validator.attribute</validator-id>
+		<validator-class>
+			net.link.safeonline.taglib.AttributeValidator
+		</validator-class>
+	</validator>
+
 </faces-config>
