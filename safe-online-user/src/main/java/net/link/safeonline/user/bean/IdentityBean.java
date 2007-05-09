@@ -115,9 +115,8 @@ public class IdentityBean implements Identity {
 	public String save() {
 		String name = this.selectedAttribute.getName();
 		LOG.debug("save attribute: " + name);
-		String value = this.selectedAttribute.getValue();
 		try {
-			this.identityService.saveAttribute(name, value);
+			this.identityService.saveAttribute(this.selectedAttribute);
 		} catch (PermissionDeniedException e) {
 			LOG.error("user not allowed to edit value for attribute: " + name);
 			return null;

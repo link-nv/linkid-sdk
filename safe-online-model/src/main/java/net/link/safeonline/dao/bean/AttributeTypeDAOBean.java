@@ -85,6 +85,9 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		 * Manage relationships.
 		 */
 		newAttributeTypeDescription.setAttributeType(attributeType);
+		attributeType.getDescriptions().put(
+				newAttributeTypeDescription.getLanguage(),
+				newAttributeTypeDescription);
 		/*
 		 * Persist.
 		 */
@@ -93,6 +96,15 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
 	public void removeDescription(
 			AttributeTypeDescriptionEntity attributeTypeDescription) {
+		/*
+		 * Manage relationships.
+		 */
+		String language = attributeTypeDescription.getLanguage();
+		attributeTypeDescription.getAttributeType().getDescriptions().remove(
+				language);
+		/*
+		 * Remove from database.
+		 */
 		this.entityManager.remove(attributeTypeDescription);
 	}
 

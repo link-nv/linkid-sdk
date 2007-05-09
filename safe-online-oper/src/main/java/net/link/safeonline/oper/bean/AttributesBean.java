@@ -7,12 +7,14 @@
 
 package net.link.safeonline.oper.bean;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -78,7 +80,6 @@ public class AttributesBean implements Attributes {
 	// TODO: configure roles same way as the core
 	public String add() {
 		LOG.debug("add: " + this.newAttributeType);
-		this.newAttributeType.setType("string");
 		try {
 			this.attributeTypeService.add(this.newAttributeType);
 		} catch (ExistingAttributeTypeException e) {
@@ -100,5 +101,14 @@ public class AttributesBean implements Attributes {
 	public String view() {
 		LOG.debug("view: " + this.selectedAttributeType.getName());
 		return "view";
+	}
+
+	@Factory("datatypes")
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public List<SelectItem> datatypesFactory() {
+		List<SelectItem> datatypes = new LinkedList<SelectItem>();
+		datatypes.add(new SelectItem("string"));
+		datatypes.add(new SelectItem("boolean"));
+		return datatypes;
 	}
 }

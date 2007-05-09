@@ -58,10 +58,12 @@ public class MissingAttributesBean implements MissingAttributes {
 	@In(required = true)
 	private String username;
 
-	@DataModel("missingAttributeList")
+	public static final String MISSING_ATTRIBUTE_LIST = "missingAttributeList";
+
+	@DataModel(MISSING_ATTRIBUTE_LIST)
 	private List<AttributeDO> missingAttributeList;
 
-	@Factory("missingAttributeList")
+	@Factory(MISSING_ATTRIBUTE_LIST)
 	public void missingAttributeListFactory() {
 		LOG.debug("missing attribute list factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -85,12 +87,11 @@ public class MissingAttributesBean implements MissingAttributes {
 	public String save() {
 		LOG.debug("save");
 		for (AttributeDO attribute : this.missingAttributeList) {
-			String name = attribute.getName();
-			String value = attribute.getValue();
 			try {
-				this.identityService.saveAttribute(name, value);
+				this.identityService.saveAttribute(attribute);
 			} catch (PermissionDeniedException e) {
-				String msg = "permission denied for attribute: " + name;
+				String msg = "permission denied for attribute: "
+						+ attribute.getName();
 				LOG.debug(msg);
 				this.facesMessages.add(msg);
 				return null;

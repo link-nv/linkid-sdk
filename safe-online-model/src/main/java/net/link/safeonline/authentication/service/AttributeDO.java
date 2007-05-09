@@ -11,36 +11,48 @@ import java.io.Serializable;
 
 /**
  * Attribute Data Object. Used to transfer data between service and user
- * application.
+ * application. This has been done to make life in the presentation layer
+ * easier.
  * 
  * @author fcorneli
  * 
  */
-public class AttributeDO implements Serializable {
+public class AttributeDO implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String name;
 
+	private String type;
+
 	private String humanReadableName;
 
 	private String description;
-
-	private String value;
 
 	private boolean editable;
 
 	private boolean dataMining;
 
-	public AttributeDO(String name, String humanReadableName,
-			String description, String value, boolean editable,
-			boolean dataMining) {
+	private String stringValue;
+
+	private Boolean booleanValue;
+
+	public AttributeDO(String name, String type, String humanReadableName,
+			String description, boolean editable, boolean dataMining,
+			String stringValue, Boolean booleanValue) {
 		this.name = name;
+		this.type = type;
 		this.humanReadableName = humanReadableName;
 		this.description = description;
-		this.value = value;
 		this.editable = editable;
 		this.dataMining = dataMining;
+		this.stringValue = stringValue;
+		this.booleanValue = booleanValue;
+	}
+
+	public AttributeDO(String name, String type) {
+		this.name = name;
+		this.type = type;
 	}
 
 	/**
@@ -56,12 +68,12 @@ public class AttributeDO implements Serializable {
 		this.name = name;
 	}
 
-	public String getValue() {
-		return this.value;
+	public String getStringValue() {
+		return this.stringValue;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setStringValue(String value) {
+		this.stringValue = value;
 	}
 
 	public boolean isEditable() {
@@ -80,8 +92,18 @@ public class AttributeDO implements Serializable {
 		this.description = description;
 	}
 
+	/**
+	 * Gives back the human readable name of the attribute type corresponding
+	 * with this attribute. If the i18n name is <code>null</code> this method
+	 * gives back the URN machine name.
+	 * 
+	 * @return
+	 */
 	public String getHumanReadableName() {
-		return this.humanReadableName;
+		if (null != this.humanReadableName) {
+			return this.humanReadableName;
+		}
+		return this.name;
 	}
 
 	public void setHumanReadableName(String humanReadableName) {
@@ -94,5 +116,55 @@ public class AttributeDO implements Serializable {
 
 	public void setDataMining(boolean dataMining) {
 		this.dataMining = dataMining;
+	}
+
+	/**
+	 * Gets the boolean value. Can be <code>null</code>.
+	 * 
+	 * @return
+	 */
+	public Boolean getBooleanValue() {
+		return this.booleanValue;
+	}
+
+	public void setBooleanValue(Boolean booleanValue) {
+		this.booleanValue = booleanValue;
+	}
+
+	/**
+	 * Gets the value. The {@link #getValue()} and
+	 * {@link #setValue(AttributeDO)} methods are used by the presentation layer
+	 * to allow for easy Expression Language expressions in the JSF pages.
+	 * 
+	 * @return
+	 */
+	public AttributeDO getValue() {
+		return this;
+	}
+
+	/**
+	 * Sets the value. Here we do a deep-copy of the values.
+	 * 
+	 * @param value
+	 */
+	public void setValue(AttributeDO value) {
+		this.booleanValue = value.booleanValue;
+		this.stringValue = value.stringValue;
+	}
+
+	public String getType() {
+		return this.type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	@Override
+	public AttributeDO clone() {
+		AttributeDO attribute = new AttributeDO(this.name, this.type,
+				this.humanReadableName, this.description, this.editable,
+				this.dataMining, this.stringValue, this.booleanValue);
+		return attribute;
 	}
 }

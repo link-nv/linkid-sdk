@@ -112,9 +112,10 @@ public class IdentityServiceBean implements IdentityService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void saveAttribute(String attributeName, String attributeValue)
+	public void saveAttribute(AttributeDO attribute)
 			throws PermissionDeniedException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		String attributeName = attribute.getName();
 		LOG.debug("save attribute " + attributeName + " for entity with login "
 				+ subject);
 
@@ -128,8 +129,16 @@ public class IdentityServiceBean implements IdentityService,
 			throw new PermissionDeniedException();
 		}
 
-		this.attributeDAO.addOrUpdateAttribute(attributeType, subject,
-				attributeValue);
+		String type = attributeType.getType();
+		if (SafeOnlineConstants.STRING_TYPE.equals(type)) {
+			String attributeValue = attribute.getStringValue();
+			this.attributeDAO.addOrUpdateAttribute(attributeType, subject,
+					attributeValue);
+		} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(type)) {
+			Boolean attributeValue = attribute.getBooleanValue();
+			this.attributeDAO.addOrUpdateAttribute(attributeType, subject,
+					attributeValue);
+		}
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -137,7 +146,7 @@ public class IdentityServiceBean implements IdentityService,
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		LOG.debug("get attributes for " + subject.getLogin());
 		List<AttributeEntity> attributes = this.attributeDAO
-				.listAttributes(subject);
+				.listVisibleAttributes(subject);
 		LOG.debug("number of attributes: " + attributes.size());
 		List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
 		for (AttributeEntity attribute : attributes) {
@@ -145,13 +154,11 @@ public class IdentityServiceBean implements IdentityService,
 					+ attribute.getPk().getAttributeType());
 			AttributeTypeEntity attributeType = attribute.getAttributeType();
 			LOG.debug("attribute type: " + attributeType.getName());
-			if (false == attributeType.isUserVisible()) {
-				LOG.debug("attribute not user visible");
-				continue;
-			}
 			String name = attributeType.getName();
-			String value = attribute.getStringValue();
+			String stringValue = attribute.getStringValue();
+			Boolean booleanValue = attribute.getBooleanValue();
 			boolean editable = attributeType.isUserEditable();
+			String datatype = attributeType.getType();
 
 			String humanReadableName = null;
 			String description = null;
@@ -168,8 +175,9 @@ public class IdentityServiceBean implements IdentityService,
 				}
 			}
 
-			AttributeDO attributeView = new AttributeDO(name,
-					humanReadableName, description, value, editable, true);
+			AttributeDO attributeView = new AttributeDO(name, datatype,
+					humanReadableName, description, editable, true,
+					stringValue, booleanValue);
 			attributesView.add(attributeView);
 		}
 		return attributesView;
@@ -334,6 +342,7 @@ public class IdentityServiceBean implements IdentityService,
 	public List<AttributeDO> getMissingAttributes(String applicationName,
 			Locale locale) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException {
+		// TODO: simplify this method implementation
 		LOG.debug("get missing attribute for application: " + applicationName);
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
@@ -379,8 +388,9 @@ public class IdentityServiceBean implements IdentityService,
 		for (String missingAttributeName : missingAttributeNames) {
 			String humanReadableName = null;
 			String description = null;
-			String value = null;
-			boolean editable = true;
+			AttributeTypeEntity attributeType = this.attributeTypeDAO
+					.findAttributeType(missingAttributeName);
+			String datatype = attributeType.getType();
 			if (null != locale) {
 				String language = locale.getLanguage();
 				LOG.debug("trying language: " + language);
@@ -394,8 +404,8 @@ public class IdentityServiceBean implements IdentityService,
 				}
 			}
 			AttributeDO missingAttribute = new AttributeDO(
-					missingAttributeName, humanReadableName, description,
-					value, editable, true);
+					missingAttributeName, datatype, humanReadableName,
+					description, true, true, null, null);
 			missingAttributes.add(missingAttribute);
 		}
 

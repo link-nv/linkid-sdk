@@ -294,6 +294,7 @@
 			<url>http://buildserver/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
@@ -310,6 +311,7 @@
 			<layout>legacy</layout>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
@@ -334,6 +336,7 @@
 			<url>http://snapshots.repository.codehaus.org/</url>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
 			</snapshots>
 			<releases>
 				<enabled>false</enabled>

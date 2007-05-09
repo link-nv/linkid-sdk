@@ -14,9 +14,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import junit.framework.TestCase;
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -220,7 +222,10 @@ public class AttributeServiceBeanTest extends TestCase {
 				testSubjectLogin, "user");
 		identityService.confirmIdentity(testApplicationName);
 
-		identityService.saveAttribute(testAttributeName, testAttributeValue);
+		AttributeDO testAttribute = new AttributeDO(testAttributeName,
+				SafeOnlineConstants.STRING_TYPE);
+		testAttribute.setStringValue(testAttributeValue);
+		identityService.saveAttribute(testAttribute);
 
 		AttributeService attributeService = EJBTestUtils.newInstance(
 				AttributeServiceBean.class,
@@ -287,7 +292,10 @@ public class AttributeServiceBeanTest extends TestCase {
 				testSubjectLogin, "user");
 		identityService.confirmIdentity(testApplicationName);
 
-		identityService.saveAttribute(testAttributeName, testAttributeValue);
+		AttributeDO testAttribute = new AttributeDO(testAttributeName,
+				SafeOnlineConstants.STRING_TYPE);
+		testAttribute.setStringValue(testAttributeValue);
+		identityService.saveAttribute(testAttribute);
 
 		AttributeService attributeService = EJBTestUtils.newInstance(
 				AttributeServiceBean.class,
@@ -352,7 +360,10 @@ public class AttributeServiceBeanTest extends TestCase {
 				testSubjectLogin, "user");
 		identityService.confirmIdentity(testApplicationName);
 
-		identityService.saveAttribute(testAttributeName, testAttributeValue);
+		AttributeDO testAttribute = new AttributeDO(testAttributeName,
+				SafeOnlineConstants.STRING_TYPE);
+		testAttribute.setStringValue(testAttributeValue);
+		identityService.saveAttribute(testAttribute);
 
 		AttributeService attributeService = EJBTestUtils.newInstance(
 				AttributeServiceBean.class,

@@ -8,13 +8,17 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
+import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
@@ -55,8 +59,10 @@ public class AttributeTypeEntity implements Serializable {
 
 	private boolean userEditable;
 
+	private Map<String, AttributeTypeDescriptionEntity> descriptions;
+
 	public AttributeTypeEntity() {
-		// empty
+		this(null, null, false, false);
 	}
 
 	public AttributeTypeEntity(String name, String type, boolean userVisible,
@@ -65,6 +71,7 @@ public class AttributeTypeEntity implements Serializable {
 		this.type = type;
 		this.userVisible = userVisible;
 		this.userEditable = userEditable;
+		this.descriptions = new HashMap<String, AttributeTypeDescriptionEntity>();
 	}
 
 	@Id
@@ -119,6 +126,17 @@ public class AttributeTypeEntity implements Serializable {
 		this.userEditable = userEditable;
 	}
 
+	@OneToMany(mappedBy = "attributeType")
+	@MapKey(name = "language")
+	public Map<String, AttributeTypeDescriptionEntity> getDescriptions() {
+		return this.descriptions;
+	}
+
+	public void setDescriptions(
+			Map<String, AttributeTypeDescriptionEntity> descriptions) {
+		this.descriptions = descriptions;
+	}
+
 	public static Query createQueryAll(EntityManager entityManager) {
 		Query query = entityManager.createNamedQuery(QUERY_WHERE_ALL);
 		return query;
@@ -131,5 +149,4 @@ public class AttributeTypeEntity implements Serializable {
 		query.setParameter("application", application);
 		return query;
 	}
-
 }

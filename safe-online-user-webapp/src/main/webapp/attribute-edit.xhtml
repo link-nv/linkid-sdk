@@ -19,14 +19,13 @@
 			<table>
 				<tr>
 					<th>#{msgs.name}:</th>
-					<td><h:outputText value="#{selectedAttribute.name}"
-						rendered="#{empty selectedAttribute.humanReadableName}" /> <h:outputText
-						value="#{selectedAttribute.humanReadableName}"
-						rendered="#{!empty selectedAttribute.humanReadableName}" /></td>
+					<td><h:outputText
+						value="#{selectedAttribute.humanReadableName}" /></td>
 				</tr>
 				<tr>
 					<th><h:outputLabel for="value" value="#{msgs.value}" />:</th>
-					<td><h:inputText id="value" value="#{selectedAttribute.value}" /></td>
+					<td><so:inputAttribute id="value"
+						value="#{selectedAttribute.value}" /></td>
 				</tr>
 			</table>
 
@@ -38,6 +37,7 @@
 		</h:form>
 
 	</ui:define>
+
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
 			<ui:param name="loginComp" value="#{login}" />

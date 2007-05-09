@@ -24,13 +24,18 @@ public interface AttributeDAO {
 	AttributeEntity getAttribute(String attributeTypeName, String subjectLogin)
 			throws AttributeNotFoundException;
 
-	void addAttribute(AttributeTypeEntity attributeType, SubjectEntity subject,
-			String stringValue);
+	AttributeEntity addAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, String stringValue);
 
 	List<AttributeEntity> listAttributes(SubjectEntity subject);
 
+	List<AttributeEntity> listVisibleAttributes(SubjectEntity subject);
+
 	void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, String stringValue);
+
+	void addOrUpdateAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, Boolean booleanValue);
 
 	AttributeEntity findAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject);

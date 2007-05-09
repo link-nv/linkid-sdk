@@ -38,6 +38,7 @@ public class AttributeTypeDescriptionDecoratorBean implements
 		}
 		for (AttributeTypeEntity attributeType : attributeTypes) {
 			String name = attributeType.getName();
+			String datatype = attributeType.getType();
 			String humanReadableName = null;
 			String description = null;
 			if (null != language) {
@@ -49,8 +50,9 @@ public class AttributeTypeDescriptionDecoratorBean implements
 					description = attributeTypeDescription.getDescription();
 				}
 			}
-			AttributeDO attribute = new AttributeDO(name, humanReadableName,
-					description, null, attributeType.isUserEditable(), true);
+			AttributeDO attribute = new AttributeDO(name, datatype,
+					humanReadableName, description, attributeType
+							.isUserEditable(), true, null, null);
 			attributes.add(attribute);
 		}
 		return attributes;
@@ -66,6 +68,7 @@ public class AttributeTypeDescriptionDecoratorBean implements
 		}
 		for (ApplicationIdentityAttributeEntity identityAttribute : identityAttributes) {
 			String name = identityAttribute.getAttributeTypeName();
+			String datatype = identityAttribute.getAttributeType().getType();
 			String humanReadableName = null;
 			String description = null;
 			if (null != language) {
@@ -77,9 +80,10 @@ public class AttributeTypeDescriptionDecoratorBean implements
 					description = attributeTypeDescription.getDescription();
 				}
 			}
-			AttributeDO attribute = new AttributeDO(name, humanReadableName,
-					description, null, identityAttribute.getAttributeType()
-							.isUserEditable(), identityAttribute.isDataMining());
+			AttributeDO attribute = new AttributeDO(name, datatype,
+					humanReadableName, description, identityAttribute
+							.getAttributeType().isUserEditable(),
+					identityAttribute.isDataMining(), null, null);
 			attributes.add(attribute);
 		}
 		return attributes;

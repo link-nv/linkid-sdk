@@ -23,16 +23,27 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT;
+import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_VISIBLE;
+import static net.link.safeonline.entity.AttributeEntity.SUBJECT_PARAM;
 
 @Entity
 @Table(name = "attribute")
-@NamedQueries( { @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT attribute FROM AttributeEntity AS attribute "
-		+ "WHERE attribute.subject = :subject") })
+@NamedQueries( {
+		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT attribute FROM AttributeEntity AS attribute "
+				+ "WHERE attribute.subject = :" + SUBJECT_PARAM),
+		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_VISIBLE, query = "SELECT attribute FROM AttributeEntity AS attribute "
+				+ "WHERE attribute.subject = :"
+				+ SUBJECT_PARAM
+				+ " AND attribute.attributeType.userVisible = TRUE") })
 public class AttributeEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_WHERE_SUBJECT = "attr.subject";
+
+	public static final String QUERY_WHERE_SUBJECT_AND_VISIBLE = "attr.subject.visi";
+
+	public static final String SUBJECT_PARAM = "subject";
 
 	private AttributePK pk;
 
@@ -41,6 +52,8 @@ public class AttributeEntity implements Serializable {
 	private SubjectEntity subject;
 
 	private String stringValue;
+
+	private Boolean booleanValue;
 
 	public AttributeEntity() {
 		// empty
@@ -94,10 +107,26 @@ public class AttributeEntity implements Serializable {
 		this.stringValue = stringValue;
 	}
 
+	public Boolean getBooleanValue() {
+		return this.booleanValue;
+	}
+
+	public void setBooleanValue(Boolean booleanValue) {
+		this.booleanValue = booleanValue;
+	}
+
 	public static Query createQueryWhereSubject(EntityManager entityManager,
 			SubjectEntity subject) {
 		Query query = entityManager.createNamedQuery(QUERY_WHERE_SUBJECT);
-		query.setParameter("subject", subject);
+		query.setParameter(SUBJECT_PARAM, subject);
+		return query;
+	}
+
+	public static Query createQueryWhereSubjectAndVisible(
+			EntityManager entityManager, SubjectEntity subject) {
+		Query query = entityManager
+				.createNamedQuery(QUERY_WHERE_SUBJECT_AND_VISIBLE);
+		query.setParameter(SUBJECT_PARAM, subject);
 		return query;
 	}
 }

@@ -31,16 +31,13 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.attributeName}</f:facet>
-					<h:outputText value="#{item.name}"
-						rendered="#{empty item.humanReadableName}" />
-					<h:outputText value="#{item.humanReadableName}"
-						rendered="#{!empty item.humanReadableName}" />:
+					<h:outputText value="#{item.humanReadableName}" />:
 				</h:column>
 
 				<h:column>
 					<f:facet name="header">#{msgs.attributeValue}</f:facet>
 					<s:decorate>
-						<h:inputText value="#{item.value}" required="true" />
+						<so:inputAttribute value="#{item.value}" required="true" />
 					</s:decorate>
 				</h:column>
 

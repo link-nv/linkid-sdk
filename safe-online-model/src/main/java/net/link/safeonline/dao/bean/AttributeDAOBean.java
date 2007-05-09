@@ -33,13 +33,14 @@ public class AttributeDAOBean implements AttributeDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
-	public void addAttribute(AttributeTypeEntity attributeType,
+	public AttributeEntity addAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, String stringValue) {
 		LOG.debug("add attribute " + attributeType + " for subject " + subject
 				+ " with value: " + stringValue);
 		AttributeEntity attribute = new AttributeEntity(attributeType, subject,
 				stringValue);
 		this.entityManager.persist(attribute);
+		return attribute;
 	}
 
 	public AttributeEntity findAttribute(String attributeTypeName,
@@ -63,13 +64,21 @@ public class AttributeDAOBean implements AttributeDAO {
 
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, String stringValue) {
-		AttributeEntity attribute = findAttribute(attributeType.getName(),
-				subject.getLogin());
+		AttributeEntity attribute = findAttribute(attributeType, subject);
 		if (null != attribute) {
 			attribute.setStringValue(stringValue);
 			return;
 		}
 		addAttribute(attributeType, subject, stringValue);
+	}
+
+	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, Boolean booleanValue) {
+		AttributeEntity attribute = findAttribute(attributeType, subject);
+		if (null == attribute) {
+			attribute = addAttribute(attributeType, subject, null);
+		}
+		attribute.setBooleanValue(booleanValue);
 	}
 
 	public AttributeEntity getAttribute(String attributeTypeName,
@@ -97,5 +106,13 @@ public class AttributeDAOBean implements AttributeDAO {
 			throw new AttributeNotFoundException();
 		}
 		return attribute;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AttributeEntity> listVisibleAttributes(SubjectEntity subject) {
+		Query query = AttributeEntity.createQueryWhereSubjectAndVisible(
+				this.entityManager, subject);
+		List<AttributeEntity> attributes = query.getResultList();
+		return attributes;
 	}
 }

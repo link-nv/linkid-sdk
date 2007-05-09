@@ -31,6 +31,13 @@
 							required="true" />
 					</s:decorate>*<h:message for="name" styleClass="error" /></td>
 				</tr>
+				<tr>
+					<th><h:outputLabel for="datatype" value="#{msgs.type}" />:</th>
+					<td><h:selectOneMenu id="datatype"
+						value="#{newAttributeType.type}">
+						<f:selectItems value="#{datatypes}" />
+					</h:selectOneMenu></td>
+				</tr>
 			</table>
 
 			<h:panelGrid columns="1">

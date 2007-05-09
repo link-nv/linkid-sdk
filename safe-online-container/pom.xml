@@ -148,5 +148,13 @@
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-jaxrpc</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>el-api</artifactId>
+		</dependency>
 	</dependencies>
 </project>

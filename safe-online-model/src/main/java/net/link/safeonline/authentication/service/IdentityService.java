@@ -49,17 +49,12 @@ public interface IdentityService {
 			throws PermissionDeniedException;
 
 	/**
-	 * Saves a (new) attribute value for the current user.
+	 * Saves an (new) attribute value for the current user.
 	 * 
-	 * @param attributeName
-	 *            the name of the attribute.
-	 * @param attributeValue
-	 *            the value of the attribute.
 	 * @throws PermissionDeniedException
 	 *             if the user is not allowed to edit the attribute.
 	 */
-	void saveAttribute(String attributeName, String attributeValue)
-			throws PermissionDeniedException;
+	void saveAttribute(AttributeDO attribute) throws PermissionDeniedException;
 
 	/**
 	 * Gives back a list of attributes for the current user. Only the attributes
