@@ -29,7 +29,9 @@ public interface AttributeService {
 	/**
 	 * Gives back the value of an attribute of a certain subject. The subject
 	 * must have confirmed attribute usage before the application is allowed to
-	 * access the attribute value.
+	 * access the attribute value. The returned object can be a {@link String}
+	 * or {@link Boolean} depending on the actual datatype used by corresponding
+	 * attribute type of the requested attribute.
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
@@ -38,7 +40,7 @@ public interface AttributeService {
 	 * @throws PermissionDeniedException
 	 * @throws SubjectNotFoundException
 	 */
-	String getConfirmedAttribute(String subjectLogin, String attributeName)
+	Object getConfirmedAttributeValue(String subjectLogin, String attributeName)
 			throws AttributeNotFoundException, PermissionDeniedException,
 			SubjectNotFoundException;
 
@@ -48,13 +50,15 @@ public interface AttributeService {
 	 * and the attributes returned are those that have been confirmed by the
 	 * user. It is possible that a user already confirmed an attribute usage
 	 * over an attribute that he still needs to define. In this case the
-	 * resulting map will not contain an entry for the missing attribute.
+	 * resulting map will not contain an entry for the missing attribute. The
+	 * type of map values depends on the actual datatype used by the
+	 * corresponding attribute type of the attribute.
 	 * 
 	 * @param subjectLogin
 	 * @return
 	 * @throws SubjectNotFoundException
 	 * @throws PermissionDeniedException
 	 */
-	Map<String, String> getConfirmedAttributes(String subjectLogin)
+	Map<String, Object> getConfirmedAttributeValues(String subjectLogin)
 			throws SubjectNotFoundException, PermissionDeniedException;
 }

@@ -71,7 +71,7 @@ public class AttributeServiceBean implements AttributeService,
 	private SubjectDAO subjectDAO;
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public String getConfirmedAttribute(String subjectLogin,
+	public Object getConfirmedAttributeValue(String subjectLogin,
 			String attributeName) throws AttributeNotFoundException,
 			PermissionDeniedException, SubjectNotFoundException {
 		LOG.debug("get attribute " + attributeName + " for login "
@@ -84,8 +84,16 @@ public class AttributeServiceBean implements AttributeService,
 		AttributeEntity attribute = this.attributeDAO.getAttribute(
 				attributeName, subjectLogin);
 
-		String value = attribute.getStringValue();
-		return value;
+		String datatype = attribute.getAttributeType().getType();
+		if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+			String value = attribute.getStringValue();
+			return value;
+		}
+		if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+			Boolean value = attribute.getBooleanValue();
+			return value;
+		}
+		throw new EJBException("datatype not supported: " + datatype);
 	}
 
 	private void checkAttributeReadPermission(String attributeName,
@@ -140,12 +148,13 @@ public class AttributeServiceBean implements AttributeService,
 					"application identity not found for version: "
 							+ confirmedIdentityVersion);
 		}
-		
+
 		/*
 		 * Filter the datamining attributes
 		 */
 		List<ApplicationIdentityAttributeEntity> attributes = new ArrayList<ApplicationIdentityAttributeEntity>();
-		for (ApplicationIdentityAttributeEntity attribute : confirmedApplicationIdentity.getAttributes()) {
+		for (ApplicationIdentityAttributeEntity attribute : confirmedApplicationIdentity
+				.getAttributes()) {
 			if (!attribute.isDataMining()) {
 				attributes.add(attribute);
 			}
@@ -154,11 +163,11 @@ public class AttributeServiceBean implements AttributeService,
 	}
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public Map<String, String> getConfirmedAttributes(String subjectLogin)
+	public Map<String, Object> getConfirmedAttributeValues(String subjectLogin)
 			throws SubjectNotFoundException, PermissionDeniedException {
 		LOG.debug("get confirmed attributes for subject: " + subjectLogin);
 		List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
-		Map<String, String> resultAttributes = new TreeMap<String, String>();
+		Map<String, Object> resultAttributes = new TreeMap<String, Object>();
 		for (ApplicationIdentityAttributeEntity confirmedAttribute : confirmedAttributes) {
 			String attributeName = confirmedAttribute.getAttributeTypeName();
 			AttributeEntity attribute = this.attributeDAO.findAttribute(
@@ -167,7 +176,16 @@ public class AttributeServiceBean implements AttributeService,
 				continue;
 			}
 			LOG.debug("confirmed attribute: " + attributeName);
-			resultAttributes.put(attributeName, attribute.getStringValue());
+			Object value;
+			String datatype = attribute.getAttributeType().getType();
+			if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+				value = attribute.getStringValue();
+			} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+				value = attribute.getBooleanValue();
+			} else {
+				throw new EJBException("datatype not supported: " + datatype);
+			}
+			resultAttributes.put(attributeName, value);
 		}
 		return resultAttributes;
 	}

@@ -173,8 +173,9 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 		// expectations
 		expect(
-				this.mockAttributeService.getConfirmedAttribute(testSubjectLogin,
-						testAttributeName)).andReturn(testAttributeValue);
+				this.mockAttributeService.getConfirmedAttributeValue(
+						testSubjectLogin, testAttributeName)).andReturn(
+				testAttributeValue);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn("test-application-name");
 
@@ -218,7 +219,9 @@ public class SAMLAttributePortImplTest extends TestCase {
 		List<Object> resultAttributeValues = resultAttribute
 				.getAttributeValue();
 		assertEquals(1, resultAttributeValues.size());
-		String resultAttributeValue = (String) resultAttributeValues.get(0);
+		Object resultAttributeValueObject = resultAttributeValues.get(0);
+		assertEquals(resultAttributeValueObject.getClass(), String.class);
+		String resultAttributeValue = (String) resultAttributeValueObject;
 		assertEquals(testAttributeValue, resultAttributeValue);
 
 		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
@@ -228,6 +231,85 @@ public class SAMLAttributePortImplTest extends TestCase {
 		marshaller.marshal(samlpObjectFactory.createResponse(response),
 				stringWriter);
 		LOG.debug("response: " + stringWriter);
+	}
+
+	public void testAttributeQueryWithBooleanValue() throws Exception {
+		// setup
+		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
+
+		AttributeQueryType request = new AttributeQueryType();
+		SubjectType subject = new SubjectType();
+		NameIDType subjectName = new NameIDType();
+		String testSubjectLogin = "test-subject-login";
+		subjectName.setValue(testSubjectLogin);
+		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
+		request.setSubject(subject);
+
+		List<AttributeType> attributes = request.getAttribute();
+		AttributeType attribute = new AttributeType();
+		String testAttributeName = "test-attribute-name";
+		attribute.setName(testAttributeName);
+		attributes.add(attribute);
+
+		Boolean testAttributeValue = Boolean.TRUE;
+		String testIssuerName = "test-issuer-name";
+
+		// stubs
+		expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
+				testIssuerName);
+
+		// expectations
+		expect(
+				this.mockAttributeService.getConfirmedAttributeValue(
+						testSubjectLogin, testAttributeName)).andReturn(
+				testAttributeValue);
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn("test-application-name");
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		ResponseType response = clientPort.attributeQuery(request);
+
+		// verify
+		verify(this.mockObjects);
+		assertNotNull(response);
+
+		List<Object> resultAssertions = response
+				.getAssertionOrEncryptedAssertion();
+		assertEquals(1, resultAssertions.size());
+		LOG.debug("assertion class: "
+				+ resultAssertions.get(0).getClass().getName());
+		AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
+		SubjectType resultSubject = resultAssertion.getSubject();
+		List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
+		assertEquals(1, resultSubjectContent.size());
+		LOG.debug("subject content type: "
+				+ resultSubjectContent.get(0).getValue().getClass().getName());
+		NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
+				.getValue();
+		assertEquals(testSubjectLogin, resultSubjectName.getValue());
+
+		List<StatementAbstractType> resultStatements = resultAssertion
+				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
+		assertEquals(1, resultStatements.size());
+		AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
+				.get(0);
+		List<Object> resultAttributes = resultAttributeStatement
+				.getAttributeOrEncryptedAttribute();
+		assertEquals(1, resultAttributes.size());
+		LOG.debug("result attribute type: "
+				+ resultAttributes.get(0).getClass().getName());
+		AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
+		assertEquals(testAttributeName, resultAttribute.getName());
+		List<Object> resultAttributeValues = resultAttribute
+				.getAttributeValue();
+		assertEquals(1, resultAttributeValues.size());
+		Object resultAttributeValueObject = resultAttributeValues.get(0);
+		assertEquals(resultAttributeValueObject.getClass(), Boolean.class);
+		Boolean resultAttributeValue = (Boolean) resultAttributeValueObject;
+		assertEquals(testAttributeValue, resultAttributeValue);
 	}
 
 	public void testAttributeQueryForNonExistingAttribute() throws Exception {
@@ -250,8 +332,8 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 		// expectations
 		expect(
-				this.mockAttributeService.getConfirmedAttribute(testSubjectLogin,
-						testAttributeName)).andThrow(
+				this.mockAttributeService.getConfirmedAttributeValue(
+						testSubjectLogin, testAttributeName)).andThrow(
 				new AttributeNotFoundException());
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn("test-application-name");

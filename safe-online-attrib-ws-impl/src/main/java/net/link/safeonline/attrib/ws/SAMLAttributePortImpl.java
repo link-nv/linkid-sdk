@@ -127,11 +127,11 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		LOG.debug("subject login: " + subjectLogin);
 
 		List<AttributeType> attributes = request.getAttribute();
-		Map<String, String> attributeMap = new HashMap<String, String>();
+		Map<String, Object> attributeMap = new HashMap<String, Object>();
 		if (0 == attributes.size()) {
 			try {
 				attributeMap = this.attributeService
-						.getConfirmedAttributes(subjectLogin);
+						.getConfirmedAttributeValues(subjectLogin);
 			} catch (SubjectNotFoundException e) {
 				ResponseType subjectNotFoundResponse = createUnknownPrincipalResponse(subjectLogin);
 				return subjectNotFoundResponse;
@@ -143,8 +143,9 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			for (AttributeType attribute : attributes) {
 				String attributeName = attribute.getName();
 				try {
-					String attributeValue = this.attributeService
-							.getConfirmedAttribute(subjectLogin, attributeName);
+					Object attributeValue = this.attributeService
+							.getConfirmedAttributeValue(subjectLogin,
+									attributeName);
 					attributeMap.put(attributeName, attributeValue);
 				} catch (AttributeNotFoundException e) {
 					LOG.error("attribute not found: " + attributeName
@@ -259,7 +260,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 	}
 
 	private AssertionType getAttributeAssertion(String subjectLogin,
-			Map<String, String> attributes) {
+			Map<String, Object> attributes) {
 		AssertionType assertion = new AssertionType();
 
 		SubjectType subject = new SubjectType();
@@ -289,9 +290,9 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		statements.add(attributeStatement);
 		List<Object> statementAttributes = attributeStatement
 				.getAttributeOrEncryptedAttribute();
-		for (Map.Entry<String, String> attribute : attributes.entrySet()) {
+		for (Map.Entry<String, Object> attribute : attributes.entrySet()) {
 			String attributeName = attribute.getKey();
-			String attributeValue = attribute.getValue();
+			Object attributeValue = attribute.getValue();
 
 			AttributeType statementAttribute = new AttributeType();
 			statementAttribute.setName(attributeName);

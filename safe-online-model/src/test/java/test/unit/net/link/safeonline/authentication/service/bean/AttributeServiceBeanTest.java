@@ -110,7 +110,7 @@ public class AttributeServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			attributeService.getConfirmedAttribute(testSubjectLogin,
+			attributeService.getConfirmedAttributeValue(testSubjectLogin,
 					testAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
@@ -166,7 +166,7 @@ public class AttributeServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			attributeService.getConfirmedAttribute(testSubjectLogin,
+			attributeService.getConfirmedAttributeValue(testSubjectLogin,
 					testAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
@@ -233,10 +233,78 @@ public class AttributeServiceBeanTest extends TestCase {
 				testApplicationName, "application");
 
 		// operate
-		String result = attributeService.getConfirmedAttribute(
+		Object result = attributeService.getConfirmedAttributeValue(
 				testSubjectLogin, testAttributeName);
 
 		// verify
+		assertEquals(testAttributeValue.getClass(), String.class);
+		assertEquals(testAttributeValue, result);
+	}
+
+	public void testGetBooleanAttributeValue() throws Exception {
+		// setup
+		String testSubjectLogin = UUID.randomUUID().toString();
+		String testAttributeName = UUID.randomUUID().toString();
+		String testApplicationName = UUID.randomUUID().toString();
+		Boolean testAttributeValue = Boolean.TRUE;
+
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(testSubjectLogin, null, null);
+
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-admin", "global-operator");
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				testAttributeName, SafeOnlineConstants.BOOLEAN_TYPE, true, true);
+		attributeTypeService.add(attributeType);
+
+		ApplicationService applicationService = EJBTestUtils.newInstance(
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-operator", "operator");
+		applicationService
+				.addApplication(
+						testApplicationName,
+						"owner",
+						null,
+						null,
+						Arrays
+								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+										testAttributeName, true, false) }));
+
+		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
+				SubscriptionServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				testSubjectLogin, "user");
+		subscriptionService.subscribe(testApplicationName);
+
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				testSubjectLogin, "user");
+		identityService.confirmIdentity(testApplicationName);
+
+		AttributeDO testAttribute = new AttributeDO(testAttributeName,
+				SafeOnlineConstants.BOOLEAN_TYPE);
+		testAttribute.setBooleanValue(testAttributeValue);
+		identityService.saveAttribute(testAttribute);
+
+		AttributeService attributeService = EJBTestUtils.newInstance(
+				AttributeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				testApplicationName, "application");
+
+		// operate
+		Object result = attributeService.getConfirmedAttributeValue(
+				testSubjectLogin, testAttributeName);
+
+		// verify
+		assertEquals(result.getClass(), Boolean.class);
 		assertEquals(testAttributeValue, result);
 	}
 
@@ -304,7 +372,7 @@ public class AttributeServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			attributeService.getConfirmedAttribute(testSubjectLogin,
+			attributeService.getConfirmedAttributeValue(testSubjectLogin,
 					unconfirmedAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
@@ -372,7 +440,7 @@ public class AttributeServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			attributeService.getConfirmedAttribute(testSubjectLogin,
+			attributeService.getConfirmedAttributeValue(testSubjectLogin,
 					testAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
