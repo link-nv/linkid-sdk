@@ -15,6 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
@@ -42,7 +43,7 @@ public class AttributeOutputComponent extends UIOutput {
 		AttributeDO attribute = (AttributeDO) getValue();
 		String type = attribute.getType();
 		AttributeValueEncoder attributeValueEncoder = getAttributeValueEncoder(type);
-		attributeValueEncoder.encode(attribute, response);
+		attributeValueEncoder.encode(attribute, response, context);
 	}
 
 	@Override
@@ -52,16 +53,16 @@ public class AttributeOutputComponent extends UIOutput {
 	}
 
 	private interface AttributeValueEncoder {
-		void encode(AttributeDO attribute, ResponseWriter response)
-				throws IOException;
+		void encode(AttributeDO attribute, ResponseWriter response,
+				FacesContext context) throws IOException;
 	}
 
 	@SupportedType(SafeOnlineConstants.STRING_TYPE)
 	public static class StringAttributeValueEncoder implements
 			AttributeValueEncoder {
 
-		public void encode(AttributeDO attribute, ResponseWriter response)
-				throws IOException {
+		public void encode(AttributeDO attribute, ResponseWriter response,
+				FacesContext context) throws IOException {
 			String value = attribute.getStringValue();
 			response.write(value);
 		}
@@ -71,11 +72,14 @@ public class AttributeOutputComponent extends UIOutput {
 	public static class BooleanAttributeValueEncoder implements
 			AttributeValueEncoder {
 
-		public void encode(AttributeDO attribute, ResponseWriter response)
-				throws IOException {
+		public void encode(AttributeDO attribute, ResponseWriter response,
+				FacesContext context) throws IOException {
 			Boolean value = attribute.getBooleanValue();
 			if (null == value) {
-				response.write("[No Value]");
+				ResourceBundle messages = AttributeComponentUtil
+						.getResourceBundle(context);
+				String noValueStr = messages.getString("noValue");
+				response.write("[" + noValueStr + "]");
 				return;
 			}
 			response.write(value.toString());

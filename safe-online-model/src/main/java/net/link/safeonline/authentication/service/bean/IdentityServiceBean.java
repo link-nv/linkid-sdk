@@ -364,18 +364,31 @@ public class IdentityServiceBean implements IdentityService,
 		}
 
 		for (AttributeEntity userAttribute : userAttributes) {
-			if (null == userAttribute.getStringValue()) {
-				/*
-				 * In this case the user still needs to input a value for the
-				 * field.
-				 */
-				continue;
-			}
-			if (userAttribute.getStringValue().length() == 0) {
-				/*
-				 * Even empty attributes must be marked as missing.
-				 */
-				continue;
+			String datatype = userAttribute.getAttributeType().getType();
+			if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+				String stringValue = userAttribute.getStringValue();
+				if (null == stringValue) {
+					/*
+					 * In this case the user still needs to input a value for
+					 * the field.
+					 */
+					continue;
+				}
+				if (stringValue.length() == 0) {
+					/*
+					 * Even empty attributes must be marked as missing.
+					 */
+					continue;
+				}
+			} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+				Boolean booleanValue = userAttribute.getBooleanValue();
+				if (null == booleanValue) {
+					/*
+					 * In this case the user still needs to input a value for
+					 * the boolean attribute.
+					 */
+					continue;
+				}
 			}
 			String attributeName = userAttribute.getAttributeType().getName();
 			missingAttributeNames.remove(attributeName);

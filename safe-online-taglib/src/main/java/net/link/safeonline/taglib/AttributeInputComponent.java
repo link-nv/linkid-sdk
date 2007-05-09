@@ -10,7 +10,9 @@ package net.link.safeonline.taglib;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
+import javax.faces.component.NamingContainer;
 import javax.faces.component.UIInput;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -22,6 +24,8 @@ import net.link.safeonline.authentication.service.AttributeDO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.renderkit.html.util.AddResource;
+import org.apache.myfaces.renderkit.html.util.AddResourceFactory;
 
 /**
  * JSF input component for {@link AttributeDO}.
@@ -49,12 +53,9 @@ public class AttributeInputComponent extends UIInput {
 		AttributeDO attribute = (AttributeDO) getValue();
 		String type = attribute.getType();
 		Renderer renderer = renderers.get(type);
-		if (null == renderer) {
-			super.decode(context);
-			return;
+		if (null != renderer) {
+			renderer.decode(context, this);
 		}
-
-		renderer.decode(context, this);
 		super.decode(context);
 	}
 
@@ -65,11 +66,15 @@ public class AttributeInputComponent extends UIInput {
 			return;
 		}
 
+		String clientId = getClientId(context);
+		ResponseWriter responseWriter = context.getResponseWriter();
+		responseWriter.startElement("span", this);
+		responseWriter.writeAttribute("id", clientId, "id");
+
 		AttributeDO attribute = (AttributeDO) getValue();
 		String type = attribute.getType();
 		Renderer renderer = renderers.get(type);
 		if (null == renderer) {
-			ResponseWriter responseWriter = context.getResponseWriter();
 			responseWriter.write("Unsupported type: " + type);
 			return;
 		}
@@ -87,11 +92,12 @@ public class AttributeInputComponent extends UIInput {
 		AttributeDO attribute = (AttributeDO) getValue();
 		String type = attribute.getType();
 		Renderer renderer = renderers.get(type);
-		if (null == renderer) {
-			return;
+		if (null != renderer) {
+			renderer.encodeEnd(context, this);
 		}
 
-		renderer.encodeEnd(context, this);
+		ResponseWriter responseWriter = context.getResponseWriter();
+		responseWriter.endElement("span");
 	}
 
 	@Override
@@ -174,23 +180,113 @@ public class AttributeInputComponent extends UIInput {
 
 	private static class BooleanRenderer implements Renderer {
 
+		private static final String INLINE_SCRIPT_ADDED = BooleanRenderer.class
+				+ ".inline_script_added";
+
 		public void encodeBegin(FacesContext context, UIInput inputComponent)
 				throws IOException {
 			String clientId = inputComponent.getClientId(context);
 			ResponseWriter responseWriter = context.getResponseWriter();
 
-			responseWriter.startElement("input", inputComponent);
-			responseWriter.writeAttribute("id", clientId, "id");
-			responseWriter.writeAttribute("type", "checkbox", null);
+			ResourceBundle messages = AttributeComponentUtil
+					.getResourceBundle(context);
+
+			String trueId = clientId + NamingContainer.SEPARATOR_CHAR + "true";
+			String falseId = clientId + NamingContainer.SEPARATOR_CHAR
+					+ "false";
 
 			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
 			Boolean value = attribute.getBooleanValue();
 
-			responseWriter.writeAttribute("name", clientId, null);
-			responseWriter.writeAttribute("value", "true", null);
-			if (Boolean.TRUE.equals(value)) {
-				responseWriter.writeAttribute("checked", "true", null);
+			/*
+			 * True input checkbox
+			 */
+			responseWriter.startElement("span", null);
+			{
+				responseWriter.startElement("input", null);
+				{
+					responseWriter.writeAttribute("type", "checkbox", null);
+					responseWriter.writeAttribute("name", clientId, "id");
+					responseWriter.writeAttribute("value", "true", null);
+					responseWriter.writeAttribute("id", trueId, null);
+					responseWriter.writeAttribute("onclick",
+							"threeValuedCheckboxClicked(this.checked, this.form, '"
+									+ falseId + "')", null);
+					if (Boolean.TRUE.equals(value)) {
+						responseWriter.writeAttribute("checked", Boolean.TRUE,
+								null);
+					}
+					LOG.debug("message: " + messages.getString("true"));
+				}
+				responseWriter.endElement("input");
+				responseWriter.write(messages.getString("true"));
 			}
+			responseWriter.endElement("span");
+
+			/*
+			 * False input checkbox
+			 */
+			responseWriter.startElement("span", null);
+			{
+				responseWriter.startElement("input", null);
+				{
+					responseWriter.writeAttribute("type", "checkbox", null);
+					responseWriter.writeAttribute("name", clientId, "id");
+					responseWriter.writeAttribute("value", "false", null);
+					responseWriter.writeAttribute("id", falseId, null);
+					responseWriter.writeAttribute("onclick",
+							"threeValuedCheckboxClicked(this.checked, this.form, '"
+									+ trueId + "')", null);
+					if (Boolean.FALSE.equals(value)) {
+						LOG.debug("adding checked attribute");
+						responseWriter.writeAttribute("checked", Boolean.TRUE,
+								null);
+					}
+				}
+				responseWriter.endElement("input");
+				responseWriter.write(messages.getString("false"));
+			}
+			responseWriter.endElement("span");
+
+			/*
+			 * Javascript via tomahawk extensions filter.
+			 */
+			if (needToAddInlineScript(context)) {
+				AddResource addResource = AddResourceFactory
+						.getInstance(context);
+				LOG.debug("addResource class: "
+						+ addResource.getClass().getName());
+				String inlineScript = getInlineScript();
+				addResource.addInlineScriptAtPosition(context,
+						AddResource.HEADER_BEGIN, inlineScript);
+			}
+		}
+
+		private String getInlineScript() {
+			StringBuffer stringBuffer = new StringBuffer();
+			stringBuffer
+					.append("    function threeValuedCheckboxClicked(checked, form, checkboxId) {\n");
+			stringBuffer.append("        if (true == checked) {\n");
+			stringBuffer
+					.append("            form.elements[checkboxId].checked = false;\n");
+			stringBuffer.append("         }\n");
+			stringBuffer.append("    }\n");
+			return stringBuffer.toString();
+		}
+
+		@SuppressWarnings("unchecked")
+		private boolean needToAddInlineScript(FacesContext context) {
+			ExternalContext externalContext = context.getExternalContext();
+			Map<String, Object> requestMap = externalContext.getRequestMap();
+			if (true == requestMap.containsKey(INLINE_SCRIPT_ADDED)) {
+				/*
+				 * The inline script was already added by a previous call to
+				 * render a component instance of this component type.
+				 */
+				return false;
+			}
+			requestMap.put(INLINE_SCRIPT_ADDED, Boolean.TRUE);
+			return true;
 		}
 
 		public void encodeEnd(FacesContext context, UIInput inputComponent)
@@ -211,7 +307,13 @@ public class AttributeInputComponent extends UIInput {
 			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
 			AttributeDO newAttribute = attribute.clone();
 
-			newAttribute.setBooleanValue(Boolean.parseBoolean(decodedValue));
+			Boolean value;
+			if (null == decodedValue) {
+				value = null;
+			} else {
+				value = Boolean.parseBoolean(decodedValue);
+			}
+			newAttribute.setBooleanValue(value);
 
 			inputComponent.setSubmittedValue(newAttribute);
 		}
