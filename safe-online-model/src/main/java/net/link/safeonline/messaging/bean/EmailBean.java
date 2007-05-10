@@ -5,6 +5,8 @@ import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.
 import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.emailSender;
 import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.emailSubjectPrefix;
 
+import static net.link.safeonline.messaging.bean.EmailBean.queueName;
+
 import java.util.Date;
 import java.util.Properties;
 
@@ -30,10 +32,12 @@ import org.apache.commons.logging.LogFactory;
 
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/outgoing-email") })
+		@ActivationConfigProperty(propertyName = "destination", propertyValue = queueName) })
 public class EmailBean implements MessageListener {
 
 	private final static Log LOG = LogFactory.getLog(EmailBean.class);
+
+	public final static String queueName = "queue/outgoing-email";
 
 	@EJB
 	private ConfigurationManager configurationManager;
