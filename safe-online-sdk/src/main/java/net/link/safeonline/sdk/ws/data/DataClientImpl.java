@@ -12,12 +12,9 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.sun.xml.ws.client.ClientTransportException;
+import javax.xml.ws.handler.Handler;
 
 import liberty.dst._2006_08.ref.safe_online.AppDataType;
 import liberty.dst._2006_08.ref.safe_online.CreateItemType;
@@ -42,11 +39,18 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.ApplicationAuthenticationUtils;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.sun.xml.ws.client.ClientTransportException;
+
 public class DataClientImpl implements DataClient {
 
 	private static final Log LOG = LogFactory.getLog(DataClientImpl.class);
 
-	private DataServicePort port;
+	private final DataServicePort port;
+
+	private final TargetIdentityClientHandler targetIdentityHandler;
 
 	public DataClientImpl(String location, X509Certificate clientCertificate,
 			PrivateKey clientPrivateKey) {
@@ -57,6 +61,17 @@ public class DataClientImpl implements DataClient {
 
 		ApplicationAuthenticationUtils.initWsSecurity(this.port,
 				clientCertificate, clientPrivateKey);
+
+		this.targetIdentityHandler = new TargetIdentityClientHandler();
+		initTargetIdentityHandler();
+	}
+
+	private void initTargetIdentityHandler() {
+		BindingProvider bindingProvider = (BindingProvider) this.port;
+		Binding binding = bindingProvider.getBinding();
+		List<Handler> handlerChain = binding.getHandlerChain();
+		handlerChain.add(this.targetIdentityHandler);
+		binding.setHandlerChain(handlerChain);
 	}
 
 	private void setEndpointAddress(String location) {
@@ -69,6 +84,8 @@ public class DataClientImpl implements DataClient {
 
 	public void setAttributeValue(String subjectLogin, String attributeName,
 			String attributeValue) throws ConnectException {
+		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
+
 		ModifyType modify = new ModifyType();
 		List<ModifyItemType> modifyItems = modify.getModifyItem();
 		ModifyItemType modifyItem = new ModifyItemType();
@@ -107,6 +124,8 @@ public class DataClientImpl implements DataClient {
 	public DataValue getAttributeValue(String subjectLogin, String attributeName)
 			throws ConnectException, RequestDeniedException,
 			SubjectNotFoundException {
+		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
+
 		QueryType query = new QueryType();
 
 		List<QueryItemType> queryItems = query.getQueryItem();
@@ -171,6 +190,8 @@ public class DataClientImpl implements DataClient {
 
 	public void createAttribute(String subjectLogin, String attributeName)
 			throws ConnectException {
+
+		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
 
 		CreateType create = new CreateType();
 		List<CreateItemType> createItems = create.getCreateItem();

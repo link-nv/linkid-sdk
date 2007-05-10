@@ -10,8 +10,10 @@ package net.link.safeonline.data.ws;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
+import javax.xml.ws.WebServiceContext;
 
 import liberty.dst._2006_08.ref.safe_online.AppDataType;
 import liberty.dst._2006_08.ref.safe_online.CreateItemType;
@@ -50,12 +52,15 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @WebService(endpointInterface = "liberty.dst._2006_08.ref.safe_online.DataServicePort")
-@HandlerChain(file = "app-auth-ws-handlers.xml")
+@HandlerChain(file = "data-ws-handlers.xml")
 public class DataServicePortImpl implements DataServicePort {
 
 	private static final Log LOG = LogFactory.getLog(DataServicePortImpl.class);
 
 	private AttributeProviderService attributeProviderService;
+
+	@Resource
+	private WebServiceContext context;
 
 	private AttributeProviderService getAttributeProviderService() {
 		AttributeProviderService attributeProviderService = EjbUtils.getEJB(
@@ -195,6 +200,11 @@ public class DataServicePortImpl implements DataServicePort {
 
 	public QueryResponseType query(QueryType request) {
 		LOG.debug("query");
+
+		String targetIdentity = TargetIdentityHandler
+				.getTargetIdentity(this.context);
+		LOG.debug("TargetIdentity: " + targetIdentity);
+
 		List<QueryItemType> queryItems = request.getQueryItem();
 		if (queryItems.size() > 1) {
 			LOG.debug("query items > 1");

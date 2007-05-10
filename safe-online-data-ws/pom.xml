@@ -39,23 +39,34 @@
 											refid="maven.plugin.classpath" />
 									</classpath>
 								</taskdef>
+								<taskdef name="xjc"
+									classname="com.sun.tools.xjc.XJCTask">
+									<classpath>
+										<path
+											refid="maven.compile.classpath" />
+										<path
+											refid="maven.plugin.classpath" />
+									</classpath>
+								</taskdef>
 								<mkdir
-									dir="${project.build.directory}/generated-sources/main/java" />
+									dir="${project.build.directory}/generated-sources/xjc" />
+								<xjc
+									destdir="${project.build.directory}/generated-sources/xjc">
+									<schema
+										dir="${basedir}/src/main/resources"
+										includes="liberty-idwsf-soap-binding-v2.0.xsd" />
+								</xjc>
 								<mkdir
 									dir="${project.build.directory}/generated-classes/jaxws" />
 								<wsimport debug="true" fork="true"
 									destdir="${project.build.directory}/generated-classes/jaxws"
 									verbose="true"
 									wsdl="${basedir}/src/main/resources/liberty-idwsf-dst-ref-v2.1-link.wsdl"
-									sourcedestdir="${project.build.directory}/generated-sources/main/java">
-									<produces
-										dir="${project.build.directory}/generated-sources/main/java">
-										<include name="**/*.java" />
-									</produces>
+									sourcedestdir="${project.build.directory}/generated-sources/xjc">
 								</wsimport>
 							</tasks>
 							<sourceRoot>
-								${project.build.directory}/generated-sources/main/java
+								${project.build.directory}/generated-sources/xjc
 							</sourceRoot>
 						</configuration>
 					</execution>
