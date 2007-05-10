@@ -7,14 +7,13 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.Iterator;
 
-import javax.jms.ObjectMessage;
+import javax.jms.Message;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.entity.ConfigItemEntity;
 import net.link.safeonline.messaging.bean.EmailBean;
-import net.link.safeonline.messaging.bean.EndUserMessage;
 import net.link.safeonline.model.ConfigurationManager;
 import net.link.safeonline.test.util.EJBTestUtils;
 
@@ -47,12 +46,13 @@ public class EmailBeanTest extends TestCase {
 	public void testEmail() throws Exception {
 		SimpleSmtpServer server = SimpleSmtpServer.start(2525);
 
-		EndUserMessage message = new EndUserMessage("test@test.test",
-				"testsubject", "testmessage");
-
-		ObjectMessage objectMessage = createMock(ObjectMessage.class);
-		expect(objectMessage.getObject()).andReturn(message);
-		replay(objectMessage);
+		Message message = createMock(Message.class);
+		expect(message.getStringProperty("destination")).andReturn(
+				"test@test.test");
+		expect(message.getStringProperty("subject")).andReturn("testsubject");
+		expect(message.getStringProperty("messagetext")).andReturn(
+				"testmessage");
+		replay(message);
 
 		expect(this.configurationManager.findConfigItem(emailServer))
 				.andReturn(new ConfigItemEntity(emailServer, "127.0.0.1", null));
@@ -69,12 +69,12 @@ public class EmailBeanTest extends TestCase {
 		replay(this.configurationManager);
 
 		// operate
-		this.testedInstance.onMessage(objectMessage);
+		this.testedInstance.onMessage(message);
 
 		server.stop();
 
 		// verify
-		verify(objectMessage);
+		verify(message);
 		assertTrue(server.getReceivedEmailSize() == 1);
 		Iterator emailIter = server.getReceivedEmail();
 		SmtpMessage email = (SmtpMessage) emailIter.next();

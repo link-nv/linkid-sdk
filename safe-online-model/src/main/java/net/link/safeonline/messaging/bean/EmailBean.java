@@ -16,7 +16,6 @@ import javax.ejb.EJBException;
 import javax.ejb.MessageDriven;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.ObjectMessage;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -54,8 +53,7 @@ public class EmailBean implements MessageListener {
 			String prefix = this.configurationManager.findConfigItem(
 					emailSubjectPrefix).getValue();
 
-			ObjectMessage objMessage = (ObjectMessage) msg;
-			EndUserMessage message = (EndUserMessage) objMessage.getObject();
+			EndUserMessage message = new EndUserMessage(msg);
 
 			LOG.debug("Message received for: " + message.getDestination()
 					+ " about: " + message.getSubject());

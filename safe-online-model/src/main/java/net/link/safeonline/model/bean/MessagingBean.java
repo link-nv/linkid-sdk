@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
 
@@ -31,10 +30,8 @@ public class MessagingBean implements Messaging {
 		try {
 			Connection connect = factory.createConnection();
 			Session session = connect.createSession(true, 0);
-			ObjectMessage objectMessage = session.createObjectMessage();
-			objectMessage.setObject(message);
 			MessageProducer producer = session.createProducer(this.emailQueue);
-			producer.send(objectMessage);
+			producer.send(message.getJMSMessage(session));
 			session.close();
 			connect.close();
 		} catch (Exception e) {
