@@ -118,6 +118,7 @@ public class IdentityServiceBean implements IdentityService,
 		String attributeName = attribute.getName();
 		LOG.debug("save attribute " + attributeName + " for entity with login "
 				+ subject);
+		LOG.debug("received attribute values: " + attribute);
 
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.findAttributeType(attributeName);

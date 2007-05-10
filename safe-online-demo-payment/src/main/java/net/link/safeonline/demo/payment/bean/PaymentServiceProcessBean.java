@@ -139,7 +139,8 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 		}
 
 		try {
-			this.visaNumber = this.attributeClient.getAttributeValue(username,
+			this.visaNumber = (String) this.attributeClient.getAttributeValue(
+					username,
 					"urn:net:lin-k:safe-online:attribute:visaCardNumber");
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found: " + e.getMessage();

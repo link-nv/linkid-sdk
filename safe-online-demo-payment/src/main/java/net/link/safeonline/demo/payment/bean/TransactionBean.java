@@ -118,7 +118,8 @@ public class TransactionBean implements Transaction {
 		String username = getUsername();
 		String visaNumber;
 		try {
-			visaNumber = this.attributeClient.getAttributeValue(username,
+			visaNumber = (String) this.attributeClient.getAttributeValue(
+					username,
 					"urn:net:lin-k:safe-online:attribute:visaCardNumber");
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found: " + e.getMessage();

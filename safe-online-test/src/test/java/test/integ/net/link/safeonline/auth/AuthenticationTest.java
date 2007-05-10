@@ -524,7 +524,7 @@ public class AuthenticationTest extends TestCase {
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
 		IntegrationTestUtils.login("admin", "admin");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, "string", true, true);
+				testAttributeName, SafeOnlineConstants.STRING_TYPE, true, true);
 		attributeTypeService.add(attributeType);
 
 		// operate: register certificate as application trust point
@@ -550,7 +550,7 @@ public class AuthenticationTest extends TestCase {
 		identityService.confirmIdentity(testApplicationName);
 
 		// operate: retrieve name attribute via web service
-		String result = this.attributeClient.getAttributeValue(login,
+		String result = (String) this.attributeClient.getAttributeValue(login,
 				SafeOnlineConstants.NAME_ATTRIBUTE);
 
 		// verify
@@ -559,24 +559,32 @@ public class AuthenticationTest extends TestCase {
 		assertEquals(testName, result);
 
 		// operate: retrieve all accessible attributes.
-		Map<String, String> resultAttributes = this.attributeClient
+		Map<String, Object> resultAttributes = this.attributeClient
 				.getAttributeValues(login);
 
 		// verify
 		assertEquals(2, resultAttributes.size());
-		LOG.debug("resultAttributes: " + resultAttributes);
-		result = resultAttributes.get(SafeOnlineConstants.NAME_ATTRIBUTE);
+		LOG.info("resultAttributes: " + resultAttributes);
+		result = (String) resultAttributes
+				.get(SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(testName, result);
 		assertNull(resultAttributes.get(testAttributeName));
 
 		// operate: set attribute
 		IntegrationTestUtils.login(login, password);
-		AttributeDO attributeDO = new AttributeDO(testAttributeName, "string");
-		attribute.setStringValue(testAttributeValue);
+		AttributeDO attributeDO = new AttributeDO(testAttributeName,
+				SafeOnlineConstants.STRING_TYPE);
+		attributeDO.setStringValue(testAttributeValue);
 		identityService.saveAttribute(attributeDO);
+
+		String resultValue = (String) this.attributeClient.getAttributeValue(
+				login, testAttributeName);
+		assertEquals(testAttributeValue, resultValue);
 
 		// operate: retrieve all attributes
 		resultAttributes = this.attributeClient.getAttributeValues(login);
+		LOG.info("resultAttributes: " + resultAttributes);
+		assertEquals(2, resultAttributes.size());
 		assertEquals(testAttributeValue, resultAttributes
 				.get(testAttributeName));
 	}

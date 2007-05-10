@@ -23,7 +23,8 @@ public interface AttributeClient {
 
 	/**
 	 * Gives back the attribute value of a single attribute of the given
-	 * subject.
+	 * subject. The type of the value returned depends on the datatype of the
+	 * corresponding attribute type.
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
@@ -34,7 +35,7 @@ public interface AttributeClient {
 	 *             in case the service could not be contacted. Can happen if the
 	 *             SSL was not setup correctly.
 	 */
-	String getAttributeValue(String subjectLogin, String attributeName)
+	Object getAttributeValue(String subjectLogin, String attributeName)
 			throws AttributeNotFoundException, RequestDeniedException,
 			ConnectException;
 
@@ -49,7 +50,7 @@ public interface AttributeClient {
 	 * @throws RequestDeniedException
 	 * @throws ConnectException
 	 */
-	void getAttributeValues(String subjectLogin, Map<String, String> attributes)
+	void getAttributeValues(String subjectLogin, Map<String, Object> attributes)
 			throws AttributeNotFoundException, RequestDeniedException,
 			ConnectException;
 
@@ -63,7 +64,7 @@ public interface AttributeClient {
 	 * @throws ConnectException
 	 * @throws AttributeNotFoundException
 	 */
-	Map<String, String> getAttributeValues(String subjectLogin)
+	Map<String, Object> getAttributeValues(String subjectLogin)
 			throws RequestDeniedException, ConnectException,
 			AttributeNotFoundException;
 }

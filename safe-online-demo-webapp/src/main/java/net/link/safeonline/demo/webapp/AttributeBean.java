@@ -71,8 +71,7 @@ public class AttributeBean {
 	}
 
 	private void loadCertificate() {
-		PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtil
-				.getPrivateKeyEntry();
+		PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtil.getPrivateKeyEntry();
 		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
 		this.privateKey = privateKeyEntry.getPrivateKey();
 	}
@@ -84,8 +83,9 @@ public class AttributeBean {
 					this.attributeWebServiceLocation, this.certificate,
 					this.privateKey);
 			try {
-				this.attributeValue = attributeClient.getAttributeValue(
-						this.subjectLogin, this.attributeName);
+				this.attributeValue = (String) attributeClient
+						.getAttributeValue(this.subjectLogin,
+								this.attributeName);
 			} catch (AttributeNotFoundException e) {
 				LOG.error("attribute not found: " + e.getMessage());
 				return "[attribute not found]";

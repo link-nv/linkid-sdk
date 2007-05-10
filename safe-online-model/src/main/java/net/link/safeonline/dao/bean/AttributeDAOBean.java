@@ -66,6 +66,7 @@ public class AttributeDAOBean implements AttributeDAO {
 			SubjectEntity subject, String stringValue) {
 		AttributeEntity attribute = findAttribute(attributeType, subject);
 		if (null != attribute) {
+			LOG.debug("setting attribute string value: " + stringValue);
 			attribute.setStringValue(stringValue);
 			return;
 		}

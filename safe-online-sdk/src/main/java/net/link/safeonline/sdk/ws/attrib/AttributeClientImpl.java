@@ -66,7 +66,7 @@ public class AttributeClientImpl implements AttributeClient {
 				clientCertificate, clientPrivateKey);
 	}
 
-	public String getAttributeValue(String subjectLogin, String attributeName)
+	public Object getAttributeValue(String subjectLogin, String attributeName)
 			throws AttributeNotFoundException, RequestDeniedException,
 			ConnectException {
 		LOG.debug("get attribute value for subject " + subjectLogin
@@ -81,10 +81,10 @@ public class AttributeClientImpl implements AttributeClient {
 
 		checkStatus(response);
 
-		Map<String, String> attributes = new HashMap<String, String>();
+		Map<String, Object> attributes = new HashMap<String, Object>();
 		getAttributeValues(response, attributes);
 
-		String value = attributes.get(attributeName);
+		Object value = attributes.get(attributeName);
 		if (null == value) {
 			throw new RuntimeException(
 					"requested attribute not in result attributes");
@@ -166,7 +166,7 @@ public class AttributeClientImpl implements AttributeClient {
 	}
 
 	private AttributeQueryType getAttributeQuery(String subjectLogin,
-			Map<String, String> attributes) {
+			Map<String, Object> attributes) {
 		Set<String> attributeNames = attributes.keySet();
 		AttributeQueryType attributeQuery = getAttributeQuery(subjectLogin,
 				attributeNames);
@@ -174,7 +174,7 @@ public class AttributeClientImpl implements AttributeClient {
 	}
 
 	public void getAttributeValues(String subjectLogin,
-			Map<String, String> attributes) throws AttributeNotFoundException,
+			Map<String, Object> attributes) throws AttributeNotFoundException,
 			RequestDeniedException, ConnectException {
 		AttributeQueryType request = getAttributeQuery(subjectLogin, attributes);
 		ApplicationAuthenticationUtils.configureSsl();
@@ -184,7 +184,7 @@ public class AttributeClientImpl implements AttributeClient {
 	}
 
 	private void getAttributeValues(ResponseType response,
-			Map<String, String> attributes) {
+			Map<String, Object> attributes) {
 		List<Object> assertions = response.getAssertionOrEncryptedAssertion();
 		if (0 == assertions.size()) {
 			throw new RuntimeException("No assertions in response");
@@ -204,15 +204,15 @@ public class AttributeClientImpl implements AttributeClient {
 			AttributeType attribute = (AttributeType) attributeObject;
 			String attributeName = attribute.getName();
 			List<Object> attributeValues = attribute.getAttributeValue();
-			String attributeValue = (String) attributeValues.get(0);
+			Object attributeValue = attributeValues.get(0);
 			attributes.put(attributeName, attributeValue);
 		}
 	}
 
-	public Map<String, String> getAttributeValues(String subjectLogin)
+	public Map<String, Object> getAttributeValues(String subjectLogin)
 			throws RequestDeniedException, ConnectException,
 			AttributeNotFoundException {
-		Map<String, String> attributes = new HashMap<String, String>();
+		Map<String, Object> attributes = new HashMap<String, Object>();
 		AttributeQueryType request = getAttributeQuery(subjectLogin, attributes);
 		ApplicationAuthenticationUtils.configureSsl();
 		ResponseType response = getResponse(request);
