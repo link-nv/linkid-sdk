@@ -35,4 +35,11 @@
 		</depends>
 	</mbean>
 
+	<mbean code="org.jboss.mq.server.jmx.Queue"
+		name="safeonline:service=Queue,name=outgoing-email">
+		<attribute name="JNDIName">queue/outgoing-email</attribute>
+		<depends optional-attribute-name="DestinationManager">
+			jboss.mq:service=DestinationManager
+		</depends>
+	</mbean>
 </server>

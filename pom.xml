@@ -949,6 +949,16 @@
 				<artifactId>wicket-extensions</artifactId>
 				<version>${wicket.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>dumbster</groupId>
+				<artifactId>dumbster</artifactId>
+				<version>${dumbster.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>mail</artifactId>
+				<version>${javax-mail.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1092,5 +1102,7 @@
 		<maven-compiler-plugin.version>
 			2.0.2
 		</maven-compiler-plugin.version>
+		<dumbster.version>1.6</dumbster.version>
+		<javax-mail.version>1.4</javax-mail.version>
 	</properties>
 </project>

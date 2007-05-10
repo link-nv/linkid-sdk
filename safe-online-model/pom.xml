@@ -167,6 +167,15 @@
 			<artifactId>jboss-common-client</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>dumbster</groupId>
+			<artifactId>dumbster</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>
