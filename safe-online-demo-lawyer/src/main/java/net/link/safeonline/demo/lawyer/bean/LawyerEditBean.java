@@ -60,15 +60,15 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements
 
 		try {
 			createOrUpdateAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME,
-					Boolean.toString(this.lawyerStatus.isLawyer()));
+					Boolean.valueOf(this.lawyerStatus.isLawyer()));
 			createOrUpdateAttribute(
 					DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, Boolean
-							.toString(this.lawyerStatus.isSuspended()));
+							.valueOf(this.lawyerStatus.isSuspended()));
 			createOrUpdateAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME,
 					this.lawyerStatus.getBar());
 			createOrUpdateAttribute(
 					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean
-							.toString(this.lawyerStatus.isBarAdmin()));
+							.valueOf(this.lawyerStatus.isBarAdmin()));
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error");
 			return null;
@@ -83,7 +83,7 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements
 	}
 
 	private void createOrUpdateAttribute(String attributeName,
-			String attributeValue) throws ConnectException,
+			Object attributeValue) throws ConnectException,
 			RequestDeniedException, SubjectNotFoundException {
 		DataClient dataClient = getDataClient();
 		if (null == dataClient.getAttributeValue(this.name, attributeName)) {

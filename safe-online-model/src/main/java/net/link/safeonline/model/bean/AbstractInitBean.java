@@ -247,7 +247,9 @@ public abstract class AbstractInitBean implements Startable {
 				throw new EJBException("subject not found: " + subjectLogin);
 			}
 			String stringValue = attribute.getStringValue();
-			this.attributeDAO.addAttribute(attributeType, subject, stringValue);
+			AttributeEntity persistentAttribute = this.attributeDAO
+					.addAttribute(attributeType, subject, stringValue);
+			persistentAttribute.setBooleanValue(attribute.getBooleanValue());
 		}
 	}
 

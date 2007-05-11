@@ -137,13 +137,16 @@ public class DemoStartableBean extends AbstractInitBean {
 		 * Attribute Types.
 		 */
 		configDemoAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
+				SafeOnlineConstants.BOOLEAN_TYPE,
 				DEMO_PRESCRIPTION_APPLICATION_NAME, "Prescription Admin",
 				"Voorschriftbeheerder");
 		configDemoAttribute(
 				DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
+				SafeOnlineConstants.BOOLEAN_TYPE,
 				DEMO_PRESCRIPTION_APPLICATION_NAME, "Care Provider", "Dokter");
 		configDemoAttribute(
 				DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
+				SafeOnlineConstants.BOOLEAN_TYPE,
 				DEMO_PRESCRIPTION_APPLICATION_NAME, "Pharmacist", "Apotheker");
 
 		/*
@@ -170,7 +173,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		barAdminBarAdminAttribute.setPk(new AttributePK(
 				DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
 				prescriptionAdmin));
-		barAdminBarAdminAttribute.setStringValue(Boolean.TRUE.toString());
+		barAdminBarAdminAttribute.setBooleanValue(true);
 		this.attributes.add(barAdminBarAdminAttribute);
 	}
 
@@ -200,14 +203,15 @@ public class DemoStartableBean extends AbstractInitBean {
 
 		configLawyerDemoAttribute(
 				DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
-				"Bar administrator", "Baliebeheerder");
+				SafeOnlineConstants.BOOLEAN_TYPE, "Bar administrator",
+				"Baliebeheerder");
 		configLawyerDemoAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME,
-				"Lawyer", "Advocaat");
+				SafeOnlineConstants.BOOLEAN_TYPE, "Lawyer", "Advocaat");
 		configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME,
-				"Bar", "Balie");
+				SafeOnlineConstants.STRING_TYPE, "Bar", "Balie");
 		configLawyerDemoAttribute(
-				DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, "Suspended",
-				"Geschorst");
+				DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
+				SafeOnlineConstants.BOOLEAN_TYPE, "Suspended", "Geschorst");
 
 		this.identities.add(new Identity(DEMO_LAWYER_APPLICATION_NAME,
 				new IdentityAttributeTypeDO[] {
@@ -230,20 +234,20 @@ public class DemoStartableBean extends AbstractInitBean {
 		AttributeEntity barAdminBarAdminAttribute = new AttributeEntity();
 		barAdminBarAdminAttribute.setPk(new AttributePK(
 				DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, "baradmin"));
-		barAdminBarAdminAttribute.setStringValue("true");
+		barAdminBarAdminAttribute.setBooleanValue(true);
 		this.attributes.add(barAdminBarAdminAttribute);
 	}
 
-	private void configLawyerDemoAttribute(String attributeName, String enName,
-			String nlName) {
-		configDemoAttribute(attributeName, DEMO_LAWYER_APPLICATION_NAME,
-				enName, nlName);
+	private void configLawyerDemoAttribute(String attributeName,
+			String datatype, String enName, String nlName) {
+		configDemoAttribute(attributeName, datatype,
+				DEMO_LAWYER_APPLICATION_NAME, enName, nlName);
 	}
 
-	private void configDemoAttribute(String attributeName,
+	private void configDemoAttribute(String attributeName, String datatype,
 			String attributeProviderName, String enName, String nlName) {
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				attributeName, "string", true, false);
+				attributeName, datatype, true, false);
 		this.attributeTypes.add(attributeType);
 
 		if (null != attributeProviderName) {

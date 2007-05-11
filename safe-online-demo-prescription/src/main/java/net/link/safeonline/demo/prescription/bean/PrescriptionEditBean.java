@@ -51,13 +51,13 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
 		try {
 			createOrUpdateAttribute(
 					DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean
-							.toString(this.userStatus.isAdmin()));
+							.valueOf(this.userStatus.isAdmin()));
 			createOrUpdateAttribute(
 					DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
-					Boolean.toString(this.userStatus.isCareProvider()));
+					Boolean.valueOf(this.userStatus.isCareProvider()));
 			createOrUpdateAttribute(
 					DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
-					Boolean.toString(this.userStatus.isPharmacist()));
+					Boolean.valueOf(this.userStatus.isPharmacist()));
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error");
 			return null;
@@ -73,7 +73,7 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
 	}
 
 	private void createOrUpdateAttribute(String attributeName,
-			String attributeValue) throws ConnectException,
+			Object attributeValue) throws ConnectException,
 			RequestDeniedException, SubjectNotFoundException {
 		DataClient dataClient = getDataClient();
 		String name = this.userStatus.getName();
