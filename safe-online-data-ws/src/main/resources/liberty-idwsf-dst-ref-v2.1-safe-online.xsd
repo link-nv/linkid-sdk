@@ -36,10 +36,9 @@ Version 2.1
 <!--endsec(methods)-->
 <!--sec(redefs)-->
   <xs:complexType name="SelectType">
-      <xs:sequence>
-        <xs:element name="UserId" type="xs:string"/>
-        <xs:element name="AttributeName" type="xs:string"/>
-      </xs:sequence>
+    <xs:simpleContent>
+      <xs:extension base="xs:string"/>
+    </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="TestOpType">
     <xs:simpleContent>
@@ -53,7 +52,6 @@ Version 2.1
   </xs:complexType>
   <xs:complexType name="AppDataType">
     <xs:sequence>
-      <xs:element name="UserId" type="xs:string"/>
       <xs:element name="AttributeName" type="xs:string"/>
       <xs:element name="AttributeValue" type="xs:string"/>
     </xs:sequence>

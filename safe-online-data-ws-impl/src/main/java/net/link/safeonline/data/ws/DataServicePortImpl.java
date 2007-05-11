@@ -32,8 +32,10 @@ import liberty.dst._2006_08.ref.safe_online.QueryType;
 import liberty.dst._2006_08.ref.safe_online.SelectType;
 import liberty.util._2006_08.ResponseType;
 import liberty.util._2006_08.StatusType;
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DatatypeMismatchException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
@@ -95,19 +97,11 @@ public class DataServicePortImpl implements DataServicePort {
 			return failedResponse;
 		}
 
+		String userId = TargetIdentityHandler.getTargetIdentity(this.context);
+
 		AppDataType appData = createItem.getNewData();
-		String userId = appData.getUserId();
 		String attributeName = appData.getAttributeName();
 		String attributeValue = appData.getAttributeValue();
-
-		/*
-		 * Notice we could use the IdentityTarget SOAP header here instead of
-		 * the custom AppData element. The problem with the IdentityTarget
-		 * approach would be that it's quite difficult for non-Java clients to
-		 * also include a SOAP header entry in the WS-Security signature.
-		 * Because of this we have choosen to do a custom AppData that contains
-		 * the user Id directly.
-		 */
 
 		try {
 			this.attributeProviderService.createAttribute(userId,
@@ -157,18 +151,29 @@ public class DataServicePortImpl implements DataServicePort {
 			ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
 			return failedResponse;
 		}
-		if (false == DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE
+
+		SelectType select = modifyItem.getSelect();
+		String attributeName = select.getValue();
+		String userId = TargetIdentityHandler.getTargetIdentity(this.context);
+		AppDataType newData = modifyItem.getNewData();
+		String encodedAttributeValue = newData.getAttributeValue();
+		Object attributeValue;
+
+		if (true == DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE
 				.equals(objectType)) {
-			LOG.debug("unsupported object type");
+			attributeValue = encodedAttributeValue;
+		} else if (true == DataServiceConstants.BOOLEAN_ATTRIBUTE_OBJECT_TYPE
+				.equals(objectType)) {
+			if (null == encodedAttributeValue) {
+				attributeValue = null;
+			} else {
+				attributeValue = Boolean.parseBoolean(encodedAttributeValue);
+			}
+		} else {
+			LOG.debug("unsupported object type: " + objectType);
 			ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
 			return failedResponse;
 		}
-
-		SelectType select = modifyItem.getSelect();
-		String attributeName = select.getAttributeName();
-		String userId = select.getUserId();
-		AppDataType newData = modifyItem.getNewData();
-		String attributeValue = newData.getAttributeValue();
 
 		try {
 			this.attributeProviderService.setAttribute(userId, attributeName,
@@ -189,6 +194,10 @@ public class DataServicePortImpl implements DataServicePort {
 			ModifyResponseType failedResponse = createFailedModifyResponse(
 					SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
 			return failedResponse;
+		} catch (DatatypeMismatchException e) {
+			ModifyResponseType failedResponse = createFailedModifyResponse(
+					SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
+			return failedResponse;
 		}
 
 		ModifyResponseType modifyResponse = new ModifyResponseType();
@@ -200,10 +209,6 @@ public class DataServicePortImpl implements DataServicePort {
 
 	public QueryResponseType query(QueryType request) {
 		LOG.debug("query");
-
-		String targetIdentity = TargetIdentityHandler
-				.getTargetIdentity(this.context);
-		LOG.debug("TargetIdentity: " + targetIdentity);
 
 		List<QueryItemType> queryItems = request.getQueryItem();
 		if (queryItems.size() > 1) {
@@ -229,12 +234,12 @@ public class DataServicePortImpl implements DataServicePort {
 			return failedResponse;
 		}
 		SelectType select = queryItem.getSelect();
-		String userId = select.getUserId();
-		String attributeName = select.getAttributeName();
+		String userId = TargetIdentityHandler.getTargetIdentity(this.context);
+		String attributeName = select.getValue();
 		LOG.debug("query user " + userId + " for attribute " + attributeName);
 		AttributeEntity attribute;
 		try {
-			attribute = this.attributeProviderService.getAttribute(userId,
+			attribute = this.attributeProviderService.findAttribute(userId,
 					attributeName);
 		} catch (AttributeTypeNotFoundException e) {
 			QueryResponseType failedResponse = createFailedQueryResponse(
@@ -256,15 +261,31 @@ public class DataServicePortImpl implements DataServicePort {
 		List<DataType> dataList = queryResponse.getData();
 		if (null != attribute) {
 			DataType data = new DataType();
-			String value = attribute.getStringValue();
+			String datatype = attribute.getAttributeType().getType();
+			String encodedValue;
+			if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+				encodedValue = attribute.getStringValue();
+			} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+				Boolean booleanValue = attribute.getBooleanValue();
+				/*
+				 * 3VL booleans.
+				 */
+				if (null == booleanValue) {
+					encodedValue = null;
+				} else {
+					encodedValue = Boolean.toString(booleanValue);
+				}
+			} else {
+				QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
+				return failedResponse;
+			}
 			/*
 			 * Notice that value can be null. In that case we send an empty Data
 			 * element. No Data element means that the attribute provider still
 			 * needs to create the attribute.
 			 */
 			data.setAttributeName(attributeName);
-			data.setAttributeValue(value);
-			data.setUserId(userId);
+			data.setAttributeValue(encodedValue);
 			dataList.add(data);
 		}
 		return queryResponse;

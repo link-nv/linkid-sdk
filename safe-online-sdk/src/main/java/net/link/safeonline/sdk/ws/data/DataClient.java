@@ -16,7 +16,8 @@ public interface DataClient {
 
 	/**
 	 * Sets the value of an attribute. Please notice that the attribute should
-	 * already be defined via: {@link #createAttribute(String, String)}.
+	 * already be defined via: {@link #createAttribute(String, String)}. The
+	 * attribute value can be of type {@link String} or {@link Boolean}.
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
@@ -27,7 +28,7 @@ public interface DataClient {
 	 * @see #createAttribute(String, String)
 	 */
 	void setAttributeValue(String subjectLogin, String attributeName,
-			String attributeValue) throws ConnectException;
+			Object attributeValue) throws ConnectException;
 
 	/**
 	 * Gives back the attribute value of an attribute. We return a

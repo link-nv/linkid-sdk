@@ -83,26 +83,39 @@ public class DataClientImpl implements DataClient {
 	}
 
 	public void setAttributeValue(String subjectLogin, String attributeName,
-			String attributeValue) throws ConnectException {
+			Object attributeValue) throws ConnectException {
 		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
+
+		String encodedValue;
+		String objectType;
+		if (null == attributeValue) {
+			encodedValue = null;
+			objectType = DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE;
+		} else if (true == attributeValue instanceof String) {
+			encodedValue = (String) attributeValue;
+			objectType = DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE;
+		} else if (true == attributeValue instanceof Boolean) {
+			encodedValue = Boolean.toString((Boolean) attributeValue);
+			objectType = DataServiceConstants.BOOLEAN_ATTRIBUTE_OBJECT_TYPE;
+		} else {
+			throw new IllegalArgumentException(
+					"attribute value type not supported");
+		}
 
 		ModifyType modify = new ModifyType();
 		List<ModifyItemType> modifyItems = modify.getModifyItem();
 		ModifyItemType modifyItem = new ModifyItemType();
-		modifyItem
-				.setObjectType(DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE);
+		modifyItem.setObjectType(objectType);
 		modifyItems.add(modifyItem);
 
 		SelectType select = new SelectType();
 		modifyItem.setSelect(select);
-		select.setUserId(subjectLogin);
-		select.setAttributeName(attributeName);
+		select.setValue(attributeName);
 
 		AppDataType newData = new AppDataType();
 		modifyItem.setNewData(newData);
 		newData.setAttributeName(attributeName);
-		newData.setUserId(subjectLogin);
-		newData.setAttributeValue(attributeValue);
+		newData.setAttributeValue(encodedValue);
 
 		ModifyResponseType modifyResponse;
 		try {
@@ -117,6 +130,20 @@ public class DataClientImpl implements DataClient {
 				.fromCode(status.getCode());
 
 		if (TopLevelStatusCode.OK != topLevelStatusCode) {
+			List<StatusType> secondLevelStatusList = status.getStatus();
+			if (secondLevelStatusList.size() > 0) {
+				StatusType secondLevelStatus = secondLevelStatusList.get(0);
+				LOG
+						.debug("second level status: "
+								+ secondLevelStatus.getCode());
+				SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode
+						.fromCode(secondLevelStatus.getCode());
+				if (SecondLevelStatusCode.INVALID_DATA == secondLevelStatusCode) {
+					throw new IllegalArgumentException(
+							"attribute value type incorrect");
+				}
+			}
+			LOG.debug("status comment: " + status.getComment());
 			throw new RuntimeException("could not set the attribute");
 		}
 	}
@@ -135,8 +162,7 @@ public class DataClientImpl implements DataClient {
 		queryItem
 				.setObjectType(DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE);
 		SelectType select = new SelectType();
-		select.setUserId(subjectLogin);
-		select.setAttributeName(attributeName);
+		select.setValue(attributeName);
 		queryItem.setSelect(select);
 
 		ApplicationAuthenticationUtils.configureSsl();
@@ -201,7 +227,6 @@ public class DataClientImpl implements DataClient {
 		createItem
 				.setObjectType(DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE);
 		AppDataType newData = new AppDataType();
-		newData.setUserId(subjectLogin);
 		newData.setAttributeName(attributeName);
 		createItem.setNewData(newData);
 

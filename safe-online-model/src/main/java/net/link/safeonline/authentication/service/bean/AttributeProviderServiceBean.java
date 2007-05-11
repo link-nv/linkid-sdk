@@ -19,6 +19,7 @@ import net.link.safeonline.SafeOnlineApplicationRoles;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DatatypeMismatchException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
@@ -58,7 +59,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 	private SubjectDAO subjectDAO;
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public AttributeEntity getAttribute(String subjectLogin,
+	public AttributeEntity findAttribute(String subjectLogin,
 			String attributeName) throws AttributeTypeNotFoundException,
 			PermissionDeniedException, SubjectNotFoundException {
 
@@ -72,6 +73,15 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		return attribute;
 	}
 
+	/**
+	 * Check whether the caller application is an attribute provider for the
+	 * given attribute type.
+	 * 
+	 * @param attributeName
+	 * @return
+	 * @throws AttributeTypeNotFoundException
+	 * @throws PermissionDeniedException
+	 */
 	private AttributeTypeEntity checkAttributeProviderPermission(
 			String attributeName) throws AttributeTypeNotFoundException,
 			PermissionDeniedException {
@@ -102,15 +112,44 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public void setAttribute(String subjectLogin, String attributeName,
-			String attributeValue) throws AttributeTypeNotFoundException,
+			Object attributeValue) throws AttributeTypeNotFoundException,
 			PermissionDeniedException, SubjectNotFoundException,
-			AttributeNotFoundException {
+			AttributeNotFoundException, DatatypeMismatchException {
 		LOG.debug("set attribute " + attributeName + " for " + subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 
 		AttributeEntity attribute = this.attributeDAO.getAttribute(
 				attributeType, subject);
-		attribute.setStringValue(attributeValue);
+
+		if (null == attributeValue) {
+			/*
+			 * In case the attribute value is null we cannot extract the
+			 * reflection class type. But actually we don't care. Just clear
+			 * all.
+			 */
+			attribute.setStringValue(null);
+			attribute.setBooleanValue(null);
+			return;
+		}
+
+		String datatype = attributeType.getType();
+		if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+			if (false == attributeValue instanceof String) {
+				throw new DatatypeMismatchException();
+			}
+			String stringValue = (String) attributeValue;
+			attribute.setStringValue(stringValue);
+			return;
+		}
+
+		if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+			if (false == attributeValue instanceof Boolean) {
+				throw new DatatypeMismatchException();
+			}
+			Boolean booleanValue = (Boolean) attributeValue;
+			attribute.setBooleanValue(booleanValue);
+			return;
+		}
 	}
 }

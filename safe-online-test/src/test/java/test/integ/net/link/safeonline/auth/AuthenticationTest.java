@@ -678,5 +678,98 @@ public class AuthenticationTest extends TestCase {
 		LOG.debug("result: " + result);
 		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.getName());
 		assertEquals(testName, result.getValue());
+
+		// check if we can set a string attribute to null
+		this.dataClient.setAttributeValue(login,
+				SafeOnlineConstants.NAME_ATTRIBUTE, null);
+		result = this.dataClient.getAttributeValue(login,
+				SafeOnlineConstants.NAME_ATTRIBUTE);
+		assertNull(result.getValue());
+	}
+
+	public void testDataServiceBooleanAttribute() throws Exception {
+		// setup
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+
+		IntegrationTestUtils.setupLoginConfig();
+
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		IdentityService identityService = getIdentityService(initialContext);
+
+		String testApplicationName = UUID.randomUUID().toString();
+
+		// operate: register user
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		// operate: register certificate as application trust point
+		PkiService pkiService = getPkiService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		pkiService.addTrustPoint(
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+				this.certificate.getEncoded());
+
+		// operate: add boolean attribute type
+		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
+		String attributeName = "test-attribute-name-"
+				+ UUID.randomUUID().toString();
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				attributeName, SafeOnlineConstants.BOOLEAN_TYPE, true, true);
+		attributeTypeService.add(attributeType);
+
+		// operate: add application with certificate
+		ApplicationService applicationService = getApplicationService(initialContext);
+		applicationService.addApplication(testApplicationName, "owner", null,
+				this.certificate.getEncoded(), Arrays
+						.asList(new IdentityAttributeTypeDO[] {
+								new IdentityAttributeTypeDO(
+										SafeOnlineConstants.NAME_ATTRIBUTE),
+								new IdentityAttributeTypeDO(attributeName) }));
+
+		// operate: subscribe onto the application and confirm identity usage
+		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+		IntegrationTestUtils.login(login, password);
+		subscriptionService.subscribe(testApplicationName);
+		identityService.confirmIdentity(testApplicationName);
+
+		// operate: add attribute provider
+		AttributeProviderManagerService attributeProviderManagerService = getAttributeProviderManagerService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		attributeProviderManagerService.addAttributeProvider(
+				testApplicationName, attributeName);
+
+		DataValue result = this.dataClient.getAttributeValue(login,
+				attributeName);
+		LOG.debug("result: " + result.getValue());
+		assertNotNull(result);
+		assertNull(result.getValue());
+
+		try {
+			this.dataClient.setAttributeValue(login, attributeName,
+					"test-value");
+			fail();
+		} catch (IllegalArgumentException e) {
+			// expected: Boolean is required, not a String.
+		}
+
+		// set boolean attribute value to true + verify
+		this.dataClient.setAttributeValue(login, attributeName, Boolean.TRUE);
+
+		result = this.dataClient.getAttributeValue(login, attributeName);
+		LOG.debug("result: " + result.getValue());
+		assertEquals(attributeName, result.getName());
+		assertEquals(Boolean.TRUE.toString(), result.getValue());
+
+		// operate & verify: setting boolean attribute to false
+		this.dataClient.setAttributeValue(login, attributeName, Boolean.FALSE);
+		result = this.dataClient.getAttributeValue(login, attributeName);
+		assertEquals(Boolean.FALSE.toString(), result.getValue());
+
+		// operate & verify: setting boolean attribute to null
+		this.dataClient.setAttributeValue(login, attributeName, null);
+		result = this.dataClient.getAttributeValue(login, attributeName);
+		assertNull(result.getValue());
 	}
 }

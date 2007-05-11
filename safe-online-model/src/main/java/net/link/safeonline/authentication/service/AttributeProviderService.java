@@ -11,6 +11,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DatatypeMismatchException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.AttributeEntity;
@@ -32,14 +33,14 @@ public interface AttributeProviderService {
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
-	 * @return
+	 * @return the attribute, or <code>null</code> if not found.
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
 	 *             if the caller application is not an attribute provider for
 	 *             the given attribute.
 	 * @throws SubjectNotFoundException
 	 */
-	AttributeEntity getAttribute(String subjectLogin, String attributeName)
+	AttributeEntity findAttribute(String subjectLogin, String attributeName)
 			throws AttributeTypeNotFoundException, PermissionDeniedException,
 			SubjectNotFoundException;
 
@@ -58,7 +59,9 @@ public interface AttributeProviderService {
 			PermissionDeniedException, SubjectNotFoundException;
 
 	/**
-	 * Sets an attribute for the given user.
+	 * Sets an attribute for the given user. For attribute value we accept
+	 * {@link String} and {@link Boolean}. A <code>null</code> attribute
+	 * value is also allowed.
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
@@ -67,9 +70,10 @@ public interface AttributeProviderService {
 	 * @throws AttributeTypeNotFoundException
 	 * @throws SubjectNotFoundException
 	 * @throws AttributeNotFoundException
+	 * @throws DatatypeMismatchException
 	 */
 	void setAttribute(String subjectLogin, String attributeName,
-			String attributeValue) throws AttributeTypeNotFoundException,
+			Object attributeValue) throws AttributeTypeNotFoundException,
 			PermissionDeniedException, SubjectNotFoundException,
-			AttributeNotFoundException;
+			AttributeNotFoundException, DatatypeMismatchException;
 }

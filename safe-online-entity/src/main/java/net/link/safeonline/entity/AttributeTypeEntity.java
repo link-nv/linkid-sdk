@@ -85,6 +85,9 @@ public class AttributeTypeEntity implements Serializable {
 	}
 
 	@Column(name = "type", nullable = false)
+	/*
+	 * TODO: turn this into an enum so we can optimize via switch-statements.
+	 */
 	public String getType() {
 		return this.type;
 	}

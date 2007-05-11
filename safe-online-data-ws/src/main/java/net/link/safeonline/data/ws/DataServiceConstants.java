@@ -15,5 +15,7 @@ public class DataServiceConstants {
 
 	public static final String STRING_ATTRIBUTE_OBJECT_TYPE = "StringAttribute";
 
+	public static final String BOOLEAN_ATTRIBUTE_OBJECT_TYPE = "BooleanAttribute";
+
 	public static final String LIBERTY_SOAP_BINDING_NAMESPACE = "urn:liberty:sb:2005-11";
 }

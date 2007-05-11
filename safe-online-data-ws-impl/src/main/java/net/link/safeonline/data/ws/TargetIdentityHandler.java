@@ -52,11 +52,17 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 			.getName()
 			+ ".TargetIdentity";
 
+	private static final QName TARGET_IDENTITY_NAME = new QName(
+			DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
+			"TargetIdentity");
+
 	public Set<QName> getHeaders() {
 		Set<QName> headers = new HashSet<QName>();
-		headers.add(new QName(
-				DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
-				"TargetIdentity"));
+		/*
+		 * Communicate to the JAX-WS web service stack that this handler can
+		 * handle the TargetIdentity SOAP header element.
+		 */
+		headers.add(TARGET_IDENTITY_NAME);
 		return headers;
 	}
 
@@ -80,9 +86,8 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 		}
 
 		SOAPMessage soapMessage = soapContext.getMessage();
-		SOAPHeader soapHeader;
 		try {
-			soapHeader = soapMessage.getSOAPHeader();
+			SOAPHeader soapHeader = soapMessage.getSOAPHeader();
 			processHeaders(soapHeader, soapContext);
 		} catch (SOAPException e) {
 			throw new RuntimeException("SOAP error: " + e.getMessage(), e);
@@ -93,10 +98,6 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 		LOG.debug("done.");
 		return true;
 	}
-
-	private static final QName TARGET_IDENTITY_NAME = new QName(
-			DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
-			"TargetIdentity");
 
 	private void processHeaders(SOAPHeader soapHeader,
 			SOAPMessageContext soapContext) throws JAXBException {
@@ -135,6 +136,10 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 		LOG
 				.debug("scope: "
 						+ soapContext.getScope(TARGET_IDENTITY_CONTEXT_VAR));
+		/*
+		 * We need to set the scope to APPLICATION, else the port implementation
+		 * will not be able to retrieve the value via its web service context.
+		 */
 		soapContext.setScope(TARGET_IDENTITY_CONTEXT_VAR, Scope.APPLICATION);
 	}
 
@@ -152,8 +157,14 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 		return null;
 	}
 
+	/**
+	 * Gives back the target identity. This target identity has been extracted
+	 * before by this handler from the TargetIdentity SOAP header.
+	 * 
+	 * @param context
+	 * @return
+	 */
 	public static String getTargetIdentity(WebServiceContext context) {
-		LOG.debug("getTargetIdentity");
 		MessageContext messageContext = context.getMessageContext();
 		String targetIdentity = (String) messageContext
 				.get(TargetIdentityHandler.TARGET_IDENTITY_CONTEXT_VAR);
