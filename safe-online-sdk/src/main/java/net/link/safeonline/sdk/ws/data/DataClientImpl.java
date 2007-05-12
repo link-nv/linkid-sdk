@@ -15,6 +15,7 @@ import java.util.List;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
+import javax.xml.ws.soap.AddressingFeature;
 
 import liberty.dst._2006_08.ref.safe_online.AppDataType;
 import liberty.dst._2006_08.ref.safe_online.CreateItemType;
@@ -55,7 +56,8 @@ public class DataClientImpl implements DataClient {
 	public DataClientImpl(String location, X509Certificate clientCertificate,
 			PrivateKey clientPrivateKey) {
 		DataService dataService = DataServiceFactory.newInstance();
-		this.port = dataService.getDataServicePort();
+		AddressingFeature addressingFeature = new AddressingFeature();
+		this.port = dataService.getDataServicePort(addressingFeature);
 
 		setEndpointAddress(location);
 

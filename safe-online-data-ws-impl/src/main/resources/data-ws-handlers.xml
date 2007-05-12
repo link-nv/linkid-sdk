@@ -16,5 +16,8 @@
 		<jws:handler>
 			<jws:handler-class>net.link.safeonline.ws.util.WSSecurityServerHandler</jws:handler-class>
 		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>net.link.safeonline.ws.util.LoggingHandler</jws:handler-class>
+		</jws:handler>
 	</jws:handler-chain>
 </jws:handler-chains>

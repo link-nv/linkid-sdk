@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.soap.Addressing;
 
 import liberty.dst._2006_08.ref.safe_online.AppDataType;
 import liberty.dst._2006_08.ref.safe_online.CreateItemType;
@@ -55,6 +56,7 @@ import org.apache.commons.logging.LogFactory;
  */
 @WebService(endpointInterface = "liberty.dst._2006_08.ref.safe_online.DataServicePort")
 @HandlerChain(file = "data-ws-handlers.xml")
+@Addressing
 public class DataServicePortImpl implements DataServicePort {
 
 	private static final Log LOG = LogFactory.getLog(DataServicePortImpl.class);
