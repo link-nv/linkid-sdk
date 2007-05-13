@@ -12,19 +12,11 @@ SafeOnline JBoss Application Server
 
 ** Basic configuration
 
- Retrieve JEMS from http://labs.jboss.com/portal/jbossas/download/index.html
+ Download JBoss AS 4.2.0.GA from http://labs.jboss.com/portal/jbossas/download/index.html
 
 +---+
-java -jar jems-installer-1.2.0.GA.jar
+unzip jboss-4.2.0.GA.zip
 +---+
-
- Select the <<<Advanced>>> installer option.
-
- Select the <<<ejb3>>> profile during installation. This is required as SafeOnline is using EJB3.
- 
- On the <<<JMX Security>>> page of the setup: unselect all security configurations. Else we cannot use the Maven2 jboss JMX deployer.
- 
- Enter an admin password. (does not matter what)
 
 
 ** JVM Permanent Generation Heap configuration
@@ -60,24 +52,14 @@ java -jar JAXWS2.1.1_20070501.jar
  Copy <<<jboss-seam.jar>>> from the JBoss Seam package (1.2.1.GA) to <<<$JBOSS_HOME/server/default/lib/>>>.
 
 
-** Java Server Faces
-
- Since JBoss AS 4.2 comes with the Sun JSF 1.2 RI we also use the Sun implementation on JBoss AS 4.0.
- Replace <<<myfaces-api.jar>>> and <<<myfaces-impl.jar>>> within
- <<<$JBOSS_HOME/server/default/deploy/jbossweb-tomcat55.sar/jsf-libs/>>>
- with <<<jsf-api>>> and <<<jsf-impl>>> from {{https://maven-repository.dev.java.net/repository/javax.faces/jars/}}.
-
-
 ** Expression Language (EL)
 
- Copy <<<el-api>>> from {{https://maven-repository.dev.java.net/repository/javax.el/jars/}} to <<<$JBOSS_HOME/server/default/lib>>>.
- 
  Copy <<<el-impl>>> from {{https://maven-repository.dev.java.net/repository/el-impl/jars/}} to <<<$JBOSS_HOME/server/default/lib>>>.
 
 
 ** LOG4J
 
- Add the following to <<<$JBOSS_HOME/server/default/conf/log4j.xml>>>:
+ Add the following to <<<$JBOSS_HOME/server/default/conf/jboss-log4j.xml>>>:
 
 +---+
    <appender name="SAFEONLINE" class="org.jboss.logging.appender.FileAppender">

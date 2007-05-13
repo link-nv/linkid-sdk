@@ -773,8 +773,7 @@
 			<dependency>
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-remoting</artifactId>
-				<!-- http://jira.jboss.com/jira/browse/JBREM-659 -->
-				<version>1.4.6.GA</version>
+				<version>${jboss.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
@@ -959,6 +958,11 @@
 				<artifactId>mail</artifactId>
 				<version>${javax-mail.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>hibernate-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -998,7 +1002,7 @@
 		<jaxws-rt.version>2.1</jaxws-rt.version>
 		<jaxws-api.version>2.1</jaxws-api.version>
 		<commons-logging-api.version>1.0.4</commons-logging-api.version>
-		<jboss.version>4.0.5.GA</jboss.version>
+		<jboss.version>4.2.0.GA</jboss.version>
 		<sjsxp.version>1.0</sjsxp.version>
 		<commons-logging.version>1.1</commons-logging.version>
 		<log4j.version>1.2.14</log4j.version>

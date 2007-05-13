@@ -143,8 +143,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
+			<groupId>org.jboss</groupId>
+			<artifactId>hibernate-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
