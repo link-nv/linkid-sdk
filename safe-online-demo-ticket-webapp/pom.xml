@@ -111,7 +111,7 @@
 		<dependency>
 			<groupId>org.apache.myfaces.tomahawk</groupId>
 			<artifactId>tomahawk</artifactId>
-			<scope>runtime</scope>
+			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>xalan</groupId>
