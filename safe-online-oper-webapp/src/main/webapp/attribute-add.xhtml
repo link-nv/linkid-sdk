@@ -51,6 +51,11 @@
 						value="#{newAttributeType.userEditable}" />
 					<h:outputText value="#{msgs.userEditable}" />
 				</h:panelGroup>
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="multivalued"
+						value="#{newAttributeType.multivalued}" />
+					<h:outputText value="#{msgs.multivalued}" />
+				</h:panelGroup>
 			</h:panelGrid>
 
 			<h:messages styleClass="error" globalOnly="true" />

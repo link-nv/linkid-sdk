@@ -57,7 +57,9 @@ public class AttributesBean implements Attributes {
 	@Out(value = "selectedAttributeType", required = false, scope = ScopeType.SESSION)
 	private AttributeTypeEntity selectedAttributeType;
 
-	@In(required = false)
+	public static final String NEW_ATTRIBUTE_TYPE = "newAttributeType";
+
+	@In(value = NEW_ATTRIBUTE_TYPE, required = false)
 	private AttributeTypeEntity newAttributeType;
 
 	@Factory("attributeTypeList")
@@ -92,7 +94,7 @@ public class AttributesBean implements Attributes {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	@Factory("newAttributeType")
+	@Factory(NEW_ATTRIBUTE_TYPE)
 	public AttributeTypeEntity newAttributeTypeFactory() {
 		return new AttributeTypeEntity();
 	}

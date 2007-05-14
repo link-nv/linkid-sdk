@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -58,6 +58,8 @@ public class AttributeTypeEntity implements Serializable {
 	private boolean userVisible;
 
 	private boolean userEditable;
+
+	private boolean multivalued;
 
 	private Map<String, AttributeTypeDescriptionEntity> descriptions;
 
@@ -127,6 +129,19 @@ public class AttributeTypeEntity implements Serializable {
 
 	public void setUserEditable(boolean userEditable) {
 		this.userEditable = userEditable;
+	}
+
+	/**
+	 * Marks whether this attribute type allows for multivalued attributes.
+	 * 
+	 * @return
+	 */
+	public boolean isMultivalued() {
+		return this.multivalued;
+	}
+
+	public void setMultivalued(boolean multivalued) {
+		this.multivalued = multivalued;
 	}
 
 	@OneToMany(mappedBy = "attributeType")

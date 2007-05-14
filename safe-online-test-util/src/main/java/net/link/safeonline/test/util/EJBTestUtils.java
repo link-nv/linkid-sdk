@@ -510,11 +510,6 @@ public final class EJBTestUtils {
 			}
 		}
 
-		public Object getBusinessObject(Class arg0)
-				throws IllegalStateException {
-			return null;
-		}
-
 		public EJBLocalObject getEJBLocalObject() throws IllegalStateException {
 			return null;
 		}
@@ -588,6 +583,11 @@ public final class EJBTestUtils {
 		}
 
 		public void setRollbackOnly() throws IllegalStateException {
+		}
+
+		public <T> T getBusinessObject(Class<T> arg0)
+				throws IllegalStateException {
+			return null;
 		}
 	}
 
