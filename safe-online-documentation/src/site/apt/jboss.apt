@@ -108,6 +108,15 @@ cd $JBOSS_HOME/bin
 ./run.sh
 +---+
 
+ Since JBoss AS 4.2, the server will per default only bind to <<<localhost>>>.
+ 
+ To make it remote accessible, start the application server via:
+ 
++---+
+cd $JBOSS_HOME/bin
+./run.sh -b 0.0.0.0
++---+
+
 
 ** View log
 
