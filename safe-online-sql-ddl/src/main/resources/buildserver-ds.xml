@@ -9,9 +9,15 @@
 			jdbc:mysql://localhost:3306/safeonline
 		</connection-url>
 		<driver-class>com.mysql.jdbc.Driver</driver-class>
+		<transaction-isolation>
+			TRANSACTION_READ_COMMITTED
+		</transaction-isolation>
 		<user-name>safeonline</user-name>
 		<password>safeonline</password>
 		<min-pool-size>5</min-pool-size>
 		<max-pool-size>20</max-pool-size>
+		<metadata>
+			<type-mapping>mySQL</type-mapping>
+		</metadata>
 	</local-tx-datasource>
 </datasources>

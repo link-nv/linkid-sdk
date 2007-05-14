@@ -236,15 +236,20 @@ public class TaskSchedulerBean implements TaskScheduler {
 	 * @return
 	 */
 	private Timer createTimer(Date fireDate, String schedulingName) {
+		int tries = 10;
 		Timer timer = null;
 		do {
+			tries--;
 			try {
 				timer = this.timerService.createTimer(fireDate, schedulingName);
 			} catch (Exception e) {
 				LOG.error("error creating timer: " + e.getMessage(), e);
 				LOG.error("trying again...");
 			}
-		} while (null == timer);
+		} while (null == timer && tries > 0);
+		if (null == timer) {
+			throw new EJBException("could not create an EJB timer");
+		}
 		return timer;
 	}
 

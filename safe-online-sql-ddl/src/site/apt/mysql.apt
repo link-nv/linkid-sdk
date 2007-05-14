@@ -21,6 +21,27 @@ mysql -u safeonline -p safeonline < safe-online-ddl.sql
  Download the mysql connector from <<<http://www.mysql.com/products/connector/j/>>> and
  copy the included jar file to <<<$JBOSS_HOME/server/default/lib>>>
 
- * Add MySQL datasource configuration to JBoss configuration
+* Add MySQL datasource configuration to JBoss configuration
  
   Copy the <<<buildserver-ds.xml>>> file into <<<$JBOSS_HOME/server/default/deploy>>>
+  
+* EJB Timer Service Persistence
+
+ The EJB Timer Service also needs to use the SafeOnline database.
+ 
+ This is required since JBoss AS 4.2.x because of a fix in the transactional behavior of the timer service.
+ 
+ For this edit the file <<<$JBOSS_HOME/server/default/deploy/ejb-deployer.xml>>> and replace:
+ 
++---+
+<depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=DefaultDS</depends>
++--+
+
+ with:
+ 
++---+
+<depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=SafeOnlineDS</depends>
++--+
+ 
+ 
+ 
