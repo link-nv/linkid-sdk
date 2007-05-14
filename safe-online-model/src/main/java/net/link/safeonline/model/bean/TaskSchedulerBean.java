@@ -215,13 +215,37 @@ public class TaskSchedulerBean implements TaskScheduler {
 				fireDate = cronTrigger.getNextFireTime();
 			}
 			LOG.debug("Setting timer at: " + fireDate);
-			Timer timer = timerService.createTimer(fireDate, scheduling
-					.getName());
+			Timer timer = createTimer(fireDate, scheduling.getName());
 			scheduling.setTimerHandle(timer.getHandle());
 			scheduling.setFireDate(fireDate);
 		} catch (Exception e) {
 			throw new EJBException(e);
 		}
+	}
+
+	/**
+	 * Creates a timer. We use some workaround code here because of the
+	 * following issues:
+	 * 
+	 * http://jira.jboss.com/jira/browse/JBAS-3379
+	 * http://jira.jboss.com/jira/browse/JBAS-3380
+	 * http://www.jboss.com/index.html?module=bb&op=viewtopic&p=3893673
+	 * 
+	 * @param fireDate
+	 * @param schedulingName
+	 * @return
+	 */
+	private Timer createTimer(Date fireDate, String schedulingName) {
+		Timer timer = null;
+		do {
+			try {
+				timer = this.timerService.createTimer(fireDate, schedulingName);
+			} catch (Exception e) {
+				LOG.error("error creating timer: " + e.getMessage(), e);
+				LOG.error("trying again...");
+			}
+		} while (null == timer);
+		return timer;
 	}
 
 	public int getPriority() {
