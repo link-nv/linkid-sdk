@@ -76,6 +76,10 @@ public class SafeOnlineLoginModule implements LoginModule {
 		// authenticate
 		principals.add(this.authenticatedPrincipal);
 
+		// make JBoss happy
+		Group callerPrincipalGroup = getGroup("CallerPrincipal", principals);
+		callerPrincipalGroup.addMember(this.authenticatedPrincipal);
+
 		// authorize
 		Group rolesGroup = getGroup("Roles", principals);
 
@@ -86,6 +90,8 @@ public class SafeOnlineLoginModule implements LoginModule {
 		for (String role : this.roles) {
 			rolesGroup.addMember(new SimplePrincipal(role));
 		}
+
+		LOG.debug("committed");
 
 		return true;
 	}

@@ -61,11 +61,16 @@ public class DataClientImpl implements DataClient {
 
 		setEndpointAddress(location);
 
-		ApplicationAuthenticationUtils.initWsSecurity(this.port,
-				clientCertificate, clientPrivateKey);
-
+		/*
+		 * The order of the JAX-WS handlers is important. For outbound messages
+		 * the TargetIdentity SOAP handler needs to come first since it feeds
+		 * additional XML Id's to be signed by the WS-Security handler.
+		 */
 		this.targetIdentityHandler = new TargetIdentityClientHandler();
 		initTargetIdentityHandler();
+
+		ApplicationAuthenticationUtils.initWsSecurity(this.port,
+				clientCertificate, clientPrivateKey);
 	}
 
 	private void initTargetIdentityHandler() {

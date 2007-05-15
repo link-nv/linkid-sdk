@@ -27,6 +27,7 @@ import javax.xml.ws.handler.MessageContext.Scope;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import net.link.safeonline.ws.util.WSSecurityServerHandler;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.assertion.SubjectType;
 import oasis.names.tc.saml._2_0.protocol.ObjectFactory;
@@ -51,6 +52,8 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 	public static final String TARGET_IDENTITY_CONTEXT_VAR = TargetIdentityHandler.class
 			.getName()
 			+ ".TargetIdentity";
+
+	public static final String WSU_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
 
 	private static final QName TARGET_IDENTITY_NAME = new QName(
 			DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
@@ -117,6 +120,21 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 			SOAPHeaderElement targetIdentityHeaderElement,
 			SOAPMessageContext soapContext) throws JAXBException {
 		LOG.debug("processing TargetIdentity header");
+
+		/*
+		 * First check whether the TargetIdentity SOAP header has been digested
+		 * correcly by the WS-Security XML signature.
+		 */
+		String id = targetIdentityHeaderElement.getAttributeNS(WSU_NS, "Id");
+		if (null == id) {
+			throw new RuntimeException("wsu:Id attribute not found");
+		}
+		boolean signed = WSSecurityServerHandler.isSignedElement(id,
+				soapContext);
+		if (false == signed) {
+			throw new RuntimeException(
+					"TargetIdentity SOAP header not signed by WS-Security");
+		}
 
 		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
 		Unmarshaller unmarshaller = context.createUnmarshaller();

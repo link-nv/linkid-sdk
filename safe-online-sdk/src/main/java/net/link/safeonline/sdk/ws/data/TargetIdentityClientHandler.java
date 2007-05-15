@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.ws.data;
 
 import java.util.Set;
+import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -22,6 +23,7 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.data.ws.DataServiceConstants;
+import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
@@ -43,6 +45,12 @@ public class TargetIdentityClientHandler implements
 
 	private static final Log LOG = LogFactory
 			.getLog(TargetIdentityClientHandler.class);
+
+	public static final String WSU_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
+
+	public static final String WSU_PREFIX = "wsu";
+
+	public static final String XMLNS_NS = "http://www.w3.org/2000/xmlns/";
 
 	private String targetIdentity;
 
@@ -76,7 +84,7 @@ public class TargetIdentityClientHandler implements
 		SOAPHeader soapHeader;
 		try {
 			soapHeader = soapMessage.getSOAPHeader();
-			addTargetIdentityHeader(soapHeader);
+			addTargetIdentityHeader(soapHeader, soapContext);
 		} catch (SOAPException e) {
 			throw new RuntimeException("SOAP error: " + e.getMessage(), e);
 		} catch (JAXBException e) {
@@ -85,8 +93,8 @@ public class TargetIdentityClientHandler implements
 		return true;
 	}
 
-	private void addTargetIdentityHeader(SOAPHeader soapHeader)
-			throws SOAPException, JAXBException {
+	private void addTargetIdentityHeader(SOAPHeader soapHeader,
+			SOAPMessageContext soapContext) throws SOAPException, JAXBException {
 		if (null == this.targetIdentity) {
 			throw new IllegalStateException("TargetIdentity is null");
 		}
@@ -101,6 +109,17 @@ public class TargetIdentityClientHandler implements
 		SOAPHeaderElement targetIdentityHeaderElement = soapHeader
 				.addHeaderElement(targetIdentityName);
 		targetIdentityHeaderElement.setMustUnderstand(true);
+
+		/*
+		 * Make sure that the WS-Security JAX-WS handler will include the
+		 * TargetIdentity SOAP header element in the signature digest.
+		 */
+		String id = "id-" + UUID.randomUUID().toString();
+		targetIdentityHeaderElement.setAttributeNS(XMLNS_NS, "xmlns:"
+				+ WSU_PREFIX, WSU_NS);
+		targetIdentityHeaderElement.setAttributeNS(WSU_NS, WSU_PREFIX + ":Id",
+				id);
+		WSSecurityClientHandler.addToBeSignedId(id, soapContext);
 
 		/*
 		 * Create header content in JAXB.

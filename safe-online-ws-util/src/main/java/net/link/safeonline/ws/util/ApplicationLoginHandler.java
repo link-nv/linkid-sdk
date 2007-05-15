@@ -18,7 +18,6 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,8 +70,8 @@ public class ApplicationLoginHandler implements SOAPHandler<SOAPMessageContext> 
 					"no application name found on JAX-WS context");
 		}
 
-		X509Certificate certificate = (X509Certificate) context
-				.get(ApplicationCertificateValidatorHandler.CERTIFICATE_PROPERTY);
+		X509Certificate certificate = WSSecurityServerHandler
+				.getCertificate(context);
 		if (null == certificate) {
 			throw new RuntimeException(
 					"no application certificate found on JAX-WS context");

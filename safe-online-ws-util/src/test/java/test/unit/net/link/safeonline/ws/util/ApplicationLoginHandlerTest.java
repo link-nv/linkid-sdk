@@ -27,8 +27,8 @@ import junit.framework.TestCase;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.TestSOAPMessageContext;
-import net.link.safeonline.ws.util.ApplicationCertificateValidatorHandler;
 import net.link.safeonline.ws.util.ApplicationLoginHandler;
+import net.link.safeonline.ws.util.WSSecurityServerHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,9 +61,7 @@ public class ApplicationLoginHandlerTest extends TestCase {
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, "CN=Test");
-		context.put(
-				ApplicationCertificateValidatorHandler.CERTIFICATE_PROPERTY,
-				certificate);
+		context.put(WSSecurityServerHandler.CERTIFICATE_PROPERTY, certificate);
 
 		JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
 

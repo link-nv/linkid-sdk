@@ -17,7 +17,6 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import junit.framework.TestCase;
 import net.link.safeonline.test.util.TestSOAPMessageContext;
-import net.link.safeonline.ws.util.ApplicationCertificateMapperHandler;
 import net.link.safeonline.ws.util.WSSecurityServerHandler;
 
 public class WSSecurityServerHandlerTest extends TestCase {
@@ -49,8 +48,35 @@ public class WSSecurityServerHandlerTest extends TestCase {
 		this.testedInstance.handleMessage(soapMessageContext);
 
 		// verify
-		X509Certificate resultCertificate = (X509Certificate) soapMessageContext
-				.get(ApplicationCertificateMapperHandler.CERTIFICATE_PROPERTY);
+		X509Certificate resultCertificate = WSSecurityServerHandler
+				.getCertificate(soapMessageContext);
 		assertNotNull(resultCertificate);
+		assertTrue(WSSecurityServerHandler.isSignedElement("id-21414356",
+				soapMessageContext));
+		assertFalse(WSSecurityServerHandler.isSignedElement("id-foobar",
+				soapMessageContext));
+	}
+
+	public void testHandleMessageInvalidSoapBody() throws Exception {
+		// setup
+		MessageFactory messageFactory = MessageFactory
+				.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
+		InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class
+				.getResourceAsStream("/test-ws-security-invalid-message.xml");
+		assertNotNull(testSoapMessageInputStream);
+
+		SOAPMessage message = messageFactory.createMessage(null,
+				testSoapMessageInputStream);
+
+		SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(
+				message, false);
+
+		// operate & verify
+		try {
+			this.testedInstance.handleMessage(soapMessageContext);
+			fail();
+		} catch (RuntimeException e) {
+			// expected
+		}
 	}
 }

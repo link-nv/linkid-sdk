@@ -38,8 +38,6 @@ public class ApplicationCertificateValidatorHandler implements
 	private static final Log LOG = LogFactory
 			.getLog(ApplicationCertificateValidatorHandler.class);
 
-	public static final String CERTIFICATE_PROPERTY = "net.link.safeonline.x509";
-
 	private PkiValidator pkiValidator;
 
 	@PostConstruct
@@ -72,8 +70,8 @@ public class ApplicationCertificateValidatorHandler implements
 
 	private void login(SOAPMessageContext context) {
 		LOG.debug("login");
-		X509Certificate certificate = (X509Certificate) context
-				.get(CERTIFICATE_PROPERTY);
+		X509Certificate certificate = WSSecurityServerHandler
+				.getCertificate(context);
 		if (null == certificate) {
 			throw new RuntimeException(
 					"no client certificate found on JAX-WS context");

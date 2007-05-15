@@ -63,6 +63,7 @@ public class WSSecurityClientHandlerTest extends TestCase {
 				message, true);
 
 		// operate
+		WSSecurityClientHandler.addToBeSignedId("test-id", soapMessageContext);
 		this.testedInstance.handleMessage(soapMessageContext);
 
 		// verify
@@ -79,11 +80,20 @@ public class WSSecurityClientHandlerTest extends TestCase {
 						Constants.NamespaceSpecNS,
 						"xmlns:wsse",
 						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
+				"http://www.w3.org/2000/09/xmldsig#");
 
 		Node resultNode = XPathAPI
 				.selectSingleNode(
 						resultSoapPart,
 						"/soap:Envelope/soap:Header/wsse:Security[@soap:mustUnderstand = '1']",
+						nsElement);
+		assertNotNull(resultNode);
+
+		resultNode = XPathAPI
+				.selectSingleNode(
+						resultSoapPart,
+						"/soap:Envelope/soap:Header/wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference[@URI='#test-id']",
 						nsElement);
 		assertNotNull(resultNode);
 

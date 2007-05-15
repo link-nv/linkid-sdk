@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.ws;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.xml.namespace.QName;
@@ -35,7 +36,10 @@ import org.w3c.dom.Document;
 /**
  * JAX-WS SOAP Handler that provides the client-side WS-Security. This handler
  * will add the WS-Security SOAP header element as required by the SafeOnline
- * web service authentication module.
+ * web service authentication module. Per default this handler will sign the
+ * Body element of the SOAP envelope. You can make this handler to sign
+ * additional XML elements via the
+ * {@link #addToBeSignedId(String, SOAPMessageContext)} method.
  * 
  * @author fcorneli
  * 
@@ -44,6 +48,9 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 
 	private static final Log LOG = LogFactory
 			.getLog(WSSecurityClientHandler.class);
+
+	public static final String TO_BE_SIGNED_IDS_SET = WSSecurityClientHandler.class
+			+ ".tbs";
 
 	private final X509Certificate certificate;
 
@@ -76,6 +83,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean handleMessage(SOAPMessageContext soapMessageContext) {
 		Boolean outboundProperty = (Boolean) soapMessageContext
 				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
@@ -90,12 +98,20 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 		SOAPMessage soapMessage = soapMessageContext.getMessage();
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 
-		handleDocument(soapPart);
+		Set<String> tbsIds = (Set<String>) soapMessageContext
+				.get(TO_BE_SIGNED_IDS_SET);
+
+		handleDocument(soapPart, tbsIds);
 
 		return true;
 	}
 
-	private void handleDocument(Document document) {
+	/**
+	 * @param document
+	 * @param tbsIds
+	 *            the optional set of XML Id's to be signed.
+	 */
+	private void handleDocument(Document document, Set<String> tbsIds) {
 		LOG.debug("adding WS-Security SOAP header");
 		WSSecSignature wsSecSignature = new WSSecSignature();
 		wsSecSignature.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
@@ -120,6 +136,12 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 			wsSecTimeStamp.prependToHeader(wsSecHeader);
 			wsEncryptionParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));
 
+			if (null != tbsIds) {
+				for (String tbsId : tbsIds) {
+					wsEncryptionParts.add(new WSEncryptionPart(tbsId));
+				}
+			}
+
 			wsSecSignature.addReferencesToSign(wsEncryptionParts, wsSecHeader);
 
 			wsSecSignature.prependToHeader(wsSecHeader);
@@ -131,5 +153,23 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 		} catch (WSSecurityException e) {
 			throw new RuntimeException("WSS4J error: " + e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * Add an XML Id that needs to be included in the WS-Security signature
+	 * digest.
+	 * 
+	 * @param id
+	 * @param context
+	 */
+	@SuppressWarnings("unchecked")
+	public static void addToBeSignedId(String id, SOAPMessageContext context) {
+		Set<String> toBeSignedIds = (Set<String>) context
+				.get(TO_BE_SIGNED_IDS_SET);
+		if (null == toBeSignedIds) {
+			toBeSignedIds = new TreeSet<String>();
+			context.put(TO_BE_SIGNED_IDS_SET, toBeSignedIds);
+		}
+		toBeSignedIds.add(id);
 	}
 }

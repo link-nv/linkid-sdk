@@ -38,6 +38,12 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 	private static final Log LOG = LogFactory
 			.getLog(WSSecurityServerHandler.class);
 
+	public static final String CERTIFICATE_PROPERTY = WSSecurityServerHandler.class
+			+ ".x509";
+
+	public static final String SIGNED_ELEMENTS_CONTEXT_KEY = WSSecurityServerHandler.class
+			+ ".signed.elements";
+
 	public Set<QName> getHeaders() {
 		Set<QName> headers = new HashSet<QName>();
 		headers
@@ -86,6 +92,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 			wsSecurityEngineResults = securityEngine.processSecurityHeader(
 					document, null, null, crypto);
 		} catch (WSSecurityException e) {
+			LOG.debug("WS-Security error: " + e.getMessage(), e);
 			throw new RuntimeException("WS-Security error");
 		}
 		LOG.debug("results: " + wsSecurityEngineResults);
@@ -93,15 +100,48 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 			throw new RuntimeException("missing WS-Security header");
 		}
 		for (WSSecurityEngineResult result : wsSecurityEngineResults) {
-			X509Certificate certificate = result.getCertificate();
-			if (null == certificate) {
-				continue;
+			Set<String> signedElements = result.getSignedElements();
+			if (null != signedElements) {
+				LOG.debug("signed elements: " + signedElements);
+				soapMessageContext.put(SIGNED_ELEMENTS_CONTEXT_KEY,
+						signedElements);
 			}
-			soapMessageContext
-					.put(
-							ApplicationCertificateValidatorHandler.CERTIFICATE_PROPERTY,
-							certificate);
-			break;
+			X509Certificate certificate = result.getCertificate();
+			if (null != certificate) {
+				soapMessageContext.put(CERTIFICATE_PROPERTY, certificate);
+			}
 		}
+	}
+
+	/**
+	 * Gives back the X509 certificate that was set previously by a WS-Security
+	 * handler.
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public static X509Certificate getCertificate(SOAPMessageContext context) {
+		X509Certificate certificate = (X509Certificate) context
+				.get(CERTIFICATE_PROPERTY);
+		return certificate;
+	}
+
+	/**
+	 * Checks whether a WS-Security handler did verify that the element with
+	 * given Id was signed correctly.
+	 * 
+	 * @param id
+	 * @param context
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static boolean isSignedElement(String id, SOAPMessageContext context) {
+		Set<String> signedElements = (Set<String>) context
+				.get(SIGNED_ELEMENTS_CONTEXT_KEY);
+		if (null == signedElements) {
+			return false;
+		}
+		boolean result = signedElements.contains(id);
+		return result;
 	}
 }
