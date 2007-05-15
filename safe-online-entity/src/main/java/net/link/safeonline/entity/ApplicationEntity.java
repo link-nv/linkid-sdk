@@ -18,6 +18,7 @@ import java.security.cert.X509Certificate;
 import javax.ejb.EJBException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -27,6 +28,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import net.link.safeonline.entity.listener.SecurityApplicationEntityListener;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -39,9 +42,7 @@ import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_CERTID;
 
 /**
- * Application Entity. We're not using the SecurityApplicationEntityListener
- * anymore for application ownership checking since this prevents the system
- * from initializing itself.
+ * Application Entity.
  * 
  * @author fcorneli
  * 
@@ -56,7 +57,7 @@ import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_CERTID;
 		@NamedQuery(name = QUERY_WHERE_CERTID, query = "SELECT application "
 				+ "FROM ApplicationEntity AS application "
 				+ "WHERE application.certificateIdentifier = :certificateIdentifier") })
-// @EntityListeners(SecurityApplicationEntityListener.class)
+@EntityListeners(SecurityApplicationEntityListener.class)
 public class ApplicationEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
