@@ -135,7 +135,7 @@ public class SecurityApplicationEntityListener {
 		}
 		SimplePrincipal rolePrincipal = new SimplePrincipal(role);
 		for (Group group : groups) {
-			while (!"Roles".equals(group.getName())) {
+			if (!"Roles".equals(group.getName())) {
 				continue;
 			}
 			if (group.isMember(rolePrincipal)) {
