@@ -7,6 +7,8 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
+import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
+import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -47,9 +49,6 @@ import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.easymock.EasyMock;
-
-import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
-import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
 
 public class AuthenticationServiceBeanTest extends TestCase {
 
@@ -174,8 +173,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		replay(this.mockObjects);
 
 		// operate
-		boolean result = this.testedInstance.authenticate(applicationName,
-				login, password);
+		boolean result = this.testedInstance.authenticate(login, password);
 
 		// verify
 		verify(this.mockObjects);
@@ -184,7 +182,6 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 	public void testAuthenticateWithWrongPasswordFails() throws Exception {
 		// setup
-		String applicationName = "test-application";
 		String login = "test-login";
 		String password = "test-password";
 		String wrongPassword = "foobar";
@@ -209,8 +206,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		replay(this.mockObjects);
 
 		// operate
-		boolean result = this.testedInstance.authenticate(applicationName,
-				login, wrongPassword);
+		boolean result = this.testedInstance.authenticate(login, wrongPassword);
 
 		// verify
 		verify(this.mockObjects);
@@ -219,7 +215,6 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 	public void testAuthenticateWithWrongUsernameFails() throws Exception {
 		// setup
-		String applicationName = "test-application";
 		String wrongLogin = "foobar-login";
 		String password = "test-password";
 
@@ -232,8 +227,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		// operate
 		try {
-			this.testedInstance.authenticate(applicationName, wrongLogin,
-					password);
+			this.testedInstance.authenticate(wrongLogin, password);
 			fail();
 		} catch (SubjectNotFoundException e) {
 			// expected
@@ -305,13 +299,12 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		replay(mockPkiProvider);
 
 		// operate
-		String resultUserId = this.testedInstance.authenticate(sessionId,
+		boolean result = this.testedInstance.authenticate(sessionId,
 				authenticationStatementData);
 
 		// verify
 		verify(this.mockObjects);
 		verify(mockPkiProvider);
-		assertNotNull(resultUserId);
-		assertEquals(login, resultUserId);
+		assertTrue(result);
 	}
 }

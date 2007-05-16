@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +25,6 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.shared.SharedConstants;
-import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -46,21 +44,6 @@ public class AuthenticationServlet extends HttpServlet {
 	private static final Log LOG = LogFactory
 			.getLog(AuthenticationServlet.class);
 
-	private AuthenticationService authenticationService;
-
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-
-		loadAuthenticationService();
-	}
-
-	private void loadAuthenticationService() {
-		this.authenticationService = EjbUtils.getEJB(
-				"SafeOnline/AuthenticationServiceBean/local",
-				AuthenticationService.class);
-	}
-
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -79,14 +62,30 @@ public class AuthenticationServlet extends HttpServlet {
 		IOUtils.copy(contentInputStream, outputStream);
 		byte[] authenticationStatementData = outputStream.toByteArray();
 
-		String sessionId = request.getSession().getId();
+		HttpSession session = request.getSession();
+		String applicationId = (String) session.getAttribute("applicationId");
+		if (null == applicationId) {
+			throw new ServletException(
+					"applicationId session attribute not found");
+		}
+
+		String sessionId = session.getId();
 		LOG.debug("session Id: " + sessionId);
+
+		AuthenticationService authenticationService = (AuthenticationService) session
+				.getAttribute("authenticationService");
 
 		PrintWriter writer = response.getWriter();
 		try {
-			String userId = this.authenticationService.authenticate(sessionId,
+			boolean result = authenticationService.authenticate(sessionId,
 					authenticationStatementData);
-			HttpSession session = request.getSession();
+			if (result == false) {
+				authenticationService.abort();
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+			String userId = authenticationService.getUserId();
+			authenticationService.commitAuthentication(applicationId);
 			response.setStatus(HttpServletResponse.SC_OK);
 			/*
 			 * Next session attribute is used to communicate the authentication

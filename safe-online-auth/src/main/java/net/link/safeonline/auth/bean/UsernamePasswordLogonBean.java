@@ -9,7 +9,6 @@ package net.link.safeonline.auth.bean;
 
 import java.io.IOException;
 
-import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
@@ -56,7 +55,7 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 	@Out(value = "username", required = false, scope = ScopeType.SESSION)
 	private String authenticatedUsername;
 
-	@EJB
+	@In
 	private AuthenticationService authenticationService;
 
 	@Remove
@@ -82,12 +81,13 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 
 		try {
 			boolean authenticated = this.authenticationService.authenticate(
-					this.application, this.username, this.password);
+					this.username, this.password);
 			if (false == authenticated) {
 				this.facesMessages.addFromResourceBundle(
 						FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
 				return null;
 			}
+			this.authenticationService.commitAuthentication(this.application);
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addToControlFromResourceBundle("username",
 					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");

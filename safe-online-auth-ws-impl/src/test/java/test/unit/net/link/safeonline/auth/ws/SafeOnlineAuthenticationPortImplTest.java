@@ -73,9 +73,9 @@ public class SafeOnlineAuthenticationPortImplTest extends TestCase {
 		String password = "test-password";
 
 		// expectations
-		expect(
-				this.mockAuthenticationService.authenticate(applicationName,
-						username, password)).andStubReturn(true);
+		expect(this.mockAuthenticationService.authenticate(username, password))
+				.andStubReturn(true);
+		this.mockAuthenticationService.commitAuthentication(applicationName);
 
 		// prepare
 		replay(this.mockAuthenticationService);

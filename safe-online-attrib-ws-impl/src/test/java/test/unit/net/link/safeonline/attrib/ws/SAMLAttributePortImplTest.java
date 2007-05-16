@@ -33,8 +33,8 @@ import junit.framework.TestCase;
 import net.link.safeonline.attrib.ws.SAMLAttributePortImpl;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AttributeService;
-import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
@@ -74,7 +74,7 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 	private PkiValidator mockPkiValidator;
 
-	private AuthenticationService mockAuthenticationService;
+	private ApplicationAuthenticationService mockAuthenticationService;
 
 	private SamlAuthorityService mockSamlAuthorityService;
 
@@ -91,7 +91,7 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 		this.mockAttributeService = createMock(AttributeService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
-		this.mockAuthenticationService = createMock(AuthenticationService.class);
+		this.mockAuthenticationService = createMock(ApplicationAuthenticationService.class);
 		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
 
 		this.mockObjects = new Object[] { this.mockAttributeService,
@@ -104,7 +104,7 @@ public class SAMLAttributePortImplTest extends TestCase {
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
 		this.jndiTestUtils.bindComponent(
-				"SafeOnline/AuthenticationServiceBean/local",
+				"SafeOnline/ApplicationAuthenticationServiceBean/local",
 				this.mockAuthenticationService);
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/SamlAuthorityServiceBean/local",

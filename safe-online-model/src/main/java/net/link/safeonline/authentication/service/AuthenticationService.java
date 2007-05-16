@@ -1,13 +1,11 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.authentication.service;
-
-import java.security.cert.X509Certificate;
 
 import javax.ejb.Local;
 
@@ -18,17 +16,24 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 
 /**
- * Authentication service interface. This service can authentication both users
- * and applications.
+ * Authentication service interface. This service allows the authentication web
+ * application to authenticate users. The bean behind this interface is
+ * stateful. This means that a certain method invocation pattern must be
+ * respected. First the methods {@link #authenticate(String, String)} or
+ * {@link #authenticate(String, byte[])} must be invoked. Afterwards the
+ * {@link #commitAuthentication(String)} method must be invoked. In case the
+ * authentication process wants to be aborted one should invoke {@link #abort()}.
  * 
  * @author fcorneli
- * 
  */
 @Local
 public interface AuthenticationService {
+
 	/**
 	 * Authenticates a user for a certain application. This method is used by
-	 * the authentication web service.
+	 * the authentication web service. If <code>true</code> is returned the
+	 * authentication process can proceed, else {@link #abort()} should be
+	 * invoked.
 	 * 
 	 * @param applicationName
 	 * @param login
@@ -36,12 +41,22 @@ public interface AuthenticationService {
 	 * @return <code>true</code> if the user was authenticated correctly,
 	 *         <code>false</code> otherwise.
 	 * @throws SubjectNotFoundException
-	 * @throws ApplicationNotFoundException
-	 * @throws SubscriptionNotFoundException
 	 */
-	boolean authenticate(String applicationName, String login, String password)
-			throws SubjectNotFoundException, ApplicationNotFoundException,
-			SubscriptionNotFoundException;
+	boolean authenticate(String login, String password)
+			throws SubjectNotFoundException;
+
+	/**
+	 * Commits the authentication for the given application.
+	 * 
+	 * @param applicationId
+	 * @return
+	 * @throws SubscriptionNotFoundException
+	 *             in case the subject is not subscribed to the application.
+	 * @throws ApplicationNotFoundException
+	 *             in case the application does not exist.
+	 */
+	void commitAuthentication(String applicationId)
+			throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
 	/**
 	 * Authenticates a user via an authentication statement. The given session
@@ -50,30 +65,28 @@ public interface AuthenticationService {
 	 * 
 	 * @param sessionId
 	 * @param authenticationStatementData
-	 * @return the user Id
+	 * @return <code>true</code> if the authentication process can proceed.
 	 * @throws ArgumentIntegrityException
 	 * @throws TrustDomainNotFoundException
 	 * @throws SubjectNotFoundException
 	 *             in case the certificate was not linked to any subject.
-	 * @throws SubscriptionNotFoundException
-	 *             in case the subject is not subscribed to the application.
-	 * @throws ApplicationNotFoundException
-	 *             in case the application does not exist.
 	 */
-	String authenticate(String sessionId, byte[] authenticationStatementData)
+	boolean authenticate(String sessionId, byte[] authenticationStatementData)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			SubjectNotFoundException, SubscriptionNotFoundException,
-			ApplicationNotFoundException;
+			SubjectNotFoundException;
 
 	/**
-	 * Authenticates an application given an application certificate. At this
-	 * point the application certificate already passed the PKI validation.
-	 * 
-	 * @param certificate
-	 *            the trusted X509 application certificate.
-	 * @return the application name of the authentication application.
-	 * @throws ApplicationNotFoundException
+	 * Aborts the current authentication procedure.
 	 */
-	String authenticate(X509Certificate certificate)
-			throws ApplicationNotFoundException;
+	void abort();
+
+	/**
+	 * Gives back the user Id of the user that we're trying to authenticate.
+	 * Calling this method in only valid after a call to
+	 * {@link #authenticate(String, byte[])}.
+	 * 
+	 * @return
+	 */
+	String getUserId();
+
 }

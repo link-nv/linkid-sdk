@@ -85,7 +85,7 @@ public class BeIdPkiProvider implements PkiProvider {
 
 	public PkiProvider getReference() {
 		LOG.debug("get reference");
-		PkiProvider reference = (PkiProvider) this.context
+		PkiProvider reference = this.context
 				.getBusinessObject(PkiProvider.class);
 		return reference;
 	}

@@ -9,6 +9,7 @@ package net.link.safeonline.auth.ws;
 
 import javax.annotation.PostConstruct;
 import javax.jws.WebService;
+import javax.xml.ws.soap.Addressing;
 
 import net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationPort;
 import net.lin_k.safe_online.auth._1_0.types.AuthenticateRequestType;
@@ -23,17 +24,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @WebService(endpointInterface = "net.lin_k.safe_online.auth._1.SafeOnlineAuthenticationPort")
+@Addressing
 public class SafeOnlineAuthenticationPortImpl implements
 		SafeOnlineAuthenticationPort {
 
 	private static Log LOG = LogFactory
 			.getLog(SafeOnlineAuthenticationPortImpl.class);
 
-	private AuthenticationService authenticationService;
-
 	@PostConstruct
 	public void postConstructCallback() {
-		this.authenticationService = getService();
 		LOG.debug("ready");
 	}
 
@@ -49,10 +48,15 @@ public class SafeOnlineAuthenticationPortImpl implements
 		String username = request.getUsername();
 		String password = request.getPassword();
 
+		AuthenticationService authenticationService = getService();
 		boolean serviceResult;
 		try {
-			serviceResult = this.authenticationService.authenticate(
-					application, username, password);
+			serviceResult = authenticationService.authenticate(username,
+					password);
+			if (false == serviceResult) {
+				authenticationService.abort();
+			}
+			authenticationService.commitAuthentication(application);
 		} catch (SubjectNotFoundException e) {
 			serviceResult = false;
 		} catch (SubscriptionNotFoundException e) {

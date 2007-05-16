@@ -28,7 +28,7 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.codec.DecoderException;
@@ -58,7 +58,7 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 
 	public static final String OPTION_AUTHENTICATION_SERVICE_JNDI_NAME = "authenticationServiceJndiName";
 
-	public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = "SafeOnline/AuthenticationServiceBean/local";
+	public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = "SafeOnline/ApplicationAuthenticationServiceBean/local";
 
 	private String authenticationServiceJndiName;
 
@@ -163,10 +163,11 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 		}
 
 		// authenticate
-		AuthenticationService authenticationService = getAuthenticationService();
+		ApplicationAuthenticationService applicationAuthenticationService = getApplicationAuthenticationService();
 		String applicationName;
 		try {
-			applicationName = authenticationService.authenticate(certificate);
+			applicationName = applicationAuthenticationService
+					.authenticate(certificate);
 		} catch (ApplicationNotFoundException e) {
 			throw new FailedLoginException(
 					"certificate is not an application certificate");
@@ -184,13 +185,13 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 		return true;
 	}
 
-	private AuthenticationService getAuthenticationService()
+	private ApplicationAuthenticationService getApplicationAuthenticationService()
 			throws LoginException {
 		try {
-			AuthenticationService authenticationService = EjbUtils.getEJB(
-					this.authenticationServiceJndiName,
-					AuthenticationService.class);
-			return authenticationService;
+			ApplicationAuthenticationService applicationAuthenticationService = EjbUtils
+					.getEJB(this.authenticationServiceJndiName,
+							ApplicationAuthenticationService.class);
+			return applicationAuthenticationService;
 		} catch (RuntimeException e) {
 			throw new LoginException("JNDI lookup error: " + e.getMessage());
 		}

@@ -1,18 +1,23 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.authentication.service.bean;
+
+import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter;
+import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
+import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
 
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
-import javax.ejb.Stateless;
+import javax.ejb.Remove;
+import javax.ejb.Stateful;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -44,12 +49,6 @@ import net.link.safeonline.model.PkiValidator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
-import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
-import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter;
-
-;
-
 /**
  * Implementation of authentication service interface. This component does not
  * live within the SafeOnline core security domain (chicken-egg problem).
@@ -57,12 +56,18 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter
  * @author fcorneli
  * 
  */
-@Stateless
+@Stateful
 public class AuthenticationServiceBean implements AuthenticationService,
 		AuthenticationServiceRemote {
 
 	private static final Log LOG = LogFactory
 			.getLog(AuthenticationServiceBean.class);
+
+	private SubjectEntity authenticatedSubject;
+
+	private String authenticationDevice;
+
+	private String expectedApplicationId;
 
 	@EJB
 	private SubjectDAO entityDAO;
@@ -94,17 +99,14 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private StatisticDataPointDAO statisticDataPointDAO;
 
-	public boolean authenticate(String applicationName, String login,
-			String password) throws SubjectNotFoundException,
-			ApplicationNotFoundException, SubscriptionNotFoundException {
-		LOG.debug("authenticate \"" + login + "\" for \"" + applicationName
-				+ "\"");
+	public boolean authenticate(String login, String password)
+			throws SubjectNotFoundException {
+		LOG.debug("authenticate \"" + login + "\"");
 
 		// TODO: aspectize the input validation
 		if (null == login) {
 			throw new IllegalArgumentException("login is null");
 		}
-
 		if (null == password) {
 			throw new IllegalArgumentException("password is null");
 		}
@@ -128,35 +130,21 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		}
 
 		if (!expectedPassword.equals(password)) {
-			String event = "incorrect password for application: "
-					+ applicationName;
+			String event = "incorrect password for subject: " + login;
 			addHistoryEntry(subject, event);
 			return false;
 		}
 
-		ApplicationEntity application = this.applicationDAO
-				.findApplication(applicationName);
-		if (null == application) {
-			String event = "application not found: " + applicationName;
-			addHistoryEntry(subject, event);
-			throw new ApplicationNotFoundException();
-		}
+		/*
+		 * Safe the state in this stateful session bean.
+		 */
+		this.authenticatedSubject = subject;
+		this.authenticationDevice = SafeOnlineConstants.USERNAME_PASSWORD_AUTH_DEVICE;
+		this.expectedApplicationId = null;
 
-		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(subject, application);
-		if (null == subscription) {
-			String event = "subscription not found for application: "
-					+ applicationName;
-			addHistoryEntry(subject, event);
-			throw new SubscriptionNotFoundException();
-		}
-
-		addHistoryEntry(subject, "authenticated for application "
-				+ applicationName);
-
-		this.subscriptionDAO.loggedIn(subscription);
-		this.addLoginTick(application);
-
+		/*
+		 * Communicate that the authentication process can continue.
+		 */
 		return true;
 	}
 
@@ -165,11 +153,10 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.historyDAO.addHistoryEntry(now, subject, event);
 	}
 
-	public String authenticate(String sessionId,
+	public boolean authenticate(String sessionId,
 			byte[] authenticationStatementData)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			SubjectNotFoundException, SubscriptionNotFoundException,
-			ApplicationNotFoundException {
+			SubjectNotFoundException {
 		LOG.debug("authenticate session: " + sessionId);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);
@@ -178,6 +165,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		if (null == certificate) {
 			throw new ArgumentIntegrityException();
 		}
+
+		String statementSessionId = authenticationStatement.getSessionId();
 
 		PkiProvider pkiProvider = this.pkiProviderManager
 				.findPkiProvider(certificate);
@@ -191,7 +180,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			throw new ArgumentIntegrityException();
 		}
 
-		if (false == sessionId.equals(authenticationStatement.getSessionId())) {
+		if (false == sessionId.equals(statementSessionId)) {
 			throw new ArgumentIntegrityException();
 		}
 
@@ -206,40 +195,14 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		}
 		LOG.debug("subject: " + subject);
 
-		String applicationId = authenticationStatement.getApplicationId();
-		ApplicationEntity application = this.applicationDAO
-				.findApplication(applicationId);
-		if (null == application) {
-			String event = "application not found: " + applicationId;
-			addHistoryEntry(subject, event);
-			throw new ApplicationNotFoundException();
-		}
+		/*
+		 * Safe the state.
+		 */
+		this.authenticatedSubject = subject;
+		this.authenticationDevice = SafeOnlineConstants.BEID_AUTH_DEVICE;
+		this.expectedApplicationId = authenticationStatement.getApplicationId();
 
-		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(subject, application);
-		if (null == subscription) {
-			String event = "subscription not found for application: "
-					+ applicationId;
-			addHistoryEntry(subject, event);
-			throw new SubscriptionNotFoundException();
-		}
-
-		addHistoryEntry(subject, "authenticated subject " + subject
-				+ " for application " + applicationId);
-
-		this.subscriptionDAO.loggedIn(subscription);
-		this.addLoginTick(application);
-
-		return subject.getLogin();
-	}
-
-	public String authenticate(X509Certificate certificate)
-			throws ApplicationNotFoundException {
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(certificate);
-		String applicationName = application.getName();
-		LOG.debug("authenticated application: " + applicationName);
-		return applicationName;
+		return true;
 	}
 
 	private void addLoginTick(ApplicationEntity application) {
@@ -254,4 +217,68 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		dp.setX(count + 1);
 	}
 
+	@Remove
+	public void abort() {
+		LOG.debug("abort");
+		this.authenticatedSubject = null;
+		this.authenticationDevice = null;
+		this.expectedApplicationId = null;
+	}
+
+	private void checkStateBeforeCommit() {
+		if (null == this.authenticatedSubject
+				|| null == this.authenticationDevice) {
+			throw new IllegalStateException("");
+		}
+	}
+
+	@Remove
+	public void commitAuthentication(String applicationId)
+			throws ApplicationNotFoundException, SubscriptionNotFoundException {
+		LOG.debug("commitAuthentication for application: " + applicationId);
+		checkStateBeforeCommit();
+
+		if (null != this.expectedApplicationId) {
+			/*
+			 * In that case the applicationId must match. The expected
+			 * application Id can be provided by authentication statements.
+			 */
+			if (false == this.expectedApplicationId.equals(applicationId)) {
+				throw new IllegalStateException("ApplicationId does not match");
+			}
+		}
+
+		ApplicationEntity application = this.applicationDAO
+				.findApplication(applicationId);
+		if (null == application) {
+			String event = "application not found: " + applicationId;
+			addHistoryEntry(this.authenticatedSubject, event);
+			throw new ApplicationNotFoundException();
+		}
+
+		SubscriptionEntity subscription = this.subscriptionDAO
+				.findSubscription(this.authenticatedSubject, application);
+		if (null == subscription) {
+			String event = "subscription not found for application: "
+					+ applicationId;
+			addHistoryEntry(this.authenticatedSubject, event);
+			throw new SubscriptionNotFoundException();
+		}
+
+		addHistoryEntry(this.authenticatedSubject, "authenticated subject "
+				+ this.authenticatedSubject + " for application "
+				+ applicationId);
+
+		this.subscriptionDAO.loggedIn(subscription);
+		this.addLoginTick(application);
+	}
+
+	public String getUserId() {
+		LOG.debug("getUserId");
+		if (null == this.authenticatedSubject) {
+			throw new IllegalStateException("call authenticate first");
+		}
+		String userId = this.authenticatedSubject.getLogin();
+		return userId;
+	}
 }

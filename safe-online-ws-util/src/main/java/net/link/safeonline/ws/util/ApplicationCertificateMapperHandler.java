@@ -17,7 +17,7 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -25,7 +25,8 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Application Certificate JAX-WS Login Handler. This JAX-WS SOAP handler maps a
- * trusted certificate to an application name.
+ * trusted certificate to an application name. For this it uses the
+ * {@link ApplicationAuthenticationService} service.
  * 
  * @author fcorneli
  * 
@@ -36,13 +37,13 @@ public class ApplicationCertificateMapperHandler implements
 	private static final Log LOG = LogFactory
 			.getLog(ApplicationCertificateMapperHandler.class);
 
-	private AuthenticationService authenticationService;
+	private ApplicationAuthenticationService applicationAuthenticationService;
 
 	@PostConstruct
 	public void postConstructCallback() {
-		this.authenticationService = EjbUtils.getEJB(
-				"SafeOnline/AuthenticationServiceBean/local",
-				AuthenticationService.class);
+		this.applicationAuthenticationService = EjbUtils.getEJB(
+				"SafeOnline/ApplicationAuthenticationServiceBean/local",
+				ApplicationAuthenticationService.class);
 	}
 
 	public Set<QName> getHeaders() {
@@ -77,7 +78,7 @@ public class ApplicationCertificateMapperHandler implements
 		}
 		String applicationName;
 		try {
-			applicationName = this.authenticationService
+			applicationName = this.applicationAuthenticationService
 					.authenticate(certificate);
 		} catch (ApplicationNotFoundException e) {
 			throw new RuntimeException("unknown application");
