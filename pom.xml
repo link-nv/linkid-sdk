@@ -963,6 +963,11 @@
 				<artifactId>hibernate-client</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-client</artifactId>
+				<version>${jboss.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>

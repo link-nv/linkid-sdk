@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.ejb.EJBException;
+import javax.ejb.NoSuchEJBException;
 import javax.naming.InitialContext;
 import javax.security.auth.Subject;
 
@@ -149,9 +151,67 @@ public class AuthenticationTest extends TestCase {
 
 		AuthenticationService authenticationService = getAuthenticationService(initialContext);
 
-		boolean result = authenticationService.authenticate("safe-online-user",
-				"fcorneli", "secret");
+		boolean result = authenticationService.authenticate("fcorneli",
+				"secret");
 		assertTrue(result);
+
+		String resultUserId = authenticationService.getUserId();
+		assertEquals("fcorneli", resultUserId);
+
+		authenticationService.commitAuthentication("safe-online-user");
+	}
+
+	public void testAuthenticationAbort() throws Exception {
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+
+		AuthenticationService authenticationService = getAuthenticationService(initialContext);
+
+		boolean result = authenticationService.authenticate("fcorneli",
+				"secret");
+		assertTrue(result);
+
+		/*
+		 * The abort method has the @Remove annotation on the bean instance.
+		 */
+		authenticationService.abort();
+
+		// operate & verify
+		try {
+			/*
+			 * We can only use a statefull session bean once.
+			 */
+			authenticationService.authenticate("fcorneli", "secret");
+			fail();
+		} catch (NoSuchEJBException e) {
+			// expected
+		}
+	}
+
+	public void testAuthenticationCannotCommitBeforeAuthenticate()
+			throws Exception {
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+
+		AuthenticationService authenticationService = getAuthenticationService(initialContext);
+
+		// operate & verify
+		try {
+			authenticationService.commitAuthentication("safe-online-user");
+			fail();
+		} catch (EJBException e) {
+			// expected
+			LOG.debug("expected exception: " + e.getMessage());
+			LOG.debug("expected exception type: " + e.getClass().getName());
+		}
+
+		// operate & verify: cannot continue after system exception
+		try {
+			authenticationService.authenticate("fcorneli", "secret");
+			fail();
+		} catch (NoSuchEJBException e) {
+			// expected
+		}
 	}
 
 	private AuthenticationService getAuthenticationService(
