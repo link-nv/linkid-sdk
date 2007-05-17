@@ -30,6 +30,7 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
+import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
 
 @Stateful
@@ -58,6 +59,9 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 	@In
 	private AuthenticationService authenticationService;
 
+	@In
+	private Context sessionContext;
+
 	@Remove
 	@Destroy
 	public void destroyCallback() {
@@ -83,11 +87,16 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 			boolean authenticated = this.authenticationService.authenticate(
 					this.username, this.password);
 			if (false == authenticated) {
+				/*
+				 * The abort will be correctly handled by the authentication
+				 * service manager. That way we allow the user to retry the
+				 * initial authentication step.
+				 */
 				this.facesMessages.addFromResourceBundle(
 						FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
 				return null;
 			}
-			this.authenticationService.commitAuthentication(this.application);
+			commitAuthentication();
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addToControlFromResourceBundle("username",
 					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");
@@ -109,6 +118,26 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 		redirectToLogin();
 
 		return null;
+	}
+
+	private void commitAuthentication() throws SubscriptionNotFoundException,
+			ApplicationNotFoundException {
+		try {
+			this.authenticationService.commitAuthentication(this.application);
+		} finally {
+			/*
+			 * We have to remove the authentication service reference from the
+			 * http session, else the authentication service manager will try to
+			 * abort on it.
+			 */
+			cleanupAuthenticationServiceReference();
+		}
+	}
+
+	public static final String AUTH_SERVICE_ATTRIBUTE = "authenticationService";
+
+	private void cleanupAuthenticationServiceReference() {
+		this.sessionContext.set(AUTH_SERVICE_ATTRIBUTE, null);
 	}
 
 	private void redirectToLogin() {

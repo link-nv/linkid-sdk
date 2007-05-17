@@ -48,21 +48,29 @@ public class SafeOnlineAuthenticationPortImpl implements
 		String username = request.getUsername();
 		String password = request.getPassword();
 
+		/*
+		 * Keep in mind that the authentication service is a stateful session
+		 * bean.
+		 */
 		AuthenticationService authenticationService = getService();
 		boolean serviceResult;
 		try {
 			serviceResult = authenticationService.authenticate(username,
 					password);
-			if (false == serviceResult) {
-				authenticationService.abort();
-			}
-			authenticationService.commitAuthentication(application);
 		} catch (SubjectNotFoundException e) {
 			serviceResult = false;
-		} catch (SubscriptionNotFoundException e) {
-			serviceResult = false;
-		} catch (ApplicationNotFoundException e) {
-			serviceResult = false;
+		}
+
+		if (false == serviceResult) {
+			authenticationService.abort();
+		} else {
+			try {
+				authenticationService.commitAuthentication(application);
+			} catch (SubscriptionNotFoundException e) {
+				serviceResult = false;
+			} catch (ApplicationNotFoundException e) {
+				serviceResult = false;
+			}
 		}
 
 		AuthenticateResultType result = new AuthenticateResultType();

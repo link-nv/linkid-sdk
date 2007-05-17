@@ -22,7 +22,7 @@ import net.link.safeonline.authentication.exception.TrustDomainNotFoundException
  * respected. First the methods {@link #authenticate(String, String)} or
  * {@link #authenticate(String, byte[])} must be invoked. Afterwards the
  * {@link #commitAuthentication(String)} method must be invoked. In case the
- * authentication process wants to be aborted one should invoke {@link #abort()}.
+ * authentication process needs to be aborted one should invoke {@link #abort()}.
  * 
  * @author fcorneli
  */

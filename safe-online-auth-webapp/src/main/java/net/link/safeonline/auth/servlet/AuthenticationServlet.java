@@ -72,20 +72,25 @@ public class AuthenticationServlet extends HttpServlet {
 		String sessionId = session.getId();
 		LOG.debug("session Id: " + sessionId);
 
-		AuthenticationService authenticationService = (AuthenticationService) session
-				.getAttribute("authenticationService");
+		AuthenticationService authenticationService = AuthenticationServiceManager
+				.getAuthenticationService(session);
 
 		PrintWriter writer = response.getWriter();
 		try {
 			boolean result = authenticationService.authenticate(sessionId,
 					authenticationStatementData);
 			if (result == false) {
-				authenticationService.abort();
+				/*
+				 * Abort will be handled by the authentication service manager.
+				 * That way we allow the user to retry the initial
+				 * authentication step.
+				 */
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				return;
 			}
 			String userId = authenticationService.getUserId();
-			authenticationService.commitAuthentication(applicationId);
+			AuthenticationServiceManager.commitAuthentication(session,
+					applicationId);
 			response.setStatus(HttpServletResponse.SC_OK);
 			/*
 			 * Next session attribute is used to communicate the authentication

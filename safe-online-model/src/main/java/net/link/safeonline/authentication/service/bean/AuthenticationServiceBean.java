@@ -228,7 +228,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	private void checkStateBeforeCommit() {
 		if (null == this.authenticatedSubject
 				|| null == this.authenticationDevice) {
-			throw new IllegalStateException("");
+			throw new IllegalStateException(
+					"no authenticated subject or authentication device");
 		}
 	}
 

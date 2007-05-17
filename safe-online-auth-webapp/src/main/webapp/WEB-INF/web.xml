@@ -20,6 +20,12 @@
 		</listener-class>
 	</listener>
 
+	<listener>
+		<listener-class>
+			net.link.safeonline.auth.servlet.AuthenticationServiceManager
+		</listener-class>
+	</listener>
+
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>

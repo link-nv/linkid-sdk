@@ -146,9 +146,6 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		expect(this.mockSubscriptionDAO.findSubscription(subject, application))
 				.andStubReturn(subscription);
 
-		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
-				EasyMock.eq(subject), (String) EasyMock.anyObject());
-
 		AttributeTypeEntity passwordAttributeType = new AttributeTypeEntity();
 		AttributeEntity passwordAttribute = new AttributeEntity(
 				passwordAttributeType, subject, password);
@@ -156,7 +153,6 @@ public class AuthenticationServiceBeanTest extends TestCase {
 				this.mockAttributeDAO.findAttribute(
 						SafeOnlineConstants.PASSWORD_ATTRIBUTE, "test-login"))
 				.andStubReturn(passwordAttribute);
-		this.mockSubscriptionDAO.loggedIn(subscription);
 
 		StatisticEntity statistic = new StatisticEntity();
 		expect(
@@ -288,11 +284,6 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		expect(
 				this.mockStatisticDataPointDAO.findOrAddStatisticDataPoint(
 						"Login counter", statistic)).andStubReturn(dataPoint);
-
-		// expectations
-		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
-				EasyMock.eq(subject), (String) EasyMock.anyObject());
-		this.mockSubscriptionDAO.loggedIn(subscription);
 
 		// prepare
 		replay(this.mockObjects);

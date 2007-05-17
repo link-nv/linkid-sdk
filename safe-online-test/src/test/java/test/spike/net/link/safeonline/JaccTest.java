@@ -8,6 +8,7 @@
 package test.spike.net.link.safeonline;
 
 import java.util.Set;
+import java.util.UUID;
 
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
@@ -48,6 +49,16 @@ public class JaccTest extends TestCase {
 				.getContext(TestSubjectPolicyContextHandler.SUBJECT_CONTEXT_KEY);
 		assertTrue(result instanceof Subject);
 		assertEquals(subject, result);
+	}
+
+	public void testRetrieveNonExistingPolicyContext() throws Exception {
+		String contextId = "context-id-" + UUID.randomUUID().toString();
+		try {
+			PolicyContext.getContext(contextId);
+			fail();
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
 	}
 
 	private static class TestSubjectPolicyContextHandler implements

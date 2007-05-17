@@ -15,6 +15,7 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -40,6 +41,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.security.auth.Subject;
+import javax.security.jacc.PolicyContext;
+import javax.security.jacc.PolicyContextException;
+import javax.security.jacc.PolicyContextHandler;
 import javax.transaction.UserTransaction;
 import javax.xml.rpc.handler.MessageContext;
 
@@ -494,6 +498,41 @@ public final class EJBTestUtils {
 
 	}
 
+	private static class TestPolicyContextHandler implements
+			PolicyContextHandler {
+
+		private final Subject subject;
+
+		public TestPolicyContextHandler(Principal principal, String role) {
+			this.subject = new Subject();
+			Set<Principal> principals = this.subject.getPrincipals();
+			if (null != principal) {
+				principals.add(principal);
+			}
+			if (null != role) {
+				SimpleGroup rolesGroup = new SimpleGroup("Roles");
+				rolesGroup.addMember(new SimplePrincipal(role));
+				principals.add(rolesGroup);
+			}
+		}
+
+		public Object getContext(String key, Object data)
+				throws PolicyContextException {
+			return this.subject;
+		}
+
+		public String[] getKeys() throws PolicyContextException {
+			return new String[] { "javax.security.auth.Subject.container" };
+		}
+
+		public boolean supports(String key) throws PolicyContextException {
+			if ("javax.security.auth.Subject.container".equals(key)) {
+				return true;
+			}
+			return false;
+		}
+	}
+
 	private static class TestSessionContext implements SessionContext {
 
 		private final Principal principal;
@@ -507,6 +546,17 @@ public final class EJBTestUtils {
 			} else {
 				this.principal = null;
 				this.role = null;
+			}
+
+			TestPolicyContextHandler testPolicyContextHandler = new TestPolicyContextHandler(
+					this.principal, this.role);
+			try {
+				PolicyContext.registerHandler(
+						"javax.security.auth.Subject.container",
+						testPolicyContextHandler, true);
+			} catch (PolicyContextException e) {
+				throw new EJBException("policy context error: "
+						+ e.getMessage());
 			}
 		}
 

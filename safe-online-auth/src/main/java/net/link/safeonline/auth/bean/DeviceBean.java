@@ -7,31 +7,24 @@
 
 package net.link.safeonline.auth.bean;
 
-import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.ejb.Remove;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.Device;
-import net.link.safeonline.authentication.service.AuthenticationService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.FacesMessages;
 
 @Stateful
 @Name("device")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
 		+ "DeviceBean/local")
-@EJB(name = "ejb/AuthenticationService", beanInterface = AuthenticationService.class, beanName = "AuthenticationServiceBean")
 public class DeviceBean implements Device {
 
 	private static final Log LOG = LogFactory.getLog(DeviceBean.class);
@@ -46,13 +39,6 @@ public class DeviceBean implements Device {
 	public void destroyCallback() {
 		this.selection = null;
 	}
-
-	@Resource
-	private SessionContext context;
-
-	@SuppressWarnings("unused")
-	@Out(required = false, scope = ScopeType.SESSION)
-	private AuthenticationService authenticationService;
 
 	public String getSelection() {
 		return this.selection;
@@ -77,13 +63,6 @@ public class DeviceBean implements Device {
 			this.facesMessages.add(msg);
 			return null;
 		}
-
-		/*
-		 * Here we also init the authentication service instance.
-		 */
-		AuthenticationService authenticationService = (AuthenticationService) this.context
-				.lookup("ejb/AuthenticationService");
-		this.authenticationService = authenticationService;
 
 		return outcome;
 	}
