@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline;
 
+import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
@@ -16,6 +17,7 @@ import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.CachedOcspResponseDAOBean;
 import net.link.safeonline.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.dao.bean.ConfigItemDAOBean;
+import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
@@ -24,6 +26,7 @@ import net.link.safeonline.dao.bean.TaskDAOBean;
 import net.link.safeonline.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.dao.bean.TrustPointDAOBean;
+import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
@@ -34,6 +37,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.ConfigGroupEntity;
 import net.link.safeonline.entity.ConfigItemEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -73,7 +77,8 @@ public class SafeOnlineTestContainer {
 			ApplicationManagerBean.class, TrustPointDAOBean.class,
 			CachedOcspResponseDAOBean.class,
 			AttributeTypeDescriptionDecoratorBean.class,
-			AttributeProviderDAOBean.class, ApplicationsBean.class };
+			AttributeProviderDAOBean.class, ApplicationsBean.class,
+			DeviceDAOBean.class, AllowedDeviceDAOBean.class };
 
 	public static final Class[] entities = new Class[] { SubjectEntity.class,
 			ApplicationEntity.class, ApplicationOwnerEntity.class,
@@ -83,5 +88,6 @@ public class SafeOnlineTestContainer {
 			ConfigItemEntity.class, TaskEntity.class, SchedulingEntity.class,
 			TaskHistoryEntity.class, ApplicationIdentityAttributeEntity.class,
 			TrustPointEntity.class, AttributeTypeDescriptionEntity.class,
-			AttributeProviderEntity.class };
+			AttributeProviderEntity.class, DeviceEntity.class,
+			AllowedDeviceEntity.class };
 }
