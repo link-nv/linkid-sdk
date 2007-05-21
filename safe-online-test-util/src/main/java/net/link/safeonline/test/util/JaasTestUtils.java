@@ -11,6 +11,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+/**
+ * JAAS test utility class.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class JaasTestUtils {
 
 	private JaasTestUtils() {
@@ -26,5 +35,34 @@ public class JaasTestUtils {
 		printWriter.close();
 		System.setProperty("java.security.auth.login.config", jaasConfigFile
 				.getAbsolutePath());
+
+		/*
+		 * We install a shutdown hook to cleanup the JAAS config file
+		 * afterwards. Else we risk of flooding the /tmp directory with junk.
+		 */
+		Runtime runtime = Runtime.getRuntime();
+		JaasCleanupShutdownHook cleanupShutdownHook = new JaasCleanupShutdownHook(
+				jaasConfigFile);
+		runtime.addShutdownHook(cleanupShutdownHook);
+	}
+
+	private static class JaasCleanupShutdownHook extends Thread {
+
+		private static final Log LOG = LogFactory
+				.getLog(JaasCleanupShutdownHook.class);
+
+		private final File jaasConfigFile;
+
+		public JaasCleanupShutdownHook(File jaasConfigFile) {
+			this.jaasConfigFile = jaasConfigFile;
+		}
+
+		@Override
+		public void run() {
+			LOG.debug("cleanup JAAS config file: " + this.jaasConfigFile);
+			if (false == this.jaasConfigFile.delete()) {
+				this.jaasConfigFile.deleteOnExit();
+			}
+		}
 	}
 }

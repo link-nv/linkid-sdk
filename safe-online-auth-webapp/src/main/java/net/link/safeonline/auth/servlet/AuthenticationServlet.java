@@ -89,6 +89,7 @@ public class AuthenticationServlet extends HttpServlet {
 				return;
 			}
 			String userId = authenticationService.getUserId();
+			// TODO: commit later on
 			AuthenticationServiceManager.commitAuthentication(session,
 					applicationId);
 			response.setStatus(HttpServletResponse.SC_OK);

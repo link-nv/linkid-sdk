@@ -10,6 +10,7 @@ package net.link.safeonline.auth.bean;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
@@ -27,17 +28,18 @@ import net.link.safeonline.authentication.service.IdentityService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.FacesMessages;
 
-// TODO: use the user webapp security domain here
 @Stateful
 @Name("identityConfirmation")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
 		+ "IdentityConfirmationBean/local")
+@SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 public class IdentityConfirmationBean implements IdentityConfirmation {
 
 	private static final Log LOG = LogFactory
@@ -58,6 +60,7 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 	@EJB
 	private IdentityService identityService;
 
+	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String agree() {
 		LOG.debug("agree");
 		boolean hasMissingAttributes;
@@ -98,6 +101,7 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 	}
 
 	@Factory("identityConfirmationList")
+	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public List<AttributeDO> identityConfirmationListFactory() {
 		LOG.debug("identityConfirmationList factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();

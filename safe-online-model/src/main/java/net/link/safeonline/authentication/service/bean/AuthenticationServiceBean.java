@@ -7,6 +7,8 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import static net.link.safeonline.authentication.service.AuthenticationState.INIT;
+import static net.link.safeonline.authentication.service.AuthenticationState.USER_AUTHENTICATED;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
@@ -14,6 +16,7 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticNam
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Remove;
@@ -27,6 +30,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
+import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
@@ -68,6 +72,16 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	private String authenticationDevice;
 
 	private String expectedApplicationId;
+
+	private AuthenticationState authenticationState;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		/*
+		 * Set the initial state of this authentication service bean.
+		 */
+		this.authenticationState = INIT;
+	}
 
 	@EJB
 	private SubjectDAO entityDAO;
@@ -138,6 +152,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		/*
 		 * Safe the state in this stateful session bean.
 		 */
+		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = subject;
 		this.authenticationDevice = SafeOnlineConstants.USERNAME_PASSWORD_AUTH_DEVICE;
 		this.expectedApplicationId = null;
@@ -198,6 +213,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		/*
 		 * Safe the state.
 		 */
+		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = subject;
 		this.authenticationDevice = SafeOnlineConstants.BEID_AUTH_DEVICE;
 		this.expectedApplicationId = authenticationStatement.getApplicationId();
@@ -226,10 +242,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	}
 
 	private void checkStateBeforeCommit() {
-		if (null == this.authenticatedSubject
-				|| null == this.authenticationDevice) {
-			throw new IllegalStateException(
-					"no authenticated subject or authentication device");
+		if (INIT == this.authenticationState) {
+			throw new IllegalStateException("bean is still in INIT state");
 		}
 	}
 
@@ -268,7 +282,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 		addHistoryEntry(this.authenticatedSubject, "authenticated subject "
 				+ this.authenticatedSubject + " for application "
-				+ applicationId);
+				+ applicationId + " via " + this.authenticationDevice);
 
 		this.subscriptionDAO.loggedIn(subscription);
 		this.addLoginTick(application);
@@ -276,7 +290,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	public String getUserId() {
 		LOG.debug("getUserId");
-		if (null == this.authenticatedSubject) {
+		if (INIT == this.authenticationState) {
 			throw new IllegalStateException("call authenticate first");
 		}
 		String userId = this.authenticatedSubject.getLogin();

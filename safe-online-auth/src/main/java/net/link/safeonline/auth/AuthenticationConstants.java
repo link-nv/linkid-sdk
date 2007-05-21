@@ -14,4 +14,16 @@ public class AuthenticationConstants {
 	}
 
 	public static final String JNDI_PREFIX = "SafeOnline/auth/";
+
+	/**
+	 * The name of the security domain used within the SafeOnline authentication
+	 * web application control components.
+	 */
+	public static final String SECURITY_DOMAIN = "safe-online-auth";
+
+	/**
+	 * The EJB RBAC role used within the SafeOnline authentication web
+	 * application components.
+	 */
+	public static final String USER_ROLE = "user";
 }

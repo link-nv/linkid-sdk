@@ -10,6 +10,7 @@ package net.link.safeonline.auth.bean;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
@@ -27,6 +28,7 @@ import net.link.safeonline.authentication.service.IdentityService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -38,6 +40,7 @@ import org.jboss.seam.core.FacesMessages;
 @Name("missingAttributes")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
 		+ "MissingAttributesBean/local")
+@SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 public class MissingAttributesBean implements MissingAttributes {
 
 	private static final Log LOG = LogFactory
@@ -64,6 +67,7 @@ public class MissingAttributesBean implements MissingAttributes {
 	private List<AttributeDO> missingAttributeList;
 
 	@Factory(MISSING_ATTRIBUTE_LIST)
+	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public void missingAttributeListFactory() {
 		LOG.debug("missing attribute list factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -84,6 +88,7 @@ public class MissingAttributesBean implements MissingAttributes {
 		}
 	}
 
+	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String save() {
 		LOG.debug("save");
 		for (AttributeDO attribute : this.missingAttributeList) {
