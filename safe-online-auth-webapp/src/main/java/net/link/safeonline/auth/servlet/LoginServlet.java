@@ -23,6 +23,7 @@ import net.link.safeonline.authentication.exception.IdentityConfirmationRequired
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -46,6 +47,8 @@ public class LoginServlet extends HttpServlet {
 
 	private IdentityService identityService;
 
+	private SubscriptionService subscriptionService;
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -56,6 +59,9 @@ public class LoginServlet extends HttpServlet {
 	private void loadDependencies() {
 		this.identityService = EjbUtils.getEJB(
 				"SafeOnline/IdentityServiceBean/local", IdentityService.class);
+		this.subscriptionService = EjbUtils.getEJB(
+				"SafeOnline/SubscriptionServiceBean/local",
+				SubscriptionService.class);
 	}
 
 	@Override
@@ -68,6 +74,18 @@ public class LoginServlet extends HttpServlet {
 		if (null == applicationId) {
 			throw new ServletException(
 					"applicationId session attribute not found");
+		}
+
+		boolean subscriptionRequired;
+		try {
+			subscriptionRequired = !this.subscriptionService
+					.isSubscribed(applicationId);
+		} catch (ApplicationNotFoundException e1) {
+			throw new ServletException("application not found");
+		}
+		if (true == subscriptionRequired) {
+			redirectToSubscription(response);
+			return;
 		}
 
 		boolean confirmationRequired;
@@ -137,6 +155,12 @@ public class LoginServlet extends HttpServlet {
 		String redirectUrl = "./identity-confirmation.seam";
 
 		LOG.debug("redirecting to: " + redirectUrl);
+		response.sendRedirect(redirectUrl);
+	}
+
+	private void redirectToSubscription(HttpServletResponse response)
+			throws IOException {
+		String redirectUrl = "./subscription.seam";
 		response.sendRedirect(redirectUrl);
 	}
 

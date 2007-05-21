@@ -68,4 +68,15 @@ public interface SubscriptionService {
 	 */
 	long getNumberOfSubscriptions(String applicationName)
 			throws ApplicationNotFoundException, PermissionDeniedException;
+
+	/**
+	 * Returns <code>true</code> if the caller user has a subscription for the
+	 * given application.
+	 * 
+	 * @param applicationName
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 */
+	boolean isSubscribed(String applicationName)
+			throws ApplicationNotFoundException;
 }

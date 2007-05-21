@@ -40,4 +40,20 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<navigation-rule>
+		<from-view-id>/subscription.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>reject</from-action>
+			<to-view-id>/subscription-rejection.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>confirmation-required</from-outcome>
+			<to-view-id>/identity-confirmation.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>missing-attributes</from-outcome>
+			<to-view-id>/missing-attributes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
 </faces-config>

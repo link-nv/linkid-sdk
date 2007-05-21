@@ -129,4 +129,15 @@ public class SubscriptionServiceBean implements SubscriptionService,
 			throw new PermissionDeniedException();
 		}
 	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public boolean isSubscribed(String applicationName)
+			throws ApplicationNotFoundException {
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationName);
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		SubscriptionEntity subscription = this.subscriptionDAO
+				.findSubscription(subject, application);
+		return null != subscription;
+	}
 }
