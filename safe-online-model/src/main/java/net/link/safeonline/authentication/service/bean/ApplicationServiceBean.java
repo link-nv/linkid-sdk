@@ -363,4 +363,17 @@ public class ApplicationServiceBean implements ApplicationService,
 
 		application.setCertificate(certificate);
 	}
+
+	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	public void setApplicationDeviceRestriction(String name,
+			boolean deviceRestriction) throws ApplicationNotFoundException,
+			PermissionDeniedException {
+		LOG.debug("set application description: " + name);
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(name);
+
+		checkWritePermission(application);
+
+		application.setDeviceRestriction(deviceRestriction);
+	}
 }

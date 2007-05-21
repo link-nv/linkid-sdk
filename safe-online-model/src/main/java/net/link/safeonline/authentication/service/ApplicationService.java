@@ -162,4 +162,17 @@ public interface ApplicationService {
 	void updateApplicationCertificate(String applicationName,
 			byte[] certificateData) throws CertificateEncodingException,
 			ApplicationNotFoundException;
+
+	/**
+	 * Sets the application description.
+	 * 
+	 * @param name
+	 *            the name of the application.
+	 * @param deviceRestriction
+	 * @throws ApplicationNotFoundException
+	 * @throws PermissionDeniedException
+	 */
+	void setApplicationDeviceRestriction(String applicationName,
+			boolean deviceRestriction) throws ApplicationNotFoundException,
+			PermissionDeniedException;
 }

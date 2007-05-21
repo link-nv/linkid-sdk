@@ -7,6 +7,8 @@
 
 package net.link.safeonline.model.bean;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.Local;
@@ -88,6 +90,10 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 				"Password", null));
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				passwordAttributeType, "nl", "Wachtwoord", null));
+
+		List<AttributeTypeEntity> deviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
+		deviceAttributeTypeList.add(passwordAttributeType);
+		this.devices.put("password", deviceAttributeTypeList);
 	}
 
 	public int getPriority() {

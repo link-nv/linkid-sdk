@@ -59,6 +59,24 @@
 			</h:column>
 		</h:dataTable>
 
+		<p>#{msgs.isDeviceRestriction}: <h:selectBooleanCheckbox
+			value="#{selectedApplication.deviceRestriction}" disabled="true" /></p>
+
+		<h:dataTable value="#{allowedDevices}" var="item">
+			<h:column>
+				<f:facet name="header">#{msgs.name}</f:facet>
+				<h:outputText value="#{item.device.name}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">#{msgs.allowed}</f:facet>
+				<h:selectBooleanCheckbox value="#{item.allowed}" disabled="true" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">#{msgs.weight}</f:facet>
+				<h:outputText value="#{item.weight}" />
+			</h:column>
+		</h:dataTable>
+
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" action="back" />
 		</h:form>

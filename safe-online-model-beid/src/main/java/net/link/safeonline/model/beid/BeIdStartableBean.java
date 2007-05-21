@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,6 +49,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 	private TrustPointDAO trustPointDAO;
 
 	public BeIdStartableBean() {
+		List<AttributeTypeEntity> deviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
+
 		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(
 				BeIdConstants.GIVENNAME_ATTRIBUTE, "string", true, false);
 		this.attributeTypes.add(givenNameAttributeType);
@@ -56,6 +59,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 				"Given name (BeID)", null));
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				givenNameAttributeType, "nl", "Naam (BeID)", null));
+
+		deviceAttributeTypeList.add(givenNameAttributeType);
 
 		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(
 				BeIdConstants.SURNAME_ATTRIBUTE, "string", true, false);
@@ -66,8 +71,13 @@ public class BeIdStartableBean extends AbstractInitBean {
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				surnameAttributeType, "nl", "Achternaam (BeID)", null));
 
-		this.attributeTypes.add(new AttributeTypeEntity(
-				BeIdConstants.AUTH_CERT_ATTRIBUTE, "blob", true, false));
+		deviceAttributeTypeList.add(surnameAttributeType);
+
+		AttributeTypeEntity authenticationCertificateAttributeType = new AttributeTypeEntity(
+				BeIdConstants.AUTH_CERT_ATTRIBUTE, "blob", true, false);
+		this.attributeTypes.add(authenticationCertificateAttributeType);
+
+		deviceAttributeTypeList.add(authenticationCertificateAttributeType);
 
 		AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(
 				BeIdConstants.NRN_ATTRIBUTE, "string", true, false);
@@ -78,6 +88,10 @@ public class BeIdStartableBean extends AbstractInitBean {
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				nrnAttributeType, "nl",
 				"Identificatienummer van het Rijksregister", null));
+
+		deviceAttributeTypeList.add(nrnAttributeType);
+
+		this.devices.put("beid", deviceAttributeTypeList);
 
 	}
 

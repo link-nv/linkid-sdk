@@ -18,9 +18,27 @@
 		<h1>#{selectedApplication.name}</h1>
 
 		<h:form>
-			<p>#{msgs.description}:</p>
+			<h1>#{msgs.description}:</h1>
 			<p><h:inputTextarea value="#{selectedApplication.description}"
 				escape="false" cols="60" rows="10" /></p>
+
+			<h2>#{msgs.allowedDevices}:</h2>
+			<p>#{msgs.isDeviceRestriction}: <h:selectBooleanCheckbox
+				value="#{selectedApplication.deviceRestriction}" /></p>
+			<h:dataTable value="#{allowedDevices}" var="item">
+				<h:column>
+					<f:facet name="header">#{msgs.name}</f:facet>
+					<h:outputLabel for="included" value="#{item.device.name}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.allowed}</f:facet>
+					<h:selectBooleanCheckbox value="#{item.allowed}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.weight}</f:facet>
+					<h:inputText value="#{item.weight}" />
+				</h:column>
+			</h:dataTable>
 
 			<h:commandButton value="#{msgs.saveaction}"
 				action="#{ownerApplication.save}" />

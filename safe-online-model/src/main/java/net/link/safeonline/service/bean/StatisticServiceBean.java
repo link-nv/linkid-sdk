@@ -9,11 +9,10 @@ package net.link.safeonline.service.bean;
 
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
-import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +27,7 @@ import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
+import net.link.safeonline.service.ApplicationOwnerAccessControlInterceptor;
 import net.link.safeonline.service.StatisticService;
 import net.link.safeonline.service.StatisticServiceRemote;
 
@@ -45,9 +45,6 @@ public class StatisticServiceBean implements StatisticService,
 	@EJB
 	private StatisticDAO statisticDAO;
 
-	@Resource
-	private SessionContext sessionContext;
-
 	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public StatisticEntity getStatistic(String statisticName,
 			String statisticDomain, String applicationName)
@@ -59,10 +56,13 @@ public class StatisticServiceBean implements StatisticService,
 			application = this.applicationDAO.findApplication(applicationName);
 		}
 
-		if (!accessControl(application)) {
-			throw new PermissionDeniedException();
-		}
+		return this.getStatistic(statisticName, statisticDomain, application);
+	}
 
+	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
+	private StatisticEntity getStatistic(String statisticName,
+			String statisticDomain, ApplicationEntity application)
+			throws StatisticNotFoundException {
 		LOG.debug("finding statistic");
 		StatisticEntity statistic = this.statisticDAO
 				.findStatisticByNameDomainAndApplication(statisticName,
@@ -80,31 +80,12 @@ public class StatisticServiceBean implements StatisticService,
 	}
 
 	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
+	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
 	public List<StatisticEntity> getStatistics(ApplicationEntity application)
 			throws PermissionDeniedException {
-		if (!accessControl(application)) {
-			throw new PermissionDeniedException();
-		}
 		List<StatisticEntity> result = this.statisticDAO
 				.listStatistics(application);
 		return result;
-	}
-
-	private boolean accessControl(ApplicationEntity application) {
-		boolean isOperator = this.sessionContext
-				.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE);
-		if (isOperator) {
-			return true;
-		}
-		if (application == null) {
-			return false;
-		}
-		String subjectName = this.sessionContext.getCallerPrincipal().getName();
-		if (application.getApplicationOwner().getAdmin().getLogin().equals(
-				subjectName)) {
-			return true;
-		}
-		return false;
 	}
 
 }

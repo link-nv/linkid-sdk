@@ -23,4 +23,6 @@ public interface Application {
 	String save();
 
 	String viewStats();
+
+	void allowedDevices();
 }

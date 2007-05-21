@@ -86,6 +86,16 @@ public class ApplicationEntity implements Serializable {
 
 	private String certificateIdentifier;
 
+	private boolean deviceRestriction;
+
+	public boolean isDeviceRestriction() {
+		return deviceRestriction;
+	}
+
+	public void setDeviceRestriction(boolean deviceRestriction) {
+		this.deviceRestriction = deviceRestriction;
+	}
+
 	public ApplicationEntity() {
 		// empty
 	}
@@ -123,11 +133,21 @@ public class ApplicationEntity implements Serializable {
 			ApplicationOwnerEntity applicationOwner, String description,
 			boolean allowUserSubscription, boolean removable,
 			X509Certificate certificate, long identityVersion) {
+		this(name, applicationOwner, description, allowUserSubscription,
+				removable, certificate, identityVersion, false);
+	}
+
+	public ApplicationEntity(String name,
+			ApplicationOwnerEntity applicationOwner, String description,
+			boolean allowUserSubscription, boolean removable,
+			X509Certificate certificate, long identityVersion,
+			boolean deviceRestriction) {
 		this.name = name;
 		this.applicationOwner = applicationOwner;
 		this.description = description;
 		this.allowUserSubscription = allowUserSubscription;
 		this.removable = removable;
+		this.deviceRestriction = deviceRestriction;
 		this.currentApplicationIdentity = identityVersion;
 		if (null != certificate) {
 			try {

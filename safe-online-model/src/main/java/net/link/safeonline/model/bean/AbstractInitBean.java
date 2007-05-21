@@ -29,6 +29,7 @@ import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.TrustDomainDAO;
@@ -40,6 +41,7 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -155,6 +157,8 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected List<AttributeEntity> attributes;
 
+	protected Map<String, List<AttributeTypeEntity>> devices;
+
 	public AbstractInitBean() {
 		this.applicationOwnersAndLogin = new HashMap<String, String>();
 		this.attributeTypes = new LinkedList<AttributeTypeEntity>();
@@ -166,6 +170,7 @@ public abstract class AbstractInitBean implements Startable {
 		this.trustedCertificates = new LinkedList<X509Certificate>();
 		this.attributeProviders = new LinkedList<AttributeProviderEntity>();
 		this.attributes = new LinkedList<AttributeEntity>();
+		this.devices = new HashMap<String, List<AttributeTypeEntity>>();
 	}
 
 	public void postStart() {
@@ -181,6 +186,7 @@ public abstract class AbstractInitBean implements Startable {
 		initApplicationTrustPoints();
 		initAttributeProviders();
 		initAttributes();
+		initDevices();
 	}
 
 	public void preStop() {
@@ -216,6 +222,9 @@ public abstract class AbstractInitBean implements Startable {
 
 	@EJB
 	private AttributeProviderDAO attributeProviderDAO;
+
+	@EJB
+	private DeviceDAO deviceDAO;
 
 	private void initApplicationTrustPoints() {
 		for (X509Certificate certificate : this.trustedCertificates) {
@@ -446,4 +455,12 @@ public abstract class AbstractInitBean implements Startable {
 			}
 		}
 	}
+
+	private void initDevices() {
+		for (String deviceName : devices.keySet()) {
+			DeviceEntity device = this.deviceDAO.addDevice(deviceName);
+			device.setAttributeTypes(devices.get(deviceName));
+		}
+	}
+
 }

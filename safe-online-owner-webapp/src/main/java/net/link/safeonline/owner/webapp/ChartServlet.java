@@ -107,13 +107,9 @@ public class ChartServlet extends HttpServlet {
 
 		LOG.debug("found statistic");
 		// hook specific chart generation functions here
-		if (chartName.equals("blah")) {
-			chart = specificChart(statistic);
-		}
 		if (chartName.equals(usageStatistic)) {
 			chart = usageChart(statistic);
-		}
-		if (domainName.equals("Data Mining Domain")) {
+		} else if (domainName.equals("Data Mining Domain")) {
 			chart = dataMiningChart(statistic);
 		} else {
 			chart = defaultChart(statistic);
@@ -153,10 +149,6 @@ public class ChartServlet extends HttpServlet {
 				false // URLs?
 				);
 		return chart;
-	}
-
-	private JFreeChart specificChart(StatisticEntity statistic) {
-		return this.defaultChart(statistic);
 	}
 
 	private JFreeChart usageChart(StatisticEntity statistic) {
