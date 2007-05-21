@@ -23,14 +23,18 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
+import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.AuthenticationState;
+import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
@@ -112,6 +116,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	@EJB
 	private StatisticDataPointDAO statisticDataPointDAO;
+
+	@EJB
+	private IdentityService identityService;
 
 	public boolean authenticate(String login, String password)
 			throws SubjectNotFoundException {
@@ -247,11 +254,39 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		}
 	}
 
+	private void checkRequiredIdentity(String applicationId)
+			throws SubscriptionNotFoundException, ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException,
+			IdentityConfirmationRequiredException {
+		boolean confirmationRequired = this.identityService
+				.isConfirmationRequired(applicationId);
+		if (true == confirmationRequired) {
+			throw new IdentityConfirmationRequiredException();
+		}
+	}
+
+	private void checkRequiredMissingAttributes(String applicationId)
+			throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException, MissingAttributeException {
+		boolean hasMissingAttributes = this.identityService
+				.hasMissingAttributes(applicationId);
+		if (true == hasMissingAttributes) {
+			throw new MissingAttributeException();
+		}
+	}
+
 	@Remove
 	public void commitAuthentication(String applicationId)
-			throws ApplicationNotFoundException, SubscriptionNotFoundException {
+			throws ApplicationNotFoundException, SubscriptionNotFoundException,
+			ApplicationIdentityNotFoundException,
+			IdentityConfirmationRequiredException, MissingAttributeException {
 		LOG.debug("commitAuthentication for application: " + applicationId);
+
 		checkStateBeforeCommit();
+
+		checkRequiredIdentity(applicationId);
+
+		checkRequiredMissingAttributes(applicationId);
 
 		if (null != this.expectedApplicationId) {
 			/*

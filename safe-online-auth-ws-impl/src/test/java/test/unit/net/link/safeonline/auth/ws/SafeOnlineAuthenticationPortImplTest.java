@@ -22,6 +22,8 @@ import net.lin_k.safe_online.auth._1_0.types.AuthenticateResultType;
 import net.link.safeonline.auth.ws.SafeOnlineAuthenticationPortImpl;
 import net.link.safeonline.auth.ws.SafeOnlineAuthenticationServiceFactory;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.test.util.DummyLoginModule;
+import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
 
@@ -71,6 +73,8 @@ public class SafeOnlineAuthenticationPortImplTest extends TestCase {
 		String applicationName = "test-application";
 		String username = "test-username";
 		String password = "test-password";
+
+		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 
 		// expectations
 		expect(this.mockAuthenticationService.authenticate(username, password))

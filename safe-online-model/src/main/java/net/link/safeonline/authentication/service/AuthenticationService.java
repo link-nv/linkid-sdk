@@ -9,8 +9,11 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
+import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
@@ -54,9 +57,14 @@ public interface AuthenticationService {
 	 *             in case the subject is not subscribed to the application.
 	 * @throws ApplicationNotFoundException
 	 *             in case the application does not exist.
+	 * @throws ApplicationIdentityNotFoundException
+	 * @throws IdentityConfirmationRequiredException
+	 * @throws MissingAttributeException
 	 */
 	void commitAuthentication(String applicationId)
-			throws ApplicationNotFoundException, SubscriptionNotFoundException;
+			throws ApplicationNotFoundException, SubscriptionNotFoundException,
+			ApplicationIdentityNotFoundException,
+			IdentityConfirmationRequiredException, MissingAttributeException;
 
 	/**
 	 * Authenticates a user via an authentication statement. The given session

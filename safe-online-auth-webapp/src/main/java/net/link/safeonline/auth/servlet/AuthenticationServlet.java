@@ -18,10 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.shared.SharedConstants;
@@ -89,9 +87,6 @@ public class AuthenticationServlet extends HttpServlet {
 				return;
 			}
 			String userId = authenticationService.getUserId();
-			// TODO: commit later on
-			AuthenticationServiceManager.commitAuthentication(session,
-					applicationId);
 			response.setStatus(HttpServletResponse.SC_OK);
 			/*
 			 * Next session attribute is used to communicate the authentication
@@ -118,21 +113,11 @@ public class AuthenticationServlet extends HttpServlet {
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
 			writer.println("Subject not found");
-		} catch (SubscriptionNotFoundException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-			writer.println("Subscription not found");
 		} catch (ArgumentIntegrityException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
 			writer.println("Argument integrity error");
-		} catch (ApplicationNotFoundException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
-					.getErrorCode());
-			writer.println("Application not found");
 		} catch (Exception e) {
 			LOG.error("credential service error: " + e.getMessage(), e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -160,6 +160,9 @@ public class SafeOnlineLoginModule implements LoginModule {
 
 		String username = nameCallback.getName();
 		LOG.debug("username: " + username);
+		if (null == username) {
+			throw new LoginException("username is null");
+		}
 
 		// authenticate
 		// TODO: authenticate here again via SAML assertion

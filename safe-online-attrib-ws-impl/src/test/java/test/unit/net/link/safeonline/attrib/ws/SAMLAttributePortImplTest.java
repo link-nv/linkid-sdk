@@ -16,12 +16,7 @@ import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.List;
-import java.util.Map;
 
-import javax.security.auth.Subject;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.login.LoginException;
-import javax.security.auth.spi.LoginModule;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
@@ -38,6 +33,7 @@ import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
@@ -115,7 +111,7 @@ public class SAMLAttributePortImplTest extends TestCase {
 						.anyObject(), (X509Certificate) EasyMock.anyObject()))
 				.andStubReturn(true);
 
-		JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
+		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 
 		SAMLAttributePort wsPort = new SAMLAttributePortImpl();
 		this.webServiceTestUtils = new WebServiceTestUtils();
@@ -353,28 +349,4 @@ public class SAMLAttributePortImplTest extends TestCase {
 		assertEquals("urn:oasis:names:tc:SAML:2.0:status:Requester",
 				resultStatus.getStatusCode().getValue());
 	}
-
-	public static class TestLoginModule implements LoginModule {
-
-		public boolean abort() throws LoginException {
-			return true;
-		}
-
-		public boolean commit() throws LoginException {
-			return true;
-		}
-
-		public void initialize(Subject subject,
-				CallbackHandler callbackHandler, Map<String, ?> sharedState,
-				Map<String, ?> options) {
-		}
-
-		public boolean login() throws LoginException {
-			return true;
-		}
-
-		public boolean logout() throws LoginException {
-			return true;
-		}
-	};
 }

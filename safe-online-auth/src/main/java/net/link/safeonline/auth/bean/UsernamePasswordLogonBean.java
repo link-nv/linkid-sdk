@@ -17,9 +17,7 @@ import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.UsernamePasswordLogon;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 
 import org.apache.commons.logging.Log;
@@ -30,7 +28,6 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
 
 @Stateful
@@ -58,9 +55,6 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 
 	@In
 	private AuthenticationService authenticationService;
-
-	@In
-	private Context sessionContext;
 
 	@Remove
 	@Destroy
@@ -96,19 +90,9 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 						FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
 				return null;
 			}
-			commitAuthentication();
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addToControlFromResourceBundle("username",
 					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");
-			return null;
-		} catch (SubscriptionNotFoundException e) {
-			this.facesMessages.addToControlFromResourceBundle("username",
-					FacesMessage.SEVERITY_ERROR, "subscriptionNotFoundMsg",
-					this.application);
-			return null;
-		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "applicationNotFoundMsg");
 			return null;
 		}
 
@@ -120,25 +104,7 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 		return null;
 	}
 
-	private void commitAuthentication() throws SubscriptionNotFoundException,
-			ApplicationNotFoundException {
-		try {
-			this.authenticationService.commitAuthentication(this.application);
-		} finally {
-			/*
-			 * We have to remove the authentication service reference from the
-			 * http session, else the authentication service manager will try to
-			 * abort on it.
-			 */
-			cleanupAuthenticationServiceReference();
-		}
-	}
-
 	public static final String AUTH_SERVICE_ATTRIBUTE = "authenticationService";
-
-	private void cleanupAuthenticationServiceReference() {
-		this.sessionContext.set(AUTH_SERVICE_ATTRIBUTE, null);
-	}
 
 	private void redirectToLogin() {
 		FacesContext context = FacesContext.getCurrentInstance();

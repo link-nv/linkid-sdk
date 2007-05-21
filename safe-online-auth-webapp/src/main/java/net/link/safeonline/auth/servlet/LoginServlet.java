@@ -19,6 +19,8 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
+import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -99,7 +101,29 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 
+		try {
+			commitAuthentication(session, applicationId);
+		} catch (SubscriptionNotFoundException e) {
+			throw new ServletException("subscription not found");
+		} catch (ApplicationNotFoundException e) {
+			throw new ServletException("application not found");
+		} catch (ApplicationIdentityNotFoundException e) {
+			throw new ServletException("application identity not found");
+		} catch (IdentityConfirmationRequiredException e) {
+			throw new ServletException("identity confirmation required");
+		} catch (MissingAttributeException e) {
+			throw new ServletException("missing identity attribute");
+		}
+
 		redirectToApplication(request, response);
+	}
+
+	private void commitAuthentication(HttpSession session, String applicationId)
+			throws SubscriptionNotFoundException, ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException,
+			IdentityConfirmationRequiredException, MissingAttributeException {
+		AuthenticationServiceManager.commitAuthentication(session,
+				applicationId);
 	}
 
 	private void redirectToMissingAttributes(HttpServletResponse response)

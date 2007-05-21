@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.security.auth.spi.LoginModule;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,6 +29,10 @@ public class JaasTestUtils {
 	}
 
 	public static void initJaasLoginModule(Class clazz) throws IOException {
+		if (false == LoginModule.class.isAssignableFrom(clazz)) {
+			throw new IllegalArgumentException(
+					"given class is not a subclass of LoginModule");
+		}
 		File jaasConfigFile = File.createTempFile("jaas-", ".login");
 		PrintWriter printWriter = new PrintWriter(jaasConfigFile);
 		printWriter.println("client-login {");

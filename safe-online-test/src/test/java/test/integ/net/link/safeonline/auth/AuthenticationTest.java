@@ -158,6 +158,12 @@ public class AuthenticationTest extends TestCase {
 		String resultUserId = authenticationService.getUserId();
 		assertEquals("fcorneli", resultUserId);
 
+		/*
+		 * A commitAuthentication can only take place when the user is already
+		 * authenticated in the SafeOnline core.
+		 */
+		IntegrationTestUtils.setupLoginConfig();
+		IntegrationTestUtils.login("fcorneli", "secret");
 		authenticationService.commitAuthentication("safe-online-user");
 	}
 

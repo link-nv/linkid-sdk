@@ -15,7 +15,10 @@ import javax.servlet.http.HttpSessionListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
+import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -109,10 +112,14 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	 * @param applicationId
 	 * @throws SubscriptionNotFoundException
 	 * @throws ApplicationNotFoundException
+	 * @throws MissingAttributeException
+	 * @throws IdentityConfirmationRequiredException
+	 * @throws ApplicationIdentityNotFoundException
 	 */
 	public static void commitAuthentication(HttpSession session,
 			String applicationId) throws SubscriptionNotFoundException,
-			ApplicationNotFoundException {
+			ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+			IdentityConfirmationRequiredException, MissingAttributeException {
 		AuthenticationService authenticationService = getAuthenticationService(session);
 		try {
 			authenticationService.commitAuthentication(applicationId);
