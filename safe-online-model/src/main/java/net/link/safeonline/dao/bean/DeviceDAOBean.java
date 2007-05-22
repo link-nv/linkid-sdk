@@ -30,4 +30,8 @@ public class DeviceDAOBean implements DeviceDAO {
 		return result;
 	}
 
+	public DeviceEntity findDevice(String deviceName) {
+		return this.entityManager.find(DeviceEntity.class, deviceName);
+	}
+
 }

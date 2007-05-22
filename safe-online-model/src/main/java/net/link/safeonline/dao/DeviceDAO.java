@@ -13,4 +13,6 @@ public interface DeviceDAO {
 
 	List<DeviceEntity> listDevices();
 
+	DeviceEntity findDevice(String name);
+
 }
