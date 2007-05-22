@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.Startable;
+import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
@@ -19,6 +20,7 @@ import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.dao.bean.ConfigItemDAOBean;
+import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
@@ -26,6 +28,7 @@ import net.link.safeonline.dao.bean.TaskDAOBean;
 import net.link.safeonline.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.dao.bean.TrustPointDAOBean;
+import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
@@ -36,6 +39,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.ConfigGroupEntity;
 import net.link.safeonline.entity.ConfigItemEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -63,7 +67,8 @@ public class DemoStartableBeanTest extends TestCase {
 			ConfigItemDAOBean.class, TaskDAOBean.class,
 			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
 			ApplicationIdentityManagerBean.class, TrustPointDAOBean.class,
-			AttributeProviderDAOBean.class };
+			AttributeProviderDAOBean.class, DeviceDAOBean.class,
+			AllowedDeviceDAOBean.class };
 
 	@Override
 	protected void setUp() throws Exception {
@@ -80,7 +85,8 @@ public class DemoStartableBeanTest extends TestCase {
 				TrustPointEntity.class,
 				ApplicationIdentityAttributeEntity.class,
 				AttributeTypeDescriptionEntity.class,
-				AttributeProviderEntity.class);
+				AttributeProviderEntity.class, DeviceEntity.class,
+				AllowedDeviceEntity.class);
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
