@@ -12,20 +12,12 @@ import javax.jms.Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import net.link.safeonline.entity.ConfigItemEntity;
 import net.link.safeonline.messaging.bean.EmailBean;
-import net.link.safeonline.model.ConfigurationManager;
-import net.link.safeonline.test.util.EJBTestUtils;
 
 import com.dumbster.smtp.SimpleSmtpServer;
 import com.dumbster.smtp.SmtpMessage;
 
 import junit.framework.TestCase;
-
-import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.emailServer;
-import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.emailServerPort;
-import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.emailSender;
-import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.emailSubjectPrefix;
 
 public class EmailBeanTest extends TestCase {
 
@@ -33,14 +25,8 @@ public class EmailBeanTest extends TestCase {
 
 	private EmailBean testedInstance;
 
-	private ConfigurationManager configurationManager;
-
 	public EmailBeanTest() throws Exception {
 		this.testedInstance = new EmailBean();
-
-		this.configurationManager = createMock(ConfigurationManager.class);
-
-		EJBTestUtils.inject(this.testedInstance, this.configurationManager);
 	}
 
 	public void testEmail() throws Exception {
@@ -53,20 +39,6 @@ public class EmailBeanTest extends TestCase {
 		expect(message.getStringProperty("messagetext")).andReturn(
 				"testmessage");
 		replay(message);
-
-		expect(this.configurationManager.findConfigItem(emailServer))
-				.andReturn(new ConfigItemEntity(emailServer, "127.0.0.1", null));
-		expect(this.configurationManager.findConfigItem(emailServerPort))
-				.andReturn(new ConfigItemEntity(emailServerPort, "2525", null));
-		expect(this.configurationManager.findConfigItem(emailSender))
-				.andReturn(
-						new ConfigItemEntity(emailSender, "test@test.test",
-								null));
-		expect(this.configurationManager.findConfigItem(emailSubjectPrefix))
-				.andReturn(
-						new ConfigItemEntity(emailSubjectPrefix,
-								"[Safe Online]", null));
-		replay(this.configurationManager);
 
 		// operate
 		this.testedInstance.onMessage(message);

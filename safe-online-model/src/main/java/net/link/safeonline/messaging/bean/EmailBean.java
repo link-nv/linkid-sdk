@@ -1,19 +1,14 @@
 package net.link.safeonline.messaging.bean;
 
-import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.emailServer;
-import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.emailServerPort;
-import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.emailSender;
-import static net.link.safeonline.messaging.bean.EmailConfigurationProviderBean.emailSubjectPrefix;
-
 import static net.link.safeonline.messaging.bean.EmailBean.queueName;
 
 import java.util.Date;
 import java.util.Properties;
 
 import javax.ejb.ActivationConfigProperty;
-import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.MessageDriven;
+import javax.interceptor.Interceptors;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.mail.Multipart;
@@ -24,7 +19,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import net.link.safeonline.model.ConfigurationManager;
+import net.link.safeonline.Configurable;
+import net.link.safeonline.model.ConfigurationInterceptor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,26 +28,30 @@ import org.apache.commons.logging.LogFactory;
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
 		@ActivationConfigProperty(propertyName = "destination", propertyValue = queueName) })
+@Interceptors(ConfigurationInterceptor.class)
+@Configurable
 public class EmailBean implements MessageListener {
 
 	private final static Log LOG = LogFactory.getLog(EmailBean.class);
 
 	public final static String queueName = "queue/outgoing-email";
 
-	@EJB
-	private ConfigurationManager configurationManager;
+	private final static String groupName = "E-mail configuration";
+
+	@Configurable(group = groupName, name = "Outgoing mail server")
+	private String emailServer = "127.0.0.1";
+
+	@Configurable(group = groupName, name = "Mail server port")
+	private String emailServerPort = "25";
+
+	@Configurable(group = groupName, name = "E-mail sender")
+	private String emailSender = "Safe Online";
+
+	@Configurable(group = groupName, name = "Subject prefix")
+	private String emailSubjectPrefix = "[Safe Online]";
 
 	public void onMessage(Message msg) {
 		try {
-
-			String server = this.configurationManager.findConfigItem(
-					emailServer).getValue();
-			String port = this.configurationManager.findConfigItem(
-					emailServerPort).getValue();
-			String sender = this.configurationManager.findConfigItem(
-					emailSender).getValue();
-			String prefix = this.configurationManager.findConfigItem(
-					emailSubjectPrefix).getValue();
 
 			EndUserMessage message = new EndUserMessage(msg);
 
@@ -59,16 +59,16 @@ public class EmailBean implements MessageListener {
 					+ " about: " + message.getSubject());
 
 			Properties props = new Properties();
-			props.put("mail.smtp.host", server);
-			props.put("mail.smtp.port", port);
+			props.put("mail.smtp.host", emailServer);
+			props.put("mail.smtp.port", emailServerPort);
 			Session session = Session.getInstance(props, null);
 
 			MimeMessage mimemsg = new MimeMessage(session);
-			mimemsg.setFrom(new InternetAddress(sender));
+			mimemsg.setFrom(new InternetAddress(emailSender));
 			InternetAddress[] address = { new InternetAddress(message
 					.getDestination()) };
 			mimemsg.setRecipients(javax.mail.Message.RecipientType.TO, address);
-			mimemsg.setSubject(prefix + " " + message.getSubject());
+			mimemsg.setSubject(emailSubjectPrefix + " " + message.getSubject());
 			mimemsg.setSentDate(new Date());
 
 			MimeBodyPart mbp1 = new MimeBodyPart();

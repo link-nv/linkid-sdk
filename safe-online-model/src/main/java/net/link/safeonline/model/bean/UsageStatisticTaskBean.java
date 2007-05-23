@@ -14,9 +14,11 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.interceptor.Interceptors;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
+import net.link.safeonline.Configurable;
 import net.link.safeonline.Task;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.StatisticDAO;
@@ -25,14 +27,13 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
-import net.link.safeonline.model.ConfigurationManager;
-
-import static net.link.safeonline.model.bean.UsageStatisticConfigurationProviderBean.activeLimitInMillis;
-import static net.link.safeonline.model.bean.UsageStatisticConfigurationProviderBean.ageInMillis;
+import net.link.safeonline.model.ConfigurationInterceptor;
 
 @Stateless
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "UsageStatisticTaskBean")
+@Configurable
+@Interceptors(ConfigurationInterceptor.class)
 public class UsageStatisticTaskBean implements Task {
 
 	public static final String name = "Usage statistic task";
@@ -42,6 +43,12 @@ public class UsageStatisticTaskBean implements Task {
 	public static final String statisticDomain = "Usage statistic domain";
 
 	public static final String loginCounter = "Login counter";
+
+	@Configurable(group = "User Statistic Generation", name = "Active user limit (ms)")
+	private String activeLimitInMillis = "600000";
+
+	@Configurable(group = "User Statistic Generation", name = "Keep stats for (ms)")
+	private String ageInMillis = "6000000";
 
 	@EJB
 	private StatisticDAO statisticDAO;
@@ -55,9 +62,6 @@ public class UsageStatisticTaskBean implements Task {
 	@EJB
 	private ApplicationDAO applicationDAO;
 
-	@EJB
-	private ConfigurationManager configurationManager;
-
 	public String getName() {
 		return UsageStatisticTaskBean.name;
 	}
@@ -66,10 +70,8 @@ public class UsageStatisticTaskBean implements Task {
 	public void perform() throws Exception {
 		List<ApplicationEntity> applicationList = this.applicationDAO
 				.listApplications();
-		long activeLimit = Long.parseLong(this.configurationManager
-				.findConfigItem(activeLimitInMillis).getValue());
-		long age = Long.parseLong(this.configurationManager.findConfigItem(
-				ageInMillis).getValue());
+		long activeLimit = Long.parseLong(activeLimitInMillis);
+		long age = Long.parseLong(ageInMillis);
 
 		for (ApplicationEntity application : applicationList) {
 			long totalSubscriptions = this.subscriptionDAO

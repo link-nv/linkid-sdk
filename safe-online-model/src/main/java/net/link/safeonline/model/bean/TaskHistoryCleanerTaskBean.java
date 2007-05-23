@@ -7,18 +7,17 @@
 
 package net.link.safeonline.model.bean;
 
-import static net.link.safeonline.model.bean.TaskHistoryCleanerConfigurationProviderBean.configAgeInMillis;
-
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.interceptor.Interceptors;
 
+import net.link.safeonline.Configurable;
 import net.link.safeonline.Task;
 import net.link.safeonline.dao.TaskHistoryDAO;
-import net.link.safeonline.entity.ConfigItemEntity;
-import net.link.safeonline.model.ConfigurationManager;
+import net.link.safeonline.model.ConfigurationInterceptor;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -26,6 +25,8 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/"
 		+ "TaskHistoryCleanerTaskBean")
+@Interceptors(ConfigurationInterceptor.class)
+@Configurable
 public class TaskHistoryCleanerTaskBean implements Task {
 
 	private static final String name = "Task history cleaner";
@@ -33,8 +34,8 @@ public class TaskHistoryCleanerTaskBean implements Task {
 	@EJB
 	private TaskHistoryDAO taskHistoryDAO;
 
-	@EJB
-	private ConfigurationManager configurationManager;
+	@Configurable(group = "Task history cleaner", name = "Task history age limit (ms)")
+	private String configAgeInMillis = "600000";
 
 	public TaskHistoryCleanerTaskBean() {
 		// empty
@@ -46,9 +47,7 @@ public class TaskHistoryCleanerTaskBean implements Task {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void perform() throws Exception {
-		ConfigItemEntity configItem = this.configurationManager
-				.findConfigItem(configAgeInMillis);
-		long ageInMillis = Integer.parseInt(configItem.getValue());
+		long ageInMillis = Integer.parseInt(configAgeInMillis);
 
 		this.taskHistoryDAO.clearAllTasksHistory(ageInMillis);
 	}

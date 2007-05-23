@@ -7,25 +7,24 @@
 
 package net.link.safeonline.model.bean;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.lang.reflect.Field;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
-import net.link.safeonline.ConfigurationProvider;
+import net.link.safeonline.Configurable;
 import net.link.safeonline.Startable;
 import net.link.safeonline.dao.ConfigGroupDAO;
 import net.link.safeonline.dao.ConfigItemDAO;
 import net.link.safeonline.entity.ConfigGroupEntity;
 import net.link.safeonline.entity.ConfigItemEntity;
 import net.link.safeonline.model.ConfigStartable;
-import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.model.ConfigurableScanner;
 
 @Stateless
 @LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "ConfigStartableBean")
@@ -34,95 +33,71 @@ public class ConfigStartableBean implements ConfigStartable {
 	private static final Log LOG = LogFactory.getLog(ConfigStartableBean.class);
 
 	@EJB
-	private ConfigGroupDAO configGroupDAO;
+	private ConfigItemDAO configItemDAO;
 
 	@EJB
-	private ConfigItemDAO configItemDAO;
+	private ConfigGroupDAO configGroupDAO;
 
 	public int getPriority() {
 		return Startable.PRIORITY_BOOTSTRAP;
 	}
 
 	public void postStart() {
-		LOG.debug("Starting configuration discovery");
-
-		// create a default group
-		ConfigGroupEntity defaultGroup = this.configGroupDAO
-				.findConfigGroup("overall");
-		if (defaultGroup == null) {
-			LOG.debug("Adding default config group");
-			defaultGroup = this.configGroupDAO.addConfigGroup("overall");
-		}
-
-		// get list of existing configgroups and items
-		List<ConfigGroupEntity> toBeRemovedGroups = this.configGroupDAO
-				.listConfigGroups();
-		List<ConfigItemEntity> toBeRemovedItems = this.configItemDAO
-				.listConfigItems();
-
-		// iterate over all registered configuration providers.
-		Map<String, ConfigurationProvider> configNameMap = EjbUtils
-				.getComponentNames(ConfigurationProvider.JNDI_PREFIX,
-						ConfigurationProvider.class);
-		for (Entry<String, ConfigurationProvider> configEntry : configNameMap
-				.entrySet()) {
-			ConfigurationProvider provider = configEntry.getValue();
-			String groupName = provider.getGroupName();
-
-			ConfigGroupEntity configGroup = null;
-			if (groupName == null || groupName.equals("")) {
-				// use the default group if no name was specified
-				configGroup = defaultGroup;
-			} else {
-				// else find the group by name
-				configGroup = this.configGroupDAO.findConfigGroup(groupName);
-				if (configGroup == null) {
-					// if the group did not exist, create it
-					configGroup = this.configGroupDAO.addConfigGroup(groupName);
-				}
-			}
-			// save the group from destruction
-			toBeRemovedGroups.remove(configGroup);
-
-			// now iterate over all configuration parameters for this provider
-			for (Entry<String, String> entry : provider
-					.getConfigurationParameters().entrySet()) {
-				String parameterName = entry.getKey();
-				String defaultValue = entry.getValue();
-
-				// find the item if present
-				ConfigItemEntity configItem = this.configItemDAO
-						.findConfigItem(parameterName);
-				if (configItem == null) {
-					// otherwise create it
-					configItem = this.configItemDAO.addConfigItem(
-							parameterName, defaultValue, configGroup);
-				}
-				if (configItem.getValue() == null
-						|| configItem.getValue().equals("")) {
-					// if no value is set, set the default value
-					configItem.setValue(defaultValue);
-				}
-				// set the config group
-				configItem.setConfigGroup(configGroup);
-				configGroup.getConfigItems().add(configItem);
-
-				// save the item from destruction
-				toBeRemovedItems.remove(configItem);
-			}
-
-			for (ConfigItemEntity toBeRemovedItem : toBeRemovedItems) {
-				this.configItemDAO.removeConfigItem(toBeRemovedItem);
-			}
-			for (ConfigGroupEntity toBeRemovedGroup : toBeRemovedGroups) {
-				this.configGroupDAO.removeConfigGroup(toBeRemovedGroup);
-			}
+		LOG.debug("Starting configuration");
+		ConfigurableScanner scanner = new ConfigurableScanner(
+				"config.properties");
+		for (Class classObject : scanner.getClasses()) {
+			LOG.debug("found configurable class: " + classObject.getName());
+			configure(classObject);
 		}
 	}
 
 	public void preStop() {
 		// empty
 
+	}
+
+	private void configure(Class classObject) {
+		try {
+			Object target = classObject.newInstance();
+			Field[] fields = classObject.getDeclaredFields();
+
+			LOG.debug("Configuring: " + classObject.getName());
+
+			for (Field field : fields) {
+				LOG.debug("Inspecting field: " + field.getName());
+				Configurable configurable = field
+						.getAnnotation(Configurable.class);
+				if (configurable != null) {
+					LOG.debug("Configuring field: " + field.getName());
+					String name = configurable.name();
+					if (name == null || name == "") {
+						name = field.getName();
+					}
+
+					String group = configurable.group();
+					ConfigGroupEntity configGroup = configGroupDAO
+							.findConfigGroup(group);
+					if (configGroup == null) {
+						LOG.debug("Adding configuration group: " + group);
+						configGroup = configGroupDAO.addConfigGroup(group);
+					}
+
+					ConfigItemEntity configItem = configItemDAO
+							.findConfigItem(name);
+					field.setAccessible(true);
+					if (configItem == null) {
+						LOG.debug("Adding configuration item: " + name);
+						configItem = configItemDAO.addConfigItem(name,
+								(String) field.get(target), configGroup);
+					} else {
+						configItem.setConfigGroup(configGroup);
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new EJBException("Failed to execute @Configurable", e);
+		}
 	}
 
 }
