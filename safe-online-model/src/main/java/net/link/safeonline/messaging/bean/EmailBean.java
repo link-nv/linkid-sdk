@@ -29,25 +29,23 @@ import org.apache.commons.logging.LogFactory;
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
 		@ActivationConfigProperty(propertyName = "destination", propertyValue = queueName) })
 @Interceptors(ConfigurationInterceptor.class)
-@Configurable
+@Configurable(group = "E-mail configuration")
 public class EmailBean implements MessageListener {
 
 	private final static Log LOG = LogFactory.getLog(EmailBean.class);
 
 	public final static String queueName = "queue/outgoing-email";
 
-	private final static String groupName = "E-mail configuration";
-
-	@Configurable(group = groupName, name = "Outgoing mail server")
+	@Configurable(name = "Outgoing mail server")
 	private String emailServer = "127.0.0.1";
 
-	@Configurable(group = groupName, name = "Mail server port")
+	@Configurable(name = "Mail server port")
 	private String emailServerPort = "25";
 
-	@Configurable(group = groupName, name = "E-mail sender")
+	@Configurable(name = "E-mail sender")
 	private String emailSender = "safeonline@lin-k.net";
 
-	@Configurable(group = groupName, name = "Subject prefix")
+	@Configurable(name = "Subject prefix")
 	private String emailSubjectPrefix = "[Safe Online]";
 
 	public void onMessage(Message msg) {

@@ -32,7 +32,7 @@ import net.link.safeonline.model.ConfigurationInterceptor;
 @Stateless
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "UsageStatisticTaskBean")
-@Configurable
+@Configurable(group = "User Statistic Generation")
 @Interceptors(ConfigurationInterceptor.class)
 public class UsageStatisticTaskBean implements Task {
 
@@ -44,10 +44,10 @@ public class UsageStatisticTaskBean implements Task {
 
 	public static final String loginCounter = "Login counter";
 
-	@Configurable(group = "User Statistic Generation", name = "Active user limit (ms)")
+	@Configurable(name = "Active user limit (ms)")
 	private String activeLimitInMillis = "600000";
 
-	@Configurable(group = "User Statistic Generation", name = "Keep stats for (ms)")
+	@Configurable(name = "Keep stats for (ms)")
 	private String ageInMillis = "6000000";
 
 	@EJB

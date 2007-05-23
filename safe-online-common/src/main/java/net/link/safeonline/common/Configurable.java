@@ -6,7 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Configurable {
 
-	String group() default "overall";
+	public static final String defaultGroup = "overall";
+
+	String group() default defaultGroup;
 
 	String name() default "";
 

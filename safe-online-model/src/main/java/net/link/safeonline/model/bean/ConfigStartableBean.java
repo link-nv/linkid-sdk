@@ -26,6 +26,8 @@ import net.link.safeonline.entity.ConfigItemEntity;
 import net.link.safeonline.model.ConfigStartable;
 import net.link.safeonline.model.ConfigurableScanner;
 
+import static net.link.safeonline.common.Configurable.defaultGroup;
+
 @Stateless
 @LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "ConfigStartableBean")
 public class ConfigStartableBean implements ConfigStartable {
@@ -57,10 +59,16 @@ public class ConfigStartableBean implements ConfigStartable {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void configure(Class classObject) {
 		try {
 			Object target = classObject.newInstance();
 			Field[] fields = classObject.getDeclaredFields();
+
+			Configurable generalConfigurable = (Configurable) classObject
+					.getAnnotation(Configurable.class);
+
+			String group = generalConfigurable.group();
 
 			LOG.debug("Configuring: " + classObject.getName());
 
@@ -75,7 +83,9 @@ public class ConfigStartableBean implements ConfigStartable {
 						name = field.getName();
 					}
 
-					String group = configurable.group();
+					if (!configurable.group().equals(defaultGroup)) {
+						group = configurable.group();
+					}
 					ConfigGroupEntity configGroup = configGroupDAO
 							.findConfigGroup(group);
 					if (configGroup == null) {
