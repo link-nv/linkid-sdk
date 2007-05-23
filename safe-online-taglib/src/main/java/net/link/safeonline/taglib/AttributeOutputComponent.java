@@ -64,6 +64,12 @@ public class AttributeOutputComponent extends UIOutput {
 		public void encode(AttributeDO attribute, ResponseWriter response,
 				FacesContext context) throws IOException {
 			String value = attribute.getStringValue();
+			if (null == value) {
+				ResourceBundle messages = AttributeComponentUtil
+						.getResourceBundle(context);
+				String noValueStr = messages.getString("noValue");
+				value = "[" + noValueStr + "]";
+			}
 			response.write(value);
 		}
 	}
@@ -86,6 +92,15 @@ public class AttributeOutputComponent extends UIOutput {
 		}
 	}
 
+	@SupportedType(SafeOnlineConstants.BLOB_TYPE)
+	public static class BlobAttributeValueEncoder implements
+			AttributeValueEncoder {
+		public void encode(AttributeDO attribute, ResponseWriter response,
+				FacesContext context) throws IOException {
+			response.write("[BLOB]");
+		}
+	}
+
 	@Documented
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.TYPE)
@@ -98,6 +113,7 @@ public class AttributeOutputComponent extends UIOutput {
 	static {
 		registerAttributeValueEncoder(StringAttributeValueEncoder.class);
 		registerAttributeValueEncoder(BooleanAttributeValueEncoder.class);
+		registerAttributeValueEncoder(BlobAttributeValueEncoder.class);
 	}
 
 	private static void registerAttributeValueEncoder(

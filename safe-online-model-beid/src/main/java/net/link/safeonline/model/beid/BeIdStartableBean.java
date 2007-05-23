@@ -91,7 +91,7 @@ public class BeIdStartableBean extends AbstractInitBean {
 
 		deviceAttributeTypeList.add(nrnAttributeType);
 
-		this.devices.put("beid", deviceAttributeTypeList);
+		this.devices.put(BeIdConstants.BEID_DEVICE_ID, deviceAttributeTypeList);
 
 	}
 

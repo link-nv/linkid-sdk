@@ -195,6 +195,7 @@ public class CredentialServiceBean implements CredentialService,
 				.mapAttribute(identityStatementAttribute);
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.getAttributeType(attributeName);
-		this.attributeDAO.addOrUpdateAttribute(attributeType, subject, value);
+		this.attributeDAO
+				.addOrUpdateAttribute(attributeType, subject, 0, value);
 	}
 }

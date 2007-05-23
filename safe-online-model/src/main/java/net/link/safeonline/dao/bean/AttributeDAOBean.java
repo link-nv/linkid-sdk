@@ -53,6 +53,14 @@ public class AttributeDAOBean implements AttributeDAO {
 		return attribute;
 	}
 
+	private AttributeEntity findAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, long index) {
+		AttributeEntity attribute = this.entityManager.find(
+				AttributeEntity.class, new AttributePK(attributeType, subject,
+						index));
+		return attribute;
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<AttributeEntity> listAttributes(SubjectEntity subject) {
 		LOG.debug("get attributes for subject " + subject.getLogin());
@@ -63,8 +71,8 @@ public class AttributeDAOBean implements AttributeDAO {
 	}
 
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
-			SubjectEntity subject, String stringValue) {
-		AttributeEntity attribute = findAttribute(attributeType, subject);
+			SubjectEntity subject, long index, String stringValue) {
+		AttributeEntity attribute = findAttribute(attributeType, subject, index);
 		if (null != attribute) {
 			LOG.debug("setting attribute string value: " + stringValue);
 			attribute.setStringValue(stringValue);
@@ -74,8 +82,8 @@ public class AttributeDAOBean implements AttributeDAO {
 	}
 
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
-			SubjectEntity subject, Boolean booleanValue) {
-		AttributeEntity attribute = findAttribute(attributeType, subject);
+			SubjectEntity subject, long index, Boolean booleanValue) {
+		AttributeEntity attribute = findAttribute(attributeType, subject, index);
 		if (null == attribute) {
 			attribute = addAttribute(attributeType, subject, null);
 		}

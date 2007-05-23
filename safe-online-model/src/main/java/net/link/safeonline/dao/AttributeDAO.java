@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -31,11 +31,20 @@ public interface AttributeDAO {
 
 	List<AttributeEntity> listVisibleAttributes(SubjectEntity subject);
 
+	/**
+	 * Add or Update an attribute. The index is used for multi-valued
+	 * attributes.
+	 * 
+	 * @param attributeType
+	 * @param subject
+	 * @param index
+	 * @param stringValue
+	 */
 	void addOrUpdateAttribute(AttributeTypeEntity attributeType,
-			SubjectEntity subject, String stringValue);
+			SubjectEntity subject, long index, String stringValue);
 
 	void addOrUpdateAttribute(AttributeTypeEntity attributeType,
-			SubjectEntity subject, Boolean booleanValue);
+			SubjectEntity subject, long index, Boolean booleanValue);
 
 	AttributeEntity findAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject);

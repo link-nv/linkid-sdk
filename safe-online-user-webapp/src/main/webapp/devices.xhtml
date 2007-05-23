@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib">
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -27,15 +28,15 @@
 					<th><h:outputLabel for="oldpassword"
 						value="#{msgs.oldPassword}" />:</th>
 					<td><s:decorate>
-						<h:inputSecret id="oldpassword"
-							value="#{passwordBean.oldPassword}" required="true" />
+						<h:inputSecret id="oldpassword" value="#{devicesBean.oldPassword}"
+							required="true" />
 					</s:decorate>*</td>
 					<td><h:message for="oldpassword" styleClass="error" /></td>
 				</tr>
 				<tr>
 					<th><h:outputLabel for="password1" value="#{msgs.password}" />:</th>
 					<td><s:decorate>
-						<h:inputSecret id="password1" value="#{passwordBean.newPassword}"
+						<h:inputSecret id="password1" value="#{devicesBean.newPassword}"
 							required="true">
 							<f:validateLength minimum="6" />
 						</h:inputSecret>
@@ -52,27 +53,33 @@
 					<td><h:message for="password2" styleClass="error" /></td>
 				</tr>
 			</table>
-			<h:commandButton action="#{passwordBean.change}" id="change"
+			<h:commandButton action="#{devicesBean.changePassword}" id="change"
 				value="#{msgs.changePassword}" />
 		</h:form>
 
 		<h2>Belgian eID</h2>
 
-		<table>
-			<tr>
-				<th>#{msgs.givenName}:</th>
-				<td>${identityBean.givenName}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.surname}:</th>
-				<td>${identityBean.surname}</td>
-			</tr>
-		</table>
+		<h:dataTable id="beid-data" var="item" value="#{beidAttributes}"
+			preserveDataModel="false" styleClass="listingTable"
+			rowClasses="listingTable_Row1,listingTable_Row2">
+
+			<h:column>
+				<f:facet name="header">#{msgs.name}</f:facet>
+				<h:outputText value="#{item.humanReadableName}" />
+			</h:column>
+
+			<h:column>
+				<f:facet name="header">#{msgs.value}</f:facet>
+				<so:outputAttribute value="#{item}" />
+			</h:column>
+		</h:dataTable>
 
 		<h:form>
 			<h:commandButton action="extract" id="extract"
 				value="Extract Identity" />
 		</h:form>
+
+		<t:messages globalOnly="true" styleClass="error" />
 
 	</ui:define>
 	<ui:define name="sidebar">

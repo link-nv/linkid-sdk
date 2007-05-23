@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -20,6 +20,7 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AttributeDO;
@@ -30,6 +31,7 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -39,6 +41,7 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -111,15 +114,16 @@ public class IdentityServiceBean implements IdentityService,
 		return value;
 	}
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void saveAttribute(AttributeDO attribute)
-			throws PermissionDeniedException {
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		String attributeName = attribute.getName();
-		LOG.debug("save attribute " + attributeName + " for entity with login "
-				+ subject);
-		LOG.debug("received attribute values: " + attribute);
-
+	/**
+	 * Gives back the attribute type for the given attribute name, but only if
+	 * the user is allowed to edit attributes of the attribute type.
+	 * 
+	 * @param attributeName
+	 * @return
+	 * @throws PermissionDeniedException
+	 */
+	private AttributeTypeEntity getUserEditableAttributeType(
+			String attributeName) throws PermissionDeniedException {
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.findAttributeType(attributeName);
 		if (null == attributeType) {
@@ -129,16 +133,38 @@ public class IdentityServiceBean implements IdentityService,
 		if (false == attributeType.isUserEditable()) {
 			throw new PermissionDeniedException();
 		}
+		return attributeType;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public void saveAttribute(AttributeDO attribute)
+			throws PermissionDeniedException {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		String attributeName = attribute.getName();
+		LOG.debug("save attribute " + attributeName + " for entity with login "
+				+ subject);
+		LOG.debug("received attribute values: " + attribute);
+
+		AttributeTypeEntity attributeType = getUserEditableAttributeType(attributeName);
+
+		boolean multiValued = attributeType.isMultivalued();
+		long index = attribute.getIndex();
+		if (false == multiValued) {
+			if (0 != index) {
+				throw new IllegalArgumentException(
+						"index cannot <> 0 on single-valued attribute type");
+			}
+		}
 
 		String type = attributeType.getType();
 		if (SafeOnlineConstants.STRING_TYPE.equals(type)) {
 			String attributeValue = attribute.getStringValue();
 			this.attributeDAO.addOrUpdateAttribute(attributeType, subject,
-					attributeValue);
+					index, attributeValue);
 		} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(type)) {
 			Boolean attributeValue = attribute.getBooleanValue();
 			this.attributeDAO.addOrUpdateAttribute(attributeType, subject,
-					attributeValue);
+					index, attributeValue);
 		}
 	}
 
@@ -160,6 +186,7 @@ public class IdentityServiceBean implements IdentityService,
 			Boolean booleanValue = attribute.getBooleanValue();
 			boolean editable = attributeType.isUserEditable();
 			String datatype = attributeType.getType();
+			long index = attribute.getAttributeIndex();
 
 			String humanReadableName = null;
 			String description = null;
@@ -176,7 +203,7 @@ public class IdentityServiceBean implements IdentityService,
 				}
 			}
 
-			AttributeDO attributeView = new AttributeDO(name, datatype,
+			AttributeDO attributeView = new AttributeDO(name, datatype, index,
 					humanReadableName, description, editable, true,
 					stringValue, booleanValue);
 			attributesView.add(attributeView);
@@ -418,7 +445,7 @@ public class IdentityServiceBean implements IdentityService,
 				}
 			}
 			AttributeDO missingAttribute = new AttributeDO(
-					missingAttributeName, datatype, humanReadableName,
+					missingAttributeName, datatype, 0, humanReadableName,
 					description, true, true, null, null);
 			missingAttributes.add(missingAttribute);
 		}
@@ -448,5 +475,68 @@ public class IdentityServiceBean implements IdentityService,
 				.addDescriptionFromAttributeTypes(confirmedAttributeTypes,
 						locale);
 		return confirmedAttributes;
+	}
+
+	@EJB
+	private DeviceDAO deviceDAO;
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public List<AttributeDO> listAttributes(String deviceId, Locale locale)
+			throws DeviceNotFoundException {
+		LOG.debug("list attributes for device: " + deviceId);
+		DeviceEntity device = this.deviceDAO.getDevice(deviceId);
+		List<AttributeTypeEntity> deviceAttributeTypes = device
+				.getAttributeTypes();
+		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
+
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+
+		String language;
+		if (null == locale) {
+			language = null;
+		} else {
+			language = locale.getLanguage();
+		}
+
+		LOG.debug("# device attributes: " + deviceAttributeTypes.size());
+		for (AttributeTypeEntity attributeType : deviceAttributeTypes) {
+			LOG.debug("attribute type: " + attributeType.getName());
+			if (false == attributeType.isUserVisible()) {
+				continue;
+			}
+
+			long index = 0;
+			String name = attributeType.getName();
+			String type = attributeType.getType();
+			boolean editable = attributeType.isUserEditable();
+			boolean dataMining = false;
+			String humanReabableName = null;
+			String description = null;
+			if (null != language) {
+				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+						.findDescription(new AttributeTypeDescriptionPK(name,
+								language));
+				if (null != attributeTypeDescription) {
+					humanReabableName = attributeTypeDescription.getName();
+					description = attributeTypeDescription.getDescription();
+				}
+			}
+			AttributeEntity attribute = this.attributeDAO.findAttribute(
+					attributeType, subject);
+			String stringValue;
+			Boolean booleanValue;
+			if (null != attribute) {
+				stringValue = attribute.getStringValue();
+				booleanValue = attribute.getBooleanValue();
+			} else {
+				stringValue = null;
+				booleanValue = null;
+			}
+			AttributeDO attributeView = new AttributeDO(name, type, index,
+					humanReabableName, description, editable, dataMining,
+					stringValue, booleanValue);
+			attributes.add(attributeView);
+		}
+		return attributes;
 	}
 }

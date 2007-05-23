@@ -11,16 +11,18 @@
 			<ui:param name="subpage" value="profile" />
 		</ui:include>
 	</ui:define>
+
 	<ui:define name="content">
 		<h2>#{msgs.profile}</h2>
-		<h:form>
-			<table>
-				<tr>
-					<th>#{msgs.login}:</th>
-					<td>#{identityBean.login}</td>
-				</tr>
-			</table>
 
+		<table>
+			<tr>
+				<th>#{msgs.login}:</th>
+				<td>#{userPrincipal.name}</td>
+			</tr>
+		</table>
+
+		<h:form>
 			<h:dataTable id="data" var="item" value="#{attributeList}"
 				preserveDataModel="false" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2"
@@ -39,10 +41,9 @@
 					<so:outputAttribute value="#{item}" />
 				</h:column>
 			</h:dataTable>
-
 		</h:form>
-
 	</ui:define>
+
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
 			<ui:param name="loginComp" value="#{login}" />

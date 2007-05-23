@@ -22,10 +22,22 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT;
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_VISIBLE;
 import static net.link.safeonline.entity.AttributeEntity.SUBJECT_PARAM;
 
+/**
+ * Attribute JPA Entity. Sits as many-to-many between
+ * {@link AttributeTypeEntity} and {@link SubjectEntity}. Multi-valued
+ * attributes are implemented via the {@link #attributeIndex} field.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Entity
 @Table(name = "attribute")
 @NamedQueries( {
@@ -51,6 +63,8 @@ public class AttributeEntity implements Serializable {
 
 	private SubjectEntity subject;
 
+	private long attributeIndex;
+
 	private String stringValue;
 
 	private Boolean booleanValue;
@@ -67,10 +81,20 @@ public class AttributeEntity implements Serializable {
 		this.pk = new AttributePK(attributeType.getName(), subject.getLogin());
 	}
 
+	public AttributeEntity(AttributeTypeEntity attributeType,
+			SubjectEntity subject, long attributeIdx) {
+		this.attributeType = attributeType;
+		this.subject = subject;
+		this.pk = new AttributePK(attributeType, subject, attributeIdx);
+	}
+
+	public static final String ATTRIBUTE_INDEX_COLUMN_NAME = "attribute_index";
+
 	@EmbeddedId
 	@AttributeOverrides( {
-			@AttributeOverride(name = "attributeType", column = @Column(name = "attributeType")),
-			@AttributeOverride(name = "subject", column = @Column(name = "subject")) })
+			@AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
+			@AttributeOverride(name = "subject", column = @Column(name = SUBJECT_COLUMN_NAME)),
+			@AttributeOverride(name = "attributeIndex", column = @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME)) })
 	public AttributePK getPk() {
 		return this.pk;
 	}
@@ -79,8 +103,10 @@ public class AttributeEntity implements Serializable {
 		this.pk = pk;
 	}
 
+	public static final String ATTRIBUTE_TYPE_COLUMN_NAME = "attribute_type";
+
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "attributeType", insertable = false, updatable = false)
+	@JoinColumn(name = ATTRIBUTE_TYPE_COLUMN_NAME, insertable = false, updatable = false)
 	public AttributeTypeEntity getAttributeType() {
 		return this.attributeType;
 	}
@@ -89,14 +115,31 @@ public class AttributeEntity implements Serializable {
 		this.attributeType = attributeType;
 	}
 
+	public static final String SUBJECT_COLUMN_NAME = "subject";
+
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "subject", insertable = false, updatable = false)
+	@JoinColumn(name = SUBJECT_COLUMN_NAME, insertable = false, updatable = false)
 	public SubjectEntity getSubject() {
 		return this.subject;
 	}
 
 	public void setSubject(SubjectEntity subject) {
 		this.subject = subject;
+	}
+
+	/**
+	 * The attribute index is used for implementing the multi-valued attributes.
+	 * For single-value attributes that attribute index is zero.
+	 * 
+	 * @return
+	 */
+	@Column(name = ATTRIBUTE_INDEX_COLUMN_NAME, insertable = false, updatable = false)
+	public long getAttributeIndex() {
+		return this.attributeIndex;
+	}
+
+	public void setAttributeIndex(long attributeIndex) {
+		this.attributeIndex = attributeIndex;
 	}
 
 	public String getStringValue() {
@@ -113,6 +156,31 @@ public class AttributeEntity implements Serializable {
 
 	public void setBooleanValue(Boolean booleanValue) {
 		this.booleanValue = booleanValue;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (null == obj) {
+			return false;
+		}
+		if (false == (obj instanceof AttributeEntity)) {
+			return false;
+		}
+		AttributeEntity rhs = (AttributeEntity) obj;
+		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this.pk).toHashCode();
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("pk", this.pk).toString();
 	}
 
 	public static Query createQueryWhereSubject(EntityManager entityManager,

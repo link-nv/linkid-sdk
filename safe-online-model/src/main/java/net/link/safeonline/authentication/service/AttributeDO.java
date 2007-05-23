@@ -25,6 +25,8 @@ public class AttributeDO implements Serializable, Cloneable {
 
 	private String type;
 
+	private long index;
+
 	private String humanReadableName;
 
 	private String description;
@@ -37,11 +39,12 @@ public class AttributeDO implements Serializable, Cloneable {
 
 	private Boolean booleanValue;
 
-	public AttributeDO(String name, String type, String humanReadableName,
-			String description, boolean editable, boolean dataMining,
-			String stringValue, Boolean booleanValue) {
+	public AttributeDO(String name, String type, long index,
+			String humanReadableName, String description, boolean editable,
+			boolean dataMining, String stringValue, Boolean booleanValue) {
 		this.name = name;
 		this.type = type;
+		this.index = index;
 		this.humanReadableName = humanReadableName;
 		this.description = description;
 		this.editable = editable;
@@ -160,11 +163,27 @@ public class AttributeDO implements Serializable, Cloneable {
 		this.type = type;
 	}
 
+	/**
+	 * Gives back the index of this attribute. This only really makes sense in
+	 * the event of multi-valued attributes. For single-valued attributes the
+	 * index defaults to zero.
+	 * 
+	 * @return
+	 */
+	public long getIndex() {
+		return this.index;
+	}
+
+	public void setIndex(long index) {
+		this.index = index;
+	}
+
 	@Override
 	public AttributeDO clone() {
 		AttributeDO attribute = new AttributeDO(this.name, this.type,
-				this.humanReadableName, this.description, this.editable,
-				this.dataMining, this.stringValue, this.booleanValue);
+				this.index, this.humanReadableName, this.description,
+				this.editable, this.dataMining, this.stringValue,
+				this.booleanValue);
 		return attribute;
 	}
 }

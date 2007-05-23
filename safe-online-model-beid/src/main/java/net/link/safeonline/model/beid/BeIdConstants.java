@@ -24,4 +24,6 @@ public class BeIdConstants {
 	public static final String NRN_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:beid:nrn";
 
 	public static final int BEID_BOOT_PRIORITY = Startable.PRIORITY_BOOTSTRAP - 1;
+
+	public static final String BEID_DEVICE_ID = "beid";
 }

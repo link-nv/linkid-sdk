@@ -49,8 +49,12 @@ java -jar JAXWS2.1.1_20070501.jar
  Because SafeOnline consists out of multiple EARs, each hosting Seam based web application,
  the Seam runtime must be available at the top level class loader repository.
 
- Copy <<<jboss-seam.jar>>> from the JBoss Seam package (1.2.1.GA) to <<<$JBOSS_HOME/server/default/lib/>>>.
+ Copy <<<jboss-seam.jar>>> from {{http://buildserver/maven2/org/jboss/seam/jboss-seam/1.2.1.GA-safe-online/}} to <<<$JBOSS_HOME/server/default/lib/>>>.
 
+ We made some small change to Seam to be able to use the Scanner class.
+ 
+ The patch is available at: {{http://jira.jboss.org/jira/browse/JBSEAM-1342}}
+ 
 
 ** Expression Language (EL)
 

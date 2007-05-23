@@ -56,6 +56,13 @@
 	</filter>
 
 	<filter>
+		<filter-name>ContainerLoginFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter
+		</filter-class>
+	</filter>
+
+	<filter>
 		<filter-name>Seam Exception Filter</filter-name>
 		<filter-class>
 			org.jboss.seam.servlet.SeamExceptionFilter
@@ -112,6 +119,16 @@
 	</filter-mapping>
 
 	<filter-mapping>
+		<filter-name>SafeOnlineLoginFilter</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>ContainerLoginFilter</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
 		<filter-name>Login Filter</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
@@ -119,11 +136,6 @@
 	<filter-mapping>
 		<filter-name>Login Filter</filter-name>
 		<servlet-name>IdentityServlet</servlet-name>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>SafeOnlineLoginFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
 	<servlet>

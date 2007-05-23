@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -14,6 +14,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.HistoryEntity;
@@ -66,6 +67,17 @@ public interface IdentityService {
 	 * @return
 	 */
 	List<AttributeDO> listAttributes(Locale locale);
+
+	/**
+	 * List the user visible attributes for the given device.
+	 * 
+	 * @param deviceId
+	 * @param locale
+	 * @return
+	 * @throws DeviceNotFoundException
+	 */
+	List<AttributeDO> listAttributes(String deviceId, Locale locale)
+			throws DeviceNotFoundException;
 
 	/**
 	 * Checks whether confirmation is required over the usage of the identity
@@ -149,7 +161,10 @@ public interface IdentityService {
 
 	/**
 	 * Gives back a list of the user's missing attributes for the given
-	 * application.
+	 * application. This method also returns a list of {@link AttributeDO}
+	 * objects to make life easier in the view/control. The control components
+	 * will most likely afterwards call {@link #saveAttribute(AttributeDO)} to
+	 * save new values for the missing attributes.
 	 * 
 	 * @param applicationName
 	 * @param locale

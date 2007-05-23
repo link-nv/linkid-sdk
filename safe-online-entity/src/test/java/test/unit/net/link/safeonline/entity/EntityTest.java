@@ -98,7 +98,7 @@ public class EntityTest extends TestCase {
 		// empty
 	}
 
-	public void testAddRemoveEntity() throws Exception {
+	public void testAddRemoveSubject() throws Exception {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-login");
 
@@ -284,6 +284,58 @@ public class EntityTest extends TestCase {
 		assertEquals("test-password", resultAttribute.getStringValue());
 		assertEquals(subject, resultAttribute.getSubject());
 		assertEquals(attributeType, resultAttribute.getAttributeType());
+	}
+
+	public void testMultiValuedAttribute() throws Exception {
+		// setup
+		String login = "test-login";
+		SubjectEntity subject = new SubjectEntity(login);
+		String attributeName = "attribute-name";
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				attributeName, "string", false, false);
+		AttributeEntity attribute1 = new AttributeEntity(attributeType,
+				subject, "value1");
+		AttributeEntity attribute2 = new AttributeEntity(attributeType,
+				subject, 1);
+		attribute2.setStringValue("value2");
+
+		AttributePK pk1 = new AttributePK(attributeName, login, 0);
+		AttributePK pk2 = new AttributePK(attributeName, login, 0);
+		assertEquals(pk1, pk2);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(subject);
+		entityManager.persist(attributeType);
+		entityManager.persist(attribute1);
+		entityManager.persist(attribute2);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		AttributeEntity resultAttribute = entityManager.find(
+				AttributeEntity.class, new AttributePK(attributeName, login));
+		assertNotNull(resultAttribute);
+		assertEquals("value1", resultAttribute.getStringValue());
+		assertEquals(subject, resultAttribute.getSubject());
+		assertEquals(attributeType, resultAttribute.getAttributeType());
+		LOG.debug("attribute1 PK: " + attribute1.getPk());
+		LOG.debug("result PK: " + resultAttribute.getPk());
+		assertEquals(resultAttribute.getPk(), attribute1.getPk());
+		assertEquals(resultAttribute, attribute1);
+
+		// operate: remove attribute1
+		entityManager.remove(resultAttribute);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		resultAttribute = entityManager.find(AttributeEntity.class,
+				new AttributePK(attributeName, login));
+		assertNull(resultAttribute);
+
+		resultAttribute = entityManager.find(AttributeEntity.class,
+				new AttributePK(attributeType, subject, 1));
+		LOG.debug("result attribute: " + resultAttribute);
+		assertEquals(attribute2, resultAttribute);
 	}
 
 	public void testTrustDomain() throws Exception {

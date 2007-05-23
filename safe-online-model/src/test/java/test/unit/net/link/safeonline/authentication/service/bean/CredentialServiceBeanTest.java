@@ -183,9 +183,9 @@ public class CredentialServiceBeanTest extends TestCase {
 
 		// expectations
 		this.mockAttributeDAO.addOrUpdateAttribute(surnameAttributeType,
-				this.testSubject, this.smartCard.getSurname());
+				this.testSubject, 0, this.smartCard.getSurname());
 		this.mockAttributeDAO.addOrUpdateAttribute(givenNameAttributeType,
-				this.testSubject, this.smartCard.getGivenName());
+				this.testSubject, 0, this.smartCard.getGivenName());
 		this.mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain,
 				identifier, this.testSubject);
 		this.mockSubjectIdentifierDAO.removeOtherSubjectIdentifiers(
