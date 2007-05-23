@@ -17,8 +17,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
-import net.link.safeonline.Configurable;
 import net.link.safeonline.Startable;
+import net.link.safeonline.common.Configurable;
 import net.link.safeonline.dao.ConfigGroupDAO;
 import net.link.safeonline.dao.ConfigItemDAO;
 import net.link.safeonline.entity.ConfigGroupEntity;

@@ -14,8 +14,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 
-import net.link.safeonline.Configurable;
 import net.link.safeonline.Task;
+import net.link.safeonline.common.Configurable;
 import net.link.safeonline.dao.TaskHistoryDAO;
 import net.link.safeonline.model.ConfigurationInterceptor;
 

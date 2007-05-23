@@ -1,4 +1,4 @@
-package net.link.safeonline;
+package net.link.safeonline.common;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

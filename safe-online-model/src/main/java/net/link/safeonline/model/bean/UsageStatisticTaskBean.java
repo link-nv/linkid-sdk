@@ -18,8 +18,8 @@ import javax.interceptor.Interceptors;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
-import net.link.safeonline.Configurable;
 import net.link.safeonline.Task;
+import net.link.safeonline.common.Configurable;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;

@@ -10,8 +10,8 @@ package net.link.safeonline.authentication.service.bean;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
-import net.link.safeonline.Configurable;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.common.Configurable;
 import net.link.safeonline.model.ConfigurationInterceptor;
 
 @Stateless

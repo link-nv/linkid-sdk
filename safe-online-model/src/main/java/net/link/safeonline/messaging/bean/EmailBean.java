@@ -19,7 +19,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import net.link.safeonline.Configurable;
+import net.link.safeonline.common.Configurable;
 import net.link.safeonline.model.ConfigurationInterceptor;
 
 import org.apache.commons.logging.Log;
@@ -45,7 +45,7 @@ public class EmailBean implements MessageListener {
 	private String emailServerPort = "25";
 
 	@Configurable(group = groupName, name = "E-mail sender")
-	private String emailSender = "Safe Online";
+	private String emailSender = "safeonline@lin-k.net";
 
 	@Configurable(group = groupName, name = "Subject prefix")
 	private String emailSubjectPrefix = "[Safe Online]";
@@ -81,7 +81,7 @@ public class EmailBean implements MessageListener {
 			Transport.send(mimemsg);
 
 		} catch (Exception e) {
-			throw new EJBException();
+			throw new EJBException(e);
 		}
 	}
 

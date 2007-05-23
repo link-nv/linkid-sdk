@@ -11,7 +11,7 @@ import javax.interceptor.InvocationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import net.link.safeonline.Configurable;
+import net.link.safeonline.common.Configurable;
 import net.link.safeonline.dao.ConfigItemDAO;
 import net.link.safeonline.entity.ConfigItemEntity;
 

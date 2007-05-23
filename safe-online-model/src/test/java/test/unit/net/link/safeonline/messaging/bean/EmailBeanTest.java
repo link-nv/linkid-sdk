@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.messaging.bean.EmailBean;
+import net.link.safeonline.test.util.ConfigurationTestUtils;
 
 import com.dumbster.smtp.SimpleSmtpServer;
 import com.dumbster.smtp.SmtpMessage;
@@ -27,6 +28,8 @@ public class EmailBeanTest extends TestCase {
 
 	public EmailBeanTest() throws Exception {
 		this.testedInstance = new EmailBean();
+		ConfigurationTestUtils.configure(this.testedInstance,
+				"Mail server port", "2525");
 	}
 
 	public void testEmail() throws Exception {

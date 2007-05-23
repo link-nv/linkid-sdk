@@ -5,7 +5,7 @@ import java.util.Set;
 
 import javassist.bytecode.ClassFile;
 
-import net.link.safeonline.Configurable;
+import net.link.safeonline.common.Configurable;
 
 import org.jboss.seam.deployment.Scanner;
 
