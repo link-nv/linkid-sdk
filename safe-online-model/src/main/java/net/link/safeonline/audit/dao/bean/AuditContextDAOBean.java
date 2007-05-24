@@ -37,8 +37,13 @@ public class AuditContextDAOBean implements AuditContextDAO {
 		return auditContext;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public AuditContextEntity getAuditContext(long auditContextId)
 			throws AuditContextNotFoundException {
+		/*
+		 * We also put REQUIRES_NEW here, else we risk a 'no transaction open'
+		 * exception.
+		 */
 		AuditContextEntity auditContext = this.entityManager.find(
 				AuditContextEntity.class, auditContextId);
 		if (null == auditContext) {
