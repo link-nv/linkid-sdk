@@ -49,6 +49,8 @@ import net.link.safeonline.entity.TaskHistoryEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.entity.TrustPointPK;
+import net.link.safeonline.entity.audit.AuditAuditEntity;
+import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -85,7 +87,8 @@ public class EntityTest extends TestCase {
 				ApplicationIdentityEntity.class,
 				ApplicationIdentityAttributeEntity.class,
 				AttributeTypeDescriptionEntity.class,
-				AttributeProviderEntity.class);
+				AttributeProviderEntity.class, AuditContextEntity.class,
+				AuditAuditEntity.class);
 	}
 
 	@Override
@@ -833,4 +836,34 @@ public class EntityTest extends TestCase {
 		assertEquals(resultAttributeProvider, attributeProvider);
 	}
 
+	public void testCreateAuditContext() throws Exception {
+		// setup
+		AuditContextEntity contextEntity = new AuditContextEntity();
+		AuditContextEntity contextEntity2 = new AuditContextEntity();
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(contextEntity);
+		entityManager.persist(contextEntity2);
+
+		// verify
+		assertTrue(contextEntity.getId() < contextEntity2.getId());
+	}
+
+	public void testAuditAudit() throws Exception {
+		// setup
+		AuditContextEntity auditContext = new AuditContextEntity();
+		AuditAuditEntity auditAudit = new AuditAuditEntity(auditContext,
+				"test message");
+		AuditAuditEntity auditAudit2 = new AuditAuditEntity("test message 2");
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(auditContext);
+		entityManager.persist(auditAudit);
+		entityManager.persist(auditAudit2);
+
+		// verify
+		assertNull(auditAudit2.getAuditContext());
+	}
 }

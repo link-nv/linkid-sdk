@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.auth.AuthenticationStatementFactory;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean;
@@ -41,6 +42,7 @@ import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.PkiProvider;
 import net.link.safeonline.model.PkiProviderManager;
 import net.link.safeonline.model.PkiValidator;
@@ -75,6 +77,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 	private StatisticDAO mockStatisticDAO;
 
 	private StatisticDataPointDAO mockStatisticDataPointDAO;
+
+	private SecurityAuditLogger mockSecurityAuditLogger;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -113,6 +117,9 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		EJBTestUtils
 				.inject(this.testedInstance, this.mockStatisticDataPointDAO);
 
+		this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockSecurityAuditLogger);
+
 		EJBTestUtils.init(this.testedInstance);
 
 		this.mockObjects = new Object[] { this.mockSubjectDAO,
@@ -120,7 +127,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 				this.mockHistoryDAO, this.mockAttributeDAO,
 				this.mockPkiProviderManager, this.mockPkiValidator,
 				this.mockSubjectIdentifierDAO, this.mockStatisticDAO,
-				this.mockStatisticDataPointDAO };
+				this.mockStatisticDataPointDAO, this.mockSecurityAuditLogger };
 	}
 
 	public void testAuthenticate() throws Exception {
@@ -197,6 +204,9 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		// expectations
 		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
 				EasyMock.eq(subject), (String) EasyMock.anyObject());
+
+		this.mockSecurityAuditLogger.addSecurityAudit(
+				SecurityThreatType.DECEPTION, login, "incorrect password");
 
 		// prepare
 		replay(this.mockObjects);

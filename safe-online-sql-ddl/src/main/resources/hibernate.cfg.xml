@@ -39,5 +39,13 @@
 			class="net.link.safeonline.entity.AttributeTypeDescriptionEntity" />
 		<mapping class="net.link.safeonline.entity.DeviceEntity" />
 		<mapping class="net.link.safeonline.entity.AllowedDeviceEntity" />
+		<mapping
+			class="net.link.safeonline.entity.audit.AuditContextEntity" />
+		<mapping
+			class="net.link.safeonline.entity.audit.AuditAuditEntity" />
+		<mapping
+			class="net.link.safeonline.entity.audit.AccessAuditEntity" />
+		<mapping
+			class="net.link.safeonline.entity.audit.SecurityAuditEntity" />
 	</session-factory>
 </hibernate-configuration>

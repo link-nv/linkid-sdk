@@ -167,6 +167,21 @@ public class AuthenticationTest extends TestCase {
 		authenticationService.commitAuthentication("safe-online-user");
 	}
 
+	public void testIncorrectPassword() throws Exception {
+		// setup
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+
+		AuthenticationService authenticationService = getAuthenticationService(initialContext);
+
+		// operate
+		boolean result = authenticationService.authenticate("fcorneli",
+				"foobar-password");
+
+		// verify
+		assertFalse(result);
+	}
+
 	public void testAuthenticationAbort() throws Exception {
 		InitialContext initialContext = IntegrationTestUtils
 				.getInitialContext();

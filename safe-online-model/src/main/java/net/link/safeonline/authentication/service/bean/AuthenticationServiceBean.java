@@ -24,6 +24,9 @@ import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AccessAuditLogger;
+import net.link.safeonline.audit.AuditContextManager;
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
@@ -51,6 +54,7 @@ import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.PkiProvider;
 import net.link.safeonline.model.PkiProviderManager;
 import net.link.safeonline.model.PkiValidator;
@@ -68,7 +72,8 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateful
-@Interceptors(InputValidation.class)
+@Interceptors( { AuditContextManager.class, AccessAuditLogger.class,
+		InputValidation.class })
 public class AuthenticationServiceBean implements AuthenticationService,
 		AuthenticationServiceRemote {
 
@@ -124,6 +129,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private IdentityService identityService;
 
+	@EJB
+	private SecurityAuditLogger securityAuditLogger;
+
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
 	String password) throws SubjectNotFoundException {
@@ -150,6 +158,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		if (!expectedPassword.equals(password)) {
 			String event = "incorrect password for subject: " + login;
 			addHistoryEntry(subject, event);
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION, login, "incorrect password");
 			return false;
 		}
 
@@ -200,6 +210,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		}
 
 		if (false == sessionId.equals(statementSessionId)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION, "session Id mismatch");
 			throw new ArgumentIntegrityException();
 		}
 
