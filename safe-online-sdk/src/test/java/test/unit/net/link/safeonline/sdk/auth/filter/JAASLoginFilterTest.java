@@ -141,6 +141,12 @@ public class JAASLoginFilterTest extends TestCase {
 		expect(this.mockHttpServletRequest.getRequestURL()).andStubReturn(
 				new StringBuffer("test-url"));
 
+		expect(this.mockHttpServletRequest.getSession(false)).andStubReturn(
+				this.mockHttpSession);
+
+		expect(this.mockHttpSession.getAttribute("FlushJBossCredentialCache"))
+				.andStubReturn(null);
+
 		// expectation
 		this.mockHttpServletRequest.setAttribute(EasyMock.eq("login-context"),
 				EasyMock.anyObject());
