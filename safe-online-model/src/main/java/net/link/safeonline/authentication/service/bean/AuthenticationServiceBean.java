@@ -21,6 +21,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
@@ -53,6 +54,8 @@ import net.link.safeonline.entity.TrustDomainEntity;
 import net.link.safeonline.model.PkiProvider;
 import net.link.safeonline.model.PkiProviderManager;
 import net.link.safeonline.model.PkiValidator;
+import net.link.safeonline.validation.InputValidation;
+import net.link.safeonline.validation.annotation.NonEmptyString;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,6 +68,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateful
+@Interceptors(InputValidation.class)
 public class AuthenticationServiceBean implements AuthenticationService,
 		AuthenticationServiceRemote {
 
@@ -120,17 +124,10 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private IdentityService identityService;
 
-	public boolean authenticate(String login, String password)
-			throws SubjectNotFoundException {
+	public boolean authenticate(@NonEmptyString
+	String login, @NonEmptyString
+	String password) throws SubjectNotFoundException {
 		LOG.debug("authenticate \"" + login + "\"");
-
-		// TODO: aspectize the input validation
-		if (null == login) {
-			throw new IllegalArgumentException("login is null");
-		}
-		if (null == password) {
-			throw new IllegalArgumentException("password is null");
-		}
 
 		SubjectEntity subject = this.entityDAO.getSubject(login);
 
@@ -175,8 +172,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.historyDAO.addHistoryEntry(now, subject, event);
 	}
 
-	public boolean authenticate(String sessionId,
-			byte[] authenticationStatementData)
+	public boolean authenticate(@NonEmptyString
+	String sessionId, byte[] authenticationStatementData)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException {
 		LOG.debug("authenticate session: " + sessionId);
@@ -276,8 +273,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	}
 
 	@Remove
-	public void commitAuthentication(String applicationId)
-			throws ApplicationNotFoundException, SubscriptionNotFoundException,
+	public void commitAuthentication(@NonEmptyString
+	String applicationId) throws ApplicationNotFoundException,
+			SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException {
 		LOG.debug("commitAuthentication for application: " + applicationId);
