@@ -39,11 +39,15 @@ public class AttributeDO implements Serializable, Cloneable {
 
 	private Boolean booleanValue;
 
-	public AttributeDO(String name, String type, long index,
-			String humanReadableName, String description, boolean editable,
-			boolean dataMining, String stringValue, Boolean booleanValue) {
+	private boolean multivalued;
+
+	public AttributeDO(String name, String type, boolean multivalued,
+			long index, String humanReadableName, String description,
+			boolean editable, boolean dataMining, String stringValue,
+			Boolean booleanValue) {
 		this.name = name;
 		this.type = type;
+		this.multivalued = multivalued;
 		this.index = index;
 		this.humanReadableName = humanReadableName;
 		this.description = description;
@@ -98,15 +102,24 @@ public class AttributeDO implements Serializable, Cloneable {
 	/**
 	 * Gives back the human readable name of the attribute type corresponding
 	 * with this attribute. If the i18n name is <code>null</code> this method
-	 * gives back the URN machine name.
+	 * gives back the URN machine name. In case this attribute value is part of
+	 * a multi-valued attribute we also append the attribute index to the human
+	 * readable name. We increase the index by one since human beings tend to
+	 * start counting from 1.
 	 * 
 	 * @return
 	 */
 	public String getHumanReadableName() {
+		String viewName;
 		if (null != this.humanReadableName) {
-			return this.humanReadableName;
+			viewName = this.humanReadableName;
+		} else {
+			viewName = this.name;
 		}
-		return this.name;
+		if (true == this.multivalued) {
+			viewName += " " + (this.index + 1);
+		}
+		return viewName;
 	}
 
 	public void setHumanReadableName(String humanReadableName) {
@@ -178,12 +191,26 @@ public class AttributeDO implements Serializable, Cloneable {
 		this.index = index;
 	}
 
+	/**
+	 * Marks whether this attribute value is part of a multi-valued attribute or
+	 * not.
+	 * 
+	 * @return
+	 */
+	public boolean isMultivalued() {
+		return this.multivalued;
+	}
+
+	public void setMultivalued(boolean multivalued) {
+		this.multivalued = multivalued;
+	}
+
 	@Override
 	public AttributeDO clone() {
 		AttributeDO attribute = new AttributeDO(this.name, this.type,
-				this.index, this.humanReadableName, this.description,
-				this.editable, this.dataMining, this.stringValue,
-				this.booleanValue);
+				this.multivalued, this.index, this.humanReadableName,
+				this.description, this.editable, this.dataMining,
+				this.stringValue, this.booleanValue);
 		return attribute;
 	}
 }

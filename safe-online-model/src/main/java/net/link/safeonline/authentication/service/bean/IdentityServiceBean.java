@@ -186,6 +186,7 @@ public class IdentityServiceBean implements IdentityService,
 			Boolean booleanValue = attribute.getBooleanValue();
 			boolean editable = attributeType.isUserEditable();
 			String datatype = attributeType.getType();
+			boolean multivalued = attributeType.isMultivalued();
 			long index = attribute.getAttributeIndex();
 
 			String humanReadableName = null;
@@ -203,9 +204,9 @@ public class IdentityServiceBean implements IdentityService,
 				}
 			}
 
-			AttributeDO attributeView = new AttributeDO(name, datatype, index,
-					humanReadableName, description, editable, true,
-					stringValue, booleanValue);
+			AttributeDO attributeView = new AttributeDO(name, datatype,
+					multivalued, index, humanReadableName, description,
+					editable, true, stringValue, booleanValue);
 			attributesView.add(attributeView);
 		}
 		return attributesView;
@@ -444,9 +445,13 @@ public class IdentityServiceBean implements IdentityService,
 					description = attributeTypeDescription.getDescription();
 				}
 			}
+			/*
+			 * We mark the missing attribute as singled-valued here since
+			 * basically the user does not care as this point.
+			 */
 			AttributeDO missingAttribute = new AttributeDO(
-					missingAttributeName, datatype, 0, humanReadableName,
-					description, true, true, null, null);
+					missingAttributeName, datatype, false, 0,
+					humanReadableName, description, true, true, null, null);
 			missingAttributes.add(missingAttribute);
 		}
 
@@ -505,7 +510,7 @@ public class IdentityServiceBean implements IdentityService,
 				continue;
 			}
 
-			long index = 0;
+			boolean multivalued = attributeType.isMultivalued();
 			String name = attributeType.getName();
 			String type = attributeType.getType();
 			boolean editable = attributeType.isUserEditable();
@@ -525,16 +530,19 @@ public class IdentityServiceBean implements IdentityService,
 					attributeType, subject);
 			String stringValue;
 			Boolean booleanValue;
+			long index;
 			if (null != attribute) {
 				stringValue = attribute.getStringValue();
 				booleanValue = attribute.getBooleanValue();
+				index = attribute.getAttributeIndex();
 			} else {
 				stringValue = null;
 				booleanValue = null;
+				index = 0;
 			}
-			AttributeDO attributeView = new AttributeDO(name, type, index,
-					humanReabableName, description, editable, dataMining,
-					stringValue, booleanValue);
+			AttributeDO attributeView = new AttributeDO(name, type,
+					multivalued, index, humanReabableName, description,
+					editable, dataMining, stringValue, booleanValue);
 			attributes.add(attributeView);
 		}
 		return attributes;

@@ -41,6 +41,7 @@ public class AttributeTypeDescriptionDecoratorBean implements
 			String datatype = attributeType.getType();
 			String humanReadableName = null;
 			String description = null;
+			boolean multivalued = attributeType.isMultivalued();
 			if (null != language) {
 				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
 						.findDescription(new AttributeTypeDescriptionPK(name,
@@ -50,9 +51,9 @@ public class AttributeTypeDescriptionDecoratorBean implements
 					description = attributeTypeDescription.getDescription();
 				}
 			}
-			AttributeDO attribute = new AttributeDO(name, datatype, 0,
-					humanReadableName, description, attributeType
-							.isUserEditable(), true, null, null);
+			AttributeDO attribute = new AttributeDO(name, datatype,
+					multivalued, 0, humanReadableName, description,
+					attributeType.isUserEditable(), true, null, null);
 			attributes.add(attribute);
 		}
 		return attributes;
@@ -68,7 +69,9 @@ public class AttributeTypeDescriptionDecoratorBean implements
 		}
 		for (ApplicationIdentityAttributeEntity identityAttribute : identityAttributes) {
 			String name = identityAttribute.getAttributeTypeName();
-			String datatype = identityAttribute.getAttributeType().getType();
+			AttributeTypeEntity attributeType = identityAttribute
+					.getAttributeType();
+			String datatype = attributeType.getType();
 			String humanReadableName = null;
 			String description = null;
 			if (null != language) {
@@ -80,7 +83,7 @@ public class AttributeTypeDescriptionDecoratorBean implements
 					description = attributeTypeDescription.getDescription();
 				}
 			}
-			AttributeDO attribute = new AttributeDO(name, datatype, 0,
+			AttributeDO attribute = new AttributeDO(name, datatype, false, 0,
 					humanReadableName, description, identityAttribute
 							.getAttributeType().isUserEditable(),
 					identityAttribute.isDataMining(), null, null);
