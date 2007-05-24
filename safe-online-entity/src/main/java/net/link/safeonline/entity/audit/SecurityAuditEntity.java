@@ -44,6 +44,7 @@ public class SecurityAuditEntity implements Serializable {
 		this.auditContext = auditContext;
 		this.securityThreat = securityThreat;
 		this.message = message;
+		this.targetPrincipal = targetPrincipal;
 	}
 
 	@Id
