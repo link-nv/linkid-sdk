@@ -14,6 +14,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -176,4 +177,16 @@ public interface IdentityService {
 	List<AttributeDO> getMissingAttributes(String applicationName, Locale locale)
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException;
+
+	/**
+	 * Removes an attribute. A user can only remove editable attributes. In case
+	 * this attribute is part of a multivalued attribute set we will reorder the
+	 * remaining attributes in order to have a consistent perceived sequencing.
+	 * 
+	 * @param attribute
+	 * @throws PermissionDeniedException
+	 * @throws AttributeNotFoundException
+	 */
+	void removeAttribute(AttributeDO attribute)
+			throws PermissionDeniedException, AttributeNotFoundException;
 }

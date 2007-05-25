@@ -51,4 +51,24 @@ public interface AttributeDAO {
 
 	AttributeEntity getAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject) throws AttributeNotFoundException;
+
+	/**
+	 * Gives back an attribute. Use this method to retrieve a multi-valued
+	 * attribute entry via the <code>index</code> parameter. The attributes
+	 * are ordered by attribute index.
+	 * 
+	 * @param attributeType
+	 * @param subject
+	 * @param index
+	 * @return
+	 * @throws AttributeNotFoundException
+	 */
+	AttributeEntity getAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, long index)
+			throws AttributeNotFoundException;
+
+	void removeAttribute(AttributeEntity attributeEntity);
+
+	List<AttributeEntity> listAttributes(SubjectEntity subject,
+			AttributeTypeEntity attributeType);
 }

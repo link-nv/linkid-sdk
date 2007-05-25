@@ -16,6 +16,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.context.FacesContext;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -104,5 +105,31 @@ public class IdentityBean implements Identity {
 			return null;
 		}
 		return "success";
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String add() {
+		LOG.debug("add attribute of type: " + this.selectedAttribute.getName());
+		return null;
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String removeAttribute() {
+		LOG.debug("remove attribute: " + this.selectedAttribute);
+		try {
+			this.identityService.removeAttribute(this.selectedAttribute);
+		} catch (PermissionDeniedException e) {
+			String msg = "user not allowed to remove the attribute";
+			LOG.error(msg);
+			this.facesMessages.add(msg);
+			return null;
+		} catch (AttributeNotFoundException e) {
+			String msg = "attribute not found";
+			LOG.error(msg);
+			this.facesMessages.add(msg);
+			return null;
+		}
+		attributeListFactory();
+		return "removed";
 	}
 }

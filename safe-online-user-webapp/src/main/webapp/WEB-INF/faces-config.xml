@@ -45,6 +45,10 @@
 			<from-outcome>edit</from-outcome>
 			<to-view-id>/attribute-edit.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>removed</from-outcome>
+			<to-view-id>/profile.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>

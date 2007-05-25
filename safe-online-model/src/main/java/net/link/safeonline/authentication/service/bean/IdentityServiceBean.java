@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +21,7 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -141,14 +143,14 @@ public class IdentityServiceBean implements IdentityService,
 			throws PermissionDeniedException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		String attributeName = attribute.getName();
+		long index = attribute.getIndex();
 		LOG.debug("save attribute " + attributeName + " for entity with login "
-				+ subject);
+				+ subject + "; index " + index);
 		LOG.debug("received attribute values: " + attribute);
 
 		AttributeTypeEntity attributeType = getUserEditableAttributeType(attributeName);
 
 		boolean multiValued = attributeType.isMultivalued();
-		long index = attribute.getIndex();
 		if (false == multiValued) {
 			if (0 != index) {
 				throw new IllegalArgumentException(
@@ -546,5 +548,67 @@ public class IdentityServiceBean implements IdentityService,
 			attributes.add(attributeView);
 		}
 		return attributes;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public void removeAttribute(AttributeDO attribute)
+			throws PermissionDeniedException, AttributeNotFoundException {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		String attributeName = attribute.getName();
+		LOG.debug("remove attribute " + attributeName
+				+ " for entity with login " + subject);
+		LOG.debug("received attribute values: " + attribute);
+
+		AttributeTypeEntity attributeType = getUserEditableAttributeType(attributeName);
+
+		boolean multivalued = attributeType.isMultivalued();
+		if (false == multivalued) {
+			AttributeEntity attributeEntity = this.attributeDAO.getAttribute(
+					attributeType, subject);
+			this.attributeDAO.removeAttribute(attributeEntity);
+		} else {
+			/*
+			 * In case the attribute to be removed is part of a multivalued
+			 * attribute we have to resequence the remaining attributes.
+			 */
+			List<AttributeEntity> attributes = this.attributeDAO
+					.listAttributes(subject, attributeType);
+			if (attributes.isEmpty()) {
+				throw new AttributeNotFoundException();
+			}
+			long index = attribute.getIndex();
+			Iterator<AttributeEntity> iterator = attributes.iterator();
+			AttributeEntity removeAttribute = null;
+			while (iterator.hasNext()) {
+				AttributeEntity iterAttribute = iterator.next();
+				if (index == iterAttribute.getAttributeIndex()) {
+					removeAttribute = iterAttribute;
+					break;
+				}
+			}
+			if (null == removeAttribute) {
+				throw new AttributeNotFoundException();
+			}
+			/*
+			 * We remove by moving the data of the following remaining
+			 * attributes one up, and finally we remove the last entry in the
+			 * list.
+			 */
+			while (iterator.hasNext()) {
+				AttributeEntity nextAttribute = iterator.next();
+				/*
+				 * By copying the content of the next attribute into the remove
+				 * attribute we basically reindex the attributes. We cannot just
+				 * change the attribute index since it is part of the compounded
+				 * primary key of the attribute entity. Maybe we should use a
+				 * global PK attribute Id and a separate viewId instead?
+				 */
+				removeAttribute
+						.setBooleanValue(nextAttribute.getBooleanValue());
+				removeAttribute.setStringValue(nextAttribute.getStringValue());
+				removeAttribute = nextAttribute;
+			}
+			this.attributeDAO.removeAttribute(removeAttribute);
+		}
 	}
 }

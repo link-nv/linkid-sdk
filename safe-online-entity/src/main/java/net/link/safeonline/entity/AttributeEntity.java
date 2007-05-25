@@ -29,6 +29,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT;
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_VISIBLE;
 import static net.link.safeonline.entity.AttributeEntity.SUBJECT_PARAM;
+import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
+import static net.link.safeonline.entity.AttributeEntity.ATTRIBUTE_TYPE_PARAM;
 
 /**
  * Attribute JPA Entity. Sits as many-to-many between
@@ -46,7 +48,13 @@ import static net.link.safeonline.entity.AttributeEntity.SUBJECT_PARAM;
 		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_VISIBLE, query = "SELECT attribute FROM AttributeEntity AS attribute "
 				+ "WHERE attribute.subject = :"
 				+ SUBJECT_PARAM
-				+ " AND attribute.attributeType.userVisible = TRUE") })
+				+ " AND attribute.attributeType.userVisible = TRUE"),
+		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT attribute FROM AttributeEntity AS attribute "
+				+ "WHERE attribute.subject = :"
+				+ SUBJECT_PARAM
+				+ " AND attribute.attributeType = :"
+				+ ATTRIBUTE_TYPE_PARAM
+				+ " ORDER BY attribute.attributeIndex") })
 public class AttributeEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -55,7 +63,11 @@ public class AttributeEntity implements Serializable {
 
 	public static final String QUERY_WHERE_SUBJECT_AND_VISIBLE = "attr.subject.visi";
 
+	public static final String QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "attr.subject.at";
+
 	public static final String SUBJECT_PARAM = "subject";
+
+	public static final String ATTRIBUTE_TYPE_PARAM = "attributeType";
 
 	private AttributePK pk;
 
@@ -195,6 +207,16 @@ public class AttributeEntity implements Serializable {
 		Query query = entityManager
 				.createNamedQuery(QUERY_WHERE_SUBJECT_AND_VISIBLE);
 		query.setParameter(SUBJECT_PARAM, subject);
+		return query;
+	}
+
+	public static Query createQueryWhereSubjectAndAttributeTypeOrdered(
+			EntityManager entityManager, SubjectEntity subject,
+			AttributeTypeEntity attributeType) {
+		Query query = entityManager
+				.createNamedQuery(QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE);
+		query.setParameter(SUBJECT_PARAM, subject);
+		query.setParameter(ATTRIBUTE_TYPE_PARAM, attributeType);
 		return query;
 	}
 }

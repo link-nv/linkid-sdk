@@ -28,4 +28,8 @@ public interface Identity {
 	String edit();
 
 	String save();
+
+	String removeAttribute();
+
+	String add();
 }

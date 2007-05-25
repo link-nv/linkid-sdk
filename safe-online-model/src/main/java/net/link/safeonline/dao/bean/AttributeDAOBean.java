@@ -43,6 +43,17 @@ public class AttributeDAOBean implements AttributeDAO {
 		return attribute;
 	}
 
+	public AttributeEntity addAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, long index, String stringValue) {
+		LOG.debug("add attribute " + attributeType + " for subject " + subject
+				+ " with value: " + stringValue);
+		AttributeEntity attribute = new AttributeEntity(attributeType, subject,
+				index);
+		attribute.setStringValue(stringValue);
+		this.entityManager.persist(attribute);
+		return attribute;
+	}
+
 	public AttributeEntity findAttribute(String attributeTypeName,
 			String subjectLogin) {
 		LOG.debug("find attribute for type  " + attributeTypeName
@@ -78,14 +89,14 @@ public class AttributeDAOBean implements AttributeDAO {
 			attribute.setStringValue(stringValue);
 			return;
 		}
-		addAttribute(attributeType, subject, stringValue);
+		addAttribute(attributeType, subject, index, stringValue);
 	}
 
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long index, Boolean booleanValue) {
 		AttributeEntity attribute = findAttribute(attributeType, subject, index);
 		if (null == attribute) {
-			attribute = addAttribute(attributeType, subject, null);
+			attribute = addAttribute(attributeType, subject, index, null);
 		}
 		attribute.setBooleanValue(booleanValue);
 	}
@@ -121,6 +132,32 @@ public class AttributeDAOBean implements AttributeDAO {
 	public List<AttributeEntity> listVisibleAttributes(SubjectEntity subject) {
 		Query query = AttributeEntity.createQueryWhereSubjectAndVisible(
 				this.entityManager, subject);
+		List<AttributeEntity> attributes = query.getResultList();
+		return attributes;
+	}
+
+	public AttributeEntity getAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, long index)
+			throws AttributeNotFoundException {
+		AttributePK pk = new AttributePK(attributeType, subject, index);
+		AttributeEntity attribute = this.entityManager.find(
+				AttributeEntity.class, pk);
+		if (null == attribute) {
+			throw new AttributeNotFoundException();
+		}
+		return attribute;
+	}
+
+	public void removeAttribute(AttributeEntity attributeEntity) {
+		this.entityManager.remove(attributeEntity);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AttributeEntity> listAttributes(SubjectEntity subject,
+			AttributeTypeEntity attributeType) {
+		Query query = AttributeEntity
+				.createQueryWhereSubjectAndAttributeTypeOrdered(
+						this.entityManager, subject, attributeType);
 		List<AttributeEntity> attributes = query.getResultList();
 		return attributes;
 	}

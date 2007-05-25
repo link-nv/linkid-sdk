@@ -14,8 +14,10 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import junit.framework.TestCase;
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AttributeDO;
@@ -27,8 +29,15 @@ import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.authentication.service.bean.IdentityServiceBean;
 import net.link.safeonline.authentication.service.bean.SubscriptionServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
+import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.SubjectDAO;
+import net.link.safeonline.dao.bean.AttributeDAOBean;
+import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.bean.AttributeTypeServiceBean;
@@ -187,5 +196,85 @@ public class IdentityServiceBeanTest extends TestCase {
 		boolean result = identityService
 				.isConfirmationRequired(applicationName);
 		assertFalse(result);
+	}
+
+	public void testRemoveMultivaluedAttribute() throws Exception {
+		// setup
+		String login = "test-login";
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		// operate: register the test user
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(login, "test-password", null);
+
+		// operate
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.USER_ROLE);
+
+		// operate: add multivalued attribute type
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
+		String attributeName = "test-attribute-name";
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				attributeName, SafeOnlineConstants.STRING_TYPE, true, true);
+		attributeType.setMultivalued(true);
+		attributeTypeService.add(attributeType);
+
+		refreshTransaction(entityManager);
+
+		// operate: save an attribute
+		AttributeDO attribute = new AttributeDO(attributeName,
+				SafeOnlineConstants.STRING_TYPE, true, 0, null, null, true,
+				true, "value 1", null);
+		identityService.saveAttribute(attribute);
+
+		refreshTransaction(entityManager);
+
+		// operate: remove a single multi-valued attribute
+		identityService.removeAttribute(attribute);
+
+		refreshTransaction(entityManager);
+
+		// operate: save 2 multivalued attributes
+		identityService.saveAttribute(attribute);
+		AttributeDO attribute2 = new AttributeDO(attributeName,
+				SafeOnlineConstants.STRING_TYPE, true, 1, null, null, true,
+				true, "value 2", null);
+		identityService.saveAttribute(attribute2);
+
+		refreshTransaction(entityManager);
+
+		// operate: remove first attribute
+		identityService.removeAttribute(attribute);
+
+		refreshTransaction(entityManager);
+
+		// verify: the remaining attribute should have index 0 and value 'value
+		// 2'.
+		AttributeDAO attributeDAO = EJBTestUtils.newInstance(
+				AttributeDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectDAO subjectDAO = EJBTestUtils.newInstance(SubjectDAOBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
+		SubjectEntity subject = subjectDAO.getSubject(login);
+		List<AttributeEntity> resultAttributes = attributeDAO.listAttributes(
+				subject, attributeType);
+
+		assertEquals(1, resultAttributes.size());
+		AttributeEntity resultAttribute = resultAttributes.get(0);
+		assertEquals(0, resultAttribute.getAttributeIndex());
+		assertEquals("value 2", resultAttribute.getStringValue());
+	}
+
+	private void refreshTransaction(EntityManager entityManager) {
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.commit();
+		transaction.begin();
 	}
 }
