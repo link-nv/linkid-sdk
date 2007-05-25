@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="profile" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h2>#{msgs.addAttribute}</h2>
+
+		<h:form>
+			<table>
+				<tr>
+					<th>#{msgs.name}:</th>
+					<td><h:outputText value="#{newAttribute.rawHumanReadableName}" /></td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="value" value="#{msgs.value}" />:</th>
+					<td><so:inputAttribute id="value"
+						value="#{newAttribute.value}" /></td>
+				</tr>
+			</table>
+
+			<t:messages globalOnly="true" styleClass="error" />
+
+			<h:commandButton id="add" action="#{identityBean.commitAdd}"
+				value="#{msgs.addaction}" />
+			<so:nbsp />
+			<h:commandButton action="cancel" id="cancel"
+				value="#{msgs.cancelaction}" />
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{login}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+</html>

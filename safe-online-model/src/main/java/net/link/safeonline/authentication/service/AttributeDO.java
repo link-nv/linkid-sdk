@@ -122,6 +122,16 @@ public class AttributeDO implements Serializable, Cloneable {
 		return viewName;
 	}
 
+	public String getRawHumanReadableName() {
+		String viewName;
+		if (null != this.humanReadableName) {
+			viewName = this.humanReadableName;
+		} else {
+			viewName = this.name;
+		}
+		return viewName;
+	}
+
 	public void setHumanReadableName(String humanReadableName) {
 		this.humanReadableName = humanReadableName;
 	}

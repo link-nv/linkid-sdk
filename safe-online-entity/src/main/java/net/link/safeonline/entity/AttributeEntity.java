@@ -31,6 +31,7 @@ import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND
 import static net.link.safeonline.entity.AttributeEntity.SUBJECT_PARAM;
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
 import static net.link.safeonline.entity.AttributeEntity.ATTRIBUTE_TYPE_PARAM;
+import static net.link.safeonline.entity.AttributeEntity.MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
 
 /**
  * Attribute JPA Entity. Sits as many-to-many between
@@ -54,7 +55,11 @@ import static net.link.safeonline.entity.AttributeEntity.ATTRIBUTE_TYPE_PARAM;
 				+ SUBJECT_PARAM
 				+ " AND attribute.attributeType = :"
 				+ ATTRIBUTE_TYPE_PARAM
-				+ " ORDER BY attribute.attributeIndex") })
+				+ " ORDER BY attribute.attributeIndex"),
+		@NamedQuery(name = MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT MAX(attribute.attributeIndex) FROM AttributeEntity AS attribute "
+				+ "WHERE attribute.subject = :"
+				+ SUBJECT_PARAM
+				+ " AND attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM) })
 public class AttributeEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -64,6 +69,8 @@ public class AttributeEntity implements Serializable {
 	public static final String QUERY_WHERE_SUBJECT_AND_VISIBLE = "attr.subject.visi";
 
 	public static final String QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "attr.subject.at";
+
+	public static final String MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "max.id.subject.at";
 
 	public static final String SUBJECT_PARAM = "subject";
 
@@ -97,6 +104,7 @@ public class AttributeEntity implements Serializable {
 			SubjectEntity subject, long attributeIdx) {
 		this.attributeType = attributeType;
 		this.subject = subject;
+		this.attributeIndex = attributeIdx;
 		this.pk = new AttributePK(attributeType, subject, attributeIdx);
 	}
 
@@ -215,6 +223,16 @@ public class AttributeEntity implements Serializable {
 			AttributeTypeEntity attributeType) {
 		Query query = entityManager
 				.createNamedQuery(QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE);
+		query.setParameter(SUBJECT_PARAM, subject);
+		query.setParameter(ATTRIBUTE_TYPE_PARAM, attributeType);
+		return query;
+	}
+
+	public static Query createMaxIdWhereSubjectAndAttributeType(
+			EntityManager entityManager, SubjectEntity subject,
+			AttributeTypeEntity attributeType) {
+		Query query = entityManager
+				.createNamedQuery(MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE);
 		query.setParameter(SUBJECT_PARAM, subject);
 		query.setParameter(ATTRIBUTE_TYPE_PARAM, attributeType);
 		return query;

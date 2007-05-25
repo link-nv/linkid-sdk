@@ -16,6 +16,7 @@ import java.util.TreeSet;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -609,6 +610,39 @@ public class IdentityServiceBean implements IdentityService,
 				removeAttribute = nextAttribute;
 			}
 			this.attributeDAO.removeAttribute(removeAttribute);
+		}
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public void addAttribute(AttributeDO newAttribute)
+			throws PermissionDeniedException {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		String attributeName = newAttribute.getName();
+		LOG.debug("add attribute " + attributeName + " for entity with login "
+				+ subject);
+
+		AttributeTypeEntity attributeType = getUserEditableAttributeType(attributeName);
+
+		boolean multivalued = attributeType.isMultivalued();
+		if (false == multivalued) {
+			throw new PermissionDeniedException();
+		}
+
+		AttributeEntity attribute = this.attributeDAO.addAttribute(
+				attributeType, subject);
+
+		LOG.debug("new attribute index: " + attribute.getAttributeIndex());
+
+		/*
+		 * Also copy the data into the new persisted attribute.
+		 */
+		String datatype = attributeType.getType();
+		if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+			attribute.setStringValue(newAttribute.getStringValue());
+		} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+			attribute.setBooleanValue(newAttribute.getBooleanValue());
+		} else {
+			throw new EJBException("datatype not supported: " + datatype);
 		}
 	}
 }

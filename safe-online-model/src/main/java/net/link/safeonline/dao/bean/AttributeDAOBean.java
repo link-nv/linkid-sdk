@@ -9,6 +9,7 @@ package net.link.safeonline.dao.bean;
 
 import java.util.List;
 
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -44,12 +45,10 @@ public class AttributeDAOBean implements AttributeDAO {
 	}
 
 	public AttributeEntity addAttribute(AttributeTypeEntity attributeType,
-			SubjectEntity subject, long index, String stringValue) {
-		LOG.debug("add attribute " + attributeType + " for subject " + subject
-				+ " with value: " + stringValue);
+			SubjectEntity subject, long index) {
+		LOG.debug("add attribute " + attributeType + " for subject " + subject);
 		AttributeEntity attribute = new AttributeEntity(attributeType, subject,
 				index);
-		attribute.setStringValue(stringValue);
 		this.entityManager.persist(attribute);
 		return attribute;
 	}
@@ -84,19 +83,17 @@ public class AttributeDAOBean implements AttributeDAO {
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long index, String stringValue) {
 		AttributeEntity attribute = findAttribute(attributeType, subject, index);
-		if (null != attribute) {
-			LOG.debug("setting attribute string value: " + stringValue);
-			attribute.setStringValue(stringValue);
-			return;
+		if (null == attribute) {
+			attribute = addAttribute(attributeType, subject, index);
 		}
-		addAttribute(attributeType, subject, index, stringValue);
+		attribute.setStringValue(stringValue);
 	}
 
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long index, Boolean booleanValue) {
 		AttributeEntity attribute = findAttribute(attributeType, subject, index);
 		if (null == attribute) {
-			attribute = addAttribute(attributeType, subject, index, null);
+			attribute = addAttribute(attributeType, subject, index);
 		}
 		attribute.setBooleanValue(booleanValue);
 	}
@@ -160,5 +157,32 @@ public class AttributeDAOBean implements AttributeDAO {
 						this.entityManager, subject, attributeType);
 		List<AttributeEntity> attributes = query.getResultList();
 		return attributes;
+	}
+
+	@SuppressWarnings("unchecked")
+	public AttributeEntity addAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject) {
+		if (false == attributeType.isMultivalued()) {
+			throw new EJBException(
+					"addAttribute cannot be invoked for single-valued attributes");
+		}
+		Query query = AttributeEntity.createMaxIdWhereSubjectAndAttributeType(
+				this.entityManager, subject, attributeType);
+		List<Long> maxId = query.getResultList();
+		long index;
+		if (maxId.isEmpty()) {
+			/*
+			 * This means that no other multi-valued attribute of the given
+			 * attribute type existed before. This is a weird case to occur, but
+			 * we can handle it. This just means we're the first to create it.
+			 */
+			index = 0;
+		} else {
+			index = maxId.get(0) + 1;
+		}
+		AttributeEntity attribute = new AttributeEntity(attributeType, subject,
+				index);
+		this.entityManager.persist(attribute);
+		return attribute;
 	}
 }

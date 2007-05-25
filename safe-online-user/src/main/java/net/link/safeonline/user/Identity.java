@@ -32,4 +32,6 @@ public interface Identity {
 	String removeAttribute();
 
 	String add();
+
+	String commitAdd();
 }

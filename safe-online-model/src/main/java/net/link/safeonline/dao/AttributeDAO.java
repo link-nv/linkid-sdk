@@ -16,6 +16,17 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
+/**
+ * Data Access Object interface for Attribute entities. It's important to
+ * understand the duality of multi-valued attributes. Towards the user web
+ * application interface they behave as regular attributes. Towards the
+ * application web service interface they behave as weak entities, i.e., they
+ * only make sense as part of the set of multi-valued attributes for the given
+ * attribute type.
+ * 
+ * @author fcorneli
+ * 
+ */
 @Local
 public interface AttributeDAO {
 
@@ -26,6 +37,18 @@ public interface AttributeDAO {
 
 	AttributeEntity addAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, String stringValue);
+
+	/**
+	 * Adds a new attribute. This method will fail for single-valued attributes.
+	 * For multi-valued attributes a new attribute will be added with attribute
+	 * index set to MAX(current attribute ids) + 1.
+	 * 
+	 * @param attributeType
+	 * @param subject
+	 * @return
+	 */
+	AttributeEntity addAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject);
 
 	List<AttributeEntity> listAttributes(SubjectEntity subject);
 

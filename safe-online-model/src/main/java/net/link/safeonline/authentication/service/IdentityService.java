@@ -189,4 +189,17 @@ public interface IdentityService {
 	 */
 	void removeAttribute(AttributeDO attribute)
 			throws PermissionDeniedException, AttributeNotFoundException;
+
+	/**
+	 * Adds an attribute. This method only really makes sense for multi-valued
+	 * attributes since a user will never create non-existing attributes just
+	 * for fun. A user is only supposed to edit existing attribute. And if the
+	 * attribute is multi-valued, then editing includes creation. This also
+	 * implies that the attibute type must be marked as user editable.
+	 * 
+	 * @param newAttribute
+	 * @throws PermissionDeniedException
+	 */
+	void addAttribute(AttributeDO newAttribute)
+			throws PermissionDeniedException;
 }
