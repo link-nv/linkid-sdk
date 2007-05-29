@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 import net.link.safeonline.validation.validator.Validator;
 
 /**
- * Validator class meta-annotation.
+ * Validator meta-annotation.
  * 
  * @author fcorneli
  * 
@@ -26,7 +26,12 @@ import net.link.safeonline.validation.validator.Validator;
 @Documented
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidatorClass {
+public @interface ValidatorAnnotation {
 
+	/**
+	 * The validator class that implements the validator semantics.
+	 * 
+	 * @return
+	 */
 	Class<? extends Validator> value();
 }

@@ -20,7 +20,7 @@ import net.link.safeonline.validation.validator.NonEmptyStringValidator;
 @Documented
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@ValidatorClass(NonEmptyStringValidator.class)
+@ValidatorAnnotation(NonEmptyStringValidator.class)
 public @interface NonEmptyString {
 
 	String value() default "";

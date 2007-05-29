@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
-import net.link.safeonline.validation.annotation.ValidatorClass;
+import net.link.safeonline.validation.annotation.ValidatorAnnotation;
 import net.link.safeonline.validation.validator.Validator;
 import net.link.safeonline.validation.validator.ValidatorCatalog;
 
@@ -45,8 +45,8 @@ public class InputValidation {
 		for (int parameterIdx = 0; parameterIdx < allParameterAnnotations.length; parameterIdx++) {
 			Annotation[] parameterAnnotations = allParameterAnnotations[parameterIdx];
 			for (Annotation parameterAnnotation : parameterAnnotations) {
-				ValidatorClass validatorClassAnnotation = parameterAnnotation
-						.annotationType().getAnnotation(ValidatorClass.class);
+				ValidatorAnnotation validatorClassAnnotation = parameterAnnotation
+						.annotationType().getAnnotation(ValidatorAnnotation.class);
 				if (null == validatorClassAnnotation) {
 					continue;
 				}

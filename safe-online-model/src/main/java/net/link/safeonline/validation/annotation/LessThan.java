@@ -20,7 +20,7 @@ import net.link.safeonline.validation.validator.LessThanValidator;
 @Documented
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@ValidatorClass(LessThanValidator.class)
+@ValidatorAnnotation(LessThanValidator.class)
 public @interface LessThan {
 
 	double value();

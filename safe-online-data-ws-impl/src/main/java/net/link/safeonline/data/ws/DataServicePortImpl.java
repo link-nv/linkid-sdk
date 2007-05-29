@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
@@ -41,7 +42,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
 import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.ws.util.ri.Injection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,25 +58,20 @@ import org.apache.commons.logging.LogFactory;
 @WebService(endpointInterface = "liberty.dst._2006_08.ref.safe_online.DataServicePort")
 @HandlerChain(file = "data-ws-handlers.xml")
 @Addressing
+@Injection
 public class DataServicePortImpl implements DataServicePort {
 
 	private static final Log LOG = LogFactory.getLog(DataServicePortImpl.class);
 
+	@EJB(mappedName = "SafeOnline/AttributeProviderServiceBean/local")
 	private AttributeProviderService attributeProviderService;
 
 	@Resource
 	private WebServiceContext context;
 
-	private AttributeProviderService getAttributeProviderService() {
-		AttributeProviderService attributeProviderService = EjbUtils.getEJB(
-				"SafeOnline/AttributeProviderServiceBean/local",
-				AttributeProviderService.class);
-		return attributeProviderService;
-	}
-
 	@PostConstruct
 	public void postConstructCallback() {
-		this.attributeProviderService = getAttributeProviderService();
+		LOG.debug("ready");
 	}
 
 	public CreateResponseType create(CreateType request) {

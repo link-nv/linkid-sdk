@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
@@ -28,7 +29,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.ws.util.ri.Injection;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
@@ -58,22 +59,22 @@ import org.apache.commons.logging.LogFactory;
  */
 @WebService(endpointInterface = "oasis.names.tc.saml._2_0.protocol.SAMLAttributePort")
 @HandlerChain(file = "app-auth-ws-handlers.xml")
+@Injection
 public class SAMLAttributePortImpl implements SAMLAttributePort {
 
 	private static final Log LOG = LogFactory
 			.getLog(SAMLAttributePortImpl.class);
 
+	@EJB(mappedName = "SafeOnline/AttributeServiceBean/local")
 	private AttributeService attributeService;
 
+	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
 	private SamlAuthorityService samlAuthorityService;
 
 	private DatatypeFactory datatypeFactory;
 
 	@PostConstruct
 	public void postConstructCallback() {
-		this.attributeService = getAttributeService();
-		this.samlAuthorityService = getSamlAuthorityService();
-
 		try {
 			this.datatypeFactory = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
@@ -81,20 +82,6 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		}
 
 		LOG.debug("ready");
-	}
-
-	private SamlAuthorityService getSamlAuthorityService() {
-		SamlAuthorityService samlAuthorityService = EjbUtils.getEJB(
-				"SafeOnline/SamlAuthorityServiceBean/local",
-				SamlAuthorityService.class);
-		return samlAuthorityService;
-	}
-
-	private AttributeService getAttributeService() {
-		AttributeService attributeService = EjbUtils
-				.getEJB("SafeOnline/AttributeServiceBean/local",
-						AttributeService.class);
-		return attributeService;
 	}
 
 	private String findSubjectLogin(AttributeQueryType request) {

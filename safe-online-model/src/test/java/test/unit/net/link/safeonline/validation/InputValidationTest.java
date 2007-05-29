@@ -21,7 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.validation.InputValidation;
-import net.link.safeonline.validation.annotation.ValidatorClass;
+import net.link.safeonline.validation.annotation.ValidatorAnnotation;
 import net.link.safeonline.validation.validator.Validator;
 import net.link.safeonline.validation.validator.ValidatorResult;
 import junit.framework.TestCase;
@@ -39,7 +39,7 @@ public class InputValidationTest extends TestCase {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.PARAMETER)
-	@ValidatorClass(TestValidator.class)
+	@ValidatorAnnotation(TestValidator.class)
 	public @interface TestAnnotation {
 
 	}
