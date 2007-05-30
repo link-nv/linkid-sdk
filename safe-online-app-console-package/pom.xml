@@ -9,42 +9,40 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<groupId>net.lin-k.safe-online</groupId>
-	<artifactId>safe-online-app-console</artifactId>
-	<packaging>jar</packaging>
+	<artifactId>safe-online-app-console-package</artifactId>
+	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>SafeOnline Application Console</name>
-	<description>SafeOnline Application Console.</description>
+	<name>SafeOnline Application Console Package</name>
+	<description>SafeOnline Application Console Package.</description>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>
-								net.link.safeonline.appconsole.Main
-							</mainClass>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
+					<descriptors>
+						<descriptor>
+							${basedir}/src/assembly/package.xml
+						</descriptor>
+					</descriptors>
 				</configuration>
+				<executions>
+					<execution>
+						<id>package-zip</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-sdk</artifactId>
+			<artifactId>safe-online-app-console</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>
@@ -59,10 +57,6 @@
 						</reports>
 					</reportSet>
 				</reportSets>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</reporting>
