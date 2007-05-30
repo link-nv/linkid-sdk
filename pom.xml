@@ -1012,7 +1012,7 @@
 		<jaxws-tools.version>2.1</jaxws-tools.version>
 		<jaxws-rt.version>2.1.1</jaxws-rt.version>
 		<jaxws-api.version>2.1</jaxws-api.version>
-		<commons-logging-api.version>1.0.4</commons-logging-api.version>
+		<commons-logging-api.version>1.1</commons-logging-api.version>
 		<jboss.version>4.2.0.GA</jboss.version>
 		<sjsxp.version>1.0</sjsxp.version>
 		<commons-logging.version>1.1</commons-logging.version>
@@ -1046,8 +1046,8 @@
 		<el-api.version>1.0</el-api.version>
 		<el-impl.version>1.0</el-impl.version>
 		<jsp-api.version>2.1</jsp-api.version>
-		<jsf-api.version>1.2_02</jsf-api.version>
-		<jsf-impl.version>1.2_02</jsf-impl.version>
+		<jsf-api.version>1.2_04-p02</jsf-api.version>
+		<jsf-impl.version>1.2_04-p02</jsf-impl.version>
 		<myfaces-impl.version>1.1.4</myfaces-impl.version>
 		<el-ri.version>1.0</el-ri.version>
 		<tomahawk.version>1.1.6-SNAPSHOT</tomahawk.version>
@@ -1078,7 +1078,7 @@
 		<xml-apis.version>1.0.b2</xml-apis.version>
 		<junit-addons.version>1.4</junit-addons.version>
 		<joda-time.version>1.4</joda-time.version>
-		<bouncycastle.version>135</bouncycastle.version>
+		<bouncycastle.version>136</bouncycastle.version>
 		<jetty-servlet-tester.version>
 			6.1.1
 		</jetty-servlet-tester.version>
