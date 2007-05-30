@@ -11,8 +11,22 @@
 		<release version="1.0-SNAPSHOT" date="in SVN"
 			desc="Initial release.">
 			<action type="add" dev="fcorneli">
-				Added authentication client component with echo
-				operation.
+				Authentication web service client component.
+			</action>
+			<action type="add" dev="fcorneli">
+				PKCS#12 keystore util component.
+			</action>
+			<action type="add" dev="fcorneli">
+				Various servlet container login filters.
+			</action>
+			<action type="add" dev="fcorneli">
+				JAAS login module for SafeOnline.
+			</action>
+			<action type="add" dev="fcorneli">
+				Attribute web service client component.
+			</action>
+			<action type="add" dev="fcorneli">
+				Data web service client component.
 			</action>
 		</release>
 

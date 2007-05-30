@@ -36,6 +36,7 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.AuthClientImpl;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
@@ -751,8 +752,19 @@ public class AuthenticationTest extends TestCase {
 		assertNotNull(result);
 		assertNull(result.getValue());
 
+		this.dataClient.setCaptureMessages(true);
 		this.dataClient.setAttributeValue(login,
 				SafeOnlineConstants.NAME_ATTRIBUTE, testName);
+
+		/*
+		 * Verify the message logger facility.
+		 */
+		assertNotNull(this.dataClient.getInboundMessage());
+		assertNotNull(this.dataClient.getOutboundMessage());
+		LOG.debug("OUTBOUND message: "
+				+ DomUtils.domToString(this.dataClient.getOutboundMessage()));
+		LOG.debug("INBOUND message: "
+				+ DomUtils.domToString(this.dataClient.getInboundMessage()));
 
 		result = this.dataClient.getAttributeValue(login,
 				SafeOnlineConstants.NAME_ATTRIBUTE);

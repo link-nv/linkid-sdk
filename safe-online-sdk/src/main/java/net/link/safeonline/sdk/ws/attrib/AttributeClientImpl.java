@@ -21,6 +21,7 @@ import javax.xml.ws.BindingProvider;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.ApplicationAuthenticationUtils;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -48,12 +49,23 @@ import com.sun.xml.ws.client.ClientTransportException;
  * @author fcorneli
  * 
  */
-public class AttributeClientImpl implements AttributeClient {
+public class AttributeClientImpl extends AbstractMessageAccessor implements
+		AttributeClient {
 
 	private static final Log LOG = LogFactory.getLog(AttributeClientImpl.class);
 
 	private SAMLAttributePort port;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param location
+	 *            the location (host:port) of the attribute web service.
+	 * @param clientCertificate
+	 *            the X509 certificate to use for WS-Security signature.
+	 * @param clientPrivateKey
+	 *            the private key corresponding with the client certificate.
+	 */
 	public AttributeClientImpl(String location,
 			X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 		SAMLAttributeService attributeService = SAMLAttributeServiceFactory
@@ -62,6 +74,7 @@ public class AttributeClientImpl implements AttributeClient {
 
 		setEndpointAddress(location);
 
+		registerMessageLoggerHandler(this.port);
 		ApplicationAuthenticationUtils.initWsSecurity(this.port,
 				clientCertificate, clientPrivateKey);
 	}

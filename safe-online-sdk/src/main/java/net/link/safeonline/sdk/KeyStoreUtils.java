@@ -25,6 +25,22 @@ public class KeyStoreUtils {
 		// empty
 	}
 
+	/**
+	 * Loads a private key entry from a input stream.
+	 * 
+	 * The supported types of keystores depend on the configured java security
+	 * providers. Example: "pkcs12".
+	 * 
+	 * A good alternative java security provider is <a
+	 * href="http://www.bouncycastle.org/">Bouncy Castle</a>.
+	 * 
+	 * @param keystoreType
+	 *            the type of the keystore.
+	 * @param keyStoreInputStream
+	 * @param keyStorePassword
+	 * @param keyEntryPassword
+	 * @return
+	 */
 	public static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType,
 			InputStream keyStoreInputStream, String keyStorePassword,
 			String keyEntryPassword) {

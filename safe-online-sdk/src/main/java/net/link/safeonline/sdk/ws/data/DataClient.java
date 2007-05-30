@@ -11,8 +11,18 @@ import java.net.ConnectException;
 
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.MessageAccessor;
 
-public interface DataClient {
+/**
+ * Interface for data client component. Via this interface application can
+ * perform CRUD operations on attributes of a subject. For this the application
+ * must be an attribute provider. Only the operator can set the attribute
+ * provider role for applications.
+ * 
+ * @author fcorneli
+ * 
+ */
+public interface DataClient extends MessageAccessor {
 
 	/**
 	 * Sets the value of an attribute. Please notice that the attribute should
@@ -48,6 +58,15 @@ public interface DataClient {
 			throws ConnectException, RequestDeniedException,
 			SubjectNotFoundException;
 
+	/**
+	 * Creates a new (empty) attribute for the given subject.
+	 * 
+	 * @param subjectLogin
+	 * @param attributeName
+	 * @throws ConnectException
+	 *             in case the service could not be contacted. Can happen if the
+	 *             SSL was not setup correctly.
+	 */
 	void createAttribute(String subjectLogin, String attributeName)
 			throws ConnectException;
 }

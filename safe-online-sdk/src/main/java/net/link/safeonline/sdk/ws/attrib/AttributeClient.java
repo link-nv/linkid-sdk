@@ -12,14 +12,18 @@ import java.util.Map;
 
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.MessageAccessor;
 
 /**
- * Interface for attribute client.
+ * Interface for attribute client. Via components implementing this interface
+ * applications can retrieve attributes for subjects. Applications can only
+ * retrieve attribute values for which the user confirmed the corresponding
+ * application identity.
  * 
  * @author fcorneli
  * 
  */
-public interface AttributeClient {
+public interface AttributeClient extends MessageAccessor {
 
 	/**
 	 * Gives back the attribute value of a single attribute of the given

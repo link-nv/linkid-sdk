@@ -38,6 +38,7 @@ import net.link.safeonline.data.ws.SecondLevelStatusCode;
 import net.link.safeonline.data.ws.TopLevelStatusCode;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.ApplicationAuthenticationUtils;
 
 import org.apache.commons.logging.Log;
@@ -45,7 +46,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.sun.xml.ws.client.ClientTransportException;
 
-public class DataClientImpl implements DataClient {
+public class DataClientImpl extends AbstractMessageAccessor implements
+		DataClient {
 
 	private static final Log LOG = LogFactory.getLog(DataClientImpl.class);
 
@@ -53,6 +55,14 @@ public class DataClientImpl implements DataClient {
 
 	private final TargetIdentityClientHandler targetIdentityHandler;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param location
+	 *            the location (i.e. host:port) of the data web service.
+	 * @param clientCertificate
+	 * @param clientPrivateKey
+	 */
 	public DataClientImpl(String location, X509Certificate clientCertificate,
 			PrivateKey clientPrivateKey) {
 		DataService dataService = DataServiceFactory.newInstance();
@@ -60,6 +70,8 @@ public class DataClientImpl implements DataClient {
 		this.port = dataService.getDataServicePort(addressingFeature);
 
 		setEndpointAddress(location);
+
+		registerMessageLoggerHandler(this.port);
 
 		/*
 		 * The order of the JAX-WS handlers is important. For outbound messages
