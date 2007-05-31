@@ -18,6 +18,7 @@ import java.util.Set;
 
 import javax.xml.ws.BindingProvider;
 
+import net.link.safeonline.attrib.ws.AttributeServiceConstants;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
@@ -217,24 +218,24 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 			AttributeType attribute = (AttributeType) attributeObject;
 			String attributeName = attribute.getName();
 			List<Object> attributeValues = attribute.getAttributeValue();
+
 			Object attributeValue;
-			if (0 == attributeValues.size()) {
-				attributeValue = null;
-			} else if (attributeValues.size() == 1) {
-				/*
-				 * Here we depend on the xsi:type typing.
-				 */
-				attributeValue = attributeValues.get(0);
-			} else {
-				/*
-				 * In case of multivalued attributes.
-				 */
+			if (true == Boolean.valueOf(attribute.getOtherAttributes().get(
+					AttributeServiceConstants.MULTIVALUED_ATTRIBUTE))) {
 				Object[] array = new Object[attributeValues.size()];
 				for (int idx = 0; idx < array.length; idx++) {
 					array[idx] = attributeValues.get(idx);
 				}
 				attributeValue = array;
+			} else {
+				/*
+				 * Single-valued attribute.
+				 * 
+				 * Here we depend on the xsi:type typing.
+				 */
+				attributeValue = attributeValues.get(0);
 			}
+
 			attributes.put(attributeName, attributeValue);
 		}
 	}

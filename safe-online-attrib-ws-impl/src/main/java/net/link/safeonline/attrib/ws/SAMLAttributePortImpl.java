@@ -23,6 +23,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -48,11 +49,20 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of SAML attribute web service using JAX-WS.
- * 
+ * <p>
  * Specification: Assertions and Protocols for the OASIS Security Assertion
  * Markup Language (SAML) V2.0.
+ * </p>
  * 
+ * <p>
  * OASIS Standard, 15 March 2005
+ * </p>
+ * 
+ * <p>
+ * SafeOnline extensions: we communicate the multivalued property of an
+ * attribute via the {@link AttributeServiceConstants#MULTIVALUED_ATTRIBUTE} XML
+ * attribute on the SAML XML "Attribute" element.
+ * </p>
  * 
  * @author fcorneli
  * 
@@ -289,6 +299,17 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			 * attributeValue can be null.
 			 */
 			if (null != attributeValue && attributeValue.getClass().isArray()) {
+
+				/*
+				 * Via the "multivalued" XML attribute we communicate the type
+				 * to the client.
+				 */
+				Map<QName, String> otherAttributes = statementAttribute
+						.getOtherAttributes();
+				otherAttributes.put(
+						AttributeServiceConstants.MULTIVALUED_ATTRIBUTE,
+						Boolean.TRUE.toString());
+
 				/*
 				 * Multivalued attribute.
 				 */

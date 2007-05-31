@@ -20,8 +20,10 @@ import net.link.safeonline.sdk.ws.MessageAccessor;
  * retrieve attribute values for which the user confirmed the corresponding
  * application identity.
  * 
- * The attribute value can be of type String, Boolean of an array of Object[] in
+ * <p>
+ * The attribute value can be of type String, Boolean or an array of Object[] in
  * case of a multivalued attribute.
+ * </p>
  * 
  * @author fcorneli
  * 

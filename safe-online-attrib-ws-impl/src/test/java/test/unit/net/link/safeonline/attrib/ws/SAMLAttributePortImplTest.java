@@ -25,6 +25,7 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 
 import junit.framework.TestCase;
+import net.link.safeonline.attrib.ws.AttributeServiceConstants;
 import net.link.safeonline.attrib.ws.SAMLAttributePortImpl;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -302,6 +303,9 @@ public class SAMLAttributePortImplTest extends TestCase {
 				+ resultAttributes.get(0).getClass().getName());
 		AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
 		assertEquals(testAttributeName, resultAttribute.getName());
+		assertEquals(Boolean.TRUE.toString(), resultAttribute
+				.getOtherAttributes().get(
+						AttributeServiceConstants.MULTIVALUED_ATTRIBUTE));
 		List<Object> resultAttributeValues = resultAttribute
 				.getAttributeValue();
 		assertEquals(2, resultAttributeValues.size());
