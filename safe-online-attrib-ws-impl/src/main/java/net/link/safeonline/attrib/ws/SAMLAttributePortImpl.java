@@ -285,7 +285,20 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			statementAttribute.setName(attributeName);
 			List<Object> attributeValues = statementAttribute
 					.getAttributeValue();
-			attributeValues.add(attributeValue);
+			/*
+			 * attributeValue can be null.
+			 */
+			if (null != attributeValue && attributeValue.getClass().isArray()) {
+				/*
+				 * Multivalued attribute.
+				 */
+				Object[] array = (Object[]) attributeValue;
+				for (Object item : array) {
+					attributeValues.add(item);
+				}
+			} else {
+				attributeValues.add(attributeValue);
+			}
 			statementAttributes.add(statementAttribute);
 		}
 		return assertion;

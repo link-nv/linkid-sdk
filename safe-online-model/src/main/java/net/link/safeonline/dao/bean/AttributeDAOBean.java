@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -168,9 +168,9 @@ public class AttributeDAOBean implements AttributeDAO {
 		}
 		Query query = AttributeEntity.createMaxIdWhereSubjectAndAttributeType(
 				this.entityManager, subject, attributeType);
-		List<Long> maxId = query.getResultList();
+		List<Long> maxIds = query.getResultList();
 		long index;
-		if (maxId.isEmpty()) {
+		if (maxIds.isEmpty()) {
 			/*
 			 * This means that no other multi-valued attribute of the given
 			 * attribute type existed before. This is a weird case to occur, but
@@ -178,7 +178,18 @@ public class AttributeDAOBean implements AttributeDAO {
 			 */
 			index = 0;
 		} else {
-			index = maxId.get(0) + 1;
+			Long maxId = maxIds.get(0);
+			if (null == maxId) {
+				/*
+				 * This means that no other multi-valued attribute of the given
+				 * attribute type existed before. This is a weird case to occur,
+				 * but we can handle it. This just means we're the first to
+				 * create it.
+				 */
+				index = 0;
+			} else {
+				index = maxId + 1;
+			}
 		}
 		AttributeEntity attribute = new AttributeEntity(attributeType, subject,
 				index);

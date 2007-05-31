@@ -47,11 +47,17 @@ import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.data.DataValue;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.PkiService;
+import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xpath.XPathAPI;
+import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import test.accept.net.link.safeonline.IntegrationTestUtils;
 
@@ -669,6 +675,111 @@ public class AuthenticationTest extends TestCase {
 		assertEquals(2, resultAttributes.size());
 		assertEquals(testAttributeValue, resultAttributes
 				.get(testAttributeName));
+	}
+
+	public void testRetrievingMultivaluedAttributes() throws Exception {
+		// setup
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+
+		IntegrationTestUtils.setupLoginConfig();
+
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		IdentityService identityService = getIdentityService(initialContext);
+
+		String testApplicationName = UUID.randomUUID().toString();
+
+		String testAttributeName = "attr-" + UUID.randomUUID().toString();
+
+		// operate: register user
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = "pwd-" + UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		// operate: register new multivalued attribute type
+		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				testAttributeName, SafeOnlineConstants.STRING_TYPE, true, true);
+		attributeType.setMultivalued(true);
+		attributeTypeService.add(attributeType);
+
+		// operate: add multivalued attributes
+		IntegrationTestUtils.login(login, password);
+		String attributeValue1 = "value 1";
+		AttributeDO attribute1 = new AttributeDO(testAttributeName,
+				SafeOnlineConstants.STRING_TYPE, true, -1, null, null, true,
+				true, attributeValue1, null);
+		identityService.addAttribute(attribute1);
+
+		String attributeValue2 = "value 2";
+		AttributeDO attribute2 = new AttributeDO(testAttributeName,
+				SafeOnlineConstants.STRING_TYPE, true, -1, null, null, true,
+				true, attributeValue2, null);
+		identityService.addAttribute(attribute2);
+
+		// operate: register certificate as application trust point
+		PkiService pkiService = getPkiService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		pkiService.addTrustPoint(
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+				this.certificate.getEncoded());
+
+		// operate: add application with certificate
+		ApplicationService applicationService = getApplicationService(initialContext);
+		applicationService.addApplication(testApplicationName, "owner", null,
+				this.certificate.getEncoded(),
+				Arrays.asList(new IdentityAttributeTypeDO[] {
+						new IdentityAttributeTypeDO(
+								SafeOnlineConstants.NAME_ATTRIBUTE),
+						new IdentityAttributeTypeDO(testAttributeName) }));
+
+		// operate: subscribe onto the application and confirm identity usage
+		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+		IntegrationTestUtils.login(login, password);
+		subscriptionService.subscribe(testApplicationName);
+		identityService.confirmIdentity(testApplicationName);
+
+		// operate: retrieve name attribute via web service
+		this.attributeClient.setCaptureMessages(true);
+		Object[] result = (Object[]) this.attributeClient.getAttributeValue(
+				login, testAttributeName);
+
+		// verify
+		Document resultDocument = this.attributeClient.getInboundMessage();
+		LOG
+				.debug("result message: "
+						+ DomTestUtils.domToString(resultDocument));
+		LOG.debug("result: " + result);
+
+		// verify number of attribute values returned.
+		Element nsElement = resultDocument.createElement("nsElement");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap",
+				"http://schemas.xmlsoap.org/soap/envelope/");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:samlp",
+				"urn:oasis:names:tc:SAML:2.0:protocol");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml",
+				"urn:oasis:names:tc:SAML:2.0:assertion");
+		XObject xObject = XPathAPI
+				.eval(
+						resultDocument,
+						"count(/soap:Envelope/soap:Body/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute/saml:AttributeValue)",
+						nsElement);
+		double countResult = xObject.num();
+		LOG.debug("count result: " + countResult);
+		assertEquals(2.0, countResult);
+		assertTrue(contains(attributeValue1, result));
+		assertTrue(contains(attributeValue2, result));
+		assertFalse(contains("foo-bar", result));
+	}
+
+	private boolean contains(String value, Object[] items) {
+		for (Object item : items) {
+			if (value.equals(item)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void testFindAttributeValue() throws Exception {

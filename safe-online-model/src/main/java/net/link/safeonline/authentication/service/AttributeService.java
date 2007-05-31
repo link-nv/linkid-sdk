@@ -31,7 +31,8 @@ public interface AttributeService {
 	 * must have confirmed attribute usage before the application is allowed to
 	 * access the attribute value. The returned object can be a {@link String}
 	 * or {@link Boolean} depending on the actual datatype used by corresponding
-	 * attribute type of the requested attribute.
+	 * attribute type of the requested attribute. In case of a multivalued
+	 * attribute the returned object will be an array.
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
@@ -52,7 +53,8 @@ public interface AttributeService {
 	 * over an attribute that he still needs to define. In this case the
 	 * resulting map will not contain an entry for the missing attribute. The
 	 * type of map values depends on the actual datatype used by the
-	 * corresponding attribute type of the attribute.
+	 * corresponding attribute type of the attribute. In case of a multivalued
+	 * attribute the map value will be an array.
 	 * 
 	 * @param subjectLogin
 	 * @return

@@ -33,6 +33,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.ApplicationManager;
@@ -79,7 +80,31 @@ public class AttributeServiceBean implements AttributeService,
 
 		List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
 
-		checkAttributeReadPermission(attributeName, confirmedAttributes);
+		AttributeTypeEntity attributeType = checkAttributeReadPermission(
+				attributeName, confirmedAttributes);
+
+		if (attributeType.isMultivalued()) {
+			SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+			List<AttributeEntity> attributes = this.attributeDAO
+					.listAttributes(subject, attributeType);
+			String datatype = attributeType.getType();
+			if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+				String[] values = new String[attributes.size()];
+				for (int idx = 0; idx < values.length; idx++) {
+					values[idx] = attributes.get(idx).getStringValue();
+				}
+				return values;
+			}
+			if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+				Boolean[] values = new Boolean[attributes.size()];
+				for (int idx = 0; idx < values.length; idx++) {
+					values[idx] = attributes.get(idx).getBooleanValue();
+				}
+				return values;
+			}
+		}
+
+		// else single-valued attribute
 
 		AttributeEntity attribute = this.attributeDAO.getAttribute(
 				attributeName, subjectLogin);
@@ -96,7 +121,8 @@ public class AttributeServiceBean implements AttributeService,
 		throw new EJBException("datatype not supported: " + datatype);
 	}
 
-	private void checkAttributeReadPermission(String attributeName,
+	private AttributeTypeEntity checkAttributeReadPermission(
+			String attributeName,
 			List<ApplicationIdentityAttributeEntity> attributes)
 			throws PermissionDeniedException {
 		for (ApplicationIdentityAttributeEntity attribute : attributes) {
@@ -104,7 +130,7 @@ public class AttributeServiceBean implements AttributeService,
 					.debug("identity attribute: "
 							+ attribute.getAttributeTypeName());
 			if (attribute.getAttributeTypeName().equals(attributeName)) {
-				return;
+				return attribute.getAttributeType();
 			}
 		}
 		LOG.debug("attribute not in set of confirmed identity attributes");
@@ -168,23 +194,48 @@ public class AttributeServiceBean implements AttributeService,
 		LOG.debug("get confirmed attributes for subject: " + subjectLogin);
 		List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
 		Map<String, Object> resultAttributes = new TreeMap<String, Object>();
+		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 		for (ApplicationIdentityAttributeEntity confirmedAttribute : confirmedAttributes) {
+			AttributeTypeEntity attributeType = confirmedAttribute
+					.getAttributeType();
 			String attributeName = confirmedAttribute.getAttributeTypeName();
-			AttributeEntity attribute = this.attributeDAO.findAttribute(
-					attributeName, subjectLogin);
-			if (null == attribute) {
+			List<AttributeEntity> attributes = this.attributeDAO
+					.listAttributes(subject, attributeType);
+			if (attributes.isEmpty()) {
 				continue;
 			}
 			LOG.debug("confirmed attribute: " + attributeName);
+			String datatype = attributeType.getType();
 			Object value;
-			String datatype = attribute.getAttributeType().getType();
-			if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
-				value = attribute.getStringValue();
-			} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
-				value = attribute.getBooleanValue();
+			if (attributeType.isMultivalued()) {
+				if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+					String[] values = new String[attributes.size()];
+					for (int idx = 0; idx < values.length; idx++) {
+						values[idx] = attributes.get(idx).getStringValue();
+					}
+					value = values;
+				} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+					Boolean[] values = new Boolean[attributes.size()];
+					for (int idx = 0; idx < values.length; idx++) {
+						values[idx] = attributes.get(idx).getBooleanValue();
+					}
+					value = values;
+				} else {
+					throw new EJBException("datatype not supported: "
+							+ datatype);
+				}
 			} else {
-				throw new EJBException("datatype not supported: " + datatype);
+				AttributeEntity attribute = attributes.get(0);
+				if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+					value = attribute.getStringValue();
+				} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+					value = attribute.getBooleanValue();
+				} else {
+					throw new EJBException("datatype not supported: "
+							+ datatype);
+				}
 			}
+
 			resultAttributes.put(attributeName, value);
 		}
 		return resultAttributes;

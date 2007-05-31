@@ -92,6 +92,15 @@ public interface AttributeDAO {
 
 	void removeAttribute(AttributeEntity attributeEntity);
 
+	/**
+	 * Gives back all attributes of the given attribute type for a certain
+	 * subject. In case of a multivalued attribute multiple entries can be found
+	 * in the returned list.
+	 * 
+	 * @param subject
+	 * @param attributeType
+	 * @return
+	 */
 	List<AttributeEntity> listAttributes(SubjectEntity subject,
 			AttributeTypeEntity attributeType);
 }
