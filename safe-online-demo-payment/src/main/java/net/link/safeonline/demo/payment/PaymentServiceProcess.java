@@ -15,11 +15,18 @@ public interface PaymentServiceProcess {
 	/*
 	 * Actions.
 	 */
-	String confirm();
+	String authenticate();
 
-	void commit();
+	String commit();
 
 	String done();
+
+	/*
+	 * Accessors.
+	 */
+	String getVisa();
+
+	void setVisa(String visa);
 
 	/*
 	 * Lifecycle methods.

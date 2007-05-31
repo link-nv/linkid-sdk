@@ -13,6 +13,8 @@ import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -22,6 +24,7 @@ import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
+import javax.faces.model.SelectItem;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -115,29 +118,6 @@ public class TransactionBean implements Transaction {
 	public String confirm() {
 		log.debug("confirm");
 		LOG.debug("confirm");
-		String username = getUsername();
-		String visaNumber;
-		try {
-			visaNumber = (String) this.attributeClient.getAttributeValue(
-					username,
-					"urn:net:lin-k:safe-online:attribute:visaCardNumber");
-		} catch (AttributeNotFoundException e) {
-			String msg = "attribute not found: " + e.getMessage();
-			log.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		} catch (RequestDeniedException e) {
-			String msg = "request denied";
-			log.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		} catch (ConnectException e) {
-			String msg = "Connection error. Check your SSL setup.";
-			log.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
-
 		UserEntity user = this.entityManager.find(UserEntity.class, this
 				.getUsername());
 		if (user == null) {
@@ -147,7 +127,6 @@ public class TransactionBean implements Transaction {
 
 		Date paymentDate = new Date();
 		this.newPayment.setPaymentDate(paymentDate);
-		this.newPayment.setVisa(visaNumber);
 		this.newPayment.setOwner(user);
 
 		this.entityManager.persist(this.newPayment);
@@ -162,7 +141,41 @@ public class TransactionBean implements Transaction {
 	}
 
 	@Factory(NEW_PAYMENT_NAME)
+	@RolesAllowed("user")
 	public PaymentEntity newPaymentEntityFactory() {
 		return new PaymentEntity();
+	}
+
+	@Factory("visas")
+	@RolesAllowed("user")
+	public List<SelectItem> visasFactory() {
+		log.debug("visas factory");
+		String username = getUsername();
+		Object[] values;
+		try {
+			values = (Object[]) this.attributeClient.getAttributeValue(
+					username,
+					"urn:net:lin-k:safe-online:attribute:visaCardNumber");
+		} catch (AttributeNotFoundException e) {
+			String msg = "attribute not found: " + e.getMessage();
+			log.debug(msg);
+			this.facesMessages.add(msg);
+			return new LinkedList<SelectItem>();
+		} catch (RequestDeniedException e) {
+			String msg = "request denied";
+			log.debug(msg);
+			this.facesMessages.add(msg);
+			return new LinkedList<SelectItem>();
+		} catch (ConnectException e) {
+			String msg = "Connection error. Check your SSL setup.";
+			log.debug(msg);
+			this.facesMessages.add(msg);
+			return new LinkedList<SelectItem>();
+		}
+		List<SelectItem> visas = new LinkedList<SelectItem>();
+		for (Object value : values) {
+			visas.add(new SelectItem(value));
+		}
+		return visas;
 	}
 }

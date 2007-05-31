@@ -14,32 +14,29 @@
 			<table>
 				<tr>
 					<th><h:outputLabel value="#{msgs.visa}" for="visa" />:</th>
-					<td><h:selectOneMenu id="visa" value="#{newPayment.visa}">
+					<td><h:selectOneMenu id="visa"
+						value="#{paymentServiceProcess.visa}">
 						<f:selectItems value="#{visas}" />
 					</h:selectOneMenu></td>
 				</tr>
 				<tr>
-					<th><h:outputLabel value="#{msgs.recipient}" for="recipient" />:</th>
-					<td><h:inputText value="#{newPayment.recipient}"
-						required="true" id="recipient" /> <h:message for="recipient"
-						styleClass="error" /></td>
+					<th><h:outputText value="#{msgs.recipient}" />:</th>
+					<td><h:outputText value="#{recipient}" /></td>
 				</tr>
 				<tr>
-					<th><h:outputLabel value="#{msgs.amount}" for="amount" />:</th>
-					<td><h:inputText id="amount" value="#{newPayment.amount}"
-						required="true" /> euro <h:message for="amount"
-						styleClass="error" /></td>
+					<th><h:outputText value="#{msgs.amount}" />:</th>
+					<td><h:outputText value="#{amount}" /> euro</td>
 				</tr>
 				<tr>
-					<th>#{msgs.message}:</th>
-					<td><h:inputText value="#{newPayment.message}" /></td>
+					<th><h:outputText value="#{msgs.message}" />:</th>
+					<td><h:outputText value="#{message}" /></td>
 				</tr>
 			</table>
 
 			<h:messages styleClass="error" globalOnly="true" />
 
-			<h:commandButton action="#{transactionBean.confirm}" id="confirm"
-				value="#{msgs.confirm}" />
+			<h:commandButton action="#{paymentServiceProcess.commit}"
+				id="confirm" value="#{msgs.confirm}" />
 			<f:verbatim>&#160;</f:verbatim>
 			<h:commandButton action="cancel" id="cancel"
 				value="#{msgs.cancelaction}" immediate="true" />

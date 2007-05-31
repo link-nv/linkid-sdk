@@ -7,16 +7,30 @@
 
 package net.link.safeonline.demo.payment;
 
+import java.util.List;
+
 import javax.ejb.Local;
+import javax.faces.model.SelectItem;
 
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 
 @Local
 public interface Transaction {
 
+	/*
+	 * Factories.
+	 */
 	PaymentEntity newPaymentEntityFactory();
 
+	List<SelectItem> visasFactory();
+
+	/*
+	 * Actions.
+	 */
 	String confirm();
 
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
 }

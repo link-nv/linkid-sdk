@@ -54,6 +54,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
 		AttributeTypeEntity visaAttributeType = new AttributeTypeEntity(
 				DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, "string", true, true);
+		visaAttributeType.setMultivalued(true);
 		this.attributeTypes.add(visaAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				visaAttributeType, Locale.ENGLISH.getLanguage(), "VISA number",

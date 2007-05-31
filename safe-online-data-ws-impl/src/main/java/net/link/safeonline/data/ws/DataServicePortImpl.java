@@ -50,7 +50,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Implementation of data service using JAX-WS.
  * 
+ * <p>
  * Specification: Liberty ID-WSF Data Service Template version 2.1
+ * </p>
  * 
  * @author fcorneli
  * 

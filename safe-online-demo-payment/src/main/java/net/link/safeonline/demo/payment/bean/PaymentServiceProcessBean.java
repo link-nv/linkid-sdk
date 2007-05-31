@@ -8,15 +8,8 @@
 package net.link.safeonline.demo.payment.bean;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
 import java.util.Date;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.PostActivate;
-import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.context.ExternalContext;
@@ -27,12 +20,7 @@ import javax.persistence.PersistenceContext;
 import net.link.safeonline.demo.payment.PaymentServiceProcess;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.UserEntity;
-import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
-import net.link.safeonline.sdk.exception.AttributeNotFoundException;
-import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.Seam;
@@ -83,53 +71,28 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 	@In("target")
 	private String target;
 
+	private String visa;
+
+	@SuppressWarnings("unused")
 	@Out(value = "visaNumber", required = false)
 	private String visaNumber;
 
-	private transient AttributeClient attributeClient;
-
-	private PrivateKey privateKey;
-
-	private X509Certificate certificate;
-
-	@PostConstruct
-	public void postConstructCallback() {
-		PrivateKeyEntry privateKeyEntry = DemoPaymentKeyStoreUtils
-				.getPrivateKeyEntry();
-		this.privateKey = privateKeyEntry.getPrivateKey();
-		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION,
-				this.certificate, this.privateKey);
-	}
-
-	@PrePassivate
-	public void prePassivateCallback() {
-		// next is not really required
-		this.attributeClient = null;
-	}
-
-	@PostActivate
-	public void postActivateCallback() {
-		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION,
-				this.certificate, this.privateKey);
-	}
-
-	public String confirm() {
-		log.debug("confirm");
+	public String authenticate() {
+		log.debug("authenticate");
 		String result = SafeOnlineLoginUtils.login(this.facesMessages,
-				this.log, "completed.seam");
+				this.log, "cards.seam");
 		return result;
 	}
 
-	public void commit() {
+	public String commit() {
 		log.debug("commit");
 		if (null == this.username) {
 			this.facesMessages.add("username is null. user not authenticated");
-			return;
+			return null;
 		}
 		if (false == this.user.equals(this.username)) {
 			this.facesMessages.add("authenticated user != requested user");
-			return;
+			return null;
 		}
 		UserEntity user = this.entityManager.find(UserEntity.class,
 				this.username);
@@ -138,37 +101,20 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 			this.entityManager.persist(user);
 		}
 
-		try {
-			this.visaNumber = (String) this.attributeClient.getAttributeValue(
-					username,
-					"urn:net:lin-k:safe-online:attribute:visaCardNumber");
-		} catch (AttributeNotFoundException e) {
-			String msg = "attribute not found: " + e.getMessage();
-			log.debug(msg);
-			this.facesMessages.add(msg);
-			return;
-		} catch (RequestDeniedException e) {
-			String msg = "request denied";
-			log.debug(msg);
-			this.facesMessages.add(msg);
-			return;
-		} catch (ConnectException e) {
-			String msg = "Connection error. Check your SSL ";
-			log.debug(msg);
-			this.facesMessages.add(msg);
-			return;
-		}
-
 		Date paymentDate = new Date();
 		PaymentEntity newPayment = new PaymentEntity();
 		newPayment.setRecipient(this.recipient);
 		newPayment.setAmount(this.amount);
 		newPayment.setMessage(this.message);
 		newPayment.setPaymentDate(paymentDate);
-		newPayment.setVisa(this.visaNumber);
+		newPayment.setVisa(this.visa);
 		newPayment.setOwner(user);
 
 		this.entityManager.persist(newPayment);
+
+		this.visaNumber = this.visa;
+
+		return "success";
 	}
 
 	public String done() {
@@ -182,5 +128,13 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 			this.facesMessages.add("redirect error");
 		}
 		return null;
+	}
+
+	public String getVisa() {
+		return this.visa;
+	}
+
+	public void setVisa(String visa) {
+		this.visa = visa;
 	}
 }

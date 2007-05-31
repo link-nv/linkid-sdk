@@ -40,7 +40,9 @@ import org.apache.commons.logging.LogFactory;
  * check for the presence of the TargetIdentity SOAP Header. If present it will
  * push the found subject name onto the messaging context.
  * 
+ * <p>
  * Specifications: Liberty ID-WSF SOAP Binding Specification 2.0
+ * </p>
  * 
  * @author fcorneli
  */
