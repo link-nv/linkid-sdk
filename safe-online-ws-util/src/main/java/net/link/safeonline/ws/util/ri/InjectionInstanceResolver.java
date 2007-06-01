@@ -90,4 +90,11 @@ public class InjectionInstanceResolver<T> extends
 			}
 		}
 	}
+
+	/**
+	 * Clears the instance cache. This might be required for certain unit tests.
+	 */
+	public static void clearInstanceCache() {
+		instances.clear();
+	}
 }

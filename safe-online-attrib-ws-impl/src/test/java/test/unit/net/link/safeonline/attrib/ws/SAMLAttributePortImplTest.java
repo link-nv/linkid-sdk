@@ -16,6 +16,7 @@ import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -39,6 +40,7 @@ import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
+import net.link.safeonline.ws.util.ri.InjectionInstanceResolver;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
@@ -83,6 +85,8 @@ public class SAMLAttributePortImplTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
+		LOG.debug("setup");
+
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
 
@@ -117,6 +121,11 @@ public class SAMLAttributePortImplTest extends TestCase {
 		SAMLAttributePort wsPort = new SAMLAttributePortImpl();
 		this.webServiceTestUtils = new WebServiceTestUtils();
 		this.webServiceTestUtils.setUp(wsPort);
+		/*
+		 * Next is required, else the wsPort will get old mocks injected when
+		 * running multiple tests.
+		 */
+		InjectionInstanceResolver.clearInstanceCache();
 		SAMLAttributeService service = SAMLAttributeServiceFactory
 				.newInstance();
 		this.clientPort = service.getSAMLAttributePort();
@@ -137,6 +146,7 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
+		LOG.debug("tearDown");
 		this.webServiceTestUtils.tearDown();
 		this.jndiTestUtils.tearDown();
 
@@ -237,14 +247,16 @@ public class SAMLAttributePortImplTest extends TestCase {
 		AttributeQueryType request = new AttributeQueryType();
 		SubjectType subject = new SubjectType();
 		NameIDType subjectName = new NameIDType();
-		String testSubjectLogin = "test-subject-login";
+		String testSubjectLogin = "test-subject-login-"
+				+ UUID.randomUUID().toString();
 		subjectName.setValue(testSubjectLogin);
 		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
 		request.setSubject(subject);
 
 		List<AttributeType> attributes = request.getAttribute();
 		AttributeType attribute = new AttributeType();
-		String testAttributeName = "test-attribute-name";
+		String testAttributeName = "test-attribute-name-"
+				+ UUID.randomUUID().toString();
 		attribute.setName(testAttributeName);
 		attributes.add(attribute);
 
@@ -334,14 +346,16 @@ public class SAMLAttributePortImplTest extends TestCase {
 		AttributeQueryType request = new AttributeQueryType();
 		SubjectType subject = new SubjectType();
 		NameIDType subjectName = new NameIDType();
-		String testSubjectLogin = "test-subject-login";
+		String testSubjectLogin = "test-subject-login-"
+				+ UUID.randomUUID().toString();
 		subjectName.setValue(testSubjectLogin);
 		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
 		request.setSubject(subject);
 
 		List<AttributeType> attributes = request.getAttribute();
 		AttributeType attribute = new AttributeType();
-		String testAttributeName = "test-attribute-name";
+		String testAttributeName = "test-attribute-name-"
+				+ UUID.randomUUID().toString();
 		attribute.setName(testAttributeName);
 		attributes.add(attribute);
 
