@@ -7,6 +7,8 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -59,18 +61,18 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 	private SubjectDAO subjectDAO;
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-	public AttributeEntity findAttribute(String subjectLogin,
+	public List<AttributeEntity> getAttributes(String subjectLogin,
 			String attributeName) throws AttributeTypeNotFoundException,
 			PermissionDeniedException, SubjectNotFoundException {
 
-		LOG.debug("get attribute " + attributeName + " for subject "
+		LOG.debug("get attributes of type " + attributeName + " for subject "
 				+ subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 
-		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeType, subject);
-		return attribute;
+		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
+				subject, attributeType);
+		return attributes;
 	}
 
 	/**

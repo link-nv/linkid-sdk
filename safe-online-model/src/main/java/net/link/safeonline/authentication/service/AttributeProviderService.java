@@ -7,6 +7,8 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -27,22 +29,27 @@ import net.link.safeonline.entity.AttributeEntity;
 public interface AttributeProviderService {
 
 	/**
-	 * Gives back the value of an attribute of a certain subject. This
+	 * Gives back the values of an attribute of a certain subject. This
 	 * application must be an attribute provider of the attribute in order to
-	 * read the attribute's value.
+	 * read the attribute's values.
+	 * 
+	 * <p>
+	 * For single-valued attributes the returned list will of course contain at
+	 * maximum one entry.
+	 * </p>
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
-	 * @return the attribute, or <code>null</code> if not found.
+	 * @return the list of attribute entries.
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
 	 *             if the caller application is not an attribute provider for
 	 *             the given attribute.
 	 * @throws SubjectNotFoundException
 	 */
-	AttributeEntity findAttribute(String subjectLogin, String attributeName)
-			throws AttributeTypeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException;
+	List<AttributeEntity> getAttributes(String subjectLogin,
+			String attributeName) throws AttributeTypeNotFoundException,
+			PermissionDeniedException, SubjectNotFoundException;
 
 	/**
 	 * Create a new attribute for the given user.

@@ -44,6 +44,8 @@ import net.link.safeonline.authentication.service.AttributeProviderService;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.ws.util.ri.Injection;
 
+import oasis.names.tc.saml._2_0.assertion.AttributeType;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -100,8 +102,10 @@ public class DataServicePortImpl implements DataServicePort {
 		String userId = TargetIdentityHandler.getTargetIdentity(this.context);
 
 		AppDataType appData = createItem.getNewData();
-		String attributeName = appData.getAttributeName();
-		String attributeValue = appData.getAttributeValue();
+		AttributeType attribute = appData.getAttribute();
+		String attributeName = attribute.getName();
+		List<Object> attributeValues = attribute.getAttributeValue();
+		String attributeValue = (String) attributeValues.get(0);
 
 		try {
 			this.attributeProviderService.createAttribute(userId,
@@ -156,7 +160,9 @@ public class DataServicePortImpl implements DataServicePort {
 		String attributeName = select.getValue();
 		String userId = TargetIdentityHandler.getTargetIdentity(this.context);
 		AppDataType newData = modifyItem.getNewData();
-		String encodedAttributeValue = newData.getAttributeValue();
+		AttributeType attribute = newData.getAttribute();
+		String encodedAttributeValue = (String) attribute.getAttributeValue()
+				.get(0);
 		Object attributeValue;
 
 		if (true == DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE
@@ -237,10 +243,10 @@ public class DataServicePortImpl implements DataServicePort {
 		String userId = TargetIdentityHandler.getTargetIdentity(this.context);
 		String attributeName = select.getValue();
 		LOG.debug("query user " + userId + " for attribute " + attributeName);
-		AttributeEntity attribute;
+		List<AttributeEntity> attributeList;
 		try {
-			attribute = this.attributeProviderService.findAttribute(userId,
-					attributeName);
+			attributeList = this.attributeProviderService.getAttributes(
+					userId, attributeName);
 		} catch (AttributeTypeNotFoundException e) {
 			QueryResponseType failedResponse = createFailedQueryResponse(
 					SecondLevelStatusCode.DOES_NOT_EXIST,
@@ -259,14 +265,14 @@ public class DataServicePortImpl implements DataServicePort {
 		status.setCode(TopLevelStatusCode.OK.getCode());
 		queryResponse.setStatus(status);
 		List<DataType> dataList = queryResponse.getData();
-		if (null != attribute) {
+		for (AttributeEntity attributeEntity : attributeList) {
 			DataType data = new DataType();
-			String datatype = attribute.getAttributeType().getType();
+			String datatype = attributeEntity.getAttributeType().getType();
 			String encodedValue;
 			if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
-				encodedValue = attribute.getStringValue();
+				encodedValue = attributeEntity.getStringValue();
 			} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
-				Boolean booleanValue = attribute.getBooleanValue();
+				Boolean booleanValue = attributeEntity.getBooleanValue();
 				/*
 				 * 3VL booleans.
 				 */
@@ -284,8 +290,10 @@ public class DataServicePortImpl implements DataServicePort {
 			 * element. No Data element means that the attribute provider still
 			 * needs to create the attribute.
 			 */
-			data.setAttributeName(attributeName);
-			data.setAttributeValue(encodedValue);
+			AttributeType attribute = new AttributeType();
+			data.setAttribute(attribute);
+			attribute.setName(attributeName);
+			attribute.getAttributeValue().add(encodedValue);
 			dataList.add(data);
 		}
 		return queryResponse;

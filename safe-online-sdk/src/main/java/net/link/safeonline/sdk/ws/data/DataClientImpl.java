@@ -41,6 +41,8 @@ import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.ApplicationAuthenticationUtils;
 
+import oasis.names.tc.saml._2_0.assertion.AttributeType;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -133,8 +135,10 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 
 		AppDataType newData = new AppDataType();
 		modifyItem.setNewData(newData);
-		newData.setAttributeName(attributeName);
-		newData.setAttributeValue(encodedValue);
+		AttributeType attribute = new AttributeType();
+		attribute.setName(attributeName);
+		attribute.getAttributeValue().add(encodedValue);
+		newData.setAttribute(attribute);
 
 		ModifyResponseType modifyResponse;
 		try {
@@ -226,8 +230,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 			return null;
 		}
 		DataType data = dataList.get(0);
-		String value = data.getAttributeValue();
-		String name = data.getAttributeName();
+		AttributeType attribute = data.getAttribute();
+		String value = (String) attribute.getAttributeValue().get(0);
+		String name = attribute.getName();
 
 		DataValue dataValue = new DataValue(name, value);
 		return dataValue;
@@ -246,7 +251,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		createItem
 				.setObjectType(DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE);
 		AppDataType newData = new AppDataType();
-		newData.setAttributeName(attributeName);
+		AttributeType attribute = new AttributeType();
+		attribute.setName(attributeName);
+		newData.setAttribute(attribute);
 		createItem.setNewData(newData);
 
 		CreateResponseType createResponse;

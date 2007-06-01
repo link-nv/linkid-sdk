@@ -5,12 +5,15 @@
     xmlns:dst="urn:liberty:dst:2006-08"
     xmlns:lu="urn:liberty:util:2006-08"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
     elementFormDefault="qualified"
     attributeFormDefault="unqualified">
   <xs:import namespace="urn:liberty:dst:2006-08"
       schemaLocation="liberty-idwsf-dst-v2.1.xsd"/>
   <xs:import namespace="urn:liberty:util:2006-08"
       schemaLocation="liberty-idwsf-utility-v2.0.xsd"/>
+  <xs:import namespace="urn:oasis:names:tc:SAML:2.0:assertion"
+      schemaLocation="saml-schema-assertion-2.0.xsd"/>
   <xs:annotation>
     <xs:documentation>Title: Liberty ID-WSF Data Services Template Schema</xs:documentation>
     <xs:documentation>
@@ -52,8 +55,7 @@ Version 2.1
   </xs:complexType>
   <xs:complexType name="AppDataType">
     <xs:sequence>
-      <xs:element name="AttributeName" type="xs:string"/>
-      <xs:element name="AttributeValue" type="xs:string"/>
+      <xs:element ref="saml:Attribute"/>
     </xs:sequence>
   </xs:complexType>
 <!--endsec(redefs)-->
