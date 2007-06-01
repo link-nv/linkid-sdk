@@ -53,8 +53,11 @@ public class InjectionInstanceResolver<T> extends
 	public T resolve(Packet request) {
 		T instance = (T) instances.get(this.clazz);
 		if (null == instance) {
+			LOG.debug("creating new instance for class: "
+					+ this.clazz.getName());
 			instance = create();
 			ejbInjection(instance);
+			instances.put(this.clazz, instance);
 		}
 		return instance;
 	}
