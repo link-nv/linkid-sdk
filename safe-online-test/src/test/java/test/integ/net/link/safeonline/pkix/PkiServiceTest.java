@@ -23,7 +23,7 @@ import net.link.safeonline.entity.TrustPointEntity;
 import net.link.safeonline.service.PkiService;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.EjbUtils;
-import test.accept.net.link.safeonline.IntegrationTestUtils;
+import test.integ.net.link.safeonline.IntegrationTestUtils;
 import junit.framework.TestCase;
 
 /**

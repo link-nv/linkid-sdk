@@ -11,7 +11,7 @@ import javax.naming.NamingEnumeration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import test.accept.net.link.safeonline.IntegrationTestUtils;
+import test.integ.net.link.safeonline.IntegrationTestUtils;
 
 import junit.framework.TestCase;
 
