@@ -18,12 +18,12 @@ import java.util.Set;
 
 import javax.xml.ws.BindingProvider;
 
-import net.link.safeonline.attrib.ws.AttributeServiceConstants;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.ApplicationAuthenticationUtils;
+import net.link.safeonline.ws.common.WebServiceConstants;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
@@ -221,7 +221,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 
 			Object attributeValue;
 			if (true == Boolean.valueOf(attribute.getOtherAttributes().get(
-					AttributeServiceConstants.MULTIVALUED_ATTRIBUTE))) {
+					WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
 				Object[] array = new Object[attributeValues.size()];
 				for (int idx = 0; idx < array.length; idx++) {
 					array[idx] = attributeValues.get(idx);

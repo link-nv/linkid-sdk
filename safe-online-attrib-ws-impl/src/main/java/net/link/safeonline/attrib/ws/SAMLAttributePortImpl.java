@@ -30,6 +30,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.ws.common.WebServiceConstants;
 import net.link.safeonline.ws.util.ri.Injection;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -306,8 +307,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 				 */
 				Map<QName, String> otherAttributes = statementAttribute
 						.getOtherAttributes();
-				otherAttributes.put(
-						AttributeServiceConstants.MULTIVALUED_ATTRIBUTE,
+				otherAttributes.put(WebServiceConstants.MULTIVALUED_ATTRIBUTE,
 						Boolean.TRUE.toString());
 
 				/*

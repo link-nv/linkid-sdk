@@ -5,19 +5,19 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.attrib.ws;
+package net.link.safeonline.ws.common;
 
 import javax.xml.namespace.QName;
 
 /**
- * Holds constants shared between client and server attribute web service code.
+ * Holds constants for the SafeOnline web services.
  * 
  * @author fcorneli
  * 
  */
-public class AttributeServiceConstants {
+public class WebServiceConstants {
 
-	private AttributeServiceConstants() {
+	private WebServiceConstants() {
 		// empty
 	}
 
