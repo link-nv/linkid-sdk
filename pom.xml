@@ -288,6 +288,7 @@
 		<module>safe-online-demo-prescription-service</module>
 		<module>safe-online-auth-service</module>
 		<module>safe-online-app-console</module>
+		<module>safe-online-ws-common</module>
 	</modules>
 	<repositories>
 		<repository>

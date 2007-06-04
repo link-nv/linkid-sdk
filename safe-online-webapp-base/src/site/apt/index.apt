@@ -1,0 +1,7 @@
+SafeOnline Web Application Base
+
+ Serves as template for all the SafeOnline web applications making all web applications to share:
+ 
+ * the same web application framework technology. The framework is based on JBoss Seam and Facelets. Tomahawk components are also available.
+ 
+ * the same look and feel via shared Facelets template and shared CSS stylesheet.

@@ -1,0 +1,9 @@
+SafeOnline Web Service Utils
+
+ This project contains server-side utility classes in support of the various SafeOnline web service.
+ 
+ Most important utils are:
+ 
+ * JAX-WS handlers to do application authentication using WS-Security
+
+ * JAX-WS injection annotation to inject stateless EJB3 beans.
