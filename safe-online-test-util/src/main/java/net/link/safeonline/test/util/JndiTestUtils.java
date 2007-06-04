@@ -61,7 +61,7 @@ public class JndiTestUtils {
 			}
 		}
 		String name = names[names.length - 1];
-		context.bind(name, component);
+		context.rebind(name, component);
 	}
 
 	public void setUp() {

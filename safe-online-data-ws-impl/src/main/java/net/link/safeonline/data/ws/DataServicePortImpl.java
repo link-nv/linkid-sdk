@@ -99,7 +99,13 @@ public class DataServicePortImpl implements DataServicePort {
 			return failedResponse;
 		}
 
-		String userId = TargetIdentityHandler.getTargetIdentity(this.context);
+		String userId;
+		try {
+			userId = TargetIdentityHandler.getTargetIdentity(this.context);
+		} catch (TargetIdentityException e) {
+			CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
+			return failedResponse;
+		}
 
 		AppDataType appData = createItem.getNewData();
 		AttributeType attribute = appData.getAttribute();
@@ -158,7 +164,13 @@ public class DataServicePortImpl implements DataServicePort {
 
 		SelectType select = modifyItem.getSelect();
 		String attributeName = select.getValue();
-		String userId = TargetIdentityHandler.getTargetIdentity(this.context);
+		String userId;
+		try {
+			userId = TargetIdentityHandler.getTargetIdentity(this.context);
+		} catch (TargetIdentityException e) {
+			ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
+			return failedResponse;
+		}
 		AppDataType newData = modifyItem.getNewData();
 		AttributeType attribute = newData.getAttribute();
 		String encodedAttributeValue = (String) attribute.getAttributeValue()
@@ -222,6 +234,11 @@ public class DataServicePortImpl implements DataServicePort {
 			QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
 			return failedResponse;
 		}
+		if (0 == queryItems.size()) {
+			QueryResponseType failedResponse = createFailedQueryResponse(
+					SecondLevelStatusCode.EMPTY_REQUEST, "No Query Items");
+			return failedResponse;
+		}
 		QueryItemType queryItem = queryItems.get(0);
 		if (null != queryItem.getCount()) {
 			LOG.debug("pagination not supported");
@@ -240,13 +257,26 @@ public class DataServicePortImpl implements DataServicePort {
 			return failedResponse;
 		}
 		SelectType select = queryItem.getSelect();
-		String userId = TargetIdentityHandler.getTargetIdentity(this.context);
+		if (null == select) {
+			QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.MISSING_SELECT);
+			return failedResponse;
+		}
+		String userId;
+		try {
+			userId = TargetIdentityHandler.getTargetIdentity(this.context);
+		} catch (TargetIdentityException e) {
+			QueryResponseType failedResponse = createFailedQueryResponse(
+					SecondLevelStatusCode.MISSING_CREDENTIALS,
+					"no TargetIdentity found");
+			return failedResponse;
+		}
 		String attributeName = select.getValue();
-		LOG.debug("query user " + userId + " for attribute " + attributeName);
+		LOG.debug("query user \"" + userId + "\" for attribute "
+				+ attributeName);
 		List<AttributeEntity> attributeList;
 		try {
-			attributeList = this.attributeProviderService.getAttributes(
-					userId, attributeName);
+			attributeList = this.attributeProviderService.getAttributes(userId,
+					attributeName);
 		} catch (AttributeTypeNotFoundException e) {
 			QueryResponseType failedResponse = createFailedQueryResponse(
 					SecondLevelStatusCode.DOES_NOT_EXIST,
@@ -265,36 +295,38 @@ public class DataServicePortImpl implements DataServicePort {
 		status.setCode(TopLevelStatusCode.OK.getCode());
 		queryResponse.setStatus(status);
 		List<DataType> dataList = queryResponse.getData();
-		for (AttributeEntity attributeEntity : attributeList) {
-			DataType data = new DataType();
-			String datatype = attributeEntity.getAttributeType().getType();
-			String encodedValue;
-			if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
-				encodedValue = attributeEntity.getStringValue();
-			} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
-				Boolean booleanValue = attributeEntity.getBooleanValue();
-				/*
-				 * 3VL booleans.
-				 */
-				if (null == booleanValue) {
-					encodedValue = null;
-				} else {
-					encodedValue = Boolean.toString(booleanValue);
-				}
-			} else {
-				QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
-				return failedResponse;
-			}
-			/*
-			 * Notice that value can be null. In that case we send an empty Data
-			 * element. No Data element means that the attribute provider still
-			 * needs to create the attribute.
-			 */
+		DataType data = new DataType();
+		dataList.add(data);
+		/*
+		 * Notice that value can be null. In that case we send an empty Data
+		 * element. No Data element means that the attribute provider still
+		 * needs to create the attribute.
+		 */
+		if (false == attributeList.isEmpty()) {
 			AttributeType attribute = new AttributeType();
 			data.setAttribute(attribute);
 			attribute.setName(attributeName);
-			attribute.getAttributeValue().add(encodedValue);
-			dataList.add(data);
+			for (AttributeEntity attributeEntity : attributeList) {
+				String datatype = attributeEntity.getAttributeType().getType();
+				String encodedValue;
+				if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+					encodedValue = attributeEntity.getStringValue();
+				} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+					Boolean booleanValue = attributeEntity.getBooleanValue();
+					/*
+					 * 3VL booleans.
+					 */
+					if (null == booleanValue) {
+						encodedValue = null;
+					} else {
+						encodedValue = Boolean.toString(booleanValue);
+					}
+				} else {
+					QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
+					return failedResponse;
+				}
+				attribute.getAttributeValue().add(encodedValue);
+			}
 		}
 		return queryResponse;
 	}

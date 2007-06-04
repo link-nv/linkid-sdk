@@ -25,6 +25,7 @@ import javax.naming.InitialContext;
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.AttributeProviderManagerService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -38,10 +39,12 @@ import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.data.DataValue;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.PkiService;
+import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
 
 import test.integ.net.link.safeonline.IntegrationTestUtils;
 
@@ -263,7 +266,8 @@ public class DataWebServiceTest extends TestCase {
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		IdentityService identityService = getIdentityService(initialContext);
 
-		String testApplicationName = UUID.randomUUID().toString();
+		String testApplicationName = "application-"
+				+ UUID.randomUUID().toString();
 
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
@@ -277,7 +281,7 @@ public class DataWebServiceTest extends TestCase {
 				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 				this.certificate.getEncoded());
 
-		// operate: add boolean attribute type
+		// operate: add multivalued attribute type
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
 		String attributeName = "test-attribute-name-"
 				+ UUID.randomUUID().toString();
@@ -334,9 +338,23 @@ public class DataWebServiceTest extends TestCase {
 		assertEquals(attributeName, result.getName());
 		assertEquals(attributeValue1, result.getValue());
 
-		// operate & verify: setting boolean attribute to null
-		this.dataClient.setAttributeValue(login, attributeName, null);
+		IntegrationTestUtils.login(login, password);
+		AttributeDO attribute2 = new AttributeDO(attributeName,
+				SafeOnlineConstants.STRING_TYPE);
+		String attributeValue2 = "test-attribute-value-2";
+		attribute2.setStringValue(attributeValue2);
+		identityService.addAttribute(attribute2);
+
+		this.dataClient.setCaptureMessages(true);
 		result = this.dataClient.getAttributeValue(login, attributeName);
-		assertNull(result.getValue());
+		// assertNotNull(result.getValue());
+		LOG.debug("result: " + result.getValue());
+		Document resultMessage = this.dataClient.getInboundMessage();
+		LOG.debug("Request SOAP message: "
+				+ DomTestUtils
+						.domToString(this.dataClient.getOutboundMessage()));
+		LOG.debug("Response SOAP message: "
+				+ DomTestUtils.domToString(resultMessage));
+		assertEquals(attributeValue1, result.getValue());
 	}
 }

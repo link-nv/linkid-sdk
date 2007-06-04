@@ -89,6 +89,14 @@ public class TargetIdentityClientHandler implements
 		SOAPHeader soapHeader;
 		try {
 			soapHeader = soapMessage.getSOAPHeader();
+			if (soapHeader == null) {
+				/*
+				 * This can happen in the case that we're the first one to add a
+				 * SOAP header element.
+				 */
+				soapHeader = soapMessage.getSOAPPart().getEnvelope()
+						.addHeader();
+			}
 			addTargetIdentityHeader(soapHeader, soapContext);
 		} catch (SOAPException e) {
 			throw new RuntimeException("SOAP error: " + e.getMessage(), e);

@@ -183,11 +183,17 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 	 * 
 	 * @param context
 	 * @return
+	 * @throws TargetIdentityException
+	 *             in case of a missing TargetIdentity SOAP header.
 	 */
-	public static String getTargetIdentity(WebServiceContext context) {
+	public static String getTargetIdentity(WebServiceContext context)
+			throws TargetIdentityException {
 		MessageContext messageContext = context.getMessageContext();
 		String targetIdentity = (String) messageContext
 				.get(TargetIdentityHandler.TARGET_IDENTITY_CONTEXT_VAR);
+		if (null == targetIdentity) {
+			throw new TargetIdentityException();
+		}
 		return targetIdentity;
 	}
 }

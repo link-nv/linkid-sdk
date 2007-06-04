@@ -49,6 +49,12 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 	}
 
 	public boolean handleFault(SOAPMessageContext soapContext) {
+		Boolean outboundProperty = (Boolean) soapContext
+				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+		SOAPMessage soapMessage = soapContext.getMessage();
+		SOAPPart soapPart = soapMessage.getSOAPPart();
+		LOG.debug("SOAP fault (outbound: " + outboundProperty + "): "
+				+ toString(soapPart));
 		return true;
 	}
 
