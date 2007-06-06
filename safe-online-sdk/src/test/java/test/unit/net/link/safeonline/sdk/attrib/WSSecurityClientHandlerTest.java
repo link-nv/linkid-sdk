@@ -7,6 +7,8 @@
 
 package test.unit.net.link.safeonline.sdk.attrib;
 
+import static junit.framework.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.InputStream;
 import java.security.KeyPair;
@@ -18,7 +20,6 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import junit.framework.TestCase;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
@@ -28,18 +29,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class WSSecurityClientHandlerTest extends TestCase {
+public class WSSecurityClientHandlerTest {
 
 	private static final Log LOG = LogFactory
 			.getLog(WSSecurityClientHandlerTest.class);
 
 	private WSSecurityClientHandler testedInstance;
 
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate certificate = PkiTestUtils
@@ -49,7 +52,8 @@ public class WSSecurityClientHandlerTest extends TestCase {
 				.getPrivate());
 	}
 
-	public void testHandleMessageAddsWsSecuritySoapHeader() throws Exception {
+	@Test
+	public void handleMessageAddsWsSecuritySoapHeader() throws Exception {
 		// setup
 		MessageFactory messageFactory = MessageFactory
 				.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);

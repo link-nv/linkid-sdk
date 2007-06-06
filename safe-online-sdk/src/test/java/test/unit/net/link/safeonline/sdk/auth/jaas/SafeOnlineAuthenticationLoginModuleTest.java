@@ -7,6 +7,8 @@
 
 package test.unit.net.link.safeonline.sdk.auth.jaas;
 
+import static junit.framework.Assert.assertTrue;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -19,20 +21,19 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import junit.framework.TestCase;
 import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.jaas.SafeOnlineAuthenticationLoginModule;
 
 import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SafeOnlineAuthenticationLoginModuleTest extends TestCase {
+public class SafeOnlineAuthenticationLoginModuleTest {
 
 	private SafeOnlineAuthenticationLoginModule testedInstance;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		this.testedInstance = new SafeOnlineAuthenticationLoginModule();
 	}
 
@@ -55,7 +56,8 @@ public class SafeOnlineAuthenticationLoginModuleTest extends TestCase {
 		}
 	}
 
-	public void testLogin() throws Exception {
+	@Test
+	public void login() throws Exception {
 		// setup
 		CallbackHandler testCallbackHandler = new TestCallbackHandler();
 		Map sharedState = new HashMap();

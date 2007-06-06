@@ -1,5 +1,13 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package test.unit.net.link.safeonline.sdk.auth.filter;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
@@ -22,13 +30,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import junit.framework.TestCase;
 import net.link.safeonline.sdk.auth.filter.JAASLoginFilter;
 import net.link.safeonline.test.util.JaasTestUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.easymock.classextension.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Unit test for the generic JAAS login module. This unit test also demonstrates
@@ -37,7 +46,7 @@ import org.easymock.classextension.EasyMock;
  * @author fcorneli
  * 
  */
-public class JAASLoginFilterTest extends TestCase {
+public class JAASLoginFilterTest {
 
 	private JAASLoginFilter testedInstance;
 
@@ -51,9 +60,8 @@ public class JAASLoginFilterTest extends TestCase {
 
 	private FilterConfig mockFilterConfig;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		this.testedInstance = new JAASLoginFilter();
 
 		this.mockHttpServletRequest = createMock(HttpServletRequest.class);
@@ -118,7 +126,8 @@ public class JAASLoginFilterTest extends TestCase {
 		}
 	}
 
-	public void testDoFilter() throws Exception {
+	@Test
+	public void doFilter() throws Exception {
 		// setup
 		String testUsernameAttributeName = "test-username";
 		String testPasswordAttributeName = "test-password";
