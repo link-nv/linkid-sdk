@@ -27,7 +27,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
-import net.link.safeonline.sdk.ws.data.DataValue;
+import net.link.safeonline.sdk.ws.data.Attribute;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -132,10 +132,10 @@ public class LoginServlet extends HttpServlet {
 
 	private boolean getBoolean(String username, String attributeName)
 			throws ServletException, ConnectException {
-		DataValue attribute;
+		Attribute<Boolean> attribute;
 		try {
 			attribute = this.dataClient.getAttributeValue(username,
-					attributeName);
+					attributeName, Boolean.class);
 		} catch (RequestDeniedException e) {
 			throw new ServletException(
 					"count not retrieve prescription admin attribute");
@@ -147,9 +147,12 @@ public class LoginServlet extends HttpServlet {
 			return false;
 		}
 
-		String attributeValue = attribute.getValue();
+		Boolean value = attribute.getValue();
+		if (null == value) {
+			return false;
+		}
 
-		return Boolean.valueOf(attributeValue);
+		return attribute.getValue();
 	}
 
 	private void redirectToPage(String page, String role, HttpSession session,

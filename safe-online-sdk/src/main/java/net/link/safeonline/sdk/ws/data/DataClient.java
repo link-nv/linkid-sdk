@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.ws.data;
 
 import java.net.ConnectException;
 
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.MessageAccessor;
@@ -35,18 +36,25 @@ public interface DataClient extends MessageAccessor {
 	 * @throws ConnectException
 	 *             in case the service could not be contacted. Can happen if the
 	 *             SSL was not setup correctly.
+	 * @throws AttributeNotFoundException
+	 *             in case the attribute entity did not exist.
 	 * @see #createAttribute(String, String)
 	 */
 	void setAttributeValue(String subjectLogin, String attributeName,
-			Object attributeValue) throws ConnectException;
+			Object attributeValue) throws ConnectException,
+			AttributeNotFoundException;
 
 	/**
-	 * Gives back the attribute value of an attribute. We return a
-	 * {@link DataValue} object to be able to make a distinction between a
+	 * Gives back the attribute value of an attribute. We return an
+	 * {@link Attribute} object to be able to make a distinction between a
 	 * missing attribute and a <code>null</code> attribute value.
 	 * 
+	 * @param <Type>
+	 *            the type of the attribute value.
 	 * @param subjectLogin
 	 * @param attributeName
+	 * @param valueClass
+	 *            the type of the attribute value.
 	 * @return
 	 * @throws ConnectException
 	 *             in case the service could not be contacted. Can happen if the
@@ -54,7 +62,8 @@ public interface DataClient extends MessageAccessor {
 	 * @throws RequestDeniedException
 	 * @throws SubjectNotFoundException
 	 */
-	DataValue getAttributeValue(String subjectLogin, String attributeName)
+	<Type> Attribute<Type> getAttributeValue(String subjectLogin,
+			String attributeName, Class<Type> valueClass)
 			throws ConnectException, RequestDeniedException,
 			SubjectNotFoundException;
 

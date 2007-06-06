@@ -39,9 +39,13 @@ public interface AttributeDAO {
 			SubjectEntity subject, String stringValue);
 
 	/**
-	 * Adds a new attribute. This method will fail for single-valued attributes.
+	 * Adds a new attribute.
+	 * 
+	 * <p>
 	 * For multi-valued attributes a new attribute will be added with attribute
-	 * index set to MAX(current attribute ids) + 1.
+	 * index set to MAX(current attribute ids) + 1. Single-valued attributes
+	 * will of course have an attribute attribute 0.
+	 * </p>
 	 * 
 	 * @param attributeType
 	 * @param subject
@@ -95,7 +99,7 @@ public interface AttributeDAO {
 	/**
 	 * Gives back all attributes of the given attribute type for a certain
 	 * subject. In case of a multivalued attribute multiple entries can be found
-	 * in the returned list.
+	 * in the returned list. These entries will be ordered by attribute index.
 	 * 
 	 * @param subject
 	 * @param attributeType

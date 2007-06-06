@@ -26,7 +26,8 @@ public enum SecondLevelStatusCode {
 			"PaginationNotSupported"), DOES_NOT_EXIST("DoesNotExist"), MISSING_OBJECT_TYPE(
 			"MissingObjectType"), INVALID_DATA("InvalidData"), EMPTY_REQUEST(
 			"EmptyRequest"), MISSING_SELECT("MissingSelect"), MISSING_CREDENTIALS(
-			"MissingCredentials");
+			"MissingCredentials"), MISSING_NEW_DATA_ELEMENT(
+			"MissingNewDataElement");
 
 	private String code;
 

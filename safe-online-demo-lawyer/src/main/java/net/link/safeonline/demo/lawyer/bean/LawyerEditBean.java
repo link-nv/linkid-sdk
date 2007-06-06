@@ -25,6 +25,7 @@ import net.link.safeonline.demo.lawyer.LawyerConstants;
 import net.link.safeonline.demo.lawyer.LawyerEdit;
 import net.link.safeonline.demo.lawyer.LawyerStatus;
 import net.link.safeonline.model.demo.DemoConstants;
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
@@ -78,15 +79,20 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.add("subject not found: " + this.name);
 			return null;
+		} catch (AttributeNotFoundException e) {
+			this.facesMessages.add("attribute not found");
+			return null;
 		}
 		return "success";
 	}
 
 	private void createOrUpdateAttribute(String attributeName,
 			Object attributeValue) throws ConnectException,
-			RequestDeniedException, SubjectNotFoundException {
+			RequestDeniedException, SubjectNotFoundException,
+			AttributeNotFoundException {
 		DataClient dataClient = getDataClient();
-		if (null == dataClient.getAttributeValue(this.name, attributeName)) {
+		if (null == dataClient.getAttributeValue(this.name, attributeName,
+				attributeValue.getClass())) {
 			log.debug("create attribute #0 for #1", attributeName, this.name);
 			dataClient.createAttribute(this.name, attributeName);
 		}

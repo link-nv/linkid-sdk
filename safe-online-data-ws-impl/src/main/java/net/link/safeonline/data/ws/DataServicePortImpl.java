@@ -7,13 +7,16 @@
 
 package net.link.safeonline.data.ws;
 
+import java.lang.reflect.Array;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
+import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.soap.Addressing;
 
@@ -42,6 +45,8 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.ws.common.WebServiceConstants;
 import net.link.safeonline.ws.util.ri.Injection;
 
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
@@ -92,9 +97,9 @@ public class DataServicePortImpl implements DataServicePort {
 			CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
 			return failedResponse;
 		}
-		if (false == DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE
+		if (false == DataServiceConstants.ATTRIBUTE_OBJECT_TYPE
 				.equals(objectType)) {
-			LOG.debug("unsupported object type");
+			LOG.debug("unsupported object type: " + objectType);
 			CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
 			return failedResponse;
 		}
@@ -110,8 +115,7 @@ public class DataServicePortImpl implements DataServicePort {
 		AppDataType appData = createItem.getNewData();
 		AttributeType attribute = appData.getAttribute();
 		String attributeName = attribute.getName();
-		List<Object> attributeValues = attribute.getAttributeValue();
-		String attributeValue = (String) attributeValues.get(0);
+		Object attributeValue = getValueObjectFromAttribute(attribute);
 
 		try {
 			this.attributeProviderService.createAttribute(userId,
@@ -127,6 +131,9 @@ public class DataServicePortImpl implements DataServicePort {
 			return failedResponse;
 		} catch (PermissionDeniedException e) {
 			CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
+			return failedResponse;
+		} catch (DatatypeMismatchException e) {
+			CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.INVALID_DATA);
 			return failedResponse;
 		}
 
@@ -154,6 +161,11 @@ public class DataServicePortImpl implements DataServicePort {
 			ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
 			return failedResponse;
 		}
+		if (0 == modifyItems.size()) {
+			ModifyResponseType failedResponse = createFailedModifyResponse(
+					SecondLevelStatusCode.EMPTY_REQUEST, "missing ModifyItem");
+			return failedResponse;
+		}
 		ModifyItemType modifyItem = modifyItems.get(0);
 
 		String objectType = modifyItem.getObjectType();
@@ -163,6 +175,10 @@ public class DataServicePortImpl implements DataServicePort {
 		}
 
 		SelectType select = modifyItem.getSelect();
+		if (null == select) {
+			ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.MISSING_SELECT);
+			return failedResponse;
+		}
 		String attributeName = select.getValue();
 		String userId;
 		try {
@@ -172,26 +188,31 @@ public class DataServicePortImpl implements DataServicePort {
 			return failedResponse;
 		}
 		AppDataType newData = modifyItem.getNewData();
-		AttributeType attribute = newData.getAttribute();
-		String encodedAttributeValue = (String) attribute.getAttributeValue()
-				.get(0);
-		Object attributeValue;
-
-		if (true == DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE
-				.equals(objectType)) {
-			attributeValue = encodedAttributeValue;
-		} else if (true == DataServiceConstants.BOOLEAN_ATTRIBUTE_OBJECT_TYPE
-				.equals(objectType)) {
-			if (null == encodedAttributeValue) {
-				attributeValue = null;
-			} else {
-				attributeValue = Boolean.parseBoolean(encodedAttributeValue);
-			}
-		} else {
-			LOG.debug("unsupported object type: " + objectType);
-			ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
+		if (null == newData) {
+			ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.MISSING_NEW_DATA_ELEMENT);
 			return failedResponse;
 		}
+		AttributeType attribute = newData.getAttribute();
+
+		if (false == attributeName.equals(attribute.getName())) {
+			/*
+			 * Maybe we should drop the usage of Select all together.
+			 */
+			ModifyResponseType failedResponse = createFailedModifyResponse(
+					SecondLevelStatusCode.INVALID_DATA,
+					"Select and AttributeName do not correspond");
+			return failedResponse;
+		}
+
+		if (false == DataServiceConstants.ATTRIBUTE_OBJECT_TYPE
+				.equals(objectType)) {
+			LOG.debug("unsupported object type: " + objectType);
+			ModifyResponseType failedResponse = createFailedModifyResponse(
+					SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE, objectType);
+			return failedResponse;
+		}
+
+		Object attributeValue = getValueObjectFromAttribute(attribute);
 
 		try {
 			this.attributeProviderService.setAttribute(userId, attributeName,
@@ -250,9 +271,9 @@ public class DataServicePortImpl implements DataServicePort {
 			QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
 			return failedResponse;
 		}
-		if (false == DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE
+		if (false == DataServiceConstants.ATTRIBUTE_OBJECT_TYPE
 				.equals(objectType)) {
-			LOG.debug("unsupported object type");
+			LOG.debug("unsupported object type: " + objectType);
 			QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
 			return failedResponse;
 		}
@@ -300,31 +321,41 @@ public class DataServicePortImpl implements DataServicePort {
 		/*
 		 * Notice that value can be null. In that case we send an empty Data
 		 * element. No Data element means that the attribute provider still
-		 * needs to create the attribute.
+		 * needs to create the attribute entity itself.
 		 */
 		if (false == attributeList.isEmpty()) {
 			AttributeType attribute = new AttributeType();
 			data.setAttribute(attribute);
 			attribute.setName(attributeName);
+
+			/*
+			 * Communicate the 'type' meta-data via some XML attributes on the
+			 * Attribute XML SAML element.
+			 */
+			AttributeTypeEntity attributeType = attributeList.get(0)
+					.getAttributeType();
+			if (attributeType.isMultivalued()) {
+				Map<QName, String> otherAttributes = attribute
+						.getOtherAttributes();
+				otherAttributes.put(WebServiceConstants.MULTIVALUED_ATTRIBUTE,
+						Boolean.TRUE.toString());
+			}
+
 			for (AttributeEntity attributeEntity : attributeList) {
 				String datatype = attributeEntity.getAttributeType().getType();
-				String encodedValue;
+				Object encodedValue;
 				if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
 					encodedValue = attributeEntity.getStringValue();
 				} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
-					Boolean booleanValue = attributeEntity.getBooleanValue();
-					/*
-					 * 3VL booleans.
-					 */
-					if (null == booleanValue) {
-						encodedValue = null;
-					} else {
-						encodedValue = Boolean.toString(booleanValue);
-					}
+					encodedValue = attributeEntity.getBooleanValue();
 				} else {
 					QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
 					return failedResponse;
 				}
+				/*
+				 * We're using http://www.w3.org/TR/xmlschema-1/#xsi_type here
+				 * to communicate the datatype to the client.
+				 */
 				attribute.getAttributeValue().add(encodedValue);
 			}
 		}
@@ -385,5 +416,39 @@ public class DataServicePortImpl implements DataServicePort {
 			secondLevelStatus.setComment(comment);
 			secondLevelStatuses.add(secondLevelStatus);
 		}
+	}
+
+	private Object getValueObjectFromAttribute(AttributeType attribute) {
+		List<Object> attributeValues = attribute.getAttributeValue();
+		if (attributeValues.isEmpty()) {
+			return null;
+		}
+		if (false == Boolean.TRUE.toString().equals(
+				attribute.getOtherAttributes().get(
+						WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
+			/*
+			 * Single-valued attribute;
+			 */
+			return attributeValues.get(0);
+		}
+		/*
+		 * Multivalued attribute.
+		 */
+		int size = attributeValues.size();
+		/*
+		 * We retrieve the component type for the array from the first attribute
+		 * value element.
+		 */
+		Object firstAttributeValue = attributeValues.get(0);
+		/*
+		 * We're depending on xsi:type here to pass the type information from
+		 * client to server.
+		 */
+		Class componentType = firstAttributeValue.getClass();
+		Object result = Array.newInstance(componentType, size);
+		for (int idx = 0; idx < size; idx++) {
+			Array.set(result, idx, attributeValues.get(idx));
+		}
+		return result;
 	}
 }

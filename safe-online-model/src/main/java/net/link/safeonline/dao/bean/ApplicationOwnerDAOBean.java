@@ -39,11 +39,13 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 		return applicationOwner;
 	}
 
-	public void addApplicationOwner(String name, SubjectEntity admin) {
+	public ApplicationOwnerEntity addApplicationOwner(String name,
+			SubjectEntity admin) {
 		LOG.debug("add application owner: " + name);
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				name, admin);
 		this.entityManager.persist(applicationOwner);
+		return applicationOwner;
 	}
 
 	public ApplicationOwnerEntity getApplicationOwner(String name)

@@ -7,13 +7,22 @@
 
 package net.link.safeonline.sdk.ws.data;
 
-public class DataValue {
+/**
+ * Data-container class for a SafeOnline attribute.
+ * 
+ * @param <Type>
+ *            the type of the attribute value.
+ * 
+ * @author fcorneli
+ * 
+ */
+public class Attribute<Type> {
 
 	private final String name;
 
-	private final String value;
+	private final Type value;
 
-	public DataValue(String name, String value) {
+	public Attribute(String name, Type value) {
 		this.name = name;
 		this.value = value;
 	}
@@ -22,7 +31,7 @@ public class DataValue {
 		return this.name;
 	}
 
-	public String getValue() {
+	public Type getValue() {
 		return this.value;
 	}
 }

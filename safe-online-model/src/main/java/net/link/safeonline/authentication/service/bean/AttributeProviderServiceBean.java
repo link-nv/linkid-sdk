@@ -7,6 +7,8 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.lang.reflect.Array;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -79,6 +81,12 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 	 * Check whether the caller application is an attribute provider for the
 	 * given attribute type.
 	 * 
+	 * <p>
+	 * It's an interesting design-pattern to combine access control checking
+	 * with retrieval of required entities for further processing. That way
+	 * you're always sure that the checks have been executed.
+	 * </p>
+	 * 
 	 * @param attributeName
 	 * @return
 	 * @throws AttributeTypeNotFoundException
@@ -101,15 +109,41 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public void createAttribute(String subjectLogin, String attributeName,
-			String attributeValue) throws AttributeTypeNotFoundException,
-			PermissionDeniedException, SubjectNotFoundException {
+			Object attributeValue) throws AttributeTypeNotFoundException,
+			PermissionDeniedException, SubjectNotFoundException,
+			DatatypeMismatchException {
 		LOG
 				.debug("create attribute: " + attributeName + " for "
 						+ subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 
-		this.attributeDAO.addAttribute(attributeType, subject, attributeValue);
+		if (null == attributeValue) {
+			this.attributeDAO.addAttribute(attributeType, subject);
+			return;
+		}
+
+		Class attributeValueClass = attributeValue.getClass();
+		if (attributeType.isMultivalued()) {
+			if (false == attributeValueClass.isArray()) {
+				throw new DatatypeMismatchException();
+			}
+
+			int size = Array.getLength(attributeValue);
+			for (int idx = 0; idx < size; idx++) {
+				Object value = Array.get(attributeValue, idx);
+				AttributeEntity attribute = this.attributeDAO.addAttribute(
+						attributeType, subject);
+				setAttributeValue(attribute, value);
+			}
+		} else {
+			/*
+			 * Single-valued attribute.
+			 */
+			AttributeEntity attribute = this.attributeDAO.addAttribute(
+					attributeType, subject);
+			setAttributeValue(attribute, attributeValue);
+		}
 	}
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
@@ -121,37 +155,105 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 
-		AttributeEntity attribute = this.attributeDAO.getAttribute(
-				attributeType, subject);
-
-		if (null == attributeValue) {
+		if (attributeType.isMultivalued()) {
+			List<AttributeEntity> attributes = this.attributeDAO
+					.listAttributes(subject, attributeType);
+			if (attributes.isEmpty()) {
+				/*
+				 * Via setAttribute one can only update existing multivalued
+				 * attributes, not create them.
+				 */
+				throw new AttributeNotFoundException();
+			}
+			if (null == attributeValue) {
+				/*
+				 * In this case we remove all but one, which we set with a null
+				 * value.
+				 */
+				Iterator<AttributeEntity> iterator = attributes.iterator();
+				AttributeEntity attribute = iterator.next();
+				clearAttributeValues(attribute);
+				while (iterator.hasNext()) {
+					attribute = iterator.next();
+					this.attributeDAO.removeAttribute(attribute);
+				}
+			} else {
+				if (false == attributeValue.getClass().isArray()) {
+					throw new DatatypeMismatchException();
+				}
+				int newSize = Array.getLength(attributeValue);
+				Iterator<AttributeEntity> iterator = attributes.iterator();
+				for (int idx = 0; idx < newSize; idx++) {
+					Object value = Array.get(attributeValue, idx);
+					AttributeEntity attribute;
+					if (iterator.hasNext()) {
+						attribute = iterator.next();
+					} else {
+						attribute = this.attributeDAO.addAttribute(
+								attributeType, subject);
+					}
+					setAttributeValue(attribute, value);
+				}
+				while (iterator.hasNext()) {
+					AttributeEntity attribute = iterator.next();
+					this.attributeDAO.removeAttribute(attribute);
+				}
+			}
+		} else {
 			/*
-			 * In case the attribute value is null we cannot extract the
-			 * reflection class type. But actually we don't care. Just clear
-			 * all.
+			 * Single-valued attribute.
 			 */
-			attribute.setStringValue(null);
-			attribute.setBooleanValue(null);
-			return;
-		}
+			AttributeEntity attribute = this.attributeDAO.getAttribute(
+					attributeType, subject);
 
+			if (null == attributeValue) {
+				/*
+				 * In case the attribute value is null we cannot extract the
+				 * reflection class type. But actually we don't care. Just clear
+				 * all.
+				 */
+				clearAttributeValues(attribute);
+				return;
+			}
+
+			setAttributeValue(attribute, attributeValue);
+		}
+	}
+
+	/**
+	 * Generic datatype conversion method with type-checking.
+	 * 
+	 * TODO: maybe we could move this method to AttributeEntity itself?
+	 * 
+	 * @param attribute
+	 * @param value
+	 * @throws DatatypeMismatchException
+	 */
+	private void setAttributeValue(AttributeEntity attribute, Object value)
+			throws DatatypeMismatchException {
+		AttributeTypeEntity attributeType = attribute.getAttributeType();
 		String datatype = attributeType.getType();
 		if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
-			if (false == attributeValue instanceof String) {
+			if (false == value instanceof String) {
 				throw new DatatypeMismatchException();
 			}
-			String stringValue = (String) attributeValue;
+			String stringValue = (String) value;
 			attribute.setStringValue(stringValue);
 			return;
 		}
 
 		if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
-			if (false == attributeValue instanceof Boolean) {
+			if (false == value instanceof Boolean) {
 				throw new DatatypeMismatchException();
 			}
-			Boolean booleanValue = (Boolean) attributeValue;
+			Boolean booleanValue = (Boolean) value;
 			attribute.setBooleanValue(booleanValue);
 			return;
 		}
+	}
+
+	private void clearAttributeValues(AttributeEntity attribute) {
+		attribute.setStringValue(null);
+		attribute.setBooleanValue(null);
 	}
 }

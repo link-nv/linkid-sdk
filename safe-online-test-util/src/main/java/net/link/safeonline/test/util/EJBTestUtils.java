@@ -233,6 +233,9 @@ public final class EJBTestUtils {
 	@SuppressWarnings("unchecked")
 	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
 			EntityManager entityManager, SessionContext sessionContext) {
+		if (clazz.isInterface()) {
+			throw new EJBException("cannot instantiate an interface");
+		}
 		Type instance;
 		try {
 			instance = clazz.newInstance();

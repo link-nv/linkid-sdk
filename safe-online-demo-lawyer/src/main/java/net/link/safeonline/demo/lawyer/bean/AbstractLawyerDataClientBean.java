@@ -34,7 +34,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
-import net.link.safeonline.sdk.ws.data.DataValue;
+import net.link.safeonline.sdk.ws.data.Attribute;
 
 /**
  * Abstract class for data client beans. Inherit from this class if you need a
@@ -115,20 +115,22 @@ public abstract class AbstractLawyerDataClientBean implements
 		boolean suspended = false;
 		String bar = null;
 		boolean barAdmin = false;
-		DataValue lawyerAttribute;
-		DataValue suspendedAttribute;
-		DataValue barAttribute;
-		DataValue barAdminAttribute;
+		Attribute<Boolean> lawyerAttribute;
+		Attribute<Boolean> suspendedAttribute;
+		Attribute<String> barAttribute;
+		Attribute<Boolean> barAdminAttribute;
 		DataClient dataClient = getDataClient();
 		try {
 			lawyerAttribute = dataClient.getAttributeValue(subjectLogin,
-					DemoConstants.LAWYER_ATTRIBUTE_NAME);
+					DemoConstants.LAWYER_ATTRIBUTE_NAME, Boolean.class);
 			suspendedAttribute = dataClient.getAttributeValue(subjectLogin,
-					DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME);
+					DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
+					Boolean.class);
 			barAttribute = dataClient.getAttributeValue(subjectLogin,
-					DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME);
+					DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, String.class);
 			barAdminAttribute = dataClient.getAttributeValue(subjectLogin,
-					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME);
+					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
+					Boolean.class);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());
 			return null;
@@ -139,20 +141,17 @@ public abstract class AbstractLawyerDataClientBean implements
 			this.facesMessages.add("subject not found");
 			return null;
 		}
-		if (null != lawyerAttribute
-				&& "true".equals(lawyerAttribute.getValue())) {
-			lawyer = true;
+		if (null != lawyerAttribute && null != lawyerAttribute.getValue()) {
+			lawyer = lawyerAttribute.getValue();
 		}
-		if (null != suspendedAttribute
-				&& "true".equals(suspendedAttribute.getValue())) {
-			suspended = true;
+		if (null != suspendedAttribute && null != suspendedAttribute.getValue()) {
+			suspended = suspendedAttribute.getValue();
 		}
 		if (null != barAttribute) {
 			bar = barAttribute.getValue();
 		}
-		if (null != barAdminAttribute
-				&& "true".equals(barAdminAttribute.getValue())) {
-			barAdmin = true;
+		if (null != barAdminAttribute && null != barAdminAttribute.getValue()) {
+			barAdmin = barAdminAttribute.getValue();
 		}
 		LawyerStatus lawyerStatus = new LawyerStatus(lawyer, suspended, bar,
 				barAdmin);

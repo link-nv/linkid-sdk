@@ -16,6 +16,7 @@ import net.link.safeonline.demo.prescription.PrescriptionConstants;
 import net.link.safeonline.demo.prescription.PrescriptionEdit;
 import net.link.safeonline.demo.prescription.UserStatus;
 import net.link.safeonline.model.demo.DemoConstants;
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
@@ -68,16 +69,20 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
 			this.facesMessages.add("subject not found: "
 					+ this.userStatus.getName());
 			return null;
+		} catch (AttributeNotFoundException e) {
+			this.facesMessages.add("attribute not found");
+			return null;
 		}
 		return "success";
 	}
 
 	private void createOrUpdateAttribute(String attributeName,
 			Object attributeValue) throws ConnectException,
-			RequestDeniedException, SubjectNotFoundException {
+			RequestDeniedException, SubjectNotFoundException,
+			AttributeNotFoundException {
 		DataClient dataClient = getDataClient();
 		String name = this.userStatus.getName();
-		if (null == dataClient.getAttributeValue(name, attributeName)) {
+		if (null == dataClient.getAttributeValue(name, attributeName, null)) {
 			log.debug("create attribute #0 for #1", attributeName, name);
 			dataClient.createAttribute(name, attributeName);
 		}

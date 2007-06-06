@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.data;
 
+import java.lang.reflect.Array;
 import java.net.ConnectException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -36,11 +37,12 @@ import net.link.safeonline.data.ws.DataServiceConstants;
 import net.link.safeonline.data.ws.DataServiceFactory;
 import net.link.safeonline.data.ws.SecondLevelStatusCode;
 import net.link.safeonline.data.ws.TopLevelStatusCode;
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.ApplicationAuthenticationUtils;
-
+import net.link.safeonline.ws.common.WebServiceConstants;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
 import org.apache.commons.logging.Log;
@@ -104,29 +106,14 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 	}
 
 	public void setAttributeValue(String subjectLogin, String attributeName,
-			Object attributeValue) throws ConnectException {
+			Object attributeValue) throws ConnectException,
+			AttributeNotFoundException {
 		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
-
-		String encodedValue;
-		String objectType;
-		if (null == attributeValue) {
-			encodedValue = null;
-			objectType = DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE;
-		} else if (true == attributeValue instanceof String) {
-			encodedValue = (String) attributeValue;
-			objectType = DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE;
-		} else if (true == attributeValue instanceof Boolean) {
-			encodedValue = Boolean.toString((Boolean) attributeValue);
-			objectType = DataServiceConstants.BOOLEAN_ATTRIBUTE_OBJECT_TYPE;
-		} else {
-			throw new IllegalArgumentException(
-					"attribute value type not supported");
-		}
 
 		ModifyType modify = new ModifyType();
 		List<ModifyItemType> modifyItems = modify.getModifyItem();
 		ModifyItemType modifyItem = new ModifyItemType();
-		modifyItem.setObjectType(objectType);
+		modifyItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
 		modifyItems.add(modifyItem);
 
 		SelectType select = new SelectType();
@@ -137,7 +124,21 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		modifyItem.setNewData(newData);
 		AttributeType attribute = new AttributeType();
 		attribute.setName(attributeName);
-		attribute.getAttributeValue().add(encodedValue);
+		if (attributeValue != null) {
+			List<Object> attributeValues = attribute.getAttributeValue();
+			if (attributeValue.getClass().isArray()) {
+				attribute.getOtherAttributes().put(
+						WebServiceConstants.MULTIVALUED_ATTRIBUTE,
+						Boolean.TRUE.toString());
+				int size = Array.getLength(attributeValue);
+				for (int idx = 0; idx < size; idx++) {
+					Object value = Array.get(attributeValue, idx);
+					attributeValues.add(value);
+				}
+			} else {
+				attributeValues.add(attributeValue);
+			}
+		}
 		newData.setAttribute(attribute);
 
 		ModifyResponseType modifyResponse;
@@ -161,9 +162,12 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 								+ secondLevelStatus.getCode());
 				SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode
 						.fromCode(secondLevelStatus.getCode());
-				if (SecondLevelStatusCode.INVALID_DATA == secondLevelStatusCode) {
+				switch (secondLevelStatusCode) {
+				case INVALID_DATA:
 					throw new IllegalArgumentException(
 							"attribute value type incorrect");
+				case DOES_NOT_EXIST:
+					throw new AttributeNotFoundException();
 				}
 			}
 			LOG.debug("status comment: " + status.getComment());
@@ -171,7 +175,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		}
 	}
 
-	public DataValue getAttributeValue(String subjectLogin, String attributeName)
+	@SuppressWarnings("unchecked")
+	public <Type> Attribute<Type> getAttributeValue(String subjectLogin,
+			String attributeName, Class<Type> expectedValueClass)
 			throws ConnectException, RequestDeniedException,
 			SubjectNotFoundException {
 		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
@@ -182,8 +188,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		QueryItemType queryItem = new QueryItemType();
 		queryItems.add(queryItem);
 
-		queryItem
-				.setObjectType(DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE);
+		queryItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
 		SelectType select = new SelectType();
 		select.setValue(attributeName);
 		queryItem.setSelect(select);
@@ -231,11 +236,66 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		}
 		DataType data = dataList.get(0);
 		AttributeType attribute = data.getAttribute();
-		String value = (String) attribute.getAttributeValue().get(0);
+		if (null == attribute) {
+			/*
+			 * This happens when the attribute entity does not exist.
+			 */
+			return null;
+		}
 		String name = attribute.getName();
+		List<Object> attributeValues = attribute.getAttributeValue();
+		Object firstAttributeValue = attributeValues.get(0);
+		if (null == firstAttributeValue) {
+			/*
+			 * null does not have a type. Lucky us.
+			 */
+			Attribute<Type> dataValue = new Attribute<Type>(name, null);
+			return dataValue;
+		}
 
-		DataValue dataValue = new DataValue(name, value);
-		return dataValue;
+		/*
+		 * We also perform some type-checking on the received attribute values.
+		 */
+		if (expectedValueClass.isArray()) {
+			/*
+			 * Multi-valued attribute expected.
+			 */
+			if (false == Boolean.TRUE.toString().equals(
+					attribute.getOtherAttributes().get(
+							WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
+				String msg = "expected multivalued attribute, but received single-valued attribute";
+				LOG.error(msg);
+				throw new IllegalArgumentException(msg);
+			}
+			Class componentType = expectedValueClass.getComponentType();
+			int size = attributeValues.size();
+			Type values = (Type) Array.newInstance(componentType, size);
+			for (int idx = 0; idx < size; idx++) {
+				Object attributeValue = attributeValues.get(idx);
+				if (false == componentType.isInstance(attributeValue)) {
+					throw new IllegalArgumentException("expected type "
+							+ componentType.getName() + "; received: "
+							+ attributeValue.getClass().getName());
+				}
+				Array.set(values, idx, attributeValue);
+			}
+			Attribute<Type> resultAttribute = new Attribute<Type>(
+					attributeName, values);
+			return resultAttribute;
+		} else {
+			/*
+			 * Single-valued attribute expected.
+			 */
+			if (false == expectedValueClass.isInstance(firstAttributeValue)) {
+				throw new IllegalArgumentException("type mismatch: expected "
+						+ expectedValueClass.getName() + "; received: "
+						+ firstAttributeValue.getClass().getName());
+			}
+			Type value = (Type) attribute.getAttributeValue().get(0);
+
+			Attribute<Type> dataValue = new Attribute<Type>(name, value);
+			return dataValue;
+		}
 	}
 
 	public void createAttribute(String subjectLogin, String attributeName)
@@ -248,8 +308,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		CreateItemType createItem = new CreateItemType();
 		createItems.add(createItem);
 
-		createItem
-				.setObjectType(DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE);
+		createItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
 		AppDataType newData = new AppDataType();
 		AttributeType attribute = new AttributeType();
 		attribute.setName(attributeName);

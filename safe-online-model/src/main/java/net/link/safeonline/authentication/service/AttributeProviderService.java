@@ -52,18 +52,23 @@ public interface AttributeProviderService {
 			PermissionDeniedException, SubjectNotFoundException;
 
 	/**
-	 * Create a new attribute for the given user.
+	 * Create a new attribute for the given user. The optional attribute value
+	 * can be a {@link String} or {@link Integer} or an array in case of a
+	 * multivalued attribute.
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
 	 * @param attributeValue
+	 *            the optional attribute value.
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
 	 * @throws SubjectNotFoundException
+	 * @throws DatatypeMismatchException
 	 */
 	void createAttribute(String subjectLogin, String attributeName,
-			String attributeValue) throws AttributeTypeNotFoundException,
-			PermissionDeniedException, SubjectNotFoundException;
+			Object attributeValue) throws AttributeTypeNotFoundException,
+			PermissionDeniedException, SubjectNotFoundException,
+			DatatypeMismatchException;
 
 	/**
 	 * Sets an attribute for the given user. For attribute value we accept

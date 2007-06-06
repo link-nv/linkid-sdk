@@ -9,7 +9,6 @@ package net.link.safeonline.dao.bean;
 
 import java.util.List;
 
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -159,41 +158,43 @@ public class AttributeDAOBean implements AttributeDAO {
 		return attributes;
 	}
 
-	@SuppressWarnings("unchecked")
 	public AttributeEntity addAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject) {
-		if (false == attributeType.isMultivalued()) {
-			throw new EJBException(
-					"addAttribute cannot be invoked for single-valued attributes");
-		}
-		Query query = AttributeEntity.createMaxIdWhereSubjectAndAttributeType(
-				this.entityManager, subject, attributeType);
-		List<Long> maxIds = query.getResultList();
 		long index;
-		if (maxIds.isEmpty()) {
-			/*
-			 * This means that no other multi-valued attribute of the given
-			 * attribute type existed before. This is a weird case to occur, but
-			 * we can handle it. This just means we're the first to create it.
-			 */
+		if (false == attributeType.isMultivalued()) {
 			index = 0;
 		} else {
-			Long maxId = maxIds.get(0);
-			if (null == maxId) {
-				/*
-				 * This means that no other multi-valued attribute of the given
-				 * attribute type existed before. This is a weird case to occur,
-				 * but we can handle it. This just means we're the first to
-				 * create it.
-				 */
-				index = 0;
-			} else {
-				index = maxId + 1;
-			}
+			index = calcIndex(subject, attributeType);
 		}
+
 		AttributeEntity attribute = new AttributeEntity(attributeType, subject,
 				index);
 		this.entityManager.persist(attribute);
+		LOG.debug("addAttribute index: " + index);
 		return attribute;
+	}
+
+	@SuppressWarnings("unchecked")
+	private long calcIndex(SubjectEntity subject,
+			AttributeTypeEntity attributeType) {
+		Query query = AttributeEntity.createMaxIdWhereSubjectAndAttributeType(
+				this.entityManager, subject, attributeType);
+		List<Long> maxIds = query.getResultList();
+		if (maxIds.isEmpty()) {
+			/*
+			 * This means that no other multi-valued attribute of the given
+			 * attribute type existed before.
+			 */
+			return 0;
+		}
+		Long maxId = maxIds.get(0);
+		if (null == maxId) {
+			/*
+			 * This means that no other multi-valued attribute of the given
+			 * attribute type existed before.
+			 */
+			return 0;
+		}
+		return maxId + 1;
 	}
 }

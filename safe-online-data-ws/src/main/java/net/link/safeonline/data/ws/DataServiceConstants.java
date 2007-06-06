@@ -7,15 +7,19 @@
 
 package net.link.safeonline.data.ws;
 
+/**
+ * Holds various constants used by the data web service.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class DataServiceConstants {
 
 	private DataServiceConstants() {
 		// empty
 	}
 
-	public static final String STRING_ATTRIBUTE_OBJECT_TYPE = "StringAttribute";
-
-	public static final String BOOLEAN_ATTRIBUTE_OBJECT_TYPE = "BooleanAttribute";
+	public static final String ATTRIBUTE_OBJECT_TYPE = "BooleanAttribute";
 
 	public static final String LIBERTY_SOAP_BINDING_NAMESPACE = "urn:liberty:sb:2005-11";
 }

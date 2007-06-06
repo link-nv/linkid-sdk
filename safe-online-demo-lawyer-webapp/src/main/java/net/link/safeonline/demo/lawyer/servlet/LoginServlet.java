@@ -26,7 +26,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
-import net.link.safeonline.sdk.ws.data.DataValue;
+import net.link.safeonline.sdk.ws.data.Attribute;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,10 +75,11 @@ public class LoginServlet extends HttpServlet {
 		String username = (String) session.getAttribute("username");
 		LOG.debug("username: " + username);
 
-		DataValue barAdminAttribute;
+		Attribute<Boolean> barAdminAttribute;
 		try {
 			barAdminAttribute = this.dataClient.getAttributeValue(username,
-					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME);
+					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
+					Boolean.class);
 		} catch (RequestDeniedException e) {
 			throw new ServletException("count not retrieve baradmin attribute");
 		} catch (SubjectNotFoundException e) {
@@ -90,13 +91,13 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 
-		String value = barAdminAttribute.getValue();
+		Boolean value = barAdminAttribute.getValue();
 		if (null == value) {
 			redirectToStatusPage(session, response);
 			return;
 		}
 
-		if (false == "true".equals(value)) {
+		if (false == value) {
 			redirectToStatusPage(session, response);
 			return;
 		}

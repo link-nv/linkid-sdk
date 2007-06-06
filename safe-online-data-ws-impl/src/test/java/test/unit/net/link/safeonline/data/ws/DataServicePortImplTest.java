@@ -7,7 +7,9 @@
 
 package test.unit.net.link.safeonline.data.ws;
 
+import static org.easymock.EasyMock.aryEq;
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -29,8 +31,15 @@ import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import junit.framework.TestCase;
+import liberty.dst._2006_08.ref.safe_online.AppDataType;
+import liberty.dst._2006_08.ref.safe_online.CreateItemType;
+import liberty.dst._2006_08.ref.safe_online.CreateResponseType;
+import liberty.dst._2006_08.ref.safe_online.CreateType;
 import liberty.dst._2006_08.ref.safe_online.DataService;
 import liberty.dst._2006_08.ref.safe_online.DataServicePort;
+import liberty.dst._2006_08.ref.safe_online.ModifyItemType;
+import liberty.dst._2006_08.ref.safe_online.ModifyResponseType;
+import liberty.dst._2006_08.ref.safe_online.ModifyType;
 import liberty.dst._2006_08.ref.safe_online.ObjectFactory;
 import liberty.dst._2006_08.ref.safe_online.QueryItemType;
 import liberty.dst._2006_08.ref.safe_online.QueryResponseType;
@@ -58,8 +67,10 @@ import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
+import net.link.safeonline.ws.common.WebServiceConstants;
 import net.link.safeonline.ws.util.LoggingHandler;
 import net.link.safeonline.ws.util.ri.InjectionInstanceResolver;
+import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -148,7 +159,7 @@ public class DataServicePortImplTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testInvalidCertificate() throws Exception {
+	public void testQueryInvalidCertificate() throws Exception {
 		// setup
 		QueryType query = new QueryType();
 
@@ -174,7 +185,7 @@ public class DataServicePortImplTest extends TestCase {
 		verify(this.mockObjects);
 	}
 
-	public void testUnknownApplication() throws Exception {
+	public void testQueryUnknownApplication() throws Exception {
 		// setup
 		QueryType query = new QueryType();
 
@@ -203,7 +214,7 @@ public class DataServicePortImplTest extends TestCase {
 		verify(this.mockObjects);
 	}
 
-	public void testUnsupportedObjectType() throws Exception {
+	public void testQueryUnsupportedObjectType() throws Exception {
 		// setup
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
@@ -237,14 +248,13 @@ public class DataServicePortImplTest extends TestCase {
 						.getCode()));
 	}
 
-	public void testMissingSelect() throws Exception {
+	public void testQueryMissingSelect() throws Exception {
 		// setup
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
 		QueryItemType queryItem = new QueryItemType();
 		query.getQueryItem().add(queryItem);
-		queryItem
-				.setObjectType(DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE);
+		queryItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
 
 		// expectations
 		expect(
@@ -272,14 +282,13 @@ public class DataServicePortImplTest extends TestCase {
 						.getCode()));
 	}
 
-	public void testMissingTargetIdentity() throws Exception {
+	public void testQueryMissingTargetIdentity() throws Exception {
 		// setup
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
 		QueryItemType queryItem = new QueryItemType();
 		query.getQueryItem().add(queryItem);
-		queryItem
-				.setObjectType(DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE);
+		queryItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
 		SelectType select = new SelectType();
 		select.setValue("select-value");
 		queryItem.setSelect(select);
@@ -310,14 +319,13 @@ public class DataServicePortImplTest extends TestCase {
 						.getCode()));
 	}
 
-	public void testTargetIdentityNotSigned() throws Exception {
+	public void testQueryTargetIdentityNotSigned() throws Exception {
 		// setup
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
 		QueryItemType queryItem = new QueryItemType();
 		query.getQueryItem().add(queryItem);
-		queryItem
-				.setObjectType(DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE);
+		queryItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
 		SelectType select = new SelectType();
 		select.setValue("select-value");
 		queryItem.setSelect(select);
@@ -364,8 +372,7 @@ public class DataServicePortImplTest extends TestCase {
 		QueryType query = new QueryType();
 		QueryItemType queryItem = new QueryItemType();
 		query.getQueryItem().add(queryItem);
-		queryItem
-				.setObjectType(DataServiceConstants.STRING_ATTRIBUTE_OBJECT_TYPE);
+		queryItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
 		SelectType select = new SelectType();
 		String attributeName = "test-attribute-name";
 		select.setValue(attributeName);
@@ -399,6 +406,7 @@ public class DataServicePortImplTest extends TestCase {
 		AttributeTypeEntity attributeType = new AttributeTypeEntity();
 		attributeType.setName(attributeName);
 		attributeType.setType(SafeOnlineConstants.STRING_TYPE);
+		attributeType.setMultivalued(true);
 		SubjectEntity subject = new SubjectEntity();
 		List<AttributeEntity> attributes = new LinkedList<AttributeEntity>();
 		AttributeEntity attribute1 = new AttributeEntity(attributeType,
@@ -424,6 +432,9 @@ public class DataServicePortImplTest extends TestCase {
 
 		// verify
 		verify(this.mockObjects);
+		StatusType status = response.getStatus();
+		assertEquals(TopLevelStatusCode.OK, TopLevelStatusCode.fromCode(status
+				.getCode()));
 
 		// marshall the result to a DOM
 		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
@@ -460,5 +471,448 @@ public class DataServicePortImplTest extends TestCase {
 						nsElement);
 		assertNotNull(resultNode);
 		assertEquals(attributeValue2, resultNode.getTextContent());
+
+		// verify multivalued attribute on Attribute
+		assertEquals(Boolean.TRUE.toString(), response.getData().get(0)
+				.getAttribute().getOtherAttributes().get(
+						WebServiceConstants.MULTIVALUED_ATTRIBUTE));
+	}
+
+	public void testModifyMissingModifyItem() throws Exception {
+		// setup
+		String applicationName = "test-application-name";
+		ModifyType request = new ModifyType();
+
+		// expectations
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andReturn(true);
+
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn(applicationName);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		ModifyResponseType result = this.dataServicePort.modify(request);
+
+		// verify
+		verify(this.mockObjects);
+		StatusType status = result.getStatus();
+		assertEquals(TopLevelStatusCode.FAILED, TopLevelStatusCode
+				.fromCode(status.getCode()));
+		assertEquals(SecondLevelStatusCode.EMPTY_REQUEST, SecondLevelStatusCode
+				.fromCode(status.getStatus().get(0).getCode()));
+	}
+
+	public void testModifyMissingObjectType() throws Exception {
+		// setup
+		String applicationName = "test-application-name";
+		ModifyType request = new ModifyType();
+		ModifyItemType modifyItem = new ModifyItemType();
+		request.getModifyItem().add(modifyItem);
+
+		// expectations
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andReturn(true);
+
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn(applicationName);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		ModifyResponseType result = this.dataServicePort.modify(request);
+
+		// verify
+		verify(this.mockObjects);
+		StatusType status = result.getStatus();
+		assertEquals(TopLevelStatusCode.FAILED, TopLevelStatusCode
+				.fromCode(status.getCode()));
+		assertEquals(SecondLevelStatusCode.MISSING_OBJECT_TYPE,
+				SecondLevelStatusCode.fromCode(status.getStatus().get(0)
+						.getCode()));
+	}
+
+	public void testModifyMissingSelect() throws Exception {
+		// setup
+		String applicationName = "test-application-name";
+		ModifyType request = new ModifyType();
+		ModifyItemType modifyItem = new ModifyItemType();
+		request.getModifyItem().add(modifyItem);
+		modifyItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+
+		// expectations
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andReturn(true);
+
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn(applicationName);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		ModifyResponseType result = this.dataServicePort.modify(request);
+
+		// verify
+		verify(this.mockObjects);
+		StatusType status = result.getStatus();
+		assertEquals(TopLevelStatusCode.FAILED, TopLevelStatusCode
+				.fromCode(status.getCode()));
+		assertEquals(SecondLevelStatusCode.MISSING_SELECT,
+				SecondLevelStatusCode.fromCode(status.getStatus().get(0)
+						.getCode()));
+	}
+
+	public void testModifyMissingNewData() throws Exception {
+		// setup
+		String applicationName = "test-application-name";
+		String attributeName = "test-attribute-name";
+
+		ModifyType request = new ModifyType();
+		ModifyItemType modifyItem = new ModifyItemType();
+		request.getModifyItem().add(modifyItem);
+		modifyItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+		SelectType select = new SelectType();
+		select.setValue(attributeName);
+		modifyItem.setSelect(select);
+
+		BindingProvider bindingProvider = (BindingProvider) this.dataServicePort;
+		Binding binding = bindingProvider.getBinding();
+		List<Handler> handlerChain = binding.getHandlerChain();
+		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
+		String targetIdentity = "test-target-identity";
+		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		handlerChain.add(0, targetIdentityClientHandler);
+		LoggingHandler loggingHandler = new LoggingHandler();
+		handlerChain.add(loggingHandler);
+		binding.setHandlerChain(handlerChain);
+
+		// expectations
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andReturn(true);
+
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn(applicationName);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		ModifyResponseType result = this.dataServicePort.modify(request);
+
+		// verify
+		verify(this.mockObjects);
+		StatusType status = result.getStatus();
+		assertEquals(TopLevelStatusCode.FAILED, TopLevelStatusCode
+				.fromCode(status.getCode()));
+		assertEquals(SecondLevelStatusCode.MISSING_NEW_DATA_ELEMENT,
+				SecondLevelStatusCode.fromCode(status.getStatus().get(0)
+						.getCode()));
+	}
+
+	public void testModifyAttributeNameMismatch() throws Exception {
+		// setup
+		String applicationName = "test-application-name";
+		String attributeName = "test-attribute-name";
+
+		ModifyType request = new ModifyType();
+		ModifyItemType modifyItem = new ModifyItemType();
+		request.getModifyItem().add(modifyItem);
+		modifyItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+		SelectType select = new SelectType();
+		select.setValue(attributeName);
+		modifyItem.setSelect(select);
+		AppDataType newData = new AppDataType();
+		modifyItem.setNewData(newData);
+		AttributeType attribute = new AttributeType();
+		newData.setAttribute(attribute);
+
+		BindingProvider bindingProvider = (BindingProvider) this.dataServicePort;
+		Binding binding = bindingProvider.getBinding();
+		List<Handler> handlerChain = binding.getHandlerChain();
+		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
+		String targetIdentity = "test-target-identity";
+		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		handlerChain.add(0, targetIdentityClientHandler);
+		LoggingHandler loggingHandler = new LoggingHandler();
+		handlerChain.add(loggingHandler);
+		binding.setHandlerChain(handlerChain);
+
+		// expectations
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andReturn(true);
+
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn(applicationName);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		ModifyResponseType result = this.dataServicePort.modify(request);
+
+		// verify
+		verify(this.mockObjects);
+		StatusType status = result.getStatus();
+		assertEquals(TopLevelStatusCode.FAILED, TopLevelStatusCode
+				.fromCode(status.getCode()));
+		assertEquals(SecondLevelStatusCode.INVALID_DATA, SecondLevelStatusCode
+				.fromCode(status.getStatus().get(0).getCode()));
+	}
+
+	public void testModifySingleValuesAttribute() throws Exception {
+		// setup
+		String applicationName = "test-application-name";
+		String attributeName = "test-attribute-name";
+
+		ModifyType request = new ModifyType();
+		ModifyItemType modifyItem = new ModifyItemType();
+		request.getModifyItem().add(modifyItem);
+		modifyItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+		SelectType select = new SelectType();
+		select.setValue(attributeName);
+		modifyItem.setSelect(select);
+		AppDataType newData = new AppDataType();
+		modifyItem.setNewData(newData);
+		AttributeType attribute = new AttributeType();
+		newData.setAttribute(attribute);
+		attribute.setName(attributeName);
+		String attributeValue = "test-attribute-value";
+		attribute.getAttributeValue().add(attributeValue);
+
+		BindingProvider bindingProvider = (BindingProvider) this.dataServicePort;
+		Binding binding = bindingProvider.getBinding();
+		List<Handler> handlerChain = binding.getHandlerChain();
+		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
+		String targetIdentity = "test-target-identity";
+		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		handlerChain.add(0, targetIdentityClientHandler);
+		LoggingHandler loggingHandler = new LoggingHandler();
+		handlerChain.add(loggingHandler);
+		binding.setHandlerChain(handlerChain);
+
+		// expectations
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andReturn(true);
+
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn(applicationName);
+
+		this.mockAttributeProviderService.setAttribute(targetIdentity,
+				attributeName, attributeValue);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		ModifyResponseType result = this.dataServicePort.modify(request);
+
+		// verify
+		verify(this.mockObjects);
+		StatusType status = result.getStatus();
+		assertEquals(TopLevelStatusCode.OK, TopLevelStatusCode.fromCode(status
+				.getCode()));
+	}
+
+	public void testModifyNullAttributeValue() throws Exception {
+		// setup
+		String applicationName = "test-application-name";
+		String attributeName = "test-attribute-name";
+
+		ModifyType request = new ModifyType();
+		ModifyItemType modifyItem = new ModifyItemType();
+		request.getModifyItem().add(modifyItem);
+		modifyItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+		SelectType select = new SelectType();
+		select.setValue(attributeName);
+		modifyItem.setSelect(select);
+		AppDataType newData = new AppDataType();
+		modifyItem.setNewData(newData);
+		AttributeType attribute = new AttributeType();
+		newData.setAttribute(attribute);
+		attribute.setName(attributeName);
+		String attributeValue = null;
+
+		BindingProvider bindingProvider = (BindingProvider) this.dataServicePort;
+		Binding binding = bindingProvider.getBinding();
+		List<Handler> handlerChain = binding.getHandlerChain();
+		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
+		String targetIdentity = "test-target-identity";
+		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		handlerChain.add(0, targetIdentityClientHandler);
+		LoggingHandler loggingHandler = new LoggingHandler();
+		handlerChain.add(loggingHandler);
+		binding.setHandlerChain(handlerChain);
+
+		// expectations
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andReturn(true);
+
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn(applicationName);
+
+		this.mockAttributeProviderService.setAttribute(targetIdentity,
+				attributeName, attributeValue);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		ModifyResponseType result = this.dataServicePort.modify(request);
+
+		// verify
+		verify(this.mockObjects);
+		StatusType status = result.getStatus();
+		assertEquals(TopLevelStatusCode.OK, TopLevelStatusCode.fromCode(status
+				.getCode()));
+	}
+
+	public void testModifyMultivaluedAttribute() throws Exception {
+		// setup
+		String applicationName = "test-application-name";
+		String attributeName = "test-attribute-name";
+
+		ModifyType request = new ModifyType();
+		ModifyItemType modifyItem = new ModifyItemType();
+		request.getModifyItem().add(modifyItem);
+		modifyItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+		SelectType select = new SelectType();
+		select.setValue(attributeName);
+		modifyItem.setSelect(select);
+		AppDataType newData = new AppDataType();
+		modifyItem.setNewData(newData);
+		AttributeType attribute = new AttributeType();
+		newData.setAttribute(attribute);
+		attribute.setName(attributeName);
+		String attributeValue1 = "test-attribute-value-1";
+		String attributeValue2 = "test-atribute-value-2";
+		List<Object> attributeValues = attribute.getAttributeValue();
+		attributeValues.add(attributeValue1);
+		attributeValues.add(attributeValue2);
+		attribute.getOtherAttributes().put(
+				WebServiceConstants.MULTIVALUED_ATTRIBUTE,
+				Boolean.TRUE.toString());
+
+		BindingProvider bindingProvider = (BindingProvider) this.dataServicePort;
+		Binding binding = bindingProvider.getBinding();
+		List<Handler> handlerChain = binding.getHandlerChain();
+		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
+		String targetIdentity = "test-target-identity";
+		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		handlerChain.add(0, targetIdentityClientHandler);
+		LoggingHandler loggingHandler = new LoggingHandler();
+		handlerChain.add(loggingHandler);
+		binding.setHandlerChain(handlerChain);
+
+		// expectations
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andReturn(true);
+
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn(applicationName);
+
+		this.mockAttributeProviderService.setAttribute(eq(targetIdentity),
+				eq(attributeName), aryEq(new String[] { attributeValue1,
+						attributeValue2 }));
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		ModifyResponseType result = this.dataServicePort.modify(request);
+
+		// verify
+		verify(this.mockObjects);
+		StatusType status = result.getStatus();
+		assertEquals(TopLevelStatusCode.OK, TopLevelStatusCode.fromCode(status
+				.getCode()));
+	}
+
+	public void testCreateMultivaluedAttribute() throws Exception {
+		// setup
+		String applicationName = "test-application-name";
+		String attributeName = "test-attribute-name";
+
+		CreateType request = new CreateType();
+		CreateItemType createItem = new CreateItemType();
+		request.getCreateItem().add(createItem);
+		createItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+		AppDataType newData = new AppDataType();
+		createItem.setNewData(newData);
+		AttributeType attribute = new AttributeType();
+		newData.setAttribute(attribute);
+		attribute.setName(attributeName);
+		String attributeValue1 = "test-attribute-value-1";
+		String attributeValue2 = "test-atribute-value-2";
+		List<Object> attributeValues = attribute.getAttributeValue();
+		attributeValues.add(attributeValue1);
+		attributeValues.add(attributeValue2);
+		attribute.getOtherAttributes().put(
+				WebServiceConstants.MULTIVALUED_ATTRIBUTE,
+				Boolean.TRUE.toString());
+
+		BindingProvider bindingProvider = (BindingProvider) this.dataServicePort;
+		Binding binding = bindingProvider.getBinding();
+		List<Handler> handlerChain = binding.getHandlerChain();
+		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
+		String targetIdentity = "test-target-identity";
+		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		handlerChain.add(0, targetIdentityClientHandler);
+		LoggingHandler loggingHandler = new LoggingHandler();
+		handlerChain.add(loggingHandler);
+		binding.setHandlerChain(handlerChain);
+
+		// expectations
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andReturn(true);
+
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn(applicationName);
+
+		this.mockAttributeProviderService.createAttribute(eq(targetIdentity),
+				eq(attributeName), aryEq(new String[] { attributeValue1,
+						attributeValue2 }));
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		CreateResponseType result = this.dataServicePort.create(request);
+
+		// verify
+		verify(this.mockObjects);
+		StatusType status = result.getStatus();
+		assertEquals(TopLevelStatusCode.OK, TopLevelStatusCode.fromCode(status
+				.getCode()));
 	}
 }

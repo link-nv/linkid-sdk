@@ -19,7 +19,7 @@ import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
-import net.link.safeonline.sdk.ws.data.DataValue;
+import net.link.safeonline.sdk.ws.data.Attribute;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -61,25 +61,41 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
 		boolean pharmacist = false;
 
 		this.userStatus = new UserStatus();
-		
+
 		DataClient dataClient = getDataClient();
 		try {
-			DataValue value = dataClient.getAttributeValue(this.name,
-					DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
-			if (null != value && Boolean.parseBoolean(value.getValue())) {
-				admin = true;
+			Attribute<Boolean> adminAttribute = dataClient.getAttributeValue(
+					this.name, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
+					Boolean.class);
+			if (null != adminAttribute) {
+				Boolean value = adminAttribute.getValue();
+				if (null != value) {
+					admin = value;
+				}
 			}
 
-			value = dataClient.getAttributeValue(this.name,
-					DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
-			if (null != value && Boolean.parseBoolean(value.getValue())) {
-				careProvider = true;
+			Attribute<Boolean> careProviderAttribute = dataClient
+					.getAttributeValue(
+							this.name,
+							DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
+							Boolean.class);
+			if (null != careProviderAttribute) {
+				Boolean value = careProviderAttribute.getValue();
+				if (null != value) {
+					careProvider = value;
+				}
 			}
 
-			value = dataClient.getAttributeValue(this.name,
-					DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
-			if (null != value && Boolean.parseBoolean(value.getValue())) {
-				pharmacist = true;
+			Attribute<Boolean> pharmacistAttribute = dataClient
+					.getAttributeValue(
+							this.name,
+							DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
+							Boolean.class);
+			if (null != pharmacistAttribute) {
+				Boolean value = pharmacistAttribute.getValue();
+				if (null != value) {
+					pharmacist = value;
+				}
 			}
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());

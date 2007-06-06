@@ -23,7 +23,7 @@ public interface ApplicationOwnerDAO {
 	ApplicationOwnerEntity getApplicationOwner(String name)
 			throws ApplicationOwnerNotFoundException;
 
-	void addApplicationOwner(String name, SubjectEntity admin);
+	ApplicationOwnerEntity addApplicationOwner(String name, SubjectEntity admin);
 
 	List<ApplicationOwnerEntity> listApplicationOwners();
 
