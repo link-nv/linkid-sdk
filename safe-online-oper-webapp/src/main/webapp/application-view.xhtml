@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">SafeOnline Operator</ui:define>
@@ -17,9 +18,9 @@
 
 		<h2>#{selectedApplication.name}</h2>
 
-		<t:panelTabbedPane>
+		<rich:tabPanel switchType="client">
 
-			<t:panelTab label="#{msgs.generic}">
+			<rich:tab label="#{msgs.generic}">
 				<table>
 					<tr>
 						<th>#{msgs.applicationOwner}:</th>
@@ -42,19 +43,19 @@
 						<td>#{numberOfSubscriptions}</td>
 					</tr>
 				</table>
-			</t:panelTab>
+			</rich:tab>
 
-			<t:panelTab label="#{msgs.description}">
+			<rich:tab label="#{msgs.description}">
 				<p><h:outputText value="#{selectedApplication.description}"
 					escape="true" /></p>
 				<!-- XSS vulnerability possible: do not set escape="false" -->
-			</t:panelTab>
+			</rich:tab>
 
-			<t:panelTab label="#{msgs.certificate}">
+			<rich:tab label="#{msgs.certificate}">
 				<pre><h:outputText value="#{selectedApplication.certificate}" /></pre>
-			</t:panelTab>
+			</rich:tab>
 
-			<t:panelTab label="#{msgs.applicationIdentity}">
+			<rich:tab label="#{msgs.applicationIdentity}">
 				<h:dataTable value="#{applicationIdentityAttributes}" var="item">
 					<h:column>
 						<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
@@ -69,8 +70,8 @@
 						<h:outputText value="#{item.dataMining}" />
 					</h:column>
 				</h:dataTable>
-			</t:panelTab>
-		</t:panelTabbedPane>
+			</rich:tab>
+		</rich:tabPanel>
 
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" id="back" action="back" />
