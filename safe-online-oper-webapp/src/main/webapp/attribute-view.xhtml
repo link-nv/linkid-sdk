@@ -4,7 +4,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">SafeOnline Operator</ui:define>
@@ -20,12 +21,9 @@
 
 		<h2>#{msgs.attribute} #{selectedAttributeType.name}</h2>
 
-		<t:saveState value="#{attributeViewTabControl}" />
-
 		<f:subview>
-			<t:panelTabbedPane id="tabs">
-				<t:panelTab id="generic-tab" label="#{msgs.generic}"
-					rendered="#{attributeViewTabControl.genericVisible}">
+			<rich:tabPanel id="tabs">
+				<rich:tab id="generic-tab" label="#{msgs.generic}">
 					<table>
 						<tr>
 							<th>#{msgs.name}:</th>
@@ -51,10 +49,9 @@
 								value="#{selectedAttributeType.multivalued}" /></td>
 						</tr>
 					</table>
-				</t:panelTab>
+				</rich:tab>
 
-				<t:panelTab id="description-tab" label="#{msgs.description}"
-					rendered="#{attributeViewTabControl.descriptionVisible}">
+				<rich:tab id="description-tab" label="#{msgs.description}">
 					<h:form>
 						<h:dataTable id="desc-data" var="item"
 							value="#{attributeTypeDescriptions}" styleClass="listingTable"
@@ -75,10 +72,9 @@
 						</h:dataTable>
 						<h:commandButton action="add" id="add" value="#{msgs.addaction}" />
 					</h:form>
-				</t:panelTab>
+				</rich:tab>
 
-				<t:panelTab id="providers-tab" label="#{msgs.attributeProviders}"
-					rendered="#{attributeViewTabControl.providersVisible}">
+				<rich:tab id="providers-tab" label="#{msgs.attributeProviders}">
 					<h:form>
 						<h:dataTable id="atttrib-prov" var="item"
 							value="#{attributeProviders}" styleClass="listingTable"
@@ -98,8 +94,8 @@
 
 						<h:messages styleClass="error" globalOnly="true" />
 					</h:form>
-				</t:panelTab>
-			</t:panelTabbedPane>
+				</rich:tab>
+			</rich:tabPanel>
 		</f:subview>
 
 		<h:form>
