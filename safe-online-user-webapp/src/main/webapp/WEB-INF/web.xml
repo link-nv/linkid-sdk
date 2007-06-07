@@ -20,7 +20,7 @@
 
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
-		<param-value>${auth.webapp.location}</param-value>
+		<param-value>http://localhost:8080/safe-online-auth/</param-value>
 	</context-param>
 
 	<context-param>
@@ -98,6 +98,12 @@
 		</filter-class>
 	</filter>
 
+	<filter> 
+		<display-name>Ajax4jsf Filter</display-name> 
+  		<filter-name>ajax4jsf</filter-name> 
+  		<filter-class>org.ajax4jsf.Filter</filter-class> 
+ 	</filter> 
+
 	<filter-mapping>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
 		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
@@ -137,6 +143,14 @@
 		<filter-name>Login Filter</filter-name>
 		<servlet-name>IdentityServlet</servlet-name>
 	</filter-mapping>
+
+	<filter-mapping> 
+  		<filter-name>ajax4jsf</filter-name> 
+   		<servlet-name>Faces Servlet</servlet-name>
+   		<dispatcher>REQUEST</dispatcher>
+   		<dispatcher>FORWARD</dispatcher>
+   		<dispatcher>INCLUDE</dispatcher>
+ 	</filter-mapping>
 
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>

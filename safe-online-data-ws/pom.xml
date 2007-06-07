@@ -49,12 +49,14 @@
 									</classpath>
 								</taskdef>
 								<mkdir
-									dir="${project.build.directory}/generated-sources/xjc" />
+									dir="${project.build.directory}/generated-sources/xjc" />								
 								<xjc
-									destdir="${project.build.directory}/generated-sources/xjc">
+									destdir="${project.build.directory}/generated-sources/xjc"
+									catalog="${basedir}/src/main/jaxb/catalog.cat">
 									<schema
 										dir="${basedir}/src/main/resources"
 										includes="liberty-idwsf-soap-binding-v2.0.xsd" />
+									<arg value="-debug" />
 								</xjc>
 								<mkdir
 									dir="${project.build.directory}/generated-classes/jaxws" />
@@ -62,7 +64,8 @@
 									destdir="${project.build.directory}/generated-classes/jaxws"
 									verbose="true"
 									wsdl="${basedir}/src/main/resources/liberty-idwsf-dst-ref-v2.1-link.wsdl"
-									sourcedestdir="${project.build.directory}/generated-sources/xjc">
+									sourcedestdir="${project.build.directory}/generated-sources/xjc"
+									catalog="${basedir}/src/main/jaxb/catalog.cat">
 								</wsimport>
 							</tasks>
 							<sourceRoot>
@@ -105,6 +108,31 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			<!--
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxws-maven-plugin</artifactId>
+				<version>1.0-beta-1-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wsimport</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<wsdlDirectory>${basedir}/src/main/resources</wsdlDirectory>
+					<catalog>${basedir}/src/main/resources/catalog.cat</catalog>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.sun.xml.ws</groupId>
+						<artifactId>jaxws-tools</artifactId>
+						<version>${jaxws-tools.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			-->
 		</plugins>
 	</build>
 	<dependencies>
