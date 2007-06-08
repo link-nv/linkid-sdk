@@ -226,8 +226,9 @@ public class TicketBuyBean implements TicketBuy {
 		this.ticketPrice = 100;
 		String username = getUsername();
 		try {
-			this.nrn = (String) this.attributeClient.getAttributeValue(
-					username, "urn:net:lin-k:safe-online:attribute:beid:nrn");
+			this.nrn = this.attributeClient.getAttributeValue(username,
+					"urn:net:lin-k:safe-online:attribute:beid:nrn",
+					String.class);
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found: " + e.getMessage();
 			log.debug(msg);

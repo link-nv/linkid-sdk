@@ -41,7 +41,8 @@ import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
-import net.link.safeonline.sdk.ws.ApplicationAuthenticationUtils;
+import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
+import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
@@ -85,7 +86,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		this.targetIdentityHandler = new TargetIdentityClientHandler();
 		initTargetIdentityHandler();
 
-		ApplicationAuthenticationUtils.initWsSecurity(this.port,
+		WSSecurityClientHandler.addNewHandler(this.port,
 				clientCertificate, clientPrivateKey);
 	}
 
@@ -193,7 +194,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		select.setValue(attributeName);
 		queryItem.setSelect(select);
 
-		ApplicationAuthenticationUtils.configureSsl();
+		SafeOnlineTrustManager.configureSsl();
 
 		QueryResponseType queryResponse;
 		try {

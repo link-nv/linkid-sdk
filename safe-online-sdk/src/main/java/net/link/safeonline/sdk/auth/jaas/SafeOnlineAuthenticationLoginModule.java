@@ -22,8 +22,8 @@ import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import net.link.safeonline.sdk.auth.AuthClient;
-import net.link.safeonline.sdk.auth.AuthClientImpl;
+import net.link.safeonline.sdk.ws.auth.AuthClient;
+import net.link.safeonline.sdk.ws.auth.AuthClientImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.auth;
+package net.link.safeonline.sdk.ws.auth;
 
 import javax.xml.ws.BindingProvider;
 

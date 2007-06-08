@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.attrib;
 
+import java.lang.reflect.Array;
 import java.net.ConnectException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -22,7 +23,8 @@ import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
-import net.link.safeonline.sdk.ws.ApplicationAuthenticationUtils;
+import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
+import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -76,11 +78,13 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 		setEndpointAddress(location);
 
 		registerMessageLoggerHandler(this.port);
-		ApplicationAuthenticationUtils.initWsSecurity(this.port,
-				clientCertificate, clientPrivateKey);
+		WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
+				clientPrivateKey);
 	}
 
-	public Object getAttributeValue(String subjectLogin, String attributeName)
+	@SuppressWarnings("unchecked")
+	public <Type> Type getAttributeValue(String subjectLogin,
+			String attributeName, Class<Type> valueClass)
 			throws AttributeNotFoundException, RequestDeniedException,
 			ConnectException {
 		LOG.debug("get attribute value for subject " + subjectLogin
@@ -89,7 +93,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 		AttributeQueryType request = getAttributeQuery(subjectLogin,
 				attributeName);
 
-		ApplicationAuthenticationUtils.configureSsl();
+		SafeOnlineTrustManager.configureSsl();
 
 		ResponseType response = getResponse(request);
 
@@ -100,10 +104,16 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 
 		Object value = attributes.get(attributeName);
 		if (null == value) {
-			throw new RuntimeException(
-					"requested attribute not in result attributes");
+			return null;
 		}
-		return value;
+
+		if (false == valueClass.isInstance(value)) {
+			throw new IllegalArgumentException("expected type: "
+					+ valueClass.getName() + "; actual type: "
+					+ value.getClass().getName());
+		}
+		Type result = (Type) value;
+		return result;
 	}
 
 	private ResponseType getResponse(AttributeQueryType request)
@@ -191,7 +201,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 			Map<String, Object> attributes) throws AttributeNotFoundException,
 			RequestDeniedException, ConnectException {
 		AttributeQueryType request = getAttributeQuery(subjectLogin, attributes);
-		ApplicationAuthenticationUtils.configureSsl();
+		SafeOnlineTrustManager.configureSsl();
 		ResponseType response = getResponse(request);
 		checkStatus(response);
 		getAttributeValues(response, attributes);
@@ -222,11 +232,17 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 			Object attributeValue;
 			if (true == Boolean.valueOf(attribute.getOtherAttributes().get(
 					WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
-				Object[] array = new Object[attributeValues.size()];
-				for (int idx = 0; idx < array.length; idx++) {
-					array[idx] = attributeValues.get(idx);
+				/*
+				 * We use the first attribute value to determine the type of the
+				 * array to be returned.
+				 */
+				Object firstAttributeValue = attributeValues.get(0);
+				Class componentType = firstAttributeValue.getClass();
+				int size = attributeValues.size();
+				attributeValue = Array.newInstance(componentType, size);
+				for (int idx = 0; idx < size; idx++) {
+					Array.set(attributeValue, idx, attributeValues.get(idx));
 				}
-				attributeValue = array;
 			} else {
 				/*
 				 * Single-valued attribute.
@@ -245,7 +261,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 			AttributeNotFoundException {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 		AttributeQueryType request = getAttributeQuery(subjectLogin, attributes);
-		ApplicationAuthenticationUtils.configureSsl();
+		SafeOnlineTrustManager.configureSsl();
 		ResponseType response = getResponse(request);
 		checkStatus(response);
 		getAttributeValues(response, attributes);

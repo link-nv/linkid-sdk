@@ -21,8 +21,8 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import net.link.safeonline.sdk.auth.AuthClient;
 import net.link.safeonline.sdk.auth.jaas.SafeOnlineAuthenticationLoginModule;
+import net.link.safeonline.sdk.ws.auth.AuthClient;
 
 import org.easymock.EasyMock;
 import org.junit.Before;

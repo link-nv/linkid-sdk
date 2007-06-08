@@ -151,11 +151,11 @@ public class TransactionBean implements Transaction {
 	public List<SelectItem> visasFactory() {
 		log.debug("visas factory");
 		String username = getUsername();
-		Object[] values;
+		String[] values;
 		try {
-			values = (Object[]) this.attributeClient.getAttributeValue(
-					username,
-					"urn:net:lin-k:safe-online:attribute:visaCardNumber");
+			values = this.attributeClient.getAttributeValue(username,
+					"urn:net:lin-k:safe-online:attribute:visaCardNumber",
+					String[].class);
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found: " + e.getMessage();
 			log.debug(msg);

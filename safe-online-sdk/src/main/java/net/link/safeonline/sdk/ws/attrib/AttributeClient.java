@@ -35,8 +35,10 @@ public interface AttributeClient extends MessageAccessor {
 	 * subject. The type of the value returned depends on the datatype of the
 	 * corresponding attribute type.
 	 * 
+	 * @param <Type>
 	 * @param subjectLogin
 	 * @param attributeName
+	 * @param valueClass
 	 * @return
 	 * @throws AttributeNotFoundException
 	 * @throws RequestDeniedException
@@ -44,9 +46,9 @@ public interface AttributeClient extends MessageAccessor {
 	 *             in case the service could not be contacted. Can happen if the
 	 *             SSL was not setup correctly.
 	 */
-	Object getAttributeValue(String subjectLogin, String attributeName)
-			throws AttributeNotFoundException, RequestDeniedException,
-			ConnectException;
+	<Type> Type getAttributeValue(String subjectLogin, String attributeName,
+			Class<Type> valueClass) throws AttributeNotFoundException,
+			RequestDeniedException, ConnectException;
 
 	/**
 	 * Gives back attribute values via the map of attributes. The map should

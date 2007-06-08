@@ -83,9 +83,8 @@ public class AttributeBean {
 					this.attributeWebServiceLocation, this.certificate,
 					this.privateKey);
 			try {
-				this.attributeValue = (String) attributeClient
-						.getAttributeValue(this.subjectLogin,
-								this.attributeName);
+				this.attributeValue = attributeClient.getAttributeValue(
+						this.subjectLogin, this.attributeName, String.class);
 			} catch (AttributeNotFoundException e) {
 				LOG.error("attribute not found: " + e.getMessage());
 				return "[attribute not found]";

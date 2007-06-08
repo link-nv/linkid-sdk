@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.ws;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -16,6 +17,9 @@ import java.util.Vector;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
+import javax.xml.ws.Binding;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
@@ -153,6 +157,25 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 		} catch (WSSecurityException e) {
 			throw new RuntimeException("WSS4J error: " + e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * Adds a new WS-Security client handler to the handler chain of the given
+	 * JAX-WS port.
+	 * 
+	 * @param port
+	 * @param certificate
+	 * @param privateKey
+	 */
+	public static void addNewHandler(Object port, X509Certificate certificate,
+			PrivateKey privateKey) {
+		BindingProvider bindingProvider = (BindingProvider) port;
+		Binding binding = bindingProvider.getBinding();
+		List<Handler> handlerChain = binding.getHandlerChain();
+		Handler wsSecurityHandler = new WSSecurityClientHandler(certificate,
+				privateKey);
+		handlerChain.add(wsSecurityHandler);
+		binding.setHandlerChain(handlerChain);
 	}
 
 	/**
