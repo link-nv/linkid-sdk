@@ -5,7 +5,8 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:tr="http://myfaces.apache.org/trinidad">
+	xmlns:tr="http://myfaces.apache.org/trinidad"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">SafeOnline Operator</ui:define>
@@ -24,48 +25,60 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<table>
-				<tr>
-					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
-					<td><s:decorate>
-						<h:inputText id="name" value="#{newAttributeType.name}"
-							required="true" />
-					</s:decorate>*<h:message for="name" styleClass="error" /></td>
-				</tr>
-				<tr>
-					<td><h:outputLabel for="datatype" value="#{msgs.type}" />:</td>
-					<td><h:selectOneMenu id="datatype"
-						value="#{newAttributeType.type}">
-						<f:selectItems value="#{datatypes}" />
-					</h:selectOneMenu></td>
-				</tr>
-			</table>
+			<rich:tabPanel switchType="client">
 
-			<h:panelGrid columns="1">
-				<h:panelGroup>
-					<h:selectBooleanCheckbox id="userVisible"
-						value="#{newAttributeType.userVisible}" />
-					<h:outputText value="#{msgs.userVisible}" />
-				</h:panelGroup>
-				<h:panelGroup>
-					<h:selectBooleanCheckbox id="userEditable"
-						value="#{newAttributeType.userEditable}" />
-					<h:outputText value="#{msgs.userEditable}" />
-				</h:panelGroup>
-				<h:panelGroup>
-					<h:selectBooleanCheckbox id="multivalued"
-						value="#{newAttributeType.multivalued}" />
-					<h:outputText value="#{msgs.multivalued}" />
-				</h:panelGroup>
-			</h:panelGrid>
+				<rich:tab label="#{msgs.generic}">
+					<table>
+						<tr>
+							<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
+							<td><s:decorate>
+								<h:inputText id="name" value="#{newAttributeType.name}"
+									required="true" />
+							</s:decorate>*<h:message for="name" styleClass="error" /></td>
+						</tr>
+						<tr>
+							<td><h:outputLabel for="datatype" value="#{msgs.type}" />:</td>
+							<td><h:selectOneMenu id="datatype"
+								value="#{newAttributeType.type}">
+								<f:selectItems value="#{datatypes}" />
+							</h:selectOneMenu></td>
+						</tr>
+						<tr>
+							<td><h:selectBooleanCheckbox id="multivalued"
+								value="#{newAttributeType.multivalued}" />
+								<h:outputText value="#{msgs.multivalued}" />
+							</td>
+						</tr>
+					</table>
+				</rich:tab>
 
-			<tr:selectOrderShuttle id="memberAttributes" value="#{attributes.selectedMemberAttributes}"
-				leadingHeader="#{msgs.attributes}:" trailingHeader="#{msgs.memberAttributes}:">
-				<f:selectItems value="#{memberAttributes}" />
-			</tr:selectOrderShuttle>
+				<rich:tab label="Compounded Members">
+					<tr:selectOrderShuttle id="memberAttributes" value="#{attributes.selectedMemberAttributes}"
+						leadingHeader="#{msgs.attributes}:" trailingHeader="#{msgs.memberAttributes}:">
+						<f:selectItems value="#{memberAttributes}" />
+					</tr:selectOrderShuttle>
+				</rich:tab>
+
+				<rich:tab label="Access Control">
+					<h:panelGrid columns="1">
+						<h:panelGroup>
+							<h:selectBooleanCheckbox id="userVisible"
+								value="#{newAttributeType.userVisible}" />
+							<h:outputText value="#{msgs.userVisible}" />
+						</h:panelGroup>
+						<h:panelGroup>
+							<h:selectBooleanCheckbox id="userEditable"
+								value="#{newAttributeType.userEditable}" />
+							<h:outputText value="#{msgs.userEditable}" />
+						</h:panelGroup>
+					</h:panelGrid>
+				</rich:tab>
+
+			</rich:tabPanel>
 
 			<h:messages styleClass="error" globalOnly="true" />
 
+			<rich:spacer height="10" />
 			<h:commandButton value="#{msgs.addaction}" id="add"
 				action="#{attributes.add}" />
 			<so:nbsp />
