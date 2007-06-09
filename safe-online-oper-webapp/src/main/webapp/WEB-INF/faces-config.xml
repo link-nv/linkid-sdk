@@ -10,7 +10,7 @@
 			<default-locale>en</default-locale>
 			<supported-locale>nl</supported-locale>
 		</locale-config>
-		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+		<default-render-kit-id>org.apache.myfaces.trinidad.core</default-render-kit-id>
 	</application>
 
 	<lifecycle>

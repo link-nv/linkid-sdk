@@ -4,7 +4,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:tr="http://myfaces.apache.org/trinidad">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">SafeOnline Operator</ui:define>
@@ -57,6 +58,11 @@
 					<h:outputText value="#{msgs.multivalued}" />
 				</h:panelGroup>
 			</h:panelGrid>
+
+			<tr:selectOrderShuttle id="memberAttributes" value="#{attributes.selectedMemberAttributes}"
+				leadingHeader="#{msgs.attributes}:" trailingHeader="#{msgs.memberAttributes}:">
+				<f:selectItems value="#{memberAttributes}" />
+			</tr:selectOrderShuttle>
 
 			<h:messages styleClass="error" globalOnly="true" />
 

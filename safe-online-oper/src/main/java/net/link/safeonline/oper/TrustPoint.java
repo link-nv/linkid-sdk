@@ -9,20 +9,29 @@ package net.link.safeonline.oper;
 
 import javax.ejb.Local;
 
-import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.apache.myfaces.custom.tree2.TreeModel;
+import org.apache.myfaces.trinidad.model.UploadedFile;
 
 @Local
 public interface TrustPoint {
 
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
 
+	/*
+	 * Accessors.
+	 */
 	TreeModel getTreeModel();
 
 	void setUpFile(UploadedFile uploadedFile);
 
 	UploadedFile getUpFile();
 
+	/*
+	 * Actions.
+	 */
 	String add();
 
 	String view();

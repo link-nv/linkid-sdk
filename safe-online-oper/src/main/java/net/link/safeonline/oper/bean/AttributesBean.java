@@ -62,6 +62,8 @@ public class AttributesBean implements Attributes {
 	@In(value = NEW_ATTRIBUTE_TYPE, required = false)
 	private AttributeTypeEntity newAttributeType;
 
+	private String[] selectedMemberAttributes;
+
 	@Factory("attributeTypeList")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void attributeTypeListFactory() {
@@ -82,6 +84,12 @@ public class AttributesBean implements Attributes {
 	// TODO: configure roles same way as the core
 	public String add() {
 		LOG.debug("add: " + this.newAttributeType);
+		if (null != this.selectedMemberAttributes) {
+			for (String selectedMemberAttribute : this.selectedMemberAttributes) {
+				LOG.debug("selected member attribute: "
+						+ selectedMemberAttribute);
+			}
+		}
 		try {
 			this.attributeTypeService.add(this.newAttributeType);
 		} catch (ExistingAttributeTypeException e) {
@@ -112,5 +120,24 @@ public class AttributesBean implements Attributes {
 		datatypes.add(new SelectItem("string"));
 		datatypes.add(new SelectItem("boolean"));
 		return datatypes;
+	}
+
+	@Factory("memberAttributes")
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public List<SelectItem> memberAttributesFactory() {
+		List<SelectItem> memberAttributes = new LinkedList<SelectItem>();
+		memberAttributes.add(new SelectItem("foo"));
+		memberAttributes.add(new SelectItem("bar"));
+		return memberAttributes;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String[] getSelectedMemberAttributes() {
+		return this.selectedMemberAttributes;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setSelectedMemberAttributes(String[] selectedMemberAttributes) {
+		this.selectedMemberAttributes = selectedMemberAttributes;
 	}
 }

@@ -24,6 +24,13 @@
 					<version>1.4</version>
 					<modules>
 						<jarModule>
+							<groupId>org.apache.myfaces.trinidad</groupId>
+							<artifactId>trinidad-api</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-common</artifactId>
 							<includeInApplicationXml>
@@ -539,6 +546,10 @@
 		<dependency>
 			<groupId>xml-security</groupId>
 			<artifactId>xmlsec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.myfaces.trinidad</groupId>
+			<artifactId>trinidad-api</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>

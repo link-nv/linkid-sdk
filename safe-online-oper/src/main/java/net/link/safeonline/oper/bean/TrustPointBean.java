@@ -7,7 +7,9 @@
 
 package net.link.safeonline.oper.bean;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -28,13 +30,14 @@ import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.TrustPoint;
 import net.link.safeonline.service.PkiService;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.apache.myfaces.custom.tree2.TreeModel;
 import org.apache.myfaces.custom.tree2.TreeModelBase;
 import org.apache.myfaces.custom.tree2.TreeNode;
 import org.apache.myfaces.custom.tree2.TreeNodeBase;
+import org.apache.myfaces.trinidad.model.UploadedFile;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
@@ -113,18 +116,20 @@ public class TrustPointBean implements TrustPoint {
 		return treeModel;
 	}
 
+	private byte[] getUpFileContent() throws IOException {
+		InputStream inputStream = this.upFile.getInputStream();
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		IOUtils.copy(inputStream, byteArrayOutputStream);
+		return byteArrayOutputStream.toByteArray();
+	}
+
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String add() {
 		String domainName = this.selectedTrustDomain.getName();
 		LOG.debug("adding trust point to domain " + domainName);
 		try {
-			byte[] encodedCertificate = this.upFile.getBytes();
-			this.pkiService.addTrustPoint(domainName, encodedCertificate);
-		} catch (IOException e) {
-			String msg = "IO error: " + e.getMessage();
-			LOG.debug(msg);
-			this.facesMessages.addToControl("fileupload", msg);
-			return null;
+			byte[] content = getUpFileContent();
+			this.pkiService.addTrustPoint(domainName, content);
 		} catch (TrustDomainNotFoundException e) {
 			String msg = "trust domain not found";
 			LOG.debug(msg);
@@ -137,6 +142,11 @@ public class TrustPointBean implements TrustPoint {
 			return null;
 		} catch (ExistingTrustPointException e) {
 			String msg = "existing trust point";
+			LOG.debug(msg);
+			this.facesMessages.addToControl("fileupload", msg);
+			return null;
+		} catch (IOException e) {
+			String msg = "I/O error";
 			LOG.debug(msg);
 			this.facesMessages.addToControl("fileupload", msg);
 			return null;

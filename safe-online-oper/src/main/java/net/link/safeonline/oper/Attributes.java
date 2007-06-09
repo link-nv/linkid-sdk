@@ -26,6 +26,8 @@ public interface Attributes {
 
 	List<SelectItem> datatypesFactory();
 
+	List<SelectItem> memberAttributesFactory();
+
 	/*
 	 * Actions.
 	 */
@@ -37,4 +39,11 @@ public interface Attributes {
 	 * Lifecycle.
 	 */
 	void destroyCallback();
+
+	/*
+	 * Accessors.
+	 */
+	void setSelectedMemberAttributes(String[] selectedMemberAttributes);
+
+	String[] getSelectedMemberAttributes();
 }
