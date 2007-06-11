@@ -21,8 +21,8 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.dao.ConfigGroupDAO;
 import net.link.safeonline.dao.ConfigItemDAO;
-import net.link.safeonline.entity.ConfigGroupEntity;
-import net.link.safeonline.entity.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigGroupEntity;
+import net.link.safeonline.entity.config.ConfigItemEntity;
 import net.link.safeonline.model.ConfigStartable;
 import net.link.safeonline.model.ConfigurableScanner;
 

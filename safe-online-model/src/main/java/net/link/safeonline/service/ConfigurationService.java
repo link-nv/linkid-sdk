@@ -11,8 +11,8 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.ConfigGroupEntity;
-import net.link.safeonline.entity.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigGroupEntity;
+import net.link.safeonline.entity.config.ConfigItemEntity;
 
 @Local
 public interface ConfigurationService {

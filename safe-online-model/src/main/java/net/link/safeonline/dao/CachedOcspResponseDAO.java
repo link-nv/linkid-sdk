@@ -9,8 +9,8 @@ package net.link.safeonline.dao;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.CachedOcspResponseEntity;
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
 @Local
 public interface CachedOcspResponseDAO {

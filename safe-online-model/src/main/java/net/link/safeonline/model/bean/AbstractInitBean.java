@@ -45,8 +45,8 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.entity.TrustPointEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
 
 import org.apache.commons.logging.Log;

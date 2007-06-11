@@ -18,6 +18,7 @@ import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.oper.Attributes;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.service.AttributeTypeService;
@@ -62,7 +63,7 @@ public class AttributesBean implements Attributes {
 	@In(value = NEW_ATTRIBUTE_TYPE, required = false)
 	private AttributeTypeEntity newAttributeType;
 
-	private String[] selectedMemberAttributes;
+	private AttributeTypeEntity[] selectedMemberAttributes;
 
 	@Factory("attributeTypeList")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -85,9 +86,16 @@ public class AttributesBean implements Attributes {
 	public String add() {
 		LOG.debug("add: " + this.newAttributeType);
 		if (null != this.selectedMemberAttributes) {
-			for (String selectedMemberAttribute : this.selectedMemberAttributes) {
+			List<CompoundedAttributeTypeMemberEntity> members = this.newAttributeType
+					.getMembers();
+			int sequenceNr = 0;
+			for (AttributeTypeEntity selectedMemberAttribute : this.selectedMemberAttributes) {
 				LOG.debug("selected member attribute: "
-						+ selectedMemberAttribute);
+						+ selectedMemberAttribute.getName());
+				members.add(new CompoundedAttributeTypeMemberEntity(
+						this.newAttributeType, selectedMemberAttribute,
+						sequenceNr));
+				sequenceNr += 1;
 			}
 		}
 		try {
@@ -126,18 +134,24 @@ public class AttributesBean implements Attributes {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<SelectItem> memberAttributesFactory() {
 		List<SelectItem> memberAttributes = new LinkedList<SelectItem>();
-		memberAttributes.add(new SelectItem("foo"));
-		memberAttributes.add(new SelectItem("bar"));
+		if (null == this.attributeTypeList) {
+			attributeTypeListFactory();
+		}
+		for (AttributeTypeEntity attributeType : this.attributeTypeList) {
+			String attributeName = attributeType.getName();
+			memberAttributes.add(new SelectItem(attributeType, attributeName));
+		}
 		return memberAttributes;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String[] getSelectedMemberAttributes() {
+	public AttributeTypeEntity[] getSelectedMemberAttributes() {
 		return this.selectedMemberAttributes;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setSelectedMemberAttributes(String[] selectedMemberAttributes) {
+	public void setSelectedMemberAttributes(
+			AttributeTypeEntity[] selectedMemberAttributes) {
 		this.selectedMemberAttributes = selectedMemberAttributes;
 	}
 }

@@ -13,9 +13,9 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.TrustPointNotFoundException;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.entity.TrustPointEntity;
-import net.link.safeonline.entity.TrustPointPK;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustPointEntity;
+import net.link.safeonline.entity.pkix.TrustPointPK;
 
 @Local
 public interface TrustPointDAO {

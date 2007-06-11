@@ -45,21 +45,22 @@
 						</tr>
 						<tr>
 							<td><h:selectBooleanCheckbox id="multivalued"
-								value="#{newAttributeType.multivalued}" />
-								<h:outputText value="#{msgs.multivalued}" />
-							</td>
+								value="#{newAttributeType.multivalued}" /> <h:outputText
+								value="#{msgs.multivalued}" /></td>
 						</tr>
 					</table>
 				</rich:tab>
 
-				<rich:tab label="Compounded Members">
-					<tr:selectOrderShuttle id="memberAttributes" value="#{attributes.selectedMemberAttributes}"
-						leadingHeader="#{msgs.attributes}:" trailingHeader="#{msgs.memberAttributes}:">
+				<rich:tab label="#{msgs.compounded}">
+					<tr:selectOrderShuttle id="memberAttributes"
+						value="#{attributes.selectedMemberAttributes}"
+						leadingHeader="#{msgs.availableAttributes}:"
+						trailingHeader="#{msgs.memberAttributes}:">
 						<f:selectItems value="#{memberAttributes}" />
 					</tr:selectOrderShuttle>
 				</rich:tab>
 
-				<rich:tab label="Access Control">
+				<rich:tab label="#{msgs.accessControl}">
 					<h:panelGrid columns="1">
 						<h:panelGroup>
 							<h:selectBooleanCheckbox id="userVisible"

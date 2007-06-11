@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import junit.framework.TestCase;
 import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.bean.TrustDomainDAOBean;
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.test.util.EntityTestManager;
 
 public class TrustDomainDAOBeanTest extends TestCase {

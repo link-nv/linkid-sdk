@@ -25,7 +25,7 @@ import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.bean.AbstractInitBean;
 
 import org.apache.commons.io.IOUtils;

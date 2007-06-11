@@ -26,7 +26,7 @@ import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.PkiProvider;
 import net.link.safeonline.model.SubjectManager;
 

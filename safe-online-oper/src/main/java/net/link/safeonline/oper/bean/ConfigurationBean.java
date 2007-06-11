@@ -23,7 +23,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.core.FacesMessages;
 
-import net.link.safeonline.entity.ConfigGroupEntity;
+import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.oper.Configuration;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.service.ConfigurationService;

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.entity;
+package net.link.safeonline.entity.tasks;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -21,13 +21,14 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import static net.link.safeonline.entity.TaskHistoryEntity.QUERY_DELETE_WHERE_TASK;
-import static net.link.safeonline.entity.TaskHistoryEntity.QUERY_DELETE;
-import static net.link.safeonline.entity.TaskHistoryEntity.QUERY_DELETE_WHERE_OLDER;
+import static net.link.safeonline.entity.tasks.TaskHistoryEntity.QUERY_DELETE;
+import static net.link.safeonline.entity.tasks.TaskHistoryEntity.QUERY_DELETE_WHERE_OLDER;
+import static net.link.safeonline.entity.tasks.TaskHistoryEntity.QUERY_DELETE_WHERE_TASK;
 
 @Entity
 @Table(name = "task_history")

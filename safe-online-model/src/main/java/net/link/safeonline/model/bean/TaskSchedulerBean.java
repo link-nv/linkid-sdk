@@ -30,8 +30,8 @@ import net.link.safeonline.authentication.exception.InvalidCronExpressionExcepti
 import net.link.safeonline.dao.SchedulingDAO;
 import net.link.safeonline.dao.TaskDAO;
 import net.link.safeonline.dao.TaskHistoryDAO;
-import net.link.safeonline.entity.SchedulingEntity;
-import net.link.safeonline.entity.TaskEntity;
+import net.link.safeonline.entity.tasks.SchedulingEntity;
+import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.model.TaskScheduler;
 import net.link.safeonline.util.ee.EjbUtils;
 

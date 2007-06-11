@@ -12,8 +12,8 @@ import java.util.List;
 
 import net.link.safeonline.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.dao.bean.ConfigItemDAOBean;
-import net.link.safeonline.entity.ConfigGroupEntity;
-import net.link.safeonline.entity.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigGroupEntity;
+import net.link.safeonline.entity.config.ConfigItemEntity;
 import net.link.safeonline.service.bean.ConfigurationServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;

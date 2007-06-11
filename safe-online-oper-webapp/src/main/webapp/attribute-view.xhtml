@@ -48,7 +48,23 @@
 							<td><h:outputText
 								value="#{selectedAttributeType.multivalued}" /></td>
 						</tr>
+						<tr>
+							<th>#{msgs.compounded}:</th>
+							<td>#{selectedAttributeType.compounded}</td>
+						</tr>
 					</table>
+				</rich:tab>
+
+				<rich:tab id="compounded-tab" label="#{msgs.compounded}"
+					disabled="#{!selectedAttributeType.compounded}">
+					<h:dataTable id="compounded-members" var="item"
+						value="#{selectedAttributeType.members}" styleClass="listingTable"
+						rowClasses="listingTable_Row1,listingTable_Row2">
+						<h:column>
+							<f:facet name="header">#{msgs.name}</f:facet>
+							<h:outputText value="#{item.member.name}" />
+						</h:column>
+					</h:dataTable>
 				</rich:tab>
 
 				<rich:tab id="description-tab" label="#{msgs.description}">

@@ -22,6 +22,13 @@ public interface AttributeTypeService {
 
 	List<AttributeTypeEntity> listAttributeTypes();
 
+	/**
+	 * Adds a new attribute type using the given attribute type prototype.
+	 * 
+	 * @param attributeType
+	 *            the attribute type prototype.
+	 * @throws ExistingAttributeTypeException
+	 */
 	void add(AttributeTypeEntity attributeType)
 			throws ExistingAttributeTypeException;
 

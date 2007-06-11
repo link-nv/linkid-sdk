@@ -18,9 +18,9 @@ import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ExistingSchedulingException;
 import net.link.safeonline.authentication.exception.InvalidCronExpressionException;
-import net.link.safeonline.entity.SchedulingEntity;
-import net.link.safeonline.entity.TaskEntity;
-import net.link.safeonline.entity.TaskHistoryEntity;
+import net.link.safeonline.entity.tasks.SchedulingEntity;
+import net.link.safeonline.entity.tasks.TaskEntity;
+import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.Scheduling;
 import net.link.safeonline.service.SchedulingService;

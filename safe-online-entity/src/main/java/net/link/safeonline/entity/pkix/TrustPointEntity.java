@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.entity;
+package net.link.safeonline.entity.pkix;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -31,11 +31,12 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import static net.link.safeonline.entity.TrustPointEntity.QUERY_WHERE_DOMAIN;
+import static net.link.safeonline.entity.pkix.TrustPointEntity.QUERY_WHERE_DOMAIN;
 
 @Entity
 @Table(name = "trust_point")

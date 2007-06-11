@@ -24,8 +24,8 @@ import net.link.safeonline.authentication.exception.CertificateEncodingException
 import net.link.safeonline.authentication.exception.ExistingTrustPointException;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.exception.TrustPointNotFoundException;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.entity.TrustPointEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.TrustPoint;
 import net.link.safeonline.service.PkiService;

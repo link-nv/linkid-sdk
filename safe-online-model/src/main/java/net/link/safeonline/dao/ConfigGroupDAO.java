@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.ConfigGroupEntity;
+import net.link.safeonline.entity.config.ConfigGroupEntity;
 
 @Local
 public interface ConfigGroupDAO {

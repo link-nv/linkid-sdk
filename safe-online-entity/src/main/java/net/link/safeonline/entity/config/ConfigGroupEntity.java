@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.entity;
+package net.link.safeonline.entity.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,11 +21,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import static net.link.safeonline.entity.ConfigGroupEntity.QUERY_LIST_ALL;
+import static net.link.safeonline.entity.config.ConfigGroupEntity.QUERY_LIST_ALL;
 
 @Entity
 @Table(name = "config_group")
@@ -85,7 +86,7 @@ public class ConfigGroupEntity implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if (false == obj instanceof TaskEntity) {
+		if (false == obj instanceof ConfigGroupEntity) {
 			return false;
 		}
 		ConfigGroupEntity rhs = (ConfigGroupEntity) obj;

@@ -22,8 +22,8 @@ import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.TaskHistoryDAO;
-import net.link.safeonline.entity.TaskEntity;
-import net.link.safeonline.entity.TaskHistoryEntity;
+import net.link.safeonline.entity.tasks.TaskEntity;
+import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 
 @Stateless
 public class TaskHistoryDAOBean implements TaskHistoryDAO {

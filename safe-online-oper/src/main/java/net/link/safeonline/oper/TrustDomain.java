@@ -9,7 +9,7 @@ package net.link.safeonline.oper;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
 @Local
 public interface TrustDomain {

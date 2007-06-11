@@ -16,8 +16,8 @@ import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.TaskDAO;
-import net.link.safeonline.entity.SchedulingEntity;
-import net.link.safeonline.entity.TaskEntity;
+import net.link.safeonline.entity.tasks.SchedulingEntity;
+import net.link.safeonline.entity.tasks.TaskEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

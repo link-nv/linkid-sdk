@@ -18,9 +18,9 @@ import javax.persistence.Query;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.TrustPointNotFoundException;
 import net.link.safeonline.dao.TrustPointDAO;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.entity.TrustPointEntity;
-import net.link.safeonline.entity.TrustPointPK;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustPointEntity;
+import net.link.safeonline.entity.pkix.TrustPointPK;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

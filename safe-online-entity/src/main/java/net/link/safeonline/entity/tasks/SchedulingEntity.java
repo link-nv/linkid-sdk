@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.entity;
+package net.link.safeonline.entity.tasks;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -24,13 +24,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import static net.link.safeonline.entity.SchedulingEntity.QUERY_WHERE_NAME;
-import static net.link.safeonline.entity.SchedulingEntity.QUERY_WHERE_TIMERHANDLE;
-import static net.link.safeonline.entity.SchedulingEntity.QUERY_LIST_ALL;
+import static net.link.safeonline.entity.tasks.SchedulingEntity.QUERY_LIST_ALL;
+import static net.link.safeonline.entity.tasks.SchedulingEntity.QUERY_WHERE_NAME;
+import static net.link.safeonline.entity.tasks.SchedulingEntity.QUERY_WHERE_TIMERHANDLE;
 
 @Entity
 @Table(name = "scheduling")

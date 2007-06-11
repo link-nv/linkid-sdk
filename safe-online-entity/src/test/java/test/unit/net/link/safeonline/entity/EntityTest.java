@@ -7,11 +7,19 @@
 
 package test.unit.net.link.safeonline.entity;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -19,7 +27,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
-import junit.framework.TestCase;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
@@ -31,11 +38,8 @@ import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeProviderPK;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CachedOcspResponseEntity;
-import net.link.safeonline.entity.ConfigGroupEntity;
-import net.link.safeonline.entity.ConfigItemEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.HistoryEntity;
-import net.link.safeonline.entity.SchedulingEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -44,13 +48,17 @@ import net.link.safeonline.entity.SubjectIdentifierPK;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.SubscriptionPK;
-import net.link.safeonline.entity.TaskEntity;
-import net.link.safeonline.entity.TaskHistoryEntity;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.entity.TrustPointEntity;
-import net.link.safeonline.entity.TrustPointPK;
 import net.link.safeonline.entity.audit.AuditAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
+import net.link.safeonline.entity.config.ConfigGroupEntity;
+import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustPointEntity;
+import net.link.safeonline.entity.pkix.TrustPointPK;
+import net.link.safeonline.entity.tasks.SchedulingEntity;
+import net.link.safeonline.entity.tasks.TaskEntity;
+import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -59,49 +67,61 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class EntityTest extends TestCase {
+public class EntityTest {
 
 	private EntityTestManager entityTestManager;
 
 	private static final Log LOG = LogFactory.getLog(EntityTest.class);
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() {
 		this.entityTestManager = new EntityTestManager();
 		/*
 		 * If you add entities to this list, also add them to
 		 * safe-online-sql-ddl.
 		 */
-		this.entityTestManager.setUp(SubjectEntity.class,
-				ApplicationEntity.class, SubscriptionEntity.class,
-				HistoryEntity.class, ApplicationOwnerEntity.class,
-				AttributeTypeEntity.class, AttributeEntity.class,
-				TrustDomainEntity.class, TrustPointEntity.class,
-				SubjectIdentifierEntity.class, CachedOcspResponseEntity.class,
-				TaskEntity.class, SchedulingEntity.class,
-				TaskHistoryEntity.class, ConfigItemEntity.class,
-				ConfigGroupEntity.class, StatisticEntity.class,
-				StatisticDataPointEntity.class,
-				ApplicationIdentityEntity.class,
-				ApplicationIdentityAttributeEntity.class,
-				AttributeTypeDescriptionEntity.class,
-				AttributeProviderEntity.class, AuditContextEntity.class,
-				AuditAuditEntity.class);
+		try {
+			this.entityTestManager.setUp(SubjectEntity.class,
+					ApplicationEntity.class, SubscriptionEntity.class,
+					HistoryEntity.class, ApplicationOwnerEntity.class,
+					AttributeTypeEntity.class, AttributeEntity.class,
+					TrustDomainEntity.class, TrustPointEntity.class,
+					SubjectIdentifierEntity.class,
+					CachedOcspResponseEntity.class, TaskEntity.class,
+					SchedulingEntity.class, TaskHistoryEntity.class,
+					ConfigItemEntity.class, ConfigGroupEntity.class,
+					StatisticEntity.class, StatisticDataPointEntity.class,
+					ApplicationIdentityEntity.class,
+					ApplicationIdentityAttributeEntity.class,
+					AttributeTypeDescriptionEntity.class,
+					AttributeProviderEntity.class, AuditContextEntity.class,
+					AuditAuditEntity.class,
+					CompoundedAttributeTypeMemberEntity.class);
+		} catch (Exception e) {
+			LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
+			throw new RuntimeException("JPA annotations incorrect: "
+					+ e.getMessage(), e);
+		}
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		this.entityTestManager.tearDown();
-		super.tearDown();
 	}
 
-	public void testAnnotationCorrectness() throws Exception {
-		// empty
+	@Test
+	public void annotationCorrectness() throws Exception {
+		LOG.debug("annotation correctness test");
+		assertNotNull("JPA annotations incorrect?", this.entityTestManager
+				.getEntityManager());
 	}
 
-	public void testAddRemoveSubject() throws Exception {
+	@Test
+	public void addRemoveSubject() throws Exception {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-login");
 
@@ -124,6 +144,7 @@ public class EntityTest extends TestCase {
 		assertNull(entityManager.find(SubjectEntity.class, "test-login"));
 	}
 
+	@Test
 	public void testAddRemoveApplication() throws Exception {
 		// setup
 		SubjectEntity admin = new SubjectEntity("test-admin");
@@ -154,6 +175,7 @@ public class EntityTest extends TestCase {
 				"test-application"));
 	}
 
+	@Test
 	public void testAddSubscriptionRequiresEntityAndApplication()
 			throws Exception {
 		// setup
@@ -177,6 +199,7 @@ public class EntityTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testAddSubscriptionRequiresExistingEntityAndApplication()
 			throws Exception {
 		// setup
@@ -199,6 +222,7 @@ public class EntityTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testAddSubscription() throws Exception {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-login");
@@ -244,6 +268,7 @@ public class EntityTest extends TestCase {
 				"test-application"));
 	}
 
+	@Test
 	public void testAddHistory() throws Exception {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-login");
@@ -264,6 +289,7 @@ public class EntityTest extends TestCase {
 		assertNotNull(resultHistory);
 	}
 
+	@Test
 	public void testAddAttribute() throws Exception {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-login");
@@ -289,6 +315,7 @@ public class EntityTest extends TestCase {
 		assertEquals(attributeType, resultAttribute.getAttributeType());
 	}
 
+	@Test
 	public void testMultiValuedAttribute() throws Exception {
 		// setup
 		String login = "test-login";
@@ -341,9 +368,11 @@ public class EntityTest extends TestCase {
 		assertEquals(attribute2, resultAttribute);
 	}
 
+	@Test
 	public void testTrustDomain() throws Exception {
 		// setup
-		String trustDomainName = "test-trust-domain-" + getName();
+		String trustDomainName = "test-trust-domain-"
+				+ UUID.randomUUID().toString();
 		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
 				true);
 
@@ -374,10 +403,12 @@ public class EntityTest extends TestCase {
 		}
 	}
 
+	@Test
 	@SuppressWarnings("unchecked")
 	public void testTrustPoint() throws Exception {
 		// setup
-		String trustDomainName = "test-trust-domain-" + getName();
+		String trustDomainName = "test-trust-domain-"
+				+ UUID.randomUUID().toString();
 		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
 				true);
 
@@ -416,10 +447,12 @@ public class EntityTest extends TestCase {
 		assertEquals(resultTrustPoint, resultTrustPoints.get(0));
 	}
 
+	@Test
 	@SuppressWarnings("unchecked")
 	public void testTrustPointWithEmptyKeyId() throws Exception {
 		// setup
-		String trustDomainName = "test-trust-domain-" + getName();
+		String trustDomainName = "test-trust-domain-"
+				+ UUID.randomUUID().toString();
 		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
 				true);
 
@@ -456,6 +489,7 @@ public class EntityTest extends TestCase {
 		assertEquals(resultTrustPoint, resultTrustPoints.get(0));
 	}
 
+	@Test
 	public void testSubjectIdentifier() throws Exception {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-subject");
@@ -507,6 +541,7 @@ public class EntityTest extends TestCase {
 		assertNull(resultSubjectIdentifier);
 	}
 
+	@Test
 	public void testTrustPointEntityHashCode() throws Exception {
 		// setup
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
@@ -526,9 +561,11 @@ public class EntityTest extends TestCase {
 		assertEquals(trustPoint1.hashCode(), trustPoint2.hashCode());
 	}
 
+	@Test
 	public void testCachedOcspResponse() throws Exception {
 		// setup
-		String trustDomainName = "test-trust-domain-" + getName();
+		String trustDomainName = "test-trust-domain-"
+				+ UUID.randomUUID().toString();
 		TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName,
 				true);
 		String key = "1234";
@@ -569,6 +606,7 @@ public class EntityTest extends TestCase {
 		assertEquals(result, 1);
 	}
 
+	@Test
 	public void testTaskScheduling() {
 		// setup
 		SchedulingEntity schedulingEntity = new SchedulingEntity("default",
@@ -601,6 +639,7 @@ public class EntityTest extends TestCase {
 		assertEquals(schedulingEntity, resultScheduling);
 	}
 
+	@Test
 	public void testAddRemoveTaskScheduling() {
 		// setup
 		SchedulingEntity schedulingEntity = new SchedulingEntity("default",
@@ -629,6 +668,7 @@ public class EntityTest extends TestCase {
 		entityManager.remove(taskEntity);
 	}
 
+	@Test
 	public void testAddRemoveTaskHistory() {
 		// setup
 		TaskEntity taskEntity = new TaskEntity("id", "name", null);
@@ -670,6 +710,7 @@ public class EntityTest extends TestCase {
 		entityManager.flush();
 	}
 
+	@Test
 	public void testTaskHistoryClearing() {
 		// setup
 		TaskEntity taskEntity = new TaskEntity("id", "name", null);
@@ -691,6 +732,7 @@ public class EntityTest extends TestCase {
 		assertEquals(0, task.getTaskHistory().size());
 	}
 
+	@Test
 	public void testAddApplicationIdentity() throws Exception {
 		// setup
 		SubjectEntity admin = new SubjectEntity("test-admin");
@@ -751,6 +793,7 @@ public class EntityTest extends TestCase {
 		assertTrue(hasType2);
 	}
 
+	@Test
 	public void testMultipleApplicationIdentities() throws Exception {
 		SubjectEntity admin = new SubjectEntity("test-admin");
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
@@ -775,6 +818,7 @@ public class EntityTest extends TestCase {
 		entityManager.getTransaction().commit();
 	}
 
+	@Test
 	public void testAddRemoveConfig() {
 		// setup
 		ConfigGroupEntity group = new ConfigGroupEntity("group 1");
@@ -786,6 +830,7 @@ public class EntityTest extends TestCase {
 		entityManager.flush();
 	}
 
+	@Test
 	public void testAddRemoveStatistic() {
 		// setup
 		StatisticEntity stat = new StatisticEntity("stat 1", "domain", null,
@@ -807,6 +852,7 @@ public class EntityTest extends TestCase {
 		assertNull(result);
 	}
 
+	@Test
 	public void testAddRemoveAttributeProvider() throws Exception {
 		// setup
 		SubjectEntity admin = new SubjectEntity("test-admin");
@@ -836,6 +882,7 @@ public class EntityTest extends TestCase {
 		assertEquals(resultAttributeProvider, attributeProvider);
 	}
 
+	@Test
 	public void testCreateAuditContext() throws Exception {
 		// setup
 		AuditContextEntity contextEntity = new AuditContextEntity();
@@ -850,6 +897,7 @@ public class EntityTest extends TestCase {
 		assertTrue(contextEntity.getId() < contextEntity2.getId());
 	}
 
+	@Test
 	public void testAuditAudit() throws Exception {
 		// setup
 		AuditContextEntity auditContext = new AuditContextEntity();
@@ -865,5 +913,102 @@ public class EntityTest extends TestCase {
 
 		// verify
 		assertNull(auditAudit2.getAuditContext());
+	}
+
+	@Test
+	public void compoundedAttributeType() throws Exception {
+		// setup
+		String testParentName = "parent-attribute-type-"
+				+ UUID.randomUUID().toString();
+		String testMemberName = "member-attribute-type-"
+				+ UUID.randomUUID().toString();
+		String testType = "string";
+
+		AttributeTypeEntity parentAttributeType = new AttributeTypeEntity(
+				testParentName, testType, true, true);
+		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
+				testMemberName, testType, true, true);
+		CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(
+				parentAttributeType, memberAttributeType, 0);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(parentAttributeType);
+		entityManager.persist(memberAttributeType);
+		entityManager.persist(member);
+
+		// verify
+		assertTrue(parentAttributeType.getMembers().isEmpty());
+		entityManager = this.entityTestManager.refreshEntityManager();
+		AttributeTypeEntity resultParent = entityManager.find(
+				AttributeTypeEntity.class, testParentName);
+		assertNotNull(resultParent);
+		assertEquals(1, resultParent.getMembers().size());
+		assertEquals(member, resultParent.getMembers().toArray()[0]);
+	}
+
+	@Test
+	public void compoundedAttributeTypePersistCascading() throws Exception {
+		// setup
+		String testParentName = "parent-attribute-type-"
+				+ UUID.randomUUID().toString();
+		String testMemberName = "member-attribute-type-"
+				+ UUID.randomUUID().toString();
+		String testType = "string";
+
+		AttributeTypeEntity parentAttributeType = new AttributeTypeEntity(
+				testParentName, testType, true, true);
+		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
+				testMemberName, testType, true, true);
+		CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(
+				parentAttributeType, memberAttributeType, 0);
+		parentAttributeType.getMembers().add(member);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(memberAttributeType);
+		entityManager.persist(parentAttributeType);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		AttributeTypeEntity resultParent = entityManager.find(
+				AttributeTypeEntity.class, testParentName);
+		assertNotNull(resultParent);
+		assertEquals(1, resultParent.getMembers().size());
+		assertEquals(member, resultParent.getMembers().toArray()[0]);
+	}
+
+	@Test
+	public void compoundedAttributeTypeEagerLoading() throws Exception {
+		// setup
+		String testParentName = "parent-attribute-type-"
+				+ UUID.randomUUID().toString();
+		String testMemberName = "member-attribute-type-"
+				+ UUID.randomUUID().toString();
+		String testType = "string";
+
+		AttributeTypeEntity parentAttributeType = new AttributeTypeEntity(
+				testParentName, testType, true, true);
+		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
+				testMemberName, testType, true, true);
+		CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(
+				parentAttributeType, memberAttributeType, 0);
+		parentAttributeType.getMembers().add(member);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(memberAttributeType);
+		entityManager.persist(parentAttributeType);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		AttributeTypeEntity resultParent = entityManager.find(
+				AttributeTypeEntity.class, testParentName);
+		assertNotNull(resultParent);
+
+		// operate & verify: eager loading of members
+		entityManager.clear(); // detaches the resultParent
+		assertEquals(1, resultParent.getMembers().size());
+		assertTrue(resultParent.isCompounded());
 	}
 }

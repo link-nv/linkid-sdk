@@ -9,7 +9,7 @@ package net.link.safeonline.model;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigItemEntity;
 
 /**
  * Configuration Manager interface. Allows for components to access the

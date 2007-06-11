@@ -29,9 +29,9 @@ import javax.security.auth.x500.X500Principal;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.dao.TrustDomainDAO;
 import net.link.safeonline.dao.TrustPointDAO;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.entity.TrustPointEntity;
-import net.link.safeonline.entity.TrustPointPK;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustPointEntity;
+import net.link.safeonline.entity.pkix.TrustPointPK;
 import net.link.safeonline.model.CachedOcspValidator;
 import net.link.safeonline.model.PkiValidator;
 

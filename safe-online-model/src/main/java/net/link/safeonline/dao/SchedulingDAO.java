@@ -12,7 +12,7 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.TimerHandle;
 
-import net.link.safeonline.entity.SchedulingEntity;
+import net.link.safeonline.entity.tasks.SchedulingEntity;
 
 @Local
 public interface SchedulingDAO {

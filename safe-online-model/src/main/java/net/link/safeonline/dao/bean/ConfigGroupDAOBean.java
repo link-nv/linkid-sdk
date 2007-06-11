@@ -16,7 +16,7 @@ import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.ConfigGroupDAO;
-import net.link.safeonline.entity.ConfigGroupEntity;
+import net.link.safeonline.entity.config.ConfigGroupEntity;
 
 @Stateless
 public class ConfigGroupDAOBean implements ConfigGroupDAO {

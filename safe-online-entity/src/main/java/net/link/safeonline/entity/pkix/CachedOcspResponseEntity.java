@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.entity;
+package net.link.safeonline.entity.pkix;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,15 +22,16 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Index;
 
-import static net.link.safeonline.entity.CachedOcspResponseEntity.QUERY_WHERE_KEY;
-import static net.link.safeonline.entity.CachedOcspResponseEntity.QUERY_DELETE_ALL;
-import static net.link.safeonline.entity.CachedOcspResponseEntity.QUERY_DELETE_PER_DOMAIN;
-import static net.link.safeonline.entity.CachedOcspResponseEntity.QUERY_DELETE_EXPIRED;
+import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_DELETE_ALL;
+import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_DELETE_EXPIRED;
+import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_DELETE_PER_DOMAIN;
+import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_WHERE_KEY;
 
 @Entity
 @Table(name = "cached_ocsp_responses")

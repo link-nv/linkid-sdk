@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.SchedulingDAO;
-import net.link.safeonline.entity.SchedulingEntity;
+import net.link.safeonline.entity.tasks.SchedulingEntity;
 
 @Stateless
 public class SchedulingDAOBean implements SchedulingDAO {

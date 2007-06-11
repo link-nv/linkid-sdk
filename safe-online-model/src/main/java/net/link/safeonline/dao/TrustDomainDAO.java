@@ -12,7 +12,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
 @Local
 public interface TrustDomainDAO {

@@ -11,7 +11,7 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
 @Local
 public interface CachedOcspValidator {

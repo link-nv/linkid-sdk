@@ -21,8 +21,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import net.link.safeonline.dao.TrustPointDAO;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.entity.TrustPointEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.model.CachedOcspValidator;
 import net.link.safeonline.model.bean.PkiValidatorBean;
 import net.link.safeonline.test.util.EJBTestUtils;

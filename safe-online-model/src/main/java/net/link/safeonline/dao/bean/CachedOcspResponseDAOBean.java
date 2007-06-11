@@ -19,8 +19,8 @@ import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.CachedOcspResponseDAO;
-import net.link.safeonline.entity.CachedOcspResponseEntity;
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
 @Stateless
 public class CachedOcspResponseDAOBean implements CachedOcspResponseDAO {

@@ -10,9 +10,9 @@ package test.unit.net.link.safeonline.dao.bean;
 import javax.persistence.EntityManager;
 
 import net.link.safeonline.dao.bean.CachedOcspResponseDAOBean;
-import net.link.safeonline.entity.CachedOcspResponseEntity;
 
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import junit.framework.TestCase;

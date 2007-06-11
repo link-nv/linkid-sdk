@@ -15,21 +15,27 @@
 		<mapping class="net.link.safeonline.entity.SubscriptionEntity" />
 		<mapping class="net.link.safeonline.entity.AttributeTypeEntity" />
 		<mapping class="net.link.safeonline.entity.AttributeEntity" />
-		<mapping class="net.link.safeonline.entity.TrustDomainEntity" />
-		<mapping class="net.link.safeonline.entity.TrustPointEntity" />
+		<mapping
+			class="net.link.safeonline.entity.pkix.TrustDomainEntity" />
+		<mapping
+			class="net.link.safeonline.entity.pkix.TrustPointEntity" />
 		<mapping
 			class="net.link.safeonline.entity.SubjectIdentifierEntity" />
 		<mapping
-			class="net.link.safeonline.entity.CachedOcspResponseEntity" />
-		<mapping class="net.link.safeonline.entity.TaskEntity" />
-		<mapping class="net.link.safeonline.entity.SchedulingEntity" />
-		<mapping class="net.link.safeonline.entity.TaskHistoryEntity" />
+			class="net.link.safeonline.entity.pkix.CachedOcspResponseEntity" />
+		<mapping class="net.link.safeonline.entity.tasks.TaskEntity" />
+		<mapping
+			class="net.link.safeonline.entity.tasks.SchedulingEntity" />
+		<mapping
+			class="net.link.safeonline.entity.tasks.TaskHistoryEntity" />
 		<mapping
 			class="net.link.safeonline.entity.ApplicationIdentityEntity" />
 		<mapping
 			class="net.link.safeonline.entity.ApplicationIdentityAttributeEntity" />
-		<mapping class="net.link.safeonline.entity.ConfigGroupEntity" />
-		<mapping class="net.link.safeonline.entity.ConfigItemEntity" />
+		<mapping
+			class="net.link.safeonline.entity.config.ConfigGroupEntity" />
+		<mapping
+			class="net.link.safeonline.entity.config.ConfigItemEntity" />
 		<mapping class="net.link.safeonline.entity.StatisticEntity" />
 		<mapping
 			class="net.link.safeonline.entity.StatisticDataPointEntity" />
@@ -47,5 +53,7 @@
 			class="net.link.safeonline.entity.audit.AccessAuditEntity" />
 		<mapping
 			class="net.link.safeonline.entity.audit.SecurityAuditEntity" />
+		<mapping
+			class="net.link.safeonline.entity.audit.CompoundedAttributeTypeMemberEntity" />
 	</session-factory>
 </hibernate-configuration>

@@ -43,7 +43,8 @@ public interface Attributes {
 	/*
 	 * Accessors.
 	 */
-	void setSelectedMemberAttributes(String[] selectedMemberAttributes);
+	void setSelectedMemberAttributes(
+			AttributeTypeEntity[] selectedMemberAttributes);
 
-	String[] getSelectedMemberAttributes();
+	AttributeTypeEntity[] getSelectedMemberAttributes();
 }

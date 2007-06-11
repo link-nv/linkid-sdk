@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.dao.TrustDomainDAO;
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
 @Stateless
 public class TrustDomainDAOBean implements TrustDomainDAO {

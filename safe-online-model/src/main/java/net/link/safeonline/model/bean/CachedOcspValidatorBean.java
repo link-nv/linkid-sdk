@@ -15,8 +15,8 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.dao.CachedOcspResponseDAO;
-import net.link.safeonline.entity.CachedOcspResponseEntity;
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.CachedOcspValidator;
 import net.link.safeonline.model.OcspValidator;
 import net.link.safeonline.model.OcspValidator.OcspResult;

@@ -12,8 +12,8 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.TaskEntity;
-import net.link.safeonline.entity.TaskHistoryEntity;
+import net.link.safeonline.entity.tasks.TaskEntity;
+import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 
 @Local
 public interface TaskHistoryDAO {

@@ -9,11 +9,15 @@ package net.link.safeonline.entity;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
@@ -21,9 +25,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.IndexColumn;
 
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_ALL;
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE;
@@ -63,6 +69,8 @@ public class AttributeTypeEntity implements Serializable {
 
 	private Map<String, AttributeTypeDescriptionEntity> descriptions;
 
+	private List<CompoundedAttributeTypeMemberEntity> members;
+
 	public AttributeTypeEntity() {
 		this(null, null, false, false);
 	}
@@ -74,6 +82,7 @@ public class AttributeTypeEntity implements Serializable {
 		this.userVisible = userVisible;
 		this.userEditable = userEditable;
 		this.descriptions = new HashMap<String, AttributeTypeDescriptionEntity>();
+		this.members = new LinkedList<CompoundedAttributeTypeMemberEntity>();
 	}
 
 	@Id
@@ -142,6 +151,21 @@ public class AttributeTypeEntity implements Serializable {
 
 	public void setMultivalued(boolean multivalued) {
 		this.multivalued = multivalued;
+	}
+
+	@OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@IndexColumn(name = CompoundedAttributeTypeMemberEntity.MEMBER_SEQUENCE_COLUMN_NAME)
+	public List<CompoundedAttributeTypeMemberEntity> getMembers() {
+		return this.members;
+	}
+
+	public void setMembers(List<CompoundedAttributeTypeMemberEntity> members) {
+		this.members = members;
+	}
+
+	@Transient
+	public boolean isCompounded() {
+		return false == this.members.isEmpty();
 	}
 
 	@OneToMany(mappedBy = "attributeType")

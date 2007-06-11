@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.dao.ConfigItemDAO;
-import net.link.safeonline.entity.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigItemEntity;
 
 public class ConfigurationInterceptor {
 

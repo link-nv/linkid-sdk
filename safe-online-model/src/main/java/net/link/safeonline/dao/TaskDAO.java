@@ -11,8 +11,8 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.SchedulingEntity;
-import net.link.safeonline.entity.TaskEntity;
+import net.link.safeonline.entity.tasks.SchedulingEntity;
+import net.link.safeonline.entity.tasks.TaskEntity;
 
 @Local
 public interface TaskDAO {

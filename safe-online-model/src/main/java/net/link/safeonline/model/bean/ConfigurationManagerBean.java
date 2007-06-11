@@ -11,7 +11,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.dao.ConfigItemDAO;
-import net.link.safeonline.entity.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigItemEntity;
 import net.link.safeonline.model.ConfigurationManager;
 
 @Stateless

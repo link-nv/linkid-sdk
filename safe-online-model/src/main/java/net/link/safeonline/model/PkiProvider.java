@@ -13,7 +13,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
 /**
  * Interface for PKI providers. An example of a PKI provider could be the BeID

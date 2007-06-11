@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.entity;
+package net.link.safeonline.entity.pkix;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -13,6 +13,7 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.EJBException;
 import javax.persistence.Embeddable;
+
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.builder.EqualsBuilder;

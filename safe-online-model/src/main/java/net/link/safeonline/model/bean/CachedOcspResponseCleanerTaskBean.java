@@ -20,7 +20,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 import net.link.safeonline.Task;
 import net.link.safeonline.dao.CachedOcspResponseDAO;
 import net.link.safeonline.dao.TrustDomainDAO;
-import net.link.safeonline.entity.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
 @Stateless
 @Local(Task.class)

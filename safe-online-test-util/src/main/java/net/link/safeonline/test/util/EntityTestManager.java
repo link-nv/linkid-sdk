@@ -60,6 +60,10 @@ public class EntityTestManager {
 	}
 
 	public void tearDown() throws Exception {
+		if (null == this.entityManager) {
+			throw new IllegalStateException("invoke setUp first");
+		}
+
 		if (this.entityManager.isOpen()) {
 			EntityTransaction entityTransaction = this.entityManager
 					.getTransaction();

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.entity;
+package net.link.safeonline.entity.tasks;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -21,12 +21,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import static net.link.safeonline.entity.TaskEntity.QUERY_WHERE_JNDINAME;
-import static net.link.safeonline.entity.TaskEntity.QUERY_LIST_ALL;
+import static net.link.safeonline.entity.tasks.TaskEntity.QUERY_LIST_ALL;
+import static net.link.safeonline.entity.tasks.TaskEntity.QUERY_WHERE_JNDINAME;
 
 @Entity
 @Table(name = "task")

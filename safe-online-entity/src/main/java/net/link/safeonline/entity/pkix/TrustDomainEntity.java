@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.entity;
+package net.link.safeonline.entity.pkix;
 
 import java.io.Serializable;
 
@@ -25,8 +25,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Index;
 
-import static net.link.safeonline.entity.TrustDomainEntity.QUERY_WHERE_NAME;
-import static net.link.safeonline.entity.TrustDomainEntity.QUERY_ALL;
+import static net.link.safeonline.entity.pkix.TrustDomainEntity.QUERY_ALL;
+import static net.link.safeonline.entity.pkix.TrustDomainEntity.QUERY_WHERE_NAME;
 
 @Entity
 @Table(name = "trust_domain")
