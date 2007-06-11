@@ -54,6 +54,6 @@
 		<mapping
 			class="net.link.safeonline.entity.audit.SecurityAuditEntity" />
 		<mapping
-			class="net.link.safeonline.entity.audit.CompoundedAttributeTypeMemberEntity" />
+			class="net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity" />
 	</session-factory>
 </hibernate-configuration>

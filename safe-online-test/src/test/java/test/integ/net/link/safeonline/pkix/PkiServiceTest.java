@@ -14,17 +14,18 @@ import java.util.UUID;
 
 import javax.naming.InitialContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
-import net.link.safeonline.entity.TrustDomainEntity;
-import net.link.safeonline.entity.TrustPointEntity;
+import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.service.PkiService;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.EjbUtils;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import test.integ.net.link.safeonline.IntegrationTestUtils;
-import junit.framework.TestCase;
 
 /**
  * PKIX service integration tests.
