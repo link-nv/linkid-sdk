@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.dao;
+package net.link.safeonline.config.dao;
 
 import java.util.List;
 

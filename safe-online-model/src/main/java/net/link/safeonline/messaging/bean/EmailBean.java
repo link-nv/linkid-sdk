@@ -20,7 +20,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import net.link.safeonline.common.Configurable;
-import net.link.safeonline.model.ConfigurationInterceptor;
+import net.link.safeonline.config.model.ConfigurationInterceptor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

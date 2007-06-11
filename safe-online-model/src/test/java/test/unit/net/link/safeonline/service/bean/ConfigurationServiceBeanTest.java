@@ -10,11 +10,11 @@ package test.unit.net.link.safeonline.service.bean;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.link.safeonline.dao.bean.ConfigGroupDAOBean;
-import net.link.safeonline.dao.bean.ConfigItemDAOBean;
+import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
+import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
+import net.link.safeonline.config.service.bean.ConfigurationServiceBean;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
-import net.link.safeonline.service.bean.ConfigurationServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import junit.framework.TestCase;

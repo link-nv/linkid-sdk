@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.bean;
+package net.link.safeonline.config.model.bean;
 
 import java.lang.reflect.Field;
 
@@ -19,12 +19,12 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 import net.link.safeonline.Startable;
 import net.link.safeonline.common.Configurable;
-import net.link.safeonline.dao.ConfigGroupDAO;
-import net.link.safeonline.dao.ConfigItemDAO;
+import net.link.safeonline.config.dao.ConfigGroupDAO;
+import net.link.safeonline.config.dao.ConfigItemDAO;
+import net.link.safeonline.config.model.ConfigStartable;
+import net.link.safeonline.config.model.ConfigurableScanner;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
-import net.link.safeonline.model.ConfigStartable;
-import net.link.safeonline.model.ConfigurableScanner;
 
 import static net.link.safeonline.common.Configurable.defaultGroup;
 
@@ -56,7 +56,6 @@ public class ConfigStartableBean implements ConfigStartable {
 
 	public void preStop() {
 		// empty
-
 	}
 
 	@SuppressWarnings("unchecked")

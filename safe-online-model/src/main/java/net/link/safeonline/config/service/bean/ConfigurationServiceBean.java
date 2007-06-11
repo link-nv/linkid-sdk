@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.service.bean;
+package net.link.safeonline.config.service.bean;
 
 import java.util.List;
 
@@ -17,12 +17,12 @@ import org.jboss.annotation.security.SecurityDomain;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.common.SafeOnlineRoles;
-import net.link.safeonline.dao.ConfigGroupDAO;
-import net.link.safeonline.dao.ConfigItemDAO;
+import net.link.safeonline.config.dao.ConfigGroupDAO;
+import net.link.safeonline.config.dao.ConfigItemDAO;
+import net.link.safeonline.config.service.ConfigurationService;
+import net.link.safeonline.config.service.ConfigurationServiceRemote;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
-import net.link.safeonline.service.ConfigurationService;
-import net.link.safeonline.service.ConfigurationServiceRemote;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)

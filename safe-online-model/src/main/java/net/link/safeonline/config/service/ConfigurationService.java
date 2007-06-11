@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.dao;
+package net.link.safeonline.config.service;
 
 import java.util.List;
 
@@ -15,17 +15,11 @@ import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
 @Local
-public interface ConfigItemDAO {
+public interface ConfigurationService {
 
-	ConfigItemEntity addConfigItem(String name, String value,
-			ConfigGroupEntity configGroup);
+	List<ConfigGroupEntity> listConfigGroups();
 
-	void removeConfigItem(ConfigItemEntity configItem);
+	void saveConfiguration(List<ConfigGroupEntity> configGroupList);
 
 	void saveConfigItem(ConfigItemEntity configItem);
-
-	ConfigItemEntity findConfigItem(String name);
-
-	List<ConfigItemEntity> listConfigItems();
-
 }

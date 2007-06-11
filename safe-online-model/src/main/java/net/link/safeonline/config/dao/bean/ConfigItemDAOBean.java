@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.dao.bean;
+package net.link.safeonline.config.dao.bean;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.dao.ConfigItemDAO;
+import net.link.safeonline.config.dao.ConfigItemDAO;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 

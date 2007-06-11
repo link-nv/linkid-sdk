@@ -5,14 +5,14 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.bean;
+package net.link.safeonline.config.model.bean;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.dao.ConfigItemDAO;
+import net.link.safeonline.config.dao.ConfigItemDAO;
+import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.entity.config.ConfigItemEntity;
-import net.link.safeonline.model.ConfigurationManager;
 
 @Stateless
 public class ConfigurationManagerBean implements ConfigurationManager {

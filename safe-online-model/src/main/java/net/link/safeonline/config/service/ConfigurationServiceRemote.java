@@ -5,13 +5,11 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model;
+package net.link.safeonline.config.service;
 
-import javax.ejb.Local;
+import javax.ejb.Remote;
 
-import net.link.safeonline.Startable;
-
-@Local
-public interface ConfigStartable extends Startable {
+@Remote
+public interface ConfigurationServiceRemote extends ConfigurationService {
 
 }

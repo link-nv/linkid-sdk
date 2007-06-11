@@ -1,4 +1,11 @@
-package net.link.safeonline.model;
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
+package net.link.safeonline.config.model;
 
 import java.lang.reflect.Field;
 
@@ -12,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.common.Configurable;
-import net.link.safeonline.dao.ConfigItemDAO;
+import net.link.safeonline.config.dao.ConfigItemDAO;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
 public class ConfigurationInterceptor {

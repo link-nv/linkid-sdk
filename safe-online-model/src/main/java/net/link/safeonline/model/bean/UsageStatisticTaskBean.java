@@ -20,6 +20,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 import net.link.safeonline.Task;
 import net.link.safeonline.common.Configurable;
+import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
@@ -27,7 +28,6 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
-import net.link.safeonline.model.ConfigurationInterceptor;
 
 @Stateless
 @Local(Task.class)

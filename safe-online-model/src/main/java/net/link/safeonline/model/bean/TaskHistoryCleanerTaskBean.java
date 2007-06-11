@@ -16,8 +16,8 @@ import javax.interceptor.Interceptors;
 
 import net.link.safeonline.Task;
 import net.link.safeonline.common.Configurable;
+import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.dao.TaskHistoryDAO;
-import net.link.safeonline.model.ConfigurationInterceptor;
 
 import org.jboss.annotation.ejb.LocalBinding;
 

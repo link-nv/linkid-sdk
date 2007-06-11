@@ -7,6 +7,8 @@
 
 package test.unit.net.link.safeonline;
 
+import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
+import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
@@ -15,8 +17,6 @@ import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.CachedOcspResponseDAOBean;
-import net.link.safeonline.dao.bean.ConfigGroupDAOBean;
-import net.link.safeonline.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.SchedulingDAOBean;

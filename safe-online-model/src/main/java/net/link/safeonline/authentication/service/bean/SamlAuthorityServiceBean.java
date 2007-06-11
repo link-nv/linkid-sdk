@@ -12,7 +12,7 @@ import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.common.Configurable;
-import net.link.safeonline.model.ConfigurationInterceptor;
+import net.link.safeonline.config.model.ConfigurationInterceptor;
 
 @Stateless
 @Configurable

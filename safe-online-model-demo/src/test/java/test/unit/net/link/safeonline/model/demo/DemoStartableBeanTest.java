@@ -11,6 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.Startable;
+import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
+import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
@@ -18,8 +20,6 @@ import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
-import net.link.safeonline.dao.bean.ConfigGroupDAOBean;
-import net.link.safeonline.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
