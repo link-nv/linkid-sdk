@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.oper;
+package net.link.safeonline.oper.app;
 
 import javax.ejb.Local;
 
@@ -14,15 +14,30 @@ import org.apache.myfaces.custom.fileupload.UploadedFile;
 @Local
 public interface Application {
 
+	/*
+	 * Factory
+	 */
 	void applicationListFactory();
 
+	void newIdentityAttributesFactory();
+
+	void identityAttributesFactory();
+
+	void applicationIdentityAttributesFactory();
+
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
 
+	/*
+	 * Accessors.
+	 */
 	String getName();
 
-	String getDescription();
-
 	void setName(String name);
+
+	String getDescription();
 
 	void setDescription(String description);
 
@@ -30,19 +45,16 @@ public interface Application {
 
 	void setApplicationOwner(String applicationOwner);
 
-	String add();
-
-	String removeApplication();
-
 	void setUpFile(UploadedFile uploadedFile);
 
 	UploadedFile getUpFile();
 
-	void newIdentityAttributesFactory();
+	/*
+	 * Actions.
+	 */
+	String add();
 
-	void identityAttributesFactory();
-
-	void applicationIdentityAttributesFactory();
+	String removeApplication();
 
 	String save();
 

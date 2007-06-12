@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.oper.bean;
+package net.link.safeonline.oper.attrib.bean;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.oper.AttributeDescription;
 import net.link.safeonline.oper.OperatorConstants;
+import net.link.safeonline.oper.attrib.AttributeDescription;
 import net.link.safeonline.service.AttributeTypeService;
 
 import org.apache.commons.logging.Log;

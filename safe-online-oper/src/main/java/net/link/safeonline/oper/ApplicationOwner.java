@@ -12,8 +12,14 @@ import javax.ejb.Local;
 @Local
 public interface ApplicationOwner {
 
+	/*
+	 * Factory.
+	 */
 	void applicationOwnerListFactory();
 
+	/*
+	 * Accessors.
+	 */
 	String getLogin();
 
 	void setLogin(String login);
@@ -22,7 +28,13 @@ public interface ApplicationOwner {
 
 	void setName(String name);
 
+	/*
+	 * Actions.
+	 */
 	String add();
 
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
 }

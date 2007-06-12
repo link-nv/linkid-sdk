@@ -1,4 +1,4 @@
-package net.link.safeonline.oper.bean;
+package net.link.safeonline.oper.attrib.bean;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,8 +18,8 @@ import net.link.safeonline.authentication.service.AttributeProviderManagerServic
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.oper.AttributeProvider;
 import net.link.safeonline.oper.OperatorConstants;
+import net.link.safeonline.oper.attrib.AttributeProvider;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;

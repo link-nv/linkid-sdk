@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.oper;
+package net.link.safeonline.oper.app;
 
 import java.io.Serializable;
 

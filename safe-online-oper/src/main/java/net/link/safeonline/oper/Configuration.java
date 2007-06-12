@@ -12,10 +12,19 @@ import javax.ejb.Local;
 @Local
 public interface Configuration {
 
+	/*
+	 * Factories.
+	 */
 	void configGroupListFactory();
 
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
 
+	/*
+	 * Actions.
+	 */
 	String save();
 
 }

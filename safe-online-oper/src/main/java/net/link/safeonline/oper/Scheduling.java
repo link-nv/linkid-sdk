@@ -15,6 +15,9 @@ import javax.faces.model.SelectItem;
 @Local
 public interface Scheduling {
 
+	/*
+	 * Factories.
+	 */
 	void schedulingListFactory();
 
 	void taskListFactory();
@@ -23,10 +26,16 @@ public interface Scheduling {
 
 	void newSchedulingFactory();
 
-	void destroyCallback();
-
 	List<SelectItem> selectSchedulingListFactory();
 
+	/*
+	 * Lifecycle.
+	 */
+	void destroyCallback();
+
+	/*
+	 * Actions.
+	 */
 	String schedulingListView();
 
 	String schedulingView();

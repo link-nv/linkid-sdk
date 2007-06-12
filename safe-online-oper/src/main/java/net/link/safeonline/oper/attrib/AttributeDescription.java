@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.oper;
+package net.link.safeonline.oper.attrib;
 
 import javax.ejb.Local;
 
@@ -14,12 +14,21 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 @Local
 public interface AttributeDescription {
 
+	/*
+	 * Factories.
+	 */
 	void attributeTypeDescriptionsFactory();
 
 	AttributeTypeDescriptionEntity newAttributeTypeDescriptionFactory();
 
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
 
+	/*
+	 * Actions.
+	 */
 	String edit();
 
 	String add();

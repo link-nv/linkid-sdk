@@ -21,14 +21,6 @@
 		</phase-listener>
 	</lifecycle>
 
-	<managed-bean>
-		<managed-bean-name>attributeViewTabControl</managed-bean-name>
-		<managed-bean-class>
-			net.link.safeonline.oper.bean.AttributeViewTabControlBean
-		</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
-
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>register</from-outcome>
@@ -44,53 +36,61 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<!-- Begin applications natigation rules -->
+
 	<navigation-rule>
-		<from-view-id>/applications.xhtml</from-view-id>
+		<from-view-id>/applications/applications.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>add-application</from-outcome>
-			<to-view-id>/application-add.seam</to-view-id>
+			<to-view-id>/applications/application-add.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>view</from-outcome>
-			<to-view-id>/application-view.seam</to-view-id>
+			<to-view-id>/applications/application-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/application-add.xhtml</from-view-id>
+		<from-view-id>/applications/application-add.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/applications.seam</to-view-id>
+			<to-view-id>/applications/applications.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>cancel</from-action>
-			<to-view-id>/applications.seam</to-view-id>
+			<to-view-id>/applications/applications.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/application-view.xhtml</from-view-id>
+		<from-view-id>
+			/applications/application-view.xhtml
+		</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/applications.seam</to-view-id>
+			<to-view-id>/applications/applications.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>edit</from-action>
-			<to-view-id>/application-edit.seam</to-view-id>
+			<to-view-id>/applications/application-edit.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/application-edit.xhtml</from-view-id>
+		<from-view-id>
+			/applications/application-edit.xhtml
+		</from-view-id>
 		<navigation-case>
 			<from-action>cancel</from-action>
-			<to-view-id>/application-view.seam</to-view-id>
+			<to-view-id>/applications/application-view.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/application-view.seam</to-view-id>
+			<to-view-id>/applications/application-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+
+	<!-- End applications natigation rules -->
 
 	<navigation-rule>
 		<from-view-id>/owners.xhtml</from-view-id>
@@ -348,93 +348,109 @@
 
 	<!-- End tasks natigation rules -->
 
+	<!-- Begin attributes natigation rules -->
+
 	<navigation-rule>
-		<from-view-id>/attributes.xhtml</from-view-id>
+		<from-view-id>/attributes/attributes.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>add</from-action>
-			<to-view-id>/attribute-add.xhtml</to-view-id>
+			<to-view-id>/attributes/attribute-add.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>view</from-outcome>
-			<to-view-id>/attribute-view.xhtml</to-view-id>
+			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/attribute-view.xhtml</from-view-id>
+		<from-view-id>/attributes/attribute-view.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/attributes.xhtml</to-view-id>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>add</from-action>
-			<to-view-id>/attribute-desc-add.xhtml</to-view-id>
+			<to-view-id>
+				/attributes/attribute-desc-add.xhtml
+			</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>edit</from-outcome>
-			<to-view-id>/attribute-desc-edit.xhtml</to-view-id>
+			<to-view-id>
+				/attributes/attribute-desc-edit.xhtml
+			</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>add-provider</from-action>
-			<to-view-id>/attribute-provider-add.xhtml</to-view-id>
+			<to-view-id>
+				/attributes/attribute-provider-add.xhtml
+			</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>provider-removed</from-outcome>
-			<to-view-id>/attribute-view.xhtml</to-view-id>
+			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/attribute-provider-add.xhtml</from-view-id>
+		<from-view-id>
+			/attributes/attribute-provider-add.xhtml
+		</from-view-id>
 		<navigation-case>
 			<from-outcome>cancel</from-outcome>
-			<to-view-id>/attribute-view.xhtml</to-view-id>
+			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/attribute-view.xhtml</to-view-id>
+			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/attribute-desc-edit.xhtml</from-view-id>
+		<from-view-id>
+			/attributes/attribute-desc-edit.xhtml
+		</from-view-id>
 		<navigation-case>
 			<from-outcome>cancel</from-outcome>
-			<to-view-id>/attribute-view.xhtml</to-view-id>
+			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>saved</from-outcome>
-			<to-view-id>/attribute-view.xhtml</to-view-id>
+			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>removed</from-outcome>
-			<to-view-id>/attribute-view.xhtml</to-view-id>
+			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/attribute-desc-add.xhtml</from-view-id>
+		<from-view-id>
+			/attributes/attribute-desc-add.xhtml
+		</from-view-id>
 		<navigation-case>
 			<from-action>cancel</from-action>
-			<to-view-id>/attribute-view.xhtml</to-view-id>
+			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/attribute-view.xhtml</to-view-id>
+			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/attribute-add.xhtml</from-view-id>
+		<from-view-id>/attributes/attribute-add.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/attributes.xhtml</to-view-id>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>cancel</from-action>
-			<to-view-id>/attributes.xhtml</to-view-id>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+
+	<!-- End attributes natigation rules -->
 
 	<navigation-rule>
 		<from-view-id>/configuration.xhtml</from-view-id>

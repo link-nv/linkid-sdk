@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.oper.bean;
+package net.link.safeonline.oper.app.bean;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,9 +30,9 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.oper.Application;
-import net.link.safeonline.oper.IdentityAttribute;
 import net.link.safeonline.oper.OperatorConstants;
+import net.link.safeonline.oper.app.Application;
+import net.link.safeonline.oper.app.IdentityAttribute;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.AttributeTypeService;
 
