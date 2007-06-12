@@ -106,6 +106,7 @@ public class AttributesBean implements Attributes {
 			this.facesMessages.addToControl("name", msg);
 			return null;
 		}
+		attributeTypeListFactory();
 		return "success";
 	}
 

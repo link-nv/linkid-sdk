@@ -1,11 +1,12 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:tr="http://myfaces.apache.org/trinidad">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">SafeOnline Operator</ui:define>
@@ -15,34 +16,31 @@
 			<ui:param name="subpage" value="pkix" />
 		</ui:include>
 	</ui:define>
-
 	<ui:define name="content">
 
-		<h2>Add Trust Point to Trust Domain #{selectedTrustDomain.name}</h2>
+		<h2>Edit Trust Domain: #{selectedTrustDomain.name}</h2>
 
-		<h:form enctype="multipart/form-data">
-			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
-			</f:facet>
-
+		<h:form>
 			<h:panelGrid columns="1">
 				<h:panelGroup>
-					<s:decorate>
-						<tr:inputFile id="fileupload" label="#{msgs.certificate}:" 
-							value="#{trustPoint.upFile}" />
-					</s:decorate>
-					<h:message for="fileupload" styleClass="error" />
+					<h:outputText value="Perform OCSP Check" />
+					<h:selectBooleanCheckbox id="performOcspCheck"
+						value="#{editTrustDomain.performOcspCheck}" />
+				</h:panelGroup>
+				<h:panelGroup>
+					<h:outputText value="OCSP cache time-out (ms)" />
+					<h:inputText id="ocspCacheTimeOutMillis"
+						value="#{editTrustDomain.ocspCacheTimeOutMillis}" required="true" />
 				</h:panelGroup>
 			</h:panelGrid>
 
-			<h:commandButton action="#{trustPoint.add}" id="add"
-				value="#{msgs.addaction}" />
+			<h:commandButton action="#{editTrustDomain.save}" id="save"
+				value="#{msgs.saveaction}" />
 			<so:nbsp />
-			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" />
+			<h:commandButton action="#{editTrustDomain.cancel}" id="cancel"
+				value="#{msgs.cancelaction}" />
 		</h:form>
 	</ui:define>
-
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
 			<ui:param name="loginComp" value="#{operLogin}" />

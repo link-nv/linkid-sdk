@@ -1,3 +1,5 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
@@ -47,12 +49,17 @@
 
 			<rich:tab label="#{msgs.description}">
 				<p><h:outputText value="#{selectedApplication.description}"
-					escape="true" /></p>
+					escape="true" rendered="#{!empty selectedApplication.description}" />
+				<h:outputText value="#{msgs.noDescription}"
+					rendered="#{empty selectedApplication.description}" /></p>
 				<!-- XSS vulnerability possible: do not set escape="false" -->
 			</rich:tab>
 
 			<rich:tab label="#{msgs.certificate}">
-				<pre><h:outputText value="#{selectedApplication.certificate}" /></pre>
+				<pre><h:outputText value="#{selectedApplication.certificate}"
+					rendered="#{!empty selectedApplication.certificate}" /></pre>
+				<p><h:outputText value="#{msgs.noCertificate}"
+					rendered="#{empty selectedApplication.certificate}" /></p>
 			</rich:tab>
 
 			<rich:tab label="#{msgs.applicationIdentity}">

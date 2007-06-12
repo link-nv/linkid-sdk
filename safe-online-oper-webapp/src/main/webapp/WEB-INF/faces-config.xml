@@ -10,7 +10,9 @@
 			<default-locale>en</default-locale>
 			<supported-locale>nl</supported-locale>
 		</locale-config>
-		<default-render-kit-id>org.apache.myfaces.trinidad.core</default-render-kit-id>
+		<default-render-kit-id>
+			org.apache.myfaces.trinidad.core
+		</default-render-kit-id>
 	</application>
 
 	<lifecycle>
@@ -110,97 +112,101 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<!-- Begin PKIX natigation rules -->
+
 	<navigation-rule>
-		<from-view-id>/pkix.xhtml</from-view-id>
+		<from-view-id>/pkix/pkix.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>add</from-action>
-			<to-view-id>/trust-domain-add.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-domain-add.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>view</from-outcome>
-			<to-view-id>/trust-domain.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>removed</from-outcome>
-			<to-view-id>/pkix.xhtml</to-view-id>
+			<to-view-id>/pkix/pkix.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>clear-cache</from-outcome>
-			<to-view-id>/pkix.xhtml</to-view-id>
+			<to-view-id>/pkix/pkix.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/trust-domain-add.xhtml</from-view-id>
+		<from-view-id>/pkix/trust-domain-add.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/pkix.xhtml</to-view-id>
+			<to-view-id>/pkix/pkix.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>cancel</from-action>
-			<to-view-id>/pkix.xhtml</to-view-id>
+			<to-view-id>/pkix/pkix.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/trust-domain.xhtml</from-view-id>
+		<from-view-id>/pkix/trust-domain.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/pkix.xhtml</to-view-id>
+			<to-view-id>/pkix/pkix.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>add</from-action>
-			<to-view-id>/trust-point-add.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-point-add.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>view</from-outcome>
-			<to-view-id>/trust-point-view.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-point-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>edit</from-outcome>
-			<to-view-id>/trust-domain-edit.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-domain-edit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>clear-cache</from-outcome>
-			<to-view-id>/trust-domain.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/trust-domain-edit.xhtml</from-view-id>
+		<from-view-id>/pkix/trust-domain-edit.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/trust-domain.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>canceled</from-outcome>
-			<to-view-id>/trust-domain.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/trust-point-add.xhtml</from-view-id>
+		<from-view-id>/pkix/trust-point-add.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>cancel</from-action>
-			<to-view-id>/trust-domain.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/trust-domain.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/trust-point-view.xhtml</from-view-id>
+		<from-view-id>/pkix/trust-point-view.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/trust-domain.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>removed</from-outcome>
-			<to-view-id>/trust-domain.xhtml</to-view-id>
+			<to-view-id>/pkix/trust-domain.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+
+	<!-- End PKIX natigation rules -->
 
 	<navigation-rule>
 		<from-view-id>/tasks.xhtml</from-view-id>
