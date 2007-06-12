@@ -4,7 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">SafeOnline Application Owner</ui:define>
+	<ui:define name="title">#{initParam['CommercialName']} Application Owner</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -14,7 +14,7 @@
 	<ui:define name="content">
 		<div class="subcolumn1-2">
 		<h3>#{msgs.applications}</h3>
-		<p>Manage the applications for which SafeOnline provides an
+		<p>Manage the applications for which #{initParam['CommercialName']} provides an
 		authentication service. Click <a href="./applications.seam">here</a>
 		to manage applications.</p>
 		</div>

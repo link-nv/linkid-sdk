@@ -4,7 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">SafeOnline Application Owner</ui:define>
+	<ui:define name="title">#{initParam['CommercialName']} Application Owner</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -12,7 +12,7 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<p>Registration of new users should be done via the SafeOnline
+		<p>Registration of new users should be done via the #{initParam['CommercialName']}
 		User web application.</p>
 	</ui:define>
 	<ui:define name="sidebar">

@@ -50,6 +50,11 @@
 		<param-value>true</param-value>
 	</context-param>
 
+	<context-param>
+		<param-name>CommercialName</param-name>
+		<param-value>OLAS</param-value>
+	</context-param>
+
 	<filter>
 		<filter-name>SafeOnlineLoginFilter</filter-name>
 		<filter-class>

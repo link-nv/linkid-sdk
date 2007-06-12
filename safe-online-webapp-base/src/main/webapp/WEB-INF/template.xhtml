@@ -14,14 +14,14 @@
 	<body>
 	<div id="document">
 	<div id="header"><ui:insert name="header">
-		<h1><ui:insert name="title">SafeOnline</ui:insert></h1>
+		<h1><ui:insert name="title">#{initParam['CommercialName']}</ui:insert></h1>
 	</ui:insert></div>
 
 	<div><ui:insert name="topnav" /></div>
 
 	<div id="container"><ui:insert name="sidebar" />
 
-	<div id="content"><ui:insert name="content">Welcome to SafeOnline.</ui:insert></div>
+	<div id="content"><ui:insert name="content">Welcome to #{initParam['CommercialName']}.</ui:insert></div>
 	</div>
 
 	<div id="footer"><ui:insert name="footer">

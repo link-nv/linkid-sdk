@@ -10,7 +10,7 @@
 	xmlns:tr="http://myfaces.apache.org/trinidad">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">SafeOnline Operator</ui:define>
+	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
