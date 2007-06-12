@@ -5,21 +5,30 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.oper;
+package net.link.safeonline.oper.pkix;
 
 import javax.ejb.Local;
 
 @Local
 public interface EditTrustDomain {
 
-	String edit();
-
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
+
+	/*
+	 * Actions.
+	 */
+	String edit();
 
 	String save();
 
 	String cancel();
 
+	/*
+	 * Accessors.
+	 */
 	boolean isPerformOcspCheck();
 
 	void setPerformOcspCheck(boolean performOcspCheck);

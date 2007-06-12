@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.oper.bean;
+package net.link.safeonline.oper.pkix.bean;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -13,8 +13,8 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
-import net.link.safeonline.oper.EditTrustDomain;
 import net.link.safeonline.oper.OperatorConstants;
+import net.link.safeonline.oper.pkix.EditTrustDomain;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.service.PkiService;
 

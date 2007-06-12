@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.oper.bean;
+package net.link.safeonline.oper.pkix.bean;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import javax.faces.context.FacesContext;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.oper.OperatorConstants;
-import net.link.safeonline.oper.TrustPoint;
+import net.link.safeonline.oper.pkix.TrustPoint;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.pkix.exception.ExistingTrustPointException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
