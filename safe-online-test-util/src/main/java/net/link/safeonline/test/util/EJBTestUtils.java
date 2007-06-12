@@ -217,16 +217,17 @@ public final class EJBTestUtils {
 	}
 
 	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
-			EntityManager entityManager, String callerPrincipalName, String role) {
+			EntityManager entityManager, String callerPrincipalName,
+			String... roles) {
 		TestSessionContext testSessionContext = new TestSessionContext(
-				callerPrincipalName, role);
+				callerPrincipalName, roles);
 		return newInstance(clazz, container, entityManager, testSessionContext);
 	}
 
 	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
 			EntityManager entityManager, String callerPrincipalName) {
 		TestSessionContext testSessionContext = new TestSessionContext(
-				callerPrincipalName, null);
+				callerPrincipalName, (String[]) null);
 		return newInstance(clazz, container, entityManager, testSessionContext);
 	}
 
@@ -506,15 +507,17 @@ public final class EJBTestUtils {
 
 		private final Subject subject;
 
-		public TestPolicyContextHandler(Principal principal, String role) {
+		public TestPolicyContextHandler(Principal principal, String... roles) {
 			this.subject = new Subject();
 			Set<Principal> principals = this.subject.getPrincipals();
 			if (null != principal) {
 				principals.add(principal);
 			}
-			if (null != role) {
+			if (null != roles) {
 				SimpleGroup rolesGroup = new SimpleGroup("Roles");
-				rolesGroup.addMember(new SimplePrincipal(role));
+				for (String role : roles) {
+					rolesGroup.addMember(new SimplePrincipal(role));
+				}
 				principals.add(rolesGroup);
 			}
 		}
@@ -540,19 +543,19 @@ public final class EJBTestUtils {
 
 		private final Principal principal;
 
-		private final String role;
+		private final String[] roles;
 
-		public TestSessionContext(String principalName, String role) {
+		public TestSessionContext(String principalName, String... roles) {
 			if (null != principalName) {
 				this.principal = new SimplePrincipal(principalName);
-				this.role = role;
+				this.roles = roles;
 			} else {
 				this.principal = null;
-				this.role = null;
+				this.roles = null;
 			}
 
 			TestPolicyContextHandler testPolicyContextHandler = new TestPolicyContextHandler(
-					this.principal, this.role);
+					this.principal, this.roles);
 			try {
 				PolicyContext.registerHandler(
 						"javax.security.auth.Subject.container",
@@ -622,11 +625,13 @@ public final class EJBTestUtils {
 		}
 
 		public boolean isCallerInRole(String expectedRole) {
-			if (null == role) {
+			if (null == this.roles) {
 				return false;
 			}
-			if (true == role.equals(expectedRole)) {
-				return true;
+			for (String role : this.roles) {
+				if (true == role.equals(expectedRole)) {
+					return true;
+				}
 			}
 			return false;
 		}

@@ -67,6 +67,8 @@ public class AttributeTypeEntity implements Serializable {
 
 	private boolean multivalued;
 
+	private boolean compoundMember;
+
 	private Map<String, AttributeTypeDescriptionEntity> descriptions;
 
 	private List<CompoundedAttributeTypeMemberEntity> members;
@@ -153,6 +155,22 @@ public class AttributeTypeEntity implements Serializable {
 		this.multivalued = multivalued;
 	}
 
+	/**
+	 * Marks whether this attribute type is a member of a compounded attribute
+	 * type. This field is used to have a performant implementation of the
+	 * restriction that an attribute type can only participate in one compounded
+	 * attribute type.
+	 * 
+	 * @return
+	 */
+	public boolean isCompoundMember() {
+		return this.compoundMember;
+	}
+
+	public void setCompoundMember(boolean compoundMember) {
+		this.compoundMember = compoundMember;
+	}
+
 	@OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 	@IndexColumn(name = CompoundedAttributeTypeMemberEntity.MEMBER_SEQUENCE_COLUMN_NAME)
 	public List<CompoundedAttributeTypeMemberEntity> getMembers() {
@@ -161,6 +179,13 @@ public class AttributeTypeEntity implements Serializable {
 
 	public void setMembers(List<CompoundedAttributeTypeMemberEntity> members) {
 		this.members = members;
+	}
+
+	public void addMember(AttributeTypeEntity memberAttributeType,
+			int memberSequence) {
+		CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(
+				this, memberAttributeType, memberSequence);
+		getMembers().add(member);
 	}
 
 	@Transient

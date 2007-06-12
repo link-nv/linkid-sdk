@@ -16,9 +16,10 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.attrib.Attributes;
 import net.link.safeonline.service.AttributeTypeService;
@@ -86,22 +87,29 @@ public class AttributesBean implements Attributes {
 	public String add() {
 		LOG.debug("add: " + this.newAttributeType);
 		if (null != this.selectedMemberAttributes) {
-			List<CompoundedAttributeTypeMemberEntity> members = this.newAttributeType
-					.getMembers();
-			int sequenceNr = 0;
+			int memberSequence = 0;
 			for (AttributeTypeEntity selectedMemberAttribute : this.selectedMemberAttributes) {
 				LOG.debug("selected member attribute: "
 						+ selectedMemberAttribute.getName());
-				members.add(new CompoundedAttributeTypeMemberEntity(
-						this.newAttributeType, selectedMemberAttribute,
-						sequenceNr));
-				sequenceNr += 1;
+				this.newAttributeType.addMember(selectedMemberAttribute,
+						memberSequence);
+				memberSequence += 1;
 			}
 		}
 		try {
 			this.attributeTypeService.add(this.newAttributeType);
 		} catch (ExistingAttributeTypeException e) {
 			String msg = "existing attribute type";
+			LOG.debug(msg);
+			this.facesMessages.addToControl("name", msg);
+			return null;
+		} catch (AttributeTypeNotFoundException e) {
+			String msg = "member attribute type not found";
+			LOG.debug(msg);
+			this.facesMessages.addToControl("name", msg);
+			return null;
+		} catch (AttributeTypeDefinitionException e) {
+			String msg = "illegal member attribute type";
 			LOG.debug(msg);
 			this.facesMessages.addToControl("name", msg);
 			return null;
@@ -134,15 +142,35 @@ public class AttributesBean implements Attributes {
 	@Factory("memberAttributes")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<SelectItem> memberAttributesFactory() {
-		List<SelectItem> memberAttributes = new LinkedList<SelectItem>();
-		if (null == this.attributeTypeList) {
-			attributeTypeListFactory();
-		}
-		for (AttributeTypeEntity attributeType : this.attributeTypeList) {
-			String attributeName = attributeType.getName();
-			memberAttributes.add(new SelectItem(attributeType, attributeName));
-		}
+		List<AttributeTypeEntity> memberAttributeTypes = this.attributeTypeService
+				.listAvailableMemberAttributeTypes();
+		List<SelectItem> memberAttributes = convert(memberAttributeTypes,
+				new AttributeConvertor());
 		return memberAttributes;
+	}
+
+	private static class AttributeConvertor implements
+			Convertor<AttributeTypeEntity, SelectItem> {
+
+		public SelectItem convert(AttributeTypeEntity input) {
+			String attributeName = input.getName();
+			SelectItem output = new SelectItem(input, attributeName);
+			return output;
+		}
+	}
+
+	private interface Convertor<TypeIn, TypeOut> {
+		TypeOut convert(TypeIn input);
+	}
+
+	private static <TypeIn, TypeOut> List<TypeOut> convert(
+			List<TypeIn> inputList, Convertor<TypeIn, TypeOut> convertor) {
+		List<TypeOut> outputList = new LinkedList<TypeOut>();
+		for (TypeIn inputEntry : inputList) {
+			TypeOut outputEntry = convertor.convert(inputEntry);
+			outputList.add(outputEntry);
+		}
+		return outputList;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
@@ -20,7 +21,29 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 @Local
 public interface AttributeTypeService {
 
+	/**
+	 * Lists all attributes types within the system. This includes primitive
+	 * attribute types, multi-valued attribute types and compounded attribute
+	 * types.
+	 * 
+	 * @return
+	 */
 	List<AttributeTypeEntity> listAttributeTypes();
+
+	/**
+	 * Lists attribute types that could participate as member in a compounded
+	 * attribute type.
+	 * 
+	 * <p>
+	 * Via this method we express the restriction that one cannot construct
+	 * compounded attributes of other compounded attributes. We also don't allow
+	 * an attribute type to be member of more than one compounded attribute
+	 * type.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	List<AttributeTypeEntity> listAvailableMemberAttributeTypes();
 
 	/**
 	 * Adds a new attribute type using the given attribute type prototype.
@@ -28,9 +51,16 @@ public interface AttributeTypeService {
 	 * @param attributeType
 	 *            the attribute type prototype.
 	 * @throws ExistingAttributeTypeException
+	 * @throws AttributeTypeDefinitionException
+	 *             in case the member attribute is not allowed when defining a
+	 *             new compounded attribute type.
+	 * @throws AttributeTypeNotFoundException
+	 *             in case the member attribute was not found when defining a
+	 *             new compounded attribute type.
 	 */
 	void add(AttributeTypeEntity attributeType)
-			throws ExistingAttributeTypeException;
+			throws ExistingAttributeTypeException,
+			AttributeTypeNotFoundException, AttributeTypeDefinitionException;
 
 	List<AttributeTypeDescriptionEntity> listDescriptions(
 			String attributeTypeName) throws AttributeTypeNotFoundException;
