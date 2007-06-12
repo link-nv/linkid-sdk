@@ -15,10 +15,10 @@ import java.util.UUID;
 import javax.naming.InitialContext;
 
 import junit.framework.TestCase;
-import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
-import net.link.safeonline.service.PkiService;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.EjbUtils;
 

@@ -32,14 +32,14 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
-import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.service.AttributeTypeService;
-import net.link.safeonline.service.PkiService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 

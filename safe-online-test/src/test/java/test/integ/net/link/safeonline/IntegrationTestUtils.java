@@ -25,8 +25,8 @@ import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.service.AttributeTypeService;
-import net.link.safeonline.service.PkiService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.jboss.security.auth.callback.UsernamePasswordHandler;
