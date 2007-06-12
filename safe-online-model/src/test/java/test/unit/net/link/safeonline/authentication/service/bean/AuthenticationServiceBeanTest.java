@@ -43,10 +43,10 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
-import net.link.safeonline.model.PkiProvider;
-import net.link.safeonline.model.PkiProviderManager;
-import net.link.safeonline.model.PkiValidator;
 import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.pkix.model.PkiProvider;
+import net.link.safeonline.pkix.model.PkiProviderManager;
+import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 

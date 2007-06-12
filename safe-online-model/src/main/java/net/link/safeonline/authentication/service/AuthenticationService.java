@@ -16,7 +16,7 @@ import net.link.safeonline.authentication.exception.IdentityConfirmationRequired
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
  * Authentication service interface. This service allows the authentication web

@@ -20,15 +20,15 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.context.FacesContext;
 
-import net.link.safeonline.authentication.exception.CertificateEncodingException;
-import net.link.safeonline.authentication.exception.ExistingTrustPointException;
-import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
-import net.link.safeonline.authentication.exception.TrustPointNotFoundException;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.TrustPoint;
-import net.link.safeonline.service.PkiService;
+import net.link.safeonline.pkix.exception.CertificateEncodingException;
+import net.link.safeonline.pkix.exception.ExistingTrustPointException;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.pkix.exception.TrustPointNotFoundException;
+import net.link.safeonline.pkix.service.PkiService;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;

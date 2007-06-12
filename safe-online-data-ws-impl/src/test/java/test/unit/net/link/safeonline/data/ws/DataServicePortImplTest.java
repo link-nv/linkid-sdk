@@ -58,7 +58,7 @@ import net.link.safeonline.data.ws.TopLevelStatusCode;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.model.PkiValidator;
+import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.data.TargetIdentityClientHandler;
 import net.link.safeonline.test.util.DomTestUtils;

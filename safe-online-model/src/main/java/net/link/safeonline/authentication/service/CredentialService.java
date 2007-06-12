@@ -12,7 +12,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
  * Interface of service that manages the credentials of the caller subject.

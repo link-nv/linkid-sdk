@@ -21,12 +21,12 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.Startable;
-import net.link.safeonline.dao.TrustDomainDAO;
-import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.bean.AbstractInitBean;
+import net.link.safeonline.pkix.dao.TrustDomainDAO;
+import net.link.safeonline.pkix.dao.TrustPointDAO;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;

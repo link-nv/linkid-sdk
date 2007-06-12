@@ -22,7 +22,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.CertificateEncodingException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
@@ -34,6 +33,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.oper.Application;
 import net.link.safeonline.oper.IdentityAttribute;
 import net.link.safeonline.oper.OperatorConstants;
+import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.AttributeTypeService;
 
 import org.apache.commons.logging.Log;

@@ -32,8 +32,6 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
-import net.link.safeonline.dao.TrustDomainDAO;
-import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
@@ -48,6 +46,8 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
+import net.link.safeonline.pkix.dao.TrustDomainDAO;
+import net.link.safeonline.pkix.dao.TrustPointDAO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

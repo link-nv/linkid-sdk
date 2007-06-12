@@ -16,11 +16,11 @@ import static org.easymock.EasyMock.verify;
 import java.security.cert.X509Certificate;
 
 import junit.framework.TestCase;
-import net.link.safeonline.dao.TrustDomainDAO;
-import net.link.safeonline.dao.TrustPointDAO;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.beid.BeIdPkiProvider;
 import net.link.safeonline.model.beid.BeIdStartableBean;
+import net.link.safeonline.pkix.dao.TrustDomainDAO;
+import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.test.util.EJBTestUtils;
 
 import org.easymock.EasyMock;

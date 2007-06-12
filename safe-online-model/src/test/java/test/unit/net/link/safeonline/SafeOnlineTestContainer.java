@@ -16,7 +16,6 @@ import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
-import net.link.safeonline.dao.bean.CachedOcspResponseDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.SchedulingDAOBean;
@@ -24,8 +23,6 @@ import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.dao.bean.TaskDAOBean;
 import net.link.safeonline.dao.bean.TaskHistoryDAOBean;
-import net.link.safeonline.dao.bean.TrustDomainDAOBean;
-import net.link.safeonline.dao.bean.TrustPointDAOBean;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
@@ -52,6 +49,9 @@ import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
 import net.link.safeonline.model.bean.ApplicationsBean;
 import net.link.safeonline.model.bean.AttributeTypeDescriptionDecoratorBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
+import net.link.safeonline.pkix.dao.bean.CachedOcspResponseDAOBean;
+import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
+import net.link.safeonline.pkix.dao.bean.TrustPointDAOBean;
 
 /**
  * Represents the content of the SafeOnline container.

@@ -12,11 +12,11 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
-import net.link.safeonline.authentication.exception.TrustDomainNotFoundException;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.oper.EditTrustDomain;
 import net.link.safeonline.oper.OperatorConstants;
-import net.link.safeonline.service.PkiService;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.pkix.service.PkiService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -25,7 +25,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.CertificateEncodingException;
 import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -53,8 +52,9 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.ApplicationIdentityManager;
 import net.link.safeonline.model.ApplicationOwnerManager;
 import net.link.safeonline.model.Applications;
-import net.link.safeonline.model.PkiUtils;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.pkix.PkiUtils;
+import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
 
 import org.apache.commons.logging.Log;
