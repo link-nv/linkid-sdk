@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.service.bean;
+package net.link.safeonline.tasks.service.bean;
 
 import java.util.List;
 
@@ -19,15 +19,15 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingSchedulingException;
 import net.link.safeonline.authentication.exception.InvalidCronExpressionException;
 import net.link.safeonline.common.SafeOnlineRoles;
-import net.link.safeonline.dao.SchedulingDAO;
-import net.link.safeonline.dao.TaskDAO;
-import net.link.safeonline.dao.TaskHistoryDAO;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
-import net.link.safeonline.model.TaskScheduler;
-import net.link.safeonline.service.SchedulingService;
-import net.link.safeonline.service.SchedulingServiceRemote;
+import net.link.safeonline.tasks.dao.SchedulingDAO;
+import net.link.safeonline.tasks.dao.TaskDAO;
+import net.link.safeonline.tasks.dao.TaskHistoryDAO;
+import net.link.safeonline.tasks.model.TaskScheduler;
+import net.link.safeonline.tasks.service.SchedulingService;
+import net.link.safeonline.tasks.service.SchedulingServiceRemote;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)

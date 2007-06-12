@@ -5,9 +5,10 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.service;
+package net.link.safeonline.tasks.service;
 
 import javax.ejb.Remote;
+
 
 @Remote
 public interface SchedulingServiceRemote extends SchedulingService {

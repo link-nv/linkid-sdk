@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.dao.bean;
+package net.link.safeonline.tasks.dao.bean;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.dao.TaskDAO;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
+import net.link.safeonline.tasks.dao.TaskDAO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

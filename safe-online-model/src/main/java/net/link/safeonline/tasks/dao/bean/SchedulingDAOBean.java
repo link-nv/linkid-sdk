@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.dao.bean;
+package net.link.safeonline.tasks.dao.bean;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.dao.SchedulingDAO;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
+import net.link.safeonline.tasks.dao.SchedulingDAO;
 
 @Stateless
 public class SchedulingDAOBean implements SchedulingDAO {

@@ -208,141 +208,145 @@
 
 	<!-- End PKIX natigation rules -->
 
+	<!-- Begin tasks natigation rules -->
+
 	<navigation-rule>
-		<from-view-id>/tasks.xhtml</from-view-id>
+		<from-view-id>/tasks/tasks.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>taskview</from-outcome>
-			<to-view-id>/task-view.xhtml</to-view-id>
+			<to-view-id>/tasks/task-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>schedulingview</from-outcome>
-			<to-view-id>/scheduling-view.xhtml</to-view-id>
+			<to-view-id>/tasks/scheduling-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>schedulinglistview</from-outcome>
-			<to-view-id>/schedulings.xhtml</to-view-id>
+			<to-view-id>/tasks/schedulings.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>successclearalltaskshistory</from-outcome>
-			<to-view-id>/schedulings.xhtml</to-view-id>
+			<to-view-id>/tasks/schedulings.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/task-view.xhtml</from-view-id>
+		<from-view-id>/tasks/task-view.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>tasklistview</from-outcome>
-			<to-view-id>/tasks.xhtml</to-view-id>
+			<to-view-id>/tasks/tasks.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>schedulingview</from-outcome>
-			<to-view-id>/scheduling-view.xhtml</to-view-id>
+			<to-view-id>/tasks/scheduling-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>taskhistoryview</from-outcome>
-			<to-view-id>/task-history.xhtml</to-view-id>
+			<to-view-id>/tasks/task-history.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>successcleartaskhistory</from-outcome>
-			<to-view-id>/task-view.xhtml</to-view-id>
+			<to-view-id>/tasks/task-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>successperformtask</from-outcome>
-			<to-view-id>/task-history.xhtml</to-view-id>
+			<to-view-id>/tasks/task-history.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>taskeditview</from-outcome>
-			<to-view-id>/task-edit.xhtml</to-view-id>
+			<to-view-id>/tasks/task-edit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/task-edit.xhtml</from-view-id>
+		<from-view-id>/tasks/task-edit.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>taskview</from-outcome>
-			<to-view-id>/task-view.xhtml</to-view-id>
+			<to-view-id>/tasks/task-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>successsavetask</from-outcome>
-			<to-view-id>/task-view.xhtml</to-view-id>
+			<to-view-id>/tasks/task-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/schedulings.xhtml</from-view-id>
+		<from-view-id>/tasks/schedulings.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>tasklistview</from-outcome>
-			<to-view-id>/tasks.xhtml</to-view-id>
+			<to-view-id>/tasks/tasks.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>schedulingview</from-outcome>
-			<to-view-id>/scheduling-view.xhtml</to-view-id>
+			<to-view-id>/tasks/scheduling-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>addschedulingview</from-outcome>
-			<to-view-id>/scheduling-add.xhtml</to-view-id>
+			<to-view-id>/tasks/scheduling-add.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/scheduling-view.xhtml</from-view-id>
+		<from-view-id>/tasks/scheduling-view.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>schedulinglistview</from-outcome>
-			<to-view-id>/schedulings.xhtml</to-view-id>
+			<to-view-id>/tasks/schedulings.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>taskview</from-outcome>
-			<to-view-id>/task-view.xhtml</to-view-id>
+			<to-view-id>/tasks/task-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>tasklistview</from-outcome>
-			<to-view-id>/tasks.xhtml</to-view-id>
+			<to-view-id>/tasks/tasks.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>schedulingedit</from-outcome>
-			<to-view-id>/scheduling-edit.xhtml</to-view-id>
+			<to-view-id>/tasks/scheduling-edit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>successperformscheduling</from-outcome>
-			<to-view-id>/scheduling-view.xhtml</to-view-id>
+			<to-view-id>/tasks/scheduling-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/scheduling-edit.xhtml</from-view-id>
+		<from-view-id>/tasks/scheduling-edit.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>schedulingview</from-outcome>
-			<to-view-id>/scheduling-view.xhtml</to-view-id>
+			<to-view-id>/tasks/scheduling-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>successsavescheduling</from-outcome>
-			<to-view-id>/scheduling-view.xhtml</to-view-id>
+			<to-view-id>/tasks/scheduling-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/scheduling-add.xhtml</from-view-id>
+		<from-view-id>/tasks/scheduling-add.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>schedulinglistview</from-outcome>
-			<to-view-id>/schedulings.xhtml</to-view-id>
+			<to-view-id>/tasks/schedulings.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>successaddscheduling</from-outcome>
-			<to-view-id>/schedulings.xhtml</to-view-id>
+			<to-view-id>/tasks/schedulings.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/task-history.xhtml</from-view-id>
+		<from-view-id>/tasks/task-history.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>taskview</from-outcome>
-			<to-view-id>/task-view.xhtml</to-view-id>
+			<to-view-id>/tasks/task-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>successcleartaskhistory</from-outcome>
-			<to-view-id>/task-history.xhtml</to-view-id>
+			<to-view-id>/tasks/task-history.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+
+	<!-- End tasks natigation rules -->
 
 	<navigation-rule>
 		<from-view-id>/attributes.xhtml</from-view-id>

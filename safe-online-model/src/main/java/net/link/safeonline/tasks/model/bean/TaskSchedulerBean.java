@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.bean;
+package net.link.safeonline.tasks.model.bean;
 
 import java.util.Collection;
 import java.util.Date;
@@ -27,12 +27,12 @@ import javax.ejb.TransactionAttributeType;
 import net.link.safeonline.Startable;
 import net.link.safeonline.Task;
 import net.link.safeonline.authentication.exception.InvalidCronExpressionException;
-import net.link.safeonline.dao.SchedulingDAO;
-import net.link.safeonline.dao.TaskDAO;
-import net.link.safeonline.dao.TaskHistoryDAO;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
-import net.link.safeonline.model.TaskScheduler;
+import net.link.safeonline.tasks.dao.SchedulingDAO;
+import net.link.safeonline.tasks.dao.TaskDAO;
+import net.link.safeonline.tasks.dao.TaskHistoryDAO;
+import net.link.safeonline.tasks.model.TaskScheduler;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;

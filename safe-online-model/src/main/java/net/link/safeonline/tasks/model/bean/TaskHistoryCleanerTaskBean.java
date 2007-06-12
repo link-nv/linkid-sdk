@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.bean;
+package net.link.safeonline.tasks.model.bean;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -17,7 +17,7 @@ import javax.interceptor.Interceptors;
 import net.link.safeonline.Task;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
-import net.link.safeonline.dao.TaskHistoryDAO;
+import net.link.safeonline.tasks.dao.TaskHistoryDAO;
 
 import org.jboss.annotation.ejb.LocalBinding;
 

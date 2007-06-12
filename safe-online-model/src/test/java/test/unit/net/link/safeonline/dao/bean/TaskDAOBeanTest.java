@@ -9,10 +9,10 @@ package test.unit.net.link.safeonline.dao.bean;
 
 import java.util.List;
 
-import net.link.safeonline.dao.bean.TaskDAOBean;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
+import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import junit.framework.TestCase;

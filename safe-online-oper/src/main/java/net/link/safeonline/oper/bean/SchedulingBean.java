@@ -23,7 +23,7 @@ import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.Scheduling;
-import net.link.safeonline.service.SchedulingService;
+import net.link.safeonline.tasks.service.SchedulingService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -175,7 +175,8 @@ public class SchedulingBean implements Scheduling {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String clearTaskHistory() {
-		this.schedulingService.clearTaskHistory(selectedTask);
+		this.schedulingService.clearTaskHistory(this.selectedTask);
+		taskHistoryListFactory();
 		return "successcleartaskhistory";
 	}
 

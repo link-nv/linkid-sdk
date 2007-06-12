@@ -1,3 +1,5 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
@@ -15,36 +17,26 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>Task History: #{selectedTask.name}</h2>
+		<h2>#{msgs.schedulings}</h2>
 
 		<h:form>
-			<t:dataTable id="task-history-data" var="item"
-				value="#{taskHistoryList}" rows="10" preserveDataModel="false"
+			<t:dataTable id="scheduling-data" var="item"
+				value="#{schedulingList}" rows="10" preserveDataModel="false"
 				styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">Execution Date</f:facet>
-					#{item.executionDate}
+					<f:facet name="header">#{msgs.name}</f:facet>
+					<h:commandLink value="#{item.name}"
+						action="#{scheduling.schedulingView}" />
 				</h:column>
 				<h:column>
-					<f:facet name="header">Execution Time</f:facet>
-					#{item.executionTime}
-				</h:column>
-				<h:column>
-					<f:facet name="header">Message</f:facet>
-					#{item.message}
-				</h:column>
-				<h:column>
-					<f:facet name="header">Result</f:facet>
-					<h:outputText value="#{item.result}"
-						style="background-color: green" rendered="#{item.result}" />
-					<h:outputText value="#{item.result}" style="background-color: red"
-						rendered="#{!item.result}" />
+					<f:facet name="header">#{msgs.cron}</f:facet>
+					#{item.cronExpression}
 				</h:column>
 			</t:dataTable>
 
-			<t:dataScroller for="task-history-data" fastStep="10"
+			<t:dataScroller for="scheduling-data" fastStep="10"
 				pageCountVar="pageCount" pageIndexVar="pageIndex"
 				styleClass="scroller" paginator="true" paginatorMaxPages="9">
 				<f:facet name="first">#{msgs.first}</f:facet>
@@ -53,11 +45,14 @@
 				<f:facet name="next">#{msgs.next}</f:facet>
 			</t:dataScroller>
 
-			<h:commandButton action="#{scheduling.taskView}" id="back"
+			<h:messages styleClass="error" />
+
+			<h:commandButton action="#{scheduling.taskListView}" id="back"
 				value="#{msgs.backaction}" immediate="true" />
 			<so:nbsp />
-			<h:commandButton action="#{scheduling.clearTaskHistory}"
-				id="cleartaskhistory" value="Clear Task History" immediate="true" />
+			<h:commandButton action="#{scheduling.addSchedulingView}" id="add"
+				value="#{msgs.addaction}" immediate="true" />
+
 		</h:form>
 
 	</ui:define>
@@ -70,4 +65,3 @@
 </body>
 
 </html>
-

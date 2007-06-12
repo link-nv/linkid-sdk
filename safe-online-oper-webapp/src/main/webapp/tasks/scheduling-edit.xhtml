@@ -1,3 +1,5 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
@@ -15,31 +17,32 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.edittask}: #{selectedTask.name}</h2>
+		<h2>#{msgs.editscheduling}: #{selectedScheduling.name}</h2>
 
 		<h:form>
 			<table>
 				<tr>
 					<th>#{msgs.name}:</th>
-					<td>#{selectedTask.name}</td>
+					<td><h:inputText value="#{selectedScheduling.name}"
+						required="true" /></td>
 				</tr>
 				<tr>
-					<th>#{msgs.jndiname}:</th>
-					<td>#{selectedTask.jndiName}</td>
+					<th>#{msgs.cron}:</th>
+					<td><h:inputText value="#{selectedScheduling.cronExpression}"
+						required="true" /></td>
 				</tr>
 				<tr>
-					<th>#{msgs.scheduling}:</th>
-					<td><h:selectOneMenu value="#{selectedTask.scheduling.name}">
-						<f:selectItems value="#{selectSchedulingList}" />
-					</h:selectOneMenu></td>
+					<th>#{msgs.last}:</th>
+					<td>#{selectedScheduling.fireDate}</td>
 				</tr>
 			</table>
 
-			<h:commandButton action="#{scheduling.taskView}" id="back"
-				value="#{msgs.backaction}" immediate="true" />
+
+			<h:commandButton action="#{scheduling.schedulingView}" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" />
 			<so:nbsp />
-			<h:commandButton action="#{scheduling.saveTask}" id="saveTask"
-				value="#{msgs.saveaction}" />
+			<h:commandButton action="#{scheduling.saveScheduling}"
+				id="savescheduling" value="#{msgs.saveaction}" />
 		</h:form>
 
 	</ui:define>

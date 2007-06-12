@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.model.bean;
+package test.unit.net.link.safeonline.tasks.model.bean;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
@@ -23,12 +23,12 @@ import javax.persistence.EntityTransaction;
 import junit.framework.TestCase;
 import net.link.safeonline.Startable;
 import net.link.safeonline.Task;
-import net.link.safeonline.dao.SchedulingDAO;
-import net.link.safeonline.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
-import net.link.safeonline.model.bean.TaskSchedulerBean;
+import net.link.safeonline.tasks.dao.SchedulingDAO;
+import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
+import net.link.safeonline.tasks.model.bean.TaskSchedulerBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JndiTestUtils;

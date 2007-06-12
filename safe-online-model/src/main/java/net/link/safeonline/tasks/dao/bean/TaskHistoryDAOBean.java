@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.dao.bean;
+package net.link.safeonline.tasks.dao.bean;
 
 import java.util.Date;
 import java.util.List;
@@ -21,9 +21,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.dao.TaskHistoryDAO;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
+import net.link.safeonline.tasks.dao.TaskHistoryDAO;
 
 @Stateless
 public class TaskHistoryDAOBean implements TaskHistoryDAO {

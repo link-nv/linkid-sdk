@@ -11,13 +11,13 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
-import net.link.safeonline.dao.TaskDAO;
-import net.link.safeonline.dao.TaskHistoryDAO;
-import net.link.safeonline.dao.bean.TaskDAOBean;
-import net.link.safeonline.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
+import net.link.safeonline.tasks.dao.TaskDAO;
+import net.link.safeonline.tasks.dao.TaskHistoryDAO;
+import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
+import net.link.safeonline.tasks.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.test.util.EntityTestManager;
 import junit.framework.TestCase;
 
