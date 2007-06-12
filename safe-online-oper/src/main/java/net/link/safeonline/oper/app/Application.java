@@ -7,7 +7,10 @@
 
 package net.link.safeonline.oper.app;
 
+import java.util.List;
+
 import javax.ejb.Local;
+import javax.faces.model.SelectItem;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
 
@@ -24,6 +27,8 @@ public interface Application {
 	void identityAttributesFactory();
 
 	void applicationIdentityAttributesFactory();
+
+	List<SelectItem> availableApplicationOwnersFactory();
 
 	/*
 	 * Lifecycle.

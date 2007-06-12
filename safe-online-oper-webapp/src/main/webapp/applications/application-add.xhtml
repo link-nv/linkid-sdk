@@ -27,58 +27,71 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<table>
-				<tr>
-					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
-					<td><s:decorate>
-						<h:inputText id="name" value="#{operApplication.name}"
-							required="true" />
-					</s:decorate>*<h:message for="name" styleClass="error" /></td>
-				</tr>
-				<tr>
-					<td><h:outputLabel for="owner"
-						value="#{msgs.applicationOwner}" />:</td>
-					<td><s:decorate>
-						<h:inputText id="owner"
-							value="#{operApplication.applicationOwner}" required="true" />
-					</s:decorate>*<h:message for="owner" styleClass="error" /></td>
-				</tr>
-			</table>
+			<rich:tabPanel switchType="client">
 
-			<h:panelGrid columns="1">
-				<h:outputLabel for="description" value="Description" />
-				<h:inputTextarea id="description"
-					value="#{operApplication.description}" cols="60" rows="10" />
-			</h:panelGrid>
+				<rich:tab label="#{msgs.generic}">
+					<table>
+						<tr>
+							<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
+							<td><s:decorate>
+								<h:inputText id="name" value="#{operApplication.name}"
+									required="true" />
+							</s:decorate>*<h:message for="name" styleClass="error" /></td>
+						</tr>
+						<tr>
+							<td><h:outputLabel for="owner"
+								value="#{msgs.applicationOwner}" />:</td>
+							<td><s:decorate>
+								<h:selectOneMenu id="owner"
+									value="#{operApplication.applicationOwner}" required="true">
+									<f:selectItems value="#{availableApplicationOwners}" />
+								</h:selectOneMenu>
+							</s:decorate>* <h:message for="owner" styleClass="error" /></td>
+						</tr>
+					</table>
+				</rich:tab>
 
-			<h:panelGrid columns="1">
-				<h:panelGroup>
-					#{msgs.certificate}:
-					<s:decorate>
-						<t:inputFileUpload id="fileupload"
-							value="#{operApplication.upFile}" storage="file"
-							maxlength="200000" />
-					</s:decorate>
-					<h:message for="fileupload" styleClass="error" />
-				</h:panelGroup>
-			</h:panelGrid>
+				<rich:tab label="#{msgs.description}">
+					<h:panelGrid columns="1">
+						<h:outputLabel for="description" value="#{msgs.description}:" />
+						<h:inputTextarea id="description"
+							value="#{operApplication.description}" cols="60" rows="10" />
+					</h:panelGrid>
+				</rich:tab>
 
-			<h2>#{msgs.applicationIdentity}</h2>
-			<h:dataTable value="#{newIdentityAttributes}" var="item">
-				<h:column>
-					<f:facet name="header">#{msgs.name}</f:facet>
-					<h:selectBooleanCheckbox value="#{item.included}" id="included" />
-					<h:outputLabel for="included" value="#{item.name}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.required}</f:facet>
-					<h:selectBooleanCheckbox value="#{item.required}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.dataMining}</f:facet>
-					<h:selectBooleanCheckbox value="#{item.dataMining}" />
-				</h:column>
-			</h:dataTable>
+				<rich:tab label="#{msgs.accessControl}">
+					<h:panelGrid columns="1">
+						<h:panelGroup>
+							<h:outputText value="#{msgs.certificate}: " />
+							<s:decorate>
+								<t:inputFileUpload id="fileupload"
+									value="#{operApplication.upFile}" storage="file"
+									maxlength="200000" />
+							</s:decorate>
+							<h:message for="fileupload" styleClass="error" />
+						</h:panelGroup>
+					</h:panelGrid>
+				</rich:tab>
+
+				<rich:tab label="#{msgs.applicationIdentity}">
+					<h:dataTable value="#{newIdentityAttributes}" var="item">
+						<h:column>
+							<f:facet name="header">#{msgs.attributeName}</f:facet>
+							<h:selectBooleanCheckbox value="#{item.included}" id="included" />
+							<h:outputLabel for="included" value="#{item.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.required}</f:facet>
+							<h:selectBooleanCheckbox value="#{item.required}" id="required" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.dataMining}</f:facet>
+							<h:selectBooleanCheckbox value="#{item.dataMining}"
+								id="dataMining" />
+						</h:column>
+					</h:dataTable>
+				</rich:tab>
+			</rich:tabPanel>
 
 			<t:messages styleClass="error" globalOnly="true" />
 

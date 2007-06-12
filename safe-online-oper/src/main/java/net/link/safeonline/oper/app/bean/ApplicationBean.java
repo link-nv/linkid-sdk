@@ -17,6 +17,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -27,8 +28,11 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.SubscriptionService;
+import net.link.safeonline.ctrl.Convertor;
+import net.link.safeonline.ctrl.ConvertorUtil;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.app.Application;
@@ -420,5 +424,24 @@ public class ApplicationBean implements Application {
 		 */
 		LOG.debug("view application: " + this.selectedApplication.getName());
 		return "view";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	@Factory("availableApplicationOwners")
+	public List<SelectItem> availableApplicationOwnersFactory() {
+		List<ApplicationOwnerEntity> applicationOwners = this.applicationService
+				.listApplicationOwners();
+		List<SelectItem> availableApplicationOwners = ConvertorUtil.convert(
+				applicationOwners, new ApplicationOwnerSelectItemConvertor());
+		return availableApplicationOwners;
+	}
+
+	private static class ApplicationOwnerSelectItemConvertor implements
+			Convertor<ApplicationOwnerEntity, SelectItem> {
+
+		public SelectItem convert(ApplicationOwnerEntity input) {
+			SelectItem output = new SelectItem(input.getName());
+			return output;
+		}
 	}
 }

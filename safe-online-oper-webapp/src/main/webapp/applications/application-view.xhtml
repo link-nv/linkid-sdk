@@ -55,7 +55,8 @@
 				<!-- XSS vulnerability possible: do not set escape="false" -->
 			</rich:tab>
 
-			<rich:tab label="#{msgs.certificate}">
+			<rich:tab label="#{msgs.accessControl}">
+				<p><h:outputText value="#{msgs.certificate}:" /></p>
 				<pre><h:outputText value="#{selectedApplication.certificate}"
 					rendered="#{!empty selectedApplication.certificate}" /></pre>
 				<p><h:outputText value="#{msgs.noCertificate}"
@@ -65,7 +66,7 @@
 			<rich:tab label="#{msgs.applicationIdentity}">
 				<h:dataTable value="#{applicationIdentityAttributes}" var="item">
 					<h:column>
-						<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
+						<f:facet name="header">#{msgs.attributeName}</f:facet>
 						<h:outputText value="#{item.attributeTypeName}" />
 					</h:column>
 					<h:column>

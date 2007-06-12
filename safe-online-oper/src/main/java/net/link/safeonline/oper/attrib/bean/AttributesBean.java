@@ -19,6 +19,8 @@ import javax.faces.model.SelectItem;
 import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
+import net.link.safeonline.ctrl.Convertor;
+import net.link.safeonline.ctrl.ConvertorUtil;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.attrib.Attributes;
@@ -144,8 +146,8 @@ public class AttributesBean implements Attributes {
 	public List<SelectItem> memberAttributesFactory() {
 		List<AttributeTypeEntity> memberAttributeTypes = this.attributeTypeService
 				.listAvailableMemberAttributeTypes();
-		List<SelectItem> memberAttributes = convert(memberAttributeTypes,
-				new AttributeConvertor());
+		List<SelectItem> memberAttributes = ConvertorUtil.convert(
+				memberAttributeTypes, new AttributeConvertor());
 		return memberAttributes;
 	}
 
@@ -157,20 +159,6 @@ public class AttributesBean implements Attributes {
 			SelectItem output = new SelectItem(input, attributeName);
 			return output;
 		}
-	}
-
-	private interface Convertor<TypeIn, TypeOut> {
-		TypeOut convert(TypeIn input);
-	}
-
-	private static <TypeIn, TypeOut> List<TypeOut> convert(
-			List<TypeIn> inputList, Convertor<TypeIn, TypeOut> convertor) {
-		List<TypeOut> outputList = new LinkedList<TypeOut>();
-		for (TypeIn inputEntry : inputList) {
-			TypeOut outputEntry = convertor.convert(inputEntry);
-			outputList.add(outputEntry);
-		}
-		return outputList;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
