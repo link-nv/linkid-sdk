@@ -24,7 +24,7 @@
 			</activation>
 			<properties>
 				<auth.webapp.location>
-					http://localhost:8080/safe-online-auth/
+					http://localhost:8080/olas-auth/
 				</auth.webapp.location>
 			</properties>
 		</profile>
@@ -38,7 +38,7 @@
 			</activation>
 			<properties>
 				<auth.webapp.location>
-					http://buildserver:8080/safe-online-auth/
+					http://buildserver:8080/olas-auth/
 				</auth.webapp.location>
 			</properties>
 		</profile>

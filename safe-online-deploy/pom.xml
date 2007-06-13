@@ -186,7 +186,7 @@
 							<artifactId>
 								safe-online-user-webapp
 							</artifactId>
-							<contextRoot>/safe-online</contextRoot>
+							<contextRoot>/olas</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
@@ -216,7 +216,7 @@
 							<artifactId>
 								safe-online-oper-webapp
 							</artifactId>
-							<contextRoot>/safe-online-oper</contextRoot>
+							<contextRoot>/olas-oper</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>
@@ -234,7 +234,7 @@
 								safe-online-owner-webapp
 							</artifactId>
 							<contextRoot>
-								/safe-online-owner
+								/olas-owner
 							</contextRoot>
 						</webModule>
 						<sarModule>
@@ -257,7 +257,7 @@
 							<artifactId>
 								safe-online-auth-webapp
 							</artifactId>
-							<contextRoot>/safe-online-auth</contextRoot>
+							<contextRoot>/olas-auth</contextRoot>
 						</webModule>
 						<sarModule>
 							<groupId>net.lin-k.safe-online</groupId>

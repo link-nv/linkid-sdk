@@ -4,9 +4,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 
-	<display-name>
-		SafeOnline Authentication Web Application
-	</display-name>
+	<display-name>Olas Authentication Web Application</display-name>
 
 	<listener>
 		<listener-class>
@@ -39,6 +37,11 @@
 	<context-param>
 		<param-name>facelets.DEVELOPMENT</param-name>
 		<param-value>true</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>CommercialName</param-name>
+		<param-value>OLAS</param-value>
 	</context-param>
 
 	<filter>

@@ -8,7 +8,7 @@
 	<f:loadBundle basename="messages.webapp" var="msgs" />
 	<link rel="stylesheet" type="text/css"
 		href="#{facesContext.externalContext.requestContextPath}/css/style.css" />
-	<title><ui:insert name="title">SafeOnline</ui:insert></title>
+	<title><ui:insert name="title">#{initParam['CommercialName']}</ui:insert></title>
 	</head>
 
 	<body>

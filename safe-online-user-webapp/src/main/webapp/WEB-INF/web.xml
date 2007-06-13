@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 
-	<display-name>SafeOnline User Web Application</display-name>
+	<display-name>Olas User Web Application</display-name>
 
 	<listener>
 		<listener-class>
@@ -21,7 +21,7 @@
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
 		<param-value>
-			http://localhost:8080/safe-online-auth/
+			http://localhost:8080/olas-auth/
 		</param-value>
 	</context-param>
 
