@@ -79,7 +79,7 @@ public class MissingAttributesBean implements MissingAttributes {
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
 		try {
 			this.missingAttributeList = this.identityService
-					.getMissingAttributes(this.application, viewLocale);
+					.listMissingAttributes(this.application, viewLocale);
 		} catch (ApplicationNotFoundException e) {
 			String msg = "application not found.";
 			LOG.debug(msg);

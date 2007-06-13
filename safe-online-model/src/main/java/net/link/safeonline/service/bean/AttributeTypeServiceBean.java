@@ -7,7 +7,6 @@
 
 package net.link.safeonline.service.bean;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -26,6 +25,8 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.AttributeTypeServiceRemote;
+import net.link.safeonline.util.Filter;
+import net.link.safeonline.util.FilterUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -149,8 +150,9 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 	public List<AttributeTypeEntity> listAvailableMemberAttributeTypes() {
 		List<AttributeTypeEntity> attributeTypes = this.attributeTypeDAO
 				.listAttributeTypes();
-		List<AttributeTypeEntity> availableMemberAttributeTypes = filter(
-				attributeTypes, new AvailableMemberAttributeTypeFilter());
+		List<AttributeTypeEntity> availableMemberAttributeTypes = FilterUtil
+				.filter(attributeTypes,
+						new AvailableMemberAttributeTypeFilter());
 		return availableMemberAttributeTypes;
 	}
 
@@ -166,21 +168,5 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 			}
 			return true;
 		}
-	}
-
-	private interface Filter<Type> {
-		boolean isAllowed(Type element);
-	}
-
-	private static <Type> List<Type> filter(List<Type> inputList,
-			Filter<Type> filter) {
-		List<Type> outputList = new LinkedList<Type>();
-		for (Type element : inputList) {
-			if (false == filter.isAllowed(element)) {
-				continue;
-			}
-			outputList.add(element);
-		}
-		return outputList;
 	}
 }

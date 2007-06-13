@@ -7,12 +7,15 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -44,12 +47,15 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.AttributeTypeDescriptionDecorator;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.util.FilterUtil;
+import net.link.safeonline.util.MapEntryFilter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -365,17 +371,23 @@ public class IdentityServiceBean implements IdentityService,
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException {
 		LOG.debug("hasMissingAttributes for application: " + applicationName);
-		List<AttributeDO> missingAttributes = getMissingAttributes(
+		List<AttributeDO> missingAttributes = listMissingAttributes(
 				applicationName, null);
 		return false == missingAttributes.isEmpty();
 	}
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<AttributeDO> getMissingAttributes(String applicationName,
-			Locale locale) throws ApplicationNotFoundException,
+	/**
+	 * Gives back all the requires data attribute types for the given
+	 * application. This method will also expand compounded attribute types.
+	 * 
+	 * @param applicationName
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 * @throws ApplicationIdentityNotFoundException
+	 */
+	private Set<AttributeTypeEntity> getRequiredDataAttributeTypes(
+			String applicationName) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException {
-		// TODO: simplify this method implementation
-		LOG.debug("get missing attribute for application: " + applicationName);
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
 		long currentApplicationIdentityVersion = application
@@ -383,8 +395,70 @@ public class IdentityServiceBean implements IdentityService,
 		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
 				.getApplicationIdentity(application,
 						currentApplicationIdentityVersion);
-		List<AttributeTypeEntity> requiredApplicationAttributeTypes = applicationIdentity
-				.getRequiredAttributeTypes();
+		List<ApplicationIdentityAttributeEntity> identityAttributes = applicationIdentity
+				.getAttributes();
+
+		/*
+		 * The non-compounded attribute types have precedence over the members
+		 * of compounded attribute types.
+		 */
+		Map<AttributeTypeEntity, Boolean> attributeRequirements = new HashMap<AttributeTypeEntity, Boolean>();
+		for (ApplicationIdentityAttributeEntity identityAttribute : identityAttributes) {
+			AttributeTypeEntity attributeType = identityAttribute
+					.getAttributeType();
+			if (attributeType.isCompounded()) {
+				continue;
+			}
+			attributeRequirements.put(attributeType, identityAttribute
+					.isRequired());
+		}
+
+		/*
+		 * Next we go over the compounded attribute types and add their members
+		 * to the map, using the optionality of the identity attribute entity.
+		 */
+		for (ApplicationIdentityAttributeEntity identityAttribute : identityAttributes) {
+			AttributeTypeEntity attributeType = identityAttribute
+					.getAttributeType();
+			if (false == attributeType.isCompounded()) {
+				continue;
+			}
+			for (CompoundedAttributeTypeMemberEntity member : attributeType
+					.getMembers()) {
+				AttributeTypeEntity memberAttributeType = member.getMember();
+				if (attributeRequirements.containsKey(memberAttributeType)) {
+					/*
+					 * If the attribute is already present it's because of a
+					 * non-compounded attribute type which has precedence over
+					 * the member attribute types of a compounded attribute
+					 * type.
+					 */
+					continue;
+				}
+				attributeRequirements.put(memberAttributeType,
+						identityAttribute.isRequired());
+			}
+		}
+
+		Set<AttributeTypeEntity> result = FilterUtil.filterToSet(
+				attributeRequirements, new RequiredAttributeMapEntryFilter());
+		return result;
+	}
+
+	private static class RequiredAttributeMapEntryFilter implements
+			MapEntryFilter<AttributeTypeEntity, Boolean> {
+
+		public boolean isAllowed(Entry<AttributeTypeEntity, Boolean> element) {
+			return element.getValue();
+		}
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public List<AttributeDO> listMissingAttributes(String applicationName,
+			Locale locale) throws ApplicationNotFoundException,
+			ApplicationIdentityNotFoundException {
+		LOG.debug("get missing attribute for application: " + applicationName);
+		Set<AttributeTypeEntity> requiredApplicationAttributeTypes = getRequiredDataAttributeTypes(applicationName);
 
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		List<AttributeEntity> userAttributes = this.attributeDAO
@@ -450,7 +524,7 @@ public class IdentityServiceBean implements IdentityService,
 			}
 			/*
 			 * We mark the missing attribute as singled-valued here since
-			 * basically the user does not care as this point.
+			 * basically the user does not care at this point.
 			 */
 			AttributeDO missingAttribute = new AttributeDO(
 					missingAttributeName, datatype, false, 0,

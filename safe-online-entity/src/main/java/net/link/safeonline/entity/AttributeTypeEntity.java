@@ -28,6 +28,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.IndexColumn;
 
@@ -119,6 +120,11 @@ public class AttributeTypeEntity implements Serializable {
 			return false;
 		final AttributeTypeEntity rhs = (AttributeTypeEntity) obj;
 		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this.name).toHashCode();
 	}
 
 	@Override

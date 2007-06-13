@@ -174,7 +174,7 @@ public interface IdentityService {
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
 	 */
-	List<AttributeDO> getMissingAttributes(String applicationName, Locale locale)
+	List<AttributeDO> listMissingAttributes(String applicationName, Locale locale)
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException;
 
