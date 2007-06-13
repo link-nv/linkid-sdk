@@ -38,11 +38,11 @@ public class SafeOnlineConstants {
 	 */
 	public static final String SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN = "applications";
 
-	public static final String SAFE_ONLINE_USER_APPLICATION_NAME = "safe-online-user";
+	public static final String SAFE_ONLINE_USER_APPLICATION_NAME = "olas-user";
 
-	public static final String SAFE_ONLINE_OPERATOR_APPLICATION_NAME = "safe-online-oper";
+	public static final String SAFE_ONLINE_OPERATOR_APPLICATION_NAME = "olas-oper";
 
-	public static final String SAFE_ONLINE_OWNER_APPLICATION_NAME = "safe-online-owner";
+	public static final String SAFE_ONLINE_OWNER_APPLICATION_NAME = "olas-owner";
 
 	public static final String NAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:name";
 

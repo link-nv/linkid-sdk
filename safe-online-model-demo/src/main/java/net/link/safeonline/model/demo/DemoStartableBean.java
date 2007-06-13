@@ -41,13 +41,13 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	public static final String DEMO_APPLICATION_NAME = "demo-application";
 
-	public static final String DEMO_TICKET_APPLICATION_NAME = "safe-online-demo-ticket";
+	public static final String DEMO_TICKET_APPLICATION_NAME = "demo-ticket";
 
-	public static final String DEMO_PAYMENT_APPLICATION_NAME = "safe-online-demo-payment";
+	public static final String DEMO_PAYMENT_APPLICATION_NAME = "demo-payment";
 
-	public static final String DEMO_LAWYER_APPLICATION_NAME = "safe-online-demo-lawyer";
+	public static final String DEMO_LAWYER_APPLICATION_NAME = "demo-lawyer";
 
-	public static final String DEMO_PRESCRIPTION_APPLICATION_NAME = "safe-online-demo-prescription";
+	public static final String DEMO_PRESCRIPTION_APPLICATION_NAME = "demo-prescription";
 
 	public DemoStartableBean() {
 		configDemoUsers();

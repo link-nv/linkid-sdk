@@ -31,7 +31,7 @@
 
 	<context-param>
 		<param-name>ApplicationName</param-name>
-		<param-value>safe-online-demo-payment</param-value>
+		<param-value>demo-payment</param-value>
 	</context-param>
 
 	<context-param>

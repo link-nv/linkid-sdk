@@ -27,7 +27,7 @@
 
 	<context-param>
 		<param-name>ApplicationName</param-name>
-		<param-value>safe-online-user</param-value>
+		<param-value>olas-user</param-value>
 	</context-param>
 
 	<context-param>
