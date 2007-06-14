@@ -22,7 +22,6 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AttributeDO;
@@ -53,6 +52,7 @@ import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.AttributeTypeService;
@@ -117,9 +117,9 @@ public class IdentityServiceBeanTest {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-global-operator", "global-operator");
 		attributeTypeService.add(new AttributeTypeEntity("test-attribute-type",
-				"string", false, false));
+				DatatypeType.STRING, false, false));
 		attributeTypeService.add(new AttributeTypeEntity(
-				"test-attribute-type-2", "string", false, false));
+				"test-attribute-type-2", DatatypeType.STRING, false, false));
 		applicationService.addApplication(applicationName,
 				"test-application-owner-name", null, null, Collections
 						.singletonList(new IdentityAttributeTypeDO(
@@ -243,7 +243,7 @@ public class IdentityServiceBeanTest {
 				SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
 		String attributeName = "test-attribute-name";
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				attributeName, SafeOnlineConstants.STRING_TYPE, true, true);
+				attributeName, DatatypeType.STRING, true, true);
 		attributeType.setMultivalued(true);
 		attributeTypeService.add(attributeType);
 
@@ -251,8 +251,8 @@ public class IdentityServiceBeanTest {
 
 		// operate: save an attribute
 		AttributeDO attribute = new AttributeDO(attributeName,
-				SafeOnlineConstants.STRING_TYPE, true, 0, null, null, true,
-				true, "value 1", null);
+				DatatypeType.STRING, true, 0, null, null, true, true,
+				"value 1", null);
 		identityService.saveAttribute(attribute);
 
 		refreshTransaction(entityManager);
@@ -265,8 +265,8 @@ public class IdentityServiceBeanTest {
 		// operate: save 2 multivalued attributes
 		identityService.saveAttribute(attribute);
 		AttributeDO attribute2 = new AttributeDO(attributeName,
-				SafeOnlineConstants.STRING_TYPE, true, 1, null, null, true,
-				true, "value 2", null);
+				DatatypeType.STRING, true, 1, null, null, true, true,
+				"value 2", null);
 		identityService.saveAttribute(attribute2);
 
 		refreshTransaction(entityManager);
@@ -329,18 +329,16 @@ public class IdentityServiceBeanTest {
 				AttributeTypeDAOBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager);
 		AttributeTypeEntity optionalAttributeType = new AttributeTypeEntity(
-				"test-optional-attribute-type",
-				SafeOnlineConstants.STRING_TYPE, true, true);
+				"test-optional-attribute-type", DatatypeType.STRING, true, true);
 		attributeTypeDAO.addAttributeType(optionalAttributeType);
 		AttributeTypeEntity requiredAttributeType = new AttributeTypeEntity(
-				"test-required-attribute-type",
-				SafeOnlineConstants.STRING_TYPE, true, true);
+				"test-required-attribute-type", DatatypeType.STRING, true, true);
 		attributeTypeDAO.addAttributeType(requiredAttributeType);
 		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
-				"test-compounded-attribute-type",
-				SafeOnlineConstants.STRING_TYPE, true, true);
-		compoundedAttributeType.addMember(optionalAttributeType, 0);
-		compoundedAttributeType.addMember(requiredAttributeType, 1);
+				"test-compounded-attribute-type", DatatypeType.STRING, true,
+				true);
+		compoundedAttributeType.addMember(optionalAttributeType, 0, false);
+		compoundedAttributeType.addMember(requiredAttributeType, 1, true);
 		attributeTypeDAO.addAttributeType(compoundedAttributeType);
 
 		ApplicationIdentityDAO applicationIdentityDAO = EJBTestUtils

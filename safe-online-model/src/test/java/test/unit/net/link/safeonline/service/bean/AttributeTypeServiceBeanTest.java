@@ -16,10 +16,10 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.bean.AttributeTypeServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -60,7 +60,7 @@ public class AttributeTypeServiceBeanTest {
 		String attributeName = "test-attribute-type-name-"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				attributeName, SafeOnlineConstants.STRING_TYPE, true, true);
+				attributeName, DatatypeType.STRING, true, true);
 
 		// operate
 		this.testedInstance.add(attributeType);
@@ -80,21 +80,19 @@ public class AttributeTypeServiceBeanTest {
 		String memberAttributeName = "test-attribute-type-name-"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
-				memberAttributeName, SafeOnlineConstants.STRING_TYPE, true,
-				true);
+				memberAttributeName, DatatypeType.STRING, true, true);
 
 		String nonMemberAttributeName = "test-attribute-type-name"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity nonMemberAttributeType = new AttributeTypeEntity(
-				nonMemberAttributeName, SafeOnlineConstants.STRING_TYPE, true,
-				true);
+				nonMemberAttributeName, DatatypeType.STRING, true, true);
+		nonMemberAttributeType.setMultivalued(true);
 
 		String compoundedAttributeTypeName = "test-attribute-type-name"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
-				compoundedAttributeTypeName, SafeOnlineConstants.STRING_TYPE,
-				true, true);
-		compoundedAttributeType.addMember(memberAttributeType, 0);
+				compoundedAttributeTypeName, DatatypeType.STRING, true, true);
+		compoundedAttributeType.addMember(memberAttributeType, 0, true);
 
 		// operate
 		this.testedInstance.add(memberAttributeType);
@@ -123,22 +121,21 @@ public class AttributeTypeServiceBeanTest {
 		String memberAttributeName = "test-attribute-type-name-"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
-				memberAttributeName, SafeOnlineConstants.STRING_TYPE, true,
-				true);
+				memberAttributeName, DatatypeType.STRING, true, true);
 
 		String compoundedAttributeTypeName = "test-attribute-type-name"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
-				compoundedAttributeTypeName, SafeOnlineConstants.STRING_TYPE,
-				true, true);
-		compoundedAttributeType.addMember(memberAttributeType, 0);
+				compoundedAttributeTypeName, DatatypeType.STRING, true, true);
+		compoundedAttributeType.addMember(memberAttributeType, 0, true);
 
 		String compoundedCompoundedAttributeTypeName = "test-attribute-type-name"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity compoundedCompoundedAttributeType = new AttributeTypeEntity(
-				compoundedCompoundedAttributeTypeName,
-				SafeOnlineConstants.STRING_TYPE, true, true);
-		compoundedCompoundedAttributeType.addMember(compoundedAttributeType, 0);
+				compoundedCompoundedAttributeTypeName, DatatypeType.STRING,
+				true, true);
+		compoundedCompoundedAttributeType.addMember(compoundedAttributeType, 0,
+				true);
 
 		// operate
 		this.testedInstance.add(memberAttributeType);
@@ -158,22 +155,20 @@ public class AttributeTypeServiceBeanTest {
 		String memberAttributeName = "test-attribute-type-name-"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
-				memberAttributeName, SafeOnlineConstants.STRING_TYPE, true,
-				true);
+				memberAttributeName, DatatypeType.STRING, true, true);
 
 		String compoundedAttributeTypeName = "test-attribute-type-name"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
-				compoundedAttributeTypeName, SafeOnlineConstants.STRING_TYPE,
-				true, true);
-		compoundedAttributeType.addMember(memberAttributeType, 0);
+				compoundedAttributeTypeName, DatatypeType.STRING, true, true);
+		compoundedAttributeType.addMember(memberAttributeType, 0, true);
 
 		String compoundedCompoundedAttributeTypeName = "test-attribute-type-name"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity compounded2AttributeType = new AttributeTypeEntity(
-				compoundedCompoundedAttributeTypeName,
-				SafeOnlineConstants.STRING_TYPE, true, true);
-		compounded2AttributeType.addMember(memberAttributeType, 0);
+				compoundedCompoundedAttributeTypeName, DatatypeType.STRING,
+				true, true);
+		compounded2AttributeType.addMember(memberAttributeType, 0, true);
 
 		// operate
 		this.testedInstance.add(memberAttributeType);

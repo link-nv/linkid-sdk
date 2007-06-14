@@ -32,6 +32,7 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
@@ -200,7 +201,7 @@ public class DataWebServiceTest extends TestCase {
 		String attributeName = "test-attribute-name-"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				attributeName, SafeOnlineConstants.BOOLEAN_TYPE, true, true);
+				attributeName, DatatypeType.BOOLEAN, true, true);
 		attributeTypeService.add(attributeType);
 
 		// operate: add application with certificate
@@ -294,7 +295,7 @@ public class DataWebServiceTest extends TestCase {
 		String attributeName = "test-attribute-name-"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				attributeName, SafeOnlineConstants.STRING_TYPE, true, true);
+				attributeName, DatatypeType.STRING, true, true);
 		attributeType.setMultivalued(true);
 		attributeTypeService.add(attributeType);
 
@@ -349,7 +350,7 @@ public class DataWebServiceTest extends TestCase {
 
 		IntegrationTestUtils.login(login, password);
 		AttributeDO attribute2 = new AttributeDO(attributeName,
-				SafeOnlineConstants.STRING_TYPE);
+				DatatypeType.STRING);
 		String attributeValue2 = "test-attribute-value-2";
 		attribute2.setStringValue(attributeValue2);
 		identityService.addAttribute(attribute2);
@@ -401,7 +402,7 @@ public class DataWebServiceTest extends TestCase {
 		String attributeName = "test-attribute-name-"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				attributeName, SafeOnlineConstants.BOOLEAN_TYPE, true, true);
+				attributeName, DatatypeType.BOOLEAN, true, true);
 		attributeTypeService.add(attributeType);
 
 		// operate: add application with certificate

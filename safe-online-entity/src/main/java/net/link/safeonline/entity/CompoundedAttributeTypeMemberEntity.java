@@ -35,15 +35,18 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
 
 	private int memberSequence;
 
+	private boolean required;
+
 	public CompoundedAttributeTypeMemberEntity() {
 		// empty
 	}
 
 	public CompoundedAttributeTypeMemberEntity(AttributeTypeEntity parent,
-			AttributeTypeEntity member, int memberSequence) {
+			AttributeTypeEntity member, int memberSequence, boolean required) {
 		this.parent = parent;
 		this.member = member;
 		this.memberSequence = memberSequence;
+		this.required = required;
 		this.pk = new CompoundedAttributeTypeMemberPK(this.parent, this.member);
 	}
 
@@ -92,6 +95,20 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
 
 	public void setMemberSequence(int memberSequence) {
 		this.memberSequence = memberSequence;
+	}
+
+	/**
+	 * Marks whether the member is a required part of the compounded attribute
+	 * type.
+	 * 
+	 * @return
+	 */
+	public boolean isRequired() {
+		return this.required;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
 	}
 
 	@Override

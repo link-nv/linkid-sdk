@@ -48,12 +48,6 @@ public class SafeOnlineConstants {
 
 	public static final String PASSWORD_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:password";
 
-	public static final String STRING_TYPE = "string";
-
-	public static final String BOOLEAN_TYPE = "boolean";
-
-	public static final String BLOB_TYPE = "blob";
-
 	public static final String USERNAME_PASSWORD_AUTH_DEVICE = "password";
 
 	public static final String BEID_AUTH_DEVICE = "beid";

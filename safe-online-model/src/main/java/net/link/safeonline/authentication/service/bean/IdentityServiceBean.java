@@ -48,6 +48,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -165,15 +166,25 @@ public class IdentityServiceBean implements IdentityService,
 			}
 		}
 
-		String type = attributeType.getType();
-		if (SafeOnlineConstants.STRING_TYPE.equals(type)) {
+		DatatypeType type = attributeType.getType();
+		if (attribute.getType() != type) {
+			throw new EJBException("datatype does not match");
+		}
+		switch (type) {
+		case STRING: {
 			String attributeValue = attribute.getStringValue();
 			this.attributeDAO.addOrUpdateAttribute(attributeType, subject,
 					index, attributeValue);
-		} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(type)) {
+			break;
+		}
+		case BOOLEAN: {
 			Boolean attributeValue = attribute.getBooleanValue();
 			this.attributeDAO.addOrUpdateAttribute(attributeType, subject,
 					index, attributeValue);
+			break;
+		}
+		default:
+			throw new EJBException("datatype not supported: " + type);
 		}
 	}
 
@@ -194,7 +205,7 @@ public class IdentityServiceBean implements IdentityService,
 			String stringValue = attribute.getStringValue();
 			Boolean booleanValue = attribute.getBooleanValue();
 			boolean editable = attributeType.isUserEditable();
-			String datatype = attributeType.getType();
+			DatatypeType datatype = attributeType.getType();
 			boolean multivalued = attributeType.isMultivalued();
 			long index = attribute.getAttributeIndex();
 
@@ -470,8 +481,9 @@ public class IdentityServiceBean implements IdentityService,
 		}
 
 		for (AttributeEntity userAttribute : userAttributes) {
-			String datatype = userAttribute.getAttributeType().getType();
-			if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+			DatatypeType datatype = userAttribute.getAttributeType().getType();
+			switch (datatype) {
+			case STRING:
 				String stringValue = userAttribute.getStringValue();
 				if (null == stringValue) {
 					/*
@@ -486,7 +498,8 @@ public class IdentityServiceBean implements IdentityService,
 					 */
 					continue;
 				}
-			} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+				break;
+			case BOOLEAN:
 				Boolean booleanValue = userAttribute.getBooleanValue();
 				if (null == booleanValue) {
 					/*
@@ -495,6 +508,9 @@ public class IdentityServiceBean implements IdentityService,
 					 */
 					continue;
 				}
+				break;
+			default:
+				throw new EJBException("datatype not supported: " + datatype);
 			}
 			String attributeName = userAttribute.getAttributeType().getName();
 			missingAttributeNames.remove(attributeName);
@@ -509,7 +525,7 @@ public class IdentityServiceBean implements IdentityService,
 			String description = null;
 			AttributeTypeEntity attributeType = this.attributeTypeDAO
 					.findAttributeType(missingAttributeName);
-			String datatype = attributeType.getType();
+			DatatypeType datatype = attributeType.getType();
 			if (null != locale) {
 				String language = locale.getLanguage();
 				LOG.debug("trying language: " + language);
@@ -589,7 +605,7 @@ public class IdentityServiceBean implements IdentityService,
 
 			boolean multivalued = attributeType.isMultivalued();
 			String name = attributeType.getName();
-			String type = attributeType.getType();
+			DatatypeType type = attributeType.getType();
 			boolean editable = attributeType.isUserEditable();
 			boolean dataMining = false;
 			String humanReabableName = null;
@@ -710,12 +726,15 @@ public class IdentityServiceBean implements IdentityService,
 		/*
 		 * Also copy the data into the new persisted attribute.
 		 */
-		String datatype = attributeType.getType();
-		if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+		DatatypeType datatype = attributeType.getType();
+		switch (datatype) {
+		case STRING:
 			attribute.setStringValue(newAttribute.getStringValue());
-		} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+			break;
+		case BOOLEAN:
 			attribute.setBooleanValue(newAttribute.getBooleanValue());
-		} else {
+			break;
+		default:
 			throw new EJBException("datatype not supported: " + datatype);
 		}
 	}

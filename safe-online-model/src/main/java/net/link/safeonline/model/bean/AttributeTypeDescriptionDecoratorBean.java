@@ -20,6 +20,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.model.AttributeTypeDescriptionDecorator;
 
 @Stateless
@@ -38,7 +39,7 @@ public class AttributeTypeDescriptionDecoratorBean implements
 		}
 		for (AttributeTypeEntity attributeType : attributeTypes) {
 			String name = attributeType.getName();
-			String datatype = attributeType.getType();
+			DatatypeType datatype = attributeType.getType();
 			String humanReadableName = null;
 			String description = null;
 			boolean multivalued = attributeType.isMultivalued();
@@ -71,7 +72,7 @@ public class AttributeTypeDescriptionDecoratorBean implements
 			String name = identityAttribute.getAttributeTypeName();
 			AttributeTypeEntity attributeType = identityAttribute
 					.getAttributeType();
-			String datatype = attributeType.getType();
+			DatatypeType datatype = attributeType.getType();
 			String humanReadableName = null;
 			String description = null;
 			if (null != language) {

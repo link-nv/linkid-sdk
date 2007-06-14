@@ -1,1 +1,9 @@
-<pages></pages>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pages PUBLIC 
+	"-//JBoss/Seam Pages Configuration DTD 1.2//EN"
+	"http://jboss.com/products/seam/pages-1.2.dtd">
+<pages>
+	<page view-id="/attributes/attribute-add.xhtml">
+		<begin-conversation join="true" />
+	</page>
+</pages>

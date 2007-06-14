@@ -28,6 +28,7 @@ import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeProviderPK;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
@@ -53,7 +54,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		configDemoUsers();
 
 		AttributeTypeEntity visaAttributeType = new AttributeTypeEntity(
-				DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, "string", true, true);
+				DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, DatatypeType.STRING,
+				true, true);
 		visaAttributeType.setMultivalued(true);
 		this.attributeTypes.add(visaAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
@@ -138,17 +140,16 @@ public class DemoStartableBean extends AbstractInitBean {
 		 * Attribute Types.
 		 */
 		configDemoAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
-				SafeOnlineConstants.BOOLEAN_TYPE,
-				DEMO_PRESCRIPTION_APPLICATION_NAME, "Prescription Admin",
-				"Voorschriftbeheerder");
+				DatatypeType.BOOLEAN, DEMO_PRESCRIPTION_APPLICATION_NAME,
+				"Prescription Admin", "Voorschriftbeheerder");
 		configDemoAttribute(
 				DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
-				SafeOnlineConstants.BOOLEAN_TYPE,
-				DEMO_PRESCRIPTION_APPLICATION_NAME, "Care Provider", "Dokter");
+				DatatypeType.BOOLEAN, DEMO_PRESCRIPTION_APPLICATION_NAME,
+				"Care Provider", "Dokter");
 		configDemoAttribute(
 				DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
-				SafeOnlineConstants.BOOLEAN_TYPE,
-				DEMO_PRESCRIPTION_APPLICATION_NAME, "Pharmacist", "Apotheker");
+				DatatypeType.BOOLEAN, DEMO_PRESCRIPTION_APPLICATION_NAME,
+				"Pharmacist", "Apotheker");
 
 		/*
 		 * Application Identities.
@@ -204,15 +205,14 @@ public class DemoStartableBean extends AbstractInitBean {
 
 		configLawyerDemoAttribute(
 				DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
-				SafeOnlineConstants.BOOLEAN_TYPE, "Bar administrator",
-				"Baliebeheerder");
+				DatatypeType.BOOLEAN, "Bar administrator", "Baliebeheerder");
 		configLawyerDemoAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME,
-				SafeOnlineConstants.BOOLEAN_TYPE, "Lawyer", "Advocaat");
+				DatatypeType.BOOLEAN, "Lawyer", "Advocaat");
 		configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME,
-				SafeOnlineConstants.STRING_TYPE, "Bar", "Balie");
+				DatatypeType.STRING, "Bar", "Balie");
 		configLawyerDemoAttribute(
 				DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
-				SafeOnlineConstants.BOOLEAN_TYPE, "Suspended", "Geschorst");
+				DatatypeType.BOOLEAN, "Suspended", "Geschorst");
 
 		this.identities.add(new Identity(DEMO_LAWYER_APPLICATION_NAME,
 				new IdentityAttributeTypeDO[] {
@@ -240,13 +240,14 @@ public class DemoStartableBean extends AbstractInitBean {
 	}
 
 	private void configLawyerDemoAttribute(String attributeName,
-			String datatype, String enName, String nlName) {
+			DatatypeType datatype, String enName, String nlName) {
 		configDemoAttribute(attributeName, datatype,
 				DEMO_LAWYER_APPLICATION_NAME, enName, nlName);
 	}
 
-	private void configDemoAttribute(String attributeName, String datatype,
-			String attributeProviderName, String enName, String nlName) {
+	private void configDemoAttribute(String attributeName,
+			DatatypeType datatype, String attributeProviderName, String enName,
+			String nlName) {
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
 				attributeName, datatype, true, false);
 		this.attributeTypes.add(attributeType);

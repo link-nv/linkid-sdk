@@ -23,6 +23,7 @@ import javax.ejb.Stateless;
 import net.link.safeonline.Startable;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
@@ -52,7 +53,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 		List<AttributeTypeEntity> deviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
 
 		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(
-				BeIdConstants.GIVENNAME_ATTRIBUTE, "string", true, false);
+				BeIdConstants.GIVENNAME_ATTRIBUTE, DatatypeType.STRING, true,
+				false);
 		this.attributeTypes.add(givenNameAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				givenNameAttributeType, Locale.ENGLISH.getLanguage(),
@@ -63,7 +65,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 		deviceAttributeTypeList.add(givenNameAttributeType);
 
 		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(
-				BeIdConstants.SURNAME_ATTRIBUTE, "string", true, false);
+				BeIdConstants.SURNAME_ATTRIBUTE, DatatypeType.STRING, true,
+				false);
 		this.attributeTypes.add(surnameAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				surnameAttributeType, Locale.ENGLISH.getLanguage(),
@@ -73,14 +76,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 
 		deviceAttributeTypeList.add(surnameAttributeType);
 
-		AttributeTypeEntity authenticationCertificateAttributeType = new AttributeTypeEntity(
-				BeIdConstants.AUTH_CERT_ATTRIBUTE, "blob", true, false);
-		this.attributeTypes.add(authenticationCertificateAttributeType);
-
-		deviceAttributeTypeList.add(authenticationCertificateAttributeType);
-
 		AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(
-				BeIdConstants.NRN_ATTRIBUTE, "string", true, false);
+				BeIdConstants.NRN_ATTRIBUTE, DatatypeType.STRING, true, false);
 		this.attributeTypes.add(nrnAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				nrnAttributeType, Locale.ENGLISH.getLanguage(),

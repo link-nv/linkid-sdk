@@ -7,13 +7,14 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineApplicationRoles;
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -33,21 +34,25 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JmxTestUtils;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
-public class AttributeProviderServiceBeanTest extends TestCase {
+public class AttributeProviderServiceBeanTest {
 
 	private EntityTestManager entityTestManager;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		JmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 
 		this.entityTestManager = new EntityTestManager();
@@ -61,12 +66,12 @@ public class AttributeProviderServiceBeanTest extends TestCase {
 		this.entityTestManager.refreshEntityManager();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		this.entityTestManager.tearDown();
-		super.tearDown();
 	}
 
+	@Test
 	public void testCreateAttributeRequiresAttributeProvider() throws Exception {
 		// setup
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -93,7 +98,7 @@ public class AttributeProviderServiceBeanTest extends TestCase {
 				AttributeTypeDAOBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager);
 		AttributeTypeEntity testAttributeType = new AttributeTypeEntity(
-				testAttributeName, SafeOnlineConstants.STRING_TYPE, true, false);
+				testAttributeName, DatatypeType.STRING, true, false);
 		attributeTypeDAO.addAttributeType(testAttributeType);
 
 		ApplicationDAO applicationDAO = EJBTestUtils.newInstance(
@@ -118,6 +123,7 @@ public class AttributeProviderServiceBeanTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testMultivaluedAttribute() throws Exception {
 		// setup
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -147,7 +153,7 @@ public class AttributeProviderServiceBeanTest extends TestCase {
 				AttributeTypeDAOBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager);
 		AttributeTypeEntity testAttributeType = new AttributeTypeEntity(
-				testAttributeName, SafeOnlineConstants.STRING_TYPE, true, false);
+				testAttributeName, DatatypeType.STRING, true, false);
 		testAttributeType.setMultivalued(true);
 		attributeTypeDAO.addAttributeType(testAttributeType);
 
@@ -223,6 +229,7 @@ public class AttributeProviderServiceBeanTest extends TestCase {
 		assertEquals(value1, resultAttributes.get(2).getStringValue());
 	}
 
+	@Test
 	public void testCreateSingleValuedAttributes() throws Exception {
 		// setup
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -250,7 +257,7 @@ public class AttributeProviderServiceBeanTest extends TestCase {
 				AttributeTypeDAOBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager);
 		AttributeTypeEntity testAttributeType = new AttributeTypeEntity(
-				testAttributeName, SafeOnlineConstants.STRING_TYPE, true, false);
+				testAttributeName, DatatypeType.STRING, true, false);
 		attributeTypeDAO.addAttributeType(testAttributeType);
 
 		ApplicationDAO applicationDAO = EJBTestUtils.newInstance(

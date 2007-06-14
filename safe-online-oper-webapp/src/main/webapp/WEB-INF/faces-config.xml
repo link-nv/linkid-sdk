@@ -441,12 +441,102 @@
 	<navigation-rule>
 		<from-view-id>/attributes/attribute-add.xhtml</from-view-id>
 		<navigation-case>
+			<from-outcome>singleValued</from-outcome>
+			<to-view-id>
+				/attributes/attribute-add-type.xhtml
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>multiValued</from-outcome>
+			<to-view-id>
+				/attributes/attribute-add-type.xhtml
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>compounded</from-outcome>
+			<to-view-id>
+				/attributes/attribute-add-members.xhtml
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>
+			/attributes/attribute-add-type.xhtml
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>next</from-outcome>
+			<to-view-id>/attributes/attribute-add-ac.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>previous</from-action>
+			<to-view-id>/attributes/attribute-add.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/attributes/attribute-add-ac.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>previous</from-action>
+			<to-view-id>
+				/attributes/attribute-add-type.xhtml
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>
+			/attributes/attribute-add-members.xhtml
+		</from-view-id>
+		<navigation-case>
+			<from-outcome>next</from-outcome>
+			<to-view-id>
+				/attributes/attribute-add-members-ac.xhtml
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>previous</from-action>
+			<to-view-id>/attributes/attribute-add.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>
+			/attributes/attribute-add-members-ac.xhtml
+		</from-view-id>
+		<navigation-case>
 			<from-outcome>success</from-outcome>
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>cancel</from-action>
+			<from-outcome>canceled</from-outcome>
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>previous</from-action>
+			<to-view-id>
+				/attributes/attribute-add-members.xhtml
+			</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

@@ -34,6 +34,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.ApplicationManager;
@@ -87,20 +88,24 @@ public class AttributeServiceBean implements AttributeService,
 			SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 			List<AttributeEntity> attributes = this.attributeDAO
 					.listAttributes(subject, attributeType);
-			String datatype = attributeType.getType();
-			if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+			DatatypeType datatype = attributeType.getType();
+			switch (datatype) {
+			case STRING: {
 				String[] values = new String[attributes.size()];
 				for (int idx = 0; idx < values.length; idx++) {
 					values[idx] = attributes.get(idx).getStringValue();
 				}
 				return values;
 			}
-			if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+			case BOOLEAN: {
 				Boolean[] values = new Boolean[attributes.size()];
 				for (int idx = 0; idx < values.length; idx++) {
 					values[idx] = attributes.get(idx).getBooleanValue();
 				}
 				return values;
+			}
+			default:
+				throw new EJBException("datatype not supported: " + datatype);
 			}
 		}
 
@@ -109,16 +114,19 @@ public class AttributeServiceBean implements AttributeService,
 		AttributeEntity attribute = this.attributeDAO.getAttribute(
 				attributeName, subjectLogin);
 
-		String datatype = attribute.getAttributeType().getType();
-		if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+		DatatypeType datatype = attribute.getAttributeType().getType();
+		switch (datatype) {
+		case STRING: {
 			String value = attribute.getStringValue();
 			return value;
 		}
-		if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+		case BOOLEAN: {
 			Boolean value = attribute.getBooleanValue();
 			return value;
 		}
-		throw new EJBException("datatype not supported: " + datatype);
+		default:
+			throw new EJBException("datatype not supported: " + datatype);
+		}
 	}
 
 	private AttributeTypeEntity checkAttributeReadPermission(
@@ -205,32 +213,40 @@ public class AttributeServiceBean implements AttributeService,
 				continue;
 			}
 			LOG.debug("confirmed attribute: " + attributeName);
-			String datatype = attributeType.getType();
+			DatatypeType datatype = attributeType.getType();
 			Object value;
 			if (attributeType.isMultivalued()) {
-				if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+				switch (datatype) {
+				case STRING: {
 					String[] values = new String[attributes.size()];
 					for (int idx = 0; idx < values.length; idx++) {
 						values[idx] = attributes.get(idx).getStringValue();
 					}
 					value = values;
-				} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+					break;
+				}
+				case BOOLEAN: {
 					Boolean[] values = new Boolean[attributes.size()];
 					for (int idx = 0; idx < values.length; idx++) {
 						values[idx] = attributes.get(idx).getBooleanValue();
 					}
 					value = values;
-				} else {
+					break;
+				}
+				default:
 					throw new EJBException("datatype not supported: "
 							+ datatype);
 				}
 			} else {
 				AttributeEntity attribute = attributes.get(0);
-				if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+				switch (datatype) {
+				case STRING:
 					value = attribute.getStringValue();
-				} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+					break;
+				case BOOLEAN:
 					value = attribute.getBooleanValue();
-				} else {
+					break;
+				default:
 					throw new EJBException("datatype not supported: "
 							+ datatype);
 				}

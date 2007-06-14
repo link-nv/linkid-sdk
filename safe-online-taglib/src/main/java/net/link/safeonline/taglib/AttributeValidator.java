@@ -17,8 +17,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.AttributeDO;
+import net.link.safeonline.entity.DatatypeType;
 
 /**
  * JSF validator for {@link AttributeDO}.
@@ -38,7 +38,7 @@ public class AttributeValidator implements Validator {
 			return;
 		}
 		AttributeDO attribute = (AttributeDO) value;
-		String type = attribute.getType();
+		DatatypeType type = attribute.getType();
 		TypeValidator typeValidator = typeValidators.get(type);
 		if (null == typeValidator) {
 			FacesMessage facesMessage = new FacesMessage("unsupported type: "
@@ -85,12 +85,10 @@ public class AttributeValidator implements Validator {
 		}
 	}
 
-	private static final Map<String, TypeValidator> typeValidators = new HashMap<String, TypeValidator>();
+	private static final Map<DatatypeType, TypeValidator> typeValidators = new HashMap<DatatypeType, TypeValidator>();
 
 	static {
-		typeValidators.put(SafeOnlineConstants.STRING_TYPE,
-				new StringTypeValidator());
-		typeValidators.put(SafeOnlineConstants.BOOLEAN_TYPE,
-				new BooleanTypeValidator());
+		typeValidators.put(DatatypeType.STRING, new StringTypeValidator());
+		typeValidators.put(DatatypeType.BOOLEAN, new BooleanTypeValidator());
 	}
 }

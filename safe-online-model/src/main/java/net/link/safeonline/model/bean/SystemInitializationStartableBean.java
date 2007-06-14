@@ -18,6 +18,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -75,7 +76,8 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
 	private void configureAttributeTypes() {
 		AttributeTypeEntity nameAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.NAME_ATTRIBUTE, "string", true, true);
+				SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING, true,
+				true);
 		this.attributeTypes.add(nameAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				nameAttributeType, Locale.ENGLISH.getLanguage(), "Name", null));
@@ -83,7 +85,8 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 				nameAttributeType, "nl", "Naam", null));
 
 		AttributeTypeEntity passwordAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, "string", false, false);
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, DatatypeType.STRING,
+				false, false);
 		this.attributeTypes.add(passwordAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				passwordAttributeType, Locale.ENGLISH.getLanguage(),

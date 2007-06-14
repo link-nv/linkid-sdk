@@ -18,44 +18,32 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.addAttribute}</h2>
+		<h2>#{msgs.addAttribute}: #{msgs.accessControl}</h2>
 
 		<h:form>
-			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
-			</f:facet>
-
-			<h:panelGrid columns="3">
-				<h:outputLabel for="name" value="#{msgs.name}:" />
+			<h:panelGrid columns="1">
 				<h:panelGroup>
-					<s:decorate>
-						<h:inputText id="name" value="#{addAttribute.name}"
-							required="true" />
-					</s:decorate>
-					<h:outputText value="*" />
+					<h:selectBooleanCheckbox id="userVisible"
+						value="#{addAttribute.userVisible}" />
+					<h:outputText value="#{msgs.userVisible}" />
 				</h:panelGroup>
-				<h:message for="name" styleClass="error" />
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="userEditable"
+						value="#{addAttribute.userEditable}" />
+					<h:outputText value="#{msgs.userEditable}" />
+				</h:panelGroup>
 			</h:panelGrid>
-
-			<h:selectOneRadio value="#{addAttribute.category}"
-				layout="pageDirection" required="true" id="category">
-				<f:selectItem itemLabel="Single-valued" itemValue="singleValued" />
-				<f:selectItem itemLabel="Multi-valued" itemValue="multiValued" />
-				<f:selectItem itemLabel="Compounded" itemValue="compounded" />
-			</h:selectOneRadio>
-
-			<h:message styleClass="error" for="category" />
 
 			<h:messages styleClass="error" globalOnly="true" />
 
-			<br />
-
+			<h:commandButton value="#{msgs.previous}" id="previous"
+				action="previous" immediate="true" />
+			<so:nbsp />
 			<h:commandButton action="#{addAttribute.cancel}" id="cancel"
 				value="#{msgs.cancelaction}" immediate="true" />
 			<so:nbsp />
-			<h:commandButton value="#{msgs.next}" id="next"
-				action="#{addAttribute.next}" />
-
+			<h:commandButton value="#{msgs.addaction}" id="add"
+				action="#{addAttribute.add}" />
 		</h:form>
 
 	</ui:define>

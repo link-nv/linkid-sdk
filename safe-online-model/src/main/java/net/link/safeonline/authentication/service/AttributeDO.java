@@ -9,6 +9,8 @@ package net.link.safeonline.authentication.service;
 
 import java.io.Serializable;
 
+import net.link.safeonline.entity.DatatypeType;
+
 /**
  * Attribute Data Object. Used to transfer data between service and user
  * application. This has been done to make life in the presentation layer
@@ -23,7 +25,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
 	private String name;
 
-	private String type;
+	private DatatypeType type;
 
 	private long index;
 
@@ -41,7 +43,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
 	private boolean multivalued;
 
-	public AttributeDO(String name, String type, boolean multivalued,
+	public AttributeDO(String name, DatatypeType type, boolean multivalued,
 			long index, String humanReadableName, String description,
 			boolean editable, boolean dataMining, String stringValue,
 			Boolean booleanValue) {
@@ -57,7 +59,7 @@ public class AttributeDO implements Serializable, Cloneable {
 		this.booleanValue = booleanValue;
 	}
 
-	public AttributeDO(String name, String type) {
+	public AttributeDO(String name, DatatypeType type) {
 		this.name = name;
 		this.type = type;
 	}
@@ -178,11 +180,11 @@ public class AttributeDO implements Serializable, Cloneable {
 		this.stringValue = value.stringValue;
 	}
 
-	public String getType() {
+	public DatatypeType getType() {
 		return this.type;
 	}
 
-	public void setType(String type) {
+	public void setType(DatatypeType type) {
 		this.type = type;
 	}
 

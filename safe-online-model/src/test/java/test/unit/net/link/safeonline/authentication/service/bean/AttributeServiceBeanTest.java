@@ -7,6 +7,11 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
@@ -14,12 +19,7 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineApplicationRoles;
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
@@ -36,24 +36,30 @@ import net.link.safeonline.authentication.service.bean.SubscriptionServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.bean.AttributeTypeServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
-public class AttributeServiceBeanTest extends TestCase {
+public class AttributeServiceBeanTest {
 
 	private static final Log LOG = LogFactory
 			.getLog(AttributeServiceBeanTest.class);
 
 	private EntityTestManager entityTestManager;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		this.entityTestManager = new EntityTestManager();
 		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
@@ -70,13 +76,12 @@ public class AttributeServiceBeanTest extends TestCase {
 		entityTransaction.begin();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		this.entityTestManager.tearDown();
-
-		super.tearDown();
 	}
 
+	@Test
 	public void testGetAttributeFailsIfUserNotSubscribed() throws Exception {
 		// setup
 		String testSubjectLogin = UUID.randomUUID().toString();
@@ -95,7 +100,7 @@ public class AttributeServiceBeanTest extends TestCase {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-admin", "global-operator");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, "string", true, true);
+				testAttributeName, DatatypeType.STRING, true, true);
 		attributeTypeService.add(attributeType);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
@@ -127,6 +132,7 @@ public class AttributeServiceBeanTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetAttributeFailsIfUserNotConfirmed() throws Exception {
 		// setup
 		String testSubjectLogin = UUID.randomUUID().toString();
@@ -145,7 +151,7 @@ public class AttributeServiceBeanTest extends TestCase {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-admin", "global-operator");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, "string", true, true);
+				testAttributeName, DatatypeType.STRING, true, true);
 		attributeTypeService.add(attributeType);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
@@ -183,6 +189,7 @@ public class AttributeServiceBeanTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetAttribute() throws Exception {
 		// setup
 		String testSubjectLogin = UUID.randomUUID().toString();
@@ -202,7 +209,7 @@ public class AttributeServiceBeanTest extends TestCase {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-admin", "global-operator");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, "string", true, true);
+				testAttributeName, DatatypeType.STRING, true, true);
 		attributeTypeService.add(attributeType);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
@@ -232,7 +239,7 @@ public class AttributeServiceBeanTest extends TestCase {
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
-				SafeOnlineConstants.STRING_TYPE);
+				DatatypeType.STRING);
 		testAttribute.setStringValue(testAttributeValue);
 		identityService.saveAttribute(testAttribute);
 
@@ -250,6 +257,7 @@ public class AttributeServiceBeanTest extends TestCase {
 		assertEquals(testAttributeValue, result);
 	}
 
+	@Test
 	public void testGetBooleanAttributeValue() throws Exception {
 		// setup
 		String testSubjectLogin = UUID.randomUUID().toString();
@@ -269,7 +277,7 @@ public class AttributeServiceBeanTest extends TestCase {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-admin", "global-operator");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, SafeOnlineConstants.BOOLEAN_TYPE, true, true);
+				testAttributeName, DatatypeType.BOOLEAN, true, true);
 		attributeTypeService.add(attributeType);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
@@ -299,7 +307,7 @@ public class AttributeServiceBeanTest extends TestCase {
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
-				SafeOnlineConstants.BOOLEAN_TYPE);
+				DatatypeType.BOOLEAN);
 		testAttribute.setBooleanValue(testAttributeValue);
 		identityService.saveAttribute(testAttribute);
 
@@ -317,6 +325,7 @@ public class AttributeServiceBeanTest extends TestCase {
 		assertEquals(testAttributeValue, result);
 	}
 
+	@Test
 	public void testGetUnconfirmedAttributeFails() throws Exception {
 		// setup
 		String testSubjectLogin = UUID.randomUUID().toString();
@@ -337,10 +346,10 @@ public class AttributeServiceBeanTest extends TestCase {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-admin", "global-operator");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, "string", true, true);
+				testAttributeName, DatatypeType.STRING, true, true);
 		attributeTypeService.add(attributeType);
 		AttributeTypeEntity unconfirmedAttributeType = new AttributeTypeEntity(
-				unconfirmedAttributeName, "string", true, true);
+				unconfirmedAttributeName, DatatypeType.STRING, true, true);
 		attributeTypeService.add(unconfirmedAttributeType);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
@@ -370,7 +379,7 @@ public class AttributeServiceBeanTest extends TestCase {
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
-				SafeOnlineConstants.STRING_TYPE);
+				DatatypeType.STRING);
 		testAttribute.setStringValue(testAttributeValue);
 		identityService.saveAttribute(testAttribute);
 
@@ -389,6 +398,7 @@ public class AttributeServiceBeanTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetAttributeFailsIfDataMining() throws Exception {
 		// setup
 		String testSubjectLogin = UUID.randomUUID().toString();
@@ -408,7 +418,7 @@ public class AttributeServiceBeanTest extends TestCase {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-admin", "global-operator");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, "string", true, true);
+				testAttributeName, DatatypeType.STRING, true, true);
 		attributeTypeService.add(attributeType);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
@@ -438,7 +448,7 @@ public class AttributeServiceBeanTest extends TestCase {
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
-				SafeOnlineConstants.STRING_TYPE);
+				DatatypeType.STRING);
 		testAttribute.setStringValue(testAttributeValue);
 		identityService.saveAttribute(testAttribute);
 
@@ -458,6 +468,7 @@ public class AttributeServiceBeanTest extends TestCase {
 
 	}
 
+	@Test
 	public void testGetMultivaluedAttribute() throws Exception {
 		// setup
 		String testSubjectLogin = UUID.randomUUID().toString();
@@ -480,7 +491,7 @@ public class AttributeServiceBeanTest extends TestCase {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-admin", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, "string", true, true);
+				testAttributeName, DatatypeType.STRING, true, true);
 		attributeType.setMultivalued(true);
 		attributeTypeService.add(attributeType);
 
@@ -511,7 +522,7 @@ public class AttributeServiceBeanTest extends TestCase {
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
-				SafeOnlineConstants.STRING_TYPE);
+				DatatypeType.STRING);
 		testAttribute.setStringValue(testAttributeValue1);
 		identityService.saveAttribute(testAttribute);
 		testAttribute.setStringValue(testAttributeValue2);

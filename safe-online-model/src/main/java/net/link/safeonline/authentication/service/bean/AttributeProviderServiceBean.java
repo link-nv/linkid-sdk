@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import org.apache.commons.logging.Log;
@@ -36,6 +37,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.ApplicationManager;
 
@@ -232,23 +234,24 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 	private void setAttributeValue(AttributeEntity attribute, Object value)
 			throws DatatypeMismatchException {
 		AttributeTypeEntity attributeType = attribute.getAttributeType();
-		String datatype = attributeType.getType();
-		if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+		DatatypeType datatype = attributeType.getType();
+		switch (datatype) {
+		case STRING:
 			if (false == value instanceof String) {
 				throw new DatatypeMismatchException();
 			}
 			String stringValue = (String) value;
 			attribute.setStringValue(stringValue);
 			return;
-		}
-
-		if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+		case BOOLEAN:
 			if (false == value instanceof Boolean) {
 				throw new DatatypeMismatchException();
 			}
 			Boolean booleanValue = (Boolean) value;
 			attribute.setBooleanValue(booleanValue);
 			return;
+		default:
+			throw new EJBException("datatype not supported: " + datatype);
 		}
 	}
 

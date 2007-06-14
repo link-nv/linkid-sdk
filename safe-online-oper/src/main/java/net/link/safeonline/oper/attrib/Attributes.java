@@ -7,12 +7,7 @@
 
 package net.link.safeonline.oper.attrib;
 
-import java.util.List;
-
 import javax.ejb.Local;
-import javax.faces.model.SelectItem;
-
-import net.link.safeonline.entity.AttributeTypeEntity;
 
 @Local
 public interface Attributes {
@@ -22,29 +17,13 @@ public interface Attributes {
 	 */
 	void attributeTypeListFactory();
 
-	AttributeTypeEntity newAttributeTypeFactory();
-
-	List<SelectItem> datatypesFactory();
-
-	List<SelectItem> memberAttributesFactory();
-
 	/*
 	 * Actions.
 	 */
-	String add();
-
 	String view();
 
 	/*
 	 * Lifecycle.
 	 */
 	void destroyCallback();
-
-	/*
-	 * Accessors.
-	 */
-	void setSelectedMemberAttributes(
-			AttributeTypeEntity[] selectedMemberAttributes);
-
-	AttributeTypeEntity[] getSelectedMemberAttributes();
 }

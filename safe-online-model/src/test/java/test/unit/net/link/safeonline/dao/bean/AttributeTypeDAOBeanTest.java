@@ -22,6 +22,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -96,7 +97,7 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 		// setup attribute types
 		String attributeName = UUID.randomUUID().toString();
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				attributeName, "", false, false);
+				attributeName, DatatypeType.STRING, false, false);
 		this.testedInstance.addAttributeType(attributeType);
 
 		// setup attribute

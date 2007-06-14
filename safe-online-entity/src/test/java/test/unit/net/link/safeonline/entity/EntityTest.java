@@ -39,6 +39,7 @@ import net.link.safeonline.entity.AttributeProviderPK;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
@@ -294,7 +295,7 @@ public class EntityTest {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-login");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity("password",
-				"string", false, false);
+				DatatypeType.STRING, false, false);
 		AttributeEntity attribute = new AttributeEntity(attributeType, subject,
 				"test-password");
 
@@ -322,7 +323,7 @@ public class EntityTest {
 		SubjectEntity subject = new SubjectEntity(login);
 		String attributeName = "attribute-name";
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				attributeName, "string", false, false);
+				attributeName, DatatypeType.STRING, false, false);
 		AttributeEntity attribute1 = new AttributeEntity(attributeType,
 				subject, "value1");
 		AttributeEntity attribute2 = new AttributeEntity(attributeType,
@@ -741,9 +742,9 @@ public class EntityTest {
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application", applicationOwner);
 		AttributeTypeEntity attributeType1 = new AttributeTypeEntity(
-				"test-attribute-type-1", "string", true, true);
+				"test-attribute-type-1", DatatypeType.STRING, true, true);
 		AttributeTypeEntity attributeType2 = new AttributeTypeEntity(
-				"test-attribute-type-2", "string", true, true);
+				"test-attribute-type-2", DatatypeType.STRING, true, true);
 		long identityVersion = 10;
 		ApplicationIdentityEntity applicationIdentity = new ApplicationIdentityEntity(
 				application, identityVersion);
@@ -801,7 +802,7 @@ public class EntityTest {
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application", applicationOwner);
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				"test-attribute-type", "string", true, true);
+				"test-attribute-type", DatatypeType.STRING, true, true);
 		ApplicationIdentityEntity applicationIdentity1 = new ApplicationIdentityEntity(
 				application, 1);
 		ApplicationIdentityEntity applicationIdentity2 = new ApplicationIdentityEntity(
@@ -861,7 +862,7 @@ public class EntityTest {
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application", applicationOwner);
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				"test-attribute-type", "string", false, false);
+				"test-attribute-type", DatatypeType.STRING, false, false);
 		AttributeProviderEntity attributeProvider = new AttributeProviderEntity(
 				application, attributeType);
 
@@ -922,14 +923,14 @@ public class EntityTest {
 				+ UUID.randomUUID().toString();
 		String testMemberName = "member-attribute-type-"
 				+ UUID.randomUUID().toString();
-		String testType = "string";
+		DatatypeType testType = DatatypeType.STRING;
 
 		AttributeTypeEntity parentAttributeType = new AttributeTypeEntity(
 				testParentName, testType, true, true);
 		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
 				testMemberName, testType, true, true);
 		CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(
-				parentAttributeType, memberAttributeType, 0);
+				parentAttributeType, memberAttributeType, 0, true);
 
 		// operate
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -954,14 +955,14 @@ public class EntityTest {
 				+ UUID.randomUUID().toString();
 		String testMemberName = "member-attribute-type-"
 				+ UUID.randomUUID().toString();
-		String testType = "string";
+		DatatypeType testType = DatatypeType.STRING;
 
 		AttributeTypeEntity parentAttributeType = new AttributeTypeEntity(
 				testParentName, testType, true, true);
 		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
 				testMemberName, testType, true, true);
 		CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(
-				parentAttributeType, memberAttributeType, 0);
+				parentAttributeType, memberAttributeType, 0, false);
 		parentAttributeType.getMembers().add(member);
 
 		// operate
@@ -985,14 +986,14 @@ public class EntityTest {
 				+ UUID.randomUUID().toString();
 		String testMemberName = "member-attribute-type-"
 				+ UUID.randomUUID().toString();
-		String testType = "string";
+		DatatypeType testType = DatatypeType.STRING;
 
 		AttributeTypeEntity parentAttributeType = new AttributeTypeEntity(
 				testParentName, testType, true, true);
 		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
 				testMemberName, testType, true, true);
 		CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(
-				parentAttributeType, memberAttributeType, 0);
+				parentAttributeType, memberAttributeType, 0, false);
 		parentAttributeType.getMembers().add(member);
 
 		// operate

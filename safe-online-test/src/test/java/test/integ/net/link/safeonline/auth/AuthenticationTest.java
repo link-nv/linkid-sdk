@@ -7,6 +7,10 @@
 
 package test.integ.net.link.safeonline.auth;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAuthenticationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getCredentialService;
@@ -23,7 +27,6 @@ import javax.ejb.NoSuchEJBException;
 import javax.naming.InitialContext;
 import javax.security.auth.Subject;
 
-import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -34,6 +37,7 @@ import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.sdk.ws.auth.AuthClient;
 import net.link.safeonline.sdk.ws.auth.AuthClientImpl;
@@ -41,6 +45,8 @@ import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 import test.integ.net.link.safeonline.IntegrationTestUtils;
 
@@ -50,7 +56,7 @@ import test.integ.net.link.safeonline.IntegrationTestUtils;
  * @author fcorneli
  * 
  */
-public class AuthenticationTest extends TestCase {
+public class AuthenticationTest {
 
 	private static final Log LOG = LogFactory.getLog(AuthenticationTest.class);
 
@@ -58,13 +64,12 @@ public class AuthenticationTest extends TestCase {
 
 	private AuthClient authClient;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		this.authClient = new AuthClientImpl(SAFE_ONLINE_LOCATION);
 	}
 
+	@Test
 	public void testAvailabilityViaEcho() throws Exception {
 		// setup
 		String message = "hello world";
@@ -76,6 +81,7 @@ public class AuthenticationTest extends TestCase {
 		assertEquals(message, result);
 	}
 
+	@Test
 	public void testAuthenticateFcorneli() throws Exception {
 		// setup
 		String application = "demo-application";
@@ -90,6 +96,7 @@ public class AuthenticationTest extends TestCase {
 		assertTrue(result);
 	}
 
+	@Test
 	public void testFoobarNotAuthenticated() throws Exception {
 		// setup
 		String application = "demo-application";
@@ -104,6 +111,7 @@ public class AuthenticationTest extends TestCase {
 		assertFalse(result);
 	}
 
+	@Test
 	public void testFcorneliNotAuthenticatedForFoobarApplication()
 			throws Exception {
 		// setup
@@ -119,6 +127,7 @@ public class AuthenticationTest extends TestCase {
 		assertFalse(result);
 	}
 
+	@Test
 	public void testAuthenticationOverRMI() throws Exception {
 		InitialContext initialContext = IntegrationTestUtils
 				.getInitialContext();
@@ -138,9 +147,11 @@ public class AuthenticationTest extends TestCase {
 		 */
 		IntegrationTestUtils.setupLoginConfig();
 		IntegrationTestUtils.login("fcorneli", "secret");
-		authenticationService.commitAuthentication("safe-online-user");
+		authenticationService
+				.commitAuthentication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 	}
 
+	@Test
 	public void testIncorrectPassword() throws Exception {
 		// setup
 		InitialContext initialContext = IntegrationTestUtils
@@ -156,6 +167,7 @@ public class AuthenticationTest extends TestCase {
 		assertFalse(result);
 	}
 
+	@Test
 	public void testAuthenticationAbort() throws Exception {
 		InitialContext initialContext = IntegrationTestUtils
 				.getInitialContext();
@@ -183,6 +195,7 @@ public class AuthenticationTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testAuthenticationCannotCommitBeforeAuthenticate()
 			throws Exception {
 		InitialContext initialContext = IntegrationTestUtils
@@ -209,6 +222,7 @@ public class AuthenticationTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testAddApplication() throws Exception {
 
 		InitialContext initialContext = IntegrationTestUtils
@@ -244,6 +258,7 @@ public class AuthenticationTest extends TestCase {
 		applicationService.removeApplication(applicationName);
 	}
 
+	@Test
 	public void testBigUseCase() throws Exception {
 		InitialContext initialContext = IntegrationTestUtils
 				.getInitialContext();
@@ -282,7 +297,7 @@ public class AuthenticationTest extends TestCase {
 		IntegrationTestUtils.login(userLogin, userPassword);
 
 		AttributeDO attribute = new AttributeDO(
-				SafeOnlineConstants.NAME_ATTRIBUTE, "string");
+				SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING);
 		attribute.setStringValue(userName);
 		identityService.saveAttribute(attribute);
 		String resultName = identityService
@@ -319,6 +334,7 @@ public class AuthenticationTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testCreateApplicationOwner() throws Exception {
 		InitialContext initialContext = IntegrationTestUtils
 				.getInitialContext();
@@ -354,6 +370,7 @@ public class AuthenticationTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testChangingApplicationDescriptionTriggersOwnershipCheck()
 			throws Exception {
 		// setup
@@ -399,6 +416,7 @@ public class AuthenticationTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testCredentialCacheFlushOnSubscription() throws Exception {
 		// setup
 		InitialContext initialContext = IntegrationTestUtils
@@ -427,6 +445,7 @@ public class AuthenticationTest extends TestCase {
 		applicationService.getOwnedApplications();
 	}
 
+	@Test
 	public void testUserCannotRetrieveThePasswordAttribute() throws Exception {
 		// setup
 		InitialContext initialContext = IntegrationTestUtils
@@ -451,6 +470,7 @@ public class AuthenticationTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testUserCannotEditThePasswordAttribute() throws Exception {
 		// setup
 		InitialContext initialContext = IntegrationTestUtils
@@ -467,7 +487,7 @@ public class AuthenticationTest extends TestCase {
 
 		// operate: cannot retrieve password attribute
 		AttributeDO attribute = new AttributeDO(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, "string");
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, DatatypeType.STRING);
 		attribute.setStringValue("test-password");
 		try {
 			identityService.saveAttribute(attribute);
@@ -477,6 +497,7 @@ public class AuthenticationTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testFindAttributeValue() throws Exception {
 		// setup
 		InitialContext initialContext = IntegrationTestUtils

@@ -20,6 +20,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.user.Identity;
 import net.link.safeonline.user.UserConstants;
 
@@ -132,7 +133,7 @@ public class IdentityBean implements Identity {
 		String name = this.selectedAttribute.getName();
 		long index = -1; // don't care, core will set it
 		String description = this.selectedAttribute.getDescription();
-		String type = this.selectedAttribute.getType();
+		DatatypeType type = this.selectedAttribute.getType();
 		String humanReadableName = this.selectedAttribute
 				.getRawHumanReadableName();
 		this.newAttribute = new AttributeDO(name, type, multivalued, index,

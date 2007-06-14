@@ -17,6 +17,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.MapKey;
@@ -60,7 +62,7 @@ public class AttributeTypeEntity implements Serializable {
 
 	private String name;
 
-	private String type;
+	private DatatypeType type;
 
 	private boolean userVisible;
 
@@ -78,8 +80,8 @@ public class AttributeTypeEntity implements Serializable {
 		this(null, null, false, false);
 	}
 
-	public AttributeTypeEntity(String name, String type, boolean userVisible,
-			boolean userEditable) {
+	public AttributeTypeEntity(String name, DatatypeType type,
+			boolean userVisible, boolean userEditable) {
 		this.name = name;
 		this.type = type;
 		this.userVisible = userVisible;
@@ -99,14 +101,12 @@ public class AttributeTypeEntity implements Serializable {
 	}
 
 	@Column(name = "type", nullable = false)
-	/*
-	 * TODO: turn this into an enum so we can optimize via switch-statements.
-	 */
-	public String getType() {
+	@Enumerated(EnumType.STRING)
+	public DatatypeType getType() {
 		return this.type;
 	}
 
-	public void setType(String type) {
+	public void setType(DatatypeType type) {
 		this.type = type;
 	}
 
@@ -188,9 +188,9 @@ public class AttributeTypeEntity implements Serializable {
 	}
 
 	public void addMember(AttributeTypeEntity memberAttributeType,
-			int memberSequence) {
+			int memberSequence, boolean required) {
 		CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(
-				this, memberAttributeType, memberSequence);
+				this, memberAttributeType, memberSequence, required);
 		getMembers().add(member);
 	}
 

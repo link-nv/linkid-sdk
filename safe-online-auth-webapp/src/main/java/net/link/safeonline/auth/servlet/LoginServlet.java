@@ -80,7 +80,8 @@ public class LoginServlet extends HttpServlet {
 		try {
 			subscriptionRequired = !this.subscriptionService
 					.isSubscribed(applicationId);
-		} catch (ApplicationNotFoundException e1) {
+		} catch (ApplicationNotFoundException e) {
+			LOG.debug("application not found: " + applicationId);
 			throw new ServletException("application not found");
 		}
 		if (true == subscriptionRequired) {

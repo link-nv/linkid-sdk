@@ -166,6 +166,9 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 			if (element.isCompoundMember()) {
 				return false;
 			}
+			if (false == element.isMultivalued()) {
+				return false;
+			}
 			return true;
 		}
 	}

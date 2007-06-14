@@ -19,8 +19,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.validator.Validator;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.AttributeDO;
+import net.link.safeonline.entity.DatatypeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,7 +51,7 @@ public class AttributeInputComponent extends UIInput {
 		LOG.debug("decode");
 
 		AttributeDO attribute = (AttributeDO) getValue();
-		String type = attribute.getType();
+		DatatypeType type = attribute.getType();
 		Renderer renderer = renderers.get(type);
 		if (null != renderer) {
 			renderer.decode(context, this);
@@ -72,7 +72,7 @@ public class AttributeInputComponent extends UIInput {
 		responseWriter.writeAttribute("id", clientId, "id");
 
 		AttributeDO attribute = (AttributeDO) getValue();
-		String type = attribute.getType();
+		DatatypeType type = attribute.getType();
 		Renderer renderer = renderers.get(type);
 		if (null == renderer) {
 			responseWriter.write("Unsupported type: " + type);
@@ -90,7 +90,7 @@ public class AttributeInputComponent extends UIInput {
 		}
 
 		AttributeDO attribute = (AttributeDO) getValue();
-		String type = attribute.getType();
+		DatatypeType type = attribute.getType();
 		Renderer renderer = renderers.get(type);
 		if (null != renderer) {
 			renderer.encodeEnd(context, this);
@@ -126,12 +126,12 @@ public class AttributeInputComponent extends UIInput {
 		void decode(FacesContext context, UIInput inputComponent);
 	}
 
-	private static final Map<String, Renderer> renderers;
+	private static final Map<DatatypeType, Renderer> renderers;
 
 	static {
-		renderers = new HashMap<String, Renderer>();
-		renderers.put(SafeOnlineConstants.STRING_TYPE, new StringRenderer());
-		renderers.put(SafeOnlineConstants.BOOLEAN_TYPE, new BooleanRenderer());
+		renderers = new HashMap<DatatypeType, Renderer>();
+		renderers.put(DatatypeType.STRING, new StringRenderer());
+		renderers.put(DatatypeType.BOOLEAN, new BooleanRenderer());
 	}
 
 	private static class StringRenderer implements Renderer {

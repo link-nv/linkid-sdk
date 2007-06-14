@@ -57,6 +57,7 @@ import net.link.safeonline.data.ws.SecondLevelStatusCode;
 import net.link.safeonline.data.ws.TopLevelStatusCode;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
@@ -405,7 +406,7 @@ public class DataServicePortImplTest extends TestCase {
 
 		AttributeTypeEntity attributeType = new AttributeTypeEntity();
 		attributeType.setName(attributeName);
-		attributeType.setType(SafeOnlineConstants.STRING_TYPE);
+		attributeType.setType(DatatypeType.STRING);
 		attributeType.setMultivalued(true);
 		SubjectEntity subject = new SubjectEntity();
 		List<AttributeEntity> attributes = new LinkedList<AttributeEntity>();

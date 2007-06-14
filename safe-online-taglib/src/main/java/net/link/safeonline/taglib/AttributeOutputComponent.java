@@ -21,8 +21,8 @@ import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.AttributeDO;
+import net.link.safeonline.entity.DatatypeType;
 
 /**
  * JSF output component for {@link AttributeDO}.
@@ -41,7 +41,7 @@ public class AttributeOutputComponent extends UIOutput {
 		String clientId = getClientId(context);
 		response.writeAttribute("id", clientId, "id");
 		AttributeDO attribute = (AttributeDO) getValue();
-		String type = attribute.getType();
+		DatatypeType type = attribute.getType();
 		AttributeValueEncoder attributeValueEncoder = getAttributeValueEncoder(type);
 		attributeValueEncoder.encode(attribute, response, context);
 	}
@@ -57,7 +57,7 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException;
 	}
 
-	@SupportedType(SafeOnlineConstants.STRING_TYPE)
+	@SupportedType(DatatypeType.STRING)
 	public static class StringAttributeValueEncoder implements
 			AttributeValueEncoder {
 
@@ -74,7 +74,7 @@ public class AttributeOutputComponent extends UIOutput {
 		}
 	}
 
-	@SupportedType(SafeOnlineConstants.BOOLEAN_TYPE)
+	@SupportedType(DatatypeType.BOOLEAN)
 	public static class BooleanAttributeValueEncoder implements
 			AttributeValueEncoder {
 
@@ -92,28 +92,18 @@ public class AttributeOutputComponent extends UIOutput {
 		}
 	}
 
-	@SupportedType(SafeOnlineConstants.BLOB_TYPE)
-	public static class BlobAttributeValueEncoder implements
-			AttributeValueEncoder {
-		public void encode(AttributeDO attribute, ResponseWriter response,
-				FacesContext context) throws IOException {
-			response.write("[BLOB]");
-		}
-	}
-
 	@Documented
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.TYPE)
 	private @interface SupportedType {
-		String value();
+		DatatypeType value();
 	}
 
-	private static final Map<String, Class<? extends AttributeValueEncoder>> attributeValueEncoders = new HashMap<String, Class<? extends AttributeValueEncoder>>();
+	private static final Map<DatatypeType, Class<? extends AttributeValueEncoder>> attributeValueEncoders = new HashMap<DatatypeType, Class<? extends AttributeValueEncoder>>();
 
 	static {
 		registerAttributeValueEncoder(StringAttributeValueEncoder.class);
 		registerAttributeValueEncoder(BooleanAttributeValueEncoder.class);
-		registerAttributeValueEncoder(BlobAttributeValueEncoder.class);
 	}
 
 	private static void registerAttributeValueEncoder(
@@ -123,7 +113,7 @@ public class AttributeOutputComponent extends UIOutput {
 			throw new RuntimeException(
 					"attribute value encoder required SupportedType meta-data annotation");
 		}
-		String type = supportedType.value();
+		DatatypeType type = supportedType.value();
 		if (attributeValueEncoders.containsKey(type)) {
 			throw new RuntimeException(
 					"duplicate attribute value encoder entry for type: " + type);
@@ -131,7 +121,7 @@ public class AttributeOutputComponent extends UIOutput {
 		attributeValueEncoders.put(type, clazz);
 	}
 
-	private static final Map<String, AttributeValueEncoder> instances = new HashMap<String, AttributeValueEncoder>();
+	private static final Map<DatatypeType, AttributeValueEncoder> instances = new HashMap<DatatypeType, AttributeValueEncoder>();
 
 	/**
 	 * Gives back an instance of the requested attribute value encoder. There is
@@ -140,7 +130,8 @@ public class AttributeOutputComponent extends UIOutput {
 	 * @param type
 	 * @return
 	 */
-	private static AttributeValueEncoder getAttributeValueEncoder(String type) {
+	private static AttributeValueEncoder getAttributeValueEncoder(
+			DatatypeType type) {
 		AttributeValueEncoder attributeValueEncoder = instances.get(type);
 		if (null != attributeValueEncoder) {
 			return attributeValueEncoder;

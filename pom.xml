@@ -996,6 +996,11 @@
 				<artifactId>json</artifactId>
 				<version>${json.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>jgroups</groupId>
+				<artifactId>jgroups</artifactId>
+				<version>${jgroups.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1106,9 +1111,7 @@
 		</jetty-servlet-tester.version>
 		<commons-httpclient.version>3.0.1</commons-httpclient.version>
 		<jetty.version>6.1.1</jetty.version>
-		<trinidad-api.version>
-			1.2-07-may-SNAPSHOT
-		</trinidad-api.version>
+		<trinidad-api.version>1.2-07-may-SNAPSHOT</trinidad-api.version>
 		<trinidad-impl.version>
 			1.2-07-may-SNAPSHOT
 		</trinidad-impl.version>
@@ -1146,5 +1149,6 @@
 		<webui-jsf.version>4.1-b6</webui-jsf.version>
 		<dataprovider.version>4.1-b6</dataprovider.version>
 		<json.version>4.1-b6</json.version>
+		<jgroups.version>2.2.5</jgroups.version>
 	</properties>
 </project>

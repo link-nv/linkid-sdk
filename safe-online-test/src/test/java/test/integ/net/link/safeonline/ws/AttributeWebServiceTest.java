@@ -35,6 +35,7 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -105,7 +106,7 @@ public class AttributeWebServiceTest {
 		// operate: save name attribute
 		IntegrationTestUtils.login(login, password);
 		AttributeDO attribute = new AttributeDO(
-				SafeOnlineConstants.NAME_ATTRIBUTE, "string");
+				SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING);
 		attribute.setStringValue(testName);
 		identityService.saveAttribute(attribute);
 
@@ -113,7 +114,7 @@ public class AttributeWebServiceTest {
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
 		IntegrationTestUtils.login("admin", "admin");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, SafeOnlineConstants.STRING_TYPE, true, true);
+				testAttributeName, DatatypeType.STRING, true, true);
 		attributeTypeService.add(attributeType);
 
 		// operate: register certificate as application trust point
@@ -162,7 +163,7 @@ public class AttributeWebServiceTest {
 		// operate: set attribute
 		IntegrationTestUtils.login(login, password);
 		AttributeDO attributeDO = new AttributeDO(testAttributeName,
-				SafeOnlineConstants.STRING_TYPE);
+				DatatypeType.STRING);
 		attributeDO.setStringValue(testAttributeValue);
 		identityService.saveAttribute(attributeDO);
 
@@ -202,7 +203,7 @@ public class AttributeWebServiceTest {
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
 		IntegrationTestUtils.login("admin", "admin");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, SafeOnlineConstants.STRING_TYPE, true, true);
+				testAttributeName, DatatypeType.STRING, true, true);
 		attributeTypeService.add(attributeType);
 
 		// operate: register certificate as application trust point
@@ -241,8 +242,8 @@ public class AttributeWebServiceTest {
 
 		// operate: remove attribute
 		AttributeDO attribute = new AttributeDO(testAttributeName,
-				SafeOnlineConstants.STRING_TYPE, true, -1, null, null, true,
-				true, null, null);
+				DatatypeType.STRING, true, -1, null, null, true, true, null,
+				null);
 		identityService.removeAttribute(attribute);
 
 		// operate: retrieve the missing attribute via attrib web service
@@ -279,7 +280,7 @@ public class AttributeWebServiceTest {
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
 		IntegrationTestUtils.login("admin", "admin");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				testAttributeName, SafeOnlineConstants.STRING_TYPE, true, true);
+				testAttributeName, DatatypeType.STRING, true, true);
 		attributeType.setMultivalued(true);
 		attributeTypeService.add(attributeType);
 
@@ -287,14 +288,14 @@ public class AttributeWebServiceTest {
 		IntegrationTestUtils.login(login, password);
 		String attributeValue1 = "value 1";
 		AttributeDO attribute1 = new AttributeDO(testAttributeName,
-				SafeOnlineConstants.STRING_TYPE, true, -1, null, null, true,
-				true, attributeValue1, null);
+				DatatypeType.STRING, true, -1, null, null, true, true,
+				attributeValue1, null);
 		identityService.addAttribute(attribute1);
 
 		String attributeValue2 = "value 2";
 		AttributeDO attribute2 = new AttributeDO(testAttributeName,
-				SafeOnlineConstants.STRING_TYPE, true, -1, null, null, true,
-				true, attributeValue2, null);
+				DatatypeType.STRING, true, -1, null, null, true, true,
+				attributeValue2, null);
 		identityService.addAttribute(attribute2);
 
 		// operate: register certificate as application trust point

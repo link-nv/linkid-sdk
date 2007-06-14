@@ -37,7 +37,6 @@ import liberty.dst._2006_08.ref.safe_online.QueryType;
 import liberty.dst._2006_08.ref.safe_online.SelectType;
 import liberty.util._2006_08.ResponseType;
 import liberty.util._2006_08.StatusType;
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DatatypeMismatchException;
@@ -46,9 +45,9 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import net.link.safeonline.ws.util.ri.Injection;
-
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
 import org.apache.commons.logging.Log;
@@ -342,13 +341,17 @@ public class DataServicePortImpl implements DataServicePort {
 			}
 
 			for (AttributeEntity attributeEntity : attributeList) {
-				String datatype = attributeEntity.getAttributeType().getType();
+				DatatypeType datatype = attributeEntity.getAttributeType()
+						.getType();
 				Object encodedValue;
-				if (SafeOnlineConstants.STRING_TYPE.equals(datatype)) {
+				switch (datatype) {
+				case STRING:
 					encodedValue = attributeEntity.getStringValue();
-				} else if (SafeOnlineConstants.BOOLEAN_TYPE.equals(datatype)) {
+					break;
+				case BOOLEAN:
 					encodedValue = attributeEntity.getBooleanValue();
-				} else {
+					break;
+				default:
 					QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
 					return failedResponse;
 				}

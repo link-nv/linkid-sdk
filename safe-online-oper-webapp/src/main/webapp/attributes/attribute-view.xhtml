@@ -24,35 +24,29 @@
 		<f:subview>
 			<rich:tabPanel id="tabs" switchType="client">
 				<rich:tab id="generic-tab" label="#{msgs.generic}">
-					<table>
-						<tr>
-							<th>#{msgs.name}:</th>
-							<td><h:outputText value="#{selectedAttributeType.name}" /></td>
-						</tr>
-						<tr>
-							<th>#{msgs.type}:</th>
-							<td><h:outputText value="#{selectedAttributeType.type}" /></td>
-						</tr>
-						<tr>
-							<th>#{msgs.userVisible}:</th>
-							<td><h:outputText
-								value="#{selectedAttributeType.userVisible}" /></td>
-						</tr>
-						<tr>
-							<th>#{msgs.userEditable}:</th>
-							<td><h:outputText
-								value="#{selectedAttributeType.userEditable}" /></td>
-						</tr>
-						<tr>
-							<th>#{msgs.multivalued}:</th>
-							<td><h:outputText
-								value="#{selectedAttributeType.multivalued}" /></td>
-						</tr>
-						<tr>
-							<th>#{msgs.compounded}:</th>
-							<td>#{selectedAttributeType.compounded}</td>
-						</tr>
-					</table>
+					<h:panelGrid columns="2">
+						<h:outputText value="#{msgs.name}:" />
+						<h:outputText value="#{selectedAttributeType.name}" />
+
+						<h:outputText value="#{msgs.type}:" />
+						<h:outputText value="#{selectedAttributeType.type}" />
+
+						<h:outputText value="#{msgs.multivalued}:" />
+						<h:outputText value="#{selectedAttributeType.multivalued}" />
+
+						<h:outputText value="#{msgs.compounded}:" />
+						<h:outputText value="#{selectedAttributeType.compounded}" />
+					</h:panelGrid>
+				</rich:tab>
+
+				<rich:tab id="access-control-tab" label="#{msgs.accessControl}">
+					<h:panelGrid columns="2">
+						<h:outputText value="#{msgs.userVisible}:" />
+						<h:outputText value="#{selectedAttributeType.userVisible}" />
+
+						<h:outputText value="#{msgs.userEditable}:" />
+						<h:outputText value="#{selectedAttributeType.userEditable}" />
+					</h:panelGrid>
 				</rich:tab>
 
 				<rich:tab id="compounded-tab" label="#{msgs.compounded}"
@@ -63,6 +57,10 @@
 						<h:column>
 							<f:facet name="header">#{msgs.name}</f:facet>
 							<h:outputText value="#{item.member.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.required}</f:facet>
+							<h:outputText value="#{item.required}" />
 						</h:column>
 					</h:dataTable>
 				</rich:tab>
