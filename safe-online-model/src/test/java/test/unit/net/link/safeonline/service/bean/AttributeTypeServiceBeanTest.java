@@ -14,7 +14,9 @@ import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.UUID;
 
+import javax.ejb.EJBException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
 import net.link.safeonline.common.SafeOnlineRoles;
@@ -92,12 +94,24 @@ public class AttributeTypeServiceBeanTest {
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
 				compoundedAttributeTypeName, DatatypeType.STRING, true, true);
-		compoundedAttributeType.addMember(memberAttributeType, 0, true);
 
 		// operate
 		this.testedInstance.add(memberAttributeType);
 		this.testedInstance.add(nonMemberAttributeType);
 
+		/*
+		 * Next is important in order to emulate correct behaviour of the
+		 * entities. They should be detached since addMember is setting fields
+		 * on the detached entities that should not directly be visible in the
+		 * database itself.
+		 */
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.commit();
+		transaction.begin();
+		entityManager.clear();
+
+		compoundedAttributeType.addMember(memberAttributeType, 0, true);
 		this.testedInstance.add(compoundedAttributeType);
 
 		List<AttributeTypeEntity> allResult = this.testedInstance
@@ -127,6 +141,13 @@ public class AttributeTypeServiceBeanTest {
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
 				compoundedAttributeTypeName, DatatypeType.STRING, true, true);
+		this.testedInstance.add(memberAttributeType);
+
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.commit();
+		transaction.begin();
+		entityManager.clear();
 		compoundedAttributeType.addMember(memberAttributeType, 0, true);
 
 		String compoundedCompoundedAttributeTypeName = "test-attribute-type-name"
@@ -134,11 +155,11 @@ public class AttributeTypeServiceBeanTest {
 		AttributeTypeEntity compoundedCompoundedAttributeType = new AttributeTypeEntity(
 				compoundedCompoundedAttributeTypeName, DatatypeType.STRING,
 				true, true);
+
 		compoundedCompoundedAttributeType.addMember(compoundedAttributeType, 0,
 				true);
 
 		// operate
-		this.testedInstance.add(memberAttributeType);
 		this.testedInstance.add(compoundedAttributeType);
 
 		try {
@@ -152,12 +173,19 @@ public class AttributeTypeServiceBeanTest {
 	@Test
 	public void compoundedOfExistingCompoundMemberNotAllowed() throws Exception {
 		// setup
-		String memberAttributeName = "test-attribute-type-name-"
+		String memberAttributeName = "test-member-attribute-type-name-"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(
 				memberAttributeName, DatatypeType.STRING, true, true);
+		this.testedInstance.add(memberAttributeType);
 
-		String compoundedAttributeTypeName = "test-attribute-type-name"
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.commit();
+		transaction.begin();
+		entityManager.clear();
+
+		String compoundedAttributeTypeName = "test-compounded-attribute-type-name"
 				+ UUID.randomUUID().toString();
 		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
 				compoundedAttributeTypeName, DatatypeType.STRING, true, true);
@@ -168,16 +196,10 @@ public class AttributeTypeServiceBeanTest {
 		AttributeTypeEntity compounded2AttributeType = new AttributeTypeEntity(
 				compoundedCompoundedAttributeTypeName, DatatypeType.STRING,
 				true, true);
-		compounded2AttributeType.addMember(memberAttributeType, 0, true);
-
-		// operate
-		this.testedInstance.add(memberAttributeType);
-		this.testedInstance.add(compoundedAttributeType);
-
 		try {
-			this.testedInstance.add(compounded2AttributeType);
+			compounded2AttributeType.addMember(memberAttributeType, 0, true);
 			fail();
-		} catch (AttributeTypeDefinitionException e) {
+		} catch (EJBException e) {
 			// expected
 		}
 	}
