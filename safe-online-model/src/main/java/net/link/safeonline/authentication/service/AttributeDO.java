@@ -50,6 +50,8 @@ public class AttributeDO implements Serializable, Cloneable {
 
 	private boolean member;
 
+	private boolean required;
+
 	public AttributeDO(String name, DatatypeType type, boolean multivalued,
 			long index, String humanReadableName, String description,
 			boolean editable, boolean dataMining, String stringValue,
@@ -250,6 +252,20 @@ public class AttributeDO implements Serializable, Cloneable {
 
 	public void setMember(boolean member) {
 		this.member = member;
+	}
+
+	/**
+	 * Marks whether this attribute is required or not. For compounded member
+	 * attribute the value could be optional.
+	 * 
+	 * @return
+	 */
+	public boolean isRequired() {
+		return this.required;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
 	}
 
 	@Override

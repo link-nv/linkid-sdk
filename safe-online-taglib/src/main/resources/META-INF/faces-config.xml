@@ -15,6 +15,15 @@
 
 	<component>
 		<component-type>
+			net.link.component.attributeNameOutput
+		</component-type>
+		<component-class>
+			net.link.safeonline.taglib.AttributeNameOutputComponent
+		</component-class>
+	</component>
+
+	<component>
+		<component-type>
 			net.link.component.attributeInput
 		</component-type>
 		<component-class>

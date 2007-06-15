@@ -419,13 +419,16 @@ public class IdentityServiceBeanTest {
 
 			assertEquals(COMP_ATT_NAME, result.get(0).getName());
 			assertTrue(result.get(0).isCompounded());
+			assertFalse(result.get(0).isRequired());
 
 			assertEquals(REQ_ATT_NAME, result.get(1).getName());
 			assertTrue(result.get(1).isMember());
+			assertTrue(result.get(1).isRequired());
 
 			assertEquals(OPT_ATT_NAME, result.get(2).getName());
 			assertTrue(result.get(2).isMember());
 			assertEquals("value", result.get(2).getStringValue());
+			assertFalse(result.get(2).isRequired());
 		}
 	}
 
@@ -524,6 +527,7 @@ public class IdentityServiceBeanTest {
 			assertNotNull(result);
 			assertEquals(1, result.size());
 			assertEquals(attributeType.getName(), result.get(0).getName());
+			assertTrue(result.get(0).isRequired());
 		}
 	}
 

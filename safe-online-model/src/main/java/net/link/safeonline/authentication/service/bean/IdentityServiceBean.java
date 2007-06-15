@@ -157,6 +157,21 @@ public class IdentityServiceBean implements IdentityService,
 				+ subject + "; index " + index);
 		LOG.debug("received attribute values: " + attribute);
 
+		if (attribute.isCompounded()) {
+			LOG.debug("attribute marked as compounded; skipping");
+			return;
+		}
+
+		if (false == attribute.isEditable()) {
+			/*
+			 * We allow the web application to pass in attribute safe calls with
+			 * attributes marked as non-editable, that way we have a transparent
+			 * handling of attributes in the GUI.
+			 */
+			LOG.debug("attribute marked as non-editable; skipping");
+			return;
+		}
+
 		AttributeTypeEntity attributeType = getUserEditableAttributeType(attributeName);
 
 		boolean multiValued = attributeType.isMultivalued();
@@ -571,9 +586,10 @@ public class IdentityServiceBean implements IdentityService,
 			 * basically the user does not care at this point.
 			 */
 			AttributeDO missingAttribute = new AttributeDO(attributeName,
-					datatype, false, 0, humanReadableName, description, true,
-					true, null, null);
+					datatype, false, 0, humanReadableName, description,
+					attributeType.isUserEditable(), true, null, null);
 			LOG.debug("adding missing attribute: " + attributeName);
+			missingAttribute.setRequired(true);
 			missingAttributes.add(missingAttribute);
 		}
 
@@ -624,8 +640,8 @@ public class IdentityServiceBean implements IdentityService,
 			}
 			AttributeDO missingAttribute = new AttributeDO(
 					compoundedAttributeType.getName(), DatatypeType.COMPOUNDED,
-					false, 0, humanReadableName, description, true, true, null,
-					null);
+					false, 0, humanReadableName, description, false, true,
+					null, null);
 			missingAttribute.setCompounded(true);
 			LOG.debug("adding missing compounded attribute: "
 					+ missingAttribute.getName());
@@ -637,6 +653,8 @@ public class IdentityServiceBean implements IdentityService,
 			for (CompoundedAttributeTypeMemberEntity member : compoundedAttributeType
 					.getMembers()) {
 				AttributeTypeEntity attributeType = member.getMember();
+				humanReadableName = null;
+				description = null;
 				if (null != locale) {
 					String language = locale.getLanguage();
 					LOG.debug("trying language: " + language);
@@ -648,14 +666,12 @@ public class IdentityServiceBean implements IdentityService,
 						humanReadableName = attributeTypeDescription.getName();
 						description = attributeTypeDescription.getDescription();
 					}
-				} else {
-					humanReadableName = null;
-					description = null;
 				}
 				AttributeDO missingMemberAttribute = new AttributeDO(
 						attributeType.getName(), attributeType.getType(),
-						false, 0, humanReadableName, description, true, true,
-						null, null);
+						false, 0, humanReadableName, description, attributeType
+								.isUserEditable(), true, null, null);
+				missingMemberAttribute.setRequired(member.isRequired());
 				missingMemberAttribute.setMember(true);
 
 				/*

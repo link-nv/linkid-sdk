@@ -132,6 +132,21 @@ public class AttributeInputComponent extends UIInput {
 		renderers = new HashMap<DatatypeType, Renderer>();
 		renderers.put(DatatypeType.STRING, new StringRenderer());
 		renderers.put(DatatypeType.BOOLEAN, new BooleanRenderer());
+		renderers.put(DatatypeType.COMPOUNDED, new CompoundedRenderer());
+	}
+
+	private static class CompoundedRenderer implements Renderer {
+
+		public void decode(FacesContext context, UIInput inputComponent) {
+		}
+
+		public void encodeBegin(FacesContext context, UIInput inputComponent)
+				throws IOException {
+		}
+
+		public void encodeEnd(FacesContext context, UIInput inputComponent)
+				throws IOException {
+		}
 	}
 
 	private static class StringRenderer implements Renderer {
@@ -150,6 +165,11 @@ public class AttributeInputComponent extends UIInput {
 
 			responseWriter.writeAttribute("name", clientId, null);
 			responseWriter.writeAttribute("value", value, null);
+
+			if (false == attribute.isEditable()) {
+				LOG.debug("setting disabled to true");
+				responseWriter.writeAttribute("disabled", "true", null);
+			}
 		}
 
 		public void encodeEnd(FacesContext context, UIInput inputComponent)
@@ -216,6 +236,9 @@ public class AttributeInputComponent extends UIInput {
 						responseWriter.writeAttribute("checked", Boolean.TRUE,
 								null);
 					}
+					if (false == attribute.isEditable()) {
+						responseWriter.writeAttribute("disabled", "true", null);
+					}
 					LOG.debug("message: " + messages.getString("true"));
 				}
 				responseWriter.endElement("input");
@@ -241,6 +264,10 @@ public class AttributeInputComponent extends UIInput {
 						LOG.debug("adding checked attribute");
 						responseWriter.writeAttribute("checked", Boolean.TRUE,
 								null);
+					}
+					if (false == attribute.isEditable()) {
+						LOG.debug("setting disabled to true");
+						responseWriter.writeAttribute("disabled", "true", null);
 					}
 				}
 				responseWriter.endElement("input");

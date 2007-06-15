@@ -26,6 +26,15 @@
 	</tag>
 
 	<tag>
+		<tag-name>outputAttributeName</tag-name>
+		<component>
+			<component-type>
+				net.link.component.attributeNameOutput
+			</component-type>
+		</component>
+	</tag>
+
+	<tag>
 		<tag-name>inputAttribute</tag-name>
 		<component>
 			<component-type>

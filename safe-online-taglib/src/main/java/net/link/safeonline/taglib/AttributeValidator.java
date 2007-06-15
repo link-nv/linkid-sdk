@@ -38,6 +38,13 @@ public class AttributeValidator implements Validator {
 			return;
 		}
 		AttributeDO attribute = (AttributeDO) value;
+		if (false == attribute.isRequired()) {
+			/*
+			 * In case of compounded member attributes the attribute can be
+			 * optional.
+			 */
+			return;
+		}
 		DatatypeType type = attribute.getType();
 		TypeValidator typeValidator = typeValidators.get(type);
 		if (null == typeValidator) {
