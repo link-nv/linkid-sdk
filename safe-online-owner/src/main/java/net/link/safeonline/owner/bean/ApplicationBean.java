@@ -9,6 +9,7 @@ package net.link.safeonline.owner.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -84,7 +85,7 @@ public class ApplicationBean implements Application {
 
 	@Out(value = "selectedApplicationIdentity", required = false)
 	@SuppressWarnings("unused")
-	private List<ApplicationIdentityAttributeEntity> selectedApplicationIdentity;
+	private Set<ApplicationIdentityAttributeEntity> selectedApplicationIdentity;
 
 	@DataModel
 	private List<DeviceEntry> allowedDevices;

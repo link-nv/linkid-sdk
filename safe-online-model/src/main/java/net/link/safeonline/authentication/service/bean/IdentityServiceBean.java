@@ -8,13 +8,13 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import javax.annotation.security.RolesAllowed;
@@ -26,6 +26,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -246,7 +247,7 @@ public class IdentityServiceBean implements IdentityService,
 				.getCurrentApplicationIdentity();
 		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
 				.getApplicationIdentity(application, currentIdentityVersion);
-		List<ApplicationIdentityAttributeEntity> identityAttributeTypes = applicationIdentity
+		Set<ApplicationIdentityAttributeEntity> identityAttributeTypes = applicationIdentity
 				.getAttributes();
 		if (true == identityAttributeTypes.isEmpty()) {
 			/*
@@ -315,6 +316,13 @@ public class IdentityServiceBean implements IdentityService,
 		List<AttributeTypeEntity> attributeTypes = confirmedApplicationIdentity
 				.getAttributeTypes();
 		for (AttributeTypeEntity attributeType : attributeTypes) {
+			if (attributeType.isCompounded()) {
+				/*
+				 * Of course we don't create value entries for compounded
+				 * top-level attributes.
+				 */
+				continue;
+			}
 			AttributeEntity existingAttribute = this.attributeDAO
 					.findAttribute(attributeType, subject);
 			if (null != existingAttribute) {
@@ -339,7 +347,7 @@ public class IdentityServiceBean implements IdentityService,
 		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
 				.getApplicationIdentity(application,
 						currentApplicationIdentityVersion);
-		List<ApplicationIdentityAttributeEntity> currentIdentityAttributes = applicationIdentity
+		Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes = applicationIdentity
 				.getAttributes();
 
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -353,7 +361,9 @@ public class IdentityServiceBean implements IdentityService,
 			 * If no identity version was confirmed previously, then the user
 			 * needs to confirm the current application identity attributes.
 			 */
-
+			LOG
+					.debug("currentIdentityAttributes: "
+							+ currentIdentityAttributes);
 			List<AttributeDO> resultAttributes = this.attributeTypeDescriptionDecorator
 					.addDescriptionFromIdentityAttributes(
 							currentIdentityAttributes, locale);
@@ -406,7 +416,7 @@ public class IdentityServiceBean implements IdentityService,
 		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
 				.getApplicationIdentity(application,
 						currentApplicationIdentityVersion);
-		List<ApplicationIdentityAttributeEntity> identityAttributes = applicationIdentity
+		Set<ApplicationIdentityAttributeEntity> identityAttributes = applicationIdentity
 				.getAttributes();
 
 		/*
@@ -426,12 +436,15 @@ public class IdentityServiceBean implements IdentityService,
 
 		/*
 		 * Next we go over the compounded attribute types and add their members
-		 * to the map, using the optionality of the identity attribute entity.
+		 * to the map, using the optionality of the member attribute entity.
 		 */
 		for (ApplicationIdentityAttributeEntity identityAttribute : identityAttributes) {
 			AttributeTypeEntity attributeType = identityAttribute
 					.getAttributeType();
 			if (false == attributeType.isCompounded()) {
+				continue;
+			}
+			if (false == identityAttribute.isRequired()) {
 				continue;
 			}
 			for (CompoundedAttributeTypeMemberEntity member : attributeType
@@ -446,8 +459,8 @@ public class IdentityServiceBean implements IdentityService,
 					 */
 					continue;
 				}
-				attributeRequirements.put(memberAttributeType,
-						identityAttribute.isRequired());
+				attributeRequirements.put(memberAttributeType, member
+						.isRequired());
 			}
 		}
 
@@ -472,15 +485,17 @@ public class IdentityServiceBean implements IdentityService,
 		Set<AttributeTypeEntity> requiredApplicationAttributeTypes = getRequiredDataAttributeTypes(applicationName);
 
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		List<AttributeEntity> userAttributes = this.attributeDAO
+		Map<AttributeTypeEntity, List<AttributeEntity>> userAttributes = this.attributeDAO
 				.listAttributes(subject);
 
-		Set<String> missingAttributeNames = new TreeSet<String>();
-		for (AttributeTypeEntity applicationAttributeType : requiredApplicationAttributeTypes) {
-			missingAttributeNames.add(applicationAttributeType.getName());
-		}
-
-		for (AttributeEntity userAttribute : userAttributes) {
+		for (Map.Entry<AttributeTypeEntity, List<AttributeEntity>> userAttributeEntry : userAttributes
+				.entrySet()) {
+			/*
+			 * Even in case of a multi-valued attribute we only need to peek at
+			 * the first entry.
+			 */
+			AttributeEntity userAttribute = userAttributeEntry.getValue()
+					.get(0);
 			DatatypeType datatype = userAttribute.getAttributeType().getType();
 			switch (datatype) {
 			case STRING:
@@ -512,26 +527,39 @@ public class IdentityServiceBean implements IdentityService,
 			default:
 				throw new EJBException("datatype not supported: " + datatype);
 			}
-			String attributeName = userAttribute.getAttributeType().getName();
-			missingAttributeNames.remove(attributeName);
+			requiredApplicationAttributeTypes.remove(userAttribute
+					.getAttributeType());
 		}
 
 		/*
-		 * Construct the result view.
+		 * At this point the set contains the required attribute types for which
+		 * the user has not yet entered a value. Some of these attribute types
+		 * are belong to a compounded attribute type. If this is the case we
+		 * have to return the entire compounded attribute record to the user so
+		 * he can edit the missing fields of the compounded attribute 'in the
+		 * correct context'.
+		 */
+
+		/*
+		 * Construct the result view. On top of the view list we put the
+		 * attribute entries that are not a member of a compounded attribute
+		 * type.
 		 */
 		List<AttributeDO> missingAttributes = new LinkedList<AttributeDO>();
-		for (String missingAttributeName : missingAttributeNames) {
+		for (AttributeTypeEntity attributeType : requiredApplicationAttributeTypes) {
+			if (attributeType.isCompoundMember()) {
+				continue;
+			}
 			String humanReadableName = null;
 			String description = null;
-			AttributeTypeEntity attributeType = this.attributeTypeDAO
-					.findAttributeType(missingAttributeName);
 			DatatypeType datatype = attributeType.getType();
+			String attributeName = attributeType.getName();
 			if (null != locale) {
 				String language = locale.getLanguage();
 				LOG.debug("trying language: " + language);
 				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
 						.findDescription(new AttributeTypeDescriptionPK(
-								missingAttributeName, language));
+								attributeName, language));
 				if (null != attributeTypeDescription) {
 					LOG.debug("found description");
 					humanReadableName = attributeTypeDescription.getName();
@@ -542,10 +570,121 @@ public class IdentityServiceBean implements IdentityService,
 			 * We mark the missing attribute as singled-valued here since
 			 * basically the user does not care at this point.
 			 */
-			AttributeDO missingAttribute = new AttributeDO(
-					missingAttributeName, datatype, false, 0,
-					humanReadableName, description, true, true, null, null);
+			AttributeDO missingAttribute = new AttributeDO(attributeName,
+					datatype, false, 0, humanReadableName, description, true,
+					true, null, null);
+			LOG.debug("adding missing attribute: " + attributeName);
 			missingAttributes.add(missingAttribute);
+		}
+
+		/*
+		 * Next we add the compounded attribute records for the missing member
+		 * attribute types. First we need to construct the list of compounded
+		 * attribute types. Notice here that we first need to construct the set
+		 * to filter out duplicate entries.
+		 */
+		Set<AttributeTypeEntity> compoundedAttributeTypes = new HashSet<AttributeTypeEntity>();
+		for (AttributeTypeEntity attributeType : requiredApplicationAttributeTypes) {
+			if (false == attributeType.isCompoundMember()) {
+				continue;
+			}
+			AttributeTypeEntity parentAttributeType;
+			try {
+				parentAttributeType = this.attributeTypeDAO
+						.getParent(attributeType);
+			} catch (AttributeTypeNotFoundException e) {
+				throw new EJBException(
+						"inconsistency in compounded attribute type definition of "
+								+ attributeType.getName());
+			}
+			compoundedAttributeTypes.add(parentAttributeType);
+		}
+
+		/*
+		 * Finally we add a record for every required missing compounded
+		 * attribute type.
+		 */
+		for (AttributeTypeEntity compoundedAttributeType : compoundedAttributeTypes) {
+			/*
+			 * First we add the 'top-level' compounded title entry.
+			 */
+			String humanReadableName = null;
+			String description = null;
+			if (null != locale) {
+				String language = locale.getLanguage();
+				LOG.debug("trying language: " + language);
+				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+						.findDescription(new AttributeTypeDescriptionPK(
+								compoundedAttributeType.getName(), language));
+				if (null != attributeTypeDescription) {
+					LOG.debug("found description");
+					humanReadableName = attributeTypeDescription.getName();
+					description = attributeTypeDescription.getDescription();
+				}
+			}
+			AttributeDO missingAttribute = new AttributeDO(
+					compoundedAttributeType.getName(), DatatypeType.COMPOUNDED,
+					false, 0, humanReadableName, description, true, true, null,
+					null);
+			missingAttribute.setCompounded(true);
+			LOG.debug("adding missing compounded attribute: "
+					+ missingAttribute.getName());
+			missingAttributes.add(missingAttribute);
+			/*
+			 * Under the title entry we add entries for the members of the
+			 * compounded attribute type.
+			 */
+			for (CompoundedAttributeTypeMemberEntity member : compoundedAttributeType
+					.getMembers()) {
+				AttributeTypeEntity attributeType = member.getMember();
+				if (null != locale) {
+					String language = locale.getLanguage();
+					LOG.debug("trying language: " + language);
+					AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+							.findDescription(new AttributeTypeDescriptionPK(
+									attributeType.getName(), language));
+					if (null != attributeTypeDescription) {
+						LOG.debug("found description");
+						humanReadableName = attributeTypeDescription.getName();
+						description = attributeTypeDescription.getDescription();
+					}
+				} else {
+					humanReadableName = null;
+					description = null;
+				}
+				AttributeDO missingMemberAttribute = new AttributeDO(
+						attributeType.getName(), attributeType.getType(),
+						false, 0, humanReadableName, description, true, true,
+						null, null);
+				missingMemberAttribute.setMember(true);
+
+				/*
+				 * For a compounded we want to fill in as much existing data as
+				 * possible to make it easier for the user to edit the values in
+				 * context of an existing compounded attribute.
+				 */
+				List<AttributeEntity> attributes = userAttributes
+						.get(attributeType);
+				if (null != attributes) {
+					AttributeEntity attribute = attributes.get(0);
+					DatatypeType type = attributeType.getType();
+					switch (type) {
+					case STRING:
+						missingMemberAttribute.setStringValue(attribute
+								.getStringValue());
+						break;
+					case BOOLEAN:
+						missingMemberAttribute.setBooleanValue(attribute
+								.getBooleanValue());
+						break;
+					default:
+						throw new EJBException("unsupported data type: " + type);
+					}
+				}
+				LOG.debug("adding missing member attribute: "
+						+ missingMemberAttribute.getName());
+				missingAttributes.add(missingMemberAttribute);
+			}
 		}
 
 		return missingAttributes;

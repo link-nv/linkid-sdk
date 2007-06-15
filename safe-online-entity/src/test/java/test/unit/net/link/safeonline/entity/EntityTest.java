@@ -19,6 +19,7 @@ import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityExistsException;
@@ -771,7 +772,7 @@ public class EntityTest {
 						new ApplicationIdentityPK(application.getName(),
 								identityVersion));
 		assertNotNull(resultApplicationIdentity);
-		List<ApplicationIdentityAttributeEntity> resultIdentityAttributes = resultApplicationIdentity
+		Set<ApplicationIdentityAttributeEntity> resultIdentityAttributes = resultApplicationIdentity
 				.getAttributes();
 		assertNotNull(resultIdentityAttributes);
 		assertEquals(2, resultIdentityAttributes.size());

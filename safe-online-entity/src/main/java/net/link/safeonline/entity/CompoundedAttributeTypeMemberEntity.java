@@ -14,18 +14,29 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.annotations.Index;
+
+import static net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity.QUERY_PARENT;
 
 @Entity
 @Table(name = "comp_attribute_member")
+@NamedQueries( { @NamedQuery(name = QUERY_PARENT, query = "SELECT catm.parent FROM CompoundedAttributeTypeMemberEntity AS catm "
+		+ "WHERE catm.member = :member") })
 public class CompoundedAttributeTypeMemberEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String QUERY_PARENT = "cat.parent";
 
 	private CompoundedAttributeTypeMemberPK pk;
 
@@ -78,6 +89,7 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = MEMBER_COLUMN_NAME, insertable = false, updatable = false)
+	@Index(name = "memberIndex")
 	public AttributeTypeEntity getMember() {
 		return this.member;
 	}
@@ -129,5 +141,12 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.pk).toHashCode();
+	}
+
+	public static Query createParentQuery(EntityManager entityManager,
+			AttributeTypeEntity member) {
+		Query query = entityManager.createNamedQuery(QUERY_PARENT);
+		query.setParameter("member", member);
+		return query;
 	}
 }

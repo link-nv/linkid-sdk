@@ -7,7 +7,10 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -71,12 +74,23 @@ public class AttributeDAOBean implements AttributeDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<AttributeEntity> listAttributes(SubjectEntity subject) {
+	public Map<AttributeTypeEntity, List<AttributeEntity>> listAttributes(
+			SubjectEntity subject) {
 		LOG.debug("get attributes for subject " + subject.getLogin());
 		Query query = AttributeEntity.createQueryWhereSubject(
 				this.entityManager, subject);
 		List<AttributeEntity> attributes = query.getResultList();
-		return attributes;
+		Map<AttributeTypeEntity, List<AttributeEntity>> result = new HashMap<AttributeTypeEntity, List<AttributeEntity>>();
+		for (AttributeEntity attribute : attributes) {
+			List<AttributeEntity> list = result.get(attribute
+					.getAttributeType());
+			if (null == list) {
+				list = new LinkedList<AttributeEntity>();
+				result.put(attribute.getAttributeType(), list);
+			}
+			list.add(attribute);
+		}
+		return result;
 	}
 
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,

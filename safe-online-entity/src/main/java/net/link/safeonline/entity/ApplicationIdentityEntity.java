@@ -8,8 +8,10 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -28,6 +30,9 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import static net.link.safeonline.entity.ApplicationIdentityEntity.QUERY_WHERE_APPLICATION;
 
 @Entity
@@ -45,10 +50,10 @@ public class ApplicationIdentityEntity implements Serializable {
 
 	private ApplicationEntity application;
 
-	private List<ApplicationIdentityAttributeEntity> attributes;
+	private Set<ApplicationIdentityAttributeEntity> attributes;
 
 	public ApplicationIdentityEntity() {
-		this.attributes = new LinkedList<ApplicationIdentityAttributeEntity>();
+		this.attributes = new HashSet<ApplicationIdentityAttributeEntity>();
 	}
 
 	public ApplicationIdentityEntity(ApplicationEntity application,
@@ -56,7 +61,7 @@ public class ApplicationIdentityEntity implements Serializable {
 		this.pk = new ApplicationIdentityPK(application.getName(),
 				identityVersion);
 		this.application = application;
-		this.attributes = new LinkedList<ApplicationIdentityAttributeEntity>();
+		this.attributes = new HashSet<ApplicationIdentityAttributeEntity>();
 	}
 
 	public static final String APPLICATION_COLUMN_NAME = "application";
@@ -91,12 +96,11 @@ public class ApplicationIdentityEntity implements Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationIdentity", cascade = CascadeType.REMOVE)
-	public List<ApplicationIdentityAttributeEntity> getAttributes() {
+	public Set<ApplicationIdentityAttributeEntity> getAttributes() {
 		return this.attributes;
 	}
 
-	public void setAttributes(
-			List<ApplicationIdentityAttributeEntity> attributes) {
+	public void setAttributes(Set<ApplicationIdentityAttributeEntity> attributes) {
 		this.attributes = attributes;
 	}
 
@@ -125,6 +129,26 @@ public class ApplicationIdentityEntity implements Serializable {
 			requiredAttributeTypes.add(attribute.getAttributeType());
 		}
 		return requiredAttributeTypes;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this.pk).toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (null == obj) {
+			return false;
+		}
+		if (false == obj instanceof ApplicationIdentityEntity) {
+			return false;
+		}
+		ApplicationIdentityEntity rhs = (ApplicationIdentityEntity) obj;
+		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
 	}
 
 	public static Query createQueryWhereApplication(

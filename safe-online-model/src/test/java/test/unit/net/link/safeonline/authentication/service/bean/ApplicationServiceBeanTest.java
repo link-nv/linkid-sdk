@@ -10,6 +10,7 @@ package test.unit.net.link.safeonline.authentication.service.bean;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -73,7 +74,7 @@ public class ApplicationServiceBeanTest extends TestCase {
 				ApplicationServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
-		List<ApplicationIdentityAttributeEntity> result = applicationService
+		Set<ApplicationIdentityAttributeEntity> result = applicationService
 				.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
 		// verify
@@ -91,9 +92,9 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 		// verify
 		assertEquals(1, result.size());
-		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.get(0)
-				.getAttributeTypeName());
-		assertFalse(result.get(0).isRequired());
+		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.iterator()
+				.next().getAttributeTypeName());
+		assertFalse(result.iterator().next().isRequired());
 
 		// operate
 		applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
@@ -110,9 +111,9 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 		// verify
 		assertEquals(1, result.size());
-		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.get(0)
-				.getAttributeTypeName());
-		assertTrue(result.get(0).isRequired());
+		assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.iterator()
+				.next().getAttributeTypeName());
+		assertTrue(result.iterator().next().isRequired());
 	}
 
 	public void testRemoveApplication() throws Exception {
@@ -150,7 +151,7 @@ public class ApplicationServiceBeanTest extends TestCase {
 		entityTransaction.begin();
 
 		applicationService.removeApplication(testApplicationName);
-		
+
 		entityManager.getTransaction().commit();
 	}
 }

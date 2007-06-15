@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -120,7 +121,7 @@ public class ApplicationBean implements Application {
 
 	@SuppressWarnings("unused")
 	@DataModel(value = APPLICATION_IDENTITY_ATTRIBUTES_NAME)
-	private List<ApplicationIdentityAttributeEntity> applicationIdentityAttributes;
+	private Set<ApplicationIdentityAttributeEntity> applicationIdentityAttributes;
 
 	@Factory(OPER_APPLICATION_LIST_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -285,7 +286,7 @@ public class ApplicationBean implements Application {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@Factory(IDENTITY_ATTRIBUTES_NAME)
 	public void identityAttributesFactory() {
-		List<ApplicationIdentityAttributeEntity> currentIdentityAttributes;
+		Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes;
 		try {
 			currentIdentityAttributes = this.applicationService
 					.getCurrentApplicationIdentity(this.selectedApplication

@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Local;
 
@@ -128,7 +129,7 @@ public interface ApplicationService {
 	 * @throws ApplicationIdentityNotFoundException
 	 * @throws PermissionDeniedException
 	 */
-	List<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
+	Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
 			String applicationName) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, PermissionDeniedException;
 

@@ -15,6 +15,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 @Entity
 @Table(name = "application_identity_attribute")
@@ -141,5 +143,12 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
 
 	public void setDataMining(boolean dataMining) {
 		this.dataMining = dataMining;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+				.append("pk", this.pk).append("required", this.required)
+				.toString();
 	}
 }

@@ -71,4 +71,14 @@ public interface AttributeTypeDAO {
 	Map<String, Long> categorize(ApplicationEntity application,
 			AttributeTypeEntity attributeType);
 
+	/**
+	 * Gives back the compounded parent attribute type to which a member
+	 * attribute type belongs to.
+	 * 
+	 * @param memberAttributeType
+	 * @return
+	 * @throws AttributeTypeNotFoundException
+	 */
+	AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType)
+			throws AttributeTypeNotFoundException;
 }

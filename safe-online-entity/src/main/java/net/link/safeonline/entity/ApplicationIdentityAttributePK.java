@@ -14,6 +14,7 @@ import javax.persistence.Embeddable;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 @Embeddable
 public class ApplicationIdentityAttributePK implements Serializable {
@@ -87,7 +88,7 @@ public class ApplicationIdentityAttributePK implements Serializable {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this)
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
 				.append("application", this.application).append(
 						"identityVersion", this.identityVersion).append(
 						"attributeType", this.attributeTypeName).toString();

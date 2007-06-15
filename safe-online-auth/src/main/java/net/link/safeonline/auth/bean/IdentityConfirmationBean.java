@@ -170,6 +170,7 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 			List<AttributeDO> confirmationList = this.identityService
 					.listIdentityAttributesToConfirm(this.application,
 							viewLocale);
+			LOG.debug("confirmation list: " + confirmationList);
 			return confirmationList;
 		} catch (SubscriptionNotFoundException e) {
 			String msg = "subscription not found.";

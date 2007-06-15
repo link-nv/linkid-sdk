@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.bean;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -61,7 +62,7 @@ public class AttributeTypeDescriptionDecoratorBean implements
 	}
 
 	public List<AttributeDO> addDescriptionFromIdentityAttributes(
-			List<ApplicationIdentityAttributeEntity> identityAttributes,
+			Collection<ApplicationIdentityAttributeEntity> identityAttributes,
 			Locale locale) {
 		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
 		String language = null;

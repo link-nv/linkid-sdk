@@ -1,6 +1,7 @@
 package net.link.safeonline.model.bean;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -39,7 +40,7 @@ public class ApplicationsBean implements Applications {
 		return applications;
 	}
 
-	public List<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
+	public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
 			ApplicationEntity application)
 			throws ApplicationIdentityNotFoundException {
 
@@ -49,7 +50,7 @@ public class ApplicationsBean implements Applications {
 				.getCurrentApplicationIdentity();
 		ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO
 				.getApplicationIdentity(application, currentIdentityVersion);
-		List<ApplicationIdentityAttributeEntity> attributes = applicationIdentity
+		Set<ApplicationIdentityAttributeEntity> attributes = applicationIdentity
 				.getAttributes();
 		for (ApplicationIdentityAttributeEntity attribute : attributes) {
 			LOG.debug("attribute: " + attribute);

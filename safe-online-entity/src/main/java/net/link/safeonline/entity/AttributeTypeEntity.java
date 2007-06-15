@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.EJBException;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -187,11 +188,25 @@ public class AttributeTypeEntity implements Serializable {
 		this.members = members;
 	}
 
+	/**
+	 * Adds a member to this compounded attribute type. This method also marks
+	 * the member attribute type as being such.
+	 * 
+	 * @param memberAttributeType
+	 * @param memberSequence
+	 * @param required
+	 */
 	public void addMember(AttributeTypeEntity memberAttributeType,
 			int memberSequence, boolean required) {
+		if (memberAttributeType.isCompoundMember()) {
+			throw new EJBException(
+					"attribute type cannot be member of more than one compounded: "
+							+ memberAttributeType.getName());
+		}
 		CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(
 				this, memberAttributeType, memberSequence, required);
 		getMembers().add(member);
+		memberAttributeType.setCompoundMember(true);
 	}
 
 	@Transient

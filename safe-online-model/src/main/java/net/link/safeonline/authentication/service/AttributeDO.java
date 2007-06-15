@@ -9,6 +9,9 @@ package net.link.safeonline.authentication.service;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import net.link.safeonline.entity.DatatypeType;
 
 /**
@@ -42,6 +45,10 @@ public class AttributeDO implements Serializable, Cloneable {
 	private Boolean booleanValue;
 
 	private boolean multivalued;
+
+	private boolean compounded;
+
+	private boolean member;
 
 	public AttributeDO(String name, DatatypeType type, boolean multivalued,
 			long index, String humanReadableName, String description,
@@ -217,6 +224,34 @@ public class AttributeDO implements Serializable, Cloneable {
 		this.multivalued = multivalued;
 	}
 
+	/**
+	 * Marks that this attribute entry is the title entry of a compounded
+	 * attribute record. This flag will be used for visualization.
+	 * 
+	 * @return
+	 */
+	public boolean isCompounded() {
+		return this.compounded;
+	}
+
+	public void setCompounded(boolean compounded) {
+		this.compounded = compounded;
+	}
+
+	/**
+	 * Marks that this attribute entry is a member entry of a compounded
+	 * attribute record. This flag will be used for visualization.
+	 * 
+	 * @return
+	 */
+	public boolean isMember() {
+		return this.member;
+	}
+
+	public void setMember(boolean member) {
+		this.member = member;
+	}
+
 	@Override
 	public AttributeDO clone() {
 		AttributeDO attribute = new AttributeDO(this.name, this.type,
@@ -224,5 +259,13 @@ public class AttributeDO implements Serializable, Cloneable {
 				this.description, this.editable, this.dataMining,
 				this.stringValue, this.booleanValue);
 		return attribute;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+				.append("name", this.name).append("multi-valued",
+						this.multivalued).append("index", this.index).append(
+						"string-value", this.stringValue).toString();
 	}
 }

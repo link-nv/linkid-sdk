@@ -9,6 +9,7 @@ package net.link.safeonline.authentication.service.bean;
 
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
@@ -305,7 +306,7 @@ public class ApplicationServiceBean implements ApplicationService,
 	}
 
 	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
-	public List<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
+	public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
 			String applicationName) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, PermissionDeniedException {
 

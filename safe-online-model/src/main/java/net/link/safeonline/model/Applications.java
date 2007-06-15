@@ -1,6 +1,7 @@
 package net.link.safeonline.model;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Local;
 
@@ -17,7 +18,7 @@ public interface Applications {
 
 	public List<ApplicationEntity> listApplications();
 
-	public List<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
+	public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
 			ApplicationEntity application)
 			throws ApplicationIdentityNotFoundException;
 

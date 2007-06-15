@@ -8,6 +8,7 @@
 package net.link.safeonline.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Local;
 
@@ -54,7 +55,15 @@ public interface AttributeDAO {
 	AttributeEntity addAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject);
 
-	List<AttributeEntity> listAttributes(SubjectEntity subject);
+	/**
+	 * Lists all the attributes of a user. The returned attributes have already
+	 * been sorted out per attribute type.
+	 * 
+	 * @param subject
+	 * @return
+	 */
+	Map<AttributeTypeEntity, List<AttributeEntity>> listAttributes(
+			SubjectEntity subject);
 
 	List<AttributeEntity> listVisibleAttributes(SubjectEntity subject);
 

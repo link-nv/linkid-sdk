@@ -31,6 +31,7 @@ public class IdentityAttributeTypeDO implements Serializable {
 	 * 
 	 * @param name
 	 * @param required
+	 * @param dataMining
 	 */
 	public IdentityAttributeTypeDO(String name, boolean required,
 			boolean dataMining) {

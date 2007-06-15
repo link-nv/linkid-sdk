@@ -25,6 +25,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -146,4 +147,16 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	public AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType)
+			throws AttributeTypeNotFoundException {
+		Query query = CompoundedAttributeTypeMemberEntity.createParentQuery(
+				this.entityManager, memberAttributeType);
+		List<AttributeTypeEntity> result = query.getResultList();
+		if (result.isEmpty()) {
+			throw new AttributeTypeNotFoundException();
+		}
+		AttributeTypeEntity parent = result.get(0);
+		return parent;
+	}
 }

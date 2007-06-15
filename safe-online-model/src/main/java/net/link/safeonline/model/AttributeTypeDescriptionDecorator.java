@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,7 +36,7 @@ public interface AttributeTypeDescriptionDecorator {
 	 * @return
 	 */
 	List<AttributeDO> addDescriptionFromIdentityAttributes(
-			List<ApplicationIdentityAttributeEntity> identityAttributes,
+			Collection<ApplicationIdentityAttributeEntity> identityAttributes,
 			Locale locale);
 
 	/**
