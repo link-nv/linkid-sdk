@@ -8,6 +8,6 @@
 		java:/jaas/safe-online-user
 	</security-domain>
 
-	<context-root>/safe-online</context-root>
+	<context-root>/olas</context-root>
 
 </jboss-web>

@@ -241,6 +241,7 @@ public class AttributeServiceBeanTest {
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
 				DatatypeType.STRING);
 		testAttribute.setStringValue(testAttributeValue);
+		testAttribute.setEditable(true);
 		identityService.saveAttribute(testAttribute);
 
 		AttributeService attributeService = EJBTestUtils.newInstance(
@@ -309,6 +310,7 @@ public class AttributeServiceBeanTest {
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
 				DatatypeType.BOOLEAN);
 		testAttribute.setBooleanValue(testAttributeValue);
+		testAttribute.setEditable(true);
 		identityService.saveAttribute(testAttribute);
 
 		AttributeService attributeService = EJBTestUtils.newInstance(
@@ -524,6 +526,7 @@ public class AttributeServiceBeanTest {
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
 				DatatypeType.STRING);
 		testAttribute.setStringValue(testAttributeValue1);
+		testAttribute.setEditable(true);
 		identityService.saveAttribute(testAttribute);
 		testAttribute.setStringValue(testAttributeValue2);
 		identityService.addAttribute(testAttribute);

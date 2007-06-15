@@ -35,47 +35,47 @@
 		</navigation-case>
 		<navigation-case>
 			<from-action>profile</from-action>
-			<to-view-id>/profile.seam</to-view-id>
+			<to-view-id>/profile/profile.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/profile.xhtml</from-view-id>
+		<from-view-id>/profile/profile.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>edit</from-outcome>
-			<to-view-id>/attribute-edit.seam</to-view-id>
+			<to-view-id>/profile/attribute-edit.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>removed</from-outcome>
-			<to-view-id>/profile.xhtml</to-view-id>
+			<to-view-id>/profile/profile.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>add</from-outcome>
-			<to-view-id>/attribute-add.xhtml</to-view-id>
+			<to-view-id>/profile/attribute-add.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/attribute-add.xhtml</from-view-id>
+		<from-view-id>/profile/attribute-add.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/profile.xhtml</to-view-id>
+			<to-view-id>/profile/profile.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>cancel</from-action>
-			<to-view-id>/profile.xhtml</to-view-id>
+			<to-view-id>/profile/profile.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/attribute-edit.xhtml</from-view-id>
+		<from-view-id>/profile/attribute-edit.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
-			<to-view-id>/profile.seam</to-view-id>
+			<to-view-id>/profile/profile.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>cancel</from-action>
-			<to-view-id>/profile.seam</to-view-id>
+			<to-view-id>/profile/profile.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

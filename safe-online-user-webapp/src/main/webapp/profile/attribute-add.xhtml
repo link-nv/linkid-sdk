@@ -1,3 +1,5 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
@@ -14,26 +16,25 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.editAttribute}</h2>
+		<h2>#{msgs.addAttribute}</h2>
 
 		<h:form>
 			<table>
 				<tr>
 					<th>#{msgs.name}:</th>
-					<td><h:outputText
-						value="#{selectedAttribute.humanReadableName}" /></td>
+					<td><h:outputText value="#{newAttribute.rawHumanReadableName}" /></td>
 				</tr>
 				<tr>
 					<th><h:outputLabel for="value" value="#{msgs.value}" />:</th>
 					<td><so:inputAttribute id="value"
-						value="#{selectedAttribute.value}" /></td>
+						value="#{newAttribute.value}" /></td>
 				</tr>
 			</table>
 
 			<t:messages globalOnly="true" styleClass="error" />
 
-			<h:commandButton id="save" action="#{identityBean.save}"
-				value="#{msgs.saveaction}" />
+			<h:commandButton id="add" action="#{identityBean.commitAdd}"
+				value="#{msgs.addaction}" />
 			<so:nbsp />
 			<h:commandButton action="cancel" id="cancel"
 				value="#{msgs.cancelaction}" />
