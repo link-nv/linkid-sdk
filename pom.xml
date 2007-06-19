@@ -1001,6 +1001,11 @@
 				<artifactId>jgroups</artifactId>
 				<version>${jgroups.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>gravel</artifactId>
+				<version>${gravel.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1150,5 +1155,6 @@
 		<dataprovider.version>4.1-b6</dataprovider.version>
 		<json.version>4.1-b6</json.version>
 		<jgroups.version>2.2.5</jgroups.version>
+		<gravel.version>1.0.0.GA</gravel.version>
 	</properties>
 </project>

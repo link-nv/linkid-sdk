@@ -151,6 +151,10 @@ public class MissingAttributesBean implements MissingAttributes {
 	@In
 	private Context sessionContext;
 
+	/**
+	 * We're using injection here on the authentication service since it's being
+	 * managed by the session-scope based authentication service manager.
+	 */
 	@In
 	private AuthenticationService authenticationService;
 
@@ -172,6 +176,7 @@ public class MissingAttributesBean implements MissingAttributes {
 	public static final String AUTH_SERVICE_ATTRIBUTE = "authenticationService";
 
 	private void cleanupAuthenticationServiceReference() {
+		LOG.debug("cleaning up the authentication service reference");
 		this.sessionContext.set(AUTH_SERVICE_ATTRIBUTE, null);
 	}
 }

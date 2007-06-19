@@ -39,8 +39,10 @@
 				<h:column>
 					<f:facet name="header">#{msgs.attributeValue}</f:facet>
 					<s:decorate>
-						<so:inputAttribute value="#{item.value}" required="true" />
+						<so:inputAttribute id="value" value="#{item.value}"
+							required="true" />
 					</s:decorate>
+					<h:message for="value" styleClass="error" />
 				</h:column>
 
 			</h:dataTable>
