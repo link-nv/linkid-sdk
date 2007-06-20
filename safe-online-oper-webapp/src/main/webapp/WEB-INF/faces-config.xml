@@ -525,6 +525,28 @@
 			/attributes/attribute-add-members-ac.xhtml
 		</from-view-id>
 		<navigation-case>
+			<from-outcome>next</from-outcome>
+			<to-view-id>
+				/attributes/attribute-add-comp-ac.xhtml
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>canceled</from-outcome>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>previous</from-action>
+			<to-view-id>
+				/attributes/attribute-add-members.xhtml
+			</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>
+			/attributes/attribute-add-comp-ac.xhtml
+		</from-view-id>
+		<navigation-case>
 			<from-outcome>success</from-outcome>
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>

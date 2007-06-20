@@ -63,6 +63,8 @@ public interface AddAttribute {
 
 	String membersNext();
 
+	String membersAccessControlNext();
+
 	/*
 	 * Factory.
 	 */

@@ -294,4 +294,10 @@ public class AddAttributeBean implements AddAttribute {
 					selectedMemberAttribute));
 		}
 	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String membersAccessControlNext() {
+		log.debug("members access control next");
+		return "next";
+	}
 }
