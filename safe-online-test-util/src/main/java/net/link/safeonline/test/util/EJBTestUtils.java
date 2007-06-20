@@ -397,6 +397,13 @@ public final class EJBTestUtils {
 					setField(field, testTimerService);
 					continue;
 				}
+				if (true == String.class.isAssignableFrom(fieldType)) {
+					/*
+					 * In this case we're probably dealing with an env-entry
+					 * injection, which we can most of the time safely skip.
+					 */
+					continue;
+				}
 				throw new EJBException("unsupported resource type: "
 						+ fieldType.getName());
 			}

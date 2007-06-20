@@ -11,6 +11,9 @@ import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +23,6 @@ import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import junit.framework.TestCase;
 import net.link.safeonline.Startable;
 import net.link.safeonline.Task;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
@@ -35,10 +37,13 @@ import net.link.safeonline.test.util.JndiTestUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
-public class TaskSchedulerBeanTest extends TestCase {
+public class TaskSchedulerBeanTest {
 
 	private static final Log LOG = LogFactory
 			.getLog(TaskSchedulerBeanTest.class);
@@ -53,7 +58,7 @@ public class TaskSchedulerBeanTest extends TestCase {
 
 	private JndiTestUtils jndiTestUtils;
 
-	@Override
+	@Before
 	public void setUp() throws Exception {
 		this.mockTimerService = createMock(TimerService.class);
 		this.mockTimer = createMock(Timer.class);
@@ -78,13 +83,13 @@ public class TaskSchedulerBeanTest extends TestCase {
 		this.jndiTestUtils.setUp();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		this.entityTestManager.tearDown();
 		this.jndiTestUtils.tearDown();
-		super.tearDown();
 	}
 
+	@Test
 	public void testSetTimer() throws Exception {
 		// setup
 		SchedulingEntity scheduling = new SchedulingEntity("test",
@@ -109,6 +114,7 @@ public class TaskSchedulerBeanTest extends TestCase {
 		assertFalse(firstDate.equals(nextDate));
 	}
 
+	@Test
 	public void testPostStart() throws Exception {
 		// setup
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
