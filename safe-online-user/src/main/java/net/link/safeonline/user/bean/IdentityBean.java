@@ -142,6 +142,11 @@ public class IdentityBean implements Identity {
 			LOG.error(msg);
 			this.facesMessages.add(msg);
 			return null;
+		} catch (AttributeTypeNotFoundException e) {
+			String msg = "attribute type not found";
+			LOG.error(msg);
+			this.facesMessages.add(msg);
+			return null;
 		}
 		attributeListFactory();
 		return "removed";

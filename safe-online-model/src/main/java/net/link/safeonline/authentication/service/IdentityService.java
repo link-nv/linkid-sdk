@@ -191,9 +191,11 @@ public interface IdentityService {
 	 * @param attribute
 	 * @throws PermissionDeniedException
 	 * @throws AttributeNotFoundException
+	 * @throws AttributeTypeNotFoundException
 	 */
 	void removeAttribute(AttributeDO attribute)
-			throws PermissionDeniedException, AttributeNotFoundException;
+			throws PermissionDeniedException, AttributeNotFoundException,
+			AttributeTypeNotFoundException;
 
 	/**
 	 * Adds an attribute. This method only really makes sense for multi-valued

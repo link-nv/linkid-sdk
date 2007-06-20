@@ -22,6 +22,9 @@
 			</activation>
 			<properties>
 				<isGlobalOperator>true</isGlobalOperator>
+				<defaultCronExpression>
+					0 0/5 * * * ?
+				</defaultCronExpression>
 			</properties>
 		</profile>
 		<profile>
@@ -34,6 +37,9 @@
 			</activation>
 			<properties>
 				<isGlobalOperator>true</isGlobalOperator>
+				<defaultCronExpression>
+					0 0 3 * * ?
+				</defaultCronExpression>
 			</properties>
 		</profile>
 	</profiles>

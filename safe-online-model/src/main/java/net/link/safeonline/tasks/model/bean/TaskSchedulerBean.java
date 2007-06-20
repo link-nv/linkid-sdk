@@ -58,8 +58,8 @@ public class TaskSchedulerBean implements TaskScheduler {
 	@Resource
 	private TimerService timerService;
 
-	// private static String defaultCronExpression = "0 0 3 * * ?";
-	private static String defaultCronExpression = "0 * * * * ?";
+	@Resource(name = "defaultCronExpression")
+	private String defaultCronExpression = "0 * * * * ?";
 
 	@Timeout
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -137,7 +137,7 @@ public class TaskSchedulerBean implements TaskScheduler {
 				.findSchedulingByName("default");
 		if (defaultScheduling == null) {
 			defaultScheduling = this.schedulingDAO.addScheduling("default",
-					defaultCronExpression);
+					this.defaultCronExpression);
 			try {
 				this.setTimer(defaultScheduling);
 			} catch (Exception ex) {

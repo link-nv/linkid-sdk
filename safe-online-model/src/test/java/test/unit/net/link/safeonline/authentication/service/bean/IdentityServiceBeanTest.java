@@ -451,8 +451,108 @@ public class IdentityServiceBeanTest {
 		refreshTransaction(entityManager);
 
 		// verify
-		assertEquals(6, identityService.listAttributes(null).size());
-		// 6 = 2 * (1 title + 2 member entries)
+		List<AttributeDO> resultAttributes = identityService
+				.listAttributes(null);
+		LOG.debug("result attributes: " + resultAttributes);
+		assertEquals(6, resultAttributes.size());
+
+		assertEquals(compoundedAttributeName, resultAttributes.get(0).getName());
+
+		assertEquals(attributeName0, resultAttributes.get(1).getName());
+		assertEquals("value 0", resultAttributes.get(1).getStringValue());
+
+		assertEquals(attributeName1, resultAttributes.get(2).getName());
+		assertEquals(Boolean.TRUE, resultAttributes.get(2).getBooleanValue());
+
+		assertEquals(compoundedAttributeName, resultAttributes.get(3).getName());
+
+		assertEquals(attributeName0, resultAttributes.get(4).getName());
+		assertEquals("value 2", resultAttributes.get(4).getStringValue());
+
+		assertEquals(attributeName1, resultAttributes.get(5).getName());
+		assertEquals(Boolean.FALSE, resultAttributes.get(5).getBooleanValue());
+	}
+
+	/**
+	 * Tests whether we can remove a compounded attribute record when some of
+	 * the member attribute values are missing for the record to be removed.
+	 * Also checks whether we can remove all the member attribute values. Even
+	 * if the member attribute types are marked as non-user-editable it's
+	 * possible for the user to remove the attribute record if the compounded
+	 * attribute type is marked as user-editable.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void removeAllowMemberCompoundAttributesToBeEmpty() throws Exception {
+		// setup
+		String login = "test-login";
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		// operate: register the test user
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(login, "test-password", null);
+
+		// operate: add multivalued attribute type
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
+
+		String attributeName0 = "editable-member-attribute-attribute-name-0";
+		AttributeTypeEntity attributeType0 = new AttributeTypeEntity(
+				attributeName0, DatatypeType.STRING, true, true);
+		attributeType0.setMultivalued(true);
+		attributeTypeService.add(attributeType0);
+
+		String attributeName1 = "non-editable-member-attribute-name-1";
+		AttributeTypeEntity attributeType1 = new AttributeTypeEntity(
+				attributeName1, DatatypeType.BOOLEAN, true, false);
+		attributeType1.setMultivalued(true);
+		attributeTypeService.add(attributeType1);
+
+		refreshTransaction(entityManager);
+
+		String compoundedAttributeName = "test-comp-attrib-name";
+		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, true);
+		compoundedAttributeType.setMultivalued(true);
+		compoundedAttributeType.addMember(attributeType0, 0, true);
+		compoundedAttributeType.addMember(attributeType1, 1, true);
+		attributeTypeService.add(compoundedAttributeType);
+
+		// operate: save attribute
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.USER_ROLE);
+
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 0, null, null, true, true,
+				"value 0", null));
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 1, null, null, true, true,
+				"value 1", null));
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 2, null, null, true, true,
+				"value 2", null));
+
+		refreshTransaction(entityManager);
+
+		// operate: remove a single multi-valued attribute
+		identityService.removeAttribute(new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 1,
+				null, null, true, true, null, null));
+
+		refreshTransaction(entityManager);
+
+		// verify
+		List<AttributeDO> resultAttributes = identityService
+				.listAttributes(null);
+		LOG.debug("result attributes: " + resultAttributes);
+		assertEquals(6, resultAttributes.size());
 	}
 
 	private static class RequiredCompoundedMissingAttributesScenario implements

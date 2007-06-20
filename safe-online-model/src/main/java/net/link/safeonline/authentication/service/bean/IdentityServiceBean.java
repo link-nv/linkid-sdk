@@ -147,6 +147,48 @@ public class IdentityServiceBean implements IdentityService,
 		return attributeType;
 	}
 
+	/**
+	 * Gives back the attribute type for the given attribute name, but only if
+	 * the user is allowed to remove attributes of the attribute type.
+	 * 
+	 * @param attributeName
+	 * @return
+	 * @throws PermissionDeniedException
+	 * @throws AttributeTypeNotFoundException
+	 */
+	private AttributeTypeEntity getUserRemovableAttributeType(
+			String attributeName) throws PermissionDeniedException,
+			AttributeTypeNotFoundException {
+		AttributeTypeEntity attributeType = this.attributeTypeDAO
+				.findAttributeType(attributeName);
+		if (null == attributeType) {
+			throw new IllegalArgumentException("attribute type not found: "
+					+ attributeName);
+		}
+		if (true == attributeType.isUserEditable()) {
+			return attributeType;
+		}
+		if (false == attributeType.isCompoundMember()) {
+			LOG.debug("attribute type is not a compounded member: "
+					+ attributeType.getName());
+			throw new PermissionDeniedException();
+		}
+		/*
+		 * We make an exception here for compounded member attributes here. Even
+		 * if the member attribute type is marked as being non-user-editable the
+		 * user is allowed to remove the entry if the compounded attribute type
+		 * is editable.
+		 */
+		AttributeTypeEntity compoundedAttributeType = this.attributeTypeDAO
+				.getParent(attributeType);
+		if (true == compoundedAttributeType.isUserEditable()) {
+			return attributeType;
+		}
+		LOG.debug("compounded parent attribute type is not user editable: "
+				+ compoundedAttributeType.getName());
+		throw new PermissionDeniedException();
+	}
+
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void saveAttribute(AttributeDO attribute)
 			throws PermissionDeniedException {
@@ -923,14 +965,15 @@ public class IdentityServiceBean implements IdentityService,
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void removeAttribute(AttributeDO attribute)
-			throws PermissionDeniedException, AttributeNotFoundException {
+			throws PermissionDeniedException, AttributeNotFoundException,
+			AttributeTypeNotFoundException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		String attributeName = attribute.getName();
 		LOG.debug("remove attribute " + attributeName
 				+ " for entity with login " + subject);
 		LOG.debug("received attribute values: " + attribute);
 
-		AttributeTypeEntity attributeType = getUserEditableAttributeType(attributeName);
+		AttributeTypeEntity attributeType = getUserRemovableAttributeType(attributeName);
 
 		if (attributeType.isCompounded()) {
 			LOG.debug("remove compounded attribute record for: "
@@ -967,6 +1010,13 @@ public class IdentityServiceBean implements IdentityService,
 			List<AttributeEntity> attributes = this.attributeDAO
 					.listAttributes(subject, attributeType);
 			if (attributes.isEmpty()) {
+				if (attributeType.isCompoundMember()) {
+					/*
+					 * For compounded attributes we allow some optional member
+					 * attributes to be empty.
+					 */
+					return;
+				}
 				throw new AttributeNotFoundException();
 			}
 			long index = attribute.getIndex();
@@ -980,6 +1030,13 @@ public class IdentityServiceBean implements IdentityService,
 				}
 			}
 			if (null == removeAttribute) {
+				if (attributeType.isCompoundMember()) {
+					/*
+					 * For compounded attributes we allow some optional member
+					 * attributes to be empty.
+					 */
+					return;
+				}
 				throw new AttributeNotFoundException();
 			}
 			/*

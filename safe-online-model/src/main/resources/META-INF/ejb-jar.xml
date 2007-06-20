@@ -5,6 +5,7 @@
 	version="3.0">
 
 	<enterprise-beans>
+
 		<session>
 			<ejb-name>AuthorizationServiceBean</ejb-name>
 			<env-entry>
@@ -13,6 +14,18 @@
 				<env-entry-value>${isGlobalOperator}</env-entry-value>
 			</env-entry>
 		</session>
+
+		<session>
+			<ejb-name>TaskSchedulerBean</ejb-name>
+			<env-entry>
+				<env-entry-name>defaultCronExpression</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>
+					${defaultCronExpression}
+				</env-entry-value>
+			</env-entry>
+		</session>
+
 	</enterprise-beans>
 
 </ejb-jar>
