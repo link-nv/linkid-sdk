@@ -49,7 +49,8 @@ import static net.link.safeonline.entity.AttributeEntity.MAX_ID_WHERE_SUBJECT_AN
 		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_VISIBLE, query = "SELECT attribute FROM AttributeEntity AS attribute "
 				+ "WHERE attribute.subject = :"
 				+ SUBJECT_PARAM
-				+ " AND attribute.attributeType.userVisible = TRUE"),
+				+ " AND attribute.attributeType.userVisible = TRUE "
+				+ "ORDER BY attribute.attributeType, attribute.attributeIndex"),
 		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT attribute FROM AttributeEntity AS attribute "
 				+ "WHERE attribute.subject = :"
 				+ SUBJECT_PARAM

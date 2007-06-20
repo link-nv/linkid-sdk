@@ -92,6 +92,16 @@ public class AttributeOutputComponent extends UIOutput {
 		}
 	}
 
+	@SupportedType(DatatypeType.COMPOUNDED)
+	public static class CompoundedAttributeValueEncoder implements
+			AttributeValueEncoder {
+
+		public void encode(AttributeDO attribute, ResponseWriter response,
+				FacesContext context) throws IOException {
+			// empty
+		}
+	}
+
 	@Documented
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.TYPE)
@@ -102,8 +112,13 @@ public class AttributeOutputComponent extends UIOutput {
 	private static final Map<DatatypeType, Class<? extends AttributeValueEncoder>> attributeValueEncoders = new HashMap<DatatypeType, Class<? extends AttributeValueEncoder>>();
 
 	static {
+		/*
+		 * It would be a little bit of overkill to use the JBoss Seam Scanner
+		 * component over here.
+		 */
 		registerAttributeValueEncoder(StringAttributeValueEncoder.class);
 		registerAttributeValueEncoder(BooleanAttributeValueEncoder.class);
+		registerAttributeValueEncoder(CompoundedAttributeValueEncoder.class);
 	}
 
 	private static void registerAttributeValueEncoder(

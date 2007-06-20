@@ -31,11 +31,6 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface AttributeDAO {
 
-	AttributeEntity findAttribute(String attributeTypeName, String subjectLogin);
-
-	AttributeEntity getAttribute(String attributeTypeName, String subjectLogin)
-			throws AttributeNotFoundException;
-
 	AttributeEntity addAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, String stringValue);
 
@@ -56,18 +51,6 @@ public interface AttributeDAO {
 			SubjectEntity subject);
 
 	/**
-	 * Lists all the attributes of a user. The returned attributes have already
-	 * been sorted out per attribute type.
-	 * 
-	 * @param subject
-	 * @return
-	 */
-	Map<AttributeTypeEntity, List<AttributeEntity>> listAttributes(
-			SubjectEntity subject);
-
-	List<AttributeEntity> listVisibleAttributes(SubjectEntity subject);
-
-	/**
 	 * Add or Update an attribute. The index is used for multi-valued
 	 * attributes.
 	 * 
@@ -82,11 +65,7 @@ public interface AttributeDAO {
 	void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long index, Boolean booleanValue);
 
-	AttributeEntity findAttribute(AttributeTypeEntity attributeType,
-			SubjectEntity subject);
-
-	AttributeEntity getAttribute(AttributeTypeEntity attributeType,
-			SubjectEntity subject) throws AttributeNotFoundException;
+	void removeAttribute(AttributeEntity attributeEntity);
 
 	/**
 	 * Gives back an attribute. Use this method to retrieve a multi-valued
@@ -103,7 +82,38 @@ public interface AttributeDAO {
 			SubjectEntity subject, long index)
 			throws AttributeNotFoundException;
 
-	void removeAttribute(AttributeEntity attributeEntity);
+	AttributeEntity getAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject) throws AttributeNotFoundException;
+
+	AttributeEntity getAttribute(String attributeTypeName, String subjectLogin)
+			throws AttributeNotFoundException;
+
+	AttributeEntity findAttribute(SubjectEntity subject,
+			AttributeTypeEntity attributeType, long index);
+
+	AttributeEntity findAttribute(String attributeTypeName, String subjectLogin);
+
+	AttributeEntity findAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject);
+
+	/**
+	 * Lists all the attributes of a user. The returned attributes have already
+	 * been sorted out per attribute type.
+	 * 
+	 * @param subject
+	 * @return
+	 */
+	Map<AttributeTypeEntity, List<AttributeEntity>> listAttributes(
+			SubjectEntity subject);
+
+	/**
+	 * Lists all the user visible attributes of a user. The returned attributes
+	 * have been sorted per attribute type and per attribute index.
+	 * 
+	 * @param subject
+	 * @return
+	 */
+	List<AttributeEntity> listVisibleAttributes(SubjectEntity subject);
 
 	/**
 	 * Gives back all attributes of the given attribute type for a certain
@@ -116,4 +126,5 @@ public interface AttributeDAO {
 	 */
 	List<AttributeEntity> listAttributes(SubjectEntity subject,
 			AttributeTypeEntity attributeType);
+
 }

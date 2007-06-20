@@ -205,17 +205,27 @@ public class IdentityServiceBean implements IdentityService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<AttributeDO> listAttributes(Locale locale) {
+	public List<AttributeDO> listAttributes(Locale locale)
+			throws AttributeTypeNotFoundException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		LOG.debug("get attributes for " + subject.getLogin());
 		List<AttributeEntity> attributes = this.attributeDAO
 				.listVisibleAttributes(subject);
-		LOG.debug("number of attributes: " + attributes.size());
+
+		/*
+		 * At the top of the result list we put the attributes that are not a
+		 * member of a compounded attribute.
+		 */
 		List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
 		for (AttributeEntity attribute : attributes) {
+			AttributeTypeEntity attributeType = attribute.getAttributeType();
+
+			if (attributeType.isCompoundMember()) {
+				continue;
+			}
+
 			LOG.debug("attribute pk type: "
 					+ attribute.getPk().getAttributeType());
-			AttributeTypeEntity attributeType = attribute.getAttributeType();
 			LOG.debug("attribute type: " + attributeType.getName());
 			String name = attributeType.getName();
 			String stringValue = attribute.getStringValue();
@@ -245,6 +255,121 @@ public class IdentityServiceBean implements IdentityService,
 					editable, true, stringValue, booleanValue);
 			attributesView.add(attributeView);
 		}
+
+		/*
+		 * Next we put the compounded member attribute in their compounded
+		 * attribute context. First we need to determine which compounded
+		 * attribute groups we need to visualize.
+		 */
+
+		/*
+		 * compoundedAttributes: First map is keyed per compounded attribute
+		 * type. Second map is keyed via the compounded member attribute type.
+		 * Third map is keyed via attribute index.
+		 */
+		Map<AttributeTypeEntity, Map<AttributeTypeEntity, Map<Long, AttributeEntity>>> compoundedAttributes = new HashMap<AttributeTypeEntity, Map<AttributeTypeEntity, Map<Long, AttributeEntity>>>();
+		/*
+		 * numberOfRecordsPerCompounded: per compounded attribute type we keep
+		 * track of the number of data records that we're required to visualize.
+		 */
+		Map<AttributeTypeEntity, Long> numberOfRecordsPerCompounded = new HashMap<AttributeTypeEntity, Long>();
+		for (AttributeEntity attribute : attributes) {
+			AttributeTypeEntity attributeType = attribute.getAttributeType();
+			if (false == attributeType.isCompoundMember()) {
+				continue;
+			}
+			AttributeTypeEntity compoundedAttributeType = this.attributeTypeDAO
+					.getParent(attributeType);
+			Map<AttributeTypeEntity, Map<Long, AttributeEntity>> members = compoundedAttributes
+					.get(compoundedAttributeType);
+			if (null == members) {
+				members = new HashMap<AttributeTypeEntity, Map<Long, AttributeEntity>>();
+				compoundedAttributes.put(compoundedAttributeType, members);
+			}
+			Map<Long, AttributeEntity> memberAttributes = members
+					.get(attributeType);
+			if (null == memberAttributes) {
+				memberAttributes = new HashMap<Long, AttributeEntity>();
+				members.put(attributeType, memberAttributes);
+			}
+			long attributeIndex = attribute.getAttributeIndex();
+			memberAttributes.put(attributeIndex, attribute);
+
+			Long numberOfRecords = numberOfRecordsPerCompounded
+					.get(compoundedAttributeType);
+			if (null == numberOfRecords) {
+				// long live auto-boxing NPEs... big step forward
+				numberOfRecords = 1L;
+			}
+			if (numberOfRecords < attributeIndex + 1) {
+				numberOfRecords = attributeIndex + 1;
+			}
+			numberOfRecordsPerCompounded.put(compoundedAttributeType,
+					numberOfRecords);
+		}
+
+		for (Map.Entry<AttributeTypeEntity, Map<AttributeTypeEntity, Map<Long, AttributeEntity>>> compoundedAttributeEntry : compoundedAttributes
+				.entrySet()) {
+			AttributeTypeEntity compoundedAttributeType = compoundedAttributeEntry
+					.getKey();
+			Map<AttributeTypeEntity, Map<Long, AttributeEntity>> membersMap = compoundedAttributeEntry
+					.getValue();
+
+			long numberOfRecords = numberOfRecordsPerCompounded
+					.get(compoundedAttributeType);
+			for (long idx = 0; idx < numberOfRecords; idx++) {
+				AttributeDO compoundedAttributeView = new AttributeDO(
+						compoundedAttributeType.getName(),
+						DatatypeType.COMPOUNDED, true, idx, null, null, true,
+						false, null, null);
+				compoundedAttributeView.setCompounded(true);
+				attributesView.add(compoundedAttributeView);
+
+				List<CompoundedAttributeTypeMemberEntity> members = compoundedAttributeType
+						.getMembers();
+				/*
+				 * Remember that the members are in-order.
+				 */
+				for (CompoundedAttributeTypeMemberEntity member : members) {
+					AttributeTypeEntity memberAttributeType = member
+							.getMember();
+					AttributeDO attributeView = new AttributeDO(
+							memberAttributeType.getName(), memberAttributeType
+									.getType(), memberAttributeType
+									.isMultivalued(), idx, null, null, false,
+							false, null, null);
+					/*
+					 * We mark compounded attribute members as non-editable when
+					 * queries via the listAttributes method to ease
+					 * visualization.
+					 */
+					Map<Long, AttributeEntity> attributeValues = membersMap
+							.get(memberAttributeType);
+					attributeView.setMember(true);
+					AttributeEntity attributeValue = null;
+					if (null != attributeValues) {
+						attributeValue = attributeValues.get(idx);
+					}
+					if (null != attributeValue) {
+						switch (memberAttributeType.getType()) {
+						case STRING:
+							attributeView.setStringValue(attributeValue
+									.getStringValue());
+							break;
+						case BOOLEAN:
+							attributeView.setBooleanValue(attributeValue
+									.getBooleanValue());
+							break;
+						default:
+							throw new EJBException("unsupported datatype: "
+									+ memberAttributeType.getType());
+						}
+					}
+					attributesView.add(attributeView);
+				}
+			}
+		}
+
 		return attributesView;
 	}
 
@@ -807,6 +932,28 @@ public class IdentityServiceBean implements IdentityService,
 
 		AttributeTypeEntity attributeType = getUserEditableAttributeType(attributeName);
 
+		if (attributeType.isCompounded()) {
+			LOG.debug("remove compounded attribute record for: "
+					+ attributeName);
+			List<CompoundedAttributeTypeMemberEntity> members = attributeType
+					.getMembers();
+			for (CompoundedAttributeTypeMemberEntity member : members) {
+				AttributeTypeEntity memberAttributeType = member.getMember();
+				/*
+				 * We use simple recursion in this case.
+				 */
+				removeAttribute(new AttributeDO(memberAttributeType.getName(),
+						memberAttributeType.getType(), true, attribute
+								.getIndex(), null, null, memberAttributeType
+								.isUserEditable(), false, null, null));
+			}
+			/*
+			 * Since the compounded top-level attribute has no data entry itself
+			 * we can return at this point.
+			 */
+			return;
+		}
+
 		boolean multivalued = attributeType.isMultivalued();
 		if (false == multivalued) {
 			AttributeEntity attributeEntity = this.attributeDAO.getAttribute(
@@ -892,5 +1039,61 @@ public class IdentityServiceBean implements IdentityService,
 		default:
 			throw new EJBException("datatype not supported: " + datatype);
 		}
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public List<AttributeDO> getAttributeEditContext(
+			AttributeDO selectedAttribute)
+			throws AttributeTypeNotFoundException {
+		AttributeTypeEntity attributeType = this.attributeTypeDAO
+				.getAttributeType(selectedAttribute.getName());
+		if (attributeType.isCompounded()) {
+			List<CompoundedAttributeTypeMemberEntity> members = attributeType
+					.getMembers();
+			SubjectEntity subject = this.subjectManager.getCallerSubject();
+
+			List<AttributeDO> attributeEditContext = new LinkedList<AttributeDO>();
+			attributeEditContext.add(selectedAttribute);
+			/*
+			 * Notice that the members are in-order.
+			 */
+			long index = selectedAttribute.getIndex();
+			for (CompoundedAttributeTypeMemberEntity member : members) {
+				AttributeTypeEntity memberAttributeType = member.getMember();
+				AttributeEntity attribute = this.attributeDAO.findAttribute(
+						subject, memberAttributeType, index);
+				AttributeDO memberView = new AttributeDO(memberAttributeType
+						.getName(), memberAttributeType.getType(), true, index,
+						null, null, memberAttributeType.isUserEditable(),
+						false, null, null);
+				memberView.setMember(true);
+				if (null != attribute) {
+					switch (memberAttributeType.getType()) {
+					case STRING:
+						memberView.setStringValue(attribute.getStringValue());
+						break;
+					case BOOLEAN:
+						memberView.setBooleanValue(attribute.getBooleanValue());
+						break;
+					default:
+						throw new EJBException("unsupported datatype: "
+								+ memberAttributeType.getType());
+					}
+				}
+				attributeEditContext.add(memberView);
+			}
+
+			return attributeEditContext;
+		}
+		if (selectedAttribute.isMember()) {
+			throw new IllegalArgumentException("cannot handle members itself.");
+		}
+		/*
+		 * Else we're dealing with simple- of multivalued attributes that do not
+		 * participate in a compounded record somehow.
+		 */
+		List<AttributeDO> attributeEditContext = new LinkedList<AttributeDO>();
+		attributeEditContext.add(selectedAttribute);
+		return attributeEditContext;
 	}
 }

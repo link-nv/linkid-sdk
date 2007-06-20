@@ -15,6 +15,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -66,8 +67,10 @@ public interface IdentityService {
 	 *            the optional locale that should be used to i18n the response.
 	 * 
 	 * @return
+	 * @throws AttributeTypeNotFoundException
 	 */
-	List<AttributeDO> listAttributes(Locale locale);
+	List<AttributeDO> listAttributes(Locale locale)
+			throws AttributeTypeNotFoundException;
 
 	/**
 	 * List the user visible attributes for the given device.
@@ -174,14 +177,16 @@ public interface IdentityService {
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
 	 */
-	List<AttributeDO> listMissingAttributes(String applicationName, Locale locale)
-			throws ApplicationNotFoundException,
+	List<AttributeDO> listMissingAttributes(String applicationName,
+			Locale locale) throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException;
 
 	/**
 	 * Removes an attribute. A user can only remove editable attributes. In case
 	 * this attribute is part of a multivalued attribute set we will reorder the
 	 * remaining attributes in order to have a consistent perceived sequencing.
+	 * In case of a compounded multi-valued attribute a resequencing of all
+	 * member attributes takes place.
 	 * 
 	 * @param attribute
 	 * @throws PermissionDeniedException
@@ -202,4 +207,16 @@ public interface IdentityService {
 	 */
 	void addAttribute(AttributeDO newAttribute)
 			throws PermissionDeniedException;
+
+	/**
+	 * This method simply returns a set of attributes that the user can edit
+	 * when he previously selected the selectedAttribute for editing. This
+	 * method allows editing of compounded attributes. In case of compounded
+	 * attributes the appropriate set of member attributes will be returned.
+	 * 
+	 * @param selectedAttribute
+	 * @throws AttributeTypeNotFoundException
+	 */
+	List<AttributeDO> getAttributeEditContext(AttributeDO selectedAttribute)
+			throws AttributeTypeNotFoundException;
 }

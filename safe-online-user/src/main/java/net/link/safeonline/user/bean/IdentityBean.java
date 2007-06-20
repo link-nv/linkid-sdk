@@ -7,6 +7,7 @@
 
 package net.link.safeonline.user.bean;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -17,6 +18,7 @@ import javax.ejb.Stateful;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -55,18 +57,13 @@ public class IdentityBean implements Identity {
 	@DataModel(ATTRIBUTE_LIST_NAME)
 	private List<AttributeDO> attributeList;
 
-	@DataModelSelection
+	@DataModelSelection(ATTRIBUTE_LIST_NAME)
 	@Out(required = false, scope = ScopeType.SESSION)
-	@In(required = false)
 	private AttributeDO selectedAttribute;
 
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	/**
-	 * TODO: do better lifecycle management than just pushing everything into
-	 * the session.
-	 */
 	@Out(required = false, scope = ScopeType.SESSION)
 	@In(required = false)
 	private AttributeDO newAttribute;
@@ -81,7 +78,15 @@ public class IdentityBean implements Identity {
 	public void attributeListFactory() {
 		LOG.debug("attributeListFactory");
 		Locale viewLocale = getViewLocale();
-		this.attributeList = this.identityService.listAttributes(viewLocale);
+		try {
+			this.attributeList = this.identityService
+					.listAttributes(viewLocale);
+		} catch (AttributeTypeNotFoundException e) {
+			LOG.error("attribute type not found: " + e.getMessage());
+			this.facesMessages.add("attribute type not found: "
+					+ e.getMessage());
+			this.attributeList = new LinkedList<AttributeDO>();
+		}
 	}
 
 	private Locale getViewLocale() {
@@ -92,28 +97,8 @@ public class IdentityBean implements Identity {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String edit() {
-		/*
-		 * We have to pass via this bean to let Seam do its job on the data
-		 * model selection.
-		 */
 		LOG.debug("edit attribute: " + this.selectedAttribute.getName());
 		return "edit";
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String save() {
-		String name = this.selectedAttribute.getName();
-		LOG.debug("save attribute: " + name);
-		try {
-			this.identityService.saveAttribute(this.selectedAttribute);
-		} catch (PermissionDeniedException e) {
-			String msg = "user not allowed to edit value for attribute: "
-					+ name;
-			LOG.error(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
-		return "success";
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

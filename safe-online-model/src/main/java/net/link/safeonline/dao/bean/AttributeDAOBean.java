@@ -65,8 +65,8 @@ public class AttributeDAOBean implements AttributeDAO {
 		return attribute;
 	}
 
-	private AttributeEntity findAttribute(AttributeTypeEntity attributeType,
-			SubjectEntity subject, long index) {
+	public AttributeEntity findAttribute(SubjectEntity subject,
+			AttributeTypeEntity attributeType, long index) {
 		AttributeEntity attribute = this.entityManager.find(
 				AttributeEntity.class, new AttributePK(attributeType, subject,
 						index));
@@ -95,7 +95,7 @@ public class AttributeDAOBean implements AttributeDAO {
 
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long index, String stringValue) {
-		AttributeEntity attribute = findAttribute(attributeType, subject, index);
+		AttributeEntity attribute = findAttribute(subject, attributeType, index);
 		if (null == attribute) {
 			attribute = addAttribute(attributeType, subject, index);
 		}
@@ -104,7 +104,7 @@ public class AttributeDAOBean implements AttributeDAO {
 
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long index, Boolean booleanValue) {
-		AttributeEntity attribute = findAttribute(attributeType, subject, index);
+		AttributeEntity attribute = findAttribute(subject, attributeType, index);
 		if (null == attribute) {
 			attribute = addAttribute(attributeType, subject, index);
 		}
@@ -165,6 +165,8 @@ public class AttributeDAOBean implements AttributeDAO {
 	@SuppressWarnings("unchecked")
 	public List<AttributeEntity> listAttributes(SubjectEntity subject,
 			AttributeTypeEntity attributeType) {
+		LOG.debug("listAttributes for " + subject.getLogin() + " of type "
+				+ attributeType.getName());
 		Query query = AttributeEntity
 				.createQueryWhereSubjectAndAttributeTypeOrdered(
 						this.entityManager, subject, attributeType);

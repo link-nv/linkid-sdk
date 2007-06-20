@@ -376,6 +376,85 @@ public class IdentityServiceBeanTest {
 		assertEquals("value 2", resultAttribute.getStringValue());
 	}
 
+	@Test
+	public void removeMultivaluedCompoundedAttribute() throws Exception {
+		// setup
+		String login = "test-login";
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		// operate: register the test user
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(login, "test-password", null);
+
+		// operate: add multivalued attribute type
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
+
+		String attributeName0 = "test-attribute-name-0";
+		AttributeTypeEntity attributeType0 = new AttributeTypeEntity(
+				attributeName0, DatatypeType.STRING, true, true);
+		attributeType0.setMultivalued(true);
+		attributeTypeService.add(attributeType0);
+
+		String attributeName1 = "test-attribute-name-1";
+		AttributeTypeEntity attributeType1 = new AttributeTypeEntity(
+				attributeName1, DatatypeType.BOOLEAN, true, true);
+		attributeType1.setMultivalued(true);
+		attributeTypeService.add(attributeType1);
+
+		refreshTransaction(entityManager);
+
+		String compoundedAttributeName = "test-comp-attrib-name";
+		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, true);
+		compoundedAttributeType.setMultivalued(true);
+		compoundedAttributeType.addMember(attributeType0, 0, true);
+		compoundedAttributeType.addMember(attributeType1, 1, true);
+		attributeTypeService.add(compoundedAttributeType);
+
+		// operate: save attribute
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.USER_ROLE);
+
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 0, null, null, true, true,
+				"value 0", null));
+		identityService.saveAttribute(new AttributeDO(attributeName1,
+				DatatypeType.BOOLEAN, true, 0, null, null, true, true, null,
+				Boolean.TRUE));
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 1, null, null, true, true,
+				"value 1", null));
+		identityService.saveAttribute(new AttributeDO(attributeName1,
+				DatatypeType.BOOLEAN, true, 1, null, null, true, true, null,
+				Boolean.FALSE));
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 2, null, null, true, true,
+				"value 2", null));
+		identityService.saveAttribute(new AttributeDO(attributeName1,
+				DatatypeType.BOOLEAN, true, 2, null, null, true, true, null,
+				Boolean.FALSE));
+
+		refreshTransaction(entityManager);
+
+		// operate: remove a single multi-valued attribute
+		identityService.removeAttribute(new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 1,
+				null, null, true, true, null, null));
+
+		refreshTransaction(entityManager);
+
+		// verify
+		assertEquals(6, identityService.listAttributes(null).size());
+		// 6 = 2 * (1 title + 2 member entries)
+	}
+
 	private static class RequiredCompoundedMissingAttributesScenario implements
 			MissingAttributesScenario {
 
@@ -657,9 +736,233 @@ public class IdentityServiceBeanTest {
 		}
 	}
 
+	@Test
+	public void listAttributes() throws Exception {
+		// setup
+		EntityManager entityManager = IdentityServiceBeanTest.this.entityTestManager
+				.getEntityManager();
+		String userLogin = "test-user-login-" + UUID.randomUUID().toString();
+
+		// register user
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(userLogin, "secret", null);
+
+		// add attribute type
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
+		AttributeTypeEntity attributeType = new AttributeTypeEntity();
+		String attributeName = "test-attribute-type-name-"
+				+ UUID.randomUUID().toString();
+		attributeType.setName(attributeName);
+		attributeType.setType(DatatypeType.STRING);
+		attributeType.setUserVisible(true);
+		attributeType.setUserEditable(true);
+		attributeTypeService.add(attributeType);
+
+		// add attribute value
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, userLogin,
+				SafeOnlineRoles.USER_ROLE);
+		String attributeValue = "test-attribute-value-"
+				+ UUID.randomUUID().toString();
+		AttributeDO attribute = new AttributeDO(attributeName,
+				DatatypeType.STRING, false, 0, null, null, true, false,
+				attributeValue, null);
+		identityService.saveAttribute(attribute);
+
+		// operate
+		List<AttributeDO> resultAttributes = identityService
+				.listAttributes(null);
+
+		// verify
+		assertNotNull(resultAttributes);
+		assertEquals(1, resultAttributes.size());
+		assertEquals(attributeName, resultAttributes.get(0).getName());
+		assertEquals(attributeValue, resultAttributes.get(0).getStringValue());
+	}
+
+	@Test
+	public void listCompoundedAttributes() throws Exception {
+		// setup
+		EntityManager entityManager = IdentityServiceBeanTest.this.entityTestManager
+				.getEntityManager();
+		String userLogin = "test-user-login-" + UUID.randomUUID().toString();
+
+		// register user
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(userLogin, "secret", null);
+
+		// add attribute type
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
+		AttributeTypeEntity requiredAttributeType = new AttributeTypeEntity();
+		String requiredAttributeName = "test-required-attribute-type-name-"
+				+ UUID.randomUUID().toString();
+		requiredAttributeType.setName(requiredAttributeName);
+		requiredAttributeType.setType(DatatypeType.STRING);
+		requiredAttributeType.setUserVisible(true);
+		requiredAttributeType.setUserEditable(true);
+		attributeTypeService.add(requiredAttributeType);
+
+		AttributeTypeEntity optionalAttributeType = new AttributeTypeEntity();
+		String optionalAttributeName = "test-optional-attribute-type-name-"
+				+ UUID.randomUUID().toString();
+		optionalAttributeType.setName(optionalAttributeName);
+		optionalAttributeType.setType(DatatypeType.STRING);
+		optionalAttributeType.setUserVisible(true);
+		optionalAttributeType.setUserEditable(true);
+		attributeTypeService.add(optionalAttributeType);
+
+		refreshTransaction(entityManager);
+
+		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity();
+		String compoundedAttributeName = "test-compounded-attribute-type-name-"
+				+ UUID.randomUUID().toString();
+		compoundedAttributeType.setName(compoundedAttributeName);
+		compoundedAttributeType.setType(DatatypeType.COMPOUNDED);
+		compoundedAttributeType.setUserEditable(true);
+		compoundedAttributeType.setUserVisible(true);
+		compoundedAttributeType.addMember(requiredAttributeType, 0, true);
+		compoundedAttributeType.addMember(optionalAttributeType, 1, false);
+		attributeTypeService.add(compoundedAttributeType);
+
+		// add attribute value
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, userLogin,
+				SafeOnlineRoles.USER_ROLE);
+		String requiredAttributeValue = "test-attribute-value-"
+				+ UUID.randomUUID().toString();
+		AttributeDO requiredAttribute = new AttributeDO(requiredAttributeName,
+				DatatypeType.STRING, false, 0, null, null, true, false,
+				requiredAttributeValue, null);
+		identityService.saveAttribute(requiredAttribute);
+
+		// operate
+		List<AttributeDO> resultAttributes = identityService
+				.listAttributes(null);
+
+		// verify
+		assertNotNull(resultAttributes);
+		assertEquals(3, resultAttributes.size());
+
+		assertEquals(compoundedAttributeName, resultAttributes.get(0).getName());
+		assertTrue(resultAttributes.get(0).isCompounded());
+		assertTrue(resultAttributes.get(0).isEditable());
+
+		assertEquals(requiredAttributeName, resultAttributes.get(1).getName());
+		assertTrue(resultAttributes.get(1).isMember());
+		assertEquals(requiredAttributeValue, resultAttributes.get(1)
+				.getStringValue());
+		assertFalse(resultAttributes.get(1).isEditable());
+
+		assertEquals(optionalAttributeName, resultAttributes.get(2).getName());
+		assertTrue(resultAttributes.get(2).isMember());
+		assertFalse(resultAttributes.get(2).isEditable());
+	}
+
+	@Test
+	public void getAttributeEditContext() throws Exception {
+		// setup
+		String login = "test-login";
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		// operate: register the test user
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(login, "test-password", null);
+
+		// operate: add multivalued attribute type
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
+
+		String attributeName0 = "test-attribute-name-0";
+		AttributeTypeEntity attributeType0 = new AttributeTypeEntity(
+				attributeName0, DatatypeType.STRING, true, true);
+		attributeType0.setMultivalued(true);
+		attributeTypeService.add(attributeType0);
+
+		String attributeName1 = "test-attribute-name-1";
+		AttributeTypeEntity attributeType1 = new AttributeTypeEntity(
+				attributeName1, DatatypeType.BOOLEAN, true, true);
+		attributeType1.setMultivalued(true);
+		attributeTypeService.add(attributeType1);
+
+		refreshTransaction(entityManager);
+
+		String compoundedAttributeName = "test-comp-attrib-name";
+		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, true);
+		compoundedAttributeType.setMultivalued(true);
+		compoundedAttributeType.addMember(attributeType0, 0, true);
+		compoundedAttributeType.addMember(attributeType1, 1, true);
+		attributeTypeService.add(compoundedAttributeType);
+
+		// operate: save attribute
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.USER_ROLE);
+
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 0, null, null, true, true,
+				"value 0", null));
+		identityService.saveAttribute(new AttributeDO(attributeName1,
+				DatatypeType.BOOLEAN, true, 0, null, null, true, true, null,
+				Boolean.FALSE));
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 1, null, null, true, true,
+				"value 1", null));
+		identityService.saveAttribute(new AttributeDO(attributeName1,
+				DatatypeType.BOOLEAN, true, 1, null, null, true, true, null,
+				Boolean.TRUE));
+
+		refreshTransaction(entityManager);
+
+		// operate
+		AttributeDO queryAttribute = new AttributeDO(compoundedAttributeName,
+				DatatypeType.COMPOUNDED, true, 1, null, null, true, false,
+				null, null);
+		queryAttribute.setCompounded(true);
+		List<AttributeDO> result = identityService
+				.getAttributeEditContext(queryAttribute);
+
+		// verify
+		assertNotNull(result);
+		LOG.debug("result edit context: " + result);
+		assertEquals(3, result.size());
+
+		assertEquals(compoundedAttributeName, result.get(0).getName());
+		assertTrue(result.get(0).isCompounded());
+
+		assertEquals(attributeName0, result.get(1).getName());
+		assertTrue(result.get(1).isMember());
+		assertEquals("value 1", result.get(1).getStringValue());
+
+		assertEquals(attributeName1, result.get(2).getName());
+		assertTrue(result.get(2).isMember());
+		assertEquals(Boolean.TRUE, result.get(2).getBooleanValue());
+	}
+
 	private void refreshTransaction(EntityManager entityManager) {
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.commit();
 		transaction.begin();
+		/*
+		 * Also make sure that the existing entities are detached.
+		 */
+		entityManager.clear();
 	}
 }
