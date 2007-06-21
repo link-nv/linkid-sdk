@@ -18,6 +18,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 
 /**
  * Interface for attribute type data access object.
@@ -80,5 +81,9 @@ public interface AttributeTypeDAO {
 	 * @throws AttributeTypeNotFoundException
 	 */
 	AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType)
+			throws AttributeTypeNotFoundException;
+
+	CompoundedAttributeTypeMemberEntity getMemberEntry(
+			AttributeTypeEntity memberAttributeType)
 			throws AttributeTypeNotFoundException;
 }

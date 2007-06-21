@@ -56,8 +56,10 @@ public interface IdentityService {
 	 * 
 	 * @throws PermissionDeniedException
 	 *             if the user is not allowed to edit the attribute.
+	 * @throws AttributeTypeNotFoundException
 	 */
-	void saveAttribute(AttributeDO attribute) throws PermissionDeniedException;
+	void saveAttribute(AttributeDO attribute) throws PermissionDeniedException,
+			AttributeTypeNotFoundException;
 
 	/**
 	 * Gives back a list of attributes for the current user. Only the attributes
@@ -198,17 +200,31 @@ public interface IdentityService {
 			AttributeTypeNotFoundException;
 
 	/**
-	 * Adds an attribute. This method only really makes sense for multi-valued
-	 * attributes since a user will never create non-existing attributes just
-	 * for fun. A user is only supposed to edit existing attribute. And if the
-	 * attribute is multi-valued, then editing includes creation. This also
-	 * implies that the attibute type must be marked as user editable.
+	 * Adds an attribute.
 	 * 
-	 * @param newAttribute
+	 * <p>
+	 * This method only really makes sense for multi-valued attributes since a
+	 * user will never create non-existing attributes just for fun. A user is
+	 * only supposed to edit existing attribute. And if the attribute is
+	 * multi-valued, then editing includes creation. This also implies that the
+	 * attibute type must be marked as user editable.
+	 * </p>
+	 * 
+	 * <p>
+	 * In case the user wants to add a compounded multi-valued attribute the
+	 * input list will contain more than one attribute data object. The first
+	 * entry holds the compounded attribute type for which the user wishes to
+	 * create a new record. Followed by an entry for each member attribute of
+	 * the compounded attribute. The method signature has been optimized for
+	 * ease of usage by the user web application.
+	 * </p>
+	 * 
+	 * @param newAttributeContext
 	 * @throws PermissionDeniedException
+	 * @throws AttributeTypeNotFoundException
 	 */
-	void addAttribute(AttributeDO newAttribute)
-			throws PermissionDeniedException;
+	void addAttribute(List<AttributeDO> newAttributeContext)
+			throws PermissionDeniedException, AttributeTypeNotFoundException;
 
 	/**
 	 * This method simply returns a set of attributes that the user can edit
@@ -220,5 +236,16 @@ public interface IdentityService {
 	 * @throws AttributeTypeNotFoundException
 	 */
 	List<AttributeDO> getAttributeEditContext(AttributeDO selectedAttribute)
+			throws AttributeTypeNotFoundException;
+
+	/**
+	 * Creates a template that can be used to create a new attribute according
+	 * to the attribute type of the given prototype attribute.
+	 * 
+	 * @param prototypeAttribute
+	 * @return
+	 * @throws AttributeTypeNotFoundException
+	 */
+	List<AttributeDO> getAttributeTemplate(AttributeDO prototypeAttribute)
 			throws AttributeTypeNotFoundException;
 }

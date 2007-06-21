@@ -21,6 +21,7 @@ import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.MissingAttributes;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -102,6 +103,11 @@ public class MissingAttributesBean implements MissingAttributes {
 			} catch (PermissionDeniedException e) {
 				String msg = "permission denied for attribute: "
 						+ attribute.getName();
+				LOG.debug(msg);
+				this.facesMessages.add(msg);
+				return null;
+			} catch (AttributeTypeNotFoundException e) {
+				String msg = "attribute type not found: " + attribute.getName();
 				LOG.debug(msg);
 				this.facesMessages.add(msg);
 				return null;

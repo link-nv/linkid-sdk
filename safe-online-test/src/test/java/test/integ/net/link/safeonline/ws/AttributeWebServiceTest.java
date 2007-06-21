@@ -22,6 +22,7 @@ import static test.integ.net.link.safeonline.IntegrationTestUtils.getUserRegistr
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -290,13 +291,13 @@ public class AttributeWebServiceTest {
 		AttributeDO attribute1 = new AttributeDO(testAttributeName,
 				DatatypeType.STRING, true, -1, null, null, true, true,
 				attributeValue1, null);
-		identityService.addAttribute(attribute1);
+		identityService.addAttribute(Collections.singletonList(attribute1));
 
 		String attributeValue2 = "value 2";
 		AttributeDO attribute2 = new AttributeDO(testAttributeName,
 				DatatypeType.STRING, true, -1, null, null, true, true,
 				attributeValue2, null);
-		identityService.addAttribute(attribute2);
+		identityService.addAttribute(Collections.singletonList(attribute2));
 
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);

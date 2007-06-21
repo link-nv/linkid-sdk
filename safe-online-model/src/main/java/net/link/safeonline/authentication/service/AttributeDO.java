@@ -9,9 +9,13 @@ package net.link.safeonline.authentication.service;
 
 import java.io.Serializable;
 
+import javax.ejb.EJBException;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 
 /**
@@ -283,5 +287,27 @@ public class AttributeDO implements Serializable, Cloneable {
 				.append("name", this.name).append("multi-valued",
 						this.multivalued).append("index", this.index).append(
 						"string-value", this.stringValue).toString();
+	}
+
+	/**
+	 * Copies the value of this attribute data object to the (attached) target
+	 * attribute entity according to the datatype constraints by the given
+	 * attribute type.
+	 * 
+	 * @param attributeType
+	 * @param targetAttribute
+	 */
+	public void copyValueTo(AttributeTypeEntity attributeType,
+			AttributeEntity targetAttribute) {
+		switch (attributeType.getType()) {
+		case STRING:
+			targetAttribute.setStringValue(this.stringValue);
+			break;
+		case BOOLEAN:
+			targetAttribute.setBooleanValue(this.booleanValue);
+			break;
+		default:
+			throw new EJBException("datatype not supported: " + this.type);
+		}
 	}
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 import javax.annotation.security.RolesAllowed;
@@ -132,16 +133,16 @@ public class IdentityServiceBean implements IdentityService,
 	 * @param attributeName
 	 * @return
 	 * @throws PermissionDeniedException
+	 * @throws AttributeTypeNotFoundException
 	 */
 	private AttributeTypeEntity getUserEditableAttributeType(
-			String attributeName) throws PermissionDeniedException {
+			String attributeName) throws PermissionDeniedException,
+			AttributeTypeNotFoundException {
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
-				.findAttributeType(attributeName);
-		if (null == attributeType) {
-			throw new IllegalArgumentException("attribute type not found: "
-					+ attributeName);
-		}
+				.getAttributeType(attributeName);
 		if (false == attributeType.isUserEditable()) {
+			LOG.debug("user not allowed to edit attribute of type: "
+					+ attributeName);
 			throw new PermissionDeniedException();
 		}
 		return attributeType;
@@ -191,7 +192,7 @@ public class IdentityServiceBean implements IdentityService,
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void saveAttribute(AttributeDO attribute)
-			throws PermissionDeniedException {
+			throws PermissionDeniedException, AttributeTypeNotFoundException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		String attributeName = attribute.getName();
 		long index = attribute.getIndex();
@@ -200,13 +201,41 @@ public class IdentityServiceBean implements IdentityService,
 		LOG.debug("received attribute values: " + attribute);
 
 		if (attribute.isCompounded()) {
-			LOG.debug("attribute marked as compounded; skipping");
+			LOG.debug("save compounded attribute");
+			/*
+			 * A compounded attribute record has a top-level attribute entry
+			 * containing a UUID to uniquely identify the compounded attribute
+			 * record.
+			 */
+			AttributeTypeEntity compoundedAttributeType = getUserEditableAttributeType(attributeName);
+			AttributeEntity compoundedAttribute = this.attributeDAO
+					.findAttribute(subject, compoundedAttributeType, index);
+			if (null == compoundedAttribute) {
+				/*
+				 * This situation is possible when filling in a compounded
+				 * attribute record during the missing attributes phase of the
+				 * authentication process.
+				 */
+				compoundedAttribute = this.attributeDAO.addAttribute(
+						compoundedAttributeType, subject, index);
+				String compoundedAttributeId = UUID.randomUUID().toString();
+				LOG.debug("adding compounded attribute for "
+						+ subject.getLogin() + " of type " + attributeName
+						+ " with ID " + compoundedAttributeId);
+				compoundedAttribute.setStringValue(compoundedAttributeId);
+			}
+			/*
+			 * Notice that, if there is already a compounded attribute for the
+			 * given record index, then we don't overwrite it with a new ID. The
+			 * idea behind the ID is that it remains constant during the
+			 * lifecycle of the compounded attribute record.
+			 */
 			return;
 		}
 
 		if (false == attribute.isEditable()) {
 			/*
-			 * We allow the web application to pass in attribute safe calls with
+			 * We allow the web application to pass in saveAttribute calls with
 			 * attributes marked as non-editable, that way we have a transparent
 			 * handling of attributes in the GUI.
 			 */
@@ -263,6 +292,19 @@ public class IdentityServiceBean implements IdentityService,
 			AttributeTypeEntity attributeType = attribute.getAttributeType();
 
 			if (attributeType.isCompoundMember()) {
+				continue;
+			}
+			if (attributeType.isCompounded()) {
+				/*
+				 * The database also contains attribute entities for the
+				 * compounded attribute type itself. This attribute stores the
+				 * UUID of the corresponding compounded attribute record. This
+				 * UUID is used for identification of the compounded attribute
+				 * record by the data web service. This UUID serves no purpose
+				 * in the communication between SafeOnline core and the
+				 * SafeOnline User Web Application. So we can simply skip this
+				 * compounded attribute entry.
+				 */
 				continue;
 			}
 
@@ -706,6 +748,8 @@ public class IdentityServiceBean implements IdentityService,
 					continue;
 				}
 				break;
+			case COMPOUNDED:
+				continue;
 			default:
 				throw new EJBException("datatype not supported: " + datatype);
 			}
@@ -991,10 +1035,10 @@ public class IdentityServiceBean implements IdentityService,
 								.isUserEditable(), false, null, null));
 			}
 			/*
-			 * Since the compounded top-level attribute has no data entry itself
-			 * we can return at this point.
+			 * Since the compounded top-level attribute also has a data entry
+			 * itself we simply continue to remove after all member entries have
+			 * been removed.
 			 */
-			return;
 		}
 
 		boolean multivalued = attributeType.isMultivalued();
@@ -1063,10 +1107,12 @@ public class IdentityServiceBean implements IdentityService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void addAttribute(AttributeDO newAttribute)
-			throws PermissionDeniedException {
+	public void addAttribute(List<AttributeDO> newAttributeContext)
+			throws PermissionDeniedException, AttributeTypeNotFoundException {
+
+		AttributeDO headAttribute = newAttributeContext.get(0);
+		String attributeName = headAttribute.getName();
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		String attributeName = newAttribute.getName();
 		LOG.debug("add attribute " + attributeName + " for entity with login "
 				+ subject);
 
@@ -1077,25 +1123,52 @@ public class IdentityServiceBean implements IdentityService,
 			throw new PermissionDeniedException();
 		}
 
-		AttributeEntity attribute = this.attributeDAO.addAttribute(
-				attributeType, subject);
+		if (newAttributeContext.size() > 1) {
+			/*
+			 * In this case the first entry is the compounded attribute for
+			 * which the user wants to create a new record.
+			 */
+			if (false == attributeType.isCompounded()) {
+				throw new PermissionDeniedException();
+			}
+			AttributeEntity compoundedAttribute = this.attributeDAO
+					.addAttribute(attributeType, subject);
+			String compoundedAttributeId = UUID.randomUUID().toString();
+			LOG.debug("adding new compounded entry with Id: "
+					+ compoundedAttributeId);
+			compoundedAttribute.setStringValue(compoundedAttributeId);
+			long attributeIndex = compoundedAttribute.getAttributeIndex();
+			LOG.debug("compounded attribute index: " + attributeIndex);
 
-		LOG.debug("new attribute index: " + attribute.getAttributeIndex());
+			Iterator<AttributeDO> iterator = newAttributeContext
+					.listIterator(1);
+			while (iterator.hasNext()) {
+				AttributeDO attribute = iterator.next();
+				if (false == attribute.isEditable()) {
+					/*
+					 * By skipping this entry we allow an easy handling of a
+					 * compounded attribute record in the GUI.
+					 */
+					continue;
+				}
+				AttributeTypeEntity memberAttributeType = this.attributeTypeDAO
+						.getAttributeType(attribute.getName());
+				AttributeEntity memberAttribute = this.attributeDAO
+						.addAttribute(memberAttributeType, subject,
+								attributeIndex);
+				LOG.debug("adding member: " + memberAttributeType.getName());
+				attribute.copyValueTo(memberAttributeType, memberAttribute);
+			}
+			return;
+		}
 
 		/*
-		 * Also copy the data into the new persisted attribute.
+		 * Else we're dealing with a regular multi-valued attribute.
 		 */
-		DatatypeType datatype = attributeType.getType();
-		switch (datatype) {
-		case STRING:
-			attribute.setStringValue(newAttribute.getStringValue());
-			break;
-		case BOOLEAN:
-			attribute.setBooleanValue(newAttribute.getBooleanValue());
-			break;
-		default:
-			throw new EJBException("datatype not supported: " + datatype);
-		}
+		AttributeEntity attribute = this.attributeDAO.addAttribute(
+				attributeType, subject);
+		LOG.debug("new attribute index: " + attribute.getAttributeIndex());
+		headAttribute.copyValueTo(attributeType, attribute);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -1142,15 +1215,78 @@ public class IdentityServiceBean implements IdentityService,
 
 			return attributeEditContext;
 		}
-		if (selectedAttribute.isMember()) {
+		if (attributeType.isCompoundMember()) {
 			throw new IllegalArgumentException("cannot handle members itself.");
 		}
 		/*
-		 * Else we're dealing with simple- of multivalued attributes that do not
+		 * Else we're dealing with simple- or multivalued attributes that do not
 		 * participate in a compounded record somehow.
 		 */
 		List<AttributeDO> attributeEditContext = new LinkedList<AttributeDO>();
 		attributeEditContext.add(selectedAttribute);
 		return attributeEditContext;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public List<AttributeDO> getAttributeTemplate(AttributeDO prototypeAttribute)
+			throws AttributeTypeNotFoundException {
+		String attributeName = prototypeAttribute.getName();
+		LOG.debug("getAttributeTemplate: " + attributeName);
+		AttributeTypeEntity attributeType = this.attributeTypeDAO
+				.getAttributeType(prototypeAttribute.getName());
+
+		if (attributeType.isCompounded()) {
+			List<AttributeDO> attributeTemplate = new LinkedList<AttributeDO>();
+
+			/*
+			 * Notice that we mark the entry as single-valued here since we
+			 * cannot yet pass a usefull attribute index to the GUI.
+			 */
+			AttributeDO compoundedAttribute = new AttributeDO(attributeType
+					.getName(), attributeType.getType(), false, -1,
+					prototypeAttribute.getRawHumanReadableName(),
+					prototypeAttribute.getDescription(), attributeType
+							.isUserEditable(), false, null, null);
+			compoundedAttribute.setCompounded(true);
+			attributeTemplate.add(compoundedAttribute);
+
+			List<CompoundedAttributeTypeMemberEntity> members = attributeType
+					.getMembers();
+
+			for (CompoundedAttributeTypeMemberEntity member : members) {
+				AttributeTypeEntity memberAttributeType = member.getMember();
+
+				/*
+				 * Notice that we mark the entry as single-valued here since we
+				 * cannot yet pass a usefull attribute index to the GUI.
+				 */
+				AttributeDO memberAttribute = new AttributeDO(
+						memberAttributeType.getName(), memberAttributeType
+								.getType(), false, -1, null, null,
+						memberAttributeType.isUserEditable(), false, null, null);
+				memberAttribute.setMember(true);
+				attributeTemplate.add(memberAttribute);
+			}
+
+			return attributeTemplate;
+		}
+
+		if (attributeType.isCompoundMember()) {
+			throw new IllegalArgumentException(
+					"cannot handle compounded members itself");
+		}
+
+		/*
+		 * Notice that we mark the entry as single-valued here since we cannot
+		 * yet pass a usefull attribute index to the GUI.
+		 */
+		AttributeDO attribute = new AttributeDO(attributeType.getName(),
+				attributeType.getType(), false, -1, prototypeAttribute
+						.getRawHumanReadableName(), prototypeAttribute
+						.getDescription(), attributeType.isUserEditable(),
+				false, null, null);
+		List<AttributeDO> attributeTemplate = new LinkedList<AttributeDO>();
+		attributeTemplate.add(attribute);
+		return attributeTemplate;
 	}
 }

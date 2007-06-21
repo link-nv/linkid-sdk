@@ -159,4 +159,19 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		AttributeTypeEntity parent = result.get(0);
 		return parent;
 	}
+
+	@SuppressWarnings("unchecked")
+	public CompoundedAttributeTypeMemberEntity getMemberEntry(
+			AttributeTypeEntity memberAttributeType)
+			throws AttributeTypeNotFoundException {
+		Query query = CompoundedAttributeTypeMemberEntity
+				.createQueryWhereMember(this.entityManager, memberAttributeType);
+		List<CompoundedAttributeTypeMemberEntity> memberEntries = query
+				.getResultList();
+		if (memberEntries.isEmpty()) {
+			throw new AttributeTypeNotFoundException();
+		}
+		CompoundedAttributeTypeMemberEntity memberEntry = memberEntries.get(0);
+		return memberEntry;
+	}
 }

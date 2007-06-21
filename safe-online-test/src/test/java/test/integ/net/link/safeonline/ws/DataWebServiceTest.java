@@ -18,6 +18,7 @@ import static test.integ.net.link.safeonline.IntegrationTestUtils.getUserRegistr
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 import javax.naming.InitialContext;
@@ -353,7 +354,7 @@ public class DataWebServiceTest extends TestCase {
 				DatatypeType.STRING);
 		String attributeValue2 = "test-attribute-value-2";
 		attribute2.setStringValue(attributeValue2);
-		identityService.addAttribute(attribute2);
+		identityService.addAttribute(Collections.singletonList(attribute2));
 
 		this.dataClient.setCaptureMessages(true);
 		result = this.dataClient.getAttributeValue(login, attributeName,

@@ -422,18 +422,35 @@ public class IdentityServiceBeanTest {
 				SafeOnlineTestContainer.sessionBeans, entityManager, login,
 				SafeOnlineRoles.USER_ROLE);
 
+		AttributeDO compoundedAttribute0 = new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 0,
+				null, null, true, true, null, null);
+		compoundedAttribute0.setCompounded(true);
+		identityService.saveAttribute(compoundedAttribute0);
 		identityService.saveAttribute(new AttributeDO(attributeName0,
 				DatatypeType.STRING, true, 0, null, null, true, true,
 				"value 0", null));
 		identityService.saveAttribute(new AttributeDO(attributeName1,
 				DatatypeType.BOOLEAN, true, 0, null, null, true, true, null,
 				Boolean.TRUE));
+
+		AttributeDO compoundedAttribute1 = new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 1,
+				null, null, true, true, null, null);
+		compoundedAttribute1.setCompounded(true);
+		identityService.saveAttribute(compoundedAttribute1);
 		identityService.saveAttribute(new AttributeDO(attributeName0,
 				DatatypeType.STRING, true, 1, null, null, true, true,
 				"value 1", null));
 		identityService.saveAttribute(new AttributeDO(attributeName1,
 				DatatypeType.BOOLEAN, true, 1, null, null, true, true, null,
 				Boolean.FALSE));
+
+		AttributeDO compoundedAttribute2 = new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 2,
+				null, null, true, true, null, null);
+		compoundedAttribute2.setCompounded(true);
+		identityService.saveAttribute(compoundedAttribute2);
 		identityService.saveAttribute(new AttributeDO(attributeName0,
 				DatatypeType.STRING, true, 2, null, null, true, true,
 				"value 2", null));
@@ -529,12 +546,29 @@ public class IdentityServiceBeanTest {
 				SafeOnlineTestContainer.sessionBeans, entityManager, login,
 				SafeOnlineRoles.USER_ROLE);
 
+		AttributeDO compoundedAttribute0 = new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 0,
+				null, null, true, true, null, null);
+		compoundedAttribute0.setCompounded(true);
+		identityService.saveAttribute(compoundedAttribute0);
 		identityService.saveAttribute(new AttributeDO(attributeName0,
 				DatatypeType.STRING, true, 0, null, null, true, true,
 				"value 0", null));
+
+		AttributeDO compoundedAttribute1 = new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 1,
+				null, null, true, true, null, null);
+		compoundedAttribute1.setCompounded(true);
+		identityService.saveAttribute(compoundedAttribute1);
 		identityService.saveAttribute(new AttributeDO(attributeName0,
 				DatatypeType.STRING, true, 1, null, null, true, true,
 				"value 1", null));
+
+		AttributeDO compoundedAttribute2 = new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 2,
+				null, null, true, true, null, null);
+		compoundedAttribute2.setCompounded(true);
+		identityService.saveAttribute(compoundedAttribute2);
 		identityService.saveAttribute(new AttributeDO(attributeName0,
 				DatatypeType.STRING, true, 2, null, null, true, true,
 				"value 2", null));
@@ -1054,6 +1088,111 @@ public class IdentityServiceBeanTest {
 		assertEquals(attributeName1, result.get(2).getName());
 		assertTrue(result.get(2).isMember());
 		assertEquals(Boolean.TRUE, result.get(2).getBooleanValue());
+	}
+
+	@Test
+	public void compoundedAttributeScenario() throws Exception {
+		// setup
+		String login = "test-login";
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		// operate: register the test user
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(login, "test-password", null);
+
+		// operate: add multivalued attribute type
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
+
+		String attributeName0 = "test-attribute-name-0";
+		AttributeTypeEntity attributeType0 = new AttributeTypeEntity(
+				attributeName0, DatatypeType.STRING, true, true);
+		attributeType0.setMultivalued(true);
+		attributeTypeService.add(attributeType0);
+
+		String attributeName1 = "test-attribute-name-1";
+		AttributeTypeEntity attributeType1 = new AttributeTypeEntity(
+				attributeName1, DatatypeType.BOOLEAN, true, true);
+		attributeType1.setMultivalued(true);
+		attributeTypeService.add(attributeType1);
+
+		refreshTransaction(entityManager);
+
+		String compoundedAttributeName = "test-comp-attrib-name";
+		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, true);
+		compoundedAttributeType.setMultivalued(true);
+		compoundedAttributeType.addMember(attributeType0, 0, true);
+		compoundedAttributeType.addMember(attributeType1, 1, true);
+		attributeTypeService.add(compoundedAttributeType);
+
+		// operate: add application
+		ApplicationService applicationService = EJBTestUtils.newInstance(
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+		String applicationOwnerName = "test-application-owner-name";
+		applicationService
+				.registerApplicationOwner(applicationOwnerName, login);
+		String applicationName = "test-application";
+		List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+		initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(
+				compoundedAttributeName, true, false));
+		applicationService.addApplication(applicationName,
+				applicationOwnerName, null, null,
+				initialApplicationIdentityAttributes);
+
+		// operate: save attribute
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.USER_ROLE);
+
+		AttributeDO compoundedAttribute0 = new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 0,
+				null, null, true, true, null, null);
+		compoundedAttribute0.setCompounded(true);
+		identityService.saveAttribute(compoundedAttribute0);
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 0, null, null, true, true,
+				"value 0", null));
+		identityService.saveAttribute(new AttributeDO(attributeName1,
+				DatatypeType.BOOLEAN, true, 0, null, null, true, true, null,
+				Boolean.FALSE));
+
+		AttributeDO compoundedAttribute1 = new AttributeDO(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, 1,
+				null, null, true, true, null, null);
+		compoundedAttribute1.setCompounded(true);
+		identityService.saveAttribute(compoundedAttribute1);
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 1, null, null, true, true,
+				"value 1", null));
+		identityService.saveAttribute(new AttributeDO(attributeName1,
+				DatatypeType.BOOLEAN, true, 1, null, null, true, true, null,
+				Boolean.TRUE));
+
+		refreshTransaction(entityManager);
+
+		// operate
+		List<AttributeDO> resultMissingAttributes = identityService
+				.listMissingAttributes(applicationName, null);
+
+		// verify
+		assertNotNull(resultMissingAttributes);
+		assertTrue(resultMissingAttributes.isEmpty());
+
+		// operate
+		List<AttributeDO> resultAttributes = identityService
+				.listAttributes(null);
+		assertNotNull(resultAttributes);
+		LOG.debug("result attributes: " + resultAttributes);
+		assertEquals(6, resultAttributes.size());
+
 	}
 
 	private void refreshTransaction(EntityManager entityManager) {

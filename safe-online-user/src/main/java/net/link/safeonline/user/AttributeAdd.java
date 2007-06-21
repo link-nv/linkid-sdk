@@ -10,7 +10,7 @@ package net.link.safeonline.user;
 import javax.ejb.Local;
 
 @Local
-public interface Identity {
+public interface AttributeAdd {
 
 	/*
 	 * Lifecycle.
@@ -18,16 +18,12 @@ public interface Identity {
 	void destroyCallback();
 
 	/*
-	 * Factories.
-	 */
-	void attributeListFactory();
-
-	/*
 	 * Actions.
 	 */
-	String edit();
+	String commit();
 
-	String removeAttribute();
-
-	String add();
+	/*
+	 * Factories.
+	 */
+	void attributeEditContextFactory();
 }

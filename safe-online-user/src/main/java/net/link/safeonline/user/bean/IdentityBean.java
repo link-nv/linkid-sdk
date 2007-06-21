@@ -22,7 +22,6 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
-import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.user.Identity;
 import net.link.safeonline.user.UserConstants;
 
@@ -64,10 +63,6 @@ public class IdentityBean implements Identity {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	@Out(required = false, scope = ScopeType.SESSION)
-	@In(required = false)
-	private AttributeDO newAttribute;
-
 	@Remove
 	@Destroy
 	public void destroyCallback() {
@@ -104,26 +99,6 @@ public class IdentityBean implements Identity {
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String add() {
 		LOG.debug("add attribute of type: " + this.selectedAttribute.getName());
-		/*
-		 * The selectedAttribute serves as a template for the new attribute.
-		 * This method should only be invoked for selected multivalued
-		 * attributes, since only for multivalued attributes you can add
-		 * additional attribute items.
-		 */
-		Boolean booleanValue = null;
-		String stringValue = null;
-		boolean multivalued = true;
-		boolean dataMining = false;
-		boolean editable = true;
-		String name = this.selectedAttribute.getName();
-		long index = -1; // don't care, core will set it
-		String description = this.selectedAttribute.getDescription();
-		DatatypeType type = this.selectedAttribute.getType();
-		String humanReadableName = this.selectedAttribute
-				.getRawHumanReadableName();
-		this.newAttribute = new AttributeDO(name, type, multivalued, index,
-				humanReadableName, description, editable, dataMining,
-				stringValue, booleanValue);
 		return "add";
 	}
 
@@ -150,20 +125,5 @@ public class IdentityBean implements Identity {
 		}
 		attributeListFactory();
 		return "removed";
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String commitAdd() {
-		LOG.debug("commit add: " + this.newAttribute);
-		try {
-			this.identityService.addAttribute(this.newAttribute);
-		} catch (PermissionDeniedException e) {
-			String msg = "user not allowed to add the attribute";
-			LOG.error(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
-		attributeListFactory();
-		return "success";
 	}
 }

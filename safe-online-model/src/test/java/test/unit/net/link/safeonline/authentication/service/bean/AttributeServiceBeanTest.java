@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -529,7 +530,7 @@ public class AttributeServiceBeanTest {
 		testAttribute.setEditable(true);
 		identityService.saveAttribute(testAttribute);
 		testAttribute.setStringValue(testAttributeValue2);
-		identityService.addAttribute(testAttribute);
+		identityService.addAttribute(Collections.singletonList(testAttribute));
 
 		AttributeService attributeService = EJBTestUtils.newInstance(
 				AttributeServiceBean.class,

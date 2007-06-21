@@ -65,6 +65,18 @@ public interface AttributeDAO {
 	void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long index, Boolean booleanValue);
 
+	/**
+	 * Creates a new attribute with the given attribute index. This can be used
+	 * to create new compounded attribute records.
+	 * 
+	 * @param attributeType
+	 * @param subject
+	 * @param index
+	 * @return
+	 */
+	AttributeEntity addAttribute(AttributeTypeEntity attributeType,
+			SubjectEntity subject, long index);
+
 	void removeAttribute(AttributeEntity attributeEntity);
 
 	/**

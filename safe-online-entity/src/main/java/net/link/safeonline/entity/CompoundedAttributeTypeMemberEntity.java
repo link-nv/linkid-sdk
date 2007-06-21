@@ -27,16 +27,22 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Index;
 
 import static net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity.QUERY_PARENT;
+import static net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity.QUERY_WHERE_MEMBER;
 
 @Entity
 @Table(name = "comp_attribute_member")
-@NamedQueries( { @NamedQuery(name = QUERY_PARENT, query = "SELECT catm.parent FROM CompoundedAttributeTypeMemberEntity AS catm "
-		+ "WHERE catm.member = :member") })
+@NamedQueries( {
+		@NamedQuery(name = QUERY_PARENT, query = "SELECT catm.parent FROM CompoundedAttributeTypeMemberEntity AS catm "
+				+ "WHERE catm.member = :member"),
+		@NamedQuery(name = QUERY_WHERE_MEMBER, query = "SELECT catm FROM CompoundedAttributeTypeMemberEntity AS catm "
+				+ "WHERE catm.member = :member") })
 public class CompoundedAttributeTypeMemberEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_PARENT = "cat.parent";
+
+	public static final String QUERY_WHERE_MEMBER = "cat.member";
 
 	private CompoundedAttributeTypeMemberPK pk;
 
@@ -147,6 +153,13 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
 			AttributeTypeEntity member) {
 		Query query = entityManager.createNamedQuery(QUERY_PARENT);
 		query.setParameter("member", member);
+		return query;
+	}
+
+	public static Query createQueryWhereMember(EntityManager entityManager,
+			AttributeTypeEntity memberAttributeType) {
+		Query query = entityManager.createNamedQuery(QUERY_WHERE_MEMBER);
+		query.setParameter("member", memberAttributeType);
 		return query;
 	}
 }
