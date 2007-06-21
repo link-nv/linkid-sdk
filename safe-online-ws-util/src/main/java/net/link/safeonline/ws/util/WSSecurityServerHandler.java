@@ -100,13 +100,15 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 			throw new RuntimeException("missing WS-Security header");
 		}
 		for (WSSecurityEngineResult result : wsSecurityEngineResults) {
-			Set<String> signedElements = result.getSignedElements();
+			Set<String> signedElements = (Set<String>) result
+					.get(WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS);
 			if (null != signedElements) {
 				LOG.debug("signed elements: " + signedElements);
 				soapMessageContext.put(SIGNED_ELEMENTS_CONTEXT_KEY,
 						signedElements);
 			}
-			X509Certificate certificate = result.getCertificate();
+			X509Certificate certificate = (X509Certificate) result
+					.get(WSSecurityEngineResult.TAG_X509_CERTIFICATE);
 			if (null != certificate) {
 				soapMessageContext.put(CERTIFICATE_PROPERTY, certificate);
 			}

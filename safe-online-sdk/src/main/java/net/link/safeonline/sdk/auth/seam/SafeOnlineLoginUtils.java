@@ -74,7 +74,7 @@ public class SafeOnlineLoginUtils {
 		HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext
 				.getResponse();
 		String requestUrl = httpServletRequest.getRequestURL().toString();
-		String targetUrl = getOverviewTargetUrl(requestUrl, targetPage);
+		String targetUrl = getTargetUrl(requestUrl, targetPage);
 		/*
 		 * Next is required to preserve the session if the browser does not
 		 * support cookies.
@@ -103,8 +103,7 @@ public class SafeOnlineLoginUtils {
 		return null;
 	}
 
-	public static String getOverviewTargetUrl(String requestUrl,
-			String targetPage) {
+	public static String getTargetUrl(String requestUrl, String targetPage) {
 		int lastSlashIdx = requestUrl.lastIndexOf("/");
 		String prefix = requestUrl.substring(0, lastSlashIdx);
 		String targetUrl = prefix + "/" + targetPage;
