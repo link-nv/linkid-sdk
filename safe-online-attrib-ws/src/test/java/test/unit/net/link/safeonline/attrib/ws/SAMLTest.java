@@ -1,0 +1,116 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
+package test.unit.net.link.safeonline.attrib.ws;
+
+import static org.junit.Assert.assertEquals;
+
+import java.io.StringWriter;
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import oasis.names.tc.saml._2_0.assertion.AssertionType;
+import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
+import oasis.names.tc.saml._2_0.assertion.AttributeType;
+import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
+import oasis.names.tc.saml._2_0.assertion.StatementAbstractType;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+public class SAMLTest {
+
+	private static final Log LOG = LogFactory.getLog(SAMLTest.class);
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void attributeValueXsiType() throws Exception {
+		// setup
+		LOG.debug("xsi:type test");
+
+		ObjectFactory objectFactory = new ObjectFactory();
+		AssertionType assertion = objectFactory.createAssertionType();
+
+		List<StatementAbstractType> statements = assertion
+				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
+		AttributeStatementType attributeStatement = objectFactory
+				.createAttributeStatementType();
+		statements.add(attributeStatement);
+
+		List<Object> attributes = attributeStatement
+				.getAttributeOrEncryptedAttribute();
+		AttributeType attribute = objectFactory.createAttributeType();
+		attributes.add(attribute);
+
+		attribute.setName("test-attribute-name");
+		List<Object> attributeValue = attribute.getAttributeValue();
+
+		AttributeType memberAttribute = objectFactory.createAttributeType();
+		attributeValue.add(memberAttribute);
+
+		attributeValue.add("hello world");
+		attributeValue.add(5);
+		attributeValue.add(true);
+		attributeValue.add(new Date());
+		attributeValue.add(3.14);
+
+		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+		Marshaller marshaller = context.createMarshaller();
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
+				.newInstance();
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+		Document document = documentBuilder.newDocument();
+
+		// operate
+		marshaller.marshal(objectFactory.createAssertion(assertion), document);
+
+		// verify
+		LOG.debug("result document: " + domToString(document));
+
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		JAXBElement<AssertionType> assertionElement = (JAXBElement<AssertionType>) unmarshaller
+				.unmarshal(document);
+
+		assertEquals(AttributeType.class,
+				((AttributeType) ((AttributeStatementType) assertionElement
+						.getValue()
+						.getStatementOrAuthnStatementOrAuthzDecisionStatement()
+						.get(0)).getAttributeOrEncryptedAttribute().get(0))
+						.getAttributeValue().get(0).getClass());
+	}
+
+	public static String domToString(Node domNode) throws TransformerException {
+		Source source = new DOMSource(domNode);
+		StringWriter stringWriter = new StringWriter();
+		Result result = new StreamResult(stringWriter);
+		TransformerFactory transformerFactory = TransformerFactory
+				.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		transformer.transform(source, result);
+		return stringWriter.toString();
+	}
+}
