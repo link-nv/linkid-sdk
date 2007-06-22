@@ -10,6 +10,7 @@ package net.link.safeonline.demo.payment.bean;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
+import net.link.safeonline.demo.payment.PaymentConstants;
 import net.link.safeonline.demo.payment.PaymentServiceEntry;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -20,6 +21,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.RequestParameter;
+import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
@@ -55,6 +57,9 @@ public class PaymentServiceEntryBean implements PaymentServiceEntry {
 	@In(create = true)
 	FacesMessages facesMessages;
 
+	@In
+	private Context sessionContext;
+
 	@Remove
 	@Destroy
 	public void destroyCallback() {
@@ -75,5 +80,8 @@ public class PaymentServiceEntryBean implements PaymentServiceEntry {
 		if (null == this.amount) {
 			this.facesMessages.add("amount request parameter is null");
 		}
+
+		this.sessionContext.set("role", PaymentConstants.USER_ROLE);
+
 	}
 }

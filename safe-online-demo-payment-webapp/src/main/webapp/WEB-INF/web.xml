@@ -54,6 +54,11 @@
 		<param-value>true</param-value>
 	</context-param>
 
+	<context-param>
+		<param-name>LocalHostName</param-name>
+		<param-value>${local.host.name}</param-value>
+	</context-param>
+
 	<filter>
 		<filter-name>LoginFilter</filter-name>
 		<filter-class>
