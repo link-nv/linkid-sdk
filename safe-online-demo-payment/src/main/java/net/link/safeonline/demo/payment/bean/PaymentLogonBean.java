@@ -47,7 +47,7 @@ public class PaymentLogonBean implements PaymentLogon {
 	public String login() {
 		log.debug("login");
 		String result = SafeOnlineLoginUtils.login(this.facesMessages,
-				this.log, "overview.seam");
+				this.log, "login");
 		return result;
 	}
 

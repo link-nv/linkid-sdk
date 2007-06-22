@@ -128,9 +128,25 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
+	<servlet>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.demo.payment.servlet.LoginServlet
+		</servlet-class>
+		<init-param>
+			<param-name>LocalHostName</param-name>
+			<param-value>${local.host.name}</param-value>
+		</init-param>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.seam</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

@@ -53,23 +53,6 @@ public class DemoStartableBean extends AbstractInitBean {
 	public DemoStartableBean() {
 		configDemoUsers();
 
-		AttributeTypeEntity visaAttributeType = new AttributeTypeEntity(
-				DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, DatatypeType.STRING,
-				true, true);
-		visaAttributeType.setMultivalued(true);
-		this.attributeTypes.add(visaAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				visaAttributeType, Locale.ENGLISH.getLanguage(), "VISA number",
-				null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				visaAttributeType, "nl", "VISA-nummer", null));
-		this.identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME,
-				new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-						BeIdConstants.NRN_ATTRIBUTE, true, false) }));
-		this.identities.add(new Identity(DEMO_PAYMENT_APPLICATION_NAME,
-				new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-						visaAttributeType.getName(), true, false) }));
-
 		PrivateKeyEntry demoPrivateKeyEntry = DemoKeyStoreUtil
 				.getPrivateKeyEntry();
 		X509Certificate demoCertificate = (X509Certificate) demoPrivateKeyEntry
@@ -77,28 +60,110 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME,
 				"owner", demoCertificate));
 
-		PrivateKeyEntry demoTicketPrivateKeyEntry = DemoTicketKeyStoreUtils
-				.getPrivateKeyEntry();
-		X509Certificate demoTicketCertificate = (X509Certificate) demoTicketPrivateKeyEntry
-				.getCertificate();
-		this.registeredApplications.add(new Application(
-				DEMO_TICKET_APPLICATION_NAME, "owner", demoTicketCertificate));
-
-		PrivateKeyEntry demoPaymentPrivateKeyEntry = DemoPaymentKeyStoreUtils
-				.getPrivateKeyEntry();
-		X509Certificate demoPaymentCertificate = (X509Certificate) demoPaymentPrivateKeyEntry
-				.getCertificate();
-		this.registeredApplications
-				.add(new Application(DEMO_PAYMENT_APPLICATION_NAME, "owner",
-						demoPaymentCertificate));
-
 		this.trustedCertificates.add(demoCertificate);
-		this.trustedCertificates.add(demoTicketCertificate);
-		this.trustedCertificates.add(demoPaymentCertificate);
+
+		configTicketDemo();
+
+		configPaymentDemo();
 
 		configLawyerDemo();
 
 		configPrescriptionDemo();
+	}
+
+	private void configTicketDemo() {
+		PrivateKeyEntry demoTicketPrivateKeyEntry = DemoTicketKeyStoreUtils
+				.getPrivateKeyEntry();
+		X509Certificate demoTicketCertificate = (X509Certificate) demoTicketPrivateKeyEntry
+				.getCertificate();
+
+		this.trustedCertificates.add(demoTicketCertificate);
+		this.registeredApplications.add(new Application(
+				DEMO_TICKET_APPLICATION_NAME, "owner", demoTicketCertificate));
+
+		this.identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME,
+				new IdentityAttributeTypeDO[] {
+						new IdentityAttributeTypeDO(
+								BeIdConstants.NRN_ATTRIBUTE, true, false),
+						new IdentityAttributeTypeDO(
+								DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+								false, false) }));
+	}
+
+	private void configPaymentDemo() {
+
+		String paymentAdmin = "payment-admin";
+		this.authorizedUsers.put(paymentAdmin, "secret");
+
+		/*
+		 * Register the payment and ticket demo application within SafeOnline.
+		 */
+		PrivateKeyEntry demoPaymentPrivateKeyEntry = DemoPaymentKeyStoreUtils
+				.getPrivateKeyEntry();
+		X509Certificate demoPaymentCertificate = (X509Certificate) demoPaymentPrivateKeyEntry
+				.getCertificate();
+
+		this.trustedCertificates.add(demoPaymentCertificate);
+
+		this.registeredApplications
+				.add(new Application(DEMO_PAYMENT_APPLICATION_NAME, "owner",
+						demoPaymentCertificate));
+
+		/*
+		 * Subscribe the payment admin.
+		 */
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				paymentAdmin, DEMO_PAYMENT_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(
+				SubscriptionOwnerType.APPLICATION, paymentAdmin,
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+
+		/*
+		 * Subscribe the demo users to the payment demo application.
+		 */
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"fcorneli", DEMO_PAYMENT_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"dieter", DEMO_PAYMENT_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"mario", DEMO_PAYMENT_APPLICATION_NAME));
+
+		/*
+		 * Attribute Types.
+		 */
+		configDemoAttribute(DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME,
+				DatatypeType.BOOLEAN, false, DEMO_PAYMENT_APPLICATION_NAME,
+				"Payment Admin", "Rekeningbeheerder", true, false);
+		configDemoAttribute(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+				DatatypeType.BOOLEAN, false, DEMO_PAYMENT_APPLICATION_NAME,
+				"Junior Account", "Jongerenrekening", true, false);
+		configDemoAttribute(DemoConstants.DEMO_VISA_ATTRIBUTE_NAME,
+				DatatypeType.STRING, true, null, "VISA number", "VISA nummer",
+				true, true);
+
+		/*
+		 * Application Identities.
+		 */
+		this.identities.add(new Identity(DEMO_PAYMENT_APPLICATION_NAME,
+				new IdentityAttributeTypeDO[] {
+						new IdentityAttributeTypeDO(
+								DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME,
+								false, false),
+						new IdentityAttributeTypeDO(
+								DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+								false, false),
+						new IdentityAttributeTypeDO(
+								DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, true,
+								false) }));
+
+		/*
+		 * Also make sure the admin is marked as such.
+		 */
+		AttributeEntity paymentAdminAttribute = new AttributeEntity();
+		paymentAdminAttribute.setPk(new AttributePK(
+				DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, paymentAdmin));
+		paymentAdminAttribute.setBooleanValue(true);
+		this.attributes.add(paymentAdminAttribute);
 	}
 
 	private void configPrescriptionDemo() {
@@ -140,16 +205,19 @@ public class DemoStartableBean extends AbstractInitBean {
 		 * Attribute Types.
 		 */
 		configDemoAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
-				DatatypeType.BOOLEAN, DEMO_PRESCRIPTION_APPLICATION_NAME,
-				"Prescription Admin", "Voorschriftbeheerder");
+				DatatypeType.BOOLEAN, false,
+				DEMO_PRESCRIPTION_APPLICATION_NAME, "Prescription Admin",
+				"Voorschriftbeheerder", true, false);
 		configDemoAttribute(
 				DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
-				DatatypeType.BOOLEAN, DEMO_PRESCRIPTION_APPLICATION_NAME,
-				"Care Provider", "Dokter");
+				DatatypeType.BOOLEAN, false,
+				DEMO_PRESCRIPTION_APPLICATION_NAME, "Care Provider", "Dokter",
+				true, false);
 		configDemoAttribute(
 				DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
-				DatatypeType.BOOLEAN, DEMO_PRESCRIPTION_APPLICATION_NAME,
-				"Pharmacist", "Apotheker");
+				DatatypeType.BOOLEAN, false,
+				DEMO_PRESCRIPTION_APPLICATION_NAME, "Pharmacist", "Apotheker",
+				true, false);
 
 		/*
 		 * Application Identities.
@@ -241,15 +309,17 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	private void configLawyerDemoAttribute(String attributeName,
 			DatatypeType datatype, String enName, String nlName) {
-		configDemoAttribute(attributeName, datatype,
-				DEMO_LAWYER_APPLICATION_NAME, enName, nlName);
+		configDemoAttribute(attributeName, datatype, false,
+				DEMO_LAWYER_APPLICATION_NAME, enName, nlName, true, false);
 	}
 
 	private void configDemoAttribute(String attributeName,
-			DatatypeType datatype, String attributeProviderName, String enName,
-			String nlName) {
+			DatatypeType datatype, boolean multiValued,
+			String attributeProviderName, String enName, String nlName,
+			boolean userVisible, boolean userEditable) {
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
-				attributeName, datatype, true, false);
+				attributeName, datatype, userVisible, userEditable);
+		attributeType.setMultivalued(multiValued);
 		this.attributeTypes.add(attributeType);
 
 		if (null != attributeProviderName) {

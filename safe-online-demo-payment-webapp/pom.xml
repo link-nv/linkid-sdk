@@ -26,6 +26,7 @@
 				<auth.webapp.location>
 					http://localhost:8080/olas-auth/
 				</auth.webapp.location>
+				<local.host.name>localhost</local.host.name>
 			</properties>
 		</profile>
 		<profile>
@@ -40,6 +41,7 @@
 				<auth.webapp.location>
 					http://buildserver:8080/olas-auth/
 				</auth.webapp.location>
+				<local.host.name>buildserver</local.host.name>
 			</properties>
 		</profile>
 	</profiles>
@@ -319,6 +321,11 @@
 			<groupId>javax.faces</groupId>
 			<artifactId>jsf-api</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-demo</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

@@ -39,6 +39,7 @@ import net.link.safeonline.demo.ticket.entity.Ticket;
 import net.link.safeonline.demo.ticket.entity.User;
 import net.link.safeonline.demo.ticket.entity.Ticket.Site;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
+import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -164,6 +165,10 @@ public class TicketBuyBean implements TicketBuy {
 
 	private String nrn;
 
+	@SuppressWarnings("unused")
+	@Out(required = false)
+	private int juniorReduction;
+
 	public String getFrom() {
 		return this.from;
 	}
@@ -224,11 +229,18 @@ public class TicketBuyBean implements TicketBuy {
 	@RolesAllowed("user")
 	public String checkOut() {
 		this.ticketPrice = 100;
+		this.juniorReduction = 0;
 		String username = getUsername();
 		try {
 			this.nrn = this.attributeClient.getAttributeValue(username,
 					"urn:net:lin-k:safe-online:attribute:beid:nrn",
 					String.class);
+			Boolean juniorValue = this.attributeClient.getAttributeValue(
+					username, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+					Boolean.class);
+			if (juniorValue != null && juniorValue.booleanValue() == true) {
+				this.juniorReduction = 10;
+			}
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found: " + e.getMessage();
 			log.debug(msg);
@@ -246,7 +258,7 @@ public class TicketBuyBean implements TicketBuy {
 			return null;
 		} catch (Exception e) {
 			String msg = "Error occurred: " + e.getMessage();
-			log.debug(msg);
+			log.debug(msg, e);
 			log.debug("exception type: " + e.getClass().getName());
 			this.facesMessages.add(msg);
 			return null;
@@ -300,8 +312,8 @@ public class TicketBuyBean implements TicketBuy {
 					+ "&recipient="
 					+ URLEncoder.encode(recipient, "UTF-8")
 					+ "&amount="
-					+ URLEncoder.encode(Double.toString(this.ticketPrice),
-							"UTF-8") + "&message="
+					+ URLEncoder.encode(Double.toString(this.ticketPrice
+							- this.juniorReduction), "UTF-8") + "&message="
 					+ URLEncoder.encode(message, "UTF-8") + "&target="
 					+ URLEncoder.encode(target, "UTF-8");
 		} catch (UnsupportedEncodingException e) {

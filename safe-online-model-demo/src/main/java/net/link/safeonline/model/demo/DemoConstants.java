@@ -28,4 +28,8 @@ public class DemoConstants {
 	public static final String PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME = "urn:net:lin-k:safe-online:attribute:prescription:care-provider";
 
 	public static final String PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME = "urn:net:lin-k:safe-online:attribute:prescription:pharmacist";
+
+	public static final String PAYMENT_JUNIOR_ATTRIBUTE_NAME = "urn:net:lin-k:safe-online:attribute:payment:junior";
+
+	public static final String PAYMENT_ADMIN_ATTRIBUTE_NAME = "urn:net:lin-k:safe-online:attribute:payment:admin";
 }
