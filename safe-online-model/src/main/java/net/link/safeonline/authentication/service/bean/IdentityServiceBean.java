@@ -537,9 +537,13 @@ public class IdentityServiceBean implements IdentityService,
 		ApplicationIdentityEntity confirmedApplicationIdentity = this.applicationIdentityDAO
 				.getApplicationIdentity(application, subscription
 						.getConfirmedIdentityVersion());
+		LOG.debug("managing identity attribute visibility for version: "
+				+ confirmedApplicationIdentity.getIdentityVersion());
 		List<AttributeTypeEntity> attributeTypes = confirmedApplicationIdentity
 				.getAttributeTypes();
 		for (AttributeTypeEntity attributeType : attributeTypes) {
+			LOG.debug("checking out attribute existence for "
+					+ attributeType.getName());
 			if (attributeType.isCompounded()) {
 				/*
 				 * Of course we don't create value entries for compounded

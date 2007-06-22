@@ -299,6 +299,11 @@ public class AuthenticationTest {
 		AttributeDO attribute = new AttributeDO(
 				SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING);
 		attribute.setStringValue(userName);
+		attribute.setEditable(true);
+		/*
+		 * If we don't mark the attribute as editable the identityService will
+		 * skip the saveAttribute operation.
+		 */
 		identityService.saveAttribute(attribute);
 		String resultName = identityService
 				.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
@@ -489,6 +494,11 @@ public class AuthenticationTest {
 		AttributeDO attribute = new AttributeDO(
 				SafeOnlineConstants.PASSWORD_ATTRIBUTE, DatatypeType.STRING);
 		attribute.setStringValue("test-password");
+		attribute.setEditable(true);
+		/*
+		 * If we don't mark the attribute as editable the identity service will
+		 * skip the saveAttribute operation.
+		 */
 		try {
 			identityService.saveAttribute(attribute);
 			fail();

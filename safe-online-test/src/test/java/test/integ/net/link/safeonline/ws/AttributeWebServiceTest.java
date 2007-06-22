@@ -23,6 +23,7 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -108,8 +109,23 @@ public class AttributeWebServiceTest {
 		IntegrationTestUtils.login(login, password);
 		AttributeDO attribute = new AttributeDO(
 				SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING);
+		attribute.setEditable(true);
+		/*
+		 * Marking the attribute as editable is important. Else the identity
+		 * service will simply skip the saveAttribute operation.
+		 */
 		attribute.setStringValue(testName);
 		identityService.saveAttribute(attribute);
+
+		List<AttributeDO> resultAttributeDOs = identityService
+				.listAttributes(null);
+		for (AttributeDO resultAttribute : resultAttributeDOs) {
+			if (SafeOnlineConstants.NAME_ATTRIBUTE.equals(resultAttribute
+					.getName())) {
+				LOG.debug("result name: " + resultAttribute.getStringValue());
+				assertEquals(testName, resultAttribute.getStringValue());
+			}
+		}
 
 		// operate: register new attribute type
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
@@ -166,6 +182,7 @@ public class AttributeWebServiceTest {
 		AttributeDO attributeDO = new AttributeDO(testAttributeName,
 				DatatypeType.STRING);
 		attributeDO.setStringValue(testAttributeValue);
+		attributeDO.setEditable(true);
 		identityService.saveAttribute(attributeDO);
 
 		String resultValue = this.attributeClient.getAttributeValue(login,
