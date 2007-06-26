@@ -28,6 +28,8 @@ import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.attrib.annotation.Compound;
 import net.link.safeonline.sdk.ws.attrib.annotation.CompoundMember;
+import net.link.safeonline.sdk.ws.attrib.annotation.IdentityAttribute;
+import net.link.safeonline.sdk.ws.attrib.annotation.IdentityCard;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -398,5 +400,46 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 		checkStatus(response);
 		getAttributeValues(response, attributes);
 		return attributes;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <Type> Type getIdentity(String subjectLogin,
+			Class<Type> identityCardClass) throws AttributeNotFoundException,
+			RequestDeniedException, ConnectException {
+		IdentityCard identityCardAnnotation = identityCardClass
+				.getAnnotation(IdentityCard.class);
+		if (null == identityCardAnnotation) {
+			throw new IllegalArgumentException(
+					"identity card class should be annotated with @IdentityCard");
+		}
+		Type identityCard;
+		try {
+			identityCard = identityCardClass.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(
+					"could not instantiate the identity card class");
+		}
+		Method[] methods = identityCardClass.getMethods();
+		for (Method method : methods) {
+			IdentityAttribute identityAttributeAnnotation = method
+					.getAnnotation(IdentityAttribute.class);
+			if (null == identityAttributeAnnotation) {
+				continue;
+			}
+			String attributeName = identityAttributeAnnotation.value();
+			String propertyName = method.getName().substring(3);
+			Class valueClass = method.getReturnType();
+			Object attributeValue = getAttributeValue(subjectLogin,
+					attributeName, valueClass);
+			Method setMethod;
+			try {
+				setMethod = identityCardClass.getMethod("set" + propertyName,
+						valueClass);
+				setMethod.invoke(identityCard, new Object[] { attributeValue });
+			} catch (Exception e) {
+				throw new RuntimeException("error: " + e.getMessage());
+			}
+		}
+		return identityCard;
 	}
 }

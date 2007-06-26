@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeTypeService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
@@ -45,6 +46,8 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.attrib.annotation.Compound;
 import net.link.safeonline.sdk.ws.attrib.annotation.CompoundMember;
+import net.link.safeonline.sdk.ws.attrib.annotation.IdentityAttribute;
+import net.link.safeonline.sdk.ws.attrib.annotation.IdentityCard;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
@@ -480,8 +483,12 @@ public class AttributeWebServiceTest {
 						+ DomTestUtils.domToString(resultDocument));
 		CompoundedTestClass result0 = result[0];
 		LOG.debug("result0: " + result0);
+		assertEquals("value 00", result0.getMember0());
+		assertEquals("value 01", result0.getMember1());
 		CompoundedTestClass result1 = result[1];
 		LOG.debug("result1: " + result1);
+		assertEquals("value 10", result1.getMember0());
+		assertEquals("value 11", result1.getMember1());
 
 		// verify number of attribute values returned.
 		Element nsElement = resultDocument.createElement("nsElement");
@@ -499,6 +506,22 @@ public class AttributeWebServiceTest {
 		double countResult = xObject.num();
 		LOG.debug("count result: " + countResult);
 		assertEquals(2.0, countResult);
+
+		// operate: retrieve identity
+		IdentityCardTestClass identityCard = this.attributeClient.getIdentity(
+				login, IdentityCardTestClass.class);
+
+		// verify
+		assertNotNull(identityCard);
+		assertNull(identityCard.getName());
+		result0 = identityCard.getCompoundData()[0];
+		LOG.debug("result0: " + result0);
+		assertEquals("value 00", result0.getMember0());
+		assertEquals("value 01", result0.getMember1());
+		result1 = identityCard.getCompoundData()[1];
+		LOG.debug("result1: " + result1);
+		assertEquals("value 10", result1.getMember0());
+		assertEquals("value 11", result1.getMember1());
 	}
 
 	public static final String TEST_COMP_NAME = "test-comp-name-1234";
@@ -539,6 +562,31 @@ public class AttributeWebServiceTest {
 		public String toString() {
 			return new ToStringBuilder(this).append("member0", this.member0)
 					.append("member1", this.member1).toString();
+		}
+	}
+
+	@IdentityCard
+	public static class IdentityCardTestClass {
+		private String name;
+
+		private CompoundedTestClass[] compoundData;
+
+		@IdentityAttribute(TEST_COMP_NAME)
+		public CompoundedTestClass[] getCompoundData() {
+			return this.compoundData;
+		}
+
+		public void setCompoundData(CompoundedTestClass[] compoundData) {
+			this.compoundData = compoundData;
+		}
+
+		@IdentityAttribute(SafeOnlineConstants.NAME_ATTRIBUTE)
+		public String getName() {
+			return this.name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
 		}
 	}
 

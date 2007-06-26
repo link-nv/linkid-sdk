@@ -85,4 +85,23 @@ public interface AttributeClient extends MessageAccessor {
 	Map<String, Object> getAttributeValues(String subjectLogin)
 			throws RequestDeniedException, ConnectException,
 			AttributeNotFoundException;
+
+	/**
+	 * Gives back the application identity for the given subject.
+	 * 
+	 * The identity card class is a POJO annotated with
+	 * {@link net.link.safeonline.sdk.ws.attrib.annotation.IdentityCard}. It's
+	 * properties should be annotated with
+	 * {@link net.link.safeonline.sdk.ws.attrib.annotation.IdentityAttribute}.
+	 * 
+	 * @param <Type>
+	 * @param subjectLogin
+	 * @return
+	 * @throws AttributeNotFoundException
+	 * @throws RequestDeniedException
+	 * @throws ConnectException
+	 */
+	<Type> Type getIdentity(String subjectLogin, Class<Type> identityCardClass)
+			throws AttributeNotFoundException, RequestDeniedException,
+			ConnectException;
 }
