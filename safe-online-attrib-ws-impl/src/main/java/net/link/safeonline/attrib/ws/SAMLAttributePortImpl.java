@@ -257,6 +257,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		return response;
 	}
 
+	@SuppressWarnings("unchecked")
 	private AssertionType getAttributeAssertion(String subjectLogin,
 			Map<String, Object> attributes) {
 		AssertionType assertion = new AssertionType();
@@ -315,7 +316,30 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 				 */
 				Object[] array = (Object[]) attributeValue;
 				for (Object item : array) {
-					attributeValues.add(item);
+					if (item instanceof Map) {
+						/*
+						 * Compounded attribute.
+						 */
+						Map<String, Object> compoundedAttributeValues = (Map<String, Object>) item;
+
+						AttributeType compoundedAttribute = new AttributeType();
+
+						compoundedAttribute.setName(attributeName);
+						for (Map.Entry<String, Object> compoundedAttributeValue : compoundedAttributeValues
+								.entrySet()) {
+							AttributeType memberAttribute = new AttributeType();
+							memberAttribute.setName(compoundedAttributeValue
+									.getKey());
+							memberAttribute.getAttributeValue().add(
+									compoundedAttributeValue.getValue());
+							compoundedAttribute.getAttributeValue().add(
+									memberAttribute);
+						}
+						attributeValues.add(compoundedAttribute);
+
+					} else {
+						attributeValues.add(item);
+					}
 				}
 			} else {
 				attributeValues.add(attributeValue);

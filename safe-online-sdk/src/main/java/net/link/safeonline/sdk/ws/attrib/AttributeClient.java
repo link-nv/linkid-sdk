@@ -35,6 +35,13 @@ public interface AttributeClient extends MessageAccessor {
 	 * subject. The type of the value returned depends on the datatype of the
 	 * corresponding attribute type.
 	 * 
+	 * <p>
+	 * Compounded attributes are handled via annotated java classes. The
+	 * annotations to be used for this are
+	 * {@link net.link.safeonline.sdk.ws.attrib.annotation.Compound} and
+	 * {@link net.link.safeonline.sdk.ws.attrib.annotation.CompoundMember}.
+	 * </p>
+	 * 
 	 * @param <Type>
 	 * @param subjectLogin
 	 * @param attributeName

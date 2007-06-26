@@ -10,6 +10,7 @@ package test.unit.net.link.safeonline.authentication.service.bean;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
@@ -564,6 +565,146 @@ public class AttributeServiceBeanTest {
 		stringArrayResult = (String[]) result;
 		assertTrue(contains(stringArrayResult, testAttributeValue1));
 		assertTrue(contains(stringArrayResult, testAttributeValue2));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void getCompoundedAttribute() throws Exception {
+		// setup
+		String testSubjectLogin = "test-subject-login";
+		String testApplicationName = "test-application-name";
+		String compoundName = "compound-attrib-name";
+		String firstMemberName = "member-0-name";
+		String secondMemberName = "member-1-name";
+
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		// register test user
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(testSubjectLogin, null, null);
+
+		// register multivalued attribute type
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-admin", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
+
+		AttributeTypeEntity firstAttributeType = new AttributeTypeEntity(
+				firstMemberName, DatatypeType.STRING, true, true);
+		firstAttributeType.setMultivalued(true);
+		attributeTypeService.add(firstAttributeType);
+
+		AttributeTypeEntity secondAttributeType = new AttributeTypeEntity(
+				secondMemberName, DatatypeType.STRING, true, true);
+		secondAttributeType.setMultivalued(true);
+		attributeTypeService.add(secondAttributeType);
+
+		this.entityTestManager.newTransaction();
+
+		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
+				compoundName, DatatypeType.COMPOUNDED, true, true);
+		compoundedAttributeType.setMultivalued(true);
+		compoundedAttributeType.addMember(firstAttributeType, 0, true);
+		compoundedAttributeType.addMember(secondAttributeType, 1, true);
+		attributeTypeService.add(compoundedAttributeType);
+
+		ApplicationService applicationService = EJBTestUtils.newInstance(
+				ApplicationServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+		applicationService
+				.addApplication(
+						testApplicationName,
+						"owner",
+						null,
+						null,
+						Arrays
+								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+										compoundName, true, false) }));
+
+		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
+				SubscriptionServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				testSubjectLogin, "user");
+		subscriptionService.subscribe(testApplicationName);
+
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				testSubjectLogin, "user");
+		identityService.confirmIdentity(testApplicationName);
+
+		AttributeDO compoundAttribute = new AttributeDO(compoundName,
+				DatatypeType.COMPOUNDED);
+		compoundAttribute.setCompounded(true);
+		identityService.saveAttribute(compoundAttribute);
+
+		AttributeDO attribute = new AttributeDO(firstMemberName,
+				DatatypeType.STRING);
+		attribute.setStringValue("value 0");
+		attribute.setEditable(true);
+		identityService.saveAttribute(attribute);
+
+		compoundAttribute.setIndex(1);
+		identityService.saveAttribute(compoundAttribute);
+
+		attribute = new AttributeDO(secondMemberName, DatatypeType.STRING);
+		attribute.setStringValue("value 1");
+		attribute.setEditable(true);
+		attribute.setIndex(1);
+		identityService.saveAttribute(attribute);
+
+		this.entityTestManager.newTransaction();
+
+		AttributeService attributeService = EJBTestUtils.newInstance(
+				AttributeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				testApplicationName,
+				SafeOnlineApplicationRoles.APPLICATION_ROLE);
+
+		// operate
+		Object result = attributeService.getConfirmedAttributeValue(
+				testSubjectLogin, compoundName);
+
+		// verify
+		assertNotNull(result);
+		assertEquals(Map[].class, result.getClass());
+		Map[] resultMapArray = (Map[]) result;
+		assertEquals(2, resultMapArray.length);
+		for (Map resultMap : resultMapArray) {
+			LOG.debug("result map: " + resultMap);
+		}
+
+		Map<String, Object> firstResult = resultMapArray[0];
+		assertEquals("value 0", firstResult.get(firstMemberName));
+		assertTrue(firstResult.containsKey(secondMemberName));
+		assertNull(firstResult.get(secondMemberName));
+
+		Map<String, Object> secondResult = resultMapArray[1];
+		assertTrue(secondResult.containsKey(firstMemberName));
+		assertNull(secondResult.get(firstMemberName));
+		assertEquals("value 1", secondResult.get(secondMemberName));
+
+		// operate
+		Map<String, Object> result2 = attributeService
+				.getConfirmedAttributeValues(testSubjectLogin);
+
+		// verify
+		LOG.debug("result2: " + result2);
+		assertTrue(result2.containsKey(compoundName));
+		resultMapArray = (Map[]) result2.get(compoundName);
+
+		firstResult = resultMapArray[0];
+		assertEquals("value 0", firstResult.get(firstMemberName));
+		assertTrue(firstResult.containsKey(secondMemberName));
+		assertNull(firstResult.get(secondMemberName));
+
+		secondResult = resultMapArray[1];
+		assertTrue(secondResult.containsKey(firstMemberName));
+		assertNull(secondResult.get(firstMemberName));
+		assertEquals("value 1", secondResult.get(secondMemberName));
 	}
 
 	private boolean contains(String[] list, String value) {

@@ -198,7 +198,7 @@ public class IdentityServiceBean implements IdentityService,
 		long index = attribute.getIndex();
 		LOG.debug("save attribute " + attributeName + " for entity with login "
 				+ subject + "; index " + index);
-		LOG.debug("received attribute values: " + attribute);
+		LOG.debug("received attribute value: " + attribute);
 
 		if (attribute.isCompounded()) {
 			LOG.debug("save compounded attribute");

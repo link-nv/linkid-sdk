@@ -11,11 +11,15 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
@@ -25,7 +29,6 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 
-import junit.framework.TestCase;
 import net.link.safeonline.attrib.ws.SAMLAttributePortImpl;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -57,8 +60,11 @@ import oasis.names.tc.saml._2_0.protocol.StatusType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.easymock.EasyMock;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SAMLAttributePortImplTest extends TestCase {
+public class SAMLAttributePortImplTest {
 
 	private static final Log LOG = LogFactory
 			.getLog(SAMLAttributePortImplTest.class);
@@ -81,10 +87,8 @@ public class SAMLAttributePortImplTest extends TestCase {
 
 	private X509Certificate certificate;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		LOG.debug("setup");
 
 		this.jndiTestUtils = new JndiTestUtils();
@@ -144,15 +148,14 @@ public class SAMLAttributePortImplTest extends TestCase {
 		binding.setHandlerChain(handlerChain);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		LOG.debug("tearDown");
 		this.webServiceTestUtils.tearDown();
 		this.jndiTestUtils.tearDown();
-
-		super.tearDown();
 	}
 
+	@Test
 	public void testAttributeQuery() throws Exception {
 		// setup
 		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
@@ -240,6 +243,7 @@ public class SAMLAttributePortImplTest extends TestCase {
 		LOG.debug("response: " + stringWriter);
 	}
 
+	@Test
 	public void testQueryMultivaluedAttribute() throws Exception {
 		// setup
 		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
@@ -339,6 +343,105 @@ public class SAMLAttributePortImplTest extends TestCase {
 		LOG.debug("response: " + stringWriter);
 	}
 
+	@Test
+	public void testQueryCompoundedAttribute() throws Exception {
+		// setup
+		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
+
+		AttributeQueryType request = new AttributeQueryType();
+		SubjectType subject = new SubjectType();
+		NameIDType subjectName = new NameIDType();
+		String testSubjectLogin = "test-subject-login-"
+				+ UUID.randomUUID().toString();
+		subjectName.setValue(testSubjectLogin);
+		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
+		request.setSubject(subject);
+
+		List<AttributeType> attributes = request.getAttribute();
+		AttributeType attribute = new AttributeType();
+		String testAttributeName = "test-compounded-attribute-name-"
+				+ UUID.randomUUID().toString();
+		attribute.setName(testAttributeName);
+		attributes.add(attribute);
+
+		Map[] testAttributeValues = new Map[2];
+		Map<String, Object> compAttribute1 = new HashMap<String, Object>();
+		testAttributeValues[0] = compAttribute1;
+		compAttribute1.put("test-member1", "test-value11");
+		compAttribute1.put("test-member2", "test-value21");
+		Map<String, Object> compAttribute2 = new HashMap<String, Object>();
+		testAttributeValues[1] = compAttribute2;
+		compAttribute2.put("test-member1", "test-value12");
+		compAttribute2.put("test-member2", "test-value22");
+
+		String testIssuerName = "test-issuer-name";
+
+		// stubs
+		expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(
+				testIssuerName);
+
+		// expectations
+		expect(
+				this.mockAttributeService.getConfirmedAttributeValue(
+						testSubjectLogin, testAttributeName)).andReturn(
+				testAttributeValues);
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn("test-application-name");
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		ResponseType response = clientPort.attributeQuery(request);
+
+		// verify
+		verify(this.mockObjects);
+		assertNotNull(response);
+
+		List<Object> resultAssertions = response
+				.getAssertionOrEncryptedAssertion();
+		assertEquals(1, resultAssertions.size());
+		LOG.debug("assertion class: "
+				+ resultAssertions.get(0).getClass().getName());
+		AssertionType resultAssertion = (AssertionType) resultAssertions.get(0);
+		SubjectType resultSubject = resultAssertion.getSubject();
+		List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
+		assertEquals(1, resultSubjectContent.size());
+		LOG.debug("subject content type: "
+				+ resultSubjectContent.get(0).getValue().getClass().getName());
+		NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
+				.getValue();
+		assertEquals(testSubjectLogin, resultSubjectName.getValue());
+
+		List<StatementAbstractType> resultStatements = resultAssertion
+				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
+		assertEquals(1, resultStatements.size());
+		AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements
+				.get(0);
+		List<Object> resultAttributes = resultAttributeStatement
+				.getAttributeOrEncryptedAttribute();
+		assertEquals(1, resultAttributes.size());
+		LOG.debug("result attribute type: "
+				+ resultAttributes.get(0).getClass().getName());
+		AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
+		assertEquals(testAttributeName, resultAttribute.getName());
+		assertEquals(Boolean.TRUE.toString(), resultAttribute
+				.getOtherAttributes().get(
+						WebServiceConstants.MULTIVALUED_ATTRIBUTE));
+		List<Object> resultAttributeValues = resultAttribute
+				.getAttributeValue();
+		assertEquals(2, resultAttributeValues.size());
+
+		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
+		Marshaller marshaller = context.createMarshaller();
+		StringWriter stringWriter = new StringWriter();
+		ObjectFactory samlpObjectFactory = new ObjectFactory();
+		marshaller.marshal(samlpObjectFactory.createResponse(response),
+				stringWriter);
+		LOG.debug("response: " + stringWriter);
+	}
+
+	@Test
 	public void testAttributeQueryWithBooleanValue() throws Exception {
 		// setup
 		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
@@ -420,6 +523,7 @@ public class SAMLAttributePortImplTest extends TestCase {
 		assertEquals(testAttributeValue, resultAttributeValue);
 	}
 
+	@Test
 	public void testAttributeQueryForNonExistingAttribute() throws Exception {
 		// setup
 		oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();

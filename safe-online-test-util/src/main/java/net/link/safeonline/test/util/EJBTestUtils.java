@@ -333,22 +333,23 @@ public final class EJBTestUtils {
 			if (null == securityDomainAnnotation) {
 				return;
 			}
-			LOG.debug("security domain: " + securityDomainAnnotation.value());
+			// LOG.debug("security domain: " +
+			// securityDomainAnnotation.value());
 			Principal callerPrincipal = this.sessionContext
 					.getCallerPrincipal();
 			if (null == callerPrincipal) {
 				throw new EJBException("caller principal should not be null");
 			}
-			LOG.debug("caller principal: " + callerPrincipal.getName());
+			// LOG.debug("caller principal: " + callerPrincipal.getName());
 			RolesAllowed rolesAllowedAnnotation = method
 					.getAnnotation(RolesAllowed.class);
 			if (rolesAllowedAnnotation == null) {
 				return;
 			}
 			String[] roles = rolesAllowedAnnotation.value();
-			LOG.debug("number of roles: " + roles.length);
+			// LOG.debug("number of roles: " + roles.length);
 			for (String role : roles) {
-				LOG.debug("checking role: " + role);
+				// LOG.debug("checking role: " + role);
 				if (true == this.sessionContext.isCallerInRole(role)) {
 					return;
 				}

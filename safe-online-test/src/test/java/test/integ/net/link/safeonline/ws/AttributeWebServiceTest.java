@@ -23,6 +23,7 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -42,10 +43,13 @@ import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.ws.attrib.annotation.Compound;
+import net.link.safeonline.sdk.ws.attrib.annotation.CompoundMember;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
@@ -369,6 +373,179 @@ public class AttributeWebServiceTest {
 		assertTrue(contains(attributeValue1, result));
 		assertTrue(contains(attributeValue2, result));
 		assertFalse(contains("foo-bar", result));
+	}
+
+	@Test
+	public void retrievingCompoundedAttributes() throws Exception {
+		// setup
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+
+		IntegrationTestUtils.setupLoginConfig();
+
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		IdentityService identityService = getIdentityService(initialContext);
+
+		String testApplicationName = UUID.randomUUID().toString();
+
+		// operate: register user
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = "pwd-" + UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		// operate: register new multivalued attribute type
+		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+
+		List<AttributeTypeEntity> existingAttributeTypes = attributeTypeService
+				.listAttributeTypes();
+		AttributeTypeEntity member0AttributeType = new AttributeTypeEntity(
+				TEST_MEMBER_0_NAME, DatatypeType.STRING, true, true);
+		if (false == existingAttributeTypes.contains(member0AttributeType)) {
+			member0AttributeType.setMultivalued(true);
+			attributeTypeService.add(member0AttributeType);
+		}
+
+		AttributeTypeEntity member1AttributeType = new AttributeTypeEntity(
+				TEST_MEMBER_1_NAME, DatatypeType.STRING, true, true);
+		if (false == existingAttributeTypes.contains(member1AttributeType)) {
+			member1AttributeType.setMultivalued(true);
+			attributeTypeService.add(member1AttributeType);
+		}
+
+		AttributeTypeEntity compoundAttributeType = new AttributeTypeEntity(
+				TEST_COMP_NAME, DatatypeType.COMPOUNDED, true, true);
+		if (false == existingAttributeTypes.contains(compoundAttributeType)) {
+			compoundAttributeType.setMultivalued(true);
+			compoundAttributeType.addMember(member0AttributeType, 0, true);
+			compoundAttributeType.addMember(member1AttributeType, 1, true);
+			attributeTypeService.add(compoundAttributeType);
+		}
+
+		// operate: add multivalued attributes
+		IntegrationTestUtils.login(login, password);
+		AttributeDO compAttribute = new AttributeDO(TEST_COMP_NAME,
+				DatatypeType.COMPOUNDED, true, -1, null, null, true, true,
+				null, null);
+		String attributeValue1 = "value 00";
+		AttributeDO attribute1 = new AttributeDO(TEST_MEMBER_0_NAME,
+				DatatypeType.STRING, true, -1, null, null, true, true,
+				attributeValue1, null);
+		String attributeValue2 = "value 01";
+		AttributeDO attribute2 = new AttributeDO(TEST_MEMBER_1_NAME,
+				DatatypeType.STRING, true, -1, null, null, true, true,
+				attributeValue2, null);
+		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
+		attributes.add(compAttribute);
+		attributes.add(attribute1);
+		attributes.add(attribute2);
+		identityService.addAttribute(attributes);
+
+		attribute1.setStringValue("value 10");
+		attribute2.setStringValue("value 11");
+		identityService.addAttribute(attributes);
+
+		// operate: register certificate as application trust point
+		PkiService pkiService = getPkiService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		pkiService.addTrustPoint(
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+				this.certificate.getEncoded());
+
+		// operate: add application with certificate
+		ApplicationService applicationService = getApplicationService(initialContext);
+		applicationService.addApplication(testApplicationName, "owner", null,
+				this.certificate.getEncoded(), Arrays
+						.asList(new IdentityAttributeTypeDO[] {
+								new IdentityAttributeTypeDO(
+										SafeOnlineConstants.NAME_ATTRIBUTE),
+								new IdentityAttributeTypeDO(TEST_COMP_NAME) }));
+
+		// operate: subscribe onto the application and confirm identity usage
+		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+		IntegrationTestUtils.login(login, password);
+		subscriptionService.subscribe(testApplicationName);
+		identityService.confirmIdentity(testApplicationName);
+
+		// operate: retrieve name attribute via web service
+
+		this.attributeClient.setCaptureMessages(true);
+		CompoundedTestClass[] result = this.attributeClient.getAttributeValue(
+				login, TEST_COMP_NAME, CompoundedTestClass[].class);
+
+		// verify
+		Document resultDocument = this.attributeClient.getInboundMessage();
+		LOG
+				.debug("result message: "
+						+ DomTestUtils.domToString(resultDocument));
+		CompoundedTestClass result0 = result[0];
+		LOG.debug("result0: " + result0);
+		CompoundedTestClass result1 = result[1];
+		LOG.debug("result1: " + result1);
+
+		// verify number of attribute values returned.
+		Element nsElement = resultDocument.createElement("nsElement");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap",
+				"http://schemas.xmlsoap.org/soap/envelope/");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:samlp",
+				"urn:oasis:names:tc:SAML:2.0:protocol");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml",
+				"urn:oasis:names:tc:SAML:2.0:assertion");
+		XObject xObject = XPathAPI
+				.eval(
+						resultDocument,
+						"count(/soap:Envelope/soap:Body/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute/saml:AttributeValue)",
+						nsElement);
+		double countResult = xObject.num();
+		LOG.debug("count result: " + countResult);
+		assertEquals(2.0, countResult);
+	}
+
+	public static final String TEST_COMP_NAME = "test-comp-name-1234";
+
+	public static final String TEST_MEMBER_0_NAME = "test-member-0-name-5678";
+
+	public static final String TEST_MEMBER_1_NAME = "test-member-1-name-4321";
+
+	@Compound(TEST_COMP_NAME)
+	public static class CompoundedTestClass {
+		private String member0;
+
+		private String member1;
+
+		public CompoundedTestClass() {
+
+		}
+
+		@CompoundMember(TEST_MEMBER_0_NAME)
+		public String getMember0() {
+			return this.member0;
+		}
+
+		public void setMember0(String member0) {
+			this.member0 = member0;
+		}
+
+		@CompoundMember(TEST_MEMBER_1_NAME)
+		public String getMember1() {
+			return this.member1;
+		}
+
+		public void setMember1(String member1) {
+			this.member1 = member1;
+		}
+
+		@Override
+		public String toString() {
+			return new ToStringBuilder(this).append("member0", this.member0)
+					.append("member1", this.member1).toString();
+		}
+	}
+
+	@Test
+	public void instantiation() throws Exception {
+		Class clazz = CompoundedTestClass.class;
+		clazz.newInstance();
 	}
 
 	private boolean contains(String value, Object[] items) {

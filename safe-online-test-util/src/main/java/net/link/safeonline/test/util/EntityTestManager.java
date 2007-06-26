@@ -97,6 +97,14 @@ public class EntityTestManager {
 		return this.entityManager;
 	}
 
+	public void newTransaction() {
+		LOG.debug("new transaction");
+		EntityTransaction transaction = this.entityManager.getTransaction();
+		transaction.commit();
+		transaction.begin();
+		this.entityManager.clear();
+	}
+
 	public EntityManager getEntityManager() {
 		return this.entityManager;
 	}

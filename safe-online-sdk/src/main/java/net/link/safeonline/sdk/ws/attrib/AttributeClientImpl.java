@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.ws.attrib;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -25,6 +26,8 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.attrib.annotation.Compound;
+import net.link.safeonline.sdk.ws.attrib.annotation.CompoundMember;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -99,21 +102,150 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 
 		checkStatus(response);
 
-		Map<String, Object> attributes = new HashMap<String, Object>();
-		getAttributeValues(response, attributes);
-
-		Object value = attributes.get(attributeName);
-		if (null == value) {
-			return null;
-		}
-
-		if (false == valueClass.isInstance(value)) {
-			throw new IllegalArgumentException("expected type: "
-					+ valueClass.getName() + "; actual type: "
-					+ value.getClass().getName());
-		}
-		Type result = (Type) value;
+		Type result = getAttributeValue(response, valueClass);
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Object newInstance(Class compoundClass) {
+		Compound compoundAnnotation = (Compound) compoundClass
+				.getAnnotation(Compound.class);
+		if (null == compoundAnnotation) {
+			throw new IllegalArgumentException(
+					"valueClass not @Compound annotated");
+		}
+
+		Object compoundAttribute;
+		try {
+			compoundAttribute = compoundClass.newInstance();
+		} catch (Exception e) {
+			LOG.error("error: " + e.getMessage(), e);
+			throw new IllegalArgumentException(
+					"could not create new instance for "
+							+ compoundClass.getName());
+		}
+
+		return compoundAttribute;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <Type> Type getAttributeValue(ResponseType response,
+			Class<Type> valueClass) {
+		List<Object> assertions = response.getAssertionOrEncryptedAssertion();
+		if (assertions.isEmpty()) {
+			throw new RuntimeException("No assertions in response");
+		}
+		AssertionType assertion = (AssertionType) assertions.get(0);
+
+		List<StatementAbstractType> statements = assertion
+				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
+		if (statements.isEmpty()) {
+			throw new RuntimeException("No statements in response assertion");
+		}
+		AttributeStatementType attributeStatement = (AttributeStatementType) statements
+				.get(0);
+		List<Object> attributeObjects = attributeStatement
+				.getAttributeOrEncryptedAttribute();
+		AttributeType attribute = (AttributeType) attributeObjects.get(0);
+
+		if (Boolean.valueOf(attribute.getOtherAttributes().get(
+				WebServiceConstants.MULTIVALUED_ATTRIBUTE))
+				^ valueClass.isArray()) {
+			throw new IllegalArgumentException(
+					"multivalued and [] type mismatch");
+		}
+
+		List<Object> attributeValues = attribute.getAttributeValue();
+
+		if (valueClass.isArray()) {
+			/*
+			 * Multi-valued attribute.
+			 */
+			Class componentType = valueClass.getComponentType();
+			Type result = (Type) Array.newInstance(componentType,
+					attributeValues.size());
+
+			int idx = 0;
+			for (Object attributeValue : attributeValues) {
+				if (attributeValue instanceof AttributeType) {
+					AttributeType compoundAttribute = (AttributeType) attributeValue;
+					Object compound = newInstance(componentType);
+
+					List<Object> memberAttributes = compoundAttribute
+							.getAttributeValue();
+					for (Object memberAttributeObject : memberAttributes) {
+						AttributeType memberAttribute = (AttributeType) memberAttributeObject;
+						String memberName = memberAttribute.getName();
+						Object memberAttributeValue = memberAttribute
+								.getAttributeValue().get(0);
+						setCompoundProperty(memberName, memberAttributeValue,
+								compound);
+					}
+
+					Array.set(result, idx, compound);
+				} else {
+					Array.set(result, idx, attributeValue);
+				}
+				idx++;
+			}
+
+			return result;
+		} else {
+			/*
+			 * Single-valued attribute.
+			 */
+			// TODO: what about single-valued compounds?
+			Object value = attributeValues.get(0);
+			if (null == value) {
+				return null;
+			}
+
+			if (false == valueClass.isInstance(value)) {
+				throw new IllegalArgumentException("expected type: "
+						+ valueClass.getName() + "; actual type: "
+						+ value.getClass().getName());
+			}
+			Type attributeValue = (Type) value;
+			return attributeValue;
+		}
+
+	}
+
+	private void setCompoundProperty(String memberName,
+			Object memberAttributeValue, Object compound) {
+		Class compoundClass = compound.getClass();
+
+		Method[] methods = compoundClass.getMethods();
+		for (Method method : methods) {
+			CompoundMember compoundMemberAnnotation = method
+					.getAnnotation(CompoundMember.class);
+			if (null == compoundMemberAnnotation) {
+				continue;
+			}
+			if (false == memberName.equals(compoundMemberAnnotation.value())) {
+				continue;
+			}
+			String propertyName = method.getName().substring(3);
+			Method setPropertyMethod;
+			try {
+				setPropertyMethod = compoundClass.getMethod("set"
+						+ propertyName, new Class[] { memberAttributeValue
+						.getClass() });
+			} catch (SecurityException e) {
+				throw new RuntimeException("security error: " + e.getMessage(),
+						e);
+			} catch (NoSuchMethodException e) {
+				throw new RuntimeException(
+						"type mismatch for compound member: " + memberName);
+			}
+			try {
+				setPropertyMethod.invoke(compound,
+						new Object[] { memberAttributeValue });
+			} catch (Exception e) {
+				throw new RuntimeException("could not invoke: "
+						+ setPropertyMethod.getName());
+			}
+		}
 	}
 
 	private ResponseType getResponse(AttributeQueryType request)

@@ -133,6 +133,11 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>

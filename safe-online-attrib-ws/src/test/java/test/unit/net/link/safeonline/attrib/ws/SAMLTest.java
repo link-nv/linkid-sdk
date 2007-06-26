@@ -8,11 +8,13 @@
 package test.unit.net.link.safeonline.attrib.ws;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
@@ -36,8 +38,10 @@ import oasis.names.tc.saml._2_0.assertion.StatementAbstractType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xpath.XPathAPI;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class SAMLTest {
@@ -68,6 +72,8 @@ public class SAMLTest {
 		List<Object> attributeValue = attribute.getAttributeValue();
 
 		AttributeType memberAttribute = objectFactory.createAttributeType();
+		memberAttribute.setName("member-attribute-name");
+		memberAttribute.getAttributeValue().add("value");
 		attributeValue.add(memberAttribute);
 
 		attributeValue.add("hello world");
@@ -89,6 +95,18 @@ public class SAMLTest {
 
 		// verify
 		LOG.debug("result document: " + domToString(document));
+
+		Element nsElement = document.createElement("nsElement");
+		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+				"xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+				"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		Node resultNode = XPathAPI
+				.selectSingleNode(
+						document,
+						"/saml:Assertion/saml:AttributeStatement/saml:Attribute/saml:AttributeValue[@xsi:type='AttributeType']/saml:AttributeValue",
+						nsElement);
+		assertNotNull(resultNode);
 
 		Unmarshaller unmarshaller = context.createUnmarshaller();
 		JAXBElement<AssertionType> assertionElement = (JAXBElement<AssertionType>) unmarshaller

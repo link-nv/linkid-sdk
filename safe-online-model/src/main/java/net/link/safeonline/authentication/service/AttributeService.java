@@ -29,10 +29,15 @@ public interface AttributeService {
 	/**
 	 * Gives back the value of an attribute of a certain subject. The subject
 	 * must have confirmed attribute usage before the application is allowed to
-	 * access the attribute value. The returned object can be a {@link String}
-	 * or {@link Boolean} depending on the actual datatype used by corresponding
-	 * attribute type of the requested attribute. In case of a multivalued
-	 * attribute the returned object will be an array.
+	 * access the attribute value.
+	 * 
+	 * <p>
+	 * The returned object can be a {@link String} or {@link Boolean} depending
+	 * on the actual datatype used by corresponding attribute type of the
+	 * requested attribute. In case of a multivalued attribute the returned
+	 * object will be an array. In case of a compounded a Map will be returned.
+	 * In case of a multivalued compounded an array of Maps will be returned.
+	 * </p>
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName

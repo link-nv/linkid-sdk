@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -34,6 +35,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -72,6 +74,7 @@ public class AttributeServiceBean implements AttributeService,
 	@EJB
 	private SubjectDAO subjectDAO;
 
+	@SuppressWarnings("unchecked")
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public Object getConfirmedAttributeValue(String subjectLogin,
 			String attributeName) throws AttributeNotFoundException,
@@ -88,6 +91,8 @@ public class AttributeServiceBean implements AttributeService,
 			SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 			List<AttributeEntity> attributes = this.attributeDAO
 					.listAttributes(subject, attributeType);
+			LOG.debug("number of attributes for attrib type "
+					+ attributeType.getName() + ": " + attributes.size());
 			DatatypeType datatype = attributeType.getType();
 			switch (datatype) {
 			case STRING: {
@@ -101,6 +106,41 @@ public class AttributeServiceBean implements AttributeService,
 				Boolean[] values = new Boolean[attributes.size()];
 				for (int idx = 0; idx < values.length; idx++) {
 					values[idx] = attributes.get(idx).getBooleanValue();
+				}
+				return values;
+			}
+			case COMPOUNDED: {
+				Map[] values = new Map[attributes.size()];
+				for (CompoundedAttributeTypeMemberEntity member : attributeType
+						.getMembers()) {
+					AttributeTypeEntity memberAttributeType = member
+							.getMember();
+					for (int idx = 0; idx < attributes.size(); idx++) {
+						AttributeEntity attribute = this.attributeDAO
+								.findAttribute(subject, memberAttributeType,
+										idx);
+						Map<String, Object> memberMap = values[idx];
+						if (null == memberMap) {
+							memberMap = new HashMap<String, Object>();
+							values[idx] = memberMap;
+						}
+						Object value = null;
+						if (null != attribute) {
+							switch (memberAttributeType.getType()) {
+							case STRING:
+								value = attribute.getStringValue();
+								break;
+							case BOOLEAN:
+								value = attribute.getBooleanValue();
+								break;
+							default:
+								throw new EJBException(
+										"datatype not supported: "
+												+ memberAttributeType.getType());
+							}
+						}
+						memberMap.put(memberAttributeType.getName(), value);
+					}
 				}
 				return values;
 			}
@@ -196,6 +236,7 @@ public class AttributeServiceBean implements AttributeService,
 		return attributes;
 	}
 
+	@SuppressWarnings("unchecked")
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public Map<String, Object> getConfirmedAttributeValues(String subjectLogin)
 			throws SubjectNotFoundException, PermissionDeniedException {
@@ -229,6 +270,44 @@ public class AttributeServiceBean implements AttributeService,
 					Boolean[] values = new Boolean[attributes.size()];
 					for (int idx = 0; idx < values.length; idx++) {
 						values[idx] = attributes.get(idx).getBooleanValue();
+					}
+					value = values;
+					break;
+				}
+				case COMPOUNDED: {
+					Map[] values = new Map[attributes.size()];
+					for (CompoundedAttributeTypeMemberEntity member : attributeType
+							.getMembers()) {
+						AttributeTypeEntity memberAttributeType = member
+								.getMember();
+						for (int idx = 0; idx < attributes.size(); idx++) {
+							AttributeEntity attribute = this.attributeDAO
+									.findAttribute(subject,
+											memberAttributeType, idx);
+							Map<String, Object> memberMap = values[idx];
+							if (null == memberMap) {
+								memberMap = new HashMap<String, Object>();
+								values[idx] = memberMap;
+							}
+							Object memberValue = null;
+							if (null != attribute) {
+								switch (memberAttributeType.getType()) {
+								case STRING:
+									memberValue = attribute.getStringValue();
+									break;
+								case BOOLEAN:
+									memberValue = attribute.getBooleanValue();
+									break;
+								default:
+									throw new EJBException(
+											"datatype not supported: "
+													+ memberAttributeType
+															.getType());
+								}
+							}
+							memberMap.put(memberAttributeType.getName(),
+									memberValue);
+						}
 					}
 					value = values;
 					break;
