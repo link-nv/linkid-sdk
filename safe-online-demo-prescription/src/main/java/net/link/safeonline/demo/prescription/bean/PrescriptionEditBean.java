@@ -84,9 +84,10 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
 		String name = this.userStatus.getName();
 		if (null == dataClient.getAttributeValue(name, attributeName, null)) {
 			log.debug("create attribute #0 for #1", attributeName, name);
-			dataClient.createAttribute(name, attributeName);
+			dataClient.createAttribute(name, attributeName, attributeValue);
+		} else {
+			log.debug("set attribute #0 for #1", attributeName, name);
+			dataClient.setAttributeValue(name, attributeName, attributeValue);
 		}
-		log.debug("set attribute #0 for #1", attributeName, name);
-		dataClient.setAttributeValue(name, attributeName, attributeValue);
 	}
 }

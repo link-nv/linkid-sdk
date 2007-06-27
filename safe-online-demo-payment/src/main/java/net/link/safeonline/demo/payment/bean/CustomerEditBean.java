@@ -89,9 +89,12 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements
 		if (null == dataClient.getAttributeValue(this.name, attributeName,
 				attributeValue.getClass())) {
 			log.debug("create attribute #0 for #1", attributeName, this.name);
-			dataClient.createAttribute(this.name, attributeName);
+			dataClient
+					.createAttribute(this.name, attributeName, attributeValue);
+		} else {
+			log.debug("set attribute #0 for #1", attributeName, this.name);
+			dataClient.setAttributeValue(this.name, attributeName,
+					attributeValue);
 		}
-		log.debug("set attribute #0 for #1", attributeName, this.name);
-		dataClient.setAttributeValue(this.name, attributeName, attributeValue);
 	}
 }
