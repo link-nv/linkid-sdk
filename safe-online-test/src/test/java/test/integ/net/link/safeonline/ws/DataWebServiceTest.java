@@ -25,6 +25,8 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.naming.InitialContext;
@@ -43,6 +45,9 @@ import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.annotation.Compound;
+import net.link.safeonline.sdk.ws.annotation.CompoundId;
+import net.link.safeonline.sdk.ws.annotation.CompoundMember;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
@@ -50,6 +55,7 @@ import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
@@ -204,26 +210,32 @@ public class DataWebServiceTest {
 				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 				this.certificate.getEncoded());
 
-		// operate: add boolean attribute type
+		// operate: add attribute type
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
-		String firstMemberName = "member-name-" + UUID.randomUUID().toString();
+		List<AttributeTypeEntity> existingAttributeTypes = attributeTypeService
+				.listAttributeTypes();
 		AttributeTypeEntity firstMemberAttributeType = new AttributeTypeEntity(
-				firstMemberName, DatatypeType.STRING, true, true);
+				TEST_MEMBER_0_NAME, DatatypeType.STRING, true, true);
 		firstMemberAttributeType.setMultivalued(true);
-		attributeTypeService.add(firstMemberAttributeType);
+		if (false == existingAttributeTypes.contains(firstMemberAttributeType)) {
+			attributeTypeService.add(firstMemberAttributeType);
+		}
 
-		String secondMemberName = "member-name-" + UUID.randomUUID().toString();
 		AttributeTypeEntity secondMemberAttributeType = new AttributeTypeEntity(
-				secondMemberName, DatatypeType.BOOLEAN, true, true);
+				TEST_MEMBER_1_NAME, DatatypeType.BOOLEAN, true, true);
 		secondMemberAttributeType.setMultivalued(true);
-		attributeTypeService.add(secondMemberAttributeType);
+		if (false == existingAttributeTypes.contains(secondMemberAttributeType)) {
+			attributeTypeService.add(secondMemberAttributeType);
+		}
 
-		String compoundName = "compound-name-" + UUID.randomUUID().toString();
 		AttributeTypeEntity compoundAttributeType = new AttributeTypeEntity(
-				compoundName, DatatypeType.COMPOUNDED, true, true);
+				TEST_COMP_NAME, DatatypeType.COMPOUNDED, true, true);
+		compoundAttributeType.setMultivalued(true);
 		compoundAttributeType.addMember(firstMemberAttributeType, 0, true);
 		compoundAttributeType.addMember(secondMemberAttributeType, 1, true);
-		attributeTypeService.add(compoundAttributeType);
+		if (false == existingAttributeTypes.contains(compoundAttributeType)) {
+			attributeTypeService.add(compoundAttributeType);
+		}
 
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
@@ -232,7 +244,7 @@ public class DataWebServiceTest {
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),
-								new IdentityAttributeTypeDO(compoundName) }));
+								new IdentityAttributeTypeDO(TEST_COMP_NAME) }));
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
@@ -244,17 +256,56 @@ public class DataWebServiceTest {
 		AttributeProviderManagerService attributeProviderManagerService = getAttributeProviderManagerService(initialContext);
 		IntegrationTestUtils.login("admin", "admin");
 		attributeProviderManagerService.addAttributeProvider(
-				testApplicationName, compoundName);
+				testApplicationName, TEST_COMP_NAME);
 
 		this.dataClient.setCaptureMessages(true);
-		Attribute<Boolean> result = this.dataClient.getAttributeValue(login,
-				compoundName, Boolean.class);
+		Attribute<CompoundedTestClass[]> result = this.dataClient
+				.getAttributeValue(login, TEST_COMP_NAME,
+						CompoundedTestClass[].class);
 		LOG.debug("result message: "
 				+ DomUtils.domToString(this.dataClient.getInboundMessage()));
 		assertNull(result);
 
-		// operate: should fail
-		this.dataClient.setAttributeValue(login, compoundName, "test-value");
+		// operate: add 2 compounded attribute records
+		IntegrationTestUtils.login(login, password);
+		AttributeDO compAttribute = new AttributeDO(TEST_COMP_NAME,
+				DatatypeType.COMPOUNDED, true, -1, null, null, true, true,
+				null, null);
+		String attributeValue1 = "value 00";
+		AttributeDO attribute1 = new AttributeDO(TEST_MEMBER_0_NAME,
+				DatatypeType.STRING, true, -1, null, null, true, true,
+				attributeValue1, null);
+		Boolean attributeValue2 = true;
+		AttributeDO attribute2 = new AttributeDO(TEST_MEMBER_1_NAME,
+				DatatypeType.BOOLEAN, true, -1, null, null, true, true, null,
+				attributeValue2);
+		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
+		attributes.add(compAttribute);
+		attributes.add(attribute1);
+		attributes.add(attribute2);
+		identityService.addAttribute(attributes);
+
+		attribute1.setStringValue("value 10");
+		attribute2.setBooleanValue(false);
+		identityService.addAttribute(attributes);
+
+		this.dataClient.setCaptureMessages(true);
+		result = this.dataClient.getAttributeValue(login, TEST_COMP_NAME,
+				CompoundedTestClass[].class);
+		LOG.debug("result message: "
+				+ DomUtils.domToString(this.dataClient.getInboundMessage()));
+
+		assertEquals(TEST_COMP_NAME, result.getName());
+
+		assertEquals(2, result.getValue().length);
+		assertNotNull(result.getValue()[0].getId());
+		LOG.debug("attributeId: " + result.getValue()[0].getId());
+		assertEquals(attributeValue1, result.getValue()[0].getMember0());
+		assertTrue(result.getValue()[0].getMember1());
+
+		assertEquals("value 10", result.getValue()[1].getMember0());
+		assertFalse(result.getValue()[1].getMember1());
+		assertNotNull(result.getValue()[1].getId());
 	}
 
 	@Test
@@ -542,5 +593,57 @@ public class DataWebServiceTest {
 				Boolean.class);
 		assertNotNull(result);
 		assertNull(result.getValue());
+	}
+
+	public static final String TEST_COMP_NAME = "test-comp-name-6453";
+
+	public static final String TEST_MEMBER_0_NAME = "test-member-0-name-7493";
+
+	public static final String TEST_MEMBER_1_NAME = "test-member-1-name-3298";
+
+	@Compound(TEST_COMP_NAME)
+	public static class CompoundedTestClass {
+		private String member0;
+
+		private Boolean member1;
+
+		private String id;
+
+		public CompoundedTestClass() {
+
+		}
+
+		@CompoundId
+		public String getId() {
+			return this.id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		@CompoundMember(TEST_MEMBER_0_NAME)
+		public String getMember0() {
+			return this.member0;
+		}
+
+		public void setMember0(String member0) {
+			this.member0 = member0;
+		}
+
+		@CompoundMember(TEST_MEMBER_1_NAME)
+		public Boolean getMember1() {
+			return this.member1;
+		}
+
+		public void setMember1(Boolean member1) {
+			this.member1 = member1;
+		}
+
+		@Override
+		public String toString() {
+			return new ToStringBuilder(this).append("member0", this.member0)
+					.append("member1", this.member1).toString();
+		}
 	}
 }

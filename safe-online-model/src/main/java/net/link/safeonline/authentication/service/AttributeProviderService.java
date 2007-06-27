@@ -38,6 +38,10 @@ public interface AttributeProviderService {
 	 * maximum one entry.
 	 * </p>
 	 * 
+	 * <p>
+	 * For compounded attributes the members field will be filled in correctly.
+	 * </p>
+	 * 
 	 * @param subjectLogin
 	 * @param attributeName
 	 * @return the list of attribute entries.

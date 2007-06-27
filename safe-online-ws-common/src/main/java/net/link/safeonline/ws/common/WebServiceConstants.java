@@ -27,4 +27,7 @@ public class WebServiceConstants {
 
 	public static final QName MULTIVALUED_ATTRIBUTE = new QName(
 			SAFE_ONLINE_SAML_NAMESPACE, "multivalued", SAFE_ONLINE_SAML_PREFIX);
+
+	public static final QName COMPOUNDED_ATTRIBUTE_ID = new QName(
+			SAFE_ONLINE_SAML_NAMESPACE, "attributeId", SAFE_ONLINE_SAML_PREFIX);
 }

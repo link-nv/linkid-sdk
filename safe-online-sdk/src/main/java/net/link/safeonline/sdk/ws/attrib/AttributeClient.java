@@ -38,8 +38,8 @@ public interface AttributeClient extends MessageAccessor {
 	 * <p>
 	 * Compounded attributes are handled via annotated java classes. The
 	 * annotations to be used for this are
-	 * {@link net.link.safeonline.sdk.ws.attrib.annotation.Compound} and
-	 * {@link net.link.safeonline.sdk.ws.attrib.annotation.CompoundMember}.
+	 * {@link net.link.safeonline.sdk.ws.annotation.Compound} and
+	 * {@link net.link.safeonline.sdk.ws.annotation.CompoundMember}.
 	 * </p>
 	 * 
 	 * @param <Type>

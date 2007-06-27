@@ -8,6 +8,8 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -21,6 +23,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -177,6 +180,27 @@ public class AttributeEntity implements Serializable {
 
 	public void setBooleanValue(Boolean booleanValue) {
 		this.booleanValue = booleanValue;
+	}
+
+	private transient List<AttributeEntity> members;
+
+	/**
+	 * We don't manage the member attributes of a compounded attribute directly
+	 * via the database because the relationship is to complex to express. This
+	 * field is filled in by the DAO layer upon request.
+	 * 
+	 * @return
+	 */
+	@Transient
+	public List<AttributeEntity> getMember() {
+		if (null == this.members) {
+			this.members = new LinkedList<AttributeEntity>();
+		}
+		return this.members;
+	}
+
+	public void setMembers(List<AttributeEntity> members) {
+		this.members = members;
 	}
 
 	@Override

@@ -9,8 +9,8 @@ package test.unit.net.link.safeonline.sdk.ws.attrib;
 
 import org.junit.Test;
 
-import net.link.safeonline.sdk.ws.attrib.annotation.Compound;
-import net.link.safeonline.sdk.ws.attrib.annotation.CompoundMember;
+import net.link.safeonline.sdk.ws.annotation.Compound;
+import net.link.safeonline.sdk.ws.annotation.CompoundMember;
 
 public class CompoundedAttributeTest {
 

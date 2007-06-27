@@ -37,6 +37,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.ApplicationManager;
@@ -76,6 +77,24 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 
 		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
 				subject, attributeType);
+
+		if (false == attributeType.isCompounded()) {
+			return attributes;
+		}
+
+		List<CompoundedAttributeTypeMemberEntity> members = attributeType
+				.getMembers();
+		for (AttributeEntity attribute : attributes) {
+			for (CompoundedAttributeTypeMemberEntity member : members) {
+				AttributeEntity memberAttribute = this.attributeDAO
+						.findAttribute(subject, member.getMember(), attribute
+								.getAttributeIndex());
+				if (null != memberAttribute) {
+					attribute.getMember().add(memberAttribute);
+				}
+			}
+		}
+
 		return attributes;
 	}
 

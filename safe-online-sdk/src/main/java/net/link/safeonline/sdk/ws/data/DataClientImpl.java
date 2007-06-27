@@ -41,6 +41,7 @@ import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
+import net.link.safeonline.sdk.ws.CompoundBuilder;
 import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.ws.common.WebServiceConstants;
@@ -259,12 +260,38 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 			Type values = (Type) Array.newInstance(componentType, size);
 			for (int idx = 0; idx < size; idx++) {
 				Object attributeValue = attributeValues.get(idx);
-				if (false == componentType.isInstance(attributeValue)) {
-					throw new IllegalArgumentException("expected type "
-							+ componentType.getName() + "; received: "
-							+ attributeValue.getClass().getName());
+				if (attributeValue instanceof AttributeType) {
+					/*
+					 * We're dealing with a compounded attribute here.
+					 */
+					AttributeType compoundAttribute = (AttributeType) attributeValue;
+					CompoundBuilder compoundBuilder = new CompoundBuilder(
+							componentType);
+
+					String attributeId = compoundAttribute.getOtherAttributes()
+							.get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
+					compoundBuilder.setCompoundId(attributeId);
+
+					List<Object> memberAttributes = compoundAttribute
+							.getAttributeValue();
+					for (Object memberAttributeObject : memberAttributes) {
+						AttributeType memberAttribute = (AttributeType) memberAttributeObject;
+						String memberName = memberAttribute.getName();
+						Object memberAttributeValue = memberAttribute
+								.getAttributeValue().get(0);
+						compoundBuilder.setCompoundProperty(memberName,
+								memberAttributeValue);
+					}
+
+					Array.set(values, idx, compoundBuilder.getCompound());
+				} else {
+					if (false == componentType.isInstance(attributeValue)) {
+						throw new IllegalArgumentException("expected type "
+								+ componentType.getName() + "; received: "
+								+ attributeValue.getClass().getName());
+					}
+					Array.set(values, idx, attributeValue);
 				}
-				Array.set(values, idx, attributeValue);
 			}
 			Attribute<Type> resultAttribute = new Attribute<Type>(
 					attributeName, values);

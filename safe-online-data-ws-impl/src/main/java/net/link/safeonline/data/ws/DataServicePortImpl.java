@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.namespace.QName;
@@ -343,26 +344,63 @@ public class DataServicePortImpl implements DataServicePort {
 			for (AttributeEntity attributeEntity : attributeList) {
 				DatatypeType datatype = attributeEntity.getAttributeType()
 						.getType();
-				Object encodedValue;
 				switch (datatype) {
-				case STRING:
-					encodedValue = attributeEntity.getStringValue();
+				case STRING: {
+					Object encodedValue = attributeEntity.getStringValue();
+					attribute.getAttributeValue().add(encodedValue);
 					break;
-				case BOOLEAN:
-					encodedValue = attributeEntity.getBooleanValue();
+				}
+				case BOOLEAN: {
+					Object encodedValue = attributeEntity.getBooleanValue();
+					attribute.getAttributeValue().add(encodedValue);
 					break;
+				}
+				case COMPOUNDED: {
+					AttributeType compoundAttribute = new AttributeType();
+					compoundAttribute.setName(attributeName);
+					compoundAttribute.getOtherAttributes().put(
+							WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID,
+							attributeEntity.getStringValue());
+					List<Object> memberAttributeValues = compoundAttribute
+							.getAttributeValue();
+					for (AttributeEntity memberAttributeEntity : attributeEntity
+							.getMember()) {
+						AttributeType memberAttribute = new AttributeType();
+						AttributeTypeEntity memberAttributeType = memberAttributeEntity
+								.getAttributeType();
+						memberAttribute.setName(memberAttributeType.getName());
+						setSamlAttributeValue(memberAttributeEntity,
+								memberAttribute);
+						memberAttributeValues.add(memberAttribute);
+					}
+
+					attribute.getAttributeValue().add(compoundAttribute);
+					break;
+				}
 				default:
 					QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
 					return failedResponse;
 				}
-				/*
-				 * We're using http://www.w3.org/TR/xmlschema-1/#xsi_type here
-				 * to communicate the datatype to the client.
-				 */
-				attribute.getAttributeValue().add(encodedValue);
 			}
 		}
 		return queryResponse;
+	}
+
+	private void setSamlAttributeValue(AttributeEntity attribute,
+			AttributeType targetAttribute) {
+		AttributeTypeEntity attributeType = attribute.getAttributeType();
+		DatatypeType datatype = attributeType.getType();
+		List<Object> attributeValues = targetAttribute.getAttributeValue();
+		switch (datatype) {
+		case STRING:
+			attributeValues.add(attribute.getStringValue());
+			break;
+		case BOOLEAN:
+			attributeValues.add(attribute.getBooleanValue());
+			break;
+		default:
+			throw new EJBException("datatype not supported: " + datatype);
+		}
 	}
 
 	private QueryResponseType createFailedQueryResponse(

@@ -24,10 +24,9 @@ import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
+import net.link.safeonline.sdk.ws.CompoundBuilder;
 import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
-import net.link.safeonline.sdk.ws.attrib.annotation.Compound;
-import net.link.safeonline.sdk.ws.attrib.annotation.CompoundMember;
 import net.link.safeonline.sdk.ws.attrib.annotation.IdentityAttribute;
 import net.link.safeonline.sdk.ws.attrib.annotation.IdentityCard;
 import net.link.safeonline.ws.common.WebServiceConstants;
@@ -109,28 +108,6 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 	}
 
 	@SuppressWarnings("unchecked")
-	private Object newInstance(Class compoundClass) {
-		Compound compoundAnnotation = (Compound) compoundClass
-				.getAnnotation(Compound.class);
-		if (null == compoundAnnotation) {
-			throw new IllegalArgumentException(
-					"valueClass not @Compound annotated");
-		}
-
-		Object compoundAttribute;
-		try {
-			compoundAttribute = compoundClass.newInstance();
-		} catch (Exception e) {
-			LOG.error("error: " + e.getMessage(), e);
-			throw new IllegalArgumentException(
-					"could not create new instance for "
-							+ compoundClass.getName());
-		}
-
-		return compoundAttribute;
-	}
-
-	@SuppressWarnings("unchecked")
 	private <Type> Type getAttributeValue(ResponseType response,
 			Class<Type> valueClass) {
 		List<Object> assertions = response.getAssertionOrEncryptedAssertion();
@@ -171,7 +148,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 			for (Object attributeValue : attributeValues) {
 				if (attributeValue instanceof AttributeType) {
 					AttributeType compoundAttribute = (AttributeType) attributeValue;
-					Object compound = newInstance(componentType);
+					CompoundBuilder compoundBuilder = new CompoundBuilder(
+							componentType);
 
 					List<Object> memberAttributes = compoundAttribute
 							.getAttributeValue();
@@ -180,11 +158,11 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 						String memberName = memberAttribute.getName();
 						Object memberAttributeValue = memberAttribute
 								.getAttributeValue().get(0);
-						setCompoundProperty(memberName, memberAttributeValue,
-								compound);
+						compoundBuilder.setCompoundProperty(memberName,
+								memberAttributeValue);
 					}
 
-					Array.set(result, idx, compound);
+					Array.set(result, idx, compoundBuilder.getCompound());
 				} else {
 					Array.set(result, idx, attributeValue);
 				}
@@ -211,43 +189,6 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 			return attributeValue;
 		}
 
-	}
-
-	private void setCompoundProperty(String memberName,
-			Object memberAttributeValue, Object compound) {
-		Class compoundClass = compound.getClass();
-
-		Method[] methods = compoundClass.getMethods();
-		for (Method method : methods) {
-			CompoundMember compoundMemberAnnotation = method
-					.getAnnotation(CompoundMember.class);
-			if (null == compoundMemberAnnotation) {
-				continue;
-			}
-			if (false == memberName.equals(compoundMemberAnnotation.value())) {
-				continue;
-			}
-			String propertyName = method.getName().substring(3);
-			Method setPropertyMethod;
-			try {
-				setPropertyMethod = compoundClass.getMethod("set"
-						+ propertyName, new Class[] { memberAttributeValue
-						.getClass() });
-			} catch (SecurityException e) {
-				throw new RuntimeException("security error: " + e.getMessage(),
-						e);
-			} catch (NoSuchMethodException e) {
-				throw new RuntimeException(
-						"type mismatch for compound member: " + memberName);
-			}
-			try {
-				setPropertyMethod.invoke(compound,
-						new Object[] { memberAttributeValue });
-			} catch (Exception e) {
-				throw new RuntimeException("could not invoke: "
-						+ setPropertyMethod.getName());
-			}
-		}
 	}
 
 	private ResponseType getResponse(AttributeQueryType request)
