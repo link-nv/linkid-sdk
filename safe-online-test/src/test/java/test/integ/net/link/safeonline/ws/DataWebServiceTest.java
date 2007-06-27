@@ -7,6 +7,12 @@
 
 package test.integ.net.link.safeonline.ws;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeProviderManagerService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeTypeService;
@@ -23,7 +29,6 @@ import java.util.UUID;
 
 import javax.naming.InitialContext;
 
-import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AttributeDO;
@@ -47,6 +52,8 @@ import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 
 import test.integ.net.link.safeonline.IntegrationTestUtils;
@@ -61,7 +68,7 @@ import test.integ.net.link.safeonline.IntegrationTestUtils;
  * @author fcorneli
  * 
  */
-public class DataWebServiceTest extends TestCase {
+public class DataWebServiceTest {
 
 	private static final Log LOG = LogFactory.getLog(DataWebServiceTest.class);
 
@@ -69,10 +76,8 @@ public class DataWebServiceTest extends TestCase {
 
 	private X509Certificate certificate;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
 				"CN=Test");
@@ -81,6 +86,7 @@ public class DataWebServiceTest extends TestCase {
 				keyPair.getPrivate());
 	}
 
+	@Test
 	public void testDataService() throws Exception {
 		// setup
 		String testName = "test-name";
@@ -173,6 +179,85 @@ public class DataWebServiceTest extends TestCase {
 		assertNull(result.getValue());
 	}
 
+	@Test
+	public void dataServiceCompoundedAttribute() throws Exception {
+		// setup
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+
+		IntegrationTestUtils.setupLoginConfig();
+
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		IdentityService identityService = getIdentityService(initialContext);
+
+		String testApplicationName = UUID.randomUUID().toString();
+
+		// operate: register user
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		// operate: register certificate as application trust point
+		PkiService pkiService = getPkiService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		pkiService.addTrustPoint(
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+				this.certificate.getEncoded());
+
+		// operate: add boolean attribute type
+		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
+		String firstMemberName = "member-name-" + UUID.randomUUID().toString();
+		AttributeTypeEntity firstMemberAttributeType = new AttributeTypeEntity(
+				firstMemberName, DatatypeType.STRING, true, true);
+		firstMemberAttributeType.setMultivalued(true);
+		attributeTypeService.add(firstMemberAttributeType);
+
+		String secondMemberName = "member-name-" + UUID.randomUUID().toString();
+		AttributeTypeEntity secondMemberAttributeType = new AttributeTypeEntity(
+				secondMemberName, DatatypeType.BOOLEAN, true, true);
+		secondMemberAttributeType.setMultivalued(true);
+		attributeTypeService.add(secondMemberAttributeType);
+
+		String compoundName = "compound-name-" + UUID.randomUUID().toString();
+		AttributeTypeEntity compoundAttributeType = new AttributeTypeEntity(
+				compoundName, DatatypeType.COMPOUNDED, true, true);
+		compoundAttributeType.addMember(firstMemberAttributeType, 0, true);
+		compoundAttributeType.addMember(secondMemberAttributeType, 1, true);
+		attributeTypeService.add(compoundAttributeType);
+
+		// operate: add application with certificate
+		ApplicationService applicationService = getApplicationService(initialContext);
+		applicationService.addApplication(testApplicationName, "owner", null,
+				this.certificate.getEncoded(), Arrays
+						.asList(new IdentityAttributeTypeDO[] {
+								new IdentityAttributeTypeDO(
+										SafeOnlineConstants.NAME_ATTRIBUTE),
+								new IdentityAttributeTypeDO(compoundName) }));
+
+		// operate: subscribe onto the application and confirm identity usage
+		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+		IntegrationTestUtils.login(login, password);
+		subscriptionService.subscribe(testApplicationName);
+		identityService.confirmIdentity(testApplicationName);
+
+		// operate: add attribute provider
+		AttributeProviderManagerService attributeProviderManagerService = getAttributeProviderManagerService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		attributeProviderManagerService.addAttributeProvider(
+				testApplicationName, compoundName);
+
+		this.dataClient.setCaptureMessages(true);
+		Attribute<Boolean> result = this.dataClient.getAttributeValue(login,
+				compoundName, Boolean.class);
+		LOG.debug("result message: "
+				+ DomUtils.domToString(this.dataClient.getInboundMessage()));
+		assertNull(result);
+
+		// operate: should fail
+		this.dataClient.setAttributeValue(login, compoundName, "test-value");
+	}
+
+	@Test
 	public void testDataServiceBooleanAttribute() throws Exception {
 		// setup
 		InitialContext initialContext = IntegrationTestUtils
@@ -266,6 +351,7 @@ public class DataWebServiceTest extends TestCase {
 		assertNull(result.getValue());
 	}
 
+	@Test
 	public void testDataServiceMultivaluedAttribute() throws Exception {
 		// setup
 		InitialContext initialContext = IntegrationTestUtils
@@ -375,6 +461,7 @@ public class DataWebServiceTest extends TestCase {
 		assertEquals(attributeValue2, result.getValue()[1]);
 	}
 
+	@Test
 	public void testCreateAttribute() throws Exception {
 		// setup
 		InitialContext initialContext = IntegrationTestUtils
@@ -433,6 +520,27 @@ public class DataWebServiceTest extends TestCase {
 			// expected
 		}
 
-		this.dataClient.createAttribute(login, attributeName);
+		// operate
+		this.dataClient.createAttribute(login, attributeName, Boolean.TRUE);
+
+		// verify
+		result = this.dataClient.getAttributeValue(login, attributeName,
+				Boolean.class);
+		assertNotNull(result);
+		assertTrue(result.getValue());
+
+		// operate: set value to FALSE
+		this.dataClient.setAttributeValue(login, attributeName, Boolean.FALSE);
+		result = this.dataClient.getAttributeValue(login, attributeName,
+				Boolean.class);
+		assertNotNull(result);
+		assertFalse(result.getValue());
+
+		// operate: set value to NULL
+		this.dataClient.setAttributeValue(login, attributeName, null);
+		result = this.dataClient.getAttributeValue(login, attributeName,
+				Boolean.class);
+		assertNotNull(result);
+		assertNull(result.getValue());
 	}
 }

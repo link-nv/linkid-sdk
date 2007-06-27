@@ -86,8 +86,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		this.targetIdentityHandler = new TargetIdentityClientHandler();
 		initTargetIdentityHandler();
 
-		WSSecurityClientHandler.addNewHandler(this.port,
-				clientCertificate, clientPrivateKey);
+		WSSecurityClientHandler.addNewHandler(this.port, clientCertificate,
+				clientPrivateKey);
 	}
 
 	private void initTargetIdentityHandler() {
@@ -125,21 +125,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		modifyItem.setNewData(newData);
 		AttributeType attribute = new AttributeType();
 		attribute.setName(attributeName);
-		if (attributeValue != null) {
-			List<Object> attributeValues = attribute.getAttributeValue();
-			if (attributeValue.getClass().isArray()) {
-				attribute.getOtherAttributes().put(
-						WebServiceConstants.MULTIVALUED_ATTRIBUTE,
-						Boolean.TRUE.toString());
-				int size = Array.getLength(attributeValue);
-				for (int idx = 0; idx < size; idx++) {
-					Object value = Array.get(attributeValue, idx);
-					attributeValues.add(value);
-				}
-			} else {
-				attributeValues.add(attributeValue);
-			}
-		}
+		setAttributeValue(attributeValue, attribute);
 		newData.setAttribute(attribute);
 
 		ModifyResponseType modifyResponse;
@@ -299,8 +285,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		}
 	}
 
-	public void createAttribute(String subjectLogin, String attributeName)
-			throws ConnectException {
+	public void createAttribute(String subjectLogin, String attributeName,
+			Object attributeValue) throws ConnectException {
 
 		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
 
@@ -313,6 +299,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		AppDataType newData = new AppDataType();
 		AttributeType attribute = new AttributeType();
 		attribute.setName(attributeName);
+		setAttributeValue(attributeValue, attribute);
 		newData.setAttribute(attribute);
 		createItem.setNewData(newData);
 
@@ -330,6 +317,35 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		if (TopLevelStatusCode.OK != topLevelStatusCode) {
 			throw new RuntimeException(
 					"error occurred while creating attribute");
+		}
+	}
+
+	/**
+	 * Sets the attribute value within the target SAML attribute element.
+	 * 
+	 * The input attribute value can be an Integer, Boolean or array of these in
+	 * case of a multivalued attribute.
+	 * 
+	 * @param attributeValue
+	 * @param targetAttribute
+	 */
+	private void setAttributeValue(Object attributeValue,
+			AttributeType targetAttribute) {
+		if (null == attributeValue) {
+			return;
+		}
+		List<Object> attributeValues = targetAttribute.getAttributeValue();
+		if (attributeValue.getClass().isArray()) {
+			targetAttribute.getOtherAttributes().put(
+					WebServiceConstants.MULTIVALUED_ATTRIBUTE,
+					Boolean.TRUE.toString());
+			int size = Array.getLength(attributeValue);
+			for (int idx = 0; idx < size; idx++) {
+				Object value = Array.get(attributeValue, idx);
+				attributeValues.add(value);
+			}
+		} else {
+			attributeValues.add(attributeValue);
 		}
 	}
 }

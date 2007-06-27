@@ -76,6 +76,6 @@ public interface DataClient extends MessageAccessor {
 	 *             in case the service could not be contacted. Can happen if the
 	 *             SSL was not setup correctly.
 	 */
-	void createAttribute(String subjectLogin, String attributeName)
-			throws ConnectException;
+	void createAttribute(String subjectLogin, String attributeName,
+			Object objectValue) throws ConnectException;
 }
