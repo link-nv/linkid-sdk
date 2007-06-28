@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.demo.payment.servlet;
 
 import java.io.IOException;
@@ -71,25 +78,25 @@ public class LoginServlet extends HttpServlet {
 		}
 
 		if (null == paymentAdminAttribute) {
-			redirectToStatusPage(session, response);
+			redirectToOverviewPage(session, response);
 			return;
 		}
 
 		Boolean value = paymentAdminAttribute.getValue();
 		if (null == value) {
-			redirectToStatusPage(session, response);
+			redirectToOverviewPage(session, response);
 			return;
 		}
 
 		if (false == value) {
-			redirectToStatusPage(session, response);
+			redirectToOverviewPage(session, response);
 			return;
 		}
 
-		redirectToOverviewPage(session, response);
+		redirectToAdminPage(session, response);
 	}
 
-	private void redirectToStatusPage(HttpSession session,
+	private void redirectToOverviewPage(HttpSession session,
 			HttpServletResponse response) throws IOException {
 		session.setAttribute("role", PaymentConstants.USER_ROLE);
 		/*
@@ -99,7 +106,7 @@ public class LoginServlet extends HttpServlet {
 		response.sendRedirect("./overview.seam");
 	}
 
-	private void redirectToOverviewPage(HttpSession session,
+	private void redirectToAdminPage(HttpSession session,
 			HttpServletResponse response) throws IOException {
 		session.setAttribute("role", PaymentConstants.ADMIN_ROLE);
 		response.sendRedirect("./search.seam");

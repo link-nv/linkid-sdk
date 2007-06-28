@@ -1,0 +1,24 @@
+<div id="sidebar"><c:choose
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib">
+	<c:when test="#{userPrincipal == null}">
+		<h:form>
+			<h:commandButton action="#{mandateLogon.login}" id="login"
+				value="Login" />
+		</h:form>
+		<f:verbatim>&#160;</f:verbatim>
+	</c:when>
+	<c:otherwise>
+		<p>Welcome #{userPrincipal.name}.</p>
+		<h:form>
+			<h:commandButton action="#{mandateLogon.logout}" id="logout"
+				value="Logout" />
+		</h:form>
+		<f:verbatim>&#160;</f:verbatim>
+	</c:otherwise>
+</c:choose></div>

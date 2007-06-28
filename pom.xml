@@ -298,6 +298,8 @@
 		<module>safe-online-app-console</module>
 		<module>safe-online-ws-common</module>
 		<module>safe-online-demo-mandate-keystore</module>
+		<module>safe-online-demo-mandate</module>
+		<module>safe-online-demo-mandate-webapp</module>
 	</modules>
 	<repositories>
 		<repository>

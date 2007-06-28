@@ -2,12 +2,13 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="content">
-		<p>#{msgs.welcomeMsg}</p>
-		<p><a href="/olas/register.seam">#{msgs.clickToRegister}</a></p>
+		<h2>#{msgs.overview}</h2>
+
 	</ui:define>
 
 	<ui:define name="sidebar">

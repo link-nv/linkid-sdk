@@ -5,13 +5,17 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.demo.payment;
+package net.link.safeonline.demo.mandate;
 
 import javax.ejb.Local;
 
 @Local
-public interface CustomerSearch extends AbstractPaymentDataClient {
+public interface MandateLogon {
 
-	String search();
+	/*
+	 * Actions.
+	 */
+	String login();
 
+	String logout();
 }
