@@ -116,8 +116,14 @@ public class DataServicePortImpl implements DataServicePort {
 		AppDataType appData = createItem.getNewData();
 		AttributeType attribute = appData.getAttribute();
 		String attributeName = attribute.getName();
-		Object attributeValue = getValueObjectFromAttribute(attribute);
 
+		Object attributeValue;
+		if (isCompoundAttribute(attribute)) {
+			attributeValue = getCompoundMemberValues(attribute);
+
+		} else {
+			attributeValue = getValueObjectFromAttribute(attribute);
+		}
 		try {
 			this.attributeProviderService.createAttribute(userId,
 					attributeName, attributeValue);

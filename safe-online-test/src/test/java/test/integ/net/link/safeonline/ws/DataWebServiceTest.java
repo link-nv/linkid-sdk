@@ -325,6 +325,21 @@ public class DataWebServiceTest {
 		assertEquals("hello world", result.getValue()[1].getMember0());
 		assertFalse(result.getValue()[1].isMember1());
 		assertNotNull(result.getValue()[1].getId());
+
+		// operate: create compound attribute
+		CompoundedTestClass newCompoundAttribute = new CompoundedTestClass();
+		newCompoundAttribute.setMember0("foobar");
+		newCompoundAttribute.setMember1(true);
+		this.dataClient.createAttribute(login, TEST_COMP_NAME,
+				newCompoundAttribute);
+
+		result = this.dataClient.getAttributeValue(login, TEST_COMP_NAME,
+				CompoundedTestClass[].class);
+		assertEquals(3, result.getValue().length);
+
+		assertEquals("foobar", result.getValue()[2].getMember0());
+		assertTrue(result.getValue()[2].isMember1());
+		assertNotNull(result.getValue()[2].getId());
 	}
 
 	@Test

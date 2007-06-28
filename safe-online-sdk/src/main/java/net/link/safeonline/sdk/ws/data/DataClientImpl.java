@@ -130,7 +130,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		modifyItem.setNewData(newData);
 		AttributeType attribute = new AttributeType();
 		attribute.setName(attributeName);
-		setAttributeValue(attributeValue, attribute);
+		setAttributeValue(attributeValue, attribute, false);
 		newData.setAttribute(attribute);
 
 		ModifyResponseType modifyResponse;
@@ -330,7 +330,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		AppDataType newData = new AppDataType();
 		AttributeType attribute = new AttributeType();
 		attribute.setName(attributeName);
-		setAttributeValue(attributeValue, attribute);
+		setAttributeValue(attributeValue, attribute, true);
 		newData.setAttribute(attribute);
 		createItem.setNewData(newData);
 
@@ -359,15 +359,17 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 	 * 
 	 * @param attributeValue
 	 * @param targetAttribute
+	 * @param newAttribute
 	 */
 	private void setAttributeValue(Object attributeValue,
-			AttributeType targetAttribute) {
+			AttributeType targetAttribute, boolean isNewAttribute) {
 		if (null == attributeValue) {
 			return;
 		}
 		List<Object> attributeValues = targetAttribute.getAttributeValue();
 		if (isCompound(attributeValue)) {
-			AttributeType compoundAttribute = createCompoundAttribute(attributeValue);
+			AttributeType compoundAttribute = createCompoundAttribute(
+					attributeValue, isNewAttribute);
 			attributeValues.add(compoundAttribute);
 			return;
 		}
@@ -386,7 +388,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 	}
 
 	@SuppressWarnings("unchecked")
-	private AttributeType createCompoundAttribute(Object attributeValue) {
+	private AttributeType createCompoundAttribute(Object attributeValue,
+			boolean isNewAttribute) {
 		Class attributeClass = attributeValue.getClass();
 		Method[] methods = attributeClass.getMethods();
 		AttributeType compoundAttribute = new AttributeType();
@@ -426,16 +429,21 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 				}
 			}
 		}
-		if (null == id) {
-			throw new IllegalArgumentException(
-					"Missing @Id property on compound attribute value");
+		if (null != id) {
+			compoundAttribute.getOtherAttributes().put(
+					WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, id);
+		} else {
+			if (false == isNewAttribute) {
+				/*
+				 * The @Id property is really required to be able to target the
+				 * correct compound attribute record within the system. In case
+				 * we're creating a new compounded attribute record the
+				 * attribute Id is of no use.
+				 */
+				throw new IllegalArgumentException(
+						"Missing @Id property on compound attribute value");
+			}
 		}
-		/*
-		 * The @Id property is really required to be able to target the correct
-		 * compound attribute record within the system.
-		 */
-		compoundAttribute.getOtherAttributes().put(
-				WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, id);
 		return compoundAttribute;
 	}
 

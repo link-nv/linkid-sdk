@@ -11,6 +11,7 @@ import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -129,6 +130,29 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		return attributeType;
 	}
 
+	private void createCompoundAttribute(SubjectEntity subject,
+			AttributeTypeEntity attributeType, Map<String, Object> memberValues) {
+		AttributeEntity compoundAttribute = this.attributeDAO.addAttribute(
+				attributeType, subject);
+		long attributeIdx = compoundAttribute.getAttributeIndex();
+		LOG.debug("createCompoundAttribute: idx " + attributeIdx);
+		String attributeId = UUID.randomUUID().toString();
+		LOG.debug("new attribute Id: " + attributeId);
+		compoundAttribute.setStringValue(attributeId);
+
+		List<CompoundedAttributeTypeMemberEntity> members = attributeType
+				.getMembers();
+		for (CompoundedAttributeTypeMemberEntity member : members) {
+			AttributeTypeEntity memberAttributeType = member.getMember();
+			AttributeEntity memberAttribute = this.attributeDAO.addAttribute(
+					memberAttributeType, subject, attributeIdx);
+			Object attributeValue = memberValues.get(memberAttributeType
+					.getName());
+			memberAttribute.setValue(attributeValue);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public void createAttribute(String subjectLogin, String attributeName,
 			Object attributeValue) throws AttributeTypeNotFoundException,
@@ -142,6 +166,12 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 
 		if (null == attributeValue) {
 			this.attributeDAO.addAttribute(attributeType, subject);
+			return;
+		}
+
+		if (attributeValue instanceof Map) {
+			Map<String, Object> memberValues = (Map<String, Object>) attributeValue;
+			createCompoundAttribute(subject, attributeType, memberValues);
 			return;
 		}
 

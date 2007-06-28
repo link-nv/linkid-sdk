@@ -57,9 +57,13 @@ public interface AttributeProviderService {
 			PermissionDeniedException, SubjectNotFoundException;
 
 	/**
-	 * Create a new attribute for the given user. The optional attribute value
-	 * can be a {@link String} or {@link Integer} or an array in case of a
-	 * multivalued attribute.
+	 * Create a new attribute for the given user.
+	 * 
+	 * <p>
+	 * The optional attribute value can be a {@link String} or {@link Integer}
+	 * or an array in case of a multivalued attribute. In case of a compounded
+	 * attribute record the attribute value is a Map.
+	 * </p>
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
