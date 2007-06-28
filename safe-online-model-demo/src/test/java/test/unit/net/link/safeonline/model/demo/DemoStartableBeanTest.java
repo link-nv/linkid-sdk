@@ -54,9 +54,12 @@ import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import junit.framework.TestCase;
 
-public class DemoStartableBeanTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class DemoStartableBeanTest {
 
 	private EntityTestManager entityTestManager;
 
@@ -71,10 +74,8 @@ public class DemoStartableBeanTest extends TestCase {
 			AttributeProviderDAOBean.class, DeviceDAOBean.class,
 			AllowedDeviceDAOBean.class };
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		this.entityTestManager = new EntityTestManager();
 		this.entityTestManager.setUp(SubjectEntity.class,
 				ApplicationEntity.class, ApplicationOwnerEntity.class,
@@ -103,14 +104,13 @@ public class DemoStartableBeanTest extends TestCase {
 		entityTransaction.begin();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		this.entityTestManager.tearDown();
-
-		super.tearDown();
 	}
 
-	public void testPostStart() throws Exception {
+	@Test
+	public void postStart() throws Exception {
 		// setup
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 		DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(

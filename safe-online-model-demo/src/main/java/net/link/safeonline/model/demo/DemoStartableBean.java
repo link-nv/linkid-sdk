@@ -19,6 +19,7 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.demo.keystore.DemoKeyStoreUtil;
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
+import net.link.safeonline.demo.mandate.keystore.DemoMandateKeyStoreUtils;
 import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
 import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStoreUtils;
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
@@ -50,6 +51,8 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	public static final String DEMO_PRESCRIPTION_APPLICATION_NAME = "demo-prescription";
 
+	public static final String DEMO_MANDATE_APPLICATION_NAME = "demo-mandate";
+
 	public DemoStartableBean() {
 		configDemoUsers();
 
@@ -69,6 +72,65 @@ public class DemoStartableBean extends AbstractInitBean {
 		configLawyerDemo();
 
 		configPrescriptionDemo();
+
+		configMandateDemo();
+	}
+
+	private void configMandateDemo() {
+		PrivateKeyEntry demoMandatePrivateKeyEntry = DemoMandateKeyStoreUtils
+				.getPrivateKeyEntry();
+		X509Certificate demoMandateCertificate = (X509Certificate) demoMandatePrivateKeyEntry
+				.getCertificate();
+
+		/*
+		 * Register the application and the application certificate.
+		 */
+		this.trustedCertificates.add(demoMandateCertificate);
+		this.registeredApplications
+				.add(new Application(DEMO_MANDATE_APPLICATION_NAME, "owner",
+						demoMandateCertificate));
+
+		/*
+		 * Subscribe the demo users to the mandate demo application.
+		 */
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"fcorneli", DEMO_MANDATE_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"dieter", DEMO_MANDATE_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"mario", DEMO_MANDATE_APPLICATION_NAME));
+
+		/*
+		 * Register mandate attribute type
+		 */
+		AttributeTypeEntity mandateCompanyAttributeType = configDemoAttribute(
+				DemoConstants.MANDATE_COMPANY_ATTRIBUTE_NAME,
+				DatatypeType.STRING, true, null, "Company", "Bedrijf", true,
+				false);
+		AttributeTypeEntity mandateTitleAttributeType = configDemoAttribute(
+				DemoConstants.MANDATE_TITLE_ATTRIBUTE_NAME,
+				DatatypeType.STRING, true, null, "Title", "Titel", true, false);
+
+		AttributeTypeEntity mandateAttributeType = new AttributeTypeEntity(
+				DemoConstants.MANDATE_ATTRIBUTE_NAME, DatatypeType.COMPOUNDED,
+				true, false);
+		mandateAttributeType.setMultivalued(true);
+		mandateAttributeType.addMember(mandateCompanyAttributeType, 0, true);
+		mandateAttributeType.addMember(mandateTitleAttributeType, 1, true);
+		this.attributeTypes.add(mandateAttributeType);
+
+		AttributeProviderEntity attributeProvider = new AttributeProviderEntity();
+		attributeProvider.setPk(new AttributeProviderPK(
+				DEMO_MANDATE_APPLICATION_NAME,
+				DemoConstants.MANDATE_ATTRIBUTE_NAME));
+		this.attributeProviders.add(attributeProvider);
+
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				mandateAttributeType, Locale.ENGLISH.getLanguage(), "Mandate",
+				null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				mandateAttributeType, "nl", "Mandaat", null));
+
 	}
 
 	private void configTicketDemo() {
@@ -313,7 +375,7 @@ public class DemoStartableBean extends AbstractInitBean {
 				DEMO_LAWYER_APPLICATION_NAME, enName, nlName, true, false);
 	}
 
-	private void configDemoAttribute(String attributeName,
+	private AttributeTypeEntity configDemoAttribute(String attributeName,
 			DatatypeType datatype, boolean multiValued,
 			String attributeProviderName, String enName, String nlName,
 			boolean userVisible, boolean userEditable) {
@@ -329,10 +391,17 @@ public class DemoStartableBean extends AbstractInitBean {
 			this.attributeProviders.add(attributeProvider);
 		}
 
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				attributeType, Locale.ENGLISH.getLanguage(), enName, null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				attributeType, "nl", nlName, null));
+		if (null != enName) {
+			this.attributeTypeDescriptions
+					.add(new AttributeTypeDescriptionEntity(attributeType,
+							Locale.ENGLISH.getLanguage(), enName, null));
+		}
+		if (null != nlName) {
+			this.attributeTypeDescriptions
+					.add(new AttributeTypeDescriptionEntity(attributeType,
+							"nl", nlName, null));
+		}
+		return attributeType;
 	}
 
 	private void configDemoUsers() {
