@@ -39,4 +39,22 @@ public class AuthorizationServiceBean implements AuthorizationService {
 
 		return user.isAdmin();
 	}
+
+	public void bootstrap() {
+		LOG.debug("bootstrapping...");
+		UserEntity defaultAdminUser = this.entityManager.find(UserEntity.class,
+				AuthorizationService.DEFAULT_ADMIN_USER);
+		if (null == defaultAdminUser) {
+			LOG.debug("adding default admin user: "
+					+ AuthorizationService.DEFAULT_ADMIN_USER);
+			defaultAdminUser = new UserEntity(
+					AuthorizationService.DEFAULT_ADMIN_USER);
+			this.entityManager.persist(defaultAdminUser);
+		}
+		if (false == defaultAdminUser.isAdmin()) {
+			LOG.debug("resetting default admin user to admin privilege: "
+					+ defaultAdminUser.getName());
+			defaultAdminUser.setAdmin(true);
+		}
+	}
 }

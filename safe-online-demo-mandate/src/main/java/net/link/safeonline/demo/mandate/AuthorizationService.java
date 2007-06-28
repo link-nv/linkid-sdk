@@ -14,5 +14,9 @@ public interface AuthorizationService {
 
 	static final String JNDI_BINDING = "SafeOnlineMandateDemo/AuthorizationServiceBean/local";
 
+	static final String DEFAULT_ADMIN_USER = "mandate-admin";
+
 	boolean isAdmin(String username);
+
+	void bootstrap();
 }

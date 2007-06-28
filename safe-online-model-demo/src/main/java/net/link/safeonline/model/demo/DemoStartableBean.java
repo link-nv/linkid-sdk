@@ -131,6 +131,18 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				mandateAttributeType, "nl", "Mandaat", null));
 
+		/*
+		 * Register admin
+		 */
+		String mandateAdmin = "mandate-admin";
+		this.authorizedUsers.put(mandateAdmin, "secret");
+
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				mandateAdmin, DEMO_MANDATE_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(
+				SubscriptionOwnerType.APPLICATION, mandateAdmin,
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+
 	}
 
 	private void configTicketDemo() {
