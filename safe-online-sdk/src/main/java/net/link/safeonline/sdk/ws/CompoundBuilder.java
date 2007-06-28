@@ -61,6 +61,29 @@ public class CompoundBuilder {
 		return this.compoundAttribute;
 	}
 
+	private Method getSetMethod(Method getMethod) {
+		String methodName = getMethod.getName();
+		String propertyName;
+		if (methodName.startsWith("get")) {
+			propertyName = methodName.substring(3);
+		} else if (methodName.startsWith("is")) {
+			propertyName = methodName.substring(2);
+		} else {
+			throw new RuntimeException("not a property: " + methodName);
+		}
+		Method setMethod;
+		try {
+			setMethod = this.compoundClass.getMethod("set" + propertyName,
+					new Class[] { getMethod.getReturnType() });
+		} catch (SecurityException e) {
+			throw new RuntimeException("security error: " + e.getMessage(), e);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException("type mismatch for compound member: "
+					+ propertyName);
+		}
+		return setMethod;
+	}
+
 	public void setCompoundProperty(String memberName,
 			Object memberAttributeValue) {
 		Method[] methods = this.compoundClass.getMethods();
@@ -73,19 +96,7 @@ public class CompoundBuilder {
 			if (false == memberName.equals(compoundMemberAnnotation.value())) {
 				continue;
 			}
-			String propertyName = method.getName().substring(3);
-			Method setPropertyMethod;
-			try {
-				setPropertyMethod = this.compoundClass.getMethod("set"
-						+ propertyName, new Class[] { memberAttributeValue
-						.getClass() });
-			} catch (SecurityException e) {
-				throw new RuntimeException("security error: " + e.getMessage(),
-						e);
-			} catch (NoSuchMethodException e) {
-				throw new RuntimeException(
-						"type mismatch for compound member: " + memberName);
-			}
+			Method setPropertyMethod = getSetMethod(method);
 			try {
 				setPropertyMethod.invoke(this.compoundAttribute,
 						new Object[] { memberAttributeValue });
@@ -104,17 +115,7 @@ public class CompoundBuilder {
 			if (null == compoundIdAnnotation) {
 				continue;
 			}
-			String propertyName = method.getName().substring(3);
-			Method setPropertyMethod;
-			try {
-				setPropertyMethod = this.compoundClass.getMethod("set"
-						+ propertyName, new Class[] { String.class });
-			} catch (SecurityException e) {
-				throw new RuntimeException("security error: " + e.getMessage(),
-						e);
-			} catch (NoSuchMethodException e) {
-				throw new RuntimeException("type mismatch for Id");
-			}
+			Method setPropertyMethod = getSetMethod(method);
 			try {
 				setPropertyMethod.invoke(this.compoundAttribute,
 						new Object[] { attributeId });

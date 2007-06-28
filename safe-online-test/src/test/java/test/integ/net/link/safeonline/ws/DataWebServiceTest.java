@@ -301,10 +301,29 @@ public class DataWebServiceTest {
 		assertNotNull(result.getValue()[0].getId());
 		LOG.debug("attributeId: " + result.getValue()[0].getId());
 		assertEquals(attributeValue1, result.getValue()[0].getMember0());
-		assertTrue(result.getValue()[0].getMember1());
+		assertTrue(result.getValue()[0].isMember1());
 
 		assertEquals("value 10", result.getValue()[1].getMember0());
-		assertFalse(result.getValue()[1].getMember1());
+		assertFalse(result.getValue()[1].isMember1());
+		assertNotNull(result.getValue()[1].getId());
+
+		// operate: write compounded attribute
+		CompoundedTestClass newValue = result.getValue()[1];
+		newValue.setMember0("hello world");
+		this.dataClient.setCaptureMessages(true);
+		try {
+			this.dataClient.setAttributeValue(login, TEST_COMP_NAME, newValue);
+		} finally {
+			LOG.debug("request message: "
+					+ DomTestUtils.domToString(this.dataClient
+							.getOutboundMessage()));
+		}
+
+		// verify
+		result = this.dataClient.getAttributeValue(login, TEST_COMP_NAME,
+				CompoundedTestClass[].class);
+		assertEquals("hello world", result.getValue()[1].getMember0());
+		assertFalse(result.getValue()[1].isMember1());
 		assertNotNull(result.getValue()[1].getId());
 	}
 
@@ -632,7 +651,7 @@ public class DataWebServiceTest {
 		}
 
 		@CompoundMember(TEST_MEMBER_1_NAME)
-		public Boolean getMember1() {
+		public Boolean isMember1() {
 			return this.member1;
 		}
 

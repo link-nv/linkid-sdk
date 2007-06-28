@@ -40,6 +40,7 @@
 		</developer>
 	</developers>
 	<scm>
+		<url>http://buildserver/svn/products/safe-online/trunk/</url>
 		<connection>
 			scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/trunk
 		</connection>
@@ -47,6 +48,12 @@
 			scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/trunk
 		</developerConnection>
 	</scm>
+	<mailingLists>
+		<mailingList>
+			<name>safeonline-dev</name>
+			<post>safeonline-dev@lin-k.net</post>
+		</mailingList>
+	</mailingLists>
 	<organization>
 		<name>LIN.K N.V.</name>
 		<url>http://www.lin-k.net</url>

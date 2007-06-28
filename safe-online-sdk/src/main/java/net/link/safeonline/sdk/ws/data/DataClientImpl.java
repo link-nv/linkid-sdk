@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.ws.data;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -44,6 +45,9 @@ import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.CompoundBuilder;
 import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.annotation.Compound;
+import net.link.safeonline.sdk.ws.annotation.CompoundId;
+import net.link.safeonline.sdk.ws.annotation.CompoundMember;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
@@ -362,6 +366,11 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 			return;
 		}
 		List<Object> attributeValues = targetAttribute.getAttributeValue();
+		if (isCompound(attributeValue)) {
+			AttributeType compoundAttribute = createCompoundAttribute(attributeValue);
+			attributeValues.add(compoundAttribute);
+			return;
+		}
 		if (attributeValue.getClass().isArray()) {
 			targetAttribute.getOtherAttributes().put(
 					WebServiceConstants.MULTIVALUED_ATTRIBUTE,
@@ -374,5 +383,67 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		} else {
 			attributeValues.add(attributeValue);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private AttributeType createCompoundAttribute(Object attributeValue) {
+		Class attributeClass = attributeValue.getClass();
+		Method[] methods = attributeClass.getMethods();
+		AttributeType compoundAttribute = new AttributeType();
+		Compound compoundAnnotation = (Compound) attributeClass
+				.getAnnotation(Compound.class);
+		String compoundName = compoundAnnotation.value();
+		compoundAttribute.setName(compoundName);
+		List<Object> attributeValues = compoundAttribute.getAttributeValue();
+		LOG.debug("creating compound attribute: " + compoundName);
+		String id = null;
+		for (Method method : methods) {
+			CompoundMember compoundMemberAnnotation = method
+					.getAnnotation(CompoundMember.class);
+			if (null != compoundMemberAnnotation) {
+				String memberName = compoundMemberAnnotation.value();
+				Object value;
+				try {
+					value = method.invoke(attributeValue, new Object[] {});
+				} catch (Exception e) {
+					throw new RuntimeException("could not get property: "
+							+ method.getName().substring(3));
+				}
+				AttributeType memberAttribute = new AttributeType();
+				memberAttribute.setName(memberName);
+				memberAttribute.getAttributeValue().add(value);
+				attributeValues.add(memberAttribute);
+			}
+			CompoundId compoundIdAnnotation = method
+					.getAnnotation(CompoundId.class);
+			if (null != compoundIdAnnotation) {
+				try {
+					id = (String) method
+							.invoke(attributeValue, new Object[] {});
+				} catch (Exception e) {
+					throw new RuntimeException(
+							"@Id property not of type string");
+				}
+			}
+		}
+		if (null == id) {
+			throw new IllegalArgumentException(
+					"Missing @Id property on compound attribute value");
+		}
+		/*
+		 * The @Id property is really required to be able to target the correct
+		 * compound attribute record within the system.
+		 */
+		compoundAttribute.getOtherAttributes().put(
+				WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, id);
+		return compoundAttribute;
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean isCompound(Object attributeValue) {
+		Class attributeClass = attributeValue.getClass();
+		Compound compoundAnnotation = (Compound) attributeClass
+				.getAnnotation(Compound.class);
+		return null != compoundAnnotation;
 	}
 }

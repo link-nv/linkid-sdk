@@ -10,15 +10,12 @@ package net.link.safeonline.authentication.service.bean;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.security.SecurityDomain;
 
 import net.link.safeonline.SafeOnlineApplicationRoles;
 import net.link.safeonline.SafeOnlineConstants;
@@ -41,6 +38,10 @@ import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.ApplicationManager;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
@@ -90,7 +91,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 						.findAttribute(subject, member.getMember(), attribute
 								.getAttributeIndex());
 				if (null != memberAttribute) {
-					attribute.getMember().add(memberAttribute);
+					attribute.getMembers().add(memberAttribute);
 				}
 			}
 		}
@@ -177,67 +178,79 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 
 		if (attributeType.isMultivalued()) {
-			List<AttributeEntity> attributes = this.attributeDAO
-					.listAttributes(subject, attributeType);
-			if (attributes.isEmpty()) {
-				/*
-				 * Via setAttribute one can only update existing multivalued
-				 * attributes, not create them.
-				 */
-				throw new AttributeNotFoundException();
-			}
-			if (null == attributeValue) {
-				/*
-				 * In this case we remove all but one, which we set with a null
-				 * value.
-				 */
-				Iterator<AttributeEntity> iterator = attributes.iterator();
-				AttributeEntity attribute = iterator.next();
-				clearAttributeValues(attribute);
-				while (iterator.hasNext()) {
-					attribute = iterator.next();
-					this.attributeDAO.removeAttribute(attribute);
-				}
-			} else {
-				if (false == attributeValue.getClass().isArray()) {
-					throw new DatatypeMismatchException();
-				}
-				int newSize = Array.getLength(attributeValue);
-				Iterator<AttributeEntity> iterator = attributes.iterator();
-				for (int idx = 0; idx < newSize; idx++) {
-					Object value = Array.get(attributeValue, idx);
-					AttributeEntity attribute;
-					if (iterator.hasNext()) {
-						attribute = iterator.next();
-					} else {
-						attribute = this.attributeDAO.addAttribute(
-								attributeType, subject);
-					}
-					setAttributeValue(attribute, value);
-				}
-				while (iterator.hasNext()) {
-					AttributeEntity attribute = iterator.next();
-					this.attributeDAO.removeAttribute(attribute);
-				}
+			setMultivaluedAttribute(attributeValue, attributeType, subject);
+		} else {
+			setSinglevaluedAttribute(attributeValue, attributeType, subject);
+		}
+	}
+
+	private void setSinglevaluedAttribute(Object attributeValue,
+			AttributeTypeEntity attributeType, SubjectEntity subject)
+			throws AttributeNotFoundException, DatatypeMismatchException {
+		/*
+		 * Single-valued attribute.
+		 */
+		AttributeEntity attribute = this.attributeDAO.getAttribute(
+				attributeType, subject);
+
+		if (null == attributeValue) {
+			/*
+			 * In case the attribute value is null we cannot extract the
+			 * reflection class type. But actually we don't care. Just clear
+			 * all.
+			 */
+			clearAttributeValues(attribute);
+			return;
+		}
+
+		setAttributeValue(attribute, attributeValue);
+	}
+
+	private void setMultivaluedAttribute(Object attributeValue,
+			AttributeTypeEntity attributeType, SubjectEntity subject)
+			throws AttributeNotFoundException, DatatypeMismatchException {
+		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
+				subject, attributeType);
+		if (attributes.isEmpty()) {
+			/*
+			 * Via setAttribute one can only update existing multivalued
+			 * attributes, not create them.
+			 */
+			throw new AttributeNotFoundException();
+		}
+		if (null == attributeValue) {
+			/*
+			 * In this case we remove all but one, which we set with a null
+			 * value.
+			 */
+			Iterator<AttributeEntity> iterator = attributes.iterator();
+			AttributeEntity attribute = iterator.next();
+			clearAttributeValues(attribute);
+			while (iterator.hasNext()) {
+				attribute = iterator.next();
+				this.attributeDAO.removeAttribute(attribute);
 			}
 		} else {
-			/*
-			 * Single-valued attribute.
-			 */
-			AttributeEntity attribute = this.attributeDAO.getAttribute(
-					attributeType, subject);
-
-			if (null == attributeValue) {
-				/*
-				 * In case the attribute value is null we cannot extract the
-				 * reflection class type. But actually we don't care. Just clear
-				 * all.
-				 */
-				clearAttributeValues(attribute);
-				return;
+			if (false == attributeValue.getClass().isArray()) {
+				throw new DatatypeMismatchException();
 			}
-
-			setAttributeValue(attribute, attributeValue);
+			int newSize = Array.getLength(attributeValue);
+			Iterator<AttributeEntity> iterator = attributes.iterator();
+			for (int idx = 0; idx < newSize; idx++) {
+				Object value = Array.get(attributeValue, idx);
+				AttributeEntity attribute;
+				if (iterator.hasNext()) {
+					attribute = iterator.next();
+				} else {
+					attribute = this.attributeDAO.addAttribute(attributeType,
+							subject);
+				}
+				setAttributeValue(attribute, value);
+			}
+			while (iterator.hasNext()) {
+				AttributeEntity attribute = iterator.next();
+				this.attributeDAO.removeAttribute(attribute);
+			}
 		}
 	}
 
@@ -277,5 +290,57 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 	private void clearAttributeValues(AttributeEntity attribute) {
 		attribute.setStringValue(null);
 		attribute.setBooleanValue(null);
+	}
+
+	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+	public void setCompoundAttributeRecord(String subjectLogin,
+			String attributeName, String attributeId,
+			Map<String, Object> memberValues)
+			throws AttributeTypeNotFoundException, PermissionDeniedException,
+			SubjectNotFoundException, DatatypeMismatchException,
+			AttributeNotFoundException {
+		LOG.debug("set compound attribute " + attributeName + " for "
+				+ subjectLogin);
+		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+		if (false == attributeType.isCompounded()) {
+			throw new DatatypeMismatchException();
+		}
+
+		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+
+		/*
+		 * AttributeId is the global Id of the record, while AttributeIdx is the
+		 * local database Id of the attribute record.
+		 */
+		AttributeEntity compoundAttribute = getCompoundAttribute(subject,
+				attributeType, attributeId);
+
+		long attributeIdx = compoundAttribute.getAttributeIndex();
+		LOG.debug("attribute idx: " + attributeIdx);
+
+		for (Map.Entry<String, Object> memberValue : memberValues.entrySet()) {
+			AttributeTypeEntity memberAttributeType = this.attributeTypeDAO
+					.getAttributeType(memberValue.getKey());
+			AttributeEntity memberAttribute = this.attributeDAO.getAttribute(
+					memberAttributeType, subject, attributeIdx);
+			try {
+				memberAttribute.setValue(memberValue.getValue());
+			} catch (EJBException e) {
+				throw new DatatypeMismatchException();
+			}
+		}
+	}
+
+	private AttributeEntity getCompoundAttribute(SubjectEntity subject,
+			AttributeTypeEntity attributeType, String attributeId)
+			throws AttributeNotFoundException {
+		List<AttributeEntity> compoundAttributes = this.attributeDAO
+				.listAttributes(subject, attributeType);
+		for (AttributeEntity compoundAttribute : compoundAttributes) {
+			if (attributeId.equals(compoundAttribute.getStringValue())) {
+				return compoundAttribute;
+			}
+		}
+		throw new AttributeNotFoundException();
 	}
 }

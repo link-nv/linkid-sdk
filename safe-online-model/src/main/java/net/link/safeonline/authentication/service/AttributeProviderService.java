@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Local;
 
@@ -92,4 +93,26 @@ public interface AttributeProviderService {
 			Object attributeValue) throws AttributeTypeNotFoundException,
 			PermissionDeniedException, SubjectNotFoundException,
 			AttributeNotFoundException, DatatypeMismatchException;
+
+	/**
+	 * Sets the member values of a compound attribute record. Editing a compound
+	 * multivalued attribute is somehow different from editing a regular
+	 * multivalued attribute. This because we explicitly address the records of
+	 * a multivalued compounded attribute via the attribute Id.
+	 * 
+	 * @param subjectLogin
+	 * @param attributeName
+	 * @param attributeId
+	 * @param memberValues
+	 * @throws PermissionDeniedException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws SubjectNotFoundException
+	 * @throws DatatypeMismatchException
+	 * @throws AttributeNotFoundException
+	 */
+	void setCompoundAttributeRecord(String subjectLogin, String attributeName,
+			String attributeId, Map<String, Object> memberValues)
+			throws AttributeTypeNotFoundException, PermissionDeniedException,
+			SubjectNotFoundException, DatatypeMismatchException,
+			AttributeNotFoundException;
 }

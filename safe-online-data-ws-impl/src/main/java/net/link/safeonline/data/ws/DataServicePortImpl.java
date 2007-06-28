@@ -8,6 +8,7 @@
 package net.link.safeonline.data.ws;
 
 import java.lang.reflect.Array;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -212,31 +213,75 @@ public class DataServicePortImpl implements DataServicePort {
 			return failedResponse;
 		}
 
-		Object attributeValue = getValueObjectFromAttribute(attribute);
+		/*
+		 * Different strategies are possible to go from the SAML attribute to
+		 * the AttributeProviderService attribute data object. Here we have
+		 * chosen not to multiplex the SAML attribute to a generic attribute
+		 * data object when invoking the setAttribute. Let's just call a
+		 * setAttribute method dedicated for compounded attribute records.
+		 */
+		if (isCompoundAttribute(attribute)) {
+			String attributeId = findAttributeId(attribute);
+			if (null == attributeId) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(
+						SecondLevelStatusCode.INVALID_DATA,
+						"AttributeId required");
+				return failedResponse;
+			}
+			Map<String, Object> memberValues = getCompoundMemberValues(attribute);
+			try {
+				this.attributeProviderService.setCompoundAttributeRecord(
+						userId, attributeName, attributeId, memberValues);
+			} catch (SubjectNotFoundException e) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(
+						SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
+				return failedResponse;
+			} catch (AttributeTypeNotFoundException e) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(
+						SecondLevelStatusCode.DOES_NOT_EXIST,
+						"AttributeTypeNotFound");
+				return failedResponse;
+			} catch (PermissionDeniedException e) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
+				return failedResponse;
+			} catch (DatatypeMismatchException e) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(
+						SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
+				return failedResponse;
+			} catch (AttributeNotFoundException e) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(
+						SecondLevelStatusCode.DOES_NOT_EXIST,
+						"AttributeNotFound");
+				return failedResponse;
+			}
+		} else {
+			Object attributeValue = getValueObjectFromAttribute(attribute);
 
-		try {
-			this.attributeProviderService.setAttribute(userId, attributeName,
-					attributeValue);
-		} catch (SubjectNotFoundException e) {
-			ModifyResponseType failedResponse = createFailedModifyResponse(
-					SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
-			return failedResponse;
-		} catch (AttributeTypeNotFoundException e) {
-			ModifyResponseType failedResponse = createFailedModifyResponse(
-					SecondLevelStatusCode.DOES_NOT_EXIST,
-					"AttributeTypeNotFound");
-			return failedResponse;
-		} catch (PermissionDeniedException e) {
-			ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
-			return failedResponse;
-		} catch (AttributeNotFoundException e) {
-			ModifyResponseType failedResponse = createFailedModifyResponse(
-					SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
-			return failedResponse;
-		} catch (DatatypeMismatchException e) {
-			ModifyResponseType failedResponse = createFailedModifyResponse(
-					SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
-			return failedResponse;
+			try {
+				this.attributeProviderService.setAttribute(userId,
+						attributeName, attributeValue);
+			} catch (SubjectNotFoundException e) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(
+						SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
+				return failedResponse;
+			} catch (AttributeTypeNotFoundException e) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(
+						SecondLevelStatusCode.DOES_NOT_EXIST,
+						"AttributeTypeNotFound");
+				return failedResponse;
+			} catch (PermissionDeniedException e) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
+				return failedResponse;
+			} catch (AttributeNotFoundException e) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(
+						SecondLevelStatusCode.DOES_NOT_EXIST,
+						"AttributeNotFound");
+				return failedResponse;
+			} catch (DatatypeMismatchException e) {
+				ModifyResponseType failedResponse = createFailedModifyResponse(
+						SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
+				return failedResponse;
+			}
 		}
 
 		ModifyResponseType modifyResponse = new ModifyResponseType();
@@ -244,6 +289,46 @@ public class DataServicePortImpl implements DataServicePort {
 		status.setCode(TopLevelStatusCode.OK.getCode());
 		modifyResponse.setStatus(status);
 		return modifyResponse;
+	}
+
+	private Map<String, Object> getCompoundMemberValues(AttributeType attribute) {
+		Map<String, Object> compoundMemberValues = new HashMap<String, Object>();
+		AttributeType compoundAttribute = (AttributeType) attribute
+				.getAttributeValue().get(0);
+		List<Object> attributeValues = compoundAttribute.getAttributeValue();
+		for (Object attributeValue : attributeValues) {
+			AttributeType memberAttribute = (AttributeType) attributeValue;
+			String memberName = memberAttribute.getName();
+			List<Object> memberValues = memberAttribute.getAttributeValue();
+			Object memberValue;
+			if (memberValues.isEmpty()) {
+				memberValue = null;
+			} else {
+				memberValue = memberValues.get(0);
+			}
+			compoundMemberValues.put(memberName, memberValue);
+		}
+		return compoundMemberValues;
+	}
+
+	private String findAttributeId(AttributeType attribute) {
+		AttributeType compAttribute = (AttributeType) attribute
+				.getAttributeValue().get(0);
+		String attributeId = compAttribute.getOtherAttributes().get(
+				WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
+		return attributeId;
+	}
+
+	private boolean isCompoundAttribute(AttributeType attribute) {
+		List<Object> attributeValues = attribute.getAttributeValue();
+		if (attributeValues.isEmpty()) {
+			return false;
+		}
+		Object attributeValue = attributeValues.get(0);
+		if (attributeValue instanceof AttributeType) {
+			return true;
+		}
+		return false;
 	}
 
 	public QueryResponseType query(QueryType request) {
@@ -364,7 +449,7 @@ public class DataServicePortImpl implements DataServicePort {
 					List<Object> memberAttributeValues = compoundAttribute
 							.getAttributeValue();
 					for (AttributeEntity memberAttributeEntity : attributeEntity
-							.getMember()) {
+							.getMembers()) {
 						AttributeType memberAttribute = new AttributeType();
 						AttributeTypeEntity memberAttributeType = memberAttributeEntity
 								.getAttributeType();

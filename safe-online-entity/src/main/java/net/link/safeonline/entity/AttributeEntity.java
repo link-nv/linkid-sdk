@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.ejb.EJBException;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -192,7 +193,7 @@ public class AttributeEntity implements Serializable {
 	 * @return
 	 */
 	@Transient
-	public List<AttributeEntity> getMember() {
+	public List<AttributeEntity> getMembers() {
 		if (null == this.members) {
 			this.members = new LinkedList<AttributeEntity>();
 		}
@@ -201,6 +202,44 @@ public class AttributeEntity implements Serializable {
 
 	public void setMembers(List<AttributeEntity> members) {
 		this.members = members;
+	}
+
+	/**
+	 * Generic data mapping can be done via {@link #getValue()} and
+	 * {@link #setValue(Object)}.
+	 * 
+	 * @return
+	 */
+	@Transient
+	public Object getValue() {
+		DatatypeType datatype = this.attributeType.getType();
+		switch (datatype) {
+		case STRING:
+			return this.getStringValue();
+		case BOOLEAN:
+			return this.getBooleanValue();
+		default:
+			throw new EJBException("datatype not supported: " + datatype);
+		}
+	}
+
+	@Transient
+	public void setValue(Object value) {
+		DatatypeType datatype = this.attributeType.getType();
+		switch (datatype) {
+		case STRING: {
+			String stringValue = (String) value;
+			this.setStringValue(stringValue);
+			break;
+		}
+		case BOOLEAN: {
+			Boolean booleanValue = (Boolean) value;
+			this.setBooleanValue(booleanValue);
+			break;
+		}
+		default:
+			throw new EJBException("datatype not supported: " + datatype);
+		}
 	}
 
 	@Override
