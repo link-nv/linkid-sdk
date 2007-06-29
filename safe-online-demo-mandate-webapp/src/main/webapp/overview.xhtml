@@ -3,11 +3,25 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="content">
 		<h2>#{msgs.overview}</h2>
+
+		<rich:dataTable value="#{userMandates}" var="item">
+			<rich:column>
+				<f:facet name="header">#{msgs.company}</f:facet>
+				<h:outputText value="#{item.companyName}" />
+			</rich:column>
+
+			<rich:column>
+				<f:facet name="header">#{msgs.title}</f:facet>
+				<h:outputText value="#{item.title}" />
+			</rich:column>
+		</rich:dataTable>
+
+		<h:messages styleClass="error" globalOnly="true" />
 
 	</ui:define>
 

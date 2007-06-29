@@ -16,4 +16,6 @@ public interface MandateView extends AbstractMandateDataClient {
 	 * Factory.
 	 */
 	void mandatesFactory();
+
+	void userMandatesFactory();
 }

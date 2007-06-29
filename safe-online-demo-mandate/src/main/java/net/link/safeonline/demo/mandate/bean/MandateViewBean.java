@@ -8,8 +8,11 @@
 package net.link.safeonline.demo.mandate.bean;
 
 import java.net.ConnectException;
+import java.security.Principal;
 
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.demo.mandate.Mandate;
@@ -44,8 +47,17 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements
 	@Logger
 	private Log log;
 
-	@In
+	@In(required = false)
 	private String mandateUser;
+
+	@Resource
+	private SessionContext context;
+
+	public static final String USER_MANDATES = "userMandates";
+
+	@SuppressWarnings("unused")
+	@DataModel(USER_MANDATES)
+	private Mandate[] userMandates;
 
 	@Factory("mandates")
 	@RolesAllowed(MandateConstants.ADMIN_ROLE)
@@ -68,6 +80,32 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements
 			this.mandates = mandateAttribute.getValue();
 		} else {
 			this.mandates = new Mandate[] {};
+		}
+	}
+
+	@RolesAllowed(MandateConstants.USER_ROLE)
+	@Factory(USER_MANDATES)
+	public void userMandatesFactory() {
+		Principal callerPrincipal = this.context.getCallerPrincipal();
+		String username = callerPrincipal.getName();
+		log.debug("user mandates factory for user #0", username);
+		DataClient dataClient = getDataClient();
+		Attribute<Mandate[]> mandateAttribute = null;
+		try {
+			mandateAttribute = dataClient.getAttributeValue(this.mandateUser,
+					DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
+		} catch (ConnectException e) {
+			this.facesMessages.add("connection error: " + e.getMessage());
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addToControl("name", "subject not found");
+		}
+
+		if (null != mandateAttribute) {
+			this.userMandates = mandateAttribute.getValue();
+		} else {
+			this.userMandates = new Mandate[] {};
 		}
 	}
 }

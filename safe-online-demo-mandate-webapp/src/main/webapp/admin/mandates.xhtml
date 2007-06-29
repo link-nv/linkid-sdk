@@ -3,7 +3,6 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
 	xmlns:n="http://gravel.jboss.org/jsf/1.0/navigation">
 <body>
@@ -27,6 +26,8 @@
 					<h:outputText value="#{item.title}" />
 				</rich:column>
 			</rich:dataTable>
+
+			<h:messages styleClass="error" globalOnly="true" />
 
 			<h:commandButton id="add" value="#{msgs.add}" action="add">
 				<n:nav outcome="add" viewId="/admin/mandate-add.xhtml" />
