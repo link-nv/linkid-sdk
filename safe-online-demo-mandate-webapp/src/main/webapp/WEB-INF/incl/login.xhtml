@@ -5,7 +5,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:s="http://jboss.com/products/seam/taglib">
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:n="http://gravel.jboss.org/jsf/1.0/navigation">
 	<c:when test="#{userPrincipal == null}">
 		<h:form>
 			<h:commandButton action="#{mandateLogon.login}" id="login"
@@ -17,7 +18,9 @@
 		<p>Welcome #{userPrincipal.name}.</p>
 		<h:form>
 			<h:commandButton action="#{mandateLogon.logout}" id="logout"
-				value="Logout" />
+				value="Logout">
+				<n:nav outcome="logout-success" viewId="/main.xhtml" redirect="true" />
+			</h:commandButton>
 		</h:form>
 		<f:verbatim>&#160;</f:verbatim>
 	</c:otherwise>

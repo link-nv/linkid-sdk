@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:n="http://gravel.jboss.org/jsf/1.0/navigation">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+
+		<h1>#{msgs.search}</h1>
+
+		<h:form>
+
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+
+			<table>
+				<tr>
+					<th><h:outputLabel for="name" value="#{msgs.name}" />:</th>
+					<td><s:decorate>
+						<h:inputText id="name" value="#{mandateSearch.name}"
+							required="true" />
+					</s:decorate>*<h:message for="name" styleClass="error" /></td>
+				</tr>
+			</table>
+
+			<h:messages styleClass="error" globalOnly="true" />
+
+			<h:commandButton id="search" value="#{msgs.search}"
+				action="#{mandateSearch.search}">
+				<n:nav outcome="success" viewId="/admin/mandates.xhtml" />
+			</h:commandButton>
+
+		</h:form>
+
+	</ui:define>
+
+
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml" />
+	</ui:define>
+
+</ui:composition>
+</body>
+</html>

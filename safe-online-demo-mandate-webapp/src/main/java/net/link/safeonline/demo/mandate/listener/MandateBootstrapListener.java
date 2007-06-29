@@ -11,7 +11,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import net.link.safeonline.demo.mandate.AuthorizationService;
-import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.demo.mandate.AuthorizationServiceFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,8 +26,7 @@ public class MandateBootstrapListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		LOG.debug("context initialized");
 
-		this.authorizationService = EjbUtils.getEJB(
-				AuthorizationService.JNDI_BINDING, AuthorizationService.class);
+		this.authorizationService = AuthorizationServiceFactory.newInstance();
 		this.authorizationService.bootstrap();
 	}
 

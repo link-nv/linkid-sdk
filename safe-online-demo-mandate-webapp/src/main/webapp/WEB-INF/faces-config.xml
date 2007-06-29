@@ -12,6 +12,9 @@
 			<supported-locale>nl</supported-locale>
 		</locale-config>
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+		<navigation-handler>
+			org.jboss.gravel.navigation.GravelNavigationHandler
+		</navigation-handler>
 	</application>
 
 	<lifecycle>
@@ -19,13 +22,5 @@
 			org.jboss.seam.jsf.SeamPhaseListener
 		</phase-listener>
 	</lifecycle>
-
-	<navigation-rule>
-		<navigation-case>
-			<from-outcome>logout-success</from-outcome>
-			<to-view-id>/main.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-	</navigation-rule>
 
 </faces-config>

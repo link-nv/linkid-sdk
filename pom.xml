@@ -300,6 +300,7 @@
 		<module>safe-online-demo-mandate-keystore</module>
 		<module>safe-online-demo-mandate</module>
 		<module>safe-online-demo-mandate-webapp</module>
+		<module>safe-online-demo-mandate-service</module>
 	</modules>
 	<repositories>
 		<repository>

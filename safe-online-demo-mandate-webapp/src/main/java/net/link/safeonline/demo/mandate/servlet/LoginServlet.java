@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.demo.mandate.AuthorizationService;
+import net.link.safeonline.demo.mandate.AuthorizationServiceFactory;
 import net.link.safeonline.demo.mandate.MandateConstants;
-import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,8 +36,7 @@ public class LoginServlet extends HttpServlet {
 		super.init(config);
 		LOG.debug("init");
 
-		this.authorizationService = EjbUtils.getEJB(
-				AuthorizationService.JNDI_BINDING, AuthorizationService.class);
+		this.authorizationService = AuthorizationServiceFactory.newInstance();
 	}
 
 	@Override
@@ -70,6 +69,6 @@ public class LoginServlet extends HttpServlet {
 	private void redirectToAdminPage(HttpSession session,
 			HttpServletResponse response) throws IOException {
 		session.setAttribute("role", MandateConstants.ADMIN_ROLE);
-		response.sendRedirect("./search.seam");
+		response.sendRedirect("./admin/search.seam");
 	}
 }
