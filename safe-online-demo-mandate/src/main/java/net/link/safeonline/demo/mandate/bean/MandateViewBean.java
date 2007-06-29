@@ -92,7 +92,7 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements
 		DataClient dataClient = getDataClient();
 		Attribute<Mandate[]> mandateAttribute = null;
 		try {
-			mandateAttribute = dataClient.getAttributeValue(this.mandateUser,
+			mandateAttribute = dataClient.getAttributeValue(username,
 					DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());

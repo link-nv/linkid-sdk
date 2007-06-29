@@ -283,6 +283,13 @@ public class IdentityServiceBean implements IdentityService,
 		List<AttributeEntity> attributes = this.attributeDAO
 				.listVisibleAttributes(subject);
 
+		String language;
+		if (null != locale) {
+			language = locale.getLanguage();
+		} else {
+			language = null;
+		}
+
 		/*
 		 * At the top of the result list we put the attributes that are not a
 		 * member of a compounded attribute.
@@ -321,8 +328,7 @@ public class IdentityServiceBean implements IdentityService,
 
 			String humanReadableName = null;
 			String description = null;
-			if (null != locale) {
-				String language = locale.getLanguage();
+			if (null != language) {
 				LOG.debug("trying language: " + language);
 				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
 						.findDescription(new AttributeTypeDescriptionPK(name,
@@ -399,12 +405,26 @@ public class IdentityServiceBean implements IdentityService,
 			Map<AttributeTypeEntity, Map<Long, AttributeEntity>> membersMap = compoundedAttributeEntry
 					.getValue();
 
+			String humanReadableName = null;
+			String description = null;
+			if (null != language) {
+				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+						.findDescription(new AttributeTypeDescriptionPK(
+								compoundedAttributeType.getName(), language));
+				if (null != attributeTypeDescription) {
+					LOG.debug("found description");
+					humanReadableName = attributeTypeDescription.getName();
+					description = attributeTypeDescription.getDescription();
+				}
+			}
+
 			long numberOfRecords = numberOfRecordsPerCompounded
 					.get(compoundedAttributeType);
 			for (long idx = 0; idx < numberOfRecords; idx++) {
 				AttributeDO compoundedAttributeView = new AttributeDO(
 						compoundedAttributeType.getName(),
-						DatatypeType.COMPOUNDED, true, idx, null, null, true,
+						DatatypeType.COMPOUNDED, true, idx, humanReadableName,
+						description, compoundedAttributeType.isUserEditable(),
 						false, null, null);
 				compoundedAttributeView.setCompounded(true);
 				attributesView.add(compoundedAttributeView);
@@ -417,10 +437,27 @@ public class IdentityServiceBean implements IdentityService,
 				for (CompoundedAttributeTypeMemberEntity member : members) {
 					AttributeTypeEntity memberAttributeType = member
 							.getMember();
+
+					String memberHumanReadableName = null;
+					String memberDescription = null;
+					if (null != language) {
+						AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+								.findDescription(new AttributeTypeDescriptionPK(
+										memberAttributeType.getName(), language));
+						if (null != attributeTypeDescription) {
+							LOG.debug("found description");
+							memberHumanReadableName = attributeTypeDescription
+									.getName();
+							memberDescription = attributeTypeDescription
+									.getDescription();
+						}
+					}
+
 					AttributeDO attributeView = new AttributeDO(
 							memberAttributeType.getName(), memberAttributeType
 									.getType(), memberAttributeType
-									.isMultivalued(), idx, null, null, false,
+									.isMultivalued(), idx,
+							memberHumanReadableName, memberDescription, false,
 							false, null, null);
 					/*
 					 * We mark compounded attribute members as non-editable when
