@@ -4,7 +4,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:n="http://gravel.jboss.org/jsf/1.0/navigation">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 
@@ -14,17 +15,27 @@
 
 		<p>#{msgs.user}: #{mandateUser}</p>
 
-		<rich:dataTable value="#{mandates}" var="item">
-			<rich:column>
-				<f:facet name="header">#{msgs.company}</f:facet>
-				<h:graphicImage value="#{item.companyName}" />
-			</rich:column>
+		<h:form>
+			<rich:dataTable value="#{mandates}" var="item">
+				<rich:column>
+					<f:facet name="header">#{msgs.company}</f:facet>
+					<h:outputText value="#{item.companyName}" />
+				</rich:column>
 
-			<rich:column>
-				<f:facet name="header">#{msgs.title}</f:facet>
-				<h:graphicImage value="#{item.title}" />
-			</rich:column>
-		</rich:dataTable>
+				<rich:column>
+					<f:facet name="header">#{msgs.title}</f:facet>
+					<h:outputText value="#{item.title}" />
+				</rich:column>
+			</rich:dataTable>
+
+			<h:commandButton id="add" value="#{msgs.add}" action="add">
+				<n:nav outcome="add" viewId="/admin/mandate-add.xhtml" />
+			</h:commandButton>
+
+			<h:commandButton id="search" value="#{msgs.search}" action="search">
+				<n:nav outcome="search" viewId="/admin/search.xhtml" />
+			</h:commandButton>
+		</h:form>
 
 	</ui:define>
 
