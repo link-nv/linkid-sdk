@@ -83,8 +83,8 @@ public class ApplicationBean implements Application {
 	@In(value = "selectedApplication", required = false)
 	private ApplicationEntity selectedApplication;
 
-	@Out(value = "selectedApplicationIdentity", required = false)
 	@SuppressWarnings("unused")
+	@DataModel(value = "selectedApplicationIdentity")
 	private Set<ApplicationIdentityAttributeEntity> selectedApplicationIdentity;
 
 	@DataModel
