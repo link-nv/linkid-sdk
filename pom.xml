@@ -1057,7 +1057,7 @@
 		<jaxws-rt.version>2.1.1</jaxws-rt.version>
 		<jaxws-api.version>2.1</jaxws-api.version>
 		<commons-logging-api.version>1.1</commons-logging-api.version>
-		<jboss.version>4.2.0.GA</jboss.version>
+		<jboss.version>4.2.1.GA</jboss.version>
 		<sjsxp.version>1.0</sjsxp.version>
 		<commons-logging.version>1.1</commons-logging.version>
 		<log4j.version>1.2.14</log4j.version>
@@ -1094,7 +1094,7 @@
 		<jsf-impl.version>1.2_04-p02</jsf-impl.version>
 		<myfaces-impl.version>1.1.4</myfaces-impl.version>
 		<el-ri.version>1.0</el-ri.version>
-		<tomahawk.version>1.1.6-SNAPSHOT</tomahawk.version>
+		<tomahawk.version>1.1.6</tomahawk.version>
 		<tomahawk-facelets.version>1.0</tomahawk-facelets.version>
 		<myfaces-api.version>1.1.4</myfaces-api.version>
 		<jboss-sar-maven-plugin.version>
@@ -1128,10 +1128,8 @@
 		</jetty-servlet-tester.version>
 		<commons-httpclient.version>3.0.1</commons-httpclient.version>
 		<jetty.version>6.1.1</jetty.version>
-		<trinidad-api.version>1.2-07-may-SNAPSHOT</trinidad-api.version>
-		<trinidad-impl.version>
-			1.2-07-may-SNAPSHOT
-		</trinidad-impl.version>
+		<trinidad-api.version>1.2.1</trinidad-api.version>
+		<trinidad-impl.version>1.2.1</trinidad-impl.version>
 		<maven-jaxb-plugin.version>1.1</maven-jaxb-plugin.version>
 		<maven-jar-plugin.version>2.1</maven-jar-plugin.version>
 		<maven-assembly-plugin.version>
@@ -1151,7 +1149,7 @@
 		<jfreechart.version>1.0.4</jfreechart.version>
 		<jcommon.version>1.0.8</jcommon.version>
 		<maven-enforcer-plugin.version>
-			1.0-alpha-3-SNAPSHOT
+			1.0-alpha-3
 		</maven-enforcer-plugin.version>
 		<maven-deploy-plugin.version>2.3</maven-deploy-plugin.version>
 		<taglist-maven-plugin.version>2.0</taglist-maven-plugin.version>
