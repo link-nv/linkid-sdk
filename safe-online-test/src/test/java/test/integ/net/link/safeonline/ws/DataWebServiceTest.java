@@ -185,6 +185,7 @@ public class DataWebServiceTest {
 		assertNull(result.getValue());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void dataServiceCompoundedAttribute() throws Exception {
 		// setup
@@ -340,6 +341,14 @@ public class DataWebServiceTest {
 		assertEquals("foobar", result.getValue()[2].getMember0());
 		assertTrue(result.getValue()[2].isMember1());
 		assertNotNull(result.getValue()[2].getId());
+
+		// operate: remove a compounded attribute record
+		this.dataClient.removeAttribute(login, new Attribute(TEST_COMP_NAME,
+				result.getValue()[1]));
+		// verify
+		result = this.dataClient.getAttributeValue(login, TEST_COMP_NAME,
+				CompoundedTestClass[].class);
+		assertEquals(2, result.getValue().length);
 	}
 
 	@Test
@@ -627,6 +636,14 @@ public class DataWebServiceTest {
 				Boolean.class);
 		assertNotNull(result);
 		assertNull(result.getValue());
+
+		// operate: remove the attribute
+		this.dataClient.removeAttribute(login, result);
+
+		// verify that the attribute no longer exists
+		result = this.dataClient.getAttributeValue(login, attributeName,
+				Boolean.class);
+		assertNull(result);
 	}
 
 	public static final String TEST_COMP_NAME = "test-comp-name-6453";

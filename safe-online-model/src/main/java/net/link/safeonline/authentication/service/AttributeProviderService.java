@@ -119,4 +119,37 @@ public interface AttributeProviderService {
 			throws AttributeTypeNotFoundException, PermissionDeniedException,
 			SubjectNotFoundException, DatatypeMismatchException,
 			AttributeNotFoundException;
+
+	/**
+	 * Removes the attribute for the given subject.
+	 * 
+	 * @param subjectLogin
+	 *            the login of the subject from whom to remove an attribute.
+	 * @param attributeName
+	 *            the name of the attribute to be removed.
+	 * @throws PermissionDeniedException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws SubjectNotFoundException
+	 * @throws AttributeNotFoundException
+	 */
+	void removeAttribute(String subjectLogin, String attributeName)
+			throws AttributeTypeNotFoundException, PermissionDeniedException,
+			SubjectNotFoundException, AttributeNotFoundException;
+
+	/**
+	 * Removes a record of a compounded attribute. The record is identified via
+	 * the attribute Id.
+	 * 
+	 * @param subjectLogin
+	 * @param attributeName
+	 * @param attributeId
+	 * @throws PermissionDeniedException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws SubjectNotFoundException
+	 * @throws AttributeNotFoundException
+	 */
+	void removeCompoundAttributeRecord(String subjectLogin,
+			String attributeName, String attributeId)
+			throws AttributeTypeNotFoundException, PermissionDeniedException,
+			SubjectNotFoundException, AttributeNotFoundException;
 }

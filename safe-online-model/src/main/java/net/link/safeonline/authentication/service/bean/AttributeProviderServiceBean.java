@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineApplicationRoles;
@@ -36,9 +36,9 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
-import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.ApplicationManager;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,6 +66,20 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 
 	@EJB
 	private SubjectDAO subjectDAO;
+
+	private AttributeManagerLWBean attributeManager;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		/*
+		 * By injecting the attribute DAO of this session bean in the attribute
+		 * manager we are sure that the attribute manager (a lightweight bean)
+		 * will live within the same transaction and security context as this
+		 * identity service EJB3 session bean.
+		 */
+		LOG.debug("postConstruct");
+		this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+	}
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public List<AttributeEntity> getAttributes(String subjectLogin,
@@ -198,6 +212,15 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		}
 	}
 
+	private void setAttributeValue(AttributeEntity attribute, Object value)
+			throws DatatypeMismatchException {
+		try {
+			attribute.setValue(value);
+		} catch (ClassCastException e) {
+			throw new DatatypeMismatchException();
+		}
+	}
+
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public void setAttribute(String subjectLogin, String attributeName,
 			Object attributeValue) throws AttributeTypeNotFoundException,
@@ -284,39 +307,6 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		}
 	}
 
-	/**
-	 * Generic datatype conversion method with type-checking.
-	 * 
-	 * TODO: maybe we could move this method to AttributeEntity itself?
-	 * 
-	 * @param attribute
-	 * @param value
-	 * @throws DatatypeMismatchException
-	 */
-	private void setAttributeValue(AttributeEntity attribute, Object value)
-			throws DatatypeMismatchException {
-		AttributeTypeEntity attributeType = attribute.getAttributeType();
-		DatatypeType datatype = attributeType.getType();
-		switch (datatype) {
-		case STRING:
-			if (false == value instanceof String) {
-				throw new DatatypeMismatchException();
-			}
-			String stringValue = (String) value;
-			attribute.setStringValue(stringValue);
-			return;
-		case BOOLEAN:
-			if (false == value instanceof Boolean) {
-				throw new DatatypeMismatchException();
-			}
-			Boolean booleanValue = (Boolean) value;
-			attribute.setBooleanValue(booleanValue);
-			return;
-		default:
-			throw new EJBException("datatype not supported: " + datatype);
-		}
-	}
-
 	private void clearAttributeValues(AttributeEntity attribute) {
 		attribute.setStringValue(null);
 		attribute.setBooleanValue(null);
@@ -353,11 +343,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 					.getAttributeType(memberValue.getKey());
 			AttributeEntity memberAttribute = this.attributeDAO.getAttribute(
 					memberAttributeType, subject, attributeIdx);
-			try {
-				memberAttribute.setValue(memberValue.getValue());
-			} catch (EJBException e) {
-				throw new DatatypeMismatchException();
-			}
+			setAttributeValue(memberAttribute, memberValue.getValue());
 		}
 	}
 
@@ -372,5 +358,32 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 			}
 		}
 		throw new AttributeNotFoundException();
+	}
+
+	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+	public void removeAttribute(String subjectLogin, String attributeName)
+			throws AttributeTypeNotFoundException, PermissionDeniedException,
+			SubjectNotFoundException, AttributeNotFoundException {
+		LOG.debug("remove attribute " + attributeName + " from subject "
+				+ subjectLogin);
+		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+
+		this.attributeManager.removeAttribute(attributeType, subject);
+	}
+
+	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+	public void removeCompoundAttributeRecord(String subjectLogin,
+			String attributeName, String attributeId)
+			throws AttributeTypeNotFoundException, PermissionDeniedException,
+			SubjectNotFoundException, AttributeNotFoundException {
+		LOG.debug("remove compound attribute " + attributeName
+				+ " from subject " + subjectLogin + " with attrib Id "
+				+ attributeId);
+		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+
+		this.attributeManager.removeCompoundAttribute(attributeType, subject,
+				attributeId);
 	}
 }

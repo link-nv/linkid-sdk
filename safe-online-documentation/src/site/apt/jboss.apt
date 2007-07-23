@@ -12,10 +12,10 @@ SafeOnline JBoss Application Server
 
 ** Basic configuration
 
- Download JBoss AS 4.2.0.GA from http://labs.jboss.com/portal/jbossas/download/index.html
+ Download JBoss AS 4.2.1.GA from http://labs.jboss.com/portal/jbossas/download/index.html
 
 +---+
-unzip jboss-4.2.0.GA.zip
+unzip jboss-4.x.x.GA.zip
 +---+
 
 

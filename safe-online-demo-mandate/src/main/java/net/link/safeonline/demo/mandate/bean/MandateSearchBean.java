@@ -29,6 +29,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
@@ -49,8 +50,12 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements
 	@DataModel
 	private Mandate[] mandates;
 
+	@DataModelSelection
+	private Mandate selectedMandate;
+
 	@SuppressWarnings("unused")
 	@Out(required = false, scope = ScopeType.SESSION)
+	@In(required = false)
 	private String mandateUser;
 
 	private String name;
@@ -91,6 +96,21 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements
 
 		this.mandateUser = this.name;
 
+		return "success";
+	}
+
+	@RolesAllowed(MandateConstants.ADMIN_ROLE)
+	public String removeMandate() {
+		log.debug("remove mandate : " + this.selectedMandate);
+		DataClient dataClient = getDataClient();
+		try {
+			dataClient.removeAttribute(this.mandateUser,
+					DemoConstants.MANDATE_ATTRIBUTE_NAME, this.selectedMandate
+							.getAttributeId());
+		} catch (ConnectException e) {
+			this.facesMessages.add("connection error: " + e.getMessage());
+			return null;
+		}
 		return "success";
 	}
 

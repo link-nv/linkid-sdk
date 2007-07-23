@@ -25,6 +25,14 @@
 					<f:facet name="header">#{msgs.title}</f:facet>
 					<h:outputText value="#{item.title}" />
 				</rich:column>
+
+				<rich:column>
+					<f:facet name="header">#{msgs.actions}</f:facet>
+					<h:commandLink id="remove" value="#{msgs.remove}"
+						action="#{mandateSearch.removeMandate}">
+						<n:nav outcome="success" viewId="/admin/mandates.xhtml" />
+					</h:commandLink>
+				</rich:column>
 			</rich:dataTable>
 
 			<h:messages styleClass="error" globalOnly="true" />

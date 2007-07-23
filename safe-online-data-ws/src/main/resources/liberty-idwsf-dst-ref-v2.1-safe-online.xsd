@@ -40,7 +40,13 @@ Version 2.1
 <!--sec(redefs)-->
   <xs:complexType name="SelectType">
     <xs:simpleContent>
-      <xs:extension base="xs:string"/>
+      <xs:extension base="xs:string">
+		<xs:anyAttribute namespace="##any" processContents="lax"/>
+		<!-- 
+			In the DST spec they propose to have XPath-like expressions as Select values,
+			but then again, what's the point of using structured XML in the first place?
+		 -->
+	  </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="TestOpType">

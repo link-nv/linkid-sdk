@@ -28,6 +28,7 @@ import liberty.dst._2006_08.ref.safe_online.CreateResponseType;
 import liberty.dst._2006_08.ref.safe_online.CreateType;
 import liberty.dst._2006_08.ref.safe_online.DataServicePort;
 import liberty.dst._2006_08.ref.safe_online.DataType;
+import liberty.dst._2006_08.ref.safe_online.DeleteItemType;
 import liberty.dst._2006_08.ref.safe_online.DeleteResponseType;
 import liberty.dst._2006_08.ref.safe_online.DeleteType;
 import liberty.dst._2006_08.ref.safe_online.ModifyItemType;
@@ -152,11 +153,73 @@ public class DataServicePortImpl implements DataServicePort {
 	}
 
 	public DeleteResponseType delete(DeleteType request) {
-		LOG.debug("delete: implement me");
+		LOG.debug("delete");
+
+		List<DeleteItemType> deleteItems = request.getDeleteItem();
+		if (deleteItems.size() > 1) {
+			DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
+			return failedResponse;
+		}
+		DeleteItemType deleteItem = deleteItems.get(0);
+
+		String objectType = deleteItem.getObjectType();
+		if (null == objectType) {
+			DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.MISSING_OBJECT_TYPE);
+			return failedResponse;
+		}
+		if (false == DataServiceConstants.ATTRIBUTE_OBJECT_TYPE
+				.equals(objectType)) {
+			LOG.debug("unsupported object type: " + objectType);
+			DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE);
+			return failedResponse;
+		}
+
+		SelectType select = deleteItem.getSelect();
+		if (null == select) {
+			DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.MISSING_SELECT);
+			return failedResponse;
+		}
+		String attributeName = select.getValue();
+
+		String userId;
+		try {
+			userId = TargetIdentityHandler.getTargetIdentity(this.context);
+		} catch (TargetIdentityException e) {
+			DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
+			return failedResponse;
+		}
+
+		String attributeId = select.getOtherAttributes().get(
+				WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
+		try {
+			if (null == attributeId) {
+				this.attributeProviderService.removeAttribute(userId,
+						attributeName);
+			} else {
+				this.attributeProviderService.removeCompoundAttributeRecord(
+						userId, attributeName, attributeId);
+			}
+		} catch (SubjectNotFoundException e) {
+			DeleteResponseType failedResponse = createFailedDeleteResponse(
+					SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
+			return failedResponse;
+		} catch (AttributeTypeNotFoundException e) {
+			DeleteResponseType failedResponse = createFailedDeleteResponse(
+					SecondLevelStatusCode.DOES_NOT_EXIST,
+					"AttributeTypeNotFound");
+			return failedResponse;
+		} catch (PermissionDeniedException e) {
+			DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
+			return failedResponse;
+		} catch (AttributeNotFoundException e) {
+			DeleteResponseType failedResponse = createFailedDeleteResponse(
+					SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
+			return failedResponse;
+		}
+
 		DeleteResponseType deleteResponse = new DeleteResponseType();
 		StatusType status = new StatusType();
-		status.setCode(TopLevelStatusCode.FAILED.getCode());
-		status.setComment("delete operation not implemented");
+		status.setCode(TopLevelStatusCode.OK.getCode());
 		deleteResponse.setStatus(status);
 		return deleteResponse;
 	}
@@ -506,6 +569,20 @@ public class DataServicePortImpl implements DataServicePort {
 		CreateResponseType createResponse = new CreateResponseType();
 		setResponseStatus(createResponse, secondLevelStatusCode, comment);
 		return createResponse;
+	}
+
+	private DeleteResponseType createFailedDeleteResponse(
+			SecondLevelStatusCode secondLevelStatusCode, String comment) {
+		DeleteResponseType deleteResponse = new DeleteResponseType();
+		setResponseStatus(deleteResponse, secondLevelStatusCode, comment);
+		return deleteResponse;
+	}
+
+	private DeleteResponseType createFailedDeleteResponse(
+			SecondLevelStatusCode secondLevelStatusCode) {
+		DeleteResponseType deleteResponse = createFailedDeleteResponse(
+				secondLevelStatusCode, null);
+		return deleteResponse;
 	}
 
 	private ModifyResponseType createFailedModifyResponse(

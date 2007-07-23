@@ -26,6 +26,9 @@ import liberty.dst._2006_08.ref.safe_online.CreateType;
 import liberty.dst._2006_08.ref.safe_online.DataService;
 import liberty.dst._2006_08.ref.safe_online.DataServicePort;
 import liberty.dst._2006_08.ref.safe_online.DataType;
+import liberty.dst._2006_08.ref.safe_online.DeleteItemType;
+import liberty.dst._2006_08.ref.safe_online.DeleteResponseType;
+import liberty.dst._2006_08.ref.safe_online.DeleteType;
 import liberty.dst._2006_08.ref.safe_online.ModifyItemType;
 import liberty.dst._2006_08.ref.safe_online.ModifyResponseType;
 import liberty.dst._2006_08.ref.safe_online.ModifyType;
@@ -43,6 +46,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.CompoundBuilder;
+import net.link.safeonline.sdk.ws.CompoundUtil;
 import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.annotation.Compound;
@@ -367,7 +371,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 			return;
 		}
 		List<Object> attributeValues = targetAttribute.getAttributeValue();
-		if (isCompound(attributeValue)) {
+		if (CompoundUtil.isCompound(attributeValue)) {
 			AttributeType compoundAttribute = createCompoundAttribute(
 					attributeValue, isNewAttribute);
 			attributeValues.add(compoundAttribute);
@@ -447,11 +451,57 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		return compoundAttribute;
 	}
 
-	@SuppressWarnings("unchecked")
-	private boolean isCompound(Object attributeValue) {
-		Class attributeClass = attributeValue.getClass();
-		Compound compoundAnnotation = (Compound) attributeClass
-				.getAnnotation(Compound.class);
-		return null != compoundAnnotation;
+	public void removeAttribute(String subjectLogin, String attributeName,
+			String attributeId) throws ConnectException {
+		LOG.debug("remove attribute " + attributeName + " for subject "
+				+ subjectLogin);
+		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
+
+		DeleteType delete = new DeleteType();
+		List<DeleteItemType> deleteItems = delete.getDeleteItem();
+
+		DeleteItemType deleteItem = new DeleteItemType();
+		deleteItems.add(deleteItem);
+
+		deleteItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+		SelectType select = new SelectType();
+		select.setValue(attributeName);
+		deleteItem.setSelect(select);
+
+		if (null != attributeId) {
+			select.getOtherAttributes().put(
+					WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, attributeId);
+		}
+
+		DeleteResponseType deleteResponse;
+		try {
+			deleteResponse = this.port.delete(delete);
+		} catch (ClientTransportException e) {
+			throw new ConnectException(e.getMessage());
+		}
+
+		StatusType status = deleteResponse.getStatus();
+		LOG.debug("status: " + status.getCode());
+		TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
+				.fromCode(status.getCode());
+		if (TopLevelStatusCode.OK != topLevelStatusCode) {
+			String comment = status.getComment();
+			throw new RuntimeException(
+					"error occurred while removing attribute: " + comment);
+		}
+	}
+
+	public <Type> void removeAttribute(String subjectLogin,
+			Attribute<Type> attribute) throws ConnectException {
+
+		String attributeName = attribute.getName();
+
+		Object value = attribute.getValue();
+		if (CompoundUtil.isCompound(value)) {
+			String attributeId = CompoundUtil.getAttributeId(value);
+			removeAttribute(subjectLogin, attributeName, attributeId);
+		} else {
+			removeAttribute(subjectLogin, attributeName, null);
+		}
 	}
 }

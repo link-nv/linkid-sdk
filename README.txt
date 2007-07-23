@@ -10,7 +10,7 @@ http://buildserver/twiki/bin/view/Products/SafeOnline
 === 2. Requirements
 
 Java 1.5.0	Compilation
-Maven 2.0.5	Building
+Maven 2.0.7	Building
 
 
 === 3. Build

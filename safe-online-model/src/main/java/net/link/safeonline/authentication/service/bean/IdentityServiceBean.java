@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -57,6 +58,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.AttributeTypeDescriptionDecorator;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.util.FilterUtil;
 import net.link.safeonline.util.MapEntryFilter;
 
@@ -100,6 +102,20 @@ public class IdentityServiceBean implements IdentityService,
 
 	@EJB
 	AttributeTypeDescriptionDecorator attributeTypeDescriptionDecorator;
+
+	private AttributeManagerLWBean attributeManager;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		/*
+		 * By injecting the attribute DAO of this session bean in the attribute
+		 * manager we are sure that the attribute manager (a lightweight bean)
+		 * will live within the same transaction and security context as this
+		 * identity service EJB3 session bean.
+		 */
+		LOG.debug("postConstruct");
+		this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public List<HistoryEntity> listHistory() {
@@ -1060,91 +1076,8 @@ public class IdentityServiceBean implements IdentityService,
 
 		AttributeTypeEntity attributeType = getUserRemovableAttributeType(attributeName);
 
-		if (attributeType.isCompounded()) {
-			LOG.debug("remove compounded attribute record for: "
-					+ attributeName);
-			List<CompoundedAttributeTypeMemberEntity> members = attributeType
-					.getMembers();
-			for (CompoundedAttributeTypeMemberEntity member : members) {
-				AttributeTypeEntity memberAttributeType = member.getMember();
-				/*
-				 * We use simple recursion in this case.
-				 */
-				removeAttribute(new AttributeDO(memberAttributeType.getName(),
-						memberAttributeType.getType(), true, attribute
-								.getIndex(), null, null, memberAttributeType
-								.isUserEditable(), false, null, null));
-			}
-			/*
-			 * Since the compounded top-level attribute also has a data entry
-			 * itself we simply continue to remove after all member entries have
-			 * been removed.
-			 */
-		}
-
-		boolean multivalued = attributeType.isMultivalued();
-		if (false == multivalued) {
-			AttributeEntity attributeEntity = this.attributeDAO.getAttribute(
-					attributeType, subject);
-			this.attributeDAO.removeAttribute(attributeEntity);
-		} else {
-			/*
-			 * In case the attribute to be removed is part of a multivalued
-			 * attribute we have to resequence the remaining attributes.
-			 */
-			List<AttributeEntity> attributes = this.attributeDAO
-					.listAttributes(subject, attributeType);
-			if (attributes.isEmpty()) {
-				if (attributeType.isCompoundMember()) {
-					/*
-					 * For compounded attributes we allow some optional member
-					 * attributes to be empty.
-					 */
-					return;
-				}
-				throw new AttributeNotFoundException();
-			}
-			long index = attribute.getIndex();
-			Iterator<AttributeEntity> iterator = attributes.iterator();
-			AttributeEntity removeAttribute = null;
-			while (iterator.hasNext()) {
-				AttributeEntity iterAttribute = iterator.next();
-				if (index == iterAttribute.getAttributeIndex()) {
-					removeAttribute = iterAttribute;
-					break;
-				}
-			}
-			if (null == removeAttribute) {
-				if (attributeType.isCompoundMember()) {
-					/*
-					 * For compounded attributes we allow some optional member
-					 * attributes to be empty.
-					 */
-					return;
-				}
-				throw new AttributeNotFoundException();
-			}
-			/*
-			 * We remove by moving the data of the following remaining
-			 * attributes one up, and finally we remove the last entry in the
-			 * list.
-			 */
-			while (iterator.hasNext()) {
-				AttributeEntity nextAttribute = iterator.next();
-				/*
-				 * By copying the content of the next attribute into the remove
-				 * attribute we basically reindex the attributes. We cannot just
-				 * change the attribute index since it is part of the compounded
-				 * primary key of the attribute entity. Maybe we should use a
-				 * global PK attribute Id and a separate viewId instead?
-				 */
-				removeAttribute
-						.setBooleanValue(nextAttribute.getBooleanValue());
-				removeAttribute.setStringValue(nextAttribute.getStringValue());
-				removeAttribute = nextAttribute;
-			}
-			this.attributeDAO.removeAttribute(removeAttribute);
-		}
+		this.attributeManager.removeAttribute(attributeType, attribute
+				.getIndex(), subject);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)

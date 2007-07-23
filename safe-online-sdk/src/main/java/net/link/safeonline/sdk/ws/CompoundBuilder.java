@@ -9,12 +9,12 @@ package net.link.safeonline.sdk.ws;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import net.link.safeonline.sdk.ws.annotation.Compound;
 import net.link.safeonline.sdk.ws.annotation.CompoundId;
 import net.link.safeonline.sdk.ws.annotation.CompoundMember;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Builder for compound attribute instances. A compound attribute instance in
@@ -61,29 +61,6 @@ public class CompoundBuilder {
 		return this.compoundAttribute;
 	}
 
-	private Method getSetMethod(Method getMethod) {
-		String methodName = getMethod.getName();
-		String propertyName;
-		if (methodName.startsWith("get")) {
-			propertyName = methodName.substring(3);
-		} else if (methodName.startsWith("is")) {
-			propertyName = methodName.substring(2);
-		} else {
-			throw new RuntimeException("not a property: " + methodName);
-		}
-		Method setMethod;
-		try {
-			setMethod = this.compoundClass.getMethod("set" + propertyName,
-					new Class[] { getMethod.getReturnType() });
-		} catch (SecurityException e) {
-			throw new RuntimeException("security error: " + e.getMessage(), e);
-		} catch (NoSuchMethodException e) {
-			throw new RuntimeException("type mismatch for compound member: "
-					+ propertyName);
-		}
-		return setMethod;
-	}
-
 	public void setCompoundProperty(String memberName,
 			Object memberAttributeValue) {
 		Method[] methods = this.compoundClass.getMethods();
@@ -96,7 +73,8 @@ public class CompoundBuilder {
 			if (false == memberName.equals(compoundMemberAnnotation.value())) {
 				continue;
 			}
-			Method setPropertyMethod = getSetMethod(method);
+			Method setPropertyMethod = CompoundUtil.getSetMethod(
+					this.compoundClass, method);
 			try {
 				setPropertyMethod.invoke(this.compoundAttribute,
 						new Object[] { memberAttributeValue });
@@ -115,7 +93,8 @@ public class CompoundBuilder {
 			if (null == compoundIdAnnotation) {
 				continue;
 			}
-			Method setPropertyMethod = getSetMethod(method);
+			Method setPropertyMethod = CompoundUtil.getSetMethod(
+					this.compoundClass, method);
 			try {
 				setPropertyMethod.invoke(this.compoundAttribute,
 						new Object[] { attributeId });

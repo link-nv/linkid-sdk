@@ -23,4 +23,6 @@ public interface MandateSearch extends AbstractMandateDataClient {
 	 * Actions.
 	 */
 	String search();
+
+	String removeMandate();
 }

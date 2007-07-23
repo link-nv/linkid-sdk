@@ -13,6 +13,9 @@ import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
@@ -30,13 +33,15 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPFaultException;
 
-import junit.framework.TestCase;
 import liberty.dst._2006_08.ref.safe_online.AppDataType;
 import liberty.dst._2006_08.ref.safe_online.CreateItemType;
 import liberty.dst._2006_08.ref.safe_online.CreateResponseType;
 import liberty.dst._2006_08.ref.safe_online.CreateType;
 import liberty.dst._2006_08.ref.safe_online.DataService;
 import liberty.dst._2006_08.ref.safe_online.DataServicePort;
+import liberty.dst._2006_08.ref.safe_online.DeleteItemType;
+import liberty.dst._2006_08.ref.safe_online.DeleteResponseType;
+import liberty.dst._2006_08.ref.safe_online.DeleteType;
 import liberty.dst._2006_08.ref.safe_online.ModifyItemType;
 import liberty.dst._2006_08.ref.safe_online.ModifyResponseType;
 import liberty.dst._2006_08.ref.safe_online.ModifyType;
@@ -76,11 +81,14 @@ import oasis.names.tc.saml._2_0.assertion.AttributeType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class DataServicePortImplTest extends TestCase {
+public class DataServicePortImplTest {
 
 	private static final Log LOG = LogFactory
 			.getLog(DataServicePortImplTest.class);
@@ -101,9 +109,8 @@ public class DataServicePortImplTest extends TestCase {
 
 	private X509Certificate certificate;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
@@ -150,17 +157,14 @@ public class DataServicePortImplTest extends TestCase {
 		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-
+	@After
+	public void tearDown() throws Exception {
 		this.webServiceTestUtils.tearDown();
-
 		this.jndiTestUtils.tearDown();
-
-		super.tearDown();
 	}
 
-	public void testQueryInvalidCertificate() throws Exception {
+	@Test
+	public void queryInvalidCertificate() throws Exception {
 		// setup
 		QueryType query = new QueryType();
 
@@ -186,7 +190,8 @@ public class DataServicePortImplTest extends TestCase {
 		verify(this.mockObjects);
 	}
 
-	public void testQueryUnknownApplication() throws Exception {
+	@Test
+	public void queryUnknownApplication() throws Exception {
 		// setup
 		QueryType query = new QueryType();
 
@@ -215,7 +220,8 @@ public class DataServicePortImplTest extends TestCase {
 		verify(this.mockObjects);
 	}
 
-	public void testQueryUnsupportedObjectType() throws Exception {
+	@Test
+	public void queryUnsupportedObjectType() throws Exception {
 		// setup
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
@@ -249,7 +255,8 @@ public class DataServicePortImplTest extends TestCase {
 						.getCode()));
 	}
 
-	public void testQueryMissingSelect() throws Exception {
+	@Test
+	public void queryMissingSelect() throws Exception {
 		// setup
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
@@ -283,7 +290,8 @@ public class DataServicePortImplTest extends TestCase {
 						.getCode()));
 	}
 
-	public void testQueryMissingTargetIdentity() throws Exception {
+	@Test
+	public void queryMissingTargetIdentity() throws Exception {
 		// setup
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
@@ -320,7 +328,8 @@ public class DataServicePortImplTest extends TestCase {
 						.getCode()));
 	}
 
-	public void testQueryTargetIdentityNotSigned() throws Exception {
+	@Test
+	public void queryTargetIdentityNotSigned() throws Exception {
 		// setup
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
@@ -367,7 +376,8 @@ public class DataServicePortImplTest extends TestCase {
 		verify(this.mockObjects);
 	}
 
-	public void testQueryMultivaluedAttribute() throws Exception {
+	@Test
+	public void queryMultivaluedAttribute() throws Exception {
 		// setup
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
@@ -479,7 +489,8 @@ public class DataServicePortImplTest extends TestCase {
 						WebServiceConstants.MULTIVALUED_ATTRIBUTE));
 	}
 
-	public void testModifyMissingModifyItem() throws Exception {
+	@Test
+	public void modifyMissingModifyItem() throws Exception {
 		// setup
 		String applicationName = "test-application-name";
 		ModifyType request = new ModifyType();
@@ -509,7 +520,8 @@ public class DataServicePortImplTest extends TestCase {
 				.fromCode(status.getStatus().get(0).getCode()));
 	}
 
-	public void testModifyMissingObjectType() throws Exception {
+	@Test
+	public void modifyMissingObjectType() throws Exception {
 		// setup
 		String applicationName = "test-application-name";
 		ModifyType request = new ModifyType();
@@ -542,7 +554,8 @@ public class DataServicePortImplTest extends TestCase {
 						.getCode()));
 	}
 
-	public void testModifyMissingSelect() throws Exception {
+	@Test
+	public void modifyMissingSelect() throws Exception {
 		// setup
 		String applicationName = "test-application-name";
 		ModifyType request = new ModifyType();
@@ -576,7 +589,8 @@ public class DataServicePortImplTest extends TestCase {
 						.getCode()));
 	}
 
-	public void testModifyMissingNewData() throws Exception {
+	@Test
+	public void modifyMissingNewData() throws Exception {
 		// setup
 		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
@@ -626,7 +640,8 @@ public class DataServicePortImplTest extends TestCase {
 						.getCode()));
 	}
 
-	public void testModifyAttributeNameMismatch() throws Exception {
+	@Test
+	public void modifyAttributeNameMismatch() throws Exception {
 		// setup
 		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
@@ -679,7 +694,8 @@ public class DataServicePortImplTest extends TestCase {
 				.fromCode(status.getStatus().get(0).getCode()));
 	}
 
-	public void testModifySingleValuesAttribute() throws Exception {
+	@Test
+	public void modifySingleValuesAttribute() throws Exception {
 		// setup
 		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
@@ -736,7 +752,8 @@ public class DataServicePortImplTest extends TestCase {
 				.getCode()));
 	}
 
-	public void testModifyNullAttributeValue() throws Exception {
+	@Test
+	public void modifyNullAttributeValue() throws Exception {
 		// setup
 		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
@@ -792,7 +809,8 @@ public class DataServicePortImplTest extends TestCase {
 				.getCode()));
 	}
 
-	public void testModifyMultivaluedAttribute() throws Exception {
+	@Test
+	public void modifyMultivaluedAttribute() throws Exception {
 		// setup
 		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
@@ -856,7 +874,8 @@ public class DataServicePortImplTest extends TestCase {
 				.getCode()));
 	}
 
-	public void testCreateMultivaluedAttribute() throws Exception {
+	@Test
+	public void createMultivaluedAttribute() throws Exception {
 		// setup
 		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
@@ -909,6 +928,56 @@ public class DataServicePortImplTest extends TestCase {
 
 		// operate
 		CreateResponseType result = this.dataServicePort.create(request);
+
+		// verify
+		verify(this.mockObjects);
+		StatusType status = result.getStatus();
+		assertEquals(TopLevelStatusCode.OK, TopLevelStatusCode.fromCode(status
+				.getCode()));
+	}
+
+	@Test
+	public void delete() throws Exception {
+		// setup
+		String applicationName = "test-application-name";
+		DeleteType delete = new DeleteType();
+		String attributeName = "test-attribute-name";
+		DeleteItemType deleteItem = new DeleteItemType();
+		delete.getDeleteItem().add(deleteItem);
+		deleteItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
+		SelectType select = new SelectType();
+		select.setValue(attributeName);
+		deleteItem.setSelect(select);
+
+		BindingProvider bindingProvider = (BindingProvider) this.dataServicePort;
+		Binding binding = bindingProvider.getBinding();
+		List<Handler> handlerChain = binding.getHandlerChain();
+		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
+		String targetIdentity = "test-target-identity";
+		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		handlerChain.add(0, targetIdentityClientHandler);
+		LoggingHandler loggingHandler = new LoggingHandler();
+		handlerChain.add(loggingHandler);
+		binding.setHandlerChain(handlerChain);
+
+		// expectations
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								this.certificate)).andReturn(true);
+
+		expect(this.mockAuthenticationService.authenticate(this.certificate))
+				.andReturn(applicationName);
+
+		this.mockAttributeProviderService.removeAttribute(targetIdentity,
+				attributeName);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		DeleteResponseType result = this.dataServicePort.delete(delete);
 
 		// verify
 		verify(this.mockObjects);

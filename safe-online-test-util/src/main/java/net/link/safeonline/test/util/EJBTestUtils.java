@@ -187,8 +187,14 @@ public final class EJBTestUtils {
 	@SuppressWarnings("unchecked")
 	public static void init(Object bean) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
-		LOG.debug("Initializing: " + bean);
 		Class clazz = bean.getClass();
+		init(clazz, bean);
+	}
+
+	public static void init(Class clazz, Object bean)
+			throws IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
+		LOG.debug("Initializing: " + bean);
 		Method[] methods = clazz.getMethods();
 		for (Method method : methods) {
 			PostConstruct postConstruct = method
@@ -251,6 +257,11 @@ public final class EJBTestUtils {
 		enhancer.setSuperclass(clazz);
 		enhancer.setCallback(testContainerMethodInterceptor);
 		Type object = (Type) enhancer.create();
+		try {
+			init(clazz, object);
+		} catch (Exception e) {
+			throw new RuntimeException("init error");
+		}
 		return object;
 	}
 
