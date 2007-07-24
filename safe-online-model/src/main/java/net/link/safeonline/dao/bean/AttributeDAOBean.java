@@ -67,6 +67,8 @@ public class AttributeDAOBean implements AttributeDAO {
 
 	public AttributeEntity findAttribute(SubjectEntity subject,
 			AttributeTypeEntity attributeType, long index) {
+		LOG.debug("find attribute for type  " + attributeType.getName()
+				+ " and subject " + subject.getLogin());
 		AttributeEntity attribute = this.entityManager.find(
 				AttributeEntity.class, new AttributePK(attributeType, subject,
 						index));

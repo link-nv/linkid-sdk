@@ -8,6 +8,7 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,6 +25,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -92,6 +95,12 @@ public class AttributeEntity implements Serializable {
 	private String stringValue;
 
 	private Boolean booleanValue;
+
+	private Integer integerValue;
+
+	private Double doubleValue;
+
+	private Date dateValue;
 
 	public AttributeEntity() {
 		// empty
@@ -183,6 +192,31 @@ public class AttributeEntity implements Serializable {
 		this.booleanValue = booleanValue;
 	}
 
+	@Temporal(TemporalType.DATE)
+	public Date getDateValue() {
+		return this.dateValue;
+	}
+
+	public void setDateValue(Date dateValue) {
+		this.dateValue = dateValue;
+	}
+
+	public Double getDoubleValue() {
+		return this.doubleValue;
+	}
+
+	public void setDoubleValue(Double doubleValue) {
+		this.doubleValue = doubleValue;
+	}
+
+	public Integer getIntegerValue() {
+		return this.integerValue;
+	}
+
+	public void setIntegerValue(Integer integerValue) {
+		this.integerValue = integerValue;
+	}
+
 	private transient List<AttributeEntity> members;
 
 	/**
@@ -218,6 +252,12 @@ public class AttributeEntity implements Serializable {
 			return this.getStringValue();
 		case BOOLEAN:
 			return this.getBooleanValue();
+		case INTEGER:
+			return this.getIntegerValue();
+		case DOUBLE:
+			return this.getDoubleValue();
+		case DATE:
+			return this.getDateValue();
 		default:
 			throw new EJBException("datatype not supported: " + datatype);
 		}
@@ -237,6 +277,44 @@ public class AttributeEntity implements Serializable {
 			this.setBooleanValue(booleanValue);
 			break;
 		}
+		case INTEGER: {
+			Integer integerValue = (Integer) value;
+			this.setIntegerValue(integerValue);
+			break;
+		}
+		case DOUBLE: {
+			Double doubleValue = (Double) value;
+			this.setDoubleValue(doubleValue);
+			break;
+		}
+		case DATE: {
+			Date dateValue = (Date) value;
+			this.setDateValue(dateValue);
+			break;
+		}
+		default:
+			throw new EJBException("datatype not supported: " + datatype);
+		}
+	}
+
+	@Transient
+	public boolean isEmpty() {
+		DatatypeType datatype = this.attributeType.getType();
+		switch (datatype) {
+		case STRING:
+			String stringValue = this.getStringValue();
+			if (null == stringValue) {
+				return true;
+			}
+			return stringValue.length() == 0;
+		case BOOLEAN:
+			return null == this.getBooleanValue();
+		case INTEGER:
+			return null == this.getIntegerValue();
+		case DOUBLE:
+			return null == this.getDoubleValue();
+		case DATE:
+			return null == this.getDateValue();
 		default:
 			throw new EJBException("datatype not supported: " + datatype);
 		}
@@ -301,4 +379,5 @@ public class AttributeEntity implements Serializable {
 		query.setParameter(ATTRIBUTE_TYPE_PARAM, attributeType);
 		return query;
 	}
+
 }

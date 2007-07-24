@@ -8,11 +8,7 @@
 package net.link.safeonline.taglib;
 
 import java.io.IOException;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -92,6 +88,60 @@ public class AttributeOutputComponent extends UIOutput {
 		}
 	}
 
+	@SupportedType(DatatypeType.INTEGER)
+	public static class IntegerAttributeValueEncoder implements
+			AttributeValueEncoder {
+
+		public void encode(AttributeDO attribute, ResponseWriter response,
+				FacesContext context) throws IOException {
+			Integer value = attribute.getIntegerValue();
+			if (null == value) {
+				ResourceBundle messages = AttributeComponentUtil
+						.getResourceBundle(context);
+				String noValueStr = messages.getString("noValue");
+				response.write("[" + noValueStr + "]");
+				return;
+			}
+			response.write(value.toString());
+		}
+	}
+
+	@SupportedType(DatatypeType.DOUBLE)
+	public static class DoubleAttributeValueEncoder implements
+			AttributeValueEncoder {
+
+		public void encode(AttributeDO attribute, ResponseWriter response,
+				FacesContext context) throws IOException {
+			Double value = attribute.getDoubleValue();
+			if (null == value) {
+				ResourceBundle messages = AttributeComponentUtil
+						.getResourceBundle(context);
+				String noValueStr = messages.getString("noValue");
+				response.write("[" + noValueStr + "]");
+				return;
+			}
+			response.write(value.toString());
+		}
+	}
+
+	@SupportedType(DatatypeType.DATE)
+	public static class DateAttributeValueEncoder implements
+			AttributeValueEncoder {
+
+		public void encode(AttributeDO attribute, ResponseWriter response,
+				FacesContext context) throws IOException {
+			Date value = attribute.getDateValue();
+			if (null == value) {
+				ResourceBundle messages = AttributeComponentUtil
+						.getResourceBundle(context);
+				String noValueStr = messages.getString("noValue");
+				response.write("[" + noValueStr + "]");
+				return;
+			}
+			response.write(value.toString());
+		}
+	}
+
 	@SupportedType(DatatypeType.COMPOUNDED)
 	public static class CompoundedAttributeValueEncoder implements
 			AttributeValueEncoder {
@@ -100,13 +150,6 @@ public class AttributeOutputComponent extends UIOutput {
 				FacesContext context) throws IOException {
 			// empty
 		}
-	}
-
-	@Documented
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.TYPE)
-	private @interface SupportedType {
-		DatatypeType value();
 	}
 
 	private static final Map<DatatypeType, Class<? extends AttributeValueEncoder>> attributeValueEncoders = new HashMap<DatatypeType, Class<? extends AttributeValueEncoder>>();
@@ -119,6 +162,9 @@ public class AttributeOutputComponent extends UIOutput {
 		registerAttributeValueEncoder(StringAttributeValueEncoder.class);
 		registerAttributeValueEncoder(BooleanAttributeValueEncoder.class);
 		registerAttributeValueEncoder(CompoundedAttributeValueEncoder.class);
+		registerAttributeValueEncoder(IntegerAttributeValueEncoder.class);
+		registerAttributeValueEncoder(DoubleAttributeValueEncoder.class);
+		registerAttributeValueEncoder(DateAttributeValueEncoder.class);
 	}
 
 	private static void registerAttributeValueEncoder(
@@ -126,7 +172,7 @@ public class AttributeOutputComponent extends UIOutput {
 		SupportedType supportedType = clazz.getAnnotation(SupportedType.class);
 		if (null == supportedType) {
 			throw new RuntimeException(
-					"attribute value encoder required SupportedType meta-data annotation");
+					"attribute value encoder requires @SupportedType meta-data annotation");
 		}
 		DatatypeType type = supportedType.value();
 		if (attributeValueEncoders.containsKey(type)) {

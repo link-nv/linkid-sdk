@@ -8,6 +8,8 @@
 package net.link.safeonline.taglib;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -130,12 +132,35 @@ public class AttributeInputComponent extends UIInput {
 
 	static {
 		renderers = new HashMap<DatatypeType, Renderer>();
-		renderers.put(DatatypeType.STRING, new StringRenderer());
-		renderers.put(DatatypeType.BOOLEAN, new BooleanRenderer());
-		renderers.put(DatatypeType.COMPOUNDED, new CompoundedRenderer());
+		registerRenderer(StringRenderer.class);
+		registerRenderer(BooleanRenderer.class);
+		registerRenderer(CompoundedRenderer.class);
+		registerRenderer(IntegerRenderer.class);
+		registerRenderer(DoubleRenderer.class);
+		registerRenderer(DateRenderer.class);
 	}
 
-	private static class CompoundedRenderer implements Renderer {
+	private static void registerRenderer(Class<? extends Renderer> clazz) {
+		SupportedType supportedType = clazz.getAnnotation(SupportedType.class);
+		if (null == supportedType) {
+			throw new RuntimeException(
+					"renderer requires SupportedType meta-data annotation");
+		}
+		DatatypeType type = supportedType.value();
+		if (renderers.containsKey(type)) {
+			throw new RuntimeException("duplicate renderer entry for type: "
+					+ type);
+		}
+		try {
+			renderers.put(type, clazz.newInstance());
+		} catch (Exception e) {
+			throw new RuntimeException("instantiation error for class: "
+					+ clazz.getName());
+		}
+	}
+
+	@SupportedType(DatatypeType.COMPOUNDED)
+	public static class CompoundedRenderer implements Renderer {
 
 		public void decode(FacesContext context, UIInput inputComponent) {
 		}
@@ -149,7 +174,8 @@ public class AttributeInputComponent extends UIInput {
 		}
 	}
 
-	private static class StringRenderer implements Renderer {
+	@SupportedType(DatatypeType.STRING)
+	public static class StringRenderer implements Renderer {
 
 		public void encodeBegin(FacesContext context, UIInput inputComponent)
 				throws IOException {
@@ -198,7 +224,258 @@ public class AttributeInputComponent extends UIInput {
 		}
 	}
 
-	private static class BooleanRenderer implements Renderer {
+	@SupportedType(DatatypeType.INTEGER)
+	public static class IntegerRenderer implements Renderer {
+
+		public void encodeBegin(FacesContext context, UIInput inputComponent)
+				throws IOException {
+			String clientId = inputComponent.getClientId(context);
+			ResponseWriter responseWriter = context.getResponseWriter();
+
+			responseWriter.startElement("input", inputComponent);
+			responseWriter.writeAttribute("id", clientId, "id");
+			responseWriter.writeAttribute("type", "text", null);
+
+			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
+			Integer value = attribute.getIntegerValue();
+			String encodedValue;
+			if (null == value) {
+				encodedValue = "";
+			} else {
+				encodedValue = value.toString();
+			}
+
+			responseWriter.writeAttribute("name", clientId, null);
+			responseWriter.writeAttribute("value", encodedValue, null);
+
+			if (false == attribute.isEditable()) {
+				responseWriter.writeAttribute("disabled", "true", null);
+			}
+		}
+
+		public void encodeEnd(FacesContext context, UIInput inputComponent)
+				throws IOException {
+			ResponseWriter responseWriter = context.getResponseWriter();
+			responseWriter.endElement("input");
+		}
+
+		@SuppressWarnings("unchecked")
+		public void decode(FacesContext context, UIInput inputComponent) {
+			String clientId = inputComponent.getClientId(context);
+			ExternalContext externalContext = context.getExternalContext();
+			Map<String, String> requestParameterMap = externalContext
+					.getRequestParameterMap();
+			String encodedValue = requestParameterMap.get(clientId);
+
+			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
+			AttributeDO newAttribute = attribute.clone();
+
+			try {
+				Integer decodedValue;
+				if (encodedValue.length() == 0) {
+					decodedValue = null;
+				} else {
+					decodedValue = Integer.parseInt(encodedValue);
+				}
+				LOG.debug("decoded value: " + decodedValue);
+				newAttribute.setIntegerValue(decodedValue);
+			} catch (NumberFormatException e) {
+				LOG.warn("not an integer: " + encodedValue);
+			}
+
+			inputComponent.setSubmittedValue(newAttribute);
+		}
+	}
+
+	@SupportedType(DatatypeType.DOUBLE)
+	public static class DoubleRenderer implements Renderer {
+
+		public void encodeBegin(FacesContext context, UIInput inputComponent)
+				throws IOException {
+			String clientId = inputComponent.getClientId(context);
+			ResponseWriter responseWriter = context.getResponseWriter();
+
+			responseWriter.startElement("input", inputComponent);
+			responseWriter.writeAttribute("id", clientId, "id");
+			responseWriter.writeAttribute("type", "text", null);
+
+			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
+			Double value = attribute.getDoubleValue();
+			String encodedValue;
+			if (null == value) {
+				encodedValue = "";
+			} else {
+				encodedValue = value.toString();
+			}
+
+			responseWriter.writeAttribute("name", clientId, null);
+			responseWriter.writeAttribute("value", encodedValue, null);
+
+			if (false == attribute.isEditable()) {
+				responseWriter.writeAttribute("disabled", "true", null);
+			}
+		}
+
+		public void encodeEnd(FacesContext context, UIInput inputComponent)
+				throws IOException {
+			ResponseWriter responseWriter = context.getResponseWriter();
+			responseWriter.endElement("input");
+		}
+
+		@SuppressWarnings("unchecked")
+		public void decode(FacesContext context, UIInput inputComponent) {
+			String clientId = inputComponent.getClientId(context);
+			ExternalContext externalContext = context.getExternalContext();
+			Map<String, String> requestParameterMap = externalContext
+					.getRequestParameterMap();
+			String encodedValue = requestParameterMap.get(clientId);
+
+			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
+			AttributeDO newAttribute = attribute.clone();
+
+			try {
+				Double decodedValue;
+				if (encodedValue.length() == 0) {
+					decodedValue = null;
+				} else {
+					decodedValue = Double.parseDouble(encodedValue);
+				}
+				newAttribute.setDoubleValue(decodedValue);
+			} catch (NumberFormatException e) {
+				LOG.warn("not a double: " + encodedValue);
+			}
+
+			inputComponent.setSubmittedValue(newAttribute);
+		}
+
+	}
+
+	@SupportedType(DatatypeType.DATE)
+	public static class DateRenderer implements Renderer {
+
+		public void encodeBegin(FacesContext context, UIInput inputComponent)
+				throws IOException {
+			String clientId = inputComponent.getClientId(context);
+			ResponseWriter responseWriter = context.getResponseWriter();
+
+			responseWriter.startElement("span", inputComponent);
+
+			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
+			Date value = attribute.getDateValue();
+			Calendar calendar = Calendar.getInstance();
+			if (null != value) {
+				calendar.setTime(value);
+			}
+
+			// day
+			responseWriter.startElement("select", null);
+			{
+				String dayId = getDayId(clientId);
+				responseWriter.writeAttribute("name", dayId, null);
+				for (int dayIdx = 1; dayIdx < 32; dayIdx++) {
+					responseWriter.startElement("option", null);
+					responseWriter.writeAttribute("value", Integer
+							.toString(dayIdx), null);
+					if (calendar.get(Calendar.DAY_OF_MONTH) == dayIdx) {
+						responseWriter.writeAttribute("selected", "true", null);
+					}
+					responseWriter.write(Integer.toString(dayIdx));
+					responseWriter.endElement("option");
+				}
+			}
+			responseWriter.endElement("select");
+
+			// month
+			responseWriter.startElement("select", null);
+			{
+				String monthId = getMonthId(clientId);
+				responseWriter.writeAttribute("name", monthId, null);
+				int month = calendar.get(Calendar.MONTH) + 1;
+				for (int monthIdx = 1; monthIdx < 12; monthIdx++) {
+					responseWriter.startElement("option", null);
+					responseWriter.writeAttribute("value", Integer
+							.toString(monthIdx), null);
+					if (month == monthIdx) {
+						responseWriter.writeAttribute("selected", "true", null);
+					}
+					responseWriter.write(Integer.toString(monthIdx));
+					responseWriter.endElement("option");
+				}
+			}
+			responseWriter.endElement("select");
+
+			// year
+			responseWriter.startElement("select", null);
+			{
+				String yearId = getYearId(clientId);
+				responseWriter.writeAttribute("name", yearId, null);
+				int year = calendar.get(Calendar.YEAR);
+				for (int yearIdx = 1940; yearIdx < 2038; yearIdx++) {
+					responseWriter.startElement("option", null);
+					responseWriter.writeAttribute("value", Integer
+							.toString(yearIdx), null);
+					if (year == yearIdx) {
+						responseWriter.writeAttribute("selected", "true", null);
+					}
+					responseWriter.write(Integer.toString(yearIdx));
+					responseWriter.endElement("option");
+				}
+			}
+			responseWriter.endElement("select");
+		}
+
+		private String getDayId(String clientId) {
+			return clientId + ".day";
+		}
+
+		private String getMonthId(String clientId) {
+			return clientId + ".month";
+		}
+
+		private String getYearId(String clientId) {
+			return clientId + ".year";
+		}
+
+		public void encodeEnd(FacesContext context, UIInput inputComponent)
+				throws IOException {
+			ResponseWriter responseWriter = context.getResponseWriter();
+			responseWriter.endElement("span");
+		}
+
+		@SuppressWarnings("unchecked")
+		public void decode(FacesContext context, UIInput inputComponent) {
+			String clientId = inputComponent.getClientId(context);
+			ExternalContext externalContext = context.getExternalContext();
+			Map<String, String> requestParameterMap = externalContext
+					.getRequestParameterMap();
+			String dayId = getDayId(clientId);
+			String encodedDayValue = requestParameterMap.get(dayId);
+			String monthId = getMonthId(clientId);
+			String encodedMonthValue = requestParameterMap.get(monthId);
+			String yearId = getYearId(clientId);
+			String encodedYearValue = requestParameterMap.get(yearId);
+
+			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
+			AttributeDO newAttribute = attribute.clone();
+
+			Calendar calendar = Calendar.getInstance();
+			Date oldDate = newAttribute.getDateValue();
+			if (null != oldDate) {
+				calendar.setTime(oldDate);
+			}
+			calendar.set(Calendar.DAY_OF_MONTH, Integer
+					.parseInt(encodedDayValue));
+			calendar.set(Calendar.MONTH,
+					Integer.parseInt(encodedMonthValue) - 1);
+			calendar.set(Calendar.YEAR, Integer.parseInt(encodedYearValue));
+			newAttribute.setDateValue(calendar.getTime());
+
+			inputComponent.setSubmittedValue(newAttribute);
+		}
+	}
+
+	@SupportedType(DatatypeType.BOOLEAN)
+	public static class BooleanRenderer implements Renderer {
 
 		private static final String INLINE_SCRIPT_ADDED = BooleanRenderer.class
 				+ ".inline_script_added";

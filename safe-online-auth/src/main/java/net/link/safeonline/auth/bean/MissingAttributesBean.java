@@ -98,6 +98,7 @@ public class MissingAttributesBean implements MissingAttributes {
 	public String save() {
 		LOG.debug("save");
 		for (AttributeDO attribute : this.missingAttributeList) {
+			LOG.debug("attribute to save: " + attribute);
 			try {
 				this.identityService.saveAttribute(attribute);
 			} catch (PermissionDeniedException e) {

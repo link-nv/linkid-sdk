@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.ejb.EJBException;
 
@@ -47,6 +48,12 @@ public class AttributeDO implements Serializable, Cloneable {
 	private String stringValue;
 
 	private Boolean booleanValue;
+
+	private Integer integerValue;
+
+	private Double doubleValue;
+
+	private Date dateValue;
 
 	private boolean multivalued;
 
@@ -172,6 +179,30 @@ public class AttributeDO implements Serializable, Cloneable {
 		this.booleanValue = booleanValue;
 	}
 
+	public Date getDateValue() {
+		return this.dateValue;
+	}
+
+	public void setDateValue(Date dateValue) {
+		this.dateValue = dateValue;
+	}
+
+	public Double getDoubleValue() {
+		return this.doubleValue;
+	}
+
+	public void setDoubleValue(Double doubleValue) {
+		this.doubleValue = doubleValue;
+	}
+
+	public Integer getIntegerValue() {
+		return this.integerValue;
+	}
+
+	public void setIntegerValue(Integer integerValue) {
+		this.integerValue = integerValue;
+	}
+
 	/**
 	 * Gets the value. The {@link #getValue()} and
 	 * {@link #setValue(AttributeDO)} methods are used by the presentation layer
@@ -191,6 +222,33 @@ public class AttributeDO implements Serializable, Cloneable {
 	public void setValue(AttributeDO value) {
 		this.booleanValue = value.booleanValue;
 		this.stringValue = value.stringValue;
+		this.integerValue = value.integerValue;
+		this.doubleValue = value.doubleValue;
+		this.dateValue = value.dateValue;
+	}
+
+	public void setValue(AttributeEntity attribute) {
+		AttributeTypeEntity attributeType = attribute.getAttributeType();
+		DatatypeType type = attributeType.getType();
+		switch (type) {
+		case STRING:
+			this.setStringValue(attribute.getStringValue());
+			break;
+		case BOOLEAN:
+			this.setBooleanValue(attribute.getBooleanValue());
+			break;
+		case INTEGER:
+			this.setIntegerValue(attribute.getIntegerValue());
+			break;
+		case DOUBLE:
+			this.setDoubleValue(attribute.getDoubleValue());
+			break;
+		case DATE:
+			this.setDateValue(attribute.getDateValue());
+			break;
+		default:
+			throw new EJBException("unsupported data type: " + type);
+		}
 	}
 
 	public DatatypeType getType() {
@@ -278,6 +336,9 @@ public class AttributeDO implements Serializable, Cloneable {
 				this.multivalued, this.index, this.humanReadableName,
 				this.description, this.editable, this.dataMining,
 				this.stringValue, this.booleanValue);
+		attribute.integerValue = this.integerValue;
+		attribute.doubleValue = this.doubleValue;
+		attribute.dateValue = this.dateValue;
 		return attribute;
 	}
 
@@ -286,7 +347,8 @@ public class AttributeDO implements Serializable, Cloneable {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
 				.append("name", this.name).append("multi-valued",
 						this.multivalued).append("index", this.index).append(
-						"string-value", this.stringValue).toString();
+						"string-value", this.stringValue).append(
+						"integer-value", this.integerValue).toString();
 	}
 
 	/**
@@ -306,8 +368,18 @@ public class AttributeDO implements Serializable, Cloneable {
 		case BOOLEAN:
 			targetAttribute.setBooleanValue(this.booleanValue);
 			break;
+		case INTEGER:
+			targetAttribute.setIntegerValue(this.integerValue);
+			break;
+		case DOUBLE:
+			targetAttribute.setDoubleValue(this.doubleValue);
+			break;
+		case DATE:
+			targetAttribute.setDateValue(this.dateValue);
+			break;
 		default:
 			throw new EJBException("datatype not supported: " + this.type);
 		}
 	}
+
 }

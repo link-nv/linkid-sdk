@@ -273,22 +273,14 @@ public class IdentityServiceBean implements IdentityService,
 		if (attribute.getType() != type) {
 			throw new EJBException("datatype does not match");
 		}
-		switch (type) {
-		case STRING: {
-			String attributeValue = attribute.getStringValue();
-			this.attributeDAO.addOrUpdateAttribute(attributeType, subject,
-					index, attributeValue);
-			break;
+
+		AttributeEntity attributeEntity = this.attributeDAO.findAttribute(
+				subject, attributeType, index);
+		if (null == attributeEntity) {
+			attributeEntity = this.attributeDAO.addAttribute(attributeType,
+					subject, index);
 		}
-		case BOOLEAN: {
-			Boolean attributeValue = attribute.getBooleanValue();
-			this.attributeDAO.addOrUpdateAttribute(attributeType, subject,
-					index, attributeValue);
-			break;
-		}
-		default:
-			throw new EJBException("datatype not supported: " + type);
-		}
+		attribute.copyValueTo(attributeType, attributeEntity);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -359,6 +351,7 @@ public class IdentityServiceBean implements IdentityService,
 			AttributeDO attributeView = new AttributeDO(name, datatype,
 					multivalued, index, humanReadableName, description,
 					editable, true, stringValue, booleanValue);
+			attributeView.setValue(attribute);
 			attributesView.add(attributeView);
 		}
 
@@ -771,47 +764,25 @@ public class IdentityServiceBean implements IdentityService,
 
 		for (Map.Entry<AttributeTypeEntity, List<AttributeEntity>> userAttributeEntry : userAttributes
 				.entrySet()) {
+			AttributeTypeEntity userAttributeType = userAttributeEntry.getKey();
+			if (true == userAttributeType.isCompounded()) {
+				/*
+				 * We don't need to remove a compounded attribute type since
+				 * such a type is not part of the
+				 * requiredApplicationAttributeTypes list in the first place.
+				 */
+				continue;
+			}
 			/*
 			 * Even in case of a multi-valued attribute we only need to peek at
 			 * the first entry.
 			 */
 			AttributeEntity userAttribute = userAttributeEntry.getValue()
 					.get(0);
-			DatatypeType datatype = userAttribute.getAttributeType().getType();
-			switch (datatype) {
-			case STRING:
-				String stringValue = userAttribute.getStringValue();
-				if (null == stringValue) {
-					/*
-					 * In this case the user still needs to input a value for
-					 * the field.
-					 */
-					continue;
-				}
-				if (stringValue.length() == 0) {
-					/*
-					 * Even empty attributes must be marked as missing.
-					 */
-					continue;
-				}
-				break;
-			case BOOLEAN:
-				Boolean booleanValue = userAttribute.getBooleanValue();
-				if (null == booleanValue) {
-					/*
-					 * In this case the user still needs to input a value for
-					 * the boolean attribute.
-					 */
-					continue;
-				}
-				break;
-			case COMPOUNDED:
+			if (true == userAttribute.isEmpty()) {
 				continue;
-			default:
-				throw new EJBException("datatype not supported: " + datatype);
 			}
-			requiredApplicationAttributeTypes.remove(userAttribute
-					.getAttributeType());
+			requiredApplicationAttributeTypes.remove(userAttributeType);
 		}
 
 		/*
@@ -839,12 +810,10 @@ public class IdentityServiceBean implements IdentityService,
 			String attributeName = attributeType.getName();
 			if (null != locale) {
 				String language = locale.getLanguage();
-				LOG.debug("trying language: " + language);
 				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
 						.findDescription(new AttributeTypeDescriptionPK(
 								attributeName, language));
 				if (null != attributeTypeDescription) {
-					LOG.debug("found description");
 					humanReadableName = attributeTypeDescription.getName();
 					description = attributeTypeDescription.getDescription();
 				}
@@ -896,12 +865,10 @@ public class IdentityServiceBean implements IdentityService,
 			String description = null;
 			if (null != locale) {
 				String language = locale.getLanguage();
-				LOG.debug("trying language: " + language);
 				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
 						.findDescription(new AttributeTypeDescriptionPK(
 								compoundedAttributeType.getName(), language));
 				if (null != attributeTypeDescription) {
-					LOG.debug("found description");
 					humanReadableName = attributeTypeDescription.getName();
 					description = attributeTypeDescription.getDescription();
 				}
@@ -925,12 +892,10 @@ public class IdentityServiceBean implements IdentityService,
 				description = null;
 				if (null != locale) {
 					String language = locale.getLanguage();
-					LOG.debug("trying language: " + language);
 					AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
 							.findDescription(new AttributeTypeDescriptionPK(
 									attributeType.getName(), language));
 					if (null != attributeTypeDescription) {
-						LOG.debug("found description");
 						humanReadableName = attributeTypeDescription.getName();
 						description = attributeTypeDescription.getDescription();
 					}
@@ -951,19 +916,7 @@ public class IdentityServiceBean implements IdentityService,
 						.get(attributeType);
 				if (null != attributes) {
 					AttributeEntity attribute = attributes.get(0);
-					DatatypeType type = attributeType.getType();
-					switch (type) {
-					case STRING:
-						missingMemberAttribute.setStringValue(attribute
-								.getStringValue());
-						break;
-					case BOOLEAN:
-						missingMemberAttribute.setBooleanValue(attribute
-								.getBooleanValue());
-						break;
-					default:
-						throw new EJBException("unsupported data type: " + type);
-					}
+					missingMemberAttribute.setValue(attribute);
 				}
 				LOG.debug("adding missing member attribute: "
 						+ missingMemberAttribute.getName());

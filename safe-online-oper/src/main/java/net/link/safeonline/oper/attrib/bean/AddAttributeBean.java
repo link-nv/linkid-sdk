@@ -94,8 +94,13 @@ public class AddAttributeBean implements AddAttribute {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<SelectItem> datatypesFactory() {
 		List<SelectItem> datatypes = new LinkedList<SelectItem>();
-		datatypes.add(new SelectItem(DatatypeType.STRING.name(), "string"));
-		datatypes.add(new SelectItem(DatatypeType.BOOLEAN.name(), "boolean"));
+		for (DatatypeType type : DatatypeType.values()) {
+			if (false == type.isPrimitive()) {
+				continue;
+			}
+			datatypes.add(new SelectItem(type.name(), type.getFriendlyName()));
+
+		}
 		return datatypes;
 	}
 

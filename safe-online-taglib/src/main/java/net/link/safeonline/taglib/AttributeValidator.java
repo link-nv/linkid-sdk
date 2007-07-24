@@ -7,6 +7,7 @@
 
 package net.link.safeonline.taglib;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,9 @@ import javax.faces.validator.ValidatorException;
 import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.entity.DatatypeType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * JSF validator for {@link AttributeDO}.
  * 
@@ -27,6 +31,8 @@ import net.link.safeonline.entity.DatatypeType;
  * 
  */
 public class AttributeValidator implements Validator {
+
+	private static final Log LOG = LogFactory.getLog(AttributeValidator.class);
 
 	public static final String VALIDATOR_ID = "net.link.validator.attribute";
 
@@ -50,6 +56,7 @@ public class AttributeValidator implements Validator {
 		if (null == typeValidator) {
 			FacesMessage facesMessage = new FacesMessage("unsupported type: "
 					+ type);
+			LOG.error("unsupported type: " + type);
 			throw new ValidatorException(facesMessage);
 		}
 		typeValidator.validate(context, attribute);
@@ -61,7 +68,8 @@ public class AttributeValidator implements Validator {
 				throws ValidatorException;
 	}
 
-	private static class StringTypeValidator implements TypeValidator {
+	@SupportedType(DatatypeType.STRING)
+	public static class StringTypeValidator implements TypeValidator {
 
 		public void validate(FacesContext context, AttributeDO attribute)
 				throws ValidatorException {
@@ -79,7 +87,8 @@ public class AttributeValidator implements Validator {
 		}
 	}
 
-	private static class BooleanTypeValidator implements TypeValidator {
+	@SupportedType(DatatypeType.BOOLEAN)
+	public static class BooleanTypeValidator implements TypeValidator {
 
 		public void validate(FacesContext context, AttributeDO attribute)
 				throws ValidatorException {
@@ -92,10 +101,83 @@ public class AttributeValidator implements Validator {
 		}
 	}
 
+	@SupportedType(DatatypeType.INTEGER)
+	public static class IntegerTypeValidator implements TypeValidator {
+
+		public void validate(FacesContext context, AttributeDO attribute)
+				throws ValidatorException {
+			Integer value = attribute.getIntegerValue();
+			if (null == value) {
+				String msg = "integer value is null";
+				LOG.debug(msg);
+				FacesMessage facesMessage = new FacesMessage(msg);
+				throw new ValidatorException(facesMessage);
+			}
+		}
+	}
+
+	@SupportedType(DatatypeType.DOUBLE)
+	public static class DoubleTypeValidator implements TypeValidator {
+
+		public void validate(FacesContext context, AttributeDO attribute)
+				throws ValidatorException {
+			Double value = attribute.getDoubleValue();
+			if (null == value) {
+				String msg = "double value is null";
+				LOG.debug(msg);
+				FacesMessage facesMessage = new FacesMessage(msg);
+				throw new ValidatorException(facesMessage);
+			}
+		}
+	}
+
+	@SupportedType(DatatypeType.DATE)
+	public static class DateTypeValidator implements TypeValidator {
+
+		public void validate(FacesContext context, AttributeDO attribute)
+				throws ValidatorException {
+			Date value = attribute.getDateValue();
+			if (null == value) {
+				String msg = "date value is null";
+				LOG.debug(msg);
+				FacesMessage facesMessage = new FacesMessage(msg);
+				throw new ValidatorException(facesMessage);
+			}
+		}
+	}
+
 	private static final Map<DatatypeType, TypeValidator> typeValidators = new HashMap<DatatypeType, TypeValidator>();
 
 	static {
-		typeValidators.put(DatatypeType.STRING, new StringTypeValidator());
-		typeValidators.put(DatatypeType.BOOLEAN, new BooleanTypeValidator());
+		registerTypeValidator(StringTypeValidator.class);
+		registerTypeValidator(BooleanTypeValidator.class);
+		registerTypeValidator(IntegerTypeValidator.class);
+		registerTypeValidator(DoubleTypeValidator.class);
+		registerTypeValidator(DateTypeValidator.class);
+	}
+
+	private static void registerTypeValidator(
+			Class<? extends TypeValidator> clazz) {
+		SupportedType supportedTypeAnnotation = clazz
+				.getAnnotation(SupportedType.class);
+		if (null == supportedTypeAnnotation) {
+			throw new RuntimeException(
+					"@SupportedType annotation required on class: "
+							+ clazz.getName());
+		}
+		DatatypeType type = supportedTypeAnnotation.value();
+		if (typeValidators.containsKey(type)) {
+			throw new RuntimeException(
+					"already registered an validator for type: " + type);
+		}
+
+		TypeValidator typeValidator;
+		try {
+			typeValidator = clazz.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException("error instantiating: "
+					+ clazz.getName());
+		}
+		typeValidators.put(type, typeValidator);
 	}
 }
