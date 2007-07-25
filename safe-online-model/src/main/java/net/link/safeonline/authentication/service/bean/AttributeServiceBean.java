@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,92 +82,16 @@ public class AttributeServiceBean implements AttributeService,
 			PermissionDeniedException, SubjectNotFoundException {
 		LOG.debug("get attribute " + attributeName + " for login "
 				+ subjectLogin);
-
 		List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
 
 		AttributeTypeEntity attributeType = checkAttributeReadPermission(
 				attributeName, confirmedAttributes);
+		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
+				subject, attributeType);
 
-		if (attributeType.isMultivalued()) {
-			SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
-			List<AttributeEntity> attributes = this.attributeDAO
-					.listAttributes(subject, attributeType);
-			LOG.debug("number of attributes for attrib type "
-					+ attributeType.getName() + ": " + attributes.size());
-			DatatypeType datatype = attributeType.getType();
-			switch (datatype) {
-			case STRING: {
-				String[] values = new String[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++) {
-					values[idx] = attributes.get(idx).getStringValue();
-				}
-				return values;
-			}
-			case BOOLEAN: {
-				Boolean[] values = new Boolean[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++) {
-					values[idx] = attributes.get(idx).getBooleanValue();
-				}
-				return values;
-			}
-			case COMPOUNDED: {
-				Map[] values = new Map[attributes.size()];
-				for (CompoundedAttributeTypeMemberEntity member : attributeType
-						.getMembers()) {
-					AttributeTypeEntity memberAttributeType = member
-							.getMember();
-					for (int idx = 0; idx < attributes.size(); idx++) {
-						AttributeEntity attribute = this.attributeDAO
-								.findAttribute(subject, memberAttributeType,
-										idx);
-						Map<String, Object> memberMap = values[idx];
-						if (null == memberMap) {
-							memberMap = new HashMap<String, Object>();
-							values[idx] = memberMap;
-						}
-						Object value = null;
-						if (null != attribute) {
-							switch (memberAttributeType.getType()) {
-							case STRING:
-								value = attribute.getStringValue();
-								break;
-							case BOOLEAN:
-								value = attribute.getBooleanValue();
-								break;
-							default:
-								throw new EJBException(
-										"datatype not supported: "
-												+ memberAttributeType.getType());
-							}
-						}
-						memberMap.put(memberAttributeType.getName(), value);
-					}
-				}
-				return values;
-			}
-			default:
-				throw new EJBException("datatype not supported: " + datatype);
-			}
-		}
-
-		// else single-valued attribute
-
-		AttributeEntity attribute = this.attributeDAO.getAttribute(
-				attributeName, subjectLogin);
-
-		DatatypeType datatype = attribute.getAttributeType().getType();
-		switch (datatype) {
-		case STRING: {
-			String value = attribute.getStringValue();
-			return value;
-		}
-		case BOOLEAN: {
-			Boolean value = attribute.getBooleanValue();
-			return value;
-		}
-		default:
-			throw new EJBException("datatype not supported: " + datatype);
-		}
+		Object value = getValue(attributes, attributeType, subject);
+		return value;
 	}
 
 	private AttributeTypeEntity checkAttributeReadPermission(
@@ -247,92 +172,105 @@ public class AttributeServiceBean implements AttributeService,
 		for (ApplicationIdentityAttributeEntity confirmedAttribute : confirmedAttributes) {
 			AttributeTypeEntity attributeType = confirmedAttribute
 					.getAttributeType();
-			String attributeName = confirmedAttribute.getAttributeTypeName();
 			List<AttributeEntity> attributes = this.attributeDAO
 					.listAttributes(subject, attributeType);
 			if (attributes.isEmpty()) {
 				continue;
 			}
+			String attributeName = confirmedAttribute.getAttributeTypeName();
 			LOG.debug("confirmed attribute: " + attributeName);
-			DatatypeType datatype = attributeType.getType();
 			Object value;
-			if (attributeType.isMultivalued()) {
-				switch (datatype) {
-				case STRING: {
-					String[] values = new String[attributes.size()];
-					for (int idx = 0; idx < values.length; idx++) {
-						values[idx] = attributes.get(idx).getStringValue();
-					}
-					value = values;
-					break;
-				}
-				case BOOLEAN: {
-					Boolean[] values = new Boolean[attributes.size()];
-					for (int idx = 0; idx < values.length; idx++) {
-						values[idx] = attributes.get(idx).getBooleanValue();
-					}
-					value = values;
-					break;
-				}
-				case COMPOUNDED: {
-					Map[] values = new Map[attributes.size()];
-					for (CompoundedAttributeTypeMemberEntity member : attributeType
-							.getMembers()) {
-						AttributeTypeEntity memberAttributeType = member
-								.getMember();
-						for (int idx = 0; idx < attributes.size(); idx++) {
-							AttributeEntity attribute = this.attributeDAO
-									.findAttribute(subject,
-											memberAttributeType, idx);
-							Map<String, Object> memberMap = values[idx];
-							if (null == memberMap) {
-								memberMap = new HashMap<String, Object>();
-								values[idx] = memberMap;
-							}
-							Object memberValue = null;
-							if (null != attribute) {
-								switch (memberAttributeType.getType()) {
-								case STRING:
-									memberValue = attribute.getStringValue();
-									break;
-								case BOOLEAN:
-									memberValue = attribute.getBooleanValue();
-									break;
-								default:
-									throw new EJBException(
-											"datatype not supported: "
-													+ memberAttributeType
-															.getType());
-								}
-							}
-							memberMap.put(memberAttributeType.getName(),
-									memberValue);
-						}
-					}
-					value = values;
-					break;
-				}
-				default:
-					throw new EJBException("datatype not supported: "
-							+ datatype);
-				}
-			} else {
-				AttributeEntity attribute = attributes.get(0);
-				switch (datatype) {
-				case STRING:
-					value = attribute.getStringValue();
-					break;
-				case BOOLEAN:
-					value = attribute.getBooleanValue();
-					break;
-				default:
-					throw new EJBException("datatype not supported: "
-							+ datatype);
-				}
+			try {
+				value = getValue(attributes, attributeType, subject);
+			} catch (AttributeNotFoundException e) {
+				throw new EJBException("attribute not found");
 			}
-
 			resultAttributes.put(attributeName, value);
 		}
 		return resultAttributes;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Object getValue(List<AttributeEntity> attributes,
+			AttributeTypeEntity attributeType, SubjectEntity subject)
+			throws AttributeNotFoundException {
+		DatatypeType datatype = attributeType.getType();
+		if (attributeType.isMultivalued()) {
+			switch (datatype) {
+			case STRING: {
+				String[] values = new String[attributes.size()];
+				for (int idx = 0; idx < values.length; idx++) {
+					values[idx] = attributes.get(idx).getStringValue();
+				}
+				return values;
+			}
+			case BOOLEAN: {
+				Boolean[] values = new Boolean[attributes.size()];
+				for (int idx = 0; idx < values.length; idx++) {
+					values[idx] = attributes.get(idx).getBooleanValue();
+				}
+				return values;
+			}
+			case INTEGER: {
+				Integer[] values = new Integer[attributes.size()];
+				for (int idx = 0; idx < values.length; idx++) {
+					values[idx] = attributes.get(idx).getIntegerValue();
+				}
+				return values;
+			}
+			case DOUBLE: {
+				Double[] values = new Double[attributes.size()];
+				for (int idx = 0; idx < values.length; idx++) {
+					values[idx] = attributes.get(idx).getDoubleValue();
+				}
+				return values;
+			}
+			case DATE: {
+				Date[] values = new Date[attributes.size()];
+				for (int idx = 0; idx < values.length; idx++) {
+					values[idx] = attributes.get(idx).getDateValue();
+				}
+				return values;
+			}
+			case COMPOUNDED: {
+				Map[] values = new Map[attributes.size()];
+				for (CompoundedAttributeTypeMemberEntity member : attributeType
+						.getMembers()) {
+					AttributeTypeEntity memberAttributeType = member
+							.getMember();
+					for (int idx = 0; idx < attributes.size(); idx++) {
+						AttributeEntity attribute = this.attributeDAO
+								.findAttribute(subject, memberAttributeType,
+										idx);
+						Map<String, Object> memberMap = values[idx];
+						if (null == memberMap) {
+							memberMap = new HashMap<String, Object>();
+							values[idx] = memberMap;
+						}
+						Object memberValue;
+						if (null != attribute) {
+							memberValue = attribute.getValue();
+						} else {
+							memberValue = null;
+						}
+						memberMap.put(memberAttributeType.getName(),
+								memberValue);
+					}
+				}
+				return values;
+			}
+			default:
+				throw new EJBException("datatype not supported: " + datatype);
+			}
+		} else {
+			/*
+			 * Single-valued attribute.
+			 */
+			if (attributes.isEmpty()) {
+				throw new AttributeNotFoundException();
+			}
+			AttributeEntity attribute = attributes.get(0);
+			return attribute.getValue();
+		}
 	}
 }

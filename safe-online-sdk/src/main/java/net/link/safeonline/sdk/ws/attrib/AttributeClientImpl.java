@@ -21,10 +21,13 @@ import java.util.Set;
 import javax.xml.ws.BindingProvider;
 
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
+import net.link.safeonline.attrib.ws.SamlpSecondLevelErrorCode;
+import net.link.safeonline.attrib.ws.SamlpTopLevelErrorCode;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.CompoundBuilder;
+import net.link.safeonline.sdk.ws.CompoundUtil;
 import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.attrib.annotation.IdentityAttribute;
@@ -207,19 +210,20 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 		StatusType status = response.getStatus();
 		StatusCodeType statusCode = status.getStatusCode();
 		String statusCodeValue = statusCode.getValue();
-		if (false == "urn:oasis:names:tc:SAML:2.0:status:Success"
-				.equals(statusCodeValue)) {
+		SamlpTopLevelErrorCode samlpTopLevelErrorCode = SamlpTopLevelErrorCode
+				.getSamlpTopLevelErrorCode(statusCodeValue);
+		if (SamlpTopLevelErrorCode.SUCCESS != samlpTopLevelErrorCode) {
 			LOG.error("status code: " + statusCodeValue);
 			LOG.error("status message: " + status.getStatusMessage());
 			StatusCodeType secondLevelStatusCode = statusCode.getStatusCode();
 			if (null != secondLevelStatusCode) {
 				String secondLevelStatusCodeValue = secondLevelStatusCode
 						.getValue();
-				if ("urn:oasis:names:tc:SAML:2.0:status:InvalidAttrNameOrValue"
-						.equals(secondLevelStatusCodeValue)) {
+				SamlpSecondLevelErrorCode samlpSecondLevelErrorCode = SamlpSecondLevelErrorCode
+						.getSamlpTopLevelErrorCode(secondLevelStatusCodeValue);
+				if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode) {
 					throw new AttributeNotFoundException();
-				} else if ("urn:oasis:names:tc:SAML:2.0:status:RequestDenied"
-						.equals(secondLevelStatusCodeValue)) {
+				} else if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode) {
 					throw new RequestDeniedException();
 				}
 				LOG.debug("second level status code: "
@@ -368,14 +372,12 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 				continue;
 			}
 			String attributeName = identityAttributeAnnotation.value();
-			String propertyName = method.getName().substring(3);
 			Class valueClass = method.getReturnType();
 			Object attributeValue = getAttributeValue(subjectLogin,
 					attributeName, valueClass);
-			Method setMethod;
+			Method setMethod = CompoundUtil.getSetMethod(identityCardClass,
+					method);
 			try {
-				setMethod = identityCardClass.getMethod("set" + propertyName,
-						valueClass);
 				setMethod.invoke(identityCard, new Object[] { attributeValue });
 			} catch (Exception e) {
 				throw new RuntimeException("error: " + e.getMessage());

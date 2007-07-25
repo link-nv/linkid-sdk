@@ -50,6 +50,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of SAML attribute web service using JAX-WS.
+ * 
  * <p>
  * Specification: Assertions and Protocols for the OASIS Security Assertion
  * Markup Language (SAML) V2.0.
@@ -177,29 +178,11 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		XMLGregorianCalendar currentXmlGregorianCalendar = getCurrentXmlGregorianCalendar();
 		response.setIssueInstant(currentXmlGregorianCalendar);
 		StatusCodeType statusCode = new StatusCodeType();
-		statusCode.setValue(errorCode.toString());
+		statusCode.setValue(errorCode.getErrorCode());
 		StatusType status = new StatusType();
 		status.setStatusCode(statusCode);
 		response.setStatus(status);
 		return response;
-	}
-
-	private enum SamlpTopLevelErrorCode {
-		SUCCESS("urn:oasis:names:tc:SAML:2.0:status:Success"), REQUESTER(
-				"urn:oasis:names:tc:SAML:2.0:status:Requester"), RESPONDER(
-				"urn:oasis:names:tc:SAML:2.0:status:Responder"), VERSION_MISMATCH(
-				"urn:oasis:names:tc:SAML:2.0:status:VersionMismatch");
-
-		private final String errorCode;
-
-		private SamlpTopLevelErrorCode(String errorCode) {
-			this.errorCode = errorCode;
-		}
-
-		@Override
-		public String toString() {
-			return this.errorCode;
-		}
 	}
 
 	/**
@@ -215,21 +198,21 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			detailMessage = "Attribute not found: " + attributeName;
 		}
 		ResponseType response = createRequesterErrorResponse(
-				"urn:oasis:names:tc:SAML:2.0:status:InvalidAttrNameOrValue",
+				SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE,
 				detailMessage);
 		return response;
 	}
 
 	private ResponseType createUnknownPrincipalResponse(String subjectLogin) {
 		ResponseType response = createRequesterErrorResponse(
-				"urn:oasis:names:tc:SAML:2.0:status:UnknownPrincipal",
+				SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL,
 				"Subject not found: " + subjectLogin);
 		return response;
 	}
 
 	private ResponseType createRequestDeniedResponse() {
 		ResponseType response = createRequesterErrorResponse(
-				"urn:oasis:names:tc:SAML:2.0:status:RequestDenied", null);
+				SamlpSecondLevelErrorCode.REQUEST_DENIED, null);
 		return response;
 	}
 
@@ -241,12 +224,14 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 	 * @return
 	 */
 	private ResponseType createRequesterErrorResponse(
-			String secondLevelStatusCode, String statusMessage) {
+			SamlpSecondLevelErrorCode secondLevelStatusCode,
+			String statusMessage) {
 		ResponseType response = createGenericResponse(SamlpTopLevelErrorCode.REQUESTER);
 
 		if (null != secondLevelStatusCode) {
 			StatusCodeType jaxbSecondLevelStatusCode = new StatusCodeType();
-			jaxbSecondLevelStatusCode.setValue(secondLevelStatusCode);
+			jaxbSecondLevelStatusCode.setValue(secondLevelStatusCode
+					.getErrorCode());
 			response.getStatus().getStatusCode().setStatusCode(
 					jaxbSecondLevelStatusCode);
 		}
