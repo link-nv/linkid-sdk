@@ -48,7 +48,6 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import net.link.safeonline.ws.util.ri.Injection;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
@@ -496,20 +495,7 @@ public class DataServicePortImpl implements DataServicePort {
 			}
 
 			for (AttributeEntity attributeEntity : attributeList) {
-				DatatypeType datatype = attributeEntity.getAttributeType()
-						.getType();
-				switch (datatype) {
-				case STRING: {
-					Object encodedValue = attributeEntity.getStringValue();
-					attribute.getAttributeValue().add(encodedValue);
-					break;
-				}
-				case BOOLEAN: {
-					Object encodedValue = attributeEntity.getBooleanValue();
-					attribute.getAttributeValue().add(encodedValue);
-					break;
-				}
-				case COMPOUNDED: {
+				if (attributeEntity.getAttributeType().isCompounded()) {
 					AttributeType compoundAttribute = new AttributeType();
 					compoundAttribute.setName(attributeName);
 					compoundAttribute.getOtherAttributes().put(
@@ -529,11 +515,15 @@ public class DataServicePortImpl implements DataServicePort {
 					}
 
 					attribute.getAttributeValue().add(compoundAttribute);
-					break;
-				}
-				default:
-					QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
-					return failedResponse;
+				} else {
+					Object encodedValue;
+					try {
+						encodedValue = attributeEntity.getValue();
+						attribute.getAttributeValue().add(encodedValue);
+					} catch (EJBException e) {
+						QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
+						return failedResponse;
+					}
 				}
 			}
 		}
@@ -542,19 +532,9 @@ public class DataServicePortImpl implements DataServicePort {
 
 	private void setSamlAttributeValue(AttributeEntity attribute,
 			AttributeType targetAttribute) {
-		AttributeTypeEntity attributeType = attribute.getAttributeType();
-		DatatypeType datatype = attributeType.getType();
 		List<Object> attributeValues = targetAttribute.getAttributeValue();
-		switch (datatype) {
-		case STRING:
-			attributeValues.add(attribute.getStringValue());
-			break;
-		case BOOLEAN:
-			attributeValues.add(attribute.getBooleanValue());
-			break;
-		default:
-			throw new EJBException("datatype not supported: " + datatype);
-		}
+		Object value = attribute.getValue();
+		attributeValues.add(value);
 	}
 
 	private QueryResponseType createFailedQueryResponse(
