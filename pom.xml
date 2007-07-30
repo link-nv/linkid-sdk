@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
@@ -301,7 +299,8 @@
 		<module>safe-online-demo-mandate</module>
 		<module>safe-online-demo-mandate-webapp</module>
 		<module>safe-online-demo-mandate-service</module>
-	</modules>
+    <module>safe-online-sms</module>
+  </modules>
 	<repositories>
 		<repository>
 			<id>buildserver</id>
@@ -1018,6 +1017,11 @@
 				<artifactId>gravel</artifactId>
 				<version>${gravel.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.rxtx</groupId>
+				<artifactId>rxtx</artifactId>
+				<version>${rxtx.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1168,5 +1172,6 @@
 		<json.version>4.1-b6</json.version>
 		<jgroups.version>2.2.5</jgroups.version>
 		<gravel.version>1.0.0.GA</gravel.version>
+		<rxtx.version>2.1.7</rxtx.version>
 	</properties>
 </project>
