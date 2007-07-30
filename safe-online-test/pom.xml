@@ -34,6 +34,12 @@
 			<artifactId>safe-online-sdk</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -123,9 +129,23 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.opensaml</groupId>
+			<groupId>opensaml</groupId>
 			<artifactId>opensaml</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>xmltooling</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>openws</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>velocity</groupId>
+			<artifactId>velocity</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
@@ -299,8 +301,8 @@
 		<module>safe-online-demo-mandate</module>
 		<module>safe-online-demo-mandate-webapp</module>
 		<module>safe-online-demo-mandate-service</module>
-    <module>safe-online-sms</module>
-  </modules>
+		<module>safe-online-sms</module>
+	</modules>
 	<repositories>
 		<repository>
 			<id>buildserver</id>
@@ -379,7 +381,7 @@
 		<repository>
 			<id>jboss</id>
 			<name>JBoss Maven2 Repository</name>
-			<url>http://repository.jboss.com/maven2/</url>
+			<url>http://repository.jboss.com/maven2</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
@@ -391,6 +393,17 @@
 			<url>
 				http://people.apache.org/repo/m2-snapshot-repository/
 			</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>jboss-snapshots</id>
+			<name>JBoss Snapshots Maven2 Repository</name>
+			<url>http://snapshots.jboss.org/maven2</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
@@ -800,10 +813,19 @@
 				<version>${concurrent.version}</version>
 			</dependency>
 			<dependency>
-				<!-- TODO: transitive dependency on xmlsec,commons-codec in pom.xml -->
-				<groupId>org.opensaml</groupId>
+				<groupId>opensaml</groupId>
 				<artifactId>opensaml</artifactId>
 				<version>${opensaml.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>opensaml</groupId>
+				<artifactId>xmltooling</artifactId>
+				<version>${xmltooling.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>opensaml</groupId>
+				<artifactId>openws</artifactId>
+				<version>${openws.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>xml-security</groupId>
@@ -1018,6 +1040,16 @@
 				<version>${gravel.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>velocity</groupId>
+				<artifactId>velocity</artifactId>
+				<version>${velocity.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>${xercesImpl.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.rxtx</groupId>
 				<artifactId>rxtx</artifactId>
 				<version>${rxtx.version}</version>
@@ -1113,7 +1145,9 @@
 		<catalina.version>5.5.15</catalina.version>
 		<maven-war-plugin.version>2.0.2</maven-war-plugin.version>
 		<concurrent.version>1.3.4</concurrent.version>
-		<opensaml.version>1.1b</opensaml.version>
+		<opensaml.version>jdk-1.5-trunk</opensaml.version>
+		<xmltooling.version>jdk-1.5-trunk</xmltooling.version>
+		<openws.version>jdk-1.5-trunk</openws.version>
 		<xmlsec.version>1.3.0</xmlsec.version>
 		<commons-codec.version>1.3</commons-codec.version>
 		<cargo-maven2-plugin.version>0.3.1</cargo-maven2-plugin.version>
@@ -1163,7 +1197,7 @@
 		<maven-compiler-plugin.version>
 			2.0.2
 		</maven-compiler-plugin.version>
-		<dumbster.version>1.6</dumbster.version>
+		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
 		<javassist.version>3.0</javassist.version>
 		<richfaces.version>3.0.1</richfaces.version>
@@ -1172,6 +1206,8 @@
 		<json.version>4.1-b6</json.version>
 		<jgroups.version>2.2.5</jgroups.version>
 		<gravel.version>1.0.0.GA</gravel.version>
+		<velocity.version>1.5</velocity.version>
+		<xercesImpl.version>2.8.1</xercesImpl.version>
 		<rxtx.version>2.1.7</rxtx.version>
 	</properties>
 </project>

@@ -7,60 +7,94 @@
 
 package test.spike.net.link.safeonline.saml;
 
-import java.util.Date;
-import java.util.UUID;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import junit.framework.TestCase;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.validation.SchemaFactory;
+
+import net.link.safeonline.test.util.DomTestUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.opensaml.SAMLAssertion;
-import org.opensaml.SAMLAuthenticationQuery;
-import org.opensaml.SAMLAuthenticationStatement;
-import org.opensaml.SAMLNameIdentifier;
-import org.opensaml.SAMLRequest;
-import org.opensaml.SAMLResponse;
-import org.opensaml.SAMLSubject;
+import org.apache.xpath.XPathAPI;
+import org.joda.time.DateTime;
+import org.junit.Test;
+import org.opensaml.Configuration;
+import org.opensaml.DefaultBootstrap;
+import org.opensaml.common.SAMLObjectBuilder;
+import org.opensaml.common.SAMLVersion;
+import org.opensaml.common.binding.artifact.SAMLArtifactFactory;
+import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.xml.XMLObjectBuilderFactory;
+import org.opensaml.xml.io.Marshaller;
+import org.opensaml.xml.io.MarshallerFactory;
+import org.w3c.dom.Element;
 
-public class SamlTest extends TestCase {
+public class SamlTest {
 
 	private static final Log LOG = LogFactory.getLog(SamlTest.class);
 
-	public void testAuthenticationRequest() throws Exception {
-		SAMLNameIdentifier id = new SAMLNameIdentifier();
-		id.setName("test-username");
-		id.setNameQualifier("test-password");
-		id.setFormat(SAMLNameIdentifier.FORMAT_UNSPECIFIED);
-		SAMLSubject subject = new SAMLSubject();
-		subject.setNameIdentifier(id);
-		SAMLAuthenticationQuery query = new SAMLAuthenticationQuery(subject,
-				SAMLAuthenticationStatement.AuthenticationMethod_Password);
+	@SuppressWarnings("unchecked")
+	@Test
+	public void samlAssertion() throws Exception {
+		System
+				.setProperty(
+						"javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
+						"org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+		DefaultBootstrap.bootstrap();
 
-		SAMLRequest authRequest = new SAMLRequest(query);
-		String result = authRequest.toString();
-		LOG.debug("authentication request: " + result);
+		LOG.debug("SAML request test");
+		SAMLArtifactFactory artifactFactory = Configuration
+				.getArtifactFactory();
+
+		assertNotNull(artifactFactory);
+
+		XMLObjectBuilderFactory builderFactory = Configuration
+				.getBuilderFactory();
+		SAMLObjectBuilder<Assertion> assertionBuilder = (SAMLObjectBuilder<Assertion>) builderFactory
+				.getBuilder(Assertion.DEFAULT_ELEMENT_NAME);
+
+		Assertion assertion = assertionBuilder.buildObject();
+		assertion.setVersion(SAMLVersion.VERSION_20);
+
+		SecureRandomIdentifierGenerator idGenerator = new SecureRandomIdentifierGenerator();
+
+		assertion.setID(idGenerator.generateIdentifier());
+		assertion.setIssueInstant(new DateTime());
+
+		MarshallerFactory marshallerFactory = Configuration
+				.getMarshallerFactory();
+		Marshaller marshaller = marshallerFactory.getMarshaller(assertion);
+		Element assertionElement = marshaller.marshall(assertion);
+
+		LOG.debug("result assertion: "
+				+ DomTestUtils.domToString(assertionElement));
+		assertNotNull(XPathAPI.selectNodeIterator(assertionElement,
+				"saml:Assertion"));
 	}
-	
-	public void testAuthenticationResponse() throws Exception {
-		SAMLNameIdentifier nameId = new SAMLNameIdentifier();
-		nameId.setName("test-name");
-		nameId.setFormat(SAMLNameIdentifier.FORMAT_UNSPECIFIED);
-		SAMLSubject subject = new SAMLSubject();
-		subject.setNameIdentifier(nameId);
-		
-		SAMLAuthenticationStatement authStatement = new SAMLAuthenticationStatement();
-		authStatement.setAuthMethod(SAMLAuthenticationStatement.AuthenticationMethod_Password);
-		authStatement.setSubject(subject);
-		authStatement.setAuthInstant(new Date());
-		
-		SAMLAssertion assertion = new SAMLAssertion();
-		assertion.setIssuer("test-asserting-party");
-		assertion.addStatement(authStatement);
-		
-		SAMLResponse response = new SAMLResponse();
-		response.setId(UUID.randomUUID().toString());
-		response.addAssertion(assertion);
-		String result = response.toString();
-		LOG.debug("authentication response: " + result);
+
+	@Test
+	public void endorsedXercer() throws Exception {
+		String builderFactoryClassName = DocumentBuilderFactory.newInstance()
+				.getClass().getName();
+		LOG.debug("document builder factory class name: "
+				+ builderFactoryClassName);
+		assertEquals("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl",
+				builderFactoryClassName);
+
+		System.setProperty("jaxp.debug", "true");
+		System
+				.setProperty(
+						"javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
+						"org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+
+		SchemaFactory factory = SchemaFactory
+				.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		String schemaFactoryClassname = factory.getClass().getName();
+		LOG.debug("schema factory class: " + schemaFactoryClassname);
+		assertEquals("org.apache.xerces.jaxp.validation.XMLSchemaFactory",
+				schemaFactoryClassname);
 	}
 }

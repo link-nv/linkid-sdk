@@ -73,7 +73,7 @@ public class WebServiceTestUtils {
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
 	}
 
-	private static int getFreePort() throws Exception {
+	public static int getFreePort() throws Exception {
 		ServerSocket serverSocket = new ServerSocket(0);
 		int port = serverSocket.getLocalPort();
 		serverSocket.close();

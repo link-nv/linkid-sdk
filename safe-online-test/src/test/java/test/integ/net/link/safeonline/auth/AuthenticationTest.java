@@ -337,6 +337,9 @@ public class AuthenticationTest {
 		for (SubscriptionEntity subscription : subscriptions) {
 			LOG.debug("subscription: " + subscription);
 		}
+
+		IntegrationTestUtils.login("admin", "admin");
+		applicationService.removeApplication(applicationName);
 	}
 
 	@Test
