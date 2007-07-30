@@ -12,7 +12,7 @@ public class SMSTest {
 	 * 
 	 */
 	@Test
-	public void testSMS() {
+	public void testSMS() throws Exception {
 		GSMModem modem = new GSMModem("/dev/tty.usbmodem0000103D2");
 		modem.open();
 		modem.sendSMS(new SMS("32477657223", "hellohello"));
