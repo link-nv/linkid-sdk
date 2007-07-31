@@ -25,6 +25,14 @@ public class LoginHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
 	private final Principal userPrincipal;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param request
+	 * @param username
+	 *            the username to use for user principal.
+	 * 
+	 */
 	public LoginHttpServletRequestWrapper(HttpServletRequest request,
 			String username) {
 		super(request);

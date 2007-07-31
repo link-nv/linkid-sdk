@@ -19,21 +19,24 @@ import javax.servlet.ServletResponse;
 import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
  * SafeOnline Authentication Filter. This filter can be used by servlet
- * container based web application for authentication via SafeOnline. The
- * configuration of this filter should be managed via the web.xml deployment
- * descriptor. This filter initiates the authentication request. The handling of
- * the authentication response is done via the LoginFilter.
+ * container based web applications for authentication via SafeOnline. This
+ * filter initiates the authentication request towards the SafeOnline
+ * authentication web application. The handling of the authentication response
+ * is done via the {@link LoginFilter}.
+ * 
+ * <p>
+ * The configuration of this filter should be managed via the
+ * <code>web.xml</code> deployment descriptor.
+ * </p>
  * 
  * @author fcorneli
  * @see LoginFilter
- * 
  */
 public class AuthenticationFilter implements Filter {
 
@@ -50,42 +53,40 @@ public class AuthenticationFilter implements Filter {
 
 	public void init(FilterConfig config) throws ServletException {
 		LOG.debug("init");
-		this.safeOnlineAuthenticationServiceUrl = config
-				.getInitParameter(AUTH_SERVICE_URL_INIT_PARAM);
-		this.applicationName = config
-				.getInitParameter(APPLICATION_NAME_INIT_PARAM);
-		LOG
-				.debug("redirection url: "
-						+ this.safeOnlineAuthenticationServiceUrl);
-		LOG.debug("application name: " + this.applicationName);
-		if (null == this.safeOnlineAuthenticationServiceUrl) {
-			throw new UnavailableException(AUTH_SERVICE_URL_INIT_PARAM
-					+ " init param should be specified in web.xml");
+		this.safeOnlineAuthenticationServiceUrl = getInitParameter(config,
+				AUTH_SERVICE_URL_INIT_PARAM);
+		this.applicationName = getInitParameter(config,
+				APPLICATION_NAME_INIT_PARAM);
+	}
+
+	private String getInitParameter(FilterConfig config, String initParamName)
+			throws UnavailableException {
+		String initParam = config.getInitParameter(initParamName);
+		if (null == initParam) {
+			String msg = "init param \"" + initParamName
+					+ "\"should be specified in web.xml";
+			LOG.error(msg);
+			throw new UnavailableException(msg);
 		}
-		if (null == this.applicationName) {
-			throw new UnavailableException(APPLICATION_NAME_INIT_PARAM
-					+ " init param should be specified in web.xml");
-		}
+		return initParam;
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		LOG.debug("doFilter");
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		HttpSession session = httpRequest.getSession();
-
-		String username = (String) session.getAttribute("username");
-		if (null == username) {
-			outputRedirectPage(httpRequest, response);
+		boolean loggedIn = LoginManager.isAuthenticated(request);
+		if (false == loggedIn) {
+			outputRedirectPage(request, response);
 		} else {
 			chain.doFilter(request, response);
 		}
 	}
 
-	private void outputRedirectPage(HttpServletRequest request,
+	private void outputRedirectPage(ServletRequest request,
 			ServletResponse response) throws IOException {
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		LOG.debug("redirecting to: " + this.safeOnlineAuthenticationServiceUrl);
-		String targetUrl = request.getRequestURL().toString();
+		String targetUrl = httpRequest.getRequestURL().toString();
 		LOG.debug("target url: " + targetUrl);
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String redirectUrl = this.safeOnlineAuthenticationServiceUrl

@@ -60,6 +60,13 @@ public class DomUtils {
 		return domBuilder.parse(inputSource);
 	}
 
+	/**
+	 * Saves a DOM document to the given output file.
+	 * 
+	 * @param document
+	 * @param outputFile
+	 * @throws TransformerException
+	 */
 	public static void saveDocument(Document document, File outputFile)
 			throws TransformerException {
 		Source source = new DOMSource(document);
@@ -70,6 +77,15 @@ public class DomUtils {
 		transformer.transform(source, streamResult);
 	}
 
+	/**
+	 * Loads a DOM document from the given input stream.
+	 * 
+	 * @param documentInputStream
+	 * @return
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
 	public static Document loadDocument(InputStream documentInputStream)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
@@ -81,6 +97,13 @@ public class DomUtils {
 		return document;
 	}
 
+	/**
+	 * Transforms a DOM node (e.g. DOM element or DOM document) to a String.
+	 * 
+	 * @param domNode
+	 * @return
+	 * @throws TransformerException
+	 */
 	public static String domToString(Node domNode) throws TransformerException {
 		Source source = new DOMSource(domNode);
 		StringWriter stringWriter = new StringWriter();

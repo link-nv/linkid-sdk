@@ -20,9 +20,7 @@
 
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
-		<param-value>
-			http://localhost:8080/olas-auth/
-		</param-value>
+		<param-value>http://localhost:8080/olas-auth/</param-value>
 	</context-param>
 
 	<context-param>
@@ -91,10 +89,6 @@
 		<init-param>
 			<param-name>LoginContextName</param-name>
 			<param-value>client-login</param-value>
-		</init-param>
-		<init-param>
-			<param-name>SessionUsernameAttributeName</param-name>
-			<param-value>username</param-value>
 		</init-param>
 	</filter>
 

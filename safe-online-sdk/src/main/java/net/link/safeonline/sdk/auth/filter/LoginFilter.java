@@ -16,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,21 +40,10 @@ public class LoginFilter implements Filter {
 
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		LOG.debug("doFilter: " + httpRequest.getRequestURL());
-		HttpSession session = httpRequest.getSession();
 
 		String paramUsername = httpRequest.getParameter("username");
-		/*
-		 * TODO: retrieve assertion and verify integrity.
-		 * 
-		 * Later on we will receive an assertion Id here. Using the assertion Id
-		 * we should go to the SafeOnline Authentication Web Service to retrieve
-		 * the SAML assertion. After checking the integrity of the SAML
-		 * assertion we can safely login into our application. We should check
-		 * that this procedure is in line with the Shibboleth browser profile.
-		 */
 		if (null != paramUsername) {
-			LOG.debug("doing a login via the SafeOnline username token");
-			session.setAttribute("username", paramUsername);
+			LoginManager.setUsername(paramUsername, request);
 		}
 
 		chain.doFilter(request, response);

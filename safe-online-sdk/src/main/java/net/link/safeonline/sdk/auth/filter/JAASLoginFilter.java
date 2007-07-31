@@ -8,9 +8,7 @@
 package net.link.safeonline.sdk.auth.filter;
 
 import java.io.IOException;
-import java.security.Principal;
 
-import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.Filter;
@@ -33,12 +31,14 @@ import org.jboss.security.auth.callback.UsernamePasswordHandler;
  * session and uses it to perform a JAAS login. It also takes care of proper
  * JAAS logout.
  * 
+ * <p>
  * When running within a JBoss Application Server, EJB components can set a
  * session attribute called {@link #FLUSH_JBOSS_CREDENTIAL_CACHE_ATTRIBUTE_NAME}
  * to flush the security domain credentials of the caller principal. The value
  * of this attribute is the name of the security domain for which to flush the
  * credential cache. This can be useful for EJB components that make changes to
  * the credentials of the caller principal.
+ * </p>
  * 
  * @author fcorneli
  * 
@@ -47,27 +47,24 @@ public class JAASLoginFilter implements Filter {
 
 	private static final Log LOG = LogFactory.getLog(JAASLoginFilter.class);
 
-	private static final String SESSION_LOGIN_CONTEXT = "login-context";
+	public static final String JAAS_LOGIN_CONTEXT_SESSION_ATTRIB = JAASLoginFilter.class
+			.getName()
+			+ ".LOGIN_CONTEXT";
 
 	public static final String LOGIN_CONTEXT_PARAM = "LoginContextName";
 
+	/**
+	 * The default JAAS login context is 'client-login'. This is what JBoss AS
+	 * expects of EJB clients to use for login.
+	 */
 	private static final String DEFAULT_LOGIN_CONTEXT = "client-login";
-
-	public static final String SESSION_USERNAME_PARAM = "SessionUsernameAttributeName";
-
-	public static final String DEFAULT_SESSION_USERNAME = "username";
 
 	private String loginContextName;
 
-	private String sessionUsernameAttribute;
-
 	public void init(FilterConfig config) throws ServletException {
-		LOG.debug("init");
 		this.loginContextName = getInitParameter(config, LOGIN_CONTEXT_PARAM,
 				DEFAULT_LOGIN_CONTEXT);
-		this.sessionUsernameAttribute = getInitParameter(config,
-				SESSION_USERNAME_PARAM, DEFAULT_SESSION_USERNAME);
-		LOG.debug("login context: " + this.loginContextName);
+		LOG.debug("JAAS login context: " + this.loginContextName);
 	}
 
 	private String getInitParameter(FilterConfig config, String param,
@@ -95,9 +92,44 @@ public class JAASLoginFilter implements Filter {
 		}
 	}
 
+	private void login(HttpServletRequest request) {
+		String username = LoginManager.findUsername(request);
+		if (username == null) {
+			return;
+		}
+		UsernamePasswordHandler handler = new UsernamePasswordHandler(username,
+				null);
+		try {
+			LoginContext loginContext = new LoginContext(this.loginContextName,
+					handler);
+			LOG.debug("login to " + this.loginContextName + " with " + username
+					+ " for " + request.getRequestURL());
+			loginContext.login();
+			request.setAttribute(JAAS_LOGIN_CONTEXT_SESSION_ATTRIB,
+					loginContext);
+		} catch (LoginException e) {
+			LOG.error("login error: " + e.getMessage(), e);
+		}
+	}
+
+	private void logout(ServletRequest request) {
+		LoginContext loginContext = (LoginContext) request
+				.getAttribute(JAAS_LOGIN_CONTEXT_SESSION_ATTRIB);
+		if (loginContext == null) {
+			return;
+		}
+		try {
+			LOG.debug("logout");
+			loginContext.logout();
+		} catch (LoginException e) {
+			LOG.error("logout error: " + e.getMessage(), e);
+		}
+	}
+
 	public static final String FLUSH_JBOSS_CREDENTIAL_CACHE_ATTRIBUTE_NAME = "FlushJBossCredentialCache";
 
-	private void processFlushJBossCredentialCache(HttpServletRequest request) {
+	private void processFlushJBossCredentialCache(HttpServletRequest request)
+			throws ServletException {
 		HttpSession session = request.getSession(false);
 		/*
 		 * We could trigger here an java.lang.IllegalStateException: Cannot
@@ -116,8 +148,7 @@ public class JAASLoginFilter implements Filter {
 		if (null == securityDomain) {
 			return;
 		}
-		String username = (String) session
-				.getAttribute(this.sessionUsernameAttribute);
+		String username = LoginManager.getUsername(request);
 		LOG.debug("trying to flush JBoss credential cache for " + username
 				+ " on security domain " + securityDomain);
 		try {
@@ -125,45 +156,6 @@ public class JAASLoginFilter implements Filter {
 		} finally {
 			session
 					.removeAttribute(FLUSH_JBOSS_CREDENTIAL_CACHE_ATTRIBUTE_NAME);
-		}
-	}
-
-	private void login(HttpServletRequest request) {
-		String username = (String) request.getSession().getAttribute(
-				this.sessionUsernameAttribute);
-		if (username == null) {
-			return;
-		}
-		UsernamePasswordHandler handler = new UsernamePasswordHandler(username,
-				null);
-		LoginContext loginContext;
-		try {
-			loginContext = new LoginContext(this.loginContextName, handler);
-			LOG.debug("login to " + this.loginContextName + " with " + username
-					+ " for " + request.getRequestURL());
-			loginContext.login();
-			Subject subject = loginContext.getSubject();
-			for (Principal principal : subject.getPrincipals()) {
-				LOG.debug("subject principal: " + principal);
-			}
-			LOG.debug("after login");
-			request.setAttribute(SESSION_LOGIN_CONTEXT, loginContext);
-		} catch (LoginException e) {
-			LOG.error("login error: " + e.getMessage(), e);
-		}
-	}
-
-	private void logout(ServletRequest request) {
-		LoginContext loginContext = (LoginContext) request
-				.getAttribute(SESSION_LOGIN_CONTEXT);
-		if (loginContext == null) {
-			return;
-		}
-		try {
-			LOG.debug("logout");
-			loginContext.logout();
-		} catch (LoginException e) {
-			LOG.error("logout error: " + e.getMessage(), e);
 		}
 	}
 }

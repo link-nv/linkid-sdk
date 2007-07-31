@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.filter.JAASLoginFilter;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.test.util.JaasTestUtils;
 
 import org.apache.commons.logging.Log;
@@ -129,7 +130,6 @@ public class JAASLoginFilterTest {
 	@Test
 	public void doFilter() throws Exception {
 		// setup
-		String testUsernameAttributeName = "test-username";
 		String testPasswordAttributeName = "test-password";
 
 		// stubs
@@ -137,12 +137,10 @@ public class JAASLoginFilterTest {
 				this.mockFilterConfig
 						.getInitParameter(JAASLoginFilter.LOGIN_CONTEXT_PARAM))
 				.andStubReturn("client-login");
-		expect(
-				this.mockFilterConfig
-						.getInitParameter(JAASLoginFilter.SESSION_USERNAME_PARAM))
-				.andStubReturn(testUsernameAttributeName);
 
-		expect(this.mockHttpSession.getAttribute(testUsernameAttributeName))
+		expect(
+				this.mockHttpSession
+						.getAttribute(LoginManager.USERNAME_SESSION_ATTRIBUTE))
 				.andStubReturn("test-username");
 		expect(this.mockHttpSession.getAttribute(testPasswordAttributeName))
 				.andStubReturn("test-password");
@@ -157,10 +155,13 @@ public class JAASLoginFilterTest {
 				.andStubReturn(null);
 
 		// expectation
-		this.mockHttpServletRequest.setAttribute(EasyMock.eq("login-context"),
+		this.mockHttpServletRequest.setAttribute(EasyMock
+				.eq(JAASLoginFilter.JAAS_LOGIN_CONTEXT_SESSION_ATTRIB),
 				EasyMock.anyObject());
 		LoginContext mockLoginContext = createMock(LoginContext.class);
-		expect(this.mockHttpServletRequest.getAttribute("login-context"))
+		expect(
+				this.mockHttpServletRequest
+						.getAttribute(JAASLoginFilter.JAAS_LOGIN_CONTEXT_SESSION_ATTRIB))
 				.andStubReturn(mockLoginContext);
 
 		mockLoginContext.logout();

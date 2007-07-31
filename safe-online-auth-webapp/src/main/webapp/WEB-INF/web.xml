@@ -53,10 +53,6 @@
 			<param-name>LoginContextName</param-name>
 			<param-value>client-login</param-value>
 		</init-param>
-		<init-param>
-			<param-name>SessionUsernameAttributeName</param-name>
-			<param-value>username</param-value>
-		</init-param>
 	</filter>
 
 	<filter>

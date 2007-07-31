@@ -28,11 +28,15 @@ public class KeyStoreUtils {
 	/**
 	 * Loads a private key entry from a input stream.
 	 * 
+	 * <p>
 	 * The supported types of keystores depend on the configured java security
 	 * providers. Example: "pkcs12".
+	 * </p>
 	 * 
+	 * <p>
 	 * A good alternative java security provider is <a
 	 * href="http://www.bouncycastle.org/">Bouncy Castle</a>.
+	 * </p>
 	 * 
 	 * @param keystoreType
 	 *            the type of the keystore.

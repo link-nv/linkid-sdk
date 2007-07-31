@@ -31,8 +31,11 @@ import org.apache.commons.logging.LogFactory;
 /**
  * JAAS Login Module using the SafeOnline Authentication service.
  * 
+ * <p>
  * This login module can be used by J2EE application to delegate authentication
- * decisions to SafeOnline.
+ * decisions to SafeOnline. This login module is using the SafeOnline
+ * authentication web service.
+ * </p>
  * 
  * @author fcorneli
  * 

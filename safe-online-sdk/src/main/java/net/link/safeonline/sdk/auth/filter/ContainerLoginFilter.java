@@ -16,11 +16,22 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Servlet container filter that sets the servlet container user principal
+ * according to the SafeOnline authenticated user.
+ * 
+ * <p>
+ * The configuration of this filter should be managed via the
+ * <code>web.xml</code> deployment descriptor.
+ * </p>
+ * 
+ * @author fcorneli
+ * 
+ */
 public class ContainerLoginFilter implements Filter {
 
 	private static final Log LOG = LogFactory
@@ -31,15 +42,17 @@ public class ContainerLoginFilter implements Filter {
 			+ ".ALREADY_PROCESSED";
 
 	public void init(FilterConfig config) throws ServletException {
+		// empty
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-		HttpSession httpSession = httpServletRequest.getSession();
-
-		String username = (String) httpSession.getAttribute("username");
-		if (null == username) {
+		boolean loggedIn = LoginManager.isAuthenticated(request);
+		if (false == loggedIn) {
+			/*
+			 * The the user did not authenticate via SafeOnline we cannot set
+			 * the servlet container user principal yet.
+			 */
 			chain.doFilter(request, response);
 			return;
 		}
@@ -51,8 +64,9 @@ public class ContainerLoginFilter implements Filter {
 		}
 		request.setAttribute(ALREADY_PROCESSED, Boolean.TRUE);
 
-		LOG.debug("container login " + username + " for "
-				+ httpServletRequest.getRequestURL());
+		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+		String username = LoginManager.getUsername(request);
+		LOG.debug("setting servlet container user principal to " + username);
 		LoginHttpServletRequestWrapper wrapper = new LoginHttpServletRequestWrapper(
 				httpServletRequest, username);
 
@@ -60,5 +74,6 @@ public class ContainerLoginFilter implements Filter {
 	}
 
 	public void destroy() {
+		// empty
 	}
 }

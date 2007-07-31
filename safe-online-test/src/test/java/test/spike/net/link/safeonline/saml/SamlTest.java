@@ -9,11 +9,18 @@ package test.spike.net.link.safeonline.saml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.validation.SchemaFactory;
 
 import net.link.safeonline.test.util.DomTestUtils;
+import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,14 +29,25 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import org.opensaml.Configuration;
 import org.opensaml.DefaultBootstrap;
+import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLObjectBuilder;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.binding.artifact.SAMLArtifactFactory;
+import org.opensaml.common.impl.SAMLObjectContentReference;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.Issuer;
+import org.opensaml.xml.XMLObjectBuilder;
 import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.MarshallerFactory;
+import org.opensaml.xml.security.SecurityHelper;
+import org.opensaml.xml.security.credential.BasicCredential;
+import org.opensaml.xml.signature.Signature;
+import org.opensaml.xml.signature.SignatureConstants;
+import org.opensaml.xml.signature.Signer;
+import org.opensaml.xml.signature.impl.SignatureBuilder;
 import org.w3c.dom.Element;
 
 public class SamlTest {
@@ -73,6 +91,74 @@ public class SamlTest {
 				+ DomTestUtils.domToString(assertionElement));
 		assertNotNull(XPathAPI.selectNodeIterator(assertionElement,
 				"saml:Assertion"));
+	}
+
+	@Test
+	public void testAuthnRequest() throws Exception {
+		System
+				.setProperty(
+						"javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
+						"org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+		DefaultBootstrap.bootstrap();
+
+		KeyPair testKeyPair = PkiTestUtils.generateKeyPair();
+		PrivateKey privateKey = testKeyPair.getPrivate();
+		PublicKey publicKey = testKeyPair.getPublic();
+
+		AuthnRequest request = buildXMLObject(AuthnRequest.class,
+				AuthnRequest.DEFAULT_ELEMENT_NAME);
+
+		request.setForceAuthn(true);
+		SecureRandomIdentifierGenerator idGenerator = new SecureRandomIdentifierGenerator();
+		request.setID(idGenerator.generateIdentifier());
+		request.setVersion(SAMLVersion.VERSION_20);
+		request.setIssueInstant(new DateTime());
+		Issuer issuer = buildXMLObject(Issuer.class,
+				Issuer.DEFAULT_ELEMENT_NAME);
+		issuer.setValue("test-application-id");
+		request.setIssuer(issuer);
+
+		XMLObjectBuilderFactory builderFactory = Configuration
+				.getBuilderFactory();
+		SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
+				.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+		Signature signature = signatureBuilder.buildObject();
+		signature
+				.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+		signature
+				.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
+		signature.getContentReferences().add(
+				new SAMLObjectContentReference(request));
+		request.setSignature(signature);
+		BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
+				publicKey, privateKey);
+		signature.setSigningCredential(signingCredential);
+
+		// verify marshalling
+		MarshallerFactory marshallerFactory = Configuration
+				.getMarshallerFactory();
+		Marshaller marshaller = marshallerFactory.getMarshaller(request);
+		Element requestElement = marshaller.marshall(request);
+
+		// sign after marshalling of course
+		Signer.signObject(signature);
+
+		LOG
+				.debug("result request: "
+						+ DomTestUtils.domToString(requestElement));
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <Type extends SAMLObject> Type buildXMLObject(
+			Class<Type> clazz, QName objectQName) {
+		XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory()
+				.getBuilder(objectQName);
+		if (builder == null) {
+			fail("Unable to retrieve builder for object QName " + objectQName);
+		}
+		Type object = builder.buildObject(objectQName.getNamespaceURI(),
+				objectQName.getLocalPart(), objectQName.getPrefix());
+		return object;
 	}
 
 	@Test
