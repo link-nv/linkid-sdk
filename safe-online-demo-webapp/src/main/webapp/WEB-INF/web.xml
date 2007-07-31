@@ -8,7 +8,7 @@
 
 	<context-param>
 		<param-name>title</param-name>
-		<param-value>SafeOnline Test Web Application</param-value>
+		<param-value>OLAS Test Web Application</param-value>
 	</context-param>
 
 	<filter>

@@ -8,7 +8,6 @@
 package net.link.safeonline.sdk.auth.filter;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -17,8 +16,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.UnavailableException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import net.link.safeonline.sdk.auth.AuthenticationProtocol;
+import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
+import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +36,22 @@ import org.apache.commons.logging.LogFactory;
  * <code>web.xml</code> deployment descriptor.
  * </p>
  * 
+ * <p>
+ * The init parameter <code>SafeOnlineAuthenticationServiceUrl</code> should
+ * point to the SafeOnline Authentication Web Application entry point.
+ * </p>
+ * 
+ * <p>
+ * The init parameter <code>ApplicationName</code> should contain the
+ * application name of this service provider.
+ * </p>
+ * 
+ * <p>
+ * The init parameter <code>AuthenticationProtocol</code> should contain the
+ * name of the protocol used between the SafeOnline authentication web
+ * application and this service provider.
+ * </p>
+ * 
  * @author fcorneli
  * @see LoginFilter
  */
@@ -47,9 +64,15 @@ public class AuthenticationFilter implements Filter {
 
 	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
 
+	public static final String AUTHN_PROTOCOL_INIT_PARAM = "AuthenticationProtocol";
+
+	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SIMPLE_PLAIN_URL;
+
 	private String safeOnlineAuthenticationServiceUrl;
 
 	private String applicationName;
+
+	private AuthenticationProtocol authenticationProtocol;
 
 	public void init(FilterConfig config) throws ServletException {
 		LOG.debug("init");
@@ -57,6 +80,22 @@ public class AuthenticationFilter implements Filter {
 				AUTH_SERVICE_URL_INIT_PARAM);
 		this.applicationName = getInitParameter(config,
 				APPLICATION_NAME_INIT_PARAM);
+		String authenticationProtocolString = getInitParameter(config,
+				AUTHN_PROTOCOL_INIT_PARAM, DEFAULT_AUTHN_PROTOCOL.name());
+		this.authenticationProtocol = toAuthenticationProtocol(authenticationProtocolString);
+		LOG.debug("authentication protocol: " + this.authenticationProtocol);
+	}
+
+	private AuthenticationProtocol toAuthenticationProtocol(String value)
+			throws UnavailableException {
+		try {
+			AuthenticationProtocol authenticationProtocol = AuthenticationProtocol
+					.valueOf(value);
+			return authenticationProtocol;
+		} catch (IllegalArgumentException e) {
+			throw new UnavailableException("unvalid authentication protocol: "
+					+ value);
+		}
 	}
 
 	private String getInitParameter(FilterConfig config, String initParamName)
@@ -71,29 +110,33 @@ public class AuthenticationFilter implements Filter {
 		return initParam;
 	}
 
+	private String getInitParameter(FilterConfig config, String initParamName,
+			String defaultValue) {
+		String initParamValue = config.getInitParameter(initParamName);
+		if (null == initParamValue) {
+			initParamValue = defaultValue;
+		}
+		return initParamValue;
+	}
+
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		LOG.debug("doFilter");
 		boolean loggedIn = LoginManager.isAuthenticated(request);
 		if (false == loggedIn) {
-			outputRedirectPage(request, response);
+			initiateAuthentication(request, response);
 		} else {
 			chain.doFilter(request, response);
 		}
 	}
 
-	private void outputRedirectPage(ServletRequest request,
-			ServletResponse response) throws IOException {
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		LOG.debug("redirecting to: " + this.safeOnlineAuthenticationServiceUrl);
-		String targetUrl = httpRequest.getRequestURL().toString();
-		LOG.debug("target url: " + targetUrl);
-		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-		String redirectUrl = this.safeOnlineAuthenticationServiceUrl
-				+ "?application="
-				+ URLEncoder.encode(this.applicationName, "UTF-8") + "&target="
-				+ URLEncoder.encode(targetUrl, "UTF-8");
-		httpServletResponse.sendRedirect(redirectUrl);
+	private void initiateAuthentication(ServletRequest request,
+			ServletResponse response) throws IOException, ServletException {
+		AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
+				.getAuthenticationProtocolHandler(this.authenticationProtocol,
+						this.safeOnlineAuthenticationServiceUrl,
+						this.applicationName);
+		authenticationProtocolHandler.initiateAuthentication(request, response);
 	}
 
 	public void destroy() {
