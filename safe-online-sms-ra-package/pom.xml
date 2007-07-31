@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<project>
+	<parent>
+		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-sms-ra-package</artifactId>
+	<name>safe-online-sms-ra-package</name>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>rar</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-sms-ra</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

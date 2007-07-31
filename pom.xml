@@ -308,6 +308,7 @@
 		<module>safe-online-demo-mandate-service</module>
 		<module>safe-online-sms</module>
 		<module>safe-online-sms-ra</module>
+		<module>safe-online-sms-ra-package</module>
 	</modules>
 	<repositories>
 		<repository>
