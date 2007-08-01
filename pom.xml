@@ -38,6 +38,19 @@
 				<msn>ddekunst@hotmail.com</msn>
 			</properties>
 		</developer>
+		<developer>
+			<id>wvdhaute</id>
+			<name>Wim Vandenhaute</name>
+			<email>wim@lin-k.net</email>
+			<roles>
+				<role>development</role>
+			</roles>
+			<timezone>+1</timezone>
+			<properties>
+				<msn>wim.vandenhaute@easynet.be</msn>
+				<private-email>wim.vandenhaute@gmail.com</private-email>
+			</properties>
+		</developer>
 	</developers>
 	<scm>
 		<url>http://buildserver/svn/products/safe-online/trunk/</url>
