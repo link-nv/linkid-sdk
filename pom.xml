@@ -1074,6 +1074,11 @@
 				<artifactId>rxtx</artifactId>
 				<version>${rxtx.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>commons-net</groupId>
+				<artifactId>commons-net</artifactId>
+				<version>${commons-net.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1163,7 +1168,10 @@
 			2.2.1
 		</easymockclassextension.version>
 		<catalina.version>5.5.15</catalina.version>
-		<maven-war-plugin.version>2.0.2</maven-war-plugin.version>
+		<!-- http://jira.codehaus.org/browse/MWAR-18 -->
+		<maven-war-plugin.version>
+			2.0.3-safe-online
+		</maven-war-plugin.version>
 		<concurrent.version>1.3.4</concurrent.version>
 		<opensaml.version>jdk-1.5-trunk</opensaml.version>
 		<xmltooling.version>jdk-1.5-trunk</xmltooling.version>
@@ -1230,5 +1238,6 @@
 		<xercesImpl.version>2.8.1</xercesImpl.version>
 		<rxtx.version>2.1.7</rxtx.version>
 		<maven-eclipse-plugin.version>2.4</maven-eclipse-plugin.version>
+		<commons-net.version>1.4.1</commons-net.version>
 	</properties>
 </project>
