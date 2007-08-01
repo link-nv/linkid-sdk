@@ -312,7 +312,7 @@
 	</modules>
 	<repositories>
 		<repository>
-			<id>buildserver</id>
+			<id>buildserver-snapshots</id>
 			<name>Buildserver Snapshots Repository</name>
 			<url>http://buildserver/maven2-snapshots</url>
 			<snapshots>
