@@ -24,5 +24,5 @@ public interface ConfigurationManager {
 
 	ConfigItemEntity findConfigItem(String name);
 
-	Integer getMaximumWsSecurityTimestampOffset();
+	long getMaximumWsSecurityTimestampOffset();
 }

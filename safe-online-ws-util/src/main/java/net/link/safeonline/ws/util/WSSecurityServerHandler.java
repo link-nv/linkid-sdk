@@ -143,7 +143,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 					"missing Timestamp in WS-Security header");
 		}
 		Calendar created = timestamp.getCreated();
-		Integer maxOffset = this.configurationManager
+		long maxOffset = this.configurationManager
 				.getMaximumWsSecurityTimestampOffset();
 		DateTime createdDateTime = new DateTime(created);
 		Instant createdInstant = createdDateTime.toInstant();
@@ -151,6 +151,8 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 		long offset = Math.abs(createdInstant.getMillis()
 				- nowInstant.getMillis());
 		if (offset > maxOffset) {
+			LOG.debug("timestamp offset: " + offset);
+			LOG.debug("maximum allowed offset: " + maxOffset);
 			throw new RuntimeException(
 					"WS-Security Created Timestamp offset exceeded");
 		}

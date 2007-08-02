@@ -36,9 +36,9 @@ public class ConfigurationManagerBean implements ConfigurationManager {
 	 * indicated by the local clock.
 	 */
 	@Configurable(group = "Security", name = WS_SECURITY_MAX_TIMESTAMP_OFFSET)
-	private Integer maxWsSecurityTimestampOffset = 1000 * 60 * 5;
+	private Long maxWsSecurityTimestampOffset = 1000 * 60 * 5L;
 
-	public Integer getMaximumWsSecurityTimestampOffset() {
+	public long getMaximumWsSecurityTimestampOffset() {
 		return this.maxWsSecurityTimestampOffset;
 	}
 }

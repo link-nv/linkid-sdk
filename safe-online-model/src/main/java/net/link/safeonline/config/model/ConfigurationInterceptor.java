@@ -113,6 +113,14 @@ public class ConfigurationInterceptor {
 						+ configItem.getName());
 				return;
 			}
+		} else if (Long.class.equals(fieldType)) {
+			try {
+				value = Long.parseLong(configItem.getValue());
+			} catch (NumberFormatException e) {
+				LOG.error("invalid long value for config item: "
+						+ configItem.getName());
+				return;
+			}
 		} else if (Boolean.class.equals(fieldType)) {
 			value = Boolean.parseBoolean(configItem.getValue());
 		} else {
