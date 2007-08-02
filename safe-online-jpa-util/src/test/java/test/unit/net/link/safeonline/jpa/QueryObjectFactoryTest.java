@@ -168,4 +168,25 @@ public class QueryObjectFactoryTest {
 		// verify
 		assertNull(result);
 	}
+
+	@Test
+	public void updateMethod() throws Exception {
+		// setup
+		String testName = UUID.randomUUID().toString();
+		MyTestEntity myTestEntity = new MyTestEntity(testName);
+		this.entityManager.persist(myTestEntity);
+
+		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
+				.createQueryObject(this.entityManager,
+						MyTestEntity.MyQueryTestInterface.class);
+
+		// operate
+		queryObject.removeAll();
+
+		// operate
+		MyTestEntity result = queryObject.find(testName);
+
+		// verify
+		assertNull(result);
+	}
 }

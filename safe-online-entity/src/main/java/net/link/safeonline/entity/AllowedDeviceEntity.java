@@ -1,9 +1,9 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,9 +11,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import static net.link.safeonline.entity.AllowedDeviceEntity.QUERY_WHERE_APPLICATION;
 import static net.link.safeonline.entity.AllowedDeviceEntity.DELETE_WHERE_APPLICATION;
@@ -92,18 +95,13 @@ public class AllowedDeviceEntity implements Serializable {
 		this.weight = weight;
 	}
 
-	public static Query createQueryListAllowedDevicesByApplication(
-			EntityManager entityManager, ApplicationEntity application) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_APPLICATION);
-		query.setParameter("application", application);
-		return query;
-	}
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_APPLICATION)
+		List<AllowedDeviceEntity> listAllowedDevices(@QueryParam("application")
+		ApplicationEntity application);
 
-	public static Query createQueryDeleteByApplication(
-			EntityManager entityManager, ApplicationEntity application) {
-		Query query = entityManager.createNamedQuery(DELETE_WHERE_APPLICATION);
-		query.setParameter("application", application);
-		return query;
+		@UpdateMethod(DELETE_WHERE_APPLICATION)
+		void deleteAllowedDevices(@QueryParam("application")
+		ApplicationEntity application);
 	}
-
 }

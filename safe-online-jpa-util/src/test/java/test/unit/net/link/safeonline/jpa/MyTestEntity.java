@@ -17,21 +17,26 @@ import javax.persistence.NamedQuery;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import static test.unit.net.link.safeonline.jpa.MyTestEntity.QUERY_ALL;
 import static test.unit.net.link.safeonline.jpa.MyTestEntity.QUERY_WHERE_NAME;
 import static test.unit.net.link.safeonline.jpa.MyTestEntity.NAME_PARAM;
+import static test.unit.net.link.safeonline.jpa.MyTestEntity.DELETE_ALL;
 
 @Entity
 @NamedQueries( {
 		@NamedQuery(name = QUERY_ALL, query = "FROM MyTestEntity"),
 		@NamedQuery(name = QUERY_WHERE_NAME, query = "FROM MyTestEntity AS mte WHERE mte.name = :"
-				+ NAME_PARAM) })
+				+ NAME_PARAM),
+		@NamedQuery(name = DELETE_ALL, query = "DELETE FROM MyTestEntity") })
 public class MyTestEntity implements Serializable {
 
 	public static final String QUERY_ALL = "mte.all";
 
 	public static final String QUERY_WHERE_NAME = "mte.name";
+
+	public static final String DELETE_ALL = "mte.del.all";
 
 	public static final String NAME_PARAM = "name";
 
@@ -72,5 +77,8 @@ public class MyTestEntity implements Serializable {
 		@QueryMethod(value = QUERY_WHERE_NAME, nullable = true)
 		MyTestEntity find(@QueryParam(NAME_PARAM)
 		String name);
+
+		@UpdateMethod(DELETE_ALL)
+		void removeAll();
 	}
 }
