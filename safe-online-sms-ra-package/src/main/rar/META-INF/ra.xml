@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connector xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+                        http://java.sun.com/xml/ns/j2ee/connector_1_5.xsd"
+	version="1.5">
+	<display-name>GSM Modem Resource Adapter</display-name>
+	<vendor-name>Lin.k NV</vendor-name>
+	<eis-type>GSM Modem</eis-type>
+	<resourceadapter-version>1.0</resourceadapter-version>
+	<resourceadapter>
+		<resourceadapter-class>
+			org.jboss.resource.deployment.DummyResourceAdapter
+		</resourceadapter-class>
+		<outbound-resourceadapter>
+			<connection-definition>
+				<managedconnectionfactory-class>
+					net.link.safeonline.sms.ra.impl.SMSManagedConnectionFactoryImpl
+				</managedconnectionfactory-class>
+				<config-property>
+					<config-property-name>
+						SerialPort
+					</config-property-name>
+					<config-property-type>
+						java.lang.String
+					</config-property-type>
+					<config-property-value>
+						/dev/tty.usbmodem0000103D2
+					</config-property-value>
+				</config-property>
+				<connectionfactory-interface>
+					net.link.safeonline.sms.ra.SMSConnectionFactory
+				</connectionfactory-interface>
+				<connectionfactory-impl-class>
+					net.link.safeonline.sms.ra.impl.SMSConnectionFactoryImpl
+				</connectionfactory-impl-class>
+				<connection-interface>
+					net.link.safeonline.sms.ra.SMSConnection
+				</connection-interface>
+				<connection-impl-class>
+					net.link.safeonline.sms.ra.impl.SMSConnectionImpl
+				</connection-impl-class>
+			</connection-definition>
+			<transaction-support>NoTransaction</transaction-support>
+		</outbound-resourceadapter>
+		<security-permission>
+			<description>
+				Read/Write access is required to the contents of the
+				FileSystemRootDir
+			</description>
+			<security-permission-spec>
+				permission java.io.FilePermission "/dev/*",
+				"read,write";
+			</security-permission-spec>
+		</security-permission>
+	</resourceadapter>
+</connector>

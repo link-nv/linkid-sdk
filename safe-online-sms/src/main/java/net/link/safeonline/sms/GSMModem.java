@@ -64,4 +64,8 @@ public class GSMModem implements SMSC {
 		}
 	}
 
+	public String getSerialPortName() {
+		return this.serialComm.getSerialPortName();
+	}
+
 }

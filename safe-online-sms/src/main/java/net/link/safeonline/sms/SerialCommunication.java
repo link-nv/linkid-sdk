@@ -19,15 +19,15 @@ import gnu.io.UnsupportedCommOperationException;
 
 public class SerialCommunication {
 
-	Log LOG = LogFactory.getLog(SerialCommunication.class);
+	private static final Log LOG = LogFactory.getLog(SerialCommunication.class);
 
-	String serialPortName = null;
+	private String serialPortName = null;
 
-	SerialPort serialPort;
+	private SerialPort serialPort;
 
-	OutputStream outputStream;
+	private OutputStream outputStream;
 
-	BufferedReader br;
+	private BufferedReader br;
 
 	public SerialCommunication(String serialPortName) {
 		this.serialPortName = serialPortName;
@@ -123,5 +123,13 @@ public class SerialCommunication {
 			throw new SerialCommunicationsException();
 		}
 		return result;
+	}
+
+	public String getSerialPortName() {
+		return serialPortName;
+	}
+
+	public void setSerialPortName(String serialPortName) {
+		this.serialPortName = serialPortName;
 	}
 }

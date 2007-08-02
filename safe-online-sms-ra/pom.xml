@@ -19,6 +19,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-sms</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>
