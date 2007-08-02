@@ -45,10 +45,10 @@ public class UsageStatisticTaskBean implements Task {
 	public static final String loginCounter = "Login counter";
 
 	@Configurable(name = "Active user limit (ms)")
-	private String activeLimitInMillis = "600000";
+	private Integer activeLimitInMillis = 10 * 60 * 1000;
 
 	@Configurable(name = "Keep stats for (ms)")
-	private String ageInMillis = "6000000";
+	private Integer ageInMillis = 100 * 60 * 1000;
 
 	@EJB
 	private StatisticDAO statisticDAO;
@@ -70,8 +70,8 @@ public class UsageStatisticTaskBean implements Task {
 	public void perform() throws Exception {
 		List<ApplicationEntity> applicationList = this.applicationDAO
 				.listApplications();
-		long activeLimit = Long.parseLong(activeLimitInMillis);
-		long age = Long.parseLong(ageInMillis);
+		long activeLimit = this.activeLimitInMillis;
+		long age = this.ageInMillis;
 
 		for (ApplicationEntity application : applicationList) {
 			long totalSubscriptions = this.subscriptionDAO

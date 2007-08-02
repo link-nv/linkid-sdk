@@ -50,7 +50,7 @@ public class EmailBeanTest {
 		LOG.debug("test SMTP server running");
 
 		ConfigurationTestUtils.configure(this.testedInstance,
-				"Mail server port", Integer.toString(freePort));
+				"Mail server port", freePort);
 
 		Message message = createMock(Message.class);
 		expect(message.getStringProperty("destination")).andReturn(

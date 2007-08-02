@@ -20,7 +20,7 @@ import net.link.safeonline.config.model.ConfigurationInterceptor;
 public class SamlAuthorityServiceBean implements SamlAuthorityService {
 
 	@Configurable(group = "SAML Authority", name = "Issuer Name")
-	private String issuerName = "safe-online";
+	private String issuerName = "OLAS";
 
 	public String getIssuerName() {
 		return this.issuerName;

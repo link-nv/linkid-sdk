@@ -97,8 +97,10 @@ public class ConfigStartableBean implements ConfigStartable {
 					field.setAccessible(true);
 					if (configItem == null) {
 						LOG.debug("Adding configuration item: " + name);
+						Object value = field.get(target);
+						String stringValue = value.toString();
 						configItem = configItemDAO.addConfigItem(name,
-								(String) field.get(target), configGroup);
+								stringValue, configGroup);
 					} else {
 						configItem.setConfigGroup(configGroup);
 					}

@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.messaging.bean;
 
 import static net.link.safeonline.messaging.bean.EmailBean.queueName;
@@ -40,7 +47,7 @@ public class EmailBean implements MessageListener {
 	private String emailServer = "127.0.0.1";
 
 	@Configurable(name = "Mail server port")
-	private String emailServerPort = "25";
+	private Integer emailServerPort = 25;
 
 	@Configurable(name = "E-mail sender")
 	private String emailSender = "safeonline@lin-k.net";
@@ -58,7 +65,7 @@ public class EmailBean implements MessageListener {
 
 			Properties props = new Properties();
 			props.put("mail.smtp.host", emailServer);
-			props.put("mail.smtp.port", emailServerPort);
+			props.put("mail.smtp.port", emailServerPort.toString());
 			Session session = Session.getInstance(props, null);
 
 			MimeMessage mimemsg = new MimeMessage(session);

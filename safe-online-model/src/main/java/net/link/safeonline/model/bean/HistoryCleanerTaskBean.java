@@ -34,7 +34,7 @@ public class HistoryCleanerTaskBean implements Task {
 	private HistoryDAO historyDAO;
 
 	@Configurable(name = "History Age (ms)", group = "User history cleaner")
-	private String configAgeInMillis = "600000";
+	private Integer configAgeInMillis = 10 * 60 * 1000;
 
 	public HistoryCleanerTaskBean() {
 		// empty
@@ -46,7 +46,7 @@ public class HistoryCleanerTaskBean implements Task {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void perform() throws Exception {
-		long ageInMillis = Integer.parseInt(configAgeInMillis);
+		long ageInMillis = this.configAgeInMillis;
 
 		this.historyDAO.clearAllHistory(ageInMillis);
 	}

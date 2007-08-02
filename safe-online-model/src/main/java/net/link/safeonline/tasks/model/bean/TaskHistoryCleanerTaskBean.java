@@ -35,7 +35,7 @@ public class TaskHistoryCleanerTaskBean implements Task {
 	private TaskHistoryDAO taskHistoryDAO;
 
 	@Configurable(group = "Task history cleaner", name = "Task history age limit (ms)")
-	private String configAgeInMillis = "600000";
+	private Integer configAgeInMillis = 10 * 60 * 1000;
 
 	public TaskHistoryCleanerTaskBean() {
 		// empty
@@ -47,7 +47,7 @@ public class TaskHistoryCleanerTaskBean implements Task {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void perform() throws Exception {
-		long ageInMillis = Integer.parseInt(configAgeInMillis);
+		long ageInMillis = this.configAgeInMillis;
 
 		this.taskHistoryDAO.clearAllTasksHistory(ageInMillis);
 	}
