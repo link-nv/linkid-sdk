@@ -13,7 +13,8 @@ import net.link.safeonline.entity.config.ConfigItemEntity;
 
 /**
  * Configuration Manager interface. Allows for components to access the
- * configuration outside of a security domain.
+ * configuration outside of a security domain. Also manages some configuration
+ * parameters that do not belong to a particular model bean.
  * 
  * @author fcorneli
  * 
@@ -22,4 +23,6 @@ import net.link.safeonline.entity.config.ConfigItemEntity;
 public interface ConfigurationManager {
 
 	ConfigItemEntity findConfigItem(String name);
+
+	Integer getMaximumWsSecurityTimestampOffset();
 }

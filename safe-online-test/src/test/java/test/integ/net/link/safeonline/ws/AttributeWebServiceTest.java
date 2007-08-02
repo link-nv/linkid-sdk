@@ -197,7 +197,11 @@ public class AttributeWebServiceTest {
 		assertEquals(testAttributeValue, resultValue);
 
 		// operate: retrieve all attributes
+		this.attributeClient.setCaptureMessages(true);
 		resultAttributes = this.attributeClient.getAttributeValues(login);
+		LOG.debug("outbound message: "
+				+ DomTestUtils.domToString(this.attributeClient
+						.getOutboundMessage()));
 		LOG.info("resultAttributes: " + resultAttributes);
 		assertEquals(2, resultAttributes.size());
 		assertEquals(testAttributeValue, resultAttributes

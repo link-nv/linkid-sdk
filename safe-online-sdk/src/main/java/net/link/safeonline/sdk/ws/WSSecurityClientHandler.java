@@ -136,6 +136,11 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 
 			WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
 			wsSecTimeStamp.setTimeToLive(0);
+			/*
+			 * If ttl is zero then there will be no Expires element within the
+			 * Timestamp. Eventually we want to let the service itself decide
+			 * how long the message validity period is.
+			 */
 			wsSecTimeStamp.prepare(document);
 			wsSecTimeStamp.prependToHeader(wsSecHeader);
 			wsEncryptionParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));

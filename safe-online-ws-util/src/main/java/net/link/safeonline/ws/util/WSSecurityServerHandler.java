@@ -8,10 +8,12 @@
 package net.link.safeonline.ws.util;
 
 import java.security.cert.X509Certificate;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.annotation.PostConstruct;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
@@ -19,12 +21,18 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import net.link.safeonline.config.model.ConfigurationManager;
+import net.link.safeonline.util.ee.EjbUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ws.security.WSSecurityEngine;
 import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.Crypto;
+import org.apache.ws.security.message.token.Timestamp;
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.w3c.dom.Document;
 
 /**
@@ -43,6 +51,15 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 
 	public static final String SIGNED_ELEMENTS_CONTEXT_KEY = WSSecurityServerHandler.class
 			+ ".signed.elements";
+
+	private ConfigurationManager configurationManager;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.configurationManager = EjbUtils.getEJB(
+				"SafeOnline/ConfigurationManagerBean/local",
+				ConfigurationManager.class);
+	}
 
 	public Set<QName> getHeaders() {
 		Set<QName> headers = new HashSet<QName>();
@@ -99,6 +116,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 		if (null == wsSecurityEngineResults) {
 			throw new RuntimeException("missing WS-Security header");
 		}
+		Timestamp timestamp = null;
 		for (WSSecurityEngineResult result : wsSecurityEngineResults) {
 			Set<String> signedElements = (Set<String>) result
 					.get(WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS);
@@ -112,6 +130,29 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 			if (null != certificate) {
 				soapMessageContext.put(CERTIFICATE_PROPERTY, certificate);
 			}
+
+			Timestamp resultTimestamp = (Timestamp) result
+					.get(WSSecurityEngineResult.TAG_TIMESTAMP);
+			if (null != resultTimestamp) {
+				timestamp = resultTimestamp;
+			}
+		}
+
+		if (null == timestamp) {
+			throw new RuntimeException(
+					"missing Timestamp in WS-Security header");
+		}
+		Calendar created = timestamp.getCreated();
+		Integer maxOffset = this.configurationManager
+				.getMaximumWsSecurityTimestampOffset();
+		DateTime createdDateTime = new DateTime(created);
+		Instant createdInstant = createdDateTime.toInstant();
+		Instant nowInstant = new DateTime().toInstant();
+		long offset = Math.abs(createdInstant.getMillis()
+				- nowInstant.getMillis());
+		if (offset > maxOffset) {
+			throw new RuntimeException(
+					"WS-Security Created Timestamp offset exceeded");
 		}
 	}
 
