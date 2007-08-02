@@ -322,6 +322,7 @@
 		<module>safe-online-sms</module>
 		<module>safe-online-sms-ra</module>
 		<module>safe-online-sms-ra-package</module>
+		<module>safe-online-jpa-util</module>
 	</modules>
 	<repositories>
 		<repository>
