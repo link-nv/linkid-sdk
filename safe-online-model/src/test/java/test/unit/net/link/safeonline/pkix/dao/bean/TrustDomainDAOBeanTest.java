@@ -9,19 +9,15 @@ package test.unit.net.link.safeonline.pkix.dao.bean;
 
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import junit.framework.TestCase;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
+import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class TrustDomainDAOBeanTest extends TestCase {
-
-	private static final Log LOG = LogFactory
-			.getLog(TrustDomainDAOBeanTest.class);
 
 	private TrustDomainDAO testedInstance;
 
@@ -34,8 +30,9 @@ public class TrustDomainDAOBeanTest extends TestCase {
 		this.entityTestManager = new EntityTestManager();
 		this.entityTestManager.setUp(TrustDomainEntity.class);
 
-		this.testedInstance = this.entityTestManager
-				.newInstance(TrustDomainDAOBean.class);
+		this.testedInstance = EJBTestUtils.newInstance(
+				TrustDomainDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+				this.entityTestManager.getEntityManager());
 	}
 
 	@Override
@@ -53,16 +50,6 @@ public class TrustDomainDAOBeanTest extends TestCase {
 		TrustDomainEntity resultTrustDomain = this.testedInstance
 				.findTrustDomain(name);
 		assertNotNull(resultTrustDomain);
-		try {
-			this.testedInstance.removeTrustDomain(resultTrustDomain);
-			fail();
-		} catch (IllegalArgumentException e) {
-			LOG.debug("expected exception: " + e.getMessage());
-			/*
-			 * Because the entity test manager newInstance method implements the
-			 * REQUIRES_NEW transaction semantics, we get an exception that we
-			 * try to remove a detached entity.
-			 */
-		}
+		this.testedInstance.removeTrustDomain(resultTrustDomain);
 	}
 }

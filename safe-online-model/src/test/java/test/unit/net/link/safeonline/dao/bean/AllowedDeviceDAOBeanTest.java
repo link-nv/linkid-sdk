@@ -65,6 +65,12 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 		EJBTestUtils.inject(this.subjectDAO, this.entityTestManager
 				.getEntityManager());
 
+		EJBTestUtils.init(this.deviceDAO);
+		EJBTestUtils.init(this.applicationDAO);
+		EJBTestUtils.init(this.applicationOwnerDAO);
+		EJBTestUtils.init(this.subjectDAO);
+		EJBTestUtils.init(this.testedInstance);
+
 	}
 
 	@Override

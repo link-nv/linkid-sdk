@@ -47,6 +47,9 @@ public class StatisticDataPointDAOBeanTest extends TestCase {
 				.getEntityManager());
 		EJBTestUtils.inject(this.statisticDAO, this.entityTestManager
 				.getEntityManager());
+
+		EJBTestUtils.init(this.statisticDAO);
+		EJBTestUtils.init(this.testedInstance);
 	}
 
 	@Override

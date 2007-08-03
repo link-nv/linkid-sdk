@@ -51,6 +51,9 @@ public class ConfigurationServiceBeanTest extends TestCase {
 				.getEntityManager());
 		EJBTestUtils.inject(this.testedInstance, this.configItemDAO);
 		EJBTestUtils.inject(this.testedInstance, this.configGroupDAO);
+
+		EJBTestUtils.init(this.configItemDAO);
+		EJBTestUtils.init(this.configGroupDAO);
 	}
 
 	@Override

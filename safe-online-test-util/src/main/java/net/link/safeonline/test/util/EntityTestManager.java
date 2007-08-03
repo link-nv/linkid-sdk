@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -135,7 +136,27 @@ public class EntityTestManager {
 		enhancer.setSuperclass(clazz);
 		enhancer.setCallback(transactionInvocationHandler);
 		Type object = (Type) enhancer.create();
+		try {
+			init(clazz, object);
+		} catch (Exception e) {
+			throw new RuntimeException("init error");
+		}
 		return object;
+	}
+
+	public static void init(Class clazz, Object bean)
+			throws IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
+		LOG.debug("Initializing: " + bean);
+		Method[] methods = clazz.getDeclaredMethods();
+		for (Method method : methods) {
+			PostConstruct postConstruct = method
+					.getAnnotation(PostConstruct.class);
+			if (null == postConstruct) {
+				continue;
+			}
+			method.invoke(bean, new Object[] {});
+		}
 	}
 
 	private static class TransactionMethodInterceptor implements

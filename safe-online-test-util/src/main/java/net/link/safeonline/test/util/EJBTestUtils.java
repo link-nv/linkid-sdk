@@ -195,7 +195,7 @@ public final class EJBTestUtils {
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 		LOG.debug("Initializing: " + bean);
-		Method[] methods = clazz.getMethods();
+		Method[] methods = clazz.getDeclaredMethods();
 		for (Method method : methods) {
 			PostConstruct postConstruct = method
 					.getAnnotation(PostConstruct.class);

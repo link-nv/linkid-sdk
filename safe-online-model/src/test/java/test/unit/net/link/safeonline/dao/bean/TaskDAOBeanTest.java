@@ -38,6 +38,7 @@ public class TaskDAOBeanTest extends TestCase {
 
 		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
 				.getEntityManager());
+		EJBTestUtils.init(this.testedInstance);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ package test.unit.net.link.safeonline.pkix.dao.bean;
 
 import javax.persistence.EntityManager;
 
+import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -34,9 +35,10 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
 		this.entityTestManager.setUp(TrustDomainEntity.class,
 				CachedOcspResponseEntity.class);
 
-		this.testedInstance = new CachedOcspResponseDAOBean();
-		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
-				.getEntityManager());
+		this.testedInstance = EJBTestUtils.newInstance(
+				CachedOcspResponseDAOBean.class,
+				SafeOnlineTestContainer.sessionBeans, this.entityTestManager
+						.getEntityManager());
 	}
 
 	@Override
@@ -50,14 +52,15 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
 		boolean result = true;
 		CachedOcspResponseEntity cachedOcspResponse = this.testedInstance
 				.addCachedOcspResponse(key, result, null);
-		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
-				.refreshEntityManager());
 		cachedOcspResponse = this.testedInstance.findCachedOcspResponse(key);
 		this.testedInstance.removeCachedOcspResponse(cachedOcspResponse);
-		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
-				.refreshEntityManager());
-		this.testedInstance.addCachedOcspResponse(key, result, null);
 
+		this.testedInstance = EJBTestUtils.newInstance(
+				CachedOcspResponseDAOBean.class,
+				SafeOnlineTestContainer.sessionBeans, this.entityTestManager
+						.refreshEntityManager());
+
+		this.testedInstance.addCachedOcspResponse(key, result, null);
 	}
 
 	public void testClearOcspCacheExpired() {

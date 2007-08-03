@@ -79,6 +79,14 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 				.getEntityManager());
 		EJBTestUtils.inject(this.subscriptionDAO, this.entityTestManager
 				.getEntityManager());
+
+		EJBTestUtils.init(this.testedInstance);
+		EJBTestUtils.init(this.applicationDAO);
+		EJBTestUtils.init(this.applicationOwnerDAO);
+		EJBTestUtils.init(this.subjectDAO);
+		EJBTestUtils.init(this.attributeDAO);
+		EJBTestUtils.init(this.applicationIdentityDAO);
+		EJBTestUtils.init(this.subscriptionDAO);
 	}
 
 	@Override
