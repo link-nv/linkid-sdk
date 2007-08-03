@@ -10,6 +10,7 @@ package net.link.safeonline.dao.bean;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -19,8 +20,9 @@ import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.HistoryDAO;
-import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.HistoryEntity;
+import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +35,14 @@ public class HistoryDAOBean implements HistoryDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
+	private HistoryEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, HistoryEntity.QueryInterface.class);
+	}
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void addHistoryEntry(Date when, SubjectEntity subject, String event) {
 		LOG.debug("add history entry: " + when + "; subject: "
@@ -41,12 +51,9 @@ public class HistoryDAOBean implements HistoryDAO {
 		this.entityManager.persist(history);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<HistoryEntity> getHistory(SubjectEntity subject) {
 		LOG.debug("get history for entity: " + subject.getLogin());
-		Query query = HistoryEntity.createQueryWhereEntity(this.entityManager,
-				subject);
-		List<HistoryEntity> result = query.getResultList();
+		List<HistoryEntity> result = this.queryObject.getHistory(subject);
 		return result;
 	}
 

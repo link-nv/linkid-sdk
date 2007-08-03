@@ -8,20 +8,23 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -134,18 +137,14 @@ public class AttributeProviderEntity implements Serializable {
 		return new HashCodeBuilder().append(this.pk).toHashCode();
 	}
 
-	public static Query createQueryWhereAttributeType(
-			EntityManager entityManager, AttributeTypeEntity attributeType) {
-		Query query = entityManager
-				.createNamedQuery(QUERY_WHERE_ATTRIBUTE_TYPE);
-		query.setParameter("attributeType", attributeType);
-		return query;
-	}
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_ATTRIBUTE_TYPE)
+		List<AttributeProviderEntity> listAttributeProviders(
+				@QueryParam("attributeType")
+				AttributeTypeEntity attributeType);
 
-	public static Query createDeleteWhereApplication(
-			EntityManager entityManager, ApplicationEntity application) {
-		Query query = entityManager.createNamedQuery(DELETE_WHERE_APPLICATION);
-		query.setParameter("application", application);
-		return query;
+		@UpdateMethod(DELETE_WHERE_APPLICATION)
+		int removeAttributeProviders(@QueryParam("application")
+		ApplicationEntity application);
 	}
 }

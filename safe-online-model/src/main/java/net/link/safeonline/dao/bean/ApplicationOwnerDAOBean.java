@@ -9,16 +9,17 @@ package net.link.safeonline.dao.bean;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +32,15 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private ApplicationOwnerEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory
+				.createQueryObject(this.entityManager,
+						ApplicationOwnerEntity.QueryInterface.class);
+	}
 
 	public ApplicationOwnerEntity findApplicationOwner(String name) {
 		LOG.debug("find app owner: " + name);
@@ -58,18 +68,15 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 		return applicationOwner;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ApplicationOwnerEntity> listApplicationOwners() {
-		Query query = ApplicationOwnerEntity.createQueryAll(this.entityManager);
-		List<ApplicationOwnerEntity> applicationOwners = query.getResultList();
+		List<ApplicationOwnerEntity> applicationOwners = this.queryObject
+				.listApplicationOwners();
 		return applicationOwners;
 	}
 
 	public ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject) {
-		Query query = ApplicationOwnerEntity.createQueryWhereAdmin(
-				this.entityManager, adminSubject);
-		ApplicationOwnerEntity applicationOwner = (ApplicationOwnerEntity) query
-				.getSingleResult();
+		ApplicationOwnerEntity applicationOwner = this.queryObject
+				.getApplicationOwner(adminSubject);
 		return applicationOwner;
 	}
 }

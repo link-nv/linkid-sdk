@@ -11,15 +11,16 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
-import javax.persistence.Query;
 import javax.persistence.Table;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -108,15 +109,12 @@ public class ApplicationOwnerEntity implements Serializable {
 		return new ToStringBuilder(this).append(this.name).toString();
 	}
 
-	public static Query createQueryAll(EntityManager entityManager) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_ALL);
-		return query;
-	}
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_ALL)
+		List<ApplicationOwnerEntity> listApplicationOwners();
 
-	public static Query createQueryWhereAdmin(EntityManager entityManager,
-			SubjectEntity adminSubject) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_ADMIN);
-		query.setParameter("admin", adminSubject);
-		return query;
+		@QueryMethod(QUERY_WHERE_ADMIN)
+		ApplicationOwnerEntity getApplicationOwner(@QueryParam("admin")
+		SubjectEntity adminSubject);
 	}
 }

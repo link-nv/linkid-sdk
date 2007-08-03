@@ -17,7 +17,6 @@ import javax.ejb.EJBException;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -29,6 +28,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -225,16 +227,13 @@ public class AttributeTypeEntity implements Serializable {
 		this.descriptions = descriptions;
 	}
 
-	public static Query createQueryAll(EntityManager entityManager) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_ALL);
-		return query;
-	}
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_ALL)
+		List<AttributeTypeEntity> listAttributeTypes();
 
-	public static Query createQueryCategorize(EntityManager entityManager,
-			ApplicationEntity application, AttributeTypeEntity attributeType) {
-		Query query = entityManager.createNamedQuery(QUERY_CATEGORIZE);
-		query.setParameter("attributeType", attributeType);
-		query.setParameter("application", application);
-		return query;
+		@QueryMethod(QUERY_CATEGORIZE)
+		Query createQueryCategorize(@QueryParam("application")
+		ApplicationEntity application, @QueryParam("attributeType")
+		AttributeTypeEntity attributeType);
 	}
 }

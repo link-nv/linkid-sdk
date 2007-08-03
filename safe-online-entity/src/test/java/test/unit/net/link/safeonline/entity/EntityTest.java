@@ -26,7 +26,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
-import javax.persistence.Query;
 
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
@@ -61,6 +60,7 @@ import net.link.safeonline.entity.pkix.TrustPointPK;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -253,9 +253,11 @@ public class EntityTest {
 		resultSubscription = entityManager.find(SubscriptionEntity.class,
 				new SubscriptionPK(subject, application));
 
-		Query countQuery = SubscriptionEntity.createQueryCountWhereApplication(
-				entityManager, application);
-		Long count = (Long) countQuery.getSingleResult();
+		SubscriptionEntity.QueryInterface subscriptionQueryObject = QueryObjectFactory
+				.createQueryObject(entityManager,
+						SubscriptionEntity.QueryInterface.class);
+		Long count = subscriptionQueryObject
+				.getNumberOfSubscriptions(application);
 		LOG.debug("count: " + count);
 		assertEquals(1, (long) count);
 
@@ -385,10 +387,11 @@ public class EntityTest {
 
 		// verify
 		entityManager = this.entityTestManager.refreshEntityManager();
-		Query query = TrustDomainEntity.createQueryWhereName(entityManager,
-				trustDomainName);
-		TrustDomainEntity resultTrustDomain = (TrustDomainEntity) query
-				.getSingleResult();
+		TrustDomainEntity.QueryInterface trustDomainQueryObject = QueryObjectFactory
+				.createQueryObject(entityManager,
+						TrustDomainEntity.QueryInterface.class);
+		TrustDomainEntity resultTrustDomain = trustDomainQueryObject
+				.findTrustDomain(trustDomainName);
 		LOG.debug("result trust domain: " + resultTrustDomain);
 		assertEquals(trustDomain, resultTrustDomain);
 
@@ -440,9 +443,11 @@ public class EntityTest {
 
 		// operate: query test
 		LOG.debug("trust domain Id: " + trustDomain.getId());
-		Query query = TrustPointEntity.createQueryWhereDomain(entityManager,
-				trustDomain);
-		List<TrustPointEntity> resultTrustPoints = query.getResultList();
+		TrustPointEntity.QueryInterface queryObject = QueryObjectFactory
+				.createQueryObject(entityManager,
+						TrustPointEntity.QueryInterface.class);
+		List<TrustPointEntity> resultTrustPoints = queryObject
+				.listTrustPoints(trustDomain);
 
 		// verify
 		assertEquals(1, resultTrustPoints.size());
@@ -482,9 +487,11 @@ public class EntityTest {
 
 		// operate: query test
 		LOG.debug("trust domain Id: " + trustDomain.getId());
-		Query query = TrustPointEntity.createQueryWhereDomain(entityManager,
-				trustDomain);
-		List<TrustPointEntity> resultTrustPoints = query.getResultList();
+		TrustPointEntity.QueryInterface queryObject = QueryObjectFactory
+				.createQueryObject(entityManager,
+						TrustPointEntity.QueryInterface.class);
+		List<TrustPointEntity> resultTrustPoints = queryObject
+				.listTrustPoints(trustDomain);
 
 		// verify
 		assertEquals(1, resultTrustPoints.size());
@@ -516,10 +523,11 @@ public class EntityTest {
 		/*
 		 * Check that the delete query is not deleting our new identifier.
 		 */
-		Query query = SubjectIdentifierEntity
-				.createDeleteWhereOtherIdentifiers(entityManager, domain,
-						identifier, subject);
-		query.executeUpdate();
+		SubjectIdentifierEntity.QueryInterface subjectIdentifierQueryObject = QueryObjectFactory
+				.createQueryObject(entityManager,
+						SubjectIdentifierEntity.QueryInterface.class);
+		subjectIdentifierQueryObject.deleteWhereOtherIdentifiers(domain,
+				identifier, subject);
 		resultSubjectIdentifier = entityManager.find(
 				SubjectIdentifierEntity.class, pk);
 		assertNotNull(resultSubjectIdentifier);
@@ -528,9 +536,8 @@ public class EntityTest {
 		 * Check whether the delete query can delete other identifiers.
 		 */
 		String anotherIdentifier = identifier + "-something-else";
-		query = SubjectIdentifierEntity.createDeleteWhereOtherIdentifiers(
-				entityManager, domain, anotherIdentifier, subject);
-		query.executeUpdate();
+		subjectIdentifierQueryObject.deleteWhereOtherIdentifiers(domain,
+				anotherIdentifier, subject);
 
 		/*
 		 * We have to clear the entity cache before being able to make useful
@@ -583,10 +590,11 @@ public class EntityTest {
 
 		// verify store and find
 		entityManager = this.entityTestManager.refreshEntityManager();
-		Query query = CachedOcspResponseEntity.createQueryWhereKey(
-				entityManager, key);
-		CachedOcspResponseEntity resultCachedOcspResponse = (CachedOcspResponseEntity) query
-				.getResultList().get(0);
+		CachedOcspResponseEntity.QueryInterface queryObject = QueryObjectFactory
+				.createQueryObject(entityManager,
+						CachedOcspResponseEntity.QueryInterface.class);
+		CachedOcspResponseEntity resultCachedOcspResponse = queryObject
+				.findCachedOcspResponse(key);
 		assertEquals(cachedOcspResponse, resultCachedOcspResponse);
 
 		// operate
@@ -603,8 +611,9 @@ public class EntityTest {
 
 		// operate + verify cache purge
 		entityManager = this.entityTestManager.refreshEntityManager();
-		query = CachedOcspResponseEntity.createQueryDeleteAll(entityManager);
-		int result = query.executeUpdate();
+		queryObject = QueryObjectFactory.createQueryObject(entityManager,
+				CachedOcspResponseEntity.QueryInterface.class);
+		int result = queryObject.deleteAll();
 		assertEquals(result, 1);
 	}
 
@@ -726,8 +735,10 @@ public class EntityTest {
 		entityManager.persist(history);
 		entityManager.flush();
 
-		TaskHistoryEntity.createQueryDeleteWhereTask(entityManager, taskEntity)
-				.executeUpdate();
+		TaskHistoryEntity.QueryInterface queryObject = QueryObjectFactory
+				.createQueryObject(entityManager,
+						TaskHistoryEntity.QueryInterface.class);
+		queryObject.clearTaskHistory(taskEntity);
 		entityManager = this.entityTestManager.refreshEntityManager();
 
 		TaskEntity task = entityManager.find(TaskEntity.class, "id");

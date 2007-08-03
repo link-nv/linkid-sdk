@@ -10,6 +10,7 @@ package net.link.safeonline.dao.bean;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,12 +20,22 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 @Stateless
 public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private StatisticDataPointEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager,
+				StatisticDataPointEntity.QueryInterface.class);
+	}
 
 	public StatisticDataPointEntity addStatisticDataPoint(String name,
 			StatisticEntity statistic, long x, long y, long z) {
@@ -36,14 +47,9 @@ public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
 		return statisticDataPoint;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<StatisticDataPointEntity> listStatisticDataPoints(String name,
 			StatisticEntity statistic) {
-		Query query = StatisticDataPointEntity
-				.createQueryWhereNameAndStatistic(this.entityManager, name,
-						statistic);
-		return query.getResultList();
-
+		return this.queryObject.listStatisticDataPoints(name, statistic);
 	}
 
 	public StatisticDataPointEntity findOrAddStatisticDataPoint(String name,
@@ -60,9 +66,7 @@ public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
 	}
 
 	public void cleanStatisticDataPoints(StatisticEntity statistic) {
-		Query query = StatisticDataPointEntity.createQueryDeleteWhereStatistic(
-				this.entityManager, statistic);
-		query.executeUpdate();
+		this.queryObject.deleteWhereStatistic(statistic);
 	}
 
 	public void cleanStatisticDataPoints(StatisticEntity statistic,

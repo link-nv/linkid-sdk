@@ -22,6 +22,14 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Invocation handler for the query object factory. The query object factory is
+ * using the Proxy API to construct the query object. The behaviour of the query
+ * object is provided via this invocation handler.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class QueryObjectInvocationHandler implements InvocationHandler {
 
 	private final EntityManager entityManager;
@@ -53,15 +61,23 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
 						+ method.getDeclaringClass().getName());
 	}
 
-	private Integer update(UpdateMethod updateMethodAnnotation, Method method,
+	private Object update(UpdateMethod updateMethodAnnotation, Method method,
 			Object[] args) {
 		String namedQueryName = updateMethodAnnotation.value();
 		LOG.debug("named query name: " + namedQueryName);
 		Query query = this.entityManager.createNamedQuery(namedQueryName);
 		setParameters(method, args, query);
+
+		Class<?> returnType = method.getReturnType();
+		LOG.debug("return type: " + returnType);
+
+		if (Query.class.isAssignableFrom(returnType)) {
+			return query;
+		}
+
 		Integer result = query.executeUpdate();
 
-		if (Integer.class.isAssignableFrom(method.getReturnType())) {
+		if (Integer.TYPE.isAssignableFrom(returnType)) {
 			return result;
 		}
 		return null;
@@ -75,7 +91,13 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
 
 		setParameters(method, args, query);
 
-		if (List.class.isAssignableFrom(method.getReturnType())) {
+		Class<?> returnType = method.getReturnType();
+
+		if (Query.class.isAssignableFrom(returnType)) {
+			return query;
+		}
+
+		if (List.class.isAssignableFrom(returnType)) {
 			List resultList = query.getResultList();
 			return resultList;
 		}

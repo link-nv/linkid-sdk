@@ -9,18 +9,19 @@ package net.link.safeonline.tasks.dao.bean;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.TimerHandle;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.tasks.dao.SchedulingDAO;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Stateless
 public class SchedulingDAOBean implements SchedulingDAO {
@@ -29,6 +30,14 @@ public class SchedulingDAOBean implements SchedulingDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private SchedulingEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, SchedulingEntity.QueryInterface.class);
+	}
 
 	public SchedulingEntity addScheduling(String name, String cronExpression) {
 		LOG.debug("Adding SchedulingEntity: " + name + " at " + cronExpression);
@@ -47,38 +56,22 @@ public class SchedulingDAOBean implements SchedulingDAO {
 		this.entityManager.remove(schedulingEntity);
 	}
 
-	@SuppressWarnings("unchecked")
 	public SchedulingEntity findSchedulingByName(String name) {
 		LOG.debug("Looking for scheduling by name: " + name);
-
-		Query query = SchedulingEntity.createQueryWhereName(this.entityManager,
-				name);
-		List<SchedulingEntity> result = query.getResultList();
-		if (result.isEmpty()) {
-			return null;
-		}
-		return result.get(0);
+		SchedulingEntity result = this.queryObject.findSchedulingByName(name);
+		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public SchedulingEntity findSchedulingByTimerHandle(TimerHandle timerHandle) {
 		LOG.debug("Looking for scheduling by timer handle: " + timerHandle);
-
-		Query query = SchedulingEntity.createQueryWhereTimerHandle(
-				this.entityManager, timerHandle);
-		List<SchedulingEntity> result = query.getResultList();
-		if (result.isEmpty()) {
-			return null;
-		}
-		return result.get(0);
+		SchedulingEntity result = this.queryObject
+				.findSchedulingByTimerHandle(timerHandle);
+		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<SchedulingEntity> listSchedulings() {
 		LOG.debug("Listing schedulings");
-
-		Query query = SchedulingEntity.createQueryListAll(this.entityManager);
-		List<SchedulingEntity> result = query.getResultList();
+		List<SchedulingEntity> result = this.queryObject.listSchedulings();
 		return result;
 	}
 

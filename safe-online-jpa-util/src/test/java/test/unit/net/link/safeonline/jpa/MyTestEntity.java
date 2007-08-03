@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Query;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
@@ -80,5 +81,14 @@ public class MyTestEntity implements Serializable {
 
 		@UpdateMethod(DELETE_ALL)
 		void removeAll();
+
+		@UpdateMethod(DELETE_ALL)
+		int removeAllReturningInt();
+
+		@UpdateMethod(DELETE_ALL)
+		Integer removeAllReturningInteger();
+
+		@QueryMethod(QUERY_ALL)
+		Query listAllQuery();
 	}
 }

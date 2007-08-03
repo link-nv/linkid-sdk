@@ -19,16 +19,17 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -151,10 +152,10 @@ public class ApplicationIdentityEntity implements Serializable {
 		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
 	}
 
-	public static Query createQueryWhereApplication(
-			EntityManager entityManager, ApplicationEntity application) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_APPLICATION);
-		query.setParameter("application", application);
-		return query;
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_APPLICATION)
+		List<ApplicationIdentityEntity> listApplicationIdentities(
+				@QueryParam("application")
+				ApplicationEntity application);
 	}
 }

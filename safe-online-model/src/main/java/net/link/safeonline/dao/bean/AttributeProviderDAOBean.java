@@ -9,15 +9,12 @@ package net.link.safeonline.dao.bean;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.AttributeProviderDAO;
@@ -25,6 +22,10 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeProviderPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Stateless
 public class AttributeProviderDAOBean implements AttributeProviderDAO {
@@ -35,6 +36,15 @@ public class AttributeProviderDAOBean implements AttributeProviderDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
+	private AttributeProviderEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager,
+				AttributeProviderEntity.QueryInterface.class);
+	}
+
 	public AttributeProviderEntity findAttributeProvider(
 			ApplicationEntity application, AttributeTypeEntity attributeType) {
 		AttributeProviderPK pk = new AttributeProviderPK(application,
@@ -44,13 +54,10 @@ public class AttributeProviderDAOBean implements AttributeProviderDAO {
 		return attributeProvider;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AttributeProviderEntity> listAttributeProviders(
 			AttributeTypeEntity attributeType) {
-		Query query = AttributeProviderEntity.createQueryWhereAttributeType(
-				this.entityManager, attributeType);
-		List<AttributeProviderEntity> attributeProviders = query
-				.getResultList();
+		List<AttributeProviderEntity> attributeProviders = this.queryObject
+				.listAttributeProviders(attributeType);
 		return attributeProviders;
 	}
 
@@ -68,9 +75,7 @@ public class AttributeProviderDAOBean implements AttributeProviderDAO {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void removeAttributeProviders(ApplicationEntity application) {
-		Query query = AttributeProviderEntity.createDeleteWhereApplication(
-				this.entityManager, application);
-		int count = query.executeUpdate();
+		int count = this.queryObject.removeAttributeProviders(application);
 		LOG.debug("number of removed provider entities: " + count);
 	}
 }

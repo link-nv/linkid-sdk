@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 
 import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.test.util.EntityTestManager;
@@ -182,11 +183,27 @@ public class QueryObjectFactoryTest {
 
 		// operate
 		queryObject.removeAll();
+		queryObject.removeAllReturningInt();
+		queryObject.removeAllReturningInteger();
 
 		// operate
 		MyTestEntity result = queryObject.find(testName);
 
 		// verify
 		assertNull(result);
+	}
+
+	@Test
+	public void queryQueryMethod() throws Exception {
+		// setup
+		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
+				.createQueryObject(this.entityManager,
+						MyTestEntity.MyQueryTestInterface.class);
+
+		// operate
+		Query result = queryObject.listAllQuery();
+
+		// verify
+		assertNotNull(result);
 	}
 }

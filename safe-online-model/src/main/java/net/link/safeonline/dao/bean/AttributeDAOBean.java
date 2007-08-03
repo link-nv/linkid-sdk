@@ -12,10 +12,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -24,6 +24,7 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributePK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +36,14 @@ public class AttributeDAOBean implements AttributeDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private AttributeEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, AttributeEntity.QueryInterface.class);
+	}
 
 	public AttributeEntity addAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, String stringValue) {
@@ -79,9 +88,8 @@ public class AttributeDAOBean implements AttributeDAO {
 	public Map<AttributeTypeEntity, List<AttributeEntity>> listAttributes(
 			SubjectEntity subject) {
 		LOG.debug("get attributes for subject " + subject.getLogin());
-		Query query = AttributeEntity.createQueryWhereSubject(
-				this.entityManager, subject);
-		List<AttributeEntity> attributes = query.getResultList();
+		List<AttributeEntity> attributes = this.queryObject
+				.listAttributes(subject);
 		Map<AttributeTypeEntity, List<AttributeEntity>> result = new HashMap<AttributeTypeEntity, List<AttributeEntity>>();
 		for (AttributeEntity attribute : attributes) {
 			List<AttributeEntity> list = result.get(attribute
@@ -140,11 +148,9 @@ public class AttributeDAOBean implements AttributeDAO {
 		return attribute;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AttributeEntity> listVisibleAttributes(SubjectEntity subject) {
-		Query query = AttributeEntity.createQueryWhereSubjectAndVisible(
-				this.entityManager, subject);
-		List<AttributeEntity> attributes = query.getResultList();
+		List<AttributeEntity> attributes = this.queryObject
+				.listVisibleAttributes(subject);
 		return attributes;
 	}
 
@@ -164,15 +170,12 @@ public class AttributeDAOBean implements AttributeDAO {
 		this.entityManager.remove(attributeEntity);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AttributeEntity> listAttributes(SubjectEntity subject,
 			AttributeTypeEntity attributeType) {
 		LOG.debug("listAttributes for " + subject.getLogin() + " of type "
 				+ attributeType.getName());
-		Query query = AttributeEntity
-				.createQueryWhereSubjectAndAttributeTypeOrdered(
-						this.entityManager, subject, attributeType);
-		List<AttributeEntity> attributes = query.getResultList();
+		List<AttributeEntity> attributes = this.queryObject.listAttributes(
+				subject, attributeType);
 		return attributes;
 	}
 
@@ -192,12 +195,10 @@ public class AttributeDAOBean implements AttributeDAO {
 		return attribute;
 	}
 
-	@SuppressWarnings("unchecked")
 	private long calcIndex(SubjectEntity subject,
 			AttributeTypeEntity attributeType) {
-		Query query = AttributeEntity.createMaxIdWhereSubjectAndAttributeType(
-				this.entityManager, subject, attributeType);
-		List<Long> maxIds = query.getResultList();
+		List<Long> maxIds = this.queryObject
+				.listMaxIdWhereSubjectAndAttributeType(subject, attributeType);
 		if (maxIds.isEmpty()) {
 			/*
 			 * This means that no other multi-valued attribute of the given

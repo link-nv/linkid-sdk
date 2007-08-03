@@ -9,21 +9,30 @@ package net.link.safeonline.config.dao.bean;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.config.dao.ConfigItemDAO;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 @Stateless
 public class ConfigItemDAOBean implements ConfigItemDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private ConfigItemEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, ConfigItemEntity.QueryInterface.class);
+	}
 
 	public ConfigItemEntity addConfigItem(String name, String value,
 			ConfigGroupEntity configGroup) {
@@ -48,11 +57,8 @@ public class ConfigItemDAOBean implements ConfigItemDAO {
 		return this.entityManager.find(ConfigItemEntity.class, name);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ConfigItemEntity> listConfigItems() {
-		Query query = ConfigItemEntity.createQueryListAll(this.entityManager);
-		List<ConfigItemEntity> result = query.getResultList();
+		List<ConfigItemEntity> result = this.queryObject.listConfigItems();
 		return result;
 	}
-
 }

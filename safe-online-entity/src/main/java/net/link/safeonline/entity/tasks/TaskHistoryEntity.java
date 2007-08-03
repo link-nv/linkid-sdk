@@ -21,6 +21,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -127,26 +129,6 @@ public class TaskHistoryEntity implements Serializable {
 		this.task = task;
 	}
 
-	public static Query createQueryDeleteWhereTask(EntityManager entityManager,
-			TaskEntity task) {
-		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_TASK);
-		query.setParameter("task", task);
-		return query;
-	}
-
-	public static Query createQueryDelete(EntityManager entityManager) {
-		Query query = entityManager.createNamedQuery(QUERY_DELETE);
-		return query;
-	}
-
-	public static Query createQueryDeleteWhereOlder(
-			EntityManager entityManager, long ageInMillis) {
-		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_OLDER);
-		Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
-		query.setParameter("ageLimit", ageLimit);
-		return query;
-	}
-
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("id", this.id).append("task",
@@ -175,4 +157,20 @@ public class TaskHistoryEntity implements Serializable {
 		return new HashCodeBuilder().append(this.id).toHashCode();
 	}
 
+	public static Query createQueryDeleteWhereOlder(
+			EntityManager entityManager, long ageInMillis) {
+		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_OLDER);
+		Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
+		query.setParameter("ageLimit", ageLimit);
+		return query;
+	}
+
+	public interface QueryInterface {
+		@UpdateMethod(QUERY_DELETE)
+		void clearAllTasksHistory();
+
+		@UpdateMethod(QUERY_DELETE_WHERE_TASK)
+		void clearTaskHistory(@QueryParam("task")
+		TaskEntity task);
+	}
 }

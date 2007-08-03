@@ -18,16 +18,17 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -345,39 +346,24 @@ public class AttributeEntity implements Serializable {
 		return new ToStringBuilder(this).append("pk", this.pk).toString();
 	}
 
-	public static Query createQueryWhereSubject(EntityManager entityManager,
-			SubjectEntity subject) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_SUBJECT);
-		query.setParameter(SUBJECT_PARAM, subject);
-		return query;
-	}
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_SUBJECT)
+		List<AttributeEntity> listAttributes(@QueryParam(SUBJECT_PARAM)
+		SubjectEntity subject);
 
-	public static Query createQueryWhereSubjectAndVisible(
-			EntityManager entityManager, SubjectEntity subject) {
-		Query query = entityManager
-				.createNamedQuery(QUERY_WHERE_SUBJECT_AND_VISIBLE);
-		query.setParameter(SUBJECT_PARAM, subject);
-		return query;
-	}
+		@QueryMethod(QUERY_WHERE_SUBJECT_AND_VISIBLE)
+		List<AttributeEntity> listVisibleAttributes(@QueryParam(SUBJECT_PARAM)
+		SubjectEntity subject);
 
-	public static Query createQueryWhereSubjectAndAttributeTypeOrdered(
-			EntityManager entityManager, SubjectEntity subject,
-			AttributeTypeEntity attributeType) {
-		Query query = entityManager
-				.createNamedQuery(QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE);
-		query.setParameter(SUBJECT_PARAM, subject);
-		query.setParameter(ATTRIBUTE_TYPE_PARAM, attributeType);
-		return query;
-	}
+		@QueryMethod(QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
+		List<AttributeEntity> listAttributes(@QueryParam(SUBJECT_PARAM)
+		SubjectEntity subject, @QueryParam(ATTRIBUTE_TYPE_PARAM)
+		AttributeTypeEntity attributeType);
 
-	public static Query createMaxIdWhereSubjectAndAttributeType(
-			EntityManager entityManager, SubjectEntity subject,
-			AttributeTypeEntity attributeType) {
-		Query query = entityManager
-				.createNamedQuery(MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE);
-		query.setParameter(SUBJECT_PARAM, subject);
-		query.setParameter(ATTRIBUTE_TYPE_PARAM, attributeType);
-		return query;
+		@QueryMethod(MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
+		List<Long> listMaxIdWhereSubjectAndAttributeType(
+				@QueryParam(SUBJECT_PARAM)
+				SubjectEntity subject, @QueryParam(ATTRIBUTE_TYPE_PARAM)
+				AttributeTypeEntity attributeType);
 	}
-
 }

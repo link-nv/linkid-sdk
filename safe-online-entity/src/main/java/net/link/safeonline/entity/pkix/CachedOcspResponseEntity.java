@@ -22,6 +22,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -128,34 +131,6 @@ public class CachedOcspResponseEntity implements Serializable {
 		this.entryDate = entryDate;
 	}
 
-	public static Query createQueryWhereKey(EntityManager entityManager,
-			String key) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_KEY);
-		query.setParameter("key", key);
-		return query;
-	}
-
-	public static Query createQueryDeleteAll(EntityManager entityManager) {
-		Query query = entityManager.createNamedQuery(QUERY_DELETE_ALL);
-		return query;
-	}
-
-	public static Query createQueryDeletePerDomain(EntityManager entityManager,
-			TrustDomainEntity trustDomain) {
-		Query query = entityManager.createNamedQuery(QUERY_DELETE_PER_DOMAIN);
-		query.setParameter("trustDomain", trustDomain);
-		return query;
-	}
-
-	public static Query createQueryDeleteExpired(EntityManager entityManager,
-			TrustDomainEntity trustDomain) {
-		Query query = entityManager.createNamedQuery(QUERY_DELETE_EXPIRED);
-		query.setParameter("expiryTime", new Date(System.currentTimeMillis()
-				- trustDomain.getOcspCacheTimeOutMillis()));
-		query.setParameter("trustDomain", trustDomain);
-		return query;
-	}
-
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("id", this.id).append("key",
@@ -183,4 +158,25 @@ public class CachedOcspResponseEntity implements Serializable {
 		return new HashCodeBuilder().append(this.key).toHashCode();
 	}
 
+	public interface QueryInterface {
+		@QueryMethod(value = QUERY_WHERE_KEY, nullable = true)
+		CachedOcspResponseEntity findCachedOcspResponse(@QueryParam("key")
+		String key);
+
+		@UpdateMethod(QUERY_DELETE_ALL)
+		int deleteAll();
+
+		@UpdateMethod(QUERY_DELETE_PER_DOMAIN)
+		void deletePerDomain(@QueryParam("trustDomain")
+		TrustDomainEntity trustDomain);
+	}
+
+	public static Query createQueryDeleteExpired(EntityManager entityManager,
+			TrustDomainEntity trustDomain) {
+		Query query = entityManager.createNamedQuery(QUERY_DELETE_EXPIRED);
+		query.setParameter("expiryTime", new Date(System.currentTimeMillis()
+				- trustDomain.getOcspCacheTimeOutMillis()));
+		query.setParameter("trustDomain", trustDomain);
+		return query;
+	}
 }

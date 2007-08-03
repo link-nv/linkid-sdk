@@ -14,16 +14,16 @@ import java.util.List;
 
 import javax.ejb.TimerHandle;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Query;
 import javax.persistence.Table;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -123,25 +123,6 @@ public class SchedulingEntity implements Serializable {
 		this.tasks.add(taskEntity);
 	}
 
-	public static Query createQueryWhereName(EntityManager entityManager,
-			String name) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_NAME);
-		query.setParameter("name", name);
-		return query;
-	}
-
-	public static Query createQueryWhereTimerHandle(
-			EntityManager entityManager, TimerHandle timerHandle) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_TIMERHANDLE);
-		query.setParameter("timerHandle", timerHandle);
-		return query;
-	}
-
-	public static Query createQueryListAll(EntityManager entityManager) {
-		Query query = entityManager.createNamedQuery(QUERY_LIST_ALL);
-		return query;
-	}
-
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("name", this.name).append(
@@ -166,5 +147,18 @@ public class SchedulingEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.name).toHashCode();
+	}
+
+	public interface QueryInterface {
+		@QueryMethod(QUERY_LIST_ALL)
+		List<SchedulingEntity> listSchedulings();
+
+		@QueryMethod(value = QUERY_WHERE_NAME, nullable = true)
+		SchedulingEntity findSchedulingByName(@QueryParam("name")
+		String name);
+
+		@QueryMethod(value = QUERY_WHERE_TIMERHANDLE, nullable = true)
+		SchedulingEntity findSchedulingByTimerHandle(@QueryParam("timerHandle")
+		TimerHandle timerHandle);
 	}
 }

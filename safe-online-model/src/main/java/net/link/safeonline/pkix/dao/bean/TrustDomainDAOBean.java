@@ -9,18 +9,19 @@ package net.link.safeonline.pkix.dao.bean;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Stateless
 public class TrustDomainDAOBean implements TrustDomainDAO {
@@ -30,11 +31,18 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
-	@SuppressWarnings("unchecked")
+	private TrustDomainEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, TrustDomainEntity.QueryInterface.class);
+	}
+
 	public List<TrustDomainEntity> listTrustDomains() {
 		LOG.debug("get trust domains");
-		Query query = TrustDomainEntity.createQueryAll(this.entityManager);
-		List<TrustDomainEntity> trustDomains = query.getResultList();
+		List<TrustDomainEntity> trustDomains = this.queryObject
+				.listTrustDomains();
 		return trustDomains;
 	}
 
@@ -56,16 +64,10 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
 		return trustDomain;
 	}
 
-	@SuppressWarnings("unchecked")
 	public TrustDomainEntity findTrustDomain(String name) {
 		LOG.debug("find trust domain: " + name);
-		Query query = TrustDomainEntity.createQueryWhereName(
-				this.entityManager, name);
-		List<TrustDomainEntity> trustDomains = query.getResultList();
-		if (trustDomains.isEmpty()) {
-			return null;
-		}
-		return trustDomains.get(0);
+		TrustDomainEntity trustDomain = this.queryObject.findTrustDomain(name);
+		return trustDomain;
 	}
 
 	public void removeTrustDomain(TrustDomainEntity trustDomain) {

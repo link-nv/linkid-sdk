@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Query;
 import javax.persistence.Table;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
 
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_ALL;
 
@@ -53,9 +53,8 @@ public class DeviceEntity implements Serializable {
 		this.attributeTypes = attributeTypes;
 	}
 
-	public static Query createQueryListAll(EntityManager entityManager) {
-		Query query = entityManager.createNamedQuery(QUERY_LIST_ALL);
-		return query;
+	public interface QueryInterface {
+		@QueryMethod(QUERY_LIST_ALL)
+		List<DeviceEntity> listDevices();
 	}
-
 }

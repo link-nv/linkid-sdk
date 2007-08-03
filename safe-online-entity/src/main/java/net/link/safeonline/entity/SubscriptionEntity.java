@@ -9,6 +9,7 @@ package net.link.safeonline.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -24,6 +25,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -163,28 +167,6 @@ public class SubscriptionEntity implements Serializable {
 				.toString();
 	}
 
-	public static Query createQueryWhereEntity(EntityManager entityManager,
-			SubjectEntity subject) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_SUBJECT);
-		query.setParameter("subject", subject);
-		return query;
-	}
-
-	public static Query createQueryCountWhereApplication(
-			EntityManager entityManager, ApplicationEntity application) {
-		Query query = entityManager
-				.createNamedQuery(QUERY_COUNT_WHERE_APPLICATION);
-		query.setParameter("application", application);
-		return query;
-	}
-
-	public static Query createQueryWhereApplication(
-			EntityManager entityManager, ApplicationEntity application) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_APPLICATION);
-		query.setParameter("application", application);
-		return query;
-	}
-
 	public static Query createQueryCountWhereApplicationAndActive(
 			EntityManager entityManager, ApplicationEntity application,
 			long activeLimitInMillis) {
@@ -194,5 +176,19 @@ public class SubscriptionEntity implements Serializable {
 		query.setParameter("lastLogin", new Date(System.currentTimeMillis()
 				- activeLimitInMillis));
 		return query;
+	}
+
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_SUBJECT)
+		List<SubscriptionEntity> listSubsciptions(@QueryParam("subject")
+		SubjectEntity subject);
+
+		@QueryMethod(QUERY_COUNT_WHERE_APPLICATION)
+		long getNumberOfSubscriptions(@QueryParam("application")
+		ApplicationEntity application);
+
+		@QueryMethod(QUERY_WHERE_APPLICATION)
+		List<SubscriptionEntity> listSubscriptions(@QueryParam("application")
+		ApplicationEntity application);
 	}
 }

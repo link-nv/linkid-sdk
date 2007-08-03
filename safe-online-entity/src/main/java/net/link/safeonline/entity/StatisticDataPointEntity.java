@@ -9,6 +9,7 @@ package net.link.safeonline.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -21,6 +22,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.Table;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import static net.link.safeonline.entity.StatisticDataPointEntity.DELETE_WHERE_STATISTIC;
 import static net.link.safeonline.entity.StatisticDataPointEntity.QUERY_WHERE_NAME_AND_STATISTIC;
@@ -135,22 +140,6 @@ public class StatisticDataPointEntity implements Serializable {
 		this.creationTime = creationTime;
 	}
 
-	public static Query createQueryDeleteWhereStatistic(
-			EntityManager entityManager, StatisticEntity statistic) {
-		Query query = entityManager.createNamedQuery(DELETE_WHERE_STATISTIC);
-		query.setParameter("statistic", statistic);
-		return query;
-	}
-
-	public static Query createQueryWhereNameAndStatistic(
-			EntityManager entityManager, String name, StatisticEntity statistic) {
-		Query query = entityManager
-				.createNamedQuery(QUERY_WHERE_NAME_AND_STATISTIC);
-		query.setParameter("statistic", statistic);
-		query.setParameter("name", name);
-		return query;
-	}
-
 	public static Query createQueryDeleteWhereStatisticExpired(
 			EntityManager entityManager, StatisticEntity statistic,
 			long ageInMillis) {
@@ -162,4 +151,15 @@ public class StatisticDataPointEntity implements Serializable {
 		return query;
 	}
 
+	public interface QueryInterface {
+		@UpdateMethod(DELETE_WHERE_STATISTIC)
+		void deleteWhereStatistic(@QueryParam("statistic")
+		StatisticEntity statistic);
+
+		@QueryMethod(QUERY_WHERE_NAME_AND_STATISTIC)
+		List<StatisticDataPointEntity> listStatisticDataPoints(
+				@QueryParam("name")
+				String name, @QueryParam("statistic")
+				StatisticEntity statistic);
+	}
 }

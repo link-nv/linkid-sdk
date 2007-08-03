@@ -10,6 +10,7 @@ package net.link.safeonline.dao.bean;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,6 +24,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.SubscriptionPK;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +36,14 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private SubscriptionEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, SubscriptionEntity.QueryInterface.class);
+	}
 
 	@SuppressWarnings("unchecked")
 	public SubscriptionEntity findSubscription(SubjectEntity subject,
@@ -55,12 +65,10 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		this.entityManager.persist(subscription);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<SubscriptionEntity> listSubsciptions(SubjectEntity subject) {
 		LOG.debug("get subscriptions for subject: " + subject.getLogin());
-		Query query = SubscriptionEntity.createQueryWhereEntity(
-				this.entityManager, subject);
-		List<SubscriptionEntity> subscriptions = query.getResultList();
+		List<SubscriptionEntity> subscriptions = this.queryObject
+				.listSubsciptions(subject);
 		return subscriptions;
 	}
 
@@ -74,21 +82,18 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	}
 
 	public long getNumberOfSubscriptions(ApplicationEntity application) {
-		Query query = SubscriptionEntity.createQueryCountWhereApplication(
-				this.entityManager, application);
-		Long countResult = (Long) query.getSingleResult();
+		long countResult = this.queryObject
+				.getNumberOfSubscriptions(application);
 		return countResult;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<SubscriptionEntity> listSubscriptions(
 			ApplicationEntity application) {
 		LOG
 				.debug("get subscriptions for application: "
 						+ application.getName());
-		Query query = SubscriptionEntity.createQueryWhereApplication(
-				this.entityManager, application);
-		List<SubscriptionEntity> subscriptions = query.getResultList();
+		List<SubscriptionEntity> subscriptions = this.queryObject
+				.listSubscriptions(application);
 		return subscriptions;
 	}
 

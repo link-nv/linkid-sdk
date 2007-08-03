@@ -12,15 +12,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Query;
 import javax.persistence.Table;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -104,18 +104,6 @@ public class TaskEntity implements Serializable {
 		this.taskHistory.add(taskHistoryEntity);
 	}
 
-	public static Query createQueryWhereJndiName(EntityManager entityManager,
-			String jndiName) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_JNDINAME);
-		query.setParameter("jndiName", jndiName);
-		return query;
-	}
-
-	public static Query createQueryListAll(EntityManager entityManager) {
-		Query query = entityManager.createNamedQuery(QUERY_LIST_ALL);
-		return query;
-	}
-
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("jndiName", this.jndiName)
@@ -144,4 +132,12 @@ public class TaskEntity implements Serializable {
 		return new HashCodeBuilder().append(this.jndiName).toHashCode();
 	}
 
+	public interface QueryInterface {
+		@QueryMethod(QUERY_LIST_ALL)
+		List<TaskEntity> listTaskEntities();
+
+		@QueryMethod(value = QUERY_WHERE_JNDINAME, nullable = true)
+		TaskEntity findTaskEntity(@QueryParam("jndiName")
+		String jndiName);
+	}
 }

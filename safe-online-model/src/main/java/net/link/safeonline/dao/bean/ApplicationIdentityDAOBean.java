@@ -9,10 +9,10 @@ package net.link.safeonline.dao.bean;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
@@ -22,6 +22,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +35,15 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private ApplicationIdentityEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager,
+				ApplicationIdentityEntity.QueryInterface.class);
+	}
 
 	public ApplicationIdentityEntity addApplicationIdentity(
 			ApplicationEntity application, long identityVersion) {
@@ -58,13 +68,10 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
 		return applicationIdentity;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ApplicationIdentityEntity> listApplicationIdentities(
 			ApplicationEntity application) {
-		Query query = ApplicationIdentityEntity.createQueryWhereApplication(
-				this.entityManager, application);
-		List<ApplicationIdentityEntity> applicationIdentities = query
-				.getResultList();
+		List<ApplicationIdentityEntity> applicationIdentities = this.queryObject
+				.listApplicationIdentities(application);
 		return applicationIdentities;
 	}
 

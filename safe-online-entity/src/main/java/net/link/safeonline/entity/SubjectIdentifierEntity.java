@@ -11,13 +11,14 @@ import java.io.Serializable;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
+
+import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_OTHER_IDENTIFIERS;
 
@@ -75,14 +76,11 @@ public class SubjectIdentifierEntity implements Serializable {
 		this.subject = subject;
 	}
 
-	public static Query createDeleteWhereOtherIdentifiers(
-			EntityManager entityManager, String domain, String identifier,
-			SubjectEntity subject) {
-		Query query = entityManager
-				.createNamedQuery(DELETE_WHERE_OTHER_IDENTIFIERS);
-		query.setParameter("domain", domain);
-		query.setParameter("subject", subject);
-		query.setParameter("identifier", identifier);
-		return query;
+	public interface QueryInterface {
+		@UpdateMethod(DELETE_WHERE_OTHER_IDENTIFIERS)
+		int deleteWhereOtherIdentifiers(@QueryParam("domain")
+		String domain, @QueryParam("identifier")
+		String identifier, @QueryParam("subject")
+		SubjectEntity subject);
 	}
 }

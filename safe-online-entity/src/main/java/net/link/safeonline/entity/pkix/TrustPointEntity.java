@@ -14,6 +14,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.ejb.EJBException;
 import javax.persistence.AttributeOverride;
@@ -21,16 +22,16 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -159,10 +160,9 @@ public class TrustPointEntity implements Serializable {
 		return new ToStringBuilder(this).append("pk", this.pk).toString();
 	}
 
-	public static Query createQueryWhereDomain(EntityManager entityManager,
-			TrustDomainEntity trustDomain) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_DOMAIN);
-		query.setParameter("trustDomain", trustDomain);
-		return query;
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_DOMAIN)
+		List<TrustPointEntity> listTrustPoints(@QueryParam("trustDomain")
+		TrustDomainEntity trustDomain);
 	}
 }

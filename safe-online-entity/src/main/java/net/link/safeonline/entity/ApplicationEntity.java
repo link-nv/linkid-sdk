@@ -14,6 +14,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.ejb.EJBException;
 import javax.persistence.Column;
@@ -30,6 +31,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.link.safeonline.entity.listener.SecurityApplicationEntityListener;
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -364,16 +367,14 @@ public class ApplicationEntity implements Serializable {
 				.append("removable", this.removable).toString();
 	}
 
-	public static Query createQueryAll(EntityManager entityManager) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_ALL);
-		return query;
-	}
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_ALL)
+		List<ApplicationEntity> listApplications();
 
-	public static Query createQueryWhereApplicationOwner(
-			EntityManager entityManager, ApplicationOwnerEntity applicationOwner) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_OWNER);
-		query.setParameter("applicationOwner", applicationOwner);
-		return query;
+		@QueryMethod(QUERY_WHERE_OWNER)
+		List<ApplicationEntity> listApplicationsWhereApplicationOwner(
+				@QueryParam("applicationOwner")
+				ApplicationOwnerEntity applicationOwner);
 	}
 
 	public static Query createQueryWhereCertificate(

@@ -12,15 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Query;
 import javax.persistence.Table;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -68,11 +67,6 @@ public class ConfigGroupEntity implements Serializable {
 		this.name = name;
 	}
 
-	public static Query createQueryListAll(EntityManager entityManager) {
-		Query query = entityManager.createNamedQuery(QUERY_LIST_ALL);
-		return query;
-	}
-
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("name", this.name).toString();
@@ -98,4 +92,8 @@ public class ConfigGroupEntity implements Serializable {
 		return new HashCodeBuilder().append(this.name).toHashCode();
 	}
 
+	public interface QueryInterface {
+		@QueryMethod(QUERY_LIST_ALL)
+		List<ConfigGroupEntity> listConfigGroups();
+	}
 }

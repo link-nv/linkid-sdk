@@ -10,6 +10,7 @@ package net.link.safeonline.tasks.dao.bean;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -23,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.tasks.dao.TaskHistoryDAO;
 
 @Stateless
@@ -32,6 +34,14 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private TaskHistoryEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, TaskHistoryEntity.QueryInterface.class);
+	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public TaskHistoryEntity addTaskHistoryEntity(TaskEntity task,
@@ -55,17 +65,12 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
 
 	public void clearTaskHistory(TaskEntity task) {
 		LOG.debug("Clearing history for task entity: " + task.getName());
-
-		Query query = TaskHistoryEntity.createQueryDeleteWhereTask(
-				this.entityManager, task);
-		query.executeUpdate();
+		this.queryObject.clearTaskHistory(task);
 	}
 
 	public void clearAllTasksHistory() {
 		LOG.debug("Clearing history for all tasks");
-
-		Query query = TaskHistoryEntity.createQueryDelete(this.entityManager);
-		query.executeUpdate();
+		this.queryObject.clearAllTasksHistory();
 	}
 
 	public void clearAllTasksHistory(long ageInMillis) {

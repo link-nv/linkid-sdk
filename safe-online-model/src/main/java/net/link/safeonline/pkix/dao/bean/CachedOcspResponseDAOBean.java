@@ -7,20 +7,20 @@
 
 package net.link.safeonline.pkix.dao.bean;
 
-import java.util.List;
-
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.pkix.dao.CachedOcspResponseDAO;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Stateless
 public class CachedOcspResponseDAOBean implements CachedOcspResponseDAO {
@@ -30,6 +30,15 @@ public class CachedOcspResponseDAOBean implements CachedOcspResponseDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private CachedOcspResponseEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager,
+				CachedOcspResponseEntity.QueryInterface.class);
+	}
 
 	public CachedOcspResponseEntity addCachedOcspResponse(String key,
 			boolean result, TrustDomainEntity trustDomain) {
@@ -42,19 +51,16 @@ public class CachedOcspResponseDAOBean implements CachedOcspResponseDAO {
 		return cachedOcspResponse;
 	}
 
-	@SuppressWarnings("unchecked")
 	public CachedOcspResponseEntity findCachedOcspResponse(String key) {
 		LOG.debug("looking for cached ocsp response: key " + key);
-
-		Query query = CachedOcspResponseEntity.createQueryWhereKey(
-				entityManager, key);
-		List<CachedOcspResponseEntity> result = query.getResultList();
-		if (result.isEmpty()) {
+		CachedOcspResponseEntity result = this.queryObject
+				.findCachedOcspResponse(key);
+		if (null == result) {
 			LOG.debug("ocsp cache miss for key: " + key);
-			return null;
+		} else {
+			LOG.debug("ocsp cache hit for key: " + key);
 		}
-		LOG.debug("ocsp cache hit for key: " + key);
-		return result.get(0);
+		return result;
 
 	}
 
@@ -68,19 +74,13 @@ public class CachedOcspResponseDAOBean implements CachedOcspResponseDAO {
 
 	public void clearOcspCache() {
 		LOG.debug("clearing ocsp response cache for all trust domains");
-
-		Query query = CachedOcspResponseEntity
-				.createQueryDeleteAll(entityManager);
-		query.executeUpdate();
+		this.queryObject.deleteAll();
 	}
 
 	public void clearOcspCachePerTrustDomain(TrustDomainEntity trustDomain) {
 		LOG.debug("clearing ocsp cache for trust domain: "
 				+ trustDomain.getName());
-
-		Query query = CachedOcspResponseEntity.createQueryDeletePerDomain(
-				entityManager, trustDomain);
-		query.executeUpdate();
+		this.queryObject.deletePerDomain(trustDomain);
 	}
 
 	public void clearOcspCacheExpiredForTrustDomain(

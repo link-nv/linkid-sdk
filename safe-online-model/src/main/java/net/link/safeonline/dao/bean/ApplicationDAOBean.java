@@ -10,6 +10,7 @@ package net.link.safeonline.dao.bean;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,6 +21,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +33,14 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private ApplicationEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, ApplicationEntity.QueryInterface.class);
+	}
 
 	public ApplicationEntity findApplication(String applicationName) {
 		LOG.debug("find application: " + applicationName);
@@ -49,10 +59,9 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		return application;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ApplicationEntity> listApplications() {
-		Query query = ApplicationEntity.createQueryAll(this.entityManager);
-		List<ApplicationEntity> applications = query.getResultList();
+		List<ApplicationEntity> applications = this.queryObject
+				.listApplications();
 		return applications;
 	}
 
@@ -83,14 +92,12 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		this.entityManager.remove(application);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ApplicationEntity> listApplications(
 			ApplicationOwnerEntity applicationOwner) {
 		LOG.debug("get application for application owner: "
 				+ applicationOwner.getName());
-		Query query = ApplicationEntity.createQueryWhereApplicationOwner(
-				this.entityManager, applicationOwner);
-		List<ApplicationEntity> applications = query.getResultList();
+		List<ApplicationEntity> applications = this.queryObject
+				.listApplicationsWhereApplicationOwner(applicationOwner);
 		return applications;
 	}
 

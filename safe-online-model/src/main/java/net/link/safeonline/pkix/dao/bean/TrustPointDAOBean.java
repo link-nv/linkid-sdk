@@ -10,15 +10,16 @@ package net.link.safeonline.pkix.dao.bean;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.entity.pkix.TrustPointPK;
+import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.pkix.exception.TrustPointNotFoundException;
 
@@ -33,6 +34,14 @@ public class TrustPointDAOBean implements TrustPointDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
+	private TrustPointEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, TrustPointEntity.QueryInterface.class);
+	}
+
 	public void addTrustPoint(TrustDomainEntity trustDomain,
 			X509Certificate certificate) {
 		LOG.debug("add trust point to domain: " + trustDomain.getName()
@@ -42,12 +51,10 @@ public class TrustPointDAOBean implements TrustPointDAO {
 		this.entityManager.persist(trustPoint);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<TrustPointEntity> listTrustPoints(TrustDomainEntity trustDomain) {
 		LOG.debug("get trust points for domain: " + trustDomain.getName());
-		Query query = TrustPointEntity.createQueryWhereDomain(
-				this.entityManager, trustDomain);
-		List<TrustPointEntity> trustPoints = query.getResultList();
+		List<TrustPointEntity> trustPoints = this.queryObject
+				.listTrustPoints(trustDomain);
 		return trustPoints;
 	}
 

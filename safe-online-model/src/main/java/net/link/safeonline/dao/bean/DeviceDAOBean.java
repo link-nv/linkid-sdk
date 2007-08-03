@@ -9,15 +9,16 @@ package net.link.safeonline.dao.bean;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 @Stateless
 public class DeviceDAOBean implements DeviceDAO {
@@ -25,16 +26,22 @@ public class DeviceDAOBean implements DeviceDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
+	private DeviceEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, DeviceEntity.QueryInterface.class);
+	}
+
 	public DeviceEntity addDevice(String name) {
 		DeviceEntity device = new DeviceEntity(name);
 		this.entityManager.persist(device);
 		return device;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<DeviceEntity> listDevices() {
-		Query query = DeviceEntity.createQueryListAll(this.entityManager);
-		List<DeviceEntity> result = query.getResultList();
+		List<DeviceEntity> result = this.queryObject.listDevices();
 		return result;
 	}
 

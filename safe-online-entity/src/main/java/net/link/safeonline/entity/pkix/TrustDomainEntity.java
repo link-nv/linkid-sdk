@@ -8,17 +8,19 @@
 package net.link.safeonline.entity.pkix;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -115,18 +117,6 @@ public class TrustDomainEntity implements Serializable {
 		this.ocspCacheTimeOutMillis = ocspCacheTimeOutMillis;
 	}
 
-	public static Query createQueryWhereName(EntityManager entityManager,
-			String name) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_NAME);
-		query.setParameter("name", name);
-		return query;
-	}
-
-	public static Query createQueryAll(EntityManager entityManager) {
-		Query query = entityManager.createNamedQuery(QUERY_ALL);
-		return query;
-	}
-
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this).append("id", this.id).append("name",
@@ -151,5 +141,14 @@ public class TrustDomainEntity implements Serializable {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.name).toHashCode();
+	}
+
+	public interface QueryInterface {
+		@QueryMethod(QUERY_ALL)
+		List<TrustDomainEntity> listTrustDomains();
+
+		@QueryMethod(value = QUERY_WHERE_NAME, nullable = true)
+		TrustDomainEntity findTrustDomain(@QueryParam("name")
+		String name);
 	}
 }

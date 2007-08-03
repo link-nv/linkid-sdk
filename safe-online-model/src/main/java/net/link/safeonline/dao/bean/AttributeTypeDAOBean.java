@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,6 +27,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,8 +38,26 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 	private static final Log LOG = LogFactory
 			.getLog(AttributeTypeDAOBean.class);
 
+	private AttributeTypeDescriptionEntity.QueryInterface descriptorQueryObject;
+
+	private AttributeTypeEntity.QueryInterface queryObject;
+
+	private CompoundedAttributeTypeMemberEntity.QueryInterface compoundedQueryObject;
+
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.descriptorQueryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager,
+				AttributeTypeDescriptionEntity.QueryInterface.class);
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, AttributeTypeEntity.QueryInterface.class);
+		this.compoundedQueryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager,
+				CompoundedAttributeTypeMemberEntity.QueryInterface.class);
+	}
 
 	public void addAttributeType(AttributeTypeEntity attributeType) {
 		LOG.debug("add attribute type: " + attributeType.getName());
@@ -51,11 +71,10 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		return attributeType;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AttributeTypeEntity> listAttributeTypes() {
 		LOG.debug("get attribute types");
-		Query query = AttributeTypeEntity.createQueryAll(this.entityManager);
-		List<AttributeTypeEntity> attributeTypes = query.getResultList();
+		List<AttributeTypeEntity> attributeTypes = this.queryObject
+				.listAttributeTypes();
 		return attributeTypes;
 	}
 
@@ -69,14 +88,10 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		return attributeType;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AttributeTypeDescriptionEntity> listDescriptions(
 			AttributeTypeEntity attributeType) {
-		Query query = AttributeTypeDescriptionEntity
-				.createQueryWhereAttributeType(this.entityManager,
-						attributeType);
-		List<AttributeTypeDescriptionEntity> descriptions = query
-				.getResultList();
+		List<AttributeTypeDescriptionEntity> descriptions = this.descriptorQueryObject
+				.listDescriptions(attributeType);
 		return descriptions;
 	}
 
@@ -136,8 +151,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
 	public Map<String, Long> categorize(ApplicationEntity application,
 			AttributeTypeEntity attributeType) {
-		Query query = AttributeTypeEntity.createQueryCategorize(entityManager,
-				application, attributeType);
+		Query query = this.queryObject.createQueryCategorize(application,
+				attributeType);
 		List results = query.getResultList();
 		Map<String, Long> result = new HashMap<String, Long>();
 		for (Iterator iter = results.iterator(); iter.hasNext();) {
@@ -147,27 +162,21 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType)
 			throws AttributeTypeNotFoundException {
-		Query query = CompoundedAttributeTypeMemberEntity.createParentQuery(
-				this.entityManager, memberAttributeType);
-		List<AttributeTypeEntity> result = query.getResultList();
-		if (result.isEmpty()) {
+		AttributeTypeEntity parent = this.compoundedQueryObject
+				.findParentAttribute(memberAttributeType);
+		if (null == parent) {
 			throw new AttributeTypeNotFoundException();
 		}
-		AttributeTypeEntity parent = result.get(0);
 		return parent;
 	}
 
-	@SuppressWarnings("unchecked")
 	public CompoundedAttributeTypeMemberEntity getMemberEntry(
 			AttributeTypeEntity memberAttributeType)
 			throws AttributeTypeNotFoundException {
-		Query query = CompoundedAttributeTypeMemberEntity
-				.createQueryWhereMember(this.entityManager, memberAttributeType);
-		List<CompoundedAttributeTypeMemberEntity> memberEntries = query
-				.getResultList();
+		List<CompoundedAttributeTypeMemberEntity> memberEntries = this.compoundedQueryObject
+				.listMemberEntries(memberAttributeType);
 		if (memberEntries.isEmpty()) {
 			throw new AttributeTypeNotFoundException();
 		}

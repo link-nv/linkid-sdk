@@ -8,19 +8,21 @@
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -149,17 +151,14 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
 		return new HashCodeBuilder().append(this.pk).toHashCode();
 	}
 
-	public static Query createParentQuery(EntityManager entityManager,
-			AttributeTypeEntity member) {
-		Query query = entityManager.createNamedQuery(QUERY_PARENT);
-		query.setParameter("member", member);
-		return query;
-	}
+	public interface QueryInterface {
+		@QueryMethod(value = QUERY_PARENT, nullable = true)
+		AttributeTypeEntity findParentAttribute(@QueryParam("member")
+		AttributeTypeEntity memberAttributeType);
 
-	public static Query createQueryWhereMember(EntityManager entityManager,
-			AttributeTypeEntity memberAttributeType) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_MEMBER);
-		query.setParameter("member", memberAttributeType);
-		return query;
+		@QueryMethod(QUERY_WHERE_MEMBER)
+		List<CompoundedAttributeTypeMemberEntity> listMemberEntries(
+				@QueryParam("member")
+				AttributeTypeEntity memberAttributeType);
 	}
 }

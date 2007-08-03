@@ -9,14 +9,15 @@ package net.link.safeonline.tasks.dao.bean;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.tasks.dao.TaskDAO;
 
 import org.apache.commons.logging.Log;
@@ -30,6 +31,14 @@ public class TaskDAOBean implements TaskDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
+	private TaskEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, TaskEntity.QueryInterface.class);
+	}
+
 	public TaskEntity addTaskEntity(String jndiName, String name,
 			SchedulingEntity scheduling) {
 		LOG.debug("Adding task entity: " + name);
@@ -39,31 +48,20 @@ public class TaskDAOBean implements TaskDAO {
 		return taskEntity;
 	}
 
-	@SuppressWarnings("unchecked")
 	public TaskEntity findTaskEntity(String jndiName) {
 		LOG.debug("find task entity: " + jndiName);
-
-		Query query = TaskEntity.createQueryWhereJndiName(this.entityManager,
-				jndiName);
-		List<TaskEntity> result = query.getResultList();
-		if (result.isEmpty()) {
-			return null;
-		}
-		return result.get(0);
+		TaskEntity result = this.queryObject.findTaskEntity(jndiName);
+		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<TaskEntity> listTaskEntities() {
 		LOG.debug("Listing task entities");
-
-		Query query = TaskEntity.createQueryListAll(this.entityManager);
-		List<TaskEntity> result = query.getResultList();
+		List<TaskEntity> result = this.queryObject.listTaskEntities();
 		return result;
 	}
 
 	public void removeTaskEntity(TaskEntity taskEntity) {
 		LOG.debug("Removing task entity: " + taskEntity.getName());
-
 		this.entityManager.remove(taskEntity);
 	}
 }

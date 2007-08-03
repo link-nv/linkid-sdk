@@ -9,6 +9,7 @@ package net.link.safeonline.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,6 +24,9 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_SUBJECT;
 import static net.link.safeonline.entity.HistoryEntity.QUERY_DELETE_WHERE_OLDER;
@@ -101,18 +105,17 @@ public class HistoryEntity implements Serializable {
 		this.when = when;
 	}
 
-	public static Query createQueryWhereEntity(EntityManager entityManager,
-			SubjectEntity subject) {
-		Query query = entityManager.createNamedQuery(QUERY_WHERE_SUBJECT);
-		query.setParameter("subject", subject);
-		return query;
-	}
-
 	public static Query createQueryDeleteWhereOlder(
 			EntityManager entityManager, long ageInMillis) {
 		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_OLDER);
 		Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
 		query.setParameter("ageLimit", ageLimit);
 		return query;
+	}
+
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_SUBJECT)
+		List<HistoryEntity> getHistory(@QueryParam("subject")
+		SubjectEntity subject);
 	}
 }

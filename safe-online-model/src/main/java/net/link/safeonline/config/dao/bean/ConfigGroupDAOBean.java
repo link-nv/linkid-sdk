@@ -9,20 +9,29 @@ package net.link.safeonline.config.dao.bean;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.config.dao.ConfigGroupDAO;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 @Stateless
 public class ConfigGroupDAOBean implements ConfigGroupDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private ConfigGroupEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, ConfigGroupEntity.QueryInterface.class);
+	}
 
 	public ConfigGroupEntity addConfigGroup(String name) {
 		ConfigGroupEntity configGroup = new ConfigGroupEntity(name);
@@ -42,10 +51,8 @@ public class ConfigGroupDAOBean implements ConfigGroupDAO {
 		return this.entityManager.find(ConfigGroupEntity.class, name);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ConfigGroupEntity> listConfigGroups() {
-		Query query = ConfigGroupEntity.createQueryListAll(this.entityManager);
-		List<ConfigGroupEntity> result = query.getResultList();
+		List<ConfigGroupEntity> result = this.queryObject.listConfigGroups();
 		return result;
 	}
 
