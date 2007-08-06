@@ -76,6 +76,8 @@ public class ApplicationBean implements Application {
 
 	private String name;
 
+	private String friendlyName;
+
 	private String description;
 
 	private String applicationOwner;
@@ -161,6 +163,8 @@ public class ApplicationBean implements Application {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String add() {
 		LOG.debug("add application: " + this.name);
+		if (null != this.friendlyName)
+			LOG.debug("user friendly name: " + this.friendlyName);
 		List<IdentityAttributeTypeDO> identityAttributes = new LinkedList<IdentityAttributeTypeDO>();
 		for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
 			if (false == viewIdentityAttribute.isIncluded()) {
@@ -180,7 +184,7 @@ public class ApplicationBean implements Application {
 				encodedCertificate = null;
 			}
 			this.applicationService.addApplication(this.name,
-					this.applicationOwner, this.description,
+					this.friendlyName, this.applicationOwner, this.description,
 					encodedCertificate, identityAttributes);
 		} catch (ExistingApplicationException e) {
 			String msg = "application already exists: " + this.name;
@@ -236,6 +240,14 @@ public class ApplicationBean implements Application {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getFriendlyName() {
+		return this.friendlyName;
+	}
+
+	public void setFriendlyName(String friendlyName) {
+		this.friendlyName = friendlyName;
 	}
 
 	public String getApplicationOwner() {

@@ -50,11 +50,13 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	}
 
 	public ApplicationEntity addApplication(String applicationName,
+			String applicationFriendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
 			X509Certificate certificate) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
-				applicationOwner, description, certificate);
+				applicationFriendlyName, applicationOwner, description,
+				certificate);
 		this.entityManager.persist(application);
 		return application;
 	}
@@ -75,6 +77,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	}
 
 	public ApplicationEntity addApplication(String applicationName,
+			String applicationFriendlyName,
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable,
 			String description, X509Certificate certificate,
@@ -88,7 +91,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	}
 
 	public void removeApplication(ApplicationEntity application) {
-		LOG.debug("remove application: " + application.getName());
+		LOG.debug("remove application(DAO): " + application.getName());
 		this.entityManager.remove(application);
 	}
 

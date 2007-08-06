@@ -125,6 +125,8 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 		String testApplicationName = "test-application-name-"
 				+ UUID.randomUUID().toString();
+		String testApplicationFriendlyName = "test-application-friendly-name"
+				+ UUID.randomUUID().toString();
 		String testApplicationOwnerName = "test-application-owner-name-"
 				+ UUID.randomUUID().toString();
 		String testAdminLogin = "test-admin-login-"
@@ -144,7 +146,8 @@ public class ApplicationServiceBeanTest extends TestCase {
 				SafeOnlineConstants.NAME_ATTRIBUTE));
 
 		applicationService.addApplication(testApplicationName,
-				testApplicationOwnerName, null, null, initialIdentity);
+				testApplicationFriendlyName, testApplicationOwnerName, null,
+				null, initialIdentity);
 
 		EntityTransaction entityTransaction = entityManager.getTransaction();
 		entityTransaction.commit();

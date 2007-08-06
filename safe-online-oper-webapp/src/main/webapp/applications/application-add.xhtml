@@ -39,6 +39,14 @@
 							</s:decorate>*<h:message for="name" styleClass="error" /></td>
 						</tr>
 						<tr>
+							<td><h:outputLabel for="friendlyName"
+								value="#{msgs.friendlyname}" />:</td>
+							<td><s:decorate>
+								<h:inputText id="friendlyName"
+									value="#{operApplication.friendlyName}" />
+							</s:decorate></td>
+						</tr>
+						<tr>
 							<td><h:outputLabel for="owner"
 								value="#{msgs.applicationOwner}" />:</td>
 							<td><s:decorate>

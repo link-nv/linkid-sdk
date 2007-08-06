@@ -403,10 +403,10 @@ public abstract class AbstractInitBean implements Startable {
 					.findApplicationOwner(application.owner);
 			long identityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
 			ApplicationEntity newApplication = this.applicationDAO
-					.addApplication(applicationName, applicationOwner,
-							application.allowUserSubscription,
-							application.removable, application.description,
-							application.certificate, identityVersion);
+					.addApplication(applicationName, null,
+							applicationOwner,
+							application.allowUserSubscription, application.removable,
+							application.description, application.certificate, identityVersion);
 
 			this.applicationIdentityDAO.addApplicationIdentity(newApplication,
 					identityVersion);

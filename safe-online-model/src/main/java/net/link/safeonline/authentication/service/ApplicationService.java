@@ -60,6 +60,7 @@ public interface ApplicationService {
 
 	/**
 	 * @param name
+	 * @param friendlyName
 	 * @param applicationOwnerName
 	 * @param description
 	 * @param encodedCertificate
@@ -72,8 +73,9 @@ public interface ApplicationService {
 	 * @throws CertificateEncodingException
 	 * @throws AttributeTypeNotFoundException
 	 */
-	void addApplication(String name, String applicationOwnerName,
-			String description, byte[] encodedCertificate,
+	void addApplication(String name, String friendlyName,
+			String applicationOwnerName, String description,
+			byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,

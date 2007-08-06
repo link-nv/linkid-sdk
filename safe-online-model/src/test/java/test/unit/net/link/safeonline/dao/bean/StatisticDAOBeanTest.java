@@ -72,7 +72,7 @@ public class StatisticDAOBeanTest extends TestCase {
 		ApplicationOwnerEntity owner = this.applicationOwnerDAO
 				.findApplicationOwner("testowner");
 		ApplicationEntity application = this.applicationDAO.addApplication(
-				"testapp", owner, null, null);
+				"testapp", null, owner, null, null);
 
 		// operate
 		StatisticEntity original = this.testedInstance.addStatistic("test",

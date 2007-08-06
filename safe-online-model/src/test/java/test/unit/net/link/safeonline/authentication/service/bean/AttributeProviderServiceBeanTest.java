@@ -104,7 +104,7 @@ public class AttributeProviderServiceBeanTest {
 		ApplicationDAO applicationDAO = EJBTestUtils.newInstance(
 				ApplicationDAOBean.class, SafeOnlineTestContainer.sessionBeans,
 				entityManager);
-		applicationDAO.addApplication(testApplicationName,
+		applicationDAO.addApplication(testApplicationName, null,
 				testApplicationOwnerEntity, null, null);
 
 		AttributeProviderService attributeProviderService = EJBTestUtils
@@ -161,7 +161,8 @@ public class AttributeProviderServiceBeanTest {
 				ApplicationDAOBean.class, SafeOnlineTestContainer.sessionBeans,
 				entityManager);
 		ApplicationEntity testApplication = applicationDAO.addApplication(
-				testApplicationName, testApplicationOwnerEntity, null, null);
+				testApplicationName, null, testApplicationOwnerEntity, null,
+				null);
 
 		AttributeProviderDAO attributeProviderDAO = EJBTestUtils.newInstance(
 				AttributeProviderDAOBean.class,
@@ -264,7 +265,8 @@ public class AttributeProviderServiceBeanTest {
 				ApplicationDAOBean.class, SafeOnlineTestContainer.sessionBeans,
 				entityManager);
 		ApplicationEntity testApplication = applicationDAO.addApplication(
-				testApplicationName, testApplicationOwnerEntity, null, null);
+				testApplicationName, null, testApplicationOwnerEntity, null,
+				null);
 
 		AttributeProviderDAO attributeProviderDAO = EJBTestUtils.newInstance(
 				AttributeProviderDAOBean.class,

@@ -119,8 +119,9 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void addApplication(String name, String applicationOwnerName,
-			String description, byte[] encodedCertificate,
+	public void addApplication(String name, String friendlyName,
+			String applicationOwnerName, String description,
+			byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
@@ -135,7 +136,7 @@ public class ApplicationServiceBean implements ApplicationService,
 				.getApplicationOwner(applicationOwnerName);
 
 		ApplicationEntity application = this.applicationDAO.addApplication(
-				name, applicationOwner, description, certificate);
+				name, friendlyName, applicationOwner, description, certificate);
 
 		setInitialApplicationIdentity(initialApplicationIdentityAttributes,
 				application);

@@ -112,6 +112,7 @@ public class AttributeServiceBeanTest {
 		applicationService
 				.addApplication(
 						testApplicationName,
+						null,
 						"owner",
 						null,
 						null,
@@ -163,6 +164,7 @@ public class AttributeServiceBeanTest {
 		applicationService
 				.addApplication(
 						testApplicationName,
+						null,
 						"owner",
 						null,
 						null,
@@ -221,6 +223,7 @@ public class AttributeServiceBeanTest {
 		applicationService
 				.addApplication(
 						testApplicationName,
+						null,
 						"owner",
 						null,
 						null,
@@ -290,6 +293,7 @@ public class AttributeServiceBeanTest {
 		applicationService
 				.addApplication(
 						testApplicationName,
+						null,
 						"owner",
 						null,
 						null,
@@ -363,6 +367,7 @@ public class AttributeServiceBeanTest {
 		applicationService
 				.addApplication(
 						testApplicationName,
+						null,
 						"owner",
 						null,
 						null,
@@ -432,6 +437,7 @@ public class AttributeServiceBeanTest {
 		applicationService
 				.addApplication(
 						testApplicationName,
+						null,
 						"owner",
 						null,
 						null,
@@ -506,6 +512,7 @@ public class AttributeServiceBeanTest {
 		applicationService
 				.addApplication(
 						testApplicationName,
+						null,
 						"owner",
 						null,
 						null,
@@ -617,6 +624,7 @@ public class AttributeServiceBeanTest {
 		applicationService
 				.addApplication(
 						testApplicationName,
+						null,
 						"owner",
 						null,
 						null,
