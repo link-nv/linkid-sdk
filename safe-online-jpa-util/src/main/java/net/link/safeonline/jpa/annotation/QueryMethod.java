@@ -13,6 +13,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.persistence.NoResultException;
+
 /**
  * Used to mark a method as being a JPA named query execution method.
  * 
@@ -31,5 +33,12 @@ public @interface QueryMethod {
 	 */
 	String value();
 
+	/**
+	 * Allows the method to return <code>null</code> instead of a
+	 * {@link NoResultException}. Useful to implement <code>findXXX</code>
+	 * methods.
+	 * 
+	 * @return
+	 */
 	boolean nullable() default false;
 }

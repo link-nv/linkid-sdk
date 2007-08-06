@@ -35,6 +35,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.test.util.DummyLoginModule;
@@ -83,6 +84,8 @@ public class SAMLAttributePortImplTest {
 
 	private SamlAuthorityService mockSamlAuthorityService;
 
+	private ConfigurationManager mockConfigurationManager;
+
 	private Object[] mockObjects;
 
 	private X509Certificate certificate;
@@ -98,10 +101,11 @@ public class SAMLAttributePortImplTest {
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.mockAuthenticationService = createMock(ApplicationAuthenticationService.class);
 		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+		this.mockConfigurationManager = createMock(ConfigurationManager.class);
 
 		this.mockObjects = new Object[] { this.mockAttributeService,
 				this.mockPkiValidator, this.mockAuthenticationService,
-				this.mockSamlAuthorityService };
+				this.mockSamlAuthorityService, this.mockConfigurationManager };
 
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/AttributeServiceBean/local",
@@ -114,11 +118,19 @@ public class SAMLAttributePortImplTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				this.mockSamlAuthorityService);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/ConfigurationManagerBean/local",
+				this.mockConfigurationManager);
 
 		expect(
 				this.mockPkiValidator.validateCertificate((String) EasyMock
 						.anyObject(), (X509Certificate) EasyMock.anyObject()))
 				.andStubReturn(true);
+
+		expect(
+				this.mockConfigurationManager
+						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
+				Long.MAX_VALUE);
 
 		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 

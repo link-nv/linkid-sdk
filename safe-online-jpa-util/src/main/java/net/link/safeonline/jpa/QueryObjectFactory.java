@@ -48,10 +48,10 @@ public class QueryObjectFactory {
 			throw new IllegalArgumentException(
 					"query object class is not an interface");
 		}
-		Thread currentThread = Thread.currentThread();
-		ClassLoader classLoader = currentThread.getContextClassLoader();
 		InvocationHandler invocationHandler = new QueryObjectInvocationHandler(
 				entityManager);
+		Thread currentThread = Thread.currentThread();
+		ClassLoader classLoader = currentThread.getContextClassLoader();
 		T queryObject = (T) Proxy.newProxyInstance(classLoader,
 				new Class[] { queryObjectInterface }, invocationHandler);
 		return queryObject;

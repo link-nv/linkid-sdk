@@ -116,15 +116,16 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
 	}
 
 	private void setParameters(Method method, Object[] args, Query query) {
+		if (null == args) {
+			return;
+		}
 		Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-		if (null != args) {
-			for (int paramIdx = 0; paramIdx < args.length; paramIdx++) {
-				for (Annotation parameterAnnotation : parameterAnnotations[paramIdx]) {
-					if (parameterAnnotation instanceof QueryParam) {
-						QueryParam queryParamAnnotation = (QueryParam) parameterAnnotation;
-						String paramName = queryParamAnnotation.value();
-						query.setParameter(paramName, args[paramIdx]);
-					}
+		for (int paramIdx = 0; paramIdx < args.length; paramIdx++) {
+			for (Annotation parameterAnnotation : parameterAnnotations[paramIdx]) {
+				if (parameterAnnotation instanceof QueryParam) {
+					QueryParam queryParamAnnotation = (QueryParam) parameterAnnotation;
+					String paramName = queryParamAnnotation.value();
+					query.setParameter(paramName, args[paramIdx]);
 				}
 			}
 		}
