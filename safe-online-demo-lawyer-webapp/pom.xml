@@ -346,7 +346,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.xml.ws</groupId>
+			<groupId>com.sun.net.httpserver</groupId>
 			<artifactId>http</artifactId>
 			<scope>provided</scope>
 		</dependency>

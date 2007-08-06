@@ -17,6 +17,10 @@ import net.link.safeonline.entity.SubjectEntity;
  */
 public class SubjectFactory {
 
+	private SubjectFactory() {
+		// empty
+	}
+
 	/**
 	 * Gives back the subject object corresponding with the caller principal.
 	 * 

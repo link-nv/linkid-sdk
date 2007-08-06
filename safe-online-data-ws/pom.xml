@@ -37,6 +37,8 @@
 											refid="maven.compile.classpath" />
 										<path
 											refid="maven.plugin.classpath" />
+										<path
+											refid="maven.runtime.classpath" />
 									</classpath>
 								</taskdef>
 								<taskdef name="xjc"
@@ -46,10 +48,12 @@
 											refid="maven.compile.classpath" />
 										<path
 											refid="maven.plugin.classpath" />
+										<path
+											refid="maven.runtime.classpath" />
 									</classpath>
 								</taskdef>
 								<mkdir
-									dir="${project.build.directory}/generated-sources/xjc" />								
+									dir="${project.build.directory}/generated-sources/xjc" />
 								<xjc
 									destdir="${project.build.directory}/generated-sources/xjc"
 									catalog="${basedir}/src/main/jaxb/catalog.cat">
@@ -74,65 +78,7 @@
 						</configuration>
 					</execution>
 				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>com.sun.xml.bind</groupId>
-						<artifactId>jaxb-xjc</artifactId>
-						<version>${jaxb-xjc.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>javax.jws</groupId>
-						<artifactId>jsr181-api</artifactId>
-						<version>${jsr181-api.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>com.sun.xml.bind</groupId>
-						<artifactId>jaxb-impl</artifactId>
-						<version>${jaxb-impl.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>javax.xml.soap</groupId>
-						<artifactId>saaj-api</artifactId>
-						<version>${saaj-api.version}</version>
-						<exclusions>
-							<exclusion>
-								<groupId>javax.activation</groupId>
-								<artifactId>activation</artifactId>
-							</exclusion>
-						</exclusions>
-					</dependency>
-					<dependency>
-						<groupId>com.sun.xml.messaging.saaj</groupId>
-						<artifactId>saaj-impl</artifactId>
-						<version>${saaj-impl.version}</version>
-					</dependency>
-				</dependencies>
 			</plugin>
-			<!--
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxws-maven-plugin</artifactId>
-				<version>1.0-beta-1-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>wsimport</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<wsdlDirectory>${basedir}/src/main/resources</wsdlDirectory>
-					<catalog>${basedir}/src/main/resources/catalog.cat</catalog>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>com.sun.xml.ws</groupId>
-						<artifactId>jaxws-tools</artifactId>
-						<version>${jaxws-tools.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			-->
 		</plugins>
 	</build>
 	<dependencies>
@@ -145,20 +91,6 @@
 			<groupId>com.sun.xml.ws</groupId>
 			<artifactId>jaxws-tools</artifactId>
 			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>javax.jws</groupId>
-			<artifactId>jsr181-api</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.ws</groupId>
-			<artifactId>jaxws-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

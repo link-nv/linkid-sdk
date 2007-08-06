@@ -18,6 +18,10 @@ import net.link.safeonline.entity.ApplicationEntity;
  */
 public class ApplicationFactory {
 
+	private ApplicationFactory() {
+		// empty
+	}
+
 	/**
 	 * Gives back the domain model object corresponding with the given
 	 * application name.

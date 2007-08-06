@@ -166,7 +166,7 @@
 			<artifactId>jboss-seam</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javassist</groupId>
+			<groupId>jboss</groupId>
 			<artifactId>javassist</artifactId>
 		</dependency>
 		<dependency>
