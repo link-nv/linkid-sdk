@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.naming.InitialContext;
@@ -45,6 +46,7 @@ import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.CompoundBuilder;
 import net.link.safeonline.sdk.ws.annotation.Compound;
 import net.link.safeonline.sdk.ws.annotation.CompoundId;
 import net.link.safeonline.sdk.ws.annotation.CompoundMember;
@@ -338,9 +340,18 @@ public class DataWebServiceTest {
 				CompoundedTestClass[].class);
 		assertEquals(3, result.getValue().length);
 
+		// check that the SDK can also retrieve compound attributes via maps.
+		Attribute<Map[]> mapResult = this.dataClient.getAttributeValue(login,
+				TEST_COMP_NAME, Map[].class);
+		assertEquals(3, mapResult.getValue().length);
+
 		assertEquals("foobar", result.getValue()[2].getMember0());
 		assertTrue(result.getValue()[2].isMember1());
 		assertNotNull(result.getValue()[2].getId());
+
+		assertEquals(mapResult.getValue()[0]
+				.get(CompoundBuilder.ATTRIBUTE_ID_KEY), result.getValue()[0]
+				.getId());
 
 		// operate: remove a compounded attribute record
 		this.dataClient.removeAttribute(login, new Attribute(TEST_COMP_NAME,
