@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -29,8 +29,13 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
-import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.model.application.Application;
+import net.link.safeonline.model.application.ApplicationContext;
+import net.link.safeonline.model.application.ApplicationFactory;
+import net.link.safeonline.model.subject.Subject;
+import net.link.safeonline.model.subject.SubjectContext;
+import net.link.safeonline.model.subject.SubjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +44,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class SubscriptionServiceBean implements SubscriptionService,
-		SubscriptionServiceRemote {
+		SubscriptionServiceRemote, SubjectContext, ApplicationContext {
 
 	private static final Log LOG = LogFactory
 			.getLog(SubscriptionServiceBean.class);
@@ -68,38 +73,20 @@ public class SubscriptionServiceBean implements SubscriptionService,
 	public void subscribe(String applicationName)
 			throws ApplicationNotFoundException, AlreadySubscribedException,
 			PermissionDeniedException {
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationName);
-		if (!application.isAllowUserSubscription()) {
-			throw new PermissionDeniedException();
-		}
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(subject, application);
-		if (null != subscription) {
-			throw new AlreadySubscribedException();
-		}
-		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.SUBJECT,
-				subject, application);
+		Subject subject = SubjectFactory.getCallerSubject(this);
+		Application application = ApplicationFactory.getApplication(this,
+				applicationName);
+		subject.subscribe(application);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void unsubscribe(String applicationName)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			PermissionDeniedException {
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationName);
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(subject, application);
-		if (null == subscription) {
-			throw new SubscriptionNotFoundException();
-		}
-		if (!SubscriptionOwnerType.SUBJECT.equals(subscription
-				.getSubscriptionOwnerType())) {
-			throw new PermissionDeniedException();
-		}
-		this.subscriptionDAO.removeSubscription(subject, application);
+		Subject subject = SubjectFactory.getCallerSubject(this);
+		Application application = ApplicationFactory.getApplication(this,
+				applicationName);
+		subject.unsubscribe(application);
 	}
 
 	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
@@ -133,11 +120,21 @@ public class SubscriptionServiceBean implements SubscriptionService,
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public boolean isSubscribed(String applicationName)
 			throws ApplicationNotFoundException {
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationName);
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		SubscriptionEntity subscription = this.subscriptionDAO
-				.findSubscription(subject, application);
-		return null != subscription;
+		Subject subject = SubjectFactory.getCallerSubject(this);
+		Application application = ApplicationFactory.getApplication(this,
+				applicationName);
+		return subject.isSubscribed(application);
+	}
+
+	public SubjectManager getSubjectManager() {
+		return this.subjectManager;
+	}
+
+	public ApplicationDAO getApplicationDAO() {
+		return this.applicationDAO;
+	}
+
+	public SubscriptionDAO getSubscriptionDAO() {
+		return this.subscriptionDAO;
 	}
 }
