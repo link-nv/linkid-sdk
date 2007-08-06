@@ -55,6 +55,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AttributeProviderService;
+import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.data.ws.DataServiceConstants;
 import net.link.safeonline.data.ws.DataServiceFactory;
 import net.link.safeonline.data.ws.DataServicePortImpl;
@@ -105,6 +106,8 @@ public class DataServicePortImplTest {
 
 	private PkiValidator mockPkiValidator;
 
+	private ConfigurationManager mockConfigurationManager;
+
 	private Object[] mockObjects;
 
 	private X509Certificate certificate;
@@ -129,8 +132,19 @@ public class DataServicePortImplTest {
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
 
+		this.mockConfigurationManager = createMock(ConfigurationManager.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/ConfigurationManagerBean/local",
+				this.mockConfigurationManager);
+
+		expect(
+				this.mockConfigurationManager
+						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
+				Long.MAX_VALUE);
+
 		this.mockObjects = new Object[] { this.mockAttributeProviderService,
-				this.mockAuthenticationService, this.mockPkiValidator };
+				this.mockAuthenticationService, this.mockPkiValidator,
+				this.mockConfigurationManager };
 
 		this.webServiceTestUtils = new WebServiceTestUtils();
 
