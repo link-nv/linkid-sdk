@@ -150,8 +150,8 @@ public class AttributeWebServiceTest {
 
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
-		applicationService.addApplication(testApplicationName, "owner", null,
-				this.certificate.getEncoded(),
+		applicationService.addApplication(testApplicationName, null, "owner",
+				null, this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -244,8 +244,8 @@ public class AttributeWebServiceTest {
 
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
-		applicationService.addApplication(testApplicationName, "owner", null,
-				this.certificate.getEncoded(),
+		applicationService.addApplication(testApplicationName, null, "owner",
+				null, this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -336,8 +336,8 @@ public class AttributeWebServiceTest {
 
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
-		applicationService.addApplication(testApplicationName, "owner", null,
-				this.certificate.getEncoded(),
+		applicationService.addApplication(testApplicationName, null, "owner",
+				null, this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -461,8 +461,8 @@ public class AttributeWebServiceTest {
 
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
-		applicationService.addApplication(testApplicationName, "owner", null,
-				this.certificate.getEncoded(), Arrays
+		applicationService.addApplication(testApplicationName, null, "owner",
+				null, this.certificate.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),

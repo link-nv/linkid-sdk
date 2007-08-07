@@ -249,7 +249,7 @@ public class AuthenticationTest {
 		Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
 			public Object run() throws Exception {
 
-				applicationService.addApplication(applicationName,
+				applicationService.addApplication(applicationName, null,
 						appOwnerName, null, null, null);
 				return null;
 			}
@@ -281,8 +281,8 @@ public class AuthenticationTest {
 		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
 		applicationService.registerApplicationOwner(appOwnerName, ownerLogin);
 
-		applicationService.addApplication(applicationName, appOwnerName, null,
-				null, null);
+		applicationService.addApplication(applicationName, null, appOwnerName,
+				null, null, null);
 
 		String userLogin = "login-" + UUID.randomUUID().toString();
 		final String userPassword = "secret";
@@ -362,8 +362,8 @@ public class AuthenticationTest {
 		applicationService.registerApplicationOwner(appOwnerName, login);
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
-		applicationService.addApplication(applicationName, appOwnerName, null,
-				null, null);
+		applicationService.addApplication(applicationName, null, appOwnerName,
+				null, null, null);
 
 		IntegrationTestUtils.login(login, password);
 		applicationService.setApplicationDescription(applicationName,
@@ -402,7 +402,7 @@ public class AuthenticationTest {
 
 		// operate: create application
 		String applicationName = "application-" + UUID.randomUUID().toString();
-		applicationService.addApplication(applicationName,
+		applicationService.addApplication(applicationName, null,
 				applicationOwnerName, null, null, null);
 
 		// operate: change application description via application owner

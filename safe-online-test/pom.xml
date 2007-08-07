@@ -34,12 +34,14 @@
 			<artifactId>safe-online-sdk</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>xalan</groupId>
-					<artifactId>xalan</artifactId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
