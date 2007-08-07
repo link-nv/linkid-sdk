@@ -176,6 +176,34 @@
 								true
 							</includeInApplicationXml>
 						</jarModule>
+						<jarModule>
+							<groupId>opensaml</groupId>
+							<artifactId>opensaml</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>opensaml</groupId>
+							<artifactId>xmltooling</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>opensaml</groupId>
+							<artifactId>openws</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>velocity</groupId>
+							<artifactId>velocity</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
 						<ejbModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-entity</artifactId>
@@ -602,6 +630,22 @@
 		<dependency>
 			<groupId>jgroups</groupId>
 			<artifactId>jgroups</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>opensaml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>xmltooling</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>openws</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>velocity</groupId>
+			<artifactId>velocity</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>

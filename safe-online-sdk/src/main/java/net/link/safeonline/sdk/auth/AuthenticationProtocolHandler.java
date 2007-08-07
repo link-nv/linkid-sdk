@@ -37,8 +37,11 @@ public interface AuthenticationProtocolHandler {
 	 * 
 	 * @param request
 	 * @param response
+	 * @param targetUrl
+	 *            the optional target URL. If omitted the request URL will be
+	 *            used as target URL.
 	 * @throws IOException
 	 */
-	void initiateAuthentication(ServletRequest request, ServletResponse response)
-			throws IOException;
+	void initiateAuthentication(ServletRequest request,
+			ServletResponse response, String targetUrl) throws IOException;
 }

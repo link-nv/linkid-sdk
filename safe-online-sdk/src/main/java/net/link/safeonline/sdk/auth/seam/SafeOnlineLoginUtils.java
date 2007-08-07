@@ -115,7 +115,7 @@ public class SafeOnlineLoginUtils {
 		}
 		try {
 			authenticationProtocolHandler.initiateAuthentication(
-					httpServletRequest, httpServletResponse);
+					httpServletRequest, httpServletResponse, targetUrl);
 		} catch (IOException e) {
 			throw new RuntimeException("could not initiate authentication: "
 					+ e.getMessage(), e);

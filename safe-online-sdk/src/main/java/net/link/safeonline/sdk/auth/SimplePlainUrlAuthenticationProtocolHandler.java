@@ -15,7 +15,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -53,10 +52,15 @@ public class SimplePlainUrlAuthenticationProtocolHandler implements
 	}
 
 	public void initiateAuthentication(ServletRequest request,
-			ServletResponse response) throws IOException {
+			ServletResponse response, String targetUrl) throws IOException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		LOG.debug("redirecting to: " + this.authnServiceUrl);
-		String targetUrl = httpRequest.getRequestURL().toString();
+		if (null == targetUrl) {
+			/*
+			 * In this case we default to the request URL.
+			 */
+			targetUrl = httpRequest.getRequestURL().toString();
+		}
 		LOG.debug("target url: " + targetUrl);
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String redirectUrl = this.authnServiceUrl + "?application="

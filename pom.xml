@@ -323,6 +323,7 @@
 		<module>safe-online-sms-ra</module>
 		<module>safe-online-sms-ra-package</module>
 		<module>safe-online-jpa-util</module>
+		<module>safe-online-sdk-deploy-ctx</module>
 	</modules>
 	<repositories>
 		<repository>
