@@ -82,20 +82,9 @@ public class AuthenticationFilter implements Filter {
 				APPLICATION_NAME_INIT_PARAM);
 		String authenticationProtocolString = getInitParameter(config,
 				AUTHN_PROTOCOL_INIT_PARAM, DEFAULT_AUTHN_PROTOCOL.name());
-		this.authenticationProtocol = toAuthenticationProtocol(authenticationProtocolString);
+		this.authenticationProtocol = AuthenticationProtocol
+				.toAuthenticationProtocol(authenticationProtocolString);
 		LOG.debug("authentication protocol: " + this.authenticationProtocol);
-	}
-
-	private AuthenticationProtocol toAuthenticationProtocol(String value)
-			throws UnavailableException {
-		try {
-			AuthenticationProtocol authenticationProtocol = AuthenticationProtocol
-					.valueOf(value);
-			return authenticationProtocol;
-		} catch (IllegalArgumentException e) {
-			throw new UnavailableException("unvalid authentication protocol: "
-					+ value);
-		}
 	}
 
 	private String getInitParameter(FilterConfig config, String initParamName)
