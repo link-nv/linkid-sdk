@@ -13,7 +13,21 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.subscription} #{selectedSubscription.application.name}</h2>
+		<!-- <h2>#{msgs.subscription} #{selectedSubscription.application.friendlyName}</h2> -->
+		<table>
+			<tr>
+				<td>
+				<h2><h:outputText value="#{msgs.subscription}" /></h2>
+				</td>
+				<td>
+				<h2><h:outputText
+					value="#{selectedSubscription.application.friendlyName}"
+					rendered="#{!empty selectedSubscription.application.friendlyName}" />
+				<h:outputText value="#{selectedSubscription.application.name}"
+					rendered="#{empty selectedSubscription.application.friendlyName}" /></h2>
+				</td>
+			</tr>
+		</table>
 		<p>#{msgs.description}:</p>
 		<p><h:outputText
 			value="#{selectedSubscription.application.description}"

@@ -13,10 +13,22 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.application} #{selectedApplication.name}</h2>
+		<!-- <h2>#{msgs.application} #{selectedApplication.friendlyName}</h2> -->
+		<table>
+			<tr>
+				<td>
+				<h2><h:outputText value="#{msgs.application}" /></h2>
+				</td>
+				<td>
+				<h2><h:outputText value="#{selectedApplication.friendlyName}"
+					rendered="#{!empty selectedApplication.friendlyName}" /> <h:outputText
+					value="#{selectedApplication.name}"
+					rendered="#{empty selectedApplication.friendlyName}" /></h2>
+				</td>
+			</tr>
+		</table>
 		<p><h:outputText value="#{selectedApplication.description}"
 			escape="false" /></p>
-
 		<table>
 			<tr>
 				<th>#{msgs.applicationOwner}:</th>

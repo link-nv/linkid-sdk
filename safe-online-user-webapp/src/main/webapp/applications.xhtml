@@ -21,8 +21,12 @@
 
 				<h:column>
 					<f:facet name="header">Subscribed Application</f:facet>
+					<h:commandLink value="#{item.application.friendlyName}"
+						action="#{subscriptions.viewSubscription}"
+						rendered="#{!empty item.application.friendlyName}" />
 					<h:commandLink value="#{item.application.name}"
-						action="#{subscriptions.viewSubscription}" />
+						action="#{subscriptions.viewSubscription}"
+						rendered="#{empty item.application.friendlyName}" />
 				</h:column>
 				<h:column>
 					<h:commandLink value="#{msgs.unsubscribe}"
@@ -46,8 +50,12 @@
 
 				<h:column>
 					<f:facet name="header">Available Application</f:facet>
+					<h:commandLink value="#{item.friendlyName}"
+						action="#{subscriptions.viewApplication}"
+						rendered="#{!empty item.friendlyName}" />
 					<h:commandLink value="#{item.name}"
-						action="#{subscriptions.viewApplication}" />
+						action="#{subscriptions.viewApplication}"
+						rendered="#{empty item.friendlyName}" />
 				</h:column>
 				<h:column>
 					<h:commandLink value="#{msgs.subscribe}"
