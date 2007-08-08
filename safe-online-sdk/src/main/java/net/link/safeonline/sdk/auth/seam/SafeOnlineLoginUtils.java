@@ -107,7 +107,8 @@ public class SafeOnlineLoginUtils {
 		try {
 			authenticationProtocolHandler = AuthenticationProtocolManager
 					.getAuthenticationProtocolHandler(authenticationProtocol,
-							safeOnlineAuthenticationServiceUrl, applicationName);
+							safeOnlineAuthenticationServiceUrl,
+							applicationName, null);
 		} catch (ServletException e) {
 			throw new RuntimeException(
 					"could not init authentication protocol handler: "

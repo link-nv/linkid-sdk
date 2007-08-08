@@ -124,7 +124,7 @@ public class AuthenticationFilter implements Filter {
 		AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
 				.getAuthenticationProtocolHandler(this.authenticationProtocol,
 						this.safeOnlineAuthenticationServiceUrl,
-						this.applicationName);
+						this.applicationName, null);
 		authenticationProtocolHandler.initiateAuthentication(request, response,
 				null);
 	}

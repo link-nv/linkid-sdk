@@ -7,11 +7,11 @@
 
 package net.link.safeonline.sdk.auth;
 
+import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-
 
 /**
  * Manager class for authentication protocol handlers.
@@ -60,13 +60,14 @@ public class AuthenticationProtocolManager {
 	 * @param authenticationProtocol
 	 * @param authnServiceUrl
 	 * @param applicationName
+	 * @param applicationKeyPair
 	 * @return
 	 * @throws ServletException
 	 */
 	public static AuthenticationProtocolHandler getAuthenticationProtocolHandler(
 			AuthenticationProtocol authenticationProtocol,
-			String authnServiceUrl, String applicationName)
-			throws ServletException {
+			String authnServiceUrl, String applicationName,
+			KeyPair applicationKeyPair) throws ServletException {
 		Class<? extends AuthenticationProtocolHandler> authnProtocolHandlerClass = handlerClasses
 				.get(authenticationProtocol);
 		if (null == authnProtocolHandlerClass) {
@@ -81,7 +82,8 @@ public class AuthenticationProtocolManager {
 			throw new ServletException("could not load the protocol handler: "
 					+ authnProtocolHandlerClass.getName());
 		}
-		protocolHandler.init(authnServiceUrl, applicationName);
+		protocolHandler.init(authnServiceUrl, applicationName,
+				applicationKeyPair);
 		return protocolHandler;
 	}
 }

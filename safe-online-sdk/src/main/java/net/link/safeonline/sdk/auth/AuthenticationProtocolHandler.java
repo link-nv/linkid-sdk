@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.auth;
 
 import java.io.IOException;
+import java.security.KeyPair;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -28,8 +29,12 @@ public interface AuthenticationProtocolHandler {
 	 *            handler.
 	 * @param applicationName
 	 *            the application name to be used by the handler.
+	 * @param applicationKeyPair
+	 *            the application RSA key pair used to sign the authentication
+	 *            request.
 	 */
-	void init(String authnServiceUrl, String applicationName);
+	void init(String authnServiceUrl, String applicationName,
+			KeyPair applicationKeyPair);
 
 	/**
 	 * Initiates the authentication request towards the SafeOnline
