@@ -77,6 +77,15 @@ public class AuthnRequestFactory {
 	 */
 	public static String createAuthnRequest(String applicationName,
 			KeyPair applicationKeyPair) {
+		if (null == applicationKeyPair) {
+			throw new IllegalArgumentException(
+					"application key pair should not be null");
+		}
+		if (null == applicationName) {
+			throw new IllegalArgumentException(
+					"application name should not be null");
+		}
+
 		AuthnRequest request = buildXMLObject(AuthnRequest.class,
 				AuthnRequest.DEFAULT_ELEMENT_NAME);
 

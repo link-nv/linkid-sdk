@@ -8,6 +8,9 @@
 package net.link.safeonline.sdk.auth.filter;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -17,6 +20,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.UnavailableException;
 
+import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
@@ -47,9 +51,26 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * 
  * <p>
- * The init parameter <code>AuthenticationProtocol</code> should contain the
- * name of the protocol used between the SafeOnline authentication web
- * application and this service provider.
+ * The optional init parameter <code>AuthenticationProtocol</code> should
+ * contain the name of the protocol used between the SafeOnline authentication
+ * web application and this service provider. This can be: SIMPLE_PLAIN_URL or
+ * SAML2_BROWSER_POST. Defaults to: SIMPLE_PLAIN_URL
+ * </p>
+ * 
+ * <p>
+ * The optional PKCS12 keystore resource name <code>P12KeyStoreResource</code>
+ * init parameter. The key pair within this keystore can be used by the
+ * authentication protocol handler to digitally sign the authentication request.
+ * </p>
+ * 
+ * <p>
+ * The optional PKCS12 keystore filename <code>P12KeyStoreFile</code> init
+ * parameter.
+ * </p>
+ * 
+ * <p>
+ * The optional <code>KeyStorePassword</code> init parameter contains the
+ * password to unlock the keystore and key entry.
  * </p>
  * 
  * @author fcorneli
@@ -66,6 +87,10 @@ public class AuthenticationFilter implements Filter {
 
 	public static final String AUTHN_PROTOCOL_INIT_PARAM = "AuthenticationProtocol";
 
+	public static final String P12_KEYSTORE_RESOURCE_INIT_PARAM = "P12KeyStoreResource";
+
+	public static final String KEY_STORE_PASSWORD_INIT_PARAM = "KeyStorePassword";
+
 	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SIMPLE_PLAIN_URL;
 
 	private String safeOnlineAuthenticationServiceUrl;
@@ -73,6 +98,8 @@ public class AuthenticationFilter implements Filter {
 	private String applicationName;
 
 	private AuthenticationProtocol authenticationProtocol;
+
+	private KeyPair applicationKeyPair;
 
 	public void init(FilterConfig config) throws ServletException {
 		LOG.debug("init");
@@ -85,6 +112,28 @@ public class AuthenticationFilter implements Filter {
 		this.authenticationProtocol = AuthenticationProtocol
 				.toAuthenticationProtocol(authenticationProtocolString);
 		LOG.debug("authentication protocol: " + this.authenticationProtocol);
+		String p12KeyStoreResourceName = config
+				.getInitParameter(P12_KEYSTORE_RESOURCE_INIT_PARAM);
+		if (null != p12KeyStoreResourceName) {
+			Thread currentThread = Thread.currentThread();
+			ClassLoader classLoader = currentThread.getContextClassLoader();
+			LOG.debug("classloader name: " + classLoader.getClass().getName());
+			InputStream keyStoreInputStream = classLoader
+					.getResourceAsStream(p12KeyStoreResourceName);
+			if (null == keyStoreInputStream) {
+				throw new UnavailableException(
+						"PKCS12 keystore resource not found: "
+								+ p12KeyStoreResourceName);
+			}
+			String keyStorePassword = config
+					.getInitParameter(KEY_STORE_PASSWORD_INIT_PARAM);
+			PrivateKeyEntry privateKeyEntry = KeyStoreUtils
+					.loadPrivateKeyEntry("pkcs12", keyStoreInputStream,
+							keyStorePassword, keyStorePassword);
+			this.applicationKeyPair = new KeyPair(privateKeyEntry
+					.getCertificate().getPublicKey(), privateKeyEntry
+					.getPrivateKey());
+		}
 	}
 
 	private String getInitParameter(FilterConfig config, String initParamName)
@@ -124,7 +173,7 @@ public class AuthenticationFilter implements Filter {
 		AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
 				.getAuthenticationProtocolHandler(this.authenticationProtocol,
 						this.safeOnlineAuthenticationServiceUrl,
-						this.applicationName, null);
+						this.applicationName, this.applicationKeyPair);
 		authenticationProtocolHandler.initiateAuthentication(request, response,
 				null);
 	}

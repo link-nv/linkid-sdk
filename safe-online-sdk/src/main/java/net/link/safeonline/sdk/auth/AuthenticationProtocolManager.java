@@ -13,6 +13,8 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import net.link.safeonline.sdk.auth.saml2.Saml2BrowserPostAuthenticationProtocolHandler;
+
 /**
  * Manager class for authentication protocol handlers.
  * 
@@ -29,6 +31,7 @@ public class AuthenticationProtocolManager {
 
 	static {
 		registerProtocolHandler(SimplePlainUrlAuthenticationProtocolHandler.class);
+		registerProtocolHandler(Saml2BrowserPostAuthenticationProtocolHandler.class);
 	}
 
 	private static void registerProtocolHandler(

@@ -8,6 +8,7 @@
 package net.link.safeonline.test.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -39,6 +40,25 @@ public class TestClassLoader extends ClassLoader {
 		LOG.debug("found test resources");
 		Enumeration<URL> enumeration = Collections.enumeration(resourceList);
 		return enumeration;
+	}
+
+	@Override
+	public InputStream getResourceAsStream(String name) {
+		LOG.debug("getResourceAsStream: " + name);
+		List<URL> resourceList = this.resources.get(name);
+		if (null == resourceList) {
+			return super.getResourceAsStream(name);
+		}
+		for (URL resource : resourceList) {
+			LOG.debug("found resource: " + resource);
+			try {
+				InputStream inputStream = resource.openStream();
+				return inputStream;
+			} catch (IOException e) {
+				LOG.debug("error opening resource: " + resource);
+			}
+		}
+		return null;
 	}
 
 	public void addResource(String name, URL resource) {

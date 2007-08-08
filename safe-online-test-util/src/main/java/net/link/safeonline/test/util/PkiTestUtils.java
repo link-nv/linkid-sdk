@@ -9,6 +9,8 @@
 package net.link.safeonline.test.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -17,12 +19,15 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -189,6 +194,21 @@ public class PkiTestUtils {
 		} finally {
 			IOUtils.closeQuietly(inputStream);
 		}
+	}
+
+	public static void persistKey(File pkcs12keyStore, PrivateKey privateKey,
+			X509Certificate certificate, String keyStorePassword,
+			String keyEntryPassword) throws KeyStoreException,
+			NoSuchAlgorithmException, CertificateException, IOException {
+		KeyStore keyStore;
+		keyStore = KeyStore.getInstance("pkcs12");
+		keyStore.load(null, keyStorePassword.toCharArray());
+		keyStore.setKeyEntry("default", privateKey, keyEntryPassword
+				.toCharArray(), new Certificate[] { certificate });
+		FileOutputStream keyStoreOut;
+		keyStoreOut = new FileOutputStream(pkcs12keyStore);
+		keyStore.store(keyStoreOut, keyStorePassword.toCharArray());
+		keyStoreOut.close();
 	}
 
 	private static SubjectKeyIdentifier createSubjectKeyId(PublicKey publicKey)

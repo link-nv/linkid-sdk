@@ -24,6 +24,10 @@
 			<param-name>ApplicationName</param-name>
 			<param-value>demo-application</param-value>
 		</init-param>
+		<init-param>
+			<param-name>AuthenticationProtocol</param-name>
+			<param-value>SAML2_BROWSER_POST</param-value>
+		</init-param>
 	</filter>
 
 	<filter>

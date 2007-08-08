@@ -56,7 +56,8 @@ public class KeyStoreUtils {
 					+ e.getMessage(), e);
 		}
 		try {
-			keyStore.load(keyStoreInputStream, keyStorePassword.toCharArray());
+			keyStore.load(keyStoreInputStream, keyStorePassword == null ? null
+					: keyStorePassword.toCharArray());
 		} catch (Exception e) {
 			throw new RuntimeException(
 					"keystore load error: " + e.getMessage(), e);
@@ -82,7 +83,8 @@ public class KeyStoreUtils {
 		try {
 			PrivateKeyEntry privateKeyEntry = (PrivateKeyEntry) keyStore
 					.getEntry(alias, new KeyStore.PasswordProtection(
-							keyEntryPassword.toCharArray()));
+							keyEntryPassword == null ? null : keyEntryPassword
+									.toCharArray()));
 			return privateKeyEntry;
 		} catch (Exception e) {
 			throw new RuntimeException("error retrieving key: "

@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.auth;
 import java.io.IOException;
 import java.security.KeyPair;
 
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -46,7 +47,9 @@ public interface AuthenticationProtocolHandler {
 	 *            the optional target URL. If omitted the request URL will be
 	 *            used as target URL.
 	 * @throws IOException
+	 * @throws ServletException
 	 */
 	void initiateAuthentication(ServletRequest request,
-			ServletResponse response, String targetUrl) throws IOException;
+			ServletResponse response, String targetUrl) throws IOException,
+			ServletException;
 }

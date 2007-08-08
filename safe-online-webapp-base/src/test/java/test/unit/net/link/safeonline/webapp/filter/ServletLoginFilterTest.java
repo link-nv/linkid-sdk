@@ -65,7 +65,7 @@ public class ServletLoginFilterTest extends TestCase {
 
 		this.servletTestManager = new ServletTestManager();
 		this.servletTestManager.setUp(ServletLoginFilterTestServlet.class,
-				ServletLoginFilter.class, initialSessionAttributes);
+				ServletLoginFilter.class, null, initialSessionAttributes);
 
 		ServletLoginFilterTestServlet.reset();
 	}

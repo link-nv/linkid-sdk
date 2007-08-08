@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.sdk.auth.filter;
+package test.unit.net.link.safeonline.sdk.auth;
 
 import static org.junit.Assert.assertEquals;
 

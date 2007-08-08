@@ -19,6 +19,7 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.SessionManager;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.Context;
+import org.mortbay.jetty.servlet.FilterHolder;
 import org.mortbay.jetty.servlet.HashSessionManager;
 import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
@@ -41,7 +42,7 @@ public class ServletTestManager {
 	private String servletLocation;
 
 	public String setUp(Class<?> servletClass) throws Exception {
-		return setUp(servletClass, null, null);
+		return setUp(servletClass, null, null, null);
 	}
 
 	private static class LocalHashSessionManager extends HashSessionManager {
@@ -73,6 +74,7 @@ public class ServletTestManager {
 	}
 
 	public String setUp(Class<?> servletClass, Class<?> filterClass,
+			Map<String, String> filterInitParameters,
 			Map<String, String> initialSessionAttributes) throws Exception {
 		this.server = new Server();
 		Connector connector = new SelectChannelConnector();
@@ -88,7 +90,11 @@ public class ServletTestManager {
 		this.server.addHandler(context);
 
 		if (null != filterClass) {
-			context.addFilter(filterClass, "/", Handler.DEFAULT);
+			FilterHolder filterHolder = context.addFilter(filterClass, "/",
+					Handler.DEFAULT);
+			if (null != filterInitParameters) {
+				filterHolder.setInitParameters(filterInitParameters);
+			}
 		}
 
 		ServletHandler handler = context.getServletHandler();

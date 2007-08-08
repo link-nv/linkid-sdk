@@ -60,6 +60,41 @@
 							</includeInApplicationXml>
 						</jarModule>
 						<jarModule>
+							<groupId>opensaml</groupId>
+							<artifactId>opensaml</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>opensaml</groupId>
+							<artifactId>xmltooling</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>opensaml</groupId>
+							<artifactId>openws</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>velocity</groupId>
+							<artifactId>velocity</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>bouncycastle</groupId>
+							<artifactId>bcprov-jdk15</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
 							<groupId>
 								org.apache.myfaces.tomahawk
 							</groupId>
@@ -535,6 +570,26 @@
 		<dependency>
 			<groupId>xml-security</groupId>
 			<artifactId>xmlsec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>opensaml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>xmltooling</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>openws</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>velocity</groupId>
+			<artifactId>velocity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>bouncycastle</groupId>
+			<artifactId>bcprov-jdk15</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

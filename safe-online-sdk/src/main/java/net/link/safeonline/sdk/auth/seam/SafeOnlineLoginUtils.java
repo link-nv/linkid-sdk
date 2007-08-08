@@ -7,8 +7,6 @@
 
 package net.link.safeonline.sdk.auth.seam;
 
-import java.io.IOException;
-
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
@@ -117,10 +115,18 @@ public class SafeOnlineLoginUtils {
 		try {
 			authenticationProtocolHandler.initiateAuthentication(
 					httpServletRequest, httpServletResponse, targetUrl);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RuntimeException("could not initiate authentication: "
 					+ e.getMessage(), e);
 		}
+
+		/*
+		 * Signal the JavaServer Faces implementation that the HTTP response for
+		 * this request has already been generated (such as an HTTP redirect),
+		 * and that the request processing lifecycle should be terminated as
+		 * soon as the current phase is completed.
+		 */
+		context.responseComplete();
 
 		return null;
 	}
