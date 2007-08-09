@@ -141,6 +141,18 @@
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>EntryServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.auth.servlet.EntryServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>EntryServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>

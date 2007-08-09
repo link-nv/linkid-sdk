@@ -56,6 +56,9 @@ public class AuthnRequestFactory {
 	}
 
 	static {
+		/*
+		 * Next is because Sun loves to endorse crippled versions of Xerces.
+		 */
 		System
 				.setProperty(
 						"javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",

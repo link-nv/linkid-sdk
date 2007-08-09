@@ -25,6 +25,7 @@ import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletMapping;
 import org.mortbay.jetty.servlet.SessionHandler;
+import org.mortbay.jetty.servlet.AbstractSessionManager.Session;
 
 /**
  * Servlet Test Manager. This test manager allows one to unit test servlets. It
@@ -45,9 +46,11 @@ public class ServletTestManager {
 		return setUp(servletClass, null, null, null);
 	}
 
-	private static class LocalHashSessionManager extends HashSessionManager {
+	private Session session;
 
-		private static final Log LOG = LogFactory
+	private class LocalHashSessionManager extends HashSessionManager {
+
+		private final Log LOG = LogFactory
 				.getLog(LocalHashSessionManager.class);
 
 		private final Map<String, String> initialSessionAttributes;
@@ -69,6 +72,7 @@ public class ServletTestManager {
 					session.setAttribute(key, value);
 				}
 			}
+			ServletTestManager.this.session = session;
 			return session;
 		}
 	}
@@ -125,5 +129,13 @@ public class ServletTestManager {
 
 	public void tearDown() throws Exception {
 		this.server.stop();
+	}
+
+	public Object getSessionAttribute(String name) {
+		if (null == this.session) {
+			return null;
+		}
+		Object attribute = this.session.getAttribute(name);
+		return attribute;
 	}
 }
