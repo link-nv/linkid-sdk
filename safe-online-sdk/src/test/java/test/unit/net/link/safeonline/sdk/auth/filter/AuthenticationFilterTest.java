@@ -125,7 +125,7 @@ public class AuthenticationFilterTest {
 		filterInitParameters.put("ApplicationName", "application-id");
 		filterInitParameters
 				.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
-		filterInitParameters.put("P12KeyStoreResource", p12ResourceName);
+		filterInitParameters.put("KeyStoreResource", p12ResourceName);
 		filterInitParameters.put("KeyStorePassword", "secret");
 		Map<String, String> initialSessionAttributes = new HashMap<String, String>();
 		this.servletTestManager.setUp(TestServlet.class,

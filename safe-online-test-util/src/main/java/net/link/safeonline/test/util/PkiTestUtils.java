@@ -32,6 +32,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.DSAKeyPairGenerator;
 import java.security.spec.RSAKeyGenParameterSpec;
 
 import org.apache.commons.io.IOUtils;
@@ -67,10 +68,22 @@ public class PkiTestUtils {
 
 	public static KeyPair generateKeyPair() throws NoSuchAlgorithmException,
 			InvalidAlgorithmParameterException {
-		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+		KeyPair keyPair = generateKeyPair("RSA");
+		return keyPair;
+	}
+
+	public static KeyPair generateKeyPair(String algorithm)
+			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+		KeyPairGenerator keyPairGenerator = KeyPairGenerator
+				.getInstance(algorithm);
 		SecureRandom random = new SecureRandom();
-		keyPairGenerator.initialize(new RSAKeyGenParameterSpec(1024,
-				RSAKeyGenParameterSpec.F4), random);
+		if ("RSA".equals(keyPairGenerator.getAlgorithm())) {
+			keyPairGenerator.initialize(new RSAKeyGenParameterSpec(1024,
+					RSAKeyGenParameterSpec.F4), random);
+		} else if (keyPairGenerator instanceof DSAKeyPairGenerator) {
+			DSAKeyPairGenerator dsaKeyPairGenerator = (DSAKeyPairGenerator) keyPairGenerator;
+			dsaKeyPairGenerator.initialize(512, false, random);
+		}
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 		return keyPair;
 	}

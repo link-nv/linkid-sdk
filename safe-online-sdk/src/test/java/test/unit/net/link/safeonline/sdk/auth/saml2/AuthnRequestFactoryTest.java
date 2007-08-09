@@ -84,6 +84,19 @@ public class AuthnRequestFactoryTest {
 		boolean resultValidity = signature.validate(validateContext);
 		assertTrue(resultValidity);
 	}
+	
+	@Test
+	public void createAuthnRequestDSAKey() throws Exception {
+		// setup
+		String applicationName = "test-application-id";
+		KeyPair keyPair = PkiTestUtils.generateKeyPair("DSA");
+		LOG.debug("key pair algo: " + keyPair.getPublic().getAlgorithm());
+		
+		// operate
+		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
+				keyPair);
+		LOG.debug("result: " + result);
+	}
 
 	private Element createNsElement(Document document) {
 		Element nsElement = document.createElement("nsElement");

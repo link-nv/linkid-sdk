@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.UnavailableException;
+import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
@@ -58,14 +59,14 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * 
  * <p>
- * The optional PKCS12 keystore resource name <code>P12KeyStoreResource</code>
- * init parameter. The key pair within this keystore can be used by the
+ * The optional keystore resource name <code>KeyStoreResource</code> init
+ * parameter. The key pair within this keystore can be used by the
  * authentication protocol handler to digitally sign the authentication request.
  * </p>
  * 
  * <p>
- * The optional PKCS12 keystore filename <code>P12KeyStoreFile</code> init
- * parameter.
+ * The optional <code>KeyStoreType</code> key store type init parameter.
+ * Accepted values are: <code>pkcs12</code> and <code>jks</code>.
  * </p>
  * 
  * <p>
@@ -87,9 +88,11 @@ public class AuthenticationFilter implements Filter {
 
 	public static final String AUTHN_PROTOCOL_INIT_PARAM = "AuthenticationProtocol";
 
-	public static final String P12_KEYSTORE_RESOURCE_INIT_PARAM = "P12KeyStoreResource";
+	public static final String KEYSTORE_RESOURCE_INIT_PARAM = "KeyStoreResource";
 
 	public static final String KEY_STORE_PASSWORD_INIT_PARAM = "KeyStorePassword";
+
+	public static final String KEYSTORE_TYPE_INIT_PARAM = "KeyStoreType";
 
 	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SIMPLE_PLAIN_URL;
 
@@ -113,7 +116,7 @@ public class AuthenticationFilter implements Filter {
 				.toAuthenticationProtocol(authenticationProtocolString);
 		LOG.debug("authentication protocol: " + this.authenticationProtocol);
 		String p12KeyStoreResourceName = config
-				.getInitParameter(P12_KEYSTORE_RESOURCE_INIT_PARAM);
+				.getInitParameter(KEYSTORE_RESOURCE_INIT_PARAM);
 		if (null != p12KeyStoreResourceName) {
 			Thread currentThread = Thread.currentThread();
 			ClassLoader classLoader = currentThread.getContextClassLoader();
@@ -127,8 +130,10 @@ public class AuthenticationFilter implements Filter {
 			}
 			String keyStorePassword = config
 					.getInitParameter(KEY_STORE_PASSWORD_INIT_PARAM);
+			String keyStoreType = getInitParameter(config,
+					KEYSTORE_TYPE_INIT_PARAM, "pkcs12");
 			PrivateKeyEntry privateKeyEntry = KeyStoreUtils
-					.loadPrivateKeyEntry("pkcs12", keyStoreInputStream,
+					.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
 							keyStorePassword, keyStorePassword);
 			this.applicationKeyPair = new KeyPair(privateKeyEntry
 					.getCertificate().getPublicKey(), privateKeyEntry
@@ -174,8 +179,10 @@ public class AuthenticationFilter implements Filter {
 				.getAuthenticationProtocolHandler(this.authenticationProtocol,
 						this.safeOnlineAuthenticationServiceUrl,
 						this.applicationName, this.applicationKeyPair);
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String targetUrl = httpRequest.getRequestURL().toString();
 		authenticationProtocolHandler.initiateAuthentication(request, response,
-				null);
+				targetUrl);
 	}
 
 	public void destroy() {

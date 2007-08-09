@@ -112,8 +112,14 @@ public class AuthnRequestFactory {
 		Signature signature = signatureBuilder.buildObject();
 		signature
 				.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-		signature
-				.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
+		String algorithm = applicationKeyPair.getPrivate().getAlgorithm();
+		if ("RSA".equals(algorithm)) {
+			signature
+					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
+		} else if ("DSA".equals(algorithm)) {
+			signature
+					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
+		}
 		signature.getContentReferences().add(
 				new SAMLObjectContentReference(request));
 		request.setSignature(signature);

@@ -28,6 +28,18 @@
 			<param-name>AuthenticationProtocol</param-name>
 			<param-value>SAML2_BROWSER_POST</param-value>
 		</init-param>
+		<init-param>
+			<param-name>KeyStoreType</param-name>
+			<param-value>jks</param-value>
+		</init-param>
+		<init-param>
+			<param-name>KeyStoreResource</param-name>
+			<param-value>safe-online-demo-keystore.jks</param-value>
+		</init-param>
+		<init-param>
+			<param-name>KeyStorePassword</param-name>
+			<param-value>secret</param-value>
+		</init-param>
 	</filter>
 
 	<filter>
