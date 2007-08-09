@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.protocol.ProtocolHandler;
+import net.link.safeonline.auth.protocol.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.protocol.SimpleProtocolHandler;
 
 import org.apache.commons.logging.Log;
@@ -43,6 +44,7 @@ public class EntryServlet extends HttpServlet {
 
 	static {
 		registerProtocolHandler(SimpleProtocolHandler.class);
+		registerProtocolHandler(Saml2PostProtocolHandler.class);
 	}
 
 	private static void registerProtocolHandler(
