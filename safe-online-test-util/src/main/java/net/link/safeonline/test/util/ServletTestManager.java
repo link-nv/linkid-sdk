@@ -104,7 +104,8 @@ public class ServletTestManager {
 		ServletHandler handler = context.getServletHandler();
 
 		ServletHolder servletHolder = new ServletHolder();
-		servletHolder.setClassName(servletClass.getName());
+		String servletClassName = servletClass.getName();
+		servletHolder.setClassName(servletClassName);
 		String servletName = "TestServlet";
 		servletHolder.setName(servletName);
 		handler.addServlet(servletHolder);
@@ -117,7 +118,8 @@ public class ServletTestManager {
 		this.server.start();
 
 		int port = connector.getLocalPort();
-		LOG.debug("port: " + port);
+		LOG.debug("servlet \"" + servletClass.getSimpleName() + "\" on port "
+				+ port);
 
 		this.servletLocation = "http://localhost:" + port + "/";
 		return this.servletLocation;
