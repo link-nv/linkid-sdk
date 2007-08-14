@@ -162,7 +162,7 @@
 
 	<servlet-mapping>
 		<servlet-name>EntryServlet</servlet-name>
-		<url-pattern>/</url-pattern>
+		<url-pattern>/entry</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

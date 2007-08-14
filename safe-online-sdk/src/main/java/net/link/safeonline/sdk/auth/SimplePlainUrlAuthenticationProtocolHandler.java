@@ -50,7 +50,7 @@ public class SimplePlainUrlAuthenticationProtocolHandler implements
 	public void init(String authnServiceUrl, String applicationName,
 			KeyPair applicationKeyPair, Map<String, String> configParams) {
 		LOG.debug("init");
-		this.authnServiceUrl = authnServiceUrl;
+		this.authnServiceUrl = authnServiceUrl + "/entry";
 		this.applicationName = applicationName;
 	}
 

@@ -8,7 +8,6 @@
 package net.link.safeonline.auth.protocol;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +26,7 @@ public class SimpleProtocolHandler implements ProtocolHandler {
 
 	public static final String NAME = "Simple Authentication Protocol";
 
-	public String handleRequest(HttpServletRequest authnRequest)
+	public ProtocolContext handleRequest(HttpServletRequest authnRequest)
 			throws ProtocolException {
 		if (false == "GET".equals(authnRequest.getMethod())) {
 			return null;
@@ -49,10 +48,8 @@ public class SimpleProtocolHandler implements ProtocolHandler {
 			 */
 			throw new ProtocolException("target request parameter not found");
 		}
-		HttpSession session = authnRequest.getSession();
 		LOG.debug("setting target: " + target);
-		session.setAttribute("target", target);
-		return applicationId;
+		return new ProtocolContext(applicationId, target);
 	}
 
 	public String getName() {

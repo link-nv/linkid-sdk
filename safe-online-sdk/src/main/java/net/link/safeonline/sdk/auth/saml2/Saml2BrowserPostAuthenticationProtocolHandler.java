@@ -56,7 +56,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 	public void init(String authnServiceUrl, String applicationName,
 			KeyPair applicationKeyPair, Map<String, String> configParams) {
 		LOG.debug("init");
-		this.authnServiceUrl = authnServiceUrl;
+		this.authnServiceUrl = authnServiceUrl + "/entry";
 		this.applicationName = applicationName;
 		this.applicationKeyPair = applicationKeyPair;
 		this.configParams = configParams;
@@ -68,7 +68,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		LOG.debug("target url: " + targetUrl);
 
 		String samlRequestToken = AuthnRequestFactory.createAuthnRequest(
-				this.applicationName, this.applicationKeyPair);
+				this.applicationName, this.applicationKeyPair, targetUrl);
 
 		String encodedSamlRequestToken = Base64.encode(samlRequestToken
 				.getBytes());

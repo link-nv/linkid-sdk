@@ -18,20 +18,20 @@ import javax.servlet.http.HttpServletRequest;
 public interface ProtocolHandler {
 
 	/**
-	 * Request handle method. The protocol handler should return the
-	 * applicationId if it could handle the authentication request. If the
+	 * Request handle method. The protocol handler should return a filled in
+	 * protocol context if it could handle the authentication request. If the
 	 * handler cannot handle the authentication request then it should return
 	 * <code>null</code>. A {@link ProtocolException} should be thrown in
 	 * case this handler can handle the authentication request but the request
 	 * itself violates the authentication protocol supported by this handler.
 	 * 
 	 * @param authnRequest
-	 * @return the application Id.
+	 * @return the protocol context or <code>null</code>.
 	 * @throws ProtocolException
 	 *             in case the authentication request violates the
 	 *             authentication protocol supported by this handler.
 	 */
-	String handleRequest(HttpServletRequest authnRequest)
+	ProtocolContext handleRequest(HttpServletRequest authnRequest)
 			throws ProtocolException;
 
 	/**

@@ -7,8 +7,8 @@
 
 package test.unit.net.link.safeonline.sdk.auth.saml2;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.security.KeyPair;
@@ -28,6 +28,7 @@ import org.apache.xpath.XPathAPI;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -46,11 +47,12 @@ public class AuthnRequestFactoryTest {
 		// setup
 		String applicationName = "test-application-id";
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
 
 		// operate
 		long begin = System.currentTimeMillis();
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
-				keyPair);
+				keyPair, assertionConsumerServiceURL);
 		long end = System.currentTimeMillis();
 
 		// verify
@@ -69,6 +71,13 @@ public class AuthnRequestFactoryTest {
 		assertNotNull(issuerElement);
 		assertEquals(applicationName, issuerElement.getTextContent());
 
+		Node resultAssertionConsumerServiceURLNode = XPathAPI.selectSingleNode(
+				resultDocument,
+				"/samlp2:AuthnRequest/@AssertionConsumerServiceURL", nsElement);
+		assertNotNull(resultAssertionConsumerServiceURLNode);
+		assertEquals(assertionConsumerServiceURL,
+				resultAssertionConsumerServiceURLNode.getTextContent());
+
 		// verify signature
 		NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(
 				javax.xml.crypto.dsig.XMLSignature.XMLNS, "Signature");
@@ -84,17 +93,17 @@ public class AuthnRequestFactoryTest {
 		boolean resultValidity = signature.validate(validateContext);
 		assertTrue(resultValidity);
 	}
-	
+
 	@Test
 	public void createAuthnRequestDSAKey() throws Exception {
 		// setup
 		String applicationName = "test-application-id";
 		KeyPair keyPair = PkiTestUtils.generateKeyPair("DSA");
 		LOG.debug("key pair algo: " + keyPair.getPublic().getAlgorithm());
-		
+
 		// operate
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
-				keyPair);
+				keyPair, null);
 		LOG.debug("result: " + result);
 	}
 

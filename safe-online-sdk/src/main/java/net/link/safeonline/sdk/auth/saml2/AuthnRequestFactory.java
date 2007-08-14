@@ -72,14 +72,21 @@ public class AuthnRequestFactory {
 	}
 
 	/**
-	 * Creates a SAML2 authentication request.
+	 * Creates a SAML2 authentication request. For the moment we allow the
+	 * Service Provider to pass on the Assertion Consumer Service URL itself.
+	 * Later on we could use the SAML Metadata service or a persistent
+	 * server-side application field to locate this service.
 	 * 
 	 * @param applicationName
 	 * @param applicationKeyPair
+	 * @param assertionConsumerServiceURL
+	 *            the optional location of the assertion consumer service. This
+	 *            location can be used by the IdP to send back the SAML response
+	 *            message.
 	 * @return
 	 */
 	public static String createAuthnRequest(String applicationName,
-			KeyPair applicationKeyPair) {
+			KeyPair applicationKeyPair, String assertionConsumerServiceURL) {
 		if (null == applicationKeyPair) {
 			throw new IllegalArgumentException(
 					"application key pair should not be null");
@@ -107,6 +114,10 @@ public class AuthnRequestFactory {
 				Issuer.DEFAULT_ELEMENT_NAME);
 		issuer.setValue(applicationName);
 		request.setIssuer(issuer);
+
+		if (null != assertionConsumerServiceURL) {
+			request.setAssertionConsumerServiceURL(assertionConsumerServiceURL);
+		}
 
 		XMLObjectBuilderFactory builderFactory = Configuration
 				.getBuilderFactory();

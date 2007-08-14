@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.auth.protocol.SimpleProtocolHandler;
@@ -133,9 +134,9 @@ public class EntryServlet extends HttpServlet {
 		for (ProtocolHandler protocolHandler : protocolHandlers) {
 			LOG.debug("trying protocol handler: "
 					+ protocolHandler.getClass().getSimpleName());
-			String applicationId;
+			ProtocolContext protocolContext;
 			try {
-				applicationId = protocolHandler.handleRequest(request);
+				protocolContext = protocolHandler.handleRequest(request);
 			} catch (ProtocolException e) {
 				String protocolName = protocolHandler.getName();
 				HttpSession session = request.getSession();
@@ -145,11 +146,13 @@ public class EntryServlet extends HttpServlet {
 				response.sendRedirect(this.protocolErrorUrl);
 				return;
 			}
-			if (null != applicationId) {
+			if (null != protocolContext) {
 				String protocolName = protocolHandler.getName();
 				LOG.debug("authentication protocol: " + protocolName);
 				HttpSession session = request.getSession();
-				session.setAttribute("applicationId", applicationId);
+				session.setAttribute("applicationId", protocolContext
+						.getApplicationId());
+				session.setAttribute("target", protocolContext.getTarget());
 				response.sendRedirect(this.startUrl);
 				return;
 			}

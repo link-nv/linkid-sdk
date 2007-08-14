@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -56,7 +57,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		return NAME;
 	}
 
-	public String handleRequest(HttpServletRequest authnRequest)
+	public ProtocolContext handleRequest(HttpServletRequest authnRequest)
 			throws ProtocolException {
 		LOG.debug("request method: " + authnRequest.getMethod());
 		if (false == "POST".equals(authnRequest.getMethod())) {
@@ -158,6 +159,13 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 					+ e.getMessage());
 		}
 
-		return issuerName;
+		String assertionConsumerService = samlAuthnRequest
+				.getAssertionConsumerServiceURL();
+		if (null == assertionConsumerService) {
+			LOG.debug("missing AssertionConsumerServiceURL");
+			throw new ProtocolException("missing AssertionConsumerServiceURL");
+		}
+
+		return new ProtocolContext(issuerName, assertionConsumerService);
 	}
 }
