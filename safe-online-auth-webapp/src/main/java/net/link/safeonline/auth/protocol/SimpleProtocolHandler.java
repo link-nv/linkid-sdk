@@ -25,6 +25,8 @@ public class SimpleProtocolHandler implements ProtocolHandler {
 	private static final Log LOG = LogFactory
 			.getLog(SimpleProtocolHandler.class);
 
+	public static final String NAME = "Simple Authentication Protocol";
+
 	public String handleRequest(HttpServletRequest authnRequest)
 			throws ProtocolException {
 		if (false == "GET".equals(authnRequest.getMethod())) {
@@ -54,6 +56,6 @@ public class SimpleProtocolHandler implements ProtocolHandler {
 	}
 
 	public String getName() {
-		return "Simple Authentication Protocol";
+		return NAME;
 	}
 }

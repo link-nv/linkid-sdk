@@ -12,10 +12,13 @@ import java.security.cert.X509Certificate;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -47,8 +50,10 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 	private static final Log LOG = LogFactory
 			.getLog(Saml2PostProtocolHandler.class);
 
+	public static final String NAME = "SAML v2 Browser POST Authentication Protocol";
+
 	public String getName() {
-		return "SAML v2 Browser POST Authentication Protocol";
+		return NAME;
 	}
 
 	public String handleRequest(HttpServletRequest authnRequest)
@@ -124,6 +129,22 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 					.getCertificate(issuerName);
 		} catch (ApplicationNotFoundException e) {
 			throw new ProtocolException("application not found: " + issuerName);
+		}
+
+		PkiValidator pkiValidator = EjbUtils.getEJB(
+				"SafeOnline/PkiValidatorBean/local", PkiValidator.class);
+
+		boolean certificateValid;
+		try {
+			certificateValid = pkiValidator.validateCertificate(
+					SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+					certificate);
+		} catch (TrustDomainNotFoundException e) {
+			throw new ProtocolException("trust domain error");
+		}
+
+		if (false == certificateValid) {
+			throw new ProtocolException("certificate was not found to be valid");
 		}
 
 		BasicX509Credential basicX509Credential = new BasicX509Credential();

@@ -67,6 +67,8 @@ public class EntryServlet extends HttpServlet {
 
 	public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
 
+	public static final String PROTOCOL_NAME_ATTRIBUTE = "protocolName";
+
 	private static final List<ProtocolHandler> protocolHandlers = new LinkedList<ProtocolHandler>();
 
 	static {
@@ -135,7 +137,9 @@ public class EntryServlet extends HttpServlet {
 			try {
 				applicationId = protocolHandler.handleRequest(request);
 			} catch (ProtocolException e) {
+				String protocolName = protocolHandler.getName();
 				HttpSession session = request.getSession();
+				session.setAttribute(PROTOCOL_NAME_ATTRIBUTE, protocolName);
 				session.setAttribute(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e
 						.getMessage());
 				response.sendRedirect(this.protocolErrorUrl);

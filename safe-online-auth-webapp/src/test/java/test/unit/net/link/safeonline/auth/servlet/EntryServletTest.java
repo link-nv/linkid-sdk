@@ -20,8 +20,12 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.auth.protocol.SimpleProtocolHandler;
+import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.EntryServlet;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
@@ -55,6 +59,10 @@ public class EntryServletTest {
 
 	private ApplicationAuthenticationService mockApplicationAuthenticationService;
 
+	private PkiValidator mockPkiValidator;
+
+	private Object[] mockObjects;
+
 	@Before
 	public void setUp() throws Exception {
 		this.jndiTestUtils = new JndiTestUtils();
@@ -63,6 +71,9 @@ public class EntryServletTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ApplicationAuthenticationServiceBean/local",
 				this.mockApplicationAuthenticationService);
+		this.mockPkiValidator = createMock(PkiValidator.class);
+		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
+				this.mockPkiValidator);
 
 		this.entryServletTestManager = new ServletTestManager();
 		Map<String, String> initParams = new HashMap<String, String>();
@@ -70,6 +81,10 @@ public class EntryServletTest {
 		initParams.put("UnsupportedProtocolUrl", this.unsupportedProtocolUrl);
 		initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
 		this.entryServletTestManager.setUp(EntryServlet.class, initParams);
+
+		this.mockObjects = new Object[] {
+				this.mockApplicationAuthenticationService,
+				this.mockPkiValidator };
 	}
 
 	@After
@@ -156,6 +171,10 @@ public class EntryServletTest {
 				.getSessionAttribute("protocolErrorMessage");
 		assertNotNull(resultProtocolErrorMessage);
 		assertTrue(resultProtocolErrorMessage.indexOf("target") != -1);
+		String resultProtocolName = (String) this.entryServletTestManager
+				.getSessionAttribute("protocolName");
+		assertNotNull(resultProtocolName);
+		assertEquals(SimpleProtocolHandler.NAME, resultProtocolName);
 	}
 
 	@Test
@@ -184,15 +203,20 @@ public class EntryServletTest {
 				this.mockApplicationAuthenticationService
 						.getCertificate(applicationName)).andReturn(
 				applicationCert);
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								applicationCert)).andReturn(true);
 
 		// prepare
-		replay(this.mockApplicationAuthenticationService);
+		replay(this.mockObjects);
 
 		// operate
 		int statusCode = httpClient.executeMethod(postMethod);
 
 		// verify
-		verify(this.mockApplicationAuthenticationService);
+		verify(this.mockObjects);
 		LOG.debug("status code: " + statusCode);
 		LOG.debug("result body: " + postMethod.getResponseBodyAsString());
 		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
@@ -231,15 +255,20 @@ public class EntryServletTest {
 		expect(
 				this.mockApplicationAuthenticationService
 						.getCertificate(applicationName)).andReturn(foobarCert);
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								foobarCert)).andReturn(true);
 
 		// prepare
-		replay(this.mockApplicationAuthenticationService);
+		replay(this.mockObjects);
 
 		// operate
 		int statusCode = httpClient.executeMethod(postMethod);
 
 		// verify
-		verify(this.mockApplicationAuthenticationService);
+		verify(this.mockObjects);
 		LOG.debug("status code: " + statusCode);
 		LOG.debug("result body: " + postMethod.getResponseBodyAsString());
 		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
@@ -253,5 +282,68 @@ public class EntryServletTest {
 				+ resultProtocolErrorMessage);
 		assertTrue(resultProtocolErrorMessage
 				.indexOf("signature validation error") != -1);
+		String resultProtocolName = (String) this.entryServletTestManager
+				.getSessionAttribute("protocolName");
+		assertNotNull(resultProtocolName);
+		assertEquals(Saml2PostProtocolHandler.NAME, resultProtocolName);
+	}
+
+	@Test
+	public void saml2AuthenticationProtocolNotTrustedApplication()
+			throws Exception {
+		// setup
+		HttpClient httpClient = new HttpClient();
+		PostMethod postMethod = new PostMethod(this.entryServletTestManager
+				.getServletLocation());
+
+		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate applicationCert = PkiTestUtils
+				.generateSelfSignedCertificate(applicationKeyPair,
+						"CN=TestApplication");
+		String applicationName = "test-application-id";
+		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
+				applicationName, applicationKeyPair);
+		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
+				.getBytes());
+
+		NameValuePair[] data = { new NameValuePair("SAMLRequest",
+				encodedSamlAuthnRequest) };
+		postMethod.setRequestBody(data);
+
+		// expectations
+		expect(
+				this.mockApplicationAuthenticationService
+						.getCertificate(applicationName)).andReturn(
+				applicationCert);
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								applicationCert)).andReturn(false);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		int statusCode = httpClient.executeMethod(postMethod);
+
+		// verify
+		verify(this.mockObjects);
+		LOG.debug("status code: " + statusCode);
+		LOG.debug("result body: " + postMethod.getResponseBodyAsString());
+		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
+		String location = postMethod.getResponseHeader("Location").getValue();
+		LOG.debug("location: " + location);
+		assertTrue(location.endsWith(this.protocolErrorUrl));
+		String resultProtocolErrorMessage = (String) this.entryServletTestManager
+				.getSessionAttribute("protocolErrorMessage");
+		assertNotNull(resultProtocolErrorMessage);
+		LOG.debug("result protocol error message: "
+				+ resultProtocolErrorMessage);
+		assertTrue(resultProtocolErrorMessage.indexOf("certificate") != -1);
+		String resultProtocolName = (String) this.entryServletTestManager
+				.getSessionAttribute("protocolName");
+		assertNotNull(resultProtocolName);
+		assertEquals(Saml2PostProtocolHandler.NAME, resultProtocolName);
 	}
 }
