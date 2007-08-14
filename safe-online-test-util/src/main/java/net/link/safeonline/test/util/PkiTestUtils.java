@@ -209,6 +209,25 @@ public class PkiTestUtils {
 		}
 	}
 
+	/**
+	 * Persist the given private key and corresponding certificate to a PKCS12
+	 * keystore file.
+	 * 
+	 * @param pkcs12keyStore
+	 *            the file of the PKCS12 keystore to write the key material to.
+	 * @param privateKey
+	 *            the private key to persist.
+	 * @param certificate
+	 *            the X509 certificate corresponding with the private key.
+	 * @param keyStorePassword
+	 *            the keystore password.
+	 * @param keyEntryPassword
+	 *            the keyentry password.
+	 * @throws KeyStoreException
+	 * @throws NoSuchAlgorithmException
+	 * @throws CertificateException
+	 * @throws IOException
+	 */
 	public static void persistKey(File pkcs12keyStore, PrivateKey privateKey,
 			X509Certificate certificate, String keyStorePassword,
 			String keyEntryPassword) throws KeyStoreException,
