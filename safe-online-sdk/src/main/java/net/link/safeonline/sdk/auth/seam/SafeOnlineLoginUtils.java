@@ -7,6 +7,8 @@
 
 package net.link.safeonline.sdk.auth.seam;
 
+import java.util.Map;
+
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
@@ -63,6 +65,7 @@ public class SafeOnlineLoginUtils {
 	 *            the page to which the user should be redirected after login.
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static String login(FacesMessages facesMessages, Log log,
 			String targetPage) {
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -101,12 +104,15 @@ public class SafeOnlineLoginUtils {
 		targetUrl = httpServletResponse.encodeRedirectURL(targetUrl);
 		log.debug("target url: #0", targetUrl);
 
+		Map<String, String> configParams = externalContext
+				.getInitParameterMap();
+
 		AuthenticationProtocolHandler authenticationProtocolHandler;
 		try {
 			authenticationProtocolHandler = AuthenticationProtocolManager
 					.getAuthenticationProtocolHandler(authenticationProtocol,
 							safeOnlineAuthenticationServiceUrl,
-							applicationName, null);
+							applicationName, null, configParams);
 		} catch (ServletException e) {
 			throw new RuntimeException(
 					"could not init authentication protocol handler: "

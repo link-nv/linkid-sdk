@@ -146,6 +146,18 @@
 		<servlet-class>
 			net.link.safeonline.auth.servlet.EntryServlet
 		</servlet-class>
+		<init-param>
+			<param-name>StartUrl</param-name>
+			<param-value>main.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>UnsupportedProtocolUrl</param-name>
+			<param-value>unsupported-protocol.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ProtocolErrorUrl</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>

@@ -10,6 +10,8 @@ package net.link.safeonline.sdk.auth.saml2;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.KeyPair;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -21,6 +23,9 @@ import net.link.safeonline.sdk.auth.SupportedAuthenticationProtocol;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.apache.xml.security.utils.Base64;
 
 /**
@@ -33,6 +38,10 @@ import org.apache.xml.security.utils.Base64;
 public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		AuthenticationProtocolHandler {
 
+	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/sdk/auth/saml2/saml2-post-binding.vm";
+
+	public static final String SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM = "Saml2BrowserPostTemplate";
+
 	private static final Log LOG = LogFactory
 			.getLog(Saml2BrowserPostAuthenticationProtocolHandler.class);
 
@@ -42,12 +51,15 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 
 	private KeyPair applicationKeyPair;
 
+	private Map<String, String> configParams;
+
 	public void init(String authnServiceUrl, String applicationName,
-			KeyPair applicationKeyPair) {
+			KeyPair applicationKeyPair, Map<String, String> configParams) {
 		LOG.debug("init");
 		this.authnServiceUrl = authnServiceUrl;
 		this.applicationName = applicationName;
 		this.applicationKeyPair = applicationKeyPair;
+		this.configParams = configParams;
 	}
 
 	public void initiateAuthentication(ServletRequest request,
@@ -61,20 +73,46 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		String encodedSamlRequestToken = Base64.encode(samlRequestToken
 				.getBytes());
 
+		/*
+		 * We could use the opensaml2 HTTPPostEncoderBuilder here to construct
+		 * the HTTP response. But this code is just too complex in usage. It's
+		 * easier to do all these things ourselves.
+		 */
+		Properties velocityProperties = new Properties();
+		velocityProperties.put("resource.loader", "class");
+		velocityProperties
+				.put("class.resource.loader.class",
+						"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		VelocityEngine velocityEngine;
+		try {
+			velocityEngine = new VelocityEngine(velocityProperties);
+			velocityEngine.init();
+		} catch (Exception e) {
+			throw new ServletException("could not initialize velocity engine");
+		}
+		VelocityContext velocityContext = new VelocityContext();
+		velocityContext.put("action", this.authnServiceUrl);
+		velocityContext.put("SAMLRequest", encodedSamlRequestToken);
+
+		String templateResourceName;
+		if (this.configParams
+				.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
+			templateResourceName = this.configParams
+					.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+		} else {
+			templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
+		}
+
+		Template template;
+		try {
+			template = velocityEngine.getTemplate(templateResourceName);
+		} catch (Exception e) {
+			throw new ServletException("Velocity template error: "
+					+ e.getMessage(), e);
+		}
+
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		out.println("<html>");
-		out.println("<body onload=\"document.postForm.submit();\">");
-		out.println("<h1>SAML2 Authentication Request Post</h1>");
-		out
-				.println("<p>Please wait while you're being redirected to the authentication application...</p>");
-		out.println("<form name=\"postForm\" action=\"" + this.authnServiceUrl
-				+ "\" method=\"POST\">");
-		out.println("<input type=\"hidden\" name=\"SAMLRequest\" value=\""
-				+ encodedSamlRequestToken + "\" />");
-		out.println("</form>");
-		out.println("</body>");
-		out.println("</html>");
-		out.close();
+		template.merge(velocityContext, out);
 	}
 }

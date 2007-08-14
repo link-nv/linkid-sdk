@@ -46,6 +46,11 @@ public class ServletTestManager {
 		return setUp(servletClass, null, null, null);
 	}
 
+	public String setUp(Class<?> servletClass,
+			Map<String, String> servletInitParameters) throws Exception {
+		return setUp(servletClass, servletInitParameters, null, null, null);
+	}
+
 	private Session session;
 
 	private class LocalHashSessionManager extends HashSessionManager {
@@ -80,6 +85,14 @@ public class ServletTestManager {
 	public String setUp(Class<?> servletClass, Class<?> filterClass,
 			Map<String, String> filterInitParameters,
 			Map<String, String> initialSessionAttributes) throws Exception {
+		return setUp(servletClass, null, filterClass, filterInitParameters,
+				initialSessionAttributes);
+	}
+
+	public String setUp(Class<?> servletClass,
+			Map<String, String> servletInitParameters, Class<?> filterClass,
+			Map<String, String> filterInitParameters,
+			Map<String, String> initialSessionAttributes) throws Exception {
 		this.server = new Server();
 		Connector connector = new SelectChannelConnector();
 		connector.setPort(0);
@@ -108,6 +121,9 @@ public class ServletTestManager {
 		servletHolder.setClassName(servletClassName);
 		String servletName = "TestServlet";
 		servletHolder.setName(servletName);
+		if (null != servletInitParameters) {
+			servletHolder.setInitParameters(servletInitParameters);
+		}
 		handler.addServlet(servletHolder);
 
 		ServletMapping servletMapping = new ServletMapping();

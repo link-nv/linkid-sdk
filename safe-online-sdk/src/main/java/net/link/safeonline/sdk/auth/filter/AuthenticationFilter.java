@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -104,6 +107,9 @@ public class AuthenticationFilter implements Filter {
 
 	private KeyPair applicationKeyPair;
 
+	private Map<String, String> configParams;
+
+	@SuppressWarnings("unchecked")
 	public void init(FilterConfig config) throws ServletException {
 		LOG.debug("init");
 		this.safeOnlineAuthenticationServiceUrl = getInitParameter(config,
@@ -138,6 +144,14 @@ public class AuthenticationFilter implements Filter {
 			this.applicationKeyPair = new KeyPair(privateKeyEntry
 					.getCertificate().getPublicKey(), privateKeyEntry
 					.getPrivateKey());
+		}
+
+		this.configParams = new HashMap<String, String>();
+		Enumeration<String> initParamsEnum = config.getInitParameterNames();
+		while (initParamsEnum.hasMoreElements()) {
+			String paramName = initParamsEnum.nextElement();
+			String paramValue = config.getInitParameter(paramName);
+			this.configParams.put(paramName, paramValue);
 		}
 	}
 
@@ -178,7 +192,8 @@ public class AuthenticationFilter implements Filter {
 		AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
 				.getAuthenticationProtocolHandler(this.authenticationProtocol,
 						this.safeOnlineAuthenticationServiceUrl,
-						this.applicationName, this.applicationKeyPair);
+						this.applicationName, this.applicationKeyPair,
+						this.configParams);
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String targetUrl = httpRequest.getRequestURL().toString();
 		authenticationProtocolHandler.initiateAuthentication(request, response,

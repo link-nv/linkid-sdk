@@ -145,4 +145,48 @@ public class AuthenticationFilterTest {
 		String response = getMethod.getResponseBodyAsString();
 		LOG.debug("response body: " + response);
 	}
+
+	@Test
+	public void performSaml2AuthnRequestWithCustomTemplate() throws Exception {
+		// setup
+		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(
+				keyPair, "CN=TestApplication");
+		File tmpP12File = File.createTempFile("application-", ".p12");
+		tmpP12File.deleteOnExit();
+		PkiTestUtils.persistKey(tmpP12File, keyPair.getPrivate(), cert,
+				"secret", "secret");
+
+		String p12ResourceName = "p12-resource-name.p12";
+		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURL());
+
+		Map<String, String> filterInitParameters = new HashMap<String, String>();
+		filterInitParameters.put("SafeOnlineAuthenticationServiceUrl",
+				"http://authn.service");
+		filterInitParameters.put("ApplicationName", "application-id");
+		filterInitParameters
+				.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
+		filterInitParameters.put("KeyStoreResource", p12ResourceName);
+		filterInitParameters.put("KeyStorePassword", "secret");
+		filterInitParameters.put("Saml2BrowserPostTemplate",
+				"test-saml2-post-binding.vm");
+		Map<String, String> initialSessionAttributes = new HashMap<String, String>();
+		this.servletTestManager.setUp(TestServlet.class,
+				AuthenticationFilter.class, filterInitParameters,
+				initialSessionAttributes);
+
+		GetMethod getMethod = new GetMethod(this.servletTestManager
+				.getServletLocation());
+		HttpClient httpClient = new HttpClient();
+
+		// operate
+		int statusCode = httpClient.executeMethod(getMethod);
+
+		// verify
+		LOG.debug("status code: " + statusCode);
+		assertEquals(HttpStatus.SC_OK, statusCode);
+		String response = getMethod.getResponseBodyAsString();
+		LOG.debug("response body: " + response);
+		assertTrue(response.indexOf("custom template") != -1);
+	}
 }

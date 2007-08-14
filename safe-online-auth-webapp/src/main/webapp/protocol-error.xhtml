@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">#{initParam['CommercialName']} Authentication</ui:define>
+
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
+	</ui:define>
+
+	<ui:define name="content">
+		<h2>Protocol Error</h2>
+
+		<p>A violation was detected against the authentication protocol
+		that was used for contacting the authentication web application.</p>
+
+		<p>Protocol Error Message: #{protocolErrorMessage}</p>
+	</ui:define>
+
+</ui:composition>
+</body>
+</html>

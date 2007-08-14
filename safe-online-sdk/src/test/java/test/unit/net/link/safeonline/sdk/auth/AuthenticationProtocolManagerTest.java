@@ -8,7 +8,6 @@
 package test.unit.net.link.safeonline.sdk.auth;
 
 import static org.junit.Assert.assertNotNull;
-
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
@@ -23,7 +22,7 @@ public class AuthenticationProtocolManagerTest {
 		AuthenticationProtocolHandler simpleAuthenticationProtocolHandler = AuthenticationProtocolManager
 				.getAuthenticationProtocolHandler(
 						AuthenticationProtocol.SIMPLE_PLAIN_URL,
-						"http://authn.service", "app-name", null);
+						"http://authn.service", "app-name", null, null);
 
 		// verify
 		assertNotNull(simpleAuthenticationProtocolHandler);
@@ -35,7 +34,7 @@ public class AuthenticationProtocolManagerTest {
 		AuthenticationProtocolHandler saml2AuthenticationProtocolHandler = AuthenticationProtocolManager
 				.getAuthenticationProtocolHandler(
 						AuthenticationProtocol.SAML2_BROWSER_POST,
-						"http://authn.service", "application-id", null);
+						"http://authn.service", "application-id", null, null);
 
 		// verify
 		assertNotNull(saml2AuthenticationProtocolHandler);

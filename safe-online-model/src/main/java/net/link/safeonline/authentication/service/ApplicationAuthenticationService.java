@@ -33,4 +33,15 @@ public interface ApplicationAuthenticationService {
 	 */
 	String authenticate(X509Certificate certificate)
 			throws ApplicationNotFoundException;
+
+	/**
+	 * Gives back the application X509 certificate given the application Id.
+	 * 
+	 * @param applicationId
+	 *            the application Id.
+	 * @return the X509 application certificate.
+	 * @throws ApplicationNotFoundException
+	 */
+	X509Certificate getCertificate(String applicationId)
+			throws ApplicationNotFoundException;
 }

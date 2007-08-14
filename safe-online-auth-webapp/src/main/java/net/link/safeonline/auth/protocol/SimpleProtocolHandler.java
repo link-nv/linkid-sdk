@@ -25,7 +25,8 @@ public class SimpleProtocolHandler implements ProtocolHandler {
 	private static final Log LOG = LogFactory
 			.getLog(SimpleProtocolHandler.class);
 
-	public String handleRequest(HttpServletRequest authnRequest) {
+	public String handleRequest(HttpServletRequest authnRequest)
+			throws ProtocolException {
 		if (false == "GET".equals(authnRequest.getMethod())) {
 			return null;
 		}
@@ -34,12 +35,21 @@ public class SimpleProtocolHandler implements ProtocolHandler {
 			return null;
 		}
 		LOG.debug("application: " + applicationId);
+		/*
+		 * From this moment on we're sure that the user is really trying to use
+		 * the simple authentication protocol.
+		 */
 		String target = authnRequest.getParameter("target");
-		if (null != target) {
-			HttpSession session = authnRequest.getSession();
-			LOG.debug("setting target: " + target);
-			session.setAttribute("target", target);
+		if (null == target) {
+			/*
+			 * The simple authentication protocol really requires the "target"
+			 * request parameter.
+			 */
+			throw new ProtocolException("target request parameter not found");
 		}
+		HttpSession session = authnRequest.getSession();
+		LOG.debug("setting target: " + target);
+		session.setAttribute("target", target);
 		return applicationId;
 	}
 

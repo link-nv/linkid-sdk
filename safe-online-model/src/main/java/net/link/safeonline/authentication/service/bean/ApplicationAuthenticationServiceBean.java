@@ -44,4 +44,13 @@ public class ApplicationAuthenticationServiceBean implements
 		LOG.debug("authenticated application: " + applicationName);
 		return applicationName;
 	}
+
+	public X509Certificate getCertificate(String applicationId)
+			throws ApplicationNotFoundException {
+		LOG.debug("get certificate for application Id: " + applicationId);
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationId);
+		X509Certificate certificate = application.getCertificate();
+		return certificate;
+	}
 }

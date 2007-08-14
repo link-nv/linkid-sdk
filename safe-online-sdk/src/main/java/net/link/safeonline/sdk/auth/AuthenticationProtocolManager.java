@@ -64,19 +64,37 @@ public class AuthenticationProtocolManager {
 	 * @param authnServiceUrl
 	 * @param applicationName
 	 * @param applicationKeyPair
+	 * @param configParams
+	 *            the optional protocol handler configuration parameters.
 	 * @return
 	 * @throws ServletException
 	 */
 	public static AuthenticationProtocolHandler getAuthenticationProtocolHandler(
 			AuthenticationProtocol authenticationProtocol,
 			String authnServiceUrl, String applicationName,
-			KeyPair applicationKeyPair) throws ServletException {
+			KeyPair applicationKeyPair, Map<String, String> configParams)
+			throws ServletException {
 		Class<? extends AuthenticationProtocolHandler> authnProtocolHandlerClass = handlerClasses
 				.get(authenticationProtocol);
 		if (null == authnProtocolHandlerClass) {
 			throw new ServletException(
 					"no handler for authentication protocol: "
 							+ authenticationProtocol);
+		}
+		if (null == authnServiceUrl) {
+			throw new ServletException(
+					"authenication service URL cannot be null");
+		}
+		if (null == applicationName) {
+			throw new ServletException("application name cannot be null");
+		}
+		if (null == configParams) {
+			/*
+			 * While optional for the authentication protocol manager, the
+			 * configuration parameters are mandatory for the authentication
+			 * protocol handlers.
+			 */
+			configParams = new HashMap<String, String>();
 		}
 		AuthenticationProtocolHandler protocolHandler;
 		try {
@@ -86,7 +104,7 @@ public class AuthenticationProtocolManager {
 					+ authnProtocolHandlerClass.getName());
 		}
 		protocolHandler.init(authnServiceUrl, applicationName,
-				applicationKeyPair);
+				applicationKeyPair, configParams);
 		return protocolHandler;
 	}
 }

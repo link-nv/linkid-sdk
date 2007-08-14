@@ -85,12 +85,36 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>opensaml</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>xmltooling</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>opensaml</groupId>
+			<artifactId>openws</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
