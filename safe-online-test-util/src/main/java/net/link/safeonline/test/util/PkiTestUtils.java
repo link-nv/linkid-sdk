@@ -28,7 +28,6 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -91,9 +90,9 @@ public class PkiTestUtils {
 	public static X509Certificate generateSelfSignedCertificate(
 			KeyPair keyPair, String dn, DateTime notBefore, DateTime notAfter,
 			String signatureAlgorithm, boolean caCert,
-			boolean timeStampingPurpose) throws CertificateEncodingException,
-			InvalidKeyException, IllegalStateException,
-			NoSuchAlgorithmException, SignatureException, IOException {
+			boolean timeStampingPurpose) throws InvalidKeyException,
+			IllegalStateException, NoSuchAlgorithmException,
+			SignatureException, IOException, CertificateException {
 		X509Certificate certificate = generateCertificate(keyPair.getPublic(),
 				dn, keyPair.getPrivate(), null, notBefore, notAfter,
 				signatureAlgorithm, caCert, timeStampingPurpose, null);
@@ -101,9 +100,9 @@ public class PkiTestUtils {
 	}
 
 	public static X509Certificate generateSelfSignedCertificate(
-			KeyPair keyPair, String dn) throws CertificateEncodingException,
-			InvalidKeyException, IllegalStateException,
-			NoSuchAlgorithmException, SignatureException, IOException {
+			KeyPair keyPair, String dn) throws InvalidKeyException,
+			IllegalStateException, NoSuchAlgorithmException,
+			SignatureException, IOException, CertificateException {
 		DateTime now = new DateTime();
 		DateTime future = now.plusYears(10);
 		X509Certificate certificate = generateSelfSignedCertificate(keyPair,
@@ -116,9 +115,8 @@ public class PkiTestUtils {
 			PrivateKey issuerPrivateKey, X509Certificate issuerCert,
 			DateTime notBefore, DateTime notAfter, String signatureAlgorithm,
 			boolean caCert, boolean timeStampingPurpose, URI ocspUri)
-			throws IOException, CertificateEncodingException,
-			InvalidKeyException, IllegalStateException,
-			NoSuchAlgorithmException, SignatureException {
+			throws IOException, InvalidKeyException, IllegalStateException,
+			NoSuchAlgorithmException, SignatureException, CertificateException {
 		if (null == signatureAlgorithm) {
 			signatureAlgorithm = "SHA512WithRSAEncryption";
 		}
@@ -173,6 +171,16 @@ public class PkiTestUtils {
 
 		X509Certificate certificate = certificateGenerator
 				.generate(issuerPrivateKey);
+
+		/*
+		 * Make sure the default certificate provider is active.
+		 */
+		CertificateFactory certificateFactory = CertificateFactory
+				.getInstance("X.509");
+		certificate = (X509Certificate) certificateFactory
+				.generateCertificate(new ByteArrayInputStream(certificate
+						.getEncoded()));
+
 		return certificate;
 	}
 
