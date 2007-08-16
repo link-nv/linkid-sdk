@@ -15,6 +15,8 @@ import java.util.Vector;
 
 import javax.annotation.PostConstruct;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.ws.handler.MessageContext;
@@ -26,6 +28,7 @@ import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSSecurityEngine;
 import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.WSSecurityException;
@@ -33,7 +36,6 @@ import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.message.token.Timestamp;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
-import org.w3c.dom.Document;
 
 /**
  * JAX-WS SOAP Handler that provider WS-Security server-side verification.
@@ -98,7 +100,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 	}
 
 	@SuppressWarnings("unchecked")
-	private void handleDocument(Document document,
+	private void handleDocument(SOAPPart document,
 			SOAPMessageContext soapMessageContext) {
 		LOG.debug("WS-Security header validation");
 		WSSecurityEngine securityEngine = WSSecurityEngine.getInstance();
@@ -117,13 +119,12 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 			throw new RuntimeException("missing WS-Security header");
 		}
 		Timestamp timestamp = null;
+		Set<String> signedElements = null;
 		for (WSSecurityEngineResult result : wsSecurityEngineResults) {
-			Set<String> signedElements = (Set<String>) result
+			Set<String> resultSignedElements = (Set<String>) result
 					.get(WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS);
-			if (null != signedElements) {
-				LOG.debug("signed elements: " + signedElements);
-				soapMessageContext.put(SIGNED_ELEMENTS_CONTEXT_KEY,
-						signedElements);
+			if (null != resultSignedElements) {
+				signedElements = resultSignedElements;
 			}
 			X509Certificate certificate = (X509Certificate) result
 					.get(WSSecurityEngineResult.TAG_X509_CERTIFICATE);
@@ -138,9 +139,40 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 			}
 		}
 
+		if (null == signedElements) {
+			throw new RuntimeException("no signed elements present");
+		}
+		LOG.debug("signed elements: " + signedElements);
+		soapMessageContext.put(SIGNED_ELEMENTS_CONTEXT_KEY, signedElements);
+
+		/*
+		 * Check whether the SOAP Body has been signed.
+		 */
+		SOAPBody soapBody;
+		try {
+			soapBody = document.getEnvelope().getBody();
+		} catch (SOAPException e) {
+			throw new RuntimeException("error retrieving SOAP Body");
+		}
+		String bodyId = soapBody.getAttributeNS(WSConstants.WSU_NS, "Id");
+		if (null == bodyId || 0 == bodyId.length()) {
+			throw new RuntimeException(
+					"SOAP Body should have a wsu:Id attribute");
+		}
+		if (false == signedElements.contains(bodyId)) {
+			throw new RuntimeException("SOAP Body was not signed");
+		}
+
+		/*
+		 * Check timestamp.
+		 */
 		if (null == timestamp) {
 			throw new RuntimeException(
 					"missing Timestamp in WS-Security header");
+		}
+		String timestampId = timestamp.getID();
+		if (false == signedElements.contains(timestampId)) {
+			throw new RuntimeException("Timestamp not signed");
 		}
 		Calendar created = timestamp.getCreated();
 		long maxOffset = this.configurationManager
