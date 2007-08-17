@@ -19,6 +19,8 @@ public class ProtocolException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
+	private String protocolName;
+
 	/**
 	 * Main constructor.
 	 * 
@@ -27,5 +29,24 @@ public class ProtocolException extends Exception {
 	 */
 	public ProtocolException(String message) {
 		super(message);
+		this.protocolName = "unknown";
+	}
+
+	/**
+	 * Sets the protocol name.
+	 * 
+	 * @param protocolName
+	 */
+	public void setProtocolName(String protocolName) {
+		this.protocolName = protocolName;
+	}
+
+	/**
+	 * Gives back the protocol name.
+	 * 
+	 * @return
+	 */
+	public String getProtocolName() {
+		return this.protocolName;
 	}
 }

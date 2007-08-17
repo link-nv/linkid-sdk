@@ -8,8 +8,6 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -21,9 +19,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
-import net.link.safeonline.auth.protocol.ProtocolHandler;
-import net.link.safeonline.auth.protocol.SimpleProtocolHandler;
-import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
+import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,31 +66,11 @@ public class EntryServlet extends HttpServlet {
 
 	public static final String PROTOCOL_NAME_ATTRIBUTE = "protocolName";
 
-	private static final List<ProtocolHandler> protocolHandlers = new LinkedList<ProtocolHandler>();
-
-	static {
-		registerProtocolHandler(SimpleProtocolHandler.class);
-		registerProtocolHandler(Saml2PostProtocolHandler.class);
-	}
-
 	private String startUrl;
 
 	private String unsupportedProtocolUrl;
 
 	private String protocolErrorUrl;
-
-	private static void registerProtocolHandler(
-			Class<? extends ProtocolHandler> protocolHandlerClass) {
-		try {
-			ProtocolHandler protocolHandler = protocolHandlerClass
-					.newInstance();
-			protocolHandlers.add(protocolHandler);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					"could not initialize protocol handler: "
-							+ protocolHandlerClass.getName());
-		}
-	}
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -131,35 +107,29 @@ public class EntryServlet extends HttpServlet {
 
 	private void handleInvocation(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		for (ProtocolHandler protocolHandler : protocolHandlers) {
-			LOG.debug("trying protocol handler: "
-					+ protocolHandler.getClass().getSimpleName());
-			ProtocolContext protocolContext;
-			try {
-				protocolContext = protocolHandler.handleRequest(request);
-			} catch (ProtocolException e) {
-				String protocolName = protocolHandler.getName();
-				HttpSession session = request.getSession();
-				session.setAttribute(PROTOCOL_NAME_ATTRIBUTE, protocolName);
-				session.setAttribute(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e
-						.getMessage());
-				response.sendRedirect(this.protocolErrorUrl);
-				return;
-			}
-			if (null != protocolContext) {
-				String protocolName = protocolHandler.getName();
-				LOG.debug("authentication protocol: " + protocolName);
-				HttpSession session = request.getSession();
-				session.setAttribute("applicationId", protocolContext
-						.getApplicationId());
-				session.setAttribute("target", protocolContext.getTarget());
-				response.sendRedirect(this.startUrl);
-				return;
-			}
+		ProtocolContext protocolContext;
+		try {
+			protocolContext = ProtocolHandlerManager.handleRequest(request);
+		} catch (ProtocolException e) {
+			HttpSession session = request.getSession();
+			String protocolName = e.getProtocolName();
+			session.setAttribute(PROTOCOL_NAME_ATTRIBUTE, protocolName);
+			String protocolErrorMessage = e.getMessage();
+			session.setAttribute(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE,
+					protocolErrorMessage);
+			response.sendRedirect(this.protocolErrorUrl);
+			return;
 		}
-		/*
-		 * Else no appropriate protocol handler was found.
-		 */
-		response.sendRedirect(this.unsupportedProtocolUrl);
+
+		if (null == protocolContext) {
+			response.sendRedirect(this.unsupportedProtocolUrl);
+			return;
+		}
+
+		HttpSession session = request.getSession();
+		session.setAttribute("applicationId", protocolContext
+				.getApplicationId());
+		session.setAttribute("target", protocolContext.getTarget());
+		response.sendRedirect(this.startUrl);
 	}
 }

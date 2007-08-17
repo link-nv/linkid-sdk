@@ -55,12 +55,6 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	@In(required = true)
-	private String target;
-
-	@In(required = true)
-	private String username;
-
 	@EJB
 	private IdentityService identityService;
 
@@ -149,8 +143,7 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 			return null;
 		}
 
-		AuthenticationUtils.redirectToApplication(this.target, this.username,
-				this.facesMessages);
+		AuthenticationUtils.redirectToApplication(this.facesMessages);
 
 		return null;
 	}

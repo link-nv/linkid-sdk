@@ -61,12 +61,6 @@ public class MissingAttributesBean implements MissingAttributes {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	@In(required = true)
-	private String target;
-
-	@In(required = true)
-	private String username;
-
 	public static final String MISSING_ATTRIBUTE_LIST = "missingAttributeList";
 
 	@DataModel(MISSING_ATTRIBUTE_LIST)
@@ -144,8 +138,7 @@ public class MissingAttributesBean implements MissingAttributes {
 			return null;
 		}
 
-		AuthenticationUtils.redirectToApplication(this.target, this.username,
-				this.facesMessages);
+		AuthenticationUtils.redirectToApplication(this.facesMessages);
 
 		return null;
 	}

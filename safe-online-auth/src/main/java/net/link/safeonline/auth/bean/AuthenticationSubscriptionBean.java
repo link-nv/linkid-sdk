@@ -57,12 +57,6 @@ public class AuthenticationSubscriptionBean implements
 	@EJB
 	private IdentityService identityService;
 
-	@In(required = true)
-	private String target;
-
-	@In(required = true)
-	private String username;
-
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String subscribe() {
 		log.debug("subscribe to application #0", this.applicationId);
@@ -151,8 +145,7 @@ public class AuthenticationSubscriptionBean implements
 			return null;
 		}
 
-		AuthenticationUtils.redirectToApplication(this.target, this.username,
-				this.facesMessages);
+		AuthenticationUtils.redirectToApplication(this.facesMessages);
 
 		return null;
 	}

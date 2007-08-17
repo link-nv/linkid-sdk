@@ -7,14 +7,29 @@
 
 package net.link.safeonline.auth.protocol;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Server-side authentication protocol handler for the simple authentication
- * protocol.
+ * Server-side authentication protocol handler for the simple/unsecure
+ * authentication protocol.
+ * 
+ * <p>
+ * The protocol request is a simple HTTP GET with parameters 'application' and
+ * 'target'.
+ * </p>
+ * 
+ * <p>
+ * The protocol response is a simple HTTP redirect with parameter 'username'.
+ * </p>
  * 
  * @author fcorneli
  * 
@@ -54,5 +69,29 @@ public class SimpleProtocolHandler implements ProtocolHandler {
 
 	public String getName() {
 		return NAME;
+	}
+
+	public void authnResponse(HttpSession session,
+			HttpServletResponse authnResponse) throws ProtocolException {
+		String userId = (String) session.getAttribute("username");
+		String target = (String) session.getAttribute("target");
+
+		String redirectUrl;
+		try {
+			redirectUrl = target + "?username="
+					+ URLEncoder.encode(userId, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new ProtocolException("unsupported encoding: "
+					+ e.getMessage());
+		}
+
+		session.invalidate();
+
+		LOG.debug("redirecting to: " + redirectUrl);
+		try {
+			authnResponse.sendRedirect(redirectUrl);
+		} catch (IOException e) {
+			throw new ProtocolException("IO error: " + e.getMessage());
+		}
 	}
 }

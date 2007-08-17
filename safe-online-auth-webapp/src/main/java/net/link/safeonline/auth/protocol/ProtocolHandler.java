@@ -8,9 +8,13 @@
 package net.link.safeonline.auth.protocol;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Interface for server-side authentication protocol handlers.
+ * 
+ * Protocol handlers should be implemented as stateless POJOs.
  * 
  * @author fcorneli
  * 
@@ -35,8 +39,20 @@ public interface ProtocolHandler {
 			throws ProtocolException;
 
 	/**
-	 * Gives back the informal name of the authentication protocol that this
-	 * protocol handler supports.
+	 * Performs the authentication response according to the protocol supported
+	 * by the handler that implements this interface.
+	 * 
+	 * @param session
+	 * @param authnResponse
+	 * @throws ProtocolException
+	 */
+	void authnResponse(HttpSession session, HttpServletResponse authnResponse)
+			throws ProtocolException;
+
+	/**
+	 * Gives back the informal human-readable name of the authentication
+	 * protocol that this protocol handler supports. This name can be used on
+	 * error pages.
 	 * 
 	 * @return
 	 */

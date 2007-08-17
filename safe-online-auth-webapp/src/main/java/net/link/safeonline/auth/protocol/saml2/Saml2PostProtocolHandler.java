@@ -10,6 +10,8 @@ package net.link.safeonline.auth.protocol.saml2;
 import java.security.cert.X509Certificate;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.xml.namespace.QName;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -167,5 +169,10 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		}
 
 		return new ProtocolContext(issuerName, assertionConsumerService);
+	}
+
+	public void authnResponse(HttpSession session,
+			HttpServletResponse authnResponse) throws ProtocolException {
+		throw new ProtocolException("implement me");
 	}
 }

@@ -165,6 +165,22 @@
 		<url-pattern>/entry</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>ExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.auth.servlet.ExitServlet
+		</servlet-class>
+		<init-param>
+			<param-name>ProtocolErrorUrl</param-name>
+			<param-value>protocol-error.seam</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ExitServlet</servlet-name>
+		<url-pattern>/exit</url-pattern>
+	</servlet-mapping>
+
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>

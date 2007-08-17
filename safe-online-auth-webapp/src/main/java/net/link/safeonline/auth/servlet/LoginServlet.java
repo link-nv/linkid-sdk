@@ -8,7 +8,6 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -134,7 +133,7 @@ public class LoginServlet extends HttpServlet {
 			throw new ServletException("missing identity attribute");
 		}
 
-		redirectToApplication(request, response);
+		redirectToExitServlet(request, response);
 	}
 
 	private void commitAuthentication(HttpSession session, String applicationId)
@@ -165,29 +164,8 @@ public class LoginServlet extends HttpServlet {
 		response.sendRedirect(redirectUrl);
 	}
 
-	private void redirectToApplication(HttpServletRequest request,
+	private void redirectToExitServlet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-
-		String userId = (String) session.getAttribute("username");
-		if (null == userId) {
-			throw new ServletException("user session attribute not set");
-		}
-
-		String target = (String) session.getAttribute("target");
-		if (null == target) {
-			throw new ServletException("target session attribute not set");
-		}
-
-		String redirectUrl = target + "?username="
-				+ URLEncoder.encode(userId, "UTF-8");
-
-		/*
-		 * Seam.invalidateSession does not work from within a servlet.
-		 */
-		session.invalidate();
-
-		LOG.debug("redirecting to: " + redirectUrl);
-		response.sendRedirect(redirectUrl);
+		response.sendRedirect("./exit");
 	}
 }
