@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE server
-    PUBLIC "-//JBoss//DTD MBean Service 4.0//EN"
-    "http://www.jboss.org/j2ee/dtd/jboss-service_4_0.dtd">
+    PUBLIC "-//JBoss//DTD MBean Service 4.2//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-service_4_2.dtd">
 <server>
 
 	<classpath codebase="." archives="lib/*.jar" />
 
 	<mbean code="net.link.safeonline.service.RuntimeService"
 		name="safeonline:service=Runtime" />
+
+	<mbean name="safeonline:service=Identity"
+		code="net.link.safeonline.service.IdentityService"
+		xmbean-dd="META-INF/identity-xmbean.xml">
+		<attribute name="KeyStoreType">jks</attribute>
+		<attribute name="KeyStoreResource">
+			safe-online-keystore.jks
+		</attribute>
+		<attribute name="KeyStorePassword">secret</attribute>
+	</mbean>
 
 	<mbean code="org.jboss.security.auth.login.DynamicLoginConfig"
 		name="safeonline:service=DynamicLoginConfig">

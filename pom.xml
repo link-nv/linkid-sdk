@@ -1211,10 +1211,10 @@
 		<joda-time.version>1.4</joda-time.version>
 		<bouncycastle.version>136</bouncycastle.version>
 		<jetty-servlet-tester.version>
-			6.1.1
+			6.1.5
 		</jetty-servlet-tester.version>
 		<commons-httpclient.version>3.0.1</commons-httpclient.version>
-		<jetty.version>6.1.1</jetty.version>
+		<jetty.version>6.1.5</jetty.version>
 		<trinidad-api.version>1.2.1</trinidad-api.version>
 		<trinidad-impl.version>1.2.1</trinidad-impl.version>
 		<maven-jaxb-plugin.version>1.1</maven-jaxb-plugin.version>
@@ -1233,8 +1233,8 @@
 		<dom4j.version>1.6.1</dom4j.version>
 		<cglib.version>2.1_3</cglib.version>
 		<maven-ejb-plugin.version>2.1</maven-ejb-plugin.version>
-		<jfreechart.version>1.0.4</jfreechart.version>
-		<jcommon.version>1.0.8</jcommon.version>
+		<jfreechart.version>1.0.5</jfreechart.version>
+		<jcommon.version>1.0.9</jcommon.version>
 		<maven-enforcer-plugin.version>
 			1.0-alpha-3
 		</maven-enforcer-plugin.version>

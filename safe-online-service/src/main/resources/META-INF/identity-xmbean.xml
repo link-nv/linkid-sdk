@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mbean PUBLIC
+          "-//JBoss//DTD JBOSS XMBEAN 1.2//EN"
+          "http://www.jboss.org/j2ee/dtd/jboss_xmbean_1_2.dtd">
+<mbean>
+	<description>Identity Management Service</description>
+	<class>net.link.safeonline.service.IdentityService</class>
+	<constructor>
+		<description>The default constructor</description>
+		<name>IdentityService</name>
+	</constructor>
+	<attribute getMethod="getKeyStoreType"
+		setMethod="setKeyStoreType">
+		<description>The key store type (pkcs12, jks)</description>
+		<name>KeyStoreType</name>
+		<type>java.lang.String</type>
+		<descriptors>
+			<default>jks</default>
+		</descriptors>
+	</attribute>
+	<attribute getMethod="getKeyStoreResource"
+		setMethod="setKeyStoreResource">
+		<description>
+			The name of the Identity Key Store Resource
+		</description>
+		<name>KeyStoreResource</name>
+		<type>java.lang.String</type>
+		<descriptors>
+			<default>safe-online-keystore.jks</default>
+		</descriptors>
+	</attribute>
+	<attribute getMethod="getKeyStorePassword"
+		setMethod="setKeyStorePassword">
+		<description>
+			The password to unlock the Identity Key Store
+		</description>
+		<name>KeyStorePassword</name>
+		<type>java.lang.String</type>
+		<descriptors>
+			<default>secret</default>
+		</descriptors>
+	</attribute>
+	<operation>
+		<description>Loads the Private Identity Key</description>
+		<name>loadPrivateKey</name>
+		<return-type>java.security.PrivateKey</return-type>
+	</operation>
+</mbean>
