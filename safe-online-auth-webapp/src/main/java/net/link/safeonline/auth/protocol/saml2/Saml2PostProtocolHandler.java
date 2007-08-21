@@ -7,6 +7,7 @@
 
 package net.link.safeonline.auth.protocol.saml2;
 
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import net.link.safeonline.authentication.service.ApplicationAuthenticationServi
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,6 +56,12 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 			.getLog(Saml2PostProtocolHandler.class);
 
 	public static final String NAME = "SAML v2 Browser POST Authentication Protocol";
+
+	private final IdentityServiceClient identityServiceClient;
+
+	public Saml2PostProtocolHandler() {
+		this.identityServiceClient = new IdentityServiceClient();
+	}
 
 	public String getName() {
 		return NAME;
@@ -173,6 +181,14 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 	public void authnResponse(HttpSession session,
 			HttpServletResponse authnResponse) throws ProtocolException {
+		PrivateKey privateKey = this.identityServiceClient.getPrivateKey();
+		String userId = (String) session.getAttribute("username");
+		String target = (String) session.getAttribute("target");
+		LOG.debug("user Id: " + userId);
+		LOG.debug("target URL: " + target);
+		
+		
+		
 		throw new ProtocolException("implement me");
 	}
 }
