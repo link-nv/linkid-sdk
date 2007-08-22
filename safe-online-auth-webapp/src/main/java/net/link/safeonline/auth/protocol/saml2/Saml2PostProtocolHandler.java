@@ -13,7 +13,6 @@ import java.security.cert.X509Certificate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.namespace.QName;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.protocol.ProtocolContext;
@@ -29,16 +28,18 @@ import net.link.safeonline.util.ee.IdentityServiceClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.common.SAMLObject;
-import org.opensaml.common.binding.BindingException;
-import org.opensaml.common.binding.security.SAMLSecurityPolicy;
-import org.opensaml.common.binding.security.SAMLSecurityPolicyFactory;
+import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
-import org.opensaml.saml2.binding.decoding.HTTPPostDecoderBuilder;
-import org.opensaml.saml2.binding.security.SAML2ProtocolMessageRuleFactory;
+import org.opensaml.saml2.binding.security.SAML2ProtocolMessageRule;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.ws.message.decoder.MessageDecodingException;
+import org.opensaml.ws.security.SecurityPolicy;
 import org.opensaml.ws.security.SecurityPolicyException;
-import org.opensaml.xml.parse.BasicParserPool;
+import org.opensaml.ws.security.provider.BasicSecurityPolicy;
+import org.opensaml.ws.security.provider.HTTPRule;
+import org.opensaml.ws.security.provider.MandatoryIssuerRule;
+import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.validation.ValidationException;
@@ -80,46 +81,30 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		}
 		LOG.debug("SAMLRequest parameter found");
 
-		HTTPPostDecoderBuilder postDecoderBuilder = new HTTPPostDecoderBuilder();
-		BasicParserPool parser = new BasicParserPool();
-		parser.setNamespaceAware(true);
-		postDecoderBuilder.setParser(parser);
-		HTTPPostDecoder postDecoder = postDecoderBuilder.buildDecoder();
-		postDecoder.setRequest(authnRequest);
+		BasicSAMLMessageContext messageContext = new BasicSAMLMessageContext();
+		messageContext
+				.setInboundMessageTransport(new HttpServletRequestAdapter(
+						authnRequest));
 
-		SAMLSecurityPolicyFactory samlSecurityPolicyFactory = new SAMLSecurityPolicyFactory();
-		samlSecurityPolicyFactory.setIssuerRole(new QName("someURI", "dummy",
-				"abc123"));
-		samlSecurityPolicyFactory.setIssuerProtocol("dummy-protocol");
+		SecurityPolicy securityPolicy = new BasicSecurityPolicy();
+		securityPolicy.getPolicyRules().add(new HTTPRule(null, "POST", false));
+		securityPolicy.getPolicyRules().add(new SAML2ProtocolMessageRule());
+		securityPolicy.getPolicyRules().add(new MandatoryIssuerRule());
+		// securityPolicy.getPolicyRules().add(new MessageReplayRule(...));
+		messageContext.setSecurityPolicy(securityPolicy);
 
-		/*
-		 * We will validate the signature outside of the opensaml2 framework.
-		 */
-		samlSecurityPolicyFactory.setRequiredAuthenticatedIssuer(false);
-
-		SAML2ProtocolMessageRuleFactory samlProtocolMessageRuleFactory = new SAML2ProtocolMessageRuleFactory();
-		samlSecurityPolicyFactory.getPolicyRuleFactories().add(
-				samlProtocolMessageRuleFactory);
-		/*
-		 * We tried to use
-		 * SAMLProtocolMessageXMLSignatureSecurityPolicyRuleFactory here, but
-		 * the code is overly complex and the PKIX validation is using the Java
-		 * certpathbuilder stuff.
-		 */
-
-		SAMLSecurityPolicy samlSecurityPolicy = (SAMLSecurityPolicy) samlSecurityPolicyFactory
-				.createPolicyInstance();
-		postDecoder.setSecurityPolicy(samlSecurityPolicy);
+		HTTPPostDecoder decoder = new HTTPPostDecoder();
 		try {
-			postDecoder.decode();
-		} catch (BindingException e) {
-			throw new ProtocolException("SAML request binding exception: "
-					+ e.getMessage());
+			decoder.decode(messageContext);
+		} catch (MessageDecodingException e) {
+			LOG.debug("SAML message decoding error: " + e.getMessage());
+			throw new ProtocolException("SAML message decoding error");
 		} catch (SecurityPolicyException e) {
-			throw new ProtocolException("SAML security policy exception");
+			LOG.debug("security policy error: " + e.getMessage());
+			throw new ProtocolException("security policy error");
 		}
 
-		SAMLObject samlMessage = postDecoder.getSAMLMessage();
+		SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
 		if (false == samlMessage instanceof AuthnRequest) {
 			throw new ProtocolException(
 					"SAML message not an authentication request message");
@@ -186,9 +171,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		String target = (String) session.getAttribute("target");
 		LOG.debug("user Id: " + userId);
 		LOG.debug("target URL: " + target);
-		
-		
-		
+		// TODO: implement me
 		throw new ProtocolException("implement me");
 	}
 }

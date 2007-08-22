@@ -66,7 +66,8 @@ public class ProtocolHandlerManager {
 		} catch (Exception e) {
 			throw new RuntimeException(
 					"could not initialize protocol handler: "
-							+ protocolHandlerClass.getName());
+							+ protocolHandlerClass.getName() + "; message: "
+							+ e.getMessage(), e);
 		}
 	}
 

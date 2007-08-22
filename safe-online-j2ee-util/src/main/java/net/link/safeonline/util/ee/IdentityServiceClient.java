@@ -27,6 +27,8 @@ public class IdentityServiceClient {
 
 	private final ObjectName identityServiceName;
 
+	public static final String IDENTITY_SERVICE = "safeonline:service=Identity";
+
 	/**
 	 * Main constructor.
 	 */
@@ -34,8 +36,7 @@ public class IdentityServiceClient {
 		this.server = (MBeanServer) MBeanServerFactory.findMBeanServer(null)
 				.get(0);
 		try {
-			this.identityServiceName = new ObjectName(
-					"safeonline:service=Identity");
+			this.identityServiceName = new ObjectName(IDENTITY_SERVICE);
 		} catch (MalformedObjectNameException e) {
 			throw new RuntimeException("object name error: " + e.getMessage());
 		}

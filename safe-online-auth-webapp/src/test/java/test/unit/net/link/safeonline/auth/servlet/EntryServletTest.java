@@ -27,9 +27,11 @@ import net.link.safeonline.auth.servlet.EntryServlet;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
+import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
+import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -74,6 +76,8 @@ public class EntryServletTest {
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
+
+		JmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
 		this.entryServletTestManager = new ServletTestManager();
 		Map<String, String> initParams = new HashMap<String, String>();
