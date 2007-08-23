@@ -1,11 +1,15 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.appconsole;
+
+import java.awt.EventQueue;
+
+import net.java.javafx.FXShell;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,8 +25,27 @@ public class Main {
 	private static final Log LOG = LogFactory.getLog(Main.class);
 
 	public static void main(String[] args) {
-		LOG.info("Starting SafeOnline Application Console...");
+		startSwingConsole();
+		// startJavaFXConsole();
+	}
 
-		new ApplicationConsole();
+	public static void startSwingConsole(){
+        LOG.info("Starting Swing SafeOnline Application Console...");
+        Runnable runner = new Runnable() {
+        	  public void run() {
+        		  new ApplicationConsole();
+        	  }
+        	};
+        	EventQueue.invokeLater(runner);
+    }
+
+	public static void startJavaFXConsole() {
+		LOG.info("Starting Java FX SafeOnline Application Console...");
+		try {
+			FXShell
+					.main(new String[] { "net/link/safeonline/appconsole/Main.fx" });
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

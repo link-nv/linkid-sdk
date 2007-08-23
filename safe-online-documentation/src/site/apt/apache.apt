@@ -2,15 +2,38 @@ Apache HTTP Server
 
  We will use the Apache HTTP Server to provide server-side SSL functionality.
  
- {{{http://http://httpd.apache.org/}Apache HTTP Server homepage}}
+ {{{http://httpd.apache.org/}Apache HTTP Server homepage}}
  
 * SSL configuration
 
  To enable server-side SSL we use the Apache Module named <<<mod_ssl>>>.
  
- On Fedora Core Linux the configuration for the SSL module is located in <<</etc/httpd/conf.d/ssl.conf>>>.
+  On Fedora Core Linux the configuration for the SSL module is located in <<</etc/httpd/conf.d/ssl.conf>>>.
  
  Fedora Core comes with test SSL certificates.
+ 
+ 
+ On Mac :
+ 
+ Download/install latest {{{www.openssl.org}OpenSSL}} into /usr/local
+ IMPORTANT! Version OpenSSL 0.9.8e is needed with Apache 2.2.4
+ 
+ Download/install latest Apache
+ 
+ +---+
+ ./configure --enable-mods-shared=all --enable-ssl -with-ssl=/usr/local --enable-proxy --enable-proxy-ajp --prefix=/usr/local/apache2
+ make
+ make install
+ +---+
+ 
+ Enable SSL in <<</usr/local/apache2/conf/httpd.conf>>>
+ 
+ Create Self-Signed SSL Certificate for testing purposes and put them in /usr/local/apache2/conf
+ 
+ +---+
+ openssl req -new -x509 -nodes -out server.crt -keyout server.key
+ +---+
+ 
  
 * Proxy AJP
 
@@ -25,4 +48,4 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 
  Per default the JBoss Tomcat accepts AJP connections.
  
- The configuration for this is located in <<<$JBOSS_HOME/server/default/deploy/jbossweb-tomcat55.sar/server.xml>>>.
+ The configuration for this is located in <<<$JBOSS_HOME/server/default/deploy/jbossweb-tomcat55.sar/server.xml>>> or <<<$JBOSS_HOME/server/default/deploy/jboss-web.deployer/server.xml>>> on mac.

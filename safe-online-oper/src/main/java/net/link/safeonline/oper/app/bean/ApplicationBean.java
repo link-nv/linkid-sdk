@@ -7,7 +7,9 @@
 
 package net.link.safeonline.oper.app.bean;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,9 +43,10 @@ import net.link.safeonline.oper.app.IdentityAttribute;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.AttributeTypeService;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.custom.fileupload.UploadedFile;
+import org.apache.myfaces.trinidad.model.UploadedFile;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
@@ -179,7 +182,7 @@ public class ApplicationBean implements Application {
 		try {
 			byte[] encodedCertificate;
 			if (null != this.upFile) {
-				encodedCertificate = this.upFile.getBytes();
+				encodedCertificate = getUpFileContent();
 			} else {
 				encodedCertificate = null;
 			}
@@ -357,6 +360,13 @@ public class ApplicationBean implements Application {
 		}
 	}
 
+	private byte[] getUpFileContent() throws IOException {
+		InputStream inputStream = this.upFile.getInputStream();
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		IOUtils.copy(inputStream, byteArrayOutputStream);
+		return byteArrayOutputStream.toByteArray();
+	}
+
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String save() {
 		String applicationId = this.selectedApplication.getName();
@@ -366,7 +376,7 @@ public class ApplicationBean implements Application {
 			LOG.debug("updating application certificate");
 			try {
 				this.applicationService.updateApplicationCertificate(
-						applicationId, this.upFile.getBytes());
+						applicationId, getUpFileContent());
 			} catch (CertificateEncodingException e) {
 				String msg = "certificate encoding error";
 				LOG.debug(msg);

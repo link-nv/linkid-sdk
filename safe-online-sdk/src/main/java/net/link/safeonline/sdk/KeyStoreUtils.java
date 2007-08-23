@@ -48,6 +48,16 @@ public class KeyStoreUtils {
 	public static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType,
 			InputStream keyStoreInputStream, String keyStorePassword,
 			String keyEntryPassword) {
+		return loadPrivateKeyEntry(keystoreType, keyStoreInputStream,
+				keyStorePassword == null ? null : keyStorePassword
+						.toCharArray(), keyEntryPassword == null ? null
+						: keyEntryPassword.toCharArray());
+	}
+
+	public static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType,
+			InputStream keyStoreInputStream, char[] keyStorePassword,
+			char[] keyEntryPassword) {
+
 		KeyStore keyStore;
 		try {
 			keyStore = KeyStore.getInstance(keystoreType);
@@ -56,8 +66,7 @@ public class KeyStoreUtils {
 					+ e.getMessage(), e);
 		}
 		try {
-			keyStore.load(keyStoreInputStream, keyStorePassword == null ? null
-					: keyStorePassword.toCharArray());
+			keyStore.load(keyStoreInputStream, keyStorePassword);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					"keystore load error: " + e.getMessage(), e);
@@ -82,9 +91,7 @@ public class KeyStoreUtils {
 		}
 		try {
 			PrivateKeyEntry privateKeyEntry = (PrivateKeyEntry) keyStore
-					.getEntry(alias, new KeyStore.PasswordProtection(
-							keyEntryPassword == null ? null : keyEntryPassword
-									.toCharArray()));
+					.getEntry(alias, new KeyStore.PasswordProtection(keyEntryPassword));
 			return privateKeyEntry;
 		} catch (Exception e) {
 			throw new RuntimeException("error retrieving key: "

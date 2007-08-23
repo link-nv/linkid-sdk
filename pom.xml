@@ -244,6 +244,11 @@
 					<artifactId>maven-eclipse-plugin</artifactId>
 					<version>${maven-eclipse-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>netbeans-freeform-maven-plugin</artifactId>
+					<version>${netbeans-freeform-maven-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -1098,6 +1103,26 @@
 				<artifactId>commons-net</artifactId>
 				<version>${commons-net.version}</version>
 			</dependency>
+                        <dependency>
+                                <groupId>net.java.dev</groupId>
+                                <artifactId>javafxrt</artifactId>
+                                <version>${javafxrt.version}</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>net.java.dev.swing-layout</groupId>
+                                <artifactId>swing-layout</artifactId>
+                                <version>${swing-layout.version}</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>net.java.dev</groupId>
+                                <artifactId>Filters</artifactId>
+                                <version>${Filters.version}</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>net.java.dev</groupId>
+                                <artifactId>swing-worker</artifactId>
+                                <version>${swing-worker.version}</version>
+                        </dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1258,5 +1283,10 @@
 		<rxtx.version>2.1.7</rxtx.version>
 		<maven-eclipse-plugin.version>2.4</maven-eclipse-plugin.version>
 		<commons-net.version>1.4.1</commons-net.version>
+		<netbeans-freeform-maven-plugin.version>2.1-SNAPSHOT</netbeans-freeform-maven-plugin.version>
+		<javafxrt.version>1531</javafxrt.version>
+		<swing-layout.version>1.0.2</swing-layout.version>
+		<Filters.version>1531</Filters.version>
+		<swing-worker.version>1.1</swing-worker.version>
 	</properties>
 </project>

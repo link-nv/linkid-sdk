@@ -5,6 +5,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:tr="http://myfaces.apache.org/trinidad"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
@@ -70,11 +71,9 @@
 				<rich:tab label="#{msgs.accessControl}">
 					<h:panelGrid columns="1">
 						<h:panelGroup>
-							<h:outputText value="#{msgs.certificate}: " />
 							<s:decorate>
-								<t:inputFileUpload id="fileupload"
-									value="#{operApplication.upFile}" storage="file"
-									maxlength="200000" />
+								<tr:inputFile id="certificate" label="#{msgs.certificate}:"
+									value="#{operApplication.upFile}" />
 							</s:decorate>
 							<h:message for="fileupload" styleClass="error" />
 						</h:panelGroup>
