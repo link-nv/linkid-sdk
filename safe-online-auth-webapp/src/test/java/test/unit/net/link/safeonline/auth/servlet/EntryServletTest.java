@@ -77,7 +77,8 @@ public class EntryServletTest {
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
 
-		JmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+		JmxTestUtils jmxTestUtils = new JmxTestUtils();
+		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
 		this.entryServletTestManager = new ServletTestManager();
 		Map<String, String> initParams = new HashMap<String, String>();

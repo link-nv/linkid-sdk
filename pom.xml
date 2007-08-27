@@ -332,6 +332,7 @@
 		<module>safe-online-sms-ra-package</module>
 		<module>safe-online-jpa-util</module>
 		<module>safe-online-sdk-deploy-ctx</module>
+		<module>safe-online-saml-authn-context</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -470,7 +471,7 @@
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
-			<id>buildserver</id>
+			<id>buildserver-plugins</id>
 			<name>Buildserver Plugin Repository</name>
 			<url>http://buildserver/maven2</url>
 			<snapshots>
@@ -1152,8 +1153,8 @@
 		</jboss-packaging-maven-plugin.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
 		<junit.version>4.3.1</junit.version>
-		<jaxb-xjc.version>2.1.3</jaxb-xjc.version>
-		<jaxb-impl.version>2.1.3</jaxb-impl.version>
+		<jaxb-xjc.version>2.1.4</jaxb-xjc.version>
+		<jaxb-impl.version>2.1.4</jaxb-impl.version>
 		<jsr181-api.version>1.0-MR1</jsr181-api.version>
 		<jaxb-api.version>2.1</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>

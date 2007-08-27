@@ -16,9 +16,11 @@ import net.link.safeonline.auth.Device;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.FacesMessages;
 
 @Stateful
@@ -33,6 +35,9 @@ public class DeviceBean implements Device {
 
 	@In(create = true)
 	FacesMessages facesMessages;
+
+	@Out(value = AUTHN_DEVICE_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
+	private String device;
 
 	@Remove
 	@Destroy
@@ -63,6 +68,9 @@ public class DeviceBean implements Device {
 			this.facesMessages.add(msg);
 			return null;
 		}
+
+		this.device = this.selection;
+		LOG.debug("device: " + this.device);
 
 		return outcome;
 	}

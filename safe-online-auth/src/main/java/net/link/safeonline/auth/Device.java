@@ -12,6 +12,8 @@ import javax.ejb.Local;
 @Local
 public interface Device {
 
+	public static final String AUTHN_DEVICE_ATTRIBUTE = "AuthenticationDevice";
+
 	String getSelection();
 
 	void setSelection(String deviceSelection);

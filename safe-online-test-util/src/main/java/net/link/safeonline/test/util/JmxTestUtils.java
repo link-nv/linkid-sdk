@@ -8,6 +8,7 @@
 package net.link.safeonline.test.util;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
@@ -23,9 +24,9 @@ import javax.management.ObjectName;
  */
 public class JmxTestUtils {
 
-	private JmxTestUtils() {
-		// private
-	}
+	private DynamicTestMBean dynamicTestMBean;
+
+	private ObjectName mbeanName;
 
 	/**
 	 * Sets up a test JMX MBean with the given MBean name.
@@ -37,13 +38,30 @@ public class JmxTestUtils {
 	 * @throws MBeanRegistrationException
 	 * @throws NotCompliantMBeanException
 	 */
-	public static void setUp(String mbeanName)
-			throws MalformedObjectNameException, NullPointerException,
-			InstanceAlreadyExistsException, MBeanRegistrationException,
-			NotCompliantMBeanException {
+	public void setUp(String mbeanName) throws MalformedObjectNameException,
+			NullPointerException, InstanceAlreadyExistsException,
+			MBeanRegistrationException, NotCompliantMBeanException {
 		MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
 		ObjectName mbeanObjectName = new ObjectName(mbeanName);
-		Object testMBean = new DynamicTestMBean();
-		mbeanServer.registerMBean(testMBean, mbeanObjectName);
+		this.dynamicTestMBean = new DynamicTestMBean();
+		mbeanServer.registerMBean(this.dynamicTestMBean, mbeanObjectName);
+		this.mbeanName = mbeanObjectName;
+	}
+
+	public void tearDown() throws InstanceNotFoundException,
+			MBeanRegistrationException {
+		MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
+		mbeanServer.unregisterMBean(this.mbeanName);
+	}
+
+	/**
+	 * Registers an action handler.
+	 * 
+	 * @param actionName
+	 * @param actionHandler
+	 */
+	public void registerActionHandler(String actionName,
+			MBeanActionHandler actionHandler) {
+		this.dynamicTestMBean.registerActionHandler(actionName, actionHandler);
 	}
 }

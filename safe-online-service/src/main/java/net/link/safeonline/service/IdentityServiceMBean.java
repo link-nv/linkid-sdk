@@ -8,6 +8,7 @@
 package net.link.safeonline.service;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 
 /**
  * Interface for Identity Service JMX bean.
@@ -17,8 +18,18 @@ import java.security.PrivateKey;
  */
 public interface IdentityServiceMBean {
 
-	PrivateKey loadPrivateKey();
+	/*
+	 * Operations.
+	 */
+	PrivateKey getPrivateKey();
 
+	PublicKey getPublicKey();
+
+	void loadKeyPair();
+
+	/*
+	 * Attributes.
+	 */
 	void setKeyStoreResource(String keyStoreResource);
 
 	String getKeyStoreResource();

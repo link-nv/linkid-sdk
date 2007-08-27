@@ -88,7 +88,8 @@ public class IdentityServiceBeanTest {
 				SafeOnlineTestContainer.sessionBeans, entityManager);
 		systemStartable.postStart();
 
-		JmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
+		JmxTestUtils jmxTestUtils = new JmxTestUtils();
+		jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 	}
 
 	@After

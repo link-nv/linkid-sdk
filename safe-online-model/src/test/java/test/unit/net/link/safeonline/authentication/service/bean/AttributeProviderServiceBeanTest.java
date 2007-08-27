@@ -53,7 +53,8 @@ public class AttributeProviderServiceBeanTest {
 
 	@Before
 	public void setUp() throws Exception {
-		JmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
+		JmxTestUtils jmxTestUtils = new JmxTestUtils();
+		jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 
 		this.entityTestManager = new EntityTestManager();
 		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);

@@ -41,8 +41,17 @@
 		</descriptors>
 	</attribute>
 	<operation>
-		<description>Loads the Private Identity Key</description>
-		<name>loadPrivateKey</name>
+		<description>Gives back the Private Identity Key</description>
+		<name>getPrivateKey</name>
 		<return-type>java.security.PrivateKey</return-type>
+	</operation>
+	<operation>
+		<description>Gives back the Public Identity Key</description>
+		<name>getPublicKey</name>
+		<return-type>java.security.PublicKey</return-type>
+	</operation>
+	<operation>
+		<description>Load the Identity Key Pair</description>
+		<name>loadKeyPair</name>
 	</operation>
 </mbean>

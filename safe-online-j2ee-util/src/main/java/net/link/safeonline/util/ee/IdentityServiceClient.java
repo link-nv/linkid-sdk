@@ -8,6 +8,8 @@
 package net.link.safeonline.util.ee;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.ArrayList;
 
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
@@ -33,8 +35,12 @@ public class IdentityServiceClient {
 	 * Main constructor.
 	 */
 	public IdentityServiceClient() {
-		this.server = (MBeanServer) MBeanServerFactory.findMBeanServer(null)
-				.get(0);
+		ArrayList mbeanServers = MBeanServerFactory.findMBeanServer(null);
+		if (mbeanServers.isEmpty()) {
+			throw new RuntimeException(
+					"no MBean server found; probably not running inside J2EE container");
+		}
+		this.server = (MBeanServer) mbeanServers.get(0);
 		try {
 			this.identityServiceName = new ObjectName(IDENTITY_SERVICE);
 		} catch (MalformedObjectNameException e) {
@@ -53,11 +59,30 @@ public class IdentityServiceClient {
 		PrivateKey privateKey;
 		try {
 			privateKey = (PrivateKey) this.server.invoke(
-					this.identityServiceName, "loadPrivateKey", params,
+					this.identityServiceName, "getPrivateKey", params,
 					signature);
 		} catch (Exception e) {
 			throw new RuntimeException("invoke error: " + e.getMessage(), e);
 		}
 		return privateKey;
+	}
+
+	/**
+	 * Gives back the public key of the SafeOnline service entity.
+	 * 
+	 * @return
+	 */
+	public PublicKey getPublicKey() {
+		Object[] params = {};
+		String[] signature = {};
+		PublicKey publicKey;
+		try {
+			publicKey = (PublicKey) this.server
+					.invoke(this.identityServiceName, "getPublicKey", params,
+							signature);
+		} catch (Exception e) {
+			throw new RuntimeException("invoke error: " + e.getMessage(), e);
+		}
+		return publicKey;
 	}
 }

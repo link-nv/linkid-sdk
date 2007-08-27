@@ -8,13 +8,16 @@
 package net.link.safeonline.auth.protocol.saml2;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.auth.Device;
 import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
@@ -27,19 +30,29 @@ import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.log.Log4JLogChute;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
+import org.opensaml.saml2.binding.encoding.HTTPPostEncoder;
 import org.opensaml.saml2.binding.security.SAML2ProtocolMessageRule;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
+import org.opensaml.ws.message.encoder.MessageEncodingException;
 import org.opensaml.ws.security.SecurityPolicy;
 import org.opensaml.ws.security.SecurityPolicyException;
 import org.opensaml.ws.security.provider.BasicSecurityPolicy;
 import org.opensaml.ws.security.provider.HTTPRule;
 import org.opensaml.ws.security.provider.MandatoryIssuerRule;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
+import org.opensaml.ws.transport.http.HttpServletResponseAdapter;
+import org.opensaml.xml.security.SecurityHelper;
+import org.opensaml.xml.security.credential.BasicCredential;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.validation.ValidationException;
@@ -59,6 +72,10 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 	public static final String NAME = "SAML v2 Browser POST Authentication Protocol";
 
 	private final IdentityServiceClient identityServiceClient;
+
+	public static final String IN_RESPONSE_TO_ATTRIBUTE = Saml2PostProtocolHandler.class
+			.getName()
+			+ ".IN_RESPONSE_TO";
 
 	public Saml2PostProtocolHandler() {
 		this.identityServiceClient = new IdentityServiceClient();
@@ -161,17 +178,89 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 			throw new ProtocolException("missing AssertionConsumerServiceURL");
 		}
 
+		String samlAuthnRequestId = samlAuthnRequest.getID();
+		LOG.debug("SAML authn request ID: " + samlAuthnRequestId);
+		HttpSession session = authnRequest.getSession();
+		session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
+
 		return new ProtocolContext(issuerName, assertionConsumerService);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void authnResponse(HttpSession session,
 			HttpServletResponse authnResponse) throws ProtocolException {
 		PrivateKey privateKey = this.identityServiceClient.getPrivateKey();
+		PublicKey publicKey = this.identityServiceClient.getPublicKey();
 		String userId = (String) session.getAttribute("username");
 		String target = (String) session.getAttribute("target");
 		LOG.debug("user Id: " + userId);
 		LOG.debug("target URL: " + target);
-		// TODO: implement me
-		throw new ProtocolException("implement me");
+
+		BasicSAMLMessageContext messageContext = new BasicSAMLMessageContext();
+		messageContext
+				.setOutboundMessageTransport(new HttpServletResponseAdapter(
+						authnResponse));
+		SafeOnlineAuthnContextClass authnContextClass = getAuthnContextClass(session);
+		String issuerName = "OLAS";
+		String inResponseTo = (String) session
+				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
+		if (null == inResponseTo) {
+			throw new ProtocolException(
+					"missing IN_RESPONSE_TO session attribute");
+		}
+		Response responseMessage = AuthnResponseFactory.createAuthResponse(
+				inResponseTo, issuerName, userId, authnContextClass);
+		messageContext.setOutboundSAMLMessage(responseMessage);
+
+		AssertionConsumerService assertionConsumerService = AuthnResponseFactory
+				.buildXMLObject(AssertionConsumerService.class,
+						AssertionConsumerService.DEFAULT_ELEMENT_NAME);
+		assertionConsumerService.setLocation(target);
+		messageContext.setPeerEntityEndpoint(assertionConsumerService);
+
+		BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
+				publicKey, privateKey);
+		messageContext
+				.setOutboundSAMLMessageSigningCredential(signingCredential);
+
+		Properties velocityProperties = new Properties();
+		velocityProperties.put("resource.loader", "class");
+		velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
+				Log4JLogChute.class.getName());
+		velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER,
+				Saml2PostProtocolHandler.class.getName());
+		velocityProperties
+				.put("class.resource.loader.class",
+						"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		VelocityEngine velocityEngine;
+		try {
+			velocityEngine = new VelocityEngine(velocityProperties);
+			velocityEngine.init();
+		} catch (Exception e) {
+			throw new ProtocolException("could not initialize velocity engine");
+		}
+
+		HTTPPostEncoder postEncoder = new HTTPPostEncoder(velocityEngine,
+				"/templates/saml2-post-binding.vm");
+		try {
+			postEncoder.encode(messageContext);
+		} catch (MessageEncodingException e) {
+			LOG.debug("message encoding exception: " + e.getMessage(), e);
+			throw new ProtocolException("message encoding error: "
+					+ e.getMessage());
+		}
+	}
+
+	private SafeOnlineAuthnContextClass getAuthnContextClass(HttpSession session)
+			throws ProtocolException {
+		String device = (String) session
+				.getAttribute(Device.AUTHN_DEVICE_ATTRIBUTE);
+		if ("beid".equals(device)) {
+			return SafeOnlineAuthnContextClass.SMART_CARD_PKI;
+		}
+		if ("password".equals(device)) {
+			return SafeOnlineAuthnContextClass.PASSWORD_PROTECTED_TRANSPORT;
+		}
+		throw new ProtocolException("unsupported device: " + device);
 	}
 }

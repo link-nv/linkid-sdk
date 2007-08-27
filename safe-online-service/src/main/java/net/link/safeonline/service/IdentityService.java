@@ -9,6 +9,7 @@ package net.link.safeonline.service;
 
 import java.io.InputStream;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.KeyStore.PrivateKeyEntry;
 
 import net.link.safeonline.sdk.KeyStoreUtils;
@@ -44,7 +45,11 @@ public class IdentityService implements IdentityServiceMBean {
 
 	private String keyStoreType;
 
-	public PrivateKey loadPrivateKey() {
+	private PrivateKey privateKey;
+
+	private PublicKey publicKey;
+
+	public void loadKeyPair() {
 		LOG.debug("load private key");
 		if (null == this.keyStoreResource) {
 			throw new RuntimeException("no key store resource set");
@@ -72,8 +77,8 @@ public class IdentityService implements IdentityServiceMBean {
 		} finally {
 			IOUtils.closeQuietly(keyStoreInputStream);
 		}
-		PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-		return privateKey;
+		this.privateKey = privateKeyEntry.getPrivateKey();
+		this.publicKey = privateKeyEntry.getCertificate().getPublicKey();
 	}
 
 	public void setKeyStorePassword(String keyStorePassword) {
@@ -101,4 +106,19 @@ public class IdentityService implements IdentityServiceMBean {
 	public void setKeyStoreType(String keyStoreType) {
 		this.keyStoreType = keyStoreType;
 	}
+
+	public PrivateKey getPrivateKey() {
+		if (null == this.privateKey) {
+			loadKeyPair();
+		}
+		return this.privateKey;
+	}
+
+	public PublicKey getPublicKey() {
+		if (null == this.publicKey) {
+			loadKeyPair();
+		}
+		return this.publicKey;
+	}
+
 }

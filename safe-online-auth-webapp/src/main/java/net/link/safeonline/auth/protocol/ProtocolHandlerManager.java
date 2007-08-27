@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.auth.Device;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 
 import org.apache.commons.logging.Log;
@@ -136,6 +137,12 @@ public class ProtocolHandlerManager {
 		if (null == target) {
 			throw new ProtocolException(
 					"incorrect authentication state (missing target)");
+		}
+
+		String device = (String) session
+				.getAttribute(Device.AUTHN_DEVICE_ATTRIBUTE);
+		if (null == device) {
+			throw new ProtocolException("missing device session attribute");
 		}
 
 		try {
