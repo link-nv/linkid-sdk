@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.ws;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -76,7 +77,12 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 	}
 
 	public Set<QName> getHeaders() {
-		return null;
+		Set<QName> headers = new HashSet<QName>();
+		headers
+				.add(new QName(
+						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+						"Security"));
+		return headers;
 	}
 
 	public void close(MessageContext messageContext) {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+	soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+	<soap:Body>
+		<tns:root xmlns:tns="urn:test">Hello World</tns:root>
+	</soap:Body>
+</soap:Envelope>

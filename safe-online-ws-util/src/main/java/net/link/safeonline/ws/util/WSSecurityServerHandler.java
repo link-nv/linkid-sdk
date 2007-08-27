@@ -33,6 +33,8 @@ import org.apache.ws.security.WSSecurityEngine;
 import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.Crypto;
+import org.apache.ws.security.message.WSSecHeader;
+import org.apache.ws.security.message.WSSecTimestamp;
 import org.apache.ws.security.message.token.Timestamp;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
@@ -70,7 +72,6 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
 						"Security"));
 		return headers;
-
 	}
 
 	public void close(MessageContext messageContext) {
@@ -83,24 +84,39 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 	public boolean handleMessage(SOAPMessageContext soapMessageContext) {
 		Boolean outboundProperty = (Boolean) soapMessageContext
 				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-		if (true == outboundProperty.booleanValue()) {
-			/*
-			 * We only need to verify the WS-Security SOAP header on inbound
-			 * messages.
-			 */
-			return true;
-		}
 
 		SOAPMessage soapMessage = soapMessageContext.getMessage();
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 
-		handleDocument(soapPart, soapMessageContext);
+		if (true == outboundProperty.booleanValue()) {
+			handleOutboundDocument(soapPart);
+			return true;
+		}
+
+		handleInboundDocument(soapPart, soapMessageContext);
 
 		return true;
 	}
 
+	/**
+	 * Handles the outbound SOAP message. This method will simply add an
+	 * unsigned WS-Securty Timestamp in the SOAP header. This is required for
+	 * .NET 2/3 clients.
+	 * 
+	 * @param document
+	 */
+	private void handleOutboundDocument(SOAPPart document) {
+		LOG.debug("handle outbound document");
+		WSSecHeader wsSecHeader = new WSSecHeader();
+		wsSecHeader.insertSecurityHeader(document);
+		WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
+		wsSecTimeStamp.setTimeToLive(0);
+		wsSecTimeStamp.prepare(document);
+		wsSecTimeStamp.prependToHeader(wsSecHeader);
+	}
+
 	@SuppressWarnings("unchecked")
-	private void handleDocument(SOAPPart document,
+	private void handleInboundDocument(SOAPPart document,
 			SOAPMessageContext soapMessageContext) {
 		LOG.debug("WS-Security header validation");
 		WSSecurityEngine securityEngine = WSSecurityEngine.getInstance();

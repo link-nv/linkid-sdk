@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.sdk.attrib;
+package test.unit.net.link.safeonline.sdk.ws;
 
 import static junit.framework.Assert.assertNotNull;
 

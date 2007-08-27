@@ -52,6 +52,7 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xpath.XPathAPI;
 import org.bouncycastle.util.encoders.Base64;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -130,6 +131,55 @@ public class WSSecurityServerHandlerTest {
 				soapMessageContext));
 		assertFalse(WSSecurityServerHandler.isSignedElement("id-foobar",
 				soapMessageContext));
+	}
+
+	@Test
+	public void testOutboundMessageHasTimestamp() throws Exception {
+		// setup
+		MessageFactory messageFactory = MessageFactory
+				.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
+		InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class
+				.getResourceAsStream("/test-soap-message.xml");
+		assertNotNull(testSoapMessageInputStream);
+
+		SOAPMessage message = messageFactory.createMessage(null,
+				testSoapMessageInputStream);
+
+		SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(
+				message, true);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		this.testedInstance.handleMessage(soapMessageContext);
+
+		// verify
+		SOAPMessage resultMessage = soapMessageContext.getMessage();
+		SOAPPart resultSoapPart = resultMessage.getSOAPPart();
+		LOG.debug("result SOAP part: "
+				+ DomTestUtils.domToString(resultSoapPart));
+		verify(this.mockObjects);
+		Element nsElement = resultSoapPart.createElement("nsElement");
+		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap",
+				"http://schemas.xmlsoap.org/soap/envelope/");
+		nsElement
+				.setAttributeNS(
+						Constants.NamespaceSpecNS,
+						"xmlns:wsse",
+						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
+		nsElement
+				.setAttributeNS(
+						Constants.NamespaceSpecNS,
+						"xmlns:wsu",
+						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
+		assertNotNull(
+				"missing WS-Security timestamp",
+				XPathAPI
+						.selectSingleNode(
+								resultSoapPart,
+								"/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp/wsu:Created",
+								nsElement));
 	}
 
 	@Test
