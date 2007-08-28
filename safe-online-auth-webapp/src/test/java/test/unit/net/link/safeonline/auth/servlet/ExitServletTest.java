@@ -56,7 +56,7 @@ public class ExitServletTest {
 
 	private String protocolErrorUrl = "protocol-error";
 
-	private ServletTestManager entryServletTestManager;
+	private ServletTestManager exitServletTestManager;
 
 	private String username = "test-user-name";
 
@@ -105,7 +105,7 @@ public class ExitServletTest {
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				mockSamlAuthorityService);
 
-		this.entryServletTestManager = new ServletTestManager();
+		this.exitServletTestManager = new ServletTestManager();
 		Map<String, String> servletInitParams = new HashMap<String, String>();
 		servletInitParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
@@ -121,13 +121,13 @@ public class ExitServletTest {
 				Saml2PostProtocolHandler.IN_RESPONSE_TO_ATTRIBUTE,
 				this.inResponseTo);
 
-		this.entryServletTestManager.setUp(ExitServlet.class,
-				servletInitParams, null, null, initialSessionAttributes);
+		this.exitServletTestManager.setUp(ExitServlet.class, servletInitParams,
+				null, null, initialSessionAttributes);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		this.entryServletTestManager.tearDown();
+		this.exitServletTestManager.tearDown();
 		this.jndiTestUtils.tearDown();
 		// this.jmxTestUtils.tearDown();
 	}
@@ -136,7 +136,7 @@ public class ExitServletTest {
 	public void saml2Response() throws Exception {
 		// setup
 		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.entryServletTestManager
+		GetMethod getMethod = new GetMethod(this.exitServletTestManager
 				.getServletLocation());
 		getMethod.setFollowRedirects(false);
 

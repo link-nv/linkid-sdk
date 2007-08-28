@@ -25,6 +25,7 @@ import net.link.safeonline.auth.protocol.SimpleProtocolHandler;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.EntryServlet;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.test.util.JmxTestUtils;
@@ -77,6 +78,15 @@ public class EntryServletTest {
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
 
+		SamlAuthorityService mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+		expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(
+				"test-issuer-name");
+		expect(mockSamlAuthorityService.getAuthnAssertionValidity())
+				.andStubReturn(10 * 60);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/SamlAuthorityServiceBean/local",
+				mockSamlAuthorityService);
+
 		JmxTestUtils jmxTestUtils = new JmxTestUtils();
 		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
@@ -89,7 +99,7 @@ public class EntryServletTest {
 
 		this.mockObjects = new Object[] {
 				this.mockApplicationAuthenticationService,
-				this.mockPkiValidator };
+				this.mockPkiValidator, mockSamlAuthorityService };
 	}
 
 	@After
