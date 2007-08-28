@@ -83,7 +83,7 @@ public class AuthenticationFilterTest {
 		filterInitParameters.put("SafeOnlineAuthenticationServiceUrl",
 				"http://authn.service");
 		filterInitParameters.put("ApplicationName", "application-id");
-		Map<String, String> initialSessionAttributes = new HashMap<String, String>();
+		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		this.servletTestManager.setUp(TestServlet.class,
 				AuthenticationFilter.class, filterInitParameters,
 				initialSessionAttributes);
@@ -127,7 +127,7 @@ public class AuthenticationFilterTest {
 				.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
 		filterInitParameters.put("KeyStoreResource", p12ResourceName);
 		filterInitParameters.put("KeyStorePassword", "secret");
-		Map<String, String> initialSessionAttributes = new HashMap<String, String>();
+		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		this.servletTestManager.setUp(TestServlet.class,
 				AuthenticationFilter.class, filterInitParameters,
 				initialSessionAttributes);
@@ -170,7 +170,7 @@ public class AuthenticationFilterTest {
 		filterInitParameters.put("KeyStorePassword", "secret");
 		filterInitParameters.put("Saml2BrowserPostTemplate",
 				"test-saml2-post-binding.vm");
-		Map<String, String> initialSessionAttributes = new HashMap<String, String>();
+		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		this.servletTestManager.setUp(TestServlet.class,
 				AuthenticationFilter.class, filterInitParameters,
 				initialSessionAttributes);

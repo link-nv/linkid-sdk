@@ -8,20 +8,23 @@
 package net.link.safeonline.sdk.auth;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.KeyPair;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * Interface for authentication protocol handlers.
+ * Interface for authentication protocol handlers. Protocol handlers are
+ * stateful since they must be capable of handling the challenge-response aspect
+ * of the authentication protocol.
  * 
  * @author fcorneli
  * 
  */
-public interface AuthenticationProtocolHandler {
+public interface AuthenticationProtocolHandler extends Serializable {
 
 	/**
 	 * Initializes the authentication protocol handler.
@@ -53,7 +56,19 @@ public interface AuthenticationProtocolHandler {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	void initiateAuthentication(ServletRequest request,
-			ServletResponse response, String targetUrl) throws IOException,
+	void initiateAuthentication(HttpServletRequest request,
+			HttpServletResponse response, String targetUrl) throws IOException,
 			ServletException;
+
+	/**
+	 * Finalize the active authentication process.
+	 * 
+	 * @param httpRequest
+	 * @param httpResponse
+	 * @return the authenticated user Id or <code>null</code> if the handler
+	 *         thinks the request has nothing to do with authentication.
+	 * @throws ServletException
+	 */
+	String finalizeAuthentication(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) throws ServletException;
 }

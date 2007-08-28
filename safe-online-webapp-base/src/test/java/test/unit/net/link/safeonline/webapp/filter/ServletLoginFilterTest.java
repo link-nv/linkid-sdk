@@ -60,7 +60,7 @@ public class ServletLoginFilterTest extends TestCase {
 				this.mockAuthorizationService);
 
 		this.username = "username-" + getName();
-		Map<String, String> initialSessionAttributes = new HashMap<String, String>();
+		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		initialSessionAttributes.put("username", this.username);
 
 		this.servletTestManager = new ServletTestManager();

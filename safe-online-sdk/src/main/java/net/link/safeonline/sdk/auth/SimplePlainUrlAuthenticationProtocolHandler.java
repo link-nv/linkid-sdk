@@ -12,8 +12,6 @@ import java.net.URLEncoder;
 import java.security.KeyPair;
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,7 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Implementation class for the Simple Plain URL authentication protocol.
+ * Implementation class for the Simple Plain URL authentication protocol. This
+ * protocol is not doing any security or challenge-response at all.
  * 
  * <p>
  * The authentication request is done via a simple redirect towards the
@@ -29,7 +28,11 @@ import org.apache.commons.logging.LogFactory;
  * passed: <code>application</code> holds the application name and
  * <code>target</code> holds the URL of the local resource to which the
  * authentication web application should redirect after successful
- * authenticating the user. This comes with the request paramater
+ * authenticating the user.
+ * </p>
+ * 
+ * <p>
+ * The authentication response comes with the request parameter
  * <code>username</code> containing the name of the authenticated user.
  * </p>
  * 
@@ -39,6 +42,8 @@ import org.apache.commons.logging.LogFactory;
 @SupportedAuthenticationProtocol(AuthenticationProtocol.SIMPLE_PLAIN_URL)
 public class SimplePlainUrlAuthenticationProtocolHandler implements
 		AuthenticationProtocolHandler {
+
+	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory
 			.getLog(SimplePlainUrlAuthenticationProtocolHandler.class);
@@ -54,9 +59,9 @@ public class SimplePlainUrlAuthenticationProtocolHandler implements
 		this.applicationName = applicationName;
 	}
 
-	public void initiateAuthentication(ServletRequest request,
-			ServletResponse response, String targetUrl) throws IOException {
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
+	public void initiateAuthentication(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse, String targetUrl)
+			throws IOException {
 		LOG.debug("redirecting to: " + this.authnServiceUrl);
 		if (null == targetUrl) {
 			/*
@@ -65,10 +70,21 @@ public class SimplePlainUrlAuthenticationProtocolHandler implements
 			targetUrl = httpRequest.getRequestURL().toString();
 		}
 		LOG.debug("target url: " + targetUrl);
-		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String redirectUrl = this.authnServiceUrl + "?application="
 				+ URLEncoder.encode(this.applicationName, "UTF-8") + "&target="
 				+ URLEncoder.encode(targetUrl, "UTF-8");
-		httpServletResponse.sendRedirect(redirectUrl);
+		httpResponse.sendRedirect(redirectUrl);
+	}
+
+	public String finalizeAuthentication(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) {
+		if (false == "GET".equals(httpRequest.getMethod())) {
+			/*
+			 * Nothing to see here, move along.
+			 */
+			return null;
+		}
+		String username = (String) httpRequest.getParameter("username");
+		return username;
 	}
 }

@@ -12,16 +12,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.saml2.Saml2BrowserPostAuthenticationProtocolHandler;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
- * Manager class for authentication protocol handlers.
+ * Manager class for the stateful authentication protocol handlers.
+ * 
+ * <p>
+ * The state is preserved using the HTTP session.
+ * </p>
  * 
  * @author fcorneli
  * 
  */
 public class AuthenticationProtocolManager {
+
+	private static final Log LOG = LogFactory
+			.getLog(AuthenticationProtocolManager.class);
+
+	public static final String PROTOCOL_HANDLER_ATTRIBUTE = AuthenticationProtocolManager.class
+			.getName()
+			+ ".PROTOCOL_HANDLER";
 
 	private static final Map<AuthenticationProtocol, Class<? extends AuthenticationProtocolHandler>> handlerClasses = new HashMap<AuthenticationProtocol, Class<? extends AuthenticationProtocolHandler>>();
 
@@ -58,7 +74,9 @@ public class AuthenticationProtocolManager {
 	/**
 	 * Returns a new authentication protocol handler for the requested
 	 * authentication protocol. The returned handler has already been
-	 * initialized.
+	 * initialized. This method will fail if a previous protocol handler was
+	 * already bound to the HTTP session corresponding with the given HTTP
+	 * servlet request.
 	 * 
 	 * @param authenticationProtocol
 	 * @param authnServiceUrl
@@ -66,14 +84,21 @@ public class AuthenticationProtocolManager {
 	 * @param applicationKeyPair
 	 * @param configParams
 	 *            the optional protocol handler configuration parameters.
+	 * @param httpRequest
 	 * @return
 	 * @throws ServletException
 	 */
-	public static AuthenticationProtocolHandler getAuthenticationProtocolHandler(
+	public static AuthenticationProtocolHandler createAuthenticationProtocolHandler(
 			AuthenticationProtocol authenticationProtocol,
 			String authnServiceUrl, String applicationName,
-			KeyPair applicationKeyPair, Map<String, String> configParams)
-			throws ServletException {
+			KeyPair applicationKeyPair, Map<String, String> configParams,
+			HttpServletRequest httpRequest) throws ServletException {
+		HttpSession session = httpRequest.getSession();
+		if (null != session.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE)) {
+			throw new ServletException(
+					"a previous protocol handler already attached to session");
+		}
+
 		Class<? extends AuthenticationProtocolHandler> authnProtocolHandlerClass = handlerClasses
 				.get(authenticationProtocol);
 		if (null == authnProtocolHandlerClass) {
@@ -105,6 +130,50 @@ public class AuthenticationProtocolManager {
 		}
 		protocolHandler.init(authnServiceUrl, applicationName,
 				applicationKeyPair, configParams);
+
+		/*
+		 * We save the stateful protocol handler into the HTTP session as
+		 * attribute.
+		 */
+		session.setAttribute(PROTOCOL_HANDLER_ATTRIBUTE, protocolHandler);
+
 		return protocolHandler;
+	}
+
+	/**
+	 * Gives back the authentication protocol handler instance bound to the HTTP
+	 * session corresponding with the given HTTP servlet request. In case there
+	 * is no authentication protocol handler bound to the current HTTP session
+	 * <code>null</code> will be returned.
+	 * 
+	 * @param httpRequest
+	 * @return
+	 * @throws ServletException
+	 */
+	public static AuthenticationProtocolHandler findAuthenticationProtocolHandler(
+			HttpServletRequest httpRequest) throws ServletException {
+		HttpSession session = httpRequest.getSession();
+		AuthenticationProtocolHandler protocolHandler = (AuthenticationProtocolHandler) session
+				.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE);
+		return protocolHandler;
+	}
+
+	/**
+	 * Cleanup the authentication handler currently attached to the HTTP
+	 * session.
+	 * 
+	 * @param httpRequest
+	 * @throws ServletException
+	 */
+	public static void cleanupAuthenticationHandler(
+			HttpServletRequest httpRequest) throws ServletException {
+		HttpSession session = httpRequest.getSession();
+		AuthenticationProtocolHandler protocolHandler = (AuthenticationProtocolHandler) session
+				.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE);
+		if (null == protocolHandler) {
+			throw new ServletException("no protocol handler to cleanup");
+		}
+		LOG.debug("cleanup authentication handler");
+		session.removeAttribute(PROTOCOL_HANDLER_ATTRIBUTE);
 	}
 }

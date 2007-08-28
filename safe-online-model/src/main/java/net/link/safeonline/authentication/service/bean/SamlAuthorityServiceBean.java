@@ -19,10 +19,19 @@ import net.link.safeonline.config.model.ConfigurationInterceptor;
 @Interceptors(ConfigurationInterceptor.class)
 public class SamlAuthorityServiceBean implements SamlAuthorityService {
 
-	@Configurable(group = "SAML Authority", name = "Issuer Name")
+	public static final String CONFIG_GROUP = "SAML Authority";
+
+	@Configurable(group = CONFIG_GROUP, name = "Issuer Name")
 	private String issuerName = "OLAS";
+
+	@Configurable(group = CONFIG_GROUP, name = "Authentication Assertion Validity (sec)")
+	private Integer authnAssertionValidity = 60 * 10;
 
 	public String getIssuerName() {
 		return this.issuerName;
+	}
+
+	public int getAuthnAssertionValidity() {
+		return this.authnAssertionValidity;
 	}
 }

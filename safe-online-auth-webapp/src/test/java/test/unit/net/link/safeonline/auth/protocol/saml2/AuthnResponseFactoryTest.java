@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.auth.protocol.saml2;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import net.link.safeonline.auth.protocol.saml2.AuthnResponseFactory;
 import net.link.safeonline.auth.protocol.saml2.SafeOnlineAuthnContextClass;
@@ -14,6 +15,7 @@ import net.link.safeonline.test.util.DomTestUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xpath.XPathAPI;
 import org.junit.Test;
 import org.opensaml.Configuration;
 import org.opensaml.saml2.core.Response;
@@ -21,6 +23,7 @@ import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.MarshallerFactory;
 import org.opensaml.xml.io.MarshallingException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class AuthnResponseFactoryTest {
 
@@ -33,11 +36,13 @@ public class AuthnResponseFactoryTest {
 		String inResponseTo = "id-in-response-to-test-id";
 		String issuerName = "test-issuer-name";
 		String subjectName = "test-subject-name";
+		int validity = 60 * 10;
 
 		// operate
 		Response response = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, issuerName, subjectName,
-				SafeOnlineAuthnContextClass.PASSWORD_PROTECTED_TRANSPORT);
+				SafeOnlineAuthnContextClass.PASSWORD_PROTECTED_TRANSPORT,
+				validity);
 
 		// verify
 		assertNotNull(response);
@@ -52,6 +57,11 @@ public class AuthnResponseFactoryTest {
 			throw new RuntimeException("opensaml2 marshalling error: "
 					+ e.getMessage(), e);
 		}
+
+		Node inResponseToNode = XPathAPI.selectSingleNode(responseElement,
+				"/samlp:Response/@InResponseTo");
+		assertNotNull(inResponseToNode);
+		assertEquals(inResponseTo, inResponseToNode.getTextContent());
 
 		LOG.debug("response: " + DomTestUtils.domToString(responseElement));
 	}

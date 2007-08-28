@@ -47,7 +47,8 @@ public class ContainerLoginFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		boolean loggedIn = LoginManager.isAuthenticated(request);
+		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+		boolean loggedIn = LoginManager.isAuthenticated(httpServletRequest);
 		if (false == loggedIn) {
 			/*
 			 * The the user did not authenticate via SafeOnline we cannot set
@@ -64,8 +65,7 @@ public class ContainerLoginFilter implements Filter {
 		}
 		request.setAttribute(ALREADY_PROCESSED, Boolean.TRUE);
 
-		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-		String username = LoginManager.getUsername(request);
+		String username = LoginManager.getUsername(httpServletRequest);
 		LOG.debug("setting servlet container user principal to " + username);
 		LoginHttpServletRequestWrapper wrapper = new LoginHttpServletRequestWrapper(
 				httpServletRequest, username);

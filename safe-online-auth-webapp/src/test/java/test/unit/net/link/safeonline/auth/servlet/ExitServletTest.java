@@ -7,6 +7,10 @@
 
 package test.unit.net.link.safeonline.auth.servlet;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -22,8 +26,10 @@ import net.link.safeonline.auth.Device;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.ExitServlet;
+import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JmxTestUtils;
+import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
@@ -62,6 +68,10 @@ public class ExitServletTest {
 
 	private JmxTestUtils jmxTestUtils;
 
+	private JndiTestUtils jndiTestUtils;
+
+	private Object[] mockObjects;
+
 	@Before
 	public void setUp() throws Exception {
 		this.jmxTestUtils = new JmxTestUtils();
@@ -83,10 +93,22 @@ public class ExitServletTest {
 					}
 				});
 
+		this.jndiTestUtils = new JndiTestUtils();
+		SamlAuthorityService mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+		expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(
+				"test-issuer-name");
+		expect(mockSamlAuthorityService.getAuthnAssertionValidity())
+				.andStubReturn(60 * 10);
+		this.mockObjects = new Object[] { mockSamlAuthorityService };
+		this.jndiTestUtils.setUp();
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/SamlAuthorityServiceBean/local",
+				mockSamlAuthorityService);
+
 		this.entryServletTestManager = new ServletTestManager();
 		Map<String, String> servletInitParams = new HashMap<String, String>();
 		servletInitParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
-		Map<String, String> initialSessionAttributes = new HashMap<String, String>();
+		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 
 		initialSessionAttributes.put(
 				ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE,
@@ -106,7 +128,8 @@ public class ExitServletTest {
 	@After
 	public void tearDown() throws Exception {
 		this.entryServletTestManager.tearDown();
-		//this.jmxTestUtils.tearDown();
+		this.jndiTestUtils.tearDown();
+		// this.jmxTestUtils.tearDown();
 	}
 
 	@Test
@@ -117,10 +140,14 @@ public class ExitServletTest {
 				.getServletLocation());
 		getMethod.setFollowRedirects(false);
 
+		// prepare
+		replay(this.mockObjects);
+
 		// operate
 		int statusCode = httpClient.executeMethod(getMethod);
 
 		// verify
+		verify(this.mockObjects);
 		assertEquals(HttpStatus.SC_OK, statusCode);
 		String responseBody = getMethod.getResponseBodyAsString();
 		LOG.debug("response body: " + responseBody);

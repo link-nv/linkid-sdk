@@ -23,6 +23,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
@@ -179,25 +180,28 @@ public class AuthenticationFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		LOG.debug("doFilter");
-		boolean loggedIn = LoginManager.isAuthenticated(request);
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		HttpServletResponse httpResponse = (HttpServletResponse) response;
+		boolean loggedIn = LoginManager.isAuthenticated(httpRequest);
 		if (false == loggedIn) {
-			initiateAuthentication(request, response);
+			initiateAuthentication(httpRequest, httpResponse);
 		} else {
-			chain.doFilter(request, response);
+			chain.doFilter(httpRequest, httpResponse);
 		}
 	}
 
-	private void initiateAuthentication(ServletRequest request,
-			ServletResponse response) throws IOException, ServletException {
+	private void initiateAuthentication(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) throws IOException,
+			ServletException {
 		AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
-				.getAuthenticationProtocolHandler(this.authenticationProtocol,
+				.createAuthenticationProtocolHandler(
+						this.authenticationProtocol,
 						this.safeOnlineAuthenticationServiceUrl,
 						this.applicationName, this.applicationKeyPair,
-						this.configParams);
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
+						this.configParams, httpRequest);
 		String targetUrl = httpRequest.getRequestURL().toString();
-		authenticationProtocolHandler.initiateAuthentication(request, response,
-				targetUrl);
+		authenticationProtocolHandler.initiateAuthentication(httpRequest,
+				httpResponse, targetUrl);
 	}
 
 	public void destroy() {

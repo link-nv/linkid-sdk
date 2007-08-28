@@ -16,6 +16,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
+import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,15 +41,46 @@ public class LoginFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		LOG.debug("doFilter: " + httpRequest.getRequestURL());
 
-		String paramUsername = httpRequest.getParameter("username");
-		if (null != paramUsername) {
-			LoginManager.setUsername(paramUsername, request);
+		AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
+				.findAuthenticationProtocolHandler(httpRequest);
+		if (null == protocolHandler) {
+			/*
+			 * This means that no authentication process is active. Two
+			 * possibilities: (1) user still needs to start the login process,
+			 * or (2) the user is already authenticated. Either way, we simply
+			 * continue without doing anything.
+			 */
+			chain.doFilter(request, response);
+			return;
 		}
 
+		/*
+		 * In this case there is an authentication process active.
+		 * Possibilities: (1) the handler is capable of processing the incoming
+		 * authentication response yielding an authenticated user. (2) the
+		 * incoming request has nothing to do with authentication, thus the
+		 * authentication handler stays quite. (3) the authentication handler
+		 * explodes on the incoming authentication response because for example
+		 * it has an invalid signature or it failed to link the authentication
+		 * response with the current session.
+		 */
+
+		HttpServletResponse httpResponse = (HttpServletResponse) response;
+		String username = protocolHandler.finalizeAuthentication(httpRequest,
+				httpResponse);
+		if (null != username) {
+			LoginManager.setUsername(username, httpRequest);
+			AuthenticationProtocolManager
+					.cleanupAuthenticationHandler(httpRequest);
+			chain.doFilter(request, response);
+			return;
+		}
+
+		LOG
+				.debug("authentication process busy, but will not finalize right now");
 		chain.doFilter(request, response);
 	}
 

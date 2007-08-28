@@ -58,10 +58,10 @@ public class ServletTestManager {
 		private final Log LOG = LogFactory
 				.getLog(LocalHashSessionManager.class);
 
-		private final Map<String, String> initialSessionAttributes;
+		private final Map<String, Object> initialSessionAttributes;
 
 		public LocalHashSessionManager(
-				Map<String, String> initialSessionAttributes) {
+				Map<String, Object> initialSessionAttributes) {
 			this.initialSessionAttributes = initialSessionAttributes;
 		}
 
@@ -70,10 +70,10 @@ public class ServletTestManager {
 			LOG.debug("newSession");
 			Session session = (Session) super.newSession(request);
 			if (null != this.initialSessionAttributes) {
-				for (Map.Entry<String, String> entry : this.initialSessionAttributes
+				for (Map.Entry<String, Object> entry : this.initialSessionAttributes
 						.entrySet()) {
 					String key = entry.getKey();
-					String value = entry.getValue();
+					Object value = entry.getValue();
 					session.setAttribute(key, value);
 				}
 			}
@@ -84,7 +84,7 @@ public class ServletTestManager {
 
 	public String setUp(Class<?> servletClass, Class<?> filterClass,
 			Map<String, String> filterInitParameters,
-			Map<String, String> initialSessionAttributes) throws Exception {
+			Map<String, Object> initialSessionAttributes) throws Exception {
 		return setUp(servletClass, null, filterClass, filterInitParameters,
 				initialSessionAttributes);
 	}
@@ -92,7 +92,7 @@ public class ServletTestManager {
 	public String setUp(Class<?> servletClass,
 			Map<String, String> servletInitParameters, Class<?> filterClass,
 			Map<String, String> filterInitParameters,
-			Map<String, String> initialSessionAttributes) throws Exception {
+			Map<String, Object> initialSessionAttributes) throws Exception {
 		this.server = new Server();
 		Connector connector = new SelectChannelConnector();
 		connector.setPort(0);
@@ -155,5 +155,12 @@ public class ServletTestManager {
 		}
 		Object attribute = this.session.getAttribute(name);
 		return attribute;
+	}
+	
+	public void setSessionAttribute(String name, Object value) {
+		if (null == this.session) {
+			return;
+		}
+		
 	}
 }

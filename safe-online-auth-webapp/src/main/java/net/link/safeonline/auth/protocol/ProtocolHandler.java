@@ -14,7 +14,12 @@ import javax.servlet.http.HttpSession;
 /**
  * Interface for server-side authentication protocol handlers.
  * 
- * Protocol handlers should be implemented as stateless POJOs.
+ * <p>
+ * Protocol handlers should be implemented as stateless POJOs. The server-side
+ * protocol handlers are stateless. That way they can never be subject to input
+ * validation attacks in case they would pass state from input message to output
+ * message without checking for its correctness.
+ * </p>
  * 
  * @author fcorneli
  * 

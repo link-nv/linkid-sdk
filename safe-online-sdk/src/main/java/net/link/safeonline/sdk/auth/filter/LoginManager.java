@@ -8,7 +8,6 @@
 package net.link.safeonline.sdk.auth.filter;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -39,7 +38,7 @@ public class LoginManager {
 	 * @param request
 	 * @return
 	 */
-	public static boolean isAuthenticated(ServletRequest request) {
+	public static boolean isAuthenticated(HttpServletRequest request) {
 		String username = findUsername(request);
 
 		return null != username;
@@ -52,9 +51,8 @@ public class LoginManager {
 	 * @param request
 	 * @return
 	 */
-	public static String findUsername(ServletRequest request) {
-		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-		HttpSession httpSession = httpServletRequest.getSession();
+	public static String findUsername(HttpServletRequest request) {
+		HttpSession httpSession = request.getSession();
 
 		String username = (String) httpSession
 				.getAttribute(USERNAME_SESSION_ATTRIBUTE);
@@ -70,7 +68,7 @@ public class LoginManager {
 	 * @throws ServletException
 	 *             if the user was not yet authenticated via SafeOnline.
 	 */
-	public static String getUsername(ServletRequest request)
+	public static String getUsername(HttpServletRequest request)
 			throws ServletException {
 		String username = findUsername(request);
 		if (null == username) {
@@ -86,11 +84,11 @@ public class LoginManager {
 	 * 
 	 * @param username
 	 *            the username of the SafeOnline authenticated principal.
-	 * @param request
+	 * @param httpRequest
 	 */
-	public static void setUsername(String username, ServletRequest request) {
+	public static void setUsername(String username,
+			HttpServletRequest httpRequest) {
 		LOG.debug("setting username: " + username);
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpSession session = httpRequest.getSession();
 		session.setAttribute(USERNAME_SESSION_ATTRIBUTE, username);
 	}

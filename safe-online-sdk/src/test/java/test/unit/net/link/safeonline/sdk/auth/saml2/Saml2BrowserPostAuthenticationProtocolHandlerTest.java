@@ -71,10 +71,10 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 				throw new ServletException("could not generate RSA key pair");
 			}
 			AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
-					.getAuthenticationProtocolHandler(
+					.createAuthenticationProtocolHandler(
 							AuthenticationProtocol.SAML2_BROWSER_POST,
 							"http://test.authn.service", "test-application",
-							keyPair, null);
+							keyPair, null, request);
 			authenticationProtocolHandler.initiateAuthentication(request,
 					response, "http://target");
 		}

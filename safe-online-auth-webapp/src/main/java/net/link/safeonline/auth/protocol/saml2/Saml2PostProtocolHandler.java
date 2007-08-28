@@ -23,6 +23,7 @@ import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -73,12 +74,17 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 	private final IdentityServiceClient identityServiceClient;
 
+	private final SamlAuthorityService samlAuthorityService;
+
 	public static final String IN_RESPONSE_TO_ATTRIBUTE = Saml2PostProtocolHandler.class
 			.getName()
 			+ ".IN_RESPONSE_TO";
 
 	public Saml2PostProtocolHandler() {
 		this.identityServiceClient = new IdentityServiceClient();
+		this.samlAuthorityService = EjbUtils.getEJB(
+				"SafeOnline/SamlAuthorityServiceBean/local",
+				SamlAuthorityService.class);
 	}
 
 	public String getName() {
@@ -201,7 +207,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 				.setOutboundMessageTransport(new HttpServletResponseAdapter(
 						authnResponse));
 		SafeOnlineAuthnContextClass authnContextClass = getAuthnContextClass(session);
-		String issuerName = "OLAS";
+		String issuerName = this.samlAuthorityService.getIssuerName();
+		int validity = this.samlAuthorityService.getAuthnAssertionValidity();
 		String inResponseTo = (String) session
 				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
 		if (null == inResponseTo) {
@@ -209,7 +216,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 					"missing IN_RESPONSE_TO session attribute");
 		}
 		Response responseMessage = AuthnResponseFactory.createAuthResponse(
-				inResponseTo, issuerName, userId, authnContextClass);
+				inResponseTo, issuerName, userId, authnContextClass, validity);
 		messageContext.setOutboundSAMLMessage(responseMessage);
 
 		AssertionConsumerService assertionConsumerService = AuthnResponseFactory

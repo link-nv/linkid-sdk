@@ -34,6 +34,7 @@ import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnContext;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnStatement;
+import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
@@ -83,7 +84,7 @@ public class AuthnResponseFactory {
 	 */
 	public static Response createAuthResponse(String inResponseTo,
 			String issuerName, String subjectName,
-			SafeOnlineAuthnContextClass authnContextClass) {
+			SafeOnlineAuthnContextClass authnContextClass, int validity) {
 		Response response = buildXMLObject(Response.class,
 				Response.DEFAULT_ELEMENT_NAME);
 
@@ -130,6 +131,12 @@ public class AuthnResponseFactory {
 		nameID.setValue(subjectName);
 		subject.setNameID(nameID);
 		assertion.setSubject(subject);
+
+		Conditions conditions = buildXMLObject(Conditions.class,
+				Conditions.DEFAULT_ELEMENT_NAME);
+		conditions.setNotBefore(now);
+		conditions.setNotOnOrAfter(now.plusSeconds(validity));
+		assertion.setConditions(conditions);
 
 		AuthnStatement authnStatement = buildXMLObject(AuthnStatement.class,
 				AuthnStatement.DEFAULT_ELEMENT_NAME);

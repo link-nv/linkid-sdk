@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
@@ -40,6 +40,8 @@ import org.apache.xml.security.utils.Base64;
 public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		AuthenticationProtocolHandler {
 
+	private static final long serialVersionUID = 1L;
+
 	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/sdk/auth/saml2/saml2-post-binding.vm";
 
 	public static final String SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM = "Saml2BrowserPostTemplate";
@@ -51,7 +53,11 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 
 	private String applicationName;
 
-	private KeyPair applicationKeyPair;
+	/**
+	 * We mark the key pair as transient since we don't want to serialize the
+	 * private key in the HTTP session.
+	 */
+	private transient KeyPair applicationKeyPair;
 
 	private Map<String, String> configParams;
 
@@ -64,9 +70,9 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		this.configParams = configParams;
 	}
 
-	public void initiateAuthentication(ServletRequest request,
-			ServletResponse response, String targetUrl) throws IOException,
-			ServletException {
+	public void initiateAuthentication(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse, String targetUrl)
+			throws IOException, ServletException {
 		LOG.debug("target url: " + targetUrl);
 
 		String samlRequestToken = AuthnRequestFactory.createAuthnRequest(
@@ -117,8 +123,23 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 					+ e.getMessage(), e);
 		}
 
-		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
+		httpResponse.setContentType("text/html");
+		PrintWriter out = httpResponse.getWriter();
 		template.merge(velocityContext, out);
+	}
+
+	public String finalizeAuthentication(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) throws ServletException {
+		if (false == "POST".equals(httpRequest.getMethod())) {
+			return null;
+		}
+		LOG.debug("POST request");
+		String encodedSamlResponse = httpRequest.getParameter("SAMLResponse");
+		if (null == encodedSamlResponse) {
+			return null;
+		}
+		LOG.debug("SAMLResponse parameter found");
+
+		throw new ServletException("implement me");
 	}
 }
