@@ -24,13 +24,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.security.KeyStore.PrivateKeyEntry;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -48,7 +49,7 @@ import net.link.safeonline.sdk.KeyStoreUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class LoadIdentity extends JPanel {
+public class LoadIdentity extends JPanel implements Observer {
 
 	private static final long serialVersionUID = 1L;
 
@@ -190,9 +191,10 @@ public class LoadIdentity extends JPanel {
 		PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(
 				keyStoreType, keyStoreInputStream, keyStorePassword,
 				keyEntryPassword);
-
-		this.parent.consoleManager.setIdentity(privateKeyEntry);
+		
 		this.parent.resetContent();
+		
+		new ConfirmIdentity(privateKeyEntry);
 	}
 
 	protected void onBrowse() {
@@ -207,8 +209,13 @@ public class LoadIdentity extends JPanel {
 	protected void onCancel() {
 		this.parent.resetContent();
 	}
+	
+	public void update(Observable arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		
+	}
 
-	class KeyStoreFilter extends javax.swing.filechooser.FileFilter {
+	private class KeyStoreFilter extends javax.swing.filechooser.FileFilter {
 		public boolean accept(File file) {
 			String filename = file.getName();
 			if (file.isDirectory() || filename.endsWith(".pkcs12")

@@ -9,6 +9,8 @@ import java.util.Observable;
 
 import net.link.safeonline.sdk.ws.MessageAccessor;
 
+import org.w3c.dom.Document;
+
 /**
  * 
  * Application console data class, observable for all the views
@@ -65,28 +67,41 @@ public class ApplicationConsoleManager extends Observable {
 	}
 
 	public void setIdentity(PrivateKeyEntry identity) {
-		this.identity = identity;
-		this.identityLabel = identityLabelPrefix
-				+ ((X509Certificate) identity.getCertificate())
-						.getSubjectX500Principal().getName();
+		if (null == identity) {
+			this.identity = null;
+			this.identityLabel = identityLabelPrefix;
+		} else {
+			this.identity = identity;
+			this.identityLabel = identityLabelPrefix
+					+ ((X509Certificate) identity.getCertificate())
+							.getSubjectX500Principal().getName();
+		}
 		setChanged();
 		notifyObservers();
 	}
 
 	public void setMessageAccessor(MessageAccessor messageAccessor) {
 		this.messageAccessor = messageAccessor;
+		if (captureMessages) {
+			setChanged();
+			notifyObservers(messageAccessor);
+		}
 	}
 
 	public void setCaptureMessages(boolean captureMessages) {
 		this.captureMessages = captureMessages;
 	}
 
-	public void pushMessages() {
+	public Document getInboundMessage() {
 		if (!captureMessages)
-			return;
-		setChanged();
-		notifyObservers(messageAccessor.getInboundMessage());
-		setChanged();
-		notifyObservers(messageAccessor.getOutboundMessage());
+			return null;
+		return messageAccessor.getInboundMessage();
 	}
+
+	public Document getOutboundMessage() {
+		if (!captureMessages)
+			return null;
+		return messageAccessor.getOutboundMessage();
+	}
+
 }

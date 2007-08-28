@@ -42,10 +42,10 @@
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>
-                <dependency>
-                        <groupId>commons-io</groupId>
-                        <artifactId>commons-io</artifactId>
-                </dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -58,10 +58,14 @@
 			<groupId>net.java.dev</groupId>
 			<artifactId>javafxrt</artifactId>
 		</dependency>
-                <dependency>
-                        <groupId>net.java.dev</groupId>
-                        <artifactId>swing-worker</artifactId>
-                </dependency>
+		<dependency>
+			<groupId>net.java.dev</groupId>
+			<artifactId>swing-worker</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge</groupId>
+			<artifactId>BrowserLauncher2</artifactId>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>

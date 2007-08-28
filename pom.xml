@@ -1124,6 +1124,11 @@
                                 <artifactId>swing-worker</artifactId>
                                 <version>${swing-worker.version}</version>
                         </dependency>
+                        <dependency>
+                                <groupId>net.sourceforge</groupId>
+                                <artifactId>BrowserLauncher2</artifactId>
+                                <version>${BrowserLauncher2.version}</version>
+                        </dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1289,5 +1294,6 @@
 		<swing-layout.version>1.0.2</swing-layout.version>
 		<Filters.version>1531</Filters.version>
 		<swing-worker.version>1.1</swing-worker.version>
+		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
 	</properties>
 </project>

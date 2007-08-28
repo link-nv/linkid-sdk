@@ -6,14 +6,15 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.ExecutionException;
 
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.ws.attrib.AttributeClient;
+import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.ws.data.DataClient;
+import net.link.safeonline.sdk.ws.data.DataClientImpl;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingworker.SwingWorker;
-
-import net.link.safeonline.sdk.exception.AttributeNotFoundException;
-import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 public class ServicesUtils extends Observable {
 
@@ -24,6 +25,9 @@ public class ServicesUtils extends Observable {
 	private ApplicationConsoleManager consoleManager = ApplicationConsoleManager
 			.getInstance();
 
+	private AttributeClient attributeClient = null;
+	private DataClient dataClient = null;
+
 	private ServicesUtils() {
 	}
 
@@ -33,44 +37,174 @@ public class ServicesUtils extends Observable {
 		return servicesUtilsInstance;
 	}
 
+	/*
+	 * 
+	 * Attribute webservice methods
+	 * 
+	 */
+	private AttributeClient getAttributeClient() {
+		if (null == attributeClient)
+			attributeClient = new AttributeClientImpl(consoleManager
+					.getLocation(), (X509Certificate) consoleManager
+					.getIdentity().getCertificate(), consoleManager
+					.getIdentity().getPrivateKey());
+
+		consoleManager.setMessageAccessor(attributeClient);
+		return attributeClient;
+	}
+
 	public void getAttributes(final String user) {
 		SwingWorker<Map<String, Object>, Object> worker = new SwingWorker<Map<String, Object>, Object>() {
 
 			@Override
 			protected Map<String, Object> doInBackground() throws Exception {
 				Map<String, Object> attributes = null;
-				AttributeClient attributeClient = new AttributeClientImpl(
-						consoleManager.getLocation(),
-						(X509Certificate) consoleManager.getIdentity()
-								.getCertificate(), consoleManager.getIdentity()
-								.getPrivateKey());
-				attributes = attributeClient.getAttributeValues(user);
-				consoleManager.setMessageAccessor(attributeClient);
-				consoleManager.pushMessages();
+				attributes = getAttributeClient().getAttributeValues(user);
 				return attributes;
 			}
 
 			@Override
 			protected void done() {
+				String errorMessage = null;
 				setChanged();
 				try {
 					notifyObservers(get());
 				} catch (InterruptedException e) {
-					ConsoleError error = new ConsoleError(
-							"Retrieving attributes interrupted ...");
-					setChanged();
-					notifyObservers(error);
-					e.printStackTrace();
+					errorMessage = "Retrieving attributes interrupted ...";
+					LOG.error(errorMessage, e);
 				} catch (ExecutionException e) {
-					ConsoleError error = new ConsoleError(
-							"Retrieving attributes failed to execute ...");
+					errorMessage = "Retrieving attributes failed to execute ...";
+					LOG.error(errorMessage, e);
+				}
+				if (null != errorMessage) {
 					setChanged();
-					notifyObservers(error);
-					e.printStackTrace();
+					notifyObservers(errorMessage);
 				}
 			}
 
 		};
 		worker.execute();
 	}
+
+	/*
+	 * 
+	 * Data webservice methods
+	 * 
+	 */
+	private DataClient getDataClient() {
+		if (null == dataClient)
+			dataClient = new DataClientImpl(consoleManager.getLocation(),
+					(X509Certificate) consoleManager.getIdentity()
+							.getCertificate(), consoleManager.getIdentity()
+							.getPrivateKey());
+
+		consoleManager.setMessageAccessor(dataClient);
+		return dataClient;
+	}
+
+	public void setAttributeValue(final String userName,
+			final String attributeName, final Object attributeValue) {
+		SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
+
+			@Override
+			protected Boolean doInBackground() throws Exception {
+
+				getDataClient().setAttributeValue(userName, attributeName,
+						attributeValue);
+				return Boolean.TRUE;
+			}
+
+			@Override
+			protected void done() {
+				String errorMessage = null;
+				setChanged();
+				try {
+					notifyObservers(get());
+				} catch (InterruptedException e) {
+					errorMessage = "Set attribute interrupted ...";
+					LOG.error(errorMessage, e);
+				} catch (ExecutionException e) {
+					errorMessage = "Set attribute failed to execute ...";
+					e.printStackTrace();
+					LOG.error(errorMessage, e);
+				}
+				if (null != errorMessage) {
+					setChanged();
+					notifyObservers(errorMessage);
+				}
+			}
+		};
+		worker.execute();
+	}
+
+	public void removeAttribute(final String userName,
+			final String attributeName, final String attributeId) {
+		SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
+
+			@Override
+			protected Boolean doInBackground() throws Exception {
+				getDataClient().removeAttribute(userName, attributeName,
+						attributeId);
+				return Boolean.TRUE;
+			}
+
+			@Override
+			protected void done() {
+				String errorMessage = null;
+				setChanged();
+				try {
+					notifyObservers(get());
+				} catch (InterruptedException e) {
+					errorMessage = "Remove attribute interrupted ...";
+					LOG.error(errorMessage, e);
+				} catch (ExecutionException e) {
+					errorMessage = "Remove attribute failed to execute ...";
+					e.printStackTrace();
+					LOG.error(errorMessage, e);
+				}
+				if (null != errorMessage) {
+					setChanged();
+					notifyObservers(errorMessage);
+				}
+
+			}
+		};
+		worker.execute();
+	}
+
+	public void createAttribute(final String userName,
+			final String attributeName, final Object attributeValue) {
+		SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
+
+			@Override
+			protected Boolean doInBackground() throws Exception {
+				getDataClient().createAttribute(userName, attributeName,
+						attributeValue);
+				return Boolean.TRUE;
+			}
+
+			@Override
+			protected void done() {
+				String errorMessage = null;
+				setChanged();
+				try {
+					notifyObservers(get());
+				} catch (InterruptedException e) {
+					errorMessage = "Create attribute interrupted ...";
+					LOG.error(errorMessage, e);
+				} catch (ExecutionException e) {
+					errorMessage = "Create attribute failed to execute ...";
+					e.printStackTrace();
+					LOG.error(errorMessage, e);
+				}
+				if (null != errorMessage) {
+					setChanged();
+					notifyObservers(errorMessage);
+				}
+
+			}
+		};
+		worker.execute();
+	}
+
 }

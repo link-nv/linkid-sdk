@@ -72,7 +72,7 @@ public class EchoService extends JPanel {
 		this.add(controlPanel, BorderLayout.SOUTH);
 	}
 
-	public class EchoAction extends AbstractAction {
+	private class EchoAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
 
@@ -90,7 +90,7 @@ public class EchoService extends JPanel {
 		}
 	}
 
-	public class CancelAction extends AbstractAction {
+	private class CancelAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
 

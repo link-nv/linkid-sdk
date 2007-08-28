@@ -127,7 +127,7 @@ public class AuthUser extends JPanel implements Observer {
 
 	}
 
-	public class AuthAction extends AbstractAction {
+	private class AuthAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
 
@@ -141,7 +141,7 @@ public class AuthUser extends JPanel implements Observer {
 		}
 	}
 
-	public class CancelAction extends AbstractAction {
+	private class CancelAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
 
