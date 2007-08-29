@@ -1,6 +1,7 @@
 package net.link.safeonline.sdk.auth.saml2;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.SAMLMessageContext;
 import org.opensaml.saml2.core.StatusResponseType;
@@ -24,7 +25,7 @@ import org.opensaml.ws.security.SecurityPolicyRule;
  */
 public class InResponseToRule implements SecurityPolicyRule {
 
-	private static Logger log = Logger.getLogger(InResponseToRule.class);
+	private static Log LOG = LogFactory.getLog(InResponseToRule.class);
 
 	private final String expectedInResponseTo;
 
@@ -35,7 +36,7 @@ public class InResponseToRule implements SecurityPolicyRule {
 	public void evaluate(MessageContext messageContext)
 			throws SecurityPolicyException {
 		if (!(messageContext instanceof SAMLMessageContext)) {
-			log
+			LOG
 					.debug("Invalid message context type, this policy rule only support SAMLMessageContext");
 			return;
 		}
@@ -43,7 +44,7 @@ public class InResponseToRule implements SecurityPolicyRule {
 
 		SAMLObject samlMsg = samlMsgCtx.getInboundSAMLMessage();
 		if (samlMsg == null) {
-			log.error("Message context did not contain inbound SAML message");
+			LOG.error("Message context did not contain inbound SAML message");
 			throw new SecurityPolicyException(
 					"Message context did not contain inbound SAML message");
 		}

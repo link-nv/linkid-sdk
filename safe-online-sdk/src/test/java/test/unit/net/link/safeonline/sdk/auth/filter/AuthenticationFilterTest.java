@@ -80,9 +80,12 @@ public class AuthenticationFilterTest {
 	public void performSimpleAuthnRequest() throws Exception {
 		// setup
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put("SafeOnlineAuthenticationServiceUrl",
+		filterInitParameters.put(
+				AuthenticationFilter.AUTH_SERVICE_URL_INIT_PARAM,
 				"http://authn.service");
-		filterInitParameters.put("ApplicationName", "application-id");
+		filterInitParameters.put(
+				AuthenticationFilter.APPLICATION_NAME_INIT_PARAM,
+				"application-id");
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		this.servletTestManager.setUp(TestServlet.class,
 				AuthenticationFilter.class, filterInitParameters,
@@ -120,13 +123,20 @@ public class AuthenticationFilterTest {
 		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURL());
 
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put("SafeOnlineAuthenticationServiceUrl",
+		filterInitParameters.put(
+				AuthenticationFilter.AUTH_SERVICE_URL_INIT_PARAM,
 				"http://authn.service");
-		filterInitParameters.put("ApplicationName", "application-id");
-		filterInitParameters
-				.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
-		filterInitParameters.put("KeyStoreResource", p12ResourceName);
-		filterInitParameters.put("KeyStorePassword", "secret");
+		filterInitParameters.put(
+				AuthenticationFilter.APPLICATION_NAME_INIT_PARAM,
+				"application-id");
+		filterInitParameters.put(
+				AuthenticationFilter.AUTHN_PROTOCOL_INIT_PARAM,
+				"SAML2_BROWSER_POST");
+		filterInitParameters.put(
+				AuthenticationFilter.KEYSTORE_RESOURCE_INIT_PARAM,
+				p12ResourceName);
+		filterInitParameters.put(
+				AuthenticationFilter.KEY_STORE_PASSWORD_INIT_PARAM, "secret");
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 		this.servletTestManager.setUp(TestServlet.class,
 				AuthenticationFilter.class, filterInitParameters,
@@ -161,13 +171,20 @@ public class AuthenticationFilterTest {
 		this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURL());
 
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
-		filterInitParameters.put("SafeOnlineAuthenticationServiceUrl",
+		filterInitParameters.put(
+				AuthenticationFilter.AUTH_SERVICE_URL_INIT_PARAM,
 				"http://authn.service");
-		filterInitParameters.put("ApplicationName", "application-id");
-		filterInitParameters
-				.put("AuthenticationProtocol", "SAML2_BROWSER_POST");
-		filterInitParameters.put("KeyStoreResource", p12ResourceName);
-		filterInitParameters.put("KeyStorePassword", "secret");
+		filterInitParameters.put(
+				AuthenticationFilter.APPLICATION_NAME_INIT_PARAM,
+				"application-id");
+		filterInitParameters.put(
+				AuthenticationFilter.AUTHN_PROTOCOL_INIT_PARAM,
+				"SAML2_BROWSER_POST");
+		filterInitParameters.put(
+				AuthenticationFilter.KEYSTORE_RESOURCE_INIT_PARAM,
+				p12ResourceName);
+		filterInitParameters.put(
+				AuthenticationFilter.KEY_STORE_PASSWORD_INIT_PARAM, "secret");
 		filterInitParameters.put("Saml2BrowserPostTemplate",
 				"test-saml2-post-binding.vm");
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();

@@ -30,7 +30,8 @@ public enum Messages {
 			"cert_subject_dn"), CERT_SIG_ALGO("cert_sig_algo"), KEY_ALGO(
 			"key_algo"), KEY_FORMAT("key_format"), DELETE("delete"), ADD_ATTRIBUTE(
 			"add_attribute"), ATTRIBUTE_NAME("attribute_name"), ATTRIBUTE_TYPE(
-			"attribute_type"), ATTRIBUTE_VALUE("attribute_value");
+			"attribute_type"), ATTRIBUTE_VALUE("attribute_value"), APPLICATION(
+			"application"), PROTOCOL("protocol");
 
 	private static final String MESSAGES_RESOURCE = "net.link.safeonline.appconsole.messages";
 

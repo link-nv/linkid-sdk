@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.appconsole;
 
 import static net.link.safeonline.appconsole.Messages.CANCEL;
@@ -13,6 +20,7 @@ import static net.link.safeonline.appconsole.Messages.PRIVATE_KEY;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
@@ -26,21 +34,35 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+/**
+ * Confirm the application's certificate frame.
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class ConfirmIdentity extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private PrivateKeyEntry privateKeyEntry = null;
+	private String keyStorePath;
+	private String keyStoreType;
+	private String keyStorePassword;
+
 	private ApplicationConsoleManager consoleManager = ApplicationConsoleManager
 			.getInstance();
 
 	private Action confirmAction = new ConfirmAction(CONFIRM_ID.getMessage());
 	private Action cancelAction = new CancelAction(CANCEL.getMessage());
 
-	public ConfirmIdentity(PrivateKeyEntry privateKeyEntry) {
+
+	public ConfirmIdentity(PrivateKeyEntry privateKeyEntry, String keyStorePath, String keyStoreType, String keyStorePassword) {
 		super(CONFIRM_ID.getMessage());
 
 		this.privateKeyEntry = privateKeyEntry;
+		this.keyStorePath = keyStorePath;
+		this.keyStoreType = keyStoreType;
+		this.keyStorePassword = keyStorePassword;
 
 		buildWindow();
 		this.setVisible(true);
@@ -120,12 +142,12 @@ public class ConfirmIdentity extends JFrame {
 	}
 
 	private void onConfirm() {
-		consoleManager.setIdentity(privateKeyEntry);
+		consoleManager.setIdentity(privateKeyEntry, keyStorePath, keyStoreType, keyStorePassword);
 		this.dispose();
 	}
 
 	private void onCancel() {
-		consoleManager.setIdentity(null);
+		consoleManager.setIdentity(null, null, null, null);
 		this.dispose();
 	}
 

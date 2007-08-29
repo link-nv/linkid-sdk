@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.appconsole;
 
 import static net.link.safeonline.appconsole.Messages.BROWSE;
@@ -39,6 +46,12 @@ import net.link.safeonline.sdk.KeyStoreUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Panel to extract a certificate in DER format from a keystore.
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class ExtractCertificate extends JPanel {
 
 	private static final long serialVersionUID = 1L;

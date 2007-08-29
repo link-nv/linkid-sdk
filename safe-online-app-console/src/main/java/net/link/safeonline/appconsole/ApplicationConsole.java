@@ -286,6 +286,7 @@ public class ApplicationConsole extends JFrame implements Observer {
 
 	private void manageServices() {
 		attribAction.setEnabled(null != consoleManager.getIdentity());
+		authUserAction.setEnabled(null != consoleManager.getIdentity());
 	}
 
 	private void launchBrowser(Document doc, String prefix) {

@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.appconsole;
 
 import static net.link.safeonline.appconsole.Messages.CANCEL;
@@ -20,6 +27,12 @@ import javax.swing.JTextField;
 import net.link.safeonline.sdk.ws.auth.AuthClient;
 import net.link.safeonline.sdk.ws.auth.AuthClientImpl;
 
+/**
+ * Panel to test out the SafeOnline echo web service
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class EchoService extends JPanel {
 
 	private static final long serialVersionUID = 1L;

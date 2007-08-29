@@ -7,6 +7,8 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyPair;
@@ -69,6 +71,12 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * 
  * <p>
+ * The optional keystore file name <code>KeyStoreFile</code> init parameter.
+ * The key pair within this keystore can be used by the authentication protocol
+ * handler to digitally sign the authentication request.
+ * </p>
+ * 
+ * <p>
  * The optional <code>KeyStoreType</code> key store type init parameter.
  * Accepted values are: <code>pkcs12</code> and <code>jks</code>.
  * </p>
@@ -91,6 +99,8 @@ public class AuthenticationFilter implements Filter {
 	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
 
 	public static final String AUTHN_PROTOCOL_INIT_PARAM = "AuthenticationProtocol";
+
+	public static final String KEYSTORE_FILE_INIT_PARAM = "KeyStoreFile";
 
 	public static final String KEYSTORE_RESOURCE_INIT_PARAM = "KeyStoreResource";
 
@@ -124,17 +134,30 @@ public class AuthenticationFilter implements Filter {
 		LOG.debug("authentication protocol: " + this.authenticationProtocol);
 		String p12KeyStoreResourceName = config
 				.getInitParameter(KEYSTORE_RESOURCE_INIT_PARAM);
+		String p12KeyStoreFileName = config
+				.getInitParameter(KEYSTORE_FILE_INIT_PARAM);
+		InputStream keyStoreInputStream = null;
 		if (null != p12KeyStoreResourceName) {
 			Thread currentThread = Thread.currentThread();
 			ClassLoader classLoader = currentThread.getContextClassLoader();
 			LOG.debug("classloader name: " + classLoader.getClass().getName());
-			InputStream keyStoreInputStream = classLoader
+			keyStoreInputStream = classLoader
 					.getResourceAsStream(p12KeyStoreResourceName);
 			if (null == keyStoreInputStream) {
 				throw new UnavailableException(
 						"PKCS12 keystore resource not found: "
 								+ p12KeyStoreResourceName);
 			}
+		} else if (null != p12KeyStoreFileName) {
+			try {
+				keyStoreInputStream = new FileInputStream(p12KeyStoreFileName);
+			} catch (FileNotFoundException e) {
+				throw new UnavailableException(
+						"PKCS12 keystore resource not found: "
+								+ p12KeyStoreFileName);
+			}
+		}
+		if (null != keyStoreInputStream) {
 			String keyStorePassword = config
 					.getInitParameter(KEY_STORE_PASSWORD_INIT_PARAM);
 			String keyStoreType = getInitParameter(config,

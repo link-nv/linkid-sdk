@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.appconsole;
 
 import static net.link.safeonline.appconsole.Messages.ADD_ATTRIBUTE;
@@ -22,6 +29,12 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 
+/**
+ * Add attribute window.
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class AddAttribute extends JFrame {
 
 	private static final long serialVersionUID = 1L;

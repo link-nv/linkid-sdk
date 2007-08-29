@@ -49,7 +49,13 @@ import net.link.safeonline.sdk.KeyStoreUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class LoadIdentity extends JPanel implements Observer {
+/**
+ * Panel to load an application identify
+ * 
+ * @author wvdhaute
+ * 
+ */
+public class LoadIdentity extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -77,10 +83,13 @@ public class LoadIdentity extends JPanel implements Observer {
 	public LoadIdentity(ApplicationConsole applicationConsole) {
 		super();
 		this.parent = applicationConsole;
-		buildWindow();
+		init();
 	}
 
-	private void buildWindow() {
+	/*
+	 * Initialize the swing components
+	 */
+	private void init() {
 		JPanel infoPanel = new JPanel();
 		JPanel controlPanel = new JPanel();
 
@@ -157,6 +166,9 @@ public class LoadIdentity extends JPanel implements Observer {
 		this.add(controlPanel, BorderLayout.SOUTH);
 	}
 
+	/*
+	 * Validate user input
+	 */
 	protected boolean checkInput() {
 		if (null == keyStoreField.getText()
 				|| keyStoreField.getText().length() == 0) {
@@ -188,13 +200,18 @@ public class LoadIdentity extends JPanel implements Observer {
 		char[] keyEntryPassword = keyEntryPasswordField.getPassword().length == 0 ? null
 				: keyEntryPasswordField.getPassword();
 
-		PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(
-				keyStoreType, keyStoreInputStream, keyStorePassword,
-				keyEntryPassword);
-		
+		PrivateKeyEntry privateKeyEntry;
+		try {
+			privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType,
+					keyStoreInputStream, keyStorePassword, keyEntryPassword);
+		} catch (RuntimeException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
 		this.parent.resetContent();
-		
-		new ConfirmIdentity(privateKeyEntry);
+
+		new ConfirmIdentity(privateKeyEntry, keyStorePath, keyStoreType, new String(keyStorePassword));
 	}
 
 	protected void onBrowse() {
@@ -209,24 +226,23 @@ public class LoadIdentity extends JPanel implements Observer {
 	protected void onCancel() {
 		this.parent.resetContent();
 	}
-	
-	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		
-	}
 
+
+	/*
+	 * Filter for the KeyStore file chooser
+	 */
 	private class KeyStoreFilter extends javax.swing.filechooser.FileFilter {
 		public boolean accept(File file) {
 			String filename = file.getName();
-			if (file.isDirectory() || filename.endsWith(".pkcs12")
-					|| filename.endsWith(".jks"))
+			if (file.isDirectory() || filename.endsWith(".p12")
+					|| filename.endsWith(".jks") || filename.endsWith(".pfx"))
 				return true;
 			else
 				return false;
 		}
 
 		public String getDescription() {
-			return "*.pkcs12, *.jks";
+			return "*.p12, *.pfx, *.jks";
 		}
 	}
 

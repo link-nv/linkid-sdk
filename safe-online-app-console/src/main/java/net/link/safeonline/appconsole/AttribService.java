@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.appconsole;
 
 import static net.link.safeonline.appconsole.Messages.ADD_ATTRIBUTE;
@@ -50,6 +57,13 @@ import oasis.names.tc.saml._2_0.assertion.AttributeType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Attribute panel, uses the Safe Online attribute and data webservices via the
+ * ServicesUtils class
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class AttribService extends JPanel implements Observer {
 
 	private static final long serialVersionUID = 1L;
@@ -83,21 +97,61 @@ public class AttribService extends JPanel implements Observer {
 	private DefaultTreeModel attributeTreeModel = (DefaultTreeModel) attributeTree
 			.getModel();
 
+	// JTree popup for deleting attributes
 	private JPopupMenu treePopup = new JPopupMenu();
 
+	/*
+	 * Constructor
+	 */
 	public AttribService(ApplicationConsole applicationConsole) {
 		this.parent = applicationConsole;
 		ServicesUtils.getInstance().addObserver(this);
-		buildWindow();
-		buildPopupMenu();
-		handleListeners();
+		init();
+		initMenu();
+		registerListeners();
 	}
 
-	private void buildPopupMenu() {
+	/*
+	 * Initialize swing components
+	 */
+	private void init() {
+		JPanel infoPanel = new JPanel();
+		JScrollPane treePanel = new JScrollPane(attributeTree);
+		attributeTree.setEditable(true);
+		DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) attributeTree
+				.getCellRenderer();
+		TreeCellEditor editor = new AttributeCellEditor(attributeTree, renderer);
+		attributeTree.setCellEditor(editor);
+		attributeTreeModel
+				.addTreeModelListener(new AttributeTreeModelListener());
+
+		infoPanel.setLayout(new FlowLayout());
+		infoPanel.add(userLabel);
+		infoPanel.add(userField);
+		JButton getAttributesButton = new JButton(getAttributesAction);
+		getAttributesButton.setMultiClickThreshhold(1000); // prevent double
+		infoPanel.add(getAttributesButton);
+		infoPanel.add(new JButton(addAttributeAction));
+		infoPanel.add(new JButton(doneAction));
+
+		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				infoPanel, treePanel);
+		splitPane.setDividerSize(3);
+		splitPane.setResizeWeight(1.0);
+		this.add(splitPane);
+	}
+
+	/*
+	 * Initialize menu items
+	 */
+	private void initMenu() {
 		treePopup.add(new JMenuItem(deleteAttributeAction));
 	}
 
-	private void handleListeners() {
+	/*
+	 * Register listeners
+	 */
+	private void registerListeners() {
 
 		attributeTree.addMouseListener(new MouseListener() {
 
@@ -129,34 +183,6 @@ public class AttribService extends JPanel implements Observer {
 
 	}
 
-	private void buildWindow() {
-		JPanel infoPanel = new JPanel();
-		JScrollPane treePanel = new JScrollPane(attributeTree);
-		attributeTree.setEditable(true);
-		DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) attributeTree
-				.getCellRenderer();
-		TreeCellEditor editor = new AttributeCellEditor(attributeTree, renderer);
-		attributeTree.setCellEditor(editor);
-		attributeTreeModel
-				.addTreeModelListener(new AttributeTreeModelListener());
-
-		infoPanel.setLayout(new FlowLayout());
-		infoPanel.add(userLabel);
-		infoPanel.add(userField);
-		JButton getAttributesButton = new JButton(getAttributesAction);
-		getAttributesButton.setMultiClickThreshhold(1000); // prevent double
-		infoPanel.add(getAttributesButton);
-		infoPanel.add(new JButton(addAttributeAction));
-		infoPanel.add(new JButton(doneAction));
-
-		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-				infoPanel, treePanel);
-		splitPane.setDividerSize(3);
-		splitPane.setResizeWeight(1.0);
-		this.add(splitPane);
-		userField.requestFocusInWindow();
-	}
-
 	@SuppressWarnings("unchecked")
 	public void update(Observable o, Object arg) {
 		if (arg instanceof Map) { // from attribute web service
@@ -169,6 +195,9 @@ public class AttribService extends JPanel implements Observer {
 		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
 
+	/*
+	 * Add user node to the attribute tree
+	 */
 	public void addUser(String user) {
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) attributeTreeModel
 				.getRoot();
@@ -184,7 +213,9 @@ public class AttribService extends JPanel implements Observer {
 		attributeTree.expandRow(0);
 	}
 
-	@SuppressWarnings("unchecked")
+	/*
+	 * Add list of attributes to a root node in the attribute tree
+	 */
 	private void addMap(DefaultMutableTreeNode root, Map<String, Object> map) {
 		HashMap<String, Object> data = (HashMap<String, Object>) map;
 
@@ -242,6 +273,10 @@ public class AttribService extends JPanel implements Observer {
 		}
 	}
 
+	/*
+	 * Get complete attribute value's ( single/multi ) from a given attribute
+	 * name node
+	 */
 	private Object getAttributeValue(DefaultMutableTreeNode node) {
 		if (node.getChildCount() > 1) { // multi-valued
 			Object[] attributeValues = new Object[node.getChildCount()];
@@ -259,6 +294,9 @@ public class AttribService extends JPanel implements Observer {
 		}
 	}
 
+	/*
+	 * Cell editor class to only enable leaf nodes as editable
+	 */
 	private class AttributeCellEditor extends DefaultTreeCellEditor {
 
 		public AttributeCellEditor(JTree tree, DefaultTreeCellRenderer renderer) {
@@ -282,6 +320,9 @@ public class AttribService extends JPanel implements Observer {
 	/*
 	 * 
 	 * Tree model listener class to catch leaf edits
+	 * 
+	 * Upon an edit, the attribute is immediately updated through the SafeOnline
+	 * web service
 	 * 
 	 */
 	private class AttributeTreeModelListener implements TreeModelListener {

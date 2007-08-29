@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.appconsole;
 
 import java.net.ConnectException;
@@ -16,6 +23,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingworker.SwingWorker;
 
+/**
+ * SafeOnline services util class
+ * 
+ * <p>
+ * Used to access to the attribute and data SafeOnline web services
+ * </p>
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class ServicesUtils extends Observable {
 
 	private static final Log LOG = LogFactory.getLog(ServicesUtils.class);
@@ -39,7 +56,7 @@ public class ServicesUtils extends Observable {
 
 	/*
 	 * 
-	 * Attribute webservice methods
+	 * Attribute web service methods
 	 * 
 	 */
 	private AttributeClient getAttributeClient() {
@@ -88,7 +105,7 @@ public class ServicesUtils extends Observable {
 
 	/*
 	 * 
-	 * Data webservice methods
+	 * Data web service methods
 	 * 
 	 */
 	private DataClient getDataClient() {

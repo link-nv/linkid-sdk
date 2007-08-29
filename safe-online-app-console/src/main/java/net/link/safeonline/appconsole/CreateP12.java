@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.appconsole;
 
 import static net.link.safeonline.appconsole.Messages.CANCEL;
@@ -6,8 +13,8 @@ import static net.link.safeonline.appconsole.Messages.CREATE_P12;
 import static net.link.safeonline.appconsole.Messages.ERROR_CREATE_P12;
 import static net.link.safeonline.appconsole.Messages.ERROR_MISSING_FIELDS;
 import static net.link.safeonline.appconsole.Messages.KEYENTRY_PW;
-import static net.link.safeonline.appconsole.Messages.KEYSTORE_PW;
 import static net.link.safeonline.appconsole.Messages.KEYSTORE;
+import static net.link.safeonline.appconsole.Messages.KEYSTORE_PW;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -23,6 +30,7 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,6 +42,12 @@ import net.link.safeonline.sdk.KeyStoreUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Panel for creating p12 keystores.
+ * 
+ * @author wvdhaute
+ * 
+ */
 public class CreateP12 extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -41,6 +55,7 @@ public class CreateP12 extends JPanel {
 	private static final Log LOG = LogFactory.getLog(CreateP12.class);
 
 	private JTextField keyStoreField = new JTextField(20);
+	private JComboBox keyStoreExt = new JComboBox();
 	private JTextField nameField = new JTextField(20);
 	private JPasswordField keyStorePasswordField = new JPasswordField(20);
 	private JPasswordField keyEntryPasswordField = new JPasswordField(20);
@@ -65,7 +80,9 @@ public class CreateP12 extends JPanel {
 		infoPanel.setLayout(gbl);
 
 		JLabel keyStoreLabel = new JLabel(KEYSTORE.getMessage());
-		JLabel keyStoreExtLabel = new JLabel(".pkcs12");
+		keyStoreExt.addItem(".p12");
+		keyStoreExt.addItem(".pfx");
+		keyStoreExt.setSelectedIndex(0);
 		JLabel keyStorePwLabel = new JLabel(KEYSTORE_PW.getMessage());
 		JLabel keyEntryPasswordLabel = new JLabel(KEYENTRY_PW.getMessage());
 		JLabel nameLabel = new JLabel(CERT_DN.getMessage());
@@ -87,8 +104,8 @@ public class CreateP12 extends JPanel {
 
 		gbc.gridx = 2;
 		gbc.gridy = 0;
-		gbl.setConstraints(keyStoreExtLabel, gbc);
-		infoPanel.add(keyStoreExtLabel, gbc);
+		gbl.setConstraints(keyStoreExt, gbc);
+		infoPanel.add(keyStoreExt, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -179,7 +196,8 @@ public class CreateP12 extends JPanel {
 					.generateSelfSignedCertificate(keyPair, "CN=" + certDN);
 
 			// persist P12 to keystore in /tmp
-			File pkcs12keyStore = File.createTempFile(keyStoreName, ".pkcs12");
+			File pkcs12keyStore = File.createTempFile(keyStoreName,
+					(String) keyStoreExt.getSelectedItem());
 			CertificateUtils.persistKey(pkcs12keyStore, keyPair.getPrivate(),
 					certificate, keyStorePassword, keyEntryPassword);
 
@@ -195,7 +213,7 @@ public class CreateP12 extends JPanel {
 			LOG.info(msg);
 			JOptionPane.showMessageDialog(this, msg);
 
-			this.parent.consoleManager.setIdentity(privateKeyEntry);
+			this.parent.consoleManager.setIdentity(privateKeyEntry, "", "", "");
 			this.parent.resetContent();
 
 		} catch (Exception ex) {

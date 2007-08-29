@@ -156,11 +156,11 @@ public class ServletTestManager {
 		Object attribute = this.session.getAttribute(name);
 		return attribute;
 	}
-	
+
 	public void setSessionAttribute(String name, Object value) {
 		if (null == this.session) {
 			return;
 		}
-		
+
 	}
 }
