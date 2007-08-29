@@ -86,7 +86,8 @@ public class AuthnRequestFactory {
 	 * @return
 	 */
 	public static String createAuthnRequest(String applicationName,
-			KeyPair applicationKeyPair, String assertionConsumerServiceURL) {
+			KeyPair applicationKeyPair, String assertionConsumerServiceURL,
+			Challenge<String> challenge) {
 		if (null == applicationKeyPair) {
 			throw new IllegalArgumentException(
 					"application key pair should not be null");
@@ -107,7 +108,11 @@ public class AuthnRequestFactory {
 			throw new RuntimeException("secure random init error: "
 					+ e.getMessage(), e);
 		}
-		request.setID(idGenerator.generateIdentifier());
+		String id = idGenerator.generateIdentifier();
+		request.setID(id);
+		if (null != challenge) {
+			challenge.setValue(id);
+		}
 		request.setVersion(SAMLVersion.VERSION_20);
 		request.setIssueInstant(new DateTime());
 		Issuer issuer = buildXMLObject(Issuer.class,

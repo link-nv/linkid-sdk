@@ -10,9 +10,13 @@ package test.unit.net.link.safeonline.sdk.auth.saml2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.security.KeyPair;
 
@@ -20,17 +24,22 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
+import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.sdk.auth.saml2.Saml2BrowserPostAuthenticationProtocolHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,20 +52,26 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 	private static final Log LOG = LogFactory
 			.getLog(Saml2BrowserPostAuthenticationProtocolHandlerTest.class);
 
-	private ServletTestManager servletTestManager;
+	private ServletTestManager requestServletTestManager;
+
+	private ServletTestManager responseServletTestManager;
 
 	@Before
 	public void setUp() throws Exception {
-		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(TestServlet.class);
+		this.requestServletTestManager = new ServletTestManager();
+		this.requestServletTestManager.setUp(SamlRequestTestServlet.class);
+
+		this.responseServletTestManager = new ServletTestManager();
+		this.responseServletTestManager.setUp(SamlResponseTestServlet.class);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		this.servletTestManager.tearDown();
+		this.requestServletTestManager.tearDown();
+		this.responseServletTestManager.tearDown();
 	}
 
-	public static class TestServlet extends HttpServlet {
+	public static class SamlRequestTestServlet extends HttpServlet {
 
 		private static final long serialVersionUID = 1L;
 
@@ -80,12 +95,54 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 		}
 	}
 
+	public static class SamlResponseTestServlet extends HttpServlet {
+
+		private static final long serialVersionUID = 1L;
+
+		private static final Log LOG = LogFactory
+				.getLog(SamlResponseTestServlet.class);
+
+		@SuppressWarnings("unchecked")
+		@Override
+		protected void doPost(HttpServletRequest request,
+				HttpServletResponse response) throws ServletException,
+				IOException {
+			LOG.debug("doGet");
+			AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
+					.createAuthenticationProtocolHandler(
+							AuthenticationProtocol.SAML2_BROWSER_POST,
+							"http://test.authn.service", "test-application",
+							null, null, request);
+			Saml2BrowserPostAuthenticationProtocolHandler saml2Handler = (Saml2BrowserPostAuthenticationProtocolHandler) authenticationProtocolHandler;
+			try {
+				Field challengeField = Saml2BrowserPostAuthenticationProtocolHandler.class
+						.getDeclaredField("challenge");
+				challengeField.setAccessible(true);
+				Challenge<String> challenge = (Challenge<String>) challengeField
+						.get(saml2Handler);
+				challenge.setValue("test-in-response-to");
+			} catch (Exception e) {
+				throw new ServletException("reflection error: "
+						+ e.getMessage(), e);
+			}
+			String username = authenticationProtocolHandler
+					.finalizeAuthentication(request, response);
+			if (null != username) {
+				HttpSession session = request.getSession();
+				session.setAttribute("username", username);
+			}
+			Writer out = response.getWriter();
+			out.write("username: " + username);
+			out.flush();
+		}
+	}
+
 	@Test
 	public void doGet() throws Exception {
 		// setup
 		LOG.debug("test doGet");
 		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletTestManager
+		GetMethod getMethod = new GetMethod(this.requestServletTestManager
 				.getServletLocation());
 
 		// operate
@@ -109,5 +166,36 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
 		// verify
 		assertNotNull(result);
+	}
+
+	@Test
+	public void testResponseHandling() throws Exception {
+		// setup
+		HttpClient httpClient = new HttpClient();
+		PostMethod postMethod = new PostMethod(this.responseServletTestManager
+				.getServletLocation());
+
+		InputStream xmlInputStream = Saml2BrowserPostAuthenticationProtocolHandlerTest.class
+				.getResourceAsStream("/test-saml-response.xml");
+		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+		IOUtils.copy(xmlInputStream, byteOutputStream);
+		byte[] samlResponse = byteOutputStream.toByteArray();
+		byte[] encodedSamlResponse = Base64.encodeBase64(samlResponse);
+		NameValuePair[] data = { new NameValuePair("SAMLResponse", new String(
+				encodedSamlResponse)) };
+		postMethod.setRequestBody(data);
+
+		// operate
+		int statusCode = httpClient.executeMethod(postMethod);
+
+		// verify
+		LOG.debug("status code: " + statusCode);
+		assertEquals(HttpStatus.SC_OK, statusCode);
+		String responseBody = postMethod.getResponseBodyAsString();
+		LOG.debug("response body: \"" + responseBody + "\"");
+		String username = (String) this.responseServletTestManager
+				.getSessionAttribute("username");
+		LOG.debug("authenticated username: " + username);
+		assertNotNull(username);
 	}
 }

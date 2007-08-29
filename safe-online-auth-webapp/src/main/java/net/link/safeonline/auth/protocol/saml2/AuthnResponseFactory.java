@@ -105,6 +105,7 @@ public class AuthnResponseFactory {
 		Issuer responseIssuer = buildXMLObject(Issuer.class,
 				Issuer.DEFAULT_ELEMENT_NAME);
 		responseIssuer.setValue(issuerName);
+		response.setIssuer(responseIssuer);
 
 		Status status = buildXMLObject(Status.class,
 				Status.DEFAULT_ELEMENT_NAME);
@@ -123,6 +124,7 @@ public class AuthnResponseFactory {
 		Issuer assertionIssuer = buildXMLObject(Issuer.class,
 				Issuer.DEFAULT_ELEMENT_NAME);
 		assertionIssuer.setValue(issuerName);
+		assertion.setIssuer(assertionIssuer);
 
 		Subject subject = buildXMLObject(Subject.class,
 				Subject.DEFAULT_ELEMENT_NAME);

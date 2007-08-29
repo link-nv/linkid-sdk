@@ -18,6 +18,7 @@ import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
+import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -48,17 +49,23 @@ public class AuthnRequestFactoryTest {
 		String applicationName = "test-application-id";
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
+		Challenge<String> challenge = new Challenge<String>();
 
 		// operate
 		long begin = System.currentTimeMillis();
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
-				keyPair, assertionConsumerServiceURL);
+				keyPair, assertionConsumerServiceURL, challenge);
 		long end = System.currentTimeMillis();
 
 		// verify
 		assertNotNull(result);
 		LOG.debug("duration: " + (end - begin) + " ms");
 		LOG.debug("result message: " + result);
+
+		String challengeValue = challenge.getValue();
+		LOG.debug("challenge value: " + challengeValue);
+		assertNotNull(challengeValue);
+
 		Document resultDocument = DomTestUtils.parseDocument(result);
 
 		Element nsElement = createNsElement(resultDocument);
@@ -103,7 +110,7 @@ public class AuthnRequestFactoryTest {
 
 		// operate
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
-				keyPair, null);
+				keyPair, null, null);
 		LOG.debug("result: " + result);
 	}
 

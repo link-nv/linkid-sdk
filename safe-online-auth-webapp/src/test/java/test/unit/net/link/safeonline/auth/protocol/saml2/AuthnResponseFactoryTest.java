@@ -9,6 +9,9 @@ package test.unit.net.link.safeonline.auth.protocol.saml2;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import javax.xml.XMLConstants;
+
 import net.link.safeonline.auth.protocol.saml2.AuthnResponseFactory;
 import net.link.safeonline.auth.protocol.saml2.SafeOnlineAuthnContextClass;
 import net.link.safeonline.test.util.DomTestUtils;
@@ -22,6 +25,7 @@ import org.opensaml.saml2.core.Response;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.MarshallerFactory;
 import org.opensaml.xml.io.MarshallingException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -57,12 +61,23 @@ public class AuthnResponseFactoryTest {
 			throw new RuntimeException("opensaml2 marshalling error: "
 					+ e.getMessage(), e);
 		}
+		LOG.debug("response: " + DomTestUtils.domToString(responseElement));
 
 		Node inResponseToNode = XPathAPI.selectSingleNode(responseElement,
 				"/samlp:Response/@InResponseTo");
 		assertNotNull(inResponseToNode);
 		assertEquals(inResponseTo, inResponseToNode.getTextContent());
 
-		LOG.debug("response: " + DomTestUtils.domToString(responseElement));
+		Document document = responseElement.getOwnerDocument();
+		Element nsElement = document.createElement("nsElement");
+		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+				"xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+		nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+				"xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+
+		Node issuerNode = XPathAPI.selectSingleNode(responseElement,
+				"/samlp:Response/saml:Issuer", nsElement);
+		assertNotNull(issuerNode);
+		assertEquals(issuerName, issuerNode.getTextContent());
 	}
 }

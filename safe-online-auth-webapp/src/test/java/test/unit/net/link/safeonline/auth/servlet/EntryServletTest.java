@@ -206,7 +206,8 @@ public class EntryServletTest {
 		String applicationName = "test-application-id";
 		String assertionConsumerService = "http://test.assertion.consumer.service";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationKeyPair, assertionConsumerService);
+				applicationName, applicationKeyPair, assertionConsumerService,
+				null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 
@@ -257,7 +258,7 @@ public class EntryServletTest {
 		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
 		String applicationName = "test-application-id";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationKeyPair, null);
+				applicationName, applicationKeyPair, null, null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 
@@ -321,7 +322,7 @@ public class EntryServletTest {
 						"CN=TestApplication");
 		String applicationName = "test-application-id";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationKeyPair, null);
+				applicationName, applicationKeyPair, null, null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 
