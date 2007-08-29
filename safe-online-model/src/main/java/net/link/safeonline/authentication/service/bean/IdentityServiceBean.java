@@ -481,19 +481,7 @@ public class IdentityServiceBean implements IdentityService,
 						attributeValue = attributeValues.get(idx);
 					}
 					if (null != attributeValue) {
-						switch (memberAttributeType.getType()) {
-						case STRING:
-							attributeView.setStringValue(attributeValue
-									.getStringValue());
-							break;
-						case BOOLEAN:
-							attributeView.setBooleanValue(attributeValue
-									.getBooleanValue());
-							break;
-						default:
-							throw new EJBException("unsupported datatype: "
-									+ memberAttributeType.getType());
-						}
+						attributeView.setValue(attributeValue);
 					}
 					attributesView.add(attributeView);
 				}
@@ -1125,17 +1113,7 @@ public class IdentityServiceBean implements IdentityService,
 						false, null, null);
 				memberView.setMember(true);
 				if (null != attribute) {
-					switch (memberAttributeType.getType()) {
-					case STRING:
-						memberView.setStringValue(attribute.getStringValue());
-						break;
-					case BOOLEAN:
-						memberView.setBooleanValue(attribute.getBooleanValue());
-						break;
-					default:
-						throw new EJBException("unsupported datatype: "
-								+ memberAttributeType.getType());
-					}
+					memberView.setValue(attribute);
 				}
 				attributeEditContext.add(memberView);
 			}
