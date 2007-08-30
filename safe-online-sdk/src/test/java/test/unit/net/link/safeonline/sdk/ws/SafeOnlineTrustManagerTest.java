@@ -26,7 +26,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.X509KeyManager;
 
-import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
+import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.apache.commons.logging.Log;

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.sdk.ws;
+package net.link.safeonline.sdk.trust;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -96,7 +96,7 @@ public class SafeOnlineTrustManager implements X509TrustManager {
 	public void checkClientTrusted(X509Certificate[] certs, String authType)
 			throws CertificateException {
 		throw new CertificateException(
-				"trust manager cannot be used as server-side trust manager");
+				"this trust manager cannot be used as server-side trust manager");
 	}
 
 	public void checkServerTrusted(X509Certificate[] certs, String authType)

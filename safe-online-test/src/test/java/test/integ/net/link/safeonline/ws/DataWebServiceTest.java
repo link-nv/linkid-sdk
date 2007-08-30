@@ -8,10 +8,10 @@
 package test.integ.net.link.safeonline.ws;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeProviderManagerService;
@@ -25,6 +25,7 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,8 @@ import net.link.safeonline.test.util.PkiTestUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateMidnight;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -454,6 +457,96 @@ public class DataWebServiceTest {
 		this.dataClient.setAttributeValue(login, attributeName, null);
 		result = this.dataClient.getAttributeValue(login, attributeName,
 				Boolean.class);
+		assertNull(result.getValue());
+	}
+
+	@Test
+	public void testDataServiceDateAttribute() throws Exception {
+		// setup
+		InitialContext initialContext = IntegrationTestUtils
+				.getInitialContext();
+
+		IntegrationTestUtils.setupLoginConfig();
+
+		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		IdentityService identityService = getIdentityService(initialContext);
+
+		String testApplicationName = UUID.randomUUID().toString();
+
+		// operate: register user
+		String login = "login-" + UUID.randomUUID().toString();
+		String password = UUID.randomUUID().toString();
+		userRegistrationService.registerUser(login, password, null);
+
+		// operate: register certificate as application trust point
+		PkiService pkiService = getPkiService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		pkiService.addTrustPoint(
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+				this.certificate.getEncoded());
+
+		// operate: add date attribute type
+		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
+		String attributeName = "test-attribute-name-"
+				+ UUID.randomUUID().toString();
+		AttributeTypeEntity attributeType = new AttributeTypeEntity(
+				attributeName, DatatypeType.DATE, true, true);
+		attributeTypeService.add(attributeType);
+
+		// operate: add application with certificate
+		ApplicationService applicationService = getApplicationService(initialContext);
+		applicationService.addApplication(testApplicationName, null, "owner",
+				null, this.certificate.getEncoded(), Arrays
+						.asList(new IdentityAttributeTypeDO[] {
+								new IdentityAttributeTypeDO(
+										SafeOnlineConstants.NAME_ATTRIBUTE),
+								new IdentityAttributeTypeDO(attributeName) }));
+
+		// operate: subscribe onto the application and confirm identity usage
+		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+		IntegrationTestUtils.login(login, password);
+		subscriptionService.subscribe(testApplicationName);
+		identityService.confirmIdentity(testApplicationName);
+
+		// operate: add attribute provider
+		AttributeProviderManagerService attributeProviderManagerService = getAttributeProviderManagerService(initialContext);
+		IntegrationTestUtils.login("admin", "admin");
+		attributeProviderManagerService.addAttributeProvider(
+				testApplicationName, attributeName);
+
+		Attribute<Date> result = this.dataClient.getAttributeValue(login,
+				attributeName, Date.class);
+		LOG.debug("result date value: " + result.getValue());
+		/*
+		 * Because of the identity confirmation the system created an empty
+		 * attribute.
+		 */
+		assertNotNull(result);
+		assertNull(result.getValue());
+
+		try {
+			this.dataClient.setAttributeValue(login, attributeName,
+					"test-value");
+			fail();
+		} catch (IllegalArgumentException e) {
+			// expected: Date is required, not a String.
+		}
+
+		// set date attribute value + verify
+		Date testDate = new DateMidnight().toDate();
+		this.dataClient.setAttributeValue(login, attributeName, testDate);
+
+		result = this.dataClient.getAttributeValue(login, attributeName,
+				Date.class);
+		LOG.debug("result: " + result.getValue());
+		assertEquals(attributeName, result.getName());
+		assertEquals(testDate, result.getValue());
+
+		// operate & verify: setting date attribute to null
+		this.dataClient.setAttributeValue(login, attributeName, null);
+		result = this.dataClient.getAttributeValue(login, attributeName,
+				Date.class);
+		LOG.debug("result value: " + result.getValue());
 		assertNull(result.getValue());
 	}
 

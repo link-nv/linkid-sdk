@@ -14,6 +14,7 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
@@ -44,10 +45,10 @@ import net.link.safeonline.data.ws.TopLevelStatusCode;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.CompoundBuilder;
 import net.link.safeonline.sdk.ws.CompoundUtil;
-import net.link.safeonline.sdk.ws.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.annotation.Compound;
 import net.link.safeonline.sdk.ws.annotation.CompoundId;
@@ -158,6 +159,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 								+ secondLevelStatus.getCode());
 				SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode
 						.fromCode(secondLevelStatus.getCode());
+				LOG.debug("second level status comment: "
+						+ secondLevelStatus.getComment());
 				switch (secondLevelStatusCode) {
 				case INVALID_DATA:
 					throw new IllegalArgumentException(
@@ -240,7 +243,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		}
 		String name = attribute.getName();
 		List<Object> attributeValues = attribute.getAttributeValue();
-		Object firstAttributeValue = attributeValues.get(0);
+		Object firstAttributeValue = convertFromXmlDatatypeToClientDatatype(attributeValues
+				.get(0));
 		if (null == firstAttributeValue) {
 			/*
 			 * null does not have a type. Lucky us.
@@ -267,7 +271,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 			int size = attributeValues.size();
 			Type values = (Type) Array.newInstance(componentType, size);
 			for (int idx = 0; idx < size; idx++) {
-				Object attributeValue = attributeValues.get(idx);
+				Object attributeValue = convertFromXmlDatatypeToClientDatatype(attributeValues
+						.get(idx));
 				if (attributeValue instanceof AttributeType) {
 					/*
 					 * We're dealing with a compounded attribute here.
@@ -285,8 +290,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 					for (Object memberAttributeObject : memberAttributes) {
 						AttributeType memberAttribute = (AttributeType) memberAttributeObject;
 						String memberName = memberAttribute.getName();
-						Object memberAttributeValue = memberAttribute
-								.getAttributeValue().get(0);
+						Object memberAttributeValue = convertFromXmlDatatypeToClientDatatype(memberAttribute
+								.getAttributeValue().get(0));
 						compoundBuilder.setCompoundProperty(memberName,
 								memberAttributeValue);
 					}
@@ -313,11 +318,22 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 						+ expectedValueClass.getName() + "; received: "
 						+ firstAttributeValue.getClass().getName());
 			}
-			Type value = (Type) attribute.getAttributeValue().get(0);
+			Type value = (Type) firstAttributeValue;
 
 			Attribute<Type> dataValue = new Attribute<Type>(name, value);
 			return dataValue;
 		}
+	}
+
+	private Object convertFromXmlDatatypeToClientDatatype(Object value) {
+		if (null == value) {
+			return null;
+		}
+		if (value instanceof XMLGregorianCalendar) {
+			XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
+			value = calendar.toGregorianCalendar().getTime();
+		}
+		return value;
 	}
 
 	public void createAttribute(String subjectLogin, String attributeName,

@@ -252,7 +252,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 			 * reflection class type. But actually we don't care. Just clear
 			 * all.
 			 */
-			clearAttributeValues(attribute);
+			attribute.clearValues();
 			return;
 		}
 
@@ -278,7 +278,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 			 */
 			Iterator<AttributeEntity> iterator = attributes.iterator();
 			AttributeEntity attribute = iterator.next();
-			clearAttributeValues(attribute);
+			attribute.clearValues();
 			while (iterator.hasNext()) {
 				attribute = iterator.next();
 				this.attributeDAO.removeAttribute(attribute);
@@ -305,11 +305,6 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 				this.attributeDAO.removeAttribute(attribute);
 			}
 		}
-	}
-
-	private void clearAttributeValues(AttributeEntity attribute) {
-		attribute.setStringValue(null);
-		attribute.setBooleanValue(null);
 	}
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)

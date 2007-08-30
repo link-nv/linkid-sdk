@@ -321,6 +321,15 @@ public class AttributeEntity implements Serializable {
 		}
 	}
 
+	@Transient
+	public void clearValues() {
+		this.booleanValue = null;
+		this.dateValue = null;
+		this.doubleValue = null;
+		this.integerValue = null;
+		this.stringValue = null;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {

@@ -18,6 +18,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.soap.Addressing;
@@ -346,6 +347,8 @@ public class DataServicePortImpl implements DataServicePort {
 						"AttributeNotFound");
 				return failedResponse;
 			} catch (DatatypeMismatchException e) {
+				LOG.error("datatype mismatch. received data of type: "
+						+ attributeValue.getClass().getName());
 				ModifyResponseType failedResponse = createFailedModifyResponse(
 						SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
 				return failedResponse;
@@ -618,7 +621,8 @@ public class DataServicePortImpl implements DataServicePort {
 			/*
 			 * Single-valued attribute;
 			 */
-			return attributeValues.get(0);
+			Object value = attributeValues.get(0);
+			return convertXMLDatatypeToServiceDatatype(value);
 		}
 		/*
 		 * Multivalued attribute.
@@ -628,7 +632,8 @@ public class DataServicePortImpl implements DataServicePort {
 		 * We retrieve the component type for the array from the first attribute
 		 * value element.
 		 */
-		Object firstAttributeValue = attributeValues.get(0);
+		Object firstAttributeValue = convertXMLDatatypeToServiceDatatype(attributeValues
+				.get(0));
 		/*
 		 * We're depending on xsi:type here to pass the type information from
 		 * client to server.
@@ -636,8 +641,28 @@ public class DataServicePortImpl implements DataServicePort {
 		Class componentType = firstAttributeValue.getClass();
 		Object result = Array.newInstance(componentType, size);
 		for (int idx = 0; idx < size; idx++) {
-			Array.set(result, idx, attributeValues.get(idx));
+			Object value = convertXMLDatatypeToServiceDatatype(attributeValues
+					.get(idx));
+			Array.set(result, idx, value);
 		}
 		return result;
+	}
+
+	/**
+	 * Convertor to go from XML datatypes to Service datatypes. The Service
+	 * layer doesn't eat XMLGregorianCalendars.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private Object convertXMLDatatypeToServiceDatatype(Object value) {
+		if (null == value) {
+			return null;
+		}
+		if (value instanceof XMLGregorianCalendar) {
+			XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
+			value = calendar.toGregorianCalendar().getTime();
+		}
+		return value;
 	}
 }
