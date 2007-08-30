@@ -7,9 +7,7 @@
 
 package net.link.safeonline.sdk.auth.filter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Enumeration;
 
 import javax.servlet.Filter;
@@ -64,13 +62,6 @@ public class LogFilter implements Filter {
 		Enumeration requestParameters = httpRequest.getAttributeNames();
 		while (requestParameters.hasMoreElements()) {
 			sb.append("  * " + requestParameters.nextElement() + "\n");
-		}
-
-		BufferedReader requestReader = new BufferedReader(
-				new InputStreamReader(httpRequest.getInputStream()));
-		String s;
-		while (null != (s = requestReader.readLine())) {
-			sb.append(s + "\n");
 		}
 
 		LogManager.getInstance().postLogBuffer(sb);
