@@ -34,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.Log4JLogChute;
+import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
@@ -52,6 +53,7 @@ import org.opensaml.ws.security.provider.HTTPRule;
 import org.opensaml.ws.security.provider.MandatoryIssuerRule;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
 import org.opensaml.ws.transport.http.HttpServletResponseAdapter;
+import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.security.SecurityHelper;
 import org.opensaml.xml.security.credential.BasicCredential;
 import org.opensaml.xml.security.x509.BasicX509Credential;
@@ -75,6 +77,19 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 	private final IdentityServiceClient identityServiceClient;
 
 	private final SamlAuthorityService samlAuthorityService;
+
+	static {
+		System
+				.setProperty(
+						"javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
+						"org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+		try {
+			DefaultBootstrap.bootstrap();
+		} catch (ConfigurationException e) {
+			throw new RuntimeException(
+					"could not bootstrap the OpenSAML2 library");
+		}
+	}
 
 	public static final String IN_RESPONSE_TO_ATTRIBUTE = Saml2PostProtocolHandler.class
 			.getName()
