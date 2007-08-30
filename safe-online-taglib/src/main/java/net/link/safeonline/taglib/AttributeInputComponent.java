@@ -391,7 +391,7 @@ public class AttributeInputComponent extends UIInput {
 				String monthId = getMonthId(clientId);
 				responseWriter.writeAttribute("name", monthId, null);
 				int month = calendar.get(Calendar.MONTH) + 1;
-				for (int monthIdx = 1; monthIdx < 12; monthIdx++) {
+				for (int monthIdx = 1; monthIdx < 13; monthIdx++) {
 					responseWriter.startElement("option", null);
 					responseWriter.writeAttribute("value", Integer
 							.toString(monthIdx), null);

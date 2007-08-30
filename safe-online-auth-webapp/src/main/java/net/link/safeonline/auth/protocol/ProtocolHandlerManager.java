@@ -152,5 +152,13 @@ public class ProtocolHandlerManager {
 			e.setProtocolName(protocolName);
 			throw e;
 		}
+
+		/*
+		 * It's important to invalidate the session here. Else we spill
+		 * resources and we prevent a user to login twice since the
+		 * authentication service instance was already removed from the session
+		 * context.
+		 */
+		session.invalidate();
 	}
 }

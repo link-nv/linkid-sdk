@@ -85,8 +85,6 @@ public class SimpleProtocolHandler implements ProtocolHandler {
 					+ e.getMessage());
 		}
 
-		session.invalidate();
-
 		LOG.debug("redirecting to: " + redirectUrl);
 		try {
 			authnResponse.sendRedirect(redirectUrl);
