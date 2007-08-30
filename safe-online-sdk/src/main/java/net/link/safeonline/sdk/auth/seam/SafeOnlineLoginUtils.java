@@ -7,6 +7,11 @@
 
 package net.link.safeonline.sdk.auth.seam;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
@@ -16,6 +21,7 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
@@ -36,6 +42,14 @@ public class SafeOnlineLoginUtils {
 	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
 
 	public static final String AUTHN_PROTOCOL_INIT_PARAM = "AuthenticationProtocol";
+
+	public static final String KEY_STORE_RESOURCE_INIT_PARAM = "KeyStoreResource";
+
+	public static final String KEY_STORE_FILE_INIT_PARAM = "KeyStoreFile";
+
+	public static final String KEY_STORE_TYPE_INIT_PARAM = "KeyStoreType";
+
+	public static final String KEY_STORE_PASSWORD_INIT_PARAM = "KeyStorePassword";
 
 	public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SIMPLE_PLAIN_URL;
 
@@ -91,6 +105,46 @@ public class SafeOnlineLoginUtils {
 		}
 		log.debug("authentication protocol: #0", authenticationProtocol);
 
+		String keyStoreResource = externalContext
+				.getInitParameter(KEY_STORE_RESOURCE_INIT_PARAM);
+		String keyStoreFile = externalContext
+				.getInitParameter(KEY_STORE_FILE_INIT_PARAM);
+		KeyPair keyPair;
+		if (null != keyStoreResource || null != keyStoreFile) {
+			if (null != keyStoreResource && null != keyStoreFile) {
+				throw new RuntimeException(
+						"both KeyStoreResource and KeyStoreFile are defined");
+			}
+			String keyStorePassword = getInitParameter(externalContext,
+					KEY_STORE_PASSWORD_INIT_PARAM);
+			String keyStoreType = getInitParameter(externalContext,
+					KEY_STORE_TYPE_INIT_PARAM);
+			InputStream keyStoreInputStream;
+			if (null != keyStoreResource) {
+				keyStoreInputStream = Thread.currentThread()
+						.getContextClassLoader().getResourceAsStream(
+								keyStoreResource);
+				if (null == keyStoreInputStream) {
+					throw new RuntimeException("resource not found: "
+							+ keyStoreResource);
+				}
+			} else {
+				try {
+					keyStoreInputStream = new FileInputStream(keyStoreFile);
+				} catch (FileNotFoundException e) {
+					throw new RuntimeException("file not found: "
+							+ keyStoreFile);
+				}
+			}
+			PrivateKeyEntry privateKeyEntry = KeyStoreUtils
+					.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
+							keyStorePassword, keyStorePassword);
+			keyPair = new KeyPair(privateKeyEntry.getCertificate()
+					.getPublicKey(), privateKeyEntry.getPrivateKey());
+		} else {
+			keyPair = null;
+		}
+
 		HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext
 				.getRequest();
 		HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext
@@ -113,7 +167,7 @@ public class SafeOnlineLoginUtils {
 					.createAuthenticationProtocolHandler(
 							authenticationProtocol,
 							safeOnlineAuthenticationServiceUrl,
-							applicationName, null, configParams,
+							applicationName, keyPair, configParams,
 							httpServletRequest);
 		} catch (ServletException e) {
 			throw new RuntimeException(

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.bean;
 
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +21,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.user.keystore.UserKeyStoreUtils;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -47,9 +49,11 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
 		this.applicationOwnersAndLogin.put("owner", "owner");
 
+		X509Certificate userCert = (X509Certificate) UserKeyStoreUtils
+				.getPrivateKeyEntry().getCertificate();
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
-				"The SafeOnline User Web Application."));
+				"The SafeOnline User Web Application.", userCert));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
 				"owner", "The SafeOnline Operator Web Application.", false,
@@ -59,6 +63,8 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 				"owner", "The SafeOnline Application Owner Web Application.",
 				false, false));
 
+		this.trustedCertificates.add(userCert);
+		
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "admin",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));

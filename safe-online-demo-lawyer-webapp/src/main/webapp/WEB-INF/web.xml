@@ -29,6 +29,26 @@
 	</context-param>
 
 	<context-param>
+		<param-name>AuthenticationProtocol</param-name>
+		<param-value>SAML2_BROWSER_POST</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStoreResource</param-name>
+		<param-value>safe-online-demo-lawyer-keystore.jks</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+
+	<context-param>
 		<param-name>LocalHostName</param-name>
 		<param-value>${local.host.name}</param-value>
 	</context-param>

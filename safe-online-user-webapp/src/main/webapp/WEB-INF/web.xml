@@ -29,6 +29,26 @@
 	</context-param>
 
 	<context-param>
+		<param-name>AuthenticationProtocol</param-name>
+		<param-value>SAML2_BROWSER_POST</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStoreResource</param-name>
+		<param-value>safe-online-user-keystore.jks</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+
+	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>
 	</context-param>

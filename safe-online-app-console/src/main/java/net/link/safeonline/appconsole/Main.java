@@ -29,15 +29,15 @@ public class Main {
 		// startJavaFXConsole();
 	}
 
-	public static void startSwingConsole(){
-        LOG.info("Starting Swing SafeOnline Application Console...");
-        Runnable runner = new Runnable() {
-        	  public void run() {
-        		  new ApplicationConsole();
-        	  }
-        	};
-        	EventQueue.invokeLater(runner);
-    }
+	public static void startSwingConsole() {
+		LOG.info("Starting Swing SafeOnline Application Console...");
+		Runnable runner = new Runnable() {
+			public void run() {
+				new ApplicationConsole();
+			}
+		};
+		EventQueue.invokeLater(runner);
+	}
 
 	public static void startJavaFXConsole() {
 		LOG.info("Starting Java FX SafeOnline Application Console...");

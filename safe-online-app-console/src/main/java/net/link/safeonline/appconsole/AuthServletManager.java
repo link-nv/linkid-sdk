@@ -7,7 +7,6 @@
 
 package net.link.safeonline.appconsole;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +38,6 @@ import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletMapping;
 import org.mortbay.jetty.servlet.SessionHandler;
-import org.mortbay.resource.FileResource;
 
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
@@ -57,7 +55,9 @@ public class AuthServletManager extends Observable {
 	private static AuthServletManager authServletManager;
 
 	private Server server;
+
 	private Connector connector;
+
 	private Context context;
 
 	public static AuthServletManager getInstance() {
@@ -154,16 +154,26 @@ public class AuthServletManager extends Observable {
 		@Override
 		protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 				throws ServletException, IOException {
+			LOG.debug("doGet");
 			HttpSession session = req.getSession();
 			String username = (String) session
 					.getAttribute(LoginManager.USERNAME_SESSION_ATTRIBUTE);
+			LOG.debug("username: " + username);
 			resp.getWriter().println(
 					"Success authenticating user " + username
 							+ ".\nYou may close this browser now...");
 			resp.flushBuffer();
-			AuthServletManager.getInstance().shutDownJetty();
+			if (null != username) {
+				AuthServletManager.getInstance().shutDownJetty();
+			}
 		}
 
+		@Override
+		protected void doPost(HttpServletRequest request,
+				HttpServletResponse response) throws ServletException,
+				IOException {
+			doGet(request, response);
+		}
 	}
 
 	public void shutDownJetty() {
