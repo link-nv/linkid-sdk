@@ -189,16 +189,16 @@ public class CreateP12 extends JPanel {
 			char[] keyEntryPassword = keyEntryPasswordField.getPassword();
 
 			// generate keypair
-			KeyPair keyPair = CertificateUtils.generateKeyPair();
+			KeyPair keyPair = KeyStoreUtils.generateKeyPair();
 
 			// generate X509 certificate
-			X509Certificate certificate = CertificateUtils
+			X509Certificate certificate = KeyStoreUtils
 					.generateSelfSignedCertificate(keyPair, "CN=" + certDN);
 
 			// persist P12 to keystore in /tmp
 			File pkcs12keyStore = File.createTempFile(keyStoreName,
 					(String) keyStoreExt.getSelectedItem());
-			CertificateUtils.persistKey(pkcs12keyStore, keyPair.getPrivate(),
+			KeyStoreUtils.persistKey(pkcs12keyStore, keyPair.getPrivate(),
 					certificate, keyStorePassword, keyEntryPassword);
 
 			// load generated identity

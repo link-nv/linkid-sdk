@@ -14,15 +14,18 @@ import static net.link.safeonline.appconsole.Messages.ECHO_OUTPUT;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.border.TitledBorder;
 
 import net.link.safeonline.sdk.ws.auth.AuthClient;
 import net.link.safeonline.sdk.ws.auth.AuthClientImpl;
@@ -43,8 +46,8 @@ public class EchoService extends JPanel {
 	private Action echoAction = new EchoAction(ECHO.getMessage());
 	private Action cancelAction = new CancelAction(CANCEL.getMessage());
 
-	private JTextField inputMessageField = new JTextField(20);
-	private JTextField returnMessageField = new JTextField(20);
+	private JTextArea inputMessageArea = new JTextArea();
+	private JTextArea returnMessageArea = new JTextArea();
 
 	private ApplicationConsole parent = null;
 	private ApplicationConsoleManager consoleManager = null;
@@ -60,29 +63,30 @@ public class EchoService extends JPanel {
 	}
 
 	private void buildWindow() {
-		JPanel infoPanel = new JPanel();
-		JPanel controlPanel = new JPanel();
+		JScrollPane inScrollPane = new JScrollPane(inputMessageArea);
+		inScrollPane.setBorder(new TitledBorder(ECHO_INPUT.getMessage()));
+		returnMessageArea.setEditable(false);
+		JScrollPane outScrollPane = new JScrollPane(returnMessageArea);
+		outScrollPane.setBorder(new TitledBorder(ECHO_OUTPUT.getMessage()));
 
-		JLabel inputMessageLabel = new JLabel(ECHO_INPUT.getMessage());
-		JLabel returnMessageLabel = new JLabel(ECHO_OUTPUT.getMessage());
-
-		// infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
-		infoPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
-		infoPanel.add(inputMessageLabel);
-		infoPanel.add(inputMessageField);
-		infoPanel.add(returnMessageLabel);
-		infoPanel.add(returnMessageField);
-		returnMessageField.setEditable(false);
+		JSplitPane infoPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				inScrollPane, outScrollPane);
+		infoPanel.setDividerSize(3);
+		infoPanel.setResizeWeight(0.5);
 
 		JButton echoButton = new JButton(echoAction);
 		echoButton.setMultiClickThreshhold(500);
-		controlPanel.setLayout(new FlowLayout());
+		JPanel controlPanel = new JPanel(new FlowLayout());
 		controlPanel.add(echoButton);
 		controlPanel.add(new JButton(cancelAction));
 
-		this.setLayout(new BorderLayout());
-		this.add(infoPanel, BorderLayout.CENTER);
-		this.add(controlPanel, BorderLayout.SOUTH);
+		JSplitPane fullPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				infoPanel, controlPanel);
+		fullPanel.setDividerSize(3);
+		fullPanel.setResizeWeight(1.0);
+		
+		this.setLayout(new GridLayout());
+		this.add(fullPanel);
 	}
 
 	private class EchoAction extends AbstractAction {
@@ -96,10 +100,10 @@ public class EchoService extends JPanel {
 		}
 
 		public void actionPerformed(ActionEvent evt) {
-			String message = inputMessageField.getText();
+			String message = inputMessageArea.getText();
 			AuthClient authClient = new AuthClientImpl(consoleManager
 					.getLocation());
-			returnMessageField.setText(authClient.echo(message));
+			returnMessageArea.setText(authClient.echo(message));
 		}
 	}
 

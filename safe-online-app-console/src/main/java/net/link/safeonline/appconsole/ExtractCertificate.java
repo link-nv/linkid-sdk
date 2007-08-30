@@ -203,9 +203,10 @@ public class ExtractCertificate extends JPanel {
 		try {
 			certificateFile = File.createTempFile("extracted_certificate",
 					".crt");
-			CertificateUtils.extractCertificate(privateKeyEntry,
-					certificateFile);
-			String msg = "Extraced certificate from keystore=\"" + keyStorePath + "\" to file: \"" + certificateFile.getAbsolutePath() + "\"";
+			KeyStoreUtils.extractCertificate(privateKeyEntry, certificateFile);
+			String msg = "Extraced certificate from keystore=\"" + keyStorePath
+					+ "\" to file: \"" + certificateFile.getAbsolutePath()
+					+ "\"";
 			LOG.info(msg);
 			JOptionPane.showMessageDialog(this, msg);
 			this.parent.resetContent();

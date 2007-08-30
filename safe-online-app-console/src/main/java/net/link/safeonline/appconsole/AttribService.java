@@ -19,7 +19,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,12 +43,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellEditor;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeCellEditor;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.link.safeonline.sdk.ws.CompoundUtil;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
@@ -118,10 +116,12 @@ public class AttribService extends JPanel implements Observer {
 		JPanel infoPanel = new JPanel();
 		JScrollPane treePanel = new JScrollPane(attributeTree);
 		attributeTree.setEditable(true);
-		DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) attributeTree
-				.getCellRenderer();
-		TreeCellEditor editor = new AttributeCellEditor(attributeTree, renderer);
-		attributeTree.setCellEditor(editor);
+		// DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer)
+		// attributeTree
+		// .getCellRenderer();
+		// TreeCellEditor editor = new AttributeCellEditor(attributeTree,
+		// renderer);
+		// attributeTree.setCellEditor(editor);
 		attributeTreeModel
 				.addTreeModelListener(new AttributeTreeModelListener());
 
@@ -178,9 +178,74 @@ public class AttribService extends JPanel implements Observer {
 					treePopup.show(attributeTree, e.getX(), e.getY());
 
 				}
+				if (SwingUtilities.isLeftMouseButton(e)
+						&& e.getClickCount() > 1) {
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode) attributeTree
+							.getLastSelectedPathComponent();
+					// only leafs(values) are editable
+					if (node.isLeaf()) {
+						editNode(node);
+					}
+				}
 			}
 		});
 
+	}
+
+	protected void editNode(DefaultMutableTreeNode node) {
+		String origValue = node.getUserObject().toString();
+		String newValue;
+		Object value = null;
+		while (null == value) {
+			newValue = JOptionPane.showInputDialog(this,
+					"New attribute value ?", origValue);
+			if (null == newValue)
+				return;
+			value = getValue(node, newValue);
+		}
+		node.setUserObject(value);
+		attributeTreeModel.nodeChanged(node);
+	}
+
+	private Object getValue(DefaultMutableTreeNode node, String newValue) {
+		if (node.getUserObject() instanceof XMLGregorianCalendar) {
+			try {
+				return DatatypeFactory.newInstance().newXMLGregorianCalendar(
+						newValue);
+			} catch (DatatypeConfigurationException e) {
+				JOptionPane.showMessageDialog(this, "Invalid input");
+				return null;
+			}
+		} else if (node.getUserObject() instanceof Boolean) {
+			if (newValue.equals("true") || newValue.equals("false"))
+				return new Boolean(newValue);
+			else {
+				JOptionPane
+						.showMessageDialog(this,
+								"Invalid input, valid inputs for this Boolean are: true/false");
+				return null;
+			}
+		} else if (node.getUserObject() instanceof Integer) {
+			try {
+				Integer.parseInt(newValue);
+				return new Integer(newValue);
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(this,
+						"Invalid input, not a valid integer value");
+				return null;
+			}
+		} else if (node.getUserObject() instanceof Double) {
+			try {
+				Double.parseDouble(newValue);
+				return new Double(newValue);
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(this,
+						"Invalid input, not a valid double value");
+				return null;
+			}
+		} else {
+			return newValue;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -295,29 +360,6 @@ public class AttribService extends JPanel implements Observer {
 	}
 
 	/*
-	 * Cell editor class to only enable leaf nodes as editable
-	 */
-	private class AttributeCellEditor extends DefaultTreeCellEditor {
-
-		public AttributeCellEditor(JTree tree, DefaultTreeCellRenderer renderer) {
-			super(tree, renderer);
-		}
-
-		@Override
-		public boolean isCellEditable(EventObject event) {
-			boolean returnValue = super.isCellEditable(event);
-			if (returnValue) {
-				Object node = this.tree.getLastSelectedPathComponent();
-				if ((node != null) && (node instanceof TreeNode)) {
-					TreeNode treeNode = (TreeNode) node;
-					returnValue = treeNode.isLeaf();
-				}
-			}
-			return returnValue;
-		}
-	}
-
-	/*
 	 * 
 	 * Tree model listener class to catch leaf edits
 	 * 
@@ -342,6 +384,9 @@ public class AttribService extends JPanel implements Observer {
 			if (null == attributeValue)
 				return;
 			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			LOG.info("Attribute value type : "
+					+ attributeValue.getClass().toString());
+
 			ServicesUtils.getInstance().setAttributeValue(userName,
 					attributeName, attributeValue);
 		}
