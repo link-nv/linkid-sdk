@@ -209,6 +209,7 @@ public class ApplicationConsole extends JFrame implements Observer {
 		} catch (UnsupportedOperatingSystemException e) {
 			LOG.error("UnsupportedOperatingSystemException thrown ...", e);
 		}
+		@SuppressWarnings("unchecked")
 		List<String> browsers = browserLauncher.getBrowserList();
 		for (String browser : browsers) {
 			browserCombo.addItem(browser);

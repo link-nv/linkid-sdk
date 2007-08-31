@@ -7,13 +7,11 @@
 
 package net.link.safeonline.appconsole;
 
-import java.net.ConnectException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.ExecutionException;
 
-import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;

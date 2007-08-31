@@ -20,7 +20,6 @@ import static net.link.safeonline.appconsole.Messages.PRIVATE_KEY;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 

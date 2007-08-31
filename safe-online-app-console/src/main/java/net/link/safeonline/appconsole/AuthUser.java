@@ -38,8 +38,6 @@ import javax.swing.border.TitledBorder;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.filter.LogManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jdesktop.swingworker.SwingWorker;
 
 /**
@@ -51,8 +49,6 @@ import org.jdesktop.swingworker.SwingWorker;
 public class AuthUser extends JPanel implements Observer {
 
 	private static final long serialVersionUID = 1L;
-
-	private static final Log LOG = LogFactory.getLog(AuthUser.class);
 
 	private ApplicationConsole parent = null;
 	private String selectedProtocol = null;

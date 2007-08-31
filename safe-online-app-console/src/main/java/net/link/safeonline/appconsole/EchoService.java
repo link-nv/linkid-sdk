@@ -12,7 +12,6 @@ import static net.link.safeonline.appconsole.Messages.ECHO;
 import static net.link.safeonline.appconsole.Messages.ECHO_INPUT;
 import static net.link.safeonline.appconsole.Messages.ECHO_OUTPUT;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
