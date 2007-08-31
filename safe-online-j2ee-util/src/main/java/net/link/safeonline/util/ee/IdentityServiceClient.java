@@ -16,6 +16,9 @@ import javax.management.MBeanServerFactory;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Client for SafeOnline Identity Service JMX bean. This service manages the key
  * pair of the SafeOnline service itself. See also: safe-online-service.
@@ -24,6 +27,9 @@ import javax.management.ObjectName;
  * 
  */
 public class IdentityServiceClient {
+
+	private static final Log LOG = LogFactory
+			.getLog(IdentityServiceClient.class);
 
 	private final MBeanServer server;
 
@@ -41,6 +47,7 @@ public class IdentityServiceClient {
 					"no MBean server found; probably not running inside J2EE container");
 		}
 		this.server = (MBeanServer) mbeanServers.get(0);
+		LOG.debug("MBean Server class: " + this.server.getClass().getName());
 		try {
 			this.identityServiceName = new ObjectName(IDENTITY_SERVICE);
 		} catch (MalformedObjectNameException e) {
