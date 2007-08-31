@@ -17,7 +17,6 @@ import net.link.safeonline.sdk.KeyStoreUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.system.ServiceMBeanSupport;
 
 /**
  * JMX bean that manages the identity of the SafeOnline instance. This identity
@@ -32,8 +31,7 @@ import org.jboss.system.ServiceMBeanSupport;
  * @author fcorneli
  * 
  */
-public class IdentityService extends ServiceMBeanSupport implements
-		IdentityServiceMBean {
+public class IdentityService implements IdentityServiceMBean {
 
 	private static final Log LOG = LogFactory.getLog(IdentityService.class);
 

@@ -10,15 +10,13 @@ package net.link.safeonline.service;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-import org.jboss.system.ServiceMBean;
-
 /**
  * Interface for Identity Service JMX bean.
  * 
  * @author fcorneli
  * 
  */
-public interface IdentityServiceMBean extends ServiceMBean {
+public interface IdentityServiceMBean {
 
 	/*
 	 * Operations.

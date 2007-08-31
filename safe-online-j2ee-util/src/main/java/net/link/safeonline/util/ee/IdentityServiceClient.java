@@ -9,15 +9,14 @@ package net.link.safeonline.util.ee;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.ArrayList;
 
 import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.mx.util.MBeanServerLocator;
 
 /**
  * Client for SafeOnline Identity Service JMX bean. This service manages the key
@@ -41,12 +40,7 @@ public class IdentityServiceClient {
 	 * Main constructor.
 	 */
 	public IdentityServiceClient() {
-		ArrayList mbeanServers = MBeanServerFactory.findMBeanServer(null);
-		if (mbeanServers.isEmpty()) {
-			throw new RuntimeException(
-					"no MBean server found; probably not running inside J2EE container");
-		}
-		this.server = (MBeanServer) mbeanServers.get(0);
+		this.server = MBeanServerLocator.locateJBoss();
 		LOG.debug("MBean Server class: " + this.server.getClass().getName());
 		try {
 			this.identityServiceName = new ObjectName(IDENTITY_SERVICE);
