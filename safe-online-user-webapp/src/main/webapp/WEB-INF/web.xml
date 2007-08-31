@@ -74,6 +74,17 @@
 	</context-param>
 
 	<filter>
+		<filter-name>TimeoutFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.webapp.filter.TimeoutFilter
+		</filter-class>
+		<init-param>
+			<param-name>TimeoutPath</param-name>
+			<param-value>/timeout.seam</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
 		<filter-name>SafeOnlineLoginFilter</filter-name>
 		<filter-class>
 			net.link.safeonline.sdk.auth.filter.LoginFilter
@@ -124,6 +135,11 @@
 		<filter-name>ajax4jsf</filter-name>
 		<filter-class>org.ajax4jsf.Filter</filter-class>
 	</filter>
+
+	<filter-mapping>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<filter-mapping>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
