@@ -41,7 +41,7 @@ public class JmxTestUtils {
 	public void setUp(String mbeanName) throws MalformedObjectNameException,
 			NullPointerException, InstanceAlreadyExistsException,
 			MBeanRegistrationException, NotCompliantMBeanException {
-		MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
+		MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer("jboss");
 		ObjectName mbeanObjectName = new ObjectName(mbeanName);
 		this.dynamicTestMBean = new DynamicTestMBean();
 		mbeanServer.registerMBean(this.dynamicTestMBean, mbeanObjectName);
