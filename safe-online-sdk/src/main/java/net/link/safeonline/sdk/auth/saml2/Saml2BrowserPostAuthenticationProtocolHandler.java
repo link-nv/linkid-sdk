@@ -180,7 +180,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		LOG.debug("SAMLResponse parameter found");
 		LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
 
-		BasicSAMLMessageContext messageContext = new BasicSAMLMessageContext();
+		BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
 		messageContext
 				.setInboundMessageTransport(new HttpServletRequestAdapter(
 						httpRequest));

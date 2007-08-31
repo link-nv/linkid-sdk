@@ -40,7 +40,7 @@ public class InResponseToRule implements SecurityPolicyRule {
 					.debug("Invalid message context type, this policy rule only support SAMLMessageContext");
 			return;
 		}
-		SAMLMessageContext samlMsgCtx = (SAMLMessageContext) messageContext;
+		SAMLMessageContext<?, ?, ?> samlMsgCtx = (SAMLMessageContext<?, ?, ?>) messageContext;
 
 		SAMLObject samlMsg = samlMsgCtx.getInboundSAMLMessage();
 		if (samlMsg == null) {
