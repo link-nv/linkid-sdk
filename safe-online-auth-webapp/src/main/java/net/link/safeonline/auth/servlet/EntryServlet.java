@@ -12,6 +12,7 @@ import java.io.IOException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +42,9 @@ import org.apache.commons.logging.LogFactory;
  * <ul>
  * <li><code>StartUrl</code>: points to the relative/absolute URL to which
  * this servlet will redirect after successful authentication protocol entry.</li>
+ * <li><code>FirstTimeUrl</code>: points to the relative/absolute URL to
+ * which this servlet will redirect after first visit and successful
+ * authentication protocol entry.</li>
  * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when
  * an unsupported authentication protocol is encountered.</li>
  * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an
@@ -58,6 +62,8 @@ public class EntryServlet extends HttpServlet {
 
 	public static final String START_URL_INIT_PARAM = "StartUrl";
 
+	public static final String FIRST_TIME_URL_INIT_PARAM = "FirstTimeUrl";
+
 	public static final String UNSUPPORTED_PROTOCOL_URL_INIT_PARAM = "UnsupportedProtocolUrl";
 
 	public static final String PROTOCOL_ERROR_URL = "ProtocolErrorUrl";
@@ -68,6 +74,8 @@ public class EntryServlet extends HttpServlet {
 
 	private String startUrl;
 
+	private String firstTimeUrl;
+
 	private String unsupportedProtocolUrl;
 
 	private String protocolErrorUrl;
@@ -76,6 +84,7 @@ public class EntryServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		this.startUrl = getInitParameter(config, START_URL_INIT_PARAM);
+		this.firstTimeUrl = getInitParameter(config, FIRST_TIME_URL_INIT_PARAM);
 		this.unsupportedProtocolUrl = getInitParameter(config,
 				UNSUPPORTED_PROTOCOL_URL_INIT_PARAM);
 		this.protocolErrorUrl = getInitParameter(config, PROTOCOL_ERROR_URL);
@@ -130,6 +139,44 @@ public class EntryServlet extends HttpServlet {
 		session.setAttribute("applicationId", protocolContext
 				.getApplicationId());
 		session.setAttribute("target", protocolContext.getTarget());
-		response.sendRedirect(this.startUrl);
+
+		if (isFirstTime(request, response)) {
+			response.sendRedirect(this.firstTimeUrl);
+		} else {
+			response.sendRedirect(this.startUrl);
+		}
+	}
+
+	private boolean isFirstTime(HttpServletRequest request,
+			HttpServletResponse response) {
+		Cookie[] cookies = request.getCookies();
+		if (null == cookies) {
+			setDefloweredCookie(response);
+			return true;
+		}
+		Cookie defloweredCookie = findDefloweredCookie(cookies);
+		if (null == defloweredCookie) {
+			setDefloweredCookie(response);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private final static String DEFLOWER_COOKIE_NAME = "deflowered";
+
+	private Cookie findDefloweredCookie(Cookie[] cookies) {
+		for (Cookie cookie : cookies) {
+			if (DEFLOWER_COOKIE_NAME.equals(cookie.getName())) {
+				return cookie;
+			}
+		}
+		return null;
+	}
+
+	private void setDefloweredCookie(HttpServletResponse response) {
+		Cookie defloweredCookie = new Cookie(DEFLOWER_COOKIE_NAME, "true");
+		defloweredCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+		response.addCookie(defloweredCookie);
 	}
 }

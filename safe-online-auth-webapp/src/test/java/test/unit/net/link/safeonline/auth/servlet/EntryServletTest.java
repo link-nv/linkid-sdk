@@ -52,6 +52,8 @@ public class EntryServletTest {
 
 	private ServletTestManager entryServletTestManager;
 
+	private String firstTimeUrl = "first-time";
+
 	private String startUrl = "start";
 
 	private String unsupportedProtocolUrl = "unsupported-protocol";
@@ -93,6 +95,7 @@ public class EntryServletTest {
 		this.entryServletTestManager = new ServletTestManager();
 		Map<String, String> initParams = new HashMap<String, String>();
 		initParams.put("StartUrl", this.startUrl);
+		initParams.put("FirstTimeUrl", this.firstTimeUrl);
 		initParams.put("UnsupportedProtocolUrl", this.unsupportedProtocolUrl);
 		initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
 		this.entryServletTestManager.setUp(EntryServlet.class, initParams);
@@ -152,7 +155,7 @@ public class EntryServletTest {
 		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
 		String location = getMethod.getResponseHeader("Location").getValue();
 		LOG.debug("location: " + location);
-		assertTrue(location.endsWith(this.startUrl));
+		assertTrue(location.endsWith(this.firstTimeUrl));
 		String resultApplicationId = (String) this.entryServletTestManager
 				.getSessionAttribute("applicationId");
 		assertEquals(applicationId, resultApplicationId);
@@ -239,7 +242,7 @@ public class EntryServletTest {
 		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
 		String location = postMethod.getResponseHeader("Location").getValue();
 		LOG.debug("location: " + location);
-		assertTrue(location.endsWith(this.startUrl));
+		assertTrue(location.endsWith(this.firstTimeUrl));
 		String resultApplicationId = (String) this.entryServletTestManager
 				.getSessionAttribute("applicationId");
 		assertEquals(applicationName, resultApplicationId);

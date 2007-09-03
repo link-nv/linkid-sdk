@@ -21,6 +21,18 @@
 	</lifecycle>
 
 	<navigation-rule>
+		<from-view-id>/first-time.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>new</from-action>
+			<to-view-id>/new-user.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>existing</from-action>
+			<to-view-id>/main.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
 		<from-view-id>/identity-confirmation.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>reject</from-action>

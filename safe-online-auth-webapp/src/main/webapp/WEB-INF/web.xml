@@ -151,6 +151,10 @@
 			<param-value>main.seam</param-value>
 		</init-param>
 		<init-param>
+			<param-name>FirstTimeUrl</param-name>
+			<param-value>first-time.seam</param-value>
+		</init-param>
+		<init-param>
 			<param-name>UnsupportedProtocolUrl</param-name>
 			<param-value>unsupported-protocol.seam</param-value>
 		</init-param>
