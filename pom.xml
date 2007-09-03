@@ -337,7 +337,13 @@
 		<module>safe-online-jpa-util</module>
 		<module>safe-online-sdk-deploy-ctx</module>
 		<module>safe-online-saml-authn-context</module>
+		<module>safe-online-helpdesk-webapp</module>
+		<module>safe-online-helpdesk</module>
+		<module>safe-online-helpdesk-service</module>
 		<module>safe-online-user-keystore</module>
+		<module>safe-online-helpdesk-keystore</module>
+		<module>safe-online-oper-keystore</module>
+		<module>safe-online-owner-keystore</module>
 	</modules>
 	<repositories>
 		<repository>

@@ -1,0 +1,5 @@
+SafeOnline Helpdesk Beans
+
+ This project contains the Seam backing beans used by the helpdesk web application.
+ 
+ It is using Seam.

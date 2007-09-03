@@ -73,3 +73,5 @@ mvn jboss:deploy
  * the SafeOnline user web application components <<<safe-online-user-webapp>>>, <<<safe-online-user>>> and <<<safe-online-user-service>>>.
  
  * the SafeOnline operator web application components <<<safe-online-oper-webapp>>>, <<<safe-online-oper>>> and <<<safe-online-oper-service>>>.
+ 
+ * the SafeOnline helpdesk web application components <<<safe-online-helpdesk-webapp>>>, <<<safe-online-helpdesk>>> and <<<safe-online-helpdesk-service>>>.

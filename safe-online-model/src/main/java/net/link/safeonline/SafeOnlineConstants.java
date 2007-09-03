@@ -44,6 +44,8 @@ public class SafeOnlineConstants {
 
 	public static final String SAFE_ONLINE_OWNER_APPLICATION_NAME = "olas-owner";
 
+	public static final String SAFE_ONLINE_HELPDESK_APPLICATION_NAME = "olas-helpdesk";
+
 	public static final String NAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:name";
 
 	public static final String PASSWORD_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:password";

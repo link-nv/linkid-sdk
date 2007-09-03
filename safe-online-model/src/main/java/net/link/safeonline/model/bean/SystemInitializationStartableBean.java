@@ -21,6 +21,9 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStoreUtils;
+import net.link.safeonline.oper.keystore.OperKeyStoreUtils;
+import net.link.safeonline.owner.keystore.OwnerKeyStoreUtils;
 import net.link.safeonline.user.keystore.UserKeyStoreUtils;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -51,26 +54,43 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
 		X509Certificate userCert = (X509Certificate) UserKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
+		X509Certificate operCert = (X509Certificate) OperKeyStoreUtils
+				.getPrivateKeyEntry().getCertificate();
+		X509Certificate ownerCert = (X509Certificate) OwnerKeyStoreUtils
+				.getPrivateKeyEntry().getCertificate();
+		X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStoreUtils
+				.getPrivateKeyEntry().getCertificate();
+
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
 				"The SafeOnline User Web Application.", userCert));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
 				"owner", "The SafeOnline Operator Web Application.", false,
-				false));
+				false, operCert));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
 				"owner", "The SafeOnline Application Owner Web Application.",
-				false, false));
+				false, false, ownerCert));
+		this.registeredApplications.add(new Application(
+				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
+				"owner", "The SafeOnline Helpdesk Web Application.", false,
+				false, helpdeskCert));
 
 		this.trustedCertificates.add(userCert);
-		
+		this.trustedCertificates.add(operCert);
+		this.trustedCertificates.add(ownerCert);
+		this.trustedCertificates.add(helpdeskCert);
+
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "admin",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "admin",
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(
+				SubscriptionOwnerType.APPLICATION, "admin",
+				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME));
 
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "owner",

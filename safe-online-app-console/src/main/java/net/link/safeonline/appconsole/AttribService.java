@@ -19,6 +19,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,8 +49,6 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.link.safeonline.sdk.ws.CompoundUtil;
@@ -67,9 +69,12 @@ public class AttribService extends JPanel implements Observer {
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(AttribService.class);
+	
+	private static final String DATE_FORMAT = "dd MM yyyy"; 
 
 	private ApplicationConsole parent = null;
 	private TreePath treePath = null;
+	private SimpleDateFormat dateFormat = null;
 
 	/*
 	 * Actions
@@ -103,6 +108,8 @@ public class AttribService extends JPanel implements Observer {
 	 */
 	public AttribService(ApplicationConsole applicationConsole) {
 		this.parent = applicationConsole;
+		this.dateFormat = new SimpleDateFormat(DATE_FORMAT);
+		
 		ServicesUtils.getInstance().addObserver(this);
 		init();
 		initMenu();
@@ -208,13 +215,14 @@ public class AttribService extends JPanel implements Observer {
 	}
 
 	private Object getValue(DefaultMutableTreeNode node, String newValue) {
-		if (node.getUserObject() instanceof XMLGregorianCalendar) {
+		if (node.getUserObject() instanceof Date) {
 			try {
-				return DatatypeFactory.newInstance().newXMLGregorianCalendar(
-						newValue);
-			} catch (DatatypeConfigurationException e) {
-				JOptionPane.showMessageDialog(this, "Invalid input");
+				return dateFormat.parse(newValue);
+			} catch (ParseException e) {
+				JOptionPane.showMessageDialog(this,
+						"Invalid input, not a valid date ( format=\"" + DATE_FORMAT + "\" )");
 				return null;
+
 			}
 		} else if (node.getUserObject() instanceof Boolean) {
 			if (newValue.equals("true") || newValue.equals("false"))
@@ -309,8 +317,14 @@ public class AttribService extends JPanel implements Observer {
 		if (attributeValue instanceof AttributeType)
 			addCompoundAttribute(attributeNameNode, attributeValue);
 		else {
-			DefaultMutableTreeNode attributeValueNode = new DefaultMutableTreeNode(
-					attributeValue);
+			DefaultMutableTreeNode attributeValueNode;
+			if (attributeValue instanceof XMLGregorianCalendar) {
+				Date date = ((XMLGregorianCalendar) attributeValue)
+						.toGregorianCalendar().getTime();
+				attributeValueNode = new DefaultMutableTreeNode(date);
+			} else {
+				attributeValueNode = new DefaultMutableTreeNode(attributeValue);
+			}
 			attributeTreeModel.insertNodeInto(attributeValueNode,
 					attributeNameNode, attributeNameNode.getChildCount());
 		}

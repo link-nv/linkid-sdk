@@ -29,6 +29,26 @@
 	</context-param>
 
 	<context-param>
+		<param-name>AuthenticationProtocol</param-name>
+		<param-value>SAML2_BROWSER_POST</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStoreResource</param-name>
+		<param-value>safe-online-owner-keystore.jks</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+
+	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>
 	</context-param>
@@ -52,6 +72,21 @@
 		<param-name>CommercialName</param-name>
 		<param-value>OLAS</param-value>
 	</context-param>
+
+	<filter>
+		<filter-name>TimeoutFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.webapp.filter.TimeoutFilter
+		</filter-class>
+		<init-param>
+			<param-name>TimeoutPath</param-name>
+			<param-value>/timeout.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>LoginSessionAttribute</param-name>
+			<param-value>username</param-value>
+		</init-param>
+	</filter>
 
 	<filter>
 		<filter-name>SafeOnlineLoginFilter</filter-name>
@@ -84,6 +119,11 @@
 			<param-value>client-login</param-value>
 		</init-param>
 	</filter>
+
+	<filter-mapping>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<filter-mapping>
 		<filter-name>Seam Exception Filter</filter-name>
