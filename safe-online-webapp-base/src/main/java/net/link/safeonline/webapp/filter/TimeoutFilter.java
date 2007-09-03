@@ -58,18 +58,30 @@ public class TimeoutFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
+		LOG.debug("doFilter");
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String requestedSessionId = httpRequest.getRequestedSessionId();
 		if (null == requestedSessionId) {
 			/*
 			 * This means that the user just got here for the first time.
 			 */
+			LOG.debug("no session");
 			chain.doFilter(request, response);
 			return;
 		}
 		boolean requestedSessionIdValid = httpRequest
 				.isRequestedSessionIdValid();
 		if (true == requestedSessionIdValid) {
+			HttpServletResponse httpResponse = (HttpServletResponse) response;
+			/*
+			 * We wrap the response since we need to be able to add cookies
+			 * after the body has been committed.
+			 */
+			TimeoutServletResponseWrapper timeoutResponseWrapper = new TimeoutServletResponseWrapper(
+					httpResponse);
+			LOG.debug("chain.doFilter");
+			chain.doFilter(request, timeoutResponseWrapper);
+			// chain.doFilter(request, response);
 			/*
 			 * This means that the servlet container found a matching session
 			 * context for the requested session Id.
@@ -78,15 +90,7 @@ public class TimeoutFilter implements Filter {
 			Object loginSessionAttribute = session
 					.getAttribute(this.loginSessionAttribute);
 			if (null != loginSessionAttribute) {
-				if (false == hasLoginCookie(httpRequest)) {
-					HttpServletResponse httpResponse = (HttpServletResponse) response;
-					/*
-					 * We communicate that the user has been properly logged in
-					 * by setting a non-persistent browser cookie.
-					 */
-					Cookie loginCookie = new Cookie("login", "true");
-					httpResponse.addCookie(loginCookie);
-				}
+				addLoginCookie(httpRequest, httpResponse);
 			} else {
 				/*
 				 * If the user performs a logout, we need to remove the login
@@ -95,7 +99,7 @@ public class TimeoutFilter implements Filter {
 				 */
 				removeLoginCookie(httpRequest, response);
 			}
-			chain.doFilter(request, response);
+			timeoutResponseWrapper.commit();
 			return;
 		}
 		/*
@@ -117,7 +121,22 @@ public class TimeoutFilter implements Filter {
 		 * timeout on the HTTP session, but since the user was not yet logged
 		 * in, it's not that harmful.
 		 */
+		LOG.debug("non harmful timeout");
 		chain.doFilter(request, response);
+	}
+
+	private void addLoginCookie(HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) {
+		if (true == hasLoginCookie(httpRequest)) {
+			return;
+		}
+		/*
+		 * We communicate that the user has been properly logged in by setting a
+		 * non-persistent browser cookie.
+		 */
+		Cookie loginCookie = new Cookie("login", "true");
+		LOG.debug("adding login cookie");
+		httpResponse.addCookie(loginCookie);
 	}
 
 	private void removeLoginCookie(HttpServletRequest httpRequest,
@@ -125,6 +144,7 @@ public class TimeoutFilter implements Filter {
 		if (false == hasLoginCookie(httpRequest)) {
 			return;
 		}
+		LOG.debug("removing login cookie");
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		Cookie loginCookie = new Cookie("login", "");
 		loginCookie.setMaxAge(0);
@@ -149,6 +169,8 @@ public class TimeoutFilter implements Filter {
 		this.timeoutPath = getInitParameter(config, TIMEOUT_PATH_INIT_PARAM);
 		this.loginSessionAttribute = getInitParameter(config,
 				LOGIN_SESSION_ATTRIBUTE_INIT_PARAM);
+		LOG.debug("timeout path: " + this.timeoutPath);
+		LOG.debug("login session attribute: " + this.loginSessionAttribute);
 	}
 
 	private String getInitParameter(FilterConfig config, String parameterName)
