@@ -54,11 +54,13 @@ public class TimeoutServletResponseWrapper extends HttpServletResponseWrapper {
 	 */
 	public void commit() throws IOException {
 		LOG.debug("commit");
-		/*
-		 * We need to flush the writer first so that the buffered servlet output
-		 * stream holds all the data.
-		 */
-		this.writer.flush();
+		if (null != this.writer) {
+			/*
+			 * We need to flush the writer first so that the buffered servlet
+			 * output stream holds all the data.
+			 */
+			this.writer.flush();
+		}
 		IOUtils.write(this.bufferedServletOutputStream.getData(),
 				this.origResponse.getOutputStream());
 	}
