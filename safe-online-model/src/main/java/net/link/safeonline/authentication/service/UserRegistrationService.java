@@ -34,4 +34,12 @@ public interface UserRegistrationService {
 	 */
 	void registerUser(String login, String password, String name)
 			throws ExistingUserException;
+
+	/**
+	 * Checks whether the given login Id is still free to use or not.
+	 * 
+	 * @param login
+	 * @return
+	 */
+	boolean isLoginFree(String login);
 }

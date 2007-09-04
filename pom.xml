@@ -1140,6 +1140,11 @@
 				<artifactId>BrowserLauncher2</artifactId>
 				<version>${BrowserLauncher2.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.octo.captcha</groupId>
+				<artifactId>jcaptcha-all</artifactId>
+				<version>${jcaptcha-all.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1265,7 +1270,7 @@
 			2.1
 		</maven-assembly-plugin.version>
 		<maven-dependency-plugin.version>
-			2.0-alpha-4
+			2.0-alpha-5-SNAPSHOT
 		</maven-dependency-plugin.version>
 		<http.version>20070405</http.version>
 		<maven-antrun-plugin.version>1.1</maven-antrun-plugin.version>
@@ -1308,5 +1313,6 @@
 		<Filters.version>1531</Filters.version>
 		<swing-worker.version>1.1</swing-worker.version>
 		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
+		<jcaptcha-all.version>1.0-RC6</jcaptcha-all.version>
 	</properties>
 </project>

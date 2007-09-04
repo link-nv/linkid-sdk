@@ -24,7 +24,7 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 /**
- * This HTTP session listener manages the lifecycle of the authentication
+ * This HTTP session listener manages the life-cycle of the authentication
  * service instance used by the authentication web application.
  * 
  * @author fcorneli
@@ -71,6 +71,11 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 		try {
 			LOG.debug("aborting authentication service instance");
 			authenticationService.abort();
+			/*
+			 * By doing so we actually inform the EJB container that he can
+			 * release some resources held by the authentication service bean
+			 * instance.
+			 */
 		} catch (NoSuchEJBException e) {
 			/*
 			 * This means that the authentication service instances did throw a

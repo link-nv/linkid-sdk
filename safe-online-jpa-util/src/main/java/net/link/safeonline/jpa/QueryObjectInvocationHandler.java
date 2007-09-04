@@ -64,12 +64,10 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
 	private Object update(UpdateMethod updateMethodAnnotation, Method method,
 			Object[] args) {
 		String namedQueryName = updateMethodAnnotation.value();
-		LOG.debug("named query name: " + namedQueryName);
 		Query query = this.entityManager.createNamedQuery(namedQueryName);
 		setParameters(method, args, query);
 
 		Class<?> returnType = method.getReturnType();
-		LOG.debug("return type: " + returnType);
 
 		if (Query.class.isAssignableFrom(returnType)) {
 			return query;
@@ -86,7 +84,6 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
 	private Object query(QueryMethod queryMethodAnnotation, Method method,
 			Object[] args) throws Exception {
 		String namedQueryName = queryMethodAnnotation.value();
-		LOG.debug("named query name: " + namedQueryName);
 		Query query = this.entityManager.createNamedQuery(namedQueryName);
 
 		setParameters(method, args, query);

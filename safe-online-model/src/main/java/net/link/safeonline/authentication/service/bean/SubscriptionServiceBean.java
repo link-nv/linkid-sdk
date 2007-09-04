@@ -120,6 +120,7 @@ public class SubscriptionServiceBean implements SubscriptionService,
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public boolean isSubscribed(String applicationName)
 			throws ApplicationNotFoundException {
+		LOG.debug("is subscribed: " + applicationName);
 		Subject subject = SubjectFactory.getCallerSubject(this);
 		Application application = ApplicationFactory.getApplication(this,
 				applicationName);

@@ -95,8 +95,8 @@ public class AuthenticationProtocolManager {
 			HttpServletRequest httpRequest) throws ServletException {
 		HttpSession session = httpRequest.getSession();
 		if (null != session.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE)) {
-			throw new ServletException(
-					"a previous protocol handler already attached to session");
+			LOG
+					.error("a previous protocol handler already attached to session");
 		}
 
 		Class<? extends AuthenticationProtocolHandler> authnProtocolHandlerClass = handlerClasses

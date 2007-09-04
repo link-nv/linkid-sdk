@@ -21,11 +21,8 @@ import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.IdentityConfirmation;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
-import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AttributeDO;
-import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.IdentityService;
 
 import org.apache.commons.logging.Log;
@@ -36,7 +33,6 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
 
 @Stateful
@@ -57,33 +53,6 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 
 	@EJB
 	private IdentityService identityService;
-
-	@In
-	private Context sessionContext;
-
-	@In
-	private AuthenticationService authenticationService;
-
-	private void commitAuthentication() throws SubscriptionNotFoundException,
-			ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-			IdentityConfirmationRequiredException, MissingAttributeException {
-		try {
-			this.authenticationService.commitAuthentication(this.application);
-		} finally {
-			/*
-			 * We have to remove the authentication service reference from the
-			 * http session, else the authentication service manager will try to
-			 * abort on it.
-			 */
-			cleanupAuthenticationServiceReference();
-		}
-	}
-
-	public static final String AUTH_SERVICE_ATTRIBUTE = "authenticationService";
-
-	private void cleanupAuthenticationServiceReference() {
-		this.sessionContext.set(AUTH_SERVICE_ATTRIBUTE, null);
-	}
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String agree() {
@@ -114,36 +83,7 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 			return "missing-attributes";
 		}
 
-		try {
-			commitAuthentication();
-		} catch (SubscriptionNotFoundException e) {
-			String msg = "subscription not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		} catch (ApplicationIdentityNotFoundException e) {
-			String msg = "application identity not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		} catch (IdentityConfirmationRequiredException e) {
-			String msg = "identity confirmation required.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		} catch (MissingAttributeException e) {
-			String msg = "missing attributes.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
-
-		AuthenticationUtils.redirectToApplication(this.facesMessages);
+		AuthenticationUtils.commitAuthentication(this.facesMessages);
 
 		return null;
 	}

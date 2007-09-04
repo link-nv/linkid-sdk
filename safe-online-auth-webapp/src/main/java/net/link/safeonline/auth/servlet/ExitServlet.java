@@ -19,12 +19,35 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
+import net.link.safeonline.authentication.exception.SafeOnlineException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
  * Generic exit point for the authentication web application.
+ * 
+ * <p>
+ * This servlet has two tasks:
+ * </p>
+ * <ul>
+ * <li>Committing the authentication process via the authentication service.</li>
+ * <li>Make sure the correct protocol handler is activated to handle the
+ * application response.</li>
+ * </ul>
+ * 
+ * <p>
+ * It's crucial to keep the authentication commit together with the response
+ * generation as an atomic unit of work.
+ * </p>
+ * 
+ * <p>
+ * Servlet init parameters:
+ * <ul>
+ * <li><code>ProtocolErrorUrl</code>: the URL of the page to display in case
+ * a protocol error took place.</li>
+ * </ul>
+ * </p>
  * 
  * @author fcorneli
  * 
@@ -66,8 +89,23 @@ public class ExitServlet extends HttpServlet {
 	}
 
 	private void handleInvocation(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+			HttpServletResponse response) throws IOException, ServletException {
 		HttpSession session = request.getSession();
+
+		String application = (String) session.getAttribute("applicationId");
+		if (null == application) {
+			throw new ServletException(
+					"no applicationId session attribute found");
+		}
+
+		try {
+			AuthenticationServiceManager.commitAuthentication(session,
+					application);
+		} catch (SafeOnlineException e) {
+			throw new ServletException(
+					"error committing the authentication process");
+		}
+
 		try {
 			ProtocolHandlerManager.authnResponse(session, response);
 		} catch (ProtocolException e) {

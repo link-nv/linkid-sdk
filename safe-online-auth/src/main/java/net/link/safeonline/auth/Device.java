@@ -14,11 +14,20 @@ public interface Device {
 
 	public static final String AUTHN_DEVICE_ATTRIBUTE = "AuthenticationDevice";
 
+	/*
+	 * Accessors.
+	 */
 	String getSelection();
 
 	void setSelection(String deviceSelection);
 
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
 
+	/*
+	 * Actions.
+	 */
 	String next();
 }

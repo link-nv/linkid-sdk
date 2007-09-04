@@ -24,7 +24,7 @@ public class AuthenticationUtils {
 		// empty
 	}
 
-	public static void redirectToApplication(FacesMessages facesMessages) {
+	public static void commitAuthentication(FacesMessages facesMessages) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		try {

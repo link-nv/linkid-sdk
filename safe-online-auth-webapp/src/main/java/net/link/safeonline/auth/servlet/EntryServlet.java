@@ -120,13 +120,7 @@ public class EntryServlet extends HttpServlet {
 		try {
 			protocolContext = ProtocolHandlerManager.handleRequest(request);
 		} catch (ProtocolException e) {
-			HttpSession session = request.getSession();
-			String protocolName = e.getProtocolName();
-			session.setAttribute(PROTOCOL_NAME_ATTRIBUTE, protocolName);
-			String protocolErrorMessage = e.getMessage();
-			session.setAttribute(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE,
-					protocolErrorMessage);
-			response.sendRedirect(this.protocolErrorUrl);
+			redirectToProtocolErrorPage(request, response, e);
 			return;
 		}
 
@@ -145,6 +139,18 @@ public class EntryServlet extends HttpServlet {
 		} else {
 			response.sendRedirect(this.startUrl);
 		}
+	}
+
+	private void redirectToProtocolErrorPage(HttpServletRequest request,
+			HttpServletResponse response, ProtocolException e)
+			throws IOException {
+		HttpSession session = request.getSession();
+		String protocolName = e.getProtocolName();
+		session.setAttribute(PROTOCOL_NAME_ATTRIBUTE, protocolName);
+		String protocolErrorMessage = e.getMessage();
+		session.setAttribute(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE,
+				protocolErrorMessage);
+		response.sendRedirect(this.protocolErrorUrl);
 	}
 
 	private boolean isFirstTime(HttpServletRequest request,

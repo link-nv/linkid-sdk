@@ -18,8 +18,6 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
-import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -30,9 +28,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * The login servlet. A device (username-password or BeID) confirms successful
- * login by setting the username session attribute. Then the device redirects to
- * this login servlet. This login servlet will decide which is the next step in
- * the authentication process.
+ * login by setting the 'username' session attribute. Then the device redirects
+ * to this login servlet. This login servlet will decide which is the next step
+ * in the authentication process.
  * 
  * 
  * @author fcorneli
@@ -72,7 +70,12 @@ public class LoginServlet extends HttpServlet {
 		String applicationId = (String) session.getAttribute("applicationId");
 		if (null == applicationId) {
 			throw new ServletException(
-					"applicationId session attribute not found");
+					"applicationId session attribute not set");
+		}
+
+		String username = (String) session.getAttribute("username");
+		if (null == username) {
+			throw new ServletException("username session attribute not set");
 		}
 
 		boolean subscriptionRequired;
@@ -119,29 +122,10 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 
-		try {
-			commitAuthentication(session, applicationId);
-		} catch (SubscriptionNotFoundException e) {
-			throw new ServletException("subscription not found");
-		} catch (ApplicationNotFoundException e) {
-			throw new ServletException("application not found");
-		} catch (ApplicationIdentityNotFoundException e) {
-			throw new ServletException("application identity not found");
-		} catch (IdentityConfirmationRequiredException e) {
-			throw new ServletException("identity confirmation required");
-		} catch (MissingAttributeException e) {
-			throw new ServletException("missing identity attribute");
-		}
-
-		redirectToExitServlet(request, response);
-	}
-
-	private void commitAuthentication(HttpSession session, String applicationId)
-			throws SubscriptionNotFoundException, ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException,
-			IdentityConfirmationRequiredException, MissingAttributeException {
-		AuthenticationServiceManager.commitAuthentication(session,
-				applicationId);
+		/*
+		 * We can commit the authentication process here.
+		 */
+		response.sendRedirect("./exit");
 	}
 
 	private void redirectToMissingAttributes(HttpServletResponse response)
@@ -162,10 +146,5 @@ public class LoginServlet extends HttpServlet {
 			throws IOException {
 		String redirectUrl = "./subscription.seam";
 		response.sendRedirect(redirectUrl);
-	}
-
-	private void redirectToExitServlet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		response.sendRedirect("./exit");
 	}
 }

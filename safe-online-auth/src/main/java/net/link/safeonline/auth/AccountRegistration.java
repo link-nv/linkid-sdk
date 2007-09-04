@@ -10,14 +10,25 @@ package net.link.safeonline.auth;
 import javax.ejb.Local;
 
 @Local
-public interface UsernamePasswordLogon {
+public interface AccountRegistration {
+
+	/*
+	 * Lifecycle.
+	 */
+	void destroyCallback();
+
+	void begin();
 
 	/*
 	 * Accessors.
 	 */
-	String getUsername();
+	String getLogin();
 
-	void setUsername(String username);
+	void setLogin(String login);
+
+	String getDevice();
+
+	void setDevice(String device);
 
 	String getPassword();
 
@@ -26,10 +37,9 @@ public interface UsernamePasswordLogon {
 	/*
 	 * Actions.
 	 */
-	String login();
+	String loginNext();
 
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
+	String deviceNext();
+
+	String passwordNext();
 }

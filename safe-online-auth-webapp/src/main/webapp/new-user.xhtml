@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
+	</ui:define>
+
+	<ui:define name="content">
+
+		<div class="infobox"><ui:include
+			src="/WEB-INF/incl/appinfo.xhtml" /></div>
+
+		<div>
+		<h2>#{msgs.createAccount}</h2>
+		<h:form>
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+			<table>
+				<tr>
+					<th><h:outputLabel for="login" value="#{msgs.login}" />:</th>
+					<td><s:decorate>
+						<h:inputText id="login" value="#{accountRegistration.login}"
+							required="true">
+							<f:validateLength minimum="6" />
+						</h:inputText>
+					</s:decorate>*</td>
+					<td><t:message for="login" styleClass="error" /></td>
+				</tr>
+			</table>
+			<t:messages globalOnly="true" styleClass="error" />
+			<h:commandButton action="#{accountRegistration.loginNext}"
+				id="register" value="#{msgs.register}" />
+		</h:form></div>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

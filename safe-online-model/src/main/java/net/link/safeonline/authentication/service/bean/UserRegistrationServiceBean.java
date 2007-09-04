@@ -111,4 +111,9 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 			throw new ExistingUserException();
 		}
 	}
+
+	public boolean isLoginFree(String login) {
+		SubjectEntity existingSubject = this.subjectDAO.findSubject(login);
+		return existingSubject == null;
+	}
 }

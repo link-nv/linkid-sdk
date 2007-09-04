@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">#{initParam['CommercialName']} Authentication</ui:define>
+
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
+	</ui:define>
+
+	<ui:define name="content">
+		<div class="infobox"><ui:include
+			src="/WEB-INF/incl/appinfo.xhtml" /></div>
+		<div>
+		<h2>#{msgs.createAccount}</h2>
+		<p>#{msgs.selectDevice}:</p>
+
+		<h:form>
+			<h:selectOneRadio value="#{accountRegistration.device}"
+				layout="pageDirection">
+				<f:selectItem itemLabel="Username password token"
+					itemValue="password" />
+				<f:selectItem itemLabel="Belgium eID" itemValue="beid" />
+			</h:selectOneRadio>
+
+			<h:messages styleClass="error" />
+
+			<h:commandButton action="#{accountRegistration.deviceNext}" id="next"
+				value="#{msgs.next}" />
+		</h:form></div>
+	</ui:define>
+</ui:composition>
+</body>
+</html>
