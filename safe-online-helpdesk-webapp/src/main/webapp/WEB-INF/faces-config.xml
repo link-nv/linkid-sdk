@@ -32,4 +32,13 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<navigation-rule>
+		<from-view-id>/log.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>view</from-outcome>
+			<to-view-id>/log-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+
 </faces-config>

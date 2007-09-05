@@ -20,4 +20,6 @@ public class SafeOnlineRoles {
 	public static final String GLOBAL_OPERATOR_ROLE = "global-operator";
 
 	public static final String OWNER_ROLE = "owner";
+	
+	public static final String HELPDESK_ROLE = "helpdesk";
 }

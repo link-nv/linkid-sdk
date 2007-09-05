@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
+import net.link.safeonline.helpdesk.bean.HelpdeskManagerBean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -90,6 +91,7 @@ public class ExitServlet extends HttpServlet {
 
 	private void handleInvocation(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException {
+		LOG.debug("handleInvocation");
 		HttpSession session = request.getSession();
 
 		String application = (String) session.getAttribute("applicationId");
@@ -99,6 +101,12 @@ public class ExitServlet extends HttpServlet {
 		}
 
 		try {
+			/*
+			 * persist helpdesk volatile context at the end just for debugging
+			 */
+			LOG.debug("Storing volatile helpdesk context");
+			Long id = HelpdeskManagerBean.persistContext(session);
+			LOG.debug("Persisted volatile helpdesk context ( id=" + id + " )");
 			AuthenticationServiceManager.commitAuthentication(session,
 					application);
 		} catch (SafeOnlineException e) {

@@ -53,6 +53,7 @@ import net.link.safeonline.entity.audit.AuditAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
@@ -101,7 +102,7 @@ public class EntityTest {
 					ApplicationIdentityAttributeEntity.class,
 					AttributeTypeDescriptionEntity.class,
 					AttributeProviderEntity.class, AuditContextEntity.class,
-					AuditAuditEntity.class,
+					AuditAuditEntity.class, HelpdeskContextEntity.class,
 					CompoundedAttributeTypeMemberEntity.class);
 		} catch (Exception e) {
 			LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
@@ -926,6 +927,21 @@ public class EntityTest {
 
 		// verify
 		assertNull(auditAudit2.getAuditContext());
+	}
+
+	@Test
+	public void testCreateHelpdeskContext() throws Exception {
+		// setup
+		HelpdeskContextEntity contextEntity = new HelpdeskContextEntity();
+		HelpdeskContextEntity contextEntity2 = new HelpdeskContextEntity();
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(contextEntity);
+		entityManager.persist(contextEntity2);
+
+		// verify
+		assertTrue(contextEntity.getId() < contextEntity2.getId());
 	}
 
 	@Test

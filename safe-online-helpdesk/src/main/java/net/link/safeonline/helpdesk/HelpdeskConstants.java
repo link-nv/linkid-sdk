@@ -7,15 +7,15 @@
 
 package net.link.safeonline.helpdesk;
 
-public class UserConstants {
+public class HelpdeskConstants {
 
-	private UserConstants() {
+	private HelpdeskConstants() {
 		// empty
 	}
 
-	public static final String SAFE_ONLINE_USER_SECURITY_DOMAIN = "safe-online-helpdesk";
+	public static final String SAFE_ONLINE_HELPDESK_SECURITY_DOMAIN = "safe-online-helpdesk";
 
-	public static final String USER_ROLE = "helpdesk";
+	public static final String HELPDESK_ROLE = "helpdesk";
 
 	public static final String JNDI_PREFIX = "SafeOnline/helpdesk/";
 }

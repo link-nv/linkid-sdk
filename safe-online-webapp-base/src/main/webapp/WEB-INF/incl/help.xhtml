@@ -1,0 +1,21 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="content">
+		<h1>Help !</h1>
+		<p>Your request was logged into the system, please keep note of
+		reference id = <h:outputLabel value="#{help.idt}" />
+		for further reference.</p>
+
+		<p><a
+			href="#{facesContext.externalContext.requestContextPath}/main.seam">Click
+		here to visit the main page.</a></p>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

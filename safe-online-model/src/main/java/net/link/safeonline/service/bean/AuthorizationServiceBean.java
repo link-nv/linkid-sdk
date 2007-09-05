@@ -95,6 +95,10 @@ public class AuthorizationServiceBean implements AuthorizationService,
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
 				roles);
 
+		addRoleIfSubscribed(SafeOnlineRoles.HELPDESK_ROLE, subject,
+				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
+				roles);
+
 		return roles;
 	}
 

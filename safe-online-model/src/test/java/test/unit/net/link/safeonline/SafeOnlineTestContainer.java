@@ -35,11 +35,15 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
+import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
+import net.link.safeonline.helpdesk.dao.bean.HelpdeskContextDAOBean;
+import net.link.safeonline.helpdesk.dao.bean.HelpdeskEventDAOBean;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
 import net.link.safeonline.model.bean.ApplicationManagerBean;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
@@ -79,7 +83,8 @@ public class SafeOnlineTestContainer {
 			CachedOcspResponseDAOBean.class,
 			AttributeTypeDescriptionDecoratorBean.class,
 			AttributeProviderDAOBean.class, ApplicationsBean.class,
-			DeviceDAOBean.class, AllowedDeviceDAOBean.class };
+			DeviceDAOBean.class, AllowedDeviceDAOBean.class,
+			HelpdeskContextDAOBean.class, HelpdeskEventDAOBean.class };
 
 	public static final Class[] entities = new Class[] { SubjectEntity.class,
 			ApplicationEntity.class, ApplicationOwnerEntity.class,
@@ -91,5 +96,6 @@ public class SafeOnlineTestContainer {
 			TrustPointEntity.class, AttributeTypeDescriptionEntity.class,
 			AttributeProviderEntity.class, DeviceEntity.class,
 			AllowedDeviceEntity.class,
-			CompoundedAttributeTypeMemberEntity.class };
+			CompoundedAttributeTypeMemberEntity.class,
+			HelpdeskContextEntity.class, HelpdeskEventEntity.class };
 }
