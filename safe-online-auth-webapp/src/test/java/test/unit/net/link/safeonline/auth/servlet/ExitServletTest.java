@@ -8,8 +8,8 @@
 package test.unit.net.link.safeonline.auth.servlet;
 
 import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,7 +25,9 @@ import javax.xml.XMLConstants;
 import net.link.safeonline.auth.Device;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
+import net.link.safeonline.auth.servlet.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.ExitServlet;
+import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JmxTestUtils;
@@ -66,11 +68,15 @@ public class ExitServletTest {
 
 	private String inResponseTo = "test-in-response-to";
 
+	private String applicationId = "test-application-id";
+
 	private JmxTestUtils jmxTestUtils;
 
 	private JndiTestUtils jndiTestUtils;
 
 	private Object[] mockObjects;
+
+	private AuthenticationService mockAuthenticationService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -99,7 +105,9 @@ public class ExitServletTest {
 				"test-issuer-name");
 		expect(mockSamlAuthorityService.getAuthnAssertionValidity())
 				.andStubReturn(60 * 10);
-		this.mockObjects = new Object[] { mockSamlAuthorityService };
+		this.mockAuthenticationService = createMock(AuthenticationService.class);
+		this.mockObjects = new Object[] { mockSamlAuthorityService,
+				this.mockAuthenticationService };
 		this.jndiTestUtils.setUp();
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/SamlAuthorityServiceBean/local",
@@ -115,6 +123,10 @@ public class ExitServletTest {
 				Saml2PostProtocolHandler.class.getName());
 		initialSessionAttributes.put("username", this.username);
 		initialSessionAttributes.put("target", this.target);
+		initialSessionAttributes.put("applicationId", this.applicationId);
+		initialSessionAttributes.put(
+				AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
+				this.mockAuthenticationService);
 		initialSessionAttributes
 				.put(Device.AUTHN_DEVICE_ATTRIBUTE, this.device);
 		initialSessionAttributes.put(
@@ -139,6 +151,9 @@ public class ExitServletTest {
 		GetMethod getMethod = new GetMethod(this.exitServletTestManager
 				.getServletLocation());
 		getMethod.setFollowRedirects(false);
+
+		// expectations
+		this.mockAuthenticationService.commitAuthentication(this.applicationId);
 
 		// prepare
 		replay(this.mockObjects);
