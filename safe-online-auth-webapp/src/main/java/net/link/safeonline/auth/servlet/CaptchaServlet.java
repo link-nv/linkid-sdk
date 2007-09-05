@@ -23,6 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.octo.captcha.CaptchaException;
 import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -46,8 +47,13 @@ public class CaptchaServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		String captchaId = session.getId();
 		ImageCaptchaService captchaService = getCaptchaService(session);
-		BufferedImage challengeImage = captchaService
-				.getImageChallengeForID(captchaId);
+		BufferedImage challengeImage;
+		try {
+			challengeImage = captchaService.getImageChallengeForID(captchaId);
+		} catch (CaptchaException e) {
+			LOG.error("CAPTCHA error: " + e.getMessage(), e);
+			throw new ServletException("Could not generate CAPTCHA");
+		}
 		ByteArrayOutputStream imageOutputStream = new ByteArrayOutputStream();
 		ImageIO.write(challengeImage, "jpeg", imageOutputStream);
 

@@ -202,6 +202,18 @@
 		<url-pattern>/captcha</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>IdentityRegistrationServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.auth.servlet.IdentityRegistrationServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>IdentityRegistrationServlet</servlet-name>
+		<url-pattern>/identity</url-pattern>
+	</servlet-mapping>
+
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>

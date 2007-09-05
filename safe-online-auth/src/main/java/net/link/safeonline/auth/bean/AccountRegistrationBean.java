@@ -34,6 +34,7 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
+import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
 @Stateful
@@ -104,8 +105,20 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		String captchaId = httpSession.getId();
 		log.debug("captcha Id: " + captchaId);
 
-		boolean valid = this.captchaService.validateResponseForID(captchaId,
-				captcha);
+		boolean valid;
+		try {
+			valid = this.captchaService.validateResponseForID(captchaId,
+					captcha);
+		} catch (CaptchaServiceException e) {
+			/*
+			 * It's possible that a data race occurs between the Captcha servlet
+			 * and this validation call. In that case we just ask the user to
+			 * try again.
+			 */
+			this.facesMessages.addToControl("captcha",
+					"Could not validate CAPTCHA. Try again.");
+			return null;
+		}
 		if (false == valid) {
 			this.facesMessages.addToControl("captcha",
 					"CAPTCHA invalid. Try again.");

@@ -16,7 +16,7 @@ import net.link.safeonline.p11sc.SmartCard;
 
 /**
  * The identity applet creates an identity statement at the client-side within
- * the browser.
+ * the browser and sends it over to a server-side servlet.
  * 
  * @author fcorneli
  * 
@@ -32,9 +32,10 @@ public class IdentityApplet extends AppletBase {
 		ResourceBundle messages = ResourceBundle.getBundle(
 				"net.link.safeonline.identity.IdentityMessages", locale);
 
-		outputInfoMessage(InfoLevel.NORMAL, messages.getString("creatingStmt"));
+		super.outputInfoMessage(InfoLevel.NORMAL, messages
+				.getString("creatingStmt"));
 		String user = getParameter("User");
-		outputDetailMessage("User: " + user);
+		super.outputDetailMessage("User: " + user);
 		byte[] identityStatement = IdentityStatementFactory
 				.createIdentityStatement(user, smartCard);
 		return identityStatement;

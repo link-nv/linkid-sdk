@@ -19,7 +19,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -69,8 +68,8 @@ public class AttribService extends JPanel implements Observer {
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(AttribService.class);
-	
-	private static final String DATE_FORMAT = "dd MM yyyy"; 
+
+	private static final String DATE_FORMAT = "dd MM yyyy";
 
 	private ApplicationConsole parent = null;
 	private TreePath treePath = null;
@@ -109,7 +108,7 @@ public class AttribService extends JPanel implements Observer {
 	public AttribService(ApplicationConsole applicationConsole) {
 		this.parent = applicationConsole;
 		this.dateFormat = new SimpleDateFormat(DATE_FORMAT);
-		
+
 		ServicesUtils.getInstance().addObserver(this);
 		init();
 		initMenu();
@@ -220,7 +219,8 @@ public class AttribService extends JPanel implements Observer {
 				return dateFormat.parse(newValue);
 			} catch (ParseException e) {
 				JOptionPane.showMessageDialog(this,
-						"Invalid input, not a valid date ( format=\"" + DATE_FORMAT + "\" )");
+						"Invalid input, not a valid date ( format=\""
+								+ DATE_FORMAT + "\" )");
 				return null;
 
 			}
