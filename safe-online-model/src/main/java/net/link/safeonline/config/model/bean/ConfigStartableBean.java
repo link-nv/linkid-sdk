@@ -48,7 +48,7 @@ public class ConfigStartableBean implements ConfigStartable {
 		LOG.debug("Starting configuration");
 		ConfigurableScanner scanner = new ConfigurableScanner(
 				"config.properties");
-		for (Class classObject : scanner.getClasses()) {
+		for (Class<?> classObject : scanner.getClasses()) {
 			LOG.debug("found configurable class: " + classObject.getName());
 			configure(classObject);
 		}

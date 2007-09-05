@@ -36,7 +36,7 @@ public class CompoundUtil {
 	}
 
 	public static String getAttributeId(Object attributeValue) {
-		Class clazz = attributeValue.getClass();
+		Class<?> clazz = attributeValue.getClass();
 		Method[] methods = clazz.getMethods();
 		for (Method method : methods) {
 			CompoundId compoundIdAnnotation = method
@@ -62,7 +62,7 @@ public class CompoundUtil {
 		throw new IllegalArgumentException("no @CompoundId property found");
 	}
 
-	public static Method getSetMethod(Class clazz, Method getMethod) {
+	public static Method getSetMethod(Class<?> clazz, Method getMethod) {
 		String methodName = getMethod.getName();
 		String propertyName;
 		if (methodName.startsWith("get")) {

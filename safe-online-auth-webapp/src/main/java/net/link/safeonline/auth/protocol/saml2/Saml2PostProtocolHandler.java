@@ -119,7 +119,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		}
 		LOG.debug("SAMLRequest parameter found");
 
-		BasicSAMLMessageContext messageContext = new BasicSAMLMessageContext();
+		BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
 		messageContext
 				.setInboundMessageTransport(new HttpServletRequestAdapter(
 						authnRequest));

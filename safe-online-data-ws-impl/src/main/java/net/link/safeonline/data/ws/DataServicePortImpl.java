@@ -638,7 +638,7 @@ public class DataServicePortImpl implements DataServicePort {
 		 * We're depending on xsi:type here to pass the type information from
 		 * client to server.
 		 */
-		Class componentType = firstAttributeValue.getClass();
+		Class<?> componentType = firstAttributeValue.getClass();
 		Object result = Array.newInstance(componentType, size);
 		for (int idx = 0; idx < size; idx++) {
 			Object value = convertXMLDatatypeToServiceDatatype(attributeValues

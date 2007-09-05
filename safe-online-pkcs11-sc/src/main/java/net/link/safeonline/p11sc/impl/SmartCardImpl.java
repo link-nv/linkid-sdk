@@ -378,8 +378,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 					continue;
 				}
 				LOG.debug("getInstance method found");
-				Class[] paramTypes = method.getParameterTypes();
-				for (Class paramType : paramTypes) {
+				Class<?>[] paramTypes = method.getParameterTypes();
+				for (Class<?> paramType : paramTypes) {
 					LOG.debug("param: " + paramType.getName());
 				}
 				if (Arrays.equals(new Class[] { String.class,

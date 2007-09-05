@@ -60,7 +60,7 @@ public class SafeOnlineAuthenticationLoginModuleTest {
 	public void login() throws Exception {
 		// setup
 		CallbackHandler testCallbackHandler = new TestCallbackHandler();
-		Map sharedState = new HashMap();
+		Map<?,?> sharedState = new HashMap();
 		Subject subject = new Subject();
 		Map<String, String> options = new HashMap<String, String>();
 		options.put("application-name", "test-application");

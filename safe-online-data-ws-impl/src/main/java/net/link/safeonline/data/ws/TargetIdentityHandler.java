@@ -107,7 +107,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 	private void processHeaders(SOAPHeader soapHeader,
 			SOAPMessageContext soapContext) throws JAXBException {
 		LOG.debug("processing headers");
-		Iterator iterator = soapHeader.examineAllHeaderElements();
+		Iterator<?> iterator = soapHeader.examineAllHeaderElements();
 		while (iterator.hasNext()) {
 			SOAPHeaderElement headerElement = (SOAPHeaderElement) iterator
 					.next();
@@ -140,7 +140,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
 		JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
 		Unmarshaller unmarshaller = context.createUnmarshaller();
-		JAXBElement jaxbElement = (JAXBElement) unmarshaller
+		JAXBElement<?> jaxbElement = (JAXBElement<?>) unmarshaller
 				.unmarshal(targetIdentityHeaderElement.getFirstChild());
 
 		Object element = jaxbElement.getValue();
@@ -165,7 +165,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
 	private String findSubjectLogin(SubjectType subject) {
 		List<JAXBElement<?>> subjectContent = subject.getContent();
-		for (JAXBElement subjectItem : subjectContent) {
+		for (JAXBElement<?> subjectItem : subjectContent) {
 			Object value = subjectItem.getValue();
 			if (false == value instanceof NameIDType) {
 				continue;

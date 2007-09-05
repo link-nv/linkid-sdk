@@ -34,7 +34,7 @@ public class EntityTestManager {
 	private EntityManager entityManager;
 
 	@SuppressWarnings("deprecation")
-	public void setUp(Class... serializableClasses) throws Exception {
+	public void setUp(Class<?>... serializableClasses) throws Exception {
 		Ejb3Configuration configuration = new Ejb3Configuration();
 		configuration.setProperty("hibernate.dialect",
 				"org.hibernate.dialect.HSQLDialect");
@@ -46,7 +46,7 @@ public class EntityTestManager {
 				"org.hsqldb.jdbcDriver");
 		configuration.setProperty("hibernate.connection.url",
 				"jdbc:hsqldb:mem:test");
-		for (Class serializableClass : serializableClasses) {
+		for (Class<?> serializableClass : serializableClasses) {
 			LOG.debug("adding annotated class: " + serializableClass.getName());
 			configuration.addAnnotatedClass(serializableClass);
 		}
@@ -144,7 +144,7 @@ public class EntityTestManager {
 		return object;
 	}
 
-	public static void init(Class clazz, Object bean)
+	public static void init(Class<?> clazz, Object bean)
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 		LOG.debug("Initializing: " + bean);
@@ -176,7 +176,7 @@ public class EntityTestManager {
 		}
 
 		private Field getEntityManagerField(Object object) {
-			Class clazz = object.getClass();
+			Class<?> clazz = object.getClass();
 			Field[] fields = clazz.getDeclaredFields();
 			for (Field field : fields) {
 				PersistenceContext persistenceContextAnnotation = field

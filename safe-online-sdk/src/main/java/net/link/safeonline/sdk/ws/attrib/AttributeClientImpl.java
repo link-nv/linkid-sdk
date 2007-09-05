@@ -316,7 +316,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 				 * array to be returned.
 				 */
 				Object firstAttributeValue = attributeValues.get(0);
-				Class componentType = firstAttributeValue.getClass();
+				Class<?> componentType = firstAttributeValue.getClass();
 				int size = attributeValues.size();
 				attributeValue = Array.newInstance(componentType, size);
 				for (int idx = 0; idx < size; idx++) {

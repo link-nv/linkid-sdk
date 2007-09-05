@@ -95,13 +95,13 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
 		}
 
 		if (List.class.isAssignableFrom(returnType)) {
-			List resultList = query.getResultList();
+			List<?> resultList = query.getResultList();
 			return resultList;
 		}
 
 		boolean nullable = queryMethodAnnotation.nullable();
 		if (true == nullable) {
-			List resultList = query.getResultList();
+			List<?> resultList = query.getResultList();
 			if (resultList.isEmpty()) {
 				return null;
 			}

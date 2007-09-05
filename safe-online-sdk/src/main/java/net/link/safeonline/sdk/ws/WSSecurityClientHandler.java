@@ -183,8 +183,8 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 		BindingProvider bindingProvider = (BindingProvider) port;
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
-		Handler wsSecurityHandler = new WSSecurityClientHandler(certificate,
-				privateKey);
+		Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(
+				certificate, privateKey);
 		handlerChain.add(wsSecurityHandler);
 		binding.setHandlerChain(handlerChain);
 	}

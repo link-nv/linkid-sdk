@@ -102,7 +102,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		}
 		SubjectType subject = request.getSubject();
 		List<JAXBElement<?>> subjectContent = subject.getContent();
-		for (JAXBElement subjectItem : subjectContent) {
+		for (JAXBElement<?> subjectItem : subjectContent) {
 			Object value = subjectItem.getValue();
 			if (false == value instanceof NameIDType) {
 				continue;

@@ -641,7 +641,7 @@ public class EntityTest {
 		entityManager = this.entityTestManager.refreshEntityManager();
 		resultScheduling = entityManager
 				.find(SchedulingEntity.class, "default");
-		Collection collection = resultScheduling.getTasks();
+		Collection<?> collection = resultScheduling.getTasks();
 		LOG.debug("schedulings returned: " + collection.size());
 		resultTask = (TaskEntity) resultScheduling.getTasks().toArray()[0];
 		assertNotNull(resultTask);

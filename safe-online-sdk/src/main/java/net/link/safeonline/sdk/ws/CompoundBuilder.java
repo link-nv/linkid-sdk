@@ -31,7 +31,7 @@ public class CompoundBuilder {
 
 	public static final String ATTRIBUTE_ID_KEY = "@Id";
 
-	private final Class compoundClass;
+	private final Class<?> compoundClass;
 
 	private final boolean isMap;
 

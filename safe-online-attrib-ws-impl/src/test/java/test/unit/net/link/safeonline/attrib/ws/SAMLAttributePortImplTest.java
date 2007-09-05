@@ -28,6 +28,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.attrib.ws.SAMLAttributePortImpl;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
@@ -90,6 +91,7 @@ public class SAMLAttributePortImplTest {
 
 	private X509Certificate certificate;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {
 		LOG.debug("setup");
@@ -154,8 +156,8 @@ public class SAMLAttributePortImplTest {
 		BindingProvider bindingProvider = (BindingProvider) clientPort;
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
-		Handler wsSecurityHandler = new WSSecurityClientHandler(certificate,
-				keyPair.getPrivate());
+		Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(
+				certificate, keyPair.getPrivate());
 		handlerChain.add(wsSecurityHandler);
 		binding.setHandlerChain(handlerChain);
 	}
@@ -376,7 +378,7 @@ public class SAMLAttributePortImplTest {
 		attribute.setName(testAttributeName);
 		attributes.add(attribute);
 
-		Map[] testAttributeValues = new Map[2];
+		Map<?, ?>[] testAttributeValues = new Map[2];
 		Map<String, Object> compAttribute1 = new HashMap<String, Object>();
 		testAttributeValues[0] = compAttribute1;
 		compAttribute1.put("test-member1", "test-value11");

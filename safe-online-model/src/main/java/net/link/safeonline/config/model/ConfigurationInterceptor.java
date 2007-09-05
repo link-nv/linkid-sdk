@@ -89,7 +89,7 @@ public class ConfigurationInterceptor {
 	private void setValue(ConfigItemEntity configItem, Field field,
 			Object target) throws IllegalArgumentException,
 			IllegalAccessException {
-		Class fieldType = field.getType();
+		Class<?> fieldType = field.getType();
 		Object value;
 		if (String.class.equals(fieldType)) {
 			value = configItem.getValue();

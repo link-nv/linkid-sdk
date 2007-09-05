@@ -124,7 +124,7 @@ public final class EJBTestUtils {
 			throw new IllegalArgumentException(
 					"the value object should not be null");
 		}
-		Class beanClass = bean.getClass();
+		Class<?> beanClass = bean.getClass();
 		Field[] fields = beanClass.getDeclaredFields();
 		for (Field field : fields) {
 			Resource resourceAnnotation = field.getAnnotation(Resource.class);
@@ -191,7 +191,7 @@ public final class EJBTestUtils {
 		init(clazz, bean);
 	}
 
-	public static void init(Class clazz, Object bean)
+	public static void init(Class<?> clazz, Object bean)
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 		LOG.debug("Initializing: " + bean);
@@ -217,29 +217,31 @@ public final class EJBTestUtils {
 		SecurityAssociation.setSubject(subject);
 	}
 
-	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
-			EntityManager entityManager) {
+	public static <Type> Type newInstance(Class<Type> clazz,
+			Class<?>[] container, EntityManager entityManager) {
 		return newInstance(clazz, container, entityManager, (String) null);
 	}
 
-	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
-			EntityManager entityManager, String callerPrincipalName,
-			String... roles) {
+	public static <Type> Type newInstance(Class<Type> clazz,
+			Class<?>[] container, EntityManager entityManager,
+			String callerPrincipalName, String... roles) {
 		TestSessionContext testSessionContext = new TestSessionContext(
 				callerPrincipalName, roles);
 		return newInstance(clazz, container, entityManager, testSessionContext);
 	}
 
-	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
-			EntityManager entityManager, String callerPrincipalName) {
+	public static <Type> Type newInstance(Class<Type> clazz,
+			Class<?>[] container, EntityManager entityManager,
+			String callerPrincipalName) {
 		TestSessionContext testSessionContext = new TestSessionContext(
 				callerPrincipalName, (String[]) null);
 		return newInstance(clazz, container, entityManager, testSessionContext);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <Type> Type newInstance(Class<Type> clazz, Class[] container,
-			EntityManager entityManager, SessionContext sessionContext) {
+	public static <Type> Type newInstance(Class<Type> clazz,
+			Class<?>[] container, EntityManager entityManager,
+			SessionContext sessionContext) {
 		if (clazz.isInterface()) {
 			throw new EJBException("cannot instantiate an interface");
 		}
@@ -280,14 +282,15 @@ public final class EJBTestUtils {
 
 		private final Object object;
 
-		private final Class[] container;
+		private final Class<?>[] container;
 
 		private final EntityManager entityManager;
 
 		private final SessionContext sessionContext;
 
-		public TestContainerMethodInterceptor(Object object, Class[] container,
-				EntityManager entityManager, SessionContext sessionContext) {
+		public TestContainerMethodInterceptor(Object object,
+				Class<?>[] container, EntityManager entityManager,
+				SessionContext sessionContext) {
 			this.object = object;
 			this.container = container;
 			this.entityManager = entityManager;
@@ -297,7 +300,7 @@ public final class EJBTestUtils {
 		public Object intercept(Object obj, Method method, Object[] args,
 				MethodProxy proxy) throws Throwable {
 			checkSessionBean();
-			Class clazz = this.object.getClass();
+			Class<?> clazz = this.object.getClass();
 			checkSecurity(clazz, method);
 			injectDependencies(clazz);
 			injectEntityManager(clazz);
@@ -388,7 +391,7 @@ public final class EJBTestUtils {
 			}
 		}
 
-		private void injectResources(Class clazz) {
+		private void injectResources(Class<?> clazz) {
 			if (false == clazz.equals(Object.class)) {
 				injectResources(clazz.getSuperclass());
 			}
@@ -399,7 +402,7 @@ public final class EJBTestUtils {
 				if (null == resourceAnnotation) {
 					continue;
 				}
-				Class fieldType = field.getType();
+				Class<?> fieldType = field.getType();
 				if (true == SessionContext.class.isAssignableFrom(fieldType)) {
 					setField(field, this.sessionContext);
 					continue;
@@ -421,7 +424,7 @@ public final class EJBTestUtils {
 			}
 		}
 
-		private void injectSeamLogger(Class clazz) {
+		private void injectSeamLogger(Class<?> clazz) {
 			if (false == clazz.equals(Object.class)) {
 				injectSeamLogger(clazz.getSuperclass());
 			}
@@ -431,7 +434,7 @@ public final class EJBTestUtils {
 				if (null == loggerAnnotation) {
 					continue;
 				}
-				Class fieldType = field.getType();
+				Class<?> fieldType = field.getType();
 				if (true == org.jboss.seam.log.Log.class
 						.isAssignableFrom(fieldType)) {
 					org.jboss.seam.log.Log log = new TestLog();
@@ -488,7 +491,7 @@ public final class EJBTestUtils {
 			}
 		}
 
-		private void injectEntityManager(Class clazz) {
+		private void injectEntityManager(Class<?> clazz) {
 			if (false == clazz.equals(Object.class)) {
 				injectEntityManager(clazz.getSuperclass());
 			}
@@ -499,7 +502,7 @@ public final class EJBTestUtils {
 				if (null == persistenceContextAnnotation) {
 					continue;
 				}
-				Class fieldType = field.getType();
+				Class<?> fieldType = field.getType();
 				if (false == EntityManager.class.isAssignableFrom(fieldType)) {
 					throw new EJBException("field type not correct");
 				}
@@ -593,7 +596,8 @@ public final class EJBTestUtils {
 			return null;
 		}
 
-		public Class getInvokedBusinessInterface() throws IllegalStateException {
+		public Class<?> getInvokedBusinessInterface()
+				throws IllegalStateException {
 			return null;
 		}
 
@@ -726,7 +730,7 @@ public final class EJBTestUtils {
 			return null;
 		}
 
-		public Collection getTimers() throws IllegalStateException,
+		public Collection<?> getTimers() throws IllegalStateException,
 				EJBException {
 			return null;
 		}

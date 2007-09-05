@@ -96,7 +96,7 @@ public class SafeOnlineLoginModule implements LoginModule {
 		return true;
 	}
 
-	private String getOptionValue(Map options, String optionName,
+	private String getOptionValue(Map<?, ?> options, String optionName,
 			String defaultOptionValue) {
 		String optionValue = (String) options.get(optionName);
 		if (null == optionValue) {
@@ -123,7 +123,7 @@ public class SafeOnlineLoginModule implements LoginModule {
 	}
 
 	private Group getGroup(String groupName, Set<Principal> principals) {
-		Iterator iter = principals.iterator();
+		Iterator<?> iter = principals.iterator();
 		while (iter.hasNext()) {
 			Object next = iter.next();
 			if ((next instanceof Group) == false)

@@ -65,7 +65,7 @@ public class SafeOnlineAuthenticationLoginModule implements LoginModule {
 
 	private String applicationName;
 
-	private String getOptionValue(Map options, String optionName,
+	private String getOptionValue(Map<?, ?> options, String optionName,
 			String defaultOptionValue) {
 		String optionValue = (String) options.get(optionName);
 		if (null == optionValue) {

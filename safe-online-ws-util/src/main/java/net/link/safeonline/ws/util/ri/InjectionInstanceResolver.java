@@ -39,7 +39,7 @@ public class InjectionInstanceResolver<T> extends
 	private static final Log LOG = LogFactory
 			.getLog(InjectionInstanceResolver.class);
 
-	private static final Map<Class, Object> instances = new Hashtable<Class, Object>();
+	private static final Map<Class<?>, Object> instances = new Hashtable<Class<?>, Object>();
 
 	private final Class<T> clazz;
 
