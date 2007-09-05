@@ -33,6 +33,15 @@
 					</s:decorate>*</td>
 					<td><t:message for="login" styleClass="error" /></td>
 				</tr>
+				<tr>
+					<th>Enter the following letters: <h:graphicImage
+						value="/captcha" /></th>
+					<td><s:decorate>
+						<h:inputText id="captcha" value="#{accountRegistration.captcha}"
+							required="true" />
+					</s:decorate></td>
+					<td><t:message for="captcha" styleClass="error" /></td>
+				</tr>
 			</table>
 			<t:messages globalOnly="true" styleClass="error" />
 			<h:commandButton action="#{accountRegistration.loginNext}"

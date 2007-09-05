@@ -11,6 +11,9 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.AccountRegistration;
 import net.link.safeonline.auth.AuthenticationConstants;
@@ -30,6 +33,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
+
+import com.octo.captcha.service.image.ImageCaptchaService;
 
 @Stateful
 @Name("accountRegistration")
@@ -52,6 +57,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	private String device;
 
 	private String password;
+
+	private String captcha;
 
 	@SuppressWarnings("unused")
 	@Out(value = DeviceBean.AUTHN_DEVICE_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
@@ -82,6 +89,28 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	public String loginNext() {
 		log.debug("loginNext");
+
+		log.debug("captcha: " + captcha);
+
+		if (null == this.captchaService) {
+			this.facesMessages.add("no CAPTCHA service instance found");
+			return null;
+		}
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		HttpSession httpSession = (HttpSession) externalContext
+				.getSession(false);
+		String captchaId = httpSession.getId();
+		log.debug("captcha Id: " + captchaId);
+
+		boolean valid = this.captchaService.validateResponseForID(captchaId,
+				captcha);
+		if (false == valid) {
+			this.facesMessages.addToControl("captcha",
+					"CAPTCHA invalid. Try again.");
+			return null;
+		}
 
 		boolean loginFree = this.userRegistrationService
 				.isLoginFree(this.login);
@@ -120,6 +149,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		return this.password;
 	}
 
+	@In(required = false, value = "CaptchaService", scope = ScopeType.SESSION)
+	ImageCaptchaService captchaService;
+
 	public String passwordNext() {
 		log.debug("passwordNext");
 
@@ -153,5 +185,13 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getCaptcha() {
+		return this.captcha;
+	}
+
+	public void setCaptcha(String captcha) {
+		this.captcha = captcha;
 	}
 }

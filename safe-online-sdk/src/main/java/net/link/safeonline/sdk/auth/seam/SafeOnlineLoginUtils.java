@@ -84,7 +84,7 @@ public class SafeOnlineLoginUtils {
 			String targetPage) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-
+		
 		String safeOnlineAuthenticationServiceUrl = getInitParameter(
 				externalContext, SAFE_ONLINE_AUTH_SERVICE_URL_INIT_PARAM);
 		log.debug("redirecting to #0", safeOnlineAuthenticationServiceUrl);

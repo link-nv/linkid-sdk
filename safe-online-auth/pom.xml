@@ -70,6 +70,10 @@
 			<artifactId>jboss-seam</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.octo.captcha</groupId>
+			<artifactId>jcaptcha-all</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>

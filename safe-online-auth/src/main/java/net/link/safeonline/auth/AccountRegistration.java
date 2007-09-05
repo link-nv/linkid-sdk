@@ -34,6 +34,10 @@ public interface AccountRegistration {
 
 	void setPassword(String password);
 
+	String getCaptcha();
+
+	void setCaptcha(String captcha);
+
 	/*
 	 * Actions.
 	 */

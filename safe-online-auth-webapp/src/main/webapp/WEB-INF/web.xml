@@ -190,6 +190,18 @@
 		<url-pattern>/exit</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>CaptchaServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.auth.servlet.CaptchaServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CaptchaServlet</servlet-name>
+		<url-pattern>/captcha</url-pattern>
+	</servlet-mapping>
+
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>
