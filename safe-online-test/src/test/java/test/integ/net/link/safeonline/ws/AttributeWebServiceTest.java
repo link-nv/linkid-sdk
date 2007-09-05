@@ -596,7 +596,7 @@ public class AttributeWebServiceTest {
 
 	@Test
 	public void instantiation() throws Exception {
-		Class clazz = CompoundedTestClass.class;
+		Class<?> clazz = CompoundedTestClass.class;
 		clazz.newInstance();
 	}
 

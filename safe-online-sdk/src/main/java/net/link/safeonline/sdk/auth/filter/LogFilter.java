@@ -48,18 +48,18 @@ public class LogFilter implements Filter {
 				+ httpRequest.getServerPort() + httpRequest.getRequestURI()
 				+ "\n");
 		sb.append("Session attributes :\n");
-		Enumeration sessionAttributes = httpRequest.getSession()
+		Enumeration<?> sessionAttributes = httpRequest.getSession()
 				.getAttributeNames();
 		while (sessionAttributes.hasMoreElements()) {
 			sb.append("  * " + sessionAttributes.nextElement() + "\n");
 		}
 		sb.append("Request attributes :\n");
-		Enumeration requestAttributes = httpRequest.getAttributeNames();
+		Enumeration<?> requestAttributes = httpRequest.getAttributeNames();
 		while (requestAttributes.hasMoreElements()) {
 			sb.append("  * " + requestAttributes.nextElement() + "\n");
 		}
 		sb.append("Request parameter names :\n");
-		Enumeration requestParameters = httpRequest.getAttributeNames();
+		Enumeration<?> requestParameters = httpRequest.getAttributeNames();
 		while (requestParameters.hasMoreElements()) {
 			sb.append("  * " + requestParameters.nextElement() + "\n");
 		}

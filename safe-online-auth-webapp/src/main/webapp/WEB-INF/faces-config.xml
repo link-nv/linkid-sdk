@@ -39,19 +39,19 @@
 			<to-view-id>/new-user-device.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-	
+
 	<navigation-rule>
 		<from-view-id>/new-user-device.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>beid</from-outcome>
-			<to-view-id></to-view-id>
+			<to-view-id>/new-user-beid.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>password</from-outcome>
-			<to-view-id></to-view-id>
+			<to-view-id>/new-user-password.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-	
+
 	<navigation-rule>
 		<from-view-id>/identity-confirmation.xhtml</from-view-id>
 		<navigation-case>

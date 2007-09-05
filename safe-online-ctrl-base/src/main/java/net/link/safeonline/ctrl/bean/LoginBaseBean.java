@@ -56,12 +56,18 @@ public class LoginBaseBean implements LoginBase {
 	}
 
 	public String login() {
+		/*
+		 * The 'login-processing' session attribute is used by the timeout
+		 * filter to help in detecting an application level session timeout.
+		 */
+		this.sessionContext.set("login-processing", "true");
 		return SafeOnlineLoginUtils.login(this.facesMessages, this.log,
 				"overview.seam");
 	}
 
 	public String logout() {
 		log.debug("logout");
+		this.sessionContext.set("login-processing", null);
 		this.sessionContext.set("username", null);
 		Seam.invalidateSession();
 		return "logout-success";

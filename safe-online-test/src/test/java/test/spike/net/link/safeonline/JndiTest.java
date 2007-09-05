@@ -42,7 +42,7 @@ public class JndiTest extends TestCase {
 
 	}
 
-	private List<String> contextIteration(Context context, Class type)
+	private List<String> contextIteration(Context context, Class<?> type)
 			throws Exception {
 		LOG.debug("Entering context: "
 				+ ((Context) context).getNameInNamespace());

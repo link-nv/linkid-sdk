@@ -20,12 +20,14 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
@@ -50,6 +52,10 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	private String device;
 
 	private String password;
+
+	@SuppressWarnings("unused")
+	@Out(value = DeviceBean.AUTHN_DEVICE_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
+	private String authnDevice;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -91,11 +97,14 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		log.debug("deviceNext");
 		if (null == this.device) {
 			String msg = "Please make a device selection.";
-			log.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
 		}
 		log.debug("device: " + this.device);
+		/*
+		 * Next is required for the protocol handler exit point.
+		 */
+		this.authnDevice = this.device;
 		return this.device;
 	}
 

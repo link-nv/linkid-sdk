@@ -53,7 +53,6 @@ public class TimeoutServletResponseWrapper extends HttpServletResponseWrapper {
 	 * @throws IOException
 	 */
 	public void commit() throws IOException {
-		LOG.debug("commit");
 		if (null != this.writer) {
 			/*
 			 * We need to flush the writer first so that the buffered servlet
@@ -61,8 +60,9 @@ public class TimeoutServletResponseWrapper extends HttpServletResponseWrapper {
 			 */
 			this.writer.flush();
 		}
-		IOUtils.write(this.bufferedServletOutputStream.getData(),
-				this.origResponse.getOutputStream());
+		byte[] data = this.bufferedServletOutputStream.getData();
+		LOG.debug("committing " + data.length + " bytes");
+		IOUtils.write(data, this.origResponse.getOutputStream());
 	}
 
 	@Override

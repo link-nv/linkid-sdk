@@ -63,7 +63,7 @@ public class DemoStartableBeanTest {
 
 	private EntityTestManager entityTestManager;
 
-	private static Class[] container = new Class[] { SubjectDAOBean.class,
+	private static Class<?>[] container = new Class[] { SubjectDAOBean.class,
 			ApplicationDAOBean.class, SubscriptionDAOBean.class,
 			AttributeDAOBean.class, TrustDomainDAOBean.class,
 			ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,

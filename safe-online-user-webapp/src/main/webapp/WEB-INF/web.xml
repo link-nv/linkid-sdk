@@ -90,7 +90,7 @@
 		</init-param>
 		<init-param>
 			<param-name>LoginSessionAttribute</param-name>
-			<param-value>username</param-value>
+			<param-value>login-processing</param-value>
 		</init-param>
 	</filter>
 

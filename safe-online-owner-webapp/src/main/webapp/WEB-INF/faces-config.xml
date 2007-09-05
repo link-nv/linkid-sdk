@@ -21,10 +21,6 @@
 
 	<navigation-rule>
 		<navigation-case>
-			<from-outcome>register</from-outcome>
-			<to-view-id>/register.seam</to-view-id>
-		</navigation-case>
-		<navigation-case>
 			<from-outcome>login-success</from-outcome>
 			<to-view-id>/overview.seam</to-view-id>
 		</navigation-case>
