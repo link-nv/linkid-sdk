@@ -4,7 +4,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.ctrl.Help;
-import net.link.safeonline.helpdesk.HelpdeskManager;
+import net.link.safeonline.helpdesk.Helpdesk;
 
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -21,7 +21,7 @@ public class HelpBean implements Help {
 	@Logger
 	private Log log;
 	@In
-	private HelpdeskManager helpdeskManager;
+	private Helpdesk helpdeskManager;
 
 	@In
 	Context sessionContext;

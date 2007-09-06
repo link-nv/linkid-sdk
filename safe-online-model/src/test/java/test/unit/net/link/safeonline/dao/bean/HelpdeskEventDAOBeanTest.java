@@ -9,8 +9,10 @@ package test.unit.net.link.safeonline.dao.bean;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import junit.framework.TestCase;
+import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.entity.helpdesk.LogLevelType;
 import net.link.safeonline.helpdesk.dao.bean.HelpdeskEventDAOBean;
@@ -49,16 +51,17 @@ public class HelpdeskEventDAOBeanTest extends TestCase {
 	}
 
 	public void testLogs() {
-		this.testedInstance.addHelpdeskEvent(new HelpdeskEventEntity(
-				new Long(0), new Date(), "test-message-1", "test-principal",
-				LogLevelType.INFO));
-		this.testedInstance.addHelpdeskEvent(new HelpdeskEventEntity(
-				new Long(0), new Date(), "test-message-2", "test-principal",
-				LogLevelType.ERROR));
+		HelpdeskContextEntity context = new HelpdeskContextEntity(new Long(0));
+		List<HelpdeskEventEntity> events = new Vector<HelpdeskEventEntity>();
+		events.add(new HelpdeskEventEntity(context, new Date(),
+				"test-message-1", "test-principal", LogLevelType.INFO));
+		events.add(new HelpdeskEventEntity(context, new Date(),
+				"test-message-2", "test-principal", LogLevelType.ERROR));
+		this.testedInstance.persist(events);
 
-		List<HelpdeskEventEntity> contexts = this.testedInstance
+		List<HelpdeskEventEntity> persisted_events = this.testedInstance
 				.listLogs(new Long(0));
-		assertEquals(contexts.size(), 2);
+		assertEquals(persisted_events.size(), events.size());
 	}
 
 }

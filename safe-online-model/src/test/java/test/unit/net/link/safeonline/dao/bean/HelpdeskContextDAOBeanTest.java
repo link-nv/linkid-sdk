@@ -47,10 +47,11 @@ public class HelpdeskContextDAOBeanTest extends TestCase {
 	}
 
 	public void testContext() {
-		Long contextId = this.testedInstance.createHelpdeskContext();
+		HelpdeskContextEntity context = this.testedInstance
+				.createHelpdeskContext();
 		List<HelpdeskContextEntity> contexts = this.testedInstance
 				.listContexts();
-		assertEquals(contextId, contexts.get(0).getId());
+		assertEquals(context.getId(), contexts.get(0).getId());
 	}
 
 }

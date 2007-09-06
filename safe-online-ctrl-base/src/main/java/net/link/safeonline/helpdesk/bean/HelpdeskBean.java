@@ -14,13 +14,13 @@ import java.util.Vector;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.entity.helpdesk.LogLevelType;
+import net.link.safeonline.helpdesk.Helpdesk;
 import net.link.safeonline.helpdesk.HelpdeskManager;
-import net.link.safeonline.helpdesk.dao.HelpdeskContextDAO;
-import net.link.safeonline.helpdesk.dao.HelpdeskEventDAO;
 import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -30,12 +30,13 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Context;
 
+@Stateless
 @Name("helpdesk")
-public class HelpdeskManagerBean implements HelpdeskManager {
+public class HelpdeskBean implements Helpdesk {
 
-	private final static Log LOG = LogFactory.getLog(HelpdeskManagerBean.class);
+	private final static Log LOG = LogFactory.getLog(HelpdeskBean.class);
 
-	private final static String HELPDESK_CONTEXT = "helpdeskContext";
+	public final static String HELPDESK_CONTEXT = "helpdeskContext";
 
 	@In
 	Context sessionContext;
@@ -44,10 +45,7 @@ public class HelpdeskManagerBean implements HelpdeskManager {
 	private SessionContext context;
 
 	@EJB
-	private HelpdeskContextDAO helpdeskContextDAO;
-
-	@EJB
-	private HelpdeskEventDAO helpdeskEventDAO;
+	private HelpdeskManager helpdeskManager;
 
 	public void clear() {
 		this.sessionContext.remove(HELPDESK_CONTEXT);
@@ -104,7 +102,7 @@ public class HelpdeskManagerBean implements HelpdeskManager {
 	public static void add(HttpSession session, String message,
 			LogLevelType logLevel) throws HelpdeskContextNotFoundException {
 		String principal = (String) session.getAttribute("username");
-		if ( null == principal ) {
+		if (null == principal) {
 			principal = "unknown_user";
 		}
 
@@ -120,47 +118,19 @@ public class HelpdeskManagerBean implements HelpdeskManager {
 
 	public Long persistContext() throws HelpdeskContextNotFoundException {
 		List<HelpdeskEventEntity> helpdeskContext = getCurrent();
-
-		Long id = this.helpdeskContextDAO.createHelpdeskContext();
-
-		for (HelpdeskEventEntity helpdeskEvent : helpdeskContext) {
-			helpdeskEvent.setId(id);
-			this.helpdeskEventDAO.addHelpdeskEvent(helpdeskEvent);
-		}
-		return id;
+		return helpdeskManager.persist(helpdeskContext);
 	}
 
 	public static Long persistContext(HttpSession session)
 			throws HelpdeskContextNotFoundException {
+
 		List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
 
-		LOG.debug("persistContext(session)");
+		LOG.debug("lookup HelpdeskManager bean");
+		HelpdeskManager helpdeskManager = EjbUtils.getEJB(
+				"SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
 
-		HelpdeskContextDAO helpdeskContextDAO = EjbUtils.getEJB(
-				"SafeOnline/HelpdeskContextDAOBean/local",
-				HelpdeskContextDAO.class);
-
-		LOG.debug("lookup HelpdeskContextDAO");
-
-		HelpdeskEventDAO helpdeskEventDAO = EjbUtils
-				.getEJB("SafeOnline/HelpdeskEventDAOBean/local",
-						HelpdeskEventDAO.class);
-
-		LOG.debug("lookup HelpdeskEventDAO");
-
-		Long id = helpdeskContextDAO.createHelpdeskContext();
-
-		LOG.debug("persist helpdeskcontext ( id=" + id + " )");
-
-		for (HelpdeskEventEntity helpdeskEvent : helpdeskContext) {
-			helpdeskEvent.setContextId(id);
-
-			LOG.debug("persist helpdeskevent: " + helpdeskEvent.getTime()
-					+ " - " + helpdeskEvent.getMessage());
-
-			helpdeskEventDAO.addHelpdeskEvent(helpdeskEvent);
-		}
-		return id;
+		return helpdeskManager.persist(helpdeskContext);
 	}
 
 	private String getCallerPrincipalName() {

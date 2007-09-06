@@ -34,7 +34,11 @@ public class HelpdeskContextEntity implements Serializable {
 	private Long id;
 
 	public HelpdeskContextEntity() {
-		// empty
+	}
+
+	// used by unit tests
+	public HelpdeskContextEntity(Long id) {
+		this.id = id;
 	}
 
 	@Id

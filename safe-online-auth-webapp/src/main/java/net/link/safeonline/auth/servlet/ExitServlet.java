@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
-import net.link.safeonline.helpdesk.bean.HelpdeskManagerBean;
+import net.link.safeonline.helpdesk.bean.HelpdeskBean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -105,7 +105,7 @@ public class ExitServlet extends HttpServlet {
 			 * persist helpdesk volatile context at the end just for debugging
 			 */
 			LOG.debug("Storing volatile helpdesk context");
-			Long id = HelpdeskManagerBean.persistContext(session);
+			Long id = HelpdeskBean.persistContext(session);
 			LOG.debug("Persisted volatile helpdesk context ( id=" + id + " )");
 			AuthenticationServiceManager.commitAuthentication(session,
 					application);

@@ -19,6 +19,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -41,7 +42,7 @@ public class HelpdeskEventEntity implements Serializable {
 
 	private Long id;
 
-	private Long contextId;
+	private HelpdeskContextEntity helpdeskContext;
 
 	private Date time;
 
@@ -63,9 +64,9 @@ public class HelpdeskEventEntity implements Serializable {
 		this.time = new Date();
 	}
 
-	public HelpdeskEventEntity(Long contextId, Date time, String message,
-			String principal, LogLevelType logLevel) {
-		this.contextId = contextId;
+	public HelpdeskEventEntity(HelpdeskContextEntity helpdeskContext,
+			Date time, String message, String principal, LogLevelType logLevel) {
+		this.helpdeskContext = helpdeskContext;
 		this.time = time;
 		this.message = message;
 		this.principal = principal;
@@ -82,15 +83,16 @@ public class HelpdeskEventEntity implements Serializable {
 		this.id = id;
 	}
 
-	public void setContextId(Long contextId) {
-		this.contextId = contextId;
+	public void setContext(HelpdeskContextEntity helpdeskContext) {
+		this.helpdeskContext = helpdeskContext;
 	}
 
-	public Long getContextId() {
-		return this.contextId;
+	@ManyToOne()
+	public HelpdeskContextEntity getHelpdeskContext() {
+		return this.helpdeskContext;
 	}
 
-	@Temporal(value = TemporalType.TIMESTAMP)
+	@Temporal(value = TemporalType.TIME)
 	public Date getTime() {
 		return this.time;
 	}

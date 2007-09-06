@@ -16,7 +16,7 @@ import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 @Local
 public interface HelpdeskContextDAO {
 
-	Long createHelpdeskContext();
+	HelpdeskContextEntity createHelpdeskContext();
 
 	List<HelpdeskContextEntity> listContexts();
 

@@ -18,7 +18,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.security.KeyPair;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.xml.XMLConstants;
 
@@ -29,6 +31,9 @@ import net.link.safeonline.auth.servlet.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.ExitServlet;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
+import net.link.safeonline.helpdesk.HelpdeskManager;
+import net.link.safeonline.helpdesk.bean.HelpdeskBean;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -106,12 +111,18 @@ public class ExitServletTest {
 		expect(mockSamlAuthorityService.getAuthnAssertionValidity())
 				.andStubReturn(60 * 10);
 		this.mockAuthenticationService = createMock(AuthenticationService.class);
+		HelpdeskManager mockHelpdeskManager = createMock(HelpdeskManager.class);
+		List<HelpdeskEventEntity> helpdeskContext = new Vector<HelpdeskEventEntity>();
+		expect(mockHelpdeskManager.persist(helpdeskContext)).andStubReturn(
+				new Long(1));
 		this.mockObjects = new Object[] { mockSamlAuthorityService,
-				this.mockAuthenticationService };
+				this.mockAuthenticationService, mockHelpdeskManager };
 		this.jndiTestUtils.setUp();
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				mockSamlAuthorityService);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/HelpdeskManagerBean/local", mockHelpdeskManager);
 
 		this.exitServletTestManager = new ServletTestManager();
 		Map<String, String> servletInitParams = new HashMap<String, String>();
@@ -132,6 +143,10 @@ public class ExitServletTest {
 		initialSessionAttributes.put(
 				Saml2PostProtocolHandler.IN_RESPONSE_TO_ATTRIBUTE,
 				this.inResponseTo);
+
+		helpdeskContext.add(new HelpdeskEventEntity());
+		initialSessionAttributes.put(HelpdeskBean.HELPDESK_CONTEXT,
+				helpdeskContext);
 
 		this.exitServletTestManager.setUp(ExitServlet.class, servletInitParams,
 				null, null, initialSessionAttributes);

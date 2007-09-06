@@ -9,11 +9,14 @@ package net.link.safeonline.helpdesk;
 
 import java.util.List;
 
+import javax.ejb.Local;
+
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.entity.helpdesk.LogLevelType;
 import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 
-public interface HelpdeskManager {
+@Local
+public interface Helpdesk {
 
 	/*
 	 * Create a new Helpdesk Context on the HttpSession

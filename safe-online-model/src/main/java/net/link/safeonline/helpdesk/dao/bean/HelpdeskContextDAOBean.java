@@ -11,8 +11,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -41,12 +39,11 @@ public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
 				this.entityManager, HelpdeskContextEntity.QueryInterface.class);
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public Long createHelpdeskContext() {
+	public HelpdeskContextEntity createHelpdeskContext() {
 		HelpdeskContextEntity helpdeskContext = new HelpdeskContextEntity();
 		this.entityManager.persist(helpdeskContext);
 		LOG.debug("created helpdesk context: " + helpdeskContext.getId());
-		return helpdeskContext.getId();
+		return helpdeskContext;
 	}
 
 	public List<HelpdeskContextEntity> listContexts() {

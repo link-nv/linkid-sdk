@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
-import net.link.safeonline.helpdesk.bean.HelpdeskManagerBean;
+import net.link.safeonline.helpdesk.bean.HelpdeskBean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -138,7 +138,7 @@ public class EntryServlet extends HttpServlet {
 		/*
 		 * create new helpdesk volatile context
 		 */
-		HelpdeskManagerBean.clear(session);
+		HelpdeskBean.clear(session);
 
 		if (isFirstTime(request, response)) {
 			response.sendRedirect(this.firstTimeUrl);

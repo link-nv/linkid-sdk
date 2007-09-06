@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.helpdesk.dao;
+package net.link.safeonline.helpdesk;
 
 import java.util.List;
 
@@ -14,10 +14,8 @@ import javax.ejb.Local;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 
 @Local
-public interface HelpdeskEventDAO {
-
-	void persist(List<HelpdeskEventEntity> helpdeskEvents);
-
-	List<HelpdeskEventEntity> listLogs(Long logId);
+public interface HelpdeskManager {
+	
+	public Long persist(List<HelpdeskEventEntity> helpdeskEventList);
 
 }
