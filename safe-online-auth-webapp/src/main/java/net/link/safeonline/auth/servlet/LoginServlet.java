@@ -22,7 +22,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.entity.helpdesk.LogLevelType;
-import net.link.safeonline.helpdesk.bean.HelpdeskBean;
+import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -71,15 +71,15 @@ public class LoginServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		String applicationId = (String) session.getAttribute("applicationId");
 		if (null == applicationId) {
-			HelpdeskBean.add(session,
+			HelpdeskLogger.add(session,
 					"applicationId session attribute not found",
 					LogLevelType.ERROR);
 			throw new ServletException(
 					"applicationId session attribute not set");
 		}
 
-		HelpdeskBean.add(session, "application id found: "
-				+ applicationId, LogLevelType.INFO);
+		HelpdeskLogger.add(session, "application id found: " + applicationId,
+				LogLevelType.INFO);
 		String username = (String) session.getAttribute("username");
 		if (null == username) {
 			throw new ServletException("username session attribute not set");
@@ -91,7 +91,7 @@ public class LoginServlet extends HttpServlet {
 					.isSubscribed(applicationId);
 		} catch (ApplicationNotFoundException e) {
 			LOG.debug("application not found: " + applicationId);
-			HelpdeskBean.add(session, "application not found: "
+			HelpdeskLogger.add(session, "application not found: "
 					+ applicationId, LogLevelType.ERROR);
 			throw new ServletException("application not found");
 		}
@@ -100,8 +100,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 
-		HelpdeskBean.add(session, "application found: ",
-				LogLevelType.INFO);
+		HelpdeskLogger.add(session, "application found: ", LogLevelType.INFO);
 
 		boolean confirmationRequired;
 		try {
@@ -120,8 +119,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 
-		HelpdeskBean.add(session, "confirmation found",
-				LogLevelType.INFO);
+		HelpdeskLogger.add(session, "confirmation found", LogLevelType.INFO);
 
 		boolean hasMissingAttributes;
 		try {
@@ -137,7 +135,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 
-		HelpdeskBean.add(session, "necessary attributes found",
+		HelpdeskLogger.add(session, "necessary attributes found",
 				LogLevelType.INFO);
 
 		/*

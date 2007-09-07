@@ -7,9 +7,12 @@
 
 package net.link.safeonline.ctrl;
 
-public interface Help {
+public class ControlBaseConstants {
 
-	String log();
+	private ControlBaseConstants() {
+		// empty
+	}
 
-	void destroyCallback();
+	public final static String HELPDESK_CONTEXT = "helpdeskContext";
+
 }

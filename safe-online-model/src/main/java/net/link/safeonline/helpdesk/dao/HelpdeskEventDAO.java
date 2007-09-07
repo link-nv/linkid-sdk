@@ -12,6 +12,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
+import net.link.safeonline.entity.helpdesk.LogLevelType;
 
 @Local
 public interface HelpdeskEventDAO {
@@ -19,5 +20,7 @@ public interface HelpdeskEventDAO {
 	void persist(List<HelpdeskEventEntity> helpdeskEvents);
 
 	List<HelpdeskEventEntity> listLogs(Long logId);
+
+	void clearEvents(long ageInMinutes, LogLevelType logLevel);
 
 }

@@ -40,7 +40,7 @@ public class HelpdeskManagerBean implements HelpdeskManager {
 		LOG.debug("persist helpdeskcontext ( id=" + context.getId() + " )");
 
 		for (HelpdeskEventEntity helpdeskEvent : helpdeskEventList) {
-			helpdeskEvent.setContext(context);
+			helpdeskEvent.setHelpdeskContext(context);
 
 		}
 		helpdeskEventDAO.persist(helpdeskEventList);

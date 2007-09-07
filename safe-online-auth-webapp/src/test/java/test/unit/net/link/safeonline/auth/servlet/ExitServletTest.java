@@ -31,9 +31,9 @@ import net.link.safeonline.auth.servlet.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.ExitServlet;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.ctrl.ControlBaseConstants;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
-import net.link.safeonline.helpdesk.bean.HelpdeskBean;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -145,7 +145,7 @@ public class ExitServletTest {
 				this.inResponseTo);
 
 		helpdeskContext.add(new HelpdeskEventEntity());
-		initialSessionAttributes.put(HelpdeskBean.HELPDESK_CONTEXT,
+		initialSessionAttributes.put(ControlBaseConstants.HELPDESK_CONTEXT,
 				helpdeskContext);
 
 		this.exitServletTestManager.setUp(ExitServlet.class, servletInitParams,

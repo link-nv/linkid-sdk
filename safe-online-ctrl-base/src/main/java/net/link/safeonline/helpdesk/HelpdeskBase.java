@@ -9,30 +9,29 @@ package net.link.safeonline.helpdesk;
 
 import java.util.List;
 
-import javax.ejb.Local;
-
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.entity.helpdesk.LogLevelType;
 import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 
-@Local
-public interface Helpdesk {
+public interface HelpdeskBase {
+
+	String log();
 
 	/*
 	 * Create a new Helpdesk Context on the HttpSession
 	 */
-	public void clear();
+	void clear();
 
 	/*
 	 * Get current Helpdesk Context from the HttpSession
 	 */
-	public List<HelpdeskEventEntity> getCurrent()
+	List<HelpdeskEventEntity> getCurrent()
 			throws HelpdeskContextNotFoundException;
 
 	/*
 	 * Add new helpdesk event to the helpdesk context
 	 */
-	public void add(String msg, LogLevelType logLevel)
+	void add(String msg, LogLevelType logLevel)
 			throws HelpdeskContextNotFoundException;
 
 	/*
@@ -40,4 +39,5 @@ public interface Helpdesk {
 	 */
 	public Long persistContext() throws HelpdeskContextNotFoundException;
 
+	void destroyCallback();
 }

@@ -6,6 +6,7 @@
 
 package net.link.safeonline.helpdesk.dao.bean;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -15,11 +16,18 @@ import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
+import net.link.safeonline.entity.helpdesk.LogLevelType;
 import net.link.safeonline.helpdesk.dao.HelpdeskEventDAO;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 @Stateless
 public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
+
+	private final static Log LOG = LogFactory
+			.getLog(HelpdeskEventDAOBean.class);
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
@@ -33,10 +41,19 @@ public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
 	}
 
 	public void persist(List<HelpdeskEventEntity> helpdeskEvents) {
-		this.entityManager.persist(helpdeskEvents);
+		for (HelpdeskEventEntity event : helpdeskEvents)
+			this.entityManager.persist(event);
 	}
 
 	public List<HelpdeskEventEntity> listLogs(Long contextId) {
 		return this.queryObject.listLogs(contextId);
+	}
+
+	public void clearEvents(long ageInMinutes, LogLevelType logLevel) {
+		LOG.debug("clearing helpdesk " + logLevel.toString()
+				+ " error events older than: " + ageInMinutes);
+		Date ageLimit = new Date(((System.currentTimeMillis() / 60) / 1000)
+				- ageInMinutes);
+		this.queryObject.deleteEvents(ageLimit, logLevel);
 	}
 }

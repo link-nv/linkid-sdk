@@ -8,6 +8,7 @@
 package net.link.safeonline.entity.helpdesk;
 
 import static net.link.safeonline.entity.helpdesk.HelpdeskEventEntity.QUERY_WHERE_CONTEXTID;
+import static net.link.safeonline.entity.helpdesk.HelpdeskEventEntity.QUERY_DELETE_EVENT_WHERE_OLDER;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -28,17 +29,24 @@ import javax.persistence.TemporalType;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 @Entity
 @Table(name = "helpdesk_event")
-@NamedQueries( { @NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT helpdeskEventEntity "
-		+ "FROM HelpdeskEventEntity AS helpdeskEventEntity "
-		+ "WHERE helpdeskEventEntity.contextId = :contextId") })
+@NamedQueries( {
+		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT helpdeskEventEntity "
+				+ "FROM HelpdeskEventEntity AS helpdeskEventEntity "
+				+ "WHERE helpdeskEventEntity.helpdeskContext.id = :contextId"),
+		@NamedQuery(name = QUERY_DELETE_EVENT_WHERE_OLDER, query = "DELETE "
+				+ "FROM HelpdeskEventEntity AS helpdeskEvent "
+				+ "WHERE helpdeskEvent.time < :ageLimit AND helpdeskEvent.logLevel = :logLevel") })
 public class HelpdeskEventEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String QUERY_WHERE_CONTEXTID = "hdevent.logid";
+	public static final String QUERY_WHERE_CONTEXTID = "hd.event.logid";
+
+	public static final String QUERY_DELETE_EVENT_WHERE_OLDER = "hd.event.old";
 
 	private Long id;
 
@@ -83,7 +91,7 @@ public class HelpdeskEventEntity implements Serializable {
 		this.id = id;
 	}
 
-	public void setContext(HelpdeskContextEntity helpdeskContext) {
+	public void setHelpdeskContext(HelpdeskContextEntity helpdeskContext) {
 		this.helpdeskContext = helpdeskContext;
 	}
 
@@ -130,6 +138,11 @@ public class HelpdeskEventEntity implements Serializable {
 		@QueryMethod(QUERY_WHERE_CONTEXTID)
 		List<HelpdeskEventEntity> listLogs(@QueryParam("contextId")
 		Long contextId);
+
+		@UpdateMethod(QUERY_DELETE_EVENT_WHERE_OLDER)
+		void deleteEvents(@QueryParam("ageLimit")
+		Date ageLimit, @QueryParam("level")
+		LogLevelType logLevel);
 	}
 
 }

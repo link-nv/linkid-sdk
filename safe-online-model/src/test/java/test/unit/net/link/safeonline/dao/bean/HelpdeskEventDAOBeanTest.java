@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.entity.helpdesk.LogLevelType;
+import net.link.safeonline.helpdesk.dao.bean.HelpdeskContextDAOBean;
 import net.link.safeonline.helpdesk.dao.bean.HelpdeskEventDAOBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
@@ -24,7 +25,8 @@ public class HelpdeskEventDAOBeanTest extends TestCase {
 
 	private EntityTestManager entityTestManager;
 
-	private HelpdeskEventDAOBean testedInstance;
+	private HelpdeskEventDAOBean eventDAO;
+	private HelpdeskContextDAOBean contextDAO;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -36,12 +38,16 @@ public class HelpdeskEventDAOBeanTest extends TestCase {
 		 */
 		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-		this.testedInstance = new HelpdeskEventDAOBean();
+		this.eventDAO = new HelpdeskEventDAOBean();
+		this.contextDAO = new HelpdeskContextDAOBean();
 
-		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
+		EJBTestUtils.inject(this.eventDAO, this.entityTestManager
+				.getEntityManager());
+		EJBTestUtils.inject(this.contextDAO, this.entityTestManager
 				.getEntityManager());
 
-		EJBTestUtils.init(this.testedInstance);
+		EJBTestUtils.init(this.eventDAO);
+		EJBTestUtils.init(this.contextDAO);
 	}
 
 	@Override
@@ -51,16 +57,16 @@ public class HelpdeskEventDAOBeanTest extends TestCase {
 	}
 
 	public void testLogs() {
-		HelpdeskContextEntity context = new HelpdeskContextEntity(new Long(0));
+		HelpdeskContextEntity context = contextDAO.createHelpdeskContext();
 		List<HelpdeskEventEntity> events = new Vector<HelpdeskEventEntity>();
 		events.add(new HelpdeskEventEntity(context, new Date(),
 				"test-message-1", "test-principal", LogLevelType.INFO));
 		events.add(new HelpdeskEventEntity(context, new Date(),
 				"test-message-2", "test-principal", LogLevelType.ERROR));
-		this.testedInstance.persist(events);
+		this.eventDAO.persist(events);
 
-		List<HelpdeskEventEntity> persisted_events = this.testedInstance
-				.listLogs(new Long(0));
+		List<HelpdeskEventEntity> persisted_events = this.eventDAO
+				.listLogs(context.getId());
 		assertEquals(persisted_events.size(), events.size());
 	}
 
