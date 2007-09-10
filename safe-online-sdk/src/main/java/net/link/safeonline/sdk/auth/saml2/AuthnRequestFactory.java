@@ -9,6 +9,8 @@ package net.link.safeonline.sdk.auth.saml2;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
@@ -22,8 +24,10 @@ import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SAMLObjectContentReference;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
+import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObjectBuilder;
 import org.opensaml.xml.XMLObjectBuilderFactory;
@@ -83,11 +87,13 @@ public class AuthnRequestFactory {
 	 *            the optional location of the assertion consumer service. This
 	 *            location can be used by the IdP to send back the SAML response
 	 *            message.
+	 * @param devices
+	 *            the optional list of allowed authentication devices.
 	 * @return
 	 */
 	public static String createAuthnRequest(String applicationName,
 			KeyPair applicationKeyPair, String assertionConsumerServiceURL,
-			Challenge<String> challenge) {
+			Challenge<String> challenge, Set<String> devices) {
 		if (null == applicationKeyPair) {
 			throw new IllegalArgumentException(
 					"application key pair should not be null");
@@ -122,6 +128,22 @@ public class AuthnRequestFactory {
 
 		if (null != assertionConsumerServiceURL) {
 			request.setAssertionConsumerServiceURL(assertionConsumerServiceURL);
+		}
+
+		if (null != devices) {
+			RequestedAuthnContext requestedAuthnContext = buildXMLObject(
+					RequestedAuthnContext.class,
+					RequestedAuthnContext.DEFAULT_ELEMENT_NAME);
+			List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
+					.getAuthnContextClassRefs();
+			for (String device : devices) {
+				AuthnContextClassRef authnContextClassRef = buildXMLObject(
+						AuthnContextClassRef.class,
+						AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
+				authnContextClassRef.setAuthnContextClassRef(device);
+				authnContextClassRefs.add(authnContextClassRef);
+			}
+			request.setRequestedAuthnContext(requestedAuthnContext);
 		}
 
 		XMLObjectBuilderFactory builderFactory = Configuration

@@ -54,7 +54,7 @@ public class AuthnRequestFactoryTest {
 		// operate
 		long begin = System.currentTimeMillis();
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
-				keyPair, assertionConsumerServiceURL, challenge);
+				keyPair, assertionConsumerServiceURL, challenge, null);
 		long end = System.currentTimeMillis();
 
 		// verify
@@ -110,7 +110,7 @@ public class AuthnRequestFactoryTest {
 
 		// operate
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
-				keyPair, null, null);
+				keyPair, null, null, null);
 		LOG.debug("result: " + result);
 	}
 

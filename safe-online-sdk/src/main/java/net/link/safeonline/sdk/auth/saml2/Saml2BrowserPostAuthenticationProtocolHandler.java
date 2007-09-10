@@ -10,13 +10,17 @@ package net.link.safeonline.sdk.auth.saml2;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.KeyPair;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
@@ -51,6 +55,24 @@ import org.opensaml.xml.ConfigurationException;
 /**
  * Implementation class for the SAML2 browser POST authentication protocol.
  * 
+ * <p>
+ * Optional configuration parameters:
+ * </p>
+ * <ul>
+ * <li><code>Saml2BrowserPostTemplate</code>: contains the path to the
+ * custom SAML2 Browser POST template resource.</li>
+ * <li><code>Saml2Devices</code>: contains the list of allowed
+ * authentication devices, comma separated string</li>
+ * </ul>
+ * 
+ * <p>
+ * Optional session configuration attributes:
+ * </p>
+ * <ul>
+ * <li><code>Saml2Devices</code>: contains the
+ * <code>Set&lt;String&gt;</code> of allowed authentication devices.</li>
+ * </ul>
+ * 
  * @author fcorneli
  * 
  */
@@ -63,6 +85,10 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 	public static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/sdk/auth/saml2/saml2-post-binding.vm";
 
 	public static final String SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM = "Saml2BrowserPostTemplate";
+
+	public static final String SAML2_DEVICES_CONFIG_PARAM = "Saml2Devices";
+
+	public static final String SAML2_DEVICES_ATTRIBUTE = "Saml2Devices";
 
 	private static final Log LOG = LogFactory
 			.getLog(Saml2BrowserPostAuthenticationProtocolHandler.class);
@@ -107,14 +133,53 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		this.challenge = new Challenge<String>();
 	}
 
+	@SuppressWarnings("unchecked")
+	public Set<String> getDevices(HttpServletRequest httpRequest) {
+		String staticDeviceList = this.configParams
+				.get(SAML2_DEVICES_CONFIG_PARAM);
+		HttpSession session = httpRequest.getSession();
+		Set<String> runtimeDevices = (Set<String>) session
+				.getAttribute(SAML2_DEVICES_ATTRIBUTE);
+		if (null == staticDeviceList && null == runtimeDevices) {
+			return null;
+		}
+		Set<String> staticDevices;
+		if (null == staticDeviceList) {
+			staticDevices = null;
+		} else {
+			staticDevices = new HashSet<String>();
+			StringTokenizer stringTokenizer = new StringTokenizer(
+					staticDeviceList, ",");
+			while (stringTokenizer.hasMoreTokens()) {
+				staticDevices.add(stringTokenizer.nextToken());
+			}
+		}
+		if (null != staticDevices && null != runtimeDevices) {
+			Set<String> intersection = new HashSet<String>(staticDevices);
+			intersection.retainAll(runtimeDevices);
+			if (intersection.isEmpty()) {
+				throw new RuntimeException(
+						"intersection of static and runtime device lists is empty");
+			}
+			return intersection;
+		}
+		if (null != staticDevices) {
+			return staticDevices;
+		}
+		if (null != runtimeDevices) {
+			return runtimeDevices;
+		}
+		throw new RuntimeException("WTF");
+	}
+
 	public void initiateAuthentication(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse, String targetUrl)
 			throws IOException, ServletException {
 		LOG.debug("target url: " + targetUrl);
-
+		Set<String> devices = getDevices(httpRequest);
 		String samlRequestToken = AuthnRequestFactory.createAuthnRequest(
 				this.applicationName, this.applicationKeyPair, targetUrl,
-				this.challenge);
+				this.challenge, devices);
 
 		String encodedSamlRequestToken = Base64.encode(samlRequestToken
 				.getBytes());
