@@ -13,6 +13,7 @@ import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.UsernamePasswordLogon;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 
@@ -79,6 +80,9 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addToControlFromResourceBundle("username",
 					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");
+			return null;
+		} catch (DeviceNotFoundException e) {
+			this.facesMessages.add("password device not configured");
 			return null;
 		}
 

@@ -13,6 +13,7 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
@@ -46,9 +47,11 @@ public interface AuthenticationService {
 	 * @return <code>true</code> if the user was authenticated correctly,
 	 *         <code>false</code> otherwise.
 	 * @throws SubjectNotFoundException
+	 * @throws DeviceNotFoundException
+	 *             in case the user did not configure the password device.
 	 */
 	boolean authenticate(String login, String password)
-			throws SubjectNotFoundException;
+			throws SubjectNotFoundException, DeviceNotFoundException;
 
 	/**
 	 * Commits the authentication for the given application.

@@ -20,7 +20,7 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -63,7 +63,7 @@ public class SafeOnlineAuthenticationPortImpl implements
 		try {
 			serviceResult = authenticationService.authenticate(username,
 					password);
-		} catch (SubjectNotFoundException e) {
+		} catch (SafeOnlineException e) {
 			serviceResult = false;
 		}
 

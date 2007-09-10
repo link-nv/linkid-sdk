@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.AccountRegistration;
 import net.link.safeonline.auth.AuthenticationConstants;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
@@ -200,6 +201,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addToControlFromResourceBundle("username",
 					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");
+			return null;
+		} catch (DeviceNotFoundException e) {
+			this.facesMessages.add("password device not configured");
 			return null;
 		}
 

@@ -18,7 +18,6 @@ import java.util.Date;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
@@ -31,6 +30,7 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
@@ -140,7 +140,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
-	String password) throws SubjectNotFoundException {
+	String password) throws SubjectNotFoundException, DeviceNotFoundException {
 		LOG.debug("authenticate \"" + login + "\"");
 
 		SubjectEntity subject = this.entityDAO.getSubject(login);
@@ -151,7 +151,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			String event = "password attribute not present for subject "
 					+ login;
 			addHistoryEntry(subject, event);
-			throw new EJBException(event);
+			throw new DeviceNotFoundException();
 		}
 
 		String expectedPassword = passwordAttribute.getStringValue();
