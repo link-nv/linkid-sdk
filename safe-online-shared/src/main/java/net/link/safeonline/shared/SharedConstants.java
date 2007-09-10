@@ -29,6 +29,8 @@ public class SharedConstants {
 
 	public static final String STATISTIC_NOT_FOUND_ERROR = "STATISTIC_NOT_FOUND";
 
+	public static final String DECODING_ERROR = "DECODING_ERROR";
+
 	private SharedConstants() {
 		// empty
 	}

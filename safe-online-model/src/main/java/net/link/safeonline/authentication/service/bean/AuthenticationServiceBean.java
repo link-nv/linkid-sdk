@@ -30,6 +30,8 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.DecodingException;
+import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -54,6 +56,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.model.UserRegistrationManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiProvider;
 import net.link.safeonline.pkix.model.PkiProviderManager;
@@ -132,6 +135,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private SecurityAuditLogger securityAuditLogger;
 
+	@EJB
+	private UserRegistrationManager userRegistrationManager;
+
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
 	String password) throws SubjectNotFoundException {
@@ -185,7 +191,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	public boolean authenticate(@NonEmptyString
 	String sessionId, byte[] authenticationStatementData)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			SubjectNotFoundException {
+			SubjectNotFoundException, DecodingException {
 		LOG.debug("authenticate session: " + sessionId);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);
@@ -340,5 +346,69 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		}
 		String userId = this.authenticatedSubject.getLogin();
 		return userId;
+	}
+
+	public boolean registerAndAuthenticate(String sessionId, String username,
+			byte[] registrationStatementData)
+			throws ArgumentIntegrityException, TrustDomainNotFoundException,
+			DecodingException, ExistingUserException {
+		LOG.debug("registerAndAuthentication: " + username);
+		RegistrationStatement registrationStatement = new RegistrationStatement(
+				registrationStatementData);
+
+		X509Certificate certificate = registrationStatement.verifyIntegrity();
+		if (null == certificate) {
+			throw new ArgumentIntegrityException();
+		}
+
+		PkiProvider pkiProvider = this.pkiProviderManager
+				.findPkiProvider(certificate);
+		if (null == pkiProvider) {
+			throw new ArgumentIntegrityException();
+		}
+		TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
+		boolean validationResult = this.pkiValidator.validateCertificate(
+				trustDomain, certificate);
+		if (false == validationResult) {
+			throw new ArgumentIntegrityException();
+		}
+
+		String statementSessionId = registrationStatement.getSessionId();
+		if (false == sessionId.equals(statementSessionId)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION, "session Id mismatch");
+			throw new ArgumentIntegrityException();
+		}
+
+		String statementUsername = registrationStatement.getUsername();
+		if (false == username.equals(statementUsername)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION, "username mismatch");
+			throw new ArgumentIntegrityException();
+		}
+
+		String domain = pkiProvider.getIdentifierDomainName();
+		String identifier = pkiProvider.getSubjectIdentifier(certificate);
+		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
+				.findSubject(domain, identifier);
+		if (null != existingMappedSubject) {
+			throw new ArgumentIntegrityException();
+		}
+
+		SubjectEntity subject = this.userRegistrationManager
+				.registerUser(username);
+		this.subjectIdentifierDAO.addSubjectIdentifier(domain, identifier,
+				subject);
+
+		pkiProvider.storeAdditionalAttributes(subject, certificate);
+
+		/*
+		 * Safe the state.
+		 */
+		this.authenticationState = USER_AUTHENTICATED;
+		this.authenticatedSubject = subject;
+		this.authenticationDevice = SafeOnlineConstants.BEID_AUTH_DEVICE;
+		this.expectedApplicationId = registrationStatement.getApplicationId();
+		return false;
 	}
 }

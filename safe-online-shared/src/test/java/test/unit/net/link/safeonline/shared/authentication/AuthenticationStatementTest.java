@@ -12,7 +12,7 @@ import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import junit.framework.TestCase;
-import net.link.safeonline.shared.authentication.AuthenticationStatement;
+import net.link.safeonline.shared.statement.AuthenticationStatement;
 import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.apache.commons.logging.Log;
@@ -38,7 +38,7 @@ public class AuthenticationStatementTest extends TestCase {
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				sessionId, applicationId, certificate, keyPair.getPrivate());
 		byte[] resultAuthenticationStatement = authenticationStatement
-				.generateAuthenticationStatement();
+				.generateStatement();
 
 		// verify
 		assertNotNull(resultAuthenticationStatement);

@@ -5,19 +5,18 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.shared.asn1.identity;
+package net.link.safeonline.shared.asn1.statement;
 
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
-import net.link.safeonline.shared.asn1.DERBitString;
 import net.link.safeonline.shared.asn1.DEREncodable;
 import net.link.safeonline.shared.asn1.DEREncodedData;
 import net.link.safeonline.shared.asn1.DERInteger;
 import net.link.safeonline.shared.asn1.DERSequence;
 import net.link.safeonline.shared.asn1.DERVisibleString;
 
-public class DERIdentityStatement implements DEREncodable {
+public class DERIdentityStatement extends AbstractDERStatement {
 
 	public static final int VERSION = 1;
 
@@ -39,8 +38,6 @@ public class DERIdentityStatement implements DEREncodable {
 
 	private final String surname;
 
-	private byte[] signature;
-
 	public DERIdentityStatement(X509Certificate authenticationCertificate,
 			String user, String givenName, String surname) {
 		this.authenticationCertificate = authenticationCertificate;
@@ -49,7 +46,7 @@ public class DERIdentityStatement implements DEREncodable {
 		this.surname = surname;
 	}
 
-	public byte[] getToBeSigned() {
+	public DEREncodable getToBeSigned() {
 		DERSequence tbsSequence = new DERSequence();
 		DERInteger version = new DERInteger(VERSION);
 		tbsSequence.add(version);
@@ -67,24 +64,6 @@ public class DERIdentityStatement implements DEREncodable {
 			throw new RuntimeException("cert encoding error: " + e.getMessage());
 		}
 		tbsSequence.add(encodedCert);
-		byte[] tbs = tbsSequence.getEncoded();
-		return tbs;
-	}
-
-	public void setSignature(byte[] signature) {
-		this.signature = signature;
-	}
-
-	public byte[] getEncoded() {
-		DEREncodedData tbs = new DEREncodedData(getToBeSigned());
-
-		DERSequence sequence = new DERSequence();
-		sequence.add(tbs);
-		if (null == this.signature) {
-			throw new IllegalStateException("set signature value first");
-		}
-		DERBitString signatureBitString = new DERBitString(this.signature);
-		sequence.add(signatureBitString);
-		return sequence.getEncoded();
+		return tbsSequence;
 	}
 }

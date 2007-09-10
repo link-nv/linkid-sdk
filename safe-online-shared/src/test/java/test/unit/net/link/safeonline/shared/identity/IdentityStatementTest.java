@@ -10,15 +10,14 @@ package test.unit.net.link.safeonline.shared.identity;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 
+import junit.framework.TestCase;
+import net.link.safeonline.shared.statement.IdentityStatement;
+import net.link.safeonline.test.util.PkiTestUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.util.ASN1Dump;
-
-import net.link.safeonline.shared.identity.IdentityStatement;
-import net.link.safeonline.test.util.PkiTestUtils;
-
-import junit.framework.TestCase;
 
 public class IdentityStatementTest extends TestCase {
 
@@ -38,8 +37,7 @@ public class IdentityStatementTest extends TestCase {
 		// operate
 		IdentityStatement identityStatement = new IdentityStatement(
 				certificate, user, givenName, surname, keyPair.getPrivate());
-		byte[] resultIdentityStatement = identityStatement
-				.generateIdentityStatement();
+		byte[] resultIdentityStatement = identityStatement.generateStatement();
 
 		// verify
 		assertNotNull(resultIdentityStatement);

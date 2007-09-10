@@ -68,7 +68,7 @@ public class EmailBeanTest {
 		// verify
 		verify(message);
 		assertTrue(server.getReceivedEmailSize() == 1);
-		Iterator emailIter = server.getReceivedEmail();
+		Iterator<?> emailIter = server.getReceivedEmail();
 		SmtpMessage email = (SmtpMessage) emailIter.next();
 		assertTrue(email.getHeaderValue("Subject").equals(
 				"[Safe Online] testsubject"));

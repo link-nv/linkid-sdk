@@ -203,15 +203,15 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>IdentityRegistrationServlet</servlet-name>
+		<servlet-name>RegistrationServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.auth.servlet.IdentityRegistrationServlet
+			net.link.safeonline.auth.servlet.RegistrationServlet
 		</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>IdentityRegistrationServlet</servlet-name>
-		<url-pattern>/identity</url-pattern>
+		<servlet-name>RegistrationServlet</servlet-name>
+		<url-pattern>/registration</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

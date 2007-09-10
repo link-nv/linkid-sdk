@@ -65,6 +65,10 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	@Out(value = DeviceBean.AUTHN_DEVICE_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	private String authnDevice;
 
+	@SuppressWarnings("unused")
+	@Out(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
+	private String requestedUsername;
+
 	@In(create = true)
 	FacesMessages facesMessages;
 
@@ -131,6 +135,13 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			this.facesMessages.add("login already taken");
 			return null;
 		}
+
+		/*
+		 * The requestedUsername session attribute can be used during the device
+		 * specific registration process. For example, the registration
+		 * statement is using it.
+		 */
+		this.requestedUsername = this.login;
 
 		return "next";
 	}

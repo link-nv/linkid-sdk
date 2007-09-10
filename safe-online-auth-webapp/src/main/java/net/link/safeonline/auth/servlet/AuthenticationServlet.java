@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -118,6 +119,11 @@ public class AuthenticationServlet extends HttpServlet {
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
 			writer.println("Argument integrity error");
+		} catch (DecodingException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+					.getErrorCode());
+			writer.println("decoding error");
 		} catch (Exception e) {
 			LOG.error("credential service error: " + e.getMessage(), e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

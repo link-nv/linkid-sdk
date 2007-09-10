@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
@@ -65,9 +66,12 @@ public interface PkiProvider {
 	 * providers to store additional attributes related to their specific
 	 * device.
 	 * 
+	 * @param subject
+	 *            the subject for which to store additional attributes.
 	 * @param certificate
 	 */
-	void storeAdditionalAttributes(X509Certificate certificate);
+	void storeAdditionalAttributes(SubjectEntity subject,
+			X509Certificate certificate);
 
 	/**
 	 * Gives back the identifier domain name.

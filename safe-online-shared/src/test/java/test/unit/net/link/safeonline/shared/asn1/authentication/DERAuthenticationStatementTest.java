@@ -11,15 +11,15 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
+import junit.framework.TestCase;
+import net.link.safeonline.shared.asn1.statement.DERAuthenticationStatement;
+import net.link.safeonline.test.util.PkiTestUtils;
+
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERInteger;
 import org.bouncycastle.asn1.DERVisibleString;
-
-import net.link.safeonline.shared.asn1.authentication.DERAuthenticationStatement;
-import net.link.safeonline.test.util.PkiTestUtils;
-import junit.framework.TestCase;
 
 public class DERAuthenticationStatementTest extends TestCase {
 

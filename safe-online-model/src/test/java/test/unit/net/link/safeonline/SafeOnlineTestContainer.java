@@ -19,6 +19,7 @@ import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
+import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -49,10 +50,16 @@ import net.link.safeonline.model.bean.ApplicationManagerBean;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
 import net.link.safeonline.model.bean.ApplicationsBean;
 import net.link.safeonline.model.bean.AttributeTypeDescriptionDecoratorBean;
+import net.link.safeonline.model.bean.CredentialManagerBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
+import net.link.safeonline.model.bean.UserRegistrationManagerBean;
 import net.link.safeonline.pkix.dao.bean.CachedOcspResponseDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustPointDAOBean;
+import net.link.safeonline.pkix.model.bean.CachedOcspValidatorBean;
+import net.link.safeonline.pkix.model.bean.OcspValidatorBean;
+import net.link.safeonline.pkix.model.bean.PkiProviderManagerBean;
+import net.link.safeonline.pkix.model.bean.PkiValidatorBean;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskHistoryDAOBean;
@@ -69,7 +76,7 @@ public class SafeOnlineTestContainer {
 		// empty
 	}
 
-	public static final Class[] sessionBeans = new Class[] {
+	public static final Class<?>[] sessionBeans = new Class[] {
 			SubjectDAOBean.class, ApplicationDAOBean.class,
 			SubscriptionDAOBean.class, AttributeDAOBean.class,
 			TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class,
@@ -84,16 +91,21 @@ public class SafeOnlineTestContainer {
 			AttributeTypeDescriptionDecoratorBean.class,
 			AttributeProviderDAOBean.class, ApplicationsBean.class,
 			DeviceDAOBean.class, AllowedDeviceDAOBean.class,
-			HelpdeskContextDAOBean.class, HelpdeskEventDAOBean.class };
+			HelpdeskContextDAOBean.class, HelpdeskEventDAOBean.class,
+			CredentialManagerBean.class, PkiProviderManagerBean.class,
+			PkiValidatorBean.class, CachedOcspValidatorBean.class,
+			OcspValidatorBean.class, SubjectIdentifierDAOBean.class,
+			UserRegistrationManagerBean.class };
 
-	public static final Class[] entities = new Class[] { SubjectEntity.class,
-			ApplicationEntity.class, ApplicationOwnerEntity.class,
-			AttributeEntity.class, AttributeTypeEntity.class,
-			SubscriptionEntity.class, TrustDomainEntity.class,
-			ApplicationIdentityEntity.class, ConfigGroupEntity.class,
-			ConfigItemEntity.class, TaskEntity.class, SchedulingEntity.class,
-			TaskHistoryEntity.class, ApplicationIdentityAttributeEntity.class,
-			TrustPointEntity.class, AttributeTypeDescriptionEntity.class,
+	public static final Class<?>[] entities = new Class[] {
+			SubjectEntity.class, ApplicationEntity.class,
+			ApplicationOwnerEntity.class, AttributeEntity.class,
+			AttributeTypeEntity.class, SubscriptionEntity.class,
+			TrustDomainEntity.class, ApplicationIdentityEntity.class,
+			ConfigGroupEntity.class, ConfigItemEntity.class, TaskEntity.class,
+			SchedulingEntity.class, TaskHistoryEntity.class,
+			ApplicationIdentityAttributeEntity.class, TrustPointEntity.class,
+			AttributeTypeDescriptionEntity.class,
 			AttributeProviderEntity.class, DeviceEntity.class,
 			AllowedDeviceEntity.class,
 			CompoundedAttributeTypeMemberEntity.class,

@@ -121,10 +121,10 @@ public class BeIdPkiProvider implements PkiProvider {
 		return identifier;
 	}
 
-	public void storeAdditionalAttributes(X509Certificate certificate) {
+	public void storeAdditionalAttributes(SubjectEntity subject,
+			X509Certificate certificate) {
 		String subjectName = getSubjectName(certificate);
 		String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		setOrOverrideAttribute(BeIdConstants.NRN_ATTRIBUTE, subject, nrn);
 	}
 

@@ -17,14 +17,14 @@ import java.util.Map;
 
 import javax.interceptor.InvocationContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import junit.framework.TestCase;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.ValidatorAnnotation;
 import net.link.safeonline.validation.validator.Validator;
 import net.link.safeonline.validation.validator.ValidatorResult;
-import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class InputValidationTest extends TestCase {
 
@@ -44,7 +44,7 @@ public class InputValidationTest extends TestCase {
 
 	}
 
-	public static class TestValidator implements Validator {
+	public static class TestValidator implements Validator<Annotation> {
 
 		private static final Log LOG = LogFactory.getLog(TestValidator.class);
 
@@ -67,7 +67,7 @@ public class InputValidationTest extends TestCase {
 	}
 
 	private Method getLocalMethod(String methodName) {
-		Class clazz = InputValidationTest.class;
+		Class<?> clazz = InputValidationTest.class;
 		Method[] methods = clazz.getMethods();
 		for (Method method : methods) {
 			if (method.getName().equals(methodName)) {

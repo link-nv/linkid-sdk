@@ -7,17 +7,7 @@
 
 package net.link.safeonline.authentication.service.bean;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bouncycastle.asn1.ASN1Sequence;
+import net.link.safeonline.authentication.exception.DecodingException;
 
 /**
  * Authentication Statement object class. Holds the structure and parser for the
@@ -27,84 +17,20 @@ import org.bouncycastle.asn1.ASN1Sequence;
  * @author fcorneli
  * 
  */
-public class AuthenticationStatement {
+public class AuthenticationStatement extends
+		AbstractStatement<AuthenticationStatementStructure> {
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthenticationStatement.class);
-
-	private final byte[] encodedAuthenticationStatement;
-
-	private final AuthenticationStatementStructure authenticationStatementStructure;
-
-	public AuthenticationStatement(byte[] encodedAuthenticationStatement) {
-		this.encodedAuthenticationStatement = encodedAuthenticationStatement;
-
-		ASN1Sequence sequence;
-		try {
-			sequence = ASN1Sequence.getInstance(ASN1Sequence
-					.fromByteArray(this.encodedAuthenticationStatement));
-		} catch (IOException e) {
-			throw new IllegalArgumentException("identity statement IO error: "
-					+ e.getMessage(), e);
-		}
-		this.authenticationStatementStructure = new AuthenticationStatementStructure(
-				sequence);
-	}
-
-	/**
-	 * Verifies the integrity of the statement.
-	 * 
-	 * TODO: factor out common code with identity statement
-	 * 
-	 * @return
-	 */
-	public X509Certificate verifyIntegrity() {
-		X509Certificate authCert;
-		try {
-			authCert = this.authenticationStatementStructure
-					.getAuthenticationCertificate();
-		} catch (CertificateException e) {
-			LOG.error("cert error: " + e.getMessage(), e);
-			return null;
-		} catch (IOException e) {
-			LOG.error("IO error: " + e.getMessage(), e);
-			return null;
-		}
-		byte[] data = this.authenticationStatementStructure.getToBeSignedData();
-		Signature signature;
-		try {
-			signature = Signature.getInstance("SHA1withRSA");
-		} catch (NoSuchAlgorithmException e) {
-			LOG.error("sign algo error: " + e.getMessage(), e);
-			return null;
-		}
-		try {
-			signature.initVerify(authCert);
-		} catch (InvalidKeyException e) {
-			LOG.error("Invalid key: " + e.getMessage(), e);
-			return null;
-		}
-		try {
-			signature.update(data);
-			boolean result = signature
-					.verify(this.authenticationStatementStructure
-							.getSignature());
-			if (result) {
-				return authCert;
-			} else {
-				return null;
-			}
-		} catch (SignatureException e) {
-			LOG.error("signature error: " + e.getMessage());
-			return null;
-		}
+	public AuthenticationStatement(byte[] encodedAuthenticationStatement)
+			throws DecodingException {
+		super(new AuthenticationStatementStructure(
+				encodedAuthenticationStatement));
 	}
 
 	public String getSessionId() {
-		return this.authenticationStatementStructure.getSessionId();
+		return super.getStatementStructure().getSessionId();
 	}
 
 	public String getApplicationId() {
-		return this.authenticationStatementStructure.getApplicationId();
+		return super.getStatementStructure().getApplicationId();
 	}
 }

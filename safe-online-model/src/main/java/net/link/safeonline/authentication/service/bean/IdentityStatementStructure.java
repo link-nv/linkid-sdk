@@ -7,109 +7,71 @@
 
 package net.link.safeonline.authentication.service.bean;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
-import net.link.safeonline.shared.asn1.identity.DERIdentityStatement;
+import net.link.safeonline.authentication.exception.DecodingException;
+import net.link.safeonline.shared.asn1.statement.DERIdentityStatement;
 
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERInteger;
 import org.bouncycastle.asn1.DERVisibleString;
 
-public class IdentityStatementStructure {
+public class IdentityStatementStructure extends AbstractStatementStructure {
 
-	private final ASN1Sequence sequence;
-
-	private final ASN1Sequence tbsSequence;
-
-	private final DERBitString signature;
-
-	private final DERInteger version;
-
-	private final DERVisibleString givenName;
-
-	private final DERVisibleString surname;
-
-	private final ASN1Sequence authCertificate;
-
-	private final DERVisibleString user;
-
-	public static IdentityStatementStructure getInstance(Object obj) {
-		if (obj instanceof IdentityStatementStructure) {
-			return (IdentityStatementStructure) obj;
-		}
-		if (obj instanceof ASN1Sequence) {
-			return new IdentityStatementStructure((ASN1Sequence) obj);
-		}
-		throw new IllegalArgumentException("unknown object in factory");
+	public IdentityStatementStructure(byte[] encodedIdentityStatement)
+			throws DecodingException {
+		super(encodedIdentityStatement);
 	}
 
-	public IdentityStatementStructure(ASN1Sequence sequence) {
-		this.sequence = sequence;
-		if (this.sequence.size() != 2) {
-			throw new IllegalArgumentException(
-					"sequence wrong size for an identity statement");
-		}
-		this.tbsSequence = (ASN1Sequence) this.sequence.getObjectAt(0);
-		this.signature = DERBitString.getInstance(this.sequence.getObjectAt(1));
+	private String user;
 
-		if (this.tbsSequence.size() != 5) {
-			throw new IllegalArgumentException(
-					"sequence wrong size of TBS sequence of identity statement");
+	private String givenName;
+
+	private String surname;
+
+	private X509Certificate authCert;
+
+	@Override
+	protected void decode(ASN1Sequence tbsSequence) throws DecodingException {
+		if (tbsSequence.size() != 5) {
+			throw new DecodingException();
 		}
 
-		this.version = DERInteger.getInstance(this.tbsSequence
+		DERInteger version = DERInteger.getInstance(tbsSequence
 				.getObjectAt(DERIdentityStatement.VERSION_IDX));
-		if (getVersion() != DERIdentityStatement.VERSION) {
-			throw new IllegalArgumentException(
-					"wrong identity statement version");
+		if (version.getValue().intValue() != DERIdentityStatement.VERSION) {
+			throw new DecodingException();
 		}
-		this.user = DERVisibleString.getInstance(this.tbsSequence
-				.getObjectAt(DERIdentityStatement.USER_IDX));
-		this.givenName = DERVisibleString.getInstance(this.tbsSequence
-				.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX));
-		this.surname = DERVisibleString.getInstance(this.tbsSequence
-				.getObjectAt(DERIdentityStatement.SURNAME_IDX));
-		this.authCertificate = ASN1Sequence.getInstance(this.tbsSequence
+		this.user = DERVisibleString.getInstance(
+				tbsSequence.getObjectAt(DERIdentityStatement.USER_IDX))
+				.getString();
+		this.givenName = DERVisibleString.getInstance(
+				tbsSequence.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX))
+				.getString();
+		this.surname = DERVisibleString.getInstance(
+				tbsSequence.getObjectAt(DERIdentityStatement.SURNAME_IDX))
+				.getString();
+
+		ASN1Sequence derAuthCert = ASN1Sequence.getInstance(tbsSequence
 				.getObjectAt(DERIdentityStatement.AUTH_CERT_IDX));
-	}
 
-	public byte[] getToBeSignedData() {
-		return this.tbsSequence.getDEREncoded();
-	}
-
-	public byte[] getSignature() {
-		return this.signature.getBytes();
-	}
-
-	public int getVersion() {
-		return this.version.getValue().intValue();
+		this.authCert = decodeCertificate(derAuthCert.getDEREncoded());
 	}
 
 	public String getGivenName() {
-		return this.givenName.getString();
+		return this.givenName;
 	}
 
 	public String getSurname() {
-		return this.surname.getString();
+		return this.surname;
 	}
 
 	public String getUser() {
-		return this.user.getString();
+		return this.user;
 	}
 
-	public X509Certificate getAuthenticationCertificate()
-			throws CertificateException, IOException {
-		CertificateFactory certificateFactory = CertificateFactory
-				.getInstance("X.509");
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(
-				this.authCertificate.getEncoded());
-		X509Certificate certificate = (X509Certificate) certificateFactory
-				.generateCertificate(inputStream);
-		return certificate;
+	@Override
+	public X509Certificate getCertificate() {
+		return this.authCert;
 	}
 }

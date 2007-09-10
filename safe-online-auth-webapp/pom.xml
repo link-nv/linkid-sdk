@@ -40,10 +40,10 @@
 						<dependency>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>
-								safe-online-identity-applet-package
+								safe-online-reg-applet-package
 							</artifactId>
 							<targetFilename>
-								safe-online-identity-applet-package.jar
+								safe-online-reg-applet-package.jar
 							</targetFilename>
 							<targetPath>/</targetPath>
 						</dependency>
@@ -114,7 +114,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-identity-applet-package</artifactId>
+			<artifactId>safe-online-reg-applet-package</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>

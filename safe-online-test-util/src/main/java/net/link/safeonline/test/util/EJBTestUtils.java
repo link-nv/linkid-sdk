@@ -262,7 +262,7 @@ public final class EJBTestUtils {
 		try {
 			init(clazz, object);
 		} catch (Exception e) {
-			throw new RuntimeException("init error");
+			throw new RuntimeException("init error: " + clazz.getName(), e);
 		}
 		return object;
 	}

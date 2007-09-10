@@ -153,9 +153,9 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 			AttributeTypeEntity attributeType) {
 		Query query = this.queryObject.createQueryCategorize(application,
 				attributeType);
-		List results = query.getResultList();
+		List<?> results = query.getResultList();
 		Map<String, Long> result = new HashMap<String, Long>();
-		for (Iterator iter = results.iterator(); iter.hasNext();) {
+		for (Iterator<?> iter = results.iterator(); iter.hasNext();) {
 			Object[] values = (Object[]) iter.next();
 			result.put((String) values[0], (Long) values[1]);
 		}

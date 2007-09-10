@@ -11,7 +11,7 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
 import net.link.safeonline.p11sc.SmartCard;
-import net.link.safeonline.shared.identity.IdentityStatement;
+import net.link.safeonline.shared.statement.IdentityStatement;
 
 /**
  * A factory for identity statements.
@@ -43,8 +43,7 @@ public class IdentityStatementFactory {
 		PrivateKey authPrivateKey = smartCard.getAuthenticationPrivateKey();
 		IdentityStatement identityStatement = new IdentityStatement(authCert,
 				user, givenName, surname, authPrivateKey);
-		byte[] identityStatementData = identityStatement
-				.generateIdentityStatement();
+		byte[] identityStatementData = identityStatement.generateStatement();
 		return identityStatementData;
 	}
 }

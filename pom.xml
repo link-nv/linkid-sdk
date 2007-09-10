@@ -344,6 +344,8 @@
 		<module>safe-online-helpdesk-keystore</module>
 		<module>safe-online-oper-keystore</module>
 		<module>safe-online-owner-keystore</module>
+		<module>safe-online-reg-applet</module>
+		<module>safe-online-reg-applet-package</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -1274,7 +1276,7 @@
 		</maven-dependency-plugin.version>
 		<http.version>20070405</http.version>
 		<maven-antrun-plugin.version>1.1</maven-antrun-plugin.version>
-		<wss4j.version>1.5.2</wss4j.version>
+		<wss4j.version>1.5.3</wss4j.version>
 		<quartz.version>1.5.2</quartz.version>
 		<hsqldb.version>1.8.0.7</hsqldb.version>
 		<dom4j.version>1.6.1</dom4j.version>

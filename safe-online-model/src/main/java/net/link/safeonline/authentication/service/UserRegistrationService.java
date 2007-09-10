@@ -9,7 +9,11 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
  * User registration service interface.
@@ -34,6 +38,22 @@ public interface UserRegistrationService {
 	 */
 	void registerUser(String login, String password, String name)
 			throws ExistingUserException;
+
+	/**
+	 * Registers a new user using the identity statement.
+	 * 
+	 * @param login
+	 * @param identityStatementData
+	 * @throws ExistingUserException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws ArgumentIntegrityException
+	 * @throws PermissionDeniedException
+	 * @throws TrustDomainNotFoundException
+	 */
+	void registerUser(String login, byte[] identityStatementData)
+			throws ExistingUserException, TrustDomainNotFoundException,
+			PermissionDeniedException, ArgumentIntegrityException,
+			AttributeTypeNotFoundException;
 
 	/**
 	 * Checks whether the given login Id is still free to use or not.

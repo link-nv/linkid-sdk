@@ -12,19 +12,20 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
-import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
-import net.link.safeonline.dao.SubscriptionDAO;
-import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.model.CredentialManager;
+import net.link.safeonline.model.UserRegistrationManager;
+import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,10 +49,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	private SubjectDAO subjectDAO;
 
 	@EJB
-	private ApplicationDAO applicationDAO;
-
-	@EJB
-	private SubscriptionDAO subscriptionDAO;
+	private UserRegistrationManager userRegistrationManager;
 
 	@EJB
 	private AttributeDAO attributeDAO;
@@ -59,28 +57,18 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
 
+	@EJB
+	private CredentialManager credentialManager;
+
 	public void registerUser(String login, String password, String name)
 			throws ExistingUserException {
-		LOG.debug("register user: " + login);
-
-		checkExistingUser(login);
-
-		ApplicationEntity safeOnlineUserApplication = getSafeOnlineUserApplication();
-
-		SubjectEntity newSubject = this.subjectDAO.addSubject(login);
-
+		SubjectEntity newSubject = this.userRegistrationManager
+				.registerUser(login);
 		try {
 			setAttributes(newSubject, password, name);
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("attribute type not found");
 		}
-
-		/*
-		 * Make sure the user can at least login into the SafeOnline user web
-		 * application.
-		 */
-		this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION,
-				newSubject, safeOnlineUserApplication);
 	}
 
 	private void setAttributes(SubjectEntity subject, String password,
@@ -96,24 +84,19 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 		}
 	}
 
-	private ApplicationEntity getSafeOnlineUserApplication() {
-		ApplicationEntity safeOnlineUserApplication = this.applicationDAO
-				.findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
-		if (null == safeOnlineUserApplication) {
-			throw new EJBException("SafeOnline user application not found");
-		}
-		return safeOnlineUserApplication;
-	}
-
-	private void checkExistingUser(String login) throws ExistingUserException {
-		SubjectEntity existingSubject = this.subjectDAO.findSubject(login);
-		if (null != existingSubject) {
-			throw new ExistingUserException();
-		}
-	}
-
 	public boolean isLoginFree(String login) {
 		SubjectEntity existingSubject = this.subjectDAO.findSubject(login);
 		return existingSubject == null;
+	}
+
+	public void registerUser(String login, byte[] identityStatementData)
+			throws ExistingUserException, TrustDomainNotFoundException,
+			PermissionDeniedException, ArgumentIntegrityException,
+			AttributeTypeNotFoundException {
+		LOG.debug("register user: " + login);
+		SubjectEntity newSubject = this.userRegistrationManager
+				.registerUser(login);
+		this.credentialManager.mergeIdentityStatement(newSubject,
+				identityStatementData);
 	}
 }

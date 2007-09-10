@@ -19,7 +19,7 @@ import org.bouncycastle.asn1.DERInteger;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERVisibleString;
 
-import net.link.safeonline.shared.asn1.identity.DERIdentityStatement;
+import net.link.safeonline.shared.asn1.statement.DERIdentityStatement;
 import net.link.safeonline.test.util.PkiTestUtils;
 import junit.framework.TestCase;
 

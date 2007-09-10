@@ -18,7 +18,6 @@ import java.security.cert.X509Certificate;
 import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.bean.CredentialServiceBean;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -27,20 +26,18 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.identity.IdentityStatementFactory;
-import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.model.bean.CredentialManagerBean;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.pkix.model.PkiProvider;
 import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
-import net.link.safeonline.shared.identity.IdentityStatement;
+import net.link.safeonline.shared.statement.IdentityStatement;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
-public class CredentialServiceBeanTest extends TestCase {
+public class CredentialManagerBeanTest extends TestCase {
 
-	private CredentialServiceBean testedInstance;
-
-	private SubjectManager mockSubjectManager;
+	private CredentialManagerBean testedInstance;
 
 	private AttributeDAO mockAttributeDAO;
 
@@ -68,10 +65,7 @@ public class CredentialServiceBeanTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		this.testedInstance = new CredentialServiceBean();
-
-		this.mockSubjectManager = createMock(SubjectManager.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockSubjectManager);
+		this.testedInstance = new CredentialManagerBean();
 
 		this.mockAttributeDAO = createMock(AttributeDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockAttributeDAO);
@@ -90,20 +84,16 @@ public class CredentialServiceBeanTest extends TestCase {
 		this.mockAttributeTypeDAO = createMock(AttributeTypeDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockAttributeTypeDAO);
 
-		this.mockObjects = new Object[] { this.mockSubjectManager,
-				this.mockAttributeDAO, this.mockPkiProviderManager,
-				this.mockPkiValidator, this.mockPkiProvider,
-				this.mockSubjectIdentifierDAO, this.mockAttributeTypeDAO };
+		this.mockObjects = new Object[] { this.mockAttributeDAO,
+				this.mockPkiProviderManager, this.mockPkiValidator,
+				this.mockPkiProvider, this.mockSubjectIdentifierDAO,
+				this.mockAttributeTypeDAO };
 
 		EJBTestUtils.init(this.testedInstance);
 
 		// stubs
 		this.testCallerLogin = "test-caller-login-" + getName();
-		expect(this.mockSubjectManager.getCallerLogin()).andStubReturn(
-				this.testCallerLogin);
 		this.testSubject = new SubjectEntity(this.testCallerLogin);
-		expect(this.mockSubjectManager.getCallerSubject()).andStubReturn(
-				this.testSubject);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
@@ -117,12 +107,15 @@ public class CredentialServiceBeanTest extends TestCase {
 		// setup
 		byte[] identityStatement = "foobar-identity-statemennt".getBytes();
 
+		SubjectEntity subject = new SubjectEntity();
+
 		// prepare
 		replay(this.mockObjects);
 
 		// operate
 		try {
-			this.testedInstance.mergeIdentityStatement(identityStatement);
+			this.testedInstance.mergeIdentityStatement(subject,
+					identityStatement);
 			fail();
 		} catch (ArgumentIntegrityException e) {
 			// expected
@@ -172,7 +165,8 @@ public class CredentialServiceBeanTest extends TestCase {
 		expect(
 				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
 						identifier)).andStubReturn(null);
-		this.mockPkiProvider.storeAdditionalAttributes(certificate);
+		this.mockPkiProvider.storeAdditionalAttributes(this.testSubject,
+				certificate);
 
 		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
 		expect(this.mockAttributeTypeDAO.getAttributeType(surnameAttribute))
@@ -195,7 +189,8 @@ public class CredentialServiceBeanTest extends TestCase {
 		replay(this.mockObjects);
 
 		// operate
-		this.testedInstance.mergeIdentityStatement(identityStatement);
+		this.testedInstance.mergeIdentityStatement(this.testSubject,
+				identityStatement);
 
 		// verify
 		verify(this.mockObjects);
@@ -249,7 +244,8 @@ public class CredentialServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			this.testedInstance.mergeIdentityStatement(identityStatement);
+			this.testedInstance.mergeIdentityStatement(this.testSubject,
+					identityStatement);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
@@ -278,7 +274,8 @@ public class CredentialServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			this.testedInstance.mergeIdentityStatement(identityStatement);
+			this.testedInstance.mergeIdentityStatement(this.testSubject,
+					identityStatement);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
@@ -300,8 +297,7 @@ public class CredentialServiceBeanTest extends TestCase {
 
 		IdentityStatement identityStatement = new IdentityStatement(authCert,
 				user, givenName, surname, otherKeyPair.getPrivate());
-		byte[] identityStatementData = identityStatement
-				.generateIdentityStatement();
+		byte[] identityStatementData = identityStatement.generateStatement();
 
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
@@ -316,7 +312,8 @@ public class CredentialServiceBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			this.testedInstance.mergeIdentityStatement(identityStatementData);
+			this.testedInstance.mergeIdentityStatement(this.testSubject,
+					identityStatementData);
 			fail();
 		} catch (ArgumentIntegrityException e) {
 			// expected
@@ -345,7 +342,8 @@ public class CredentialServiceBeanTest extends TestCase {
 
 		// operate
 		try {
-			this.testedInstance.mergeIdentityStatement(identityStatement);
+			this.testedInstance.mergeIdentityStatement(this.testSubject,
+					identityStatement);
 			fail();
 		} catch (ArgumentIntegrityException e) {
 			// expected

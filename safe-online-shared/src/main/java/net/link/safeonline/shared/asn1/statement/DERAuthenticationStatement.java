@@ -5,25 +5,20 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.shared.asn1.authentication;
+package net.link.safeonline.shared.asn1.statement;
 
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 
-import net.link.safeonline.shared.asn1.DERBitString;
 import net.link.safeonline.shared.asn1.DEREncodable;
 import net.link.safeonline.shared.asn1.DEREncodedData;
 import net.link.safeonline.shared.asn1.DERInteger;
 import net.link.safeonline.shared.asn1.DERSequence;
 import net.link.safeonline.shared.asn1.DERVisibleString;
 
-public class DERAuthenticationStatement implements DEREncodable {
+public class DERAuthenticationStatement extends AbstractDERStatement {
 
 	public static final int VERSION = 1;
-
-	public static final int TBS_IDX = 0;
-
-	public static final int SIGNATURE_IDX = 1;
 
 	public static final int TBS_VERSION_IDX = 0;
 
@@ -39,8 +34,6 @@ public class DERAuthenticationStatement implements DEREncodable {
 
 	private final X509Certificate authenticationCertificate;
 
-	private byte[] signature;
-
 	public DERAuthenticationStatement(String sessionId, String applicationId,
 			X509Certificate authenticationCertificate) {
 		this.sessionId = sessionId;
@@ -48,7 +41,7 @@ public class DERAuthenticationStatement implements DEREncodable {
 		this.authenticationCertificate = authenticationCertificate;
 	}
 
-	public byte[] getToBeSigned() {
+	public DEREncodable getToBeSigned() {
 		DERSequence tbsSequence = new DERSequence();
 		DERInteger version = new DERInteger(VERSION);
 		tbsSequence.add(version);
@@ -64,23 +57,6 @@ public class DERAuthenticationStatement implements DEREncodable {
 			throw new RuntimeException("cert encoding error: " + e.getMessage());
 		}
 		tbsSequence.add(encodedCert);
-		return tbsSequence.getEncoded();
-	}
-
-	public void setSignature(byte[] signature) {
-		this.signature = signature;
-	}
-
-	public byte[] getEncoded() {
-		DEREncodedData tbs = new DEREncodedData(getToBeSigned());
-
-		DERSequence sequence = new DERSequence();
-		sequence.add(tbs);
-		if (null == this.signature) {
-			throw new IllegalStateException("set signature value first");
-		}
-		DERBitString signatureBitString = new DERBitString(this.signature);
-		sequence.add(signatureBitString);
-		return sequence.getEncoded();
+		return tbsSequence;
 	}
 }

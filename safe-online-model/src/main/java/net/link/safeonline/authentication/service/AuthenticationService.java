@@ -12,6 +12,8 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.DecodingException;
+import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -78,10 +80,28 @@ public interface AuthenticationService {
 	 * @throws TrustDomainNotFoundException
 	 * @throws SubjectNotFoundException
 	 *             in case the certificate was not linked to any subject.
+	 * @throws DecodingException
 	 */
 	boolean authenticate(String sessionId, byte[] authenticationStatementData)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			SubjectNotFoundException;
+			SubjectNotFoundException, DecodingException;
+
+	/**
+	 * Registers and authenticates a new user via a registration statement.
+	 * 
+	 * @param sessionId
+	 * @param username
+	 * @param registrationStatementData
+	 * @return
+	 * @throws ArgumentIntegrityException
+	 * @throws TrustDomainNotFoundException
+	 * @throws DecodingException
+	 * @throws ExistingUserException
+	 */
+	boolean registerAndAuthenticate(String sessionId, String username,
+			byte[] registrationStatementData)
+			throws ArgumentIntegrityException, TrustDomainNotFoundException,
+			DecodingException, ExistingUserException;
 
 	/**
 	 * Aborts the current authentication procedure.

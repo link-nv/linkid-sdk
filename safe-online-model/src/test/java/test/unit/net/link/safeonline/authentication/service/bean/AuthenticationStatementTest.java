@@ -25,11 +25,11 @@ public class AuthenticationStatementTest extends TestCase {
 		String sessionId = UUID.randomUUID().toString();
 		String applicationId = "test-application-id";
 
-		net.link.safeonline.shared.authentication.AuthenticationStatement testAuthenticationStatement = new net.link.safeonline.shared.authentication.AuthenticationStatement(
+		net.link.safeonline.shared.statement.AuthenticationStatement testAuthenticationStatement = new net.link.safeonline.shared.statement.AuthenticationStatement(
 				sessionId, applicationId, certificate, keyPair.getPrivate());
 
 		byte[] encodedAuthenticationStatement = testAuthenticationStatement
-				.generateAuthenticationStatement();
+				.generateStatement();
 
 		// operate
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(

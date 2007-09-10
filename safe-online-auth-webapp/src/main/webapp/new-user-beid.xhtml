@@ -19,14 +19,16 @@
 
 		<h3>#{msgs.login}: #{accountRegistration.login}</h3>
 
-		<applet name="IdentityApplet"
-			code="net.link.safeonline.identity.IdentityApplet.class"
-			archive="safe-online-identity-applet-package.jar" width="400"
-			height="200">
+		<applet name="RegistrationApplet"
+			code="net.link.safeonline.reg.RegistrationApplet.class"
+			archive="safe-online-reg-applet-package.jar" width="400" height="200">
 			<param name="SmartCardConfig" value="beid" />
-			<param name="ServletPath" value="identity" />
+			<param name="ServletPath" value="registration" />
 			<param name="TargetPath" value="login" />
-			<param name="User" value="#{username}" />
+			<param name="User" value="#{requestedUsername}" />
+			<param name="SessionId"
+				value="#{facesContext.externalContext.request.session.id}" />
+			<param name="ApplicationId" value="${applicationId}" />
 			<param name="Language" value="#{localeSelector.language}" />
 		</applet>
 

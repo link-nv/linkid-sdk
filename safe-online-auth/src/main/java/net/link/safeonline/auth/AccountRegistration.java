@@ -12,6 +12,8 @@ import javax.ejb.Local;
 @Local
 public interface AccountRegistration {
 
+	static final String REQUESTED_USERNAME_ATTRIBUTE = "requestedUsername";
+
 	/*
 	 * Lifecycle.
 	 */
