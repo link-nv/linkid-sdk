@@ -20,9 +20,7 @@
 
 		<h:form>
 			<h:selectOneRadio value="#{device.selection}" layout="pageDirection">
-				<f:selectItem itemLabel="Username password token"
-					itemValue="password" />
-				<f:selectItem itemLabel="Belgium eID" itemValue="beid" />
+				<f:selectItems value="#{applicationDevices}" />
 			</h:selectOneRadio>
 
 			<h:messages styleClass="error" />

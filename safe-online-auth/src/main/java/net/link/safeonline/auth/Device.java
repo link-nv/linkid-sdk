@@ -7,7 +7,10 @@
 
 package net.link.safeonline.auth;
 
+import java.util.List;
+
 import javax.ejb.Local;
+import javax.faces.model.SelectItem;
 
 @Local
 public interface Device {
@@ -30,4 +33,9 @@ public interface Device {
 	 * Actions.
 	 */
 	String next();
+
+	/*
+	 * Factories.
+	 */
+	List<SelectItem> applicationDevicesFactory();
 }
