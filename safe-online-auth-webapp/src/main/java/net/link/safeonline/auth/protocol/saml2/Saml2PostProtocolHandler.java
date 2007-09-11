@@ -10,7 +10,10 @@ package net.link.safeonline.auth.protocol.saml2;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,8 +43,10 @@ import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
 import org.opensaml.saml2.binding.encoding.HTTPPostEncoder;
 import org.opensaml.saml2.binding.security.SAML2ProtocolMessageRule;
+import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
@@ -204,7 +209,24 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		HttpSession session = authnRequest.getSession();
 		session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
 
-		return new ProtocolContext(issuerName, assertionConsumerService);
+		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
+				.getRequestedAuthnContext();
+		Set<String> devices;
+		if (null != requestedAuthnContext) {
+			List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
+					.getAuthnContextClassRefs();
+			devices = new HashSet<String>();
+			for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs) {
+				String device = authnContextClassRef.getAuthnContextClassRef();
+				LOG.debug("device: " + device);
+				devices.add(device);
+			}
+		} else {
+			devices = null;
+		}
+
+		return new ProtocolContext(issuerName, assertionConsumerService,
+				devices);
 	}
 
 	@SuppressWarnings("unchecked")

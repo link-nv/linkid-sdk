@@ -8,6 +8,7 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -130,10 +131,17 @@ public class EntryServlet extends HttpServlet {
 			return;
 		}
 
+		/*
+		 * We save the result of the protocol handler into the HTTP session.
+		 */
 		HttpSession session = request.getSession();
 		session.setAttribute("applicationId", protocolContext
 				.getApplicationId());
 		session.setAttribute("target", protocolContext.getTarget());
+		Set<String> requiredDevices = protocolContext.getRequiredDevices();
+		if (null != requiredDevices) {
+			session.setAttribute("requiredDevices", requiredDevices);
+		}
 
 		/*
 		 * create new helpdesk volatile context

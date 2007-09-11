@@ -18,7 +18,9 @@ import static org.junit.Assert.assertTrue;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.protocol.SimpleProtocolHandler;
@@ -249,6 +251,70 @@ public class EntryServletTest {
 		String target = (String) this.entryServletTestManager
 				.getSessionAttribute("target");
 		assertEquals(assertionConsumerService, target);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void saml2RequestedAuthnContextSetsRequiredDevices()
+			throws Exception {
+		// setup
+		HttpClient httpClient = new HttpClient();
+		PostMethod postMethod = new PostMethod(this.entryServletTestManager
+				.getServletLocation());
+
+		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
+		X509Certificate applicationCert = PkiTestUtils
+				.generateSelfSignedCertificate(applicationKeyPair,
+						"CN=TestApplication");
+		String applicationName = "test-application-id";
+		String assertionConsumerService = "http://test.assertion.consumer.service";
+		Set<String> devices = new HashSet<String>();
+		devices.add("test-device");
+		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
+				applicationName, applicationKeyPair, assertionConsumerService,
+				null, devices);
+		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
+				.getBytes());
+
+		NameValuePair[] data = { new NameValuePair("SAMLRequest",
+				encodedSamlAuthnRequest) };
+		postMethod.setRequestBody(data);
+
+		// expectations
+		expect(
+				this.mockApplicationAuthenticationService
+						.getCertificate(applicationName)).andReturn(
+				applicationCert);
+		expect(
+				this.mockPkiValidator
+						.validateCertificate(
+								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+								applicationCert)).andReturn(true);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		int statusCode = httpClient.executeMethod(postMethod);
+
+		// verify
+		verify(this.mockObjects);
+		LOG.debug("status code: " + statusCode);
+		LOG.debug("result body: " + postMethod.getResponseBodyAsString());
+		assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
+		String location = postMethod.getResponseHeader("Location").getValue();
+		LOG.debug("location: " + location);
+		assertTrue(location.endsWith(this.firstTimeUrl));
+		String resultApplicationId = (String) this.entryServletTestManager
+				.getSessionAttribute("applicationId");
+		assertEquals(applicationName, resultApplicationId);
+		String target = (String) this.entryServletTestManager
+				.getSessionAttribute("target");
+		assertEquals(assertionConsumerService, target);
+		Set<String> resultRequiredDevices = (Set<String>) this.entryServletTestManager
+				.getSessionAttribute("requiredDevices");
+		assertNotNull(resultRequiredDevices);
+		assertTrue(resultRequiredDevices.contains("test-device"));
 	}
 
 	@Test

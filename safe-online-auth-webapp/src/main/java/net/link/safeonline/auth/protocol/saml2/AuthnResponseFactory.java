@@ -16,7 +16,9 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
+import net.link.safeonline.sdk.DomUtils;
 import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.AuthenticatorBaseType;
 import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.AuthenticatorTransportProtocolType;
 import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.AuthnContextDeclarationBaseType;
@@ -24,6 +26,8 @@ import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.AuthnMetho
 import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.ExtensionOnlyType;
 import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.ObjectFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.opensaml.Configuration;
 import org.opensaml.DefaultBootstrap;
@@ -52,6 +56,9 @@ import org.w3c.dom.Document;
  * 
  */
 public class AuthnResponseFactory {
+
+	private static final Log LOG = LogFactory
+			.getLog(AuthnResponseFactory.class);
 
 	static {
 		/*
@@ -215,9 +222,14 @@ public class AuthnResponseFactory {
 							objectFactory
 									.createAuthenticationContextDeclaration(authnContextDeclaration),
 							document);
+			try {
+				LOG.debug("password declaration: "
+						+ DomUtils.domToString(document));
+			} catch (TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return document;
-			// String result = DomUtils.domToString(document);
-			// return result;
 		} catch (JAXBException e) {
 			throw new RuntimeException("JAXB error: " + e.getMessage(), e);
 		}

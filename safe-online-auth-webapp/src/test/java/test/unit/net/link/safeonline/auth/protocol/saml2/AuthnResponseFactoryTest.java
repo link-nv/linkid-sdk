@@ -10,12 +10,16 @@ package test.unit.net.link.safeonline.auth.protocol.saml2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import javax.xml.XMLConstants;
 
 import net.link.safeonline.auth.protocol.saml2.AuthnResponseFactory;
 import net.link.safeonline.auth.protocol.saml2.SafeOnlineAuthnContextClass;
 import net.link.safeonline.test.util.DomTestUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
@@ -61,7 +65,11 @@ public class AuthnResponseFactoryTest {
 			throw new RuntimeException("opensaml2 marshalling error: "
 					+ e.getMessage(), e);
 		}
-		LOG.debug("response: " + DomTestUtils.domToString(responseElement));
+		String responseStr = DomTestUtils.domToString(responseElement);
+		LOG.debug("response: " + responseStr);
+		File tmpFile = File.createTempFile("saml-response-", ".xml");
+		IOUtils.write(responseStr, new FileOutputStream(tmpFile));
+		LOG.debug("tmp file: " + tmpFile.getAbsolutePath());
 
 		Node inResponseToNode = XPathAPI.selectSingleNode(responseElement,
 				"/samlp:Response/@InResponseTo");
