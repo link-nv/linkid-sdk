@@ -12,12 +12,18 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
+import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 
 @Local
 public interface HelpdeskContextDAO {
 
-	HelpdeskContextEntity createHelpdeskContext();
+	HelpdeskContextEntity createHelpdeskContext(String location);
 
 	List<HelpdeskContextEntity> listContexts();
+
+	// cleanup contexts without any events related to it
+	void cleanup();
+
+	void removeContext(Long logId) throws HelpdeskContextNotFoundException;
 
 }

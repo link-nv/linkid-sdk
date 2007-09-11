@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.entity.helpdesk.LogLevelType;
 import net.link.safeonline.helpdesk.dao.HelpdeskEventDAO;
@@ -45,7 +46,7 @@ public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
 			this.entityManager.persist(event);
 	}
 
-	public List<HelpdeskEventEntity> listLogs(Long contextId) {
+	public List<HelpdeskEventEntity> listEvents(Long contextId) {
 		return this.queryObject.listLogs(contextId);
 	}
 
@@ -55,5 +56,17 @@ public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
 		Date ageLimit = new Date(((System.currentTimeMillis() / 60) / 1000)
 				- ageInMinutes);
 		this.queryObject.deleteEvents(ageLimit, logLevel);
+	}
+
+	public void removeEvents(Long logId) {
+		this.queryObject.deleteEvents(logId);
+	}
+
+	public List<HelpdeskContextEntity> listUserContexts(String user) {
+		return this.queryObject.listUserContexts(user);
+	}
+
+	public List<String> listUsers() {
+		return this.queryObject.listUsers();
 	}
 }

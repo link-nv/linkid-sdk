@@ -32,10 +32,11 @@ public class HelpdeskManagerBean implements HelpdeskManager {
 	@EJB
 	private HelpdeskEventDAO helpdeskEventDAO;
 
-	public Long persist(List<HelpdeskEventEntity> helpdeskEventList) {
+	public Long persist(String location,
+			List<HelpdeskEventEntity> helpdeskEventList) {
 
 		HelpdeskContextEntity context = helpdeskContextDAO
-				.createHelpdeskContext();
+				.createHelpdeskContext(location);
 
 		LOG.debug("persist helpdeskcontext ( id=" + context.getId() + " )");
 

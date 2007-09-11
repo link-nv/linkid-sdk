@@ -48,7 +48,7 @@ public class HelpdeskContextDAOBeanTest extends TestCase {
 
 	public void testContext() {
 		HelpdeskContextEntity context = this.testedInstance
-				.createHelpdeskContext();
+				.createHelpdeskContext("test-location");
 		List<HelpdeskContextEntity> contexts = this.testedInstance
 				.listContexts();
 		assertEquals(context.getId(), contexts.get(0).getId());

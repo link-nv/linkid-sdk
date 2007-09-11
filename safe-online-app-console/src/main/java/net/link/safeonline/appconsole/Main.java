@@ -9,6 +9,8 @@ package net.link.safeonline.appconsole;
 
 import java.awt.EventQueue;
 
+import javax.swing.UIManager;
+
 import net.java.javafx.FXShell;
 
 import org.apache.commons.logging.Log;
@@ -31,6 +33,10 @@ public class Main {
 
 	public static void startSwingConsole() {
 		LOG.info("Starting Swing SafeOnline Application Console...");
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+		}
 		Runnable runner = new Runnable() {
 			public void run() {
 				new ApplicationConsole();

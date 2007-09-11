@@ -15,7 +15,8 @@ import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 
 @Local
 public interface HelpdeskManager {
-	
-	public Long persist(List<HelpdeskEventEntity> helpdeskEventList);
+
+	public Long persist(String location,
+			List<HelpdeskEventEntity> helpdeskEventList);
 
 }

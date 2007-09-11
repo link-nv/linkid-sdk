@@ -11,6 +11,15 @@
 		reference id = <h:outputLabel value="#{helpdesk.id}" /> for further
 		reference.</p>
 
+		<p>For immediate assistance, contact :</p>
+
+		<h:panelGrid columns="2">
+			<h:outputText value="#{msgs.phone}" />
+			<h:outputText value="#{helpdesk.phone}" />
+			<h:outputText value="#{msgs.email}" />
+			<h:outputText value="#{helpdesk.email}" />
+		</h:panelGrid>
+
 		<p><a
 			href="#{facesContext.externalContext.requestContextPath}/main.seam">Click
 		here to visit the main page.</a></p>

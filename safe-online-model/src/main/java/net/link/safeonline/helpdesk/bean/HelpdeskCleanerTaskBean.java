@@ -38,10 +38,10 @@ public class HelpdeskCleanerTaskBean implements Task {
 	@EJB
 	private HelpdeskContextDAO helpdeskContextDAO;
 
-	@Configurable(name = "Info Event Age (m)", group = "Helpdesk event cleaner")
+	@Configurable(name = "Info Event Age (min)", group = "Helpdesk event cleaner")
 	private Integer configInfoAgeInMinutes = 24 * 60;
 
-	@Configurable(name = "Error Event Age (m)", group = "Helpdesk event cleaner")
+	@Configurable(name = "Error Event Age (min)", group = "Helpdesk event cleaner")
 	private Integer configErrorAgeInMinutes = 5 * 24 * 60;
 
 	public HelpdeskCleanerTaskBean() {
@@ -62,7 +62,7 @@ public class HelpdeskCleanerTaskBean implements Task {
 				.clearEvents(errorAgeInMinutes, LogLevelType.ERROR);
 
 		// cleanup contexts with no events attached to it
-		// this.helpdeskContextDAO.cleanup();
+		this.helpdeskContextDAO.cleanup();
 	}
 
 }

@@ -9,6 +9,7 @@ import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.helpdesk.dao.HelpdeskContextDAO;
 import net.link.safeonline.helpdesk.dao.HelpdeskEventDAO;
+import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 import net.link.safeonline.model.HelpdeskContexts;
 
 @Stateless
@@ -24,8 +25,21 @@ public class HelpdeskContextsBean implements HelpdeskContexts {
 		return this.helpdeskContextDAO.listContexts();
 	}
 
-	public List<HelpdeskEventEntity> listLogs(Long contextId) {
-		return this.helpdeskEventDAO.listLogs(contextId);
+	public List<HelpdeskEventEntity> listEvents(Long contextId) {
+		return this.helpdeskEventDAO.listEvents(contextId);
+	}
+
+	public void removeLog(Long logId) throws HelpdeskContextNotFoundException {
+		this.helpdeskEventDAO.removeEvents(logId);
+		this.helpdeskContextDAO.removeContext(logId);
+	}
+
+	public List<HelpdeskContextEntity> listUserContexts(String user) {
+		return this.helpdeskEventDAO.listUserContexts(user);
+	}
+
+	public List<String> listUsers() {
+		return this.helpdeskEventDAO.listUsers();
 	}
 
 }

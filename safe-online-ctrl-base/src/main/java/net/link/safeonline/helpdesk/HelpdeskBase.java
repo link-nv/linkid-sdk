@@ -7,37 +7,21 @@
 
 package net.link.safeonline.helpdesk;
 
-import java.util.List;
-
-import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
-import net.link.safeonline.entity.helpdesk.LogLevelType;
-import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
-
 public interface HelpdeskBase {
 
-	String log();
+	/*
+	 * Getters for helpdesk information
+	 */
+	Long getId();
+
+	String getPhone();
+
+	String getEmail();
 
 	/*
-	 * Create a new Helpdesk Context on the HttpSession
+	 * Lifecycle callbacks
 	 */
-	void clear();
-
-	/*
-	 * Get current Helpdesk Context from the HttpSession
-	 */
-	List<HelpdeskEventEntity> getCurrent()
-			throws HelpdeskContextNotFoundException;
-
-	/*
-	 * Add new helpdesk event to the helpdesk context
-	 */
-	void add(String msg, LogLevelType logLevel)
-			throws HelpdeskContextNotFoundException;
-
-	/*
-	 * Persist the volatile helpdesk context, return the id
-	 */
-	public Long persistContext() throws HelpdeskContextNotFoundException;
+	void init();
 
 	void destroyCallback();
 }

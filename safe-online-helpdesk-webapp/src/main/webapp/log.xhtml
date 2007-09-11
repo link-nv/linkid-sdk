@@ -16,7 +16,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>Helpdesk</h2>
+		<h2>Helpdesk logs</h2>
 
 		<h:form>
 			<t:dataTable id="helpdesk-context-data" var="item"
@@ -26,7 +26,22 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.helpdeskContext}</f:facet>
-					<h:commandLink value="#{item.id}" action="#{helpdeskLog.view}" />
+					<h:outputLabel value="#{item.id}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.location}</f:facet>
+					<h:outputLabel value="#{item.location}" />
+				</h:column>
+
+				<h:column>
+					<h:commandLink value="#{msgs.viewaction}"
+						action="#{helpdeskLog.view}" />
+				</h:column>
+
+				<h:column>
+					<h:commandLink value="#{msgs.removeaction}"
+						action="#{helpdeskLog.removeLog}" />
 				</h:column>
 			</t:dataTable>
 

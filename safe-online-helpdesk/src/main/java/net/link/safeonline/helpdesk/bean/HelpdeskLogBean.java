@@ -18,6 +18,7 @@ import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.helpdesk.HelpdeskConstants;
 import net.link.safeonline.helpdesk.HelpdeskLog;
+import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 import net.link.safeonline.helpdesk.service.HelpdeskService;
 
 import org.apache.commons.logging.Log;
@@ -43,13 +44,24 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
 	private static final Log LOG = LogFactory.getLog(HelpdeskLogBean.class);
 
-	@EJB
-	private HelpdeskService helpdeskService;
-
 	private final static String HELPDESK_CONTEXT_LIST_NAME = "helpdeskContextList";
 
 	private final static String HELPDESK_LOG_LIST_NAME = "helpdeskLogList";
 
+	private final static String HELPDESK_USER_LIST_NAME = "helpdeskUserList";
+
+	private final static String HELPDESK_USER_CONTEXT_LIST_NAME = "helpdeskUserContextList";
+
+	@EJB
+	private HelpdeskService helpdeskService;
+
+	@In(create = true)
+	FacesMessages facesMessages;
+
+	/*
+	 * Seam Data models
+	 */
+	@SuppressWarnings("unused")
 	@DataModel(HELPDESK_CONTEXT_LIST_NAME)
 	private List<HelpdeskContextEntity> helpdeskContextList;
 
@@ -58,17 +70,31 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	@In(required = false)
 	private HelpdeskContextEntity selectedContext;
 
+	@SuppressWarnings("unused")
 	@DataModel(HELPDESK_LOG_LIST_NAME)
 	private List<HelpdeskEventEntity> helpdeskLogList;
 
-	@DataModelSelection(HELPDESK_LOG_LIST_NAME)
-	@Out(value = "selectedLog", required = false, scope = ScopeType.SESSION)
+	@SuppressWarnings("unused")
+	@DataModel(HELPDESK_USER_LIST_NAME)
+	private List<String> helpdeskUserList;
+
+	@DataModelSelection(HELPDESK_USER_LIST_NAME)
+	@Out(value = "selectedUser", required = false, scope = ScopeType.SESSION)
 	@In(required = false)
-	private HelpdeskEventEntity selectedLog;
+	private String selectedUser;
 
-	@In(create = true)
-	FacesMessages facesMessages;
+	@SuppressWarnings("unused")
+	@DataModel(HELPDESK_USER_CONTEXT_LIST_NAME)
+	private List<HelpdeskContextEntity> helpdeskUserContextList;
 
+	@DataModelSelection(HELPDESK_USER_CONTEXT_LIST_NAME)
+	@Out(value = "selectedUserContext", required = false, scope = ScopeType.SESSION)
+	@In(required = false)
+	private HelpdeskContextEntity selectedUserContext;
+
+	/*
+	 * Seam Factory methods
+	 */
 	@Factory(HELPDESK_CONTEXT_LIST_NAME)
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public void helpdeskContextListFactory() {
@@ -79,21 +105,73 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	@Factory(HELPDESK_LOG_LIST_NAME)
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public void helpdeskLogListFactory() {
-		LOG.debug("helpdesk log list factory ( id=" + selectedContext.getId()
-				+ " )");
-		this.helpdeskLogList = this.helpdeskService.listLogs(selectedContext
-				.getId());
+		Long id;
+		if (null == this.selectedContext)
+			id = this.selectedUserContext.getId();
+		else
+			id = this.selectedContext.getId();
+		LOG.debug("helpdesk log list factory ( id=" + " )");
+		this.helpdeskLogList = this.helpdeskService.listEvents(id);
+	}
+
+	@Factory(HELPDESK_USER_LIST_NAME)
+	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
+	public void helpdeskUserListFactory() {
+		LOG.debug("helpdesk user list factory");
+		this.helpdeskUserList = this.helpdeskService.listUsers();
+	}
+
+	@Factory(HELPDESK_USER_CONTEXT_LIST_NAME)
+	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
+	public void helpdeskUserContextListFactory() {
+		LOG.debug("helpdesk user context list factory (" + selectedUser + ")");
+		this.helpdeskUserContextList = this.helpdeskService
+				.listUserContexts(selectedUser);
+	}
+
+	/*
+	 * Actions
+	 */
+	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
+	public String view() {
+		if (null == this.selectedContext)
+			LOG.debug("view log: " + this.selectedUserContext.getId());
+		else
+			LOG.debug("view log: " + this.selectedContext.getId());
+		return "view";
 	}
 
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
-	public String view() {
-		LOG.debug("view log: " + this.selectedContext.getId());
-		return "view";
+	public String removeLog() {
+		Long id;
+		if (null == this.selectedContext)
+			id = this.selectedUserContext.getId();
+		else
+			id = this.selectedContext.getId();
+		LOG.debug("remove log: " + id);
+		try {
+			this.helpdeskService.removeLog(id);
+		} catch (HelpdeskContextNotFoundException e) {
+			String msg = "helpdesk log not found";
+			LOG.debug(msg);
+			this.facesMessages.add(msg);
+			return null;
+		}
+		helpdeskContextListFactory();
+		return "success";
+	}
+
+	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
+	public String viewUser() {
+		String user = this.selectedUser;
+		LOG.debug("view user \"" + user + "\"'s logs");
+		return "viewUser";
 	}
 
 	@Remove
 	@Destroy
 	public void destroyCallback() {
 		this.selectedContext = null;
+		this.selectedUserContext = null;
 	}
 }

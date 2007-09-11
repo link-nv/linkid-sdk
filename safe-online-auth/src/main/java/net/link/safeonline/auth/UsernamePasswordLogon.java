@@ -31,5 +31,7 @@ public interface UsernamePasswordLogon {
 	/*
 	 * Lifecycle.
 	 */
+	void init();
+
 	void destroyCallback();
 }

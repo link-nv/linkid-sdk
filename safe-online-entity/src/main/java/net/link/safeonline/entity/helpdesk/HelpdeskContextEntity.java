@@ -24,7 +24,7 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 
 @Entity
 @Table(name = "helpdesk_context")
-@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM HelpdeskContextEntity d") })
+@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "SELECT context FROM HelpdeskContextEntity as context") })
 public class HelpdeskContextEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -33,7 +33,13 @@ public class HelpdeskContextEntity implements Serializable {
 
 	private Long id;
 
+	private String location;
+
 	public HelpdeskContextEntity() {
+	}
+
+	public HelpdeskContextEntity(String location) {
+		this.location = location;
 	}
 
 	// used by unit tests
@@ -49,6 +55,14 @@ public class HelpdeskContextEntity implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getLocation() {
+		return this.location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 	public interface QueryInterface {

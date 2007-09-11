@@ -7,8 +7,11 @@
 
 package net.link.safeonline.entity.helpdesk;
 
+import static net.link.safeonline.entity.helpdesk.HelpdeskEventEntity.QUERY_DELETE_WHERE_CONTEXTID;
+import static net.link.safeonline.entity.helpdesk.HelpdeskEventEntity.QUERY_DELETE_WHERE_OLDER;
+import static net.link.safeonline.entity.helpdesk.HelpdeskEventEntity.QUERY_LIST_USERS;
+import static net.link.safeonline.entity.helpdesk.HelpdeskEventEntity.QUERY_LIST_USER_CONTEXTS;
 import static net.link.safeonline.entity.helpdesk.HelpdeskEventEntity.QUERY_WHERE_CONTEXTID;
-import static net.link.safeonline.entity.helpdesk.HelpdeskEventEntity.QUERY_DELETE_EVENT_WHERE_OLDER;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -34,19 +37,33 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 @Entity
 @Table(name = "helpdesk_event")
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT helpdeskEventEntity "
-				+ "FROM HelpdeskEventEntity AS helpdeskEventEntity "
-				+ "WHERE helpdeskEventEntity.helpdeskContext.id = :contextId"),
-		@NamedQuery(name = QUERY_DELETE_EVENT_WHERE_OLDER, query = "DELETE "
-				+ "FROM HelpdeskEventEntity AS helpdeskEvent "
-				+ "WHERE helpdeskEvent.time < :ageLimit AND helpdeskEvent.logLevel = :logLevel") })
+		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT event "
+				+ "FROM HelpdeskEventEntity AS event "
+				+ "WHERE event.helpdeskContext.id = :contextId"),
+		@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
+				+ "FROM HelpdeskEventEntity AS event "
+				+ "WHERE event.helpdeskContext.id = :contextId"),
+		@NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE "
+				+ "FROM HelpdeskEventEntity AS event "
+				+ "WHERE event.time < :ageLimit AND event.logLevel = :logLevel"),
+		@NamedQuery(name = QUERY_LIST_USER_CONTEXTS, query = "SELECT DISTINCT event.helpdeskContext "
+				+ "FROM HelpdeskEventEntity AS event "
+				+ "WHERE event.principal = :principal"),
+		@NamedQuery(name = QUERY_LIST_USERS, query = "SELECT DISTINCT event.principal "
+				+ "FROM HelpdeskEventEntity AS event") })
 public class HelpdeskEventEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_WHERE_CONTEXTID = "hd.event.logid";
 
-	public static final String QUERY_DELETE_EVENT_WHERE_OLDER = "hd.event.old";
+	public static final String QUERY_LIST_USER_CONTEXTS = "hd.event.usercontexts";
+
+	public static final String QUERY_LIST_USERS = "hd.event.users";
+
+	public static final String QUERY_DELETE_WHERE_CONTEXTID = "hd.event.del.logid";
+
+	public static final String QUERY_DELETE_WHERE_OLDER = "hd.event.old";
 
 	private Long id;
 
@@ -95,7 +112,7 @@ public class HelpdeskEventEntity implements Serializable {
 		this.helpdeskContext = helpdeskContext;
 	}
 
-	@ManyToOne()
+	@ManyToOne
 	public HelpdeskContextEntity getHelpdeskContext() {
 		return this.helpdeskContext;
 	}
@@ -139,10 +156,21 @@ public class HelpdeskEventEntity implements Serializable {
 		List<HelpdeskEventEntity> listLogs(@QueryParam("contextId")
 		Long contextId);
 
-		@UpdateMethod(QUERY_DELETE_EVENT_WHERE_OLDER)
+		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
+		void deleteEvents(@QueryParam("contextId")
+		Long contextId);
+
+		@UpdateMethod(QUERY_DELETE_WHERE_OLDER)
 		void deleteEvents(@QueryParam("ageLimit")
-		Date ageLimit, @QueryParam("level")
+		Date ageLimit, @QueryParam("logLevel")
 		LogLevelType logLevel);
+
+		@QueryMethod(QUERY_LIST_USER_CONTEXTS)
+		List<HelpdeskContextEntity> listUserContexts(@QueryParam("principal")
+		String user);
+
+		@QueryMethod(QUERY_LIST_USERS)
+		List<String> listUsers();
 	}
 
 }

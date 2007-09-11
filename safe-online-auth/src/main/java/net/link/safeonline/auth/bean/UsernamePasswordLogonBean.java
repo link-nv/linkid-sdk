@@ -7,6 +7,7 @@
 
 package net.link.safeonline.auth.bean;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
@@ -16,6 +17,8 @@ import net.link.safeonline.auth.UsernamePasswordLogon;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.entity.helpdesk.LogLevelType;
+import net.link.safeonline.helpdesk.HelpdeskLogger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,8 +63,15 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 		return this.username;
 	}
 
+	@PostConstruct
+	public void init() {
+		LOG.debug("UserNamePasswordLogonBean.init => HelpdeskLogger.clear()");
+		HelpdeskLogger.clear();
+	}
+
 	public String login() {
 		LOG.debug("login: " + this.username);
+		HelpdeskLogger.add("login: " + this.username, LogLevelType.INFO);
 		super.clearUsername();
 
 		try {
@@ -75,11 +85,15 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 				 */
 				this.facesMessages.addFromResourceBundle(
 						FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+				HelpdeskLogger.add("login failed: " + this.username,
+						LogLevelType.ERROR);
 				return null;
 			}
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addToControlFromResourceBundle("username",
 					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");
+			HelpdeskLogger.add("login: subject not found for " + this.username,
+					LogLevelType.ERROR);
 			return null;
 		} catch (DeviceNotFoundException e) {
 			this.facesMessages.add("password device not configured");
@@ -87,6 +101,10 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 		}
 
 		super.login(this.username);
+
+		LOG
+				.debug("UserNamePasswordLogonBean.login success => HelpdeskLogger.clear()");
+		HelpdeskLogger.clear();
 		return null;
 	}
 

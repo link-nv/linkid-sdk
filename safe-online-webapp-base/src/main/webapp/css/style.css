@@ -1,5 +1,4 @@
 /* @override http://localhost:8080/safe-online/css/style.css */
-
 h1 {
 	font-size: 24px;
 	color: #90e027;
@@ -167,7 +166,7 @@ a:visited {
 }
 
 .subcolumn1-2 a {
-	color:  #90e027;
+	color: #90e027;
 }
 
 .subcolumn1-2 a:hover {
@@ -180,7 +179,7 @@ a:visited {
 }
 
 .subcolumn2-2 a {
-	color:  #90e027;
+	color: #90e027;
 }
 
 .subcolumn2-2 a:hover {
@@ -188,18 +187,18 @@ a:visited {
 }
 
 .listingTable {
-	background-color:  #FFFFFF;
-	color:  #000000;
+	background-color: #FFFFFF;
+	color: #000000;
 	font-size: 12px;
 	border: 1px dotted #90e027;
 }
 
 .ListingTable a {
-	color: #000000;	
+	color: #000000;
 }
 
 .ListingTable a:hover {
-	color: #90e027;	
+	color: #90e027;
 }
 
 .ListingTable_Row1:hover {
@@ -222,10 +221,15 @@ a:visited {
 }
 
 .configTable {
-	width:  100%;
+	width: 100%;
 	border: 1px dotted #90e027;
 }
 
 .configColumn {
 	width: 50%;
+}
+
+.help {
+	font-size: 9px;
+	color: #FF0000;
 }

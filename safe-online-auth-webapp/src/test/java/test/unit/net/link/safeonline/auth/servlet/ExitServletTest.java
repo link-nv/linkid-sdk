@@ -113,8 +113,8 @@ public class ExitServletTest {
 		this.mockAuthenticationService = createMock(AuthenticationService.class);
 		HelpdeskManager mockHelpdeskManager = createMock(HelpdeskManager.class);
 		List<HelpdeskEventEntity> helpdeskContext = new Vector<HelpdeskEventEntity>();
-		expect(mockHelpdeskManager.persist(helpdeskContext)).andStubReturn(
-				new Long(1));
+		expect(mockHelpdeskManager.persist("ExitServlet", helpdeskContext))
+				.andStubReturn(new Long(1));
 		this.mockObjects = new Object[] { mockSamlAuthorityService,
 				this.mockAuthenticationService, mockHelpdeskManager };
 		this.jndiTestUtils.setUp();

@@ -40,5 +40,20 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<navigation-rule>
+		<from-view-id>/user.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>viewUser</from-outcome>
+			<to-view-id>/user-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/user-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>view</from-outcome>
+			<to-view-id>/log-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 
 </faces-config>

@@ -16,35 +16,37 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>Helpdesk context : #{selectedContext.id}</h2>
+		<h2>Helpdesk : #{selectedUser}'s logs</h2>
 
 		<h:form>
-			<t:dataTable id="helpdesk-log-data" var="item"
-				value="#{helpdeskLogList}" rows="10" preserveDataModel="false"
-				styleClass="listingTable"
+			<t:dataTable id="helpdesk-user-log-data" var="item"
+				value="#{helpdeskUserContextList}" rows="10"
+				preserveDataModel="false" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">#{msgs.level}</f:facet>
-					<h:outputText value="#{item.logLevel}" />
+					<f:facet name="header">#{msgs.helpdeskContext}</f:facet>
+					<h:outputLabel value="#{item.id}" />
 				</h:column>
 
 				<h:column>
-					<f:facet name="header">#{msgs.time}</f:facet>
-					#{item.time}
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.user}</f:facet>
-					#{item.principal}
+					<f:facet name="header">#{msgs.location}</f:facet>
+					<h:outputLabel value="#{item.location}" />
 				</h:column>
 
 				<h:column>
-					<f:facet name="header">#{msgs.message}</f:facet>
-					#{item.message}
+					<h:commandLink value="#{msgs.viewaction}"
+						action="#{helpdeskLog.view}" />
 				</h:column>
+
+				<h:column>
+					<h:commandLink value="#{msgs.removeaction}"
+						action="#{helpdeskLog.removeLog}" />
+				</h:column>
+
 			</t:dataTable>
 
-			<t:dataScroller for="helpdesk-log-data" fastStep="10"
+			<t:dataScroller for="helpdesk-user-log-data" fastStep="10"
 				pageCountVar="pageCount" pageIndexVar="pageIndex"
 				styleClass="scroller" paginator="true" paginatorMaxPages="9">
 				<f:facet name="first">#{msgs.first}</f:facet>

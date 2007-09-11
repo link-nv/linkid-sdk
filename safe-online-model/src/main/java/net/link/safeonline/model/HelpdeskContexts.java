@@ -12,6 +12,13 @@ public interface HelpdeskContexts {
 
 	List<HelpdeskContextEntity> listContexts();
 
-	List<HelpdeskEventEntity> listLogs(Long logId);
+	List<HelpdeskEventEntity> listEvents(Long logId);
+
+	// remove log ( i.e. context and events )
+	void removeLog(Long logId);
+
+	List<HelpdeskContextEntity> listUserContexts(String user);
+
+	List<String> listUsers();
 
 }

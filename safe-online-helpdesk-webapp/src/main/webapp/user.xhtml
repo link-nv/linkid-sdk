@@ -16,7 +16,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>Helpdesk</h2>
+		<h2>Helpdesk users</h2>
 
 		<h:form>
 			<t:dataTable id="helpdesk-user-data" var="item"
@@ -25,8 +25,13 @@
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">#{msgs.helpdeskContext}</f:facet>
-					<h:commandLink value="#{item.id}" action="#{helpdeskLog.view}" />
+					<f:facet name="header">#{msgs.user}</f:facet>
+					<h:outputLabel value="#{item}" />
+				</h:column>
+
+				<h:column>
+					<h:commandLink value="#{msgs.viewaction}"
+						action="#{helpdeskLog.viewUser}" />
 				</h:column>
 			</t:dataTable>
 

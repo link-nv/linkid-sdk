@@ -18,6 +18,10 @@ public interface HelpdeskLog {
 
 	void helpdeskLogListFactory();
 
+	void helpdeskUserListFactory();
+
+	void helpdeskUserContextListFactory();
+
 	/*
 	 * Accessors.
 	 */
@@ -26,6 +30,10 @@ public interface HelpdeskLog {
 	 * Actions.
 	 */
 	String view();
+
+	String removeLog();
+
+	String viewUser();
 
 	/*
 	 * Lifecycle.
