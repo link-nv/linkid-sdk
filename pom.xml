@@ -110,32 +110,6 @@
 				</configuration>
 				<inherited>true</inherited>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>enforce-versions</id>
-						<goals>
-							<goal>enforce-once</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<requireMavenVersion>
-									<version>[2.0.7]</version>
-								</requireMavenVersion>
-								<requireJavaVersion>
-									<version>[1.5,1.6)</version>
-								</requireJavaVersion>
-								<requireOS>
-									<family>unix</family>
-								</requireOS>
-							</rules>
-							<fail>true</fail>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -218,11 +192,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-ejb-plugin</artifactId>
 					<version>${maven-ejb-plugin.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-enforcer-plugin</artifactId>
-					<version>${maven-enforcer-plugin.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -1284,9 +1253,6 @@
 		<maven-ejb-plugin.version>2.1</maven-ejb-plugin.version>
 		<jfreechart.version>1.0.5</jfreechart.version>
 		<jcommon.version>1.0.9</jcommon.version>
-		<maven-enforcer-plugin.version>
-			1.0-alpha-3
-		</maven-enforcer-plugin.version>
 		<maven-deploy-plugin.version>2.3</maven-deploy-plugin.version>
 		<taglist-maven-plugin.version>2.0</taglist-maven-plugin.version>
 		<wicket.version>1.2.5</wicket.version>
