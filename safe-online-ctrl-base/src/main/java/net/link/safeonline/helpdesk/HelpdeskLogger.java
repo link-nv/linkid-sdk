@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.ctrl.ControlBaseConstants;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
-import net.link.safeonline.entity.helpdesk.LogLevelType;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -115,6 +115,13 @@ public class HelpdeskLogger {
 			add(session, "Servlet context: " + name + "=" + value,
 					getPrincipal(session), LogLevelType.INFO);
 		}
+
+		add(session, "Server info: "
+				+ session.getServletContext().getServerInfo(),
+				LogLevelType.INFO);
+		add(session, "Servlet context path: "
+				+ session.getServletContext().getServletContextName(),
+				LogLevelType.INFO);
 
 		HelpdeskManager helpdeskManager = EjbUtils.getEJB(
 				"SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);

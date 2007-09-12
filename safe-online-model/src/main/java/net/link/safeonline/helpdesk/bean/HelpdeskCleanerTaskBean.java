@@ -17,9 +17,9 @@ import javax.interceptor.Interceptors;
 import net.link.safeonline.Task;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
-import net.link.safeonline.entity.helpdesk.LogLevelType;
 import net.link.safeonline.helpdesk.dao.HelpdeskContextDAO;
 import net.link.safeonline.helpdesk.dao.HelpdeskEventDAO;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.jboss.annotation.ejb.LocalBinding;
 

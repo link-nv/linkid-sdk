@@ -21,8 +21,8 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
-import net.link.safeonline.entity.helpdesk.LogLevelType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -82,6 +82,8 @@ public class LoginServlet extends HttpServlet {
 				LogLevelType.INFO);
 		String username = (String) session.getAttribute("username");
 		if (null == username) {
+			HelpdeskLogger.add(session, "username session attribute not set",
+					LogLevelType.ERROR);
 			throw new ServletException("username session attribute not set");
 		}
 
@@ -96,25 +98,37 @@ public class LoginServlet extends HttpServlet {
 			throw new ServletException("application not found");
 		}
 		if (true == subscriptionRequired) {
+			HelpdeskLogger.add(session,
+					"subscription required for application " + applicationId
+							+ ", redirecting... ", LogLevelType.INFO);
 			redirectToSubscription(response);
 			return;
 		}
 
-		HelpdeskLogger.add(session, "application found: ", LogLevelType.INFO);
+		HelpdeskLogger.add(session, "application found", LogLevelType.INFO);
 
 		boolean confirmationRequired;
 		try {
 			confirmationRequired = this.identityService
 					.isConfirmationRequired(applicationId);
 		} catch (SubscriptionNotFoundException e) {
+			HelpdeskLogger.add(session, "subscription not found",
+					LogLevelType.ERROR);
 			throw new ServletException("subscription not found");
 		} catch (ApplicationNotFoundException e) {
+			HelpdeskLogger.add(session, "application not found",
+					LogLevelType.ERROR);
 			throw new ServletException("application not found");
 		} catch (ApplicationIdentityNotFoundException e) {
+			HelpdeskLogger.add(session, "application identity not found",
+					LogLevelType.ERROR);
 			throw new ServletException("application identity not found");
 		}
 		LOG.debug("confirmation required: " + confirmationRequired);
 		if (true == confirmationRequired) {
+			HelpdeskLogger.add(session,
+					"confirmation required for application " + applicationId
+							+ ", redirecting ...", LogLevelType.INFO);
 			redirectToIdentityConfirmation(response);
 			return;
 		}
@@ -126,11 +140,17 @@ public class LoginServlet extends HttpServlet {
 			hasMissingAttributes = this.identityService
 					.hasMissingAttributes(applicationId);
 		} catch (ApplicationNotFoundException e) {
+			HelpdeskLogger.add(session, "application not found",
+					LogLevelType.ERROR);
 			throw new ServletException("application not found");
 		} catch (ApplicationIdentityNotFoundException e) {
+			HelpdeskLogger.add(session, "application identity not found",
+					LogLevelType.ERROR);
 			throw new ServletException("application identity not found");
 		}
 		if (true == hasMissingAttributes) {
+			HelpdeskLogger.add(session, "missing attributes, redirecting ...",
+					LogLevelType.INFO);
 			redirectToMissingAttributes(response);
 			return;
 		}

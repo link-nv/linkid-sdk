@@ -17,8 +17,8 @@ import net.link.safeonline.auth.UsernamePasswordLogon;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.entity.helpdesk.LogLevelType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,7 +65,6 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 
 	@PostConstruct
 	public void init() {
-		LOG.debug("UserNamePasswordLogonBean.init => HelpdeskLogger.clear()");
 		HelpdeskLogger.clear();
 	}
 
@@ -97,13 +96,13 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 			return null;
 		} catch (DeviceNotFoundException e) {
 			this.facesMessages.add("password device not configured");
+			HelpdeskLogger.add("password device not configured",
+					LogLevelType.ERROR);
 			return null;
 		}
 
 		super.login(this.username);
 
-		LOG
-				.debug("UserNamePasswordLogonBean.login success => HelpdeskLogger.clear()");
 		HelpdeskLogger.clear();
 		return null;
 	}

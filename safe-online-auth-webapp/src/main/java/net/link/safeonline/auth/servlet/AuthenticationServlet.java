@@ -36,16 +36,17 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class AuthenticationServlet extends HttpServlet {
+public class AuthenticationServlet extends HelpdeskServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory
 			.getLog(AuthenticationServlet.class);
 
-	@Override
+	// @Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		super.doPost(request, response);
 		LOG.debug("doPost");
 		// TODO: factor out common code with identity servlet
 		String contentType = request.getContentType();

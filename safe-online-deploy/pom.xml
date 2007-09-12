@@ -55,6 +55,13 @@
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>safe-online-shared</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>
 								safe-online-jpa-util
 							</artifactId>

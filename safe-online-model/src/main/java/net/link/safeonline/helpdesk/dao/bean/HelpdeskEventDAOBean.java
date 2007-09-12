@@ -17,9 +17,9 @@ import javax.persistence.PersistenceContext;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
-import net.link.safeonline.entity.helpdesk.LogLevelType;
 import net.link.safeonline.helpdesk.dao.HelpdeskEventDAO;
 import net.link.safeonline.jpa.QueryObjectFactory;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

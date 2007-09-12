@@ -33,6 +33,7 @@ import javax.persistence.TemporalType;
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 @Entity
 @Table(name = "helpdesk_event")

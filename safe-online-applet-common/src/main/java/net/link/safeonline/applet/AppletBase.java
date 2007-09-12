@@ -17,6 +17,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -34,6 +36,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.shared.helpdesk.HelpdeskCodes;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.apache.commons.logging.Log;
 
@@ -43,7 +47,7 @@ import org.apache.commons.logging.Log;
  * @author fcorneli
  */
 public abstract class AppletBase extends JApplet implements ActionListener,
-		AppletView, RuntimeContext, StatementProvider {
+		AppletView, AppletHelpdesk, RuntimeContext, StatementProvider {
 
 	private static final long serialVersionUID = 1L;
 
@@ -58,6 +62,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 	private JPanel cards;
 
 	private JButton hideButton;
+
+	private JButton helpButton;
 
 	private static enum State {
 		HIDE, SHOW
@@ -120,8 +126,14 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		this.hideButton = new JButton();
 		this.hideButton.addActionListener(this);
+		Font helpFont = font.deriveFont((float) 10);
+		this.helpButton = new JButton(this.messages.getString("helpAction"));
+		this.helpButton.setFont(helpFont);
+		this.helpButton.setForeground(Color.red);
+		this.helpButton.setVisible(false);
 		textPanel.add(this.infoLabel);
 		buttonPanel.add(this.hideButton);
+		buttonPanel.add(this.helpButton);
 		infoPanel.add(textPanel);
 		infoPanel.add(this.progressBar);
 		infoPanel.add(Box.createVerticalStrut(10));
@@ -143,6 +155,12 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		actionPerformed(null);
 		actionPerformed(null);
 
+		this.helpButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				redirectToHelp();
+			}
+		});
+
 		// background color
 		String c = getParameter("bgcolor");
 		Color color = null;
@@ -156,6 +174,11 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 	}
 
 	public void outputDetailMessage(final String message) {
+		try {
+			addHelpdeskEvent(message, LogLevelType.INFO);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		/*
 		 * We used to have invokeAndWait here, but this sometimes causes a
 		 * deadlock between: RunnableQueue-0 and AWT-EventQueue-0.
@@ -169,6 +192,20 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	public void outputInfoMessage(final InfoLevel infoLevel,
 			final String message) {
+
+		try {
+			switch (infoLevel) {
+			case NORMAL:
+				addHelpdeskEvent(message, LogLevelType.INFO);
+				break;
+			case ERROR:
+				addHelpdeskEvent(message, LogLevelType.ERROR);
+				break;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				AppletBase.this.infoLabel.setText(message);
@@ -182,11 +219,78 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 					case ERROR:
 						AppletBase.this.infoLabel.setForeground(Color.RED);
 						AppletBase.this.progressBar.setIndeterminate(false);
+						AppletBase.this.helpButton.setVisible(true);
+						AppletBase.this.validate();
+						AppletBase.this.repaint();
 						break;
 					}
 				}
 			}
 		});
+	}
+
+	public boolean addHelpdeskEvent(String message, LogLevelType logLevel)
+			throws IOException {
+		HttpURLConnection httpURLConnection = prepareHelpdeskConnection();
+
+		httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD, "");
+		httpURLConnection.setRequestProperty(
+				HelpdeskCodes.HELPDESK_ADD_MESSAGE, message);
+		httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD_LEVEL,
+				logLevel.toString());
+
+		return sendHelpdeskStatement(httpURLConnection);
+	}
+
+	public boolean clearHelpdesk() throws IOException {
+		HttpURLConnection httpURLConnection = prepareHelpdeskConnection();
+
+		httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_CLEAR, "");
+
+		return sendHelpdeskStatement(httpURLConnection);
+	}
+
+	public Long persistHelpdesk() throws IOException {
+		HttpURLConnection httpURLConnection = prepareHelpdeskConnection();
+
+		httpURLConnection
+				.setRequestProperty(HelpdeskCodes.HELPDESK_PERSIST, "");
+
+		if (!sendHelpdeskStatement(httpURLConnection))
+			return new Long(-1);
+
+		String helpdeskPersistId = httpURLConnection
+				.getHeaderField(HelpdeskCodes.HELPDESK_PERSIST_RETURN_ID);
+		if (null == helpdeskPersistId)
+			return new Long(-1);
+		else
+			return Long.parseLong(helpdeskPersistId);
+	}
+
+	private HttpURLConnection prepareHelpdeskConnection() throws IOException {
+		URL documentBase = this.getDocumentBase();
+		String servletPath = this.getParameter("ServletPath");
+		URL url = AppletControl.transformUrl(documentBase, servletPath);
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url
+				.openConnection();
+		httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_START, "");
+		return httpURLConnection;
+	}
+
+	private boolean sendHelpdeskStatement(HttpURLConnection httpURLConnection)
+			throws IOException {
+		httpURLConnection.setRequestMethod("POST");
+		httpURLConnection.setAllowUserInteraction(false);
+		httpURLConnection.setRequestProperty("Content-type", "text/html");
+		httpURLConnection.connect();
+
+		httpURLConnection.disconnect();
+
+		int responseCode = httpURLConnection.getResponseCode();
+		if (200 == responseCode)
+			return true;
+		else
+			return false;
 	}
 
 	public abstract byte[] createStatement(SmartCard smartCard);
@@ -210,6 +314,13 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 			this.state = State.HIDE;
 			setButtonLabel(this.hideButton);
 		}
+	}
+
+	private void redirectToHelp() {
+		URL documentBase = this.getDocumentBase();
+		String targetPath = this.getParameter("HelpPath");
+		URL target = AppletControl.transformUrl(documentBase, targetPath);
+		this.showDocument(target);
 	}
 
 	private void iterateBackground(Component[] components, Color color) {

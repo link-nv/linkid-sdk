@@ -99,6 +99,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public void helpdeskContextListFactory() {
 		LOG.debug("helpdesk context list factory");
+		this.selectedUserContext = null;
 		this.helpdeskContextList = this.helpdeskService.listContexts();
 	}
 
@@ -118,6 +119,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public void helpdeskUserListFactory() {
 		LOG.debug("helpdesk user list factory");
+		this.selectedContext = null;
 		this.helpdeskUserList = this.helpdeskService.listUsers();
 	}
 
@@ -171,7 +173,6 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		this.selectedContext = null;
-		this.selectedUserContext = null;
+		LOG.debug("destroy");
 	}
 }
