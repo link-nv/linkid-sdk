@@ -16,11 +16,14 @@
 		<div class="infobox"><ui:include
 			src="/WEB-INF/incl/appinfo.xhtml" /></div>
 		<div>
+		<h2>Try Another Device</h2>
 		<p>#{msgs.selectDevice}:</p>
 
 		<h:form>
 			<h:selectOneRadio value="#{device.selection}" layout="pageDirection">
-				<f:selectItems value="#{applicationDevices}" />
+				<f:selectItem itemLabel="Username password token"
+					itemValue="password" />
+				<f:selectItem itemLabel="Belgium eID" itemValue="beid" />
 			</h:selectOneRadio>
 
 			<h:messages styleClass="error" />
@@ -28,11 +31,6 @@
 			<h:commandButton action="#{device.next}" id="next"
 				value="#{msgs.next}" />
 		</h:form></div>
-
-		<p><a href="./new-user.seam">#{msgs.newUser}</a></p>
-
-		<p><a href="./all-devices.seam">Try another device</a></p>
-
 	</ui:define>
 </ui:composition>
 </body>
