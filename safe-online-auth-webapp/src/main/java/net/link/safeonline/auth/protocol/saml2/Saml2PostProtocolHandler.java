@@ -42,7 +42,6 @@ import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
 import org.opensaml.saml2.binding.encoding.HTTPPostEncoder;
-import org.opensaml.saml2.binding.security.SAML2ProtocolMessageRule;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
@@ -131,9 +130,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 		SecurityPolicy securityPolicy = new BasicSecurityPolicy();
 		securityPolicy.getPolicyRules().add(new HTTPRule(null, "POST", false));
-		securityPolicy.getPolicyRules().add(new SAML2ProtocolMessageRule());
 		securityPolicy.getPolicyRules().add(new MandatoryIssuerRule());
-		// securityPolicy.getPolicyRules().add(new MessageReplayRule(...));
 		messageContext.setSecurityPolicy(securityPolicy);
 
 		HTTPPostDecoder decoder = new HTTPPostDecoder();
