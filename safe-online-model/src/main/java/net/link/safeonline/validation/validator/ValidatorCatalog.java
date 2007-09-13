@@ -20,15 +20,15 @@ import java.util.Map;
  */
 public class ValidatorCatalog {
 
-	private static Map<Class<? extends Validator>, Validator> instances = new HashMap<Class<? extends Validator>, Validator>();
+	private static Map<Class<? extends Validator>, Validator<?>> instances = new HashMap<Class<? extends Validator>, Validator<?>>();
 
 	private ValidatorCatalog() {
 		// empty
 	}
 
-	public static Validator getInstance(
+	public static Validator<?> getInstance(
 			Class<? extends Validator> validatorClass) {
-		Validator instance = ValidatorCatalog.instances.get(validatorClass);
+		Validator<?> instance = ValidatorCatalog.instances.get(validatorClass);
 		if (null == instance) {
 			try {
 				instance = validatorClass.newInstance();

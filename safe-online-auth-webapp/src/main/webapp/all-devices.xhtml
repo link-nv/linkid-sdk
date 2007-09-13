@@ -20,7 +20,8 @@
 		<p>#{msgs.selectDevice}:</p>
 
 		<h:form>
-			<h:selectOneRadio value="#{device.selection}" layout="pageDirection">
+			<h:selectOneRadio value="#{device.selection}" layout="pageDirection"
+				required="true">
 				<f:selectItem itemLabel="Username password token"
 					itemValue="password" />
 				<f:selectItem itemLabel="Belgium eID" itemValue="beid" />

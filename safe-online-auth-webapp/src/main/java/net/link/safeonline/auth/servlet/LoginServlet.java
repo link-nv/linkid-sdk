@@ -8,6 +8,7 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,9 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.auth.Device;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -48,6 +52,8 @@ public class LoginServlet extends HttpServlet {
 
 	private SubscriptionService subscriptionService;
 
+	private DevicePolicyService devicePolicyService;
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -61,32 +67,98 @@ public class LoginServlet extends HttpServlet {
 		this.subscriptionService = EjbUtils.getEJB(
 				"SafeOnline/SubscriptionServiceBean/local",
 				SubscriptionService.class);
+		this.devicePolicyService = EjbUtils.getEJB(
+				"SafeOnline/DevicePolicyServiceBean/local",
+				DevicePolicyService.class);
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		LOG.debug("doGet");
-
 		HttpSession session = request.getSession();
-		String applicationId = (String) session.getAttribute("applicationId");
-		if (null == applicationId) {
-			HelpdeskLogger.add(session,
-					"applicationId session attribute not found",
-					LogLevelType.ERROR);
-			throw new ServletException(
-					"applicationId session attribute not set");
-		}
+		String applicationId = getApplicationId(session);
+		String device = getDevice(session);
+		String username = getUsername(session);
 
-		HelpdeskLogger.add(session, "application id found: " + applicationId,
+		boolean devicePolicyCheck = performDevicePolicyCheck(session,
+				applicationId, device);
+		if (false == devicePolicyCheck) {
+			redirectToRegisterDevice(username, session, response);
+			return;
+		}
+		HelpdeskLogger.add(session, "authn device OK", LogLevelType.INFO);
+
+		boolean subscriptionRequired = performSubscriptionCheck(session,
+				applicationId);
+		if (true == subscriptionRequired) {
+			redirectToSubscription(response);
+			return;
+		}
+		HelpdeskLogger.add(session, "subscription found", LogLevelType.INFO);
+
+		boolean confirmationRequired = performConfirmationCheck(applicationId);
+		if (true == confirmationRequired) {
+			redirectToIdentityConfirmation(response);
+			return;
+		}
+		HelpdeskLogger.add(session, "confirmation found", LogLevelType.INFO);
+
+		boolean hasMissingAttributes = performMissingAttributesCheck(session,
+				applicationId);
+		if (true == hasMissingAttributes) {
+			redirectToMissingAttributes(response);
+			return;
+		}
+		HelpdeskLogger.add(session, "necessary attributes found",
 				LogLevelType.INFO);
-		String username = (String) session.getAttribute("username");
-		if (null == username) {
-			HelpdeskLogger.add(session, "username session attribute not set",
-					LogLevelType.ERROR);
-			throw new ServletException("username session attribute not set");
-		}
 
+		/*
+		 * We can commit the authentication process here.
+		 */
+		response.sendRedirect("./exit");
+	}
+
+	private void redirectToRegisterDevice(String username, HttpSession session,
+			HttpServletResponse response) throws IOException {
+		response.sendRedirect("./register-device.seam");
+	}
+
+	private boolean performMissingAttributesCheck(HttpSession session,
+			String applicationId) throws ServletException {
+		boolean hasMissingAttributes;
+		try {
+			hasMissingAttributes = this.identityService
+					.hasMissingAttributes(applicationId);
+		} catch (ApplicationNotFoundException e) {
+			throw new ServletException("application not found");
+		} catch (ApplicationIdentityNotFoundException e) {
+			HelpdeskLogger.add(session, "application identity not found",
+					LogLevelType.ERROR);
+			throw new ServletException("application identity not found");
+		}
+		return hasMissingAttributes;
+	}
+
+	private boolean performConfirmationCheck(String applicationId)
+			throws ServletException {
+		boolean confirmationRequired;
+		try {
+			confirmationRequired = this.identityService
+					.isConfirmationRequired(applicationId);
+		} catch (SubscriptionNotFoundException e) {
+			throw new ServletException("subscription not found");
+		} catch (ApplicationNotFoundException e) {
+			throw new ServletException("application not found");
+		} catch (ApplicationIdentityNotFoundException e) {
+			throw new ServletException("application identity not found");
+		}
+		LOG.debug("confirmation required: " + confirmationRequired);
+		return confirmationRequired;
+	}
+
+	private boolean performSubscriptionCheck(HttpSession session,
+			String applicationId) throws ServletException {
 		boolean subscriptionRequired;
 		try {
 			subscriptionRequired = !this.subscriptionService
@@ -97,71 +169,72 @@ public class LoginServlet extends HttpServlet {
 					+ applicationId, LogLevelType.ERROR);
 			throw new ServletException("application not found");
 		}
-		if (true == subscriptionRequired) {
-			HelpdeskLogger.add(session,
-					"subscription required for application " + applicationId
-							+ ", redirecting... ", LogLevelType.INFO);
-			redirectToSubscription(response);
-			return;
-		}
+		return subscriptionRequired;
+	}
 
-		HelpdeskLogger.add(session, "application found", LogLevelType.INFO);
-
-		boolean confirmationRequired;
+	/**
+	 * Check whether the used authentication device is sufficient for the given
+	 * application.
+	 * 
+	 * @param session
+	 * @param applicationId
+	 * @param device
+	 * @return
+	 * @throws ServletException
+	 */
+	@SuppressWarnings("unchecked")
+	private boolean performDevicePolicyCheck(HttpSession session,
+			String applicationId, String device) throws ServletException {
+		Set<String> requiredDevicePolicy = (Set<String>) session
+				.getAttribute(EntryServlet.REQUIRED_DEVICES_ATTRIBUTE);
+		Set<String> devicePolicy;
 		try {
-			confirmationRequired = this.identityService
-					.isConfirmationRequired(applicationId);
-		} catch (SubscriptionNotFoundException e) {
-			HelpdeskLogger.add(session, "subscription not found",
-					LogLevelType.ERROR);
-			throw new ServletException("subscription not found");
+			devicePolicy = this.devicePolicyService.getDevicePolicy(
+					applicationId, requiredDevicePolicy);
 		} catch (ApplicationNotFoundException e) {
-			HelpdeskLogger.add(session, "application not found",
-					LogLevelType.ERROR);
-			throw new ServletException("application not found");
-		} catch (ApplicationIdentityNotFoundException e) {
-			HelpdeskLogger.add(session, "application identity not found",
-					LogLevelType.ERROR);
-			throw new ServletException("application identity not found");
+			throw new ServletException("application not found: "
+					+ applicationId);
+		} catch (EmptyDevicePolicyException e) {
+			throw new ServletException("empty device policy");
 		}
-		LOG.debug("confirmation required: " + confirmationRequired);
-		if (true == confirmationRequired) {
-			HelpdeskLogger.add(session,
-					"confirmation required for application " + applicationId
-							+ ", redirecting ...", LogLevelType.INFO);
-			redirectToIdentityConfirmation(response);
-			return;
-		}
+		boolean devicePolicyCheck = devicePolicy.contains(device);
+		return devicePolicyCheck;
+	}
 
-		HelpdeskLogger.add(session, "confirmation found", LogLevelType.INFO);
-
-		boolean hasMissingAttributes;
-		try {
-			hasMissingAttributes = this.identityService
-					.hasMissingAttributes(applicationId);
-		} catch (ApplicationNotFoundException e) {
-			HelpdeskLogger.add(session, "application not found",
+	private String getUsername(HttpSession session) throws ServletException {
+		String username = (String) session.getAttribute("username");
+		if (null == username) {
+			HelpdeskLogger.add(session, "username session attribute not set",
 					LogLevelType.ERROR);
-			throw new ServletException("application not found");
-		} catch (ApplicationIdentityNotFoundException e) {
-			HelpdeskLogger.add(session, "application identity not found",
-					LogLevelType.ERROR);
-			throw new ServletException("application identity not found");
+			throw new ServletException("username session attribute not set");
 		}
-		if (true == hasMissingAttributes) {
-			HelpdeskLogger.add(session, "missing attributes, redirecting ...",
-					LogLevelType.INFO);
-			redirectToMissingAttributes(response);
-			return;
-		}
+		return username;
+	}
 
-		HelpdeskLogger.add(session, "necessary attributes found",
+	private String getDevice(HttpSession session) throws ServletException {
+		String device = (String) session
+				.getAttribute(Device.AUTHN_DEVICE_ATTRIBUTE);
+		if (null == device) {
+			throw new ServletException(Device.AUTHN_DEVICE_ATTRIBUTE
+					+ " session attribute not set");
+		}
+		HelpdeskLogger.add(session, "authenticated via " + device,
 				LogLevelType.INFO);
+		return device;
+	}
 
-		/*
-		 * We can commit the authentication process here.
-		 */
-		response.sendRedirect("./exit");
+	private String getApplicationId(HttpSession session)
+			throws ServletException {
+		String applicationId = (String) session
+				.getAttribute(EntryServlet.APPLICATION_ID_ATTRIBUTE);
+		if (null == applicationId) {
+			HelpdeskLogger.add(session,
+					"applicationId session attribute not found",
+					LogLevelType.ERROR);
+			throw new ServletException(
+					"applicationId session attribute not set");
+		}
+		return applicationId;
 	}
 
 	private void redirectToMissingAttributes(HttpServletResponse response)

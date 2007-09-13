@@ -22,14 +22,16 @@
 			archive="safe-online-auth-applet-package.jar" width="450"
 			height="200">
 			<param name="SmartCardConfig" value="beid" />
-			<param name="ServletPath" value="authentication/" />
+			<param name="ServletPath" value="authentication" />
 			<param name="TargetPath" value="login" />
 			<param name="HelpPath" value="help.seam" />
 			<param name="SessionId"
 				value="#{facesContext.externalContext.request.session.id}" />
 			<param name="ApplicationId" value="${applicationId}" />
 			<param name="Language" value="#{localeSelector.language}" />
-		</applet></div>
+		</applet>
+		<p><a href="./all-devices.seam">Try another device</a></p>
+		</div>
 	</ui:define>
 </ui:composition>
 </body>

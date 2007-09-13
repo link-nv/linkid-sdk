@@ -74,6 +74,12 @@ public class EntryServlet extends HttpServlet {
 
 	public static final String PROTOCOL_NAME_ATTRIBUTE = "protocolName";
 
+	public static final String REQUIRED_DEVICES_ATTRIBUTE = "requiredDevices";
+
+	public static final String TARGET_ATTRIBUTE = "target";
+
+	public static final String APPLICATION_ID_ATTRIBUTE = "applicationId";
+
 	private String startUrl;
 
 	private String firstTimeUrl;
@@ -135,12 +141,12 @@ public class EntryServlet extends HttpServlet {
 		 * We save the result of the protocol handler into the HTTP session.
 		 */
 		HttpSession session = request.getSession();
-		session.setAttribute("applicationId", protocolContext
+		session.setAttribute(APPLICATION_ID_ATTRIBUTE, protocolContext
 				.getApplicationId());
-		session.setAttribute("target", protocolContext.getTarget());
+		session.setAttribute(TARGET_ATTRIBUTE, protocolContext.getTarget());
 		Set<String> requiredDevices = protocolContext.getRequiredDevices();
 		if (null != requiredDevices) {
-			session.setAttribute("requiredDevices", requiredDevices);
+			session.setAttribute(REQUIRED_DEVICES_ATTRIBUTE, requiredDevices);
 		}
 
 		/*

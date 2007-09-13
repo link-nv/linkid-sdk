@@ -16,21 +16,19 @@
 		<div class="infobox"><ui:include
 			src="/WEB-INF/incl/appinfo.xhtml" /></div>
 		<div>
-		<h2>#{msgs.createAccount}</h2>
-		<h3>#{msgs.login}: #{accountRegistration.login}</h3>
+		<h2>Register a new device:</h2>
+		<h3>#{msgs.login}: #{username}</h3>
 		<p>#{msgs.selectDevice}:</p>
 
 		<h:form>
-			<h:selectOneRadio value="#{accountRegistration.device}"
+			<h:selectOneRadio value="#{deviceRegistration.device}"
 				layout="pageDirection" required="true">
-				<f:selectItem itemLabel="Username password token"
-					itemValue="password" />
-				<f:selectItem itemLabel="Belgium eID" itemValue="beid" />
+				<f:selectItems value="#{applicationDevices}" />
 			</h:selectOneRadio>
 
 			<h:messages styleClass="error" />
 
-			<h:commandButton action="#{accountRegistration.deviceNext}" id="next"
+			<h:commandButton action="#{deviceRegistration.deviceNext}" id="next"
 				value="#{msgs.next}" />
 		</h:form></div>
 	</ui:define>

@@ -20,7 +20,9 @@ import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.CredentialServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.CredentialManager;
 import net.link.safeonline.model.SubjectManager;
@@ -53,6 +55,9 @@ public class CredentialServiceBean implements CredentialService,
 	@EJB
 	private CredentialManager credentialManager;
 
+	@EJB
+	private AttributeTypeDAO attributeTypeDAO;
+
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void changePassword(String oldPassword, String newPassword)
 			throws PermissionDeniedException {
@@ -79,6 +84,30 @@ public class CredentialServiceBean implements CredentialService,
 
 		SecurityManagerUtils.flushCredentialCache(login,
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public void setPassword(String password) throws PermissionDeniedException {
+		LOG.debug("set password");
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		String login = subject.getLogin();
+		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
+		if (null != passwordAttribute) {
+			/*
+			 * We don't allow a user to overwrite an existing password.
+			 */
+			throw new PermissionDeniedException();
+		}
+		AttributeTypeEntity passwordAttributeType;
+		try {
+			passwordAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
+		} catch (AttributeTypeNotFoundException e) {
+			throw new EJBException("password attribute type not found");
+		}
+		this.attributeDAO
+				.addAttribute(passwordAttributeType, subject, password);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)

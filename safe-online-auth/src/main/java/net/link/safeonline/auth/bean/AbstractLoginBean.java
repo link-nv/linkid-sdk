@@ -50,7 +50,14 @@ public class AbstractLoginBean {
 	protected void login(String username) {
 		log.debug("login using: " + username);
 		this.username = username;
+		relogin();
+	}
 
+	/**
+	 * Re-login the current user. This will trigger the device restriction check
+	 * again.
+	 */
+	protected void relogin() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		String redirectUrl = "./login";

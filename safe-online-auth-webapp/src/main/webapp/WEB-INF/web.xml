@@ -24,6 +24,12 @@
 		</listener-class>
 	</listener>
 
+	<listener>
+		<listener-class>
+			net.link.safeonline.auth.servlet.LoginSessionListener
+		</listener-class>
+	</listener>
+
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
 		<param-value>client</param-value>
@@ -102,6 +108,11 @@
 	</filter-mapping>
 
 	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<servlet-name>IdentityServlet</servlet-name>
+	</filter-mapping>
+
+	<filter-mapping>
 		<filter-name>Seam Exception Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
@@ -131,7 +142,7 @@
 
 	<servlet-mapping>
 		<servlet-name>AuthenticationServlet</servlet-name>
-		<url-pattern>/authentication/*</url-pattern>
+		<url-pattern>/authentication</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -212,6 +223,18 @@
 	<servlet-mapping>
 		<servlet-name>RegistrationServlet</servlet-name>
 		<url-pattern>/registration</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>IdentityServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.auth.servlet.IdentityServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>IdentityServlet</servlet-name>
+		<url-pattern>/identity</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

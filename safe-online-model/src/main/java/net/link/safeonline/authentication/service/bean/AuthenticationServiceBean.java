@@ -63,6 +63,7 @@ import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
+import net.link.safeonline.validation.annotation.NotNull;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -189,9 +190,10 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	}
 
 	public boolean authenticate(@NonEmptyString
-	String sessionId, byte[] authenticationStatementData)
-			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			SubjectNotFoundException, DecodingException {
+	String sessionId, @NotNull
+	byte[] authenticationStatementData) throws ArgumentIntegrityException,
+			TrustDomainNotFoundException, SubjectNotFoundException,
+			DecodingException {
 		LOG.debug("authenticate session: " + sessionId);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);
@@ -348,10 +350,12 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return userId;
 	}
 
-	public boolean registerAndAuthenticate(String sessionId, String username,
-			byte[] registrationStatementData)
-			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			DecodingException, ExistingUserException {
+	public boolean registerAndAuthenticate(@NonEmptyString
+	String sessionId, @NonEmptyString
+	String username, @NotNull
+	byte[] registrationStatementData) throws ArgumentIntegrityException,
+			TrustDomainNotFoundException, DecodingException,
+			ExistingUserException {
 		LOG.debug("registerAndAuthentication: " + username);
 		RegistrationStatement registrationStatement = new RegistrationStatement(
 				registrationStatementData);

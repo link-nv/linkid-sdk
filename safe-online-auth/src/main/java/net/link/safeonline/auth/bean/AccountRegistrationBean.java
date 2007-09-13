@@ -67,6 +67,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	private String authnDevice;
 
 	@SuppressWarnings("unused")
+	@In(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	@Out(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	private String requestedUsername;
 
