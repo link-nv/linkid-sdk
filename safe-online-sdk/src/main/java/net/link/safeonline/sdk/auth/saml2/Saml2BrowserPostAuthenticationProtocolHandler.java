@@ -38,7 +38,6 @@ import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
-import org.opensaml.saml2.binding.security.SAML2ProtocolMessageRule;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
@@ -252,7 +251,6 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 
 		SecurityPolicy securityPolicy = new BasicSecurityPolicy();
 		securityPolicy.getPolicyRules().add(new HTTPRule(null, "POST", false));
-		securityPolicy.getPolicyRules().add(new SAML2ProtocolMessageRule());
 		securityPolicy.getPolicyRules().add(
 				new InResponseToRule(this.challenge.getValue()));
 		securityPolicy.getPolicyRules().add(new MandatoryIssuerRule());
