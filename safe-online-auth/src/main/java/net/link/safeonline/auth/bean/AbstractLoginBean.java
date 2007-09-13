@@ -33,6 +33,7 @@ public class AbstractLoginBean {
 
 	@SuppressWarnings("unused")
 	@Out(value = "username", required = false, scope = ScopeType.SESSION)
+	@In(required = false, scope = ScopeType.SESSION)
 	private String username;
 
 	@In(create = true)
