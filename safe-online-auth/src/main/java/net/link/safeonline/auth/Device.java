@@ -15,8 +15,6 @@ import javax.faces.model.SelectItem;
 @Local
 public interface Device {
 
-	public static final String AUTHN_DEVICE_ATTRIBUTE = "AuthenticationDevice";
-
 	/*
 	 * Accessors.
 	 */
@@ -31,13 +29,6 @@ public interface Device {
 
 	/*
 	 * Actions.
-	 */
-	/**
-	 * This action is used by both the main.xhtml page as the all-devices.xhtml
-	 * page. This means it cannot enforce the device restrictions itself. We
-	 * will leave this over to the LoginServlet.
-	 * 
-	 * @return
 	 */
 	String next();
 

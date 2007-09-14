@@ -156,25 +156,8 @@ public class AuthnResponseFactory {
 		// AuthnContextDecl authnContextDecl = buildXMLObject(
 		// AuthnContextDecl.class, AuthnContextDecl.DEFAULT_ELEMENT_NAME);
 		// authnContext.setAuthnContextDecl(authnContextDecl);
-
-		switch (authnContextClass) {
-		case PASSWORD_PROTECTED_TRANSPORT:
-			authnContextClassRef
-					.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
-			// Document passwordDeclaration = createPasswordDeclaration();
-			// authnContextDecl.setDOM(passwordDeclaration.getDocumentElement());
-			// authnContextDecl.getOrderedChildren().add()
-			break;
-		case SMART_CARD_PKI:
-			authnContextClassRef
-					.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI");
-			break;
-		default:
-			throw new RuntimeException(
-					"unsupported authentication context class: "
-							+ authnContextClass);
-		}
-
+		authnContextClassRef.setAuthnContextClassRef(authnContextClass
+				.getSamlName());
 		return response;
 	}
 

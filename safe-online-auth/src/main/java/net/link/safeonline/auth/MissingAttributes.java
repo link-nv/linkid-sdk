@@ -12,9 +12,18 @@ import javax.ejb.Local;
 @Local
 public interface MissingAttributes {
 
+	/*
+	 * Factories.
+	 */
 	void missingAttributeListFactory();
 
+	/*
+	 * Actions.
+	 */
 	String save();
 
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
 }

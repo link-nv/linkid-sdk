@@ -41,6 +41,11 @@ abstract public class AbstractStatementStructure {
 			throw new DecodingException();
 		}
 
+		if (null == sequence) {
+			LOG.debug("sequence is null");
+			throw new DecodingException();
+		}
+
 		if (sequence.size() != 2) {
 			LOG.error("sequence size: " + sequence.size());
 			throw new DecodingException();
@@ -61,7 +66,7 @@ abstract public class AbstractStatementStructure {
 			throws DecodingException;
 
 	protected abstract X509Certificate getCertificate();
-	
+
 	public byte[] getSignature() {
 		return this.signature;
 	}

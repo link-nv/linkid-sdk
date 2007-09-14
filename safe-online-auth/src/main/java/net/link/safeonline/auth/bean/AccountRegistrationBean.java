@@ -20,6 +20,7 @@ import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 
@@ -61,10 +62,6 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	private String password;
 
 	private String captcha;
-
-	@SuppressWarnings("unused")
-	@Out(value = DeviceBean.AUTHN_DEVICE_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
-	private String authnDevice;
 
 	@SuppressWarnings("unused")
 	@In(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
@@ -156,10 +153,6 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			return null;
 		}
 		log.debug("device: " + this.device);
-		/*
-		 * Next is required for the protocol handler exit point.
-		 */
-		this.authnDevice = this.device;
 		return this.device;
 	}
 
@@ -208,7 +201,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			return null;
 		}
 
-		super.login(this.login);
+		super.login(this.login, AuthenticationDevice.PASSWORD);
 		return null;
 	}
 

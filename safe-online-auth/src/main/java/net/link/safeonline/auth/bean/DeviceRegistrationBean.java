@@ -15,6 +15,7 @@ import javax.ejb.Stateful;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.DeviceRegistration;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.CredentialService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -80,7 +81,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 			this.facesMessages.add("permission denied");
 			return null;
 		}
-		super.relogin();
+		super.relogin(AuthenticationDevice.PASSWORD);
 		return null;
 	}
 

@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.security.ProviderException;
 import java.util.List;
@@ -32,8 +31,6 @@ import net.link.safeonline.p11sc.SmartCardPinCallback;
 import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 import net.link.safeonline.p11sc.impl.SmartCardImpl;
 import net.link.safeonline.shared.SharedConstants;
-import net.link.safeonline.shared.helpdesk.HelpdeskCodes;
-import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.apache.commons.logging.Log;
 

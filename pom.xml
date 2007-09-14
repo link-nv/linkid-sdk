@@ -1145,7 +1145,7 @@
 			2.0-SNAPSHOT
 		</jboss-packaging-maven-plugin.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
-		<junit.version>4.3.1</junit.version>
+		<junit.version>4.4</junit.version>
 		<jaxb-xjc.version>2.1.4</jaxb-xjc.version>
 		<jaxb-impl.version>2.1.4</jaxb-impl.version>
 		<jsr181-api.version>1.0-MR1</jsr181-api.version>
@@ -1211,10 +1211,8 @@
 			2.0.3-safe-online
 		</maven-war-plugin.version>
 		<concurrent.version>1.3.4</concurrent.version>
-		<opensaml.version>
-			trunk-jdk-1.5-1068-safe-online
-		</opensaml.version>
-		<xmltooling.version>trunk-jdk-1.5-425</xmltooling.version>
+		<opensaml.version>trunk-jdk-1.5-1069</opensaml.version>
+		<xmltooling.version>trunk-jdk-1.5-426</xmltooling.version>
 		<openws.version>trunk-jdk-1.5-134</openws.version>
 		<xmlsec.version>1.4.1</xmlsec.version>
 		<commons-codec.version>1.3</commons-codec.version>

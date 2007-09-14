@@ -17,11 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.auth.Device;
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -78,7 +79,7 @@ public class LoginServlet extends HttpServlet {
 		LOG.debug("doGet");
 		HttpSession session = request.getSession();
 		String applicationId = getApplicationId(session);
-		String device = getDevice(session);
+		AuthenticationDevice device = getDevice(session);
 		String username = getUsername(session);
 
 		boolean devicePolicyCheck = performDevicePolicyCheck(session,
@@ -184,10 +185,9 @@ public class LoginServlet extends HttpServlet {
 	 */
 	@SuppressWarnings("unchecked")
 	private boolean performDevicePolicyCheck(HttpSession session,
-			String applicationId, String device) throws ServletException {
-		Set<String> requiredDevicePolicy = (Set<String>) session
-				.getAttribute(EntryServlet.REQUIRED_DEVICES_ATTRIBUTE);
-		Set<String> devicePolicy;
+			String applicationId, AuthenticationDevice device) throws ServletException {
+		Set<AuthenticationDevice> requiredDevicePolicy = LoginManager.getRequiredDevices(session);
+		Set<AuthenticationDevice> devicePolicy;
 		try {
 			devicePolicy = this.devicePolicyService.getDevicePolicy(
 					applicationId, requiredDevicePolicy);
@@ -211,13 +211,10 @@ public class LoginServlet extends HttpServlet {
 		return username;
 	}
 
-	private String getDevice(HttpSession session) throws ServletException {
-		String device = (String) session
-				.getAttribute(Device.AUTHN_DEVICE_ATTRIBUTE);
-		if (null == device) {
-			throw new ServletException(Device.AUTHN_DEVICE_ATTRIBUTE
-					+ " session attribute not set");
-		}
+	private AuthenticationDevice getDevice(HttpSession session)
+			throws ServletException {
+		AuthenticationDevice device = LoginManager
+				.getAuthenticationDevice(session);
 		HelpdeskLogger.add(session, "authenticated via " + device,
 				LogLevelType.INFO);
 		return device;
@@ -225,8 +222,7 @@ public class LoginServlet extends HttpServlet {
 
 	private String getApplicationId(HttpSession session)
 			throws ServletException {
-		String applicationId = (String) session
-				.getAttribute(EntryServlet.APPLICATION_ID_ATTRIBUTE);
+		String applicationId = LoginManager.findApplication(session);
 		if (null == applicationId) {
 			HelpdeskLogger.add(session,
 					"applicationId session attribute not found",

@@ -16,8 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.auth.Device;
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -127,7 +128,7 @@ public class ProtocolHandlerManager {
 					"unsupported protocol for protocol Id: " + protocolId);
 		}
 
-		String username = (String) session.getAttribute("username");
+		String username = LoginManager.findUsername(session);
 		if (null == username) {
 			throw new ProtocolException(
 					"incorrect authentication state (missing username)");
@@ -139,8 +140,8 @@ public class ProtocolHandlerManager {
 					"incorrect authentication state (missing target)");
 		}
 
-		String device = (String) session
-				.getAttribute(Device.AUTHN_DEVICE_ATTRIBUTE);
+		AuthenticationDevice device = LoginManager
+				.findAuthenticationDevice(session);
 		if (null == device) {
 			throw new ProtocolException("missing device session attribute");
 		}

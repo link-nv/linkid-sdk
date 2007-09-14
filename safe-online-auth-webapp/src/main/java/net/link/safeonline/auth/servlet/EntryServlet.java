@@ -8,7 +8,6 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
-import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -19,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
@@ -73,12 +73,6 @@ public class EntryServlet extends HttpServlet {
 	public static final String PROTOCOL_ERROR_MESSAGE_ATTRIBUTE = "protocolErrorMessage";
 
 	public static final String PROTOCOL_NAME_ATTRIBUTE = "protocolName";
-
-	public static final String REQUIRED_DEVICES_ATTRIBUTE = "requiredDevices";
-
-	public static final String TARGET_ATTRIBUTE = "target";
-
-	public static final String APPLICATION_ID_ATTRIBUTE = "applicationId";
 
 	private String startUrl;
 
@@ -141,13 +135,11 @@ public class EntryServlet extends HttpServlet {
 		 * We save the result of the protocol handler into the HTTP session.
 		 */
 		HttpSession session = request.getSession();
-		session.setAttribute(APPLICATION_ID_ATTRIBUTE, protocolContext
-				.getApplicationId());
-		session.setAttribute(TARGET_ATTRIBUTE, protocolContext.getTarget());
-		Set<String> requiredDevices = protocolContext.getRequiredDevices();
-		if (null != requiredDevices) {
-			session.setAttribute(REQUIRED_DEVICES_ATTRIBUTE, requiredDevices);
-		}
+		LoginManager
+				.setApplication(session, protocolContext.getApplicationId());
+		LoginManager.setTarget(session, protocolContext.getTarget());
+		LoginManager.setRequiredDevices(session, protocolContext
+				.getRequiredDevices());
 
 		/*
 		 * create new helpdesk volatile context

@@ -24,7 +24,7 @@ public interface DevicePolicyService {
 
 	/**
 	 * Gives back the device policy for the given application. The device policy
-	 * is a set of device Ids which the application accepts as authentication
+	 * is a set of device Id's which the application accepts as authentication
 	 * devices. The method signature has been optimized for ease of use in the
 	 * authentication web application.
 	 * 
@@ -36,7 +36,7 @@ public interface DevicePolicyService {
 	 * @throws ApplicationNotFoundException
 	 * @throws EmptyDevicePolicyException
 	 */
-	Set<String> getDevicePolicy(String applicationId,
-			Set<String> requiredDevicePolicy)
+	Set<AuthenticationDevice> getDevicePolicy(String applicationId,
+			Set<AuthenticationDevice> requiredDevicePolicy)
 			throws ApplicationNotFoundException, EmptyDevicePolicyException;
 }

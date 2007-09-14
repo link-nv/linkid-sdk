@@ -24,11 +24,12 @@ import java.util.Vector;
 
 import javax.xml.XMLConstants;
 
-import net.link.safeonline.auth.Device;
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.ExitServlet;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.ctrl.ControlBaseConstants;
@@ -69,7 +70,7 @@ public class ExitServletTest {
 
 	private String target = "http://test.target";
 
-	private String device = "beid";
+	private AuthenticationDevice device = AuthenticationDevice.BEID;
 
 	private String inResponseTo = "test-in-response-to";
 
@@ -132,14 +133,17 @@ public class ExitServletTest {
 		initialSessionAttributes.put(
 				ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE,
 				Saml2PostProtocolHandler.class.getName());
-		initialSessionAttributes.put("username", this.username);
-		initialSessionAttributes.put("target", this.target);
-		initialSessionAttributes.put("applicationId", this.applicationId);
+		initialSessionAttributes.put(LoginManager.USERNAME_ATTRIBUTE,
+				this.username);
+		initialSessionAttributes
+				.put(LoginManager.TARGET_ATTRIBUTE, this.target);
+		initialSessionAttributes.put(LoginManager.APPLICATION_ID_ATTRIBUTE,
+				this.applicationId);
 		initialSessionAttributes.put(
 				AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
 				this.mockAuthenticationService);
-		initialSessionAttributes
-				.put(Device.AUTHN_DEVICE_ATTRIBUTE, this.device);
+		initialSessionAttributes.put(
+				LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, this.device);
 		initialSessionAttributes.put(
 				Saml2PostProtocolHandler.IN_RESPONSE_TO_ATTRIBUTE,
 				this.inResponseTo);

@@ -16,9 +16,18 @@ import net.link.safeonline.authentication.service.AttributeDO;
 @Local
 public interface IdentityConfirmation {
 
+	/*
+	 * Actions.
+	 */
 	String agree();
 
+	/*
+	 * Lifecycle.
+	 */
 	void destroyCallback();
 
+	/*
+	 * Factory.
+	 */
 	List<AttributeDO> identityConfirmationListFactory();
 }

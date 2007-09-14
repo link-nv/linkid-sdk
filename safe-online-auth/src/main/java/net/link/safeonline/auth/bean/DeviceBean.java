@@ -20,19 +20,19 @@ import javax.faces.model.SelectItem;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.Device;
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.FacesMessages;
 
 @Stateful
@@ -48,17 +48,14 @@ public class DeviceBean implements Device {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	@Out(value = AUTHN_DEVICE_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
-	private String device;
-
 	@EJB
 	private DevicePolicyService devicePolicyService;
 
-	@In(value = "applicationId", required = true)
+	@In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
 	private String application;
 
-	@In(value = "requiredDevices", required = false)
-	private Set<String> requiredDevicePolicy;
+	@In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
+	private Set<AuthenticationDevice> requiredDevicePolicy;
 
 	@Remove
 	@Destroy
@@ -82,31 +79,7 @@ public class DeviceBean implements Device {
 			this.facesMessages.add(msg);
 			return null;
 		}
-		String outcome = findOutcome();
-		if (null == outcome) {
-			String msg = "Unsupported authentication device: " + this.selection;
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
-			return null;
-		}
-
-		this.device = this.selection;
-		LOG.debug("device: " + this.device);
-
-		return outcome;
-	}
-
-	private String findOutcome() {
-		/*
-		 * Later on we could make next list dynamic somehow.
-		 */
-		if ("password".equals(this.selection)) {
-			return "/username-password.xhtml";
-		}
-		if ("beid".equals(this.selection)) {
-			return "/beid.xhtml";
-		}
-		return null;
+		return this.selection;
 	}
 
 	@Factory("applicationDevices")
@@ -114,11 +87,12 @@ public class DeviceBean implements Device {
 		LOG.debug("application devices factory");
 		List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
 		try {
-			Set<String> devicePolicy = this.devicePolicyService
+			Set<AuthenticationDevice> devicePolicy = this.devicePolicyService
 					.getDevicePolicy(this.application,
 							this.requiredDevicePolicy);
-			for (String device : devicePolicy) {
-				SelectItem applicationDevice = new SelectItem(device);
+			for (AuthenticationDevice device : devicePolicy) {
+				String deviceName = device.getDeviceName();
+				SelectItem applicationDevice = new SelectItem(deviceName);
 				applicationDevices.add(applicationDevice);
 			}
 		} catch (ApplicationNotFoundException e) {

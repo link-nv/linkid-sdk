@@ -36,6 +36,7 @@ import net.link.safeonline.authentication.exception.IdentityConfirmationRequired
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.AuthenticationState;
@@ -86,7 +87,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	private SubjectEntity authenticatedSubject;
 
-	private String authenticationDevice;
+	private AuthenticationDevice authenticationDevice;
 
 	private String expectedApplicationId;
 
@@ -175,7 +176,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		 */
 		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = subject;
-		this.authenticationDevice = SafeOnlineConstants.USERNAME_PASSWORD_AUTH_DEVICE;
+		this.authenticationDevice = AuthenticationDevice.PASSWORD;
 		this.expectedApplicationId = null;
 
 		/*
@@ -239,7 +240,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		 */
 		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = subject;
-		this.authenticationDevice = SafeOnlineConstants.BEID_AUTH_DEVICE;
+		this.authenticationDevice = AuthenticationDevice.BEID;
 		this.expectedApplicationId = authenticationStatement.getApplicationId();
 
 		return true;
@@ -411,8 +412,12 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		 */
 		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = subject;
-		this.authenticationDevice = SafeOnlineConstants.BEID_AUTH_DEVICE;
+		this.authenticationDevice = AuthenticationDevice.BEID;
 		this.expectedApplicationId = registrationStatement.getApplicationId();
 		return false;
+	}
+
+	public AuthenticationDevice getAuthenticationDevice() {
+		return this.authenticationDevice;
 	}
 }

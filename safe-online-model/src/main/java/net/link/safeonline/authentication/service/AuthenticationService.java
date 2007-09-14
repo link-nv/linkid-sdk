@@ -53,6 +53,8 @@ public interface AuthenticationService {
 	boolean authenticate(String login, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException;
 
+	AuthenticationDevice getAuthenticationDevice();
+
 	/**
 	 * Commits the authentication for the given application.
 	 * 

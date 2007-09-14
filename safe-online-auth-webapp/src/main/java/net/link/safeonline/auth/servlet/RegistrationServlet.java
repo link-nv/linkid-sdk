@@ -7,26 +7,20 @@
 
 package net.link.safeonline.auth.servlet;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.shared.SharedConstants;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * The identity servlet implementation. This servlet receives its data from the
@@ -36,46 +30,25 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class RegistrationServlet extends HttpServlet {
+public class RegistrationServlet extends AbstractStatementServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(RegistrationServlet.class);
-
 	@Override
-	protected void doPost(HttpServletRequest request,
+	protected void processStatement(byte[] statementData, HttpSession session,
 			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("doPost");
-		String contentType = request.getContentType();
-		if (false == "application/octet-stream".equals(contentType)) {
-			LOG.error("content-type should be application/octet-stream");
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		InputStream contentInputStream = request.getInputStream();
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		IOUtils.copy(contentInputStream, outputStream);
-		byte[] registrationStatementData = outputStream.toByteArray();
-
-		HttpSession session = request.getSession();
-		String sessionId = session.getId();
-
 		String requestedUsername = (String) session
 				.getAttribute("requestedUsername");
 
 		AuthenticationService authenticationService = AuthenticationServiceManager
 				.getAuthenticationService(session);
+		String sessionId = session.getId();
 		try {
 			authenticationService.registerAndAuthenticate(sessionId,
-					requestedUsername, registrationStatementData);
+					requestedUsername, statementData);
 			String userId = authenticationService.getUserId();
 			response.setStatus(HttpServletResponse.SC_OK);
-			/*
-			 * Next session attribute is used to communicate the authentication
-			 * event to the redirect servlet.
-			 */
-			session.setAttribute("username", userId);
+			LoginManager.login(session, userId, AuthenticationDevice.BEID);
 		} catch (TrustDomainNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e

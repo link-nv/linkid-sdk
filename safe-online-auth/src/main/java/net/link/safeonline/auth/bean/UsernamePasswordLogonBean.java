@@ -16,6 +16,7 @@ import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.UsernamePasswordLogon;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
@@ -101,7 +102,7 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 			return null;
 		}
 
-		super.login(this.username);
+		super.login(this.username, AuthenticationDevice.PASSWORD);
 
 		HelpdeskLogger.clear();
 		return null;

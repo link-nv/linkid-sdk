@@ -12,5 +12,8 @@ import javax.ejb.Local;
 @Local
 public interface AuthenticationSubscription {
 
+	/*
+	 * Actions.
+	 */
 	String subscribe();
 }

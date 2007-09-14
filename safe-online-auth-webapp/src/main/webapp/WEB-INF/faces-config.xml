@@ -21,6 +21,30 @@
 	</lifecycle>
 
 	<navigation-rule>
+		<from-view-id>/main.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>password</from-outcome>
+			<to-view-id>/username-password.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>beid</from-outcome>
+			<to-view-id>/beid.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/all-devices.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>password</from-outcome>
+			<to-view-id>/username-password.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>beid</from-outcome>
+			<to-view-id>/beid.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
 		<from-view-id>/first-time.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>new</from-action>

@@ -12,6 +12,9 @@ import java.io.IOException;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -32,9 +35,14 @@ public class AbstractLoginBean {
 	private Log log;
 
 	@SuppressWarnings("unused")
-	@Out(value = "username", required = false, scope = ScopeType.SESSION)
+	@Out(value = LoginManager.USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	@In(required = false, scope = ScopeType.SESSION)
 	private String username;
+
+	@SuppressWarnings("unused")
+	@Out(value = LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
+	@In(required = false, scope = ScopeType.SESSION)
+	private AuthenticationDevice authenticationDevice;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -47,18 +55,24 @@ public class AbstractLoginBean {
 	 * Login the given user.
 	 * 
 	 * @param username
+	 * @param authenticationDevice
 	 */
-	protected void login(String username) {
-		log.debug("login using: " + username);
+	protected void login(String username,
+			AuthenticationDevice authenticationDevice) {
+		log.debug("login using: " + username + " via device: "
+				+ authenticationDevice);
 		this.username = username;
-		relogin();
+		relogin(authenticationDevice);
 	}
 
 	/**
 	 * Re-login the current user. This will trigger the device restriction check
 	 * again.
+	 * 
+	 * @param authenticationDevice
 	 */
-	protected void relogin() {
+	protected void relogin(AuthenticationDevice authenticationDevice) {
+		this.authenticationDevice = authenticationDevice;
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		String redirectUrl = "./login";

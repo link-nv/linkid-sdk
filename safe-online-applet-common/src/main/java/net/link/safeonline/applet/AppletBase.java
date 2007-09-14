@@ -276,7 +276,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 			throws IOException {
 		httpURLConnection.setRequestMethod("POST");
 		httpURLConnection.setAllowUserInteraction(false);
-		httpURLConnection.setRequestProperty("Content-type", "text/html");
+		httpURLConnection.setRequestProperty("Content-type",
+				"application/octet-stream");
 		httpURLConnection.connect();
 
 		httpURLConnection.disconnect();

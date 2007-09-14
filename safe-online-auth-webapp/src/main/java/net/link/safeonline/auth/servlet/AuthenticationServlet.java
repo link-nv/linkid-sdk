@@ -7,24 +7,22 @@
 
 package net.link.safeonline.auth.servlet;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.shared.SharedConstants;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -35,34 +33,20 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class AuthenticationServlet extends HelpdeskServlet {
+public class AuthenticationServlet extends AbstractStatementServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory
 			.getLog(AuthenticationServlet.class);
 
-	// @Override
-	protected void doPost(HttpServletRequest request,
+	@Override
+	protected void processStatement(byte[] statementData, HttpSession session,
 			HttpServletResponse response) throws ServletException, IOException {
-		super.doPost(request, response);
-		LOG.debug("doPost");
-		// TODO: factor out common code with identity servlet
-		String contentType = request.getContentType();
-		LOG.debug("content type: " + contentType);
-		if (false == "application/octet-stream".equals(contentType)) {
-			LOG.error("content-type should be application/octet-stream");
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
+		AuthenticationService authenticationService = AuthenticationServiceManager
+				.getAuthenticationService(session);
 
-		InputStream contentInputStream = request.getInputStream();
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		IOUtils.copy(contentInputStream, outputStream);
-		byte[] authenticationStatementData = outputStream.toByteArray();
-
-		HttpSession session = request.getSession();
-		String applicationId = (String) session.getAttribute("applicationId");
+		String applicationId = LoginManager.findApplication(session);
 		if (null == applicationId) {
 			throw new ServletException(
 					"applicationId session attribute not found");
@@ -71,13 +55,10 @@ public class AuthenticationServlet extends HelpdeskServlet {
 		String sessionId = session.getId();
 		LOG.debug("session Id: " + sessionId);
 
-		AuthenticationService authenticationService = AuthenticationServiceManager
-				.getAuthenticationService(session);
-
 		PrintWriter writer = response.getWriter();
 		try {
 			boolean result = authenticationService.authenticate(sessionId,
-					authenticationStatementData);
+					statementData);
 			if (result == false) {
 				/*
 				 * Abort will be handled by the authentication service manager.
@@ -89,11 +70,7 @@ public class AuthenticationServlet extends HelpdeskServlet {
 			}
 			String userId = authenticationService.getUserId();
 			response.setStatus(HttpServletResponse.SC_OK);
-			/*
-			 * Next session attribute is used to communicate the authentication
-			 * event to the redirect servlet.
-			 */
-			session.setAttribute("username", userId);
+			LoginManager.login(session, userId, AuthenticationDevice.BEID);
 		} catch (TrustDomainNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			/*

@@ -20,12 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.auth.Device;
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.ProtocolContext;
 import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
@@ -208,14 +209,32 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
 				.getRequestedAuthnContext();
-		Set<String> devices;
+		Set<AuthenticationDevice> devices;
 		if (null != requestedAuthnContext) {
 			List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
 					.getAuthnContextClassRefs();
-			devices = new HashSet<String>();
+			devices = new HashSet<AuthenticationDevice>();
 			for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs) {
-				String device = authnContextClassRef.getAuthnContextClassRef();
-				LOG.debug("device: " + device);
+				String authnContextClassRefValue = authnContextClassRef
+						.getAuthnContextClassRef();
+				LOG.debug("authentication context class reference: "
+						+ authnContextClassRefValue);
+				SafeOnlineAuthnContextClass safeOnlineAuthnContextClass = SafeOnlineAuthnContextClass
+						.findAuthnContextClass(authnContextClassRefValue);
+				if (null == safeOnlineAuthnContextClass) {
+					LOG.error("AuthnContextClassRef not supported: "
+							+ authnContextClassRefValue);
+					throw new ProtocolException(
+							"AuthnContextClassRef not supported: "
+									+ authnContextClassRefValue);
+				}
+				AuthenticationDevice device = findAuthenticationDevice(safeOnlineAuthnContextClass);
+				if (null == device) {
+					LOG
+							.error("no mapping from SAML authn context class to authentication device");
+					throw new ProtocolException(
+							"no mapping from SAML authn context class to authentication device");
+				}
 				devices.add(device);
 			}
 		} else {
@@ -294,14 +313,27 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 
 	private SafeOnlineAuthnContextClass getAuthnContextClass(HttpSession session)
 			throws ProtocolException {
-		String device = (String) session
-				.getAttribute(Device.AUTHN_DEVICE_ATTRIBUTE);
-		if ("beid".equals(device)) {
-			return SafeOnlineAuthnContextClass.SMART_CARD_PKI;
-		}
-		if ("password".equals(device)) {
+		AuthenticationDevice device = LoginManager
+				.getAuthenticationDevice(session);
+		switch (device) {
+		case PASSWORD:
 			return SafeOnlineAuthnContextClass.PASSWORD_PROTECTED_TRANSPORT;
+		case BEID:
+			return SafeOnlineAuthnContextClass.SMART_CARD_PKI;
+		default:
+			throw new ProtocolException("unsupported device: " + device);
 		}
-		throw new ProtocolException("unsupported device: " + device);
+	}
+
+	private AuthenticationDevice findAuthenticationDevice(
+			SafeOnlineAuthnContextClass authnContextClass) {
+		switch (authnContextClass) {
+		case PASSWORD_PROTECTED_TRANSPORT:
+			return AuthenticationDevice.PASSWORD;
+		case SMART_CARD_PKI:
+			return AuthenticationDevice.BEID;
+		default:
+			return null;
+		}
 	}
 }
