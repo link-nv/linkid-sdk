@@ -174,11 +174,6 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 	}
 
 	public void outputDetailMessage(final String message) {
-		try {
-			addHelpdeskEvent(message, LogLevelType.INFO);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		/*
 		 * We used to have invokeAndWait here, but this sometimes causes a
 		 * deadlock between: RunnableQueue-0 and AWT-EventQueue-0.

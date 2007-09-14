@@ -61,6 +61,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
 	private Long searchId;
 
+	private String searchUserName;
+
 	/*
 	 * Seam Data models
 	 */
@@ -176,10 +178,23 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	public String search() {
 		LOG.debug("search id " + this.searchId);
 		this.helpdeskContextList = this.helpdeskService.listContexts();
-		for (HelpdeskContextEntity context : helpdeskContextList) {
+		for (HelpdeskContextEntity context : this.helpdeskContextList) {
 			if (context.getId().equals(searchId)) {
 				this.selectedContext = context;
 				return "view";
+			}
+		}
+		return "search-failed";
+	}
+
+	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
+	public String searchUser() {
+		LOG.debug("search user " + this.searchUserName);
+		this.helpdeskUserList = this.helpdeskService.listUsers();
+		for (String user : this.helpdeskUserList) {
+			if (user.equals(searchUserName)) {
+				this.selectedUser = user;
+				return "viewUser";
 			}
 		}
 		return "search-failed";
@@ -197,6 +212,14 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
 	public void setSearchId(Long searchId) {
 		this.searchId = searchId;
+	}
+
+	public String getSearchUserName() {
+		return this.searchUserName;
+	}
+
+	public void setSearchUserName(String searchUserName) {
+		this.searchUserName = searchUserName;
 	}
 
 	public List autocomplete(Object event) {

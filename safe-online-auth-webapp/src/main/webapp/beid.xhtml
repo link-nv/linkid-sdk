@@ -29,7 +29,10 @@
 				value="#{facesContext.externalContext.request.session.id}" />
 			<param name="ApplicationId" value="${applicationId}" />
 			<param name="Language" value="#{localeSelector.language}" />
-		</applet>
+		</applet> <h:form>
+			<p><h:commandLink value="#{msgs.helpaction}" action="help"
+				immediate="true" styleClass="help" /></p>
+		</h:form>
 		<p><a href="./all-devices.seam">Try another device</a></p>
 		</div>
 	</ui:define>

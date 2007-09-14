@@ -36,16 +36,22 @@ public interface HelpdeskLog {
 
 	void setSearchId(Long searchId);
 
+	String getSearchUserName();
+
+	void setSearchUserName(String searchUserName);
+
 	/*
 	 * Actions.
 	 */
 	String search();
 
+	String searchUser();
+
 	String view();
 
-	String removeLog();
-
 	String viewUser();
+
+	String removeLog();
 
 	/*
 	 * Lifecycle.

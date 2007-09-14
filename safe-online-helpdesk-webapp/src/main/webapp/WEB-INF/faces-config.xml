@@ -50,6 +50,10 @@
 			<from-outcome>viewUser</from-outcome>
 			<to-view-id>/user-view.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>search-failed</from-outcome>
+			<to-view-id>/error.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
