@@ -1185,7 +1185,8 @@
 		<jboss-seam-ui.version>1.2.1.GA</jboss-seam-ui.version>
 		<jboss-seam-debug.version>1.2.1.GA</jboss-seam-debug.version>
 		<standard.version>1.1.2</standard.version>
-		<jsf-facelets.version>1.1.13</jsf-facelets.version>
+		<!-- jsf-facelets 1.1.13 has a rendering bug -->
+		<jsf-facelets.version>1.1.12</jsf-facelets.version>
 		<el-api.version>1.0</el-api.version>
 		<el-impl.version>1.0</el-impl.version>
 		<jsp-api.version>2.1</jsp-api.version>
