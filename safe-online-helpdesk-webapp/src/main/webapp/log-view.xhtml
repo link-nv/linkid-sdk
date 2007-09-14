@@ -20,7 +20,7 @@
 
 		<h:form>
 			<t:dataTable id="helpdesk-log-data" var="item"
-				value="#{helpdeskLogList}" rows="20" preserveDataModel="false"
+				value="#{helpdeskLogList}" rows="15" preserveDataModel="false"
 				styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
@@ -44,7 +44,7 @@
 				</h:column>
 			</t:dataTable>
 
-			<t:dataScroller for="helpdesk-log-data" fastStep="20"
+			<t:dataScroller for="helpdesk-log-data" fastStep="15"
 				pageCountVar="pageCount" pageIndexVar="pageIndex"
 				styleClass="scroller" paginator="true" paginatorMaxPages="9">
 				<f:facet name="first">#{msgs.first}</f:facet>

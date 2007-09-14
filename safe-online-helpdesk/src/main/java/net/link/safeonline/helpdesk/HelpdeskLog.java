@@ -7,6 +7,8 @@
 
 package net.link.safeonline.helpdesk;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 @Local
@@ -23,12 +25,22 @@ public interface HelpdeskLog {
 	void helpdeskUserContextListFactory();
 
 	/*
+	 * Richfaces
+	 */
+	List autocomplete(Object event);
+
+	/*
 	 * Accessors.
 	 */
+	Long getSearchId();
+
+	void setSearchId(Long searchId);
 
 	/*
 	 * Actions.
 	 */
+	String search();
+
 	String view();
 
 	String removeLog();

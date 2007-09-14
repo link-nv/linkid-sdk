@@ -7,6 +7,7 @@
 
 package net.link.safeonline.helpdesk.bean;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -57,6 +58,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
 	@In(create = true)
 	FacesMessages facesMessages;
+
+	private Long searchId;
 
 	/*
 	 * Seam Data models
@@ -165,14 +168,46 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public String viewUser() {
-		String user = this.selectedUser;
-		LOG.debug("view user \"" + user + "\"'s logs");
+		LOG.debug("view user \"" + this.selectedUser + "\"'s logs");
 		return "viewUser";
+	}
+
+	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
+	public String search() {
+		LOG.debug("search id " + this.searchId);
+		this.helpdeskContextList = this.helpdeskService.listContexts();
+		for (HelpdeskContextEntity context : helpdeskContextList) {
+			if (context.getId().equals(searchId)) {
+				this.selectedContext = context;
+				return "view";
+			}
+		}
+		return "search-failed";
 	}
 
 	@Remove
 	@Destroy
 	public void destroyCallback() {
 		LOG.debug("destroy");
+	}
+
+	public Long getSearchId() {
+		return this.searchId;
+	}
+
+	public void setSearchId(Long searchId) {
+		this.searchId = searchId;
+	}
+
+	public List autocomplete(Object event) {
+		String idString = event.toString();
+		List<String> idList = new LinkedList<String>();
+		for (HelpdeskContextEntity context : helpdeskContextList) {
+			String contextIdString = context.getId().toString();
+			if (contextIdString.startsWith(idString)) {
+				idList.add(contextIdString);
+			}
+		}
+		return idList;
 	}
 }

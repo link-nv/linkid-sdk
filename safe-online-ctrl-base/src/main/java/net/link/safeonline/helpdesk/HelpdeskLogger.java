@@ -8,6 +8,7 @@ package net.link.safeonline.helpdesk;
 
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.faces.context.FacesContext;
@@ -139,10 +140,13 @@ public class HelpdeskLogger {
 	}
 
 	private static String getLocation() {
-		return (String) FacesContext.getCurrentInstance().getExternalContext()
-				.getRequestContextPath()
-				+ (String) FacesContext.getCurrentInstance()
-						.getExternalContext().getRequestServletPath();
-
+		Map<?, ?> params = FacesContext.getCurrentInstance()
+				.getExternalContext().getRequestParameterMap();
+		String location = (String) params.get("location");
+		if (null == location) {
+			location = FacesContext.getCurrentInstance().getExternalContext()
+					.getRequestServletPath();
+		}
+		return location;
 	}
 }

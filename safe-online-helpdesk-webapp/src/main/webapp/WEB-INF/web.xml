@@ -146,23 +146,27 @@
 	</filter-mapping>
 
 	<filter-mapping>
+		<filter-name>ajax4jsf</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
 		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
 	</filter-mapping>
-
 	<filter-mapping>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
 		<servlet-name>Faces Servlet</servlet-name>
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>Seam Exception Filter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<filter-name>Seam Redirect Filter</filter-name>
+		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>Seam Redirect Filter</filter-name>
-		<url-pattern>*.seam</url-pattern>
+		<filter-name>Seam Exception Filter</filter-name>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>
@@ -178,14 +182,6 @@
 	<filter-mapping>
 		<filter-name>Login Filter</filter-name>
 		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>ajax4jsf</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>INCLUDE</dispatcher>
 	</filter-mapping>
 
 	<servlet>

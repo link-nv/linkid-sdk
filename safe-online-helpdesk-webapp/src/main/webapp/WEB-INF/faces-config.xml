@@ -38,6 +38,10 @@
 			<from-outcome>view</from-outcome>
 			<to-view-id>/log-view.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>search-failed</from-outcome>
+			<to-view-id>/error.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>

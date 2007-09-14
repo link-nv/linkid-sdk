@@ -5,6 +5,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
@@ -17,6 +18,23 @@
 	<ui:define name="content">
 
 		<h2>Helpdesk logs</h2>
+
+		<h:form>
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+
+			<h:panelGrid columns="4" border="0" style="border: 1px solid black;">
+				<f:verbatim>Lookup a helpdesk context id :</f:verbatim>
+				<s:decorate>
+					<h:inputText value="#{helpdeskLog.searchId}" id="searchId"
+						required="true" />
+				</s:decorate>
+				<h:commandButton action="#{helpdeskLog.search}" id="search"
+					value="#{msgs.searchAction}" />
+				<t:message for="searchId" styleClass="error" />
+			</h:panelGrid>
+		</h:form>
 
 		<h:form>
 			<t:dataTable id="helpdesk-context-data" var="item"
