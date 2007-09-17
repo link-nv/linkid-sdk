@@ -316,6 +316,7 @@
 		<module>safe-online-reg-applet</module>
 		<module>safe-online-reg-applet-package</module>
 		<module>safe-online-cli</module>
+		<module>safe-online-webapp-common</module>
 	</modules>
 	<repositories>
 		<repository>

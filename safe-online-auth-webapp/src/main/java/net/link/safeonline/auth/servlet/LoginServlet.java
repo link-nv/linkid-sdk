@@ -185,8 +185,10 @@ public class LoginServlet extends HttpServlet {
 	 */
 	@SuppressWarnings("unchecked")
 	private boolean performDevicePolicyCheck(HttpSession session,
-			String applicationId, AuthenticationDevice device) throws ServletException {
-		Set<AuthenticationDevice> requiredDevicePolicy = LoginManager.getRequiredDevices(session);
+			String applicationId, AuthenticationDevice device)
+			throws ServletException {
+		Set<AuthenticationDevice> requiredDevicePolicy = LoginManager
+				.getRequiredDevices(session);
 		Set<AuthenticationDevice> devicePolicy;
 		try {
 			devicePolicy = this.devicePolicyService.getDevicePolicy(
@@ -215,6 +217,7 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException {
 		AuthenticationDevice device = LoginManager
 				.getAuthenticationDevice(session);
+		LOG.debug("authentication device: " + device);
 		HelpdeskLogger.add(session, "authenticated via " + device,
 				LogLevelType.INFO);
 		return device;

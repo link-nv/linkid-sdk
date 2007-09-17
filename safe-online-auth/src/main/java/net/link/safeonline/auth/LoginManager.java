@@ -14,6 +14,9 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.auth.bean.AbstractLoginBean;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * The login manager makes sure that both the 'username' and the
  * 'authenticationDevice' are set at the same time to have a consistent login
@@ -23,6 +26,8 @@ import net.link.safeonline.authentication.service.AuthenticationDevice;
  * 
  */
 public class LoginManager {
+
+	private static final Log LOG = LogFactory.getLog(LoginManager.class);
 
 	public static final String USERNAME_ATTRIBUTE = "username";
 
@@ -47,7 +52,20 @@ public class LoginManager {
 			throw new IllegalArgumentException("device is null");
 		}
 		session.setAttribute(USERNAME_ATTRIBUTE, username);
+		setAuthenticationDevice(session, device);
+	}
+
+	private static void setAuthenticationDevice(HttpSession session,
+			AuthenticationDevice device) {
 		session.setAttribute(AUTHENTICATION_DEVICE_ATTRIBUTE, device);
+	}
+
+	public static void relogin(HttpSession session, AuthenticationDevice device) {
+		String username = getUsername(session);
+		AuthenticationDevice currentDevice = getAuthenticationDevice(session);
+		LOG.debug("relogin for " + username + " from device " + currentDevice
+				+ " to device " + device);
+		setAuthenticationDevice(session, device);
 	}
 
 	public static String getUsername(HttpSession session) {

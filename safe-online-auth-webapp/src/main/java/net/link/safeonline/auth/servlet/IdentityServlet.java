@@ -15,8 +15,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.shared.SharedConstants;
@@ -56,9 +58,13 @@ public class IdentityServlet extends AbstractStatementServlet {
 	@Override
 	protected void processStatement(byte[] statementData, HttpSession session,
 			HttpServletResponse response) throws ServletException, IOException {
+		String username = LoginManager.getUsername(session);
+		LOG.debug("processing statement for: " + username);
+
 		PrintWriter writer = response.getWriter();
 		try {
 			this.credentialService.mergeIdentityStatement(statementData);
+			LoginManager.relogin(session, AuthenticationDevice.BEID);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (TrustDomainNotFoundException e) {
 			LOG.error("trust domain not found: " + e.getMessage(), e);
