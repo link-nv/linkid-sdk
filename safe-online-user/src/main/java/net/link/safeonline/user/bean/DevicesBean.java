@@ -168,4 +168,10 @@ public class DevicesBean implements Devices {
 		}
 		return beidAttributes;
 	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public boolean isPasswordConfigured() {
+		boolean hasPassword = this.credentialService.isPasswordConfigured();
+		return hasPassword;
+	}
 }

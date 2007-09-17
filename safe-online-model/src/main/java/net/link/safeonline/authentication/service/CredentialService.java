@@ -62,4 +62,12 @@ public interface CredentialService {
 	void mergeIdentityStatement(byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
 			ArgumentIntegrityException, AttributeTypeNotFoundException;
+
+	/**
+	 * Gives back <code>true</code> if the user already has a password
+	 * configured.
+	 * 
+	 * @return
+	 */
+	boolean isPasswordConfigured();
 }

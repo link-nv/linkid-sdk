@@ -27,6 +27,8 @@ public interface Devices {
 
 	void setOldPassword(String oldPassword);
 
+	boolean isPasswordConfigured();
+
 	/*
 	 * Actions.
 	 */

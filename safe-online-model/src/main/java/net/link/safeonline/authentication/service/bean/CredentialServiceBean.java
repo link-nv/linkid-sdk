@@ -64,13 +64,35 @@ public class CredentialServiceBean implements CredentialService,
 		LOG.debug("change password");
 		String login = this.subjectManager.getCallerLogin();
 
+		AttributeEntity passwordAttribute = getCurrentPasswordAttribute(login,
+				oldPassword);
+		if (null != passwordAttribute) {
+			passwordAttribute.setStringValue(newPassword);
+		} else {
+			AttributeTypeEntity passwordAttributeType;
+			try {
+				passwordAttributeType = this.attributeTypeDAO
+						.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
+			} catch (AttributeTypeNotFoundException e) {
+				throw new EJBException("attribute type not found: "
+						+ SafeOnlineConstants.PASSWORD_ATTRIBUTE);
+			}
+			SubjectEntity subject = this.subjectManager.getCallerSubject();
+			passwordAttribute = this.attributeDAO.addAttribute(
+					passwordAttributeType, subject, newPassword);
+		}
+
+		SecurityManagerUtils.flushCredentialCache(login,
+				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+	}
+
+	private AttributeEntity getCurrentPasswordAttribute(String login,
+			String oldPassword) throws PermissionDeniedException {
 		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
 				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
 		if (null == passwordAttribute) {
-			throw new EJBException(
-					"password attribute not present for subject: " + login);
+			return null;
 		}
-
 		String currentPassword = passwordAttribute.getStringValue();
 		if (null == currentPassword) {
 			throw new EJBException("current password is null");
@@ -79,11 +101,7 @@ public class CredentialServiceBean implements CredentialService,
 		if (!currentPassword.equals(oldPassword)) {
 			throw new PermissionDeniedException();
 		}
-
-		passwordAttribute.setStringValue(newPassword);
-
-		SecurityManagerUtils.flushCredentialCache(login,
-				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+		return passwordAttribute;
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -118,5 +136,14 @@ public class CredentialServiceBean implements CredentialService,
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		this.credentialManager.mergeIdentityStatement(subject,
 				identityStatementData);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public boolean isPasswordConfigured() {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		String login = subject.getLogin();
+		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
+				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
+		return null != passwordAttribute;
 	}
 }
