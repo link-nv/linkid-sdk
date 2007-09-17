@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.servlet.AbstractStatementServlet;
 import net.link.safeonline.shared.SharedConstants;
 import net.link.safeonline.util.ee.EjbUtils;
 

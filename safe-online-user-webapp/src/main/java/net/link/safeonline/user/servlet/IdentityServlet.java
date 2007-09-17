@@ -7,25 +7,22 @@
 
 package net.link.safeonline.user.servlet;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.servlet.AbstractStatementServlet;
 import net.link.safeonline.shared.SharedConstants;
 import net.link.safeonline.util.ee.EjbUtils;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -36,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class IdentityServlet extends HttpServlet {
+public class IdentityServlet extends AbstractStatementServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -58,26 +55,11 @@ public class IdentityServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest request,
+	protected void processStatement(byte[] statementData, HttpSession session,
 			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("doPost");
-		String contentType = request.getContentType();
-		LOG.debug("content type: " + contentType);
-		if (false == "application/octet-stream".equals(contentType)) {
-			LOG.error("content-type should be application/octet-stream");
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		InputStream contentInputStream = request.getInputStream();
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		IOUtils.copy(contentInputStream, outputStream);
-		byte[] identityStatementData = outputStream.toByteArray();
-
 		PrintWriter writer = response.getWriter();
 		try {
-			this.credentialService
-					.mergeIdentityStatement(identityStatementData);
+			this.credentialService.mergeIdentityStatement(statementData);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (TrustDomainNotFoundException e) {
 			LOG.error("trust domain not found: " + e.getMessage(), e);

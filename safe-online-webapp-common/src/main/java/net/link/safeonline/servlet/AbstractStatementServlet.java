@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.auth.servlet;
+package net.link.safeonline.servlet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
