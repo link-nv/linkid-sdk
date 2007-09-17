@@ -63,6 +63,10 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
 	private String searchUserName;
 
+	// set by different datamodels and used by shared log-view.xhtml
+	@Out(required = false)
+	private HelpdeskContextEntity context;
+
 	/*
 	 * Seam Data models
 	 */
@@ -112,11 +116,17 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public void helpdeskLogListFactory() {
 		Long id;
-		if (null == this.selectedContext)
+		if (null != searchId) {
+			id = searchId;
+			searchId = null;
+		} else if (null == this.selectedContext) {
 			id = this.selectedUserContext.getId();
-		else
+			this.context = this.selectedUserContext;
+		} else {
 			id = this.selectedContext.getId();
-		LOG.debug("helpdesk log list factory ( id=" + " )");
+			this.context = this.selectedContext;
+		}
+		LOG.debug("helpdesk log list factory ( id=" + id + " )");
 		this.helpdeskLogList = this.helpdeskService.listEvents(id);
 	}
 
@@ -124,16 +134,23 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public void helpdeskUserListFactory() {
 		LOG.debug("helpdesk user list factory");
-		this.selectedContext = null;
 		this.helpdeskUserList = this.helpdeskService.listUsers();
+		this.selectedContext = null;
 	}
 
 	@Factory(HELPDESK_USER_CONTEXT_LIST_NAME)
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public void helpdeskUserContextListFactory() {
-		LOG.debug("helpdesk user context list factory (" + selectedUser + ")");
+		String user;
+		if (null != this.searchUserName) {
+			user = this.searchUserName;
+			this.searchUserName = null;
+		} else {
+			user = this.selectedUser;
+		}
+		LOG.debug("helpdesk user context list factory (" + user + ")");
 		this.helpdeskUserContextList = this.helpdeskService
-				.listUserContexts(selectedUser);
+				.listUserContexts(user);
 	}
 
 	/*
@@ -164,7 +181,10 @@ public class HelpdeskLogBean implements HelpdeskLog {
 			this.facesMessages.add(msg);
 			return null;
 		}
-		helpdeskContextListFactory();
+		if (null == this.selectedContext)
+			helpdeskContextListFactory();
+		else
+			helpdeskUserContextListFactory();
 		return "success";
 	}
 
@@ -180,7 +200,6 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		this.helpdeskContextList = this.helpdeskService.listContexts();
 		for (HelpdeskContextEntity context : this.helpdeskContextList) {
 			if (context.getId().equals(searchId)) {
-				this.selectedContext = context;
 				return "view";
 			}
 		}
@@ -192,8 +211,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		LOG.debug("search user " + this.searchUserName);
 		this.helpdeskUserList = this.helpdeskService.listUsers();
 		for (String user : this.helpdeskUserList) {
-			if (user.equals(searchUserName)) {
-				this.selectedUser = user;
+			if (user.equals(this.searchUserName)) {
 				return "viewUser";
 			}
 		}
@@ -225,12 +243,28 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	public List autocomplete(Object event) {
 		String idString = event.toString();
 		List<String> idList = new LinkedList<String>();
-		for (HelpdeskContextEntity context : helpdeskContextList) {
+		this.helpdeskContextList = this.helpdeskService.listContexts();
+		for (HelpdeskContextEntity context : this.helpdeskContextList) {
 			String contextIdString = context.getId().toString();
 			if (contextIdString.startsWith(idString)) {
 				idList.add(contextIdString);
 			}
 		}
+		LOG.debug("return suggestion list size = " + idList.size());
 		return idList;
 	}
+
+	public List autocompleteUser(Object event) {
+		String userString = event.toString();
+		List<String> userList = new LinkedList<String>();
+		this.helpdeskUserList = this.helpdeskService.listUsers();
+		for (String user : this.helpdeskUserList) {
+			if (user.startsWith(userString)) {
+				userList.add(user);
+			}
+		}
+		LOG.debug("return suggestion list size = " + userList.size());
+		return userList;
+	}
+
 }

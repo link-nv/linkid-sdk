@@ -5,6 +5,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
@@ -25,11 +26,17 @@
 			</f:facet>
 
 			<h:panelGrid columns="4" border="0" style="border: 1px solid black;">
-				<f:verbatim>Lookup a helpdesk context id :</f:verbatim>
+				<f:verbatim>#{msgs.lookupHelpId}</f:verbatim>
 				<s:decorate>
 					<h:inputText value="#{helpdeskLog.searchId}" id="searchId"
 						required="true" />
 				</s:decorate>
+				<rich:suggestionbox for="searchId"
+					suggestionAction="#{helpdeskLog.autocomplete}" var="searchIdInput">
+					<h:column>
+						<h:outputText value="#{searchIdInput}" />
+					</h:column>
+				</rich:suggestionbox>
 				<h:commandButton action="#{helpdeskLog.search}" id="search"
 					value="#{msgs.searchAction}" />
 				<t:message for="searchId" styleClass="error" />

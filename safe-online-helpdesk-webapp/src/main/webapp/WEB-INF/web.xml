@@ -19,8 +19,22 @@
 	</listener>
 
 	<context-param>
+		<param-name>
+			org.apache.myfaces.trinidad.ALTERNATE_VIEW_HANDLER
+		</param-name>
+		<param-value>com.sun.facelets.FaceletViewHandler</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>
+			org.apache.myfaces.trinidad.USE_APPLICATION_VIEW_CACHE
+		</param-name>
+		<param-value>false</param-value>
+	</context-param>
+
+	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
-		<param-value>http://localhost:8080/olas-auth/</param-value>
+		<param-value>${auth.webapp.location}</param-value>
 	</context-param>
 
 	<context-param>
@@ -74,6 +88,31 @@
 	</context-param>
 
 	<filter>
+		<display-name>Ajax4jsf Filter</display-name>
+		<filter-name>ajax4jsf</filter-name>
+		<filter-class>org.ajax4jsf.Filter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>trinidad</filter-name>
+		<filter-class>
+			org.apache.myfaces.trinidad.webapp.TrinidadFilter
+		</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>Seam Filter</filter-name>
+		<filter-class>org.jboss.seam.web.SeamFilter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>ServletLoginFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.webapp.filter.ServletLoginFilter
+		</filter-class>
+	</filter>
+
+	<filter>
 		<filter-name>TimeoutFilter</filter-name>
 		<filter-class>
 			net.link.safeonline.webapp.filter.TimeoutFilter
@@ -86,6 +125,7 @@
 			<param-name>LoginSessionAttribute</param-name>
 			<param-value>username</param-value>
 		</init-param>
+
 	</filter>
 
 	<filter>
@@ -96,28 +136,7 @@
 	</filter>
 
 	<filter>
-		<filter-name>ContainerLoginFilter</filter-name>
-		<filter-class>
-			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter
-		</filter-class>
-	</filter>
-
-	<filter>
-		<filter-name>Seam Exception Filter</filter-name>
-		<filter-class>
-			org.jboss.seam.servlet.SeamExceptionFilter
-		</filter-class>
-	</filter>
-
-	<filter>
-		<filter-name>Seam Redirect Filter</filter-name>
-		<filter-class>
-			org.jboss.seam.servlet.SeamRedirectFilter
-		</filter-class>
-	</filter>
-
-	<filter>
-		<filter-name>Login Filter</filter-name>
+		<filter-name>JAASLoginFilter</filter-name>
 		<filter-class>
 			net.link.safeonline.sdk.auth.filter.JAASLoginFilter
 		</filter-class>
@@ -134,12 +153,6 @@
 		</filter-class>
 	</filter>
 
-	<filter>
-		<display-name>Ajax4jsf Filter</display-name>
-		<filter-name>ajax4jsf</filter-name>
-		<filter-class>org.ajax4jsf.Filter</filter-class>
-	</filter>
-
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -151,21 +164,12 @@
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>Seam Redirect Filter</filter-name>
+		<filter-name>trinidad</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>Seam Exception Filter</filter-name>
+		<filter-name>Seam Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
@@ -175,13 +179,23 @@
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>ContainerLoginFilter</filter-name>
+		<filter-name>ServletLoginFilter</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>Login Filter</filter-name>
+		<filter-name>JAASLoginFilter</filter-name>
 		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
 	</filter-mapping>
 
 	<servlet>
@@ -190,9 +204,33 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
+	<servlet>
+		<servlet-name>resources</servlet-name>
+		<servlet-class>
+			org.apache.myfaces.trinidad.webapp.ResourceServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>Seam Resource Servlet</servlet-name>
+		<servlet-class>
+			org.jboss.seam.servlet.ResourceServlet
+		</servlet-class>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.seam</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>resources</servlet-name>
+		<url-pattern>/adf/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Seam Resource Servlet</servlet-name>
+		<url-pattern>/seam/resource/*</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

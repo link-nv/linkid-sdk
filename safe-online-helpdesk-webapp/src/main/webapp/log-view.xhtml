@@ -16,7 +16,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>Helpdesk context : #{selectedContext.id}</h2>
+		<h2>Helpdesk context : #{context.id}</h2>
 
 		<h:form>
 			<t:dataTable id="helpdesk-log-data" var="item"
@@ -26,7 +26,11 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.level}</f:facet>
-					<h:outputText value="#{item.logLevel}" />
+					<h:outputText value="#{item.logLevel}"
+						rendered="#{item.logLevel == 'INFO'}" />
+					<h:outputText value="#{item.logLevel}"
+						style="background-color: red"
+						rendered="#{item.logLevel == 'ERROR'}" />
 				</h:column>
 
 				<h:column>

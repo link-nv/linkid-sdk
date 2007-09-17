@@ -29,6 +29,8 @@ public interface HelpdeskLog {
 	 */
 	List autocomplete(Object event);
 
+	List autocompleteUser(Object event);
+
 	/*
 	 * Accessors.
 	 */

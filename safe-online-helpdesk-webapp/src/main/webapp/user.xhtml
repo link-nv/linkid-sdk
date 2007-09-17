@@ -5,6 +5,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
@@ -25,11 +26,19 @@
 			</f:facet>
 
 			<h:panelGrid columns="4" border="0" style="border: 1px solid black;">
-				<f:verbatim>Lookup a user :</f:verbatim>
+				<f:verbatim>#{msgs.lookupHelpUser}</f:verbatim>
 				<s:decorate>
 					<h:inputText value="#{helpdeskLog.searchUserName}"
 						id="searchUserName" required="true" />
 				</s:decorate>
+				<rich:suggestionbox for="searchUserName"
+					suggestionAction="#{helpdeskLog.autocompleteUser}"
+					var="searchUserNameInput">
+					<h:column>
+						<h:outputText value="#{searchUserNameInput}" />
+					</h:column>
+				</rich:suggestionbox>
+
 				<h:commandButton action="#{helpdeskLog.searchUser}" id="searchUser"
 					value="#{msgs.searchAction}" />
 				<t:message for="searchUser" styleClass="error" />
