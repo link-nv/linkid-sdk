@@ -26,7 +26,7 @@
 				<auth.webapp.location>
 					http://localhost:8080/olas-auth/
 				</auth.webapp.location>
-				<local.host.name>localhost</local.host.name>
+				<local.host.name>localhost:8443</local.host.name>
 			</properties>
 		</profile>
 		<profile>
