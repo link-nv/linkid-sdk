@@ -14,29 +14,32 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.audit.dao.AccessAuditDAO;
-import net.link.safeonline.entity.audit.AccessAuditEntity;
+import net.link.safeonline.audit.dao.ResourceAuditDAO;
 import net.link.safeonline.entity.audit.AuditContextEntity;
-import net.link.safeonline.entity.audit.OperationStateType;
+import net.link.safeonline.entity.audit.ResourceAuditEntity;
+import net.link.safeonline.entity.audit.ResourceLevelType;
+import net.link.safeonline.entity.audit.ResourceNameType;
 
 @Stateless
-public class AccessAuditDAOBean implements AccessAuditDAO {
+public class ResourceAuditDAOBean implements ResourceAuditDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
-	private AccessAuditEntity.QueryInterface queryObject;
+	private ResourceAuditEntity.QueryInterface queryObject;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addAccessAudit(AuditContextEntity auditContext,
-			String operation, OperationStateType operationState,
-			String principal) {
-		AccessAuditEntity accessAudit = new AccessAuditEntity(auditContext,
-				operation, operationState, principal);
-		this.entityManager.persist(accessAudit);
+	public void addResourceAudit(AuditContextEntity auditContext,
+			ResourceNameType resourceName, ResourceLevelType resourceLevel,
+			String sourceComponent, String message) {
+		ResourceAuditEntity resourceAudit = new ResourceAuditEntity(
+				auditContext, resourceName, resourceLevel, sourceComponent,
+				message);
+		this.entityManager.persist(resourceAudit);
 	}
 
 	public void cleanup(Long id) {
 		this.queryObject.deleteRecords(id);
 	}
+
 }

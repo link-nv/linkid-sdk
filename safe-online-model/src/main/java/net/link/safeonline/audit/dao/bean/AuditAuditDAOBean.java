@@ -24,6 +24,8 @@ public class AuditAuditDAOBean implements AuditAuditDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
+	private AuditAuditEntity.QueryInterface queryObject;
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void addAuditAudit(AuditContextEntity auditContext, String message) {
 		AuditAuditEntity auditAudit = new AuditAuditEntity(auditContext,
@@ -35,5 +37,9 @@ public class AuditAuditDAOBean implements AuditAuditDAO {
 	public void addAuditAudit(String message) {
 		AuditAuditEntity auditAudit = new AuditAuditEntity(message);
 		this.entityManager.persist(auditAudit);
+	}
+
+	public void cleanup(Long id) {
+		this.queryObject.deleteRecords(id);
 	}
 }

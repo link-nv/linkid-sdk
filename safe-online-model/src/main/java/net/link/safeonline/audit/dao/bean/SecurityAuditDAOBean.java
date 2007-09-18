@@ -25,6 +25,8 @@ public class SecurityAuditDAOBean implements SecurityAuditDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
+	private SecurityAuditEntity.QueryInterface queryObject;
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void addSecurityAudit(AuditContextEntity auditContext,
 			SecurityThreatType securityThreat, String targetPrincipal,
@@ -32,5 +34,9 @@ public class SecurityAuditDAOBean implements SecurityAuditDAO {
 		SecurityAuditEntity securityAudit = new SecurityAuditEntity(
 				auditContext, securityThreat, targetPrincipal, message);
 		this.entityManager.persist(securityAudit);
+	}
+
+	public void cleanup(Long id) {
+		this.queryObject.deleteRecords(id);
 	}
 }

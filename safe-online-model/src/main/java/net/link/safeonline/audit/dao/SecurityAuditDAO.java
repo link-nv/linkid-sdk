@@ -18,4 +18,6 @@ public interface SecurityAuditDAO {
 	void addSecurityAudit(AuditContextEntity auditContext,
 			SecurityThreatType securityThreat, String targetPrincipal,
 			String message);
+
+	void cleanup(Long id);
 }

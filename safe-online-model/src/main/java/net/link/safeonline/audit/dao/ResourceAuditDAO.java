@@ -10,13 +10,16 @@ package net.link.safeonline.audit.dao;
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.audit.AuditContextEntity;
+import net.link.safeonline.entity.audit.ResourceLevelType;
+import net.link.safeonline.entity.audit.ResourceNameType;
 
 @Local
-public interface AuditAuditDAO {
+public interface ResourceAuditDAO {
 
-	void addAuditAudit(AuditContextEntity auditContext, String message);
-
-	void addAuditAudit(String message);
+	void addResourceAudit(AuditContextEntity auditContext,
+			ResourceNameType resourceName, ResourceLevelType resourceLevel,
+			String sourceComponent, String message);
 
 	void cleanup(Long id);
+
 }

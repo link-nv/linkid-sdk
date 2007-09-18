@@ -54,11 +54,12 @@
 		<mapping
 			class="net.link.safeonline.entity.audit.SecurityAuditEntity" />
 		<mapping
+			class="net.link.safeonline.entity.audit.ResourceAuditEntity" />
+		<mapping
 			class="net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity" />
 		<mapping
 			class="net.link.safeonline.entity.helpdesk.HelpdeskContextEntity" />
 		<mapping
 			class="net.link.safeonline.entity.helpdesk.HelpdeskEventEntity" />
-
 	</session-factory>
 </hibernate-configuration>

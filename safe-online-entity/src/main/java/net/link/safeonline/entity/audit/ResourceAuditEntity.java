@@ -7,7 +7,7 @@
 
 package net.link.safeonline.entity.audit;
 
-import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
+import static net.link.safeonline.entity.audit.ResourceAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
 
 import java.io.Serializable;
 
@@ -26,37 +26,36 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 @Entity
-@Table(name = "security_audit")
+@Table(name = "resource_audit")
 @NamedQueries(@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
 		+ "FROM ResourceAuditEntity AS record "
 		+ "WHERE record.auditContext.id = :contextId"))
-public class SecurityAuditEntity implements Serializable {
+public class ResourceAuditEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String QUERY_DELETE_WHERE_CONTEXTID = "sa.del.id";
+	public static final String QUERY_DELETE_WHERE_CONTEXTID = "ra.del.id";
 
 	private Long id;
 
 	private AuditContextEntity auditContext;
 
+	private ResourceNameType resourceName;
+
+	private ResourceLevelType resourceLevel;
+
+	private String sourceComponent;
+
 	private String message;
 
-	private SecurityThreatType securityThreat;
-
-	private String targetPrincipal;
-
-	public SecurityAuditEntity() {
-		// empty
-	}
-
-	public SecurityAuditEntity(AuditContextEntity auditContext,
-			SecurityThreatType securityThreat, String targetPrincipal,
-			String message) {
+	public ResourceAuditEntity(AuditContextEntity auditContext,
+			ResourceNameType resourceName, ResourceLevelType resourceLevel,
+			String sourceComponent, String message) {
 		this.auditContext = auditContext;
-		this.securityThreat = securityThreat;
+		this.resourceName = resourceName;
+		this.resourceLevel = resourceLevel;
+		this.sourceComponent = sourceComponent;
 		this.message = message;
-		this.targetPrincipal = targetPrincipal;
 	}
 
 	@Id
@@ -78,12 +77,21 @@ public class SecurityAuditEntity implements Serializable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	public SecurityThreatType getSecurityThreat() {
-		return this.securityThreat;
+	public ResourceNameType getResourceName() {
+		return this.resourceName;
 	}
 
-	public void setSecurityThreat(SecurityThreatType securityThreat) {
-		this.securityThreat = securityThreat;
+	public void setResourceName(ResourceNameType resourceName) {
+		this.resourceName = resourceName;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public ResourceLevelType getResourceLevel() {
+		return this.resourceLevel;
+	}
+
+	public void setResourceLevel(ResourceLevelType resourceLevel) {
+		this.resourceLevel = resourceLevel;
 	}
 
 	@ManyToOne
@@ -95,12 +103,12 @@ public class SecurityAuditEntity implements Serializable {
 		this.auditContext = auditContext;
 	}
 
-	public String getTargetPrincipal() {
-		return this.targetPrincipal;
+	public String getSourceComponent() {
+		return sourceComponent;
 	}
 
-	public void setTargetPrincipal(String targetPrincipal) {
-		this.targetPrincipal = targetPrincipal;
+	public void setSourceComponent(String sourceComponent) {
+		this.sourceComponent = sourceComponent;
 	}
 
 	public interface QueryInterface {
@@ -108,5 +116,4 @@ public class SecurityAuditEntity implements Serializable {
 		void deleteRecords(@QueryParam("contextId")
 		Long contextId);
 	}
-
 }

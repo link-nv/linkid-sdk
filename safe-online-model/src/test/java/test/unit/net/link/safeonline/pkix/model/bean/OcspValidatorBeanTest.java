@@ -7,6 +7,10 @@
 
 package test.unit.net.link.safeonline.pkix.model.bean;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URI;
@@ -23,7 +27,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
+import net.link.safeonline.audit.ResourceAuditLogger;
+import net.link.safeonline.entity.audit.ResourceLevelType;
+import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.pkix.model.bean.OcspValidatorBean;
+import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 
@@ -54,6 +62,10 @@ public class OcspValidatorBeanTest extends TestCase {
 
 	private ServletTestManager servletTestManager;
 
+	private ResourceAuditLogger mockResourceAuditLogger;
+
+	private Object[] mockObjects;
+
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
@@ -83,6 +95,9 @@ public class OcspValidatorBeanTest extends TestCase {
 
 		TestOcspResponderServlet.called = false;
 
+		mockResourceAuditLogger = createMock(ResourceAuditLogger.class);
+		this.mockObjects = new Object[] { mockResourceAuditLogger };
+		EJBTestUtils.inject(this.testedInstance, this.mockResourceAuditLogger);
 	}
 
 	@Override
@@ -125,11 +140,20 @@ public class OcspValidatorBeanTest extends TestCase {
 		X509Certificate certificate = PkiTestUtils
 				.generateTestSelfSignedCert(ocspUri);
 
+		// expectations
+		this.mockResourceAuditLogger.addResourceAudit(ResourceNameType.OCSP,
+				ResourceLevelType.RESOURCE_UNAVAILABLE, "/",
+				"OCSP Responder is down");
+
+		// prepare
+		replay(this.mockObjects);
+
 		// operate
 		boolean result = this.testedInstance.performOcspCheck(certificate,
 				certificate);
 
 		// verify
+		verify(this.mockObjects);
 		assertFalse(result);
 	}
 

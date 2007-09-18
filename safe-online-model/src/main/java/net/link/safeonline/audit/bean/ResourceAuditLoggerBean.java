@@ -15,17 +15,18 @@ import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
 
 import net.link.safeonline.audit.AuditContextPolicyContextHandler;
-import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.audit.dao.AuditAuditDAO;
 import net.link.safeonline.audit.dao.AuditContextDAO;
-import net.link.safeonline.audit.dao.SecurityAuditDAO;
+import net.link.safeonline.audit.dao.ResourceAuditDAO;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
-import net.link.safeonline.authentication.exception.SafeOnlineSecurityException;
+import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
-import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.entity.audit.ResourceLevelType;
+import net.link.safeonline.entity.audit.ResourceNameType;
 
 @Stateless
-public class SecurityAuditLoggerBean implements SecurityAuditLogger {
+public class ResourceAuditLoggerBean implements ResourceAuditLogger {
 
 	@EJB
 	private AuditAuditDAO auditAuditDAO;
@@ -34,7 +35,7 @@ public class SecurityAuditLoggerBean implements SecurityAuditLogger {
 	private AuditContextDAO auditContextDAO;
 
 	@EJB
-	private SecurityAuditDAO securityAuditDAO;
+	private ResourceAuditDAO resourceAuditDAO;
 
 	@AroundInvoke
 	public Object interceptor(InvocationContext context) throws Exception {
@@ -42,15 +43,16 @@ public class SecurityAuditLoggerBean implements SecurityAuditLogger {
 		try {
 			result = context.proceed();
 			return result;
-		} catch (SafeOnlineSecurityException e) {
-			addSecurityAudit(e.getSecurityThreat(), e.getTargetPrincipal(), e
-					.getMessage());
+		} catch (SafeOnlineResourceException e) {
+			addResourceAudit(e.getResourceName(), e.getResourceLevel(), e
+					.getSourceComponent(), e.getMessage());
 			throw e;
 		}
 	}
 
-	public void addSecurityAudit(SecurityThreatType securityThreat,
-			String targetPrincipal, String message) {
+	public void addResourceAudit(ResourceNameType resourceName,
+			ResourceLevelType resourceLevel, String sourceComponent,
+			String message) {
 		Long auditContextId;
 		try {
 			auditContextId = (Long) PolicyContext
@@ -75,12 +77,8 @@ public class SecurityAuditLoggerBean implements SecurityAuditLogger {
 			return;
 		}
 
-		this.securityAuditDAO.addSecurityAudit(auditContext, securityThreat,
-				targetPrincipal, message);
+		this.resourceAuditDAO.addResourceAudit(auditContext, resourceName,
+				resourceLevel, sourceComponent, message);
 	}
 
-	public void addSecurityAudit(SecurityThreatType securityThreat,
-			String message) {
-		addSecurityAudit(securityThreat, null, message);
-	}
 }

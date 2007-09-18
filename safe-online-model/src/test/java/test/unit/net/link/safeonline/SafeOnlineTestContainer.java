@@ -7,6 +7,12 @@
 
 package test.unit.net.link.safeonline;
 
+import net.link.safeonline.audit.bean.ResourceAuditLoggerBean;
+import net.link.safeonline.audit.dao.bean.AccessAuditDAOBean;
+import net.link.safeonline.audit.dao.bean.AuditAuditDAOBean;
+import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
+import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
+import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
@@ -95,7 +101,10 @@ public class SafeOnlineTestContainer {
 			CredentialManagerBean.class, PkiProviderManagerBean.class,
 			PkiValidatorBean.class, CachedOcspValidatorBean.class,
 			OcspValidatorBean.class, SubjectIdentifierDAOBean.class,
-			UserRegistrationManagerBean.class };
+			UserRegistrationManagerBean.class, ResourceAuditLoggerBean.class,
+			AuditAuditDAOBean.class, AuditContextDAOBean.class,
+			AccessAuditDAOBean.class, SecurityAuditDAOBean.class,
+			ResourceAuditDAOBean.class };
 
 	public static final Class<?>[] entities = new Class[] {
 			SubjectEntity.class, ApplicationEntity.class,

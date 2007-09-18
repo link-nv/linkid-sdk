@@ -7,15 +7,22 @@
 
 package net.link.safeonline.entity.audit;
 
+import static net.link.safeonline.entity.audit.AuditAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
+
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 /**
  * Audit entity about audit system itself.
@@ -25,9 +32,14 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "audit_audit")
+@NamedQueries(@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
+		+ "FROM AuditAuditEntity AS record "
+		+ "WHERE record.auditContext.id = :contextId"))
 public class AuditAuditEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String QUERY_DELETE_WHERE_CONTEXTID = "aa.del.id";
 
 	private Long id;
 
@@ -74,4 +86,11 @@ public class AuditAuditEntity implements Serializable {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+
+	public interface QueryInterface {
+		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
+		void deleteRecords(@QueryParam("contextId")
+		Long contextId);
+	}
+
 }

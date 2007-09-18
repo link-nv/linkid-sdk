@@ -17,4 +17,6 @@ public interface AccessAuditDAO {
 
 	void addAccessAudit(AuditContextEntity auditContext, String operation,
 			OperationStateType operationState, String principal);
+
+	void cleanup(Long id);
 }

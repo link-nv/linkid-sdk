@@ -19,4 +19,6 @@ public interface AuditContextDAO {
 
 	AuditContextEntity getAuditContext(long auditContextId)
 			throws AuditContextNotFoundException;
+
+	void cleanup(long ageInMinutes);
 }

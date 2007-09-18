@@ -24,7 +24,7 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 
 @Entity
 @Table(name = "helpdesk_context")
-@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "SELECT context FROM HelpdeskContextEntity as context") })
+@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM HelpdeskContextEntity") })
 public class HelpdeskContextEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

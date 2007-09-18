@@ -7,8 +7,11 @@
 
 package net.link.safeonline.entity.audit;
 
+import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,10 +21,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 /**
  * Access Audit entity.
@@ -31,9 +38,14 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "access_audit")
+@NamedQueries(@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
+		+ "FROM AccessAuditEntity AS record "
+		+ "WHERE record.auditContext.id = :contextId"))
 public class AccessAuditEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final String QUERY_DELETE_WHERE_CONTEXTID = "aca.del.id";
 
 	private Long id;
 
@@ -112,5 +124,11 @@ public class AccessAuditEntity implements Serializable {
 
 	public void setEventDate(Date eventDate) {
 		this.eventDate = eventDate;
+	}
+
+	public interface QueryInterface {
+		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
+		void deleteRecords(@QueryParam("contextId")
+		Long contextId);
 	}
 }
