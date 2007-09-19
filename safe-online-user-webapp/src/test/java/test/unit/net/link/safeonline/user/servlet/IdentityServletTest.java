@@ -10,18 +10,17 @@ package test.unit.net.link.safeonline.user.servlet;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import javax.naming.InitialContext;
-import javax.naming.NameClassPair;
-import javax.naming.NamingEnumeration;
 import javax.servlet.http.HttpServletResponse;
 
-import junit.framework.TestCase;
 import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.user.servlet.IdentityServlet;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -33,19 +32,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.easymock.EasyMock;
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHandler;
-import org.mortbay.jetty.servlet.ServletHolder;
-import org.mortbay.jetty.servlet.ServletMapping;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class IdentityServletTest extends TestCase {
+public class IdentityServletTest {
 
 	private static final Log LOG = LogFactory.getLog(IdentityServletTest.class);
-
-	private Server server;
 
 	private String location;
 
@@ -53,74 +46,34 @@ public class IdentityServletTest extends TestCase {
 
 	private CredentialService mockCredentialServiceBean;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	private ServletTestManager servletTestManager;
 
-		System.setProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY,
-				"org.shiftone.ooc.InitialContextFactoryImpl");
+	private JndiTestUtils jndiTestUtils;
 
-		InitialContext initialContext = new InitialContext();
-		NamingEnumeration<NameClassPair> list = initialContext.list("");
-		javax.naming.Context safeOnlineContext;
-		if (list.hasMore()) {
-			safeOnlineContext = (javax.naming.Context) initialContext
-					.lookup("SafeOnline");
-		} else {
-			safeOnlineContext = initialContext.createSubcontext("SafeOnline");
-		}
-		list = safeOnlineContext.list("");
-		javax.naming.Context credentialServiceBeanContext;
-		if (list.hasMore()) {
-			credentialServiceBeanContext = (javax.naming.Context) safeOnlineContext
-					.lookup("CredentialServiceBean");
-		} else {
-			credentialServiceBeanContext = safeOnlineContext
-					.createSubcontext("CredentialServiceBean");
-		}
+	@Before
+	public void setUp() throws Exception {
+		this.jndiTestUtils = new JndiTestUtils();
+		this.jndiTestUtils.setUp();
 
 		this.mockCredentialServiceBean = createMock(CredentialService.class);
-		credentialServiceBeanContext.rebind("local",
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/CredentialServiceBean/local",
 				this.mockCredentialServiceBean);
 
-		this.server = new Server();
-		Connector connector = new SelectChannelConnector();
-		connector.setPort(0);
-		server.addConnector(connector);
-
-		Context context = new Context();
-		context.setContextPath("/");
-		server.addHandler(context);
-
-		ServletHandler handler = context.getServletHandler();
-
-		ServletHolder servletHolder = new ServletHolder();
-		servletHolder.setClassName(IdentityServlet.class.getName());
-		String servletName = "IdentityServlet";
-		servletHolder.setName(servletName);
-		handler.addServlet(servletHolder);
-
-		ServletMapping servletMapping = new ServletMapping();
-		servletMapping.setServletName(servletName);
-		servletMapping.setPathSpecs(new String[] { "/*" });
-		handler.addServletMapping(servletMapping);
-
-		this.server.start();
-
-		int port = connector.getLocalPort();
-		LOG.debug("port: " + port);
-
-		this.location = "http://localhost:" + port + "/";
+		this.servletTestManager = new ServletTestManager();
+		this.servletTestManager.setUp(IdentityServlet.class);
+		this.location = this.servletTestManager.getServletLocation();
 
 		this.httpClient = new HttpClient();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		this.server.stop();
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
+		this.servletTestManager.tearDown();
+		this.jndiTestUtils.tearDown();
 	}
 
+	@Test
 	public void testWrongContentTypeGivesBadRequestResult() throws Exception {
 		// setup
 		PostMethod postMethod = new PostMethod(this.location);
@@ -133,6 +86,7 @@ public class IdentityServletTest extends TestCase {
 		assertEquals(HttpServletResponse.SC_BAD_REQUEST, result);
 	}
 
+	@Test
 	public void testGetNotAllowed() throws Exception {
 		// setup
 		GetMethod getMethod = new GetMethod(this.location);
@@ -145,6 +99,7 @@ public class IdentityServletTest extends TestCase {
 		assertEquals(HttpServletResponse.SC_METHOD_NOT_ALLOWED, result);
 	}
 
+	@Test
 	public void testDoPost() throws Exception {
 		// setup
 		PostMethod postMethod = new PostMethod(this.location);
@@ -167,6 +122,7 @@ public class IdentityServletTest extends TestCase {
 		verify(this.mockCredentialServiceBean);
 	}
 
+	@Test
 	public void testJREOnlyClient() throws Exception {
 		// setup
 		URL url = new URL(this.location);
