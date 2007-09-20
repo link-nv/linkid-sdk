@@ -7,6 +7,10 @@
 
 package net.link.safeonline.audit.dao.bean;
 
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -18,6 +22,7 @@ import net.link.safeonline.audit.dao.AccessAuditDAO;
 import net.link.safeonline.entity.audit.AccessAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.OperationStateType;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 @Stateless
 public class AccessAuditDAOBean implements AccessAuditDAO {
@@ -26,6 +31,12 @@ public class AccessAuditDAOBean implements AccessAuditDAO {
 	private EntityManager entityManager;
 
 	private AccessAuditEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, AccessAuditEntity.QueryInterface.class);
+	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void addAccessAudit(AuditContextEntity auditContext,
@@ -38,5 +49,21 @@ public class AccessAuditDAOBean implements AccessAuditDAO {
 
 	public void cleanup(Long id) {
 		this.queryObject.deleteRecords(id);
+	}
+
+	public List<AccessAuditEntity> listRecords(Long id) {
+		return this.queryObject.listRecords(id);
+	}
+
+	public List<AccessAuditEntity> listRecordsSince(Date ageLimit) {
+		return this.queryObject.listRecordsSince(ageLimit);
+	}
+
+	public List<String> listUsers() {
+		return this.queryObject.listUsers();
+	}
+
+	public List<AccessAuditEntity> listRecords(String principal) {
+		return this.queryObject.listUserRecords(principal);
 	}
 }

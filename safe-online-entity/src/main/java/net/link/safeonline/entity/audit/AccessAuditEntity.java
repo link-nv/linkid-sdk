@@ -8,6 +8,10 @@
 package net.link.safeonline.entity.audit;
 
 import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
+import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_WHERE_CONTEXTID;
+import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_WHERE_AGELIMIT;
+import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_LIST_USER;
+import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_WHERE_USER;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,6 +31,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
@@ -38,14 +43,34 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
  */
 @Entity
 @Table(name = "access_audit")
-@NamedQueries(@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
-		+ "FROM AccessAuditEntity AS record "
-		+ "WHERE record.auditContext.id = :contextId"))
+@NamedQueries( {
+		@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
+				+ "FROM AccessAuditEntity AS record "
+				+ "WHERE record.auditContext.id = :contextId"),
+		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record "
+				+ "FROM AccessAuditEntity AS record "
+				+ "WHERE record.auditContext.id = :contextId"),
+		@NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.principal "
+				+ "FROM AccessAuditEntity AS record"),
+		@NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record "
+				+ "FROM AccessAuditEntity AS record "
+				+ "WHERE record.principal = :principal"),
+		@NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record "
+				+ "FROM AccessAuditEntity AS record "
+				+ "WHERE record.eventDate > :ageLimit") })
 public class AccessAuditEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_DELETE_WHERE_CONTEXTID = "aca.del.id";
+
+	public static final String QUERY_WHERE_CONTEXTID = "aca.id";
+
+	public static final String QUERY_WHERE_AGELIMIT = "aca.age";
+
+	public static final String QUERY_WHERE_USER = "aca.user";
+
+	public static final String QUERY_LIST_USER = "aca.list.user";
 
 	private Long id;
 
@@ -130,5 +155,20 @@ public class AccessAuditEntity implements Serializable {
 		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
 		void deleteRecords(@QueryParam("contextId")
 		Long contextId);
+
+		@QueryMethod(QUERY_WHERE_CONTEXTID)
+		List<AccessAuditEntity> listRecords(@QueryParam("contextId")
+		Long id);
+
+		@QueryMethod(QUERY_WHERE_AGELIMIT)
+		List<AccessAuditEntity> listRecordsSince(@QueryParam("ageLimit")
+		Date ageLimit);
+
+		@QueryMethod(QUERY_LIST_USER)
+		List<String> listUsers();
+
+		@QueryMethod(QUERY_WHERE_USER)
+		List<AccessAuditEntity> listUserRecords(@QueryParam("principal")
+		String principal);
 	}
 }

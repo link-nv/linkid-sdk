@@ -7,9 +7,14 @@
 
 package net.link.safeonline.entity.audit;
 
+import static net.link.safeonline.entity.audit.ResourceAuditEntity.QUERY_WHERE_AGELIMIT;
+import static net.link.safeonline.entity.audit.ResourceAuditEntity.QUERY_ALL;
 import static net.link.safeonline.entity.audit.ResourceAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
+import static net.link.safeonline.entity.audit.ResourceAuditEntity.QUERY_WHERE_CONTEXTID;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,20 +26,37 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 @Entity
 @Table(name = "resource_audit")
-@NamedQueries(@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
-		+ "FROM ResourceAuditEntity AS record "
-		+ "WHERE record.auditContext.id = :contextId"))
+@NamedQueries( {
+		@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
+				+ "FROM ResourceAuditEntity AS record "
+				+ "WHERE record.auditContext.id = :contextId"),
+		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record "
+				+ "FROM ResourceAuditEntity AS record "
+				+ "WHERE record.auditContext.id = :contextId"),
+		@NamedQuery(name = QUERY_ALL, query = "FROM ResourceAuditEntity"),
+		@NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record "
+				+ "FROM ResourceAuditEntity AS record "
+				+ "WHERE record.eventDate > :ageLimit") })
 public class ResourceAuditEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_DELETE_WHERE_CONTEXTID = "ra.del.id";
+
+	public static final String QUERY_ALL = "ra.all";
+
+	public static final String QUERY_WHERE_CONTEXTID = "ra.id";
+
+	public static final String QUERY_WHERE_AGELIMIT = "ra.age";
 
 	private Long id;
 
@@ -48,6 +70,8 @@ public class ResourceAuditEntity implements Serializable {
 
 	private String message;
 
+	private Date eventDate;
+
 	public ResourceAuditEntity(AuditContextEntity auditContext,
 			ResourceNameType resourceName, ResourceLevelType resourceLevel,
 			String sourceComponent, String message) {
@@ -56,6 +80,7 @@ public class ResourceAuditEntity implements Serializable {
 		this.resourceLevel = resourceLevel;
 		this.sourceComponent = sourceComponent;
 		this.message = message;
+		this.eventDate = new Date();
 	}
 
 	@Id
@@ -74,6 +99,15 @@ public class ResourceAuditEntity implements Serializable {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	@Temporal(value = TemporalType.TIMESTAMP)
+	public Date getEventDate() {
+		return eventDate;
+	}
+
+	public void setEventDate(Date eventDate) {
+		this.eventDate = eventDate;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -115,5 +149,17 @@ public class ResourceAuditEntity implements Serializable {
 		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
 		void deleteRecords(@QueryParam("contextId")
 		Long contextId);
+
+		@QueryMethod(QUERY_ALL)
+		List<ResourceAuditEntity> listRecords();
+
+		@QueryMethod(QUERY_WHERE_CONTEXTID)
+		List<ResourceAuditEntity> listRecords(@QueryParam("contextId")
+		Long id);
+
+		@QueryMethod(QUERY_WHERE_AGELIMIT)
+		List<ResourceAuditEntity> listRecordsSince(@QueryParam("ageLimit")
+		Date ageLimit);
 	}
+
 }

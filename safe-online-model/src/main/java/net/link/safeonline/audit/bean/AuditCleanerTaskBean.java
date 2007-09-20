@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.pkix.model.bean;
+package net.link.safeonline.audit.bean;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -42,6 +42,10 @@ public class AuditCleanerTaskBean implements Task {
 
 	@Configurable(name = "Audit Record Age (min)", group = "Audit cleaner")
 	private Integer configAgeInMinutes = 7 * 24 * 60;
+
+	public AuditCleanerTaskBean() {
+		// empty
+	}
 
 	public String getName() {
 		return name;

@@ -7,9 +7,16 @@
 
 package net.link.safeonline.entity.audit;
 
+import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_WHERE_AGELIMIT;
+import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_WHERE_CONTEXTID;
+import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_ALL;
 import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
+import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_LIST_USER;
+import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_WHERE_USER;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,20 +28,46 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 @Entity
 @Table(name = "security_audit")
-@NamedQueries(@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
-		+ "FROM ResourceAuditEntity AS record "
-		+ "WHERE record.auditContext.id = :contextId"))
+@NamedQueries( {
+		@NamedQuery(name = QUERY_DELETE_WHERE_CONTEXTID, query = "DELETE "
+				+ "FROM SecurityAuditEntity AS record "
+				+ "WHERE record.auditContext.id = :contextId"),
+		@NamedQuery(name = QUERY_ALL, query = "FROM SecurityAuditEntity"),
+		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record "
+				+ "FROM SecurityAuditEntity AS record "
+				+ "WHERE record.auditContext.id = :contextId"),
+		@NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.targetPrincipal "
+				+ "FROM SecurityAuditEntity AS record "),
+		@NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record "
+				+ "FROM SecurityAuditEntity AS record "
+				+ "WHERE record.targetPrincipal = :principal"),
+		@NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record "
+				+ "FROM SecurityAuditEntity AS record "
+				+ "WHERE record.eventDate > :ageLimit") })
 public class SecurityAuditEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_DELETE_WHERE_CONTEXTID = "sa.del.id";
+
+	public static final String QUERY_ALL = "sa.all";
+
+	public static final String QUERY_WHERE_CONTEXTID = "sa.id";
+
+	public static final String QUERY_WHERE_AGELIMIT = "sa.age";
+
+	public static final String QUERY_LIST_USER = "sa.list.user";
+
+	public static final String QUERY_WHERE_USER = "sa.user";
 
 	private Long id;
 
@@ -45,6 +78,8 @@ public class SecurityAuditEntity implements Serializable {
 	private SecurityThreatType securityThreat;
 
 	private String targetPrincipal;
+
+	private Date eventDate;
 
 	public SecurityAuditEntity() {
 		// empty
@@ -57,6 +92,7 @@ public class SecurityAuditEntity implements Serializable {
 		this.securityThreat = securityThreat;
 		this.message = message;
 		this.targetPrincipal = targetPrincipal;
+		this.eventDate = new Date();
 	}
 
 	@Id
@@ -103,10 +139,36 @@ public class SecurityAuditEntity implements Serializable {
 		this.targetPrincipal = targetPrincipal;
 	}
 
+	@Temporal(value = TemporalType.TIMESTAMP)
+	public Date getEventDate() {
+		return eventDate;
+	}
+
+	public void setEventDate(Date eventDate) {
+		this.eventDate = eventDate;
+	}
+
 	public interface QueryInterface {
 		@UpdateMethod(QUERY_DELETE_WHERE_CONTEXTID)
 		void deleteRecords(@QueryParam("contextId")
 		Long contextId);
-	}
 
+		@QueryMethod(QUERY_WHERE_CONTEXTID)
+		List<SecurityAuditEntity> listRecords(@QueryParam("contextId")
+		Long id);
+
+		@QueryMethod(QUERY_ALL)
+		List<SecurityAuditEntity> listRecords();
+
+		@QueryMethod(QUERY_WHERE_AGELIMIT)
+		List<SecurityAuditEntity> listRecordsSince(@QueryParam("ageLimit")
+		Date ageLimit);
+
+		@QueryMethod(QUERY_LIST_USER)
+		List<String> listUsers();
+
+		@QueryMethod(QUERY_WHERE_USER)
+		List<SecurityAuditEntity> listUserRecords(@QueryParam("principal")
+		String principal);
+	}
 }

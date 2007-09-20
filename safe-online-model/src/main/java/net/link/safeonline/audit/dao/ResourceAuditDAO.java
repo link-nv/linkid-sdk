@@ -7,9 +7,13 @@
 
 package net.link.safeonline.audit.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.audit.AuditContextEntity;
+import net.link.safeonline.entity.audit.ResourceAuditEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 
@@ -21,5 +25,11 @@ public interface ResourceAuditDAO {
 			String sourceComponent, String message);
 
 	void cleanup(Long id);
+
+	List<ResourceAuditEntity> listRecords(Long id);
+
+	List<ResourceAuditEntity> listRecordsSince(Date ageLimit);
+
+	List<ResourceAuditEntity> listRecords();
 
 }

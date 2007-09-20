@@ -7,6 +7,8 @@
 
 package net.link.safeonline.audit.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
@@ -21,4 +23,10 @@ public interface AuditContextDAO {
 			throws AuditContextNotFoundException;
 
 	void cleanup(long ageInMinutes);
+
+	List<AuditContextEntity> listContexts();
+
+	boolean removeAuditContext(Long id) throws AuditContextNotFoundException;
+
+	List<AuditContextEntity> listLastContexts();
 }

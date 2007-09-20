@@ -7,9 +7,13 @@
 
 package net.link.safeonline.audit.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.audit.AuditContextEntity;
+import net.link.safeonline.entity.audit.SecurityAuditEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 
 @Local
@@ -20,4 +24,15 @@ public interface SecurityAuditDAO {
 			String message);
 
 	void cleanup(Long id);
+
+	List<SecurityAuditEntity> listRecords();
+
+	List<SecurityAuditEntity> listRecords(Long id);
+
+	List<SecurityAuditEntity> listRecords(String principal);
+
+	List<SecurityAuditEntity> listRecordsSince(Date ageLimit);
+
+	List<String> listUsers();
+
 }

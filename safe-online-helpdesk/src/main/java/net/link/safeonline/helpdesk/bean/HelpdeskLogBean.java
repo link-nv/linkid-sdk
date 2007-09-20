@@ -45,13 +45,13 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
 	private static final Log LOG = LogFactory.getLog(HelpdeskLogBean.class);
 
-	private final static String HELPDESK_CONTEXT_LIST_NAME = "helpdeskContextList";
+	private static final String HELPDESK_CONTEXT_LIST_NAME = "helpdeskContextList";
 
-	private final static String HELPDESK_LOG_LIST_NAME = "helpdeskLogList";
+	private static final String HELPDESK_LOG_LIST_NAME = "helpdeskLogList";
 
-	private final static String HELPDESK_USER_LIST_NAME = "helpdeskUserList";
+	private static final String HELPDESK_USER_LIST_NAME = "helpdeskUserList";
 
-	private final static String HELPDESK_USER_CONTEXT_LIST_NAME = "helpdeskUserContextList";
+	private static final String HELPDESK_USER_CONTEXT_LIST_NAME = "helpdeskUserContextList";
 
 	@EJB
 	private HelpdeskService helpdeskService;
@@ -116,9 +116,9 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public void helpdeskLogListFactory() {
 		Long id;
-		if (null != searchId) {
-			id = searchId;
-			searchId = null;
+		if (null != this.searchId) {
+			id = this.searchId;
+			this.searchId = null;
 		} else if (null == this.selectedContext) {
 			id = this.selectedUserContext.getId();
 			this.context = this.selectedUserContext;

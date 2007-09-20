@@ -10,6 +10,7 @@ package net.link.safeonline.audit.dao.bean;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -25,6 +26,7 @@ import net.link.safeonline.audit.dao.ResourceAuditDAO;
 import net.link.safeonline.audit.dao.SecurityAuditDAO;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,6 +53,12 @@ public class AuditContextDAOBean implements AuditContextDAO {
 
 	private AuditContextEntity.QueryInterface queryObject;
 
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, AuditContextEntity.QueryInterface.class);
+	}
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public AuditContextEntity createAuditContext() {
 		AuditContextEntity auditContext = new AuditContextEntity();
@@ -75,17 +83,33 @@ public class AuditContextDAOBean implements AuditContextDAO {
 	}
 
 	public void cleanup(long ageInMinutes) {
-		Date ageLimit = new Date(((System.currentTimeMillis() / 60) / 1000)
-				- ageInMinutes);
-
+		Date ageLimit = new Date(System.currentTimeMillis()
+				- (ageInMinutes * 60 * 1000));
+		LOG.debug("Cleaning audit contexts older then " + ageLimit);
 		List<AuditContextEntity> contexts = this.queryObject
-				.listContexts(ageLimit);
+				.listContextsOlderThen(ageLimit);
 		for (AuditContextEntity context : contexts) {
+			LOG.debug("Cleaning context " + context.getId());
 			auditAuditDAO.cleanup(context.getId());
 			accessAuditDAO.cleanup(context.getId());
 			securityAuditDAO.cleanup(context.getId());
 			resourceAuditDAO.cleanup(context.getId());
 			this.entityManager.remove(context);
 		}
+	}
+
+	public List<AuditContextEntity> listContexts() {
+		return this.queryObject.listContexts();
+	}
+
+	public boolean removeAuditContext(Long auditContextId)
+			throws AuditContextNotFoundException {
+		AuditContextEntity auditContext = getAuditContext(auditContextId);
+		this.entityManager.remove(auditContext);
+		return true;
+	}
+
+	public List<AuditContextEntity> listLastContexts() {
+		return this.queryObject.listLastContexts();
 	}
 }

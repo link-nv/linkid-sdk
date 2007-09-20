@@ -8,7 +8,7 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Helpdesk</ui:define>
+	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -16,42 +16,40 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>Helpdesk context : #{context.id}</h2>
-
 		<h:form>
-			<t:dataTable id="helpdesk-log-data" var="item"
-				value="#{helpdeskLogList}" rows="15" preserveDataModel="false"
-				styleClass="listingTable"
+			<h3>Security Audit Records</h3>
+			<t:dataTable id="security-audit-data" var="item"
+				renderedIfEmpty="false" value="#{securityAuditRecordList}" rows="15"
+				preserveDataModel="false" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">#{msgs.level}</f:facet>
-					<h:outputText value="#{item.logLevel}"
-						rendered="#{item.logLevel == 'INFO'}" />
-					<h:outputText value="#{item.logLevel}"
-						style="background-color: red"
-						rendered="#{item.logLevel == 'ERROR'}" />
-				</h:column>
-
-				<h:column>
 					<f:facet name="header">#{msgs.time}</f:facet>
-					<h:outputLabel value="#{item.time}">
+					<h:outputLabel value="#{item.eventDate}">
 						<f:convertDateTime type="both" timeStyle="medium"
 							dateStyle="short" />
 					</h:outputLabel>
 				</h:column>
+
 				<h:column>
 					<f:facet name="header">#{msgs.user}</f:facet>
-					#{item.principal}
+					<h:outputLabel value="#{item.targetPrincipal}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.securityThreat}</f:facet>
+					<h:outputLabel value="#{item.securityThreat}" />
 				</h:column>
 
 				<h:column>
 					<f:facet name="header">#{msgs.message}</f:facet>
-					#{item.message}
+					<h:outputLabel value="#{item.message}" />
 				</h:column>
+
 			</t:dataTable>
 
-			<t:dataScroller for="helpdesk-log-data" fastStep="15"
+			<t:dataScroller for="security-audit-data"
+				rendered="#{!audit.securityAuditListIsEmpty}" fastStep="15"
 				pageCountVar="pageCount" pageIndexVar="pageIndex"
 				styleClass="scroller" paginator="true" paginatorMaxPages="9">
 				<f:facet name="first">#{msgs.first}</f:facet>
@@ -59,14 +57,12 @@
 				<f:facet name="previous">#{msgs.previous}</f:facet>
 				<f:facet name="next">#{msgs.next}</f:facet>
 			</t:dataScroller>
-
 		</h:form>
-
 
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{helpLogin}" />
+			<ui:param name="loginComp" value="#{operLogin}" />
 		</ui:include>
 	</ui:define>
 </ui:composition>

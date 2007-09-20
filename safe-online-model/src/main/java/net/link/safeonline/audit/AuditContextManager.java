@@ -7,7 +7,9 @@
 
 package net.link.safeonline.audit;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
@@ -18,6 +20,9 @@ import net.link.safeonline.audit.exception.ExistingAuditContextException;
 import net.link.safeonline.audit.exception.MissingAuditContextException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * EJB3 Interceptor that manages the audit context.
  * 
@@ -25,6 +30,11 @@ import net.link.safeonline.entity.audit.AuditContextEntity;
  * 
  */
 public class AuditContextManager {
+
+	private static final Log LOG = LogFactory.getLog(AuditContextManager.class);
+
+	@Resource
+	private SessionContext context;
 
 	@EJB
 	private AuditContextDAO auditContextDAO;
@@ -78,4 +88,5 @@ public class AuditContextManager {
 		long auditContextId = auditContext.getId();
 		return auditContextId;
 	}
+
 }

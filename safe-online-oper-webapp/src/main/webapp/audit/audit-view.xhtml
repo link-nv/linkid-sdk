@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h2>Audit context : #{auditContext.id}</h2>
+
+		<h:form>
+			<h3>Access Audit Records</h3>
+			<t:dataTable id="access-audit-data" var="item"
+				renderedIfEmpty="false" value="#{accessAuditRecordList}" rows="15"
+				preserveDataModel="false" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+
+				<h:column>
+					<f:facet name="header">#{msgs.time}</f:facet>
+					<h:outputLabel value="#{item.eventDate}">
+						<f:convertDateTime type="both" timeStyle="medium"
+							dateStyle="short" />
+					</h:outputLabel>
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.user}</f:facet>
+					<h:outputLabel value="#{item.principal}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.operationState}</f:facet>
+					<h:outputLabel value="#{item.operationState}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.operation}</f:facet>
+					<h:outputLabel value="#{item.operation}" />
+				</h:column>
+
+			</t:dataTable>
+
+			<t:dataScroller for="access-audit-data"
+				rendered="#{!audit.accessAuditListIsEmpty}" fastStep="15"
+				pageCountVar="pageCount" pageIndexVar="pageIndex"
+				styleClass="scroller" paginator="true" paginatorMaxPages="9">
+				<f:facet name="first">#{msgs.first}</f:facet>
+				<f:facet name="last">#{msgs.last}</f:facet>
+				<f:facet name="previous">#{msgs.previous}</f:facet>
+				<f:facet name="next">#{msgs.next}</f:facet>
+			</t:dataScroller>
+		</h:form>
+
+		<h:form>
+			<h3>Security Audit Records</h3>
+			<t:dataTable id="security-audit-data" var="item"
+				renderedIfEmpty="false" value="#{securityAuditRecordList}" rows="15"
+				preserveDataModel="false" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+
+				<h:column>
+					<f:facet name="header">#{msgs.time}</f:facet>
+					<h:outputLabel value="#{item.eventDate}">
+						<f:convertDateTime type="both" timeStyle="medium"
+							dateStyle="short" />
+					</h:outputLabel>
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.user}</f:facet>
+					<h:outputLabel value="#{item.targetPrincipal}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.securityThreat}</f:facet>
+					<h:outputLabel value="#{item.securityThreat}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.message}</f:facet>
+					<h:outputLabel value="#{item.message}" />
+				</h:column>
+
+			</t:dataTable>
+
+			<t:dataScroller for="security-audit-data"
+				rendered="#{!audit.securityAuditListIsEmpty}" fastStep="15"
+				pageCountVar="pageCount" pageIndexVar="pageIndex"
+				styleClass="scroller" paginator="true" paginatorMaxPages="9">
+				<f:facet name="first">#{msgs.first}</f:facet>
+				<f:facet name="last">#{msgs.last}</f:facet>
+				<f:facet name="previous">#{msgs.previous}</f:facet>
+				<f:facet name="next">#{msgs.next}</f:facet>
+			</t:dataScroller>
+		</h:form>
+
+		<h:form>
+			<h3>Resource Audit Records</h3>
+			<t:dataTable id="resource-audit-data" var="item"
+				renderedIfEmpty="false" value="#{resourceAuditRecordList}" rows="15"
+				preserveDataModel="false" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+
+				<h:column>
+					<f:facet name="header">#{msgs.time}</f:facet>
+					<h:outputLabel value="#{item.eventDate}">
+						<f:convertDateTime type="both" timeStyle="medium"
+							dateStyle="short" />
+					</h:outputLabel>
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.resource}</f:facet>
+					<h:outputLabel value="#{item.resourceName}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.level}</f:facet>
+					<h:outputLabel value="#{item.resourceLevel}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.source}</f:facet>
+					<h:outputLabel value="#{item.sourceComponent}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.message}</f:facet>
+					<h:outputLabel value="#{item.message}" />
+				</h:column>
+
+			</t:dataTable>
+
+			<t:dataScroller for="resource-audit-data"
+				rendered="#{!audit.resourceAuditListIsEmpty}" fastStep="15"
+				pageCountVar="pageCount" pageIndexVar="pageIndex"
+				styleClass="scroller" paginator="true" paginatorMaxPages="9">
+				<f:facet name="first">#{msgs.first}</f:facet>
+				<f:facet name="last">#{msgs.last}</f:facet>
+				<f:facet name="previous">#{msgs.previous}</f:facet>
+				<f:facet name="next">#{msgs.next}</f:facet>
+			</t:dataScroller>
+		</h:form>
+
+		<h:form>
+			<h3>Audit Audit Records</h3>
+			<t:dataTable id="audit-audit-data" var="item" renderedIfEmpty="false"
+				value="#{auditAuditRecordList}" rows="15" preserveDataModel="false"
+				styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+
+				<h:column>
+					<f:facet name="header">#{msgs.time}</f:facet>
+					<h:outputLabel value="#{item.eventDate}">
+						<f:convertDateTime type="both" timeStyle="medium"
+							dateStyle="short" />
+					</h:outputLabel>
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.message}</f:facet>
+					<h:outputLabel value="#{item.principal}" />
+				</h:column>
+
+			</t:dataTable>
+
+			<t:dataScroller for="audit-audit-data"
+				rendered="#{!audit.auditAuditListIsEmpty}" fastStep="15"
+				pageCountVar="pageCount" pageIndexVar="pageIndex"
+				styleClass="scroller" paginator="true" paginatorMaxPages="9">
+				<f:facet name="first">#{msgs.first}</f:facet>
+				<f:facet name="last">#{msgs.last}</f:facet>
+				<f:facet name="previous">#{msgs.previous}</f:facet>
+				<f:facet name="next">#{msgs.next}</f:facet>
+			</t:dataScroller>
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{operLogin}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>
+

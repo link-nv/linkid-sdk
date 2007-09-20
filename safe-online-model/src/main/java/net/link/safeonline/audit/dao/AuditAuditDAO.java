@@ -7,8 +7,12 @@
 
 package net.link.safeonline.audit.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.ejb.Local;
 
+import net.link.safeonline.entity.audit.AuditAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 
 @Local
@@ -19,4 +23,8 @@ public interface AuditAuditDAO {
 	void addAuditAudit(String message);
 
 	void cleanup(Long id);
+
+	List<AuditAuditEntity> listRecords(Long id);
+
+	List<AuditAuditEntity> listRecordsSince(Date ageLimit);
 }

@@ -8,6 +8,8 @@
 package net.link.safeonline.entity.audit;
 
 import static net.link.safeonline.entity.audit.AuditContextEntity.QUERY_LIST_ALL;
+import static net.link.safeonline.entity.audit.AuditContextEntity.QUERY_LIST_ALL_LAST;
+import static net.link.safeonline.entity.audit.AuditContextEntity.QUERY_LIST_OLD;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -35,19 +37,26 @@ import net.link.safeonline.jpa.annotation.QueryParam;
  */
 @Entity
 @Table(name = "audit_context")
-@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "SELECT context FROM AuditContextEntity as context WHERE context.time < :ageLimit") })
+@NamedQueries( {
+		@NamedQuery(name = QUERY_LIST_OLD, query = "SELECT context FROM AuditContextEntity as context WHERE context.creationTime < :ageLimit"),
+		@NamedQuery(name = QUERY_LIST_ALL_LAST, query = "SELECT context FROM AuditContextEntity as context ORDER BY context.creationTime DESC"),
+		@NamedQuery(name = QUERY_LIST_ALL, query = "FROM AuditContextEntity ") })
 public class AuditContextEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_LIST_ALL = "ac.all";
 
+	public static final String QUERY_LIST_ALL_LAST = "ac.all.last";
+
+	public static final String QUERY_LIST_OLD = "ac.old";
+
 	private Long id;
 
-	private Date time;
+	private Date creationTime;
 
 	public AuditContextEntity() {
-		time = new Date();
+		this.creationTime = new Date();
 	}
 
 	@Id
@@ -60,18 +69,24 @@ public class AuditContextEntity implements Serializable {
 		this.id = id;
 	}
 
-	@Temporal(TemporalType.TIME)
-	public Date getTime() {
-		return time;
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getCreationTime() {
+		return creationTime;
 	}
 
-	public void setTime(Date time) {
-		this.time = time;
+	public void setCreationTime(Date time) {
+		this.creationTime = time;
 	}
 
 	public interface QueryInterface {
-		@QueryMethod(QUERY_LIST_ALL)
-		List<AuditContextEntity> listContexts(@QueryParam("ageLimit")
+		@QueryMethod(QUERY_LIST_OLD)
+		List<AuditContextEntity> listContextsOlderThen(@QueryParam("ageLimit")
 		Date ageLimit);
+
+		@QueryMethod(QUERY_LIST_ALL)
+		List<AuditContextEntity> listContexts();
+
+		@QueryMethod(QUERY_LIST_ALL_LAST)
+		List<AuditContextEntity> listLastContexts();
 	}
 }
