@@ -27,9 +27,9 @@ public interface HelpdeskLog {
 	/*
 	 * Richfaces
 	 */
-	List autocomplete(Object event);
+	List<String> autocomplete(Object event);
 
-	List autocompleteUser(Object event);
+	List<String> autocompleteUser(Object event);
 
 	/*
 	 * Accessors.

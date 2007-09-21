@@ -46,7 +46,7 @@ public class AuthorizationServiceBean implements AuthorizationService,
 			.getLog(AuthorizationServiceBean.class);
 
 	@EJB
-	private SubjectDAO entityDAO;
+	private SubjectDAO subjectDAO;
 
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
@@ -64,7 +64,7 @@ public class AuthorizationServiceBean implements AuthorizationService,
 
 		SubjectEntity subject;
 		try {
-			subject = this.entityDAO.getSubject(login);
+			subject = this.subjectDAO.getSubject(login);
 		} catch (SubjectNotFoundException e) {
 			LOG.error("entity not found: " + login);
 			/*

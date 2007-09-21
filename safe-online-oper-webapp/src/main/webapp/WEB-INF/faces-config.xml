@@ -32,7 +32,7 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<!-- Begin applications natigation rules -->
+	<!-- Begin applications navigation rules -->
 
 	<navigation-rule>
 		<from-view-id>/applications/applications.xhtml</from-view-id>
@@ -86,7 +86,7 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<!-- End applications natigation rules -->
+	<!-- End applications navigation rules -->
 
 	<navigation-rule>
 		<from-view-id>/owners.xhtml</from-view-id>
@@ -108,7 +108,7 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<!-- Begin PKIX natigation rules -->
+	<!-- Begin PKIX navigation rules -->
 
 	<navigation-rule>
 		<from-view-id>/pkix/pkix.xhtml</from-view-id>
@@ -202,9 +202,9 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<!-- End PKIX natigation rules -->
+	<!-- End PKIX navigation rules -->
 
-	<!-- Begin tasks natigation rules -->
+	<!-- Begin tasks navigation rules -->
 
 	<navigation-rule>
 		<from-view-id>/tasks/tasks.xhtml</from-view-id>
@@ -342,9 +342,9 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<!-- End tasks natigation rules -->
+	<!-- End tasks navigation rules -->
 
-	<!-- Begin attributes natigation rules -->
+	<!-- Begin attributes navigation rules -->
 
 	<navigation-rule>
 		<from-view-id>/attributes/attributes.xhtml</from-view-id>
@@ -560,6 +560,8 @@
 
 	<!-- End attributes navigation rules -->
 
+	<!-- Begin configuration navigation rules -->
+
 	<navigation-rule>
 		<from-view-id>/configuration.xhtml</from-view-id>
 		<navigation-case>
@@ -571,6 +573,32 @@
 			<to-view-id>/overview.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+
+	<!-- End configuration navigation rules  -->
+
+	<!-- Begin authorization navigation rules -->
+
+	<navigation-rule>
+		<from-view-id>/authorization/main.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>found</from-outcome>
+			<to-view-id>/authorization/roles.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<from-view-id>/authorization/roles.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>saved</from-outcome>
+			<to-view-id>/authorization/main.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cancel</from-outcome>
+			<to-view-id>/authorization/main.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<!-- End authorization navigation rules -->
 
 	<!-- Begin audit navigation rules -->
 
@@ -603,4 +631,5 @@
 	</navigation-rule>
 
 	<!-- End audit navigation rules -->
+
 </faces-config>

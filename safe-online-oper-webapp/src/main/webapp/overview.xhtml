@@ -11,6 +11,7 @@
 			<ui:param name="subpage" value="overview" />
 		</ui:include>
 	</ui:define>
+
 	<ui:define name="content">
 		<div class="subcolumn1-2">
 		<h3>#{msgs.applicationOwners}</h3>
@@ -32,6 +33,7 @@
 		<h3>Audit</h3>
 		<p>Browse all audit entries made by the SafeOnline core. Click <a
 			href="./audit/audit.seam">here</a> to view the audot entries.</p>
+
 		</div>
 
 		<div class="subcolumn2-2">
@@ -48,8 +50,14 @@
 		<h3>#{msgs.configuration}</h3>
 		<p>Manage configuration options for the SafeOnline system. Click <a
 			href="./configuration.seam">here</a> to manage the configuration.</p>
+
+		<h3>#{msgs.authorization}</h3>
+		<p>Manage the authorization within the SafeOnline system. Click <a
+			href="./authorization/main.seam">here</a> to manage the
+		authorization.</p>
 		</div>
 	</ui:define>
+
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
 			<ui:param name="loginComp" value="#{operLogin}" />

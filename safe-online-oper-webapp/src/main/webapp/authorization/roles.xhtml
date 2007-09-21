@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">SafeOnline Operator</ui:define>
+
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="authorization" />
+		</ui:include>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h2>#{msgs.authorization}</h2>
+
+		<h:panelGrid columns="2">
+			<h:outputText value="#{msgs.user}:" />
+			<h:outputText value="#{authorizationManager.user}" />
+		</h:panelGrid>
+
+		<h:form>
+			<h:selectManyCheckbox id="roles" layout="pageDirection"
+				value="#{authorizationManager.roles}">
+				<f:selectItems value="#{availableRoles}" />
+			</h:selectManyCheckbox>
+
+			<h:messages styleClass="error" />
+
+			<h:commandButton value="#{msgs.saveaction}" id="save"
+				action="#{authorizationManager.save}" />
+			<so:nbsp />
+			<h:commandButton action="#{authorizationManager.cancel}" id="cancel"
+				value="#{msgs.cancelaction}" />
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{operLogin}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

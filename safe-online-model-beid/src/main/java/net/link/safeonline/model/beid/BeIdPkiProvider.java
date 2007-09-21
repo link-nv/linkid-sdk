@@ -25,7 +25,6 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
-import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiProvider;
@@ -56,9 +55,6 @@ public class BeIdPkiProvider implements PkiProvider {
 
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
-
-	@EJB
-	private SubjectManager subjectManager;
 
 	public boolean accept(X509Certificate certificate) {
 		X500Principal subjectPrincipal = certificate.getSubjectX500Principal();

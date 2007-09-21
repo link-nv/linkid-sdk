@@ -64,6 +64,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	private String searchUserName;
 
 	// set by different datamodels and used by shared log-view.xhtml
+	@SuppressWarnings("unused")
 	@Out(required = false)
 	private HelpdeskContextEntity context;
 
@@ -240,7 +241,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		this.searchUserName = searchUserName;
 	}
 
-	public List autocomplete(Object event) {
+	public List<String> autocomplete(Object event) {
 		String idString = event.toString();
 		List<String> idList = new LinkedList<String>();
 		this.helpdeskContextList = this.helpdeskService.listContexts();
@@ -254,7 +255,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		return idList;
 	}
 
-	public List autocompleteUser(Object event) {
+	public List<String> autocompleteUser(Object event) {
 		String userString = event.toString();
 		List<String> userList = new LinkedList<String>();
 		this.helpdeskUserList = this.helpdeskService.listUsers();
