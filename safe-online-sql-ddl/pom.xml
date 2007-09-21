@@ -47,9 +47,9 @@
 									destdir="${project.build.directory}/classes">
 									<!-- jpaconfiguration can directly use the PAR -->
 									<annotationconfiguration
-										configurationfile="${basedir}/src/main/resources/hibernate.cfg.xml" />
+										configurationfile="${basedir}/src/main/resources/mysql-safe-online.cfg.xml" />
 									<hbm2ddl export="false"
-										format="true" outputfilename="safe-online-ddl.sql" />
+										format="true" outputfilename="mysql-safe-online-ddl.sql" />
 								</hibernatetool>
 							</tasks>
 						</configuration>

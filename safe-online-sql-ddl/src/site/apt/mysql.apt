@@ -10,7 +10,7 @@ SafeOnline MySQL Database
  
 * Create the SafeOnline tables.
 
- Use the <<<safe-online-ddl.sql>>> SQL script as follows:
+ Use the <<<mysql-safe-online-ddl.sql>>> SQL script as follows:
 
 +---+
 mysql -u safeonline -p safeonline < safe-online-ddl.sql
