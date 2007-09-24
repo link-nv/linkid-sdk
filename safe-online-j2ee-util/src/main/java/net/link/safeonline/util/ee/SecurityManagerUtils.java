@@ -19,6 +19,7 @@ import javax.management.ReflectionException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.mx.util.MBeanServerLocator;
 import org.jboss.security.SimplePrincipal;
 
 public class SecurityManagerUtils {
@@ -55,8 +56,7 @@ public class SecurityManagerUtils {
 		Object[] params = { securityDomain, user };
 		String[] signature = { String.class.getName(),
 				Principal.class.getName() };
-		MBeanServer server = (MBeanServer) MBeanServerFactory.findMBeanServer(
-				null).get(0);
+		MBeanServer server = MBeanServerLocator.locateJBoss();
 		try {
 			server.invoke(jaasMgr, "flushAuthenticationCache", params,
 					signature);
