@@ -21,8 +21,10 @@ import javax.ejb.EJBException;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
+import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
@@ -226,6 +228,9 @@ public abstract class AbstractInitBean implements Startable {
 	@EJB
 	private DeviceDAO deviceDAO;
 
+	@EJB
+	private PasswordManager passwordManager;
+
 	private void initApplicationTrustPoints() {
 		for (X509Certificate certificate : this.trustedCertificates) {
 			addCertificateAsTrustPoint(certificate);
@@ -403,10 +408,10 @@ public abstract class AbstractInitBean implements Startable {
 					.findApplicationOwner(application.owner);
 			long identityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
 			ApplicationEntity newApplication = this.applicationDAO
-					.addApplication(applicationName, null,
-							applicationOwner,
-							application.allowUserSubscription, application.removable,
-							application.description, application.certificate, identityVersion);
+					.addApplication(applicationName, null, applicationOwner,
+							application.allowUserSubscription,
+							application.removable, application.description,
+							application.certificate, identityVersion);
 
 			this.applicationIdentityDAO.addApplicationIdentity(newApplication,
 					identityVersion);
@@ -422,22 +427,13 @@ public abstract class AbstractInitBean implements Startable {
 				continue;
 			}
 			subject = this.subjectDAO.addSubject(login);
-			AttributeEntity passwordAttribute = this.attributeDAO
-					.findAttribute(SafeOnlineConstants.PASSWORD_ATTRIBUTE,
-							login);
-			if (null != passwordAttribute) {
-				continue;
-			}
+
 			String password = authorizedUser.getValue();
-			AttributeTypeEntity passwordAttributeType;
 			try {
-				passwordAttributeType = this.attributeTypeDAO
-						.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
-			} catch (AttributeTypeNotFoundException e) {
-				throw new EJBException("attribute type not found");
+				this.passwordManager.setPassword(subject, password, false);
+			} catch (PermissionDeniedException e) {
+				throw new EJBException("could not set password");
 			}
-			this.attributeDAO.addAttribute(passwordAttributeType, subject,
-					password);
 		}
 	}
 

@@ -13,6 +13,8 @@ import net.link.safeonline.audit.dao.bean.AuditAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
 import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
+import net.link.safeonline.authentication.service.bean.CredentialManagerBean;
+import net.link.safeonline.authentication.service.bean.PasswordManagerBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
@@ -56,7 +58,6 @@ import net.link.safeonline.model.bean.ApplicationManagerBean;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
 import net.link.safeonline.model.bean.ApplicationsBean;
 import net.link.safeonline.model.bean.AttributeTypeDescriptionDecoratorBean;
-import net.link.safeonline.model.bean.CredentialManagerBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.UserRegistrationManagerBean;
 import net.link.safeonline.pkix.dao.bean.CachedOcspResponseDAOBean;
@@ -104,7 +105,7 @@ public class SafeOnlineTestContainer {
 			UserRegistrationManagerBean.class, ResourceAuditLoggerBean.class,
 			AuditAuditDAOBean.class, AuditContextDAOBean.class,
 			AccessAuditDAOBean.class, SecurityAuditDAOBean.class,
-			ResourceAuditDAOBean.class };
+			ResourceAuditDAOBean.class, PasswordManagerBean.class };
 
 	public static final Class<?>[] entities = new Class[] {
 			SubjectEntity.class, ApplicationEntity.class,

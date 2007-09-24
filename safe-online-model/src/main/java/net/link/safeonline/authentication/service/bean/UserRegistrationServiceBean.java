@@ -16,6 +16,8 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.CredentialManager;
+import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
 import net.link.safeonline.dao.AttributeDAO;
@@ -23,7 +25,6 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.model.CredentialManager;
 import net.link.safeonline.model.UserRegistrationManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
@@ -60,6 +61,9 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	@EJB
 	private CredentialManager credentialManager;
 
+	@EJB
+	private PasswordManager passwordController;
+
 	public void registerUser(String login, String password, String name)
 			throws ExistingUserException {
 		SubjectEntity newSubject = this.userRegistrationManager
@@ -73,10 +77,13 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 
 	private void setAttributes(SubjectEntity subject, String password,
 			String name) throws AttributeTypeNotFoundException {
-		AttributeTypeEntity passwordAttributeType = this.attributeTypeDAO
-				.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
-		this.attributeDAO
-				.addAttribute(passwordAttributeType, subject, password);
+
+		try {
+			this.passwordController.setPassword(subject, password, false);
+		} catch (PermissionDeniedException e) {
+			throw new EJBException("Not allowed to set password");
+		}
+
 		if (null != name) {
 			AttributeTypeEntity nameAttributeType = this.attributeTypeDAO
 					.getAttributeType(SafeOnlineConstants.NAME_ATTRIBUTE);

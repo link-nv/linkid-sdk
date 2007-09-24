@@ -102,6 +102,11 @@ public class DevicesBean implements Devices {
 			LOG.debug(msg);
 			this.facesMessages.addToControl("oldpassword", msg);
 			return null;
+		} catch (DeviceNotFoundException e) {
+			String msg = "there is no old password";
+			LOG.debug(msg);
+			this.facesMessages.addToControl("oldpassword", msg);
+			return null;
 		}
 
 		this.credentialCacheFlushRequired = true;

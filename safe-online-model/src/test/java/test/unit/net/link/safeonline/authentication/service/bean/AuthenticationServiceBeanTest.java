@@ -20,13 +20,12 @@ import java.util.Date;
 import java.util.UUID;
 
 import junit.framework.TestCase;
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.auth.AuthenticationStatementFactory;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
@@ -35,8 +34,6 @@ import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
-import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -64,7 +61,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 	private HistoryDAO mockHistoryDAO;
 
-	private AttributeDAO mockAttributeDAO;
+	private PasswordManager mockPasswordManager;
 
 	private PkiProviderManager mockPkiProviderManager;
 
@@ -98,8 +95,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		this.mockHistoryDAO = createMock(HistoryDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockHistoryDAO);
 
-		this.mockAttributeDAO = createMock(AttributeDAO.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockAttributeDAO);
+		this.mockPasswordManager = createMock(PasswordManager.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockPasswordManager);
 
 		this.mockPkiProviderManager = createMock(PkiProviderManager.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockPkiProviderManager);
@@ -124,7 +121,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		this.mockObjects = new Object[] { this.mockSubjectDAO,
 				this.mockApplicationDAO, this.mockSubscriptionDAO,
-				this.mockHistoryDAO, this.mockAttributeDAO,
+				this.mockHistoryDAO, this.mockPasswordManager,
 				this.mockPkiProviderManager, this.mockPkiValidator,
 				this.mockSubjectIdentifierDAO, this.mockStatisticDAO,
 				this.mockStatisticDataPointDAO, this.mockSecurityAuditLogger };
@@ -153,13 +150,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		expect(this.mockSubscriptionDAO.findSubscription(subject, application))
 				.andStubReturn(subscription);
 
-		AttributeTypeEntity passwordAttributeType = new AttributeTypeEntity();
-		AttributeEntity passwordAttribute = new AttributeEntity(
-				passwordAttributeType, subject, password);
-		expect(
-				this.mockAttributeDAO.findAttribute(
-						SafeOnlineConstants.PASSWORD_ATTRIBUTE, "test-login"))
-				.andStubReturn(passwordAttribute);
+		expect(this.mockPasswordManager.validatePassword(subject, password))
+				.andStubReturn(true);
 
 		StatisticEntity statistic = new StatisticEntity();
 		expect(
@@ -186,20 +178,15 @@ public class AuthenticationServiceBeanTest extends TestCase {
 	public void testAuthenticateWithWrongPasswordFails() throws Exception {
 		// setup
 		String login = "test-login";
-		String password = "test-password";
 		String wrongPassword = "foobar";
 
 		// stubs
 		SubjectEntity subject = new SubjectEntity(login);
 		expect(this.mockSubjectDAO.getSubject(login)).andStubReturn(subject);
 
-		AttributeTypeEntity passwordAttributeType = new AttributeTypeEntity();
-		AttributeEntity passwordAttribute = new AttributeEntity(
-				passwordAttributeType, subject, password);
 		expect(
-				this.mockAttributeDAO.findAttribute(
-						SafeOnlineConstants.PASSWORD_ATTRIBUTE, login))
-				.andStubReturn(passwordAttribute);
+				this.mockPasswordManager.validatePassword(subject,
+						wrongPassword)).andStubReturn(false);
 
 		// expectations
 		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),

@@ -22,7 +22,6 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
@@ -41,8 +40,8 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
@@ -50,7 +49,6 @@ import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -114,9 +112,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	private HistoryDAO historyDAO;
 
 	@EJB
-	private AttributeDAO attributeDAO;
-
-	@EJB
 	private PkiProviderManager pkiProviderManager;
 
 	@EJB
@@ -140,6 +135,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private UserRegistrationManager userRegistrationManager;
 
+	@EJB
+	private PasswordManager passwordManager;
+
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
 	String password) throws SubjectNotFoundException, DeviceNotFoundException {
@@ -147,23 +145,19 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 		SubjectEntity subject = this.entityDAO.getSubject(login);
 
-		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
-		if (null == passwordAttribute) {
+		boolean validationResult = false;
+
+		try {
+			validationResult = this.passwordManager.validatePassword(
+					subject, password);
+		} catch (DeviceNotFoundException e) {
 			String event = "password attribute not present for subject "
 					+ login;
 			addHistoryEntry(subject, event);
-			throw new DeviceNotFoundException();
+			throw e;
 		}
 
-		String expectedPassword = passwordAttribute.getStringValue();
-		if (null == expectedPassword) {
-			String event = "actual password is null for subject " + login;
-			addHistoryEntry(subject, event);
-			return false;
-		}
-
-		if (!expectedPassword.equals(password)) {
+		if (!validationResult) {
 			String event = "incorrect password for subject: " + login;
 			addHistoryEntry(subject, event);
 			this.securityAuditLogger.addSecurityAudit(

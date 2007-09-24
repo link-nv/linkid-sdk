@@ -9,22 +9,19 @@ package net.link.safeonline.authentication.service.bean;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.CredentialManager;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.CredentialServiceRemote;
+import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.common.SafeOnlineRoles;
-import net.link.safeonline.dao.AttributeDAO;
-import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.model.CredentialManager;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
@@ -50,82 +47,31 @@ public class CredentialServiceBean implements CredentialService,
 	private SubjectManager subjectManager;
 
 	@EJB
-	private AttributeDAO attributeDAO;
-
-	@EJB
 	private CredentialManager credentialManager;
 
 	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
+	private PasswordManager passwordController;
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void changePassword(String oldPassword, String newPassword)
-			throws PermissionDeniedException {
+			throws PermissionDeniedException, DeviceNotFoundException {
 		LOG.debug("change password");
-		String login = this.subjectManager.getCallerLogin();
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
 
-		AttributeEntity passwordAttribute = getCurrentPasswordAttribute(login,
-				oldPassword);
-		if (null != passwordAttribute) {
-			passwordAttribute.setStringValue(newPassword);
-		} else {
-			AttributeTypeEntity passwordAttributeType;
-			try {
-				passwordAttributeType = this.attributeTypeDAO
-						.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
-			} catch (AttributeTypeNotFoundException e) {
-				throw new EJBException("attribute type not found: "
-						+ SafeOnlineConstants.PASSWORD_ATTRIBUTE);
-			}
-			SubjectEntity subject = this.subjectManager.getCallerSubject();
-			passwordAttribute = this.attributeDAO.addAttribute(
-					passwordAttributeType, subject, newPassword);
-		}
+		this.passwordController.changePassword(subject, oldPassword,
+				newPassword);
 
-		SecurityManagerUtils.flushCredentialCache(login,
+		SecurityManagerUtils.flushCredentialCache(subject.getLogin(),
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
-	}
-
-	private AttributeEntity getCurrentPasswordAttribute(String login,
-			String oldPassword) throws PermissionDeniedException {
-		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
-		if (null == passwordAttribute) {
-			return null;
-		}
-		String currentPassword = passwordAttribute.getStringValue();
-		if (null == currentPassword) {
-			throw new EJBException("current password is null");
-		}
-
-		if (!currentPassword.equals(oldPassword)) {
-			throw new PermissionDeniedException();
-		}
-		return passwordAttribute;
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void setPassword(String password) throws PermissionDeniedException {
 		LOG.debug("set password");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		String login = subject.getLogin();
-		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
-		if (null != passwordAttribute) {
-			/*
-			 * We don't allow a user to overwrite an existing password.
-			 */
-			throw new PermissionDeniedException();
-		}
-		AttributeTypeEntity passwordAttributeType;
-		try {
-			passwordAttributeType = this.attributeTypeDAO
-					.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
-		} catch (AttributeTypeNotFoundException e) {
-			throw new EJBException("password attribute type not found");
-		}
-		this.attributeDAO
-				.addAttribute(passwordAttributeType, subject, password);
+
+		this.passwordController.setPassword(subject, password, false);
+
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -141,9 +87,6 @@ public class CredentialServiceBean implements CredentialService,
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public boolean isPasswordConfigured() {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		String login = subject.getLogin();
-		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
-		return null != passwordAttribute;
+		return this.passwordController.isPasswordConfigured(subject);
 	}
 }

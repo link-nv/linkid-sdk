@@ -11,6 +11,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
@@ -32,7 +33,7 @@ public interface CredentialService {
 	 * @throws PermissionDeniedException
 	 */
 	void changePassword(String oldPassword, String newPassword)
-			throws PermissionDeniedException;
+			throws PermissionDeniedException, DeviceNotFoundException;
 
 	/**
 	 * Sets the password of a user. This method should be used in case the user

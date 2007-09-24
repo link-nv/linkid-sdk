@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model;
+package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
