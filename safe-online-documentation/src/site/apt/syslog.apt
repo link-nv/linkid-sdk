@@ -1,0 +1,23 @@
+Syslog configuration
+
+ SafeOnline is using syslog as audit backend.
+ 
+ On Fedora Linux one can configure syslog as follows.
+ 
+ Add the following line to the file <<</etc/syslog.conf>>>:
+ 
++---+
+local0.*	/var/log/safe-online.log
++---+
+ 
+ Change the following line in the file <<</etc/sysconfig/syslog>>>:
+ 
++---+
+SYSLOGD_OPTIONS="-m 0 -r"
++---+
+ 
+ Restart the <<<syslogd>>> daemon via:
+ 
++---+
+/etc/rc.d/init.d/syslog restart
++---+

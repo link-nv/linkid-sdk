@@ -31,20 +31,24 @@
 						<configuration>
 							<tasks>
 								<echo>Generating SQL DDL...</echo>
+								<path id="jpatoolslib">
+									<path
+										refid="maven.compile.classpath" />
+									<path
+										refid="maven.plugin.classpath" />
+									<pathelement
+										location="${basedir}/src/main/resources" />
+								</path>
 								<taskdef
 									classname="org.hibernate.tool.ant.HibernateToolTask"
-									name="hibernatetool">
-									<classpath>
-										<path
-											refid="maven.compile.classpath" />
-										<path
-											refid="maven.plugin.classpath" />
-									</classpath>
-								</taskdef>
+									name="hibernatetool" classpathref="jpatoolslib" />
 								<mkdir
 									dir="${project.build.directory}/classes" />
 								<hibernatetool
 									destdir="${project.build.directory}/classes">
+									<classpath>
+										<path refid="jpatoolslib" />
+									</classpath>
 									<!-- jpaconfiguration can directly use the PAR -->
 									<annotationconfiguration
 										configurationfile="${basedir}/src/main/resources/mysql-safe-online.cfg.xml" />

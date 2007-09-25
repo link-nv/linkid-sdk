@@ -19,6 +19,7 @@
 			<item name="Deployment" href="deploy.html" />
 			<item name="IDE" href="ide.html" />
 			<item name="Apache" href="apache.html" />
+			<item name="Syslog" href="syslog.html" />
 		</menu>
 	</body>
 

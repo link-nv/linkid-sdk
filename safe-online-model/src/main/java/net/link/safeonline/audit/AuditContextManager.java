@@ -7,28 +7,16 @@
 
 package net.link.safeonline.audit;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.Topic;
-import javax.jms.TopicConnection;
-import javax.jms.TopicConnectionFactory;
-import javax.jms.TopicSession;
 
 import net.link.safeonline.audit.dao.AuditAuditDAO;
 import net.link.safeonline.audit.dao.AuditContextDAO;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
-import net.link.safeonline.audit.exception.AuditContextNotPublishedException;
 import net.link.safeonline.audit.exception.ExistingAuditContextException;
 import net.link.safeonline.audit.exception.MissingAuditContextException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * EJB3 Interceptor that manages the audit context. Also publishes the finalized
@@ -39,13 +27,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AuditContextManager {
 
-	private static final Log LOG = LogFactory.getLog(AuditContextManager.class);
-
-	@Resource(mappedName = "ConnectionFactory")
-	private TopicConnectionFactory factory;
-
-	@Resource(mappedName = AuditConstants.auditTopic)
-	private Topic auditTopic;
+	@EJB
+	private AuditContextFinalizer auditContextFinalizer;
 
 	@EJB
 	private AuditContextDAO auditContextDAO;
@@ -67,37 +50,14 @@ public class AuditContextManager {
 	}
 
 	private void cleanupAuditContext() {
+		Long auditContextId;
 		try {
-			publishAuditContext(AuditContextPolicyContextHandler
-					.getAuditContextId());
+			auditContextId = AuditContextPolicyContextHandler
+					.getAuditContextId();
+			this.auditContextFinalizer.finalizeAuditContext(auditContextId);
 			AuditContextPolicyContextHandler.removeAuditContext();
-		} catch (AuditContextNotPublishedException e) {
-			this.auditAuditDAO.addAuditAudit("unable to publish audit context "
-					+ e.getAuditContextId() + " - reason: " + e.getMessage()
-					+ " - errorCode: " + e.getErrorCode());
 		} catch (MissingAuditContextException e) {
 			this.auditAuditDAO.addAuditAudit("missing audit context");
-		}
-	}
-
-	private void publishAuditContext(Long auditContextId)
-			throws AuditContextNotPublishedException {
-		AuditMessage auditMessage = new AuditMessage(auditContextId);
-
-		TopicConnection connect;
-		try {
-			connect = factory.createTopicConnection();
-			TopicSession session = connect.createTopicSession(true,
-					Session.AUTO_ACKNOWLEDGE);
-			MessageProducer sender = session.createProducer(this.auditTopic);
-			sender.send(auditMessage.getJMSMessage(session));
-			LOG.info("Audit JMS message (id=" + auditContextId
-					+ ") published to " + this.auditTopic.getTopicName()
-					+ " topic");
-			connect.close();
-		} catch (JMSException e) {
-			throw new AuditContextNotPublishedException(auditContextId, e
-					.getMessage(), e.getErrorCode());
 		}
 	}
 
@@ -126,5 +86,4 @@ public class AuditContextManager {
 		long auditContextId = auditContext.getId();
 		return auditContextId;
 	}
-
 }

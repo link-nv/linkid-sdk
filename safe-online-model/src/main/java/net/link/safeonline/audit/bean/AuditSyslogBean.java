@@ -20,37 +20,36 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 
 import net.link.safeonline.audit.AuditConstants;
-import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.AuditMessage;
-import net.link.safeonline.audit.service.AuditService;
+import net.link.safeonline.audit.dao.AccessAuditDAO;
+import net.link.safeonline.audit.dao.AuditAuditDAO;
+import net.link.safeonline.audit.dao.ResourceAuditDAO;
+import net.link.safeonline.audit.dao.SecurityAuditDAO;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.entity.audit.AccessAuditEntity;
 import net.link.safeonline.entity.audit.AuditAuditEntity;
+import net.link.safeonline.entity.audit.OperationStateType;
 import net.link.safeonline.entity.audit.ResourceAuditEntity;
 import net.link.safeonline.entity.audit.SecurityAuditEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.net.SyslogAppender;
-
-/*
- * @ActivationConfigProperty(propertyName = "subscriptionDurability",
- * propertyValue = "Durable"), @ActivationConfigProperty(propertyName =
- * "subscriptionName", propertyValue = "Audit Topic")
- */
 
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.auditTopic) })
+		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_TOPIC_NAME) })
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable(group = "Audit syslog configuration")
 public class AuditSyslogBean implements MessageListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(AuditContextManager.class);
+	private static final Log LOG = LogFactory.getLog(AuditSyslogBean.class);
 
 	Logger logger = Logger.getLogger(AuditSyslogBean.class);
 
@@ -61,7 +60,16 @@ public class AuditSyslogBean implements MessageListener {
 	private String threshold = "INFO";
 
 	@EJB
-	AuditService auditService;
+	private SecurityAuditDAO securityAuditDAO;
+
+	@EJB
+	private ResourceAuditDAO resourceAuditDAO;
+
+	@EJB
+	private AccessAuditDAO accessAuditDAO;
+
+	@EJB
+	private AuditAuditDAO auditAuditDAO;
 
 	@PostConstruct
 	public void init() {
@@ -70,6 +78,8 @@ public class AuditSyslogBean implements MessageListener {
 		SyslogAppender syslogAppender = new SyslogAppender();
 		syslogAppender.setSyslogHost(this.syslogHost);
 		syslogAppender.setFacility("LOCAL0");
+		syslogAppender.setThreshold(Level.toLevel(this.threshold));
+		syslogAppender.setLayout(new SimpleLayout());
 
 		logger.addAppender(syslogAppender);
 	}
@@ -95,8 +105,8 @@ public class AuditSyslogBean implements MessageListener {
 	}
 
 	private void logSecurityAudits(Long auditContextId) {
-		List<SecurityAuditEntity> securityAuditEntries = auditService
-				.listSecurityAuditRecords(auditContextId);
+		List<SecurityAuditEntity> securityAuditEntries = this.securityAuditDAO
+				.listRecords(auditContextId);
 		for (SecurityAuditEntity e : securityAuditEntries) {
 			logger.error("Security audit context " + e.getAuditContext()
 					+ " : principal=" + e.getTargetPrincipal() + " message="
@@ -105,8 +115,8 @@ public class AuditSyslogBean implements MessageListener {
 	}
 
 	private void logResourceAudits(Long auditContextId) {
-		List<ResourceAuditEntity> resourceAuditEntries = auditService
-				.listResourceAuditRecords(auditContextId);
+		List<ResourceAuditEntity> resourceAuditEntries = this.resourceAuditDAO
+				.listRecords(auditContextId);
 		for (ResourceAuditEntity e : resourceAuditEntries) {
 			logger.error("Resource audit context " + e.getAuditContext()
 					+ " : resource=" + e.getResourceName() + " type="
@@ -116,25 +126,25 @@ public class AuditSyslogBean implements MessageListener {
 	}
 
 	private void logAccessAudits(Long auditContextId) {
-		List<AccessAuditEntity> accessAuditEntries = auditService
-				.listAccessAuditRecords(auditContextId);
+		List<AccessAuditEntity> accessAuditEntries = this.accessAuditDAO
+				.listRecords(auditContextId);
 		for (AccessAuditEntity e : accessAuditEntries) {
-			logger.error("Access audit context " + e.getAuditContext()
-					+ " : principal=" + e.getPrincipal() + " operation="
-					+ e.getOperation() + "operationState="
-					+ e.getOperationState());
-
+			if (e.getOperationState() != OperationStateType.BEGIN
+					&& e.getOperationState() != OperationStateType.NORMAL_END) {
+				logger.error("Access audit context " + e.getAuditContext()
+						+ " : principal=" + e.getPrincipal() + " operation="
+						+ e.getOperation() + "operationState="
+						+ e.getOperationState());
+			}
 		}
 	}
 
 	private void logAuditAudits(Long auditContextId) {
-		List<AuditAuditEntity> auditAuditEntries = auditService
-				.listAuditAuditRecords(auditContextId);
+		List<AuditAuditEntity> auditAuditEntries = this.auditAuditDAO
+				.listRecords(auditContextId);
 		for (AuditAuditEntity e : auditAuditEntries) {
 			logger.error("Audit audit context " + e.getAuditContext()
 					+ " message=" + e.getMessage());
-
 		}
 	}
-
 }

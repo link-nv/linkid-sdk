@@ -96,7 +96,12 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 					LogLevelType.ERROR);
 			return null;
 		} catch (DeviceNotFoundException e) {
-			this.facesMessages.add("password device not configured");
+			/*
+			 * Important here not to explicitly communicate that the password
+			 * device was not configured.
+			 */
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
 			HelpdeskLogger.add("password device not configured",
 					LogLevelType.ERROR);
 			return null;

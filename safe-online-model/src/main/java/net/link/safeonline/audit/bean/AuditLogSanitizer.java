@@ -8,7 +8,6 @@
 package net.link.safeonline.audit.bean;
 
 import javax.ejb.ActivationConfigProperty;
-import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
@@ -16,9 +15,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 
 import net.link.safeonline.audit.AuditConstants;
-import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.AuditMessage;
-import net.link.safeonline.audit.service.AuditService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,22 +30,21 @@ import org.apache.commons.logging.LogFactory;
 
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.auditQueue) })
+		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_QUEUE_NAME) })
 public class AuditLogSanitizer implements MessageListener {
 
 	private static final Log LOG = LogFactory.getLog(AuditLogSanitizer.class);
-
-	@EJB
-	AuditService auditService;
 
 	public void onMessage(Message msg) {
 		LOG.debug("onMessage");
 		try {
 			AuditMessage auditMessage = new AuditMessage(msg);
 			Long auditContextId = auditMessage.getAuditContextId();
+			LOG.debug("sanitizing audit context: " + auditContextId);
+			LOG.debug("implement me");
+			// TODO: implement me
 		} catch (JMSException e) {
 			throw new EJBException();
 		}
-
 	}
 }

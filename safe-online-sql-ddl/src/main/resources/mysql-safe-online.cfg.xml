@@ -61,5 +61,6 @@
 			class="net.link.safeonline.entity.helpdesk.HelpdeskContextEntity" />
 		<mapping
 			class="net.link.safeonline.entity.helpdesk.HelpdeskEventEntity" />
+		<mapping class="net.link.safeonline.entity.MetadataEntity" />
 	</session-factory>
 </hibernate-configuration>

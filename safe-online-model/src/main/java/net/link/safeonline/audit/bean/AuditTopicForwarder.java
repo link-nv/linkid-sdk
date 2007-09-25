@@ -8,7 +8,6 @@ package net.link.safeonline.audit.bean;
 
 import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
-import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.MessageDriven;
 import javax.jms.Connection;
@@ -21,9 +20,7 @@ import javax.jms.Queue;
 import javax.jms.Session;
 
 import net.link.safeonline.audit.AuditConstants;
-import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.AuditMessage;
-import net.link.safeonline.audit.service.AuditService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,32 +35,39 @@ import org.apache.commons.logging.LogFactory;
 
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.auditTopic) })
+		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_TOPIC_NAME) })
 public class AuditTopicForwarder implements MessageListener {
 
 	private static final Log LOG = LogFactory.getLog(AuditTopicForwarder.class);
 
-	@Resource(mappedName = "ConnectionFactory")
+	@Resource(mappedName = AuditConstants.CONNECTION_FACTORY_NAME)
 	private ConnectionFactory factory;
 
-	@Resource(mappedName = AuditConstants.auditQueue)
+	@Resource(mappedName = AuditConstants.AUDIT_QUEUE_NAME)
 	private Queue auditQueue;
 
-	@EJB
-	AuditService auditService;
-
 	public void onMessage(Message msg) {
-
 		LOG.debug("onMessage");
-
 		try {
 			AuditMessage auditMessage = new AuditMessage(msg);
-			Connection connect = factory.createConnection();
-			Session session = connect.createSession(true, 0);
-			MessageProducer producer = session.createProducer(this.auditQueue);
-			producer.send(auditMessage.getJMSMessage(session));
-			session.close();
-			connect.close();
+			Connection connection = this.factory.createConnection();
+			try {
+				Session session = connection.createSession(true, 0);
+				try {
+					MessageProducer producer = session
+							.createProducer(this.auditQueue);
+					try {
+						Message message = auditMessage.getJMSMessage(session);
+						producer.send(message);
+					} finally {
+						producer.close();
+					}
+				} finally {
+					session.close();
+				}
+			} finally {
+				connection.close();
+			}
 		} catch (JMSException e) {
 			throw new EJBException();
 		}
