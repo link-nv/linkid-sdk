@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.service.bean.PasswordManagerBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
@@ -72,7 +73,7 @@ public class DemoStartableBeanTest {
 			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
 			ApplicationIdentityManagerBean.class, TrustPointDAOBean.class,
 			AttributeProviderDAOBean.class, DeviceDAOBean.class,
-			AllowedDeviceDAOBean.class };
+			AllowedDeviceDAOBean.class, PasswordManagerBean.class };
 
 	@Before
 	public void setUp() throws Exception {
