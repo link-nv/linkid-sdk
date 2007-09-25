@@ -58,16 +58,28 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 	}
 
 	/**
+	 * Returns the audit context Id for the current thread
+	 * 
+	 * @return auditContextId
+	 * @throws MissingAuditContextException
+	 */
+	public static synchronized Long getAuditContextId()
+			throws MissingAuditContextException {
+		Long auditContextId = auditContext.get();
+		if (null == auditContextId) {
+			throw new MissingAuditContextException();
+		}
+		return auditContextId;
+	}
+
+	/**
 	 * Removes the audit context for the current thread.
 	 * 
 	 * @throws MissingAuditContextException
 	 */
 	public static synchronized void removeAuditContext()
 			throws MissingAuditContextException {
-		Long auditContextId = auditContext.get();
-		if (null == auditContextId) {
-			throw new MissingAuditContextException();
-		}
+		getAuditContextId();
 		auditContext.remove();
 	}
 }
