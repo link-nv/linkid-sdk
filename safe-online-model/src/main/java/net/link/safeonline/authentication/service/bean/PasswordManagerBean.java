@@ -1,8 +1,14 @@
 package net.link.safeonline.authentication.service.bean;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -18,6 +24,8 @@ import net.link.safeonline.entity.SubjectEntity;
 @Stateless
 public class PasswordManagerBean implements PasswordManager {
 
+	private static final String defaultHashingAlgorithm = "SHA-512";
+
 	@EJB
 	private AttributeDAO attributeDAO;
 
@@ -32,57 +40,112 @@ public class PasswordManagerBean implements PasswordManager {
 			throw new PermissionDeniedException();
 		}
 
-		setPassword(subject, newPassword, true);
+		setPasswordWithForce(subject, newPassword);
 
 	}
 
-	public void setPassword(SubjectEntity subject, String password,
-			boolean forceOverwrite) throws PermissionDeniedException {
+	public void setPassword(SubjectEntity subject, String password)
+			throws PermissionDeniedException {
 
-		AttributeTypeEntity passwordAttributeType;
-		try {
-			passwordAttributeType = this.attributeTypeDAO
-					.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
-		} catch (AttributeTypeNotFoundException e) {
-			throw new EJBException("password attribute type not found");
+		if (isPasswordConfigured(subject)) {
+			throw new PermissionDeniedException();
 		}
 
-		AttributeEntity passwordAttribute;
+		setPasswordWithForce(subject, password);
+	}
 
+	private void setPasswordWithForce(SubjectEntity subject, String password) {
+		AttributeTypeEntity passwordHashAttributeType;
+		AttributeTypeEntity passwordSeedAttributeType;
+		AttributeTypeEntity passwordAlgorithmAttributeType;
 		try {
-			passwordAttribute = getPasswordAttribute(subject.getLogin());
-			if (!forceOverwrite)
-				throw new PermissionDeniedException();
-			passwordAttribute.setStringValue(password);
+			passwordHashAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE);
+			passwordSeedAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE);
+			passwordAlgorithmAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
+		} catch (AttributeTypeNotFoundException e) {
+			throw new EJBException("password attribute types not found");
+		}
+
+		String seed = subject.getLogin();
+		String hashValue;
+		try {
+			hashValue = hash(password, seed, defaultHashingAlgorithm);
+		} catch (NoSuchAlgorithmException e) {
+			throw new EJBException(
+					"Could not find the default password hashing algorithm: "
+							+ defaultHashingAlgorithm);
+		}
+		try {
+			Password passwordAttribute = getPasswordAttribute(subject
+					.getLogin());
+
+			passwordAttribute.hash.setStringValue(hashValue);
+			passwordAttribute.seed.setStringValue(seed);
+			passwordAttribute.algorithm.setStringValue(defaultHashingAlgorithm);
 		} catch (DeviceNotFoundException e) {
-			this.attributeDAO.addAttribute(passwordAttributeType, subject,
-					password);
+			this.attributeDAO.addAttribute(passwordHashAttributeType, subject,
+					hashValue);
+			this.attributeDAO.addAttribute(passwordSeedAttributeType, subject,
+					seed);
+			this.attributeDAO.addAttribute(passwordAlgorithmAttributeType,
+					subject, defaultHashingAlgorithm);
 		}
 	}
 
 	public boolean validatePassword(SubjectEntity subject, String password)
 			throws DeviceNotFoundException {
-		String expectedPassword = getPasswordAttribute(subject.getLogin())
-				.getStringValue();
-		if (expectedPassword.equals(password)) {
+
+		// get current password
+		Password expectedPassword = getPasswordAttribute(subject.getLogin());
+		String expectedPasswordHash = expectedPassword.hash.getStringValue();
+		String seed = expectedPassword.seed.getStringValue();
+		String algorithm = expectedPassword.algorithm.getStringValue();
+
+		// calculate hash
+		String givenPasswordHash;
+		try {
+			givenPasswordHash = hash(password, seed, algorithm);
+		} catch (NoSuchAlgorithmException e) {
+			throw new EJBException("Password hashing algorithm not found: "
+					+ algorithm);
+		}
+
+		// compare hash
+		if (expectedPasswordHash.equals(givenPasswordHash)) {
+			// update hash to new default
+			setPasswordWithForce(subject, password);
 			return true;
 		}
 		return false;
 	}
 
-	private AttributeEntity getPasswordAttribute(String login)
+	private Password getPasswordAttribute(String login)
 			throws DeviceNotFoundException {
-		AttributeEntity passwordAttribute = this.attributeDAO.findAttribute(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, login);
-		if (null == passwordAttribute) {
+		AttributeEntity passwordHashAttribute = this.attributeDAO
+				.findAttribute(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
+						login);
+		AttributeEntity passwordSeedAttribute = this.attributeDAO
+				.findAttribute(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE,
+						login);
+		AttributeEntity passwordAlgorithmAttribute = this.attributeDAO
+				.findAttribute(
+						SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE, login);
+		if (null == passwordHashAttribute || null == passwordSeedAttribute
+				|| null == passwordAlgorithmAttribute) {
 			throw new DeviceNotFoundException();
 		}
-		String password = passwordAttribute.getStringValue();
-		if (null == password) {
+		String hash = passwordHashAttribute.getStringValue();
+		String seed = passwordSeedAttribute.getStringValue();
+		String algorithm = passwordAlgorithmAttribute.getStringValue();
+		if (null == hash || null == seed || null == algorithm) {
 			throw new DeviceNotFoundException();
 		}
 
-		return passwordAttribute;
+		return new Password(passwordHashAttribute, passwordSeedAttribute,
+				passwordAlgorithmAttribute);
 	}
 
 	public boolean isPasswordConfigured(SubjectEntity subject) {
@@ -93,4 +156,41 @@ public class PasswordManagerBean implements PasswordManager {
 		}
 		return true;
 	}
+
+	private static class Password {
+		public AttributeEntity hash;
+		public AttributeEntity seed;
+		public AttributeEntity algorithm;
+
+		public Password(AttributeEntity hash, AttributeEntity seed,
+				AttributeEntity algorithm) {
+			this.hash = hash;
+			this.seed = seed;
+			this.algorithm = algorithm;
+		}
+	}
+
+	private static String hash(String input, String seed, String algorithm)
+			throws NoSuchAlgorithmException {
+
+		String toHash = input + seed;
+		byte[] plainText = null;
+
+		try {
+			plainText = toHash.getBytes("UTF8");
+		} catch (UnsupportedEncodingException e) {
+			throw new EJBException(
+					"Unsupported encoding in password hash function");
+		}
+
+		MessageDigest messageDigest = MessageDigest.getInstance(algorithm,
+				new BouncyCastleProvider());
+
+		messageDigest.update(plainText);
+		String digestAsString = new sun.misc.BASE64Encoder()
+				.encode(messageDigest.digest());
+
+		return digestAsString;
+	}
+
 }

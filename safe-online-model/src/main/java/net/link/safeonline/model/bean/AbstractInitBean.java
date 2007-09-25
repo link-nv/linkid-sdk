@@ -430,7 +430,7 @@ public abstract class AbstractInitBean implements Startable {
 
 			String password = authorizedUser.getValue();
 			try {
-				this.passwordManager.setPassword(subject, password, false);
+				this.passwordManager.setPassword(subject, password);
 			} catch (PermissionDeniedException e) {
 				throw new EJBException("could not set password");
 			}

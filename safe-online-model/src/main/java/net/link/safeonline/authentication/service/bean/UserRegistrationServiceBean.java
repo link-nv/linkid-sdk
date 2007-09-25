@@ -79,7 +79,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 			String name) throws AttributeTypeNotFoundException {
 
 		try {
-			this.passwordController.setPassword(subject, password, false);
+			this.passwordController.setPassword(subject, password);
 		} catch (PermissionDeniedException e) {
 			throw new EJBException("Not allowed to set password");
 		}

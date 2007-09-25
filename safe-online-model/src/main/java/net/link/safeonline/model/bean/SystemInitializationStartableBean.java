@@ -110,18 +110,39 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				nameAttributeType, "nl", "Naam", null));
 
-		AttributeTypeEntity passwordAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, DatatypeType.STRING,
-				false, false);
-		this.attributeTypes.add(passwordAttributeType);
+		AttributeTypeEntity passwordHashAttributeType = new AttributeTypeEntity(
+				SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
+				DatatypeType.STRING, false, false);
+		AttributeTypeEntity passwordSeedAttributeType = new AttributeTypeEntity(
+				SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE,
+				DatatypeType.STRING, false, false);
+		AttributeTypeEntity passwordAlgorithmAttributeType = new AttributeTypeEntity(
+				SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
+				DatatypeType.STRING, false, false);
+		this.attributeTypes.add(passwordHashAttributeType);
+		this.attributeTypes.add(passwordSeedAttributeType);
+		this.attributeTypes.add(passwordAlgorithmAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				passwordAttributeType, Locale.ENGLISH.getLanguage(),
-				"Password", null));
+				passwordHashAttributeType, Locale.ENGLISH.getLanguage(),
+				"Password hash", null));
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				passwordAttributeType, "nl", "Wachtwoord", null));
+				passwordSeedAttributeType, Locale.ENGLISH.getLanguage(),
+				"Password hash seed", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				passwordAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
+				"Password hash algorithm", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				passwordHashAttributeType, "nl", "Wachtwoord hash", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				passwordSeedAttributeType, "nl", "Wachtwoord hash seed", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				passwordAlgorithmAttributeType, "nl",
+				"Wachtwoord hash algoritme", null));
 
 		List<AttributeTypeEntity> deviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
-		deviceAttributeTypeList.add(passwordAttributeType);
+		deviceAttributeTypeList.add(passwordHashAttributeType);
+		deviceAttributeTypeList.add(passwordSeedAttributeType);
+		deviceAttributeTypeList.add(passwordAlgorithmAttributeType);
 		this.devices.put("password", deviceAttributeTypeList);
 	}
 

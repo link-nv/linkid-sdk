@@ -70,7 +70,7 @@ public class CredentialServiceBean implements CredentialService,
 		LOG.debug("set password");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 
-		this.passwordController.setPassword(subject, password, false);
+		this.passwordController.setPassword(subject, password);
 
 	}
 

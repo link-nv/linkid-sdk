@@ -9,8 +9,8 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface PasswordManager {
 
-	void setPassword(SubjectEntity subject, String password,
-			boolean forceOverWrite) throws PermissionDeniedException;
+	void setPassword(SubjectEntity subject, String password)
+			throws PermissionDeniedException;
 
 	void changePassword(SubjectEntity subject, String oldPassword,
 			String newPassword) throws PermissionDeniedException,

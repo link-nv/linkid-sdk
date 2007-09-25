@@ -48,7 +48,11 @@ public class SafeOnlineConstants {
 
 	public static final String NAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:name";
 
-	public static final String PASSWORD_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:password";
+	public static final String PASSWORD_HASH_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:password:hash";
+
+	public static final String PASSWORD_SEED_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:password:seed";
+
+	public static final String PASSWORD_ALGORITHM_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:password:algorithm";
 
 	public static final String USERNAME_PASSWORD_AUTH_DEVICE = "password";
 

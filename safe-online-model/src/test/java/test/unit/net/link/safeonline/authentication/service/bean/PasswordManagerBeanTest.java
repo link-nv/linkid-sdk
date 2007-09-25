@@ -1,13 +1,10 @@
 package test.unit.net.link.safeonline.authentication.service.bean;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.UUID;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -15,269 +12,159 @@ import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.authentication.service.bean.PasswordManagerBean;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.dao.SubjectDAO;
+import net.link.safeonline.dao.bean.AttributeDAOBean;
+import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
+import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.test.util.EJBTestUtils;
+import net.link.safeonline.test.util.EntityTestManager;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import test.unit.net.link.safeonline.SafeOnlineTestContainer;
+
 public class PasswordManagerBeanTest {
+
+	private EntityTestManager entityTestManager;
 
 	private PasswordManager testedInstance;
 
-	private AttributeTypeDAO mockAttributeTypeDAO;
+	private AttributeTypeDAO attributeTypeDAO;
 
-	private AttributeDAO mockAttributeDAO;
+	private AttributeDAO attributeDAO;
 
-	private Object[] mockObjects;
+	private SubjectDAO subjectDAO;
 
 	@Before
 	public void setUp() throws Exception {
+
+		this.entityTestManager = new EntityTestManager();
+		/*
+		 * If you add entities to this list, also add them to
+		 * safe-online-sql-ddl.
+		 */
+		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+
 		this.testedInstance = new PasswordManagerBean();
+		this.attributeDAO = new AttributeDAOBean();
+		this.attributeTypeDAO = new AttributeTypeDAOBean();
+		this.subjectDAO = new SubjectDAOBean();
 
-		this.mockAttributeTypeDAO = createMock(AttributeTypeDAO.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockAttributeTypeDAO);
+		EJBTestUtils.inject(this.attributeDAO, this.entityTestManager
+				.getEntityManager());
+		EJBTestUtils.inject(this.attributeTypeDAO, this.entityTestManager
+				.getEntityManager());
+		EJBTestUtils.inject(this.subjectDAO, this.entityTestManager
+				.getEntityManager());
+		EJBTestUtils.inject(this.testedInstance, this.attributeDAO);
+		EJBTestUtils.inject(this.testedInstance, this.attributeTypeDAO);
 
-		this.mockAttributeDAO = createMock(AttributeDAO.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockAttributeDAO);
+		EJBTestUtils.init(this.attributeDAO);
+		EJBTestUtils.init(this.attributeTypeDAO);
+		EJBTestUtils.init(this.testedInstance);
 
-		this.mockObjects = new Object[] { this.mockAttributeDAO,
-				this.mockAttributeTypeDAO };
+		this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(
+				SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
+				DatatypeType.STRING, false, false));
+		this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(
+				SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE,
+				DatatypeType.STRING, false, false));
+		this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(
+				SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
+				DatatypeType.STRING, false, false));
 
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		this.entityTestManager.tearDown();
 	}
 
 	@Test
 	public void testSetPassword() throws Exception {
 		// prepare
-		SubjectEntity subject = new SubjectEntity("test-subject");
+		UUID subjectUUID = UUID.randomUUID();
+		SubjectEntity subject = this.subjectDAO.addSubject(subjectUUID
+				.toString());
 		String password = "password";
 
-		AttributeTypeEntity passwordType = new AttributeTypeEntity();
-
-		// stubs
-		expect(
-				this.mockAttributeTypeDAO
-						.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE))
-				.andStubReturn(passwordType);
-
-		expect(
-				this.mockAttributeTypeDAO
-						.findAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE))
-				.andStubReturn(passwordType);
-
-		expect(this.mockAttributeDAO.findAttribute(passwordType, subject))
-				.andStubReturn(null);
-
-		expect(
-				this.mockAttributeDAO.findAttribute(
-						SafeOnlineConstants.PASSWORD_ATTRIBUTE, subject
-								.getLogin())).andStubReturn(null);
-
-		expect(
-				this.mockAttributeDAO.addAttribute(passwordType, subject,
-						password)).andReturn(null);
-
-		// replay
-		replay(this.mockObjects);
-
 		// operate
-		this.testedInstance.setPassword(subject, password, false);
+		this.testedInstance.setPassword(subject, password);
 
 		// validate
-		verify(this.mockObjects);
+		boolean validationResult = this.testedInstance.validatePassword(
+				subject, password);
+		assertTrue(validationResult);
 
-	}
-
-	@Test
-	public void testSetPasswordWithPreviousPasswordSet() throws Exception {
-		// prepare
-		SubjectEntity subject = new SubjectEntity("test-subject");
-		String password = "password";
-
-		AttributeTypeEntity passwordType = new AttributeTypeEntity();
-		AttributeEntity passwordEntity = new AttributeEntity(passwordType,
-				subject, "something");
-
-		// stubs
-		expect(
-				this.mockAttributeTypeDAO
-						.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE))
-				.andStubReturn(passwordType);
-
-		expect(
-				this.mockAttributeTypeDAO
-						.findAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE))
-				.andStubReturn(passwordType);
-
-		expect(this.mockAttributeDAO.findAttribute(passwordType, subject))
-				.andStubReturn(passwordEntity);
-
-		expect(
-				this.mockAttributeDAO.findAttribute(
-						SafeOnlineConstants.PASSWORD_ATTRIBUTE, subject
-								.getLogin())).andStubReturn(passwordEntity);
-
-		// replay
-		replay(this.mockObjects);
-
-		// operate
 		try {
-			this.testedInstance.setPassword(subject, password, false);
+			this.testedInstance.setPassword(subject, password);
 			fail();
 		} catch (PermissionDeniedException e) {
+			// empty
 		}
-
-		this.testedInstance.setPassword(subject, password, true);
-
-		assertEquals(passwordEntity.getStringValue(), password);
-
-		// validate
-		verify(this.mockObjects);
 
 	}
 
 	@Test
 	public void testChangePassword() throws Exception {
 		// prepare
-		SubjectEntity subject = new SubjectEntity("test-subject");
+		UUID subjectUUID = UUID.randomUUID();
+		SubjectEntity subject = this.subjectDAO.addSubject(subjectUUID
+				.toString());
 		String password = "password";
 		String newPassword = "newpassword";
 
-		AttributeTypeEntity passwordType = new AttributeTypeEntity();
-		AttributeEntity passwordEntity = new AttributeEntity(passwordType,
-				subject, password);
-
-		// stubs
-		expect(
-				this.mockAttributeTypeDAO
-						.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE))
-				.andStubReturn(passwordType);
-
-		expect(
-				this.mockAttributeTypeDAO
-						.findAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE))
-				.andStubReturn(passwordType);
-
-		expect(this.mockAttributeDAO.findAttribute(passwordType, subject))
-				.andStubReturn(passwordEntity);
-
-		expect(
-				this.mockAttributeDAO.findAttribute(
-						SafeOnlineConstants.PASSWORD_ATTRIBUTE, subject
-								.getLogin())).andStubReturn(passwordEntity);
-
-		// replay
-		replay(this.mockObjects);
-
 		// operate
-		try {
-			this.testedInstance.changePassword(subject, newPassword,
-					newPassword);
-			fail();
-		} catch (PermissionDeniedException e) {
-		}
-
+		this.testedInstance.setPassword(subject, password);
 		this.testedInstance.changePassword(subject, password, newPassword);
 
-		assertEquals(passwordEntity.getStringValue(), newPassword);
-
 		// validate
-		verify(this.mockObjects);
+		boolean validationResult = this.testedInstance.validatePassword(
+				subject, password);
+		assertFalse(validationResult);
+
+		validationResult = this.testedInstance.validatePassword(subject,
+				newPassword);
+		assertTrue(validationResult);
 	}
 
 	@Test
-	public void testValidatePassword() throws Exception {
+	public void validatePassword() throws Exception {
 		// prepare
-		SubjectEntity subject = new SubjectEntity("test-subject");
+		UUID subjectUUID = UUID.randomUUID();
+		SubjectEntity subject = this.subjectDAO.addSubject(subjectUUID
+				.toString());
 		String password = "password";
-		String wrongPassword = "wrongpassword";
-
-		AttributeTypeEntity passwordType = new AttributeTypeEntity();
-		AttributeEntity passwordEntity = new AttributeEntity(passwordType,
-				subject, password);
-
-		// stubs
-		expect(
-				this.mockAttributeTypeDAO
-						.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE))
-				.andStubReturn(passwordType);
-
-		expect(
-				this.mockAttributeTypeDAO
-						.findAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE))
-				.andStubReturn(passwordType);
-
-		expect(this.mockAttributeDAO.findAttribute(passwordType, subject))
-				.andStubReturn(passwordEntity);
-
-		expect(
-				this.mockAttributeDAO.findAttribute(
-						SafeOnlineConstants.PASSWORD_ATTRIBUTE, subject
-								.getLogin())).andStubReturn(passwordEntity);
-
-		// replay
-		replay(this.mockObjects);
 
 		// operate
-
-		assertFalse(this.testedInstance
-				.validatePassword(subject, wrongPassword));
-
-		assertTrue(this.testedInstance.validatePassword(subject, password));
+		this.testedInstance.setPassword(subject, password);
 
 		// validate
-		verify(this.mockObjects);
+		boolean validationResult = this.testedInstance.validatePassword(
+				subject, password);
+		assertTrue(validationResult);
 	}
 
 	@Test
 	public void testIsPasswordConfigured() throws Exception {
 		// prepare
-		SubjectEntity subject = new SubjectEntity("test-subject");
-		SubjectEntity wrongSubject = new SubjectEntity("wrong-subject");
+		UUID subjectUUID = UUID.randomUUID();
+		SubjectEntity subject = this.subjectDAO.addSubject(subjectUUID
+				.toString());
 		String password = "password";
 
-		AttributeTypeEntity passwordType = new AttributeTypeEntity();
-		AttributeEntity passwordEntity = new AttributeEntity(passwordType,
-				subject, password);
-
-		// stubs
-		expect(
-				this.mockAttributeTypeDAO
-						.getAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE))
-				.andStubReturn(passwordType);
-
-		expect(
-				this.mockAttributeTypeDAO
-						.findAttributeType(SafeOnlineConstants.PASSWORD_ATTRIBUTE))
-				.andStubReturn(passwordType);
-
-		expect(this.mockAttributeDAO.findAttribute(passwordType, subject))
-				.andStubReturn(passwordEntity);
-		expect(this.mockAttributeDAO.findAttribute(passwordType, wrongSubject))
-				.andStubReturn(null);
-
-		expect(
-				this.mockAttributeDAO.findAttribute(
-						SafeOnlineConstants.PASSWORD_ATTRIBUTE, subject
-								.getLogin())).andStubReturn(passwordEntity);
-		expect(
-				this.mockAttributeDAO.findAttribute(
-						SafeOnlineConstants.PASSWORD_ATTRIBUTE, wrongSubject
-								.getLogin())).andStubReturn(null);
-
-		// replay
-		replay(this.mockObjects);
-
 		// operate
-
-		assertFalse(this.testedInstance.isPasswordConfigured(wrongSubject));
-
-		assertTrue(this.testedInstance.isPasswordConfigured(subject));
+		this.testedInstance.setPassword(subject, password);
 
 		// validate
-		verify(this.mockObjects);
+		boolean validationResult = this.testedInstance
+				.isPasswordConfigured(subject);
+		assertTrue(validationResult);
 	}
 
 }
