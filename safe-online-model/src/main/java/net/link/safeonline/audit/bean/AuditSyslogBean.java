@@ -77,7 +77,7 @@ public class AuditSyslogBean implements MessageListener {
 
 		SyslogAppender syslogAppender = new SyslogAppender();
 		syslogAppender.setSyslogHost(this.syslogHost);
-		syslogAppender.setFacility("LOCAL0");
+		syslogAppender.setFacility("LOCAL1");
 		syslogAppender.setThreshold(Level.toLevel(this.threshold));
 		syslogAppender.setLayout(new SimpleLayout());
 
@@ -108,9 +108,9 @@ public class AuditSyslogBean implements MessageListener {
 		List<SecurityAuditEntity> securityAuditEntries = this.securityAuditDAO
 				.listRecords(auditContextId);
 		for (SecurityAuditEntity e : securityAuditEntries) {
-			logger.error("Security audit context " + e.getAuditContext()
-					+ " : principal=" + e.getTargetPrincipal() + " message="
-					+ e.getMessage());
+			logger.error("Security audit context "
+					+ e.getAuditContext().getId() + " : principal="
+					+ e.getTargetPrincipal() + " message=" + e.getMessage());
 		}
 	}
 
@@ -118,10 +118,11 @@ public class AuditSyslogBean implements MessageListener {
 		List<ResourceAuditEntity> resourceAuditEntries = this.resourceAuditDAO
 				.listRecords(auditContextId);
 		for (ResourceAuditEntity e : resourceAuditEntries) {
-			logger.error("Resource audit context " + e.getAuditContext()
-					+ " : resource=" + e.getResourceName() + " type="
-					+ e.getResourceLevel() + " source="
-					+ e.getSourceComponent() + " message=" + e.getMessage());
+			logger.error("Resource audit context "
+					+ e.getAuditContext().getId() + " : resource="
+					+ e.getResourceName() + " type=" + e.getResourceLevel()
+					+ " source=" + e.getSourceComponent() + " message="
+					+ e.getMessage());
 		}
 	}
 
@@ -131,10 +132,10 @@ public class AuditSyslogBean implements MessageListener {
 		for (AccessAuditEntity e : accessAuditEntries) {
 			if (e.getOperationState() != OperationStateType.BEGIN
 					&& e.getOperationState() != OperationStateType.NORMAL_END) {
-				logger.error("Access audit context " + e.getAuditContext()
-						+ " : principal=" + e.getPrincipal() + " operation="
-						+ e.getOperation() + " operationState="
-						+ e.getOperationState());
+				logger.error("Access audit context "
+						+ e.getAuditContext().getId() + " : principal="
+						+ e.getPrincipal() + " operation=" + e.getOperation()
+						+ "operationState=" + e.getOperationState());
 			}
 		}
 	}
@@ -143,7 +144,7 @@ public class AuditSyslogBean implements MessageListener {
 		List<AuditAuditEntity> auditAuditEntries = this.auditAuditDAO
 				.listRecords(auditContextId);
 		for (AuditAuditEntity e : auditAuditEntries) {
-			logger.error("Audit audit context " + e.getAuditContext()
+			logger.error("Audit audit context " + e.getAuditContext().getId()
 					+ " message=" + e.getMessage());
 		}
 	}
