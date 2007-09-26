@@ -25,6 +25,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 
@@ -76,6 +78,11 @@ public class AuditContextEntity implements Serializable {
 
 	public void setCreationTime(Date time) {
 		this.creationTime = time;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("id", this.id).toString();
 	}
 
 	public interface QueryInterface {
