@@ -13,7 +13,6 @@ import javax.interceptor.InvocationContext;
 
 import net.link.safeonline.audit.dao.AuditAuditDAO;
 import net.link.safeonline.audit.dao.AuditContextDAO;
-import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 import net.link.safeonline.audit.exception.ExistingAuditContextException;
 import net.link.safeonline.audit.exception.MissingAuditContextException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
@@ -60,30 +59,34 @@ public class AuditContextManager {
 		try {
 			auditContextId = AuditContextPolicyContextHandler
 					.getAuditContextId();
-			this.auditContextFinalizer.finalizeAuditContext(auditContextId);
-			AuditContextPolicyContextHandler.removeAuditContext();
+			boolean isMainEntry = AuditContextPolicyContextHandler
+					.removeAuditContext();
+			if (isMainEntry) {
+				this.auditContextFinalizer.finalizeAuditContext(auditContextId);
+			}
 		} catch (MissingAuditContextException e) {
 			this.auditAuditDAO.addAuditAudit("missing audit context");
 		}
 	}
 
 	private void initAuditContext() {
+		boolean hasAuditContext = AuditContextPolicyContextHandler
+				.lockAuditContext();
+		if (true == hasAuditContext) {
+			return;
+		}
+		/*
+		 * In this case we need to create a new audit context and associate it
+		 * with the current caller thread.
+		 */
 		long newAuditContextId = createNewAuditContextId();
 		LOG.debug("init new audit context: " + newAuditContextId);
 		try {
 			AuditContextPolicyContextHandler
 					.setAuditContextId(newAuditContextId);
 		} catch (ExistingAuditContextException e) {
-			long existingAuditContextId = e.getAuditContextId();
-			try {
-				AuditContextEntity auditContext = this.auditContextDAO
-						.getAuditContext(existingAuditContextId);
-				this.auditAuditDAO.addAuditAudit(auditContext,
-						"audit context not correctly terminated");
-			} catch (AuditContextNotFoundException e2) {
-				this.auditAuditDAO.addAuditAudit("non-existing audit context: "
-						+ existingAuditContextId);
-			}
+			this.auditAuditDAO.addAuditAudit("existing audit context: "
+					+ e.getAuditContextId());
 		}
 	}
 

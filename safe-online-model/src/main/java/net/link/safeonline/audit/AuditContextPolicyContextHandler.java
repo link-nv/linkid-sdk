@@ -10,11 +10,11 @@ package net.link.safeonline.audit;
 import javax.security.jacc.PolicyContextException;
 import javax.security.jacc.PolicyContextHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import net.link.safeonline.audit.exception.ExistingAuditContextException;
 import net.link.safeonline.audit.exception.MissingAuditContextException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * JACC policy context handler for audit context information.
@@ -29,14 +29,39 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
 	public static final String AUDIT_CONTEXT_KEY = "net.link.safeonline.audit.context";
 
-	private static ThreadLocal<Long> auditContext = new ThreadLocal<Long>();
+	private static ThreadLocal<AuditContextInfo> auditContextInfos = new ThreadLocal<AuditContextInfo>();
+
+	public static final class AuditContextInfo {
+		private final long auditContextId;
+
+		private long counter;
+
+		public long getAuditContextId() {
+			return this.auditContextId;
+		}
+
+		public AuditContextInfo(long auditContextId) {
+			this.auditContextId = auditContextId;
+			this.counter = 1;
+		}
+
+		public void lock() {
+			this.counter++;
+		}
+
+		public boolean unlock() {
+			this.counter--;
+			return 0 == this.counter;
+		}
+	}
 
 	public Object getContext(String key, Object data)
 			throws PolicyContextException {
 		if (false == key.equalsIgnoreCase(AUDIT_CONTEXT_KEY)) {
 			return null;
 		}
-		return auditContext.get();
+		AuditContextInfo auditContextInfo = auditContextInfos.get();
+		return auditContextInfo.getAuditContextId();
 	}
 
 	public String[] getKeys() throws PolicyContextException {
@@ -56,14 +81,17 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 	 */
 	public static synchronized void setAuditContextId(long auditContextId)
 			throws ExistingAuditContextException {
-		Long previousAuditContextId = auditContext.get();
-		if (null != previousAuditContextId) {
+		AuditContextInfo previousAuditContextInfo = auditContextInfos.get();
+		if (null != previousAuditContextInfo) {
+			long previousAuditContextId = previousAuditContextInfo
+					.getAuditContextId();
 			LOG
 					.fatal("previous audit context found: "
 							+ previousAuditContextId);
 			throw new ExistingAuditContextException(previousAuditContextId);
 		}
-		auditContext.set(auditContextId);
+		AuditContextInfo auditContextInfo = new AuditContextInfo(auditContextId);
+		auditContextInfos.set(auditContextInfo);
 	}
 
 	/**
@@ -74,12 +102,28 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 	 */
 	public static synchronized Long getAuditContextId()
 			throws MissingAuditContextException {
-		Long auditContextId = auditContext.get();
-		if (null == auditContextId) {
+		AuditContextInfo auditContextInfo = auditContextInfos.get();
+		if (null == auditContextInfo) {
 			LOG.fatal("missing audit context");
 			throw new MissingAuditContextException();
 		}
-		return auditContextId;
+		return auditContextInfo.getAuditContextId();
+	}
+
+	/**
+	 * Locks the audit context associated with the current thread. If the
+	 * current thread has no audit context this method will return
+	 * <code>false</code>.
+	 * 
+	 * @return
+	 */
+	public static synchronized boolean lockAuditContext() {
+		AuditContextInfo auditContextInfo = auditContextInfos.get();
+		if (null != auditContextInfo) {
+			auditContextInfo.lock();
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -87,9 +131,17 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 	 * 
 	 * @throws MissingAuditContextException
 	 */
-	public static synchronized void removeAuditContext()
+	public static synchronized boolean removeAuditContext()
 			throws MissingAuditContextException {
-		getAuditContextId();
-		auditContext.remove();
+		AuditContextInfo auditContextInfo = auditContextInfos.get();
+		if (null == auditContextInfo) {
+			LOG.fatal("missing audit context");
+			throw new MissingAuditContextException();
+		}
+		boolean isMainEntry = auditContextInfo.unlock();
+		if (isMainEntry) {
+			auditContextInfos.remove();
+		}
+		return isMainEntry;
 	}
 }
