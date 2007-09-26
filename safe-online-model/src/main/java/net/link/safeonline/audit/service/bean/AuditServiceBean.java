@@ -75,6 +75,13 @@ public class AuditServiceBean implements AuditService {
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public boolean removeAuditContext(Long id)
 			throws AuditContextNotFoundException {
+		/*
+		 * We're not using the cascading of hibernate here.
+		 */
+		this.securityAuditDAO.cleanup(id);
+		this.accessAuditDAO.cleanup(id);
+		this.auditAuditDAO.cleanup(id);
+		this.resourceAuditDAO.cleanup(id);
 		return this.auditContextDAO.removeAuditContext(id);
 	}
 
