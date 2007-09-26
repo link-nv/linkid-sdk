@@ -29,10 +29,11 @@ public interface SecurityAuditDAO {
 
 	List<SecurityAuditEntity> listRecords(Long id);
 
+	boolean hasRecords(long id);
+
 	List<SecurityAuditEntity> listRecords(String principal);
 
 	List<SecurityAuditEntity> listRecordsSince(Date ageLimit);
 
 	List<String> listUsers();
-
 }

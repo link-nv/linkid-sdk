@@ -20,19 +20,19 @@ Apache HTTP Server
  
  Download/install latest Apache
  
- +---+
- ./configure --enable-mods-shared=all --enable-ssl -with-ssl=/usr/local --enable-proxy --enable-proxy-ajp --prefix=/usr/local/apache2
- make
- make install
- +---+
++---+
+./configure --enable-mods-shared=all --enable-ssl -with-ssl=/usr/local --enable-proxy --enable-proxy-ajp --prefix=/usr/local/apache2
+make
+make install
++---+
  
  Enable SSL in <<</usr/local/apache2/conf/httpd.conf>>>
  
  Create Self-Signed SSL Certificate for testing purposes and put them in /usr/local/apache2/conf
  
- +---+
- openssl req -new -x509 -nodes -out server.crt -keyout server.key
- +---+
++---+
+openssl req -new -x509 -nodes -out server.crt -keyout server.key
++---+
  
  
 * Proxy AJP

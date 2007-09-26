@@ -61,4 +61,9 @@ public class AuditAuditDAOBean implements AuditAuditDAO {
 	public List<AuditAuditEntity> listRecordsSince(Date ageLimit) {
 		return this.queryObject.listRecordsSince(ageLimit);
 	}
+
+	public boolean hasRecords(long id) {
+		long count = this.queryObject.countRecords(id);
+		return 0 != count;
+	}
 }

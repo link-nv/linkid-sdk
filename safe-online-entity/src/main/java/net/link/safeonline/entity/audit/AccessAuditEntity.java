@@ -7,10 +7,11 @@
 
 package net.link.safeonline.entity.audit;
 
+import static net.link.safeonline.entity.audit.AccessAuditEntity.COUNT_WHERE_CONTEXTID;
 import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
-import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_WHERE_CONTEXTID;
-import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_WHERE_AGELIMIT;
 import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_LIST_USER;
+import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_WHERE_AGELIMIT;
+import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_WHERE_CONTEXTID;
 import static net.link.safeonline.entity.audit.AccessAuditEntity.QUERY_WHERE_USER;
 
 import java.io.Serializable;
@@ -50,6 +51,10 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record "
 				+ "FROM AccessAuditEntity AS record "
 				+ "WHERE record.auditContext.id = :contextId"),
+		@NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) "
+				+ "FROM AccessAuditEntity AS record "
+				+ "WHERE record.auditContext.id = :contextId AND "
+				+ "record.operationState IN ('BUSINESS_EXCEPTION_END', 'SYSTEM_EXCEPTION_END')"),
 		@NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.principal "
 				+ "FROM AccessAuditEntity AS record"),
 		@NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record "
@@ -71,6 +76,8 @@ public class AccessAuditEntity implements Serializable {
 	public static final String QUERY_WHERE_USER = "aca.user";
 
 	public static final String QUERY_LIST_USER = "aca.list.user";
+
+	public static final String COUNT_WHERE_CONTEXTID = "aca.count.id";
 
 	private Long id;
 
@@ -159,6 +166,10 @@ public class AccessAuditEntity implements Serializable {
 		@QueryMethod(QUERY_WHERE_CONTEXTID)
 		List<AccessAuditEntity> listRecords(@QueryParam("contextId")
 		Long id);
+
+		@QueryMethod(COUNT_WHERE_CONTEXTID)
+		long countErrorRecords(@QueryParam("contextId")
+		long id);
 
 		@QueryMethod(QUERY_WHERE_AGELIMIT)
 		List<AccessAuditEntity> listRecordsSince(@QueryParam("ageLimit")

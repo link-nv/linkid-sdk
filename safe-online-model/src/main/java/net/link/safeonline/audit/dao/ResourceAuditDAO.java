@@ -28,6 +28,8 @@ public interface ResourceAuditDAO {
 
 	List<ResourceAuditEntity> listRecords(Long id);
 
+	boolean hasRecords(long id);
+
 	List<ResourceAuditEntity> listRecordsSince(Date ageLimit);
 
 	List<ResourceAuditEntity> listRecords();

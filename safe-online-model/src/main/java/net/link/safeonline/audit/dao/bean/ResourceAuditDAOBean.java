@@ -65,4 +65,8 @@ public class ResourceAuditDAOBean implements ResourceAuditDAO {
 		return this.queryObject.listRecords();
 	}
 
+	public boolean hasRecords(long id) {
+		long count = this.queryObject.countRecords(id);
+		return 0 != count;
+	}
 }

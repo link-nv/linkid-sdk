@@ -26,10 +26,11 @@ public interface AccessAuditDAO {
 
 	List<AccessAuditEntity> listRecords(Long id);
 
+	boolean hasErrorRecords(long id);
+
 	List<AccessAuditEntity> listRecords(String principal);
 
 	List<AccessAuditEntity> listRecordsSince(Date ageLimit);
 
 	List<String> listUsers();
-
 }

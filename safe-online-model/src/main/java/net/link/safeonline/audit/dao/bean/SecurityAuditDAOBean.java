@@ -70,4 +70,9 @@ public class SecurityAuditDAOBean implements SecurityAuditDAO {
 	public List<SecurityAuditEntity> listRecords(String principal) {
 		return this.queryObject.listUserRecords(principal);
 	}
+
+	public boolean hasRecords(long id) {
+		long count = this.queryObject.countRecords(id);
+		return 0 != count;
+	}
 }

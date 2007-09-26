@@ -13,6 +13,7 @@ import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_ALL;
 import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
 import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_LIST_USER;
 import static net.link.safeonline.entity.audit.SecurityAuditEntity.QUERY_WHERE_USER;
+import static net.link.safeonline.entity.audit.SecurityAuditEntity.COUNT_WHERE_CONTEXTID;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -45,6 +46,9 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 		@NamedQuery(name = QUERY_WHERE_CONTEXTID, query = "SELECT record "
 				+ "FROM SecurityAuditEntity AS record "
 				+ "WHERE record.auditContext.id = :contextId"),
+		@NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) "
+				+ "FROM SecurityAuditEntity AS record "
+				+ "WHERE record.auditContext.id = :contextId"),
 		@NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.targetPrincipal "
 				+ "FROM SecurityAuditEntity AS record "),
 		@NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record "
@@ -68,6 +72,8 @@ public class SecurityAuditEntity implements Serializable {
 	public static final String QUERY_LIST_USER = "sa.list.user";
 
 	public static final String QUERY_WHERE_USER = "sa.user";
+
+	public static final String COUNT_WHERE_CONTEXTID = "sa.count.id";
 
 	private Long id;
 
@@ -156,6 +162,10 @@ public class SecurityAuditEntity implements Serializable {
 		@QueryMethod(QUERY_WHERE_CONTEXTID)
 		List<SecurityAuditEntity> listRecords(@QueryParam("contextId")
 		Long id);
+
+		@QueryMethod(COUNT_WHERE_CONTEXTID)
+		long countRecords(@QueryParam("contextId")
+		long id);
 
 		@QueryMethod(QUERY_ALL)
 		List<SecurityAuditEntity> listRecords();

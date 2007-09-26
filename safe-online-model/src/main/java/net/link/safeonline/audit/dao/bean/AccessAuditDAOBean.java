@@ -66,4 +66,9 @@ public class AccessAuditDAOBean implements AccessAuditDAO {
 	public List<AccessAuditEntity> listRecords(String principal) {
 		return this.queryObject.listUserRecords(principal);
 	}
+
+	public boolean hasErrorRecords(long id) {
+		long count = this.queryObject.countErrorRecords(id);
+		return 0 != count;
+	}
 }

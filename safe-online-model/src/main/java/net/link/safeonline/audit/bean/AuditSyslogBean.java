@@ -133,7 +133,7 @@ public class AuditSyslogBean implements MessageListener {
 					&& e.getOperationState() != OperationStateType.NORMAL_END) {
 				logger.error("Access audit context " + e.getAuditContext()
 						+ " : principal=" + e.getPrincipal() + " operation="
-						+ e.getOperation() + "operationState="
+						+ e.getOperation() + " operationState="
 						+ e.getOperationState());
 			}
 		}

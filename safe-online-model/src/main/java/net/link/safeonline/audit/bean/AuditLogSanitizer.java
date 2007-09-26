@@ -8,6 +8,7 @@
 package net.link.safeonline.audit.bean;
 
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
@@ -16,6 +17,12 @@ import javax.jms.MessageListener;
 
 import net.link.safeonline.audit.AuditConstants;
 import net.link.safeonline.audit.AuditMessage;
+import net.link.safeonline.audit.dao.AccessAuditDAO;
+import net.link.safeonline.audit.dao.AuditAuditDAO;
+import net.link.safeonline.audit.dao.AuditContextDAO;
+import net.link.safeonline.audit.dao.ResourceAuditDAO;
+import net.link.safeonline.audit.dao.SecurityAuditDAO;
+import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,16 +42,60 @@ public class AuditLogSanitizer implements MessageListener {
 
 	private static final Log LOG = LogFactory.getLog(AuditLogSanitizer.class);
 
+	@EJB
+	private AuditContextDAO auditContextDAO;
+
+	@EJB
+	private AuditAuditDAO auditAuditDAO;
+
+	@EJB
+	private AccessAuditDAO accessAuditDAO;
+
+	@EJB
+	private ResourceAuditDAO resourceAuditDAO;
+
+	@EJB
+	private SecurityAuditDAO securityAuditDAO;
+
 	public void onMessage(Message msg) {
-		LOG.debug("onMessage");
+		AuditMessage auditMessage;
 		try {
-			AuditMessage auditMessage = new AuditMessage(msg);
-			Long auditContextId = auditMessage.getAuditContextId();
-			LOG.debug("sanitizing audit context: " + auditContextId);
-			LOG.debug("implement me");
-			// TODO: implement me
+			auditMessage = new AuditMessage(msg);
 		} catch (JMSException e) {
-			throw new EJBException();
+			throw new EJBException(
+					"audit message JMS error: " + e.getMessage(), e);
+		}
+		Long auditContextId = auditMessage.getAuditContextId();
+		LOG.debug("audit context: " + auditContextId);
+		if (requiresSanitation(auditContextId)) {
+			flush(auditContextId);
+		}
+	}
+
+	private boolean requiresSanitation(long auditContextId) {
+		if (this.resourceAuditDAO.hasRecords(auditContextId)) {
+			return false;
+		}
+		if (this.securityAuditDAO.hasRecords(auditContextId)) {
+			return false;
+		}
+		if (this.auditAuditDAO.hasRecords(auditContextId)) {
+			return false;
+		}
+		if (this.accessAuditDAO.hasErrorRecords(auditContextId)) {
+			return false;
+		}
+		return true;
+	}
+
+	private void flush(long auditContextId) {
+		LOG.debug("sanitizing audit context: " + auditContextId);
+		this.accessAuditDAO.cleanup(auditContextId);
+		try {
+			this.auditContextDAO.removeAuditContext(auditContextId);
+		} catch (AuditContextNotFoundException e) {
+			throw new EJBException(
+					"audit context not found: " + auditContextId, e);
 		}
 	}
 }

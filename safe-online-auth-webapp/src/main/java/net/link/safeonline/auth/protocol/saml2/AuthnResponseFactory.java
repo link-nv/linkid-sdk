@@ -152,12 +152,9 @@ public class AuthnResponseFactory {
 				AuthnContextClassRef.class,
 				AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
 		authnContext.setAuthnContextClassRef(authnContextClassRef);
-
-		// AuthnContextDecl authnContextDecl = buildXMLObject(
-		// AuthnContextDecl.class, AuthnContextDecl.DEFAULT_ELEMENT_NAME);
-		// authnContext.setAuthnContextDecl(authnContextDecl);
 		authnContextClassRef.setAuthnContextClassRef(authnContextClass
 				.getSamlName());
+
 		return response;
 	}
 

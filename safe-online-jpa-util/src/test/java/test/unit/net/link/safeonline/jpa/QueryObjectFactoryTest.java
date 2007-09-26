@@ -206,4 +206,18 @@ public class QueryObjectFactoryTest {
 		// verify
 		assertNotNull(result);
 	}
+
+	@Test
+	public void countQuery() throws Exception {
+		// setup
+		MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory
+				.createQueryObject(this.entityManager,
+						MyTestEntity.MyQueryTestInterface.class);
+
+		// operate
+		long count = queryObject.countAll();
+
+		// verify
+		assertTrue(0 == count);
+	}
 }
