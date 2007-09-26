@@ -41,6 +41,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.hibernate.annotations.Index;
 
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_ALL;
+import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_USER_ALL;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_CERTID;
 
@@ -54,6 +55,9 @@ import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_CERTID;
 @Table(name = "application")
 @NamedQueries( {
 		@NamedQuery(name = QUERY_WHERE_ALL, query = "FROM ApplicationEntity"),
+		@NamedQuery(name = QUERY_WHERE_USER_ALL, query = "SELECT application "
+				+ "FROM ApplicationEntity AS application "
+				+ "WHERE application.allowUserSubscription = true"),
 		@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT application "
 				+ "FROM ApplicationEntity AS application "
 				+ "WHERE application.applicationOwner = :applicationOwner"),
@@ -66,6 +70,8 @@ public class ApplicationEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_WHERE_ALL = "app.all";
+
+	public static final String QUERY_WHERE_USER_ALL = "app.user.all";
 
 	public static final String QUERY_WHERE_OWNER = "app.owner";
 
@@ -408,6 +414,9 @@ public class ApplicationEntity implements Serializable {
 	public interface QueryInterface {
 		@QueryMethod(QUERY_WHERE_ALL)
 		List<ApplicationEntity> listApplications();
+
+		@QueryMethod(QUERY_WHERE_USER_ALL)
+		List<ApplicationEntity> listUserApplications();
 
 		@QueryMethod(QUERY_WHERE_OWNER)
 		List<ApplicationEntity> listApplicationsWhereApplicationOwner(

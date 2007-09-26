@@ -40,6 +40,12 @@ public class ApplicationsBean implements Applications {
 		return applications;
 	}
 
+	public List<ApplicationEntity> listUserApplications() {
+		List<ApplicationEntity> applications = this.applicationDAO
+				.listUserApplications();
+		return applications;
+	}
+
 	public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(
 			ApplicationEntity application)
 			throws ApplicationIdentityNotFoundException {
@@ -57,5 +63,4 @@ public class ApplicationsBean implements Applications {
 		}
 		return attributes;
 	}
-
 }

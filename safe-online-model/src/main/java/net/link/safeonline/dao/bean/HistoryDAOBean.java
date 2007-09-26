@@ -21,6 +21,8 @@ import javax.persistence.Query;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.HistoryEntity;
+import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
@@ -44,10 +46,28 @@ public class HistoryDAOBean implements HistoryDAO {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addHistoryEntry(Date when, SubjectEntity subject, String event) {
+	public void addHistoryEntry(Date when, SubjectEntity subject,
+			HistoryEventType event, HistoryInfoType eventInfo,
+			String application, String info) {
 		LOG.debug("add history entry: " + when + "; subject: "
-				+ subject.getLogin() + "; event: " + event);
-		HistoryEntity history = new HistoryEntity(when, subject, event);
+				+ subject.getLogin() + "; event: " + event + "; eventInfo: "
+				+ eventInfo + "; application: " + application + "; info: "
+				+ info);
+		HistoryEntity history = new HistoryEntity(when, subject, event,
+				eventInfo, application, info);
+		this.entityManager.persist(history);
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void addHistoryEntry(SubjectEntity subject, HistoryEventType event,
+			HistoryInfoType eventInfo, String application, String info) {
+		Date when = new Date();
+		LOG.debug("add history entry: " + when + "; subject: "
+				+ subject.getLogin() + "; event: " + event + "; eventInfo: "
+				+ eventInfo + "; application: " + application + "; info: "
+				+ info);
+		HistoryEntity history = new HistoryEntity(when, subject, event,
+				eventInfo, application, info);
 		this.entityManager.persist(history);
 	}
 

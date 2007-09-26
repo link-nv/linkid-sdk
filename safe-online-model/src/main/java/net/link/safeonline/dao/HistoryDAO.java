@@ -13,6 +13,8 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.HistoryEntity;
+import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.SubjectEntity;
 
 /**
@@ -24,7 +26,12 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface HistoryDAO {
 
-	void addHistoryEntry(Date when, SubjectEntity subject, String event);
+	void addHistoryEntry(Date when, SubjectEntity subject,
+			HistoryEventType event, HistoryInfoType eventInfo,
+			String application, String info);
+
+	void addHistoryEntry(SubjectEntity subject, HistoryEventType event,
+			HistoryInfoType eventInfo, String application, String info);
 
 	/**
 	 * Gives back all history entries for a given subject.

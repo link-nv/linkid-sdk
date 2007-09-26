@@ -15,7 +15,11 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.ctrl.ControlBaseConstants;
+import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
+import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -127,8 +131,19 @@ public class HelpdeskLogger {
 		HelpdeskManager helpdeskManager = EjbUtils.getEJB(
 				"SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
 
+		SubjectManager subjectManager = EjbUtils.getEJB(
+				"SafeOnline/SubjectManagerBean/local", SubjectManager.class);
+
+		HistoryDAO historyDAO = EjbUtils.getEJB(
+				"SafeOnline/HistoryDAOBean/local", HistoryDAO.class);
+
 		LOG.debug("persisting volatile context...");
-		return helpdeskManager.persist(location, helpdeskContext);
+		Long id = helpdeskManager.persist(location, helpdeskContext);
+
+		historyDAO.addHistoryEntry(subjectManager.getCallerSubject(),
+				HistoryEventType.HELPDESK_ID, HistoryInfoType.NONE, null, id
+						.toString());
+		return id;
 	}
 
 	/*

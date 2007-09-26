@@ -51,9 +51,10 @@ public interface ApplicationDAO {
 
 	ApplicationEntity addApplication(String applicationName,
 			String applicationFriendlyName,
-			ApplicationOwnerEntity applicationOwner, boolean allowUserSubscription,
-			boolean removable, String description,
-			X509Certificate certificate, long initialIdentityVersion);
+			ApplicationOwnerEntity applicationOwner,
+			boolean allowUserSubscription, boolean removable,
+			String description, X509Certificate certificate,
+			long initialIdentityVersion);
 
 	/**
 	 * Gives back a list of all application registered within the SafeOnline
@@ -62,6 +63,14 @@ public interface ApplicationDAO {
 	 * @return
 	 */
 	List<ApplicationEntity> listApplications();
+
+	/**
+	 * Gives back a list of all applications registered within the SafeOnline
+	 * system and allowed for regular users to view/subscribe to.
+	 * 
+	 * @return
+	 */
+	List<ApplicationEntity> listUserApplications();
 
 	/**
 	 * Gives back the application owned by the given application owner.

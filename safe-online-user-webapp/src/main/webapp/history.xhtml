@@ -26,6 +26,21 @@
 					<f:facet name="header">#{msgs.event}</f:facet>
 				#{item.event}
 			</h:column>
+
+				<h:column>
+					<f:facet name="header">Event Info</f:facet>
+				#{item.eventInfo}
+			</h:column>
+
+				<h:column>
+					<f:facet name="header">Application</f:facet>
+				#{item.application}
+			</h:column>
+
+				<h:column>
+					<f:facet name="header">Info</f:facet>
+				#{item.info}
+			</h:column>
 			</t:dataTable>
 
 			<t:dataScroller for="data" fastStep="10" pageCountVar="pageCount"

@@ -67,6 +67,12 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		return applications;
 	}
 
+	public List<ApplicationEntity> listUserApplications() {
+		List<ApplicationEntity> applications = this.queryObject
+				.listUserApplications();
+		return applications;
+	}
+
 	public ApplicationEntity getApplication(String applicationName)
 			throws ApplicationNotFoundException {
 		ApplicationEntity application = findApplication(applicationName);

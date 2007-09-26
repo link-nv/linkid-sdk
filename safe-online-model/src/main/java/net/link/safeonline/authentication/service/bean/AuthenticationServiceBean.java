@@ -49,6 +49,8 @@ import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -148,18 +150,18 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		boolean validationResult = false;
 
 		try {
-			validationResult = this.passwordManager.validatePassword(
-					subject, password);
+			validationResult = this.passwordManager.validatePassword(subject,
+					password);
 		} catch (DeviceNotFoundException e) {
-			String event = "password attribute not present for subject "
-					+ login;
-			addHistoryEntry(subject, event);
+			addHistoryEntry(subject, HistoryEventType.LOGIN,
+					HistoryInfoType.PASSWORD_ATTRIBUTE_NOT_FOUND, null, null);
 			throw e;
 		}
 
 		if (!validationResult) {
 			String event = "incorrect password for subject: " + login;
-			addHistoryEntry(subject, event);
+			addHistoryEntry(subject, HistoryEventType.LOGIN,
+					HistoryInfoType.INCORRECT_PASSWORD, null, null);
 			this.securityAuditLogger.addSecurityAudit(
 					SecurityThreatType.DECEPTION, login, "incorrect password");
 			return false;
@@ -179,9 +181,11 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return true;
 	}
 
-	private void addHistoryEntry(SubjectEntity subject, String event) {
+	private void addHistoryEntry(SubjectEntity subject, HistoryEventType event,
+			HistoryInfoType eventInfo, String application, String info) {
 		Date now = new Date();
-		this.historyDAO.addHistoryEntry(now, subject, event);
+		this.historyDAO.addHistoryEntry(now, subject, event, eventInfo,
+				application, info);
 	}
 
 	public boolean authenticate(@NonEmptyString
@@ -315,7 +319,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 				.findApplication(applicationId);
 		if (null == application) {
 			String event = "application not found: " + applicationId;
-			addHistoryEntry(this.authenticatedSubject, event);
+			addHistoryEntry(this.authenticatedSubject, HistoryEventType.LOGIN,
+					HistoryInfoType.APPLICATION_NOT_FOUND, applicationId, null);
 			throw new ApplicationNotFoundException();
 		}
 
@@ -324,13 +329,15 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		if (null == subscription) {
 			String event = "subscription not found for application: "
 					+ applicationId;
-			addHistoryEntry(this.authenticatedSubject, event);
+			addHistoryEntry(this.authenticatedSubject,
+					HistoryEventType.SUBSCRIPTION,
+					HistoryInfoType.SUBSCRIPTION_NOT_FOUND, applicationId, null);
 			throw new SubscriptionNotFoundException();
 		}
 
-		addHistoryEntry(this.authenticatedSubject, "authenticated subject "
-				+ this.authenticatedSubject + " for application "
-				+ applicationId + " via " + this.authenticationDevice);
+		addHistoryEntry(this.authenticatedSubject, HistoryEventType.LOGIN,
+				HistoryInfoType.SUCCESS, applicationId,
+				this.authenticationDevice.getDeviceName());
 
 		this.subscriptionDAO.loggedIn(subscription);
 		this.addLoginTick(application);
@@ -408,6 +415,11 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.authenticatedSubject = subject;
 		this.authenticationDevice = AuthenticationDevice.BEID;
 		this.expectedApplicationId = registrationStatement.getApplicationId();
+
+		addHistoryEntry(this.authenticatedSubject, HistoryEventType.LOGIN,
+				HistoryInfoType.REGISTRATION, this.expectedApplicationId,
+				this.authenticationDevice.getDeviceName());
+
 		return false;
 	}
 

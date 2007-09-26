@@ -40,6 +40,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
@@ -119,5 +120,6 @@ public class SafeOnlineTestContainer {
 			AttributeProviderEntity.class, DeviceEntity.class,
 			AllowedDeviceEntity.class,
 			CompoundedAttributeTypeMemberEntity.class,
-			HelpdeskContextEntity.class, HelpdeskEventEntity.class };
+			HelpdeskContextEntity.class, HelpdeskEventEntity.class,
+			HistoryEntity.class };
 }

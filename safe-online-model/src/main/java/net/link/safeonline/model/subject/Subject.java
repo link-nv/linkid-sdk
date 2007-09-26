@@ -40,6 +40,10 @@ public class Subject {
 		this.entity = entity;
 	}
 
+	public SubjectEntity getSubjectEntity() {
+		return this.entity;
+	}
+
 	/**
 	 * Subscribes this subject on the given application.
 	 * 

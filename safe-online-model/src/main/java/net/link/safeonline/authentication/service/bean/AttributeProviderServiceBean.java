@@ -30,12 +30,15 @@ import net.link.safeonline.authentication.service.AttributeProviderServiceRemote
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.ApplicationManager;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
@@ -66,6 +69,9 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 
 	@EJB
 	private SubjectDAO subjectDAO;
+
+	@EJB
+	private HistoryDAO historyDAO;
 
 	private AttributeManagerLWBean attributeManager;
 
@@ -178,6 +184,10 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 
+		this.historyDAO.addHistoryEntry(subject,
+				HistoryEventType.ATTRIBUTE_PROVIDER, HistoryInfoType.ADD,
+				attributeName, null);
+
 		if (null == attributeValue) {
 			this.attributeDAO.addAttribute(attributeType, subject);
 			return;
@@ -229,6 +239,10 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		LOG.debug("set attribute " + attributeName + " for " + subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+
+		this.historyDAO.addHistoryEntry(subject,
+				HistoryEventType.ATTRIBUTE_PROVIDER, HistoryInfoType.CHANGE,
+				attributeName, null);
 
 		if (attributeType.isMultivalued()) {
 			setMultivaluedAttribute(attributeValue, attributeType, subject);
@@ -363,6 +377,10 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 				+ subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+
+		this.historyDAO.addHistoryEntry(subject,
+				HistoryEventType.ATTRIBUTE_PROVIDER, HistoryInfoType.REMOVE,
+				attributeName, null);
 
 		this.attributeManager.removeAttribute(attributeType, subject);
 	}

@@ -7,6 +7,9 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.HistoryEntity.QUERY_DELETE_WHERE_OLDER;
+import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_SUBJECT;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -27,9 +30,6 @@ import javax.persistence.TemporalType;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
-
-import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_SUBJECT;
-import static net.link.safeonline.entity.HistoryEntity.QUERY_DELETE_WHERE_OLDER;
 
 @Entity
 @Table(name = "hist")
@@ -53,7 +53,13 @@ public class HistoryEntity implements Serializable {
 
 	private SubjectEntity subject;
 
-	private String event;
+	private HistoryEventType event;
+
+	private HistoryInfoType eventInfo;
+
+	private String application;
+
+	private String info;
 
 	private Date when;
 
@@ -80,18 +86,23 @@ public class HistoryEntity implements Serializable {
 		// empty
 	}
 
-	public HistoryEntity(Date when, SubjectEntity subject, String event) {
-		this.event = event;
+	public HistoryEntity(Date when, SubjectEntity subject,
+			HistoryEventType event, HistoryInfoType eventInfo,
+			String application, String info) {
 		this.subject = subject;
+		this.event = event;
+		this.application = application;
+		this.eventInfo = eventInfo;
 		this.when = when;
+		this.info = info;
 	}
 
 	@Column(name = "histevent", nullable = false)
-	public String getEvent() {
+	public HistoryEventType getEvent() {
 		return event;
 	}
 
-	public void setEvent(String event) {
+	public void setEvent(HistoryEventType event) {
 		this.event = event;
 	}
 
@@ -103,6 +114,30 @@ public class HistoryEntity implements Serializable {
 
 	public void setWhen(Date when) {
 		this.when = when;
+	}
+
+	public String getApplication() {
+		return application;
+	}
+
+	public void setApplication(String application) {
+		this.application = application;
+	}
+
+	public HistoryInfoType getEventInfo() {
+		return eventInfo;
+	}
+
+	public void setEventInfo(HistoryInfoType eventInfo) {
+		this.eventInfo = eventInfo;
+	}
+
+	public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
 	}
 
 	public static Query createQueryDeleteWhereOlder(

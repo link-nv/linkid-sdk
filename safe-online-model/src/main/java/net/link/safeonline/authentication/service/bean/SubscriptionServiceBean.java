@@ -24,9 +24,12 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.SubscriptionServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.SubjectManager;
@@ -58,6 +61,9 @@ public class SubscriptionServiceBean implements SubscriptionService,
 	@EJB
 	private ApplicationDAO applicationDAO;
 
+	@EJB
+	private HistoryDAO historyDAO;
+
 	@Resource
 	private SessionContext sessionContext;
 
@@ -77,6 +83,10 @@ public class SubscriptionServiceBean implements SubscriptionService,
 		Application application = ApplicationFactory.getApplication(this,
 				applicationName);
 		subject.subscribe(application);
+
+		this.historyDAO.addHistoryEntry(subject.getSubjectEntity(),
+				HistoryEventType.SUBSCRIPTION, HistoryInfoType.ADD,
+				applicationName, null);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -87,6 +97,10 @@ public class SubscriptionServiceBean implements SubscriptionService,
 		Application application = ApplicationFactory.getApplication(this,
 				applicationName);
 		subject.unsubscribe(application);
+
+		this.historyDAO.addHistoryEntry(subject.getSubjectEntity(),
+				HistoryEventType.SUBSCRIPTION, HistoryInfoType.REMOVE,
+				applicationName, null);
 	}
 
 	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })

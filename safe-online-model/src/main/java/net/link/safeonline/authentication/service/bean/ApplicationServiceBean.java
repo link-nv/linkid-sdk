@@ -114,7 +114,13 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	@PermitAll
 	public List<ApplicationEntity> listApplications() {
-		return this.applications.listApplications();
+		if (sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)
+				|| sessionContext.isCallerInRole(SafeOnlineRoles.OWNER_ROLE)
+				|| sessionContext
+						.isCallerInRole(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE))
+			return this.applications.listApplications();
+		else
+			return this.applications.listUserApplications();
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

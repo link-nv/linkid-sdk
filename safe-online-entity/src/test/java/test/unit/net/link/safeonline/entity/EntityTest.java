@@ -41,6 +41,8 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.HistoryEntity;
+import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -278,7 +280,9 @@ public class EntityTest {
 		// setup
 		SubjectEntity subject = new SubjectEntity("test-login");
 		Date when = new Date();
-		HistoryEntity history = new HistoryEntity(when, subject, "test-event");
+		HistoryEntity history = new HistoryEntity(when, subject,
+				HistoryEventType.LOGIN, HistoryInfoType.SUCCESS, "test-app",
+				"username-password");
 
 		// operate
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
