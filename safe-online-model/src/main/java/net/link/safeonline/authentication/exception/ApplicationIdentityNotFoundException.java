@@ -17,6 +17,6 @@ public class ApplicationIdentityNotFoundException extends SafeOnlineException {
 	private static final long serialVersionUID = 1L;
 
 	public ApplicationIdentityNotFoundException() {
-		super(SharedConstants.ATTRIBUTE_NOT_FOUND_ERROR);
+		super(null, SharedConstants.ATTRIBUTE_NOT_FOUND_ERROR);
 	}
 }

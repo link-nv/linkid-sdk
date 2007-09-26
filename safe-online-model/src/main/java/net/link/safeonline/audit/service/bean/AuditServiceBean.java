@@ -143,4 +143,9 @@ public class AuditServiceBean implements AuditService {
 	public List<AuditContextEntity> listLastContexts() {
 		return this.auditContextDAO.listLastContexts();
 	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public List<AuditAuditEntity> listAuditAuditRecords() {
+		return this.auditAuditDAO.listRecords();
+	}
 }

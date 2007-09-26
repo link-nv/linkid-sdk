@@ -14,8 +14,11 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AccessAuditLogger;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -46,6 +49,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class SubscriptionServiceBean implements SubscriptionService,
 		SubscriptionServiceRemote, SubjectContext, ApplicationContext {
 
@@ -127,7 +131,8 @@ public class SubscriptionServiceBean implements SubscriptionService,
 		SubjectEntity expectedSubject = applicationOwner.getAdmin();
 		SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
 		if (false == expectedSubject.equals(actualSubject)) {
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException(
+					"application owner admin mismatch");
 		}
 	}
 

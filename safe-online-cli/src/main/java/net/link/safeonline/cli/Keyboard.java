@@ -10,6 +10,7 @@ package net.link.safeonline.cli;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 /**
@@ -29,7 +30,7 @@ public class Keyboard {
 		// empty
 	}
 
-	public static char getNextChar() {
+	private static String getNextToken() {
 		StringTokenizer tokenizer;
 		try {
 			tokenizer = new StringTokenizer(input.readLine(), DELIMITERS, true);
@@ -37,6 +38,18 @@ public class Keyboard {
 			throw new RuntimeException("error");
 		}
 		String token = tokenizer.nextToken();
-		return token.charAt(0);
+		return token;
+	}
+
+	public static char getNextChar() {
+		while (true) {
+			try {
+				String token = getNextToken();
+				char ch = token.charAt(0);
+				return ch;
+			} catch (NoSuchElementException e) {
+				// retry
+			}
+		}
 	}
 }

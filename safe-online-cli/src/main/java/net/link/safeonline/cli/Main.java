@@ -27,9 +27,11 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		char nextChar = Keyboard.getNextChar();
+		char nextChar;
 		do {
 			printMainMenu();
+			nextChar = Keyboard.getNextChar();
 		} while (nextChar != 'e');
+		System.out.println("Done.");
 	}
 }

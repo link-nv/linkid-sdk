@@ -10,6 +10,9 @@ package net.link.safeonline.audit;
 import javax.security.jacc.PolicyContextException;
 import javax.security.jacc.PolicyContextHandler;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import net.link.safeonline.audit.exception.ExistingAuditContextException;
 import net.link.safeonline.audit.exception.MissingAuditContextException;
 
@@ -20,6 +23,9 @@ import net.link.safeonline.audit.exception.MissingAuditContextException;
  * 
  */
 public class AuditContextPolicyContextHandler implements PolicyContextHandler {
+
+	private static final Log LOG = LogFactory
+			.getLog(AuditContextPolicyContextHandler.class);
 
 	public static final String AUDIT_CONTEXT_KEY = "net.link.safeonline.audit.context";
 
@@ -52,6 +58,9 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 			throws ExistingAuditContextException {
 		Long previousAuditContextId = auditContext.get();
 		if (null != previousAuditContextId) {
+			LOG
+					.fatal("previous audit context found: "
+							+ previousAuditContextId);
 			throw new ExistingAuditContextException(previousAuditContextId);
 		}
 		auditContext.set(auditContextId);
@@ -67,6 +76,7 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 			throws MissingAuditContextException {
 		Long auditContextId = auditContext.get();
 		if (null == auditContextId) {
+			LOG.fatal("missing audit context");
 			throw new MissingAuditContextException();
 		}
 		return auditContextId;

@@ -21,10 +21,13 @@ import javax.security.jacc.PolicyContextException;
 import net.link.safeonline.audit.dao.AccessAuditDAO;
 import net.link.safeonline.audit.dao.AuditAuditDAO;
 import net.link.safeonline.audit.dao.AuditContextDAO;
+import net.link.safeonline.audit.dao.SecurityAuditDAO;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.OperationStateType;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,6 +54,9 @@ public class AccessAuditLogger {
 	@EJB
 	private AuditAuditDAO auditAuditDAO;
 
+	@EJB
+	private SecurityAuditDAO securityAuditDAO;
+
 	@AroundInvoke
 	public Object interceptor(InvocationContext context) throws Exception {
 		auditAccessBegin(context);
@@ -60,6 +66,10 @@ public class AccessAuditLogger {
 			result = context.proceed();
 			auditAccessEnd(context);
 			return result;
+		} catch (PermissionDeniedException e) {
+			auditAccess(context, OperationStateType.BUSINESS_EXCEPTION_END);
+			auditSecurity(context, e.getMessage());
+			throw e;
 		} catch (SafeOnlineException e) {
 			auditAccess(context, OperationStateType.BUSINESS_EXCEPTION_END);
 			throw e;
@@ -73,6 +83,18 @@ public class AccessAuditLogger {
 		auditAccess(context, OperationStateType.BEGIN);
 	}
 
+	private void auditSecurity(InvocationContext context, String message) {
+		String principalName = getCallerPrincipalName();
+		LOG.debug("security audit: " + message + " for principal "
+				+ principalName);
+
+		AuditContextEntity auditContext = findAuditContext();
+		if (null != auditContext) {
+			this.securityAuditDAO.addSecurityAudit(auditContext,
+					SecurityThreatType.DECEPTION, principalName, message);
+		}
+	}
+
 	private void auditAccess(InvocationContext context,
 			OperationStateType operationState) {
 		Method method = context.getMethod();
@@ -82,6 +104,14 @@ public class AccessAuditLogger {
 		LOG.debug("access audit: " + methodName + " as " + principalName
 				+ " at " + operationState);
 
+		AuditContextEntity auditContext = findAuditContext();
+		if (null != auditContext) {
+			this.accessAuditDAO.addAccessAudit(auditContext, methodName,
+					operationState, principalName);
+		}
+	}
+
+	private AuditContextEntity findAuditContext() {
 		Long auditContextId;
 		try {
 			auditContextId = (Long) PolicyContext
@@ -90,24 +120,22 @@ public class AccessAuditLogger {
 			this.auditAuditDAO
 					.addAuditAudit("audit context policy context error: "
 							+ e.getMessage());
-			return;
+			return null;
 		}
 		if (null == auditContextId) {
 			this.auditAuditDAO.addAuditAudit("no audit context available");
-			return;
+			return null;
 		}
 
-		AuditContextEntity auditContext;
 		try {
-			auditContext = this.auditContextDAO.getAuditContext(auditContextId);
+			AuditContextEntity auditContext = this.auditContextDAO
+					.getAuditContext(auditContextId);
+			return auditContext;
 		} catch (AuditContextNotFoundException e) {
 			this.auditAuditDAO.addAuditAudit("audit context not found: "
 					+ auditContextId);
-			return;
+			return null;
 		}
-
-		this.accessAuditDAO.addAccessAudit(auditContext, methodName,
-				operationState, principalName);
 	}
 
 	private void auditAccessEnd(InvocationContext context) {

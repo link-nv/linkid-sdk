@@ -291,6 +291,10 @@ public class AuditSearchBean implements AuditSearch {
 			LOG.debug("Retrieve audit audit records since " + this.ageLimit);
 			this.auditAuditRecordList = this.auditService
 					.listAuditAuditRecordsSince(this.ageLimit);
+		} else if (SearchMode.ALL == this.searchMode) {
+			LOG.debug("retrieving all audit audit");
+			this.auditAuditRecordList = this.auditService
+					.listAuditAuditRecords();
 		}
 	}
 
@@ -318,6 +322,13 @@ public class AuditSearchBean implements AuditSearch {
 		LOG.debug("View all resource records");
 		setMode(SearchMode.ALL);
 		return "view-resource";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String viewAuditRecords() {
+		LOG.debug("view all audit records");
+		setMode(SearchMode.ALL);
+		return "view-audit";
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

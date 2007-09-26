@@ -29,4 +29,6 @@ public interface AuditAuditDAO {
 	boolean hasRecords(long id);
 
 	List<AuditAuditEntity> listRecordsSince(Date ageLimit);
+
+	List<AuditAuditEntity> listRecords();
 }

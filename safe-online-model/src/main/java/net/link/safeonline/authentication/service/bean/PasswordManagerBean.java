@@ -7,10 +7,13 @@ import java.security.NoSuchAlgorithmException;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AccessAuditLogger;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -22,6 +25,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
 @Stateless
+@Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class PasswordManagerBean implements PasswordManager {
 
 	private static final String defaultHashingAlgorithm = "SHA-512";
@@ -37,7 +41,7 @@ public class PasswordManagerBean implements PasswordManager {
 			DeviceNotFoundException {
 
 		if (!validatePassword(subject, oldPassword)) {
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException("password mismatch");
 		}
 
 		setPasswordWithForce(subject, newPassword);
@@ -48,7 +52,7 @@ public class PasswordManagerBean implements PasswordManager {
 			throws PermissionDeniedException {
 
 		if (isPasswordConfigured(subject)) {
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException("password already configured");
 		}
 
 		setPasswordWithForce(subject, password);

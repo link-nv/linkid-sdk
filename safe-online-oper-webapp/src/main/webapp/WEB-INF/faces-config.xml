@@ -628,6 +628,10 @@
 			<from-outcome>view-resource</from-outcome>
 			<to-view-id>/audit/audit-view-resource.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-audit</from-outcome>
+			<to-view-id>/audit/audit-view-audit.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -664,6 +668,14 @@
 
 	<navigation-rule>
 		<from-view-id>/audit/audit-view-user.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/audit/audit.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/audit/audit-view-audit.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
 			<to-view-id>/audit/audit.xhtml</to-view-id>

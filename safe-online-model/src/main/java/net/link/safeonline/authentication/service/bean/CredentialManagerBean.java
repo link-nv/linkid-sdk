@@ -11,7 +11,10 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
+import net.link.safeonline.audit.AccessAuditLogger;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
@@ -29,6 +32,7 @@ import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
 
 @Stateless
+@Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class CredentialManagerBean implements CredentialManager {
 
 	@EJB
@@ -86,7 +90,7 @@ public class CredentialManagerBean implements CredentialManager {
 		 */
 		String user = identityStatement.getUser();
 		if (false == login.equals(user)) {
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException("statement user mismatch");
 		}
 
 		String domain = pkiProvider.getIdentifierDomainName();
@@ -104,7 +108,7 @@ public class CredentialManagerBean implements CredentialManager {
 			/*
 			 * The certificate is already linked to another user.
 			 */
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException("certificate already in use");
 		}
 		/*
 		 * The user can only have one subject identifier for the domain. We

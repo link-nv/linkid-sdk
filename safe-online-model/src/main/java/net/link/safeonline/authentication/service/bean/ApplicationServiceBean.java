@@ -20,8 +20,11 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AccessAuditLogger;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
@@ -70,6 +73,7 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class ApplicationServiceBean implements ApplicationService,
 		ApplicationServiceRemote {
 
@@ -195,7 +199,7 @@ public class ApplicationServiceBean implements ApplicationService,
 				.getApplication(name);
 
 		if (false == application.isRemovable()) {
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException("application not removable");
 		}
 
 		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
@@ -236,7 +240,8 @@ public class ApplicationServiceBean implements ApplicationService,
 		SubjectEntity requiredSubject = applicationOwner.getAdmin();
 		SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
 		if (false == requiredSubject.equals(actualSubject)) {
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException(
+					"application owner admin mismatch");
 		}
 	}
 
@@ -335,7 +340,8 @@ public class ApplicationServiceBean implements ApplicationService,
 		SubjectEntity expectedSubject = applicationOwner.getAdmin();
 		SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
 		if (false == expectedSubject.equals(actualSubject)) {
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException(
+					"application owner admin mismatch");
 		}
 	}
 

@@ -67,6 +67,8 @@ public interface AuditSearch {
 
 	String viewSecurityRecords();
 
+	String viewAuditRecords();
+
 	String removeContext();
 
 	String searchId();

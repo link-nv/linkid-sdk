@@ -66,4 +66,8 @@ public class AuditAuditDAOBean implements AuditAuditDAO {
 		long count = this.queryObject.countRecords(id);
 		return 0 != count;
 	}
+
+	public List<AuditAuditEntity> listRecords() {
+		return this.queryObject.listRecords();
+	}
 }

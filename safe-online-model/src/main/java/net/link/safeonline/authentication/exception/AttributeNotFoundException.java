@@ -17,6 +17,6 @@ public class AttributeNotFoundException extends SafeOnlineException {
 	private static final long serialVersionUID = 1L;
 
 	public AttributeNotFoundException() {
-		super(SharedConstants.ATTRIBUTE_NOT_FOUND_ERROR);
+		super(null, SharedConstants.ATTRIBUTE_NOT_FOUND_ERROR);
 	}
 }

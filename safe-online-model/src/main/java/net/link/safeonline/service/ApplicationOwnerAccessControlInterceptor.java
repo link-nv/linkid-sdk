@@ -49,7 +49,7 @@ public class ApplicationOwnerAccessControlInterceptor {
 			returnValue = true;
 		}
 		if (returnValue == false) {
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException("application admin mismatch");
 		}
 		return invocation.proceed();
 	}

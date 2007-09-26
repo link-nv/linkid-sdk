@@ -15,6 +15,6 @@ public class NotFoundException extends SafeOnlineException {
 	private static final long serialVersionUID = 1L;
 
 	public NotFoundException(String errorCode) {
-		super(errorCode);
+		super(null, errorCode);
 	}
 }

@@ -17,9 +17,12 @@ import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineApplicationRoles;
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AccessAuditLogger;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DatatypeMismatchException;
@@ -49,6 +52,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
+@Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class AttributeProviderServiceBean implements AttributeProviderService,
 		AttributeProviderServiceRemote {
 
@@ -145,7 +149,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		AttributeProviderEntity attributeProvider = this.attributeProviderDAO
 				.findAttributeProvider(application, attributeType);
 		if (null == attributeProvider) {
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException("not an attribute provider");
 		}
 		return attributeType;
 	}

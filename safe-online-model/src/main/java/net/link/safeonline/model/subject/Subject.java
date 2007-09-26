@@ -87,7 +87,7 @@ public class Subject {
 		}
 		if (!SubscriptionOwnerType.SUBJECT.equals(subscription
 				.getSubscriptionOwnerType())) {
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException("subject cannot unsubscribe");
 		}
 		subscriptionDAO.removeSubscription(this.entity, applicationEntity);
 	}

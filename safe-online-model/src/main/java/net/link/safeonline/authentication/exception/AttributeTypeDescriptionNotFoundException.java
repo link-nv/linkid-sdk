@@ -17,6 +17,6 @@ public class AttributeTypeDescriptionNotFoundException extends SafeOnlineExcepti
 	private static final long serialVersionUID = 1L;
 
 	public AttributeTypeDescriptionNotFoundException() {
-		super(SharedConstants.ATTRIBUTE_NOT_FOUND_ERROR);
+		super(null, SharedConstants.ATTRIBUTE_NOT_FOUND_ERROR);
 	}
 }

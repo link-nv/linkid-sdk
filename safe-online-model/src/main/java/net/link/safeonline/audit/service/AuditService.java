@@ -58,4 +58,6 @@ public interface AuditService {
 
 	List<AuditContextEntity> listLastContexts();
 
+	List<AuditAuditEntity> listAuditAuditRecords();
+
 }

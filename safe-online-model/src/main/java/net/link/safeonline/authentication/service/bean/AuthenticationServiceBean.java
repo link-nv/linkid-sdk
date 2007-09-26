@@ -161,7 +161,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		if (!validationResult) {
 			String event = "incorrect password for subject: " + login;
 			addHistoryEntry(subject, HistoryEventType.LOGIN,
-					HistoryInfoType.INCORRECT_PASSWORD, null, null);
+					HistoryInfoType.INCORRECT_PASSWORD, null, event);
 			this.securityAuditLogger.addSecurityAudit(
 					SecurityThreatType.DECEPTION, login, "incorrect password");
 			return false;
@@ -320,7 +320,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		if (null == application) {
 			String event = "application not found: " + applicationId;
 			addHistoryEntry(this.authenticatedSubject, HistoryEventType.LOGIN,
-					HistoryInfoType.APPLICATION_NOT_FOUND, applicationId, null);
+					HistoryInfoType.APPLICATION_NOT_FOUND, applicationId, event);
 			throw new ApplicationNotFoundException();
 		}
 
@@ -331,7 +331,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 					+ applicationId;
 			addHistoryEntry(this.authenticatedSubject,
 					HistoryEventType.SUBSCRIPTION,
-					HistoryInfoType.SUBSCRIPTION_NOT_FOUND, applicationId, null);
+					HistoryInfoType.SUBSCRIPTION_NOT_FOUND, applicationId,
+					event);
 			throw new SubscriptionNotFoundException();
 		}
 

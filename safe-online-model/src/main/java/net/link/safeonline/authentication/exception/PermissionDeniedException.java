@@ -16,7 +16,7 @@ public class PermissionDeniedException extends SafeOnlineException {
 
 	private static final long serialVersionUID = 1L;
 
-	public PermissionDeniedException() {
-		super(SharedConstants.PERMISSION_DENIED_ERROR);
+	public PermissionDeniedException(String message) {
+		super(message, SharedConstants.PERMISSION_DENIED_ERROR);
 	}
 }

@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h:form>
+			<h3>Audit Audit Records</h3>
+			<t:dataTable id="audit-audit-data" var="item" renderedIfEmpty="false"
+				value="#{auditAuditRecordList}" rows="15" preserveDataModel="false"
+				styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+
+				<h:column>
+					<f:facet name="header">#{msgs.time}</f:facet>
+					<h:outputLabel value="#{item.eventDate}">
+						<f:convertDateTime type="both" timeStyle="medium"
+							dateStyle="short" />
+					</h:outputLabel>
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.message}</f:facet>
+					<h:outputLabel value="#{item.message}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">Audit Context (optional)</f:facet>
+					<h:outputLabel value="#{item.auditContext}" />
+				</h:column>
+
+			</t:dataTable>
+
+			<t:dataScroller for="audit-audit-data" fastStep="15"
+				pageCountVar="pageCount" pageIndexVar="pageIndex"
+				styleClass="scroller" paginator="true" paginatorMaxPages="9">
+				<f:facet name="first">#{msgs.first}</f:facet>
+				<f:facet name="last">#{msgs.last}</f:facet>
+				<f:facet name="previous">#{msgs.previous}</f:facet>
+				<f:facet name="next">#{msgs.next}</f:facet>
+			</t:dataScroller>
+
+			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
+				immediate="true" />
+		</h:form>
+
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{operLogin}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

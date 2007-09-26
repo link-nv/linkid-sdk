@@ -11,7 +11,6 @@ import javax.ejb.ApplicationException;
 
 import net.link.safeonline.shared.SharedConstants;
 
-
 @ApplicationException(rollback = true)
 public class SafeOnlineException extends Exception {
 
@@ -30,10 +29,11 @@ public class SafeOnlineException extends Exception {
 	}
 
 	public SafeOnlineException() {
-		this(SharedConstants.UNDEFINED_ERROR);
+		this(null, SharedConstants.UNDEFINED_ERROR);
 	}
 
-	public SafeOnlineException(String errorCode) {
+	public SafeOnlineException(String message, String errorCode) {
+		super(message);
 		this.errorCode = errorCode;
 	}
 }

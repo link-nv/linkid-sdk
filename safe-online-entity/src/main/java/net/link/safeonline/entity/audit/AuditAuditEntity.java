@@ -8,6 +8,7 @@
 package net.link.safeonline.entity.audit;
 
 import static net.link.safeonline.entity.audit.AuditAuditEntity.COUNT_WHERE_CONTEXTID;
+import static net.link.safeonline.entity.audit.AuditAuditEntity.QUERY_ALL;
 import static net.link.safeonline.entity.audit.AuditAuditEntity.QUERY_DELETE_WHERE_CONTEXTID;
 import static net.link.safeonline.entity.audit.AuditAuditEntity.QUERY_WHERE_AGELIMIT;
 import static net.link.safeonline.entity.audit.AuditAuditEntity.QUERY_WHERE_CONTEXTID;
@@ -51,7 +52,8 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 				+ "WHERE record.auditContext.id = :contextId"),
 		@NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record "
 				+ "FROM AuditAuditEntity AS record "
-				+ "WHERE record.eventDate > :ageLimit") })
+				+ "WHERE record.eventDate > :ageLimit"),
+		@NamedQuery(name = QUERY_ALL, query = "FROM AuditAuditEntity") })
 public class AuditAuditEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -63,6 +65,8 @@ public class AuditAuditEntity implements Serializable {
 	public static final String QUERY_WHERE_AGELIMIT = "aa.age";
 
 	public static final String COUNT_WHERE_CONTEXTID = "aa.count.id";
+
+	public static final String QUERY_ALL = "aa.all";
 
 	private Long id;
 
@@ -138,5 +142,8 @@ public class AuditAuditEntity implements Serializable {
 		@QueryMethod(QUERY_WHERE_AGELIMIT)
 		List<AuditAuditEntity> listRecordsSince(@QueryParam("ageLimit")
 		Date ageLimit);
+
+		@QueryMethod(QUERY_ALL)
+		List<AuditAuditEntity> listRecords();
 	}
 }

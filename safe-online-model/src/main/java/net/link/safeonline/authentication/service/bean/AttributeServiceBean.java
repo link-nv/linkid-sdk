@@ -18,9 +18,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineApplicationRoles;
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.audit.AccessAuditLogger;
+import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -54,6 +57,7 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
+@Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class AttributeServiceBean implements AttributeService,
 		AttributeServiceRemote {
 
@@ -107,7 +111,8 @@ public class AttributeServiceBean implements AttributeService,
 			}
 		}
 		LOG.debug("attribute not in set of confirmed identity attributes");
-		throw new PermissionDeniedException();
+		throw new PermissionDeniedException(
+				"attribute not in set of confirmed identity attributes");
 	}
 
 	private List<ApplicationIdentityAttributeEntity> getConfirmedIdentityAttributes(
@@ -124,7 +129,7 @@ public class AttributeServiceBean implements AttributeService,
 				.findSubscription(subject, application);
 		if (null == subscription) {
 			LOG.debug("subject is not subscribed");
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException("subject is not subscribed");
 		}
 
 		/*
@@ -134,7 +139,8 @@ public class AttributeServiceBean implements AttributeService,
 				.getConfirmedIdentityVersion();
 		if (null == confirmedIdentityVersion) {
 			LOG.debug("subject has no confirmed identity version");
-			throw new PermissionDeniedException();
+			throw new PermissionDeniedException(
+					"subject has no confirmed identity version");
 		}
 
 		ApplicationIdentityEntity confirmedApplicationIdentity;
