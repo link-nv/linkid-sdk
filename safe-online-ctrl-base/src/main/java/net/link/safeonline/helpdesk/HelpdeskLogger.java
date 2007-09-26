@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.ctrl.ControlBaseConstants;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.HistoryEventType;
-import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
@@ -141,8 +140,7 @@ public class HelpdeskLogger {
 		Long id = helpdeskManager.persist(location, helpdeskContext);
 
 		historyDAO.addHistoryEntry(subjectManager.getCallerSubject(),
-				HistoryEventType.HELPDESK_ID, HistoryInfoType.NONE, null, id
-						.toString());
+				HistoryEventType.HELPDESK_ID, null, id.toString());
 		return id;
 	}
 

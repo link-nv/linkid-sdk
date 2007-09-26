@@ -35,7 +35,6 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.HistoryEventType;
-import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -193,8 +192,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		// expectations
 		this.mockHistoryDAO.addHistoryEntry((Date) EasyMock.anyObject(),
 				EasyMock.eq(subject), (HistoryEventType) EasyMock.anyObject(),
-				(HistoryInfoType) EasyMock.anyObject(), (String) EasyMock
-						.anyObject(), (String) EasyMock.anyObject());
+				(String) EasyMock.anyObject(), (String) EasyMock.anyObject());
 
 		this.mockSecurityAuditLogger.addSecurityAudit(
 				SecurityThreatType.DECEPTION, login, "incorrect password");

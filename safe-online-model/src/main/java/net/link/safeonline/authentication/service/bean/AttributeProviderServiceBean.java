@@ -41,7 +41,6 @@ import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.HistoryEventType;
-import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.ApplicationManager;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
@@ -189,8 +188,9 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 
 		this.historyDAO.addHistoryEntry(subject,
-				HistoryEventType.ATTRIBUTE_PROVIDER, HistoryInfoType.ADD,
-				attributeName, null);
+				HistoryEventType.ATTRIBUTE_PROVIDER_ADD, attributeName,
+				this.applicationManager.getCallerApplication()
+						.getFriendlyName());
 
 		if (null == attributeValue) {
 			this.attributeDAO.addAttribute(attributeType, subject);
@@ -245,8 +245,9 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 
 		this.historyDAO.addHistoryEntry(subject,
-				HistoryEventType.ATTRIBUTE_PROVIDER, HistoryInfoType.CHANGE,
-				attributeName, null);
+				HistoryEventType.ATTRIBUTE_PROVIDER_CHANGE, attributeName,
+				this.applicationManager.getCallerApplication()
+						.getFriendlyName());
 
 		if (attributeType.isMultivalued()) {
 			setMultivaluedAttribute(attributeValue, attributeType, subject);
@@ -383,8 +384,9 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
 
 		this.historyDAO.addHistoryEntry(subject,
-				HistoryEventType.ATTRIBUTE_PROVIDER, HistoryInfoType.REMOVE,
-				attributeName, null);
+				HistoryEventType.ATTRIBUTE_PROVIDER_REMOVE, attributeName,
+				this.applicationManager.getCallerApplication()
+						.getFriendlyName());
 
 		this.attributeManager.removeAttribute(attributeType, subject);
 	}

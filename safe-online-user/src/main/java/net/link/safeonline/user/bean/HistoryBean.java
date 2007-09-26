@@ -7,15 +7,19 @@
 
 package net.link.safeonline.user.bean;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.user.History;
+import net.link.safeonline.user.HistoryMessage;
+import net.link.safeonline.user.HistoryMessageManager;
 import net.link.safeonline.user.UserConstants;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -32,8 +36,18 @@ public class HistoryBean implements History {
 	private IdentityService identityService;
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	public List<HistoryEntity> getList() {
+	public List<HistoryMessage> getList() {
 		List<HistoryEntity> result = this.identityService.listHistory();
-		return result;
+
+		List<HistoryMessage> messageList = new LinkedList<HistoryMessage>();
+
+		for (HistoryEntity historyEntity : result) {
+			String historyMessage = HistoryMessageManager.getMessage(
+					FacesContext.getCurrentInstance(), historyEntity);
+			messageList.add(new HistoryMessage(historyEntity.getWhen(),
+					historyMessage));
+		}
+
+		return messageList;
 	}
 }

@@ -21,3 +21,27 @@ SYSLOGD_OPTIONS="-m 0 -r"
 +---+
 /etc/rc.d/init.d/syslog restart
 +---+
+
+ On Mac OS X configure syslog as follows.
+
+ Add the following line to the file <<</etc/syslog.conf>>>:
+ 
++---+
+local0.*	/var/log/safe-online.log
++---+
+
+ Add following line in the file <<</System/Library/LaunchDaemons/com.apple.syslogd.plist>>>:
+ 
++---+
+     <array>
+            <string>/usr/sbin/syslogd</string>
+            <string>-u</string>
+    </array>
++---+
+
+ Restart the <<<syslogd>>> daemon via:
+ 
++---+
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.syslogd.plist
+sudo launchctl load /System/Library/LaunchDaemons/com.apple.syslogd.plist
++---+

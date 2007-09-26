@@ -32,7 +32,6 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.HistoryEventType;
-import net.link.safeonline.entity.HistoryInfoType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.SubjectManager;
@@ -89,8 +88,7 @@ public class SubscriptionServiceBean implements SubscriptionService,
 		subject.subscribe(application);
 
 		this.historyDAO.addHistoryEntry(subject.getSubjectEntity(),
-				HistoryEventType.SUBSCRIPTION, HistoryInfoType.ADD,
-				applicationName, null);
+				HistoryEventType.SUBSCRIPTION_ADD, applicationName, null);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -103,8 +101,7 @@ public class SubscriptionServiceBean implements SubscriptionService,
 		subject.unsubscribe(application);
 
 		this.historyDAO.addHistoryEntry(subject.getSubjectEntity(),
-				HistoryEventType.SUBSCRIPTION, HistoryInfoType.REMOVE,
-				applicationName, null);
+				HistoryEventType.SUBSCRIPTION_REMOVE, applicationName, null);
 	}
 
 	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })

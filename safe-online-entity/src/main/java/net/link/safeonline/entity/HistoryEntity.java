@@ -55,8 +55,6 @@ public class HistoryEntity implements Serializable {
 
 	private HistoryEventType event;
 
-	private HistoryInfoType eventInfo;
-
 	private String application;
 
 	private String info;
@@ -87,12 +85,10 @@ public class HistoryEntity implements Serializable {
 	}
 
 	public HistoryEntity(Date when, SubjectEntity subject,
-			HistoryEventType event, HistoryInfoType eventInfo,
-			String application, String info) {
+			HistoryEventType event, String application, String info) {
 		this.subject = subject;
 		this.event = event;
 		this.application = application;
-		this.eventInfo = eventInfo;
 		this.when = when;
 		this.info = info;
 	}
@@ -122,14 +118,6 @@ public class HistoryEntity implements Serializable {
 
 	public void setApplication(String application) {
 		this.application = application;
-	}
-
-	public HistoryInfoType getEventInfo() {
-		return eventInfo;
-	}
-
-	public void setEventInfo(HistoryInfoType eventInfo) {
-		this.eventInfo = eventInfo;
 	}
 
 	public String getInfo() {
