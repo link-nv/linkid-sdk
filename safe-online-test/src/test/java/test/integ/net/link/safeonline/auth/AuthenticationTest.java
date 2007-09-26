@@ -468,10 +468,24 @@ public class AuthenticationTest {
 
 		IdentityService identityService = getIdentityService(initialContext);
 
-		// operate: cannot retrieve password attribute
+		// operate: cannot retrieve password attributes
 		try {
 			identityService
-					.findAttributeValue(SafeOnlineConstants.PASSWORD_ATTRIBUTE);
+					.findAttributeValue(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE);
+			fail();
+		} catch (PermissionDeniedException e) {
+			// expected
+		}
+		try {
+			identityService
+					.findAttributeValue(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE);
+			fail();
+		} catch (PermissionDeniedException e) {
+			// expected
+		}
+		try {
+			identityService
+					.findAttributeValue(SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
@@ -494,16 +508,39 @@ public class AuthenticationTest {
 		IdentityService identityService = getIdentityService(initialContext);
 
 		// operate: cannot retrieve password attribute
-		AttributeDO attribute = new AttributeDO(
-				SafeOnlineConstants.PASSWORD_ATTRIBUTE, DatatypeType.STRING);
-		attribute.setStringValue("test-password");
-		attribute.setEditable(true);
+		AttributeDO hashAttribute = new AttributeDO(
+				SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
+				DatatypeType.STRING);
+		hashAttribute.setStringValue("test-hash");
+		hashAttribute.setEditable(true);
+		AttributeDO seedAttribute = new AttributeDO(
+				SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE,
+				DatatypeType.STRING);
+		seedAttribute.setStringValue("test-seed");
+		seedAttribute.setEditable(true);
+		AttributeDO algorithmAttribute = new AttributeDO(
+				SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
+				DatatypeType.STRING);
+		algorithmAttribute.setStringValue("test-algorithm");
+		algorithmAttribute.setEditable(true);
 		/*
 		 * If we don't mark the attribute as editable the identity service will
 		 * skip the saveAttribute operation.
 		 */
 		try {
-			identityService.saveAttribute(attribute);
+			identityService.saveAttribute(hashAttribute);
+			fail();
+		} catch (PermissionDeniedException e) {
+			// expected
+		}
+		try {
+			identityService.saveAttribute(seedAttribute);
+			fail();
+		} catch (PermissionDeniedException e) {
+			// expected
+		}
+		try {
+			identityService.saveAttribute(algorithmAttribute);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected

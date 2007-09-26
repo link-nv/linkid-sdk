@@ -12,9 +12,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Keyboard helper class.
  * 
@@ -22,8 +19,6 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class Keyboard {
-
-	private static final Log LOG = LogFactory.getLog(Keyboard.class);
 
 	private static final BufferedReader input = new BufferedReader(
 			new InputStreamReader(System.in));
