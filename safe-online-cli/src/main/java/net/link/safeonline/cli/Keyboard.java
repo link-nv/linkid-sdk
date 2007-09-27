@@ -35,7 +35,7 @@ public class Keyboard {
 		try {
 			tokenizer = new StringTokenizer(input.readLine(), DELIMITERS, true);
 		} catch (IOException e) {
-			throw new RuntimeException("error");
+			throw new RuntimeException("error: " + e.getMessage(), e);
 		}
 		String token = tokenizer.nextToken();
 		return token;
@@ -51,5 +51,21 @@ public class Keyboard {
 				// retry
 			}
 		}
+	}
+
+	public static String getString() {
+		String line;
+		try {
+			line = input.readLine();
+		} catch (IOException e) {
+			throw new RuntimeException("error: " + e.getMessage(), e);
+		}
+		return line;
+	}
+
+	public static Integer getInteger() {
+		String line = getString();
+		int result = Integer.parseInt(line);
+		return result;
 	}
 }
