@@ -1050,9 +1050,39 @@
 				<version>${javassist.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.richfaces</groupId>
-				<artifactId>richfaces</artifactId>
-				<version>${richfaces.version}</version>
+				<groupId>org.richfaces.framework</groupId>
+				<artifactId>richfaces-api</artifactId>
+				<version>${richfaces-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.richfaces.framework</groupId>
+				<artifactId>richfaces-impl</artifactId>
+				<version>${richfaces-impl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.richfaces.ui</groupId>
+				<artifactId>suggestionbox</artifactId>
+				<version>${richfaces-suggestionbox.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.richfaces.ui</groupId>
+				<artifactId>spacer</artifactId>
+				<version>${richfaces-spacer.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.richfaces.ui</groupId>
+				<artifactId>dataTable</artifactId>
+				<version>${richfaces-dataTable.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.richfaces.ui</groupId>
+				<artifactId>tabPanel</artifactId>
+				<version>${richfaces-tabPanel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.richfaces.ui</groupId>
+				<artifactId>richfaces-ui</artifactId>
+				<version>${richfaces-ui.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.webui.jsf</groupId>
@@ -1276,7 +1306,15 @@
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
 		<javassist.version>3.0</javassist.version>
-		<richfaces.version>3.0.1</richfaces.version>
+		<richfaces-api.version>3.1.0</richfaces-api.version>
+		<richfaces-impl.version>3.1.0</richfaces-impl.version>
+		<richfaces-suggestionbox.version>
+			3.1.0
+		</richfaces-suggestionbox.version>
+		<richfaces-spacer.version>3.1.0</richfaces-spacer.version>
+		<richfaces-dataTable.version>3.1.0</richfaces-dataTable.version>
+		<richfaces-tabPanel.version>3.1.0</richfaces-tabPanel.version>
+		<richfaces-ui.version>3.1.0</richfaces-ui.version>
 		<webui-jsf.version>4.1-b6</webui-jsf.version>
 		<dataprovider.version>4.1-b6</dataprovider.version>
 		<json.version>4.1-b6</json.version>

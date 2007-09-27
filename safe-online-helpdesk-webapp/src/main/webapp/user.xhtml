@@ -33,7 +33,7 @@
 				</s:decorate>
 				<rich:suggestionbox for="searchUserName"
 					suggestionAction="#{helpdeskLog.autocompleteUser}"
-					var="searchUserNameInput">
+					var="searchUserNameInput" selfRendered="true">
 					<h:column>
 						<h:outputText value="#{searchUserNameInput}" />
 					</h:column>
