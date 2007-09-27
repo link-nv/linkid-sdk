@@ -5,7 +5,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
@@ -20,8 +21,8 @@
 		<h2>#{msgs.tasks}</h2>
 
 		<h:form>
-			<t:dataTable id="task-data" var="item" value="#{taskList}" rows="10"
-				preserveDataModel="false" styleClass="listingTable"
+			<rich:dataTable id="task-data" var="item" value="#{taskList}"
+				rows="10" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
@@ -33,16 +34,10 @@
 					<h:commandLink value="#{item.scheduling.name}"
 						action="#{scheduling.schedulingView}" />
 				</h:column>
-			</t:dataTable>
-
-			<t:dataScroller for="task-data" fastStep="10"
-				pageCountVar="pageCount" pageIndexVar="pageIndex"
-				styleClass="scroller" paginator="true" paginatorMaxPages="9">
-				<f:facet name="first">#{msgs.first}</f:facet>
-				<f:facet name="last">#{msgs.last}</f:facet>
-				<f:facet name="previous">#{msgs.previous}</f:facet>
-				<f:facet name="next">#{msgs.next}</f:facet>
-			</t:dataScroller>
+				<f:facet name="footer">
+					<rich:datascroller for="task-data" />
+				</f:facet>
+			</rich:dataTable>
 
 			<h:messages styleClass="error" />
 

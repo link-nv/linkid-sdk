@@ -1076,6 +1076,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.richfaces.ui</groupId>
+				<artifactId>datascroller</artifactId>
+				<version>${richfaces-datascroller.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.richfaces.ui</groupId>
 				<artifactId>tabPanel</artifactId>
 				<version>${richfaces-tabPanel.version}</version>
 			</dependency>
@@ -1313,6 +1318,9 @@
 		</richfaces-suggestionbox.version>
 		<richfaces-spacer.version>3.1.0</richfaces-spacer.version>
 		<richfaces-dataTable.version>3.1.0</richfaces-dataTable.version>
+		<richfaces-datascroller.version>
+			3.1.0
+		</richfaces-datascroller.version>
 		<richfaces-tabPanel.version>3.1.0</richfaces-tabPanel.version>
 		<richfaces-ui.version>3.1.0</richfaces-ui.version>
 		<webui-jsf.version>4.1-b6</webui-jsf.version>
