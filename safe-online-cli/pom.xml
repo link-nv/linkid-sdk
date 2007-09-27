@@ -36,12 +36,10 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-sql-ddl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	<reporting>

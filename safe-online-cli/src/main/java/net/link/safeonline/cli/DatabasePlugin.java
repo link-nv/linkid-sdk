@@ -9,6 +9,7 @@ package net.link.safeonline.cli;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public interface DatabasePlugin {
 
@@ -18,4 +19,6 @@ public interface DatabasePlugin {
 
 	Connection getConnection(String connectionUrl, String user, String password)
 			throws SQLException;
+
+	List<String> getInitList();
 }

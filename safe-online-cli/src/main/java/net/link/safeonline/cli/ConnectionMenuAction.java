@@ -22,6 +22,11 @@ public class ConnectionMenuAction extends AbstractMenuAction {
 		super('c', "Create Database Connection");
 	}
 
+	@Override
+	public boolean isActive() {
+		return false == DatabasePluginManager.hasActiveConnection();
+	}
+
 	public void run() {
 		System.out.println(super.getDescription());
 		System.out.println();
@@ -74,8 +79,8 @@ public class ConnectionMenuAction extends AbstractMenuAction {
 			System.out.print("Give the password: ");
 			String password = Keyboard.getString();
 			try {
-				Connection connection = databasePlugin.getConnection(
-						connectionUrl, user, password);
+				Connection connection = DatabasePluginManager.connect(
+						databasePlugin, connectionUrl, user, password);
 				return connection;
 			} catch (SQLException e) {
 				System.err.println("Connection error: " + e.getMessage());

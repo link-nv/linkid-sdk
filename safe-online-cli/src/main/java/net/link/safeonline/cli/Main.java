@@ -24,7 +24,9 @@ public class Main {
 		System.out.println("SafeOnline CLI - Main Menu");
 		System.out.println();
 		for (AbstractMenuAction menuAction : mainMenuActions) {
-			System.out.println(menuAction.toString());
+			if (menuAction.isActive()) {
+				System.out.println(menuAction.toString());
+			}
 		}
 		System.out.println();
 		System.out.print("Make you choice:");
@@ -34,6 +36,9 @@ public class Main {
 
 	static {
 		mainMenuActions.add(new ConnectionMenuAction());
+		mainMenuActions.add(new DisconnectMenuAction());
+		mainMenuActions.add(new CheckSchemaMenuAction());
+		mainMenuActions.add(new InitializeDatabaseMenuAction());
 		mainMenuActions.add(new ExitMenuAction());
 	}
 
@@ -41,7 +46,8 @@ public class Main {
 
 	private static void initialize() {
 		for (AbstractMenuAction menuAction : mainMenuActions) {
-			char activationChar = menuAction.getActivationChar();
+			char activationChar = Character.toUpperCase(menuAction
+					.getActivationChar());
 			if (mainMenuActivationChars.containsKey(activationChar)) {
 				throw new RuntimeException("duplicate activation char: "
 						+ activationChar);
@@ -54,11 +60,15 @@ public class Main {
 		initialize();
 		while (true) {
 			printMainMenu();
-			char nextChar = Keyboard.getNextChar();
+			char nextChar = Character.toUpperCase(Keyboard.getNextChar());
 			AbstractMenuAction menuAction = mainMenuActivationChars
 					.get(nextChar);
 			if (null != menuAction) {
-				menuAction.run();
+				if (menuAction.isActive()) {
+					menuAction.run();
+				} else {
+					System.out.println("Menu action not active. Try again.");
+				}
 			} else {
 				System.out.println("Invalid activation char. Try again.");
 			}

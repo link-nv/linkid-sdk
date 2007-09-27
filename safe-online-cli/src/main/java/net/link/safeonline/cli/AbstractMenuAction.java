@@ -18,6 +18,10 @@ public abstract class AbstractMenuAction implements Runnable {
 		this.description = description;
 	}
 
+	public boolean isActive() {
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return "[" + Character.toUpperCase(this.activationChar) + "] "

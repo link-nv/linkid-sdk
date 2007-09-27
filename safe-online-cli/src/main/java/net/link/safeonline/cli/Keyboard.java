@@ -64,8 +64,14 @@ public class Keyboard {
 	}
 
 	public static Integer getInteger() {
-		String line = getString();
-		int result = Integer.parseInt(line);
-		return result;
+		while (true) {
+			String line = getString();
+			try {
+				int result = Integer.parseInt(line);
+				return result;
+			} catch (NumberFormatException e) {
+				System.out.println("Input value is not an integer. Try again.");
+			}
+		}
 	}
 }
