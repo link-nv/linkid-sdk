@@ -44,7 +44,7 @@ public class AttributeValidator implements Validator {
 			return;
 		}
 		AttributeDO attribute = (AttributeDO) value;
-		if (false == attribute.isRequired()) {
+		if (false == attribute.isRequired() && attribute.isCompounded()) {
 			/*
 			 * In case of compounded member attributes the attribute can be
 			 * optional.
@@ -106,7 +106,9 @@ public class AttributeValidator implements Validator {
 
 		public void validate(FacesContext context, AttributeDO attribute)
 				throws ValidatorException {
+			LOG.debug("Integer validator");
 			Integer value = attribute.getIntegerValue();
+			LOG.debug(" - value = " + value);
 			if (null == value) {
 				String msg = "integer value is null";
 				LOG.debug(msg);

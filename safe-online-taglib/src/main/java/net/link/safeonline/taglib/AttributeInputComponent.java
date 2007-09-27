@@ -280,7 +280,7 @@ public class AttributeInputComponent extends UIInput {
 				LOG.debug("decoded value: " + decodedValue);
 				newAttribute.setIntegerValue(decodedValue);
 			} catch (NumberFormatException e) {
-				LOG.warn("not an integer: " + encodedValue);
+				LOG.warn("not an integer : " + encodedValue);
 			}
 
 			inputComponent.setSubmittedValue(newAttribute);

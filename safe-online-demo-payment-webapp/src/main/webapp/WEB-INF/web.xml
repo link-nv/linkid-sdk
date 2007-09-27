@@ -80,32 +80,6 @@
 	</context-param>
 
 	<filter>
-		<filter-name>ExceptionFilter</filter-name>
-		<filter-class>
-			net.link.safeonline.webapp.filter.ExceptionFilter
-		</filter-class>
-		<init-param>
-			<param-name>ErrorPage</param-name>
-			<param-value>/error.seam</param-value>
-		</init-param>
-	</filter>
-
-	<filter>
-		<filter-name>TimeoutFilter</filter-name>
-		<filter-class>
-			net.link.safeonline.webapp.filter.TimeoutFilter
-		</filter-class>
-		<init-param>
-			<param-name>TimeoutPath</param-name>
-			<param-value>/timeout.seam</param-value>
-		</init-param>
-		<init-param>
-			<param-name>LoginSessionAttribute</param-name>
-			<param-value>login-processing</param-value>
-		</init-param>
-	</filter>
-
-	<filter>
 		<filter-name>LoginFilter</filter-name>
 		<filter-class>
 			net.link.safeonline.sdk.auth.filter.LoginFilter
@@ -143,16 +117,6 @@
 			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter
 		</filter-class>
 	</filter>
-
-	<filter-mapping>
-		<filter-name>ExceptionFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 
 	<filter-mapping>
 		<filter-name>Seam Exception Filter</filter-name>
