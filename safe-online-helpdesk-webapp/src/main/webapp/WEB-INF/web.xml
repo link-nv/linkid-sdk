@@ -74,12 +74,12 @@
 
 	<context-param>
 		<param-name>facelets.DEVELOPMENT</param-name>
-		<param-value>true</param-value>
+		<param-value>${debug.mode}</param-value>
 	</context-param>
 
 	<context-param>
 		<param-name>org.jboss.seam.core.init.debug</param-name>
-		<param-value>true</param-value>
+		<param-value>${debug.mode}</param-value>
 	</context-param>
 
 	<context-param>
@@ -113,6 +113,17 @@
 	</filter>
 
 	<filter>
+		<filter-name>ExceptionFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.webapp.filter.ExceptionFilter
+		</filter-class>
+		<init-param>
+			<param-name>ErrorPage</param-name>
+			<param-value>/error.seam</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
 		<filter-name>TimeoutFilter</filter-name>
 		<filter-class>
 			net.link.safeonline.webapp.filter.TimeoutFilter
@@ -125,7 +136,6 @@
 			<param-name>LoginSessionAttribute</param-name>
 			<param-value>username</param-value>
 		</init-param>
-
 	</filter>
 
 	<filter>
@@ -152,6 +162,11 @@
 			org.apache.myfaces.webapp.filter.ExtensionsFilter
 		</filter-class>
 	</filter>
+
+	<filter-mapping>
+		<filter-name>ExceptionFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>

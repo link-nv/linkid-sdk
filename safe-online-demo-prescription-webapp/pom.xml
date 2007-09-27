@@ -27,6 +27,7 @@
 					http://localhost:8080/olas-auth/
 				</auth.webapp.location>
 				<local.host.name>localhost:8443</local.host.name>
+				<debug.mode>true</debug.mode>
 			</properties>
 		</profile>
 		<profile>
@@ -42,6 +43,7 @@
 					http://buildserver:8080/olas-auth/
 				</auth.webapp.location>
 				<local.host.name>buildserver</local.host.name>
+				<debug.mode>false</debug.mode>
 			</properties>
 		</profile>
 	</profiles>
