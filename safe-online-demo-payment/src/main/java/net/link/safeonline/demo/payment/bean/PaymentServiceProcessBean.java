@@ -37,8 +37,6 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/PaymentServiceProcessBean/local")
 public class PaymentServiceProcessBean implements PaymentServiceProcess {
 
-	public static final String SAFE_ONLINE_LOCATION = "localhost";
-
 	@Logger
 	private Log log;
 

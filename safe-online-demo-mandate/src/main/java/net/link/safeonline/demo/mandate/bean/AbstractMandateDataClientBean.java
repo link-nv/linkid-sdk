@@ -48,7 +48,8 @@ public abstract class AbstractMandateDataClientBean implements
 
 	private transient DataClient dataClient;
 
-	private String location;
+	private String wsHostName;
+	private String wsHostPort;
 
 	private X509Certificate certificate;
 
@@ -59,7 +60,8 @@ public abstract class AbstractMandateDataClientBean implements
 		log.debug("postConstruct");
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		this.location = externalContext.getInitParameter("LocalHostName");
+		this.wsHostName = externalContext.getInitParameter("WsHostName");
+		this.wsHostPort = externalContext.getInitParameter("WsHostPort");
 		PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils
 				.getPrivateKeyEntry();
 		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
@@ -70,8 +72,8 @@ public abstract class AbstractMandateDataClientBean implements
 	@PostActivate
 	public void postActivateCallback() {
 		log.debug("postActivate");
-		this.dataClient = new DataClientImpl(this.location, this.certificate,
-				this.privateKey);
+		this.dataClient = new DataClientImpl(this.wsHostName + ":"
+				+ this.wsHostPort, this.certificate, this.privateKey);
 	}
 
 	@PrePassivate
@@ -85,7 +87,8 @@ public abstract class AbstractMandateDataClientBean implements
 	public void destroyCallback() {
 		log.debug("destroy");
 		this.dataClient = null;
-		this.location = null;
+		this.wsHostName = null;
+		this.wsHostPort = null;
 		this.certificate = null;
 		this.privateKey = null;
 	}

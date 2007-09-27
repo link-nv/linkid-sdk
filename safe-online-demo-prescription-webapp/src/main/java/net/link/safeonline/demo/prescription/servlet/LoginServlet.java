@@ -57,7 +57,8 @@ public class LoginServlet extends HttpServlet {
 
 		LOG.debug("init");
 
-		String location = config.getInitParameter("LocalHostName");
+		String wsHostName = config.getInitParameter("WsHostName");
+		String wsHostPort = config.getInitParameter("WsHostPort");
 
 		PrivateKeyEntry privateKeyEntry = DemoPrescriptionKeyStoreUtils
 				.getPrivateKeyEntry();
@@ -66,8 +67,8 @@ public class LoginServlet extends HttpServlet {
 				.getCertificate();
 		PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
 
-		this.dataClient = new DataClientImpl(location, clientCertificate,
-				clientPrivateKey);
+		this.dataClient = new DataClientImpl(wsHostName + ":" + wsHostPort,
+				clientCertificate, clientPrivateKey);
 	}
 
 	@Override

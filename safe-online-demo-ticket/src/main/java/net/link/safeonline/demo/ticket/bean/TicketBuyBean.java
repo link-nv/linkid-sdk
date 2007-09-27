@@ -68,8 +68,6 @@ import org.joda.time.Period;
 @SecurityDomain("demo-ticket")
 public class TicketBuyBean implements TicketBuy {
 
-	public static final String SAFE_ONLINE_LOCATION = "localhost";
-
 	@Logger
 	private Log log;
 
@@ -100,7 +98,10 @@ public class TicketBuyBean implements TicketBuy {
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	private String localHostName;
+	private String demoHostName;
+	private String demoHostPort;
+	private String wsHostName;
+	private String wsHostPort;
 
 	@PostConstruct
 	public void postConstructCallback() {
@@ -108,12 +109,16 @@ public class TicketBuyBean implements TicketBuy {
 				.getPrivateKeyEntry();
 		this.privateKey = privateKeyEntry.getPrivateKey();
 		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION,
-				this.certificate, this.privateKey);
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		this.localHostName = externalContext.getInitParameter("LocalHostName");
+		this.demoHostName = externalContext.getInitParameter("DemoHostName");
+		this.demoHostPort = externalContext.getInitParameter("DemoHostPort");
+		this.wsHostName = externalContext.getInitParameter("WsHostName");
+		this.wsHostPort = externalContext.getInitParameter("WsHostPort");
+
+		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
+				+ this.wsHostPort, this.certificate, this.privateKey);
 	}
 
 	@PrePassivate
@@ -127,8 +132,8 @@ public class TicketBuyBean implements TicketBuy {
 
 	@PostActivate
 	public void postActivateCallback() {
-		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION,
-				this.certificate, this.privateKey);
+		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
+				+ this.wsHostPort, this.certificate, this.privateKey);
 	}
 
 	public enum TicketPeriod {
@@ -297,8 +302,8 @@ public class TicketBuyBean implements TicketBuy {
 		String user = getUsername();
 		String recipient = "De Lijn";
 		String message = "Ticket " + ticket.getId();
-		String target = "http://" + this.localHostName
-				+ ":8080/demo-ticket/list.seam";
+		String target = "http://" + this.demoHostName + ":" + this.demoHostPort
+				+ "/demo-ticket/list.seam";
 		HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext
 				.getResponse();
 		target = httpServletResponse.encodeRedirectURL(target);
@@ -306,8 +311,10 @@ public class TicketBuyBean implements TicketBuy {
 		String redirectUrl;
 		try {
 			redirectUrl = "http://"
-					+ this.localHostName
-					+ ":8080/demo-payment/entry.seam?user="
+					+ this.demoHostName
+					+ ":"
+					+ this.demoHostPort
+					+ "/demo-payment/entry.seam?user="
 					+ URLEncoder.encode(user, "UTF-8")
 					+ "&recipient="
 					+ URLEncoder.encode(recipient, "UTF-8")

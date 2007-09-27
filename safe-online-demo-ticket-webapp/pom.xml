@@ -26,7 +26,10 @@
 				<auth.webapp.location>
 					http://localhost:8080/olas-auth/
 				</auth.webapp.location>
-				<local.host.name>localhost:8443</local.host.name>
+				<demo.host.name>localhost</demo.host.name>
+				<demo.host.port>8080</demo.host.port>
+				<ws.host.name>localhost</ws.host.name>
+				<ws.host.port>8443</ws.host.port>
 				<debug.mode>true</debug.mode>
 			</properties>
 		</profile>
@@ -42,7 +45,10 @@
 				<auth.webapp.location>
 					http://buildserver:8080/olas-auth/
 				</auth.webapp.location>
-				<local.host.name>buildserver</local.host.name>
+				<demo.host.name>buildserver</demo.host.name>
+				<demo.host.port>8080</demo.host.port>
+				<ws.host.name>buildserver</ws.host.name>
+				<ws.host.port>443</ws.host.port>
 				<debug.mode>false</debug.mode>
 			</properties>
 		</profile>

@@ -24,6 +24,8 @@ import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -57,8 +59,6 @@ import org.jboss.seam.log.Log;
 @SecurityDomain("demo-payment")
 public class TransactionBean implements Transaction {
 
-	public static final String SAFE_ONLINE_LOCATION = "localhost";
-
 	private static final org.apache.commons.logging.Log LOG = LogFactory
 			.getLog(TransactionBean.class);
 
@@ -85,14 +85,23 @@ public class TransactionBean implements Transaction {
 	@In(create = true)
 	FacesMessages facesMessages;
 
+	private String wsHostName;
+	private String wsHostPort;
+
 	@PostConstruct
 	public void postConstructCallback() {
 		PrivateKeyEntry privateKeyEntry = DemoPaymentKeyStoreUtils
 				.getPrivateKeyEntry();
 		this.privateKey = privateKeyEntry.getPrivateKey();
 		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION,
-				this.certificate, this.privateKey);
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		this.wsHostName = externalContext.getInitParameter("WsHostName");
+		this.wsHostPort = externalContext.getInitParameter("WsHostPort");
+
+		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
+				+ this.wsHostPort, this.certificate, this.privateKey);
 	}
 
 	@PrePassivate
@@ -103,8 +112,8 @@ public class TransactionBean implements Transaction {
 
 	@PostActivate
 	public void postActivateCallback() {
-		this.attributeClient = new AttributeClientImpl(SAFE_ONLINE_LOCATION,
-				this.certificate, this.privateKey);
+		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
+				+ this.wsHostPort, this.certificate, this.privateKey);
 	}
 
 	private String getUsername() {
