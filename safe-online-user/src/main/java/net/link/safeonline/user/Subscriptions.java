@@ -16,13 +16,7 @@ public interface Subscriptions {
 
 	String viewSubscription();
 
-	String viewApplication();
-
 	String unsubscribe();
-
-	String subscribe();
-
-	void applicationListFactory();
 
 	void destroyCallback();
 }

@@ -209,10 +209,7 @@
 
 	<filter-mapping>
 		<filter-name>ajax4jsf</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>INCLUDE</dispatcher>
+		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
 	<servlet>

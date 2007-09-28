@@ -16,16 +16,13 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.context.FacesContext;
 
-import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
-import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.user.Subscriptions;
 import net.link.safeonline.user.UserConstants;
@@ -57,9 +54,6 @@ public class SubscriptionsBean implements Subscriptions {
 	private SubscriptionService subscriptionService;
 
 	@EJB
-	private ApplicationService applicationService;
-
-	@EJB
 	private IdentityService identityService;
 
 	@In(create = true)
@@ -83,20 +77,6 @@ public class SubscriptionsBean implements Subscriptions {
 		LOG.debug("subscription list factory");
 		this.subscriptionList = this.subscriptionService.listSubscriptions();
 
-	}
-
-	@SuppressWarnings("unused")
-	@DataModel
-	private List<ApplicationEntity> applicationList;
-
-	@DataModelSelection("applicationList")
-	@Out(value = "selectedApplication", required = false, scope = ScopeType.SESSION)
-	private ApplicationEntity selectedApplication;
-
-	@Factory("applicationList")
-	public void applicationListFactory() {
-		LOG.debug("application list factory");
-		this.applicationList = this.applicationService.listApplications();
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
@@ -144,32 +124,6 @@ public class SubscriptionsBean implements Subscriptions {
 		}
 		subscriptionListFactory();
 		return "unsubscribed";
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String subscribe() {
-		String applicationName = this.selectedApplication.getName();
-		LOG.debug("subscribe on: " + applicationName);
-		try {
-			this.subscriptionService.subscribe(applicationName);
-		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.add("application not found");
-			return null;
-		} catch (AlreadySubscribedException e) {
-			this.facesMessages.add("already subscribed to " + applicationName);
-			return null;
-		} catch (PermissionDeniedException e) {
-			this.facesMessages.add("permission denied to subscribe to "
-					+ applicationName);
-			return null;
-		}
-		subscriptionListFactory();
-		return "subscribed";
-	}
-
-	public String viewApplication() {
-		LOG.debug("view application: " + this.selectedApplication.getName());
-		return "view-application";
 	}
 
 	@Remove
