@@ -35,11 +35,24 @@ public class LoginManager {
 	 * Checks whether the user is logged in via the SafeOnline authentication
 	 * web application or not.
 	 * 
-	 * @param request
+	 * @request
 	 * @return
 	 */
 	public static boolean isAuthenticated(HttpServletRequest request) {
-		String username = findUsername(request);
+		return isAuthenticated(request, USERNAME_SESSION_ATTRIBUTE);
+	}
+
+	/**
+	 * Checks whether the user is logged in via the SafeOnline authentication
+	 * web application or not. It uses the specified parameter in the session.
+	 * 
+	 * @param request
+	 * @param paramName
+	 * @return
+	 */
+	public static boolean isAuthenticated(HttpServletRequest request,
+			String paramName) {
+		String username = findUsername(request, paramName);
 
 		return null != username;
 	}
@@ -52,10 +65,23 @@ public class LoginManager {
 	 * @return
 	 */
 	public static String findUsername(HttpServletRequest request) {
+		return findUsername(request, USERNAME_SESSION_ATTRIBUTE);
+	}
+
+	/**
+	 * Gives back the SafeOnline authenticated username, or <code>null</code>
+	 * if the user was not yet authenticated. It uses the specified parameter in
+	 * the session.
+	 * 
+	 * @param request
+	 * @param paramName
+	 * @return
+	 */
+	public static String findUsername(HttpServletRequest request,
+			String paramName) {
 		HttpSession httpSession = request.getSession();
 
-		String username = (String) httpSession
-				.getAttribute(USERNAME_SESSION_ATTRIBUTE);
+		String username = (String) httpSession.getAttribute(paramName);
 		return username;
 	}
 
@@ -70,7 +96,24 @@ public class LoginManager {
 	 */
 	public static String getUsername(HttpServletRequest request)
 			throws ServletException {
-		String username = findUsername(request);
+		return getUsername(request, USERNAME_SESSION_ATTRIBUTE);
+	}
+
+	/**
+	 * Gives back the SafeOnline authenticated username. It uses the specified
+	 * parameter in the session.
+	 * 
+	 * @param request
+	 *            the servlet request object.
+	 * @param paramName
+	 *            the parameter name that is used to store login info
+	 * @return
+	 * @throws ServletException
+	 *             if the user was not yet authenticated via SafeOnline.
+	 */
+	public static String getUsername(HttpServletRequest request,
+			String paramName) throws ServletException {
+		String username = findUsername(request, paramName);
 		if (null == username) {
 			throw new ServletException("no user was authenticated");
 		}
@@ -88,8 +131,23 @@ public class LoginManager {
 	 */
 	public static void setUsername(String username,
 			HttpServletRequest httpRequest) {
+		setUsername(username, httpRequest, USERNAME_SESSION_ATTRIBUTE);
+	}
+
+	/**
+	 * Sets the username. This method should only be invoked after the user has
+	 * been properly authenticated via the SafeOnline authentication web
+	 * application.
+	 * 
+	 * @param username
+	 *            the username of the SafeOnline authenticated principal.
+	 * @param httpRequest
+	 * @param paramName
+	 */
+	public static void setUsername(String username,
+			HttpServletRequest httpRequest, String paramName) {
 		LOG.debug("setting username: " + username);
 		HttpSession session = httpRequest.getSession();
-		session.setAttribute(USERNAME_SESSION_ATTRIBUTE, username);
+		session.setAttribute(paramName, username);
 	}
 }

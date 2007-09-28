@@ -124,8 +124,12 @@
 	<filter>
 		<filter-name>PatientAuthenticationFilter</filter-name>
 		<filter-class>
-			net.link.safeonline.demo.prescription.filter.PatientAuthenticationFilter
+			net.link.safeonline.sdk.auth.filter.LoginFilter
 		</filter-class>
+		<init-param>
+			<param-name>UsernameSessionParameter</param-name>
+			<param-value>patient</param-value>
+		</init-param>
 	</filter>
 
 	<filter-mapping>

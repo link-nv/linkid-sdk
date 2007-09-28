@@ -35,6 +35,10 @@ public class LoginFilter implements Filter {
 
 	private static final Log LOG = LogFactory.getLog(LoginFilter.class);
 
+	public static final String USERNAME_SESSION_PARAMETER = "UsernameSessionParameter";
+
+	String sessionParameter;
+
 	public void destroy() {
 		LOG.debug("destroy");
 	}
@@ -72,7 +76,8 @@ public class LoginFilter implements Filter {
 		String username = protocolHandler.finalizeAuthentication(httpRequest,
 				httpResponse);
 		if (null != username) {
-			LoginManager.setUsername(username, httpRequest);
+			LoginManager.setUsername(username, httpRequest,
+					this.sessionParameter);
 			AuthenticationProtocolManager
 					.cleanupAuthenticationHandler(httpRequest);
 			chain.doFilter(request, response);
@@ -86,5 +91,10 @@ public class LoginFilter implements Filter {
 
 	public void init(FilterConfig config) throws ServletException {
 		LOG.debug("init");
+		this.sessionParameter = config
+				.getInitParameter(USERNAME_SESSION_PARAMETER);
+		if (this.sessionParameter == null) {
+			this.sessionParameter = LoginManager.USERNAME_SESSION_ATTRIBUTE;
+		}
 	}
 }
