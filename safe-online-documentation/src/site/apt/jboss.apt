@@ -82,6 +82,21 @@ java -jar JAXWS2.1.1_20070501.jar
 +---+
 
 
+** SSL
+
+ SSL can be done via the front-end Apache HTTPD server or via the Tomcat of JBoss AS itself.
+ To enable SSL on Tomcat add the following to <<<$JBOSS_HOME/server/default/deploy/jboss-web.deployer/server.xml>>>:
+
++---+
+<Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+               maxThreads="150" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS"
+               keystoreFile="${jboss.server.home.dir}/conf/ssl.jks"
+               keystorePass="secret" />
++---+
+
+ And add an SSL certificate <<<ssl.jks>>> to <<<$JBOSS_HOME/server/default/conf/>>>.
+ 
 
 ** JMX JVM Agent
 

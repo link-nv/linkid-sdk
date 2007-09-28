@@ -1,6 +1,8 @@
 Syslog configuration
 
  SafeOnline is using syslog as audit backend.
+
+* Linux
  
  On Fedora Linux one can configure syslog as follows.
  
@@ -21,6 +23,8 @@ SYSLOGD_OPTIONS="-m 0 -r"
 +---+
 /etc/rc.d/init.d/syslog restart
 +---+
+
+* Mac
 
  On Mac OS X configure syslog as follows.
 

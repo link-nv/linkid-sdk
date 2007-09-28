@@ -7,13 +7,15 @@ Apache HTTP Server
 * SSL configuration
 
  To enable server-side SSL we use the Apache Module named <<<mod_ssl>>>.
+
+** Linux
  
-  On Fedora Core Linux the configuration for the SSL module is located in <<</etc/httpd/conf.d/ssl.conf>>>.
+ On Fedora Core Linux the configuration for the SSL module is located in <<</etc/httpd/conf.d/ssl.conf>>>.
  
  Fedora Core comes with test SSL certificates.
  
  
- On Mac :
+** Mac
  
  Download/install latest {{{www.openssl.org}OpenSSL}} into /usr/local
  IMPORTANT! Version OpenSSL 0.9.8e is needed with Apache 2.2.4

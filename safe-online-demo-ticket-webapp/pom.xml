@@ -24,7 +24,7 @@
 			</activation>
 			<properties>
 				<auth.webapp.location>
-					http://localhost:8080/olas-auth/
+					https://localhost:8443/olas-auth/
 				</auth.webapp.location>
 				<demo.host.name>localhost</demo.host.name>
 				<demo.host.port>8080</demo.host.port>
@@ -43,7 +43,7 @@
 			</activation>
 			<properties>
 				<auth.webapp.location>
-					http://buildserver:8080/olas-auth/
+					https://buildserver/olas-auth/
 				</auth.webapp.location>
 				<demo.host.name>buildserver</demo.host.name>
 				<demo.host.port>8080</demo.host.port>
