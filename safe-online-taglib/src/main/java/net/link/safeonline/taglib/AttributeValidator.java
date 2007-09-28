@@ -10,6 +10,7 @@ package net.link.safeonline.taglib;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -54,8 +55,10 @@ public class AttributeValidator implements Validator {
 		DatatypeType type = attribute.getType();
 		TypeValidator typeValidator = typeValidators.get(type);
 		if (null == typeValidator) {
-			FacesMessage facesMessage = new FacesMessage("unsupported type: "
-					+ type);
+			ResourceBundle messages = AttributeComponentUtil
+					.getResourceBundle(context);
+			FacesMessage facesMessage = new FacesMessage(messages
+					.getString("unsupportedType"));
 			LOG.error("unsupported type: " + type);
 			throw new ValidatorException(facesMessage);
 		}
@@ -75,8 +78,10 @@ public class AttributeValidator implements Validator {
 				throws ValidatorException {
 			String value = attribute.getStringValue();
 			if (null == value) {
-				FacesMessage facesMessage = new FacesMessage(
-						"string value is null");
+				ResourceBundle messages = AttributeComponentUtil
+						.getResourceBundle(context);
+				FacesMessage facesMessage = new FacesMessage(messages
+						.getString("stringNull"));
 				throw new ValidatorException(facesMessage);
 			}
 			if (0 == value.length()) {
@@ -94,8 +99,10 @@ public class AttributeValidator implements Validator {
 				throws ValidatorException {
 			Boolean value = attribute.getBooleanValue();
 			if (null == value) {
-				FacesMessage facesMessage = new FacesMessage(
-						"boolean value is null");
+				ResourceBundle messages = AttributeComponentUtil
+						.getResourceBundle(context);
+				FacesMessage facesMessage = new FacesMessage(messages
+						.getString("booleanNull"));
 				throw new ValidatorException(facesMessage);
 			}
 		}
@@ -110,9 +117,10 @@ public class AttributeValidator implements Validator {
 			Integer value = attribute.getIntegerValue();
 			LOG.debug(" - value = " + value);
 			if (null == value) {
-				String msg = "integer value is null";
-				LOG.debug(msg);
-				FacesMessage facesMessage = new FacesMessage(msg);
+				ResourceBundle messages = AttributeComponentUtil
+						.getResourceBundle(context);
+				FacesMessage facesMessage = new FacesMessage(messages
+						.getString("integerNull"));
 				throw new ValidatorException(facesMessage);
 			}
 		}
@@ -125,9 +133,10 @@ public class AttributeValidator implements Validator {
 				throws ValidatorException {
 			Double value = attribute.getDoubleValue();
 			if (null == value) {
-				String msg = "double value is null";
-				LOG.debug(msg);
-				FacesMessage facesMessage = new FacesMessage(msg);
+				ResourceBundle messages = AttributeComponentUtil
+						.getResourceBundle(context);
+				FacesMessage facesMessage = new FacesMessage(messages
+						.getString("doubleNull"));
 				throw new ValidatorException(facesMessage);
 			}
 		}
@@ -140,9 +149,10 @@ public class AttributeValidator implements Validator {
 				throws ValidatorException {
 			Date value = attribute.getDateValue();
 			if (null == value) {
-				String msg = "date value is null";
-				LOG.debug(msg);
-				FacesMessage facesMessage = new FacesMessage(msg);
+				ResourceBundle messages = AttributeComponentUtil
+						.getResourceBundle(context);
+				FacesMessage facesMessage = new FacesMessage(messages
+						.getString("dateNull"));
 				throw new ValidatorException(facesMessage);
 			}
 		}
