@@ -77,4 +77,8 @@ public class HistoryDAOBean implements HistoryDAO {
 				this.entityManager, ageInMillis);
 		query.executeUpdate();
 	}
+
+	public void clearAllHistory(SubjectEntity subject) {
+		this.queryObject.deleteAll(subject);
+	}
 }

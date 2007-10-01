@@ -66,4 +66,8 @@ public class SubjectIdentifierDAOBean implements SubjectIdentifierDAO {
 				identifier, subject);
 		LOG.debug("number of removed subject identifiers: " + count);
 	}
+
+	public void removeSubjectIdentifiers(SubjectEntity subject) {
+		this.queryObject.deleteWhereSubject(subject);
+	}
 }

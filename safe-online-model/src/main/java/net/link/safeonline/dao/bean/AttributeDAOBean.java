@@ -216,4 +216,8 @@ public class AttributeDAOBean implements AttributeDAO {
 		}
 		return maxId + 1;
 	}
+
+	public void removeAttributes(SubjectEntity subject) {
+		this.queryObject.deleteAttributes(subject);
+	}
 }

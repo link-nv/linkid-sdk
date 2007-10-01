@@ -9,6 +9,7 @@ package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.HistoryEntity.QUERY_DELETE_WHERE_OLDER;
 import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_SUBJECT;
+import static net.link.safeonline.entity.HistoryEntity.DELETE_ALL;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,6 +31,7 @@ import javax.persistence.TemporalType;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 @Entity
 @Table(name = "hist")
@@ -40,12 +42,16 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 				+ "ORDER BY history.when DESC"),
 		@NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE "
 				+ "FROM HistoryEntity AS history "
-				+ "WHERE history.when < :ageLimit") })
+				+ "WHERE history.when < :ageLimit"),
+		@NamedQuery(name = DELETE_ALL, query = "DELETE FROM HistoryEntity AS history "
+				+ "WHERE history.subject = :subject") })
 public class HistoryEntity implements Serializable {
 
 	public static final String QUERY_WHERE_SUBJECT = "hist.subject";
 
 	public static final String QUERY_DELETE_WHERE_OLDER = "hist.old";
+
+	public static final String DELETE_ALL = "hist.del";
 
 	private static final long serialVersionUID = 1L;
 
@@ -139,6 +145,10 @@ public class HistoryEntity implements Serializable {
 	public interface QueryInterface {
 		@QueryMethod(QUERY_WHERE_SUBJECT)
 		List<HistoryEntity> getHistory(@QueryParam("subject")
+		SubjectEntity subject);
+
+		@UpdateMethod(DELETE_ALL)
+		void deleteAll(@QueryParam("subject")
 		SubjectEntity subject);
 	}
 }

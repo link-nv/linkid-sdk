@@ -124,4 +124,7 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		subscription.setLastLogin(new Date());
 	}
 
+	public void removeAllSubscriptions(SubjectEntity subject) {
+		this.queryObject.deleteAll(subject);
+	}
 }

@@ -20,6 +20,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
+import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.user.Actions;
 import net.link.safeonline.user.UserConstants;
 
@@ -29,9 +30,9 @@ import net.link.safeonline.user.UserConstants;
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 public class ActionsBean implements Actions {
 
-	//@EJB
-	
-	
+	@EJB
+	private AccountService accountService;
+
 	@Logger
 	private Log log;
 
@@ -43,7 +44,7 @@ public class ActionsBean implements Actions {
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String removeAccount() {
 		log.debug("remove account");
-		
+		this.accountService.removeAccount();
 		Seam.invalidateSession();
 		return "logout-success";
 	}

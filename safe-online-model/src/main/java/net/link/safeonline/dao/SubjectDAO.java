@@ -40,4 +40,11 @@ public interface SubjectDAO {
 	 * @exception SubjectNotFoundException
 	 */
 	SubjectEntity getSubject(String login) throws SubjectNotFoundException;
+
+	/**
+	 * Removes the given attached subject from the database.
+	 * 
+	 * @param subject
+	 */
+	void removeSubject(SubjectEntity subject);
 }

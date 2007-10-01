@@ -50,4 +50,8 @@ public class SubjectDAOBean implements SubjectDAO {
 		}
 		return subject;
 	}
+
+	public void removeSubject(SubjectEntity subject) {
+		this.entityManager.remove(subject);
+	}
 }

@@ -139,4 +139,11 @@ public interface AttributeDAO {
 	List<AttributeEntity> listAttributes(SubjectEntity subject,
 			AttributeTypeEntity attributeType);
 
+	/**
+	 * Removes all the attributes of the given subject.
+	 * 
+	 * @param subject
+	 */
+	void removeAttributes(SubjectEntity subject);
+
 }

@@ -46,4 +46,9 @@ public interface HistoryDAO {
 	 * @param ageInMillis
 	 */
 	void clearAllHistory(long ageInMillis);
+
+	/**
+	 * Deletes all history entries of the given user.
+	 */
+	void clearAllHistory(SubjectEntity subject);
 }

@@ -51,4 +51,5 @@ public interface SubscriptionDAO {
 
 	void loggedIn(SubscriptionEntity subscription);
 
+	void removeAllSubscriptions(SubjectEntity subject);
 }

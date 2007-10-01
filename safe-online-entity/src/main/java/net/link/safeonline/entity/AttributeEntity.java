@@ -7,6 +7,14 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.AttributeEntity.ATTRIBUTE_TYPE_PARAM;
+import static net.link.safeonline.entity.AttributeEntity.MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
+import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT;
+import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
+import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_VISIBLE;
+import static net.link.safeonline.entity.AttributeEntity.SUBJECT_PARAM;
+import static net.link.safeonline.entity.AttributeEntity.DELETE_WHERE_SUBJECT;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
@@ -29,17 +37,11 @@ import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT;
-import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_VISIBLE;
-import static net.link.safeonline.entity.AttributeEntity.SUBJECT_PARAM;
-import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
-import static net.link.safeonline.entity.AttributeEntity.ATTRIBUTE_TYPE_PARAM;
-import static net.link.safeonline.entity.AttributeEntity.MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
 
 /**
  * Attribute JPA Entity. Sits as many-to-many between
@@ -68,7 +70,9 @@ import static net.link.safeonline.entity.AttributeEntity.MAX_ID_WHERE_SUBJECT_AN
 		@NamedQuery(name = MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT MAX(attribute.attributeIndex) FROM AttributeEntity AS attribute "
 				+ "WHERE attribute.subject = :"
 				+ SUBJECT_PARAM
-				+ " AND attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM) })
+				+ " AND attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM),
+		@NamedQuery(name = DELETE_WHERE_SUBJECT, query = "DELETE FROM AttributeEntity AS attribute "
+				+ "WHERE attribute.subject = :" + SUBJECT_PARAM) })
 public class AttributeEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -80,6 +84,8 @@ public class AttributeEntity implements Serializable {
 	public static final String QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "attr.subject.at";
 
 	public static final String MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE = "max.id.subject.at";
+
+	public static final String DELETE_WHERE_SUBJECT = "attr.del.sub";
 
 	public static final String SUBJECT_PARAM = "subject";
 
@@ -374,5 +380,9 @@ public class AttributeEntity implements Serializable {
 				@QueryParam(SUBJECT_PARAM)
 				SubjectEntity subject, @QueryParam(ATTRIBUTE_TYPE_PARAM)
 				AttributeTypeEntity attributeType);
+
+		@UpdateMethod(DELETE_WHERE_SUBJECT)
+		void deleteAttributes(@QueryParam(SUBJECT_PARAM)
+		SubjectEntity subject);
 	}
 }

@@ -21,6 +21,7 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_OTHER_IDENTIFIERS;
+import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_SUBJECT;
 
 /**
  * Subject Identifier entity. This entity allows us to unambiguously map from an
@@ -33,15 +34,20 @@ import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_OT
  */
 @Entity
 @Table(name = "subject_identifier")
-@NamedQueries( { @NamedQuery(name = DELETE_WHERE_OTHER_IDENTIFIERS, query = "DELETE FROM SubjectIdentifierEntity AS subjectIdentifier "
-		+ "WHERE subjectIdentifier.pk.domain = :domain AND "
-		+ "subjectIdentifier.subject = :subject AND "
-		+ "subjectIdentifier.pk.identifier <> :identifier") })
+@NamedQueries( {
+		@NamedQuery(name = DELETE_WHERE_OTHER_IDENTIFIERS, query = "DELETE FROM SubjectIdentifierEntity AS subjectIdentifier "
+				+ "WHERE subjectIdentifier.pk.domain = :domain AND "
+				+ "subjectIdentifier.subject = :subject AND "
+				+ "subjectIdentifier.pk.identifier <> :identifier"),
+		@NamedQuery(name = DELETE_WHERE_SUBJECT, query = "DELETE FROM SubjectIdentifierEntity AS subjectIdentifier "
+				+ "WHERE subjectIdentifier.subject = :subject") })
 public class SubjectIdentifierEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String DELETE_WHERE_OTHER_IDENTIFIERS = "sie.del";
+
+	public static final String DELETE_WHERE_SUBJECT = "sei.del.subject";
 
 	private SubjectIdentifierPK pk;
 
@@ -81,6 +87,10 @@ public class SubjectIdentifierEntity implements Serializable {
 		int deleteWhereOtherIdentifiers(@QueryParam("domain")
 		String domain, @QueryParam("identifier")
 		String identifier, @QueryParam("subject")
+		SubjectEntity subject);
+
+		@UpdateMethod(DELETE_WHERE_SUBJECT)
+		void deleteWhereSubject(@QueryParam("subject")
 		SubjectEntity subject);
 	}
 }

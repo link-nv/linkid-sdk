@@ -15,6 +15,11 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.authentication.service.AccountServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.dao.SubjectDAO;
+import net.link.safeonline.dao.SubjectIdentifierDAO;
+import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 
@@ -31,10 +36,31 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 	@EJB
 	private SubjectManager subjectManager;
 
+	@EJB
+	private HistoryDAO historyDAO;
+	
+	@EJB
+	private AttributeDAO attributeDAO;
+
+	@EJB
+	private SubscriptionDAO subscriptionDAO;
+
+	@EJB
+	private SubjectDAO subjectDAO;
+	
+	@EJB
+	private SubjectIdentifierDAO subjectIdentifierDAO;
+	
+	
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void removeAccount() {
 		LOG.debug("remove account");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		// TODO: implement me
+
+		this.historyDAO.clearAllHistory(subject);
+		this.subscriptionDAO.removeAllSubscriptions(subject);
+		this.attributeDAO.removeAttributes(subject);
+		this.subjectIdentifierDAO.removeSubjectIdentifiers(subject);
+		this.subjectDAO.removeSubject(subject);
 	}
 }

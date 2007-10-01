@@ -28,6 +28,7 @@ import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -37,6 +38,7 @@ import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_APPLICATION;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_APPLICATION;
 import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE;
+import static net.link.safeonline.entity.SubscriptionEntity.DELETE_ALL_SUBJECT;
 
 @Entity
 @Table(name = "subscription")
@@ -53,7 +55,9 @@ import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_AP
 				+ "AND subscription.lastLogin > :lastLogin"),
 		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT subscription "
 				+ "FROM SubscriptionEntity AS subscription "
-				+ "WHERE subscription.application = :application") })
+				+ "WHERE subscription.application = :application"),
+		@NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM SubscriptionEntity AS subscription "
+				+ "WHERE subscription.subject = :subject") })
 public class SubscriptionEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -65,6 +69,8 @@ public class SubscriptionEntity implements Serializable {
 	public static final String QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE = "sub.count.app.active";
 
 	public static final String QUERY_WHERE_APPLICATION = "sub.application";
+
+	public static final String DELETE_ALL_SUBJECT = "sub.del.sub";
 
 	private SubscriptionPK pk;
 
@@ -190,5 +196,9 @@ public class SubscriptionEntity implements Serializable {
 		@QueryMethod(QUERY_WHERE_APPLICATION)
 		List<SubscriptionEntity> listSubscriptions(@QueryParam("application")
 		ApplicationEntity application);
+
+		@UpdateMethod(DELETE_ALL_SUBJECT)
+		void deleteAll(@QueryParam("subject")
+		SubjectEntity subject);
 	}
 }
