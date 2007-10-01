@@ -131,4 +131,20 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<navigation-rule>
+		<from-view-id>/actions.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>remove</from-action>
+			<to-view-id>/remove.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/remove.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/actions.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
 </faces-config>
