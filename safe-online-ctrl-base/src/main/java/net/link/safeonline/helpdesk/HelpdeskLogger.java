@@ -29,6 +29,8 @@ public class HelpdeskLogger {
 
 	private static final Log LOG = LogFactory.getLog(HelpdeskLogger.class);
 
+	private static final String UNKNOWN_USER = "unknown";
+
 	/*
 	 * Clear the volatile helpdesk context on the HttpSession
 	 */
@@ -80,7 +82,7 @@ public class HelpdeskLogger {
 	private static String getPrincipal(HttpSession session) {
 		String principal = (String) session.getAttribute("username");
 		if (null == principal) {
-			principal = "unknown";
+			principal = UNKNOWN_USER;
 		}
 		return principal;
 	}
@@ -108,6 +110,7 @@ public class HelpdeskLogger {
 	public static Long persistContext(String location, HttpSession session) {
 		List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
 
+		String principal = getPrincipal(session);
 		/*
 		 * add extra information
 		 */
@@ -116,8 +119,8 @@ public class HelpdeskLogger {
 		while (initParameterNames.hasMoreElements()) {
 			String name = (String) initParameterNames.nextElement();
 			String value = session.getServletContext().getInitParameter(name);
-			add(session, "Servlet context: " + name + "=" + value,
-					getPrincipal(session), LogLevelType.INFO);
+			add(session, "Servlet context: " + name + "=" + value, principal,
+					LogLevelType.INFO);
 		}
 
 		add(session, "Server info: "
@@ -136,11 +139,13 @@ public class HelpdeskLogger {
 		HistoryDAO historyDAO = EjbUtils.getEJB(
 				"SafeOnline/HistoryDAOBean/local", HistoryDAO.class);
 
-		LOG.debug("persisting volatile context...");
+		LOG.debug("persisting volatile context for user " + principal + "...");
 		Long id = helpdeskManager.persist(location, helpdeskContext);
 
-		historyDAO.addHistoryEntry(subjectManager.getCallerSubject(),
-				HistoryEventType.HELPDESK_ID, null, id.toString());
+		if (!principal.equals(UNKNOWN_USER)) {
+			historyDAO.addHistoryEntry(subjectManager.getCallerSubject(),
+					HistoryEventType.HELPDESK_ID, null, id.toString());
+		}
 		return id;
 	}
 

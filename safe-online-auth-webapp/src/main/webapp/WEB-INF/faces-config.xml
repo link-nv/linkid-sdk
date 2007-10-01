@@ -121,6 +121,22 @@
 	</navigation-rule>
 
 	<navigation-rule>
+		<from-view-id>/register-beid.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>help</from-action>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/new-user-beid.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>help</from-action>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
 		<from-view-id>/subscription.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>reject</from-action>

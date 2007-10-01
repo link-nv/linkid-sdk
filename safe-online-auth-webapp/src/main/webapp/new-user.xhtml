@@ -34,8 +34,7 @@
 					<td><t:message for="login" styleClass="error" /></td>
 				</tr>
 				<tr>
-					<th>Enter the following letters: <h:graphicImage
-						value="/captcha" /></th>
+					<th>#{msgs.captcha}<h:graphicImage value="/captcha" /></th>
 					<td><s:decorate>
 						<h:inputText id="captcha" value="#{accountRegistration.captcha}"
 							required="true" />

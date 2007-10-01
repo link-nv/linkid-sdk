@@ -31,6 +31,9 @@
 						rendered="#{empty item.application.friendlyName}" />
 				</h:column>
 				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="#{msgs.action}" />
+					</f:facet>
 					<h:commandLink value="#{msgs.unsubscribe}"
 						action="#{subscriptions.unsubscribe}" />
 				</h:column>
