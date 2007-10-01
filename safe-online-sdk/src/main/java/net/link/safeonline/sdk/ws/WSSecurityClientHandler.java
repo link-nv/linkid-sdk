@@ -182,6 +182,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 			PrivateKey privateKey) {
 		BindingProvider bindingProvider = (BindingProvider) port;
 		Binding binding = bindingProvider.getBinding();
+		@SuppressWarnings("unchecked")
 		List<Handler> handlerChain = binding.getHandlerChain();
 		Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(
 				certificate, privateKey);

@@ -112,6 +112,7 @@ public class DataServicePortImplTest {
 
 	private X509Certificate certificate;
 
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {
 
@@ -342,6 +343,7 @@ public class DataServicePortImplTest {
 						.getCode()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void queryTargetIdentityNotSigned() throws Exception {
 		// setup
@@ -390,6 +392,7 @@ public class DataServicePortImplTest {
 		verify(this.mockObjects);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void queryMultivaluedAttribute() throws Exception {
 		// setup
@@ -603,6 +606,7 @@ public class DataServicePortImplTest {
 						.getCode()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void modifyMissingNewData() throws Exception {
 		// setup
@@ -654,6 +658,7 @@ public class DataServicePortImplTest {
 						.getCode()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void modifyAttributeNameMismatch() throws Exception {
 		// setup
@@ -708,6 +713,7 @@ public class DataServicePortImplTest {
 				.fromCode(status.getStatus().get(0).getCode()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void modifySingleValuesAttribute() throws Exception {
 		// setup
@@ -766,6 +772,7 @@ public class DataServicePortImplTest {
 				.getCode()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void modifyNullAttributeValue() throws Exception {
 		// setup
@@ -823,6 +830,7 @@ public class DataServicePortImplTest {
 				.getCode()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void modifyMultivaluedAttribute() throws Exception {
 		// setup
@@ -888,6 +896,7 @@ public class DataServicePortImplTest {
 				.getCode()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void createMultivaluedAttribute() throws Exception {
 		// setup
@@ -950,6 +959,7 @@ public class DataServicePortImplTest {
 				.getCode()));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void delete() throws Exception {
 		// setup

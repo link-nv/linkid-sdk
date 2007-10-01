@@ -56,6 +56,7 @@ public class SafeOnlineAuthenticationLoginModuleTest {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void login() throws Exception {
 		// setup

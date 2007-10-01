@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
-import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.UserRegistrationService;
@@ -42,10 +41,6 @@ public class ApplicationServiceBeanTest extends TestCase {
 			.getLog(ApplicationServiceBeanTest.class);
 
 	private EntityTestManager entityTestManager;
-
-	private ResourceAuditLogger mockResourceAuditLogger;
-
-	private Object[] mockObjects;
 
 	@Override
 	protected void setUp() throws Exception {

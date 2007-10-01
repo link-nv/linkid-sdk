@@ -33,5 +33,6 @@ public @interface ValidatorAnnotation {
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	Class<? extends Validator> value();
 }

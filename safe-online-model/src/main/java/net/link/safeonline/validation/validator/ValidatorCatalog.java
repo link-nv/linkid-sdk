@@ -20,14 +20,15 @@ import java.util.Map;
  */
 public class ValidatorCatalog {
 
+	@SuppressWarnings("unchecked")
 	private static Map<Class<? extends Validator>, Validator<?>> instances = new HashMap<Class<? extends Validator>, Validator<?>>();
 
 	private ValidatorCatalog() {
 		// empty
 	}
 
-	public static Validator<?> getInstance(
-			Class<? extends Validator> validatorClass) {
+	public static Validator<?> getInstance(@SuppressWarnings("unchecked")
+	Class<? extends Validator> validatorClass) {
 		Validator<?> instance = ValidatorCatalog.instances.get(validatorClass);
 		if (null == instance) {
 			try {

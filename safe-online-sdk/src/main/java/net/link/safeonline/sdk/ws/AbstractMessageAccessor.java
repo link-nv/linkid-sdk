@@ -48,6 +48,7 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
 	protected void registerMessageLoggerHandler(Object port) {
 		BindingProvider bindingProvider = (BindingProvider) port;
 		Binding binding = bindingProvider.getBinding();
+		@SuppressWarnings("unchecked")
 		List<Handler> handlerChain = binding.getHandlerChain();
 		handlerChain.add(this.messageLoggerHandler);
 		binding.setHandlerChain(handlerChain);

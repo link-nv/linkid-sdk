@@ -16,7 +16,6 @@ import javax.security.jacc.PolicyContextException;
 
 import net.link.safeonline.audit.AuditContextPolicyContextHandler;
 import net.link.safeonline.audit.ResourceAuditLogger;
-import net.link.safeonline.audit.AuditContextPolicyContextHandler.AuditContextInfo;
 import net.link.safeonline.audit.dao.AuditAuditDAO;
 import net.link.safeonline.audit.dao.AuditContextDAO;
 import net.link.safeonline.audit.dao.ResourceAuditDAO;

@@ -103,6 +103,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 	private void initTargetIdentityHandler() {
 		BindingProvider bindingProvider = (BindingProvider) this.port;
 		Binding binding = bindingProvider.getBinding();
+		@SuppressWarnings("unchecked")
 		List<Handler> handlerChain = binding.getHandlerChain();
 		handlerChain.add(this.targetIdentityHandler);
 		binding.setHandlerChain(handlerChain);
