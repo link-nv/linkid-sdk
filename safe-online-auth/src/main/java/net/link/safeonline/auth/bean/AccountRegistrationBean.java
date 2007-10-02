@@ -177,8 +177,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		super.clearUsername();
 
 		try {
-			this.userRegistrationService.registerUser(this.login,
-					this.password, null);
+			this.userRegistrationService
+					.registerUser(this.login, this.password);
 		} catch (ExistingUserException e) {
 			this.facesMessages.add("login already taken");
 			return null;

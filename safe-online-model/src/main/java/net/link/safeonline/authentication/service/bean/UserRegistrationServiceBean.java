@@ -11,7 +11,6 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
@@ -20,10 +19,7 @@ import net.link.safeonline.authentication.service.CredentialManager;
 import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
-import net.link.safeonline.dao.AttributeDAO;
-import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
-import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.UserRegistrationManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -53,41 +49,19 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	private UserRegistrationManager userRegistrationManager;
 
 	@EJB
-	private AttributeDAO attributeDAO;
-
-	@EJB
-	private AttributeTypeDAO attributeTypeDAO;
-
-	@EJB
 	private CredentialManager credentialManager;
 
 	@EJB
 	private PasswordManager passwordController;
 
-	public void registerUser(String login, String password, String name)
+	public void registerUser(String login, String password)
 			throws ExistingUserException {
 		SubjectEntity newSubject = this.userRegistrationManager
 				.registerUser(login);
 		try {
-			setAttributes(newSubject, password, name);
-		} catch (AttributeTypeNotFoundException e) {
-			throw new EJBException("attribute type not found");
-		}
-	}
-
-	private void setAttributes(SubjectEntity subject, String password,
-			String name) throws AttributeTypeNotFoundException {
-
-		try {
-			this.passwordController.setPassword(subject, password);
+			this.passwordController.setPassword(newSubject, password);
 		} catch (PermissionDeniedException e) {
 			throw new EJBException("Not allowed to set password");
-		}
-
-		if (null != name) {
-			AttributeTypeEntity nameAttributeType = this.attributeTypeDAO
-					.getAttributeType(SafeOnlineConstants.NAME_ATTRIBUTE);
-			this.attributeDAO.addAttribute(nameAttributeType, subject, name);
 		}
 	}
 

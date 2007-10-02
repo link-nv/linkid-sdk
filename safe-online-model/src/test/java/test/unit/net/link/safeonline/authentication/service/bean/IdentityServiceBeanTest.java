@@ -102,21 +102,20 @@ public class IdentityServiceBeanTest {
 		// setup
 		String login = "test-login";
 		String password = "test-password";
-		String name = "test-name";
 		String applicationName = "test-application";
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
 		UserRegistrationServiceBean userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
-		userRegistrationService.registerUser(login, password, name);
+		userRegistrationService.registerUser(login, password);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
 				ApplicationServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
 		userRegistrationService.registerUser("test-application-owner-login",
-				"password", null);
+				"password");
 		applicationService.registerApplicationOwner(
 				"test-application-owner-name", "test-application-owner-login");
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
@@ -190,21 +189,20 @@ public class IdentityServiceBeanTest {
 		// setup
 		String login = "test-login";
 		String password = "test-password";
-		String name = "test-name";
 		String applicationName = "test-application";
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
 		UserRegistrationServiceBean userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
-		userRegistrationService.registerUser(login, password, name);
+		userRegistrationService.registerUser(login, password);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
 				ApplicationServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
 		userRegistrationService.registerUser("test-application-owner-login",
-				"password", null);
+				"password");
 		applicationService.registerApplicationOwner(
 				"test-application-owner-name", "test-application-owner-login");
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
@@ -268,21 +266,20 @@ public class IdentityServiceBeanTest {
 		// setup
 		String login = "test-login";
 		String password = "test-password";
-		String name = "test-name";
 		String applicationName = "test-application";
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
-		userRegistrationService.registerUser(login, password, name);
+		userRegistrationService.registerUser(login, password);
 
 		ApplicationService applicationService = EJBTestUtils.newInstance(
 				ApplicationServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
 		userRegistrationService.registerUser("test-application-owner-login",
-				"password", null);
+				"password");
 		applicationService.registerApplicationOwner(
 				"test-application-owner-name", "test-application-owner-login");
 		applicationService.addApplication(applicationName, null,
@@ -312,7 +309,7 @@ public class IdentityServiceBeanTest {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
-		userRegistrationService.registerUser(login, "test-password", null);
+		userRegistrationService.registerUser(login, "test-password");
 
 		// operate
 		IdentityService identityService = EJBTestUtils.newInstance(
@@ -387,7 +384,7 @@ public class IdentityServiceBeanTest {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
-		userRegistrationService.registerUser(login, "test-password", null);
+		userRegistrationService.registerUser(login, "test-password");
 
 		// operate: add multivalued attribute type
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
@@ -511,7 +508,7 @@ public class IdentityServiceBeanTest {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
-		userRegistrationService.registerUser(login, "test-password", null);
+		userRegistrationService.registerUser(login, "test-password");
 
 		// operate: add multivalued attribute type
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
@@ -882,7 +879,7 @@ public class IdentityServiceBeanTest {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
-		userRegistrationService.registerUser(userLogin, "secret", null);
+		userRegistrationService.registerUser(userLogin, "secret");
 
 		// add attribute type
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
@@ -932,7 +929,7 @@ public class IdentityServiceBeanTest {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
-		userRegistrationService.registerUser(userLogin, "secret", null);
+		userRegistrationService.registerUser(userLogin, "secret");
 
 		// add attribute type
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
@@ -1015,7 +1012,7 @@ public class IdentityServiceBeanTest {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
-		userRegistrationService.registerUser(login, "test-password", null);
+		userRegistrationService.registerUser(login, "test-password");
 
 		// operate: add multivalued attribute type
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
@@ -1101,7 +1098,7 @@ public class IdentityServiceBeanTest {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
-		userRegistrationService.registerUser(login, "test-password", null);
+		userRegistrationService.registerUser(login, "test-password");
 
 		// operate: add multivalued attribute type
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(

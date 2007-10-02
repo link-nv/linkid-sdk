@@ -36,7 +36,7 @@ public interface UserRegistrationService {
 	 * @param name
 	 * @throws ExistingUserException
 	 */
-	void registerUser(String login, String password, String name)
+	void registerUser(String login, String password)
 			throws ExistingUserException;
 
 	/**

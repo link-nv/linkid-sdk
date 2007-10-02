@@ -100,7 +100,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 
 	/**
 	 * Handles the outbound SOAP message. This method will simply add an
-	 * unsigned WS-Securty Timestamp in the SOAP header. This is required for
+	 * unsigned WS-Security Timestamp in the SOAP header. This is required for
 	 * .NET 2/3 clients.
 	 * 
 	 * @param document

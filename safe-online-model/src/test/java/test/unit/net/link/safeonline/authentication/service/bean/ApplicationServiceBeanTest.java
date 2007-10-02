@@ -137,7 +137,7 @@ public class ApplicationServiceBeanTest extends TestCase {
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 
-		userRegistrationService.registerUser(testAdminLogin, "secret", null);
+		userRegistrationService.registerUser(testAdminLogin, "secret");
 
 		applicationService.registerApplicationOwner(testApplicationOwnerName,
 				testAdminLogin);

@@ -125,7 +125,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
 		/*
 		 * First check whether the TargetIdentity SOAP header has been digested
-		 * correcly by the WS-Security XML signature.
+		 * correctly by the WS-Security XML signature.
 		 */
 		String id = targetIdentityHeaderElement.getAttributeNS(WSU_NS, "Id");
 		if (null == id) {

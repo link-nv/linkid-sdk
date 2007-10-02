@@ -58,7 +58,6 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		// setup
 		String testLogin = "test-login";
 		String testPassword = "test-password";
-		String testName = "test-name";
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 		UserRegistrationService userRegistrationService = EJBTestUtils
@@ -66,7 +65,7 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 
 		// operate
-		userRegistrationService.registerUser(testLogin, testPassword, testName);
+		userRegistrationService.registerUser(testLogin, testPassword);
 
 		// verify
 		SubjectDAO subjectDAO = EJBTestUtils.newInstance(SubjectDAOBean.class,
@@ -93,7 +92,6 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		// setup
 		String testLogin = "test-login";
 		String testPassword = "test-password";
-		String testName = "test-name";
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 		UserRegistrationService userRegistrationService = EJBTestUtils
@@ -101,12 +99,11 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 
 		// operate
-		userRegistrationService.registerUser(testLogin, testPassword, testName);
+		userRegistrationService.registerUser(testLogin, testPassword);
 
 		// operate & verify
 		try {
-			userRegistrationService.registerUser(testLogin, testPassword,
-					testName);
+			userRegistrationService.registerUser(testLogin, testPassword);
 			fail();
 		} catch (ExistingUserException e) {
 			// expected
