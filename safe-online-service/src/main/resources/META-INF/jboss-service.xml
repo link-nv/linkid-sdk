@@ -55,17 +55,17 @@
 		</depends>
 	</mbean>
 
-	<mbean code="org.jboss.mq.server.jmx.Topic"
-		name="safeonline:service=Topic,name=audit">
-		<attribute name="JNDIName">topic/audit</attribute>
+	<mbean code="org.jboss.mq.server.jmx.Queue"
+		name="safeonline:service=Queue,name=auditBackend">
+		<attribute name="JNDIName">queue/auditBackend</attribute>
 		<depends optional-attribute-name="DestinationManager">
 			jboss.mq:service=DestinationManager
 		</depends>
 	</mbean>
 
 	<mbean code="org.jboss.mq.server.jmx.Queue"
-		name="safeonline:service=Queue,name=audit">
-		<attribute name="JNDIName">queue/audit</attribute>
+		name="safeonline:service=Queue,name=auditSanitizer">
+		<attribute name="JNDIName">queue/auditSanitizer</attribute>
 		<depends optional-attribute-name="DestinationManager">
 			jboss.mq:service=DestinationManager
 		</depends>

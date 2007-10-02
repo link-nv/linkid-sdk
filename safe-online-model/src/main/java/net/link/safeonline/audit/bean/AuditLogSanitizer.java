@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
 
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_QUEUE_NAME) })
+		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_SANITIZER_QUEUE_NAME) })
 public class AuditLogSanitizer implements MessageListener {
 
 	private static final Log LOG = LogFactory.getLog(AuditLogSanitizer.class);

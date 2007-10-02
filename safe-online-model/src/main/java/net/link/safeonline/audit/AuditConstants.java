@@ -14,14 +14,14 @@ public class AuditConstants {
 	}
 
 	/**
-	 * The audit topic where finalized audit contexts are published on.
+	 * The audit queue where finalized audit contexts are published on.
 	 */
-	public final static String AUDIT_TOPIC_NAME = "topic/audit";
+	public final static String AUDIT_BACKEND_QUEUE_NAME = "queue/auditBackend";
 
 	/**
 	 * The audit queue where audit contexts are cleaned up.
 	 */
-	public final static String AUDIT_QUEUE_NAME = "queue/audit";
+	public final static String AUDIT_SANITIZER_QUEUE_NAME = "queue/auditSanitizer";
 
 	/**
 	 * The name of the connection factory used for publishing JMS messages.

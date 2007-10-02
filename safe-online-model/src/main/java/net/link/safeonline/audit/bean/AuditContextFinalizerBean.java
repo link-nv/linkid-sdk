@@ -12,14 +12,13 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
 import javax.jms.Session;
-import javax.jms.Topic;
-import javax.jms.TopicConnection;
-import javax.jms.TopicConnectionFactory;
-import javax.jms.TopicPublisher;
-import javax.jms.TopicSession;
 
 import net.link.safeonline.audit.AuditConstants;
 import net.link.safeonline.audit.AuditContextFinalizer;
@@ -43,10 +42,10 @@ public class AuditContextFinalizerBean implements AuditContextFinalizer {
 			.getLog(AuditContextFinalizerBean.class);
 
 	@Resource(mappedName = AuditConstants.CONNECTION_FACTORY_NAME)
-	private TopicConnectionFactory factory;
+	private ConnectionFactory factory;
 
-	@Resource(mappedName = AuditConstants.AUDIT_TOPIC_NAME)
-	private Topic auditTopic;
+	@Resource(mappedName = AuditConstants.AUDIT_BACKEND_QUEUE_NAME)
+	private Queue auditBackendQueue;
 
 	@EJB
 	private AuditAuditDAO auditAuditDAO;
@@ -56,21 +55,17 @@ public class AuditContextFinalizerBean implements AuditContextFinalizer {
 		LOG.debug("finalizing audit context: " + auditContextId);
 		AuditMessage auditMessage = new AuditMessage(auditContextId);
 		try {
-			TopicConnection connection = this.factory.createTopicConnection();
+			Connection connection = this.factory.createConnection();
 			try {
-				TopicSession session = connection.createTopicSession(true,
-						Session.AUTO_ACKNOWLEDGE);
+				Session session = connection.createSession(true, 0);
 				try {
-					TopicPublisher publisher = session
-							.createPublisher(this.auditTopic);
+					MessageProducer producer = session
+							.createProducer(this.auditBackendQueue);
 					try {
 						Message message = auditMessage.getJMSMessage(session);
-						publisher.publish(message);
-						LOG.info("Audit JMS message (id=" + auditContextId
-								+ ") published to "
-								+ this.auditTopic.getTopicName() + " topic");
+						producer.send(message);
 					} finally {
-						publisher.close();
+						producer.close();
 					}
 				} finally {
 					session.close();
