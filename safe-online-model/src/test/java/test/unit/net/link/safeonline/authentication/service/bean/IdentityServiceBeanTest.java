@@ -1089,6 +1089,91 @@ public class IdentityServiceBeanTest {
 	}
 
 	@Test
+	public void getAttributeEditContextWithNonVisibleMember() throws Exception {
+		// setup
+		String login = "test-login";
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		// operate: register the test user
+		UserRegistrationService userRegistrationService = EJBTestUtils
+				.newInstance(UserRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		userRegistrationService.registerUser(login, "test-password");
+
+		// operate: add multivalued attribute type
+		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
+				AttributeTypeServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
+
+		String attributeName0 = "test-attribute-name-0";
+		AttributeTypeEntity attributeType0 = new AttributeTypeEntity(
+				attributeName0, DatatypeType.STRING, true, true);
+		attributeType0.setMultivalued(true);
+		attributeTypeService.add(attributeType0);
+
+		/*
+		 * Next one is not user visible.
+		 */
+		String attributeName1 = "test-attribute-name-1";
+		AttributeTypeEntity attributeType1 = new AttributeTypeEntity(
+				attributeName1, DatatypeType.BOOLEAN, false, true);
+		attributeType1.setMultivalued(true);
+		attributeTypeService.add(attributeType1);
+
+		refreshTransaction(entityManager);
+
+		String compoundedAttributeName = "test-comp-attrib-name";
+		AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
+				compoundedAttributeName, DatatypeType.COMPOUNDED, true, true);
+		compoundedAttributeType.setMultivalued(true);
+		compoundedAttributeType.addMember(attributeType0, 0, true);
+		compoundedAttributeType.addMember(attributeType1, 1, true);
+		attributeTypeService.add(compoundedAttributeType);
+
+		// operate: save attribute
+		IdentityService identityService = EJBTestUtils.newInstance(
+				IdentityServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager, login,
+				SafeOnlineRoles.USER_ROLE);
+
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 0, null, null, true, true,
+				"value 0", null));
+		identityService.saveAttribute(new AttributeDO(attributeName1,
+				DatatypeType.BOOLEAN, true, 0, null, null, true, true, null,
+				Boolean.FALSE));
+		identityService.saveAttribute(new AttributeDO(attributeName0,
+				DatatypeType.STRING, true, 1, null, null, true, true,
+				"value 1", null));
+		identityService.saveAttribute(new AttributeDO(attributeName1,
+				DatatypeType.BOOLEAN, true, 1, null, null, true, true, null,
+				Boolean.TRUE));
+
+		refreshTransaction(entityManager);
+
+		// operate
+		AttributeDO queryAttribute = new AttributeDO(compoundedAttributeName,
+				DatatypeType.COMPOUNDED, true, 1, null, null, true, false,
+				null, null);
+		queryAttribute.setCompounded(true);
+		List<AttributeDO> result = identityService
+				.getAttributeEditContext(queryAttribute);
+
+		// verify
+		assertNotNull(result);
+		LOG.debug("result edit context: " + result);
+		assertEquals(2, result.size());
+
+		assertEquals(compoundedAttributeName, result.get(0).getName());
+		assertTrue(result.get(0).isCompounded());
+
+		assertEquals(attributeName0, result.get(1).getName());
+		assertTrue(result.get(1).isMember());
+		assertEquals("value 1", result.get(1).getStringValue());
+	}
+
+	@Test
 	public void compoundedAttributeScenario() throws Exception {
 		// setup
 		String login = "test-login";

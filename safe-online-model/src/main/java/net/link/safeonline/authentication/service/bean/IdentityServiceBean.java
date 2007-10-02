@@ -1140,6 +1140,9 @@ public class IdentityServiceBean implements IdentityService,
 			long index = selectedAttribute.getIndex();
 			for (CompoundedAttributeTypeMemberEntity member : members) {
 				AttributeTypeEntity memberAttributeType = member.getMember();
+				if (false == memberAttributeType.isUserVisible()) {
+					continue;
+				}
 				AttributeEntity attribute = this.attributeDAO.findAttribute(
 						subject, memberAttributeType, index);
 				AttributeDO memberView = new AttributeDO(memberAttributeType
