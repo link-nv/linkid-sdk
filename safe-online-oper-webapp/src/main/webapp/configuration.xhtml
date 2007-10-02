@@ -6,7 +6,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	xmlns:rich="http://richfaces.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
@@ -25,31 +25,23 @@
 		</f:facet>
 
 		<h:form>
-			<t:dataTable id="group-data" var="group" value="#{configGroupList}"
-				preserveDataModel="false" styleClass="configTable" columnClasses="configColumn">
-				<h:column>
-					<h2>#{group.name}</h2>
-				</h:column>
-				<h:column>
-					<t:dataTable id="config-data" var="item"
-						value="#{group.configItems}" preserveDataModel="false"
-						styleClass="configTable" columnClasses="configColumn">
-						<h:column>
-							<f:facet name="header">#{msgs.name}</f:facet>
-							#{item.name}
-						</h:column>
-						<h:column>
-							<f:facet name="header">#{msgs.value}</f:facet>
-							<h:panelGroup>
-								<s:decorate>
-									<h:inputText value="#{item.value}" required="true" id="value" />
-									<h:message for="value" styleClass="error" />
-								</s:decorate>
-							</h:panelGroup>
-						</h:column>
-					</t:dataTable>
-				</h:column>
-			</t:dataTable>
+			<rich:dataList id="group-data" var="group" value="#{configGroupList}">
+				<h3><h:outputText value="#{group.name}" /></h3>
+				<t:dataTable id="config-data" var="item"
+					value="#{group.configItems}" preserveDataModel="false">
+					<h:column>
+						<h:outputText value="#{item.name}:" />
+					</h:column>
+					<h:column>
+						<h:panelGroup>
+							<s:decorate>
+								<h:inputText value="#{item.value}" required="true" id="value" />
+								<h:message for="value" styleClass="error" />
+							</s:decorate>
+						</h:panelGroup>
+					</h:column>
+				</t:dataTable>
+			</rich:dataList>
 
 			<h:messages styleClass="error" globalOnly="true" />
 
