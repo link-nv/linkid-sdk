@@ -145,4 +145,18 @@ public class AuthorizationBean implements Authorization {
 	public void postConstructCallback() {
 		log.debug("postConstruct: " + this);
 	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public List<String> autocompleteUser(Object event) {
+		String userPrefix = event.toString();
+		log.debug("auto-complete user: #0", userPrefix);
+		List<String> allUsers = this.authorizationManagerService.getUsers();
+		List<String> filteredUsers = new LinkedList<String>();
+		for (String user : allUsers) {
+			if (user.startsWith(userPrefix)) {
+				filteredUsers.add(user);
+			}
+		}
+		return filteredUsers;
+	}
 }

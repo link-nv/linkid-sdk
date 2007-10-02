@@ -9,6 +9,7 @@ package net.link.safeonline.service.bean;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -173,5 +174,11 @@ public class AuthorizationManagerServiceBean implements
 			return;
 		}
 		roles.add(roleToAdd);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public List<String> getUsers() {
+		List<String> users = this.subjectDAO.listUsers();
+		return users;
 	}
 }

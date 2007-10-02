@@ -4,7 +4,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:s="http://jboss.com/products/seam/taglib">
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">SafeOnline Operator</ui:define>
@@ -32,7 +33,13 @@
 						<h:inputText id="user" value="#{authorizationManager.user}"
 							required="true" />
 					</s:decorate>
-					<h:outputText value="*" />
+					<rich:suggestionbox for="user"
+						suggestionAction="#{authorizationManager.autocompleteUser}"
+						var="searchUserNameInput" selfRendered="true">
+						<h:column>
+							<h:outputText value="#{searchUserNameInput}" />
+						</h:column>
+					</rich:suggestionbox>
 				</h:panelGroup>
 				<h:message for="user" styleClass="error" />
 			</h:panelGrid>

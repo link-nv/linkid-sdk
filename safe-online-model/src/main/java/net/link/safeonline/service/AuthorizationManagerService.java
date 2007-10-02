@@ -7,6 +7,7 @@
 
 package net.link.safeonline.service;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Local;
@@ -44,4 +45,11 @@ public interface AuthorizationManagerService {
 	 */
 	void setRoles(String login, Set<String> roles)
 			throws SubjectNotFoundException, RoleNotFoundException;
+
+	/**
+	 * Gives back a list of all available user logins.
+	 * 
+	 * @return
+	 */
+	List<String> getUsers();
 }

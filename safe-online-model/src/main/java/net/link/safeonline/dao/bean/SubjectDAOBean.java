@@ -7,6 +7,9 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,6 +18,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +30,14 @@ public class SubjectDAOBean implements SubjectDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	private SubjectEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, SubjectEntity.QueryInterface.class);
+	}
 
 	public SubjectEntity findSubject(String login) {
 		LOG.debug("find subject: " + login);
@@ -53,5 +65,10 @@ public class SubjectDAOBean implements SubjectDAO {
 
 	public void removeSubject(SubjectEntity subject) {
 		this.entityManager.remove(subject);
+	}
+
+	public List<String> listUsers() {
+		List<String> users = this.queryObject.listUsers();
+		return users;
 	}
 }

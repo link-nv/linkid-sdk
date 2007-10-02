@@ -36,6 +36,11 @@ public interface Authorization {
 	String save();
 
 	/*
+	 * Richfaces.
+	 */
+	List<String> autocompleteUser(Object event);
+
+	/*
 	 * Lifecycle.
 	 */
 	void destroyCallback();

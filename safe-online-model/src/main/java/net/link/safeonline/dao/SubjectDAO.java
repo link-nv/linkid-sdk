@@ -7,6 +7,8 @@
 
 package net.link.safeonline.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -47,4 +49,11 @@ public interface SubjectDAO {
 	 * @param subject
 	 */
 	void removeSubject(SubjectEntity subject);
+
+	/**
+	 * Gives back a list of all user logins.
+	 * 
+	 * @return
+	 */
+	List<String> listUsers();
 }
