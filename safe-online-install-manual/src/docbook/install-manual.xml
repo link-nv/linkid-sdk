@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article lang="en">
+	<title>OLAS</title>
+	<subtitle>Installation Manual</subtitle>
+	<articleinfo>
+		<abstract>
+			<para>
+				This document contains installation instructions for the
+				OLAS product.
+			</para>
+		</abstract>
+		<date>03/10/2007</date>
+		<author>
+			<surname>LIN-K N.V.</surname>
+		</author>
+		<copyright>
+			<year>2007</year>
+			<holder>LIN-K N.V.</holder>
+		</copyright>
+		<productname>OLAS</productname>
+		<productnumber>1.0.0</productnumber>
+	</articleinfo>
+
+	<section>
+		<title>Introduction</title>
+		<para>
+			OLAS is an authentication, signature and user data exchange
+			service. It allows 3th party web application to authenticate
+			users, involve users in transactions and obtain user
+			identity data. It brings to users a central identity
+			management.
+		</para>
+	</section>
+</article>
