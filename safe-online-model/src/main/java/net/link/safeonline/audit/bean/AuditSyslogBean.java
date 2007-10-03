@@ -38,20 +38,24 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Stateless
 @LocalBinding(jndiBinding = AuditBackend.JNDI_PREFIX + "AuditSyslogBean")
 @Interceptors(ConfigurationInterceptor.class)
-@Configurable(group = "Audit syslog configuration")
 public class AuditSyslogBean implements AuditBackend {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(AuditSyslogBean.class);
 
+	private static final String CONFIG_GROUP = "Audit syslog";
+
 	Logger logger = Logger.getLogger("syslog");
 
-	@Configurable(name = "Hostname", group = "Audit syslog")
+	@Configurable(name = "Hostname", group = CONFIG_GROUP)
 	private String syslogHost = "127.0.0.1";
 
-	@Configurable(name = "Threshold", group = "Audit syslog")
+	@Configurable(name = "Threshold", group = CONFIG_GROUP)
 	private String threshold = "INFO";
+
+	@Configurable(name = "Facility", group = CONFIG_GROUP)
+	private String facility = "LOCAL0";
 
 	@EJB
 	private SecurityAuditDAO securityAuditDAO;
@@ -71,7 +75,7 @@ public class AuditSyslogBean implements AuditBackend {
 
 		SyslogAppender syslogAppender = new SyslogAppender();
 		syslogAppender.setSyslogHost(this.syslogHost);
-		syslogAppender.setFacility("LOCAL1");
+		syslogAppender.setFacility(this.facility);
 		syslogAppender.setThreshold(Level.toLevel(this.threshold));
 		syslogAppender.setLayout(new SimpleLayout());
 
