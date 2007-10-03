@@ -16,35 +16,6 @@
 	<description>
 		Helpdesk web application towards the SafeOnline service.
 	</description>
-	<profiles>
-		<profile>
-			<id>env-dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<auth.webapp.location>
-					https://localhost:8443/olas-auth/
-				</auth.webapp.location>
-				<debug.mode>true</debug.mode>
-			</properties>
-		</profile>
-		<profile>
-			<id>env-buildserver</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>buildserver</value>
-				</property>
-			</activation>
-			<properties>
-				<auth.webapp.location>
-					https://buildserver/olas-auth/
-				</auth.webapp.location>
-				<debug.mode>false</debug.mode>
-			</properties>
-		</profile>
-	</profiles>
 	<build>
 		<plugins>
 			<plugin>

@@ -16,33 +16,6 @@
 	<description>
 		Demonstrates web application login via SafeOnline.
 	</description>
-	<profiles>
-		<profile>
-			<id>env-dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<auth.webapp.location>
-					http://localhost:8080/olas-auth/
-				</auth.webapp.location>
-			</properties>
-		</profile>
-		<profile>
-			<id>env-buildserver</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>buildserver</value>
-				</property>
-			</activation>
-			<properties>
-				<auth.webapp.location>
-					http://buildserver:8080/olas-auth/
-				</auth.webapp.location>
-			</properties>
-		</profile>
-	</profiles>
 	<build>
 		<plugins>
 			<plugin>

@@ -14,35 +14,6 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Model</name>
 	<description>The SafeOnline Core EJB3 Model.</description>
-	<profiles>
-		<profile>
-			<id>env-dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<isGlobalOperator>true</isGlobalOperator>
-				<defaultCronExpression>
-					0 0/5 * * * ?
-				</defaultCronExpression>
-			</properties>
-		</profile>
-		<profile>
-			<id>env-buildserver</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>buildserver</value>
-				</property>
-			</activation>
-			<properties>
-				<isGlobalOperator>true</isGlobalOperator>
-				<defaultCronExpression>
-					0 0 3 * * ?
-				</defaultCronExpression>
-			</properties>
-		</profile>
-	</profiles>
 	<build>
 		<plugins>
 			<plugin>

@@ -12,6 +12,12 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -38,6 +44,19 @@
 					<alias>safe-online</alias>
 					<verbose>true</verbose>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>filter</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

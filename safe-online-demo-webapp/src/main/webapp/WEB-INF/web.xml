@@ -18,7 +18,9 @@
 		</filter-class>
 		<init-param>
 			<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
-			<param-value>${auth.webapp.location}</param-value>
+			<param-value>
+				https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/
+			</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ApplicationName</param-name>

@@ -16,7 +16,7 @@
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>src/main/jboss</directory>
+			<directory>target/classes/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
 		<fileSet>

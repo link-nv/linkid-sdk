@@ -26,7 +26,9 @@
 
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
-		<param-value>${auth.webapp.location}</param-value>
+		<param-value>
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/
+		</param-value>
 	</context-param>
 
 	<context-param>
@@ -76,12 +78,12 @@
 
 	<context-param>
 		<param-name>WsHostName</param-name>
-		<param-value>${ws.host.name}</param-value>
+		<param-value>${safe-online.host.name}</param-value>
 	</context-param>
 
 	<context-param>
 		<param-name>WsHostPort</param-name>
-		<param-value>${ws.host.port}</param-value>
+		<param-value>${safe-online.host.port}</param-value>
 	</context-param>
 
 	<filter>
@@ -161,11 +163,11 @@
 		</servlet-class>
 		<init-param>
 			<param-name>WsHostName</param-name>
-			<param-value>${ws.host.name}</param-value>
+			<param-value>${safe-online.host.name}</param-value>
 		</init-param>
 		<init-param>
 			<param-name>WsHostPort</param-name>
-			<param-value>${ws.host.port}</param-value>
+			<param-value>${safe-online.host.port}</param-value>
 		</init-param>
 	</servlet>
 

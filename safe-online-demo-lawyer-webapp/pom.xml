@@ -16,39 +16,6 @@
 	<description>
 		Demo Lawyer Web Application using SafeOnline.
 	</description>
-	<profiles>
-		<profile>
-			<id>env-dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<auth.webapp.location>
-					https://localhost:8443/olas-auth/
-				</auth.webapp.location>
-				<ws.host.name>localhost</ws.host.name>
-				<ws.host.port>8443</ws.host.port>
-				<debug.mode>true</debug.mode>
-			</properties>
-		</profile>
-		<profile>
-			<id>env-buildserver</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>buildserver</value>
-				</property>
-			</activation>
-			<properties>
-				<auth.webapp.location>
-					https://buildserver/olas-auth/
-				</auth.webapp.location>
-				<ws.host.name>buildserver</ws.host.name>
-				<ws.host.port>443</ws.host.port>
-				<debug.mode>false</debug.mode>
-			</properties>
-		</profile>
-	</profiles>
 	<build>
 		<plugins>
 			<plugin>

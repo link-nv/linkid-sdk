@@ -14,65 +14,6 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Entity</name>
 	<description>SafeOnline EJB3 Entities.</description>
-	<profiles>
-		<profile>
-			<id>development</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<safe-online.data.source>
-					/DefaultDS
-				</safe-online.data.source>
-				<safe-online.dialect>
-					org.hibernate.dialect.HSQLDialect
-				</safe-online.dialect>
-				<safe-online.hibernate.hbm2ddl.auto>
-					create-drop
-				</safe-online.hibernate.hbm2ddl.auto>
-			</properties>
-		</profile>
-		<profile>
-			<id>env-mysql</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>mysql</value>
-				</property>
-			</activation>
-			<properties>
-				<safe-online.data.source>
-					/SafeOnlineDS
-				</safe-online.data.source>
-				<safe-online.dialect>
-					org.hibernate.dialect.MySQL5Dialect
-				</safe-online.dialect>
-				<safe-online.hibernate.hbm2ddl.auto>
-					update
-				</safe-online.hibernate.hbm2ddl.auto>
-			</properties>
-		</profile>
-		<profile>
-			<id>env-buildserver</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>buildserver</value>
-				</property>
-			</activation>
-			<properties>
-				<safe-online.data.source>
-					/SafeOnlineDS
-				</safe-online.data.source>
-				<safe-online.dialect>
-					org.hibernate.dialect.MySQL5Dialect
-				</safe-online.dialect>
-				<safe-online.hibernate.hbm2ddl.auto>
-					update
-				</safe-online.hibernate.hbm2ddl.auto>
-			</properties>
-		</profile>
-	</profiles>
 	<build>
 		<plugins>
 			<plugin>

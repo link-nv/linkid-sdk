@@ -12,35 +12,6 @@
 	<name>SafeOnline Demo Lawyer Web Application in Wicket</name>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
-	<profiles>
-		<profile>
-			<id>env-dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<auth.webapp.location>
-					http://localhost:8080/safe-online-auth/
-				</auth.webapp.location>
-				<local.host.name>localhost</local.host.name>
-			</properties>
-		</profile>
-		<profile>
-			<id>env-buildserver</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>buildserver</value>
-				</property>
-			</activation>
-			<properties>
-				<auth.webapp.location>
-					http://buildserver:8080/safe-online-auth/
-				</auth.webapp.location>
-				<local.host.name>buildserver</local.host.name>
-			</properties>
-		</profile>
-	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

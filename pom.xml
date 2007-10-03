@@ -51,6 +51,15 @@
 				<private-email>wim.vandenhaute@gmail.com</private-email>
 			</properties>
 		</developer>
+		<developer>
+			<id>mbillemo</id>
+			<name>Maarten Billemont</name>
+			<email>maarten@lin-k.net</email>
+			<roles>
+				<role>development</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
 	</developers>
 	<scm>
 		<url>http://buildserver/svn/products/safe-online/trunk/</url>
@@ -71,6 +80,61 @@
 		<name>LIN.K N.V.</name>
 		<url>http://www.lin-k.net</url>
 	</organization>
+	<profiles>
+		<profile>
+			<id>env-dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<isGlobalOperator>true</isGlobalOperator>
+				<defaultCronExpression>
+					0 0/5 * * * ?
+				</defaultCronExpression>
+				<safe-online.data.source>
+					/DefaultDS
+				</safe-online.data.source>
+				<safe-online.dialect>
+					org.hibernate.dialect.HSQLDialect
+				</safe-online.dialect>
+				<safe-online.hibernate.hbm2ddl.auto>
+					create-drop
+				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.host.name>localhost</safe-online.host.name>
+				<safe-online.host.port>8080</safe-online.host.port>
+				<safe-online.host.port.ssl>8443</safe-online.host.port.ssl>
+				<debug.mode>true</debug.mode>
+			</properties>
+		</profile>
+		<profile>
+			<id>env-buildserver</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>buildserver</value>
+				</property>
+			</activation>
+			<properties>
+				<isGlobalOperator>true</isGlobalOperator>
+				<defaultCronExpression>
+					0 0 3 * * ?
+				</defaultCronExpression>
+				<safe-online.data.source>
+					/SafeOnlineDS
+				</safe-online.data.source>
+				<safe-online.dialect>
+					org.hibernate.dialect.MySQL5Dialect
+				</safe-online.dialect>
+				<safe-online.hibernate.hbm2ddl.auto>
+					update
+				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.host.name>buildserver</safe-online.host.name>
+				<safe-online.host.port>8080</safe-online.host.port>
+				<safe-online.host.port.ssl>8443</safe-online.host.port.ssl>
+				<debug.mode>false</debug.mode>
+			</properties>
+		</profile>
+	</profiles>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
