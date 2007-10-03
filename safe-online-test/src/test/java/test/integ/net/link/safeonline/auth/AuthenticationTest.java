@@ -236,7 +236,7 @@ public class AuthenticationTest {
 
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		Subject subject = IntegrationTestUtils.login("admin", "admin");
 
@@ -271,7 +271,7 @@ public class AuthenticationTest {
 
 		String ownerLogin = "login-" + UUID.randomUUID().toString();
 		String ownerPassword = "password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(ownerLogin, ownerPassword, null);
+		userRegistrationService.registerUser(ownerLogin, ownerPassword);
 
 		IntegrationTestUtils.login("admin", "admin");
 
@@ -287,7 +287,7 @@ public class AuthenticationTest {
 		String userLogin = "login-" + UUID.randomUUID().toString();
 		final String userPassword = "secret";
 
-		userRegistrationService.registerUser(userLogin, userPassword, null);
+		userRegistrationService.registerUser(userLogin, userPassword);
 
 		final String userName = "name-" + UUID.randomUUID().toString();
 
@@ -353,7 +353,7 @@ public class AuthenticationTest {
 
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		ApplicationService applicationService = getApplicationService(initialContext);
 
@@ -390,7 +390,7 @@ public class AuthenticationTest {
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		String ownerLogin = "owner-login-" + UUID.randomUUID().toString();
 		String ownerPassword = "owner-password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(ownerLogin, ownerPassword, null);
+		userRegistrationService.registerUser(ownerLogin, ownerPassword);
 
 		// operate: create application owner
 		IntegrationTestUtils.login("admin", "admin");
@@ -435,7 +435,7 @@ public class AuthenticationTest {
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: trigger JAAS on the core
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
@@ -464,7 +464,7 @@ public class AuthenticationTest {
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		IdentityService identityService = getIdentityService(initialContext);
 
@@ -503,7 +503,7 @@ public class AuthenticationTest {
 		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "password-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		IdentityService identityService = getIdentityService(initialContext);
 

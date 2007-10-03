@@ -110,7 +110,7 @@ public class AttributeWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "pwd-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: save name attribute
 		IntegrationTestUtils.login(login, password);
@@ -226,7 +226,7 @@ public class AttributeWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "pwd-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: register new attribute type
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
@@ -303,7 +303,7 @@ public class AttributeWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "pwd-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: register new multivalued attribute type
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
@@ -398,7 +398,7 @@ public class AttributeWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "pwd-" + UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: register new multivalued attribute type
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);

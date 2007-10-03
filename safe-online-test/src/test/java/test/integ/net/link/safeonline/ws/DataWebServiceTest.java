@@ -113,7 +113,7 @@ public class DataWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);
@@ -207,7 +207,7 @@ public class DataWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);
@@ -381,7 +381,7 @@ public class DataWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);
@@ -475,7 +475,7 @@ public class DataWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);
@@ -566,7 +566,7 @@ public class DataWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);
@@ -675,7 +675,7 @@ public class DataWebServiceTest {
 		// operate: register user
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
-		userRegistrationService.registerUser(login, password, null);
+		userRegistrationService.registerUser(login, password);
 
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);
