@@ -6,7 +6,7 @@
 	<persistence-unit name="SafeOnlineEntityManager">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<jta-data-source>
-			java:${safe-online.data.source}
+			java:/${safe-online.data.source}
 		</jta-data-source>
 		<properties>
 			<property name="hibernate.dialect"
