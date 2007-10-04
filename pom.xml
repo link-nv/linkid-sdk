@@ -175,7 +175,7 @@
 			</properties>
 			<modules>
 				<module>safe-online-base-distribution</module>
-				<module>safe-online-pilot-distribution</module>
+				<module>safe-online-demo-distribution</module>
 			</modules>
 		</profile>
 	</profiles>
