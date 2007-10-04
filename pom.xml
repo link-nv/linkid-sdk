@@ -109,6 +109,40 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>env-demo</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>demo</value>
+				</property>
+			</activation>
+			<properties>
+				<isGlobalOperator>true</isGlobalOperator>
+				<defaultCronExpression>
+					0 0/5 * * * ?
+				</defaultCronExpression>
+				<safe-online.data.source>
+					DefaultDS
+				</safe-online.data.source>
+				<safe-online.dialect>
+					org.hibernate.dialect.HSQLDialect
+				</safe-online.dialect>
+				<safe-online.hibernate.hbm2ddl.auto>
+					create-drop
+				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.host.name>localhost</safe-online.host.name>
+				<safe-online.host.port>8080</safe-online.host.port>
+				<safe-online.host.port.ssl>
+					8443
+				</safe-online.host.port.ssl>
+				<debug.mode>true</debug.mode>
+			</properties>
+			<modules>
+				<module>safe-online-base-distribution</module>
+				<module>safe-online-demo-distribution</module>
+			</modules>
+		</profile>
+		<profile>
 			<id>env-buildserver</id>
 			<activation>
 				<property>
