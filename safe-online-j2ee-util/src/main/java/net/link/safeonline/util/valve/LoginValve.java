@@ -62,7 +62,7 @@ public class LoginValve extends ValveBase {
 			LOG.debug("context info: " + context.getInfo());
 			LOG.debug("context type: " + context.getClass().getName());
 			Realm realm = context.getRealm();
-			if (null == realm) {
+			if (null != realm) {
 				LOG.debug("realm info: " + realm.getInfo());
 				LOG.debug("realm type: " + realm.getClass().getName());
 			}
