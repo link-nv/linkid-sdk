@@ -156,13 +156,13 @@
 					0 0 3 * * ?
 				</defaultCronExpression>
 				<safe-online.data.source>
-					SafeOnlineDS
+					DefaultDS
 				</safe-online.data.source>
 				<safe-online.dialect>
-					org.hibernate.dialect.MySQL5Dialect
+					org.hibernate.dialect.HSQLDialect
 				</safe-online.dialect>
 				<safe-online.hibernate.hbm2ddl.auto>
-					update
+					create-drop
 				</safe-online.hibernate.hbm2ddl.auto>
 				<safe-online.host.name>
 					buildserver
