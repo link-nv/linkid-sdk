@@ -102,7 +102,9 @@
 				</safe-online.hibernate.hbm2ddl.auto>
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>8080</safe-online.host.port>
-				<safe-online.host.port.ssl>8443</safe-online.host.port.ssl>
+				<safe-online.host.port.ssl>
+					8443
+				</safe-online.host.port.ssl>
 				<debug.mode>true</debug.mode>
 			</properties>
 		</profile>
@@ -128,9 +130,13 @@
 				<safe-online.hibernate.hbm2ddl.auto>
 					update
 				</safe-online.hibernate.hbm2ddl.auto>
-				<safe-online.host.name>buildserver</safe-online.host.name>
+				<safe-online.host.name>
+					buildserver
+				</safe-online.host.name>
 				<safe-online.host.port>8080</safe-online.host.port>
-				<safe-online.host.port.ssl>8443</safe-online.host.port.ssl>
+				<safe-online.host.port.ssl>
+					8443
+				</safe-online.host.port.ssl>
 				<debug.mode>false</debug.mode>
 			</properties>
 		</profile>

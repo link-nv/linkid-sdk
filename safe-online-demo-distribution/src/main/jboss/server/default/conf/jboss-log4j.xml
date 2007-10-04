@@ -41,6 +41,22 @@
 				value="%d{ABSOLUTE} %-5p [%c{1}] %m%n" />
 		</layout>
 	</appender>
+	
+	<appender name="SAFEONLINE"
+		class="org.jboss.logging.appender.FileAppender">
+		<param name="File"
+			value="${jboss.server.home.dir}/log/safe-online.log" />
+		<param name="Append" value="false" />
+
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%p [%c{1}] %m%n" />
+		</layout>
+	</appender>
+
+	<category name="net.link.safeonline">
+		<priority value="DEBUG" />
+		<appender-ref ref="SAFEONLINE" />
+	</category>
 
 	<!-- Limit the org.apache category to INFO as its DEBUG is verbose -->
 	<category name="org.apache">
@@ -71,22 +87,5 @@
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />
 	</root>
-
-	<appender name="SAFEONLINE"
-		class="org.jboss.logging.appender.FileAppender">
-		<param name="File"
-			value="${jboss.server.home.dir}/log/safe-online.log" />
-		<param name="Append" value="false" />
-
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%p [%c{1}] %m%n" />
-		</layout>
-	</appender>
-
-	<category name="net.link.safeonline">
-		<priority value="DEBUG" />
-		<appender-ref ref="SAFEONLINE" />
-	</category>
-
 
 </log4j:configuration>
