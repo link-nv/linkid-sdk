@@ -426,6 +426,7 @@
 		<module>safe-online-cli</module>
 		<module>safe-online-webapp-common</module>
 		<module>safe-online-idmapping-ws</module>
+		<module>safe-online-idmapping-ws-impl</module>
 	</modules>
 	<repositories>
 		<repository>
