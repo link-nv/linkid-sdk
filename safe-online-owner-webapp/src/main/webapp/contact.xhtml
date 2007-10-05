@@ -4,9 +4,13 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
-<ui:include src="/WEB-INF/incl/contact.xhtml">
-	<ui:param name="title" value="#{initParam['CommercialName']} Application Owner" />
+<ui:composition template="/WEB-INF/incl/contact.xhtml">
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.ownerTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:param name="loginComp" value="#{ownerLogin}" />
-</ui:include>
+</ui:composition>
 </body>
 </html>
