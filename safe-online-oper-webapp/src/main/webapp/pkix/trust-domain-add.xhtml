@@ -9,7 +9,11 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.operatorTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -18,7 +22,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>Add Trust Domain</h2>
+		<h2>#{msgs.operatorAddTrustDomain}</h2>
 
 		<h:form>
 			<f:facet name="aroundInvalidField">
@@ -37,12 +41,12 @@
 
 			<h:panelGrid columns="1">
 				<h:panelGroup>
-					<h:outputText value="Perform OCSP Check" />
+					<h:outputText value="#{msgs.operatorPerformOCSPCheck}" />
 					<h:selectBooleanCheckbox id="performOcspCheck"
 						value="#{newTrustDomain.performOcspCheck}" />
 				</h:panelGroup>
 				<h:panelGroup>
-					<h:outputText value="OCSP cache time-out (ms)" />
+					<h:outputText value="#{msgs.operatorOCSPCacheTimeout} (ms)" />
 					<h:inputText id="ocspCacheTimeOutMillis"
 						value="#{newTrustDomain.ocspCacheTimeOutMillis}" required="true" />
 				</h:panelGroup>

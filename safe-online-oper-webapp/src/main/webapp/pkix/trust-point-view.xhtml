@@ -8,7 +8,11 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.operatorTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -16,32 +20,32 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<h2>Trust Domain: #{selectedTrustDomain.name}</h2>
-		<h2>Trust Point: #{selectedTrustPoint.pk.subjectName}</h2>
+		<h2>#{msgs.operatorTrustDomain}: #{selectedTrustDomain.name}</h2>
+		<h2>#{msgs.operatorTrustPoint}: #{selectedTrustPoint.pk.subjectName}</h2>
 
 		<table>
 			<tr>
-				<th>Subject:</th>
+				<th>#{msgs.miscSubject}:</th>
 				<td>#{selectedTrustPoint.pk.subjectName}</td>
 			</tr>
 			<tr>
-				<th>Issuer:</th>
+				<th>#{msgs.miscIssuer}:</th>
 				<td>#{selectedTrustPoint.issuerName}</td>
 			</tr>
 			<tr>
-				<th>Version:</th>
+				<th>#{msgs.miscVersion}:</th>
 				<td>#{selectedTrustPoint.certificate.version}</td>
 			</tr>
 			<tr>
-				<th>Not Before:</th>
+				<th>#{msgs.miscNotBefore}:</th>
 				<td>#{selectedTrustPoint.certificate.notBefore}</td>
 			</tr>
 			<tr>
-				<th>Not After:</th>
+				<th>#{msgs.miscNotAfter}:</th>
 				<td>#{selectedTrustPoint.certificate.notAfter}</td>
 			</tr>
 			<tr>
-				<th>Serial Number:</th>
+				<th>#{msgs.miscSerialNumber}:</th>
 				<td>#{selectedTrustPoint.certificate.serialNumber}</td>
 			</tr>
 		</table>

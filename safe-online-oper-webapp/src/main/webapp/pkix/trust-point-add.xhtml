@@ -10,7 +10,11 @@
 	xmlns:tr="http://myfaces.apache.org/trinidad">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.operatorTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -20,7 +24,7 @@
 
 	<ui:define name="content">
 
-		<h2>Add Trust Point to Trust Domain #{selectedTrustDomain.name}</h2>
+		<h2>#{msgs.operatorAddTrustPointTo} #{selectedTrustDomain.name}</h2>
 
 		<h:form enctype="multipart/form-data">
 			<f:facet name="aroundInvalidField">

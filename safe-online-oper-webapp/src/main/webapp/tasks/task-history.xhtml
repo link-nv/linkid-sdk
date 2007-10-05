@@ -8,7 +8,11 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.operatorTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -17,7 +21,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>Task History: #{selectedTask.name}</h2>
+		<h2>#{msgs.operatorTaskHistory}: #{selectedTask.name}</h2>
 
 		<h:form>
 			<t:dataTable id="task-history-data" var="item"
@@ -26,19 +30,19 @@
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">Execution Date</f:facet>
+					<f:facet name="header">#{msgs.operatorTaskExecutionDate}</f:facet>
 					#{item.executionDate}
 				</h:column>
 				<h:column>
-					<f:facet name="header">Execution Time</f:facet>
+					<f:facet name="header">#{msgs.operatorTaskDuration}</f:facet>
 					#{item.executionTime}
 				</h:column>
 				<h:column>
-					<f:facet name="header">Message</f:facet>
+					<f:facet name="header">#{msgs.operatorTaskMessage}</f:facet>
 					#{item.message}
 				</h:column>
 				<h:column>
-					<f:facet name="header">Result</f:facet>
+					<f:facet name="header">#{msgs.operatorTaskResult}</f:facet>
 					<h:outputText value="#{item.result}"
 						style="background-color: green" rendered="#{item.result}" />
 					<h:outputText value="#{item.result}" style="background-color: red"

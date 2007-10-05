@@ -6,7 +6,11 @@
 	xmlns:rich="http://richfaces.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.operatorTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -26,7 +30,7 @@
 					#{item.name}
 				</h:column>
 				<h:column>
-					<f:facet name="header">Admin</f:facet>
+					<f:facet name="header">#{msgs.operatorAdmin}</f:facet>
 					#{item.admin.login}
 				</h:column>
 				<f:facet name="footer">

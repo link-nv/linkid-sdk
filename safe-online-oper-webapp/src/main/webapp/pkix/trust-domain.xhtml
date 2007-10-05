@@ -8,7 +8,11 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.operatorTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -16,24 +20,24 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<h2>Trust Domain: #{selectedTrustDomain.name}</h2>
+		<h2>#{msgs.operatorTrustDomain}: #{selectedTrustDomain.name}</h2>
 
 		<h:form>
 
-			<h2>Properties</h2>
+			<h2>#{msgs.miscProperties}</h2>
 
 			<table>
 				<tr>
-					<th>Perform OCSP check:</th>
+					<th>#{msgs.operatorPerformOCSPCheck}:</th>
 					<td>#{selectedTrustDomain.performOcspCheck}</td>
 				</tr>
 				<tr>
-					<th>OCSP cache time-out (ms):</th>
+					<th>#{msgs.operatorOCSPCacheTimeout} (ms):</th>
 					<td>#{selectedTrustDomain.ocspCacheTimeOutMillis}</td>
 				</tr>
 			</table>
 
-			<h2>Content</h2>
+			<h2>#{msgs.miscContent}</h2>
 
 			<t:tree2 value="#{trustPoint.treeModel}" var="node"
 				clientSideToggle="false">

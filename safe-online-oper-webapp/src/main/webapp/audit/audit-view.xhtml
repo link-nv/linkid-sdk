@@ -8,7 +8,11 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.operatorTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -16,10 +20,10 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>Audit context : #{auditContext.id}</h2>
+		<h2>#{msgs.operatorAuditContext} : #{auditContext.id}</h2>
 
 		<h:form>
-			<h3>Access Audit Records</h3>
+			<h3>#{msgs.operatorAccessAuditRecords}</h3>
 			<t:dataTable id="access-audit-data" var="item"
 				renderedIfEmpty="false" value="#{accessAuditRecordList}" rows="15"
 				preserveDataModel="false" styleClass="listingTable"
@@ -62,7 +66,7 @@
 		</h:form>
 
 		<h:form>
-			<h3>Security Audit Records</h3>
+			<h3>#{msgs.operatorSecurityAuditRecords}</h3>
 			<t:dataTable id="security-audit-data" var="item"
 				renderedIfEmpty="false" value="#{securityAuditRecordList}" rows="15"
 				preserveDataModel="false" styleClass="listingTable"
@@ -105,7 +109,7 @@
 		</h:form>
 
 		<h:form>
-			<h3>Resource Audit Records</h3>
+			<h3>#{msgs.operatorResourceAuditRecords}</h3>
 			<t:dataTable id="resource-audit-data" var="item"
 				renderedIfEmpty="false" value="#{resourceAuditRecordList}" rows="15"
 				preserveDataModel="false" styleClass="listingTable"
@@ -153,7 +157,7 @@
 		</h:form>
 
 		<h:form>
-			<h3>Audit Audit Records</h3>
+			<h3>#{msgs.operatorAuditAuditRecords}</h3>
 			<t:dataTable id="audit-audit-data" var="item" renderedIfEmpty="false"
 				value="#{auditAuditRecordList}" rows="15" preserveDataModel="false"
 				styleClass="listingTable"

@@ -9,7 +9,11 @@
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">SafeOnline Operator</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.operatorTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -29,11 +33,11 @@
 						<td>#{selectedApplication.applicationOwner.name}</td>
 					</tr>
 					<tr>
-						<th>Application Owner Admin:</th>
+						<th>#{msgs.operatorApplicationOwnerAdmin}:</th>
 						<td>#{selectedApplication.applicationOwner.admin.login}</td>
 					</tr>
 					<tr>
-						<th>User allowed to subscribe:</th>
+						<th>#{msgs.operatorUserAllowedToSubscribe}:</th>
 						<td>#{selectedApplication.allowUserSubscription}</td>
 					</tr>
 					<tr>
@@ -41,7 +45,7 @@
 						<td>#{selectedApplication.removable}</td>
 					</tr>
 					<tr>
-						<th>Number of subscriptions:</th>
+						<th>#{msgs.operatorNumberOfSubscriptions}:</th>
 						<td>#{numberOfSubscriptions}</td>
 					</tr>
 				</table>

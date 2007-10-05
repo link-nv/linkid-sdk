@@ -9,7 +9,11 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.operatorTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -17,7 +21,7 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h2>Audit</h2>
+		<h2>#{msgs.audit}</h2>
 
 		<h:form>
 			<h:panelGrid columns="2" border="0">
@@ -99,14 +103,14 @@
 		</h:form>
 
 		<h:form>
-			<h3>Last Audit contexts</h3>
+			<h3>#{msgs.operatorLastAuditContexts}</h3>
 			<t:dataTable id="audit-context-data" var="item"
 				value="#{auditContextList}" rows="15" preserveDataModel="false"
 				styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
-					<f:facet name="header">ID</f:facet>
+					<f:facet name="header">#{msgs.operatorAuditID}</f:facet>
 					<h:outputLabel value="#{item.id}" />
 				</h:column>
 

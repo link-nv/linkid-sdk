@@ -4,7 +4,11 @@
 	xmlns:h="http://java.sun.com/jsf/html">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Operator</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.operatorTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -15,46 +19,36 @@
 	<ui:define name="content">
 		<div class="subcolumn1-2">
 		<h3>#{msgs.applicationOwners}</h3>
-		<p>Manage the application owners that provide the user
-		applications. Click <a href="./owners/owners.seam">here</a> to manage
-		the application owners.</p>
+		<p>#{msgs.operatorApplicationOwnerInfo} <a
+			href="./owners/owners.seam">#{msgs.clickHere}</a></p>
 
 		<h3>#{msgs.applications}</h3>
-		<p>Manage the applications for which SafeOnline provides an
-		authentication service. Click <a
-			href="./applications/applications.seam">here</a> to manage
-		applications.</p>
+		<p>#{msgs.operatorApplicationInfo} <a
+			href="./applications/applications.seam">#{msgs.clickHere}</a></p>
 
-		<h3>PKIX</h3>
-		<p>Configure the trust domains and trust points used by the
-		SafeOnline PKIX-based components. Click <a href="./pkix/pkix.seam">here</a>
-		to edit the PKIX trust points.</p>
+		<h3>#{msgs.PKIX}</h3>
+		<p>#{msgs.operatorPKIXInfo} <a href="./pkix/pkix.seam">#{msgs.clickHere}</a></p>
 
-		<h3>Audit</h3>
-		<p>Browse all audit entries made by the SafeOnline core. Click <a
-			href="./audit/audit.seam">here</a> to view the audot entries.</p>
+		<h3>#{msgs.audit}</h3>
+		<p>#{msgs.operatorAuditInfo} <a href="./audit/audit.seam">#{msgs.clickHere}</a></p>
 
 		</div>
 
 		<div class="subcolumn2-2">
 		<h3>#{msgs.tasks}</h3>
-		<p>Configure the scheduling of the different tasks that need to
-		run as part of the SafeOnline service. Click <a
-			href="./tasks/tasks.seam">here</a> to configure the tasks.</p>
+		<p>#{msgs.operatorTaskInfo} <a href="./tasks/tasks.seam">#{msgs.clickHere}</a></p>
 
 		<h3>#{msgs.attributes}</h3>
-		<p>Manage the attribute types used by the SafeOnline system. Click
-		<a href="./attributes/attributes.seam">here</a> to manage the
-		attribute types.</p>
+		<p>#{msgs.operatorAttributeInfo} <a
+			href="./attributes/attributes.seam">#{msgs.clickHere}</a></p>
 
 		<h3>#{msgs.configuration}</h3>
-		<p>Manage configuration options for the SafeOnline system. Click <a
-			href="./configuration.seam">here</a> to manage the configuration.</p>
+		<p>#{msgs.operatorConfigurationInfo} <a
+			href="./configuration.seam">#{msgs.clickHere}</a></p>
 
 		<h3>#{msgs.authorization}</h3>
-		<p>Manage the authorization within the SafeOnline system. Click <a
-			href="./authorization/main.seam">here</a> to manage the
-		authorization.</p>
+		<p>#{msgs.operatorAuthorizationInfo} <a
+			href="./authorization/main.seam">#{msgs.clickHere}</a></p>
 		</div>
 	</ui:define>
 
