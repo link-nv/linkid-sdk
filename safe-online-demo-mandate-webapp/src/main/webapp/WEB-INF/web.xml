@@ -83,7 +83,7 @@
 
 	<context-param>
 		<param-name>WsHostPort</param-name>
-		<param-value>${safe-online.host.port}</param-value>
+		<param-value>${safe-online.host.port.ssl}</param-value>
 	</context-param>
 
 	<filter>
@@ -164,7 +164,7 @@
 		</init-param>
 		<init-param>
 			<param-name>WsHostPort</param-name>
-			<param-value>${safe-online.host.port}</param-value>
+			<param-value>${safe-online.host.port.ssl}</param-value>
 		</init-param>
 	</servlet>
 
