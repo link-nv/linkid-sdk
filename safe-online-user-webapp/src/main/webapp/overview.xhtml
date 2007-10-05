@@ -14,32 +14,24 @@
 	</ui:define>
 	<ui:define name="content">
 		<div class="subcolumn1-2">
-		<h3>Your profile</h3>
-		<p>Manage the details of your identity. This profile will be
-		shared by all applications to which you are subscribed, but you
-		control what details are exposed. <a href="./profile/profile.seam">Click
-		here</a> to edit your profile.</p>
+		<h3>#{msgs.userYourProfile}</h3>
+		<p>#{msgs.userYourProfileInfo} <a href="./profile/profile.seam">#{msgs.clickHere}</a></p>
 
-		<h3>Your applications</h3>
-		<p>Search for applications and decide which ones you want to use.
-		Click <a href="./applications.seam">here</a> to search, subscribe to
-		or unsubscribe from applications.</p>
+		<h3>#{msgs.userYourApplications}</h3>
+		<p>#{msgs.userYourApplicationsInfo} <a href="./applications.seam">#{msgs.clickHere}</a></p>
 
 		</div>
 		<div class="subcolumn2-2">
-		<h3>Your devices</h3>
+		<h3>#{msgs.userYourDevices}</h3>
 
-		<p>Configure your new and existing devices so you can use them to
-		authenticate, sign and pay inside your applications. Click <a
-			href="./devices.seam">here</a> to edit your devices.</p>
+		<p>#{msgs.userYourDevicesInfo} <a
+			href="./devices.seam">#{msgs.clickHere}</a></p>
 
-		<h3>Your history</h3>
-		<p>Click <a href="./history.seam">here</a> to search and view all
-		events about your identity.</p>
+		<h3>#{msgs.userYourHistory}</h3>
+		<p>#{msgs.userYourHistoryInfo} <a href="./history.seam">#{msgs.clickHere}</a></p>
 
 		<h3>#{msgs.actions}</h3>
-		<p>Click <a href="./actions.seam">here</a> to perform account
-		actions.</p>
+		<p>#{msgs.userActionsInfo} <a href="./actions.seam">#{msgs.clickHere}</a></p>
 		</div>
 	</ui:define>
 	<ui:define name="sidebar">

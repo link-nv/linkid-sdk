@@ -6,11 +6,10 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="content">
-		<h1>Help !</h1>
-		<p>Your request was logged into the system, please keep note of
-		reference <b>id = <h:outputLabel value="#{helpdesk.id}" /></b>.</p>
+		<h1>#{msgs.help}</h1>
+		<p>#{msgs.helpInfo} <b>id = <h:outputLabel value="#{helpdesk.id}" /></b>.</p>
 
-		<p>For immediate assistance, contact :</p>
+		<p>#{msgs.helpContact} :</p>
 
 		<h:panelGrid columns="2">
 			<h:outputText value="#{msgs.phone}" />
@@ -20,8 +19,7 @@
 		</h:panelGrid>
 
 		<p><a
-			href="#{facesContext.externalContext.requestContextPath}/main.seam">Click
-		here to visit the main page.</a></p>
+			href="#{facesContext.externalContext.requestContextPath}/main.seam">#{msgs.helpLinkToMain}</a></p>
 	</ui:define>
 </ui:composition>
 </body>

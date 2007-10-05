@@ -6,12 +6,10 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="content">
-		<h1>Timeout</h1>
-		<p>A timeout event occurred. Please restart your web application
-		session.</p>
+		<h1>#{msgs.timeout}</h1>
+		<p>#{msgs.timoutInfo}</p>
 		<p><a
-			href="#{facesContext.externalContext.requestContextPath}/main.seam">Click
-		here to visit the main page.</a></p>
+			href="#{facesContext.externalContext.requestContextPath}/main.seam">#{msgs.timeoutLinkToMain}</a></p>
 	</ui:define>
 </ui:composition>
 </body>

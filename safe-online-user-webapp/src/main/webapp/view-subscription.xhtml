@@ -32,7 +32,8 @@
 		<p><h:outputText
 			value="#{selectedSubscription.application.description}"
 			escape="false" /></p>
-		<p>Owner: #{selectedSubscription.subscriptionOwnerType}</p>
+		<p>#{msgs.userOwner}:
+		#{selectedSubscription.subscriptionOwnerType}</p>
 
 		<h2>#{msgs.confirmedIdentity}</h2>
 
