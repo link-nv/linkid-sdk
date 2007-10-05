@@ -7,7 +7,11 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Authentication</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.authentication}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
@@ -16,10 +20,9 @@
 	<ui:define name="content">
 		<div class="infobox"><ui:include
 			src="/WEB-INF/incl/appinfo.xhtml" /></div>
-		<h2>Identity Rejection</h2>
+		<h2>#{msgs.identityRejection}</h2>
 		<div>
-		<p>You did not agree with the usage of the attributes required by
-		the application.</p>
+		<p>#{msgs.identityRejectionInfo}</p>
 
 		</div>
 	</ui:define>

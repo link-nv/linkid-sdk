@@ -6,7 +6,11 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">#{initParam['CommercialName']} Authentication</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.authentication}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
@@ -16,7 +20,7 @@
 		<div class="infobox"><ui:include
 			src="/WEB-INF/incl/appinfo.xhtml" /></div>
 		<div>
-		<h2>Register a new device:</h2>
+		<h2>#{msgs.registerANewDevice}:</h2>
 		<h3>#{msgs.login}: #{username}</h3>
 		<p>#{msgs.selectDevice}:</p>
 

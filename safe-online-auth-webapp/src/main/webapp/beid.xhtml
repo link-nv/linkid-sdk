@@ -7,7 +7,11 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Authentication</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.authentication}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
@@ -16,7 +20,7 @@
 	<ui:define name="content">
 		<div class="infobox"><ui:include
 			src="/WEB-INF/incl/appinfo.xhtml" /></div>
-		<h2>BeID authentication</h2>
+		<h2>#{msgs.authenticateBeId}</h2>
 		<div><applet name="AuthenticationApplet"
 			code="net.link.safeonline.auth.AuthenticationApplet.class"
 			archive="safe-online-auth-applet-package.jar" width="450"
@@ -33,7 +37,7 @@
 			<p><h:commandLink value="#{msgs.helpaction}" action="help"
 				immediate="true" styleClass="help" /></p>
 		</h:form>
-		<p><a href="./all-devices.seam">Try another device</a></p>
+		<p><a href="./all-devices.seam">#{msgs.tryAnotherDevice}</a></p>
 		</div>
 	</ui:define>
 </ui:composition>

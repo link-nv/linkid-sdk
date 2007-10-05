@@ -7,7 +7,11 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Authentication</ui:define>
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.authentication}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
 
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
@@ -25,7 +29,7 @@
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
-			<f:facet name="afterInvalidField">Enter a value.</f:facet>
+			<f:facet name="afterInvalidField">#{msgs.enterAValue}</f:facet>
 
 			<h:dataTable var="item" value="#{missingAttributeList}"
 				preserveDataModel="false" styleClass="listingTable"
