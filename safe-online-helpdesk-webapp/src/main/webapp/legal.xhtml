@@ -5,7 +5,8 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:include src="/WEB-INF/incl/legal.xhtml">
-	<ui:param name="title" value="#{initParam['CommercialName']} Helpdesk" />
+	<ui:param name="title"
+		value="#{initParam['CommercialName']} #{msgs.helpdesk}" />
 	<ui:param name="loginComp" value="#{helpLogin}" />
 </ui:include>
 </body>

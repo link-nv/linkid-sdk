@@ -8,7 +8,7 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Helpdesk</ui:define>
+	<ui:define name="title">#{initParam['CommercialName']} #{msgs.helpdesk}</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -16,7 +16,9 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>Helpdesk : #{selectedUser}'s logs</h2>
+		<h2>#{msgs.helpdesk} : <h:outputFormat value="#{msgs.userLog}">
+			<f:param value="#{selectedUser}" />
+		</h:outputFormat></h2>
 
 		<h:form>
 			<t:dataTable id="helpdesk-user-log-data" var="item"

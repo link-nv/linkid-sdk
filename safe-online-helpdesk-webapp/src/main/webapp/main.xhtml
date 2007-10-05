@@ -5,17 +5,16 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Helpdesk</ui:define>
+	<ui:define name="title">#{initParam['CommercialName']} #{msgs.helpdesk}</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<p>#{initParam['CommercialName']} is a secure, online, centralised and user-centric
-		identity platform. It allows you to authenticate to your favourite
-		applications, sign transactions, pay and keep your information
-		synchronised. Using #{initParam['CommercialName']} is free so register today!</p>
+		<p><h:outputFormat value="#{msgs.introMessage}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat></p>
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">

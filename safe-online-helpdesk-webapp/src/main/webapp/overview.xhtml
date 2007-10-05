@@ -4,7 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">#{initParam['CommercialName']} Helpdesk</ui:define>
+	<ui:define name="title">#{initParam['CommercialName']} #{msgs.helpdesk}</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
@@ -14,11 +14,9 @@
 	<ui:define name="content">
 		<div class="subcolumn1-2">
 		<h3>#{msgs.helpdeskLookupLog}</h3>
-		<p>Lookup generated helpdesk error logs. Search by context ID.
-		Click <a href="./log.seam">here</a>.</p>
+		<p>#{msgs.helpdeskLookupLogInfo} <a href="./log.seam">#{msgs.clickHere}</a>.</p>
 		<h3>#{msgs.helpdeskLookupUser}</h3>
-		<p>Lookup generated helpdesk error logs. Search by user. Click <a
-			href="./user.seam">here</a>.</p>
+		<p>#{msgs.helpdeskLookupUserInfo} <a href="./user.seam">#{msgs.clickHere}</a>.</p>
 		</div>
 	</ui:define>
 	<ui:define name="sidebar">
