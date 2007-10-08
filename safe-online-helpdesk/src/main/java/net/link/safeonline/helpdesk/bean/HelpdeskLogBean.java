@@ -245,6 +245,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		this.searchUserName = searchUserName;
 	}
 
+	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public List<String> autocomplete(Object event) {
 		String idString = event.toString();
 		List<String> idList = new LinkedList<String>();
@@ -259,6 +260,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		return idList;
 	}
 
+	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
 	public List<String> autocompleteUser(Object event) {
 		String userString = event.toString();
 		List<String> userList = new LinkedList<String>();

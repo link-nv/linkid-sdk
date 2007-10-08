@@ -140,6 +140,7 @@ public class TrustDomainBean implements TrustDomain {
 	}
 
 	@Factory
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public TrustDomainEntity getNewTrustDomain() {
 		return new TrustDomainEntity();
 	}

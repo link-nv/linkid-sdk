@@ -78,6 +78,7 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 		this.name = name;
 	}
 
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String add() {
 		LOG.debug("add");
 		try {

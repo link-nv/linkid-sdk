@@ -138,6 +138,7 @@ public class IdentityBean implements Identity {
 		return "removed";
 	}
 
+	@RolesAllowed(UserConstants.USER_ROLE)
 	public String getUsername() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
