@@ -29,7 +29,7 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<h:panelGrid columns="4" border="0" style="border: 1px solid black;">
+			<h:panelGrid columns="5" border="0" style="border: 1px solid black;">
 				<f:verbatim>#{msgs.lookupHelpUser}</f:verbatim>
 				<s:decorate>
 					<h:inputText value="#{helpdeskLog.searchUserName}"
@@ -46,7 +46,7 @@
 
 				<h:commandButton action="#{helpdeskLog.searchUser}" id="searchUser"
 					value="#{msgs.searchAction}" />
-				<t:message for="searchUser" styleClass="error" />
+				<t:message for="searchUserName" styleClass="error" />
 			</h:panelGrid>
 		</h:form>
 

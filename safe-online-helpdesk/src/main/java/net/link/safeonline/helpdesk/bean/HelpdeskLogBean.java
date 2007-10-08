@@ -284,14 +284,14 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		LOG.debug("validateId: " + id);
 		this.helpdeskContextList = this.helpdeskService.listContexts();
 		for (HelpdeskContextEntity helpdeskContext : this.helpdeskContextList) {
-			Long contextId = Long.getLong(helpdeskContext.getId().toString());
+			Long contextId = helpdeskContext.getId();
 			if (contextId.equals(id))
 				return;
 		}
+		LOG.debug("id " + id + " not found");
 		((UIInput) toValidate).setValid(false);
 		FacesMessage message = new FacesMessage("Unknown context id");
 		context.addMessage(toValidate.getClientId(context), message);
-
 	}
 
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)

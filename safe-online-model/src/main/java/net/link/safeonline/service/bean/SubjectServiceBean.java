@@ -7,6 +7,7 @@
 
 package net.link.safeonline.service.bean;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -110,6 +111,12 @@ public class SubjectServiceBean implements SubjectService {
 	}
 
 	public List<String> listUsers() {
-		return this.subjectDAO.listUsers();
+		List<String> userList = new LinkedList<String>();
+		List<String> userIdList = this.subjectDAO.listUsers();
+		for (String userId : userIdList) {
+			String user = this.getSubjectLogin(userId);
+			userList.add(user);
+		}
+		return userList;
 	}
 }

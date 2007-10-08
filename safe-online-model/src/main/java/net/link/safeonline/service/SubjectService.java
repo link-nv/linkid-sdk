@@ -84,7 +84,7 @@ public interface SubjectService {
 	String getSubjectLogin(String userId);
 
 	/**
-	 * Returns list of users.
+	 * Returns list of users' login names.
 	 * 
 	 * @return
 	 */
