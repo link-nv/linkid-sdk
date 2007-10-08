@@ -7,7 +7,6 @@
 
 package net.link.safeonline.demo.payment.bean;
 
-import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.demo.payment.PaymentLogon;
@@ -17,7 +16,6 @@ import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.ejb.cache.simple.CacheConfig;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.Seam;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -31,7 +29,8 @@ import org.jboss.seam.log.Log;
 @Scope(ScopeType.SESSION)
 @CacheConfig(idleTimeoutSeconds = (5 + 1) * 60)
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/PaymentLogonBean/local")
-public class PaymentLogonBean implements PaymentLogon {
+public class PaymentLogonBean extends AbstractPaymentDataClientBean implements
+		PaymentLogon {
 
 	public static final String APPLICATION_NAME = "safe-online-demo-payment";
 
@@ -58,9 +57,8 @@ public class PaymentLogonBean implements PaymentLogon {
 		return "logout-success";
 	}
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		log.debug("destroy: #0", this);
+	public String getUsername() {
+		String userId = (String) this.sessionContext.get("username");
+		return getUsername(userId);
 	}
 }

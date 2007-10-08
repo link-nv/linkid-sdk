@@ -65,19 +65,19 @@ public class AttributeDAOBean implements AttributeDAO {
 	}
 
 	public AttributeEntity findAttribute(String attributeTypeName,
-			String subjectLogin) {
+			String subjectId) {
 		LOG.debug("find attribute for type  " + attributeTypeName
-				+ " and subject " + subjectLogin);
+				+ " and subject " + subjectId);
 		AttributeEntity attribute = this.entityManager.find(
 				AttributeEntity.class, new AttributePK(attributeTypeName,
-						subjectLogin));
+						subjectId));
 		return attribute;
 	}
 
 	public AttributeEntity findAttribute(SubjectEntity subject,
 			AttributeTypeEntity attributeType, long index) {
 		LOG.debug("find attribute for type  " + attributeType.getName()
-				+ " and subject " + subject.getLogin());
+				+ " and subject " + subject.getUserId());
 		AttributeEntity attribute = this.entityManager.find(
 				AttributeEntity.class, new AttributePK(attributeType, subject,
 						index));
@@ -87,7 +87,7 @@ public class AttributeDAOBean implements AttributeDAO {
 	@SuppressWarnings("unchecked")
 	public Map<AttributeTypeEntity, List<AttributeEntity>> listAttributes(
 			SubjectEntity subject) {
-		LOG.debug("get attributes for subject " + subject.getLogin());
+		LOG.debug("get attributes for subject " + subject.getUserId());
 		List<AttributeEntity> attributes = this.queryObject
 				.listAttributes(subject);
 		Map<AttributeTypeEntity, List<AttributeEntity>> result = new HashMap<AttributeTypeEntity, List<AttributeEntity>>();
@@ -122,9 +122,8 @@ public class AttributeDAOBean implements AttributeDAO {
 	}
 
 	public AttributeEntity getAttribute(String attributeTypeName,
-			String subjectLogin) throws AttributeNotFoundException {
-		AttributeEntity attribute = findAttribute(attributeTypeName,
-				subjectLogin);
+			String subjectId) throws AttributeNotFoundException {
+		AttributeEntity attribute = findAttribute(attributeTypeName, subjectId);
 		if (null == attribute) {
 			throw new AttributeNotFoundException();
 		}
@@ -172,7 +171,7 @@ public class AttributeDAOBean implements AttributeDAO {
 
 	public List<AttributeEntity> listAttributes(SubjectEntity subject,
 			AttributeTypeEntity attributeType) {
-		LOG.debug("listAttributes for " + subject.getLogin() + " of type "
+		LOG.debug("listAttributes for " + subject.getUserId() + " of type "
 				+ attributeType.getName());
 		List<AttributeEntity> attributes = this.queryObject.listAttributes(
 				subject, attributeType);

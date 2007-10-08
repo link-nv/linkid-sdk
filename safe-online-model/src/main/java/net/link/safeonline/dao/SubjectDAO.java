@@ -23,25 +23,25 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface SubjectDAO {
 	/**
-	 * Finds the subject for a given login. Returns <code>null</code> if the
+	 * Finds the subject for a given user ID. Returns <code>null</code> if the
 	 * entity could not be found.
 	 * 
-	 * @param login
+	 * @param userId
 	 * @return the subject or <code>null</code> if the subject was not found.
 	 */
-	SubjectEntity findSubject(String login);
+	SubjectEntity findSubject(String userId);
 
-	SubjectEntity addSubject(String login);
+	SubjectEntity addSubject(String userId);
 
 	/**
-	 * Gives back the subject for the given login.
+	 * Gives back the subject for the given userId.
 	 * 
-	 * @param login
-	 *            the login of the subject.
+	 * @param userId
+	 *            the userId of the subject.
 	 * @return the subject.
 	 * @exception SubjectNotFoundException
 	 */
-	SubjectEntity getSubject(String login) throws SubjectNotFoundException;
+	SubjectEntity getSubject(String userId) throws SubjectNotFoundException;
 
 	/**
 	 * Removes the given attached subject from the database.

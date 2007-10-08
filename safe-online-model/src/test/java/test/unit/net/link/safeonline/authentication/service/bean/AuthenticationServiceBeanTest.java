@@ -29,7 +29,6 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
-import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -45,6 +44,7 @@ import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.pkix.model.PkiProvider;
 import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -54,7 +54,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 	private AuthenticationServiceBean testedInstance;
 
-	private SubjectDAO mockSubjectDAO;
+	private SubjectService mockSubjectService;
 
 	private ApplicationDAO mockApplicationDAO;
 
@@ -84,8 +84,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		this.testedInstance = new AuthenticationServiceBean();
 
-		this.mockSubjectDAO = createMock(SubjectDAO.class);
-		EJBTestUtils.inject(this.testedInstance, this.mockSubjectDAO);
+		this.mockSubjectService = createMock(SubjectService.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockSubjectService);
 
 		this.mockApplicationDAO = createMock(ApplicationDAO.class);
 		EJBTestUtils.inject(this.testedInstance, this.mockApplicationDAO);
@@ -120,7 +120,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		EJBTestUtils.init(this.testedInstance);
 
-		this.mockObjects = new Object[] { this.mockSubjectDAO,
+		this.mockObjects = new Object[] { this.mockSubjectService,
 				this.mockApplicationDAO, this.mockSubscriptionDAO,
 				this.mockHistoryDAO, this.mockPasswordManager,
 				this.mockPkiProviderManager, this.mockPkiValidator,
@@ -136,7 +136,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		// stubs
 		SubjectEntity subject = new SubjectEntity(login);
-		expect(this.mockSubjectDAO.getSubject(login)).andStubReturn(subject);
+		expect(this.mockSubjectService.getSubjectFromUserName(login))
+				.andStubReturn(subject);
 
 		SubjectEntity adminSubject = new SubjectEntity("admin-login");
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
@@ -183,7 +184,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 
 		// stubs
 		SubjectEntity subject = new SubjectEntity(login);
-		expect(this.mockSubjectDAO.getSubject(login)).andStubReturn(subject);
+		expect(this.mockSubjectService.getSubjectFromUserName(login))
+				.andStubReturn(subject);
 
 		expect(
 				this.mockPasswordManager.validatePassword(subject,
@@ -214,8 +216,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		String password = "test-password";
 
 		// stubs
-		expect(this.mockSubjectDAO.getSubject(wrongLogin)).andStubThrow(
-				new SubjectNotFoundException());
+		expect(this.mockSubjectService.getSubjectFromUserName(wrongLogin))
+				.andStubThrow(new SubjectNotFoundException());
 
 		// prepare
 		replay(this.mockObjects);

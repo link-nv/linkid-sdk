@@ -15,7 +15,7 @@
 		<f:verbatim>&#160;</f:verbatim>
 	</c:when>
 	<c:otherwise>
-		<p>Welcome #{userPrincipal.name}.</p>
+		<p>Welcome #{mandateLogon.username}.</p>
 		<h:form>
 			<h:commandButton action="#{mandateLogon.logout}" id="logout"
 				value="Logout">

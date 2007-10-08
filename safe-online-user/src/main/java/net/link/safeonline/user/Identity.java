@@ -23,6 +23,11 @@ public interface Identity {
 	void attributeListFactory();
 
 	/*
+	 * Accessors
+	 */
+	String getUsername();
+
+	/*
 	 * Actions.
 	 */
 	String edit();

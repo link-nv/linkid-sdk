@@ -10,9 +10,7 @@ package net.link.safeonline.demo.ticket;
 import javax.ejb.Local;
 
 @Local
-public interface TicketOverview {
-
-	void destroyCallback();
+public interface TicketOverview extends AbstractTicketDataClient {
 
 	void ticketListFactory();
 }

@@ -54,7 +54,7 @@ public class CredentialManagerBean implements CredentialManager {
 			byte[] identityStatementData) throws TrustDomainNotFoundException,
 			PermissionDeniedException, ArgumentIntegrityException,
 			AttributeTypeNotFoundException {
-		String login = subject.getLogin();
+		String login = subject.getUserId();
 
 		/*
 		 * First check integrity of the received identity statement.

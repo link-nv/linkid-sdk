@@ -99,6 +99,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				"dieter", DEMO_MANDATE_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"mario", DEMO_MANDATE_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"wvdhaute", DEMO_MANDATE_APPLICATION_NAME));
 
 		/*
 		 * Register mandate attribute type
@@ -132,6 +134,16 @@ public class DemoStartableBean extends AbstractInitBean {
 				mandateAttributeType, "nl", "Mandaat", null));
 
 		/*
+		 * Application Identities
+		 */
+		this.identities
+				.add(new Identity(
+						DEMO_MANDATE_APPLICATION_NAME,
+						new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+								DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true,
+								false) }));
+
+		/*
 		 * Register admin
 		 */
 		String mandateAdmin = "mandate-admin";
@@ -161,7 +173,10 @@ public class DemoStartableBean extends AbstractInitBean {
 								BeIdConstants.NRN_ATTRIBUTE, true, false),
 						new IdentityAttributeTypeDO(
 								DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
-								false, false) }));
+								false, false),
+						new IdentityAttributeTypeDO(
+								DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true,
+								false) }));
 	}
 
 	private void configPaymentDemo() {
@@ -201,6 +216,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				"dieter", DEMO_PAYMENT_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"mario", DEMO_PAYMENT_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"wvdhaute", DEMO_PAYMENT_APPLICATION_NAME));
 
 		/*
 		 * Attribute Types.
@@ -228,6 +245,9 @@ public class DemoStartableBean extends AbstractInitBean {
 								false, false),
 						new IdentityAttributeTypeDO(
 								DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, true,
+								false),
+						new IdentityAttributeTypeDO(
+								DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true,
 								false) }));
 
 		/*
@@ -274,6 +294,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				"dieter", DEMO_PRESCRIPTION_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"mario", DEMO_PRESCRIPTION_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"wvdhaute", DEMO_PRESCRIPTION_APPLICATION_NAME));
 
 		/*
 		 * Attribute Types.
@@ -308,7 +330,10 @@ public class DemoStartableBean extends AbstractInitBean {
 										false, false),
 								new IdentityAttributeTypeDO(
 										DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
-										false, false) }));
+										false, false),
+								new IdentityAttributeTypeDO(
+										DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
+										true, false) }));
 
 		/*
 		 * Also make sure the admin is marked as such.
@@ -344,6 +369,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				"dieter", DEMO_LAWYER_APPLICATION_NAME));
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"mario", DEMO_LAWYER_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"wvdhaute", DEMO_LAWYER_APPLICATION_NAME));
 
 		configLawyerDemoAttribute(
 				DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
@@ -369,7 +396,10 @@ public class DemoStartableBean extends AbstractInitBean {
 								false),
 						new IdentityAttributeTypeDO(
 								DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
-								false, false) }));
+								false, false),
+						new IdentityAttributeTypeDO(
+								DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true,
+								false) }));
 
 		/*
 		 * Also make sure the baradmin is marked as such.
@@ -420,6 +450,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.authorizedUsers.put("fcorneli", "secret");
 		this.authorizedUsers.put("dieter", "secret");
 		this.authorizedUsers.put("mario", "secret");
+		this.authorizedUsers.put("wvdhaute", "secret");
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"fcorneli", DEMO_APPLICATION_NAME));
@@ -450,6 +481,17 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "mario",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"wvdhaute", DEMO_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"wvdhaute", DEMO_TICKET_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
+				"wvdhaute", DEMO_PAYMENT_APPLICATION_NAME));
+		this.subscriptions.add(new Subscription(
+				SubscriptionOwnerType.APPLICATION, "wvdhaute",
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
+
 	}
 
 	public int getPriority() {

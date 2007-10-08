@@ -90,7 +90,10 @@ public class AuditSearchBean implements AuditSearch {
 
 	@Out(required = false, scope = ScopeType.SESSION)
 	@In(required = false)
-	Date ageLimit;
+	private Date ageLimit;
+
+	@Out(value = "principal", required = false, scope = ScopeType.SESSION)
+	private String auditPrincipal;
 
 	private void setMode(SearchMode searchMode) {
 		this.searchMode = searchMode;

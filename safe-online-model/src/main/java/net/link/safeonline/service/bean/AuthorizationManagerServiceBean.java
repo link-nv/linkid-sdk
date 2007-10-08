@@ -24,13 +24,13 @@ import net.link.safeonline.authentication.exception.RoleNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.service.AuthorizationManagerService;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
 
 import org.apache.commons.logging.Log;
@@ -55,7 +55,7 @@ public class AuthorizationManagerServiceBean implements
 			.getLog(AuthorizationManagerServiceBean.class);
 
 	@EJB
-	private SubjectDAO subjectDAO;
+	private SubjectService subjectService;
 
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
@@ -80,7 +80,8 @@ public class AuthorizationManagerServiceBean implements
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public Set<String> getRoles(String login) throws SubjectNotFoundException {
 		LOG.debug("getRoles for subject: " + login);
-		SubjectEntity subject = this.subjectDAO.getSubject(login);
+		SubjectEntity subject = this.subjectService
+				.getSubjectFromUserName(login);
 		Set<String> roles = new HashSet<String>();
 		addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject,
 				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
@@ -107,7 +108,8 @@ public class AuthorizationManagerServiceBean implements
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void setRoles(String login, Set<String> roles)
 			throws SubjectNotFoundException, RoleNotFoundException {
-		SubjectEntity subject = this.subjectDAO.getSubject(login);
+		SubjectEntity subject = this.subjectService
+				.getSubjectFromUserName(login);
 		LOG.debug("set roles for subject: " + login);
 		for (String role : roles) {
 			setRole(subject, role);
@@ -178,7 +180,7 @@ public class AuthorizationManagerServiceBean implements
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<String> getUsers() {
-		List<String> users = this.subjectDAO.listUsers();
+		List<String> users = this.subjectService.listUsers();
 		return users;
 	}
 }

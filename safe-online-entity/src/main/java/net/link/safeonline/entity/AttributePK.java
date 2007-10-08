@@ -52,7 +52,7 @@ public class AttributePK implements Serializable {
 
 	public AttributePK(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long attributeIndex) {
-		this(attributeType.getName(), subject.getLogin(), attributeIndex);
+		this(attributeType.getName(), subject.getUserId(), attributeIndex);
 	}
 
 	public String getAttributeType() {

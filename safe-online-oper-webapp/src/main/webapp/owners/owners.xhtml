@@ -27,11 +27,11 @@
 				rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
 					<f:facet name="header">#{msgs.applicationOwner}</f:facet>
-					#{item.name}
+					#{item.entity.name}
 				</h:column>
 				<h:column>
 					<f:facet name="header">#{msgs.operatorAdmin}</f:facet>
-					#{item.admin.login}
+					#{item.adminName}
 				</h:column>
 				<f:facet name="footer">
 					<rich:datascroller for="app-data" />

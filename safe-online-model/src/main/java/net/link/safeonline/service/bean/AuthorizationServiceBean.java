@@ -19,13 +19,13 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.service.AuthorizationService;
 import net.link.safeonline.service.AuthorizationServiceRemote;
+import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +46,7 @@ public class AuthorizationServiceBean implements AuthorizationService,
 			.getLog(AuthorizationServiceBean.class);
 
 	@EJB
-	private SubjectDAO subjectDAO;
+	private SubjectService subjectService;
 
 	@EJB
 	private SubscriptionDAO subscriptionDAO;
@@ -64,11 +64,11 @@ public class AuthorizationServiceBean implements AuthorizationService,
 
 		SubjectEntity subject;
 		try {
-			subject = this.subjectDAO.getSubject(login);
+			subject = this.subjectService.getSubject(login);
 		} catch (SubjectNotFoundException e) {
 			LOG.error("entity not found: " + login);
 			/*
-			 * In case the subjet was not found we don't assign the user any
+			 * In case the subject was not found we don't assign the user any
 			 * roles.
 			 */
 			return roles;

@@ -19,10 +19,10 @@ import net.link.safeonline.authentication.service.CredentialManager;
 import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
-import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.UserRegistrationManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +43,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 			.getLog(UserRegistrationServiceBean.class);
 
 	@EJB
-	private SubjectDAO subjectDAO;
+	private SubjectService subjectService;
 
 	@EJB
 	private UserRegistrationManager userRegistrationManager;
@@ -55,7 +55,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	private PasswordManager passwordController;
 
 	public void registerUser(String login, String password)
-			throws ExistingUserException {
+			throws ExistingUserException, AttributeTypeNotFoundException {
 		SubjectEntity newSubject = this.userRegistrationManager
 				.registerUser(login);
 		try {
@@ -66,7 +66,8 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	}
 
 	public boolean isLoginFree(String login) {
-		SubjectEntity existingSubject = this.subjectDAO.findSubject(login);
+		SubjectEntity existingSubject;
+		existingSubject = this.subjectService.findSubject(login);
 		return existingSubject == null;
 	}
 

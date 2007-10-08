@@ -7,12 +7,15 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.security.NoSuchAlgorithmException;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
@@ -35,9 +38,13 @@ public interface UserRegistrationService {
 	 * @param password
 	 * @param name
 	 * @throws ExistingUserException
+	 * @throws NoSuchAlgorithmException
+	 * @throws SubjectIdNotUniqueException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws SubjectNotFoundException
 	 */
 	void registerUser(String login, String password)
-			throws ExistingUserException;
+			throws ExistingUserException, AttributeTypeNotFoundException;
 
 	/**
 	 * Registers a new user using the identity statement.
@@ -49,6 +56,9 @@ public interface UserRegistrationService {
 	 * @throws ArgumentIntegrityException
 	 * @throws PermissionDeniedException
 	 * @throws TrustDomainNotFoundException
+	 * @throws NoSuchAlgorithmException
+	 * @throws SubjectIdNotUniqueException
+	 * @throws SubjectNotFoundException
 	 */
 	void registerUser(String login, byte[] identityStatementData)
 			throws ExistingUserException, TrustDomainNotFoundException,

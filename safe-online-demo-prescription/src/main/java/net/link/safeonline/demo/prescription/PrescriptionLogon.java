@@ -10,7 +10,7 @@ package net.link.safeonline.demo.prescription;
 import javax.ejb.Local;
 
 @Local
-public interface PrescriptionLogon {
+public interface PrescriptionLogon extends AbstractPrescriptionDataClient {
 
 	/*
 	 * Actions.
@@ -18,6 +18,8 @@ public interface PrescriptionLogon {
 	String login();
 
 	String logout();
+
+	String getUsername();
 
 	String activateAdminRole();
 

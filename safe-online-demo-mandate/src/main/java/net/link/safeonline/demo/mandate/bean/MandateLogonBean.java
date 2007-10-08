@@ -7,7 +7,7 @@
 
 package net.link.safeonline.demo.mandate.bean;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 
 import net.link.safeonline.demo.mandate.MandateLogon;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
@@ -21,10 +21,11 @@ import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
-@Stateless
+@Stateful
 @Name("mandateLogon")
 @LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateLogonBean/local")
-public class MandateLogonBean implements MandateLogon {
+public class MandateLogonBean extends AbstractMandateDataClientBean implements
+		MandateLogon {
 
 	@Logger
 	private Log log;
@@ -48,4 +49,10 @@ public class MandateLogonBean implements MandateLogon {
 		Seam.invalidateSession();
 		return "logout-success";
 	}
+
+	public String getUsername() {
+		String userId = (String) this.sessionContext.get("username");
+		return getUsername(userId);
+	}
+
 }

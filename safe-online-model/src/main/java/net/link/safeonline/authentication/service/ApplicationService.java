@@ -111,7 +111,7 @@ public interface ApplicationService {
 	 * @throws SubjectNotFoundException
 	 * @throws ExistingApplicationOwnerException
 	 */
-	void registerApplicationOwner(String ownerName, String adminLogin)
+	void registerApplicationOwner(String ownerName, String adminId)
 			throws SubjectNotFoundException, ExistingApplicationOwnerException;
 
 	/**

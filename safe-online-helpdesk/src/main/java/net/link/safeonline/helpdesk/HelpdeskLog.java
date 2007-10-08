@@ -10,6 +10,8 @@ package net.link.safeonline.helpdesk;
 import java.util.List;
 
 import javax.ejb.Local;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
 @Local
 public interface HelpdeskLog {
@@ -30,6 +32,13 @@ public interface HelpdeskLog {
 	List<String> autocomplete(Object event);
 
 	List<String> autocompleteUser(Object event);
+
+	/*
+	 * Validators
+	 */
+	void validateId(FacesContext context, UIComponent toValidate, Object value);
+
+	void validateUser(FacesContext context, UIComponent toValidate, Object value);
 
 	/*
 	 * Accessors.

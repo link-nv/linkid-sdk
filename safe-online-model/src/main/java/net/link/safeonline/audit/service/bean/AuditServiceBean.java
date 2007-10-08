@@ -25,11 +25,13 @@ import net.link.safeonline.audit.dao.SecurityAuditDAO;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 import net.link.safeonline.audit.service.AuditService;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.AccessAuditEntity;
 import net.link.safeonline.entity.audit.AuditAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.ResourceAuditEntity;
 import net.link.safeonline.entity.audit.SecurityAuditEntity;
+import net.link.safeonline.service.SubjectService;
 
 import org.jboss.annotation.security.SecurityDomain;
 
@@ -52,24 +54,43 @@ public class AuditServiceBean implements AuditService {
 	@EJB
 	private SecurityAuditDAO securityAuditDAO;
 
+	@EJB
+	private SubjectService subjectService;
+
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public Set<String> listUsers() {
 		List<String> accessUsers = this.accessAuditDAO.listUsers();
 		List<String> securityUsers = this.securityAuditDAO.listUsers();
 		Set<String> users = new HashSet<String>();
-		users.addAll(accessUsers);
-		users.addAll(securityUsers);
+		for (String userId : accessUsers) {
+			String user = this.subjectService.getSubjectLogin(userId);
+			if (null != user)
+				users.add(user);
+		}
+		for (String userId : securityUsers) {
+			String user = this.subjectService.getSubjectLogin(userId);
+			if (null != user)
+				users.add(user);
+		}
 		return users;
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<AccessAuditEntity> listAccessAuditRecords(String principal) {
-		return this.accessAuditDAO.listRecords(principal);
+		SubjectEntity subject = this.subjectService
+				.findSubjectFromUserName(principal);
+		if (null == subject)
+			return null;
+		return this.accessAuditDAO.listRecords(subject.getUserId());
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<SecurityAuditEntity> listSecurityAuditRecords(String principal) {
-		return this.securityAuditDAO.listRecords(principal);
+		SubjectEntity subject = this.subjectService
+				.findSubjectFromUserName(principal);
+		if (null == subject)
+			return null;
+		return this.securityAuditDAO.listRecords(subject.getUserId());
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

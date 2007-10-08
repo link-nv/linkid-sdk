@@ -42,7 +42,6 @@ import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
@@ -59,6 +58,7 @@ import net.link.safeonline.model.Applications;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.pkix.PkiUtils;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
 
 import org.apache.commons.logging.Log;
@@ -87,7 +87,7 @@ public class ApplicationServiceBean implements ApplicationService,
 	private SubscriptionDAO subscriptionDAO;
 
 	@EJB
-	private SubjectDAO subjectDAO;
+	private SubjectService subjectService;
 
 	@EJB
 	private ApplicationOwnerDAO applicationOwnerDAO;
@@ -258,13 +258,13 @@ public class ApplicationServiceBean implements ApplicationService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void registerApplicationOwner(String ownerName, String adminLogin)
+	public void registerApplicationOwner(String ownerName, String adminId)
 			throws SubjectNotFoundException, ExistingApplicationOwnerException {
 		LOG.debug("register application owner: " + ownerName + " with account "
-				+ adminLogin);
+				+ adminId);
 		checkExistingOwner(ownerName);
 
-		SubjectEntity adminSubject = this.subjectDAO.getSubject(adminLogin);
+		SubjectEntity adminSubject = this.subjectService.getSubject(adminId);
 
 		this.applicationOwnerDAO.addApplicationOwner(ownerName, adminSubject);
 
@@ -286,7 +286,7 @@ public class ApplicationServiceBean implements ApplicationService,
 		 * possible that the login cannot logon because JAAS is caching the old
 		 * roles that did not include the 'owner' role yet.
 		 */
-		SecurityManagerUtils.flushCredentialCache(adminLogin,
+		SecurityManagerUtils.flushCredentialCache(adminId,
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
 	}
 

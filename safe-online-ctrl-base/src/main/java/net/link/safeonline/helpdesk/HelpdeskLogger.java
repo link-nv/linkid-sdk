@@ -19,6 +19,7 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -83,7 +84,16 @@ public class HelpdeskLogger {
 		String principal = (String) session.getAttribute("username");
 		if (null == principal) {
 			principal = UNKNOWN_USER;
+		} else {
+			SubjectService subjectService = EjbUtils
+					.getEJB("SafeOnline/SubjectServiceBean/local",
+							SubjectService.class);
+			principal = subjectService.getSubjectLogin(principal);
+			if (null == principal)
+				principal = UNKNOWN_USER;
+
 		}
+		LOG.debug("principal found: " + principal);
 		return principal;
 	}
 

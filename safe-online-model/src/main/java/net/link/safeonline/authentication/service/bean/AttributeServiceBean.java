@@ -32,7 +32,6 @@ import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.AttributeServiceRemote;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.AttributeDAO;
-import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
@@ -44,6 +43,7 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.ApplicationManager;
+import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,7 +77,7 @@ public class AttributeServiceBean implements AttributeService,
 	private SubscriptionDAO subscriptionDAO;
 
 	@EJB
-	private SubjectDAO subjectDAO;
+	private SubjectService subjectService;
 
 	@SuppressWarnings("unchecked")
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
@@ -90,7 +90,7 @@ public class AttributeServiceBean implements AttributeService,
 
 		AttributeTypeEntity attributeType = checkAttributeReadPermission(
 				attributeName, confirmedAttributes);
-		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
 				subject, attributeType);
 
@@ -118,7 +118,7 @@ public class AttributeServiceBean implements AttributeService,
 	private List<ApplicationIdentityAttributeEntity> getConfirmedIdentityAttributes(
 			String subjectLogin) throws SubjectNotFoundException,
 			PermissionDeniedException {
-		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 		ApplicationEntity application = this.applicationManager
 				.getCallerApplication();
 
@@ -174,7 +174,7 @@ public class AttributeServiceBean implements AttributeService,
 		LOG.debug("get confirmed attributes for subject: " + subjectLogin);
 		List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
 		Map<String, Object> resultAttributes = new TreeMap<String, Object>();
-		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 		for (ApplicationIdentityAttributeEntity confirmedAttribute : confirmedAttributes) {
 			AttributeTypeEntity attributeType = confirmedAttribute
 					.getAttributeType();
@@ -203,7 +203,8 @@ public class AttributeServiceBean implements AttributeService,
 		DatatypeType datatype = attributeType.getType();
 		if (attributeType.isMultivalued()) {
 			switch (datatype) {
-			case STRING: {
+			case STRING:
+			case LOGIN: {
 				String[] values = new String[attributes.size()];
 				for (int idx = 0; idx < values.length; idx++) {
 					values[idx] = attributes.get(idx).getStringValue();

@@ -10,19 +10,28 @@ package test.unit.net.link.safeonline.authentication.service.bean;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import test.unit.net.link.safeonline.SafeOnlineTestContainer;
+import org.hibernate.NonUniqueObjectException;
+
+import junit.framework.TestCase;
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.PasswordManagerBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
-import net.link.safeonline.dao.SubjectDAO;
-import net.link.safeonline.dao.bean.SubjectDAOBean;
+import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.bean.AttributeDAOBean;
+import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
+import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
+import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import junit.framework.TestCase;
+import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class UserRegistrationServiceBeanTest extends TestCase {
 
@@ -68,10 +77,24 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		userRegistrationService.registerUser(testLogin, testPassword);
 
 		// verify
-		SubjectDAO subjectDAO = EJBTestUtils.newInstance(SubjectDAOBean.class,
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity resultSubject = subjectService
+				.getSubjectFromUserName(testLogin);
+		AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(
+				AttributeTypeDAOBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager);
-		SubjectEntity resultSubject = subjectDAO.getSubject(testLogin);
-		assertEquals(testLogin, resultSubject.getLogin());
+		AttributeTypeEntity loginAttributeType = attributeTypeDAO
+				.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
+		AttributeDAO attributeDAO = EJBTestUtils.newInstance(
+				AttributeDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		AttributeEntity loginAttribute = attributeDAO.getAttribute(
+				loginAttributeType, resultSubject);
+
+		assertEquals(testLogin, loginAttribute.getValue());
+		// assertEquals(testLogin, resultSubject.getLogin());
 
 		PasswordManager passwordManager = EJBTestUtils.newInstance(
 				PasswordManagerBean.class,
@@ -105,6 +128,8 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		try {
 			userRegistrationService.registerUser(testLogin, testPassword);
 			fail();
+		} catch (NonUniqueObjectException e) {
+			// expected
 		} catch (ExistingUserException e) {
 			// expected
 		}

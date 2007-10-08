@@ -10,11 +10,11 @@ package net.link.safeonline.demo.ticket;
 import javax.ejb.Local;
 
 @Local
-public interface TicketLogon {
+public interface TicketLogon extends AbstractTicketDataClient {
 
 	String login();
 
 	String logout();
 
-	void destroyCallback();
+	String getUsername();
 }

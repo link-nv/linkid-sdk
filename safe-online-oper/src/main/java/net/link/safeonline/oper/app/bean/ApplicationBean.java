@@ -42,6 +42,7 @@ import net.link.safeonline.oper.app.Application;
 import net.link.safeonline.oper.app.IdentityAttribute;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.AttributeTypeService;
+import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -76,6 +77,9 @@ public class ApplicationBean implements Application {
 
 	@EJB
 	private AttributeTypeService attributeTypeService;
+
+	@EJB
+	private SubjectService subjectService;
 
 	private String name;
 
@@ -122,6 +126,10 @@ public class ApplicationBean implements Application {
 	@In(required = false)
 	private ApplicationEntity selectedApplication;
 
+	@SuppressWarnings("unused")
+	@Out(required = false)
+	private String ownerAdminName;
+
 	public static final String APPLICATION_IDENTITY_ATTRIBUTES_NAME = "applicationIdentityAttributes";
 
 	@SuppressWarnings("unused")
@@ -145,6 +153,9 @@ public class ApplicationBean implements Application {
 					.getCurrentApplicationIdentity(applicationName);
 			this.numberOfSubscriptions = this.subscriptionService
 					.getNumberOfSubscriptions(applicationName);
+			this.ownerAdminName = this.subjectService
+					.getSubjectLogin(this.selectedApplication
+							.getApplicationOwner().getAdmin().getUserId());
 		} catch (ApplicationNotFoundException e) {
 			String msg = "application not found";
 			LOG.debug(msg);

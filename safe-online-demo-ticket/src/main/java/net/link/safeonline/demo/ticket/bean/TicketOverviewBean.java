@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
@@ -24,7 +23,6 @@ import net.link.safeonline.demo.ticket.entity.User;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -35,7 +33,8 @@ import org.jboss.seam.log.Log;
 @Name("ticketOverview")
 @LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketOverviewBean/local")
 @SecurityDomain("demo-ticket")
-public class TicketOverviewBean implements TicketOverview {
+public class TicketOverviewBean extends AbstractTicketDataClientBean implements
+		TicketOverview {
 
 	@Logger
 	private Log log;
@@ -65,14 +64,9 @@ public class TicketOverviewBean implements TicketOverview {
 
 	private String getUsername() {
 		Principal principal = this.sessionContext.getCallerPrincipal();
-		String name = principal.getName();
-		log.debug("username #0", name);
-		return name;
-	}
-
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		log.debug("destroy: #0", this);
+		String userId = principal.getName();
+		String username = getUsername(userId);
+		log.debug("username #0", username);
+		return username;
 	}
 }

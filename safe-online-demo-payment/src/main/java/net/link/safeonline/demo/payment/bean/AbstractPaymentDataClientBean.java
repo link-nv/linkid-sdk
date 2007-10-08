@@ -20,21 +20,24 @@ import javax.ejb.Remove;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import net.link.safeonline.demo.payment.AbstractPaymentDataClient;
+import net.link.safeonline.demo.payment.CustomerStatus;
+import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
+import net.link.safeonline.model.demo.DemoConstants;
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.attrib.AttributeClient;
+import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.ws.data.Attribute;
+import net.link.safeonline.sdk.ws.data.DataClient;
+import net.link.safeonline.sdk.ws.data.DataClientImpl;
+
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
-
-import net.link.safeonline.demo.payment.AbstractPaymentDataClient;
-import net.link.safeonline.demo.payment.CustomerStatus;
-import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
-import net.link.safeonline.model.demo.DemoConstants;
-import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.exception.SubjectNotFoundException;
-import net.link.safeonline.sdk.ws.data.DataClient;
-import net.link.safeonline.sdk.ws.data.DataClientImpl;
-import net.link.safeonline.sdk.ws.data.Attribute;
 
 /**
  * Abstract class for data client beans. Inherit from this class if you need a
@@ -53,6 +56,8 @@ public abstract class AbstractPaymentDataClientBean implements
 	FacesMessages facesMessages;
 
 	private transient DataClient dataClient;
+
+	private transient AttributeClient attributeClient;
 
 	private String wsHostName;
 	private String wsHostPort;
@@ -80,12 +85,15 @@ public abstract class AbstractPaymentDataClientBean implements
 		log.debug("postActivate");
 		this.dataClient = new DataClientImpl(this.wsHostName + ":"
 				+ this.wsHostPort, this.certificate, this.privateKey);
+		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
+				+ this.wsHostPort, this.certificate, this.privateKey);
 	}
 
 	@PrePassivate
 	public void prePassivateCallback() {
 		log.debug("prePassivate");
 		this.dataClient = null;
+		this.attributeClient = null;
 	}
 
 	@Remove
@@ -93,6 +101,7 @@ public abstract class AbstractPaymentDataClientBean implements
 	public void destroyCallback() {
 		log.debug("destroy");
 		this.dataClient = null;
+		this.attributeClient = null;
 		this.wsHostName = null;
 		this.wsHostPort = null;
 		this.certificate = null;
@@ -104,6 +113,13 @@ public abstract class AbstractPaymentDataClientBean implements
 			throw new EJBException("data client not yet initialized");
 		}
 		return this.dataClient;
+	}
+
+	protected AttributeClient getAttributeClient() {
+		if (null == this.attributeClient) {
+			throw new EJBException("attribute client not yet initialized");
+		}
+		return this.attributeClient;
 	}
 
 	/**
@@ -143,5 +159,32 @@ public abstract class AbstractPaymentDataClientBean implements
 		}
 		CustomerStatus customerStatus = new CustomerStatus(junior, paymentAdmin);
 		return customerStatus;
+	}
+
+	/**
+	 * Returns the username for this user Id. Sets {@link FacesMessages} in case
+	 * something goes wrong.
+	 * 
+	 * @param userId
+	 */
+	protected String getUsername(String userId) {
+		String username = null;
+		AttributeClient attributeClient = getAttributeClient();
+		try {
+			username = attributeClient.getAttributeValue(userId,
+					DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+		} catch (ConnectException e) {
+			this.facesMessages.add("connection error: " + e.getMessage());
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		} catch (AttributeNotFoundException e) {
+			this.facesMessages.add("login attribute not found");
+			return null;
+		}
+
+		log.debug("username = " + username);
+		return username;
 	}
 }

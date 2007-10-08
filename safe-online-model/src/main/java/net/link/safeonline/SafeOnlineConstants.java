@@ -58,6 +58,13 @@ public class SafeOnlineConstants {
 
 	public static final String BEID_AUTH_DEVICE = "beid";
 
+	/**
+	 * The login attribute name and login service provider domain
+	 */
+	public static final String LOGIN_ATTRIBTUE = "urn:net:lin-k:safe-online:attribute:login";
+
+	public static final String LOGIN_IDENTIFIER_DOMAIN = "login";
+
 	private SafeOnlineConstants() {
 		// empty
 	}

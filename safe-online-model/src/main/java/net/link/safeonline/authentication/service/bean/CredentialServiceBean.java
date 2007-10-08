@@ -61,7 +61,7 @@ public class CredentialServiceBean implements CredentialService,
 		this.passwordController.changePassword(subject, oldPassword,
 				newPassword);
 
-		SecurityManagerUtils.flushCredentialCache(subject.getLogin(),
+		SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
 	}
 

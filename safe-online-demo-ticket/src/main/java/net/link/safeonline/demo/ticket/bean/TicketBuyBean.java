@@ -12,19 +12,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URLEncoder;
 import java.security.Principal;
-import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.PostActivate;
-import javax.ejb.PrePassivate;
-import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 import javax.faces.context.ExternalContext;
@@ -38,17 +31,13 @@ import net.link.safeonline.demo.ticket.TicketBuy;
 import net.link.safeonline.demo.ticket.entity.Ticket;
 import net.link.safeonline.demo.ticket.entity.User;
 import net.link.safeonline.demo.ticket.entity.Ticket.Site;
-import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -66,7 +55,8 @@ import org.joda.time.Period;
 @Scope(ScopeType.CONVERSATION)
 @LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketBuyBean/local")
 @SecurityDomain("demo-ticket")
-public class TicketBuyBean implements TicketBuy {
+public class TicketBuyBean extends AbstractTicketDataClientBean implements
+		TicketBuy {
 
 	@Logger
 	private Log log;
@@ -89,52 +79,8 @@ public class TicketBuyBean implements TicketBuy {
 	@Out(required = false)
 	private Date endDate;
 
-	private transient AttributeClient attributeClient;
-
-	private PrivateKey privateKey;
-
-	private X509Certificate certificate;
-
 	@In(create = true)
 	FacesMessages facesMessages;
-
-	private String demoHostName;
-	private String demoHostPort;
-	private String wsHostName;
-	private String wsHostPort;
-
-	@PostConstruct
-	public void postConstructCallback() {
-		PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils
-				.getPrivateKeyEntry();
-		this.privateKey = privateKeyEntry.getPrivateKey();
-		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		this.demoHostName = externalContext.getInitParameter("DemoHostName");
-		this.demoHostPort = externalContext.getInitParameter("DemoHostPort");
-		this.wsHostName = externalContext.getInitParameter("WsHostName");
-		this.wsHostPort = externalContext.getInitParameter("WsHostPort");
-
-		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
-				+ this.wsHostPort, this.certificate, this.privateKey);
-	}
-
-	@PrePassivate
-	public void prePassivateCallback() {
-		/*
-		 * Next is not really required since the attributeClient field is marked
-		 * as transient anyway.
-		 */
-		this.attributeClient = null;
-	}
-
-	@PostActivate
-	public void postActivateCallback() {
-		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
-				+ this.wsHostPort, this.certificate, this.privateKey);
-	}
 
 	public enum TicketPeriod {
 		DAY("one day", Period.days(1)), WEEK("one week", Period.weeks(1)), MONTH(
@@ -207,10 +153,14 @@ public class TicketBuyBean implements TicketBuy {
 	}
 
 	private String getUsername() {
+		String username = getUsername(getUserId());
+		log.debug("username #0", username);
+		return username;
+	}
+
+	private String getUserId() {
 		Principal principal = this.sessionContext.getCallerPrincipal();
-		String name = principal.getName();
-		log.debug("username #0", name);
-		return name;
+		return principal.getName();
 	}
 
 	@Factory("siteList")
@@ -235,13 +185,13 @@ public class TicketBuyBean implements TicketBuy {
 	public String checkOut() {
 		this.ticketPrice = 100;
 		this.juniorReduction = 0;
-		String username = getUsername();
+		String userId = getUserId();
 		try {
-			this.nrn = this.attributeClient.getAttributeValue(username,
+			this.nrn = this.getAttributeClient().getAttributeValue(userId,
 					"urn:net:lin-k:safe-online:attribute:beid:nrn",
 					String.class);
-			Boolean juniorValue = this.attributeClient.getAttributeValue(
-					username, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+			Boolean juniorValue = this.getAttributeClient().getAttributeValue(
+					userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
 					Boolean.class);
 			if (juniorValue != null && juniorValue.booleanValue() == true) {
 				this.juniorReduction = 10;
@@ -338,11 +288,5 @@ public class TicketBuyBean implements TicketBuy {
 			this.facesMessages.add(msg);
 			return;
 		}
-	}
-
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		log.debug("destroy: #0", this);
 	}
 }

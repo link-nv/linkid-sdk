@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
@@ -59,6 +60,8 @@ public class RegistrationServlet extends AbstractStatementServlet {
 		} catch (ArgumentIntegrityException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		} catch (DecodingException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		} catch (AttributeTypeNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}

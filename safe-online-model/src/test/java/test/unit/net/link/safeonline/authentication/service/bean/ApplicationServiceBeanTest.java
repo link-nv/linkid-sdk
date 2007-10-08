@@ -16,9 +16,6 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
@@ -29,10 +26,17 @@ import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
+import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JmxTestUtils;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class ApplicationServiceBeanTest extends TestCase {
@@ -138,9 +142,14 @@ public class ApplicationServiceBeanTest extends TestCase {
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 
 		userRegistrationService.registerUser(testAdminLogin, "secret");
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity adminSubject = subjectService
+				.findSubjectFromUserName(testAdminLogin);
 
 		applicationService.registerApplicationOwner(testApplicationOwnerName,
-				testAdminLogin);
+				adminSubject.getUserId());
 
 		List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
 		initialIdentity.add(new IdentityAttributeTypeDO(

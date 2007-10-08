@@ -139,6 +139,16 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 				passwordAlgorithmAttributeType, "nl",
 				"Wachtwoord hash algoritme", null));
 
+		AttributeTypeEntity loginAttributeType = new AttributeTypeEntity(
+				SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.LOGIN, false,
+				false);
+		this.attributeTypes.add(loginAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				loginAttributeType, Locale.ENGLISH.getLanguage(), "Login name",
+				null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				loginAttributeType, "nl", "Login naam", null));
+
 		List<AttributeTypeEntity> deviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
 		deviceAttributeTypeList.add(passwordHashAttributeType);
 		deviceAttributeTypeList.add(passwordSeedAttributeType);

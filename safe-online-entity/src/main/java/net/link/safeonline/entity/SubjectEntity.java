@@ -26,30 +26,29 @@ import static net.link.safeonline.entity.SubjectEntity.QUERY_ALL;
 
 @Entity
 @Table(name = "subject")
-@NamedQueries( { @NamedQuery(name = QUERY_ALL, query = "SELECT login FROM SubjectEntity") })
+@NamedQueries( { @NamedQuery(name = QUERY_ALL, query = "SELECT userId FROM SubjectEntity") })
 public class SubjectEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private String userId;
 	public static final String QUERY_ALL = "sub.all";
-
-	private String login;
 
 	public SubjectEntity() {
 		// required
 	}
 
-	public SubjectEntity(String login) {
-		this.login = login;
+	public SubjectEntity(String userId) {
+		this.userId = userId;
 	}
 
 	@Id
-	public String getLogin() {
-		return this.login;
+	public String getUserId() {
+		return this.userId;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	@Override
@@ -61,13 +60,13 @@ public class SubjectEntity implements Serializable {
 			return false;
 		}
 		SubjectEntity rhs = (SubjectEntity) obj;
-		return new EqualsBuilder().append(this.login, rhs.login).isEquals();
+		return new EqualsBuilder().append(this.userId, rhs.userId).isEquals();
 	}
 
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append(
-				"login", this.login).toString();
+				"userId", this.userId).toString();
 	}
 
 	public interface QueryInterface {

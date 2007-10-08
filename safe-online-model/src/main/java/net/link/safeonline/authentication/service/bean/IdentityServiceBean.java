@@ -136,11 +136,11 @@ public class IdentityServiceBean implements IdentityService,
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public String findAttributeValue(@NonEmptyString
 	String attributeName) throws PermissionDeniedException {
-		String subjectLogin = this.subjectManager.getCallerLogin();
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		LOG.debug("get attribute " + attributeName + " for user with login "
-				+ subjectLogin);
+				+ subject.getUserId());
 		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeName, subjectLogin);
+				attributeName, subject.getUserId());
 		if (null == attribute) {
 			return null;
 		}
@@ -250,7 +250,7 @@ public class IdentityServiceBean implements IdentityService,
 						compoundedAttributeType, subject, index);
 				String compoundedAttributeId = UUID.randomUUID().toString();
 				LOG.debug("adding compounded attribute for "
-						+ subject.getLogin() + " of type " + attributeName
+						+ subject.getUserId() + " of type " + attributeName
 						+ " with ID " + compoundedAttributeId);
 				compoundedAttribute.setStringValue(compoundedAttributeId);
 			}
@@ -304,7 +304,7 @@ public class IdentityServiceBean implements IdentityService,
 	public List<AttributeDO> listAttributes(Locale locale)
 			throws AttributeTypeNotFoundException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		LOG.debug("get attributes for " + subject.getLogin());
+		LOG.debug("get attributes for " + subject.getUserId());
 		List<AttributeEntity> attributes = this.attributeDAO
 				.listVisibleAttributes(subject);
 
@@ -514,7 +514,7 @@ public class IdentityServiceBean implements IdentityService,
 			SubscriptionNotFoundException, ApplicationIdentityNotFoundException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		LOG.debug("is confirmation required for application " + applicationName
-				+ " by subject " + subject.getLogin());
+				+ " by subject " + subject.getUserId());
 
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);

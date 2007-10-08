@@ -10,7 +10,7 @@ package net.link.safeonline.demo.payment;
 import javax.ejb.Local;
 
 @Local
-public interface PaymentServiceProcess {
+public interface PaymentServiceProcess extends AbstractPaymentDataClient {
 
 	/*
 	 * Actions.
@@ -28,8 +28,6 @@ public interface PaymentServiceProcess {
 
 	void setVisa(String visa);
 
-	/*
-	 * Lifecycle methods.
-	 */
-	void destroyCallback();
+	String getUsername();
+
 }

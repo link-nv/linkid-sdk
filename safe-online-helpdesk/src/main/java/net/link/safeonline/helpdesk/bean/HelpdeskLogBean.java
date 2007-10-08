@@ -14,6 +14,10 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
@@ -268,4 +272,38 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		return userList;
 	}
 
+	/*
+	 * 
+	 * Validators
+	 * 
+	 */
+	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
+	public void validateId(FacesContext context, UIComponent toValidate,
+			Object value) {
+		Long id = (Long) value;
+		LOG.debug("validateId: " + id);
+		this.helpdeskContextList = this.helpdeskService.listContexts();
+		for (HelpdeskContextEntity helpdeskContext : this.helpdeskContextList) {
+			Long contextId = Long.getLong(helpdeskContext.getId().toString());
+			if (contextId.equals(id))
+				return;
+		}
+		((UIInput) toValidate).setValid(false);
+		FacesMessage message = new FacesMessage("Unknown context id");
+		context.addMessage(toValidate.getClientId(context), message);
+
+	}
+
+	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
+	public void validateUser(FacesContext context, UIComponent toValidate,
+			Object value) {
+		String user = (String) value;
+		LOG.debug("validateUser: " + user);
+		this.helpdeskUserList = this.helpdeskService.listUsers();
+		if (!this.helpdeskUserList.contains(user)) {
+			((UIInput) toValidate).setValid(false);
+			FacesMessage message = new FacesMessage("Unknown user");
+			context.addMessage(toValidate.getClientId(context), message);
+		}
+	}
 }

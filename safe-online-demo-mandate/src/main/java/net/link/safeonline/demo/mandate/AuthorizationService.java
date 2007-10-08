@@ -16,7 +16,7 @@ public interface AuthorizationService {
 
 	static final String DEFAULT_ADMIN_USER = "mandate-admin";
 
-	boolean isAdmin(String username);
+	boolean isAdmin(String userId);
 
 	void bootstrap();
 }

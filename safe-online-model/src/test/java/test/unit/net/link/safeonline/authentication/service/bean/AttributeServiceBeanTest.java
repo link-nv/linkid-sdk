@@ -9,8 +9,8 @@ package test.unit.net.link.safeonline.authentication.service.bean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
@@ -39,9 +39,12 @@ import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBe
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.AttributeTypeService;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.service.bean.AttributeTypeServiceBean;
+import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 
@@ -97,6 +100,12 @@ public class AttributeServiceBeanTest {
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 		userRegistrationService.registerUser(testSubjectLogin, "password");
 
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity subject = subjectService
+				.findSubjectFromUserName(testSubjectLogin);
+
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
 				AttributeTypeServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
@@ -127,7 +136,7 @@ public class AttributeServiceBeanTest {
 
 		// operate & verify
 		try {
-			attributeService.getConfirmedAttributeValue(testSubjectLogin,
+			attributeService.getConfirmedAttributeValue(subject.getUserId(),
 					testAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
@@ -148,6 +157,12 @@ public class AttributeServiceBeanTest {
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 		userRegistrationService.registerUser(testSubjectLogin, "password");
+
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity subject = subjectService
+				.findSubjectFromUserName(testSubjectLogin);
 
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
 				AttributeTypeServiceBean.class,
@@ -174,8 +189,8 @@ public class AttributeServiceBeanTest {
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		subscriptionService.subscribe(testApplicationName);
 
 		AttributeService attributeService = EJBTestUtils.newInstance(
@@ -185,7 +200,7 @@ public class AttributeServiceBeanTest {
 
 		// operate & verify
 		try {
-			attributeService.getConfirmedAttributeValue(testSubjectLogin,
+			attributeService.getConfirmedAttributeValue(subject.getUserId(),
 					testAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
@@ -208,6 +223,12 @@ public class AttributeServiceBeanTest {
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 		userRegistrationService.registerUser(testSubjectLogin, "password");
 
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity subject = subjectService
+				.findSubjectFromUserName(testSubjectLogin);
+
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
 				AttributeTypeServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
@@ -233,14 +254,14 @@ public class AttributeServiceBeanTest {
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		subscriptionService.subscribe(testApplicationName);
 
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
@@ -255,8 +276,8 @@ public class AttributeServiceBeanTest {
 				testApplicationName, "application");
 
 		// operate
-		Object result = attributeService.getConfirmedAttributeValue(
-				testSubjectLogin, testAttributeName);
+		Object result = attributeService.getConfirmedAttributeValue(subject
+				.getUserId(), testAttributeName);
 
 		// verify
 		assertEquals(testAttributeValue.getClass(), String.class);
@@ -277,6 +298,12 @@ public class AttributeServiceBeanTest {
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 		userRegistrationService.registerUser(testSubjectLogin, "password");
+
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity subject = subjectService
+				.findSubjectFromUserName(testSubjectLogin);
 
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
 				AttributeTypeServiceBean.class,
@@ -303,14 +330,14 @@ public class AttributeServiceBeanTest {
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		subscriptionService.subscribe(testApplicationName);
 
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
@@ -325,8 +352,8 @@ public class AttributeServiceBeanTest {
 				testApplicationName, "application");
 
 		// operate
-		Object result = attributeService.getConfirmedAttributeValue(
-				testSubjectLogin, testAttributeName);
+		Object result = attributeService.getConfirmedAttributeValue(subject
+				.getUserId(), testAttributeName);
 
 		// verify
 		assertEquals(result.getClass(), Boolean.class);
@@ -348,6 +375,12 @@ public class AttributeServiceBeanTest {
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 		userRegistrationService.registerUser(testSubjectLogin, "password");
+
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity subject = subjectService
+				.findSubjectFromUserName(testSubjectLogin);
 
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
 				AttributeTypeServiceBean.class,
@@ -377,14 +410,14 @@ public class AttributeServiceBeanTest {
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		subscriptionService.subscribe(testApplicationName);
 
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
@@ -399,7 +432,7 @@ public class AttributeServiceBeanTest {
 
 		// operate & verify
 		try {
-			attributeService.getConfirmedAttributeValue(testSubjectLogin,
+			attributeService.getConfirmedAttributeValue(subject.getUserId(),
 					unconfirmedAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
@@ -421,6 +454,12 @@ public class AttributeServiceBeanTest {
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 		userRegistrationService.registerUser(testSubjectLogin, "password");
+
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity subject = subjectService
+				.findSubjectFromUserName(testSubjectLogin);
 
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
 				AttributeTypeServiceBean.class,
@@ -447,14 +486,14 @@ public class AttributeServiceBeanTest {
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		subscriptionService.subscribe(testApplicationName);
 
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
@@ -469,7 +508,7 @@ public class AttributeServiceBeanTest {
 
 		// operate & verify
 		try {
-			attributeService.getConfirmedAttributeValue(testSubjectLogin,
+			attributeService.getConfirmedAttributeValue(subject.getUserId(),
 					testAttributeName);
 			fail();
 		} catch (PermissionDeniedException e) {
@@ -494,6 +533,12 @@ public class AttributeServiceBeanTest {
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 		userRegistrationService.registerUser(testSubjectLogin, "password");
+
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity subject = subjectService
+				.findSubjectFromUserName(testSubjectLogin);
 
 		// register multivalued attribute type
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
@@ -522,14 +567,14 @@ public class AttributeServiceBeanTest {
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		subscriptionService.subscribe(testApplicationName);
 
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO testAttribute = new AttributeDO(testAttributeName,
@@ -547,8 +592,8 @@ public class AttributeServiceBeanTest {
 				SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
 		// operate
-		Object result = attributeService.getConfirmedAttributeValue(
-				testSubjectLogin, testAttributeName);
+		Object result = attributeService.getConfirmedAttributeValue(subject
+				.getUserId(), testAttributeName);
 
 		// verify
 		assertNotNull(result);
@@ -560,7 +605,7 @@ public class AttributeServiceBeanTest {
 		// operate
 		LOG.debug("operate2");
 		Map<String, Object> resultMap = attributeService
-				.getConfirmedAttributeValues(testSubjectLogin);
+				.getConfirmedAttributeValues(subject.getUserId());
 
 		// verify
 		assertNotNull(resultMap);
@@ -591,6 +636,12 @@ public class AttributeServiceBeanTest {
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
 		userRegistrationService.registerUser(testSubjectLogin, "password");
+
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity subject = subjectService
+				.findSubjectFromUserName(testSubjectLogin);
 
 		// register multivalued attribute type
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
@@ -634,14 +685,14 @@ public class AttributeServiceBeanTest {
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		subscriptionService.subscribe(testApplicationName);
 
 		IdentityService identityService = EJBTestUtils.newInstance(
 				IdentityServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager,
-				testSubjectLogin, "user");
+				SafeOnlineTestContainer.sessionBeans, entityManager, subject
+						.getUserId(), "user");
 		identityService.confirmIdentity(testApplicationName);
 
 		AttributeDO compoundAttribute = new AttributeDO(compoundName,
@@ -673,8 +724,8 @@ public class AttributeServiceBeanTest {
 				SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
 		// operate
-		Object result = attributeService.getConfirmedAttributeValue(
-				testSubjectLogin, compoundName);
+		Object result = attributeService.getConfirmedAttributeValue(subject
+				.getUserId(), compoundName);
 
 		// verify
 		assertNotNull(result);
@@ -697,7 +748,7 @@ public class AttributeServiceBeanTest {
 
 		// operate
 		Map<String, Object> result2 = attributeService
-				.getConfirmedAttributeValues(testSubjectLogin);
+				.getConfirmedAttributeValues(subject.getUserId());
 
 		// verify
 		LOG.debug("result2: " + result2);

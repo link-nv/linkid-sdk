@@ -48,7 +48,7 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	@SuppressWarnings("unchecked")
 	public SubscriptionEntity findSubscription(SubjectEntity subject,
 			ApplicationEntity application) {
-		LOG.debug("find subscription for: " + subject.getLogin() + " to "
+		LOG.debug("find subscription for: " + subject.getUserId() + " to "
 				+ application.getName());
 		SubscriptionPK subscriptionPK = new SubscriptionPK(subject, application);
 		SubscriptionEntity subscription = this.entityManager.find(
@@ -58,7 +58,7 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 
 	public void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
 			SubjectEntity subject, ApplicationEntity application) {
-		LOG.debug("add subscription for " + subject.getLogin() + " to "
+		LOG.debug("add subscription for " + subject.getUserId() + " to "
 				+ application.getName());
 		SubscriptionEntity subscription = new SubscriptionEntity(
 				subscriptionOwnerType, subject, application);
@@ -66,7 +66,7 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	}
 
 	public List<SubscriptionEntity> listSubsciptions(SubjectEntity subject) {
-		LOG.debug("get subscriptions for subject: " + subject.getLogin());
+		LOG.debug("get subscriptions for subject: " + subject.getUserId());
 		List<SubscriptionEntity> subscriptions = this.queryObject
 				.listSubsciptions(subject);
 		return subscriptions;

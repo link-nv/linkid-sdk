@@ -7,6 +7,7 @@
 
 package net.link.safeonline.oper.bean;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -20,6 +21,7 @@ import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.oper.ApplicationOwner;
 import net.link.safeonline.oper.OperatorConstants;
+import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,9 +47,12 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 	@EJB
 	private ApplicationService applicationService;
 
+	@EJB
+	private SubjectService subjectService;
+
 	@SuppressWarnings("unused")
 	@DataModel("applicationOwnerList")
-	private List<ApplicationOwnerEntity> applicationOwnerList;
+	private List<ApplicationOwnerWrapper> applicationOwnerList;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -95,12 +100,38 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void applicationOwnerListFactory() {
 		LOG.debug("application owner list factory");
-		this.applicationOwnerList = this.applicationService
+		List<ApplicationOwnerEntity> applicationOwnerEntityList = this.applicationService
 				.listApplicationOwners();
+		this.applicationOwnerList = new LinkedList<ApplicationOwnerWrapper>();
+		for (ApplicationOwnerEntity applicationOwnerEntity : applicationOwnerEntityList) {
+			this.applicationOwnerList.add(new ApplicationOwnerWrapper(
+					applicationOwnerEntity));
+		}
 	}
 
 	@Remove
 	@Destroy
 	public void destroyCallback() {
+	}
+
+	public class ApplicationOwnerWrapper {
+
+		private String adminName;
+
+		private ApplicationOwnerEntity entity;
+
+		public ApplicationOwnerWrapper(ApplicationOwnerEntity entity) {
+			this.entity = entity;
+			this.adminName = subjectService.getSubjectLogin(this.entity
+					.getAdmin().getUserId());
+		}
+
+		public String getAdminName() {
+			return this.adminName;
+		}
+
+		public ApplicationOwnerEntity getEntity() {
+			return this.entity;
+		}
 	}
 }

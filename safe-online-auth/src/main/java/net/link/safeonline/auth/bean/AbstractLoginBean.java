@@ -9,11 +9,13 @@ package net.link.safeonline.auth.bean;
 
 import java.io.IOException;
 
+import javax.ejb.EJB;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
+import net.link.safeonline.service.SubjectService;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -33,6 +35,9 @@ public class AbstractLoginBean {
 
 	@Logger
 	private Log log;
+
+	@EJB
+	SubjectService subjectService;
 
 	@SuppressWarnings("unused")
 	@Out(value = LoginManager.USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
@@ -61,7 +66,8 @@ public class AbstractLoginBean {
 			AuthenticationDevice authenticationDevice) {
 		log.debug("login using: " + username + " via device: "
 				+ authenticationDevice);
-		this.username = username;
+		this.username = this.subjectService.findSubjectFromUserName(username)
+				.getUserId();
 		relogin(authenticationDevice);
 	}
 

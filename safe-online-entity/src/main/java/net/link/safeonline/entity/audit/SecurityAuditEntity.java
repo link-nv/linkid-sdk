@@ -50,7 +50,8 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 				+ "FROM SecurityAuditEntity AS record "
 				+ "WHERE record.auditContext.id = :contextId"),
 		@NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.targetPrincipal "
-				+ "FROM SecurityAuditEntity AS record "),
+				+ "FROM SecurityAuditEntity AS record "
+				+ "WHERE record.targetPrincipal IS NOT NULL"),
 		@NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record "
 				+ "FROM SecurityAuditEntity AS record "
 				+ "WHERE record.targetPrincipal = :principal"),

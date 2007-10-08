@@ -34,7 +34,6 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.HistoryDAO;
-import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
@@ -44,6 +43,7 @@ import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.ApplicationManager;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
+import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,7 +71,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 	private AttributeDAO attributeDAO;
 
 	@EJB
-	private SubjectDAO subjectDAO;
+	private SubjectService subjectService;
 
 	@EJB
 	private HistoryDAO historyDAO;
@@ -98,7 +98,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		LOG.debug("get attributes of type " + attributeName + " for subject "
 				+ subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 
 		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
 				subject, attributeType);
@@ -185,7 +185,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 				.debug("create attribute: " + attributeName + " for "
 						+ subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 
 		this.historyDAO.addHistoryEntry(subject,
 				HistoryEventType.ATTRIBUTE_PROVIDER_ADD, attributeName,
@@ -242,7 +242,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 			AttributeNotFoundException, DatatypeMismatchException {
 		LOG.debug("set attribute " + attributeName + " for " + subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 
 		this.historyDAO.addHistoryEntry(subject,
 				HistoryEventType.ATTRIBUTE_PROVIDER_CHANGE, attributeName,
@@ -340,7 +340,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 			throw new DatatypeMismatchException();
 		}
 
-		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 
 		/*
 		 * AttributeId is the global Id of the record, while AttributeIdx is the
@@ -381,7 +381,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 		LOG.debug("remove attribute " + attributeName + " from subject "
 				+ subjectLogin);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 
 		this.historyDAO.addHistoryEntry(subject,
 				HistoryEventType.ATTRIBUTE_PROVIDER_REMOVE, attributeName,
@@ -400,7 +400,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 				+ " from subject " + subjectLogin + " with attrib Id "
 				+ attributeId);
 		AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-		SubjectEntity subject = this.subjectDAO.getSubject(subjectLogin);
+		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 
 		this.attributeManager.removeCompoundAttribute(attributeType, subject,
 				attributeId);

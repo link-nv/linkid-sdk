@@ -45,7 +45,7 @@ public class HistoryDAOBean implements HistoryDAO {
 	public void addHistoryEntry(Date when, SubjectEntity subject,
 			HistoryEventType event, String application, String info) {
 		LOG.debug("add history entry: " + when + "; subject: "
-				+ subject.getLogin() + "; event: " + event + "; application: "
+				+ subject.getUserId() + "; event: " + event + "; application: "
 				+ application + "; info: " + info);
 		HistoryEntity history = new HistoryEntity(when, subject, event,
 				application, info);
@@ -56,7 +56,7 @@ public class HistoryDAOBean implements HistoryDAO {
 			String application, String info) {
 		Date when = new Date();
 		LOG.debug("add history entry: " + when + "; subject: "
-				+ subject.getLogin() + "; event: " + event + "; application: "
+				+ subject.getUserId() + "; event: " + event + "; application: "
 				+ application + "; info: " + info);
 		HistoryEntity history = new HistoryEntity(when, subject, event,
 				application, info);
@@ -64,7 +64,7 @@ public class HistoryDAOBean implements HistoryDAO {
 	}
 
 	public List<HistoryEntity> getHistory(SubjectEntity subject) {
-		LOG.debug("get history for entity: " + subject.getLogin());
+		LOG.debug("get history for entity: " + subject.getUserId());
 		List<HistoryEntity> result = this.queryObject.getHistory(subject);
 		return result;
 	}

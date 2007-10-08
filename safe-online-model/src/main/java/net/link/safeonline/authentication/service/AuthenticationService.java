@@ -7,11 +7,14 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.security.NoSuchAlgorithmException;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
@@ -49,6 +52,7 @@ public interface AuthenticationService {
 	 * @throws SubjectNotFoundException
 	 * @throws DeviceNotFoundException
 	 *             in case the user did not configure the password device.
+	 * @throws NoSuchAlgorithmException
 	 */
 	boolean authenticate(String login, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException;
@@ -102,11 +106,16 @@ public interface AuthenticationService {
 	 * @throws TrustDomainNotFoundException
 	 * @throws DecodingException
 	 * @throws ExistingUserException
+	 * @throws NoSuchAlgorithmException
+	 * @throws SubjectIdNotUniqueException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws SubjectNotFoundException
 	 */
 	boolean registerAndAuthenticate(String sessionId, String username,
 			byte[] registrationStatementData)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			DecodingException, ExistingUserException;
+			DecodingException, ExistingUserException,
+			AttributeTypeNotFoundException;
 
 	/**
 	 * Aborts the current authentication procedure.

@@ -8,9 +8,11 @@
 package net.link.safeonline.demo.payment.bean;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Date;
 
-import javax.ejb.Remove;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -24,7 +26,6 @@ import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.Seam;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -35,24 +36,20 @@ import org.jboss.seam.log.Log;
 @Stateful
 @Name("paymentServiceProcess")
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/PaymentServiceProcessBean/local")
-public class PaymentServiceProcessBean implements PaymentServiceProcess {
+public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean
+		implements PaymentServiceProcess {
 
 	@Logger
 	private Log log;
+
+	@Resource
+	private SessionContext sessionContext;
 
 	@In(create = true)
 	FacesMessages facesMessages;
 
 	@PersistenceContext(unitName = "DemoPaymentEntityManager")
 	private EntityManager entityManager;
-
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
-
-	@In(value = "username", required = false)
-	private String username;
 
 	@In("user")
 	private String user;
@@ -75,6 +72,17 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 	@Out(value = "visaNumber", required = false)
 	private String visaNumber;
 
+	public String getUsername() {
+		String username = getUsername(getUserId());
+		log.debug("username #0", username);
+		return username;
+	}
+
+	private String getUserId() {
+		Principal principal = this.sessionContext.getCallerPrincipal();
+		return principal.getName();
+	}
+
 	public String authenticate() {
 		log.debug("authenticate");
 		String result = SafeOnlineLoginUtils.login(this.facesMessages,
@@ -84,18 +92,18 @@ public class PaymentServiceProcessBean implements PaymentServiceProcess {
 
 	public String commit() {
 		log.debug("commit");
-		if (null == this.username) {
+		String username = getUsername();
+		if (null == username) {
 			this.facesMessages.add("username is null. user not authenticated");
 			return null;
 		}
-		if (false == this.user.equals(this.username)) {
+		if (false == this.user.equals(username)) {
 			this.facesMessages.add("authenticated user != requested user");
 			return null;
 		}
-		UserEntity user = this.entityManager.find(UserEntity.class,
-				this.username);
+		UserEntity user = this.entityManager.find(UserEntity.class, username);
 		if (user == null) {
-			user = new UserEntity(this.username);
+			user = new UserEntity(username);
 			this.entityManager.persist(user);
 		}
 

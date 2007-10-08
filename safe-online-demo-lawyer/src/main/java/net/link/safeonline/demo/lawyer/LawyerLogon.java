@@ -10,7 +10,7 @@ package net.link.safeonline.demo.lawyer;
 import javax.ejb.Local;
 
 @Local
-public interface LawyerLogon {
+public interface LawyerLogon extends AbstractLawyerDataClient {
 
 	/*
 	 * Actions.
@@ -20,7 +20,7 @@ public interface LawyerLogon {
 	String logout();
 
 	/*
-	 * Lifecycle.
+	 * Accessors
 	 */
-	void destroyCallback();
+	String getUsername();
 }

@@ -7,7 +7,7 @@
 
 package net.link.safeonline.demo.prescription.bean;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.demo.prescription.PrescriptionConstants;
@@ -19,19 +19,24 @@ import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
-@Stateless
+@Stateful
 @Name("prescriptionLogon")
 @LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionLogonBean/local")
-public class PrescriptionLogonBean implements PrescriptionLogon {
+public class PrescriptionLogonBean extends AbstractPrescriptionDataClientBean
+		implements PrescriptionLogon {
 
 	@Logger
 	private Log log;
 
 	@In(create = true)
 	private FacesMessages facesMessages;
+
+	@In
+	Context sessionContext;
 
 	public String login() {
 		log.debug("login");
@@ -44,6 +49,11 @@ public class PrescriptionLogonBean implements PrescriptionLogon {
 		log.debug("logout");
 		Seam.invalidateSession();
 		return "logout-success";
+	}
+
+	public String getUsername() {
+		String userId = (String) this.sessionContext.get("username");
+		return getUsername(userId);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -38,7 +38,7 @@ public class HistoryMessageManager {
 			return messages.getString("history_unknown");
 
 		return MessageFormat.format(message, historyEntity.getSubject()
-				.getLogin(), historyEntity.getApplication(), historyEntity
+				.getUserId(), historyEntity.getApplication(), historyEntity
 				.getInfo());
 	}
 }

@@ -92,7 +92,7 @@ public class SecurityApplicationEntityListener {
 		ApplicationOwnerEntity applicationOwner = application
 				.getApplicationOwner();
 		SubjectEntity adminSubject = applicationOwner.getAdmin();
-		String ownerLogin = adminSubject.getLogin();
+		String ownerLogin = adminSubject.getUserId();
 		LOG.debug("admin login: " + ownerLogin);
 
 		Principal saPrincipal = SecurityAssociation.getPrincipal();

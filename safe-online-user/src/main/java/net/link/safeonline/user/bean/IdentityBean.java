@@ -15,6 +15,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -22,6 +23,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.user.Identity;
 import net.link.safeonline.user.UserConstants;
 
@@ -49,6 +51,9 @@ public class IdentityBean implements Identity {
 
 	@EJB
 	private IdentityService identityService;
+
+	@EJB
+	private SubjectService subjectService;
 
 	public static final String ATTRIBUTE_LIST_NAME = "attributeList";
 
@@ -125,5 +130,13 @@ public class IdentityBean implements Identity {
 		}
 		attributeListFactory();
 		return "removed";
+	}
+
+	public String getUsername() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = facesContext.getExternalContext();
+		String userId = externalContext.getUserPrincipal().getName();
+		String username = this.subjectService.getSubjectLogin(userId);
+		return username;
 	}
 }

@@ -8,6 +8,7 @@
 package net.link.safeonline.service;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.EJBContext;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
@@ -17,6 +18,9 @@ import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.ApplicationEntity;
 
 public class ApplicationOwnerAccessControlInterceptor {
+
+	@EJB
+	SubjectService subjectService;
 
 	@Resource
 	EJBContext ctx;
@@ -43,15 +47,15 @@ public class ApplicationOwnerAccessControlInterceptor {
 			returnValue = false;
 		}
 		String subjectName = ctx.getCallerPrincipal().getName();
-		if (application != null
-				&& application.getApplicationOwner().getAdmin().getLogin()
-						.equals(subjectName)) {
-			returnValue = true;
+		if (application != null) {
+			if (application.getApplicationOwner().getAdmin().getUserId()
+					.equals(subjectName)) {
+				returnValue = true;
+			}
 		}
 		if (returnValue == false) {
 			throw new PermissionDeniedException("application admin mismatch");
 		}
 		return invocation.proceed();
 	}
-
 }

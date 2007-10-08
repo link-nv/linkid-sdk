@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.AccountRegistration;
 import net.link.safeonline.auth.AuthenticationConstants;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -181,6 +182,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 					.registerUser(this.login, this.password);
 		} catch (ExistingUserException e) {
 			this.facesMessages.add("login already taken");
+			return null;
+		} catch (AttributeTypeNotFoundException e) {
+			this.facesMessages.add("attribute type not found");
 			return null;
 		}
 

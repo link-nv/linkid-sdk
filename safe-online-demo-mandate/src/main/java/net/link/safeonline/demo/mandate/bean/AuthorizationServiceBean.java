@@ -7,21 +7,35 @@
 
 package net.link.safeonline.demo.mandate.bean;
 
+import java.net.ConnectException;
+import java.security.PrivateKey;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.X509Certificate;
+import java.util.ResourceBundle;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import net.link.safeonline.demo.mandate.AuthorizationService;
+import net.link.safeonline.demo.mandate.MandateConstants;
+import net.link.safeonline.demo.mandate.entity.UserEntity;
+import net.link.safeonline.demo.mandate.keystore.DemoMandateKeyStoreUtils;
+import net.link.safeonline.model.demo.DemoConstants;
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.attrib.AttributeClient;
+import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
-import net.link.safeonline.demo.mandate.AuthorizationService;
-import net.link.safeonline.demo.mandate.MandateConstants;
-import net.link.safeonline.demo.mandate.entity.UserEntity;
-
 @Stateless
 @LocalBinding(jndiBinding = AuthorizationService.JNDI_BINDING)
 public class AuthorizationServiceBean implements AuthorizationService {
+
+	private final String WEBSERVICE_CONFIG = "ws_config";
 
 	private static final Log LOG = LogFactory
 			.getLog(AuthorizationServiceBean.class);
@@ -29,7 +43,48 @@ public class AuthorizationServiceBean implements AuthorizationService {
 	@PersistenceContext(unitName = MandateConstants.ENTITY_MANAGER_NAME)
 	private EntityManager entityManager;
 
-	public boolean isAdmin(String username) {
+	private String getUsername(String userId) {
+		String username;
+		AttributeClient attributeClient = getAttributeClient();
+		try {
+			username = attributeClient.getAttributeValue(userId,
+					DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+		} catch (ConnectException e) {
+			LOG.debug("connection error: " + e.getMessage());
+			return null;
+		} catch (RequestDeniedException e) {
+			LOG.debug("request denied");
+			return null;
+		} catch (AttributeNotFoundException e) {
+			LOG.debug("login attribute not found");
+			return null;
+		}
+
+		LOG.debug("username = " + username);
+		return username;
+
+	}
+
+	private AttributeClient getAttributeClient() {
+		ResourceBundle config = ResourceBundle.getBundle(WEBSERVICE_CONFIG);
+		String wsHostName = config.getString("WsHostName");
+		String wsHostPort = config.getString("WsHostPort");
+
+		LOG.debug("Webservice: " + wsHostName + ":" + wsHostPort);
+
+		PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils
+				.getPrivateKeyEntry();
+		X509Certificate certificate = (X509Certificate) privateKeyEntry
+				.getCertificate();
+		PrivateKey privateKey = privateKeyEntry.getPrivateKey();
+
+		AttributeClient attributeClient = new AttributeClientImpl(wsHostName
+				+ ":" + wsHostPort, certificate, privateKey);
+		return attributeClient;
+	}
+
+	public boolean isAdmin(String userId) {
+		String username = getUsername(userId);
 		LOG.debug("isAdmin: " + username);
 
 		UserEntity user = this.entityManager.find(UserEntity.class, username);

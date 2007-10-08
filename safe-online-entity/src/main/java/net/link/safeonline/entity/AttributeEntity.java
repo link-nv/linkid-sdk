@@ -118,7 +118,7 @@ public class AttributeEntity implements Serializable {
 		this.stringValue = stringValue;
 		this.attributeType = attributeType;
 		this.subject = subject;
-		this.pk = new AttributePK(attributeType.getName(), subject.getLogin());
+		this.pk = new AttributePK(attributeType.getName(), subject.getUserId());
 	}
 
 	public AttributeEntity(AttributeTypeEntity attributeType,
@@ -256,6 +256,7 @@ public class AttributeEntity implements Serializable {
 		DatatypeType datatype = this.attributeType.getType();
 		switch (datatype) {
 		case STRING:
+		case LOGIN:
 			return this.getStringValue();
 		case BOOLEAN:
 			return this.getBooleanValue();
@@ -274,7 +275,8 @@ public class AttributeEntity implements Serializable {
 	public void setValue(Object value) {
 		DatatypeType datatype = this.attributeType.getType();
 		switch (datatype) {
-		case STRING: {
+		case STRING:
+		case LOGIN: {
 			String stringValue = (String) value;
 			this.setStringValue(stringValue);
 			break;
@@ -309,6 +311,7 @@ public class AttributeEntity implements Serializable {
 		DatatypeType datatype = this.attributeType.getType();
 		switch (datatype) {
 		case STRING:
+		case LOGIN:
 			String stringValue = this.getStringValue();
 			if (null == stringValue) {
 				return true;

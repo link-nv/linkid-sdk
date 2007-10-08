@@ -73,7 +73,7 @@ public class PasswordManagerBean implements PasswordManager {
 			throw new EJBException("password attribute types not found");
 		}
 
-		String seed = subject.getLogin();
+		String seed = subject.getUserId();
 		String hashValue;
 		try {
 			hashValue = hash(password, seed, defaultHashingAlgorithm);
@@ -84,7 +84,7 @@ public class PasswordManagerBean implements PasswordManager {
 		}
 		try {
 			Password passwordAttribute = getPasswordAttribute(subject
-					.getLogin());
+					.getUserId());
 
 			passwordAttribute.hash.setStringValue(hashValue);
 			passwordAttribute.seed.setStringValue(seed);
@@ -103,7 +103,7 @@ public class PasswordManagerBean implements PasswordManager {
 			throws DeviceNotFoundException {
 
 		// get current password
-		Password expectedPassword = getPasswordAttribute(subject.getLogin());
+		Password expectedPassword = getPasswordAttribute(subject.getUserId());
 		String expectedPasswordHash = expectedPassword.hash.getStringValue();
 		String seed = expectedPassword.seed.getStringValue();
 		String algorithm = expectedPassword.algorithm.getStringValue();
@@ -154,7 +154,7 @@ public class PasswordManagerBean implements PasswordManager {
 
 	public boolean isPasswordConfigured(SubjectEntity subject) {
 		try {
-			getPasswordAttribute(subject.getLogin());
+			getPasswordAttribute(subject.getUserId());
 		} catch (DeviceNotFoundException e) {
 			return false;
 		}

@@ -34,7 +34,7 @@ public class SubscriptionPK implements Serializable {
 	}
 
 	public SubscriptionPK(SubjectEntity subject, ApplicationEntity application) {
-		this.subject = subject.getLogin();
+		this.subject = subject.getUserId();
 		this.application = application.getName();
 	}
 

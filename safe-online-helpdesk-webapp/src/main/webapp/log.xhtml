@@ -33,7 +33,7 @@
 				<f:verbatim>#{msgs.lookupHelpId}</f:verbatim>
 				<s:decorate>
 					<h:inputText value="#{helpdeskLog.searchId}" id="searchId"
-						required="true" />
+						validator="#{helpdeskLog.validateId}" required="true" />
 				</s:decorate>
 				<rich:suggestionbox for="searchId"
 					suggestionAction="#{helpdeskLog.autocomplete}" var="searchIdInput">

@@ -67,7 +67,7 @@ public class SubjectDAOBeanTest extends TestCase {
 				.getSubject(subjectLogin);
 
 		// verify
-		assertEquals(subjectLogin, resultSubject.getLogin());
+		assertEquals(subjectLogin, resultSubject.getUserId());
 	}
 
 	public void testAddingTwiceFails() throws Exception {

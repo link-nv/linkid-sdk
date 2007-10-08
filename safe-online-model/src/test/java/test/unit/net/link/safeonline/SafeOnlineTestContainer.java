@@ -42,6 +42,7 @@ import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
@@ -59,6 +60,7 @@ import net.link.safeonline.model.bean.ApplicationManagerBean;
 import net.link.safeonline.model.bean.ApplicationOwnerManagerBean;
 import net.link.safeonline.model.bean.ApplicationsBean;
 import net.link.safeonline.model.bean.AttributeTypeDescriptionDecoratorBean;
+import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.UserRegistrationManagerBean;
 import net.link.safeonline.pkix.dao.bean.CachedOcspResponseDAOBean;
@@ -68,6 +70,7 @@ import net.link.safeonline.pkix.model.bean.CachedOcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.OcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.PkiProviderManagerBean;
 import net.link.safeonline.pkix.model.bean.PkiValidatorBean;
+import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskHistoryDAOBean;
@@ -106,7 +109,8 @@ public class SafeOnlineTestContainer {
 			UserRegistrationManagerBean.class, ResourceAuditLoggerBean.class,
 			AuditAuditDAOBean.class, AuditContextDAOBean.class,
 			AccessAuditDAOBean.class, SecurityAuditDAOBean.class,
-			ResourceAuditDAOBean.class, PasswordManagerBean.class };
+			ResourceAuditDAOBean.class, PasswordManagerBean.class,
+			SubjectServiceBean.class, IdGeneratorBean.class };
 
 	public static final Class<?>[] entities = new Class[] {
 			SubjectEntity.class, ApplicationEntity.class,
@@ -121,5 +125,5 @@ public class SafeOnlineTestContainer {
 			AllowedDeviceEntity.class,
 			CompoundedAttributeTypeMemberEntity.class,
 			HelpdeskContextEntity.class, HelpdeskEventEntity.class,
-			HistoryEntity.class };
+			HistoryEntity.class, SubjectIdentifierEntity.class };
 }

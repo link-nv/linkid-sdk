@@ -9,11 +9,13 @@ package net.link.safeonline.model;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.entity.SubjectEntity;
 
 @Local
 public interface UserRegistrationManager {
 
-	SubjectEntity registerUser(String username) throws ExistingUserException;
+	SubjectEntity registerUser(String username) throws ExistingUserException,
+			AttributeTypeNotFoundException;
 }

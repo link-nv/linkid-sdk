@@ -39,24 +39,24 @@ public class SubjectDAOBean implements SubjectDAO {
 				this.entityManager, SubjectEntity.QueryInterface.class);
 	}
 
-	public SubjectEntity findSubject(String login) {
-		LOG.debug("find subject: " + login);
+	public SubjectEntity findSubject(String userId) {
+		LOG.debug("find subject: " + userId);
 		SubjectEntity subject = this.entityManager.find(SubjectEntity.class,
-				login);
+				userId);
 		return subject;
 	}
 
-	public SubjectEntity addSubject(String login) {
-		LOG.debug("add subject: " + login);
-		SubjectEntity subject = new SubjectEntity(login);
+	public SubjectEntity addSubject(String userId) {
+		LOG.debug("add subject: " + userId);
+		SubjectEntity subject = new SubjectEntity(userId);
 		this.entityManager.persist(subject);
 		return subject;
 	}
 
-	public SubjectEntity getSubject(String login)
+	public SubjectEntity getSubject(String userId)
 			throws SubjectNotFoundException {
-		LOG.debug("get subject: " + login);
-		SubjectEntity subject = findSubject(login);
+		LOG.debug("get subject: " + userId);
+		SubjectEntity subject = findSubject(userId);
 		if (null == subject) {
 			throw new SubjectNotFoundException();
 		}

@@ -37,6 +37,8 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
+import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JmxTestUtils;
@@ -137,11 +139,12 @@ public class AttributeProviderServiceBeanTest {
 		String testApplicationOwner = "test-application-owner";
 		String testApplicationAdmin = "test-application-admin";
 
-		SubjectDAO subjectDAO = EJBTestUtils.newInstance(SubjectDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		SubjectEntity applicationAdminSubject = subjectDAO
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity applicationAdminSubject = subjectService
 				.addSubject(testApplicationAdmin);
-		subjectDAO.addSubject(testLogin);
+		SubjectEntity testLoginSubject = subjectService.addSubject(testLogin);
 
 		ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(
 				ApplicationOwnerDAOBean.class,
@@ -178,8 +181,8 @@ public class AttributeProviderServiceBeanTest {
 						SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
 		try {
-			attributeProviderService.setAttribute(testLogin, testAttributeName,
-					null);
+			attributeProviderService.setAttribute(testLoginSubject.getUserId(),
+					testAttributeName, null);
 			fail();
 		} catch (AttributeNotFoundException e) {
 			/*
@@ -188,8 +191,8 @@ public class AttributeProviderServiceBeanTest {
 		}
 
 		try {
-			attributeProviderService.setAttribute(testLogin, testAttributeName,
-					testAttributeValue);
+			attributeProviderService.setAttribute(testLoginSubject.getUserId(),
+					testAttributeName, testAttributeValue);
 			fail();
 		} catch (AttributeNotFoundException e) {
 			/*
@@ -198,33 +201,33 @@ public class AttributeProviderServiceBeanTest {
 		}
 
 		// operate
-		attributeProviderService.createAttribute(testLogin, testAttributeName,
-				testAttributeValue);
+		attributeProviderService.createAttribute(testLoginSubject.getUserId(),
+				testAttributeName, testAttributeValue);
 
 		// verify
 		List<AttributeEntity> resultAttributes = attributeProviderService
-				.getAttributes(testLogin, testAttributeName);
+				.getAttributes(testLoginSubject.getUserId(), testAttributeName);
 		assertEquals(testAttributeValue.length, resultAttributes.size());
 		assertEquals(value1, resultAttributes.get(0).getStringValue());
 		assertEquals(value2, resultAttributes.get(1).getStringValue());
 
 		// operate
-		attributeProviderService.setAttribute(testLogin, testAttributeName,
-				new String[] { value2 });
+		attributeProviderService.setAttribute(testLoginSubject.getUserId(),
+				testAttributeName, new String[] { value2 });
 
 		// verify
-		resultAttributes = attributeProviderService.getAttributes(testLogin,
-				testAttributeName);
+		resultAttributes = attributeProviderService.getAttributes(
+				testLoginSubject.getUserId(), testAttributeName);
 		assertEquals(1, resultAttributes.size());
 		assertEquals(value2, resultAttributes.get(0).getStringValue());
 
 		// operate
-		attributeProviderService.setAttribute(testLogin, testAttributeName,
-				new String[] { value1, value2, value1 });
+		attributeProviderService.setAttribute(testLoginSubject.getUserId(),
+				testAttributeName, new String[] { value1, value2, value1 });
 
 		// verify
-		resultAttributes = attributeProviderService.getAttributes(testLogin,
-				testAttributeName);
+		resultAttributes = attributeProviderService.getAttributes(
+				testLoginSubject.getUserId(), testAttributeName);
 		assertEquals(3, resultAttributes.size());
 		assertEquals(value1, resultAttributes.get(0).getStringValue());
 		assertEquals(value2, resultAttributes.get(1).getStringValue());
@@ -242,11 +245,12 @@ public class AttributeProviderServiceBeanTest {
 		String testApplicationOwner = "test-application-owner";
 		String testApplicationAdmin = "test-application-admin";
 
-		SubjectDAO subjectDAO = EJBTestUtils.newInstance(SubjectDAOBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager);
-		SubjectEntity applicationAdminSubject = subjectDAO
+		SubjectService subjectService = EJBTestUtils.newInstance(
+				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager);
+		SubjectEntity applicationAdminSubject = subjectService
 				.addSubject(testApplicationAdmin);
-		subjectDAO.addSubject(testLogin);
+		SubjectEntity testLoginSubject = subjectService.addSubject(testLogin);
 
 		ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(
 				ApplicationOwnerDAOBean.class,
@@ -282,8 +286,8 @@ public class AttributeProviderServiceBeanTest {
 						SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
 		try {
-			attributeProviderService.setAttribute(testLogin, testAttributeName,
-					null);
+			attributeProviderService.setAttribute(testLoginSubject.getUserId(),
+					testAttributeName, null);
 			fail();
 		} catch (AttributeNotFoundException e) {
 			/*
@@ -292,8 +296,8 @@ public class AttributeProviderServiceBeanTest {
 		}
 
 		try {
-			attributeProviderService.setAttribute(testLogin, testAttributeName,
-					testAttributeValue);
+			attributeProviderService.setAttribute(testLoginSubject.getUserId(),
+					testAttributeName, testAttributeValue);
 			fail();
 		} catch (AttributeNotFoundException e) {
 			/*
@@ -302,12 +306,12 @@ public class AttributeProviderServiceBeanTest {
 		}
 
 		// operate
-		attributeProviderService.createAttribute(testLogin, testAttributeName,
-				testAttributeValue);
+		attributeProviderService.createAttribute(testLoginSubject.getUserId(),
+				testAttributeName, testAttributeValue);
 
 		// verify
 		List<AttributeEntity> resultAttributes = attributeProviderService
-				.getAttributes(testLogin, testAttributeName);
+				.getAttributes(testLoginSubject.getUserId(), testAttributeName);
 		assertEquals(testAttributeValue, resultAttributes.get(0)
 				.getStringValue());
 	}

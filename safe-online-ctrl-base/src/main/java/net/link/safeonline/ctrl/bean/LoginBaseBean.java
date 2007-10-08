@@ -9,12 +9,14 @@ package net.link.safeonline.ctrl.bean;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.EJB;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 
 import net.link.safeonline.ctrl.LoginBase;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
+import net.link.safeonline.service.SubjectService;
 
 import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.Destroy;
@@ -31,6 +33,9 @@ public class LoginBaseBean implements LoginBase {
 
 	@In(create = true)
 	FacesMessages facesMessages;
+
+	@EJB
+	private SubjectService subjectService;
 
 	@Logger
 	private Log log;
@@ -75,7 +80,8 @@ public class LoginBaseBean implements LoginBase {
 
 	public String getLoggedInUsername() {
 		log.debug("get logged in username");
-		String username = (String) this.sessionContext.get("username");
+		String userId = (String) this.sessionContext.get("username");
+		String username = this.subjectService.getSubjectLogin(userId);
 		return username;
 	}
 

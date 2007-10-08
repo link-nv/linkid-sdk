@@ -38,11 +38,6 @@
 				</h:column>
 
 				<h:column>
-					<f:facet name="header">#{msgs.user}</f:facet>
-					<h:outputLabel value="#{item.principal}" />
-				</h:column>
-
-				<h:column>
 					<f:facet name="header">#{msgs.operationState}</f:facet>
 					<h:outputLabel value="#{item.operationState}" />
 				</h:column>
@@ -50,6 +45,12 @@
 				<h:column>
 					<f:facet name="header">#{msgs.operation}</f:facet>
 					<h:outputLabel value="#{item.operation}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.action}</f:facet>
+					<h:commandLink value="#{msgs.viewPrincipal}"
+						action="#{msgs.viewaction}" />
 				</h:column>
 
 			</t:dataTable>

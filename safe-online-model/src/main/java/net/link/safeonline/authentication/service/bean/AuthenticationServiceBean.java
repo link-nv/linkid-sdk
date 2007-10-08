@@ -28,6 +28,7 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
@@ -45,7 +46,6 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
-import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -61,6 +61,7 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiProvider;
 import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.annotation.NotNull;
@@ -101,7 +102,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	}
 
 	@EJB
-	private SubjectDAO entityDAO;
+	private SubjectService subjectService;
 
 	@EJB
 	private ApplicationDAO applicationDAO;
@@ -144,7 +145,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	String password) throws SubjectNotFoundException, DeviceNotFoundException {
 		LOG.debug("authenticate \"" + login + "\"");
 
-		SubjectEntity subject = this.entityDAO.getSubject(login);
+		SubjectEntity subject = this.subjectService
+				.getSubjectFromUserName(login);
 
 		boolean validationResult = false;
 
@@ -162,7 +164,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			addHistoryEntry(subject, HistoryEventType.LOGIN_INCORRECT_PASSWORD,
 					null, null);
 			this.securityAuditLogger.addSecurityAudit(
-					SecurityThreatType.DECEPTION, login, "incorrect password");
+					SecurityThreatType.DECEPTION, subject.getUserId(),
+					"incorrect password");
 			return false;
 		}
 
@@ -344,7 +347,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		if (INIT == this.authenticationState) {
 			throw new IllegalStateException("call authenticate first");
 		}
-		String userId = this.authenticatedSubject.getLogin();
+		String userId = this.authenticatedSubject.getUserId();
 		return userId;
 	}
 
@@ -353,7 +356,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	String username, @NotNull
 	byte[] registrationStatementData) throws ArgumentIntegrityException,
 			TrustDomainNotFoundException, DecodingException,
-			ExistingUserException {
+			ExistingUserException, AttributeTypeNotFoundException {
 		LOG.debug("registerAndAuthentication: " + username);
 		RegistrationStatement registrationStatement = new RegistrationStatement(
 				registrationStatementData);

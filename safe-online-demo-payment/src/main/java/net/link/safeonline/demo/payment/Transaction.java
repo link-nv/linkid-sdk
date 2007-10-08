@@ -15,7 +15,7 @@ import javax.faces.model.SelectItem;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 
 @Local
-public interface Transaction {
+public interface Transaction extends AbstractPaymentDataClient {
 
 	/*
 	 * Factories.
@@ -28,9 +28,4 @@ public interface Transaction {
 	 * Actions.
 	 */
 	String confirm();
-
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
 }

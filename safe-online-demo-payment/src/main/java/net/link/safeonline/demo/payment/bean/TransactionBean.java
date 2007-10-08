@@ -9,23 +9,14 @@ package net.link.safeonline.demo.payment.bean;
 
 import java.net.ConnectException;
 import java.security.Principal;
-import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.PostActivate;
-import javax.ejb.PrePassivate;
-import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,17 +24,13 @@ import javax.persistence.PersistenceContext;
 import net.link.safeonline.demo.payment.Transaction;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.UserEntity;
-import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -57,7 +44,8 @@ import org.jboss.seam.log.Log;
 @Scope(ScopeType.CONVERSATION)
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/TransactionBean/local")
 @SecurityDomain("demo-payment")
-public class TransactionBean implements Transaction {
+public class TransactionBean extends AbstractPaymentDataClientBean implements
+		Transaction {
 
 	private static final org.apache.commons.logging.Log LOG = LogFactory
 			.getLog(TransactionBean.class);
@@ -76,51 +64,18 @@ public class TransactionBean implements Transaction {
 	@In(value = NEW_PAYMENT_NAME, required = false)
 	private PaymentEntity newPayment;
 
-	private transient AttributeClient attributeClient;
-
-	private PrivateKey privateKey;
-
-	private X509Certificate certificate;
-
 	@In(create = true)
 	FacesMessages facesMessages;
 
-	private String wsHostName;
-	private String wsHostPort;
-
-	@PostConstruct
-	public void postConstructCallback() {
-		PrivateKeyEntry privateKeyEntry = DemoPaymentKeyStoreUtils
-				.getPrivateKeyEntry();
-		this.privateKey = privateKeyEntry.getPrivateKey();
-		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = context.getExternalContext();
-		this.wsHostName = externalContext.getInitParameter("WsHostName");
-		this.wsHostPort = externalContext.getInitParameter("WsHostPort");
-
-		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
-				+ this.wsHostPort, this.certificate, this.privateKey);
-	}
-
-	@PrePassivate
-	public void prePassivateCallback() {
-		// next is not really required
-		this.attributeClient = null;
-	}
-
-	@PostActivate
-	public void postActivateCallback() {
-		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
-				+ this.wsHostPort, this.certificate, this.privateKey);
+	private String getUserId() {
+		Principal principal = this.sessionContext.getCallerPrincipal();
+		return principal.getName();
 	}
 
 	private String getUsername() {
-		Principal principal = this.sessionContext.getCallerPrincipal();
-		String name = principal.getName();
-		log.debug("username #0", name);
-		return name;
+		String username = getUsername(getUserId());
+		log.debug("username #0", username);
+		return username;
 	}
 
 	@RolesAllowed("user")
@@ -143,12 +98,6 @@ public class TransactionBean implements Transaction {
 		return "confirmed";
 	}
 
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-		log.debug("destroy: #0", this);
-	}
-
 	@Factory(NEW_PAYMENT_NAME)
 	@RolesAllowed("user")
 	public PaymentEntity newPaymentEntityFactory() {
@@ -159,10 +108,10 @@ public class TransactionBean implements Transaction {
 	@RolesAllowed("user")
 	public List<SelectItem> visasFactory() {
 		log.debug("visas factory");
-		String username = getUsername();
+		String userId = getUserId();
 		String[] values;
 		try {
-			values = this.attributeClient.getAttributeValue(username,
+			values = this.getAttributeClient().getAttributeValue(userId,
 					"urn:net:lin-k:safe-online:attribute:visaCardNumber",
 					String[].class);
 		} catch (AttributeNotFoundException e) {

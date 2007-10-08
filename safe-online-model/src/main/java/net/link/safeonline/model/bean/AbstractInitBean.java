@@ -32,7 +32,6 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
-import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
@@ -50,6 +49,7 @@ import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
+import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -176,19 +176,24 @@ public abstract class AbstractInitBean implements Startable {
 	}
 
 	public void postStart() {
-		LOG.debug("postStart");
-		initTrustDomains();
-		initAttributeTypes();
-		initAttributeTypeDescriptions();
-		initSubjects();
-		initApplicationOwners();
-		initApplications();
-		initSubscriptions();
-		initIdentities();
-		initApplicationTrustPoints();
-		initAttributeProviders();
-		initAttributes();
-		initDevices();
+		try {
+			LOG.debug("postStart");
+			initTrustDomains();
+			initAttributeTypes();
+			initAttributeTypeDescriptions();
+			initSubjects();
+			initApplicationOwners();
+			initApplications();
+			initSubscriptions();
+			initIdentities();
+			initApplicationTrustPoints();
+			initAttributeProviders();
+			initAttributes();
+			initDevices();
+		} catch (AttributeTypeNotFoundException e) {
+			LOG.fatal("AttributeTypeNotFoundException thrown", e);
+			throw new EJBException(e);
+		}
 	}
 
 	public void preStop() {
@@ -196,7 +201,7 @@ public abstract class AbstractInitBean implements Startable {
 	}
 
 	@EJB
-	private SubjectDAO subjectDAO;
+	private SubjectService subjectService;
 
 	@EJB
 	private ApplicationDAO applicationDAO;
@@ -256,7 +261,8 @@ public abstract class AbstractInitBean implements Startable {
 			}
 			SubjectEntity subject;
 			try {
-				subject = this.subjectDAO.getSubject(subjectLogin);
+				subject = this.subjectService
+						.getSubjectFromUserName(subjectLogin);
 			} catch (SubjectNotFoundException e) {
 				throw new EJBException("subject not found: " + subjectLogin);
 			}
@@ -367,7 +373,8 @@ public abstract class AbstractInitBean implements Startable {
 			String login = subscription.user;
 			String applicationName = subscription.application;
 			SubscriptionOwnerType subscriptionOwnerType = subscription.subscriptionOwnerType;
-			SubjectEntity subject = this.subjectDAO.findSubject(login);
+			SubjectEntity subject = this.subjectService
+					.findSubjectFromUserName(login);
 			ApplicationEntity application = this.applicationDAO
 					.findApplication(applicationName);
 			SubscriptionEntity subscriptionEntity = this.subscriptionDAO
@@ -388,7 +395,8 @@ public abstract class AbstractInitBean implements Startable {
 			if (null != this.applicationOwnerDAO.findApplicationOwner(name)) {
 				continue;
 			}
-			SubjectEntity adminSubject = this.subjectDAO.findSubject(login);
+			SubjectEntity adminSubject = this.subjectService
+					.findSubjectFromUserName(login);
 			this.applicationOwnerDAO.addApplicationOwner(name, adminSubject);
 		}
 	}
@@ -418,15 +426,16 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
-	private void initSubjects() {
+	private void initSubjects() throws AttributeTypeNotFoundException {
 		for (Map.Entry<String, String> authorizedUser : this.authorizedUsers
 				.entrySet()) {
 			String login = authorizedUser.getKey();
-			SubjectEntity subject = this.subjectDAO.findSubject(login);
+			SubjectEntity subject = this.subjectService
+					.findSubjectFromUserName(login);
 			if (null != subject) {
 				continue;
 			}
-			subject = this.subjectDAO.addSubject(login);
+			subject = this.subjectService.addSubject(login);
 
 			String password = authorizedUser.getValue();
 			try {
