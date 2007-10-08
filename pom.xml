@@ -337,8 +337,6 @@
 		<module>safe-online-container</module>
 		<module>safe-online-demo-webapp</module>
 		<module>safe-online-demo-service</module>
-		<module>safe-online-auth-ws</module>
-		<module>safe-online-auth-ws-impl</module>
 		<module>safe-online-sdk</module>
 		<module>safe-online-demo-remote-service</module>
 		<module>safe-online-ws-runtime</module>

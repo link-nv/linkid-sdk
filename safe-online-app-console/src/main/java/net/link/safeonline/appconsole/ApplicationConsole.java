@@ -11,7 +11,6 @@ import static net.link.safeonline.appconsole.Messages.ATTRIB;
 import static net.link.safeonline.appconsole.Messages.AUTH_USER;
 import static net.link.safeonline.appconsole.Messages.CAPTURE;
 import static net.link.safeonline.appconsole.Messages.CREATE_P12;
-import static net.link.safeonline.appconsole.Messages.ECHO;
 import static net.link.safeonline.appconsole.Messages.EXTRACT_CERT;
 import static net.link.safeonline.appconsole.Messages.FILE;
 import static net.link.safeonline.appconsole.Messages.LOAD_IDENTITY;
@@ -82,7 +81,6 @@ public class ApplicationConsole extends JFrame implements Observer {
 			.getMessage());
 	private Action quitAction = new QuitAction(QUIT.getMessage());
 
-	private Action echoAction = new EchoAction(ECHO.getMessage());
 	private Action attribAction = new AttribAction(ATTRIB.getMessage());
 
 	private Action authUserAction = new AuthUserAction(AUTH_USER.getMessage());
@@ -120,10 +118,9 @@ public class ApplicationConsole extends JFrame implements Observer {
 	private JMenuItem authUserMenuItem = new JMenuItem(authUserAction);
 	private JMenuItem quitMenuItem = new JMenuItem(quitAction);
 
-	private JMenuItem echoMenuItem = new JMenuItem(echoAction);
 	private JMenuItem attribMenuItem = new JMenuItem(attribAction);
 
-	private JMenuItem[] servicesMenuItems = { echoMenuItem, attribMenuItem };
+	private JMenuItem[] servicesMenuItems = { attribMenuItem };
 
 	/*
 	 * Non-GUI members
@@ -240,11 +237,6 @@ public class ApplicationConsole extends JFrame implements Observer {
 
 	protected void onAttribService() {
 		contentPanel = new AttribService(this);
-		splitPane.setTopComponent(contentPanel);
-	}
-
-	protected void onEchoService() {
-		contentPanel = new EchoService(this);
 		splitPane.setTopComponent(contentPanel);
 	}
 
@@ -397,20 +389,6 @@ public class ApplicationConsole extends JFrame implements Observer {
 		public void actionPerformed(ActionEvent evt) {
 			LOG.info("Closing Swing SafeOnline Application Console...");
 			System.exit(0);
-		}
-	}
-
-	public class EchoAction extends AbstractAction {
-		private static final long serialVersionUID = 1L;
-
-		public EchoAction(String name) {
-			putValue(NAME, name);
-			putValue(SHORT_DESCRIPTION, name);
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
-		}
-
-		public void actionPerformed(ActionEvent evt) {
-			onEchoService();
 		}
 	}
 
