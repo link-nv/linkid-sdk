@@ -98,7 +98,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		log.debug("captcha: " + captcha);
 
 		if (null == this.captchaService) {
-			this.facesMessages.add("no CAPTCHA service instance found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorNoCaptcha");
 			return null;
 		}
 
@@ -119,20 +120,21 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			 * and this validation call. In that case we just ask the user to
 			 * try again.
 			 */
-			this.facesMessages.addToControl("captcha",
-					"Could not validate CAPTCHA. Try again.");
+			this.facesMessages.addToControlFromResourceBundle("captcha",
+					FacesMessage.SEVERITY_ERROR, "errorNoCaptchaValidation");
 			return null;
 		}
 		if (false == valid) {
-			this.facesMessages.addToControl("captcha",
-					"CAPTCHA invalid. Try again.");
+			this.facesMessages.addToControlFromResourceBundle("captcha",
+					FacesMessage.SEVERITY_ERROR, "errorInvalidCaptcha");
 			return null;
 		}
 
 		boolean loginFree = this.userRegistrationService
 				.isLoginFree(this.login);
 		if (false == loginFree) {
-			this.facesMessages.add("login already taken");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
 			return null;
 		}
 
@@ -149,8 +151,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	public String deviceNext() {
 		log.debug("deviceNext");
 		if (null == this.device) {
-			String msg = "Please make a device selection.";
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceSelection");
 			return null;
 		}
 		log.debug("device: " + this.device);
@@ -181,10 +183,12 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			this.userRegistrationService
 					.registerUser(this.login, this.password);
 		} catch (ExistingUserException e) {
-			this.facesMessages.add("login already taken");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
-			this.facesMessages.add("attribute type not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		}
 
@@ -201,7 +205,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");
 			return null;
 		} catch (DeviceNotFoundException e) {
-			this.facesMessages.add("password device not configured");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPasswordNotFound");
 			return null;
 		}
 

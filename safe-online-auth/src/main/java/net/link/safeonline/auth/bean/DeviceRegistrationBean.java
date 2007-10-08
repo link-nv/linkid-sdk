@@ -11,6 +11,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.DeviceRegistration;
@@ -78,7 +79,8 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 		try {
 			this.credentialService.setPassword(this.password);
 		} catch (PermissionDeniedException e) {
-			this.facesMessages.add("permission denied");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
 		super.relogin(AuthenticationDevice.PASSWORD);

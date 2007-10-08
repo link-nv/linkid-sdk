@@ -10,6 +10,7 @@ package net.link.safeonline.auth.bean;
 import java.io.IOException;
 
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -86,9 +87,9 @@ public class AbstractLoginBean {
 		try {
 			externalContext.redirect(redirectUrl);
 		} catch (IOException e) {
-			String msg = "IO error: " + e.getMessage();
-			log.debug(msg);
-			this.facesMessages.add(msg);
+			log.debug("IO error: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO", e.getMessage());
 			return;
 		}
 	}

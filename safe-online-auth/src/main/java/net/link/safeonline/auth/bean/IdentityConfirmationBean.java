@@ -14,6 +14,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.AuthenticationConstants;
@@ -63,19 +64,20 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 			hasMissingAttributes = this.identityService
 					.hasMissingAttributes(this.application);
 		} catch (SubscriptionNotFoundException e) {
-			String msg = "subscription not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("subscription not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
 			return null;
 		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (ApplicationIdentityNotFoundException e) {
-			String msg = "application identity not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application identity not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationIdentityNotFound");
 			return null;
 		}
 
@@ -106,19 +108,20 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 			LOG.debug("confirmation list: " + confirmationList);
 			return confirmationList;
 		} catch (SubscriptionNotFoundException e) {
-			String msg = "subscription not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("subscription not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
 			return null;
 		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (ApplicationIdentityNotFoundException e) {
-			String msg = "application identity not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application identity not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationIdentityNotFound");
 			return null;
 		}
 	}

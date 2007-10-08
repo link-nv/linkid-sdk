@@ -10,6 +10,7 @@ package net.link.safeonline.auth.bean;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationSubscription;
@@ -59,13 +60,16 @@ public class AuthenticationSubscriptionBean implements
 		try {
 			this.subscriptionService.subscribe(this.applicationId);
 		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.add("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (AlreadySubscribedException e) {
-			this.facesMessages.add("already subscribed");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAlreadySubscribed");
 			return null;
 		} catch (PermissionDeniedException e) {
-			this.facesMessages.add("permission denied");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
 
@@ -78,13 +82,17 @@ public class AuthenticationSubscriptionBean implements
 			confirmationRequired = this.identityService
 					.isConfirmationRequired(applicationId);
 		} catch (SubscriptionNotFoundException e) {
-			this.facesMessages.add("subscription not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
 			return null;
 		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.add("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (ApplicationIdentityNotFoundException e) {
-			this.facesMessages.add("application identity not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationIdentityNotFound");
 			return null;
 		}
 		log.debug("confirmation required: " + confirmationRequired);
@@ -97,14 +105,14 @@ public class AuthenticationSubscriptionBean implements
 			hasMissingAttributes = this.identityService
 					.hasMissingAttributes(this.applicationId);
 		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found.";
-			log.debug(msg);
-			this.facesMessages.add(msg);
+			log.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (ApplicationIdentityNotFoundException e) {
-			String msg = "application identity not found.";
-			log.debug(msg);
-			this.facesMessages.add(msg);
+			log.debug("application identity not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		}
 

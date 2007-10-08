@@ -14,6 +14,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.AuthenticationConstants;
@@ -71,14 +72,15 @@ public class MissingAttributesBean implements MissingAttributes {
 			this.missingAttributeList = this.identityService
 					.listMissingAttributes(this.application, viewLocale);
 		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return;
 		} catch (ApplicationIdentityNotFoundException e) {
-			String msg = "application identity not found.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application identity not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationIdentityNotFound");
 			return;
 		}
 	}
@@ -91,15 +93,19 @@ public class MissingAttributesBean implements MissingAttributes {
 			try {
 				this.identityService.saveAttribute(attribute);
 			} catch (PermissionDeniedException e) {
-				String msg = "permission denied for attribute: "
-						+ attribute.getName();
-				LOG.debug(msg);
-				this.facesMessages.add(msg);
+				LOG.debug("permission denied for attribute: "
+						+ attribute.getName());
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR,
+						"errorPermissionDeniedForAttribute", attribute
+								.getName());
 				return null;
 			} catch (AttributeTypeNotFoundException e) {
-				String msg = "attribute type not found: " + attribute.getName();
-				LOG.debug(msg);
-				this.facesMessages.add(msg);
+				LOG.debug("attribute type not found: " + attribute.getName());
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR,
+						"errorAttributeTypeNotFoundSpecific", attribute
+								.getName());
 				return null;
 			}
 		}

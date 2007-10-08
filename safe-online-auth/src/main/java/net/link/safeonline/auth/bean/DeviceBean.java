@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 
 import net.link.safeonline.auth.AuthenticationConstants;
@@ -74,9 +75,9 @@ public class DeviceBean implements Device {
 	public String next() {
 		LOG.debug("next: " + this.selection);
 		if (null == this.selection) {
-			String msg = "Please make a selection.";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("Please make a selection.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorMakeSelection");
 			return null;
 		}
 		return this.selection;
@@ -97,10 +98,11 @@ public class DeviceBean implements Device {
 			}
 		} catch (ApplicationNotFoundException e) {
 			LOG.error("application not found: " + this.application);
-			this.facesMessages
-					.add("application not found: " + this.application);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 		} catch (EmptyDevicePolicyException e) {
-			this.facesMessages.add("empty device policy");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorEmptyDevicePolicy");
 			LOG.error("empty device policy");
 		}
 		deviceNameDecoration(applicationDevices);
