@@ -17,6 +17,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
@@ -100,12 +101,14 @@ public class DevicesBean implements Devices {
 		} catch (PermissionDeniedException e) {
 			String msg = "old password not correct";
 			LOG.debug(msg);
-			this.facesMessages.addToControl("oldpassword", msg);
+			this.facesMessages.addToControlFromResourceBundle("oldpassword",
+					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotCorrect");
 			return null;
 		} catch (DeviceNotFoundException e) {
 			String msg = "there is no old password";
 			LOG.debug(msg);
-			this.facesMessages.addToControl("oldpassword", msg);
+			this.facesMessages.addToControlFromResourceBundle("oldpassword",
+					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotFound");
 			return null;
 		}
 
@@ -167,7 +170,8 @@ public class DevicesBean implements Devices {
 			beidAttributes = this.identityService.listAttributes(
 					BeIdConstants.BEID_DEVICE_ID, locale);
 		} catch (DeviceNotFoundException e) {
-			this.facesMessages.add("device not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			LOG.error("device not found");
 			return new LinkedList<AttributeDO>();
 		}

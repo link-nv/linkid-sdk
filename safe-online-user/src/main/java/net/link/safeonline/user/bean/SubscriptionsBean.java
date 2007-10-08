@@ -14,6 +14,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
@@ -90,13 +91,17 @@ public class SubscriptionsBean implements Subscriptions {
 			this.confirmedIdentityAttributes = this.identityService
 					.listConfirmedIdentity(applicationName, viewLocale);
 		} catch (SubscriptionNotFoundException e) {
-			this.facesMessages.add("subscription not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
 			return null;
 		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.add("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (ApplicationIdentityNotFoundException e) {
-			this.facesMessages.add("application identity not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationIdentityNotFound");
 			return null;
 		}
 		return "view-subscription";
@@ -111,15 +116,17 @@ public class SubscriptionsBean implements Subscriptions {
 		try {
 			this.subscriptionService.unsubscribe(applicationName);
 		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.add("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (SubscriptionNotFoundException e) {
-			this.facesMessages.add("subscription not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
 			return null;
 		} catch (PermissionDeniedException e) {
-			this.facesMessages
-					.add("entity has no permission to unsubscribe from: "
-							+ applicationName);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorUserMayNotUnsubscribeFrom", applicationName);
 			return null;
 		}
 		subscriptionListFactory();

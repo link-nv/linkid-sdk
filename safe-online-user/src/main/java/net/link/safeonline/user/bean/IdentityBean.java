@@ -15,6 +15,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -83,8 +84,9 @@ public class IdentityBean implements Identity {
 					.listAttributes(viewLocale);
 		} catch (AttributeTypeNotFoundException e) {
 			LOG.error("attribute type not found: " + e.getMessage());
-			this.facesMessages.add("attribute type not found: "
-					+ e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorAttributeTypeNotFoundSpecific", e.getMessage());
 			this.attributeList = new LinkedList<AttributeDO>();
 		}
 	}
@@ -115,17 +117,21 @@ public class IdentityBean implements Identity {
 		} catch (PermissionDeniedException e) {
 			String msg = "user not allowed to remove the attribute";
 			LOG.error(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorUserNotAllowedToRemoveAttribute");
 			return null;
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found";
 			LOG.error(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeNotFound");
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
 			String msg = "attribute type not found";
 			LOG.error(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		}
 		attributeListFactory();

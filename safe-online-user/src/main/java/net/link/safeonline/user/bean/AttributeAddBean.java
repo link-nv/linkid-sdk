@@ -14,6 +14,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -70,12 +71,15 @@ public class AttributeAddBean implements AttributeAdd {
 		} catch (PermissionDeniedException e) {
 			String msg = "user not allowed to edit value for attribute";
 			LOG.error(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorUserNotAllowedToEditAttribute");
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
 			String msg = "attribute type not found";
 			LOG.error(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		}
 		return "success";
@@ -90,7 +94,8 @@ public class AttributeAddBean implements AttributeAdd {
 		} catch (AttributeTypeNotFoundException e) {
 			String msg = "attribute type not found";
 			LOG.error(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			this.attributeAddContext = new LinkedList<AttributeDO>();
 		}
 	}
