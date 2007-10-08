@@ -14,6 +14,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ExistingSchedulingException;
@@ -191,8 +192,8 @@ public class SchedulingBean implements Scheduling {
 		try {
 			this.schedulingService.saveScheduling(this.selectedScheduling);
 		} catch (InvalidCronExpressionException e) {
-			this.facesMessages.addToControl("cronExpression",
-					"invalid cron expression");
+			this.facesMessages.addToControlFromResourceBundle("cronExpression",
+					FacesMessage.SEVERITY_ERROR, "errorCronExpressionInvalid");
 			return null;
 		}
 		return "successsavescheduling";
@@ -214,12 +215,14 @@ public class SchedulingBean implements Scheduling {
 		try {
 			this.schedulingService.addScheduling(this.newScheduling);
 		} catch (InvalidCronExpressionException e) {
-			this.facesMessages.addToControl("cronExpression",
-					"cron expression is not valid");
+			this.facesMessages.addToControlFromResourceBundle("cronExpression",
+					FacesMessage.SEVERITY_ERROR, "errorCronExpressionInvalid");
 			return null;
 		} catch (ExistingSchedulingException e) {
 			this.facesMessages
-					.addToControl("name", "scheduling already exists");
+					.addToControlFromResourceBundle("cronExpression",
+							FacesMessage.SEVERITY_ERROR,
+							"errorSchedulingAlreadyExists");
 			return null;
 		}
 		return "successaddscheduling";

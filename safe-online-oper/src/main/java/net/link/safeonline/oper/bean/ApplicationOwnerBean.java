@@ -14,6 +14,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -85,12 +86,15 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 		} catch (SubjectNotFoundException e) {
 			String msg = "subject not found";
 			LOG.debug(msg);
-			this.facesMessages.addToControl("login", msg);
+			this.facesMessages.addToControlFromResourceBundle("login",
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
 			return null;
 		} catch (ExistingApplicationOwnerException e) {
 			String msg = "application owner already exists";
 			LOG.debug(msg);
-			this.facesMessages.addToControl("name", msg);
+			this.facesMessages.addToControlFromResourceBundle("name",
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationOwnerAlreadyExists");
 			return null;
 		}
 		return "success";

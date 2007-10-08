@@ -351,7 +351,8 @@ public class AuditSearchBean implements AuditSearch {
 		} catch (AuditContextNotFoundException e) {
 			String msg = "audit context not found";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAuditContextNotFound");
 			return null;
 		}
 		auditContextListFactory();

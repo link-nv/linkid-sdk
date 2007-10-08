@@ -14,6 +14,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -221,17 +222,23 @@ public class AddAttributeBean implements AddAttribute {
 		} catch (ExistingAttributeTypeException e) {
 			String msg = "existing attribute type";
 			log.debug(msg);
-			this.facesMessages.addToControl("name", msg);
+			this.facesMessages.addToControlFromResourceBundle("name",
+					FacesMessage.SEVERITY_ERROR,
+					"errorAttributeTypeAlreadyExists");
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
 			String msg = "member attribute type not found";
 			log.debug(msg);
-			this.facesMessages.addToControl("name", msg);
+			this.facesMessages.addToControlFromResourceBundle("name",
+					FacesMessage.SEVERITY_ERROR,
+					"errorAttributeTypeMemberNotFound");
 			return null;
 		} catch (AttributeTypeDefinitionException e) {
 			String msg = "illegal member attribute type";
 			log.debug(msg);
-			this.facesMessages.addToControl("name", msg);
+			this.facesMessages.addToControlFromResourceBundle("name",
+					FacesMessage.SEVERITY_ERROR,
+					"errorAttributeTypeMemberIllegal");
 			return null;
 		}
 

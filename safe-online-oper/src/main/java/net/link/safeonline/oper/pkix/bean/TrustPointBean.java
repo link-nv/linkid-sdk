@@ -18,6 +18,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -133,22 +134,28 @@ public class TrustPointBean implements TrustPoint {
 		} catch (TrustDomainNotFoundException e) {
 			String msg = "trust domain not found";
 			LOG.debug(msg);
-			this.facesMessages.addToControl("fileupload", msg);
+			this.facesMessages.addToControlFromResourceBundle("fileupload",
+					FacesMessage.SEVERITY_ERROR, "errorTrustDomainNotFound");
 			return null;
 		} catch (CertificateEncodingException e) {
 			String msg = "certificate encoding error";
 			LOG.debug(msg);
-			this.facesMessages.addToControl("fileupload", msg);
+			this.facesMessages.addToControlFromResourceBundle("fileupload",
+					FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
 			return null;
 		} catch (ExistingTrustPointException e) {
 			String msg = "existing trust point";
 			LOG.debug(msg);
-			this.facesMessages.addToControl("fileupload", msg);
+			this.facesMessages
+					.addToControlFromResourceBundle("fileupload",
+							FacesMessage.SEVERITY_ERROR,
+							"errorTrustPointAlreadyExists");
 			return null;
 		} catch (IOException e) {
 			String msg = "I/O error";
 			LOG.debug(msg);
-			this.facesMessages.addToControl("fileupload", msg);
+			this.facesMessages.addToControlFromResourceBundle("fileupload",
+					FacesMessage.SEVERITY_ERROR, "errorIO");
 			return null;
 		}
 		return "success";
@@ -209,7 +216,8 @@ public class TrustPointBean implements TrustPoint {
 		} catch (TrustPointNotFoundException e) {
 			String msg = "trust point not found";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorTrustPointNotFound");
 			return null;
 		}
 		return "removed";

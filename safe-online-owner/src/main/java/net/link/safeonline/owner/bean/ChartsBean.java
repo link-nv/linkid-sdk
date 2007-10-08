@@ -14,6 +14,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -80,7 +81,8 @@ public class ChartsBean implements Charts {
 					.getStatistics(this.selectedApplication);
 		} catch (PermissionDeniedException e) {
 			LOG.error("permission denied: " + e.getMessage());
-			this.facesMessages.add("permission denied");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			this.statList = new LinkedList<StatisticEntity>();
 		}
 	}

@@ -13,6 +13,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.oper.OperatorConstants;
@@ -86,7 +87,9 @@ public class TrustDomainBean implements TrustDomain {
 		} catch (ExistingTrustDomainException e) {
 			String msg = "existing trust domain";
 			LOG.debug(msg);
-			this.facesMessages.addToControl("name", msg);
+			this.facesMessages.addToControlFromResourceBundle("name",
+					FacesMessage.SEVERITY_ERROR,
+					"errorTrustDomainAlreadyExists");
 			return null;
 		}
 		return "success";
@@ -113,7 +116,8 @@ public class TrustDomainBean implements TrustDomain {
 		} catch (TrustDomainNotFoundException e) {
 			String msg = "trust domain not found";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorTrustDomainNotFound");
 			return null;
 		}
 		trustDomainListFactory();

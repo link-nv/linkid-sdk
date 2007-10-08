@@ -13,6 +13,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -87,7 +88,8 @@ public class AttributeDescriptionBean implements AttributeDescription {
 		} catch (AttributeTypeNotFoundException e) {
 			String msg = "attribute type not found";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 		}
 	}
 
@@ -124,7 +126,8 @@ public class AttributeDescriptionBean implements AttributeDescription {
 		} catch (AttributeTypeNotFoundException e) {
 			String msg = "attribute type not found";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 		}
 		return "success";
 	}
@@ -139,7 +142,9 @@ public class AttributeDescriptionBean implements AttributeDescription {
 		} catch (AttributeTypeDescriptionNotFoundException e) {
 			String msg = "attribute type description not found";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorAttributeTypeDescriptionNotFound");
 		}
 		attributeTypeDescriptionsFactory();
 		return "removed";

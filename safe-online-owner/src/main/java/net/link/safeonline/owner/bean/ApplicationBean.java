@@ -15,6 +15,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -108,19 +109,20 @@ public class ApplicationBean implements Application {
 			this.selectedApplicationIdentity = this.applicationService
 					.getCurrentApplicationIdentity(applicationName);
 		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (ApplicationIdentityNotFoundException e) {
-			String msg = "application identity not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application identity not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationIdentityNotFound");
 			return null;
 		} catch (PermissionDeniedException e) {
-			String msg = "permission denied";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("permission denied.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
 
@@ -161,14 +163,14 @@ public class ApplicationBean implements Application {
 			this.deviceService.setAllowedDevices(this.selectedApplication,
 					allowedDeviceList);
 		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (PermissionDeniedException e) {
-			String msg = "permission denied";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("permission denied.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
 		return "saved";

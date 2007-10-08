@@ -17,6 +17,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.RoleNotFoundException;
@@ -73,7 +74,8 @@ public class AuthorizationBean implements Authorization {
 		try {
 			this.roles = this.authorizationManagerService.getRoles(this.user);
 		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addToControl("user", "subject not found");
+			this.facesMessages.addToControlFromResourceBundle("user",
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
 			return null;
 		}
 		log.debug("roles: #0", this.roles);
@@ -106,10 +108,12 @@ public class AuthorizationBean implements Authorization {
 		try {
 			this.authorizationManagerService.setRoles(this.user, this.roles);
 		} catch (SubjectNotFoundException e) {
-			this.facesMessages.add("subject not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
 			return null;
 		} catch (RoleNotFoundException e) {
-			this.facesMessages.add("role not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorRoleNotFound");
 			return null;
 		}
 		return "saved";

@@ -7,6 +7,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -75,7 +76,8 @@ public class AttributeProviderBean implements AttributeProvider {
 			this.attributeProviders = this.attributeProviderManagerService
 					.getAttributeProviders(attributeName);
 		} catch (AttributeTypeNotFoundException e) {
-			this.facesMessages.add("attribute type not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 		}
 	}
 
@@ -93,7 +95,9 @@ public class AttributeProviderBean implements AttributeProvider {
 			this.attributeProviderManagerService
 					.removeAttributeProvider(this.selectedAttributeProvider);
 		} catch (AttributeProviderNotFoundException e) {
-			this.facesMessages.add("attribute provider not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorAttributeProviderNotFound");
 			return null;
 		}
 		attributeProvidersFactory();
@@ -107,13 +111,17 @@ public class AttributeProviderBean implements AttributeProvider {
 			this.attributeProviderManagerService.addAttributeProvider(
 					this.application, this.selectedAttributeType.getName());
 		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.add("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
-			this.facesMessages.add("attribute type not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		} catch (ExistingAttributeProviderException e) {
-			this.facesMessages.add("existing attribute provider");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorAttributeProviderAlreadyExists");
 			return null;
 		}
 		return "success";

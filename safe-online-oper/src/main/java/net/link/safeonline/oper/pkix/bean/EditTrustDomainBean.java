@@ -11,6 +11,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.oper.OperatorConstants;
@@ -56,13 +57,15 @@ public class EditTrustDomainBean implements EditTrustDomain {
 	public String save() {
 		LOG.debug("saving " + this.selectedTrustDomain);
 		this.selectedTrustDomain.setPerformOcspCheck(this.performOcspCheck);
-		this.selectedTrustDomain.setOcspCacheTimeOutMillis(this.ocspCacheTimeOutMillis);
+		this.selectedTrustDomain
+				.setOcspCacheTimeOutMillis(this.ocspCacheTimeOutMillis);
 		try {
 			this.pkiService.saveTrustDomain(this.selectedTrustDomain);
 		} catch (TrustDomainNotFoundException e) {
 			String msg = "trust domain not found";
 			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorTrustDomainNotFound");
 			return null;
 		}
 		return "success";
@@ -99,7 +102,8 @@ public class EditTrustDomainBean implements EditTrustDomain {
 	public String edit() {
 		LOG.debug("view selected trust domain: " + this.selectedTrustDomain);
 		this.performOcspCheck = this.selectedTrustDomain.isPerformOcspCheck();
-		this.ocspCacheTimeOutMillis = this.selectedTrustDomain.getOcspCacheTimeOutMillis();
+		this.ocspCacheTimeOutMillis = this.selectedTrustDomain
+				.getOcspCacheTimeOutMillis();
 		return "edit";
 	}
 

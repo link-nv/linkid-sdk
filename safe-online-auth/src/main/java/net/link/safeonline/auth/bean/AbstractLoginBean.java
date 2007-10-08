@@ -89,7 +89,7 @@ public class AbstractLoginBean {
 		} catch (IOException e) {
 			log.debug("IO error: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO", e.getMessage());
+					FacesMessage.SEVERITY_ERROR, "errorIO");
 			return;
 		}
 	}

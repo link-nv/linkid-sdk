@@ -181,9 +181,9 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		try {
 			this.helpdeskService.removeLog(id);
 		} catch (HelpdeskContextNotFoundException e) {
-			String msg = "helpdesk log not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("helpdesk log not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorHelpdeskLogNotFound");
 			return null;
 		}
 		if (null == this.selectedContext)

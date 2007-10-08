@@ -20,6 +20,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
@@ -157,19 +158,20 @@ public class ApplicationBean implements Application {
 					.getSubjectLogin(this.selectedApplication
 							.getApplicationOwner().getAdmin().getUserId());
 		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return;
 		} catch (ApplicationIdentityNotFoundException e) {
-			String msg = "application identity not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application identity not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationIdentityNotFound");
 			return;
 		} catch (PermissionDeniedException e) {
-			String msg = "permission denied";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("permission denied.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return;
 		}
 	}
@@ -201,30 +203,31 @@ public class ApplicationBean implements Application {
 					this.friendlyName, this.applicationOwner, this.description,
 					encodedCertificate, identityAttributes);
 		} catch (ExistingApplicationException e) {
-			String msg = "application already exists: " + this.name;
-			LOG.debug(msg);
-			this.facesMessages.addToControl("name", msg);
+			LOG.debug("application already exists: " + this.name);
+			this.facesMessages.addToControlFromResourceBundle("name",
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationAlreadyExists", this.name);
 			return null;
 		} catch (ApplicationOwnerNotFoundException e) {
-			String msg = "application owner not found: "
-					+ this.applicationOwner;
-			LOG.debug(msg);
-			this.facesMessages.addToControl("owner", msg);
+			LOG.debug("application owner not found: " + this.applicationOwner);
+			this.facesMessages.addToControlFromResourceBundle("owner",
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationOwnerNotFound", this.applicationOwner);
 			return null;
 		} catch (IOException e) {
-			String msg = "IO error";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("IO error");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
 			return null;
 		} catch (CertificateEncodingException e) {
-			String msg = "X509 certificate encoding error";
-			LOG.debug(msg);
-			this.facesMessages.addToControl("fileupload", msg);
+			LOG.debug("X509 certificate encoding error");
+			this.facesMessages.addToControlFromResourceBundle("fileupload",
+					FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
-			String msg = "attribute type not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("attribute type not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		}
 		return "success";
@@ -282,14 +285,14 @@ public class ApplicationBean implements Application {
 		try {
 			this.applicationService.removeApplication(applicationName);
 		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (PermissionDeniedException e) {
-			String msg = "permission denied to remove: " + applicationName;
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("permission denied to remove: " + applicationName);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
 		applicationListFactory();
@@ -318,19 +321,20 @@ public class ApplicationBean implements Application {
 					.getCurrentApplicationIdentity(this.selectedApplication
 							.getName());
 		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return;
 		} catch (ApplicationIdentityNotFoundException e) {
-			String msg = "application identity not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application identity not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationIdentityNotFound");
 			return;
 		} catch (PermissionDeniedException e) {
-			String msg = "permission denied";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("permission denied.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return;
 		}
 
@@ -389,19 +393,20 @@ public class ApplicationBean implements Application {
 				this.applicationService.updateApplicationCertificate(
 						applicationId, getUpFileContent());
 			} catch (CertificateEncodingException e) {
-				String msg = "certificate encoding error";
-				LOG.debug(msg);
-				this.facesMessages.add(msg);
+				LOG.debug("certificate encoding error");
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
 				return null;
 			} catch (ApplicationNotFoundException e) {
-				String msg = "application not found";
-				LOG.debug(msg);
-				this.facesMessages.add(msg);
+				LOG.debug("application not found");
+				this.facesMessages
+						.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
+								"errorApplicationNotFound");
 				return null;
 			} catch (IOException e) {
-				String msg = "IO error: " + e.getMessage();
-				LOG.debug(msg);
-				this.facesMessages.add(msg);
+				LOG.debug("IO error: " + e.getMessage());
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorIO");
 				return null;
 			}
 		}
@@ -428,24 +433,25 @@ public class ApplicationBean implements Application {
 			this.applicationIdentityAttributes = this.applicationService
 					.getCurrentApplicationIdentity(applicationId);
 		} catch (ApplicationNotFoundException e) {
-			String msg = "application not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (ApplicationIdentityNotFoundException e) {
-			String msg = "application identity not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application identity not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationIdentityNotFound");
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
-			String msg = "attribute type not found";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("application identity not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		} catch (PermissionDeniedException e) {
-			String msg = "permission denied";
-			LOG.debug(msg);
-			this.facesMessages.add(msg);
+			LOG.debug("permission denied.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
 		return "success";
