@@ -37,6 +37,7 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -115,13 +116,17 @@ public class ExitServletTest {
 				.andStubReturn(60 * 10);
 		this.mockAuthenticationService = createMock(AuthenticationService.class);
 		SubjectManager mockSubjectManager = createMock(SubjectManager.class);
+		SubjectService mockSubjectService = createMock(SubjectService.class);
+		expect(mockSubjectService.getSubjectLogin("test-user-name"))
+				.andStubReturn("test-user-name");
 		HistoryDAO mockHistoryDAO = createMock(HistoryDAO.class);
 		HelpdeskManager mockHelpdeskManager = createMock(HelpdeskManager.class);
 		List<HelpdeskEventEntity> helpdeskContext = new Vector<HelpdeskEventEntity>();
 		expect(mockHelpdeskManager.persist("ExitServlet", helpdeskContext))
 				.andStubReturn(new Long(1));
 		this.mockObjects = new Object[] { mockSamlAuthorityService,
-				this.mockAuthenticationService, mockHelpdeskManager };
+				this.mockAuthenticationService, mockHelpdeskManager,
+				mockSubjectService };
 		this.jndiTestUtils.setUp();
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/SamlAuthorityServiceBean/local",
@@ -130,6 +135,8 @@ public class ExitServletTest {
 				"SafeOnline/HelpdeskManagerBean/local", mockHelpdeskManager);
 		this.jndiTestUtils.bindComponent("SafeOnline/SubjectManagerBean/local",
 				mockSubjectManager);
+		this.jndiTestUtils.bindComponent("SafeOnline/SubjectServiceBean/local",
+				mockSubjectService);
 		this.jndiTestUtils.bindComponent("SafeOnline/HistoryDAOBean/local",
 				mockHistoryDAO);
 
