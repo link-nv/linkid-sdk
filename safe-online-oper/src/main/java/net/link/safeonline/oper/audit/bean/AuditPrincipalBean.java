@@ -24,6 +24,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.FacesMessages;
 
@@ -41,15 +42,20 @@ public class AuditPrincipalBean implements AuditPrincipal {
 	FacesMessages facesMessages;
 
 	@In(required = true)
-	private String principal;
+	@Out(required = true)
+	String principal;
 
 	@EJB
 	private SubjectService subjectService;
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String view() {
-		LOG.debug("view audit principal");
-		return "view";
+	public String getName() {
+		String name;
+		if (!this.principal.equals(OperatorConstants.UNKNOWN_PRINCIPAL))
+			name = this.subjectService.getSubjectLogin(this.principal);
+		else
+			name = OperatorConstants.UNKNOWN_PRINCIPAL;
+		return name;
 	}
 
 	@Remove
@@ -57,5 +63,4 @@ public class AuditPrincipalBean implements AuditPrincipal {
 	public void destroyCallback() {
 		LOG.debug("destroy");
 	}
-
 }

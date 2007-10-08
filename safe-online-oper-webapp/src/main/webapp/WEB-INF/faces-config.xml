@@ -641,7 +641,7 @@
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>view</from-action>
+			<from-outcome>view-principal</from-outcome>
 			<to-view-id>/audit/principal-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
@@ -660,6 +660,10 @@
 			<from-action>back</from-action>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-principal</from-outcome>
+			<to-view-id>/audit/principal-view.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -668,6 +672,10 @@
 			<from-action>back</from-action>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-principal</from-outcome>
+			<to-view-id>/audit/principal-view.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -675,6 +683,10 @@
 		<navigation-case>
 			<from-action>back</from-action>
 			<to-view-id>/audit/audit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-principal</from-outcome>
+			<to-view-id>/audit/principal-view.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

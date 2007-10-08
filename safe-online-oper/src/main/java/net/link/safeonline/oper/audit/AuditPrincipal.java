@@ -11,11 +11,10 @@ import javax.ejb.Local;
 
 @Local
 public interface AuditPrincipal {
-
 	/*
-	 * Actions
+	 * Accessors
 	 */
-	String view();
+	String getName();
 
 	/*
 	 * Lifecycle

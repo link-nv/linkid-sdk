@@ -77,6 +77,8 @@ public interface AuditSearch {
 
 	String searchLastTime();
 
+	String viewPrincipal();
+
 	/*
 	 * Validators
 	 */

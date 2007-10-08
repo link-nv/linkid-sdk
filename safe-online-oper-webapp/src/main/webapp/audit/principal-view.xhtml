@@ -15,6 +15,14 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
+
+		<h2>#{msgs.operatorAuditPrincipal} : #{principal}</h2>
+
+		<h:panelGrid columns="2" border="0">
+			<f:verbatim>#{msgs.name}</f:verbatim>
+			<h:outputLabel value="#{audit_principal.name}" />
+		</h:panelGrid>
+
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">

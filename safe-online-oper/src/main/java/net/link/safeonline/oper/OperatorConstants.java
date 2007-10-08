@@ -18,4 +18,6 @@ public class OperatorConstants {
 	public static final String OPERATOR_ROLE = "operator";
 
 	public static final String JNDI_PREFIX = "SafeOnline/oper/";
+
+	public static final String UNKNOWN_PRINCIPAL = "<none>";
 }
