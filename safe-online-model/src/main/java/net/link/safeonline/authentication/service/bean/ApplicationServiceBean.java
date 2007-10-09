@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Set;
@@ -131,7 +132,7 @@ public class ApplicationServiceBean implements ApplicationService,
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void addApplication(String name, String friendlyName,
 			String applicationOwnerName, String description,
-			byte[] encodedCertificate,
+			URL applicationUrl, byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
@@ -146,7 +147,8 @@ public class ApplicationServiceBean implements ApplicationService,
 				.getApplicationOwner(applicationOwnerName);
 
 		ApplicationEntity application = this.applicationDAO.addApplication(
-				name, friendlyName, applicationOwner, description, certificate);
+				name, friendlyName, applicationOwner, description,
+				applicationUrl, certificate);
 
 		setInitialApplicationIdentity(initialApplicationIdentityAttributes,
 				application);
@@ -345,7 +347,6 @@ public class ApplicationServiceBean implements ApplicationService,
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void updateApplicationIdentity(String applicationId,
 			List<IdentityAttributeTypeDO> applicationIdentityAttributes)
@@ -354,6 +355,12 @@ public class ApplicationServiceBean implements ApplicationService,
 			AttributeTypeNotFoundException {
 		this.applicationIdentityService.updateApplicationIdentity(
 				applicationId, applicationIdentityAttributes);
+	}
+
+	public void updateApplicationUrl(String applicationId, URL applicationUrl)
+			throws ApplicationNotFoundException {
+
+		getApplication(applicationId).setApplicationUrl(applicationUrl);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

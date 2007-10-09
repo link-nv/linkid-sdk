@@ -67,7 +67,7 @@
 			<to-view-id>/applications/applications.seam</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>edit</from-action>
+			<from-outcome>edit</from-outcome>
 			<to-view-id>/applications/application-edit.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>

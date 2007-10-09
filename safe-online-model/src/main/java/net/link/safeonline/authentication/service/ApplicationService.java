@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Set;
 
@@ -75,7 +76,7 @@ public interface ApplicationService {
 	 */
 	void addApplication(String name, String friendlyName,
 			String applicationOwnerName, String description,
-			byte[] encodedCertificate,
+			URL applicationUrl, byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
@@ -153,6 +154,16 @@ public interface ApplicationService {
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException,
 			AttributeTypeNotFoundException;
+
+	/**
+	 * Updates the application URL for the given application.
+	 * 
+	 * @param applicationId
+	 * @param applicationUrl
+	 * @throws ApplicationNotFoundException
+	 */
+	void updateApplicationUrl(String applicationId, URL applicationUrl)
+			throws ApplicationNotFoundException;
 
 	/**
 	 * Updates the X509 certificate of the given application.

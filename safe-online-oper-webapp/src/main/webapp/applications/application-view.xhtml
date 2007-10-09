@@ -48,6 +48,15 @@
 						<th>#{msgs.operatorNumberOfSubscriptions}:</th>
 						<td>#{numberOfSubscriptions}</td>
 					</tr>
+                    <tr>
+                        <th>#{msgs.applicationUrl}:</th>
+                        <td><h:outputLink value="#{selectedApplication.applicationUrl}"
+                                rendered="#{!empty selectedApplication.applicationUrl}">
+                                #{selectedApplication.applicationUrl}
+                            </h:outputLink>
+                            <h:outputText value="#{msgs.noApplicationUrl}"
+                                rendered="#{empty selectedApplication.applicationUrl}" /></td>
+                    </tr>
 				</table>
 			</rich:tab>
 
@@ -89,7 +98,7 @@
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" id="back" action="back" />
 			<so:nbsp />
-			<h:commandButton action="edit" id="edit" value="#{msgs.editaction}" />
+			<h:commandButton action="#{operApplication.edit}" id="edit" value="#{msgs.editaction}" />
 		</h:form>
 
 	</ui:define>

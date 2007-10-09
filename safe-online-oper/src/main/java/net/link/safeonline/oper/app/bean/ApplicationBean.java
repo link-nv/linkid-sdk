@@ -10,6 +10,8 @@ package net.link.safeonline.oper.app.bean;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,6 +90,8 @@ public class ApplicationBean implements Application {
 
 	private String description;
 
+	private String applicationUrl;
+
 	private String applicationOwner;
 
 	private UploadedFile upFile;
@@ -106,7 +110,7 @@ public class ApplicationBean implements Application {
 
 	public static final String IDENTITY_ATTRIBUTES_NAME = "identityAttributes";
 
-	@DataModel(value = IDENTITY_ATTRIBUTES_NAME)
+	@DataModel(IDENTITY_ATTRIBUTES_NAME)
 	private List<IdentityAttribute> identityAttributes;
 
 	@Remove
@@ -114,6 +118,7 @@ public class ApplicationBean implements Application {
 	public void destroyCallback() {
 		this.name = null;
 		this.description = null;
+		this.applicationUrl = null;
 	}
 
 	public static final String OPER_APPLICATION_LIST_NAME = "operApplicationList";
@@ -178,9 +183,24 @@ public class ApplicationBean implements Application {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String add() {
+
 		LOG.debug("add application: " + this.name);
 		if (null != this.friendlyName)
 			LOG.debug("user friendly name: " + this.friendlyName);
+		if (null != this.applicationUrl)
+			LOG.debug("application url: " + this.applicationUrl);
+
+		URL newApplicationUrl = null;
+		try {
+			newApplicationUrl = new URL(this.applicationUrl);
+		} catch (MalformedURLException e) {
+			LOG.debug("illegal URL format: " + this.applicationUrl);
+			this.facesMessages.addToControlFromResourceBundle("applicationUrl",
+					FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
+					this.applicationUrl);
+			return null;
+		}
+
 		List<IdentityAttributeTypeDO> identityAttributes = new LinkedList<IdentityAttributeTypeDO>();
 		for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
 			if (false == viewIdentityAttribute.isIncluded()) {
@@ -201,7 +221,7 @@ public class ApplicationBean implements Application {
 			}
 			this.applicationService.addApplication(this.name,
 					this.friendlyName, this.applicationOwner, this.description,
-					encodedCertificate, identityAttributes);
+					newApplicationUrl, encodedCertificate, identityAttributes);
 		} catch (ExistingApplicationException e) {
 			LOG.debug("application already exists: " + this.name);
 			this.facesMessages.addToControlFromResourceBundle("name",
@@ -230,6 +250,7 @@ public class ApplicationBean implements Application {
 					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		}
+		applicationListFactory();
 		return "success";
 	}
 
@@ -247,12 +268,22 @@ public class ApplicationBean implements Application {
 		return this.description;
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getApplicationUrl() {
+
+		return applicationUrl;
+	}
+
+	public void setApplicationUrl(String applicationUrl) {
+
+		this.applicationUrl = applicationUrl;
+	}
+
+	public String getName() {
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -387,6 +418,18 @@ public class ApplicationBean implements Application {
 		String applicationId = this.selectedApplication.getName();
 		LOG.debug("save application: " + applicationId);
 
+		URL newApplicationUrl = null;
+		if (null != this.applicationUrl)
+			try {
+				newApplicationUrl = new URL(applicationUrl);
+			} catch (MalformedURLException e) {
+				LOG.debug("illegal URL format: " + this.applicationUrl);
+				this.facesMessages.addToControlFromResourceBundle(
+						"applicationUrl", FacesMessage.SEVERITY_ERROR,
+						"errorIllegalUrl", this.applicationUrl);
+				return null;
+			}
+
 		if (null != this.upFile) {
 			LOG.debug("updating application certificate");
 			try {
@@ -422,9 +465,13 @@ public class ApplicationBean implements Application {
 							.isDataMining());
 			newIdentityAttributes.add(newIdentityAttribute);
 		}
+
 		try {
 			this.applicationService.updateApplicationIdentity(applicationId,
 					newIdentityAttributes);
+			this.applicationService.updateApplicationUrl(applicationId,
+					newApplicationUrl);
+
 			/*
 			 * Refresh the selected application.
 			 */
@@ -464,6 +511,19 @@ public class ApplicationBean implements Application {
 		 */
 		LOG.debug("view application: " + this.selectedApplication.getName());
 		return "view";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String edit() {
+		/*
+		 * To set the selected application.
+		 */
+		LOG.debug("edit application: " + this.selectedApplication.getName());
+		if (null != selectedApplication.getApplicationUrl())
+			applicationUrl = selectedApplication.getApplicationUrl()
+					.toExternalForm();
+
+		return "edit";
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

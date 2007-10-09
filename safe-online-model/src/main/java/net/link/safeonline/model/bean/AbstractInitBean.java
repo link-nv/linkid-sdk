@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.bean;
 
+import java.net.URL;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -67,6 +68,8 @@ public abstract class AbstractInitBean implements Startable {
 
 		private final String description;
 
+		private final URL applicationUrl;
+
 		private final String owner;
 
 		private final boolean allowUserSubscription;
@@ -76,38 +79,42 @@ public abstract class AbstractInitBean implements Startable {
 		private final X509Certificate certificate;
 
 		public Application(String name, String owner, String description,
-				boolean allowUserSubscription, boolean removable,
-				X509Certificate certificate) {
+				URL applicationUrl, boolean allowUserSubscription,
+				boolean removable, X509Certificate certificate) {
 			this.name = name;
 			this.owner = owner;
 			this.description = description;
+			this.applicationUrl = applicationUrl;
 			this.allowUserSubscription = allowUserSubscription;
 			this.removable = removable;
 			this.certificate = certificate;
 		}
 
 		public Application(String name, String owner, String description,
-				boolean allowUserSubscription, boolean removable) {
-			this(name, owner, description, allowUserSubscription, removable,
-					null);
-		}
-
-		public Application(String name, String owner, String description) {
-			this(name, owner, description, true, true);
+				URL applicationUrl, boolean allowUserSubscription,
+				boolean removable) {
+			this(name, owner, description, applicationUrl,
+					allowUserSubscription, removable, null);
 		}
 
 		public Application(String name, String owner, String description,
-				X509Certificate certificate) {
-			this(name, owner, description, true, true, certificate);
+				URL applicationUrl) {
+			this(name, owner, description, applicationUrl, true, true);
+		}
+
+		public Application(String name, String owner, String description,
+				URL applicationUrl, X509Certificate certificate) {
+			this(name, owner, description, applicationUrl, true, true,
+					certificate);
 		}
 
 		public Application(String name, String owner) {
-			this(name, owner, (String) null);
+			this(name, owner, null, null);
 		}
 
 		public Application(String name, String owner,
 				X509Certificate certificate) {
-			this(name, owner, null, certificate);
+			this(name, owner, null, null, certificate);
 		}
 	}
 
@@ -419,6 +426,7 @@ public abstract class AbstractInitBean implements Startable {
 					.addApplication(applicationName, null, applicationOwner,
 							application.allowUserSubscription,
 							application.removable, application.description,
+							application.applicationUrl,
 							application.certificate, identityVersion);
 
 			this.applicationIdentityDAO.addApplicationIdentity(newApplication,

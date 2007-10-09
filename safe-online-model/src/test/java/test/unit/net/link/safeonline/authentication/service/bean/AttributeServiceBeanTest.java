@@ -125,6 +125,7 @@ public class AttributeServiceBeanTest {
 						"owner",
 						null,
 						null,
+						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
 										testAttributeName, true, false) }));
@@ -181,6 +182,7 @@ public class AttributeServiceBeanTest {
 						testApplicationName,
 						null,
 						"owner",
+						null,
 						null,
 						null,
 						Arrays
@@ -246,6 +248,7 @@ public class AttributeServiceBeanTest {
 						testApplicationName,
 						null,
 						"owner",
+						null,
 						null,
 						null,
 						Arrays
@@ -322,6 +325,7 @@ public class AttributeServiceBeanTest {
 						testApplicationName,
 						null,
 						"owner",
+						null,
 						null,
 						null,
 						Arrays
@@ -404,6 +408,7 @@ public class AttributeServiceBeanTest {
 						"owner",
 						null,
 						null,
+						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
 										testAttributeName, true, false) }));
@@ -478,6 +483,7 @@ public class AttributeServiceBeanTest {
 						testApplicationName,
 						null,
 						"owner",
+						null,
 						null,
 						null,
 						Arrays
@@ -559,6 +565,7 @@ public class AttributeServiceBeanTest {
 						testApplicationName,
 						null,
 						"owner",
+						null,
 						null,
 						null,
 						Arrays
@@ -677,6 +684,7 @@ public class AttributeServiceBeanTest {
 						testApplicationName,
 						null,
 						"owner",
+						null,
 						null,
 						null,
 						Arrays

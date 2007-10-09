@@ -7,6 +7,7 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -52,11 +53,11 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	public ApplicationEntity addApplication(String applicationName,
 			String applicationFriendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
-			X509Certificate certificate) {
+			URL applicationUrl, X509Certificate certificate) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
 				applicationFriendlyName, applicationOwner, description,
-				certificate);
+				applicationUrl, certificate);
 		this.entityManager.persist(application);
 		return application;
 	}
@@ -86,12 +87,13 @@ public class ApplicationDAOBean implements ApplicationDAO {
 			String applicationFriendlyName,
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable,
-			String description, X509Certificate certificate,
-			long initialIdentityVersion) {
+			String description, URL applicationUrl,
+			X509Certificate certificate, long initialIdentityVersion) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
-				applicationOwner, description, allowUserSubscription,
-				removable, certificate, initialIdentityVersion);
+				applicationOwner, description, applicationUrl,
+				allowUserSubscription, removable, certificate,
+				initialIdentityVersion);
 		this.entityManager.persist(application);
 		return application;
 	}

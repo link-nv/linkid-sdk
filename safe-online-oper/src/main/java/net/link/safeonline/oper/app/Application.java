@@ -41,14 +41,18 @@ public interface Application {
 	String getName();
 
 	void setName(String name);
-	
+
 	String getFriendlyName();
-	
+
 	void setFriendlyName(String friendlyName);
 
 	String getDescription();
 
 	void setDescription(String description);
+
+	String getApplicationUrl();
+
+	void setApplicationUrl(String applicationUrl);
 
 	String getApplicationOwner();
 
@@ -68,4 +72,6 @@ public interface Application {
 	String save();
 
 	String view();
+
+	String edit();
 }

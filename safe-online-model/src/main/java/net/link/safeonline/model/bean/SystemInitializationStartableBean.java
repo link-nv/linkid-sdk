@@ -61,21 +61,22 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
 
+		// TODO: Fill in the correct URL.
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
-				"The SafeOnline User Web Application.", userCert));
+				"The SafeOnline User Web Application.", null, userCert));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
-				"owner", "The SafeOnline Operator Web Application.", false,
-				false, operCert));
+				"owner", "The SafeOnline Operator Web Application.", null,
+				false, false, operCert));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
 				"owner", "The SafeOnline Application Owner Web Application.",
-				false, false, ownerCert));
+				null, false, false, ownerCert));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
-				"owner", "The SafeOnline Helpdesk Web Application.", false,
-				false, helpdeskCert));
+				"owner", "The SafeOnline Helpdesk Web Application.", null,
+				false, false, helpdeskCert));
 
 		this.trustedCertificates.add(userCert);
 		this.trustedCertificates.add(operCert);
@@ -156,6 +157,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		this.devices.put("password", deviceAttributeTypeList);
 	}
 
+	@Override
 	public int getPriority() {
 		return Startable.PRIORITY_BOOTSTRAP;
 	}

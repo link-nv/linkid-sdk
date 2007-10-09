@@ -45,10 +45,16 @@
 				</h:column>
 			</h:dataTable>
 
-			<h2>#{msgs.certificate}</h2>
+			<h2>#{msgs.generic}</h2>
 			<!--<h:outputLabel for="certificate" value="#{msgs.certificate}" />:
 			  <t:inputFileUpload id="certificate" value="#{operApplication.upFile}"
 				storage="file" maxlength="200000" /> -->
+            <p>#{msgs.applicationUrl}:
+                <s:decorate>
+                    <h:inputText id="applicationUrl" value="#{operApplication.applicationUrl}" />
+                </s:decorate>
+                <h:message for="applicationUrl" styleClass="error" />
+            </p>
 			<p><s:decorate>
 				<tr:inputFile id="certificate" label="#{msgs.certificate}:"
 					value="#{operApplication.upFile}" />

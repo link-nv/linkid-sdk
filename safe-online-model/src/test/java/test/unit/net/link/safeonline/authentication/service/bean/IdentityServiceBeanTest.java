@@ -134,7 +134,7 @@ public class IdentityServiceBeanTest {
 		attributeTypeService.add(new AttributeTypeEntity(
 				"test-attribute-type-2", DatatypeType.STRING, false, false));
 		applicationService.addApplication(applicationName, null,
-				"test-application-owner-name", null, null, Collections
+				"test-application-owner-name", null, null, null, Collections
 						.singletonList(new IdentityAttributeTypeDO(
 								"test-attribute-type", true, false)));
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
@@ -233,7 +233,7 @@ public class IdentityServiceBeanTest {
 				"test-compounded-type", DatatypeType.COMPOUNDED, false, false));
 
 		applicationService.addApplication(applicationName, null,
-				"test-application-owner-name", null, null, Collections
+				"test-application-owner-name", null, null, null, Collections
 						.singletonList(new IdentityAttributeTypeDO(
 								"test-compounded-type", true, false)));
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
@@ -304,7 +304,7 @@ public class IdentityServiceBeanTest {
 		applicationService.registerApplicationOwner(
 				"test-application-owner-name", ownerSubject.getUserId());
 		applicationService.addApplication(applicationName, null,
-				"test-application-owner-name", null, null,
+				"test-application-owner-name", null, null, null,
 				new LinkedList<IdentityAttributeTypeDO>());
 
 		EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");
@@ -873,7 +873,7 @@ public class IdentityServiceBeanTest {
 					ApplicationDAOBean.class,
 					SafeOnlineTestContainer.sessionBeans, entityManager);
 			ApplicationEntity application = applicationDAO.addApplication(
-					applicationName, null, applicationOwner, null, null);
+					applicationName, null, applicationOwner, null, null, null);
 
 			AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(
 					AttributeTypeDAOBean.class,
@@ -1286,7 +1286,7 @@ public class IdentityServiceBeanTest {
 		initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(
 				compoundedAttributeName, true, false));
 		applicationService.addApplication(applicationName, null,
-				applicationOwnerName, null, null,
+				applicationOwnerName, null, null, null,
 				initialApplicationIdentityAttributes);
 
 		// operate: save attribute
