@@ -16,4 +16,11 @@
 		service="{urn:liberty:dst:2006-08:ref:safe-online}DataService"
 		port="{urn:liberty:dst:2006-08:ref:safe-online}DataServicePort" />
 
+	<endpoint name="SafeOnline-Identifier-Mapping-WS"
+		implementation="net.link.safeonline.idmapping.ws.NameIdentifierMappingPortImpl"
+		url-pattern="/idmapping"
+		interface="oasis.names.tc.saml._2_0.protocol.NameIdentifierMappingPort"
+		service="{urn:oasis:names:tc:SAML:2.0:protocol}NameIdentifierMappingService"
+		port="{urn:oasis:names:tc:SAML:2.0:protocol}NameIdentifierMappingPort" />
+
 </endpoints>

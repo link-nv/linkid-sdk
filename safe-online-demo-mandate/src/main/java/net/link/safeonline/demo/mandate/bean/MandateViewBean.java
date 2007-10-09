@@ -23,6 +23,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -63,10 +64,25 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements
 	@RolesAllowed(MandateConstants.ADMIN_ROLE)
 	public void mandatesFactory() {
 		log.debug("mandates factory for user: #0", this.mandateUser);
+
+		NameIdentifierMappingClient mappingClient = super.getMappingClient();
+		String mandateUserId;
+		try {
+			mandateUserId = mappingClient.getUserId(this.mandateUser);
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addToControl("name", "subject not found");
+			this.mandates = new Mandate[] {};
+			return;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			this.mandates = new Mandate[] {};
+			return;
+		}
+
 		DataClient dataClient = getDataClient();
 		Attribute<Mandate[]> mandateAttribute = null;
 		try {
-			mandateAttribute = dataClient.getAttributeValue(this.mandateUser,
+			mandateAttribute = dataClient.getAttributeValue(mandateUserId,
 					DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());
@@ -89,10 +105,25 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements
 		Principal callerPrincipal = this.context.getCallerPrincipal();
 		String username = callerPrincipal.getName();
 		log.debug("user mandates factory for user #0", username);
+
+		NameIdentifierMappingClient mappingClient = super.getMappingClient();
+		String userId;
+		try {
+			userId = mappingClient.getUserId(username);
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addToControl("name", "subject not found");
+			this.userMandates = new Mandate[] {};
+			return;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			this.userMandates = new Mandate[] {};
+			return;
+		}
+
 		DataClient dataClient = getDataClient();
 		Attribute<Mandate[]> mandateAttribute = null;
 		try {
-			mandateAttribute = dataClient.getAttributeValue(username,
+			mandateAttribute = dataClient.getAttributeValue(userId,
 					DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());

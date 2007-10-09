@@ -48,15 +48,16 @@
 						<th>#{msgs.operatorNumberOfSubscriptions}:</th>
 						<td>#{numberOfSubscriptions}</td>
 					</tr>
-                    <tr>
-                        <th>#{msgs.applicationUrl}:</th>
-                        <td><h:outputLink value="#{selectedApplication.applicationUrl}"
-                                rendered="#{!empty selectedApplication.applicationUrl}">
+					<tr>
+						<th>#{msgs.applicationUrl}:</th>
+						<td><h:outputLink
+							value="#{selectedApplication.applicationUrl}"
+							rendered="#{!empty selectedApplication.applicationUrl}">
                                 #{selectedApplication.applicationUrl}
-                            </h:outputLink>
-                            <h:outputText value="#{msgs.noApplicationUrl}"
-                                rendered="#{empty selectedApplication.applicationUrl}" /></td>
-                    </tr>
+                            </h:outputLink> <h:outputText
+							value="#{msgs.noApplicationUrl}"
+							rendered="#{empty selectedApplication.applicationUrl}" /></td>
+					</tr>
 				</table>
 			</rich:tab>
 
@@ -69,6 +70,12 @@
 			</rich:tab>
 
 			<rich:tab label="#{msgs.accessControl}">
+				<h:panelGrid columns="2">
+					<h:outputText value="#{msgs.accessControlIdmappingService}:" />
+					<h:outputText
+						value="#{selectedApplication.identifierMappingAllowed}" />
+				</h:panelGrid>
+
 				<p><h:outputText value="#{msgs.certificate}:" /></p>
 				<pre><h:outputText value="#{selectedApplication.certificate}"
 					rendered="#{!empty selectedApplication.certificate}" /></pre>
@@ -98,7 +105,8 @@
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" id="back" action="back" />
 			<so:nbsp />
-			<h:commandButton action="#{operApplication.edit}" id="edit" value="#{msgs.editaction}" />
+			<h:commandButton action="#{operApplication.edit}" id="edit"
+				value="#{msgs.editaction}" />
 		</h:form>
 
 	</ui:define>

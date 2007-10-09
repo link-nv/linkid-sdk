@@ -156,5 +156,9 @@
 			<groupId>javax.el</groupId>
 			<artifactId>el-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
 	</dependencies>
 </project>

@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
  * 
- * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
@@ -26,12 +26,13 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.IdGenerator;
 import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.service.SubjectServiceRemote;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @Stateless
-public class SubjectServiceBean implements SubjectService {
+public class SubjectServiceBean implements SubjectService, SubjectServiceRemote {
 
 	@EJB
 	private SubjectDAO subjectDAO;
@@ -105,9 +106,12 @@ public class SubjectServiceBean implements SubjectService {
 	public SubjectEntity getSubjectFromUserName(String login)
 			throws SubjectNotFoundException {
 		LOG.debug("get subject login: " + login);
-		return this.subjectIdentifierDAO.findSubject(
+		SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
 				SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
-
+		if (null == subject) {
+			throw new SubjectNotFoundException();
+		}
+		return subject;
 	}
 
 	public List<String> listUsers() {

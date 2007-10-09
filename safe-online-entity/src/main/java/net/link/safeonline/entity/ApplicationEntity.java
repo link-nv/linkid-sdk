@@ -7,6 +7,11 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_ALL;
+import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_CERTID;
+import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
+import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_USER_ALL;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -40,11 +45,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.hibernate.annotations.Index;
-
-import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_ALL;
-import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_USER_ALL;
-import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
-import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_CERTID;
 
 /**
  * Application Entity.
@@ -101,6 +101,8 @@ public class ApplicationEntity implements Serializable {
 	private String certificateIdentifier;
 
 	private boolean deviceRestriction;
+
+	private boolean identifierMappingAllowed;
 
 	public boolean isDeviceRestriction() {
 		return deviceRestriction;
@@ -480,6 +482,20 @@ public class ApplicationEntity implements Serializable {
 		this.setEncodedCert(encodedCertificate);
 		String certificateIdentifier = toCertificateIdentifier(encodedCertificate);
 		this.setCertificateIdentifier(certificateIdentifier);
+	}
+
+	/**
+	 * The identifier mapping allowed field use used for access control over the
+	 * identifier mapping service.
+	 * 
+	 * @return
+	 */
+	public boolean isIdentifierMappingAllowed() {
+		return this.identifierMappingAllowed;
+	}
+
+	public void setIdentifierMappingAllowed(boolean identifierMappingAllowed) {
+		this.identifierMappingAllowed = identifierMappingAllowed;
 	}
 
 	@Override

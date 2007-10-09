@@ -11,6 +11,8 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
@@ -22,7 +24,9 @@ import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.IdentifierMappingService;
 import net.link.safeonline.config.model.ConfigurationManager;
+import net.link.safeonline.idmapping.ws.NameIdentifierMappingConstants;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingPortImpl;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingServiceFactory;
 import net.link.safeonline.pkix.model.PkiValidator;
@@ -32,7 +36,11 @@ import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
+import net.link.safeonline.ws.util.LoggingHandler;
+import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.protocol.NameIDMappingRequestType;
+import oasis.names.tc.saml._2_0.protocol.NameIDMappingResponseType;
+import oasis.names.tc.saml._2_0.protocol.NameIDPolicyType;
 import oasis.names.tc.saml._2_0.protocol.NameIdentifierMappingPort;
 import oasis.names.tc.saml._2_0.protocol.NameIdentifierMappingService;
 
@@ -55,9 +63,13 @@ public class NameIdentifierMappingPortImplTest {
 
 	private ConfigurationManager mockConfigurationManager;
 
+	private IdentifierMappingService mockIdentifierMappingService;
+
 	private Object[] mockObjects;
 
 	private X509Certificate certificate;
+
+	private KeyPair keyPair;
 
 	@SuppressWarnings("unchecked")
 	@Before
@@ -68,9 +80,11 @@ public class NameIdentifierMappingPortImplTest {
 		this.mockAuthenticationService = createMock(ApplicationAuthenticationService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.mockConfigurationManager = createMock(ConfigurationManager.class);
+		this.mockIdentifierMappingService = createMock(IdentifierMappingService.class);
 
 		this.mockObjects = new Object[] { this.mockAuthenticationService,
-				this.mockPkiValidator, this.mockConfigurationManager };
+				this.mockPkiValidator, this.mockConfigurationManager,
+				this.mockIdentifierMappingService };
 
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ApplicationAuthenticationServiceBean/local",
@@ -80,6 +94,9 @@ public class NameIdentifierMappingPortImplTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ConfigurationManagerBean/local",
 				this.mockConfigurationManager);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/IdentifierMappingServiceBean/local",
+				this.mockIdentifierMappingService);
 
 		this.webServiceTestUtils = new WebServiceTestUtils();
 		NameIdentifierMappingPort wsPort = new NameIdentifierMappingPortImpl();
@@ -90,16 +107,18 @@ public class NameIdentifierMappingPortImplTest {
 		this.clientPort = service.getNameIdentifierMappingPort();
 		this.webServiceTestUtils.setEndpointAddress(this.clientPort);
 
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
-				"CN=Test");
+		this.keyPair = PkiTestUtils.generateKeyPair();
+		this.certificate = PkiTestUtils.generateSelfSignedCertificate(
+				this.keyPair, "CN=Test");
 
 		BindingProvider bindingProvider = (BindingProvider) clientPort;
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(
-				certificate, keyPair.getPrivate());
+				certificate, this.keyPair.getPrivate());
 		handlerChain.add(wsSecurityHandler);
+		LoggingHandler loggingHandler = new LoggingHandler();
+		handlerChain.add(loggingHandler);
 		binding.setHandlerChain(handlerChain);
 
 		expect(
@@ -126,15 +145,34 @@ public class NameIdentifierMappingPortImplTest {
 	@Test
 	public void invocation() throws Exception {
 		// setup
+		String username = "test-username";
 		NameIDMappingRequestType request = new NameIDMappingRequestType();
+		NameIDType nameId = new NameIDType();
+		nameId.setValue(username);
+		NameIDPolicyType nameIdPolicy = new NameIDPolicyType();
+		nameIdPolicy
+				.setFormat(NameIdentifierMappingConstants.NAMEID_FORMAT_PERSISTENT);
+		request.setNameIDPolicy(nameIdPolicy);
+		request.setNameID(nameId);
+		String userId = "test-user-id";
+
+		// expectations
+		expect(this.mockIdentifierMappingService.getUserId(username))
+				.andReturn(userId);
 
 		// prepare
 		replay(this.mockObjects);
 
 		// operate
-		this.clientPort.nameIdentifierMappingQuery(request);
+		NameIDMappingResponseType response = this.clientPort
+				.nameIdentifierMappingQuery(request);
 
 		// verify
 		verify(this.mockObjects);
+		assertNotNull(response);
+		NameIDType responseNameId = response.getNameID();
+		assertNotNull(responseNameId);
+		String responseUserId = responseNameId.getValue();
+		assertEquals(userId, responseUserId);
 	}
 }

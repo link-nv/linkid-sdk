@@ -68,15 +68,15 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
 				"owner", "The SafeOnline Operator Web Application.", null,
-				false, false, operCert));
+				false, false, operCert, false));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
 				"owner", "The SafeOnline Application Owner Web Application.",
-				null, false, false, ownerCert));
+				null, false, false, ownerCert, false));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
 				"owner", "The SafeOnline Helpdesk Web Application.", null,
-				false, false, helpdeskCert));
+				false, false, helpdeskCert, false));
 
 		this.trustedCertificates.add(userCert);
 		this.trustedCertificates.add(operCert);

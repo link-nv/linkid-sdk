@@ -7,7 +7,8 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:tr="http://myfaces.apache.org/trinidad"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">
@@ -28,38 +29,57 @@
 		<h2>#{msgs.operatorEditApplication}: #{selectedApplication.name}</h2>
 
 		<h:form enctype="multipart/form-data">
-			<h2>#{msgs.applicationIdentity}:</h2>
-			<h:dataTable value="#{identityAttributes}" var="item">
-				<h:column>
-					<f:facet name="header">#{msgs.name}</f:facet>
-					<h:selectBooleanCheckbox value="#{item.included}" id="included" />
-					<h:outputLabel for="included" value="#{item.name}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.required}</f:facet>
-					<h:selectBooleanCheckbox value="#{item.required}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.dataMining}</f:facet>
-					<h:selectBooleanCheckbox value="#{item.dataMining}" />
-				</h:column>
-			</h:dataTable>
 
-			<h2>#{msgs.generic}</h2>
-			<!--<h:outputLabel for="certificate" value="#{msgs.certificate}" />:
-			  <t:inputFileUpload id="certificate" value="#{operApplication.upFile}"
-				storage="file" maxlength="200000" /> -->
-            <p>#{msgs.applicationUrl}:
-                <s:decorate>
-                    <h:inputText id="applicationUrl" value="#{operApplication.applicationUrl}" />
-                </s:decorate>
-                <h:message for="applicationUrl" styleClass="error" />
-            </p>
-			<p><s:decorate>
-				<tr:inputFile id="certificate" label="#{msgs.certificate}:"
-					value="#{operApplication.upFile}" />
-			</s:decorate> <h:message for="certificate" styleClass="error" /></p>
+			<rich:tabPanel id="tabs" switchType="client">
+				<rich:tab id="generic-tab" label="#{msgs.generic}">
+					<h:panelGrid columns="2">
+						<h:outputLabel for="applicationUrl" value="#{msgs.applicationUrl}" />
+						<s:decorate>
+							<h:inputText id="applicationUrl"
+								value="#{operApplication.applicationUrl}" />
+						</s:decorate>
+					</h:panelGrid>
+				</rich:tab>
 
+				<rich:tab id="identity-tab" label="#{msgs.applicationIdentity}">
+					<h:dataTable value="#{identityAttributes}" var="item">
+						<h:column>
+							<f:facet name="header">#{msgs.name}</f:facet>
+							<h:selectBooleanCheckbox value="#{item.included}" id="included" />
+							<h:outputLabel for="included" value="#{item.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.required}</f:facet>
+							<h:selectBooleanCheckbox value="#{item.required}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.dataMining}</f:facet>
+							<h:selectBooleanCheckbox value="#{item.dataMining}" />
+						</h:column>
+					</h:dataTable>
+				</rich:tab>
+
+				<rich:tab id="cert-tab" label="#{msgs.accessControl}">
+					<h:panelGrid columns="1">
+						<h:panelGroup>
+							<h:selectBooleanCheckbox value="#{operApplication.idmapping}"
+								id="idmapping" />
+							<h:outputLabel for="idmapping"
+								value="#{msgs.accessControlIdmappingService}" />
+						</h:panelGroup>
+
+						<h:panelGroup>
+							<s:decorate>
+								<tr:inputFile id="certificate" label="#{msgs.certificate}:"
+									value="#{operApplication.upFile}" />
+							</s:decorate>
+						</h:panelGroup>
+					</h:panelGrid>
+				</rich:tab>
+			</rich:tabPanel>
+
+			<h:message for="applicationUrl" styleClass="error" />
+			<h:message for="certificate" styleClass="error" />
 			<t:messages styleClass="error" globalOnly="true" />
 
 			<h:commandButton action="#{operApplication.save}" id="save"

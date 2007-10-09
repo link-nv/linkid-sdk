@@ -62,6 +62,10 @@ public interface Application {
 
 	UploadedFile getUpFile();
 
+	boolean isIdmapping();
+
+	void setIdmapping(boolean idmapping);
+
 	/*
 	 * Actions.
 	 */

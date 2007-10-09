@@ -32,6 +32,8 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -59,6 +61,8 @@ public abstract class AbstractLawyerDataClientBean implements
 
 	private transient AttributeClient attributeClient;
 
+	private transient NameIdentifierMappingClient identifierMappingClient;
+
 	private String wsHostName;
 	private String wsHostPort;
 
@@ -83,10 +87,13 @@ public abstract class AbstractLawyerDataClientBean implements
 	@PostActivate
 	public void postActivateCallback() {
 		log.debug("postActivate");
-		this.dataClient = new DataClientImpl(this.wsHostName + ":"
-				+ this.wsHostPort, this.certificate, this.privateKey);
-		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
-				+ this.wsHostPort, this.certificate, this.privateKey);
+		String location = this.wsHostName + ":" + this.wsHostPort;
+		this.dataClient = new DataClientImpl(location, this.certificate,
+				this.privateKey);
+		this.attributeClient = new AttributeClientImpl(location,
+				this.certificate, this.privateKey);
+		this.identifierMappingClient = new NameIdentifierMappingClientImpl(
+				location, this.certificate, this.privateKey);
 	}
 
 	@PrePassivate
@@ -122,14 +129,21 @@ public abstract class AbstractLawyerDataClientBean implements
 		return this.attributeClient;
 	}
 
+	protected NameIdentifierMappingClient getNameIdentifierMappingClient() {
+		if (null == this.identifierMappingClient) {
+			throw new EJBException("name identifier client not yet initialized");
+		}
+		return this.identifierMappingClient;
+	}
+
 	/**
 	 * Gives back the lawyer status of a subject. This method also sets the
 	 * {@link FacesMessages} in case something goes wrong.
 	 * 
-	 * @param subjectLogin
+	 * @param username
 	 * @return the lawyer status or <code>null</code> in case of error.
 	 */
-	protected LawyerStatus getLawyerStatus(String subjectLogin) {
+	protected LawyerStatus getLawyerStatus(String username) {
 		boolean lawyer = false;
 		boolean suspended = false;
 		String bar = null;
@@ -139,15 +153,17 @@ public abstract class AbstractLawyerDataClientBean implements
 		Attribute<String> barAttribute;
 		Attribute<Boolean> barAdminAttribute;
 		DataClient dataClient = getDataClient();
+		NameIdentifierMappingClient nameClient = getNameIdentifierMappingClient();
 		try {
-			lawyerAttribute = dataClient.getAttributeValue(subjectLogin,
+			String userId = nameClient.getUserId(username);
+			lawyerAttribute = dataClient.getAttributeValue(userId,
 					DemoConstants.LAWYER_ATTRIBUTE_NAME, Boolean.class);
-			suspendedAttribute = dataClient.getAttributeValue(subjectLogin,
+			suspendedAttribute = dataClient.getAttributeValue(userId,
 					DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
 					Boolean.class);
-			barAttribute = dataClient.getAttributeValue(subjectLogin,
+			barAttribute = dataClient.getAttributeValue(userId,
 					DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, String.class);
-			barAdminAttribute = dataClient.getAttributeValue(subjectLogin,
+			barAdminAttribute = dataClient.getAttributeValue(userId,
 					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
 					Boolean.class);
 		} catch (ConnectException e) {

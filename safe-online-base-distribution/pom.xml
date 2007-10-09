@@ -73,13 +73,15 @@
 								<artifactItem>
 									<groupId>org.jboss</groupId>
 									<artifactId>jboss-as</artifactId>
-									<version>4.2.1-GA</version>
+									<version>${jboss.version}</version>
 									<type>zip</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>net.java.dev</groupId>
 									<artifactId>jaxws-ri</artifactId>
-									<version>2.1.1</version>
+									<version>
+										${jaxws-rt.version}
+									</version>
 									<type>zip</type>
 								</artifactItem>
 							</artifactItems>
@@ -100,14 +102,16 @@
 									<groupId>org.jboss.seam</groupId>
 									<artifactId>jboss-seam</artifactId>
 									<version>
-										1.2.1.GA-safe-online
+										${jboss-seam.version}
 									</version>
 									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>el-impl</groupId>
 									<artifactId>el-impl</artifactId>
-									<version>1.0</version>
+									<version>
+										${el-impl.version}
+									</version>
 									<type>jar</type>
 								</artifactItem>
 							</artifactItems>

@@ -78,9 +78,12 @@ public abstract class AbstractInitBean implements Startable {
 
 		private final X509Certificate certificate;
 
+		private final boolean idmappingAccess;
+
 		public Application(String name, String owner, String description,
 				URL applicationUrl, boolean allowUserSubscription,
-				boolean removable, X509Certificate certificate) {
+				boolean removable, X509Certificate certificate,
+				boolean idmappingAccess) {
 			this.name = name;
 			this.owner = owner;
 			this.description = description;
@@ -88,13 +91,14 @@ public abstract class AbstractInitBean implements Startable {
 			this.allowUserSubscription = allowUserSubscription;
 			this.removable = removable;
 			this.certificate = certificate;
+			this.idmappingAccess = idmappingAccess;
 		}
 
 		public Application(String name, String owner, String description,
 				URL applicationUrl, boolean allowUserSubscription,
 				boolean removable) {
 			this(name, owner, description, applicationUrl,
-					allowUserSubscription, removable, null);
+					allowUserSubscription, removable, null, false);
 		}
 
 		public Application(String name, String owner, String description,
@@ -105,7 +109,7 @@ public abstract class AbstractInitBean implements Startable {
 		public Application(String name, String owner, String description,
 				URL applicationUrl, X509Certificate certificate) {
 			this(name, owner, description, applicationUrl, true, true,
-					certificate);
+					certificate, false);
 		}
 
 		public Application(String name, String owner) {
@@ -428,6 +432,8 @@ public abstract class AbstractInitBean implements Startable {
 							application.removable, application.description,
 							application.applicationUrl,
 							application.certificate, identityVersion);
+			newApplication
+					.setIdentifierMappingAllowed(application.idmappingAccess);
 
 			this.applicationIdentityDAO.addApplicationIdentity(newApplication,
 					identityVersion);

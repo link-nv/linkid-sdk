@@ -96,6 +96,8 @@ public class ApplicationBean implements Application {
 
 	private UploadedFile upFile;
 
+	private boolean idmapping;
+
 	@SuppressWarnings("unused")
 	@Out
 	private long numberOfSubscriptions;
@@ -221,7 +223,8 @@ public class ApplicationBean implements Application {
 			}
 			this.applicationService.addApplication(this.name,
 					this.friendlyName, this.applicationOwner, this.description,
-					newApplicationUrl, encodedCertificate, identityAttributes);
+					this.idmapping, newApplicationUrl, encodedCertificate,
+					identityAttributes);
 		} catch (ExistingApplicationException e) {
 			LOG.debug("application already exists: " + this.name);
 			this.facesMessages.addToControlFromResourceBundle("name",
@@ -304,6 +307,14 @@ public class ApplicationBean implements Application {
 
 	public void setApplicationOwner(String applicationOwner) {
 		this.applicationOwner = applicationOwner;
+	}
+
+	public boolean isIdmapping() {
+		return this.idmapping;
+	}
+
+	public void setIdmapping(boolean idmapping) {
+		this.idmapping = idmapping;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -501,6 +512,18 @@ public class ApplicationBean implements Application {
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
+
+		try {
+			this.applicationService.setIdentifierMappingServiceAccess(
+					applicationId, this.idmapping);
+		} catch (ApplicationNotFoundException e) {
+			LOG.debug("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+			return null;
+		}
+
+		applicationListFactory();
 		return "success";
 	}
 
@@ -519,9 +542,11 @@ public class ApplicationBean implements Application {
 		 * To set the selected application.
 		 */
 		LOG.debug("edit application: " + this.selectedApplication.getName());
-		if (null != selectedApplication.getApplicationUrl())
+		if (null != selectedApplication.getApplicationUrl()) {
 			applicationUrl = selectedApplication.getApplicationUrl()
 					.toExternalForm();
+		}
+		this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
 
 		return "edit";
 	}

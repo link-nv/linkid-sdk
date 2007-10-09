@@ -86,9 +86,9 @@ public class DemoStartableBean extends AbstractInitBean {
 		 * Register the application and the application certificate.
 		 */
 		this.trustedCertificates.add(demoMandateCertificate);
-		this.registeredApplications
-				.add(new Application(DEMO_MANDATE_APPLICATION_NAME, "owner",
-						demoMandateCertificate));
+		this.registeredApplications.add(new Application(
+				DEMO_MANDATE_APPLICATION_NAME, "owner", null, null, true, true,
+				demoMandateCertificate, true));
 
 		/*
 		 * Subscribe the demo users to the mandate demo application.
@@ -354,7 +354,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		X509Certificate demoLawyerCertificate = (X509Certificate) demoLawyerPrivateKeyEntry
 				.getCertificate();
 		this.registeredApplications.add(new Application(
-				DEMO_LAWYER_APPLICATION_NAME, "owner", demoLawyerCertificate));
+				DEMO_LAWYER_APPLICATION_NAME, "owner", null, null, true, true,
+				demoLawyerCertificate, true));
 		this.trustedCertificates.add(demoLawyerCertificate);
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,

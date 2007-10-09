@@ -177,11 +177,11 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public <Type> Attribute<Type> getAttributeValue(String subjectLogin,
+	public <Type> Attribute<Type> getAttributeValue(String userId,
 			String attributeName, Class<Type> expectedValueClass)
 			throws ConnectException, RequestDeniedException,
 			SubjectNotFoundException {
-		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
+		this.targetIdentityHandler.setTargetIdentity(userId);
 
 		QueryType query = new QueryType();
 
@@ -338,10 +338,10 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		return value;
 	}
 
-	public void createAttribute(String subjectLogin, String attributeName,
+	public void createAttribute(String userId, String attributeName,
 			Object attributeValue) throws ConnectException {
 
-		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
+		this.targetIdentityHandler.setTargetIdentity(userId);
 
 		CreateType create = new CreateType();
 		List<CreateItemType> createItems = create.getCreateItem();
@@ -469,11 +469,11 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		return compoundAttribute;
 	}
 
-	public void removeAttribute(String subjectLogin, String attributeName,
+	public void removeAttribute(String userIdn, String attributeName,
 			String attributeId) throws ConnectException {
 		LOG.debug("remove attribute " + attributeName + " for subject "
-				+ subjectLogin);
-		this.targetIdentityHandler.setTargetIdentity(subjectLogin);
+				+ userIdn);
+		this.targetIdentityHandler.setTargetIdentity(userIdn);
 
 		DeleteType delete = new DeleteType();
 		List<DeleteItemType> deleteItems = delete.getDeleteItem();
@@ -509,17 +509,17 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		}
 	}
 
-	public <Type> void removeAttribute(String subjectLogin,
-			Attribute<Type> attribute) throws ConnectException {
+	public <Type> void removeAttribute(String userId, Attribute<Type> attribute)
+			throws ConnectException {
 
 		String attributeName = attribute.getName();
 
 		Object value = attribute.getValue();
 		if (CompoundUtil.isCompound(value)) {
 			String attributeId = CompoundUtil.getAttributeId(value);
-			removeAttribute(subjectLogin, attributeName, attributeId);
+			removeAttribute(userId, attributeName, attributeId);
 		} else {
-			removeAttribute(subjectLogin, attributeName, null);
+			removeAttribute(userId, attributeName, null);
 		}
 	}
 }

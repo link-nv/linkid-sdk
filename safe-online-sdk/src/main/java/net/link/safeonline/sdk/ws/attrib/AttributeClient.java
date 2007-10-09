@@ -43,7 +43,7 @@ public interface AttributeClient extends MessageAccessor {
 	 * </p>
 	 * 
 	 * @param <Type>
-	 * @param subjectLogin
+	 * @param userId
 	 * @param attributeName
 	 * @param valueClass
 	 * @return
@@ -53,7 +53,7 @@ public interface AttributeClient extends MessageAccessor {
 	 *             in case the service could not be contacted. Can happen if the
 	 *             SSL was not setup correctly.
 	 */
-	<Type> Type getAttributeValue(String subjectLogin, String attributeName,
+	<Type> Type getAttributeValue(String userId, String attributeName,
 			Class<Type> valueClass) throws AttributeNotFoundException,
 			RequestDeniedException, ConnectException;
 
@@ -62,13 +62,13 @@ public interface AttributeClient extends MessageAccessor {
 	 * hold the requested attribute names as keys. The method will fill in the
 	 * corresponding values.
 	 * 
-	 * @param subjectLogin
+	 * @param userId
 	 * @param attributes
 	 * @throws AttributeNotFoundException
 	 * @throws RequestDeniedException
 	 * @throws ConnectException
 	 */
-	void getAttributeValues(String subjectLogin, Map<String, Object> attributes)
+	void getAttributeValues(String userId, Map<String, Object> attributes)
 			throws AttributeNotFoundException, RequestDeniedException,
 			ConnectException;
 
@@ -76,13 +76,13 @@ public interface AttributeClient extends MessageAccessor {
 	 * Gives back a map of attributes for the given subject that this
 	 * application is allowed to read.
 	 * 
-	 * @param subjectLogin
+	 * @param userId
 	 * @return
 	 * @throws RequestDeniedException
 	 * @throws ConnectException
 	 * @throws AttributeNotFoundException
 	 */
-	Map<String, Object> getAttributeValues(String subjectLogin)
+	Map<String, Object> getAttributeValues(String userId)
 			throws RequestDeniedException, ConnectException,
 			AttributeNotFoundException;
 
@@ -95,13 +95,13 @@ public interface AttributeClient extends MessageAccessor {
 	 * {@link net.link.safeonline.sdk.ws.attrib.annotation.IdentityAttribute}.
 	 * 
 	 * @param <Type>
-	 * @param subjectLogin
+	 * @param userId
 	 * @return
 	 * @throws AttributeNotFoundException
 	 * @throws RequestDeniedException
 	 * @throws ConnectException
 	 */
-	<Type> Type getIdentity(String subjectLogin, Class<Type> identityCardClass)
+	<Type> Type getIdentity(String userId, Class<Type> identityCardClass)
 			throws AttributeNotFoundException, RequestDeniedException,
 			ConnectException;
 }

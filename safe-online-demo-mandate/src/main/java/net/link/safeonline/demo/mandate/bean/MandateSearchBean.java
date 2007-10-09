@@ -20,6 +20,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -72,10 +73,22 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements
 	public String search() {
 		log.debug("search for #0", this.name);
 
+		NameIdentifierMappingClient mappingClient = getMappingClient();
+		String userId;
+		try {
+			userId = mappingClient.getUserId(this.name);
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addToControl("name", "subject not found");
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		}
+
 		DataClient dataClient = getDataClient();
 		Attribute<Mandate[]> mandateAttribute;
 		try {
-			mandateAttribute = dataClient.getAttributeValue(this.name,
+			mandateAttribute = dataClient.getAttributeValue(userId,
 					DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());
@@ -102,9 +115,22 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements
 	@RolesAllowed(MandateConstants.ADMIN_ROLE)
 	public String removeMandate() {
 		log.debug("remove mandate : " + this.selectedMandate);
+
+		NameIdentifierMappingClient mappingClient = getMappingClient();
+		String userId;
+		try {
+			userId = mappingClient.getUserId(this.mandateUser);
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addToControl("name", "subject not found");
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		}
+
 		DataClient dataClient = getDataClient();
 		try {
-			dataClient.removeAttribute(this.mandateUser,
+			dataClient.removeAttribute(userId,
 					DemoConstants.MANDATE_ATTRIBUTE_NAME, this.selectedMandate
 							.getAttributeId());
 		} catch (ConnectException e) {

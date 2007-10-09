@@ -27,6 +27,7 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.service.AttributeTypeService;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.jboss.security.auth.callback.UsernamePasswordHandler;
@@ -140,6 +141,12 @@ public class IntegrationTestUtils {
 		IdentityService identityService = EjbUtils.getEJB(initialContext,
 				"SafeOnline/IdentityServiceBean/remote", IdentityService.class);
 		return identityService;
+	}
+
+	public static SubjectService getSubjectService(InitialContext initialContext) {
+		SubjectService subjectService = EjbUtils.getEJB(initialContext,
+				"SafeOnline/SubjectServiceBean/remote", SubjectService.class);
+		return subjectService;
 	}
 
 	public static SubscriptionService getSubscriptionService(

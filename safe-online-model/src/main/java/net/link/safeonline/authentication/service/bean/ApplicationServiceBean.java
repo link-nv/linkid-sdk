@@ -132,7 +132,8 @@ public class ApplicationServiceBean implements ApplicationService,
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void addApplication(String name, String friendlyName,
 			String applicationOwnerName, String description,
-			URL applicationUrl, byte[] encodedCertificate,
+			boolean idMappingServiceAccess, URL applicationUrl,
+			byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
@@ -149,6 +150,8 @@ public class ApplicationServiceBean implements ApplicationService,
 		ApplicationEntity application = this.applicationDAO.addApplication(
 				name, friendlyName, applicationOwner, description,
 				applicationUrl, certificate);
+
+		application.setIdentifierMappingAllowed(idMappingServiceAccess);
 
 		setInitialApplicationIdentity(initialApplicationIdentityAttributes,
 				application);
@@ -357,9 +360,9 @@ public class ApplicationServiceBean implements ApplicationService,
 				applicationId, applicationIdentityAttributes);
 	}
 
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void updateApplicationUrl(String applicationId, URL applicationUrl)
 			throws ApplicationNotFoundException {
-
 		getApplication(applicationId).setApplicationUrl(applicationUrl);
 	}
 
@@ -396,5 +399,13 @@ public class ApplicationServiceBean implements ApplicationService,
 		checkWritePermission(application);
 
 		application.setDeviceRestriction(deviceRestriction);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void setIdentifierMappingServiceAccess(String applicationName,
+			boolean access) throws ApplicationNotFoundException {
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationName);
+		application.setIdentifierMappingAllowed(access);
 	}
 }

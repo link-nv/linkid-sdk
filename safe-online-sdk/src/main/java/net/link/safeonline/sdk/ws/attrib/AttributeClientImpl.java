@@ -21,8 +21,6 @@ import java.util.Set;
 import javax.xml.ws.BindingProvider;
 
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
-import net.link.safeonline.attrib.ws.SamlpSecondLevelErrorCode;
-import net.link.safeonline.attrib.ws.SamlpTopLevelErrorCode;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
@@ -32,6 +30,8 @@ import net.link.safeonline.sdk.ws.CompoundUtil;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.attrib.annotation.IdentityAttribute;
 import net.link.safeonline.sdk.ws.attrib.annotation.IdentityCard;
+import net.link.safeonline.ws.common.SamlpSecondLevelErrorCode;
+import net.link.safeonline.ws.common.SamlpTopLevelErrorCode;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -90,15 +90,13 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public <Type> Type getAttributeValue(String subjectLogin,
-			String attributeName, Class<Type> valueClass)
-			throws AttributeNotFoundException, RequestDeniedException,
-			ConnectException {
-		LOG.debug("get attribute value for subject " + subjectLogin
+	public <Type> Type getAttributeValue(String userId, String attributeName,
+			Class<Type> valueClass) throws AttributeNotFoundException,
+			RequestDeniedException, ConnectException {
+		LOG.debug("get attribute value for subject " + userId
 				+ " attribute name " + attributeName);
 
-		AttributeQueryType request = getAttributeQuery(subjectLogin,
-				attributeName);
+		AttributeQueryType request = getAttributeQuery(userId, attributeName);
 
 		SafeOnlineTrustManager.configureSsl();
 
@@ -276,10 +274,10 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 		return attributeQuery;
 	}
 
-	public void getAttributeValues(String subjectLogin,
-			Map<String, Object> attributes) throws AttributeNotFoundException,
-			RequestDeniedException, ConnectException {
-		AttributeQueryType request = getAttributeQuery(subjectLogin, attributes);
+	public void getAttributeValues(String userId, Map<String, Object> attributes)
+			throws AttributeNotFoundException, RequestDeniedException,
+			ConnectException {
+		AttributeQueryType request = getAttributeQuery(userId, attributes);
 		SafeOnlineTrustManager.configureSsl();
 		ResponseType response = getResponse(request);
 		checkStatus(response);
@@ -335,11 +333,11 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 		}
 	}
 
-	public Map<String, Object> getAttributeValues(String subjectLogin)
+	public Map<String, Object> getAttributeValues(String userId)
 			throws RequestDeniedException, ConnectException,
 			AttributeNotFoundException {
 		Map<String, Object> attributes = new HashMap<String, Object>();
-		AttributeQueryType request = getAttributeQuery(subjectLogin, attributes);
+		AttributeQueryType request = getAttributeQuery(userId, attributes);
 		SafeOnlineTrustManager.configureSsl();
 		ResponseType response = getResponse(request);
 		checkStatus(response);

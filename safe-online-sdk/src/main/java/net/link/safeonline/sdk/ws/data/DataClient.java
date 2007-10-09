@@ -30,7 +30,7 @@ public interface DataClient extends MessageAccessor {
 	 * already be defined via: {@link #createAttribute(String, String)}. The
 	 * attribute value can be of type {@link String} or {@link Boolean}.
 	 * 
-	 * @param subjectLogin
+	 * @param userId
 	 * @param attributeName
 	 * @param attributeValue
 	 * @throws ConnectException
@@ -40,7 +40,7 @@ public interface DataClient extends MessageAccessor {
 	 *             in case the attribute entity did not exist.
 	 * @see #createAttribute(String, String)
 	 */
-	void setAttributeValue(String subjectLogin, String attributeName,
+	void setAttributeValue(String userId, String attributeName,
 			Object attributeValue) throws ConnectException,
 			AttributeNotFoundException;
 
@@ -51,7 +51,7 @@ public interface DataClient extends MessageAccessor {
 	 * 
 	 * @param <Type>
 	 *            the type of the attribute value.
-	 * @param subjectLogin
+	 * @param userId
 	 * @param attributeName
 	 * @param valueClass
 	 *            the type of the attribute value.
@@ -62,7 +62,7 @@ public interface DataClient extends MessageAccessor {
 	 * @throws RequestDeniedException
 	 * @throws SubjectNotFoundException
 	 */
-	<Type> Attribute<Type> getAttributeValue(String subjectLogin,
+	<Type> Attribute<Type> getAttributeValue(String userId,
 			String attributeName, Class<Type> valueClass)
 			throws ConnectException, RequestDeniedException,
 			SubjectNotFoundException;
@@ -70,19 +70,19 @@ public interface DataClient extends MessageAccessor {
 	/**
 	 * Creates a new (empty) attribute for the given subject.
 	 * 
-	 * @param subjectLogin
+	 * @param userId
 	 * @param attributeName
 	 * @throws ConnectException
 	 *             in case the service could not be contacted. Can happen if the
 	 *             SSL was not setup correctly.
 	 */
-	void createAttribute(String subjectLogin, String attributeName,
-			Object objectValue) throws ConnectException;
+	void createAttribute(String userId, String attributeName, Object objectValue)
+			throws ConnectException;
 
 	/**
 	 * Removes an attribute for the given subject.
 	 * 
-	 * @param subjectLogin
+	 * @param userId
 	 *            the subject from which to remove the attribute.
 	 * @param attributeName
 	 *            the name of the attribute to be removed.
@@ -92,17 +92,17 @@ public interface DataClient extends MessageAccessor {
 	 *             in case the service could not be contacted. Can happen if the
 	 *             SSL was not setup correctly.
 	 */
-	void removeAttribute(String subjectLogin, String attributeName,
-			String attributeId) throws ConnectException;
+	void removeAttribute(String userId, String attributeName, String attributeId)
+			throws ConnectException;
 
 	/**
 	 * Removes an attribute.
 	 * 
 	 * @param <Type>
-	 * @param subjectLogin
+	 * @param userId
 	 * @param attribute
 	 * @throws ConnectException
 	 */
-	<Type> void removeAttribute(String subjectLogin, Attribute<Type> attribute)
+	<Type> void removeAttribute(String userId, Attribute<Type> attribute)
 			throws ConnectException;
 }

@@ -124,6 +124,7 @@ public class AttributeServiceBeanTest {
 						null,
 						"owner",
 						null,
+						false,
 						null,
 						null,
 						Arrays
@@ -183,6 +184,7 @@ public class AttributeServiceBeanTest {
 						null,
 						"owner",
 						null,
+						false,
 						null,
 						null,
 						Arrays
@@ -249,6 +251,7 @@ public class AttributeServiceBeanTest {
 						null,
 						"owner",
 						null,
+						false,
 						null,
 						null,
 						Arrays
@@ -326,6 +329,7 @@ public class AttributeServiceBeanTest {
 						null,
 						"owner",
 						null,
+						false,
 						null,
 						null,
 						Arrays
@@ -407,6 +411,7 @@ public class AttributeServiceBeanTest {
 						null,
 						"owner",
 						null,
+						false,
 						null,
 						null,
 						Arrays
@@ -484,6 +489,7 @@ public class AttributeServiceBeanTest {
 						null,
 						"owner",
 						null,
+						false,
 						null,
 						null,
 						Arrays
@@ -566,6 +572,7 @@ public class AttributeServiceBeanTest {
 						null,
 						"owner",
 						null,
+						false,
 						null,
 						null,
 						Arrays
@@ -685,6 +692,7 @@ public class AttributeServiceBeanTest {
 						null,
 						"owner",
 						null,
+						false,
 						null,
 						null,
 						Arrays

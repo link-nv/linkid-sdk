@@ -16,7 +16,10 @@ import net.link.safeonline.demo.mandate.Mandate;
 import net.link.safeonline.demo.mandate.MandateAdd;
 import net.link.safeonline.demo.mandate.MandateConstants;
 import net.link.safeonline.model.demo.DemoConstants;
+import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -52,9 +55,21 @@ public class MandateAddBean extends AbstractMandateDataClientBean implements
 	public String add() {
 		log.debug("add new mandate for user #0", this.mandateUser);
 
+		NameIdentifierMappingClient mappingClient = getMappingClient();
+		String mandateUserId;
+		try {
+			mandateUserId = mappingClient.getUserId(this.mandateUser);
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.add("subject not found");
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		}
+
 		DataClient dataClient = getDataClient();
 		try {
-			dataClient.createAttribute(this.mandateUser,
+			dataClient.createAttribute(mandateUserId,
 					DemoConstants.MANDATE_ATTRIBUTE_NAME, this.newMandate);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error");

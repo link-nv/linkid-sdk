@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.attrib.ws;
+package net.link.safeonline.ws.common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,8 @@ public enum SamlpSecondLevelErrorCode {
 	INVALID_ATTRIBUTE_NAME_OR_VALUE(
 			"urn:oasis:names:tc:SAML:2.0:status:InvalidAttrNameOrValue"), UNKNOWN_PRINCIPAL(
 			"urn:oasis:names:tc:SAML:2.0:status:UnknownPrincipal"), REQUEST_DENIED(
-			"urn:oasis:names:tc:SAML:2.0:status:RequestDenied");
+			"urn:oasis:names:tc:SAML:2.0:status:RequestDenied"), INVALID_NAMEID_POLICY(
+			"urn:oasis:names:tc:SAML:2.0:status:InvalidNameIDPolicy");
 
 	private final String errorCode;
 

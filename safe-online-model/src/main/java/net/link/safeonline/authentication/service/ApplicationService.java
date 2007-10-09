@@ -64,6 +64,7 @@ public interface ApplicationService {
 	 * @param friendlyName
 	 * @param applicationOwnerName
 	 * @param description
+	 * @param idMappingServiceAccess
 	 * @param encodedCertificate
 	 *            the optional application certificate.
 	 * @param initialApplicationIdentityAttributes
@@ -76,7 +77,8 @@ public interface ApplicationService {
 	 */
 	void addApplication(String name, String friendlyName,
 			String applicationOwnerName, String description,
-			URL applicationUrl, byte[] encodedCertificate,
+			boolean idMappingServiceAccess, URL applicationUrl,
+			byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
@@ -189,4 +191,7 @@ public interface ApplicationService {
 	void setApplicationDeviceRestriction(String applicationName,
 			boolean deviceRestriction) throws ApplicationNotFoundException,
 			PermissionDeniedException;
+
+	void setIdentifierMappingServiceAccess(String applicationName,
+			boolean access) throws ApplicationNotFoundException;
 }

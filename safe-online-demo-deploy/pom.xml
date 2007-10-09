@@ -104,13 +104,6 @@
 							</includeInApplicationXml>
 						</jarModule>
 						<jarModule>
-							<groupId>commons-codec</groupId>
-							<artifactId>commons-codec</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
-						</jarModule>
-						<jarModule>
 							<groupId>wss4j</groupId>
 							<artifactId>wss4j</artifactId>
 							<includeInApplicationXml>
@@ -503,10 +496,6 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-el</groupId>
 			<artifactId>commons-el</artifactId>
 			<exclusions>
@@ -523,6 +512,10 @@
 				<exclusion>
 					<groupId>xml-apis</groupId>
 					<artifactId>xml-apis</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-collections</groupId>
+					<artifactId>commons-collections</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -553,6 +546,10 @@
 				<exclusion>
 					<groupId>xml-apis</groupId>
 					<artifactId>xml-apis</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

@@ -51,7 +51,7 @@ public interface SubjectDAO {
 	void removeSubject(SubjectEntity subject);
 
 	/**
-	 * Gives back a list of all user logins.
+	 * Gives back a list of all user Ids.
 	 * 
 	 * @return
 	 */

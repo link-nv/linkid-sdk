@@ -90,6 +90,12 @@
 							</s:decorate>
 							<h:message for="fileupload" styleClass="error" />
 						</h:panelGroup>
+						<h:panelGroup>
+							<h:selectBooleanCheckbox value="#{operApplication.idmapping}"
+								id="idmapping" />
+							<h:outputLabel for="idmapping"
+								value="#{msgs.accessControlIdmappingService}" />
+						</h:panelGroup>
 					</h:panelGrid>
 				</rich:tab>
 

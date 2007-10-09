@@ -55,7 +55,7 @@ public class TargetIdentityClientHandler implements
 	private String targetIdentity;
 
 	/**
-	 * Sets the target identity, i.e. the subject login.
+	 * Sets the target identity, i.e. the user Id.
 	 * 
 	 * @param targetIdentity
 	 */

@@ -17,6 +17,7 @@ import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplication
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeTypeService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getPkiService;
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubjectService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubscriptionService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getUserRegistrationService;
 
@@ -49,6 +50,7 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.attrib.annotation.IdentityAttribute;
 import net.link.safeonline.sdk.ws.attrib.annotation.IdentityCard;
 import net.link.safeonline.service.AttributeTypeService;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -112,8 +114,12 @@ public class AttributeWebServiceTest {
 		String password = "pwd-" + UUID.randomUUID().toString();
 		userRegistrationService.registerUser(login, password);
 
+		SubjectService subjectService = getSubjectService(initialContext);
+		String userId = subjectService.getSubjectFromUserName(login)
+				.getUserId();
+
 		// operate: save name attribute
-		IntegrationTestUtils.login(login, password);
+		IntegrationTestUtils.login(userId, password);
 		AttributeDO attribute = new AttributeDO(
 				SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING);
 		attribute.setEditable(true);
@@ -136,14 +142,16 @@ public class AttributeWebServiceTest {
 
 		// operate: register new attribute type
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
-		IntegrationTestUtils.login("admin", "admin");
+		String adminUserId = subjectService.getSubjectFromUserName("admin")
+				.getUserId();
+		IntegrationTestUtils.login(adminUserId, "admin");
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
 				testAttributeName, DatatypeType.STRING, true, true);
 		attributeTypeService.add(attributeType);
 
 		// operate: register certificate as application trust point
 		PkiService pkiService = getPkiService(initialContext);
-		IntegrationTestUtils.login("admin", "admin");
+		IntegrationTestUtils.login(adminUserId, "admin");
 		pkiService.addTrustPoint(
 				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 				this.certificate.getEncoded());
@@ -151,7 +159,7 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, this.certificate.getEncoded(),
+				null, false, this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -159,7 +167,7 @@ public class AttributeWebServiceTest {
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(login, password);
+		IntegrationTestUtils.login(userId, password);
 		subscriptionService.subscribe(testApplicationName);
 		identityService.confirmIdentity(testApplicationName);
 
@@ -185,7 +193,7 @@ public class AttributeWebServiceTest {
 		assertNull(resultAttributes.get(testAttributeName));
 
 		// operate: set attribute
-		IntegrationTestUtils.login(login, password);
+		IntegrationTestUtils.login(userId, password);
 		AttributeDO attributeDO = new AttributeDO(testAttributeName,
 				DatatypeType.STRING);
 		attributeDO.setStringValue(testAttributeValue);
@@ -245,7 +253,7 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, this.certificate.getEncoded(),
+				null, false, this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -337,7 +345,7 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, this.certificate.getEncoded(),
+				null, false, this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -462,7 +470,7 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, this.certificate.getEncoded(), Arrays
+				null, false, this.certificate.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),
