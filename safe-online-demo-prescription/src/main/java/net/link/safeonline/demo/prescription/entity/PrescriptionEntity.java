@@ -44,7 +44,11 @@ public class PrescriptionEntity implements Serializable {
 
 	private String patient;
 
+	private String patientName;
+
 	private String careProvider;
+
+	private String careProviderName;
 
 	private boolean filled;
 
@@ -54,9 +58,12 @@ public class PrescriptionEntity implements Serializable {
 
 	private List<PrescriptionMedicineEntity> medicines;
 
-	public PrescriptionEntity(String patient, String careProvider) {
+	public PrescriptionEntity(String patient, String patientName,
+			String careProvider, String careProviderName) {
 		this.patient = patient;
+		this.patientName = patientName;
 		this.careProvider = careProvider;
+		this.careProviderName = careProviderName;
 		this.filled = false;
 		this.creationDate = new Date();
 	}
@@ -122,5 +129,21 @@ public class PrescriptionEntity implements Serializable {
 
 	public void setFilledDate(Date filledDate) {
 		this.filledDate = filledDate;
+	}
+
+	public String getPatientName() {
+		return this.patientName;
+	}
+
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
+	}
+
+	public String getCareProviderName() {
+		return this.careProviderName;
+	}
+
+	public void setCareProviderName(String careProviderName) {
+		this.careProviderName = careProviderName;
 	}
 }

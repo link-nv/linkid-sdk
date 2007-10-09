@@ -13,7 +13,7 @@ import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
 @Local
-public interface PrescriptionCreate {
+public interface PrescriptionCreate extends AbstractPrescriptionDataClient {
 
 	/*
 	 * Factory.
@@ -26,11 +26,6 @@ public interface PrescriptionCreate {
 	List<String> getSelectedMedicines();
 
 	void setSelectedMedicines(List<String> selectedMedicines);
-
-	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
 
 	/*
 	 * Actions.

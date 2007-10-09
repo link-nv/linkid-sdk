@@ -29,6 +29,8 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -56,6 +58,8 @@ public abstract class AbstractPrescriptionDataClientBean implements
 
 	private transient AttributeClient attributeClient;
 
+	private transient NameIdentifierMappingClient mappingClient;
+
 	private String wsHostName;
 	private String wsHostPort;
 
@@ -80,10 +84,13 @@ public abstract class AbstractPrescriptionDataClientBean implements
 	@PostActivate
 	public void postActivateCallback() {
 		log.debug("postActivate");
-		this.dataClient = new DataClientImpl(this.wsHostName + ":"
-				+ this.wsHostPort, this.certificate, this.privateKey);
-		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
-				+ this.wsHostPort, this.certificate, this.privateKey);
+		String location = this.wsHostName + ":" + this.wsHostPort;
+		this.dataClient = new DataClientImpl(location, this.certificate,
+				this.privateKey);
+		this.attributeClient = new AttributeClientImpl(location,
+				this.certificate, this.privateKey);
+		this.mappingClient = new NameIdentifierMappingClientImpl(location,
+				this.certificate, this.privateKey);
 	}
 
 	@PrePassivate
@@ -117,6 +124,13 @@ public abstract class AbstractPrescriptionDataClientBean implements
 			throw new EJBException("attribute client not yet initialized");
 		}
 		return this.attributeClient;
+	}
+
+	protected NameIdentifierMappingClient getMappingClient() {
+		if (null == this.mappingClient) {
+			throw new EJBException("mapping client not yet initialized");
+		}
+		return this.mappingClient;
 	}
 
 	/**

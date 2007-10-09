@@ -273,8 +273,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				.getCertificate();
 		this.trustedCertificates.add(demoPrescriptionCertificate);
 		this.registeredApplications.add(new Application(
-				DEMO_PRESCRIPTION_APPLICATION_NAME, "owner",
-				demoPrescriptionCertificate));
+				DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, null, true,
+				true, demoPrescriptionCertificate, true));
 
 		/*
 		 * Subscribe the prescription admin.

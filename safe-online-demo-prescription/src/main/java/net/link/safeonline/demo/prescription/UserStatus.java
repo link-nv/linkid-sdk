@@ -15,6 +15,8 @@ public class UserStatus implements Serializable {
 
 	private String name;
 
+	private String userId;
+
 	private boolean admin;
 
 	private boolean careProvider;
@@ -22,13 +24,14 @@ public class UserStatus implements Serializable {
 	private boolean pharmacist;
 
 	public UserStatus() {
-		this(null, false, false, false);
+		this(null, null, false, false, false);
 	}
 
-	public UserStatus(String name, boolean admin, boolean careProvider,
-			boolean pharmacist) {
+	public UserStatus(String name, String userId, boolean admin,
+			boolean careProvider, boolean pharmacist) {
 		super();
 		this.name = name;
+		this.userId = userId;
 		this.admin = admin;
 		this.careProvider = careProvider;
 		this.pharmacist = pharmacist;
@@ -64,5 +67,13 @@ public class UserStatus implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getUserId() {
+		return this.userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 }

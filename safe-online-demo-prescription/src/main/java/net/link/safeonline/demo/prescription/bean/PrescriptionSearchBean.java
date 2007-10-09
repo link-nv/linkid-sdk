@@ -20,6 +20,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.Attribute;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -56,16 +57,30 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
 	public String search() {
 		log.debug("search: " + this.name);
 
+		this.userStatus = new UserStatus();
+
+		String userId;
+		NameIdentifierMappingClient mappingClient = super.getMappingClient();
+		try {
+			userId = mappingClient.getUserId(this.name);
+		} catch (SubjectNotFoundException e) {
+			log.debug("subject not found: #0", this.name);
+			this.facesMessages.add("subject not found");
+			return null;
+		} catch (RequestDeniedException e) {
+			log.debug("request denied");
+			this.facesMessages.add("request denied");
+			return null;
+		}
+
 		boolean admin = false;
 		boolean careProvider = false;
 		boolean pharmacist = false;
 
-		this.userStatus = new UserStatus();
-
 		DataClient dataClient = getDataClient();
 		try {
 			Attribute<Boolean> adminAttribute = dataClient.getAttributeValue(
-					this.name, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
+					userId, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
 					Boolean.class);
 			if (null != adminAttribute) {
 				Boolean value = adminAttribute.getValue();
@@ -76,7 +91,7 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
 
 			Attribute<Boolean> careProviderAttribute = dataClient
 					.getAttributeValue(
-							this.name,
+							userId,
 							DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
 							Boolean.class);
 			if (null != careProviderAttribute) {
@@ -88,7 +103,7 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
 
 			Attribute<Boolean> pharmacistAttribute = dataClient
 					.getAttributeValue(
-							this.name,
+							userId,
 							DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME,
 							Boolean.class);
 			if (null != pharmacistAttribute) {
@@ -108,8 +123,8 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
 			return null;
 		}
 
-		this.userStatus = new UserStatus(this.name, admin, careProvider,
-				pharmacist);
+		this.userStatus = new UserStatus(this.name, userId, admin,
+				careProvider, pharmacist);
 
 		return "success";
 	}

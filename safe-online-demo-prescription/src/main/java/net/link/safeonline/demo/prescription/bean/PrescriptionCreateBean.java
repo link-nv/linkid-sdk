@@ -13,40 +13,34 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 import javax.faces.model.SelectItem;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import net.link.safeonline.demo.prescription.PrescriptionConstants;
+import net.link.safeonline.demo.prescription.PrescriptionCreate;
+import net.link.safeonline.demo.prescription.entity.PrescriptionEntity;
+import net.link.safeonline.demo.prescription.entity.PrescriptionMedicineEntity;
+
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
 
-import net.link.safeonline.demo.prescription.PrescriptionConstants;
-import net.link.safeonline.demo.prescription.PrescriptionCreate;
-import net.link.safeonline.demo.prescription.entity.PrescriptionEntity;
-import net.link.safeonline.demo.prescription.entity.PrescriptionMedicineEntity;
-
 @Stateful
 @Name("prescriptionCreate")
 @LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionCreateBean/local")
 @SecurityDomain(PrescriptionConstants.SECURITY_DOMAIN)
-public class PrescriptionCreateBean implements PrescriptionCreate {
+public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean
+		implements PrescriptionCreate {
 
 	@Logger
 	private Log log;
-
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
 	@RolesAllowed(PrescriptionConstants.CARE_PROVIDER_ROLE)
 	@Factory("medicines")
@@ -87,8 +81,11 @@ public class PrescriptionCreateBean implements PrescriptionCreate {
 		Principal careProviderPrincipal = this.sessionContext
 				.getCallerPrincipal();
 		String careProvider = careProviderPrincipal.getName();
+		String careProviderName = super.getUsername(careProvider);
+		String patientName = super.getUsername(this.patient);
+
 		PrescriptionEntity prescription = new PrescriptionEntity(this.patient,
-				careProvider);
+				patientName, careProvider, careProviderName);
 		this.entityManager.persist(prescription);
 		log.debug("prescription id: #0", prescription.getId());
 		for (String selectedMedicine : this.selectedMedicines) {

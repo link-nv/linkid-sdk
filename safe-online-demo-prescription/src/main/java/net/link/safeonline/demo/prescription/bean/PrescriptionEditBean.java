@@ -81,13 +81,13 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
 			RequestDeniedException, SubjectNotFoundException,
 			AttributeNotFoundException {
 		DataClient dataClient = getDataClient();
-		String name = this.userStatus.getName();
-		if (null == dataClient.getAttributeValue(name, attributeName, null)) {
-			log.debug("create attribute #0 for #1", attributeName, name);
-			dataClient.createAttribute(name, attributeName, attributeValue);
+		String userId = this.userStatus.getUserId();
+		if (null == dataClient.getAttributeValue(userId, attributeName, null)) {
+			log.debug("create attribute #0 for #1", attributeName, userId);
+			dataClient.createAttribute(userId, attributeName, attributeValue);
 		} else {
-			log.debug("set attribute #0 for #1", attributeName, name);
-			dataClient.setAttributeValue(name, attributeName, attributeValue);
+			log.debug("set attribute #0 for #1", attributeName, userId);
+			dataClient.setAttributeValue(userId, attributeName, attributeValue);
 		}
 	}
 }
