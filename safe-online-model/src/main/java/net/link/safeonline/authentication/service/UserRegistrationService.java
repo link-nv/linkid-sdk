@@ -7,15 +7,12 @@
 
 package net.link.safeonline.authentication.service;
 
-import java.security.NoSuchAlgorithmException;
-
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**

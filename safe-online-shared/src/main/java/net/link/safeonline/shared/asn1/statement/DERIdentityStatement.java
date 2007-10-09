@@ -46,6 +46,7 @@ public class DERIdentityStatement extends AbstractDERStatement {
 		this.surname = surname;
 	}
 
+	@Override
 	public DEREncodable getToBeSigned() {
 		DERSequence tbsSequence = new DERSequence();
 		DERInteger version = new DERInteger(VERSION);

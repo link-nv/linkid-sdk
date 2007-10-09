@@ -30,6 +30,7 @@ public class PkiProviderManagerBeanTest extends TestCase {
 
 	private PkiProvider mockPkiProvider;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 

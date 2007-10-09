@@ -59,7 +59,7 @@ public class LoadIdentity extends JPanel {
 
 	private static final Log LOG = LogFactory.getLog(LoadIdentity.class);
 
-	private JComboBox keyStoreTypeCombo = new JComboBox();;
+	private JComboBox keyStoreTypeCombo = new JComboBox();
 	private JPasswordField keyStorePasswordField = new JPasswordField(20);
 	private JPasswordField keyEntryPasswordField = new JPasswordField(20);
 	private JLabel keyStoreField = new JLabel();
@@ -203,13 +203,15 @@ public class LoadIdentity extends JPanel {
 			privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType,
 					keyStoreInputStream, keyStorePassword, keyEntryPassword);
 		} catch (RuntimeException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, e.getMessage(), "",
+					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
 		this.parent.resetContent();
 
-		new ConfirmIdentity(privateKeyEntry, keyStorePath, keyStoreType, new String(keyStorePassword));
+		new ConfirmIdentity(privateKeyEntry, keyStorePath, keyStoreType,
+				new String(keyStorePassword));
 	}
 
 	protected void onBrowse() {
@@ -225,11 +227,11 @@ public class LoadIdentity extends JPanel {
 		this.parent.resetContent();
 	}
 
-
 	/*
 	 * Filter for the KeyStore file chooser
 	 */
 	private class KeyStoreFilter extends javax.swing.filechooser.FileFilter {
+		@Override
 		public boolean accept(File file) {
 			String filename = file.getName();
 			if (file.isDirectory() || filename.endsWith(".p12")
@@ -239,6 +241,7 @@ public class LoadIdentity extends JPanel {
 				return false;
 		}
 
+		@Override
 		public String getDescription() {
 			return "*.p12, *.pfx, *.jks";
 		}

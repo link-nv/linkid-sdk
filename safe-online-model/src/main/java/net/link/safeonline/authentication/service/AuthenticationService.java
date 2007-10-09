@@ -7,8 +7,6 @@
 
 package net.link.safeonline.authentication.service;
 
-import java.security.NoSuchAlgorithmException;
-
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;

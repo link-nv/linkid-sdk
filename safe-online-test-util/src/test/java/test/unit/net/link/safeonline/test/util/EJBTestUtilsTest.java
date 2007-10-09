@@ -103,6 +103,7 @@ public class EJBTestUtilsTest extends TestCase {
 		object.func();
 
 		// verify
-		assertTrue(object instanceof TestClass);
+		// assertTrue(object instanceof TestClass);
+		// ^ object is declared as TestClass, making this assert pretty useless
 	}
 }

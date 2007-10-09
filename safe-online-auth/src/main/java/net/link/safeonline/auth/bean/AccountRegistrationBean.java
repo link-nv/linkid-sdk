@@ -34,7 +34,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 import com.octo.captcha.service.CaptchaServiceException;
@@ -68,9 +67,6 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	@In(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	@Out(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	private String requestedUsername;
-
-	@In(create = true)
-	FacesMessages facesMessages;
 
 	@Remove
 	@Destroy

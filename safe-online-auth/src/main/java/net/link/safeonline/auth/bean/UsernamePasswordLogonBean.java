@@ -27,7 +27,6 @@ import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.core.FacesMessages;
 
 @Stateful
 @Name("usernamePasswordLogon")
@@ -42,9 +41,6 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 	private String username;
 
 	private String password;
-
-	@In(create = true)
-	FacesMessages facesMessages;
 
 	@In
 	private AuthenticationService authenticationService;

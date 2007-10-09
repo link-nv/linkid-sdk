@@ -11,7 +11,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.auth.bean.AbstractLoginBean;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 
 import org.apache.commons.logging.Log;

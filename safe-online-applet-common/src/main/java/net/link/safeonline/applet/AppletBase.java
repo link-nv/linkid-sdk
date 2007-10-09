@@ -33,6 +33,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import net.link.safeonline.p11sc.SmartCard;
@@ -67,7 +68,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private static enum State {
 		HIDE, SHOW
-	};
+	}
 
 	private State state = State.HIDE;
 
@@ -115,7 +116,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		BoxLayout boxLayout = new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS);
 		infoPanel.setLayout(boxLayout);
 		container.add(infoPanel, BorderLayout.NORTH);
-		this.progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
+		this.progressBar = new JProgressBar(SwingConstants.HORIZONTAL);
 		this.progressBar.setIndeterminate(true);
 		JPanel textPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		this.infoLabel = new JLabel();

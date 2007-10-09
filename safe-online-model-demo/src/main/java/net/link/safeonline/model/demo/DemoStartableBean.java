@@ -494,6 +494,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	}
 
+	@Override
 	public int getPriority() {
 		return BeIdConstants.BEID_BOOT_PRIORITY - 1;
 	}

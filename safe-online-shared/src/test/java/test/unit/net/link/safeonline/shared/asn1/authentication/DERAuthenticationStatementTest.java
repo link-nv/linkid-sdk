@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
+import net.link.safeonline.shared.asn1.statement.AbstractDERStatement;
 import net.link.safeonline.shared.asn1.statement.DERAuthenticationStatement;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -47,7 +48,7 @@ public class DERAuthenticationStatementTest extends TestCase {
 				.fromByteArray(result));
 		assertEquals(2, sequence.size());
 		ASN1Sequence tbsSequence = ASN1Sequence.getInstance(sequence
-				.getObjectAt(DERAuthenticationStatement.TBS_IDX));
+				.getObjectAt(AbstractDERStatement.TBS_IDX));
 		assertEquals(4, tbsSequence.size());
 		DERInteger resultVersion = DERInteger.getInstance(tbsSequence
 				.getObjectAt(DERAuthenticationStatement.TBS_VERSION_IDX));
@@ -67,7 +68,7 @@ public class DERAuthenticationStatementTest extends TestCase {
 		assertTrue(Arrays.equals(resultEncodedCert, authCert.getEncoded()));
 
 		DERBitString resultSignature = DERBitString.getInstance(sequence
-				.getObjectAt(DERAuthenticationStatement.SIGNATURE_IDX));
+				.getObjectAt(AbstractDERStatement.SIGNATURE_IDX));
 		assertTrue(Arrays.equals(signature, resultSignature.getBytes()));
 	}
 }

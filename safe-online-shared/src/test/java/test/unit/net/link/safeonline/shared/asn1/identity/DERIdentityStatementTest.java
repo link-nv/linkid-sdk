@@ -13,6 +13,8 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
+import org.bouncycastle.asn1.ASN1Object;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DEREncodable;
 import org.bouncycastle.asn1.DERInteger;
@@ -45,8 +47,8 @@ public class DERIdentityStatementTest extends TestCase {
 
 		// verify
 		assertNotNull(result);
-		DERSequence sequence = (DERSequence) DERSequence
-				.getInstance(DERSequence.fromByteArray(result));
+		DERSequence sequence = (DERSequence) ASN1Sequence
+				.getInstance(ASN1Object.fromByteArray(result));
 		DERSequence bodySequence = (DERSequence) sequence.getObjectAt(0);
 		DERInteger version = DERInteger.getInstance(bodySequence
 				.getObjectAt(DERIdentityStatement.VERSION_IDX));

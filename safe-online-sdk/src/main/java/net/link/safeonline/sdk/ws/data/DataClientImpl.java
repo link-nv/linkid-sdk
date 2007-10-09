@@ -168,6 +168,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 							"attribute value type incorrect");
 				case DOES_NOT_EXIST:
 					throw new AttributeNotFoundException();
+				default:
 				}
 			}
 			LOG.debug("status comment: " + status.getComment());

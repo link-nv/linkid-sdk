@@ -13,8 +13,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.persistence.NoResultException;
-
 /**
  * Used to mark a method as being a JPA named query execution method.
  * 

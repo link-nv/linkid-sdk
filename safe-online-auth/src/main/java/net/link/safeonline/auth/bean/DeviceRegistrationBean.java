@@ -22,10 +22,8 @@ import net.link.safeonline.authentication.service.CredentialService;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -42,9 +40,6 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	private String device;
 
 	private String password;
-
-	@In(create = true)
-	FacesMessages facesMessages;
 
 	@EJB
 	private CredentialService credentialService;

@@ -41,6 +41,7 @@ public class DERAuthenticationStatement extends AbstractDERStatement {
 		this.authenticationCertificate = authenticationCertificate;
 	}
 
+	@Override
 	public DEREncodable getToBeSigned() {
 		DERSequence tbsSequence = new DERSequence();
 		DERInteger version = new DERInteger(VERSION);

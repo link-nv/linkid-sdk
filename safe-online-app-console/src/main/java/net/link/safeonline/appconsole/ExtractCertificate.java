@@ -58,7 +58,7 @@ public class ExtractCertificate extends JPanel {
 
 	private static final Log LOG = LogFactory.getLog(ExtractCertificate.class);
 
-	private JComboBox keyStoreTypeCombo = new JComboBox();;
+	private JComboBox keyStoreTypeCombo = new JComboBox();
 	private JPasswordField keyStorePasswordField = new JPasswordField(20);
 	private JPasswordField keyEntryPasswordField = new JPasswordField(20);
 	private JLabel keyStoreField = new JLabel();
@@ -242,6 +242,7 @@ public class ExtractCertificate extends JPanel {
 	}
 
 	class KeyStoreFilter extends javax.swing.filechooser.FileFilter {
+		@Override
 		public boolean accept(File file) {
 			String filename = file.getName();
 			if (file.isDirectory() || filename.endsWith(".pkcs12")
@@ -251,6 +252,7 @@ public class ExtractCertificate extends JPanel {
 				return false;
 		}
 
+		@Override
 		public String getDescription() {
 			return "*.pkcs12, *.jks";
 		}

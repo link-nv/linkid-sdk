@@ -18,6 +18,7 @@ import net.link.safeonline.shared.asn1.statement.AbstractDERStatement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERBitString;
 
@@ -34,7 +35,7 @@ abstract public class AbstractStatementStructure {
 			throws DecodingException {
 		ASN1Sequence sequence;
 		try {
-			sequence = ASN1Sequence.getInstance(ASN1Sequence
+			sequence = ASN1Sequence.getInstance(ASN1Object
 					.fromByteArray(encodedStatement));
 		} catch (IOException e) {
 			LOG.debug("identity statement IO error: " + e.getMessage(), e);

@@ -25,7 +25,7 @@ import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.ExtensionO
 import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.ObjectFactory;
 
 import org.joda.time.DateTime;
-import org.opensaml.Configuration;
+import org.opensaml.xml.Configuration;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;

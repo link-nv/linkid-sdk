@@ -84,7 +84,7 @@ public class SimplePlainUrlAuthenticationProtocolHandler implements
 			 */
 			return null;
 		}
-		String username = (String) httpRequest.getParameter("username");
+		String username = httpRequest.getParameter("username");
 		return username;
 	}
 }

@@ -262,7 +262,7 @@ public class AttribService extends JPanel implements Observer {
 			addMap(userNode, (Map<String, Object>) arg);
 		} else if (arg instanceof Boolean) { // from data web service
 		} else if (arg instanceof String) { // error from one of both
-			JOptionPane.showMessageDialog(this, (String) arg, "Error",
+			JOptionPane.showMessageDialog(this, arg, "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
 		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -293,8 +293,8 @@ public class AttribService extends JPanel implements Observer {
 		HashMap<String, Object> data = (HashMap<String, Object>) map;
 
 		for (Iterator<String> it = data.keySet().iterator(); it.hasNext();) {
-			String attributeName = (String) it.next();
-			Object attributeValue = (Object) data.get(attributeName);
+			String attributeName = it.next();
+			Object attributeValue = data.get(attributeName);
 
 			DefaultMutableTreeNode attributeNameNode = new DefaultMutableTreeNode(
 					attributeName);

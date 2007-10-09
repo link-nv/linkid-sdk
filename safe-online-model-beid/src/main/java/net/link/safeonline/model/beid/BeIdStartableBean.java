@@ -92,6 +92,7 @@ public class BeIdStartableBean extends AbstractInitBean {
 
 	}
 
+	@Override
 	public void postStart() {
 		LOG.debug("post start");
 		super.postStart();
@@ -146,10 +147,12 @@ public class BeIdStartableBean extends AbstractInitBean {
 		}
 	}
 
+	@Override
 	public void preStop() {
 		LOG.debug("pre stop");
 	}
 
+	@Override
 	public int getPriority() {
 		return BeIdConstants.BEID_BOOT_PRIORITY;
 	}

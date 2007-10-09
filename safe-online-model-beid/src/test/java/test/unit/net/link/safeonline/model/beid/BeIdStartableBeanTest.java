@@ -35,6 +35,7 @@ public class BeIdStartableBeanTest extends TestCase {
 
 	private Object[] mockObjects;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
