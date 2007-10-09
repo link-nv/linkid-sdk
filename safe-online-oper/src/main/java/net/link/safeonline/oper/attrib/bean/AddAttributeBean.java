@@ -77,7 +77,7 @@ public class AddAttributeBean implements AddAttribute {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String next() {
-		log.debug("next: name #0, category #1", this.name, this.category);
+		this.log.debug("next: name #0, category #1", this.name, this.category);
 		return this.category;
 	}
 
@@ -95,11 +95,12 @@ public class AddAttributeBean implements AddAttribute {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<SelectItem> datatypesFactory() {
 		List<SelectItem> datatypes = new LinkedList<SelectItem>();
-		for (DatatypeType type : DatatypeType.values()) {
-			if (false == type.isPrimitive()) {
+		for (DatatypeType currentType : DatatypeType.values()) {
+			if (false == currentType.isPrimitive()) {
 				continue;
 			}
-			datatypes.add(new SelectItem(type.name(), type.getFriendlyName()));
+			datatypes.add(new SelectItem(currentType.name(), currentType
+					.getFriendlyName()));
 
 		}
 		return datatypes;
@@ -119,7 +120,7 @@ public class AddAttributeBean implements AddAttribute {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String typeNext() {
-		log.debug("type next");
+		this.log.debug("type next");
 		return "next";
 	}
 
@@ -170,7 +171,7 @@ public class AddAttributeBean implements AddAttribute {
 		return memberAttributes;
 	}
 
-	private static class AttributeConvertor implements
+	static class AttributeConvertor implements
 			Convertor<AttributeTypeEntity, SelectItem> {
 
 		public SelectItem convert(AttributeTypeEntity input) {
@@ -190,7 +191,7 @@ public class AddAttributeBean implements AddAttribute {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@End
 	public String add() {
-		log.debug("add");
+		this.log.debug("add");
 
 		AttributeTypeEntity attributeType = new AttributeTypeEntity();
 		attributeType.setName(this.name);
@@ -209,7 +210,7 @@ public class AddAttributeBean implements AddAttribute {
 		if (null != this.memberAccessControlAttributes) {
 			int memberSequence = 0;
 			for (MemberAccessControl memberAccessControlAttribute : this.memberAccessControlAttributes) {
-				log.debug("selected member attribute: "
+				this.log.debug("selected member attribute: "
 						+ memberAccessControlAttribute.getName());
 				attributeType.addMember(memberAccessControlAttribute
 						.getAttributeType(), memberSequence,
@@ -221,21 +222,21 @@ public class AddAttributeBean implements AddAttribute {
 			this.attributeTypeService.add(attributeType);
 		} catch (ExistingAttributeTypeException e) {
 			String msg = "existing attribute type";
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.addToControlFromResourceBundle("name",
 					FacesMessage.SEVERITY_ERROR,
 					"errorAttributeTypeAlreadyExists");
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
 			String msg = "member attribute type not found";
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.addToControlFromResourceBundle("name",
 					FacesMessage.SEVERITY_ERROR,
 					"errorAttributeTypeMemberNotFound");
 			return null;
 		} catch (AttributeTypeDefinitionException e) {
 			String msg = "illegal member attribute type";
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.addToControlFromResourceBundle("name",
 					FacesMessage.SEVERITY_ERROR,
 					"errorAttributeTypeMemberIllegal");
@@ -258,7 +259,7 @@ public class AddAttributeBean implements AddAttribute {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String membersNext() {
-		log.debug("members next");
+		this.log.debug("members next");
 		return "next";
 	}
 
@@ -296,7 +297,7 @@ public class AddAttributeBean implements AddAttribute {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@Factory(MEMBER_ACCESS_CONTROL_ATTRIBUTES)
 	public void memberAccessControlAttributesFactory() {
-		log.debug("memberAccessControlAttributesFactory");
+		this.log.debug("memberAccessControlAttributesFactory");
 		this.memberAccessControlAttributes = new LinkedList<MemberAccessControl>();
 		if (null == this.selectedMemberAttributes) {
 			return;
@@ -309,7 +310,7 @@ public class AddAttributeBean implements AddAttribute {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String membersAccessControlNext() {
-		log.debug("members access control next");
+		this.log.debug("members access control next");
 		return "next";
 	}
 }

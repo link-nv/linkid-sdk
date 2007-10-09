@@ -22,7 +22,7 @@ public class IdentityAttribute implements Serializable {
 	private boolean dataMining;
 
 	public boolean isDataMining() {
-		return dataMining;
+		return this.dataMining;
 	}
 
 	public void setDataMining(boolean dataMining) {

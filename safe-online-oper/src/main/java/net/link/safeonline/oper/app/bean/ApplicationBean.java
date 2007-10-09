@@ -204,7 +204,7 @@ public class ApplicationBean implements Application {
 				return null;
 			}
 
-		List<IdentityAttributeTypeDO> identityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+		List<IdentityAttributeTypeDO> tempIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
 		for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
 			if (false == viewIdentityAttribute.isIncluded()) {
 				continue;
@@ -213,7 +213,7 @@ public class ApplicationBean implements Application {
 			IdentityAttributeTypeDO identityAttribute = new IdentityAttributeTypeDO(
 					viewIdentityAttribute.getName(), viewIdentityAttribute
 							.isRequired(), viewIdentityAttribute.isDataMining());
-			identityAttributes.add(identityAttribute);
+			tempIdentityAttributes.add(identityAttribute);
 		}
 		try {
 			byte[] encodedCertificate;
@@ -225,7 +225,8 @@ public class ApplicationBean implements Application {
 			this.applicationService.addApplication(this.name,
 					this.friendlyName, this.applicationOwner, this.description,
 					this.idmapping, newApplicationUrl, encodedCertificate,
-					identityAttributes);
+					tempIdentityAttributes);
+
 		} catch (ExistingApplicationException e) {
 			LOG.debug("application already exists: " + this.name);
 			this.facesMessages.addToControlFromResourceBundle("name",
@@ -277,8 +278,7 @@ public class ApplicationBean implements Application {
 	}
 
 	public String getApplicationUrl() {
-
-		return applicationUrl;
+		return this.applicationUrl;
 	}
 
 	public void setApplicationUrl(String applicationUrl) {
@@ -433,7 +433,7 @@ public class ApplicationBean implements Application {
 		URL newApplicationUrl = null;
 		if (null != this.applicationUrl || this.applicationUrl.length() == 0)
 			try {
-				newApplicationUrl = new URL(applicationUrl);
+				newApplicationUrl = new URL(this.applicationUrl);
 			} catch (MalformedURLException e) {
 				LOG.debug("illegal URL format: " + this.applicationUrl);
 				this.facesMessages.addToControlFromResourceBundle(
@@ -466,7 +466,7 @@ public class ApplicationBean implements Application {
 			}
 		}
 
-		List<IdentityAttributeTypeDO> newIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
+		List<IdentityAttributeTypeDO> tempNewIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
 		for (IdentityAttribute identityAttribute : this.identityAttributes) {
 			if (false == identityAttribute.isIncluded()) {
 				continue;
@@ -475,12 +475,12 @@ public class ApplicationBean implements Application {
 					identityAttribute.getName(),
 					identityAttribute.isRequired(), identityAttribute
 							.isDataMining());
-			newIdentityAttributes.add(newIdentityAttribute);
+			tempNewIdentityAttributes.add(newIdentityAttribute);
 		}
 
 		try {
 			this.applicationService.updateApplicationIdentity(applicationId,
-					newIdentityAttributes);
+					tempNewIdentityAttributes);
 			this.applicationService.updateApplicationUrl(applicationId,
 					newApplicationUrl);
 
@@ -543,8 +543,9 @@ public class ApplicationBean implements Application {
 		 * To set the selected application.
 		 */
 		LOG.debug("edit application: " + this.selectedApplication.getName());
-		if (null != selectedApplication.getApplicationUrl()) {
-			applicationUrl = selectedApplication.getApplicationUrl()
+
+		if (null != this.selectedApplication.getApplicationUrl()) {
+			this.applicationUrl = this.selectedApplication.getApplicationUrl()
 					.toExternalForm();
 		}
 		this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
@@ -562,7 +563,7 @@ public class ApplicationBean implements Application {
 		return availableApplicationOwners;
 	}
 
-	private static class ApplicationOwnerSelectItemConvertor implements
+	static class ApplicationOwnerSelectItemConvertor implements
 			Convertor<ApplicationOwnerEntity, SelectItem> {
 
 		public SelectItem convert(ApplicationOwnerEntity input) {

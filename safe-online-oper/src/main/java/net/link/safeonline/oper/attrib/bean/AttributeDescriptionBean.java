@@ -109,8 +109,8 @@ public class AttributeDescriptionBean implements AttributeDescription {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@Factory(NEW_ATTRIBUTE_TYPE_DESCIPTION_NAME)
 	public AttributeTypeDescriptionEntity newAttributeTypeDescriptionFactory() {
-		AttributeTypeDescriptionEntity newAttributeTypeDescription = new AttributeTypeDescriptionEntity();
-		return newAttributeTypeDescription;
+		AttributeTypeDescriptionEntity tempNewAttributeTypeDescription = new AttributeTypeDescriptionEntity();
+		return tempNewAttributeTypeDescription;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

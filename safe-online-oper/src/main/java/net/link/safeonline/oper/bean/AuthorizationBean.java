@@ -64,13 +64,13 @@ public class AuthorizationBean implements Authorization {
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		log.debug("destroy: " + this);
+		this.log.debug("destroy: " + this);
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@Begin
 	public String search() {
-		log.debug("search: #0", this.user);
+		this.log.debug("search: #0", this.user);
 		try {
 			this.roles = this.authorizationManagerService.getRoles(this.user);
 		} catch (SubjectNotFoundException e) {
@@ -78,13 +78,13 @@ public class AuthorizationBean implements Authorization {
 					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
 			return null;
 		}
-		log.debug("roles: #0", this.roles);
+		this.log.debug("roles: #0", this.roles);
 		return "found";
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String getUser() {
-		log.debug("get user: #0", this.user);
+		this.log.debug("get user: #0", this.user);
 		return this.user;
 	}
 
@@ -96,7 +96,7 @@ public class AuthorizationBean implements Authorization {
 	@End
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String cancel() {
-		log.debug("cancel");
+		this.log.debug("cancel");
 		this.user = null;
 		return "cancel";
 	}
@@ -104,7 +104,7 @@ public class AuthorizationBean implements Authorization {
 	@End
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String save() {
-		log.debug("save: " + this.user);
+		this.log.debug("save: " + this.user);
 		try {
 			this.authorizationManagerService.setRoles(this.user, this.roles);
 		} catch (SubjectNotFoundException e) {
@@ -121,20 +121,20 @@ public class AuthorizationBean implements Authorization {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<String> getRoles() {
-		log.debug("get roles: #0", this.roles);
+		this.log.debug("get roles: #0", this.roles);
 		return new LinkedList<String>(this.roles);
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void setRoles(List<String> roles) {
-		log.debug("set roles: #0", roles);
+		this.log.debug("set roles: #0", roles);
 		this.roles = new HashSet<String>(roles);
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	@Factory("availableRoles")
 	public List<SelectItem> availableRolesFactory() {
-		log.debug("availableRoles factory");
+		this.log.debug("availableRoles factory");
 		Set<String> availableRoles = this.authorizationManagerService
 				.getAvailableRoles();
 		List<SelectItem> availableRolesView = new LinkedList<SelectItem>();
@@ -147,18 +147,18 @@ public class AuthorizationBean implements Authorization {
 
 	@PostConstruct
 	public void postConstructCallback() {
-		log.debug("postConstruct: " + this);
+		this.log.debug("postConstruct: " + this);
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<String> autocompleteUser(Object event) {
 		String userPrefix = event.toString();
-		log.debug("auto-complete user: #0", userPrefix);
+		this.log.debug("auto-complete user: #0", userPrefix);
 		List<String> allUsers = this.authorizationManagerService.getUsers();
 		List<String> filteredUsers = new LinkedList<String>();
-		for (String user : allUsers) {
-			if (user.startsWith(userPrefix)) {
-				filteredUsers.add(user);
+		for (String currentUser : allUsers) {
+			if (currentUser.startsWith(userPrefix)) {
+				filteredUsers.add(currentUser);
 			}
 		}
 		return filteredUsers;

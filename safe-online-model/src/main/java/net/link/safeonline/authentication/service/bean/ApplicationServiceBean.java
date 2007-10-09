@@ -119,13 +119,13 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	@PermitAll
 	public List<ApplicationEntity> listApplications() {
-		if (sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)
-				|| sessionContext.isCallerInRole(SafeOnlineRoles.OWNER_ROLE)
-				|| sessionContext
+		if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)
+				|| this.sessionContext
+						.isCallerInRole(SafeOnlineRoles.OWNER_ROLE)
+				|| this.sessionContext
 						.isCallerInRole(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE))
 			return this.applications.listApplications();
-		else
-			return this.applications.listUserApplications();
+		return this.applications.listUserApplications();
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -238,7 +238,7 @@ public class ApplicationServiceBean implements ApplicationService,
 	 * @param application
 	 * @throws PermissionDeniedException
 	 */
-	public void checkWritePermission(ApplicationEntity application)
+	private void checkWritePermission(ApplicationEntity application)
 			throws PermissionDeniedException {
 		ApplicationOwnerEntity applicationOwner = application
 				.getApplicationOwner();
@@ -317,9 +317,9 @@ public class ApplicationServiceBean implements ApplicationService,
 		LOG.debug("get owned applications");
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerManager
 				.getCallerApplicationOwner();
-		List<ApplicationEntity> applications = this.applicationDAO
+		List<ApplicationEntity> tempApplications = this.applicationDAO
 				.listApplications(applicationOwner);
-		return applications;
+		return tempApplications;
 	}
 
 	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })

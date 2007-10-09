@@ -89,7 +89,7 @@ public class AttributeProviderBean implements AttributeProvider {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String removeProvider() {
-		log.debug("removing attribute provider #0",
+		this.log.debug("removing attribute provider #0",
 				this.selectedAttributeProvider);
 		try {
 			this.attributeProviderManagerService
@@ -106,7 +106,7 @@ public class AttributeProviderBean implements AttributeProvider {
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String add() {
-		log.debug("add application provider: " + this.application);
+		this.log.debug("add application provider: " + this.application);
 		try {
 			this.attributeProviderManagerService.addAttributeProvider(
 					this.application, this.selectedAttributeType.getName());
@@ -132,8 +132,8 @@ public class AttributeProviderBean implements AttributeProvider {
 		List<ApplicationEntity> applications = this.applicationService
 				.listApplications();
 		List<SelectItem> applicationList = new LinkedList<SelectItem>();
-		for (ApplicationEntity application : applications) {
-			applicationList.add(new SelectItem(application.getName()));
+		for (ApplicationEntity currentApplication : applications) {
+			applicationList.add(new SelectItem(currentApplication.getName()));
 		}
 		return applicationList;
 	}

@@ -49,7 +49,7 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 	private ApplicationService applicationService;
 
 	@EJB
-	private SubjectService subjectService;
+	protected SubjectService subjectService;
 
 	@SuppressWarnings("unused")
 	@DataModel("applicationOwnerList")
@@ -127,8 +127,8 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 
 		public ApplicationOwnerWrapper(ApplicationOwnerEntity entity) {
 			this.entity = entity;
-			this.adminName = subjectService.getSubjectLogin(this.entity
-					.getAdmin().getUserId());
+			this.adminName = ApplicationOwnerBean.this.subjectService
+					.getSubjectLogin(this.entity.getAdmin().getUserId());
 		}
 
 		public String getAdminName() {

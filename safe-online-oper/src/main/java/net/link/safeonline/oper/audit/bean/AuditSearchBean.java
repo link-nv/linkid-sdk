@@ -159,7 +159,7 @@ public class AuditSearchBean implements AuditSearch {
 	}
 
 	public Integer getSearchLastTimeDays() {
-		return searchLastTimeDays;
+		return this.searchLastTimeDays;
 	}
 
 	public void setSearchLastTimeDays(Integer searchLastTimeDays) {
@@ -167,7 +167,7 @@ public class AuditSearchBean implements AuditSearch {
 	}
 
 	public Integer getSearchLastTimeHours() {
-		return searchLastTimeHours;
+		return this.searchLastTimeHours;
 	}
 
 	public void setSearchLastTimeHours(Integer searchLastTimeHours) {
@@ -175,7 +175,7 @@ public class AuditSearchBean implements AuditSearch {
 	}
 
 	public Integer getSearchLastTimeMinutes() {
-		return searchLastTimeMinutes;
+		return this.searchLastTimeMinutes;
 	}
 
 	public void setSearchLastTimeMinutes(Integer searchLastTimeMinutes) {
