@@ -109,6 +109,7 @@ public class IdentifierMappingWebServiceTest {
 						"owner",
 						null,
 						true,
+						null,
 						this.certificate.getEncoded(),
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
@@ -173,6 +174,7 @@ public class IdentifierMappingWebServiceTest {
 						"owner",
 						null,
 						false,
+						null,
 						this.certificate.getEncoded(),
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(

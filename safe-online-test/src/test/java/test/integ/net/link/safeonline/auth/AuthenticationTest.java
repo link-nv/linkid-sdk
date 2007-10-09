@@ -15,6 +15,7 @@ import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplication
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAuthenticationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getCredentialService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubjectService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubscriptionService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getUserRegistrationService;
 
@@ -38,7 +39,9 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -73,15 +76,17 @@ public class AuthenticationTest {
 				"secret");
 		assertTrue(result);
 
-		String resultUserId = authenticationService.getUserId();
-		assertEquals("fcorneli", resultUserId);
+		String resultUserName = authenticationService.getUsername();
+		assertEquals("fcorneli", resultUserName);
+
+		String userId = authenticationService.getUserId();
 
 		/*
 		 * A commitAuthentication can only take place when the user is already
 		 * authenticated in the SafeOnline core.
 		 */
 		IntegrationTestUtils.setupLoginConfig();
-		IntegrationTestUtils.login("fcorneli", "secret");
+		IntegrationTestUtils.login(userId, "secret");
 		authenticationService
 				.commitAuthentication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 	}
@@ -169,14 +174,24 @@ public class AuthenticationTest {
 
 		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
+		final SubjectService subjectService = getSubjectService(initialContext);
+
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "password-" + UUID.randomUUID().toString();
 		userRegistrationService.registerUser(login, password);
 
-		Subject subject = IntegrationTestUtils.login("admin", "admin");
+		SubjectEntity loginSubject = subjectService
+				.findSubjectFromUserName(login);
+
+		SubjectEntity adminSubject = subjectService
+				.findSubjectFromUserName("admin");
+
+		Subject subject = IntegrationTestUtils.login(adminSubject.getUserId(),
+				"admin");
 
 		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
-		applicationService.registerApplicationOwner(appOwnerName, login);
+		applicationService.registerApplicationOwner(appOwnerName, loginSubject
+				.getUserId());
 
 		final String applicationName = "application-"
 				+ UUID.randomUUID().toString();
@@ -204,17 +219,25 @@ public class AuthenticationTest {
 
 		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 
+		final SubjectService subjectService = getSubjectService(initialContext);
+
 		String ownerLogin = "login-" + UUID.randomUUID().toString();
 		String ownerPassword = "password-" + UUID.randomUUID().toString();
 		userRegistrationService.registerUser(ownerLogin, ownerPassword);
 
-		IntegrationTestUtils.login("admin", "admin");
+		SubjectEntity ownerSubject = subjectService
+				.findSubjectFromUserName(ownerLogin);
+		SubjectEntity adminSubject = subjectService
+				.findSubjectFromUserName("admin");
+
+		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 
 		final String applicationName = "application-"
 				+ UUID.randomUUID().toString();
 
 		final String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
-		applicationService.registerApplicationOwner(appOwnerName, ownerLogin);
+		applicationService.registerApplicationOwner(appOwnerName, ownerSubject
+				.getUserId());
 
 		applicationService.addApplication(applicationName, null, appOwnerName,
 				null, false, null, null, null);
@@ -224,12 +247,15 @@ public class AuthenticationTest {
 
 		userRegistrationService.registerUser(userLogin, userPassword);
 
+		SubjectEntity userSubject = subjectService
+				.findSubjectFromUserName(userLogin);
+
 		final String userName = "name-" + UUID.randomUUID().toString();
 
 		final IdentityService identityService = EjbUtils.getEJB(initialContext,
 				"SafeOnline/IdentityServiceBean/remote", IdentityService.class);
 
-		IntegrationTestUtils.login(userLogin, userPassword);
+		IntegrationTestUtils.login(userSubject.getUserId(), userPassword);
 
 		AttributeDO attribute = new AttributeDO(
 				SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING);
@@ -250,7 +276,7 @@ public class AuthenticationTest {
 
 		credentialService.changePassword(userPassword, newPassword);
 
-		IntegrationTestUtils.login(userLogin, newPassword);
+		IntegrationTestUtils.login(userSubject.getUserId(), newPassword);
 		resultName = identityService
 				.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);
 		assertEquals(userName, resultName);
@@ -273,7 +299,7 @@ public class AuthenticationTest {
 			LOG.debug("subscription: " + subscription);
 		}
 
-		IntegrationTestUtils.login("admin", "admin");
+		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		applicationService.removeApplication(applicationName);
 	}
 
@@ -284,29 +310,39 @@ public class AuthenticationTest {
 
 		IntegrationTestUtils.setupLoginConfig();
 
-		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+
+		final SubjectService subjectService = getSubjectService(initialContext);
 
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = UUID.randomUUID().toString();
 		userRegistrationService.registerUser(login, password);
 
+		SubjectEntity loginSubject = subjectService
+				.findSubjectFromUserName(login);
+
+		SubjectEntity adminSubject = subjectService
+				.findSubjectFromUserName("admin");
+
 		ApplicationService applicationService = getApplicationService(initialContext);
 
-		IntegrationTestUtils.login("admin", "admin");
+		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		String appOwnerName = "app-owner-" + UUID.randomUUID().toString();
-		applicationService.registerApplicationOwner(appOwnerName, login);
+		applicationService.registerApplicationOwner(appOwnerName, loginSubject
+				.getUserId());
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, null, appOwnerName,
 				null, false, null, null, null);
 
-		IntegrationTestUtils.login(login, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		applicationService.setApplicationDescription(applicationName,
 				"test application description");
 
-		IntegrationTestUtils.login("admin", "admin");
+		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		try {
-			applicationService.registerApplicationOwner(appOwnerName, login);
+			applicationService.registerApplicationOwner(appOwnerName,
+					loginSubject.getUserId());
 			fail();
 		} catch (ExistingApplicationOwnerException e) {
 			// expected
@@ -321,19 +357,27 @@ public class AuthenticationTest {
 				.getInitialContext();
 		IntegrationTestUtils.setupLoginConfig();
 
+		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+
+		final SubjectService subjectService = getSubjectService(initialContext);
+
 		// operate: register application owner admin user
-		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		String ownerLogin = "owner-login-" + UUID.randomUUID().toString();
 		String ownerPassword = "owner-password-" + UUID.randomUUID().toString();
 		userRegistrationService.registerUser(ownerLogin, ownerPassword);
 
+		SubjectEntity ownerSubject = subjectService
+				.findSubjectFromUserName(ownerLogin);
+		SubjectEntity adminSubject = subjectService
+				.findSubjectFromUserName("admin");
+
 		// operate: create application owner
-		IntegrationTestUtils.login("admin", "admin");
+		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		String applicationOwnerName = "app-owner-"
 				+ UUID.randomUUID().toString();
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.registerApplicationOwner(applicationOwnerName,
-				ownerLogin);
+				ownerSubject.getUserId());
 
 		// operate: create application
 		String applicationName = "application-" + UUID.randomUUID().toString();
@@ -341,7 +385,7 @@ public class AuthenticationTest {
 				applicationOwnerName, null, false, null, null, null);
 
 		// operate: change application description via application owner
-		IntegrationTestUtils.login(ownerLogin, ownerPassword);
+		IntegrationTestUtils.login(ownerSubject.getUserId(), ownerPassword);
 		String applicationDescription = "An <b>application description</b>";
 		applicationService.setApplicationDescription(applicationName,
 				applicationDescription);
@@ -366,25 +410,35 @@ public class AuthenticationTest {
 				.getInitialContext();
 		IntegrationTestUtils.setupLoginConfig();
 
+		final UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+
+		final SubjectService subjectService = getSubjectService(initialContext);
+
 		// operate: register a new user
-		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
 		String login = "login-" + UUID.randomUUID().toString();
 		String password = "password-" + UUID.randomUUID().toString();
 		userRegistrationService.registerUser(login, password);
 
+		SubjectEntity loginSubject = subjectService
+				.findSubjectFromUserName(login);
+
+		SubjectEntity adminSubject = subjectService
+				.findSubjectFromUserName("admin");
+
 		// operate: trigger JAAS on the core
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-		IntegrationTestUtils.login(login, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		subscriptionService.listSubscriptions();
 
 		// operate: create application owner
 		ApplicationService applicationService = getApplicationService(initialContext);
-		IntegrationTestUtils.login("admin", "admin");
+		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		String applicationOwner = "owner-" + UUID.randomUUID().toString();
-		applicationService.registerApplicationOwner(applicationOwner, login);
+		applicationService.registerApplicationOwner(applicationOwner,
+				loginSubject.getUserId());
 
 		// operate: get owned applications
-		IntegrationTestUtils.login(login, password);
+		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		applicationService.getOwnedApplications();
 	}
 
@@ -488,10 +542,15 @@ public class AuthenticationTest {
 		InitialContext initialContext = IntegrationTestUtils
 				.getInitialContext();
 		IntegrationTestUtils.setupLoginConfig();
-		IdentityService identityService = getIdentityService(initialContext);
+		final IdentityService identityService = getIdentityService(initialContext);
+
+		final SubjectService subjectService = getSubjectService(initialContext);
+
+		SubjectEntity userSubject = subjectService
+				.findSubjectFromUserName("fcorneli");
 
 		// operate
-		IntegrationTestUtils.login("fcorneli", "secret");
+		IntegrationTestUtils.login(userSubject.getUserId(), "secret");
 
 		String result = identityService
 				.findAttributeValue(SafeOnlineConstants.NAME_ATTRIBUTE);

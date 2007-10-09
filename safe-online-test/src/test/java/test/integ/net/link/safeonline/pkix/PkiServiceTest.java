@@ -7,6 +7,9 @@
 
 package test.integ.net.link.safeonline.pkix;
 
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getPkiService;
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubjectService;
+
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -15,12 +18,13 @@ import java.util.UUID;
 import javax.naming.InitialContext;
 
 import junit.framework.TestCase;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.service.PkiService;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,24 +41,30 @@ public class PkiServiceTest extends TestCase {
 
 	private static final Log LOG = LogFactory.getLog(PkiServiceTest.class);
 
+	private InitialContext initialContext;
+
 	private PkiService pkiService;
+
+	private SubjectService subjectService;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		InitialContext initialContext = IntegrationTestUtils
-				.getInitialContext();
+		this.initialContext = IntegrationTestUtils.getInitialContext();
 		IntegrationTestUtils.setupLoginConfig();
 		this.pkiService = getPkiService(initialContext);
+		this.subjectService = getSubjectService(initialContext);
 	}
 
 	public void testTrustDomain() throws Exception {
 		// setup
 		String trustDomainName = UUID.randomUUID().toString();
+		SubjectEntity adminSubject = subjectService
+				.findSubjectFromUserName("admin");
 
 		// operate
-		IntegrationTestUtils.login("admin", "admin");
+		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		List<TrustDomainEntity> trustDomains = this.pkiService
 				.listTrustDomains();
 		int origSize = trustDomains.size();
@@ -110,9 +120,11 @@ public class PkiServiceTest extends TestCase {
 		String dn = "CN=Test";
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, dn);
+		SubjectEntity adminSubject = subjectService
+				.findSubjectFromUserName("admin");
 
 		// operate: add trust domain
-		IntegrationTestUtils.login("admin", "admin");
+		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		this.pkiService.addTrustDomain(trustDomainName, true);
 
 		// operate: add trust point
@@ -132,11 +144,5 @@ public class PkiServiceTest extends TestCase {
 
 		// operate: remove trust domain
 		this.pkiService.removeTrustDomain(trustDomainName);
-	}
-
-	private PkiService getPkiService(InitialContext initialContext) {
-		PkiService pkiService = EjbUtils.getEJB(initialContext,
-				"SafeOnline/PkiServiceBean/remote", PkiService.class);
-		return pkiService;
 	}
 }

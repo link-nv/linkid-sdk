@@ -351,6 +351,11 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return userId;
 	}
 
+	public String getUsername() {
+		String userId = getUserId();
+		return this.subjectService.getSubjectLogin(userId);
+	}
+
 	public boolean registerAndAuthenticate(@NonEmptyString
 	String sessionId, @NonEmptyString
 	String username, @NotNull

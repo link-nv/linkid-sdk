@@ -7,6 +7,8 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.security.NoSuchAlgorithmException;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
@@ -128,5 +130,14 @@ public interface AuthenticationService {
 	 * @return
 	 */
 	String getUserId();
+
+	/**
+	 * Gives back the username of the user that we're trying to authenticate.
+	 * Calling this method in only valid after a call to
+	 * {@link #authenticate(String, byte[])}.
+	 * 
+	 * @return
+	 */
+	String getUsername();
 
 }
