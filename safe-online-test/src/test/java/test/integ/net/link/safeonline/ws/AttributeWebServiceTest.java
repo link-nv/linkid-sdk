@@ -159,7 +159,7 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, this.certificate.getEncoded(),
+				null, false, null, this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -253,7 +253,7 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, this.certificate.getEncoded(),
+				null, false, null, this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -345,7 +345,7 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, this.certificate.getEncoded(),
+				null, false, null, this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -470,7 +470,7 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, this.certificate.getEncoded(), Arrays
+				null, false, null, this.certificate.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),
