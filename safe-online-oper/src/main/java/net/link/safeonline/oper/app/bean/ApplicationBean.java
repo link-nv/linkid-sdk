@@ -193,15 +193,16 @@ public class ApplicationBean implements Application {
 			LOG.debug("application url: " + this.applicationUrl);
 
 		URL newApplicationUrl = null;
-		try {
-			newApplicationUrl = new URL(this.applicationUrl);
-		} catch (MalformedURLException e) {
-			LOG.debug("illegal URL format: " + this.applicationUrl);
-			this.facesMessages.addToControlFromResourceBundle("applicationUrl",
-					FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
-					this.applicationUrl);
-			return null;
-		}
+		if (null != this.applicationUrl || this.applicationUrl.length() == 0)
+			try {
+				newApplicationUrl = new URL(this.applicationUrl);
+			} catch (MalformedURLException e) {
+				LOG.debug("illegal URL format: " + this.applicationUrl);
+				this.facesMessages.addToControlFromResourceBundle(
+						"applicationUrl", FacesMessage.SEVERITY_ERROR,
+						"errorIllegalUrl", this.applicationUrl);
+				return null;
+			}
 
 		List<IdentityAttributeTypeDO> identityAttributes = new LinkedList<IdentityAttributeTypeDO>();
 		for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
@@ -430,7 +431,7 @@ public class ApplicationBean implements Application {
 		LOG.debug("save application: " + applicationId);
 
 		URL newApplicationUrl = null;
-		if (null != this.applicationUrl)
+		if (null != this.applicationUrl || this.applicationUrl.length() == 0)
 			try {
 				newApplicationUrl = new URL(applicationUrl);
 			} catch (MalformedURLException e) {
