@@ -120,7 +120,9 @@ public class PasswordManagerBean implements PasswordManager {
 		// compare hash
 		if (expectedPasswordHash.equals(givenPasswordHash)) {
 			// update hash to new default
-			setPasswordWithForce(subject, password);
+			if (!algorithm.equals(defaultHashingAlgorithm)) {
+				setPasswordWithForce(subject, password);
+			}
 			return true;
 		}
 		return false;
