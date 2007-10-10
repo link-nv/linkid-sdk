@@ -21,11 +21,15 @@ import javax.ejb.EJBException;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.PasswordManager;
+import net.link.safeonline.dao.AllowedDeviceDAO;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
@@ -163,6 +167,8 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected List<AttributeProviderEntity> attributeProviders;
 
+	protected Map<String, List<String>> allowedDevices;
+
 	@EJB
 	private ApplicationIdentityManager applicationIdentityService;
 
@@ -184,6 +190,7 @@ public abstract class AbstractInitBean implements Startable {
 		this.attributeProviders = new LinkedList<AttributeProviderEntity>();
 		this.attributes = new LinkedList<AttributeEntity>();
 		this.devices = new HashMap<String, List<AttributeTypeEntity>>();
+		this.allowedDevices = new HashMap<String, List<String>>();
 	}
 
 	public void postStart() {
@@ -201,8 +208,9 @@ public abstract class AbstractInitBean implements Startable {
 			initAttributeProviders();
 			initAttributes();
 			initDevices();
-		} catch (AttributeTypeNotFoundException e) {
-			LOG.fatal("AttributeTypeNotFoundException thrown", e);
+			initAllowedDevices();
+		} catch (SafeOnlineException e) {
+			LOG.fatal("safeonline exception", e);
 			throw new EJBException(e);
 		}
 	}
@@ -485,4 +493,20 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
+	@EJB
+	private AllowedDeviceDAO allowedDeviceDAO;
+
+	private void initAllowedDevices() throws ApplicationNotFoundException,
+			DeviceNotFoundException {
+		for (String applicationName : this.allowedDevices.keySet()) {
+			ApplicationEntity application = this.applicationDAO
+					.getApplication(applicationName);
+			application.setDeviceRestriction(true);
+			List<String> deviceNames = this.allowedDevices.get(applicationName);
+			for (String deviceName : deviceNames) {
+				DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+				this.allowedDeviceDAO.addAllowedDevice(application, device, 0);
+			}
+		}
+	}
 }

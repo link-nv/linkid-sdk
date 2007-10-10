@@ -9,6 +9,8 @@ package net.link.safeonline.model.demo;
 
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.Local;
@@ -177,6 +179,10 @@ public class DemoStartableBean extends AbstractInitBean {
 						new IdentityAttributeTypeDO(
 								DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true,
 								false) }));
+
+		List<String> devices = new LinkedList<String>();
+		devices.add(BeIdConstants.BEID_DEVICE_ID);
+		this.allowedDevices.put(DEMO_TICKET_APPLICATION_NAME, devices);
 	}
 
 	private void configPaymentDemo() {
