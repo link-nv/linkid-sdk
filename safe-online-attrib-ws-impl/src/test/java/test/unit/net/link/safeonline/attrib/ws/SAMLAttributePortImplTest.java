@@ -147,17 +147,17 @@ public class SAMLAttributePortImplTest {
 		SAMLAttributeService service = SAMLAttributeServiceFactory
 				.newInstance();
 		this.clientPort = service.getSAMLAttributePort();
-		this.webServiceTestUtils.setEndpointAddress(clientPort);
+		this.webServiceTestUtils.setEndpointAddress(this.clientPort);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
 				"CN=Test");
 
-		BindingProvider bindingProvider = (BindingProvider) clientPort;
+		BindingProvider bindingProvider = (BindingProvider) this.clientPort;
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(
-				certificate, keyPair.getPrivate());
+				this.certificate, keyPair.getPrivate());
 		handlerChain.add(wsSecurityHandler);
 		binding.setHandlerChain(handlerChain);
 	}
@@ -207,7 +207,7 @@ public class SAMLAttributePortImplTest {
 		replay(this.mockObjects);
 
 		// operate
-		ResponseType response = clientPort.attributeQuery(request);
+		ResponseType response = this.clientPort.attributeQuery(request);
 
 		// verify
 		verify(this.mockObjects);
@@ -300,7 +300,7 @@ public class SAMLAttributePortImplTest {
 		replay(this.mockObjects);
 
 		// operate
-		ResponseType response = clientPort.attributeQuery(request);
+		ResponseType response = this.clientPort.attributeQuery(request);
 
 		// verify
 		verify(this.mockObjects);
@@ -406,7 +406,7 @@ public class SAMLAttributePortImplTest {
 		replay(this.mockObjects);
 
 		// operate
-		ResponseType response = clientPort.attributeQuery(request);
+		ResponseType response = this.clientPort.attributeQuery(request);
 
 		// verify
 		verify(this.mockObjects);
@@ -495,7 +495,7 @@ public class SAMLAttributePortImplTest {
 		replay(this.mockObjects);
 
 		// operate
-		ResponseType response = clientPort.attributeQuery(request);
+		ResponseType response = this.clientPort.attributeQuery(request);
 
 		// verify
 		verify(this.mockObjects);
@@ -568,7 +568,7 @@ public class SAMLAttributePortImplTest {
 		replay(this.mockObjects);
 
 		// operate
-		ResponseType response = clientPort.attributeQuery(request);
+		ResponseType response = this.clientPort.attributeQuery(request);
 
 		// verify
 		verify(this.mockObjects);

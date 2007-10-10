@@ -18,7 +18,6 @@ import net.link.safeonline.auth.DeviceRegistration;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.CredentialService;
-import net.link.safeonline.service.SubjectService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -44,9 +43,6 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 
 	@EJB
 	private CredentialService credentialService;
-
-	@EJB
-	private SubjectService subjectService;
 
 	@Remove
 	@Destroy
@@ -92,8 +88,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String getUsername() {
-		String username = this.subjectService.getSubjectLogin(this.username);
-		return username;
+		return this.subjectService.getSubjectLogin(this.username);
 	}
 
 }

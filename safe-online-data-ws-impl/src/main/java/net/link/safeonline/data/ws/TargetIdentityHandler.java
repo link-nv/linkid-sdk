@@ -71,11 +71,13 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 		return headers;
 	}
 
-	public void close(MessageContext context) {
+	public void close(@SuppressWarnings("unused")
+	MessageContext context) {
 		LOG.debug("close");
 	}
 
-	public boolean handleFault(SOAPMessageContext soapContext) {
+	public boolean handleFault(@SuppressWarnings("unused")
+	SOAPMessageContext soapContext) {
 		return true;
 	}
 

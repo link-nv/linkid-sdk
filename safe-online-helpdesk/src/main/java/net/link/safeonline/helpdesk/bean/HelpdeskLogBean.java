@@ -203,8 +203,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	public String search() {
 		LOG.debug("search id " + this.searchId);
 		this.helpdeskContextList = this.helpdeskService.listContexts();
-		for (HelpdeskContextEntity context : this.helpdeskContextList) {
-			if (context.getId().equals(searchId)) {
+		for (HelpdeskContextEntity currentContext : this.helpdeskContextList) {
+			if (currentContext.getId().equals(this.searchId)) {
 				return "view";
 			}
 		}
@@ -250,8 +250,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		String idString = event.toString();
 		List<String> idList = new LinkedList<String>();
 		this.helpdeskContextList = this.helpdeskService.listContexts();
-		for (HelpdeskContextEntity context : this.helpdeskContextList) {
-			String contextIdString = context.getId().toString();
+		for (HelpdeskContextEntity currentContext : this.helpdeskContextList) {
+			String contextIdString = currentContext.getId().toString();
 			if (contextIdString.startsWith(idString)) {
 				idList.add(contextIdString);
 			}
@@ -280,7 +280,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 	 * 
 	 */
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
-	public void validateId(FacesContext context, UIComponent toValidate,
+	public void validateId(FacesContext contextIn, UIComponent toValidate,
 			Object value) {
 		Long id = (Long) value;
 		LOG.debug("validateId: " + id);
@@ -293,11 +293,11 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		LOG.debug("id " + id + " not found");
 		((UIInput) toValidate).setValid(false);
 		FacesMessage message = new FacesMessage("Unknown context id");
-		context.addMessage(toValidate.getClientId(context), message);
+		contextIn.addMessage(toValidate.getClientId(contextIn), message);
 	}
 
 	@RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
-	public void validateUser(FacesContext context, UIComponent toValidate,
+	public void validateUser(FacesContext contextIn, UIComponent toValidate,
 			Object value) {
 		String user = (String) value;
 		LOG.debug("validateUser: " + user);
@@ -305,7 +305,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 		if (!this.helpdeskUserList.contains(user)) {
 			((UIInput) toValidate).setValid(false);
 			FacesMessage message = new FacesMessage("Unknown user");
-			context.addMessage(toValidate.getClientId(context), message);
+			contextIn.addMessage(toValidate.getClientId(contextIn), message);
 		}
 	}
 }

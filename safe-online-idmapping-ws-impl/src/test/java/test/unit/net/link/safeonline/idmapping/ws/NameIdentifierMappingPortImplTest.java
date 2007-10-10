@@ -111,11 +111,11 @@ public class NameIdentifierMappingPortImplTest {
 		this.certificate = PkiTestUtils.generateSelfSignedCertificate(
 				this.keyPair, "CN=Test");
 
-		BindingProvider bindingProvider = (BindingProvider) clientPort;
+		BindingProvider bindingProvider = (BindingProvider) this.clientPort;
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(
-				certificate, this.keyPair.getPrivate());
+				this.certificate, this.keyPair.getPrivate());
 		handlerChain.add(wsSecurityHandler);
 		LoggingHandler loggingHandler = new LoggingHandler();
 		handlerChain.add(loggingHandler);

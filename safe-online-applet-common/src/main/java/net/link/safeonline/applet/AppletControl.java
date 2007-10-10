@@ -64,7 +64,8 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 				"net.link.safeonline.applet.ControlMessages", locale);
 	}
 
-	private void setupLogging(SmartCard smartCard) {
+	private void setupLogging(@SuppressWarnings("unused")
+	SmartCard smartCard) {
 		Log log = this.appletView.getLog();
 		SmartCardImpl.setLog(log);
 	}

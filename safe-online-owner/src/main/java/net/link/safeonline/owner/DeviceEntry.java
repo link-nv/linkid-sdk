@@ -17,7 +17,7 @@ public class DeviceEntry {
 	}
 
 	public boolean isAllowed() {
-		return allowed;
+		return this.allowed;
 	}
 
 	public void setAllowed(boolean allowed) {
@@ -25,7 +25,7 @@ public class DeviceEntry {
 	}
 
 	public DeviceEntity getDevice() {
-		return device;
+		return this.device;
 	}
 
 	public void setDevice(DeviceEntity device) {
@@ -33,7 +33,7 @@ public class DeviceEntry {
 	}
 
 	public int getWeight() {
-		return weight;
+		return this.weight;
 	}
 
 	public void setWeight(int weight) {

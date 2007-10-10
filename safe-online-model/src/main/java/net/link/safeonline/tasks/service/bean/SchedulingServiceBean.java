@@ -59,7 +59,7 @@ public class SchedulingServiceBean implements SchedulingService,
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<TaskHistoryEntity> getTaskHistoryList(TaskEntity task) {
-		return taskHistoryDAO.listTaskHistory(task);
+		return this.taskHistoryDAO.listTaskHistory(task);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

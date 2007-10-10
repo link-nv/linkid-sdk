@@ -164,8 +164,8 @@ public class DataServicePortImplTest {
 		BindingProvider bindingProvider = (BindingProvider) this.dataServicePort;
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
-		Handler wsSecurityHandler = new WSSecurityClientHandler(certificate,
-				keyPair.getPrivate());
+		Handler wsSecurityHandler = new WSSecurityClientHandler(
+				this.certificate, keyPair.getPrivate());
 		handlerChain.add(wsSecurityHandler);
 		binding.setHandlerChain(handlerChain);
 

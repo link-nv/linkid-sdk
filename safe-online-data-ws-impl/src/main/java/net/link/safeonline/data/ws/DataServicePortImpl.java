@@ -661,7 +661,7 @@ public class DataServicePortImpl implements DataServicePort {
 		}
 		if (value instanceof XMLGregorianCalendar) {
 			XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
-			value = calendar.toGregorianCalendar().getTime();
+			return calendar.toGregorianCalendar().getTime();
 		}
 		return value;
 	}

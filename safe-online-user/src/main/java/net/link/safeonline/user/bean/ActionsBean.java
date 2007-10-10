@@ -43,7 +43,7 @@ public class ActionsBean implements Actions {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String removeAccount() {
-		log.debug("remove account");
+		this.log.debug("remove account");
 		this.accountService.removeAccount();
 		Seam.invalidateSession();
 		return "logout-success";

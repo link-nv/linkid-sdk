@@ -14,12 +14,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.security.SecurityDomain;
-
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.StatisticNotFoundException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
@@ -30,6 +25,10 @@ import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.service.ApplicationOwnerAccessControlInterceptor;
 import net.link.safeonline.service.StatisticService;
 import net.link.safeonline.service.StatisticServiceRemote;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -48,7 +47,7 @@ public class StatisticServiceBean implements StatisticService,
 	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	public StatisticEntity getStatistic(String statisticName,
 			String statisticDomain, String applicationName)
-			throws StatisticNotFoundException, PermissionDeniedException {
+			throws StatisticNotFoundException {
 
 		ApplicationEntity application = null;
 		if (applicationName != null) {
@@ -81,8 +80,7 @@ public class StatisticServiceBean implements StatisticService,
 
 	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
-	public List<StatisticEntity> getStatistics(ApplicationEntity application)
-			throws PermissionDeniedException {
+	public List<StatisticEntity> getStatistics(ApplicationEntity application) {
 		List<StatisticEntity> result = this.statisticDAO
 				.listStatistics(application);
 		return result;

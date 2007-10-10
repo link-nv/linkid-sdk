@@ -55,8 +55,10 @@ public class IdentityServlet extends AbstractStatementServlet {
 	}
 
 	@Override
-	protected void processStatement(byte[] statementData, HttpSession session,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void processStatement(byte[] statementData,
+			@SuppressWarnings("unused")
+			HttpSession session, HttpServletResponse response)
+			throws IOException {
 		PrintWriter writer = response.getWriter();
 		try {
 			this.credentialService.mergeIdentityStatement(statementData);

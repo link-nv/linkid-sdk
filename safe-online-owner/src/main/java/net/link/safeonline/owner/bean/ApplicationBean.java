@@ -184,12 +184,12 @@ public class ApplicationBean implements Application {
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	@Factory("allowedDevices")
 	public void allowedDevices() {
-		if (selectedApplication == null) {
+		if (this.selectedApplication == null) {
 			return;
 		}
 		List<DeviceEntity> deviceList = this.deviceService.listDevices();
 		List<AllowedDeviceEntity> allowedDeviceList = this.deviceService
-				.listAllowedDevices(selectedApplication);
+				.listAllowedDevices(this.selectedApplication);
 
 		this.allowedDevices = new ArrayList<DeviceEntry>();
 

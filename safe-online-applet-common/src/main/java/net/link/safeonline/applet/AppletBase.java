@@ -52,19 +52,19 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private static final long serialVersionUID = 1L;
 
-	private JTextArea outputArea;
+	JTextArea outputArea;
 
-	private JLabel infoLabel;
+	JLabel infoLabel;
 
-	private InfoLevel infoLevel;
+	InfoLevel infoLevel;
 
-	private JProgressBar progressBar;
+	JProgressBar progressBar;
 
 	private JPanel cards;
 
 	private JButton hideButton;
 
-	private JButton helpButton;
+	JButton helpButton;
 
 	private static enum State {
 		HIDE, SHOW
@@ -107,7 +107,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 	public void stop() {
 	}
 
-	private void setupScreen() {
+	void setupScreen() {
 
 		setLayout(new BorderLayout());
 		Container container = getContentPane();
@@ -157,7 +157,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		actionPerformed(null);
 
 		this.helpButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(@SuppressWarnings("unused")
+			ActionEvent e) {
 				redirectToHelp();
 			}
 		});
@@ -186,11 +187,11 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		});
 	}
 
-	public void outputInfoMessage(final InfoLevel infoLevel,
+	public void outputInfoMessage(final InfoLevel messageInfoLevel,
 			final String message) {
 
 		try {
-			switch (infoLevel) {
+			switch (messageInfoLevel) {
 			case NORMAL:
 				addHelpdeskEvent(message, LogLevelType.INFO);
 				break;
@@ -205,9 +206,9 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				AppletBase.this.infoLabel.setText(message);
-				if (AppletBase.this.infoLevel != infoLevel) {
-					AppletBase.this.infoLevel = infoLevel;
-					switch (infoLevel) {
+				if (AppletBase.this.infoLevel != messageInfoLevel) {
+					AppletBase.this.infoLevel = messageInfoLevel;
+					switch (messageInfoLevel) {
 					case NORMAL:
 						AppletBase.this.infoLabel.setForeground(Color.BLACK);
 						AppletBase.this.progressBar.setIndeterminate(true);
@@ -259,8 +260,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 				.getHeaderField(HelpdeskCodes.HELPDESK_PERSIST_RETURN_ID);
 		if (null == helpdeskPersistId)
 			return new Long(-1);
-		else
-			return Long.parseLong(helpdeskPersistId);
+		return Long.parseLong(helpdeskPersistId);
 	}
 
 	private HttpURLConnection prepareHelpdeskConnection() throws IOException {
@@ -286,8 +286,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		int responseCode = httpURLConnection.getResponseCode();
 		if (200 == responseCode)
 			return true;
-		else
-			return false;
+		return false;
 	}
 
 	public abstract byte[] createStatement(SmartCard smartCard);
@@ -300,7 +299,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		}
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(@SuppressWarnings("unused")
+	ActionEvent e) {
 		CardLayout cl = (CardLayout) (this.cards.getLayout());
 		if (this.state == State.HIDE) {
 			cl.show(this.cards, "details");
@@ -313,7 +313,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		}
 	}
 
-	private void redirectToHelp() {
+	void redirectToHelp() {
 		URL documentBase = this.getDocumentBase();
 		String targetPath = this.getParameter("HelpPath");
 		URL target = AppletControl.transformUrl(documentBase, targetPath);

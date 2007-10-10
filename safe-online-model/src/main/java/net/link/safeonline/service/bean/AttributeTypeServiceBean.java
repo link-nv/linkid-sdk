@@ -156,7 +156,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 		return availableMemberAttributeTypes;
 	}
 
-	private static class AvailableMemberAttributeTypeFilter implements
+	static class AvailableMemberAttributeTypeFilter implements
 			Filter<AttributeTypeEntity> {
 
 		public boolean isAllowed(AttributeTypeEntity element) {

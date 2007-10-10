@@ -38,7 +38,7 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 	private static final Log LOG = LogFactory
 			.getLog(UsernamePasswordLogonBean.class);
 
-	private String username;
+	private String loginname;
 
 	private String password;
 
@@ -48,7 +48,7 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		this.username = null;
+		this.loginname = null;
 		this.password = null;
 	}
 
@@ -57,7 +57,7 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 	}
 
 	public String getUsername() {
-		return this.username;
+		return this.loginname;
 	}
 
 	@PostConstruct
@@ -66,13 +66,13 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 	}
 
 	public String login() {
-		LOG.debug("login: " + this.username);
-		HelpdeskLogger.add("login: " + this.username, LogLevelType.INFO);
+		LOG.debug("login: " + this.loginname);
+		HelpdeskLogger.add("login: " + this.loginname, LogLevelType.INFO);
 		super.clearUsername();
 
 		try {
 			boolean authenticated = this.authenticationService.authenticate(
-					this.username, this.password);
+					this.loginname, this.password);
 			if (false == authenticated) {
 				/*
 				 * The abort will be correctly handled by the authentication
@@ -81,14 +81,14 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 				 */
 				this.facesMessages.addFromResourceBundle(
 						FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-				HelpdeskLogger.add("login failed: " + this.username,
+				HelpdeskLogger.add("login failed: " + this.loginname,
 						LogLevelType.ERROR);
 				return null;
 			}
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addToControlFromResourceBundle("username",
 					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");
-			HelpdeskLogger.add("login: subject not found for " + this.username,
+			HelpdeskLogger.add("login: subject not found for " + this.loginname,
 					LogLevelType.ERROR);
 			return null;
 		} catch (DeviceNotFoundException e) {
@@ -103,7 +103,7 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 			return null;
 		}
 
-		super.login(this.username, AuthenticationDevice.PASSWORD);
+		super.login(this.loginname, AuthenticationDevice.PASSWORD);
 
 		HelpdeskLogger.clear();
 		return null;
@@ -116,6 +116,6 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		this.loginname = username;
 	}
 }
