@@ -10,22 +10,17 @@ package net.link.safeonline.demo.prescription;
 import javax.ejb.Local;
 
 @Local
-public interface PrescriptionFill {
+public interface PrescriptionFill extends AbstractPrescriptionDataClient {
 
 	/*
-	 * Lifecycle.
-	 */
-	void destroyCallback();
-
-	/*
-	 * Action.
+	 * Actions.
 	 */
 	String view();
 
 	String fill();
 
 	/*
-	 * Factory.
+	 * Factories.
 	 */
 	void prescriptionsFactory();
 }

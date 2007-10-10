@@ -54,6 +54,8 @@ public class PrescriptionEntity implements Serializable {
 
 	private String pharmacist;
 
+	private String pharmacistName;
+
 	private Date filledDate;
 
 	private List<PrescriptionMedicineEntity> medicines;
@@ -120,6 +122,14 @@ public class PrescriptionEntity implements Serializable {
 
 	public void setPharmacist(String pharmacist) {
 		this.pharmacist = pharmacist;
+	}
+
+	public String getPharmacistName() {
+		return this.pharmacistName;
+	}
+
+	public void setPharmacistName(String pharmacistName) {
+		this.pharmacistName = pharmacistName;
 	}
 
 	@Temporal(value = TemporalType.TIMESTAMP)

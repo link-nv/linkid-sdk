@@ -13,17 +13,19 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Remove;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import net.link.safeonline.demo.prescription.PrescriptionConstants;
+import net.link.safeonline.demo.prescription.PrescriptionFill;
+import net.link.safeonline.demo.prescription.entity.PrescriptionEntity;
+
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -33,15 +35,12 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.log.Log;
 
-import net.link.safeonline.demo.prescription.PrescriptionConstants;
-import net.link.safeonline.demo.prescription.PrescriptionFill;
-import net.link.safeonline.demo.prescription.entity.PrescriptionEntity;
-
 @Stateful
 @Name("prescriptionFill")
 @LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionFillBean/local")
 @SecurityDomain(PrescriptionConstants.SECURITY_DOMAIN)
-public class PrescriptionFillBean implements PrescriptionFill {
+public class PrescriptionFillBean extends AbstractPrescriptionDataClientBean
+		implements PrescriptionFill {
 
 	@Logger
 	private Log log;
@@ -65,11 +64,6 @@ public class PrescriptionFillBean implements PrescriptionFill {
 	 */
 	@In(value = SELECTED_PRESCRIPTION, required = false)
 	private PrescriptionEntity fillPrescription;
-
-	@Remove
-	@Destroy
-	public void destroyCallback() {
-	}
 
 	@PersistenceContext(unitName = PrescriptionConstants.ENTITY_MANAGER)
 	private EntityManager entityManager;
@@ -106,6 +100,10 @@ public class PrescriptionFillBean implements PrescriptionFill {
 				.getCallerPrincipal();
 		String pharmacist = pharmacistPrincipal.getName();
 		this.fillPrescription.setPharmacist(pharmacist);
+
+		String pharmacistName = super.getUsername(pharmacist);
+		this.fillPrescription.setPharmacistName(pharmacistName);
+
 		this.fillPrescription.setFilledDate(new Date());
 		this.entityManager.merge(this.fillPrescription);
 		return "filled";

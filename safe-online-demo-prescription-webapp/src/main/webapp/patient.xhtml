@@ -17,7 +17,7 @@
 						<h:outputText value="#{msgs.prescriptions}" />
 					</f:facet>
 					<h:commandLink
-						value="#{item.id}, #{item.creationDate}, #{item.careProvider}"
+						value="#{item.id}, #{item.creationDate}, #{item.careProviderName}"
 						action="#{prescriptionPatient.view}" />
 				</h:column>
 			</h:dataTable>

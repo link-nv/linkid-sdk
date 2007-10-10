@@ -20,6 +20,8 @@ public interface PrescriptionCreate extends AbstractPrescriptionDataClient {
 	 */
 	List<SelectItem> medicinesFactory();
 
+	String patientNameFactory();
+
 	/*
 	 * Accessors.
 	 */

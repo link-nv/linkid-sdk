@@ -8,11 +8,11 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 
 	<ui:define name="content">
-		<h1>#{msgs.careProvider}</h1>
+		<h1>#{msgs.pharmacist}</h1>
 
 		<h2>#{msgs.fillPrescription}</h2>
 
-		<p>#{msgs.patient}: #{patient}</p>
+		<p>#{msgs.patient}: #{patientName}</p>
 
 		<h:form>
 			<h:dataTable value="#{prescriptions}" var="item">
@@ -21,7 +21,7 @@
 						<h:outputText value="#{msgs.prescriptions}" />
 					</f:facet>
 					<h:commandLink
-						value="#{item.id}, #{item.creationDate}, #{item.careProvider}"
+						value="#{item.id}, #{item.creationDate}, #{item.careProviderName}"
 						action="#{prescriptionFill.view}" />
 				</h:column>
 			</h:dataTable>

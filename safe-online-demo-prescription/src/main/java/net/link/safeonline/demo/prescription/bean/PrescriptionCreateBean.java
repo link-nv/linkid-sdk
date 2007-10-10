@@ -95,4 +95,10 @@ public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean
 		}
 		return "created";
 	}
+
+	@Factory("patientName")
+	public String patientNameFactory() {
+		String patientName = super.getUsername(this.patient);
+		return patientName;
+	}
 }
