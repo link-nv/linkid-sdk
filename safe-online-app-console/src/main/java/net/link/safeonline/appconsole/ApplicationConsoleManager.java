@@ -57,34 +57,34 @@ public class ApplicationConsoleManager extends Observable {
 	 * Constructor ( singleton )
 	 */
 	private ApplicationConsoleManager() {
-		identityLabel = identityLabelPrefix;
-		locationLabel = locationLabelPrefix + location;
+		this.identityLabel = this.identityLabelPrefix;
+		this.locationLabel = this.locationLabelPrefix + this.location;
 	}
 
 	public String getIdentityLabel() {
-		return identityLabel;
+		return this.identityLabel;
 	}
 
 	public String getLocationLabel() {
-		return locationLabel;
+		return this.locationLabel;
 	}
 
 	public String getLocation() {
-		return location;
+		return this.location;
 	}
 
 	public void setLocation(String location) {
 		if (location.startsWith("http://"))
-			location = location.substring(8);
+			this.location = location.substring(8);
 		this.location = location;
-		this.locationLabel = locationLabelPrefix + location;
+		this.locationLabel = this.locationLabelPrefix + location;
 		setChanged();
 		notifyObservers();
 
 	}
 
 	public PrivateKeyEntry getIdentity() {
-		return identity;
+		return this.identity;
 	}
 
 	public void setIdentity(PrivateKeyEntry identity, String keyStorePath,
@@ -94,13 +94,13 @@ public class ApplicationConsoleManager extends Observable {
 			this.keyStorePath = null;
 			this.keyStoreType = null;
 			this.keyStorePassword = null;
-			this.identityLabel = identityLabelPrefix;
+			this.identityLabel = this.identityLabelPrefix;
 		} else {
 			this.identity = identity;
 			this.keyStorePath = keyStorePath;
 			this.keyStoreType = keyStoreType;
 			this.keyStorePassword = keyStorePassword;
-			this.identityLabel = identityLabelPrefix
+			this.identityLabel = this.identityLabelPrefix
 					+ ((X509Certificate) identity.getCertificate())
 							.getSubjectX500Principal().getName() + " ( "
 					+ new File(this.keyStorePath).getName() + " )";
@@ -111,7 +111,7 @@ public class ApplicationConsoleManager extends Observable {
 
 	public void setMessageAccessor(MessageAccessor messageAccessor) {
 		this.messageAccessor = messageAccessor;
-		if (captureMessages) {
+		if (this.captureMessages) {
 			setChanged();
 			notifyObservers(messageAccessor);
 		}
@@ -122,27 +122,27 @@ public class ApplicationConsoleManager extends Observable {
 	}
 
 	public Document getInboundMessage() {
-		if (!captureMessages)
+		if (!this.captureMessages)
 			return null;
-		return messageAccessor.getInboundMessage();
+		return this.messageAccessor.getInboundMessage();
 	}
 
 	public Document getOutboundMessage() {
-		if (!captureMessages)
+		if (!this.captureMessages)
 			return null;
-		return messageAccessor.getOutboundMessage();
+		return this.messageAccessor.getOutboundMessage();
 	}
 
 	public String getKeyStorePath() {
-		return keyStorePath;
+		return this.keyStorePath;
 	}
 
 	public String getKeyStoreType() {
-		return keyStoreType;
+		return this.keyStoreType;
 	}
 
 	public String getKeyStorePassword() {
-		return keyStorePassword;
+		return this.keyStorePassword;
 	}
 
 }

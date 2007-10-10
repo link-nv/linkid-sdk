@@ -50,8 +50,8 @@ public class AuthUser extends JPanel implements Observer {
 
 	private static final long serialVersionUID = 1L;
 
-	private ApplicationConsole parent = null;
-	private String selectedProtocol = null;
+	ApplicationConsole parent = null;
+	String selectedProtocol = null;
 
 	private boolean firstRequest = true;
 
@@ -66,7 +66,7 @@ public class AuthUser extends JPanel implements Observer {
 	 */
 	private ButtonGroup protocolButtonGroup = new ButtonGroup();
 	private JRadioButton[] protocolButtons = null;
-	private JTextField applicationField = new JTextField(10);
+	JTextField applicationField = new JTextField(10);
 	private JTextArea requestArea1 = new JTextArea();
 	private JTextArea requestArea2 = new JTextArea();
 
@@ -84,10 +84,10 @@ public class AuthUser extends JPanel implements Observer {
 
 	private void setupProtocolButtons() {
 		AuthenticationProtocol[] protocols = AuthenticationProtocol.values();
-		protocolButtons = new JRadioButton[protocols.length];
+		this.protocolButtons = new JRadioButton[protocols.length];
 		for (int i = 0; i < protocols.length; i++) {
-			protocolButtons[i] = new JRadioButton(protocols[i].toString());
-			protocolButtonGroup.add(protocolButtons[i]);
+			this.protocolButtons[i] = new JRadioButton(protocols[i].toString());
+			this.protocolButtonGroup.add(this.protocolButtons[i]);
 		}
 	}
 
@@ -95,13 +95,14 @@ public class AuthUser extends JPanel implements Observer {
 		JLabel applicationLabel = new JLabel(APPLICATION.getMessage());
 
 		JSplitPane logPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				new JScrollPane(requestArea1), new JScrollPane(requestArea2));
+				new JScrollPane(this.requestArea1), new JScrollPane(
+						this.requestArea2));
 		logPanel.setDividerSize(3);
 		logPanel.setResizeWeight(0.5);
-		requestArea1.setEnabled(false);
-		requestArea2.setEnabled(false);
-		requestArea1.setBorder(new TitledBorder("Request 1"));
-		requestArea2.setBorder(new TitledBorder("Request 2"));
+		this.requestArea1.setEnabled(false);
+		this.requestArea2.setEnabled(false);
+		this.requestArea1.setBorder(new TitledBorder("Request 1"));
+		this.requestArea2.setBorder(new TitledBorder("Request 2"));
 
 		JPanel infoPanel = new JPanel();
 		GridBagLayout gbl = new GridBagLayout();
@@ -120,11 +121,11 @@ public class AuthUser extends JPanel implements Observer {
 
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		gbl.setConstraints(applicationField, gbc);
-		infoPanel.add(applicationField, gbc);
+		gbl.setConstraints(this.applicationField, gbc);
+		infoPanel.add(this.applicationField, gbc);
 
 		int gridy = 1;
-		for (JRadioButton protocolButton : protocolButtons) {
+		for (JRadioButton protocolButton : this.protocolButtons) {
 			JLabel protocolLabel = new JLabel(PROTOCOL.getMessage());
 
 			gbc.gridx = 0;
@@ -141,8 +142,8 @@ public class AuthUser extends JPanel implements Observer {
 		}
 
 		JPanel controlPanel = new JPanel(new FlowLayout());
-		controlPanel.add(new JButton(authAction));
-		controlPanel.add(new JButton(cancelAction));
+		controlPanel.add(new JButton(this.authAction));
+		controlPanel.add(new JButton(this.cancelAction));
 
 		JSplitPane bottomPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
 				infoPanel, controlPanel);
@@ -162,31 +163,33 @@ public class AuthUser extends JPanel implements Observer {
 		if (observable instanceof AuthServletManager) {
 			if (object instanceof Boolean) {
 				if ((Boolean) object) {
-					authAction.setEnabled(true);
+					this.authAction.setEnabled(true);
 				}
 			}
 		} else if (observable instanceof LogManager) {
 			if (object instanceof StringBuffer) {
-				if (firstRequest) {
-					firstRequest = false;
-					requestArea1.setText(((StringBuffer) object).toString());
+				if (this.firstRequest) {
+					this.firstRequest = false;
+					this.requestArea1.setText(((StringBuffer) object)
+							.toString());
 				} else {
-					firstRequest = true;
-					requestArea2.setText(((StringBuffer) object).toString());
+					this.firstRequest = true;
+					this.requestArea2.setText(((StringBuffer) object)
+							.toString());
 				}
 			}
 		}
 	}
 
 	public boolean checkInput() {
-		String application = applicationField.getText().trim();
+		String application = this.applicationField.getText().trim();
 		if (null == application || application.equals(""))
 			return false;
 
 		boolean found = false;
-		for (JRadioButton protocolButton : protocolButtons) {
+		for (JRadioButton protocolButton : this.protocolButtons) {
 			if (protocolButton.isSelected()) {
-				selectedProtocol = protocolButton.getText();
+				this.selectedProtocol = protocolButton.getText();
 				found = true;
 			}
 		}
@@ -199,7 +202,8 @@ public class AuthUser extends JPanel implements Observer {
 			@Override
 			protected Boolean doInBackground() throws Exception {
 				AuthServletManager.getInstance().authenticate(
-						applicationField.getText().trim(), selectedProtocol);
+						AuthUser.this.applicationField.getText().trim(),
+						AuthUser.this.selectedProtocol);
 				return Boolean.TRUE;
 			}
 
@@ -217,7 +221,8 @@ public class AuthUser extends JPanel implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_U));
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			if (checkInput()) {
 				setEnabled(false);
 				authenticate();
@@ -235,8 +240,9 @@ public class AuthUser extends JPanel implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
 		}
 
-		public void actionPerformed(ActionEvent evt) {
-			parent.resetContent();
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
+			AuthUser.this.parent.resetContent();
 		}
 	}
 

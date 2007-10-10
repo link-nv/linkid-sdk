@@ -54,8 +54,8 @@ public class ConfirmIdentity extends JFrame {
 	private Action confirmAction = new ConfirmAction(CONFIRM_ID.getMessage());
 	private Action cancelAction = new CancelAction(CANCEL.getMessage());
 
-
-	public ConfirmIdentity(PrivateKeyEntry privateKeyEntry, String keyStorePath, String keyStoreType, String keyStorePassword) {
+	public ConfirmIdentity(PrivateKeyEntry privateKeyEntry,
+			String keyStorePath, String keyStoreType, String keyStorePassword) {
 		super(CONFIRM_ID.getMessage());
 
 		this.privateKeyEntry = privateKeyEntry;
@@ -92,11 +92,11 @@ public class ConfirmIdentity extends JFrame {
 		certificatePanel.add(sigAlgoField);
 		certificatePanel.setBorder(new TitledBorder(CERTIFICATE.getMessage()));
 
-		issuerDNField.setText(((X509Certificate) privateKeyEntry
+		issuerDNField.setText(((X509Certificate) this.privateKeyEntry
 				.getCertificate()).getIssuerX500Principal().getName());
-		subjectDNField.setText(((X509Certificate) privateKeyEntry
+		subjectDNField.setText(((X509Certificate) this.privateKeyEntry
 				.getCertificate()).getSubjectX500Principal().getName());
-		sigAlgoField.setText(((X509Certificate) privateKeyEntry
+		sigAlgoField.setText(((X509Certificate) this.privateKeyEntry
 				.getCertificate()).getSigAlgName());
 
 		/*
@@ -113,15 +113,17 @@ public class ConfirmIdentity extends JFrame {
 		privateKeyPanel.add(keyFormatField);
 		privateKeyPanel.setBorder(new TitledBorder(PRIVATE_KEY.getMessage()));
 
-		keyAlgoField.setText(privateKeyEntry.getPrivateKey().getAlgorithm());
-		keyFormatField.setText(privateKeyEntry.getPrivateKey().getFormat());
+		keyAlgoField.setText(this.privateKeyEntry.getPrivateKey()
+				.getAlgorithm());
+		keyFormatField
+				.setText(this.privateKeyEntry.getPrivateKey().getFormat());
 
 		/*
 		 * Control panel
 		 */
 		controlPanel.setLayout(new FlowLayout());
-		controlPanel.add(new JButton(confirmAction));
-		controlPanel.add(new JButton(cancelAction));
+		controlPanel.add(new JButton(this.confirmAction));
+		controlPanel.add(new JButton(this.cancelAction));
 
 		/*
 		 * Add all to the parent container
@@ -140,13 +142,14 @@ public class ConfirmIdentity extends JFrame {
 		this.add(splitPanel);
 	}
 
-	private void onConfirm() {
-		consoleManager.setIdentity(privateKeyEntry, keyStorePath, keyStoreType, keyStorePassword);
+	void onConfirm() {
+		this.consoleManager.setIdentity(this.privateKeyEntry,
+				this.keyStorePath, this.keyStoreType, this.keyStorePassword);
 		this.dispose();
 	}
 
-	private void onCancel() {
-		consoleManager.setIdentity(null, null, null, null);
+	void onCancel() {
+		this.consoleManager.setIdentity(null, null, null, null);
 		this.dispose();
 	}
 
@@ -163,7 +166,8 @@ public class ConfirmIdentity extends JFrame {
 			putValue(SHORT_DESCRIPTION, name);
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			onConfirm();
 		}
 	}
@@ -177,7 +181,8 @@ public class ConfirmIdentity extends JFrame {
 			putValue(SHORT_DESCRIPTION, name);
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			onCancel();
 		}
 	}

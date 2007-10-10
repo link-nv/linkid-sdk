@@ -80,9 +80,9 @@ public class CreateP12 extends JPanel {
 		infoPanel.setLayout(gbl);
 
 		JLabel keyStoreLabel = new JLabel(KEYSTORE.getMessage());
-		keyStoreExt.addItem(".p12");
-		keyStoreExt.addItem(".pfx");
-		keyStoreExt.setSelectedIndex(0);
+		this.keyStoreExt.addItem(".p12");
+		this.keyStoreExt.addItem(".pfx");
+		this.keyStoreExt.setSelectedIndex(0);
 		JLabel keyStorePwLabel = new JLabel(KEYSTORE_PW.getMessage());
 		JLabel keyEntryPasswordLabel = new JLabel(KEYENTRY_PW.getMessage());
 		JLabel nameLabel = new JLabel(CERT_DN.getMessage());
@@ -99,13 +99,13 @@ public class CreateP12 extends JPanel {
 
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		gbl.setConstraints(keyStoreField, gbc);
-		infoPanel.add(keyStoreField, gbc);
+		gbl.setConstraints(this.keyStoreField, gbc);
+		infoPanel.add(this.keyStoreField, gbc);
 
 		gbc.gridx = 2;
 		gbc.gridy = 0;
-		gbl.setConstraints(keyStoreExt, gbc);
-		infoPanel.add(keyStoreExt, gbc);
+		gbl.setConstraints(this.keyStoreExt, gbc);
+		infoPanel.add(this.keyStoreExt, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -114,8 +114,8 @@ public class CreateP12 extends JPanel {
 
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		gbl.setConstraints(nameField, gbc);
-		infoPanel.add(nameField, gbc);
+		gbl.setConstraints(this.nameField, gbc);
+		infoPanel.add(this.nameField, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -124,8 +124,8 @@ public class CreateP12 extends JPanel {
 
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		gbl.setConstraints(keyStorePasswordField, gbc);
-		infoPanel.add(keyStorePasswordField, gbc);
+		gbl.setConstraints(this.keyStorePasswordField, gbc);
+		infoPanel.add(this.keyStorePasswordField, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 3;
@@ -134,11 +134,11 @@ public class CreateP12 extends JPanel {
 
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		gbl.setConstraints(keyEntryPasswordField, gbc);
-		infoPanel.add(keyEntryPasswordField, gbc);
+		gbl.setConstraints(this.keyEntryPasswordField, gbc);
+		infoPanel.add(this.keyEntryPasswordField, gbc);
 
-		controlPanel.add(createButton);
-		controlPanel.add(cancelButton);
+		controlPanel.add(this.createButton);
+		controlPanel.add(this.cancelButton);
 
 		this.setLayout(new BorderLayout());
 		this.add(infoPanel, BorderLayout.CENTER);
@@ -146,31 +146,34 @@ public class CreateP12 extends JPanel {
 	}
 
 	private void handleEvents() {
-		createButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
+		this.createButton.addActionListener(new ActionListener() {
+			public void actionPerformed(@SuppressWarnings("unused")
+			ActionEvent evt) {
 				if (!checkInput())
 					return;
 				onCreate();
 			}
 		});
 
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
+		this.cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(@SuppressWarnings("unused")
+			ActionEvent evt) {
 				onCancel();
 			}
 		});
 	}
 
 	protected boolean checkInput() {
-		if (null == keyStoreField.getText()
-				|| keyStoreField.getText().length() == 0) {
+		if (null == this.keyStoreField.getText()
+				|| this.keyStoreField.getText().length() == 0) {
 			LOG.error("Please provide a keystore name...");
 			JOptionPane.showMessageDialog(this, ERROR_MISSING_FIELDS
 					.getMessage(), ERROR_MISSING_FIELDS.getMessage(),
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		if (null == nameField.getText() || nameField.getText().length() == 0) {
+		if (null == this.nameField.getText()
+				|| this.nameField.getText().length() == 0) {
 			LOG.error("Please provide a distinguished name...");
 			JOptionPane.showMessageDialog(this, ERROR_MISSING_FIELDS
 					.getMessage(), ERROR_MISSING_FIELDS.getMessage(),
@@ -183,10 +186,10 @@ public class CreateP12 extends JPanel {
 	protected void onCreate() {
 		try {
 			// get information
-			String keyStoreName = keyStoreField.getText().trim();
-			String certDN = nameField.getText().trim();
-			char[] keyStorePassword = keyStorePasswordField.getPassword();
-			char[] keyEntryPassword = keyEntryPasswordField.getPassword();
+			String keyStoreName = this.keyStoreField.getText().trim();
+			String certDN = this.nameField.getText().trim();
+			char[] keyStorePassword = this.keyStorePasswordField.getPassword();
+			char[] keyEntryPassword = this.keyEntryPasswordField.getPassword();
 
 			// generate keypair
 			KeyPair keyPair = KeyStoreUtils.generateKeyPair();
@@ -197,7 +200,7 @@ public class CreateP12 extends JPanel {
 
 			// persist P12 to keystore in /tmp
 			File pkcs12keyStore = File.createTempFile(keyStoreName,
-					(String) keyStoreExt.getSelectedItem());
+					(String) this.keyStoreExt.getSelectedItem());
 			KeyStoreUtils.persistKey(pkcs12keyStore, keyPair.getPrivate(),
 					certificate, keyStorePassword, keyEntryPassword);
 

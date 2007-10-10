@@ -92,10 +92,10 @@ public class ExtractCertificate extends JPanel {
 		JLabel keyStorePwLabel = new JLabel(KEYSTORE_PW.getMessage());
 		JLabel keyEntryPasswordLabel = new JLabel(KEYENTRY_PW.getMessage());
 
-		keyStoreTypeCombo.addItem("pkcs12");
-		keyStoreTypeCombo.addItem("jks");
+		this.keyStoreTypeCombo.addItem("pkcs12");
+		this.keyStoreTypeCombo.addItem("jks");
 
-		keyStoreField.setBorder(new LineBorder(Color.black));
+		this.keyStoreField.setBorder(new LineBorder(Color.black));
 
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
@@ -109,13 +109,13 @@ public class ExtractCertificate extends JPanel {
 
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		gbl.setConstraints(keyStoreField, gbc);
-		infoPanel.add(keyStoreField, gbc);
+		gbl.setConstraints(this.keyStoreField, gbc);
+		infoPanel.add(this.keyStoreField, gbc);
 
 		gbc.gridx = 2;
 		gbc.gridy = 0;
-		gbl.setConstraints(browseButton, gbc);
-		infoPanel.add(browseButton, gbc);
+		gbl.setConstraints(this.browseButton, gbc);
+		infoPanel.add(this.browseButton, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -124,8 +124,8 @@ public class ExtractCertificate extends JPanel {
 
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		gbl.setConstraints(keyStoreTypeCombo, gbc);
-		infoPanel.add(keyStoreTypeCombo, gbc);
+		gbl.setConstraints(this.keyStoreTypeCombo, gbc);
+		infoPanel.add(this.keyStoreTypeCombo, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -134,8 +134,8 @@ public class ExtractCertificate extends JPanel {
 
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		gbl.setConstraints(keyStorePasswordField, gbc);
-		infoPanel.add(keyStorePasswordField, gbc);
+		gbl.setConstraints(this.keyStorePasswordField, gbc);
+		infoPanel.add(this.keyStorePasswordField, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 3;
@@ -144,11 +144,11 @@ public class ExtractCertificate extends JPanel {
 
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		gbl.setConstraints(keyEntryPasswordField, gbc);
-		infoPanel.add(keyEntryPasswordField, gbc);
+		gbl.setConstraints(this.keyEntryPasswordField, gbc);
+		infoPanel.add(this.keyEntryPasswordField, gbc);
 
-		controlPanel.add(extractButton);
-		controlPanel.add(cancelButton);
+		controlPanel.add(this.extractButton);
+		controlPanel.add(this.cancelButton);
 
 		this.setLayout(new BorderLayout());
 		this.add(infoPanel, BorderLayout.CENTER);
@@ -156,31 +156,33 @@ public class ExtractCertificate extends JPanel {
 	}
 
 	private void handleEvents() {
-		extractButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
+		this.extractButton.addActionListener(new ActionListener() {
+			public void actionPerformed(@SuppressWarnings("unused")
+			ActionEvent evt) {
 				if (!checkInput())
 					return;
-				else
-					onExtract();
+				onExtract();
 			}
 		});
 
-		browseButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
+		this.browseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(@SuppressWarnings("unused")
+			ActionEvent evt) {
 				onBrowse();
 			}
 		});
 
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
+		this.cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(@SuppressWarnings("unused")
+			ActionEvent evt) {
 				onCancel();
 			}
 		});
 	}
 
 	protected void onExtract() {
-		String keyStorePath = keyStoreField.getText();
-		String keyStoreType = (String) keyStoreTypeCombo.getSelectedItem();
+		String keyStorePath = this.keyStoreField.getText();
+		String keyStoreType = (String) this.keyStoreTypeCombo.getSelectedItem();
 		InputStream keyStoreInputStream;
 		try {
 			keyStoreInputStream = new FileInputStream(keyStorePath);
@@ -190,10 +192,10 @@ public class ExtractCertificate extends JPanel {
 					.getMessage(), "", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		char[] keyStorePassword = keyStorePasswordField.getPassword().length == 0 ? null
-				: keyStorePasswordField.getPassword();
-		char[] keyEntryPassword = keyEntryPasswordField.getPassword().length == 0 ? null
-				: keyEntryPasswordField.getPassword();
+		char[] keyStorePassword = this.keyStorePasswordField.getPassword().length == 0 ? null
+				: this.keyStorePasswordField.getPassword();
+		char[] keyEntryPassword = this.keyEntryPasswordField.getPassword().length == 0 ? null
+				: this.keyEntryPasswordField.getPassword();
 
 		PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(
 				keyStoreType, keyStoreInputStream, keyStorePassword,
@@ -226,12 +228,12 @@ public class ExtractCertificate extends JPanel {
 		fc.showOpenDialog(this.getParent());
 		File certFile = fc.getSelectedFile();
 		if (certFile != null)
-			keyStoreField.setText(certFile.getAbsolutePath());
+			this.keyStoreField.setText(certFile.getAbsolutePath());
 	}
 
 	protected boolean checkInput() {
-		if (null == keyStoreField.getText()
-				|| keyStoreField.getText().length() == 0) {
+		if (null == this.keyStoreField.getText()
+				|| this.keyStoreField.getText().length() == 0) {
 			LOG.error("Please select a keystore...");
 			JOptionPane.showMessageDialog(this, ERROR_SELECT_KEYSTORE
 					.getMessage(), ERROR_MISSING_FIELDS.getMessage(),
@@ -248,8 +250,7 @@ public class ExtractCertificate extends JPanel {
 			if (file.isDirectory() || filename.endsWith(".pkcs12")
 					|| filename.endsWith(".jks"))
 				return true;
-			else
-				return false;
+			return false;
 		}
 
 		@Override

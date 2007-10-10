@@ -68,7 +68,7 @@ public class ApplicationConsole extends JFrame implements Observer {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(ApplicationConsole.class);
+	static final Log LOG = LogFactory.getLog(ApplicationConsole.class);
 
 	/*
 	 * Actions
@@ -86,10 +86,10 @@ public class ApplicationConsole extends JFrame implements Observer {
 	private Action authUserAction = new AuthUserAction(AUTH_USER.getMessage());
 
 	private Action captureAction = new CaptureAction(CAPTURE.getMessage());
-	private Action viewInboundAction = new ViewInboundAction(VIEW_INBOUND_SOAP
+	Action viewInboundAction = new ViewInboundAction(VIEW_INBOUND_SOAP
 			.getMessage());
-	private Action viewOutboundAction = new ViewOutboundAction(
-			VIEW_OUTBOUND_SOAP.getMessage());
+	Action viewOutboundAction = new ViewOutboundAction(VIEW_OUTBOUND_SOAP
+			.getMessage());
 
 	/*
 	 * GUI components
@@ -111,16 +111,17 @@ public class ApplicationConsole extends JFrame implements Observer {
 	private JMenu servicesMenu = new JMenu(SERVICES.getMessage());
 	private JMenu utilsMenu = new JMenu(UTILS.getMessage());
 
-	private JMenuItem loadIdentityMenuItem = new JMenuItem(loadIdAction);
-	private JMenuItem createP12MenuItem = new JMenuItem(createP12Action);
-	private JMenuItem extractCertMenuItem = new JMenuItem(extractAction);
-	private JMenuItem setLocationMenuItem = new JMenuItem(setLocationAction);
-	private JMenuItem authUserMenuItem = new JMenuItem(authUserAction);
-	private JMenuItem quitMenuItem = new JMenuItem(quitAction);
+	private JMenuItem loadIdentityMenuItem = new JMenuItem(this.loadIdAction);
+	private JMenuItem createP12MenuItem = new JMenuItem(this.createP12Action);
+	private JMenuItem extractCertMenuItem = new JMenuItem(this.extractAction);
+	private JMenuItem setLocationMenuItem = new JMenuItem(
+			this.setLocationAction);
+	private JMenuItem authUserMenuItem = new JMenuItem(this.authUserAction);
+	private JMenuItem quitMenuItem = new JMenuItem(this.quitAction);
 
-	private JMenuItem attribMenuItem = new JMenuItem(attribAction);
+	private JMenuItem attribMenuItem = new JMenuItem(this.attribAction);
 
-	private JMenuItem[] servicesMenuItems = { attribMenuItem };
+	private JMenuItem[] servicesMenuItems = { this.attribMenuItem };
 
 	/*
 	 * Non-GUI members
@@ -141,9 +142,9 @@ public class ApplicationConsole extends JFrame implements Observer {
 		manageServices();
 		setStatus();
 
-		viewInboundAction.setEnabled(false);
-		viewOutboundAction.setEnabled(false);
-		consoleManager.addObserver(this);
+		this.viewInboundAction.setEnabled(false);
+		this.viewOutboundAction.setEnabled(false);
+		this.consoleManager.addObserver(this);
 		ApplicationConsoleManager.getInstance().addObserver(this);
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -153,27 +154,27 @@ public class ApplicationConsole extends JFrame implements Observer {
 	}
 
 	private void buildMenu() {
-		fileMenu.setMnemonic(KeyEvent.VK_F);
-		servicesMenu.setMnemonic(KeyEvent.VK_S);
-		utilsMenu.setMnemonic(KeyEvent.VK_U);
+		this.fileMenu.setMnemonic(KeyEvent.VK_F);
+		this.servicesMenu.setMnemonic(KeyEvent.VK_S);
+		this.utilsMenu.setMnemonic(KeyEvent.VK_U);
 
-		fileMenu.add(loadIdentityMenuItem);
-		fileMenu.add(setLocationMenuItem);
-		fileMenu.addSeparator();
-		fileMenu.add(authUserMenuItem);
-		fileMenu.addSeparator();
-		fileMenu.add(quitMenuItem);
+		this.fileMenu.add(this.loadIdentityMenuItem);
+		this.fileMenu.add(this.setLocationMenuItem);
+		this.fileMenu.addSeparator();
+		this.fileMenu.add(this.authUserMenuItem);
+		this.fileMenu.addSeparator();
+		this.fileMenu.add(this.quitMenuItem);
 
-		for (JMenuItem m : servicesMenuItems)
-			servicesMenu.add(m);
+		for (JMenuItem m : this.servicesMenuItems)
+			this.servicesMenu.add(m);
 
-		utilsMenu.add(createP12MenuItem);
-		utilsMenu.add(extractCertMenuItem);
+		this.utilsMenu.add(this.createP12MenuItem);
+		this.utilsMenu.add(this.extractCertMenuItem);
 
 		JMenuBar menu = new JMenuBar();
-		menu.add(fileMenu);
-		menu.add(servicesMenu);
-		menu.add(utilsMenu);
+		menu.add(this.fileMenu);
+		menu.add(this.servicesMenu);
+		menu.add(this.utilsMenu);
 		this.setJMenuBar(menu);
 	}
 
@@ -181,114 +182,115 @@ public class ApplicationConsole extends JFrame implements Observer {
 		buildStatusPanel();
 		buildDebugPanel();
 
-		if (contentPanel == null)
-			contentPanel = new JPanel();
+		if (this.contentPanel == null)
+			this.contentPanel = new JPanel();
 		JSplitPane bottomPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-				debugPanel, statusPanel);
+				this.debugPanel, this.statusPanel);
 		bottomPanel.setDividerSize(3);
 		bottomPanel.setResizeWeight(0.5);
 
-		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, contentPanel,
-				bottomPanel);
-		splitPane.setResizeWeight(1.0);
-		splitPane.setDividerSize(3);
+		this.splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				this.contentPanel, bottomPanel);
+		this.splitPane.setResizeWeight(1.0);
+		this.splitPane.setDividerSize(3);
 
-		this.add(splitPane);
+		this.add(this.splitPane);
 	}
 
 	private void buildDebugPanel() {
-		debugPanel = new JPanel(new FlowLayout());
+		this.debugPanel = new JPanel(new FlowLayout());
 
 		try {
-			browserLauncher = new BrowserLauncher();
+			this.browserLauncher = new BrowserLauncher();
 		} catch (BrowserLaunchingInitializingException e) {
 			LOG.error("BrowserLaunchingInitializingException thrown ...", e);
 		} catch (UnsupportedOperatingSystemException e) {
 			LOG.error("UnsupportedOperatingSystemException thrown ...", e);
 		}
 		@SuppressWarnings("unchecked")
-		List<String> browsers = browserLauncher.getBrowserList();
+		List<String> browsers = this.browserLauncher.getBrowserList();
 		for (String browser : browsers) {
-			browserCombo.addItem(browser);
+			this.browserCombo.addItem(browser);
 		}
-		JCheckBox captureBox = new JCheckBox(captureAction);
+		JCheckBox captureBox = new JCheckBox(this.captureAction);
 		captureBox.setSelected(true);
 		JLabel browserLabel = new JLabel("Browser");
 
-		debugPanel.add(browserLabel);
-		debugPanel.add(browserCombo);
-		debugPanel.add(captureBox);
-		debugPanel.add(new JButton(viewInboundAction));
-		debugPanel.add(new JButton(viewOutboundAction));
+		this.debugPanel.add(browserLabel);
+		this.debugPanel.add(this.browserCombo);
+		this.debugPanel.add(captureBox);
+		this.debugPanel.add(new JButton(this.viewInboundAction));
+		this.debugPanel.add(new JButton(this.viewOutboundAction));
 	}
 
 	private void buildStatusPanel() {
 		JPanel identityPanel = new JPanel();
-		identityPanel.add(identityLabel);
+		identityPanel.add(this.identityLabel);
 
 		JPanel locationPanel = new JPanel();
-		locationPanel.add(locationLabel);
+		locationPanel.add(this.locationLabel);
 
-		statusPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+		this.statusPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				identityPanel, locationPanel);
-		statusPanel.setDividerSize(0);
-		statusPanel.setResizeWeight(0.5);
+		this.statusPanel.setDividerSize(0);
+		this.statusPanel.setResizeWeight(0.5);
 	}
 
 	protected void onAttribService() {
-		contentPanel = new AttribService(this);
-		splitPane.setTopComponent(contentPanel);
+		this.contentPanel = new AttribService(this);
+		this.splitPane.setTopComponent(this.contentPanel);
 	}
 
 	protected void onSetLocation() {
 		String location = JOptionPane.showInputDialog(
-				SET_LOCATION.getMessage(), consoleManager.getLocation());
+				SET_LOCATION.getMessage(), this.consoleManager.getLocation());
 		if (null != location)
-			consoleManager.setLocation(location);
+			this.consoleManager.setLocation(location);
 	}
 
 	protected void onExtract() {
-		contentPanel = new ExtractCertificate(this);
-		splitPane.setTopComponent(contentPanel);
+		this.contentPanel = new ExtractCertificate(this);
+		this.splitPane.setTopComponent(this.contentPanel);
 	}
 
 	protected void onCreate() {
-		contentPanel = new CreateP12(this);
-		splitPane.setTopComponent(contentPanel);
+		this.contentPanel = new CreateP12(this);
+		this.splitPane.setTopComponent(this.contentPanel);
 	}
 
 	protected void onLoad() {
-		contentPanel = new LoadIdentity(this);
-		splitPane.setTopComponent(contentPanel);
+		this.contentPanel = new LoadIdentity(this);
+		this.splitPane.setTopComponent(this.contentPanel);
 	}
 
 	protected void onAuthUser() {
-		contentPanel = new AuthUser(this);
-		splitPane.setTopComponent(contentPanel);
+		this.contentPanel = new AuthUser(this);
+		this.splitPane.setTopComponent(this.contentPanel);
 	}
 
 	public void resetContent() {
-		contentPanel = new JPanel();
-		splitPane.setTopComponent(contentPanel);
+		this.contentPanel = new JPanel();
+		this.splitPane.setTopComponent(this.contentPanel);
 	}
 
 	public void setStatus() {
-		identityLabel.setText(consoleManager.getIdentityLabel());
-		locationLabel.setText(consoleManager.getLocationLabel());
+		this.identityLabel.setText(this.consoleManager.getIdentityLabel());
+		this.locationLabel.setText(this.consoleManager.getLocationLabel());
 	}
 
 	private void manageServices() {
-		attribAction.setEnabled(null != consoleManager.getIdentity());
-		authUserAction.setEnabled(null != consoleManager.getIdentity());
+		this.attribAction.setEnabled(null != this.consoleManager.getIdentity());
+		this.authUserAction.setEnabled(null != this.consoleManager
+				.getIdentity());
 	}
 
-	private void launchBrowser(Document doc, String prefix) {
+	void launchBrowser(Document doc, String prefix) {
 		File tmpXmlFile;
 
 		try {
 			tmpXmlFile = File.createTempFile(prefix, ".xml");
 			FileUtils.writeStringToFile(tmpXmlFile, DomUtils.domToString(doc));
-			browserLauncher.openURLinBrowser((String) browserCombo
+			this.browserLauncher.openURLinBrowser((String) this.browserCombo
 					.getSelectedItem(), "file://"
 					+ tmpXmlFile.getAbsolutePath());
 		} catch (TransformerException e) {
@@ -302,8 +304,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 	public void update(Observable o, Object arg) {
 		if (o instanceof ApplicationConsoleManager) {
 			if (arg instanceof MessageAccessor) {
-				viewInboundAction.setEnabled(true);
-				viewOutboundAction.setEnabled(true);
+				this.viewInboundAction.setEnabled(true);
+				this.viewOutboundAction.setEnabled(true);
 			} else {
 				setStatus();
 				manageServices();
@@ -326,7 +328,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_L));
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			onLoad();
 		}
 	}
@@ -341,7 +344,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			onCreate();
 		}
 	}
@@ -356,7 +360,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			onExtract();
 		}
 	}
@@ -371,7 +376,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			onSetLocation();
 		}
 	}
@@ -386,7 +392,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			LOG.info("Closing Swing SafeOnline Application Console...");
 			System.exit(0);
 		}
@@ -401,7 +408,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			onAttribService();
 		}
 	}
@@ -415,7 +423,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_U));
 		}
 
-		public void actionPerformed(ActionEvent arg0) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			onAuthUser();
 		}
 	}
@@ -430,7 +439,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			Document inboundSoap = ApplicationConsoleManager.getInstance()
 					.getInboundMessage();
 			launchBrowser(inboundSoap, "inbound_soap");
@@ -447,7 +457,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
 		}
 
-		public void actionPerformed(ActionEvent evt) {
+		public void actionPerformed(@SuppressWarnings("unused")
+		ActionEvent evt) {
 			Document outboundSoap = ApplicationConsoleManager.getInstance()
 					.getOutboundMessage();
 			launchBrowser(outboundSoap, "outbound_soap");
@@ -469,8 +480,10 @@ public class ApplicationConsole extends JFrame implements Observer {
 				JCheckBox value = (JCheckBox) evt.getSource();
 				ApplicationConsoleManager.getInstance().setCaptureMessages(
 						value.isSelected());
-				viewInboundAction.setEnabled(value.isSelected());
-				viewOutboundAction.setEnabled(value.isSelected());
+				ApplicationConsole.this.viewInboundAction.setEnabled(value
+						.isSelected());
+				ApplicationConsole.this.viewOutboundAction.setEnabled(value
+						.isSelected());
 			}
 		}
 	}

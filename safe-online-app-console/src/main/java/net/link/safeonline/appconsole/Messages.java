@@ -45,6 +45,6 @@ public enum Messages {
 	}
 
 	public String getMessage() {
-		return messages.getString(this.key);
+		return this.messages.getString(this.key);
 	}
 }

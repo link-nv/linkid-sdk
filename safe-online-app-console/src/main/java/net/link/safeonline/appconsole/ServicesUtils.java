@@ -33,7 +33,7 @@ import org.jdesktop.swingworker.SwingWorker;
  */
 public class ServicesUtils extends Observable {
 
-	private static final Log LOG = LogFactory.getLog(ServicesUtils.class);
+	static final Log LOG = LogFactory.getLog(ServicesUtils.class);
 
 	private static ServicesUtils servicesUtilsInstance = null;
 
@@ -57,15 +57,15 @@ public class ServicesUtils extends Observable {
 	 * Attribute web service methods
 	 * 
 	 */
-	private AttributeClient getAttributeClient() {
-		if (null == attributeClient)
-			attributeClient = new AttributeClientImpl(consoleManager
-					.getLocation(), (X509Certificate) consoleManager
-					.getIdentity().getCertificate(), consoleManager
+	AttributeClient getAttributeClient() {
+		if (null == this.attributeClient)
+			this.attributeClient = new AttributeClientImpl(this.consoleManager
+					.getLocation(), (X509Certificate) this.consoleManager
+					.getIdentity().getCertificate(), this.consoleManager
 					.getIdentity().getPrivateKey());
 
-		consoleManager.setMessageAccessor(attributeClient);
-		return attributeClient;
+		this.consoleManager.setMessageAccessor(this.attributeClient);
+		return this.attributeClient;
 	}
 
 	public void getAttributes(final String user) {
@@ -78,6 +78,7 @@ public class ServicesUtils extends Observable {
 				return attributes;
 			}
 
+			@SuppressWarnings("synthetic-access")
 			@Override
 			protected void done() {
 				String errorMessage = null;
@@ -106,15 +107,15 @@ public class ServicesUtils extends Observable {
 	 * Data web service methods
 	 * 
 	 */
-	private DataClient getDataClient() {
-		if (null == dataClient)
-			dataClient = new DataClientImpl(consoleManager.getLocation(),
-					(X509Certificate) consoleManager.getIdentity()
-							.getCertificate(), consoleManager.getIdentity()
-							.getPrivateKey());
+	DataClient getDataClient() {
+		if (null == this.dataClient)
+			this.dataClient = new DataClientImpl(this.consoleManager
+					.getLocation(), (X509Certificate) this.consoleManager
+					.getIdentity().getCertificate(), this.consoleManager
+					.getIdentity().getPrivateKey());
 
-		consoleManager.setMessageAccessor(dataClient);
-		return dataClient;
+		this.consoleManager.setMessageAccessor(this.dataClient);
+		return this.dataClient;
 	}
 
 	public void setAttributeValue(final String userName,
@@ -129,6 +130,7 @@ public class ServicesUtils extends Observable {
 				return Boolean.TRUE;
 			}
 
+			@SuppressWarnings("synthetic-access")
 			@Override
 			protected void done() {
 				String errorMessage = null;
@@ -163,6 +165,7 @@ public class ServicesUtils extends Observable {
 				return Boolean.TRUE;
 			}
 
+			@SuppressWarnings("synthetic-access")
 			@Override
 			protected void done() {
 				String errorMessage = null;
@@ -198,6 +201,7 @@ public class ServicesUtils extends Observable {
 				return Boolean.TRUE;
 			}
 
+			@SuppressWarnings("synthetic-access")
 			@Override
 			protected void done() {
 				String errorMessage = null;

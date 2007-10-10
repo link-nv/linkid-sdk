@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +49,8 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
  * 
  */
 public class AuthServletManager extends Observable {
-	private static final Log LOG = LogFactory.getLog(AuthServletManager.class);
+
+	static final Log LOG = LogFactory.getLog(AuthServletManager.class);
 
 	private static AuthServletManager authServletManager;
 
@@ -71,23 +71,23 @@ public class AuthServletManager extends Observable {
 
 	public void authenticate(String applicationName, String protocol)
 			throws Exception {
-		server = new Server();
-		connector = new SelectChannelConnector();
-		connector.setPort(0);
-		server.addConnector(connector);
+		this.server = new Server();
+		this.connector = new SelectChannelConnector();
+		this.connector.setPort(0);
+		this.server.addConnector(this.connector);
 
 		SessionManager sessionManager = new HashSessionManager();
 		SessionHandler sessionHandler = new SessionHandler(sessionManager);
 
-		context = new Context(null, sessionHandler, null, null, null);
-		context.setContextPath("/");
-		server.addHandler(context);
+		this.context = new Context(null, sessionHandler, null, null, null);
+		this.context.setContextPath("/");
+		this.server.addHandler(this.context);
 
-		context.addFilter(LogFilter.class, "/", Handler.DEFAULT);
+		this.context.addFilter(LogFilter.class, "/", Handler.DEFAULT);
 
-		context.addFilter(LoginFilter.class, "/", Handler.DEFAULT);
+		this.context.addFilter(LoginFilter.class, "/", Handler.DEFAULT);
 
-		FilterHolder authenticationFilterHoldder = context.addFilter(
+		FilterHolder authenticationFilterHoldder = this.context.addFilter(
 				AuthenticationFilter.class, "/", Handler.DEFAULT);
 		Map<String, String> filterInitParameters = new HashMap<String, String>();
 		filterInitParameters.put(
@@ -115,7 +115,7 @@ public class AuthServletManager extends Observable {
 
 		authenticationFilterHoldder.setInitParameters(filterInitParameters);
 
-		ServletHandler handler = context.getServletHandler();
+		ServletHandler handler = this.context.getServletHandler();
 
 		ServletHolder servletHolder = new ServletHolder();
 		String servletClassName = ApplicationServlet.class.getName();
@@ -129,9 +129,9 @@ public class AuthServletManager extends Observable {
 		servletMapping.setPathSpecs(new String[] { "/*" });
 		handler.addServletMapping(servletMapping);
 
-		server.start();
+		this.server.start();
 
-		int port = connector.getLocalPort();
+		int port = this.connector.getLocalPort();
 
 		String servletLocation = "http://localhost:" + port + "/";
 
@@ -153,7 +153,7 @@ public class AuthServletManager extends Observable {
 
 		@Override
 		protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-				throws ServletException, IOException {
+				throws IOException {
 			LOG.debug("doGet");
 			HttpSession session = req.getSession();
 			String username = (String) session
@@ -170,8 +170,7 @@ public class AuthServletManager extends Observable {
 
 		@Override
 		protected void doPost(HttpServletRequest request,
-				HttpServletResponse response) throws ServletException,
-				IOException {
+				HttpServletResponse response) throws IOException {
 			doGet(request, response);
 		}
 	}
@@ -179,11 +178,11 @@ public class AuthServletManager extends Observable {
 	public void shutDownJetty() {
 		LOG.info("Shutting down Jetty ......");
 		try {
-			connector.stop();
+			this.connector.stop();
 		} catch (Exception e) {
 			LOG.error("Failed to shutdown Jetty", e);
 		}
-		context.setShutdown(true);
+		this.context.setShutdown(true);
 		setChanged();
 		notifyObservers(Boolean.TRUE);
 	}
