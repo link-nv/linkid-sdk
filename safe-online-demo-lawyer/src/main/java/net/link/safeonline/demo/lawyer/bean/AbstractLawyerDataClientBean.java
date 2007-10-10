@@ -140,10 +140,10 @@ public abstract class AbstractLawyerDataClientBean implements
 	 * Gives back the lawyer status of a subject. This method also sets the
 	 * {@link FacesMessages} in case something goes wrong.
 	 * 
-	 * @param username
+	 * @param userId
 	 * @return the lawyer status or <code>null</code> in case of error.
 	 */
-	protected LawyerStatus getLawyerStatus(String username) {
+	protected LawyerStatus getLawyerStatus(String userId) {
 		boolean lawyer = false;
 		boolean suspended = false;
 		String bar = null;
@@ -153,9 +153,7 @@ public abstract class AbstractLawyerDataClientBean implements
 		Attribute<String> barAttribute;
 		Attribute<Boolean> barAdminAttribute;
 		DataClient dataClient = getDataClient();
-		NameIdentifierMappingClient nameClient = getNameIdentifierMappingClient();
 		try {
-			String userId = nameClient.getUserId(username);
 			lawyerAttribute = dataClient.getAttributeValue(userId,
 					DemoConstants.LAWYER_ATTRIBUTE_NAME, Boolean.class);
 			suspendedAttribute = dataClient.getAttributeValue(userId,

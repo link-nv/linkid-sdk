@@ -90,16 +90,17 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements
 			Object attributeValue) throws ConnectException,
 			RequestDeniedException, SubjectNotFoundException,
 			AttributeNotFoundException {
+
+		String userId = getNameIdentifierMappingClient().getUserId(this.name);
+
 		DataClient dataClient = getDataClient();
-		if (null == dataClient.getAttributeValue(this.name, attributeName,
+		if (null == dataClient.getAttributeValue(userId, attributeName,
 				attributeValue.getClass())) {
 			log.debug("create attribute #0 for #1", attributeName, this.name);
-			dataClient
-					.createAttribute(this.name, attributeName, attributeValue);
+			dataClient.createAttribute(userId, attributeName, attributeValue);
 		} else {
 			log.debug("set attribute #0 for #1", attributeName, this.name);
-			dataClient.setAttributeValue(this.name, attributeName,
-					attributeValue);
+			dataClient.setAttributeValue(userId, attributeName, attributeValue);
 		}
 	}
 }

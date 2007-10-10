@@ -13,6 +13,9 @@ import javax.ejb.Stateful;
 import net.link.safeonline.demo.lawyer.LawyerConstants;
 import net.link.safeonline.demo.lawyer.LawyerSearch;
 import net.link.safeonline.demo.lawyer.LawyerStatus;
+import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -48,7 +51,18 @@ public class LawyerSearchBean extends AbstractLawyerDataClientBean implements
 	@RolesAllowed(LawyerConstants.ADMIN_ROLE)
 	public String search() {
 		log.debug("search: " + this.name);
-		LawyerStatus lawyerStatus = getLawyerStatus(this.name);
+		NameIdentifierMappingClient nameClient = getNameIdentifierMappingClient();
+		String userId;
+		try {
+			userId = nameClient.getUserId(this.name);
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.add("subject not found");
+			return null;
+		} catch (RequestDeniedException e) {
+			this.facesMessages.add("request denied");
+			return null;
+		}
+		LawyerStatus lawyerStatus = getLawyerStatus(userId);
 		if (null == lawyerStatus) {
 			return null;
 		}
