@@ -46,13 +46,13 @@ public class EjbUtils {
 	 * @param type
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static <Type> Type getEJB(InitialContext initialContext,
 			String jndiName, Class<Type> type) {
 		try {
 			LOG.debug("ejb jndi lookup: " + jndiName);
 			Object object = initialContext.lookup(jndiName);
-			Type instance = (Type) PortableRemoteObject.narrow(object, type);
+			Type instance = type
+					.cast(PortableRemoteObject.narrow(object, type));
 			return instance;
 		} catch (NamingException e) {
 			throw new RuntimeException("naming error: " + e.getMessage(), e);
@@ -74,7 +74,6 @@ public class EjbUtils {
 		return initialContext;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <Type> List<Type> getComponents(
 			InitialContext initialContext, String jndiPrefix, Class<Type> type) {
 		LOG.debug("get components at " + jndiPrefix);
@@ -99,7 +98,7 @@ public class EjbUtils {
 					LOG.error(message);
 					throw new IllegalStateException(message);
 				}
-				Type component = (Type) object;
+				Type component = type.cast(object);
 				components.add(component);
 			}
 			return components;
@@ -119,7 +118,6 @@ public class EjbUtils {
 		return getComponents(initialContext, jndiPrefix, type);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <Type> Map<String, Type> getComponentNames(
 			InitialContext initialContext, String jndiPrefix, Class<Type> type) {
 		LOG.debug("get component names at " + jndiPrefix);
@@ -145,7 +143,7 @@ public class EjbUtils {
 					LOG.error(message);
 					throw new IllegalStateException(message);
 				}
-				Type component = (Type) object;
+				Type component = type.cast(object);
 				names.put(objectName, component);
 			}
 			return names;
