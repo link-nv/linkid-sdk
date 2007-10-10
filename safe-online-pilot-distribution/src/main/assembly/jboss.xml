@@ -11,6 +11,11 @@
 				target/files/safe-online-base-distribution-1.0-SNAPSHOT/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
+			<excludes>
+				<exclude>
+					server/default/deploy/jms/hsqldb-jdbc2-service.xml
+				</exclude>
+			</excludes>
 		</fileSet>
 		<fileSet>
 			<directory>target/classes/jboss</directory>

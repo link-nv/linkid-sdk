@@ -74,15 +74,19 @@ public class AuditLogSanitizer implements MessageListener {
 
 	private boolean requiresSanitation(long auditContextId) {
 		if (this.resourceAuditDAO.hasRecords(auditContextId)) {
+			LOG.debug("has resource audit records");
 			return false;
 		}
 		if (this.securityAuditDAO.hasRecords(auditContextId)) {
+			LOG.debug("has security audit records");
 			return false;
 		}
 		if (this.auditAuditDAO.hasRecords(auditContextId)) {
+			LOG.debug("has audit audit records");
 			return false;
 		}
 		if (this.accessAuditDAO.hasErrorRecords(auditContextId)) {
+			LOG.debug("has access audit error records");
 			return false;
 		}
 		return true;

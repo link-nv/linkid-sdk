@@ -44,7 +44,7 @@ public class HelpdeskLogger {
 		List<HelpdeskEventEntity> helpdeskContext = new Vector<HelpdeskEventEntity>();
 		session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT,
 				helpdeskContext);
-		LOG.debug("new volatlie helpdesk context created");
+		LOG.debug("new volatile helpdesk context created");
 		return helpdeskContext;
 	}
 

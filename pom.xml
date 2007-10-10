@@ -178,6 +178,40 @@
 				<module>safe-online-demo-distribution</module>
 			</modules>
 		</profile>
+		<profile>
+			<id>env-local-pilot</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>local-pilot</value>
+				</property>
+			</activation>
+			<properties>
+				<isGlobalOperator>true</isGlobalOperator>
+				<defaultCronExpression>
+					0 0 3 * * ?
+				</defaultCronExpression>
+				<safe-online.data.source>
+					SafeOnlineDS
+				</safe-online.data.source>
+				<safe-online.dialect>
+					org.hibernate.dialect.MySQLDialect
+				</safe-online.dialect>
+				<safe-online.hibernate.hbm2ddl.auto>
+					update
+				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.host.name>localhost</safe-online.host.name>
+				<safe-online.host.port>8080</safe-online.host.port>
+				<safe-online.host.port.ssl>
+					8443
+				</safe-online.host.port.ssl>
+				<debug.mode>false</debug.mode>
+			</properties>
+			<modules>
+				<module>safe-online-base-distribution</module>
+				<module>safe-online-pilot-distribution</module>
+			</modules>
+		</profile>
 	</profiles>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>

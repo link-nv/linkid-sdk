@@ -17,6 +17,18 @@ mvn clean install
 +---+
 mvn -Denv=buildserver clean install
 +---+
+
+ The available build profiles are:
+
+*---------------+---------------------------------------------------------+
+| dev (default) | Development configuration, localhost, embedded database |
+*---------------+---------------------------------------------------------+
+| demo          | localhost, embedded database                            |
+*---------------+---------------------------------------------------------+
+| buildserver   | buildserver, embedded database                          |
+*---------------+---------------------------------------------------------+
+| local-pilot   | localhost, MySQL database                               |
+*---------------+---------------------------------------------------------+
  
  The following topics described patched versions of some 3th party libraries and build plugins required for building SafeOnline.
 

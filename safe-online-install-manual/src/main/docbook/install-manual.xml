@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
-<article lang="en">
-	<title>OLAS</title>
-	<subtitle>Installation Manual</subtitle>
-	<articleinfo>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<book lang="en">
+	<bookinfo>
+		<title>OLAS Installation Manual</title>
+		<copyright>
+			<year>2007</year>
+			<holder>LIN-K N.V.</holder>
+		</copyright>
+		<date>10/10/2007</date>
 		<abstract>
 			<para>
 				This document contains installation instructions for the
 				OLAS product.
 			</para>
 		</abstract>
-		<date>03/10/2007</date>
-		<author>
-			<surname>LIN-K N.V.</surname>
-		</author>
-		<copyright>
-			<year>2007</year>
-			<holder>LIN-K N.V.</holder>
-		</copyright>
+		<releaseinfo>1.0.0</releaseinfo>
 		<productname>OLAS</productname>
 		<productnumber>1.0.0</productnumber>
-	</articleinfo>
+		<authorgroup>
+			<author>
+				<firstname>Frank</firstname>
+				<surname>Cornelis</surname>
+			</author>
+		</authorgroup>
+	</bookinfo>
 
-	<section>
+	<chapter id="introduction">
 		<title>Introduction</title>
 		<para>
 			OLAS is an authentication, signature and user data exchange
@@ -32,5 +35,129 @@
 			identity data. It brings to users a central identity
 			management.
 		</para>
-	</section>
-</article>
+		<section>
+			<title>Java</title>
+			<para>OLAS was written in Java.</para>
+			<section>
+				<title>Sun JDK 1.5</title>
+				<para>Sun JDK 1.5.0_13</para>
+			</section>
+		</section>
+		<section>
+			<title>JavaEE Application Server</title>
+			<para>
+				OLAS is a JavaEE application that requires a JavaEE
+				application server as runtime environment.
+			</para>
+			<section>
+				<title>JBoss Application Server</title>
+				<para>
+					OLAS uses JBoss AS 4.2 as application server.
+				</para>
+			</section>
+		</section>
+		<section>
+			<title>Database</title>
+			<para>
+				OLAS is using the JPA J2EE layer for persistence.
+			</para>
+			<section>
+				<title>MySQL</title>
+				<para>MySQL 5.0 support.</para>
+			</section>
+		</section>
+	</chapter>
+
+	<chapter id="topology">
+		<title>OLAS Topology</title>
+		<para>
+			Different setup topologies are possible for hosting OLAS
+		</para>
+		<section>
+			<title>Single node configuration</title>
+			<para>
+				This is the most simple configuration for hosting the
+				OLAS services.
+			</para>
+		</section>
+		<section>
+			<title>Apache HTTPD front-end</title>
+			<para>For SSL.</para>
+		</section>
+	</chapter>
+
+	<chapter id="package">
+		<title>OLAS Distribution Package</title>
+		<para>Describe the content of the ZIP</para>
+		<section>
+			<title>Pre-configured JBoss AS</title>
+			<para>
+				Describe what has been pre-configured on the JBoss AS.
+			</para>
+		</section>
+		<section>
+			<title>OLAS EAR</title>
+			<para>Describe what's inside the EAR.</para>
+		</section>
+	</chapter>
+
+	<chapter id="cli">
+		<title>Command Line Interface</title>
+		<para>
+			The OLAS service comes with a CLI to manage the database
+			schema.
+		</para>
+		<section>
+			<title>Running the CLI</title>
+			<para>Starting the CLI.</para>
+		</section>
+		<section>
+			<title>Connecting to a database</title>
+			<para>JDBC drivers</para>
+		</section>
+		<section>
+			<title>Database schema verification</title>
+			<para>TODO</para>
+		</section>
+		<section>
+			<title>Database schema initialization</title>
+			<para>TODO.</para>
+		</section>
+	</chapter>
+
+	<chapter id="configuration">
+		<title>Pre-deployment Configuration</title>
+		<para>
+			Explain that OLAS requires some minimal configuration before
+			deployment within the application server.
+		</para>
+		<section>
+			<title>SSL</title>
+			<para>
+				Describe that we need to configure some keys for SSL.
+			</para>
+		</section>
+		<section>
+			<title>OLAS X509</title>
+			<para>
+				Describe that OLAS needs a certificate of itself to sign
+				the issued SAML tokens.
+			</para>
+		</section>
+		<section>
+			<title>Applets</title>
+			<para>
+				Describe that the OLAS Java Applets need to be signed.
+			</para>
+		</section>
+		<section>
+			<title>Syslog</title>
+			<para>Describe the need for a syslog service.</para>
+		</section>
+	</chapter>
+
+	<chapter id="deployment">
+		<title>Deployment</title>
+		<para>Describe how to deploy the OLAS service.</para>
+	</chapter>
+</book>

@@ -136,6 +136,9 @@ public class AuditSyslogBean implements AuditBackend {
 	}
 
 	public void process(long auditContextId) {
+		if (0 == this.syslogHost.length()) {
+			LOG.debug("skipping syslog");
+		}
 		logSecurityAudits(auditContextId);
 		logResourceAudits(auditContextId);
 		logAccessAudits(auditContextId);
