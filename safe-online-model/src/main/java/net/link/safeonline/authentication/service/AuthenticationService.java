@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Set;
 
 import javax.ejb.Local;
 
@@ -17,9 +18,12 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DevicePolicyException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -63,6 +67,7 @@ public interface AuthenticationService {
 	 * Commits the authentication for the given application.
 	 * 
 	 * @param applicationId
+	 * @param requiredDevicePolicy
 	 * @return
 	 * @throws SubscriptionNotFoundException
 	 *             in case the subject is not subscribed to the application.
@@ -71,11 +76,15 @@ public interface AuthenticationService {
 	 * @throws ApplicationIdentityNotFoundException
 	 * @throws IdentityConfirmationRequiredException
 	 * @throws MissingAttributeException
+	 * @throws EmptyDevicePolicyException
+	 * @throws DevicePolicyException
 	 */
-	void commitAuthentication(String applicationId)
+	void commitAuthentication(String applicationId,
+			Set<AuthenticationDevice> requiredDevicePolicy)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
-			IdentityConfirmationRequiredException, MissingAttributeException;
+			IdentityConfirmationRequiredException, MissingAttributeException,
+			EmptyDevicePolicyException, DevicePolicyException;
 
 	/**
 	 * Authenticates a user via an authentication statement. The given session
@@ -116,6 +125,20 @@ public interface AuthenticationService {
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			DecodingException, ExistingUserException,
 			AttributeTypeNotFoundException;
+
+	/**
+	 * Registers a device for a logged in user via an identity statement.
+	 * 
+	 * @param identityStatementData
+	 * @return
+	 * @throws TrustDomainNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws ArgumentIntegrityException
+	 * @throws AttributeTypeNotFoundException
+	 */
+	boolean registerDevice(byte[] identityStatementData)
+			throws TrustDomainNotFoundException, PermissionDeniedException,
+			ArgumentIntegrityException, AttributeTypeNotFoundException;
 
 	/**
 	 * Aborts the current authentication procedure.

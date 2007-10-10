@@ -7,21 +7,27 @@
 
 package net.link.safeonline.auth.servlet;
 
+import java.util.Set;
+
 import javax.ejb.NoSuchEJBException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.DevicePolicyException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * This HTTP session listener manages the life-cycle of the authentication
@@ -120,14 +126,22 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	 * @throws MissingAttributeException
 	 * @throws IdentityConfirmationRequiredException
 	 * @throws ApplicationIdentityNotFoundException
+	 * @throws EmptyDevicePolicyException
+	 * @throws DevicePolicyException
 	 */
 	public static void commitAuthentication(HttpSession session,
 			String applicationId) throws SubscriptionNotFoundException,
 			ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-			IdentityConfirmationRequiredException, MissingAttributeException {
+			IdentityConfirmationRequiredException, MissingAttributeException,
+			EmptyDevicePolicyException, DevicePolicyException {
+
+		Set<AuthenticationDevice> requiredDevices = LoginManager
+				.getRequiredDevices(session);
+
 		AuthenticationService authenticationService = getAuthenticationService(session);
 		try {
-			authenticationService.commitAuthentication(applicationId);
+			authenticationService.commitAuthentication(applicationId,
+					requiredDevices);
 		} finally {
 			/*
 			 * No matter what happens, we don't want the sessionDestroyed method

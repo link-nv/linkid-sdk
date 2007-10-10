@@ -87,8 +87,8 @@ public class AuthenticationTest {
 		 */
 		IntegrationTestUtils.setupLoginConfig();
 		IntegrationTestUtils.login(userId, "secret");
-		authenticationService
-				.commitAuthentication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+		authenticationService.commitAuthentication(
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, null);
 	}
 
 	@Test
@@ -145,7 +145,8 @@ public class AuthenticationTest {
 
 		// operate & verify
 		try {
-			authenticationService.commitAuthentication("safe-online-user");
+			authenticationService
+					.commitAuthentication("safe-online-user", null);
 			fail();
 		} catch (EJBException e) {
 			// expected

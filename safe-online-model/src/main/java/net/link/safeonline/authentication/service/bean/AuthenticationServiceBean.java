@@ -15,6 +15,7 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticNam
 
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -31,15 +32,20 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DevicePolicyException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.AuthenticationState;
+import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.dao.ApplicationDAO;
@@ -139,6 +145,12 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	@EJB
 	private PasswordManager passwordManager;
+
+	@EJB
+	private DevicePolicyService devicePolicyService;
+
+	@EJB
+	private CredentialService credentialService;
 
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
@@ -292,12 +304,28 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		}
 	}
 
+	private void checkDevicePolicy(String applicationId,
+			Set<AuthenticationDevice> requiredDevicePolicy)
+			throws ApplicationNotFoundException, EmptyDevicePolicyException,
+			DevicePolicyException {
+		LOG.debug("authenticationDevice: " + this.authenticationDevice);
+		Set<AuthenticationDevice> devicePolicy = this.devicePolicyService
+				.getDevicePolicy(applicationId, requiredDevicePolicy);
+		for (AuthenticationDevice device : devicePolicy)
+			LOG.debug("devicePolicy: " + device.getDeviceName());
+		boolean devicePolicyCheck = devicePolicy
+				.contains(this.authenticationDevice);
+		if (!devicePolicyCheck)
+			throw new DevicePolicyException();
+	}
+
 	@Remove
 	public void commitAuthentication(@NonEmptyString
-	String applicationId) throws ApplicationNotFoundException,
-			SubscriptionNotFoundException,
+	String applicationId, Set<AuthenticationDevice> requiredDevicePolicy)
+			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
-			IdentityConfirmationRequiredException, MissingAttributeException {
+			IdentityConfirmationRequiredException, MissingAttributeException,
+			EmptyDevicePolicyException, DevicePolicyException {
 		LOG.debug("commitAuthentication for application: " + applicationId);
 
 		checkStateBeforeCommit();
@@ -305,6 +333,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		checkRequiredIdentity(applicationId);
 
 		checkRequiredMissingAttributes(applicationId);
+
+		checkDevicePolicy(applicationId, requiredDevicePolicy);
 
 		if (null != this.expectedApplicationId) {
 			/*
@@ -354,6 +384,16 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	public String getUsername() {
 		String userId = getUserId();
 		return this.subjectService.getSubjectLogin(userId);
+	}
+
+	public boolean registerDevice(@NotNull
+	byte[] identityStatementData) throws TrustDomainNotFoundException,
+			PermissionDeniedException, ArgumentIntegrityException,
+			AttributeTypeNotFoundException {
+		this.credentialService.mergeIdentityStatement(identityStatementData);
+
+		this.authenticationDevice = AuthenticationDevice.BEID;
+		return true;
 	}
 
 	public boolean registerAndAuthenticate(@NonEmptyString

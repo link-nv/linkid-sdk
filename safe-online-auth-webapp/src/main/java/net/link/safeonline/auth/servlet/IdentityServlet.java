@@ -19,11 +19,10 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
-import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
 import net.link.safeonline.shared.SharedConstants;
-import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,19 +40,9 @@ public class IdentityServlet extends AbstractStatementServlet {
 
 	private static final Log LOG = LogFactory.getLog(IdentityServlet.class);
 
-	private CredentialService credentialService;
-
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-
-		loadCredentialService();
-	}
-
-	private void loadCredentialService() {
-		this.credentialService = EjbUtils.getEJB(
-				"SafeOnline/CredentialServiceBean/local",
-				CredentialService.class);
 	}
 
 	@Override
@@ -64,7 +53,9 @@ public class IdentityServlet extends AbstractStatementServlet {
 
 		PrintWriter writer = response.getWriter();
 		try {
-			this.credentialService.mergeIdentityStatement(statementData);
+			AuthenticationService authenticationService = AuthenticationServiceManager
+					.getAuthenticationService(session);
+			authenticationService.registerDevice(statementData);
 			LoginManager.relogin(session, AuthenticationDevice.BEID);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (TrustDomainNotFoundException e) {
