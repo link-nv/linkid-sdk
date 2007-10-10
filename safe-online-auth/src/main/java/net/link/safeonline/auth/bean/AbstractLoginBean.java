@@ -61,33 +61,33 @@ public class AbstractLoginBean {
 	 * Login the given user.
 	 * 
 	 * @param username
-	 * @param authenticationDevice
+	 * @param inputAuthenticationDevice
 	 */
-	protected void login(String username,
-			AuthenticationDevice authenticationDevice) {
-		log.debug("login using: " + username + " via device: "
-				+ authenticationDevice);
-		this.username = this.subjectService.findSubjectFromUserName(username)
-				.getUserId();
-		relogin(authenticationDevice);
+	protected void login(String inputUsername,
+			AuthenticationDevice inputAuthenticationDevice) {
+		this.log.debug("login using: " + inputUsername + " via device: "
+				+ inputAuthenticationDevice);
+		this.username = this.subjectService.findSubjectFromUserName(
+				inputUsername).getUserId();
+		relogin(inputAuthenticationDevice);
 	}
 
 	/**
 	 * Re-login the current user. This will trigger the device restriction check
 	 * again.
 	 * 
-	 * @param authenticationDevice
+	 * @param inputAuthenticationDevice
 	 */
-	protected void relogin(AuthenticationDevice authenticationDevice) {
-		this.authenticationDevice = authenticationDevice;
+	protected void relogin(AuthenticationDevice inputAuthenticationDevice) {
+		this.authenticationDevice = inputAuthenticationDevice;
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		String redirectUrl = "./login";
-		log.debug("redirecting to: " + redirectUrl);
+		this.log.debug("redirecting to: " + redirectUrl);
 		try {
 			externalContext.redirect(redirectUrl);
 		} catch (IOException e) {
-			log.debug("IO error: " + e.getMessage());
+			this.log.debug("IO error: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorIO");
 			return;

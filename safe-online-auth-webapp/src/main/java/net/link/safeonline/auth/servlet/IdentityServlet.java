@@ -58,7 +58,7 @@ public class IdentityServlet extends AbstractStatementServlet {
 
 	@Override
 	protected void processStatement(byte[] statementData, HttpSession session,
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws IOException {
 		String username = LoginManager.getUsername(session);
 		LOG.debug("processing statement for: " + username);
 

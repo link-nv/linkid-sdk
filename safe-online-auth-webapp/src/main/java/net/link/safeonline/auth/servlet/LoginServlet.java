@@ -120,8 +120,9 @@ public class LoginServlet extends HttpServlet {
 		response.sendRedirect("./exit");
 	}
 
-	private void redirectToRegisterDevice(String username, HttpSession session,
-			HttpServletResponse response) throws IOException {
+	private void redirectToRegisterDevice(@SuppressWarnings("unused")
+	String username, @SuppressWarnings("unused")
+	HttpSession session, HttpServletResponse response) throws IOException {
 		response.sendRedirect("./register-device.seam");
 	}
 
@@ -213,8 +214,7 @@ public class LoginServlet extends HttpServlet {
 		return username;
 	}
 
-	private AuthenticationDevice getDevice(HttpSession session)
-			throws ServletException {
+	private AuthenticationDevice getDevice(HttpSession session) {
 		AuthenticationDevice device = LoginManager
 				.getAuthenticationDevice(session);
 		LOG.debug("authentication device: " + device);
@@ -243,7 +243,7 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	private void redirectToIdentityConfirmation(HttpServletResponse response)
-			throws ServletException, IOException {
+			throws IOException {
 		String redirectUrl = "./identity-confirmation.seam";
 
 		LOG.debug("redirecting to: " + redirectUrl);

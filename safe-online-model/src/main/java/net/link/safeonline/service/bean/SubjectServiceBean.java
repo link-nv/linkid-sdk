@@ -55,7 +55,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
 			throws AttributeTypeNotFoundException {
 		LOG.debug("add subject: " + login);
 
-		String userId = idGenerator.generateId();
+		String userId = this.idGenerator.generateId();
 
 		SubjectEntity subject = this.subjectDAO.addSubject(userId);
 

@@ -754,7 +754,7 @@ public class IdentityServiceBean implements IdentityService,
 		return result;
 	}
 
-	private static class RequiredAttributeMapEntryFilter implements
+	static class RequiredAttributeMapEntryFilter implements
 			MapEntryFilter<AttributeTypeEntity, Boolean> {
 
 		public boolean isAllowed(Entry<AttributeTypeEntity, Boolean> element) {

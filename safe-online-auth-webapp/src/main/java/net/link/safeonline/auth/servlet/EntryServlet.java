@@ -104,14 +104,14 @@ public class EntryServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws IOException {
 		LOG.debug("GET entry");
 		handleInvocation(request, response);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws IOException {
 		LOG.debug("POST entry");
 		handleInvocation(request, response);
 	}
@@ -176,9 +176,8 @@ public class EntryServlet extends HttpServlet {
 		if (null == defloweredCookie) {
 			setDefloweredCookie(response);
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	private final static String DEFLOWER_COOKIE_NAME = "deflowered";

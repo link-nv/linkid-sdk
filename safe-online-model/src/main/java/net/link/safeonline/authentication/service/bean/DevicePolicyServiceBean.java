@@ -60,8 +60,8 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 				devicePolicy.add(device);
 			}
 		} else {
-			List<DeviceEntity> devices = this.devices.listDevices();
-			for (DeviceEntity device : devices) {
+			List<DeviceEntity> deviceList = this.devices.listDevices();
+			for (DeviceEntity device : deviceList) {
 				String deviceName = device.getName();
 				AuthenticationDevice authnDevice = AuthenticationDevice
 						.getAuthenticationDevice(deviceName);

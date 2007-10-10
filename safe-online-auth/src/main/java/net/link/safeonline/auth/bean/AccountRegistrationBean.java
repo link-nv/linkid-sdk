@@ -71,13 +71,13 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		log.debug("destroy");
+		this.log.debug("destroy");
 	}
 
 	@Create
 	@Begin
 	public void begin() {
-		log.debug("begin");
+		this.log.debug("begin");
 	}
 
 	public String getLogin() {
@@ -89,9 +89,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	}
 
 	public String loginNext() {
-		log.debug("loginNext");
+		this.log.debug("loginNext");
 
-		log.debug("captcha: " + captcha);
+		this.log.debug("captcha: " + this.captcha);
 
 		if (null == this.captchaService) {
 			this.facesMessages.addFromResourceBundle(
@@ -104,12 +104,12 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		HttpSession httpSession = (HttpSession) externalContext
 				.getSession(false);
 		String captchaId = httpSession.getId();
-		log.debug("captcha Id: " + captchaId);
+		this.log.debug("captcha Id: " + captchaId);
 
 		boolean valid;
 		try {
 			valid = this.captchaService.validateResponseForID(captchaId,
-					captcha);
+					this.captcha);
 		} catch (CaptchaServiceException e) {
 			/*
 			 * It's possible that a data race occurs between the Captcha servlet
@@ -145,13 +145,13 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	}
 
 	public String deviceNext() {
-		log.debug("deviceNext");
+		this.log.debug("deviceNext");
 		if (null == this.device) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceSelection");
 			return null;
 		}
-		log.debug("device: " + this.device);
+		this.log.debug("device: " + this.device);
 		return this.device;
 	}
 
@@ -171,7 +171,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	ImageCaptchaService captchaService;
 
 	public String passwordNext() {
-		log.debug("passwordNext");
+		this.log.debug("passwordNext");
 
 		super.clearUsername();
 

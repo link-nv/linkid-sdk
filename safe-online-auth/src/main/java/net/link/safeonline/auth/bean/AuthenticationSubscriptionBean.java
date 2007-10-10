@@ -56,7 +56,7 @@ public class AuthenticationSubscriptionBean implements
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String subscribe() {
-		log.debug("subscribe to application #0", this.applicationId);
+		this.log.debug("subscribe to application #0", this.applicationId);
 		try {
 			this.subscriptionService.subscribe(this.applicationId);
 		} catch (ApplicationNotFoundException e) {
@@ -80,7 +80,7 @@ public class AuthenticationSubscriptionBean implements
 		boolean confirmationRequired;
 		try {
 			confirmationRequired = this.identityService
-					.isConfirmationRequired(applicationId);
+					.isConfirmationRequired(this.applicationId);
 		} catch (SubscriptionNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
@@ -95,7 +95,7 @@ public class AuthenticationSubscriptionBean implements
 					"errorApplicationIdentityNotFound");
 			return null;
 		}
-		log.debug("confirmation required: " + confirmationRequired);
+		this.log.debug("confirmation required: " + confirmationRequired);
 		if (true == confirmationRequired) {
 			return "confirmation-required";
 		}
@@ -105,12 +105,12 @@ public class AuthenticationSubscriptionBean implements
 			hasMissingAttributes = this.identityService
 					.hasMissingAttributes(this.applicationId);
 		} catch (ApplicationNotFoundException e) {
-			log.debug("application not found.");
+			this.log.debug("application not found.");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		} catch (ApplicationIdentityNotFoundException e) {
-			log.debug("application identity not found.");
+			this.log.debug("application identity not found.");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;

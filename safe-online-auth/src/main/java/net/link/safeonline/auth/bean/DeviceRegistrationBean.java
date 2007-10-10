@@ -51,12 +51,12 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		log.debug("destroy");
+		this.log.debug("destroy");
 	}
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String deviceNext() {
-		log.debug("deviceNext: " + this.device);
+		this.log.debug("deviceNext: " + this.device);
 		return this.device;
 	}
 
@@ -74,7 +74,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String passwordNext() {
-		log.debug("passwordNext");
+		this.log.debug("passwordNext");
 		try {
 			this.credentialService.setPassword(this.password);
 		} catch (PermissionDeniedException e) {

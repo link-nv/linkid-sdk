@@ -7,9 +7,6 @@
 
 package net.link.safeonline.auth.servlet;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -38,7 +35,7 @@ public class RegistrationServlet extends AbstractStatementServlet {
 
 	@Override
 	protected void processStatement(byte[] statementData, HttpSession session,
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) {
 		String requestedUsername = (String) session
 				.getAttribute("requestedUsername");
 

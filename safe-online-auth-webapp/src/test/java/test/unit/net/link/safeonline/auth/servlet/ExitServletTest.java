@@ -63,7 +63,7 @@ import org.w3c.dom.Node;
 
 public class ExitServletTest {
 
-	private static final Log LOG = LogFactory.getLog(ExitServletTest.class);
+	static final Log LOG = LogFactory.getLog(ExitServletTest.class);
 
 	private String protocolErrorUrl = "protocol-error";
 
@@ -95,14 +95,16 @@ public class ExitServletTest {
 		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		this.jmxTestUtils.registerActionHandler("getPrivateKey",
 				new MBeanActionHandler() {
-					public Object invoke(Object[] arguments) {
+					public Object invoke(@SuppressWarnings("unused")
+					Object[] arguments) {
 						LOG.debug("returning private key");
 						return keyPair.getPrivate();
 					}
 				});
 		this.jmxTestUtils.registerActionHandler("getPublicKey",
 				new MBeanActionHandler() {
-					public Object invoke(Object[] arguments) {
+					public Object invoke(@SuppressWarnings("unused")
+					Object[] arguments) {
 						LOG.debug("returning public key");
 						return keyPair.getPublic();
 					}

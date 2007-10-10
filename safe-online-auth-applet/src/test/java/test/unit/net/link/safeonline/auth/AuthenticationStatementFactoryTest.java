@@ -13,18 +13,17 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.UUID;
 
+import junit.framework.TestCase;
+import net.link.safeonline.auth.AuthenticationStatementFactory;
+import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.p11sc.SmartCardConfig;
+import net.link.safeonline.p11sc.SmartCardPinCallback;
+import net.link.safeonline.test.util.PkiTestUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.util.ASN1Dump;
-
-import net.link.safeonline.auth.AuthenticationStatementFactory;
-import net.link.safeonline.p11sc.SmartCard;
-import net.link.safeonline.p11sc.SmartCardConfig;
-import net.link.safeonline.p11sc.SmartCardNotFoundException;
-import net.link.safeonline.p11sc.SmartCardPinCallback;
-import net.link.safeonline.test.util.PkiTestUtils;
-import junit.framework.TestCase;
 
 public class AuthenticationStatementFactoryTest extends TestCase {
 
@@ -106,19 +105,23 @@ public class AuthenticationStatementFactoryTest extends TestCase {
 			return null;
 		}
 
-		public void init(List<SmartCardConfig> smartCardConfigs) {
+		public void init(@SuppressWarnings("unused")
+		List<SmartCardConfig> smartCardConfigs) {
+			// empty
 		}
 
 		public boolean isOpen() {
 			return false;
 		}
 
-		public void open(String smartCardAlias)
-				throws SmartCardNotFoundException {
+		public void open(@SuppressWarnings("unused")
+		String smartCardAlias) {
+			// empty
 		}
 
-		public void setSmartCardPinCallback(
-				SmartCardPinCallback smartCardPinCallback) {
+		public void setSmartCardPinCallback(@SuppressWarnings("unused")
+		SmartCardPinCallback smartCardPinCallback) {
+			// empty
 		}
 
 		public List<X509Certificate> getAuthenticationCertificatePath() {
