@@ -23,6 +23,8 @@ public interface DeviceRegistration {
 
 	void setPassword(String password);
 
+	String getUsername();
+
 	/*
 	 * Actions.
 	 */

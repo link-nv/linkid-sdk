@@ -43,7 +43,7 @@ public class AbstractLoginBean {
 	@SuppressWarnings("unused")
 	@Out(value = LoginManager.USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	@In(required = false, scope = ScopeType.SESSION)
-	private String username;
+	protected String username;
 
 	@SuppressWarnings("unused")
 	@Out(value = LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, required = false, scope = ScopeType.SESSION)

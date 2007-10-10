@@ -17,7 +17,7 @@
 		<h2>#{msgs.createAccount}</h2>
 		<h2>#{msgs.extractBeId}</h2>
 
-		<h3>#{msgs.login}: #{username}</h3>
+		<h3>#{msgs.login}: #{deviceRegistration.username}</h3>
 
 		<applet name="IdentityApplet"
 			code="net.link.safeonline.identity.IdentityApplet.class"
@@ -35,11 +35,6 @@
 			<p><h:commandLink value="#{msgs.helpaction}" action="help"
 				immediate="true" styleClass="help" /></p>
 		</h:form>
-	</ui:define>
-	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
-		</ui:include>
 	</ui:define>
 </ui:composition>
 </body>
