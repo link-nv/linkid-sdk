@@ -166,7 +166,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			validationResult = this.passwordManager.validatePassword(subject,
 					password);
 		} catch (DeviceNotFoundException e) {
-			addHistoryEntry(subject,
+			addExceptionHistoryEntry(subject,
 					HistoryEventType.LOGIN_PASSWORD_ATTRIBUTE_NOT_FOUND, null,
 					null);
 			throw e;
@@ -199,6 +199,13 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			String application, String info) {
 		Date now = new Date();
 		this.historyDAO.addHistoryEntry(now, subject, event, application, info);
+	}
+
+	private void addExceptionHistoryEntry(SubjectEntity subject,
+			HistoryEventType event, String application, String info) {
+		Date now = new Date();
+		this.historyDAO.addHExceptionHistoryEntry(now, subject, event,
+				application, info);
 	}
 
 	public boolean authenticate(@NonEmptyString

@@ -86,9 +86,10 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 				return null;
 			}
 		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addToControlFromResourceBundle("username",
-					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");
-			HelpdeskLogger.add("login: subject not found for " + this.loginname,
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+			HelpdeskLogger.add(
+					"login: subject not found for " + this.loginname,
 					LogLevelType.ERROR);
 			return null;
 		} catch (DeviceNotFoundException e) {

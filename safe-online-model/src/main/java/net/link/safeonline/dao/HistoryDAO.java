@@ -51,4 +51,18 @@ public interface HistoryDAO {
 	 * Deletes all history entries of the given user.
 	 */
 	void clearAllHistory(SubjectEntity subject);
+
+	/**
+	 * This method will have its own transaction, only to be used in case like
+	 * in an exception handler, ... We dont need a seperate transaction for
+	 * every history entry by default
+	 * 
+	 * @param when
+	 * @param subject
+	 * @param event
+	 * @param application
+	 * @param info
+	 */
+	void addHExceptionHistoryEntry(Date when, SubjectEntity subject,
+			HistoryEventType event, String application, String info);
 }
