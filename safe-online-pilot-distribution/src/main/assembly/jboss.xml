@@ -15,6 +15,31 @@
 				<exclude>
 					server/default/deploy/jms/hsqldb-jdbc2-service.xml
 				</exclude>
+				<exclude>
+					server/default/deploy/jmx-console.war/**
+				</exclude>
+				<exclude>
+					server/default/deploy/management/console-mgr.sar/**
+				</exclude>
+				<exclude>
+					server/default/deploy/http-invoker.sar/**
+				</exclude>
+				<exclude>server/default/conf/jboss-minimal.xml</exclude>
+				<exclude>
+					server/default/deploy/jmx-invoker-service.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/monitoring-service.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/jbossws.sar/jbossws-context.war
+				</exclude>
+				<exclude>
+					server/default/deploy/jms/jbossmq-destinations-service.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/jms/jbossmq-httpil.sar/**
+				</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet>

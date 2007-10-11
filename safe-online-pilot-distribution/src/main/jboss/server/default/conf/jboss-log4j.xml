@@ -54,7 +54,7 @@
 	</appender>
 
 	<category name="net.link.safeonline">
-		<priority value="DEBUG" />
+		<priority value="INFO" />
 		<appender-ref ref="SAFEONLINE" />
 	</category>
 
