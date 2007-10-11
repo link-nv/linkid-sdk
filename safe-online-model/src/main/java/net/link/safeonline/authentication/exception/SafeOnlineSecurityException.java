@@ -32,11 +32,11 @@ public class SafeOnlineSecurityException extends SafeOnlineException {
 	}
 
 	public SecurityThreatType getSecurityThreat() {
-		return securityThreat;
+		return this.securityThreat;
 	}
 
 	public String getTargetPrincipal() {
-		return targetPrincipal;
+		return this.targetPrincipal;
 	}
 
 }

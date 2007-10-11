@@ -39,14 +39,15 @@ public class ApplicationOwnerAccessControlInterceptor {
 		}
 
 		boolean returnValue = false;
-		boolean isOperator = ctx.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE);
+		boolean isOperator = this.ctx
+				.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE);
 		if (isOperator) {
 			returnValue = true;
 		}
 		if (application == null) {
 			returnValue = false;
 		}
-		String subjectName = ctx.getCallerPrincipal().getName();
+		String subjectName = this.ctx.getCallerPrincipal().getName();
 		if (application != null) {
 			if (application.getApplicationOwner().getAdmin().getUserId()
 					.equals(subjectName)) {

@@ -49,7 +49,7 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
 		TaskHistoryEntity taskHistoryEntity = new TaskHistoryEntity(task,
 				message, result, startDate, endDate);
 		task.addTaskHistoryEntity(taskHistoryEntity);
-		entityManager.persist(taskHistoryEntity);
+		this.entityManager.persist(taskHistoryEntity);
 		return taskHistoryEntity;
 	}
 

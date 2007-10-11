@@ -83,7 +83,7 @@ public class IdentityAttributeTypeDO implements Serializable {
 	 * @return
 	 */
 	public boolean isDataMining() {
-		return dataMining;
+		return this.dataMining;
 	}
 
 	public void setDataMining(boolean dataMining) {

@@ -68,21 +68,21 @@ public abstract class AbstractInitBean implements Startable {
 	protected Map<String, String> applicationOwnersAndLogin;
 
 	protected static class Application {
-		private final String name;
+		final String name;
 
-		private final String description;
+		final String description;
 
-		private final URL applicationUrl;
+		final URL applicationUrl;
 
-		private final String owner;
+		final String owner;
 
-		private final boolean allowUserSubscription;
+		final boolean allowUserSubscription;
 
-		private final boolean removable;
+		final boolean removable;
 
-		private final X509Certificate certificate;
+		final X509Certificate certificate;
 
-		private final boolean idmappingAccess;
+		final boolean idmappingAccess;
 
 		public Application(String name, String owner, String description,
 				URL applicationUrl, boolean allowUserSubscription,
@@ -129,11 +129,11 @@ public abstract class AbstractInitBean implements Startable {
 	protected List<Application> registeredApplications;
 
 	protected static class Subscription {
-		private final String user;
+		final String user;
 
-		private final String application;
+		final String application;
 
-		private final SubscriptionOwnerType subscriptionOwnerType;
+		final SubscriptionOwnerType subscriptionOwnerType;
 
 		public Subscription(SubscriptionOwnerType subscriptionOwnerType,
 				String user, String application) {
@@ -144,9 +144,9 @@ public abstract class AbstractInitBean implements Startable {
 	}
 
 	protected static class Identity {
-		private final String application;
+		final String application;
 
-		private final IdentityAttributeTypeDO[] identityAttributes;
+		final IdentityAttributeTypeDO[] identityAttributes;
 
 		public Identity(String application,
 				IdentityAttributeTypeDO[] identityAttributes) {
@@ -195,7 +195,7 @@ public abstract class AbstractInitBean implements Startable {
 
 	public void postStart() {
 		try {
-			LOG.debug("postStart");
+			this.LOG.debug("postStart");
 			initTrustDomains();
 			initAttributeTypes();
 			initAttributeTypeDescriptions();
@@ -210,13 +210,13 @@ public abstract class AbstractInitBean implements Startable {
 			initDevices();
 			initAllowedDevices();
 		} catch (SafeOnlineException e) {
-			LOG.fatal("safeonline exception", e);
+			this.LOG.fatal("safeonline exception", e);
 			throw new EJBException(e);
 		}
 	}
 
 	public void preStop() {
-		LOG.debug("preStop");
+		this.LOG.debug("preStop");
 	}
 
 	@EJB
@@ -322,7 +322,7 @@ public abstract class AbstractInitBean implements Startable {
 		TrustDomainEntity applicationTrustDomain = this.trustDomainDAO
 				.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 		if (null == applicationTrustDomain) {
-			LOG.fatal("application trust domain not found");
+			this.LOG.fatal("application trust domain not found");
 			return;
 		}
 
@@ -335,7 +335,7 @@ public abstract class AbstractInitBean implements Startable {
 				 */
 				demoTrustPoint.setEncodedCert(certificate.getEncoded());
 			} catch (CertificateEncodingException e) {
-				LOG.error("cert encoding error");
+				this.LOG.error("cert encoding error");
 			}
 			return;
 		}
@@ -357,7 +357,7 @@ public abstract class AbstractInitBean implements Startable {
 	}
 
 	private void initAttributeTypes() {
-		for (AttributeTypeEntity attributeType : attributeTypes) {
+		for (AttributeTypeEntity attributeType : this.attributeTypes) {
 			if (null != this.attributeTypeDAO.findAttributeType(attributeType
 					.getName())) {
 				continue;
@@ -367,7 +367,7 @@ public abstract class AbstractInitBean implements Startable {
 	}
 
 	private void initAttributeTypeDescriptions() {
-		for (AttributeTypeDescriptionEntity attributeTypeDescription : attributeTypeDescriptions) {
+		for (AttributeTypeDescriptionEntity attributeTypeDescription : this.attributeTypeDescriptions) {
 			AttributeTypeDescriptionEntity existingDescription = this.attributeTypeDAO
 					.findDescription(attributeTypeDescription.getPk());
 			if (null != existingDescription) {
@@ -475,7 +475,7 @@ public abstract class AbstractInitBean implements Startable {
 						identity.application, Arrays
 								.asList(identity.identityAttributes));
 			} catch (Exception e) {
-				LOG.debug("Could not update application identity");
+				this.LOG.debug("Could not update application identity");
 				throw new RuntimeException(
 						"could not update the application identity: "
 								+ e.getMessage(), e);
@@ -484,12 +484,12 @@ public abstract class AbstractInitBean implements Startable {
 	}
 
 	private void initDevices() {
-		for (String deviceName : devices.keySet()) {
+		for (String deviceName : this.devices.keySet()) {
 			DeviceEntity device = this.deviceDAO.findDevice(deviceName);
 			if (device == null) {
 				device = this.deviceDAO.addDevice(deviceName);
 			}
-			device.setAttributeTypes(devices.get(deviceName));
+			device.setAttributeTypes(this.devices.get(deviceName));
 		}
 	}
 

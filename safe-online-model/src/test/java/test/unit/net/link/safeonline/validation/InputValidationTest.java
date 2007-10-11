@@ -54,14 +54,17 @@ public class InputValidationTest extends TestCase {
 			return invoked;
 		}
 
-		public void validate(Object value, int parameterIdx,
-				Annotation parameterAnnotation, ValidatorResult result) {
+		public void validate(Object value, @SuppressWarnings("unused")
+		int parameterIdx, @SuppressWarnings("unused")
+		Annotation parameterAnnotation, @SuppressWarnings("unused")
+		ValidatorResult result) {
 			LOG.debug("validate: " + value);
 			invoked = true;
 		}
 	}
 
-	public void method(@TestAnnotation
+	public void method(@SuppressWarnings("unused")
+	@TestAnnotation
 	String param) {
 		// empty
 	}
@@ -122,7 +125,9 @@ public class InputValidationTest extends TestCase {
 			return null;
 		}
 
-		public void setParameters(Object[] aobj) {
+		public void setParameters(@SuppressWarnings("unused")
+		Object[] aobj) {
+			// empty
 		}
 	}
 }

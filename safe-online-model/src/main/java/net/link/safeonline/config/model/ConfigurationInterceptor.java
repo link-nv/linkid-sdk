@@ -72,7 +72,7 @@ public class ConfigurationInterceptor {
 					name = field.getName();
 				}
 
-				ConfigItemEntity configItem = configItemDAO
+				ConfigItemEntity configItem = this.configItemDAO
 						.findConfigItem(name);
 				if (configItem == null) {
 					continue;

@@ -29,11 +29,11 @@ public class ConfigurableScanner extends Scanner {
 	}
 
 	public Set<Class<Object>> getClasses() {
-		if (classes == null) {
-			classes = new HashSet<Class<Object>>();
+		if (this.classes == null) {
+			this.classes = new HashSet<Class<Object>>();
 			scan();
 		}
-		return classes;
+		return this.classes;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -44,7 +44,7 @@ public class ConfigurableScanner extends Scanner {
 			try {
 				ClassFile classFile = getClassFile(name);
 				if (hasAnnotation(classFile, Configurable.class)) {
-					classes.add((Class<Object>) classLoader
+					this.classes.add((Class<Object>) this.classLoader
 							.loadClass(classname));
 				}
 			} catch (Exception e) {

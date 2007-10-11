@@ -57,7 +57,7 @@ public class HelpdeskEventDAOBeanTest extends TestCase {
 	}
 
 	public void testLogs() {
-		HelpdeskContextEntity context = contextDAO
+		HelpdeskContextEntity context = this.contextDAO
 				.createHelpdeskContext("test-location");
 		List<HelpdeskEventEntity> events = new Vector<HelpdeskEventEntity>();
 		events.add(new HelpdeskEventEntity(context, new Date(),

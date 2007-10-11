@@ -85,21 +85,21 @@ public class ConfigStartableBean implements ConfigStartable {
 					if (!configurable.group().equals(defaultGroup)) {
 						group = configurable.group();
 					}
-					ConfigGroupEntity configGroup = configGroupDAO
+					ConfigGroupEntity configGroup = this.configGroupDAO
 							.findConfigGroup(group);
 					if (configGroup == null) {
 						LOG.debug("Adding configuration group: " + group);
-						configGroup = configGroupDAO.addConfigGroup(group);
+						configGroup = this.configGroupDAO.addConfigGroup(group);
 					}
 
-					ConfigItemEntity configItem = configItemDAO
+					ConfigItemEntity configItem = this.configItemDAO
 							.findConfigItem(name);
 					field.setAccessible(true);
 					if (configItem == null) {
 						LOG.debug("Adding configuration item: " + name);
 						Object value = field.get(target);
 						String stringValue = value.toString();
-						configItem = configItemDAO.addConfigItem(name,
+						configItem = this.configItemDAO.addConfigItem(name,
 								stringValue, configGroup);
 					} else {
 						configItem.setConfigGroup(configGroup);

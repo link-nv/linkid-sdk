@@ -155,16 +155,16 @@ public class TaskSchedulerBeanTest {
 		this.testedInstance.postStart();
 	}
 
-	private static class TestTask implements Task {
+	static class TestTask implements Task {
 
-		private static final Log LOG = LogFactory.getLog(TestTask.class);
+		private static final Log taskLOG = LogFactory.getLog(TestTask.class);
 
 		public String getName() {
 			return "test-task";
 		}
 
 		public void perform() {
-			LOG.debug("perform");
+			taskLOG.debug("perform");
 		}
 	}
 }

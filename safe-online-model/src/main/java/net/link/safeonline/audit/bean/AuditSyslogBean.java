@@ -79,7 +79,7 @@ public class AuditSyslogBean implements AuditBackend {
 		syslogAppender.setThreshold(Level.toLevel(this.threshold));
 		syslogAppender.setLayout(new SimpleLayout());
 
-		logger.addAppender(syslogAppender);
+		this.logger.addAppender(syslogAppender);
 	}
 
 	private void logSecurityAudits(Long auditContextId) {
@@ -90,7 +90,7 @@ public class AuditSyslogBean implements AuditBackend {
 					+ e.getAuditContext().getId() + " : principal="
 					+ e.getTargetPrincipal() + " message=" + e.getMessage();
 			LOG.debug(msg);
-			logger.error(msg);
+			this.logger.error(msg);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class AuditSyslogBean implements AuditBackend {
 					+ " source=" + e.getSourceComponent() + " message="
 					+ e.getMessage();
 			LOG.debug(msg);
-			logger.error(msg);
+			this.logger.error(msg);
 		}
 	}
 
@@ -119,7 +119,7 @@ public class AuditSyslogBean implements AuditBackend {
 						+ e.getPrincipal() + " operation=" + e.getOperation()
 						+ "operationState=" + e.getOperationState();
 				LOG.debug(msg);
-				logger.error(msg);
+				this.logger.error(msg);
 			}
 		}
 	}
@@ -131,7 +131,7 @@ public class AuditSyslogBean implements AuditBackend {
 			String msg = "Audit audit context " + e.getAuditContext().getId()
 					+ " message=" + e.getMessage();
 			LOG.debug(msg);
-			logger.error(msg);
+			this.logger.error(msg);
 		}
 	}
 

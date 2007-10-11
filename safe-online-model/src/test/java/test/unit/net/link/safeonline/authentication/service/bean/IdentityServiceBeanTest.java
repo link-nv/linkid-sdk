@@ -72,10 +72,9 @@ import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class IdentityServiceBeanTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(IdentityServiceBeanTest.class);
+	static final Log LOG = LogFactory.getLog(IdentityServiceBeanTest.class);
 
-	private EntityTestManager entityTestManager;
+	EntityTestManager entityTestManager;
 
 	@Before
 	public void setUp() throws Exception {
@@ -620,7 +619,7 @@ public class IdentityServiceBeanTest {
 		assertEquals(6, resultAttributes.size());
 	}
 
-	private static class RequiredCompoundedMissingAttributesScenario implements
+	static class RequiredCompoundedMissingAttributesScenario implements
 			MissingAttributesScenario {
 
 		private final String COMP_ATT_NAME = "test-compounded-attribute-type";
@@ -635,15 +634,15 @@ public class IdentityServiceBeanTest {
 				AttributeDAO attributeDAO, SubjectEntity subject) {
 
 			AttributeTypeEntity requiredAttributeType = new AttributeTypeEntity(
-					REQ_ATT_NAME, DatatypeType.STRING, true, true);
+					this.REQ_ATT_NAME, DatatypeType.STRING, true, true);
 			attributeTypeDAO.addAttributeType(requiredAttributeType);
 
 			AttributeTypeEntity optionalAttributeType = new AttributeTypeEntity(
-					OPT_ATT_NAME, DatatypeType.STRING, true, true);
+					this.OPT_ATT_NAME, DatatypeType.STRING, true, true);
 			attributeTypeDAO.addAttributeType(optionalAttributeType);
 
 			AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
-					COMP_ATT_NAME, DatatypeType.COMPOUNDED, true, true);
+					this.COMP_ATT_NAME, DatatypeType.COMPOUNDED, true, true);
 			compoundedAttributeType.addMember(requiredAttributeType, 0, true);
 			compoundedAttributeType.addMember(optionalAttributeType, 1, false);
 			attributeTypeDAO.addAttributeType(compoundedAttributeType);
@@ -661,22 +660,22 @@ public class IdentityServiceBeanTest {
 			LOG.debug("result attribute: " + result);
 			assertEquals(3, result.size());
 
-			assertEquals(COMP_ATT_NAME, result.get(0).getName());
+			assertEquals(this.COMP_ATT_NAME, result.get(0).getName());
 			assertTrue(result.get(0).isCompounded());
 			assertFalse(result.get(0).isRequired());
 
-			assertEquals(REQ_ATT_NAME, result.get(1).getName());
+			assertEquals(this.REQ_ATT_NAME, result.get(1).getName());
 			assertTrue(result.get(1).isMember());
 			assertTrue(result.get(1).isRequired());
 
-			assertEquals(OPT_ATT_NAME, result.get(2).getName());
+			assertEquals(this.OPT_ATT_NAME, result.get(2).getName());
 			assertTrue(result.get(2).isMember());
 			assertEquals("value", result.get(2).getStringValue());
 			assertFalse(result.get(2).isRequired());
 		}
 	}
 
-	private static class OptionalCompoundedMissingAttributesScenario implements
+	static class OptionalCompoundedMissingAttributesScenario implements
 			MissingAttributesScenario {
 
 		private final String COMP_ATT_NAME = "test-compounded-attribute-type";
@@ -691,15 +690,15 @@ public class IdentityServiceBeanTest {
 				AttributeDAO attributeDAO, SubjectEntity subject) {
 
 			AttributeTypeEntity requiredAttributeType = new AttributeTypeEntity(
-					REQ_ATT_NAME, DatatypeType.STRING, true, true);
+					this.REQ_ATT_NAME, DatatypeType.STRING, true, true);
 			attributeTypeDAO.addAttributeType(requiredAttributeType);
 
 			AttributeTypeEntity optionalAttributeType = new AttributeTypeEntity(
-					OPT_ATT_NAME, DatatypeType.STRING, true, true);
+					this.OPT_ATT_NAME, DatatypeType.STRING, true, true);
 			attributeTypeDAO.addAttributeType(optionalAttributeType);
 
 			AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(
-					COMP_ATT_NAME, DatatypeType.COMPOUNDED, true, true);
+					this.COMP_ATT_NAME, DatatypeType.COMPOUNDED, true, true);
 			compoundedAttributeType.addMember(requiredAttributeType, 0, true);
 			compoundedAttributeType.addMember(optionalAttributeType, 1, false);
 			attributeTypeDAO.addAttributeType(compoundedAttributeType);
@@ -740,7 +739,7 @@ public class IdentityServiceBeanTest {
 		runner.run(scenario);
 	}
 
-	private interface MissingAttributesScenario {
+	interface MissingAttributesScenario {
 		void init(AttributeTypeDAO attributeTypeDAO,
 				ApplicationIdentityDAO applicationIdentityDAO,
 				ApplicationIdentityEntity applicationIdentity,
@@ -749,7 +748,7 @@ public class IdentityServiceBeanTest {
 		void verify(List<AttributeDO> result);
 	}
 
-	private static class RequiredEmptyMissingAttributesScenario implements
+	static class RequiredEmptyMissingAttributesScenario implements
 			MissingAttributesScenario {
 
 		private AttributeTypeEntity attributeType;
@@ -757,7 +756,9 @@ public class IdentityServiceBeanTest {
 		public void init(AttributeTypeDAO attributeTypeDAO,
 				ApplicationIdentityDAO applicationIdentityDAO,
 				ApplicationIdentityEntity applicationIdentity,
-				AttributeDAO attributeDAO, SubjectEntity subject) {
+				@SuppressWarnings("unused")
+				AttributeDAO attributeDAO, @SuppressWarnings("unused")
+				SubjectEntity subject) {
 			this.attributeType = new AttributeTypeEntity("attribute-type-"
 					+ UUID.randomUUID().toString(), DatatypeType.STRING, true,
 					true);
@@ -770,12 +771,12 @@ public class IdentityServiceBeanTest {
 		public void verify(List<AttributeDO> result) {
 			assertNotNull(result);
 			assertEquals(1, result.size());
-			assertEquals(attributeType.getName(), result.get(0).getName());
+			assertEquals(this.attributeType.getName(), result.get(0).getName());
 			assertTrue(result.get(0).isRequired());
 		}
 	}
 
-	private static class RequiredFilledMissingAttributesScenario implements
+	static class RequiredFilledMissingAttributesScenario implements
 			MissingAttributesScenario {
 
 		private AttributeTypeEntity attributeType;
@@ -810,7 +811,7 @@ public class IdentityServiceBeanTest {
 		runner.run(scenario);
 	}
 
-	private static class OptionalMissingAttributesScenario implements
+	static class OptionalMissingAttributesScenario implements
 			MissingAttributesScenario {
 
 		private AttributeTypeEntity attributeType;
@@ -818,7 +819,9 @@ public class IdentityServiceBeanTest {
 		public void init(AttributeTypeDAO attributeTypeDAO,
 				ApplicationIdentityDAO applicationIdentityDAO,
 				ApplicationIdentityEntity applicationIdentity,
-				AttributeDAO attributeDAO, SubjectEntity subject) {
+				@SuppressWarnings("unused")
+				AttributeDAO attributeDAO, @SuppressWarnings("unused")
+				SubjectEntity subject) {
 			this.attributeType = new AttributeTypeEntity("attribute-type-"
 					+ UUID.randomUUID().toString(), DatatypeType.STRING, true,
 					true);
@@ -841,7 +844,7 @@ public class IdentityServiceBeanTest {
 		runner.run(scenario);
 	}
 
-	private class MissingAttributesScenarioRunner {
+	class MissingAttributesScenarioRunner {
 		public void run(MissingAttributesScenario scenario) throws Exception {
 			// setup
 			EntityManager entityManager = IdentityServiceBeanTest.this.entityTestManager

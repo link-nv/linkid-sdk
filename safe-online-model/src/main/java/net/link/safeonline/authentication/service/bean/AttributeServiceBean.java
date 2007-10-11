@@ -269,15 +269,14 @@ public class AttributeServiceBean implements AttributeService,
 			default:
 				throw new EJBException("datatype not supported: " + datatype);
 			}
-		} else {
-			/*
-			 * Single-valued attribute.
-			 */
-			if (attributes.isEmpty()) {
-				throw new AttributeNotFoundException();
-			}
-			AttributeEntity attribute = attributes.get(0);
-			return attribute.getValue();
 		}
+		/*
+		 * Single-valued attribute.
+		 */
+		if (attributes.isEmpty()) {
+			throw new AttributeNotFoundException();
+		}
+		AttributeEntity attribute = attributes.get(0);
+		return attribute.getValue();
 	}
 }

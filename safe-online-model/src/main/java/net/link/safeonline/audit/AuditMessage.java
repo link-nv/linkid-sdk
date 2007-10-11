@@ -20,7 +20,7 @@ public class AuditMessage implements Serializable {
 	private Long auditContextId;
 
 	public Long getAuditContextId() {
-		return auditContextId;
+		return this.auditContextId;
 	}
 
 	public void setAuditContextId(Long auditContextId) {

@@ -38,7 +38,7 @@ public class EndUserMessage implements Serializable {
 	}
 
 	public String getDestination() {
-		return destination;
+		return this.destination;
 	}
 
 	public void setDestination(String destination) {
@@ -46,7 +46,7 @@ public class EndUserMessage implements Serializable {
 	}
 
 	public String getMessage() {
-		return message;
+		return this.message;
 	}
 
 	public void setMessage(String message) {
@@ -54,7 +54,7 @@ public class EndUserMessage implements Serializable {
 	}
 
 	public String getSubject() {
-		return subject;
+		return this.subject;
 	}
 
 	public void setSubject(String subject) {

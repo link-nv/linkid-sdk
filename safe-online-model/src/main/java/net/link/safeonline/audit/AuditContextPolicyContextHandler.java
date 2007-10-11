@@ -7,7 +7,6 @@
 
 package net.link.safeonline.audit;
 
-import javax.security.jacc.PolicyContextException;
 import javax.security.jacc.PolicyContextHandler;
 
 import net.link.safeonline.audit.exception.ExistingAuditContextException;
@@ -55,8 +54,8 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 		}
 	}
 
-	public Object getContext(String key, Object data)
-			throws PolicyContextException {
+	public Object getContext(String key, @SuppressWarnings("unused")
+	Object data) {
 		if (false == key.equalsIgnoreCase(AUDIT_CONTEXT_KEY)) {
 			return null;
 		}
@@ -64,12 +63,12 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 		return auditContextInfo.getAuditContextId();
 	}
 
-	public String[] getKeys() throws PolicyContextException {
+	public String[] getKeys() {
 		String[] keys = { AUDIT_CONTEXT_KEY };
 		return keys;
 	}
 
-	public boolean supports(String key) throws PolicyContextException {
+	public boolean supports(String key) {
 		return key.equalsIgnoreCase(AUDIT_CONTEXT_KEY);
 	}
 

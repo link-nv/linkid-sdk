@@ -91,9 +91,8 @@ public class OcspValidatorBean implements OcspValidator {
 				issuerCertificate);
 		if (result == OcspResult.GOOD) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	public OcspResult verifyOcspStatus(URI ocspUri,

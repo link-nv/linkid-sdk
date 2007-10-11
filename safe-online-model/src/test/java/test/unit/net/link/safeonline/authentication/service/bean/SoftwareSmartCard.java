@@ -15,7 +15,6 @@ import java.util.UUID;
 
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
-import net.link.safeonline.p11sc.SmartCardNotFoundException;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
 
 public class SoftwareSmartCard implements SmartCard {
@@ -78,18 +77,20 @@ public class SoftwareSmartCard implements SmartCard {
 		return this.surname;
 	}
 
-	public void init(List<SmartCardConfig> smartCardConfigs) {
+	public void init(@SuppressWarnings("unused")
+	List<SmartCardConfig> smartCardConfigs) {
 	}
 
 	public boolean isOpen() {
 		return false;
 	}
 
-	public void setSmartCardPinCallback(
-			SmartCardPinCallback smartCardPinCallback) {
+	public void setSmartCardPinCallback(@SuppressWarnings("unused")
+	SmartCardPinCallback smartCardPinCallback) {
 	}
 
-	public void open(String smartCardAlias) throws SmartCardNotFoundException {
+	public void open(@SuppressWarnings("unused")
+	String smartCardAlias) {
 	}
 
 	public List<X509Certificate> getAuthenticationCertificatePath() {

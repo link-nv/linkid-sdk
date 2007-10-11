@@ -13,8 +13,6 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.X509Certificate;
 
-import net.link.safeonline.authentication.exception.DecodingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -24,7 +22,7 @@ abstract public class AbstractStatement<T extends AbstractStatementStructure> {
 
 	private final T statementStructure;
 
-	public AbstractStatement(T statementStructure) throws DecodingException {
+	public AbstractStatement(T statementStructure) {
 		this.statementStructure = statementStructure;
 	}
 
@@ -59,9 +57,8 @@ abstract public class AbstractStatement<T extends AbstractStatementStructure> {
 					.getSignature());
 			if (result) {
 				return authCert;
-			} else {
-				return null;
 			}
+			return null;
 		} catch (SignatureException e) {
 			LOG.error("signature error: " + e.getMessage());
 			return null;

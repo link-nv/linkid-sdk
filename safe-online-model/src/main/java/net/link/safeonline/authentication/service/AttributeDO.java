@@ -159,7 +159,7 @@ public class AttributeDO implements Serializable, Cloneable {
 	}
 
 	public boolean isDataMining() {
-		return dataMining;
+		return this.dataMining;
 	}
 
 	public void setDataMining(boolean dataMining) {
@@ -229,8 +229,8 @@ public class AttributeDO implements Serializable, Cloneable {
 
 	public void setValue(AttributeEntity attribute) {
 		AttributeTypeEntity attributeType = attribute.getAttributeType();
-		DatatypeType type = attributeType.getType();
-		switch (type) {
+		DatatypeType datatypeType = attributeType.getType();
+		switch (datatypeType) {
 		case STRING:
 		case LOGIN:
 			this.setStringValue(attribute.getStringValue());
@@ -248,7 +248,7 @@ public class AttributeDO implements Serializable, Cloneable {
 			this.setDateValue(attribute.getDateValue());
 			break;
 		default:
-			throw new EJBException("unsupported data type: " + type);
+			throw new EJBException("unsupported data type: " + datatypeType);
 		}
 	}
 

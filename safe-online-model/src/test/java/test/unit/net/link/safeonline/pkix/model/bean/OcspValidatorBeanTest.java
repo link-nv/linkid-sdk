@@ -95,8 +95,8 @@ public class OcspValidatorBeanTest extends TestCase {
 
 		TestOcspResponderServlet.called = false;
 
-		mockResourceAuditLogger = createMock(ResourceAuditLogger.class);
-		this.mockObjects = new Object[] { mockResourceAuditLogger };
+		this.mockResourceAuditLogger = createMock(ResourceAuditLogger.class);
+		this.mockObjects = new Object[] { this.mockResourceAuditLogger };
 		EJBTestUtils.inject(this.testedInstance, this.mockResourceAuditLogger);
 	}
 
@@ -109,15 +109,15 @@ public class OcspValidatorBeanTest extends TestCase {
 
 	public void testGetOcspUri() throws Exception {
 		// setup
-		URI ocspUri = new URI("http://test.ocsp.location/");
+		URI testOcspUri = new URI("http://test.ocsp.location/");
 		X509Certificate certificate = PkiTestUtils
-				.generateTestSelfSignedCert(ocspUri);
+				.generateTestSelfSignedCert(testOcspUri);
 
 		// operate
 		URI resultOcspUri = this.testedInstance.getOcspUri(certificate);
 
 		// verify
-		assertEquals(ocspUri, resultOcspUri);
+		assertEquals(testOcspUri, resultOcspUri);
 	}
 
 	public void testGetOcspUriGivesNullOnMissingOcspAccessLocation()
@@ -136,9 +136,9 @@ public class OcspValidatorBeanTest extends TestCase {
 	public void testPerformOcspCheckFailsIfOcspResponderIsDown()
 			throws Exception {
 		// setup
-		URI ocspUri = new URI("http://localhost:1/");
+		URI testOcspUri = new URI("http://localhost:1/");
 		X509Certificate certificate = PkiTestUtils
-				.generateTestSelfSignedCert(ocspUri);
+				.generateTestSelfSignedCert(testOcspUri);
 
 		// expectations
 		this.mockResourceAuditLogger.addResourceAudit(ResourceNameType.OCSP,
@@ -160,9 +160,9 @@ public class OcspValidatorBeanTest extends TestCase {
 	public void testPerformOcspCheckFailsIfOcspResponderDoesNotExist()
 			throws Exception {
 		// setup
-		URI ocspUri = new URI("http://foobar.ocsp.responder/");
+		URI testOcspUri = new URI("http://foobar.ocsp.responder/");
 		X509Certificate certificate = PkiTestUtils
-				.generateTestSelfSignedCert(ocspUri);
+				.generateTestSelfSignedCert(testOcspUri);
 
 		// operate
 		boolean result = this.testedInstance.performOcspCheck(certificate,
@@ -197,11 +197,11 @@ public class OcspValidatorBeanTest extends TestCase {
 		private static final Log LOG = LogFactory
 				.getLog(TestOcspResponderServlet.class);
 
-		private static X509Certificate certificate;
+		static X509Certificate certificate;
 
-		private static PrivateKey privateKey;
+		static PrivateKey privateKey;
 
-		private static boolean called;
+		static boolean called;
 
 		private static CertificateStatus certificateStatus = CertificateStatus.GOOD;
 

@@ -42,22 +42,22 @@ public class LoginBaseBean implements LoginBase {
 
 	@PostConstruct
 	public void postConstructCallback() {
-		log.debug("post construct: #0", this);
+		this.log.debug("post construct: #0", this);
 	}
 
 	@PreDestroy
 	public void preDestroyCallback() {
-		log.debug("pre destroy: #0", this);
+		this.log.debug("pre destroy: #0", this);
 	}
 
 	@PostActivate
 	public void postActivateCallback() {
-		log.debug("post activate: #0", this);
+		this.log.debug("post activate: #0", this);
 	}
 
 	@PrePassivate
 	public void prePassivateCallback() {
-		log.debug("pre passivate: #0", this);
+		this.log.debug("pre passivate: #0", this);
 	}
 
 	public String login() {
@@ -71,7 +71,7 @@ public class LoginBaseBean implements LoginBase {
 	}
 
 	public String logout() {
-		log.debug("logout");
+		this.log.debug("logout");
 		this.sessionContext.set("login-processing", null);
 		this.sessionContext.set("username", null);
 		Seam.invalidateSession();
@@ -79,14 +79,14 @@ public class LoginBaseBean implements LoginBase {
 	}
 
 	public String getLoggedInUsername() {
-		log.debug("get logged in username");
+		this.log.debug("get logged in username");
 		String userId = (String) this.sessionContext.get("username");
 		String username = this.subjectService.getSubjectLogin(userId);
 		return username;
 	}
 
 	public boolean isLoggedIn() {
-		log.debug("is logged in");
+		this.log.debug("is logged in");
 		String username = (String) this.sessionContext.get("username");
 		return (null != username);
 	}
@@ -94,6 +94,6 @@ public class LoginBaseBean implements LoginBase {
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		log.debug("destroy: #0", this);
+		this.log.debug("destroy: #0", this);
 	}
 }

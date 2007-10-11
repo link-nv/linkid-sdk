@@ -31,14 +31,14 @@ public class HelpdeskBaseBean implements HelpdeskBase {
 
 	@PostConstruct
 	public void init() {
-		LOG.debug("persisting volatile log");
-		id = HelpdeskLogger.persistContext();
+		this.LOG.debug("persisting volatile log");
+		this.id = HelpdeskLogger.persistContext();
 	}
 
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		LOG.debug("destroy: #0", this);
+		this.LOG.debug("destroy: #0", this);
 	}
 
 	public Long getId() {

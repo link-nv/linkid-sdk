@@ -61,7 +61,7 @@ public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
 	public void cleanup() {
 		List<HelpdeskContextEntity> contexts = listContexts();
 		for (HelpdeskContextEntity context : contexts) {
-			List<HelpdeskEventEntity> events = helpdeskEventDAO
+			List<HelpdeskEventEntity> events = this.helpdeskEventDAO
 					.listEvents(context.getId());
 			if (events.size() == 0)
 				this.entityManager.remove(context);

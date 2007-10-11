@@ -98,7 +98,7 @@ public class CredentialManagerBeanTest extends TestCase {
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
 				"CN=Test");
-		this.smartCard = new SoftwareSmartCard(keyPair, certificate);
+		this.smartCard = new SoftwareSmartCard(keyPair, this.certificate);
 		expect(this.mockPkiProviderManager.findPkiProvider(this.certificate))
 				.andStubReturn(this.mockPkiProvider);
 	}
@@ -160,13 +160,13 @@ public class CredentialManagerBeanTest extends TestCase {
 				.andStubReturn(null);
 		expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(
 				identifierDomain);
-		expect(this.mockPkiProvider.getSubjectIdentifier(certificate))
+		expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate))
 				.andStubReturn(identifier);
 		expect(
 				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
 						identifier)).andStubReturn(null);
 		this.mockPkiProvider.storeAdditionalAttributes(this.testSubject,
-				certificate);
+				this.certificate);
 
 		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
 		expect(this.mockAttributeTypeDAO.getAttributeType(surnameAttribute))
@@ -233,7 +233,7 @@ public class CredentialManagerBeanTest extends TestCase {
 				.andStubReturn(null);
 		expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(
 				identifierDomain);
-		expect(this.mockPkiProvider.getSubjectIdentifier(certificate))
+		expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate))
 				.andStubReturn(identifier);
 		expect(
 				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
@@ -258,7 +258,7 @@ public class CredentialManagerBeanTest extends TestCase {
 		// setup
 		String user = "foobar-test-user";
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(user, smartCard);
+				.createIdentityStatement(user, this.smartCard);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 
@@ -267,7 +267,7 @@ public class CredentialManagerBeanTest extends TestCase {
 				.andStubReturn(trustDomain);
 		expect(
 				this.mockPkiValidator.validateCertificate(trustDomain,
-						certificate)).andStubReturn(true);
+						this.certificate)).andStubReturn(true);
 
 		// prepare
 		replay(this.mockObjects);
@@ -288,12 +288,13 @@ public class CredentialManagerBeanTest extends TestCase {
 			throws Exception {
 		// setup
 		String user = "test-user";
-		X509Certificate authCert = smartCard.getAuthenticationCertificate();
+		X509Certificate authCert = this.smartCard
+				.getAuthenticationCertificate();
 
 		KeyPair otherKeyPair = PkiTestUtils.generateKeyPair();
 
-		String givenName = smartCard.getGivenName();
-		String surname = smartCard.getSurname();
+		String givenName = this.smartCard.getGivenName();
+		String surname = this.smartCard.getSurname();
 
 		IdentityStatement identityStatement = new IdentityStatement(authCert,
 				user, givenName, surname, otherKeyPair.getPrivate());
@@ -305,7 +306,7 @@ public class CredentialManagerBeanTest extends TestCase {
 		// stubs
 		expect(
 				this.mockPkiValidator.validateCertificate(trustDomain,
-						certificate)).andStubReturn(true);
+						this.certificate)).andStubReturn(true);
 
 		// prepare
 		replay(this.mockObjects);
@@ -326,7 +327,7 @@ public class CredentialManagerBeanTest extends TestCase {
 		// setup
 		String user = "test-user";
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(user, smartCard);
+				.createIdentityStatement(user, this.smartCard);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 
@@ -335,7 +336,7 @@ public class CredentialManagerBeanTest extends TestCase {
 				.andStubReturn(trustDomain);
 		expect(
 				this.mockPkiValidator.validateCertificate(trustDomain,
-						certificate)).andStubReturn(false);
+						this.certificate)).andStubReturn(false);
 
 		// prepare
 		replay(this.mockObjects);

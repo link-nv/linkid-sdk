@@ -91,8 +91,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
 			X509Certificate certificate, long initialIdentityVersion) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
-				applicationOwner, description, applicationUrl,
-				allowUserSubscription, removable, certificate,
+				applicationFriendlyName, applicationOwner, description,
+				applicationUrl, allowUserSubscription, removable, certificate,
 				initialIdentityVersion);
 		this.entityManager.persist(application);
 		return application;

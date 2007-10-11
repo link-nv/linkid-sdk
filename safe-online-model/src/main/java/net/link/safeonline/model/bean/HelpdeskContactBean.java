@@ -26,7 +26,7 @@ public class HelpdeskContactBean implements HelpdeskContact {
 	private String email = "help@lin-k.net";
 
 	public String getPhone() {
-		return phone;
+		return this.phone;
 	}
 
 	public void setPhone(String phone) {
@@ -34,7 +34,7 @@ public class HelpdeskContactBean implements HelpdeskContact {
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public void setEmail(String email) {

@@ -43,7 +43,7 @@ public class AccessAuditLogger {
 	private static final Log LOG = LogFactory.getLog(AccessAuditLogger.class);
 
 	@Resource
-	private SessionContext context;
+	private SessionContext sessionContext;
 
 	@EJB
 	private AccessAuditDAO accessAuditDAO;
@@ -68,7 +68,7 @@ public class AccessAuditLogger {
 			return result;
 		} catch (PermissionDeniedException e) {
 			auditAccess(context, OperationStateType.BUSINESS_EXCEPTION_END);
-			auditSecurity(context, e.getMessage());
+			auditSecurity(e.getMessage());
 			throw e;
 		} catch (SafeOnlineException e) {
 			auditAccess(context, OperationStateType.BUSINESS_EXCEPTION_END);
@@ -83,7 +83,7 @@ public class AccessAuditLogger {
 		auditAccess(context, OperationStateType.BEGIN);
 	}
 
-	private void auditSecurity(InvocationContext context, String message) {
+	private void auditSecurity(String message) {
 		String principalName = getCallerPrincipalName();
 		LOG.debug("security audit: " + message + " for principal "
 				+ principalName);
@@ -145,7 +145,7 @@ public class AccessAuditLogger {
 	private String getCallerPrincipalName() {
 		Principal callerPrincipal;
 		try {
-			callerPrincipal = this.context.getCallerPrincipal();
+			callerPrincipal = this.sessionContext.getCallerPrincipal();
 		} catch (IllegalStateException e) {
 			/*
 			 * Under JBoss we get an IllegalStateException instead of a null

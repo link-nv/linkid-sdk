@@ -81,15 +81,14 @@ public class AuditBackendProcessorBean implements MessageListener {
 			try {
 				auditBackend.process(auditContextId);
 			} catch (Exception e) {
-				addAuditAudit(auditBackend, e, auditContextId);
+				addAuditAudit(e, auditContextId);
 			}
 		}
 
 		sanitizeForwarding(auditMessage);
 	}
 
-	private void addAuditAudit(AuditBackend auditBackend, Exception exception,
-			long auditContextId) {
+	private void addAuditAudit(Exception exception, long auditContextId) {
 		String message = exception.getMessage();
 		AuditContextEntity auditContext;
 		try {

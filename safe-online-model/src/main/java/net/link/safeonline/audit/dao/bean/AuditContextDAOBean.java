@@ -90,10 +90,10 @@ public class AuditContextDAOBean implements AuditContextDAO {
 				.listContextsOlderThen(ageLimit);
 		for (AuditContextEntity context : contexts) {
 			LOG.debug("Cleaning context " + context.getId());
-			auditAuditDAO.cleanup(context.getId());
-			accessAuditDAO.cleanup(context.getId());
-			securityAuditDAO.cleanup(context.getId());
-			resourceAuditDAO.cleanup(context.getId());
+			this.auditAuditDAO.cleanup(context.getId());
+			this.accessAuditDAO.cleanup(context.getId());
+			this.securityAuditDAO.cleanup(context.getId());
+			this.resourceAuditDAO.cleanup(context.getId());
 			this.entityManager.remove(context);
 		}
 	}

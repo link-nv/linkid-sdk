@@ -224,7 +224,7 @@ public class PkiValidatorBean implements PkiValidator {
 		}
 		if (true == performOcspCheck) {
 			LOG.debug("performing OCSP check");
-			if (false == cachedOcspValidator.performCachedOcspCheck(
+			if (false == this.cachedOcspValidator.performCachedOcspCheck(
 					trustDomain, certificate, issuerCertificate)) {
 				return false;
 			}
