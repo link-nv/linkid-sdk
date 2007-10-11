@@ -127,7 +127,7 @@ public class BeIdPkiProvider implements PkiProvider {
 	private void setOrOverrideAttribute(String attributeName,
 			SubjectEntity subject, String value) {
 		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeName, subject.getUserId());
+				attributeName, subject);
 		if (null == attribute) {
 			AttributeTypeEntity attributeType;
 			try {
