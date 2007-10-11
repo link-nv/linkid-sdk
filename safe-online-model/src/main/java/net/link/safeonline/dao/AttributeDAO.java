@@ -97,13 +97,13 @@ public interface AttributeDAO {
 	AttributeEntity getAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject) throws AttributeNotFoundException;
 
-	AttributeEntity getAttribute(String attributeTypeName, String subjectId)
+	AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject)
 			throws AttributeNotFoundException;
 
 	AttributeEntity findAttribute(SubjectEntity subject,
 			AttributeTypeEntity attributeType, long index);
 
-	AttributeEntity findAttribute(String attributeTypeName, String subjectId);
+	AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject);
 
 	AttributeEntity findAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject);

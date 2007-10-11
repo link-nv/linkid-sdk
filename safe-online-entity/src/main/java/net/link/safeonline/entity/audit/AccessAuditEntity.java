@@ -54,7 +54,7 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 		@NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) "
 				+ "FROM AccessAuditEntity AS record "
 				+ "WHERE record.auditContext.id = :contextId AND "
-				+ "record.operationState IN ('BUSINESS_EXCEPTION_END', 'SYSTEM_EXCEPTION_END')"),
+				+ "record.operationState IN (2, 3)"),
 		@NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.principal "
 				+ "FROM AccessAuditEntity AS record "
 				+ "WHERE record.principal IS NOT NULL"),

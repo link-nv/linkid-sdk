@@ -17,6 +17,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.dao.AccessAuditDAO;
 import net.link.safeonline.entity.audit.AccessAuditEntity;
@@ -26,6 +29,8 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 
 @Stateless
 public class AccessAuditDAOBean implements AccessAuditDAO {
+
+	private static final Log LOG = LogFactory.getLog(AccessAuditDAOBean.class);
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
@@ -69,6 +74,7 @@ public class AccessAuditDAOBean implements AccessAuditDAO {
 
 	public boolean hasErrorRecords(long id) {
 		long count = this.queryObject.countErrorRecords(id);
+		LOG.debug("# error records: " + count);
 		return 0 != count;
 	}
 }

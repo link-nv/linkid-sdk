@@ -344,12 +344,12 @@ public class DemoStartableBean extends AbstractInitBean {
 		/*
 		 * Also make sure the admin is marked as such.
 		 */
-		AttributeEntity barAdminBarAdminAttribute = new AttributeEntity();
-		barAdminBarAdminAttribute.setPk(new AttributePK(
+		AttributeEntity prescriptionAdminAttribute = new AttributeEntity();
+		prescriptionAdminAttribute.setPk(new AttributePK(
 				DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
 				prescriptionAdmin));
-		barAdminBarAdminAttribute.setBooleanValue(true);
-		this.attributes.add(barAdminBarAdminAttribute);
+		prescriptionAdminAttribute.setBooleanValue(true);
+		this.attributes.add(prescriptionAdminAttribute);
 	}
 
 	private void configLawyerDemo() {

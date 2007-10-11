@@ -54,4 +54,11 @@ public class AllowedDeviceDAOBean implements AllowedDeviceDAO {
 	public void deleteAllowedDevices(ApplicationEntity application) {
 		this.queryObject.deleteAllowedDevices(application);
 	}
+
+	public AllowedDeviceEntity findAllowedDevice(ApplicationEntity application,
+			DeviceEntity device) {
+		AllowedDeviceEntity allowedDevice = this.queryObject.find(application,
+				device);
+		return allowedDevice;
+	}
 }

@@ -95,7 +95,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
 		AttributeEntity loginAttribute;
 		try {
 			loginAttribute = this.attributeDAO.getAttribute(
-					SafeOnlineConstants.LOGIN_ATTRIBTUE, subject.getUserId());
+					SafeOnlineConstants.LOGIN_ATTRIBTUE, subject);
 		} catch (AttributeNotFoundException e) {
 			LOG.debug("login attribute not found", e);
 			return null;

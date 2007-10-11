@@ -140,7 +140,7 @@ public class IdentityServiceBean implements IdentityService,
 		LOG.debug("get attribute " + attributeName + " for user with login "
 				+ subject.getUserId());
 		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeName, subject.getUserId());
+				attributeName, subject);
 		if (null == attribute) {
 			return null;
 		}

@@ -198,7 +198,7 @@
 					org.hibernate.dialect.MySQLDialect
 				</safe-online.dialect>
 				<safe-online.hibernate.hbm2ddl.auto>
-					update
+					validate
 				</safe-online.hibernate.hbm2ddl.auto>
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>8080</safe-online.host.port>

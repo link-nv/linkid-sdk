@@ -40,7 +40,8 @@
 			<para>OLAS was written in Java.</para>
 			<section>
 				<title>Sun JDK 1.5</title>
-				<para>Sun JDK 1.5.0_13</para>
+				<para>Sun JDK 1.5.0_13.</para>
+				<para>What about BEA JRockit?</para>
 			</section>
 		</section>
 		<section>
@@ -59,7 +60,10 @@
 		<section>
 			<title>Database</title>
 			<para>
-				OLAS is using the JPA J2EE layer for persistence.
+				OLAS is using the JPA J2EE layer for persistence. Before
+				being able to start the OLAS application one needs to
+				initialize the OLAS database. This can be done via the
+				OLAS command line interface (CLI).
 			</para>
 			<section>
 				<title>MySQL</title>
@@ -97,19 +101,48 @@
 		</section>
 		<section>
 			<title>OLAS EAR</title>
-			<para>Describe what's inside the EAR.</para>
+			<para>
+				The OLAS services and web applications are bundled as an
+				EAR.
+				<programlisting>server/default/deploy/SafeOnline.ear</programlisting>
+				The EAR contains:
+				<itemizedlist>
+					<listitem>
+						<para>The JavaEE application itself.</para>
+					</listitem>
+					<listitem>
+						<para>
+							The OLAS command line interface (CLI)
+							application.
+						</para>
+					</listitem>
+				</itemizedlist>
+			</para>
 		</section>
 	</chapter>
 
 	<chapter id="cli">
 		<title>Command Line Interface</title>
 		<para>
-			The OLAS service comes with a CLI to manage the database
-			schema.
+			The OLAS application comes with a CLI to manage the database
+			schema. If the OLAS application is started without correctly 
+			initializing the database one will receive error messages that 
+			look as follows:
+			</para>
+			<para>
+			<programlisting>ObjectName: persistence.units:ear=SafeOnline.ear,
+  unitName=SafeOnlineEntityManager
+State: FAILED
+Reason: javax.persistence.PersistenceException:
+  org.hibernate.HibernateException: Missing table: access_audit
+			</programlisting>
 		</para>
 		<section>
 			<title>Running the CLI</title>
-			<para>Starting the CLI.</para>
+			<para>The OLAS CLI can be started via</para>
+			<para>
+				<command>java -jar server/default/deploy/SafeOnline.ear</command>
+			</para>
 		</section>
 		<section>
 			<title>Connecting to a database</title>
@@ -159,5 +192,11 @@
 	<chapter id="deployment">
 		<title>Deployment</title>
 		<para>Describe how to deploy the OLAS service.</para>
+		<programlisting>cd jboss/bin
+./run.sh
+		</programlisting>
+		<tip><para>If <command>run.sh</command> is not executable one should try:
+		<code>chmod +x run.sh</code></para>
+		</tip>
 	</chapter>
 </book>

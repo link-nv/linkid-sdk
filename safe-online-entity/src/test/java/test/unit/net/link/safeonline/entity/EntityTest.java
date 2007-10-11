@@ -50,8 +50,10 @@ import net.link.safeonline.entity.SubjectIdentifierPK;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.SubscriptionPK;
+import net.link.safeonline.entity.audit.AccessAuditEntity;
 import net.link.safeonline.entity.audit.AuditAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
+import net.link.safeonline.entity.audit.OperationStateType;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
@@ -104,7 +106,8 @@ public class EntityTest {
 					AttributeTypeDescriptionEntity.class,
 					AttributeProviderEntity.class, AuditContextEntity.class,
 					AuditAuditEntity.class, HelpdeskContextEntity.class,
-					CompoundedAttributeTypeMemberEntity.class);
+					CompoundedAttributeTypeMemberEntity.class,
+					AccessAuditEntity.class);
 		} catch (Exception e) {
 			LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
 			throw new RuntimeException("JPA annotations incorrect: "
@@ -1041,5 +1044,37 @@ public class EntityTest {
 		entityManager.clear(); // detaches the resultParent
 		assertEquals(1, resultParent.getMembers().size());
 		assertTrue(resultParent.isCompounded());
+	}
+
+	@Test
+	public void testAccessAuditErrorQuery() throws Exception {
+		// setup
+		AuditContextEntity auditContext = new AuditContextEntity();
+		AccessAuditEntity accessAudit = new AccessAuditEntity(auditContext,
+				"test-operation", OperationStateType.BEGIN, null);
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(auditContext);
+		entityManager.persist(accessAudit);
+
+		AccessAuditEntity.QueryInterface queryObject = QueryObjectFactory
+				.createQueryObject(entityManager,
+						AccessAuditEntity.QueryInterface.class);
+		long count = queryObject.countErrorRecords(auditContext.getId());
+
+		// verify
+		LOG.debug("audit context Id: " + auditContext.getId());
+		LOG.debug("count: " + count);
+		assertEquals(0, count);
+
+		accessAudit = new AccessAuditEntity(auditContext, "test-operation",
+				OperationStateType.BUSINESS_EXCEPTION_END, null);
+		entityManager.persist(accessAudit);
+
+		assertEquals(2, queryObject.listRecords(auditContext.getId()).size());
+
+		count = queryObject.countErrorRecords(auditContext.getId());
+		assertEquals(1, count);
 	}
 }

@@ -21,8 +21,10 @@ public interface AllowedDeviceDAO {
 	AllowedDeviceEntity addAllowedDevice(ApplicationEntity application,
 			DeviceEntity device, int weight);
 
+	AllowedDeviceEntity findAllowedDevice(ApplicationEntity application,
+			DeviceEntity device);
+
 	List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application);
 
 	void deleteAllowedDevices(ApplicationEntity application);
-
 }

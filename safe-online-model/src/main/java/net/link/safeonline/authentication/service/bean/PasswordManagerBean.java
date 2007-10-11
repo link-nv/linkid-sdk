@@ -83,8 +83,7 @@ public class PasswordManagerBean implements PasswordManager {
 							+ defaultHashingAlgorithm);
 		}
 		try {
-			Password passwordAttribute = getPasswordAttribute(subject
-					.getUserId());
+			Password passwordAttribute = getPasswordAttribute(subject);
 
 			passwordAttribute.hash.setStringValue(hashValue);
 			passwordAttribute.seed.setStringValue(seed);
@@ -103,7 +102,7 @@ public class PasswordManagerBean implements PasswordManager {
 			throws DeviceNotFoundException {
 
 		// get current password
-		Password expectedPassword = getPasswordAttribute(subject.getUserId());
+		Password expectedPassword = getPasswordAttribute(subject);
 		String expectedPasswordHash = expectedPassword.hash.getStringValue();
 		String seed = expectedPassword.seed.getStringValue();
 		String algorithm = expectedPassword.algorithm.getStringValue();
@@ -128,17 +127,18 @@ public class PasswordManagerBean implements PasswordManager {
 		return false;
 	}
 
-	private Password getPasswordAttribute(String login)
+	private Password getPasswordAttribute(SubjectEntity subject)
 			throws DeviceNotFoundException {
 		AttributeEntity passwordHashAttribute = this.attributeDAO
 				.findAttribute(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
-						login);
+						subject);
 		AttributeEntity passwordSeedAttribute = this.attributeDAO
 				.findAttribute(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE,
-						login);
+						subject);
 		AttributeEntity passwordAlgorithmAttribute = this.attributeDAO
 				.findAttribute(
-						SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE, login);
+						SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
+						subject);
 		if (null == passwordHashAttribute || null == passwordSeedAttribute
 				|| null == passwordAlgorithmAttribute) {
 			throw new DeviceNotFoundException();
@@ -156,7 +156,7 @@ public class PasswordManagerBean implements PasswordManager {
 
 	public boolean isPasswordConfigured(SubjectEntity subject) {
 		try {
-			getPasswordAttribute(subject.getUserId());
+			getPasswordAttribute(subject);
 		} catch (DeviceNotFoundException e) {
 			return false;
 		}

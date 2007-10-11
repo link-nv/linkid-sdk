@@ -38,6 +38,7 @@ import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
@@ -265,11 +266,21 @@ public abstract class AbstractInitBean implements Startable {
 		for (AttributeEntity attribute : this.attributes) {
 			String attributeTypeName = attribute.getPk().getAttributeType();
 			String subjectLogin = attribute.getPk().getSubject();
+
+			SubjectEntity subject;
+			try {
+				subject = this.subjectService
+						.getSubjectFromUserName(subjectLogin);
+			} catch (SubjectNotFoundException e) {
+				throw new EJBException("subject not found: " + subjectLogin);
+			}
+
 			AttributeEntity existingAttribute = this.attributeDAO
-					.findAttribute(attributeTypeName, subjectLogin);
+					.findAttribute(attributeTypeName, subject);
 			if (null != existingAttribute) {
 				continue;
 			}
+
 			AttributeTypeEntity attributeType;
 			try {
 				attributeType = this.attributeTypeDAO
@@ -278,13 +289,7 @@ public abstract class AbstractInitBean implements Startable {
 				throw new EJBException("attribute type not found: "
 						+ attributeTypeName);
 			}
-			SubjectEntity subject;
-			try {
-				subject = this.subjectService
-						.getSubjectFromUserName(subjectLogin);
-			} catch (SubjectNotFoundException e) {
-				throw new EJBException("subject not found: " + subjectLogin);
-			}
+
 			String stringValue = attribute.getStringValue();
 			AttributeEntity persistentAttribute = this.attributeDAO
 					.addAttribute(attributeType, subject, stringValue);
@@ -505,7 +510,12 @@ public abstract class AbstractInitBean implements Startable {
 			List<String> deviceNames = this.allowedDevices.get(applicationName);
 			for (String deviceName : deviceNames) {
 				DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-				this.allowedDeviceDAO.addAllowedDevice(application, device, 0);
+				AllowedDeviceEntity allowedDevice = this.allowedDeviceDAO
+						.findAllowedDevice(application, device);
+				if (null == allowedDevice) {
+					this.allowedDeviceDAO.addAllowedDevice(application, device,
+							0);
+				}
 			}
 		}
 	}

@@ -149,15 +149,17 @@ public class CredentialManagerBeanTest extends TestCase {
 				this.mockPkiProvider
 						.mapAttribute(IdentityStatementAttributes.SURNAME))
 				.andStubReturn(surnameAttribute);
-		expect(this.mockAttributeDAO.findAttribute(surnameAttribute, user))
-				.andStubReturn(null);
+		expect(
+				this.mockAttributeDAO.findAttribute(surnameAttribute,
+						this.testSubject)).andStubReturn(null);
 
 		expect(
 				this.mockPkiProvider
 						.mapAttribute(IdentityStatementAttributes.GIVEN_NAME))
 				.andStubReturn(givenNameAttribute);
-		expect(this.mockAttributeDAO.findAttribute(givenNameAttribute, user))
-				.andStubReturn(null);
+		expect(
+				this.mockAttributeDAO.findAttribute(givenNameAttribute,
+						this.testSubject)).andStubReturn(null);
 		expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(
 				identifierDomain);
 		expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate))
@@ -222,15 +224,17 @@ public class CredentialManagerBeanTest extends TestCase {
 				this.mockPkiProvider
 						.mapAttribute(IdentityStatementAttributes.SURNAME))
 				.andStubReturn(surnameAttribute);
-		expect(this.mockAttributeDAO.findAttribute(surnameAttribute, user))
-				.andStubReturn(null);
+		expect(
+				this.mockAttributeDAO.findAttribute(surnameAttribute,
+						this.testSubject)).andStubReturn(null);
 
 		expect(
 				this.mockPkiProvider
 						.mapAttribute(IdentityStatementAttributes.GIVEN_NAME))
 				.andStubReturn(givenNameAttribute);
-		expect(this.mockAttributeDAO.findAttribute(givenNameAttribute, user))
-				.andStubReturn(null);
+		expect(
+				this.mockAttributeDAO.findAttribute(givenNameAttribute,
+						this.testSubject)).andStubReturn(null);
 		expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(
 				identifierDomain);
 		expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate))
