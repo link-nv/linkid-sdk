@@ -1,5 +1,7 @@
-<?xml version="1.0"?>
-<project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
@@ -73,15 +75,11 @@
 								<artifactItem>
 									<groupId>org.jboss</groupId>
 									<artifactId>jboss-as</artifactId>
-									<version>${jboss.version}</version>
 									<type>zip</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>net.java.dev</groupId>
 									<artifactId>jaxws-ri</artifactId>
-									<version>
-										${jaxws-rt.version}
-									</version>
 									<type>zip</type>
 								</artifactItem>
 							</artifactItems>
@@ -101,18 +99,10 @@
 								<artifactItem>
 									<groupId>org.jboss.seam</groupId>
 									<artifactId>jboss-seam</artifactId>
-									<version>
-										${jboss-seam.version}
-									</version>
-									<type>jar</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>el-impl</groupId>
 									<artifactId>el-impl</artifactId>
-									<version>
-										${el-impl.version}
-									</version>
-									<type>jar</type>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>
@@ -144,4 +134,24 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-as</artifactId>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev</groupId>
+			<artifactId>jaxws-ri</artifactId>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.seam</groupId>
+			<artifactId>jboss-seam</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>el-impl</groupId>
+			<artifactId>el-impl</artifactId>
+		</dependency>
+	</dependencies>
 </project>

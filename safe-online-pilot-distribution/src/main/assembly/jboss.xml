@@ -40,6 +40,16 @@
 				<exclude>
 					server/default/deploy/jms/jbossmq-httpil.sar/**
 				</exclude>
+				<exclude>
+					server/default/deploy/jboss-web.deployer/ROOT.war/**
+				</exclude>
+				<exclude>
+					server/default/deploy/bsh-deployer.xml
+				</exclude>
+				<exclude>
+					server/default/conf/props/*.properties
+				</exclude>
+				<exclude>readme.html</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet>
@@ -58,8 +68,27 @@
 			<destName>SafeOnline.ear</destName>
 		</file>
 		<file>
+			<source>
+				target/files/safe-online-root-webapp-1.0-SNAPSHOT.war
+			</source>
+			<outputDirectory>
+				jboss/server/default/deploy
+			</outputDirectory>
+		</file>
+		<file>
 			<source>target/files/mysql-connector-java-5.0.5.jar</source>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</file>
+		<file>
+			<source>target/files/install-manual.pdf</source>
+			<outputDirectory>jboss/</outputDirectory>
+		</file>
+		<file>
+			<source>
+				target/files/safe-online-base-distribution-1.0-SNAPSHOT/jboss/readme.html
+			</source>
+			<outputDirectory>jboss/</outputDirectory>
+			<destName>jboss-readme.html</destName>
 		</file>
 	</files>
 </assembly>

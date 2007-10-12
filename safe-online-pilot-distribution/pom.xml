@@ -1,5 +1,7 @@
-<?xml version="1.0"?>
-<project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
@@ -51,7 +53,15 @@
 									<artifactId>
 										safe-online-base-distribution
 									</artifactId>
-									<version>1.0-SNAPSHOT</version>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-install-manual
+									</artifactId>
 									<type>zip</type>
 								</artifactItem>
 							</artifactItems>
@@ -75,18 +85,22 @@
 									<artifactId>
 										safe-online-deploy
 									</artifactId>
-									<version>1.0-SNAPSHOT</version>
 									<type>ear</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-root-webapp
+									</artifactId>
+									<type>war</type>
 								</artifactItem>
 								<artifactItem>
 									<groupId>mysql</groupId>
 									<artifactId>
 										mysql-connector-java
 									</artifactId>
-									<version>
-										${mysql-connector-java.version}
-									</version>
-									<type>jar</type>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>
@@ -121,9 +135,31 @@
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-deploy</artifactId>
+			<artifactId>safe-online-base-distribution</artifactId>
+			<type>zip</type>
 			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-deploy</artifactId>
 			<type>ear</type>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-root-webapp</artifactId>
+			<type>war</type>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-install-manual</artifactId>
+			<type>zip</type>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 	</dependencies>
 </project>

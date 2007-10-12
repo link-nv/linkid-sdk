@@ -15,6 +15,13 @@
 				<exclude>server/minimal/**</exclude>
 				<exclude>client/**</exclude>
 				<exclude>docs/**</exclude>
+				<exclude>bin/probe.*</exclude>
+				<exclude>bin/wsconsume.*</exclude>
+				<exclude>bin/wsprovide.*</exclude>
+				<exclude>bin/wsrunclient.*</exclude>
+				<exclude>bin/wstools.*</exclude>
+				<exclude>bin/classpath.sh</exclude>
+				<exclude>jar-versions.xml</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet>
