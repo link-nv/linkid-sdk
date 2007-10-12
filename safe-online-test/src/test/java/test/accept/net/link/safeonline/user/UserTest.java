@@ -43,7 +43,7 @@ public class UserTest extends TestCase {
 
 	public void testUserRegistrationLoginEditNameSubscribeToDemoLogoutAndDoDemoLoginLogout()
 			throws Exception {
-		selenium.setContext("Testing the user registration.",
+		this.selenium.setContext("Testing the user registration.",
 				SeleniumLogLevels.DEBUG);
 
 		String login = UUID.randomUUID().toString();
@@ -72,8 +72,8 @@ public class UserTest extends TestCase {
 	}
 
 	public void testUserPasswordChange() throws Exception {
-		selenium
-				.setContext("Testing password change.", SeleniumLogLevels.DEBUG);
+		this.selenium.setContext("Testing password change.",
+				SeleniumLogLevels.DEBUG);
 
 		String login = UUID.randomUUID().toString();
 		String password = "secret";

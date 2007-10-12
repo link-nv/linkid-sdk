@@ -11,7 +11,6 @@ import java.util.Map;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
 import org.apache.commons.logging.Log;
@@ -27,27 +26,28 @@ public class DummyLoginModule implements LoginModule {
 
 	private static final Log LOG = LogFactory.getLog(DummyLoginModule.class);
 
-	public boolean abort() throws LoginException {
+	public boolean abort() {
 		LOG.debug("abort");
 		return true;
 	}
 
-	public boolean commit() throws LoginException {
+	public boolean commit() {
 		LOG.debug("commit");
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	public void initialize(Subject subject, CallbackHandler callbackHandler,
 			Map<String, ?> sharedState, Map<String, ?> options) {
 		LOG.debug("initialize");
 	}
 
-	public boolean login() throws LoginException {
+	public boolean login() {
 		LOG.debug("login");
 		return true;
 	}
 
-	public boolean logout() throws LoginException {
+	public boolean logout() {
 		LOG.debug("logout");
 		return true;
 	}

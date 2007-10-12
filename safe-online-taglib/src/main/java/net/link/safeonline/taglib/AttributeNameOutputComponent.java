@@ -25,7 +25,7 @@ import net.link.safeonline.authentication.service.AttributeDO;
  */
 public class AttributeNameOutputComponent extends UIOutput {
 
-	public static final String COMPONENT_TYPE = "net.link.component.attributeNameOutput";
+	public static final String ATTRIBUTE_NAME_OUTPUT_COMPONENT_TYPE = "net.link.component.attributeNameOutput";
 
 	@Override
 	public void encodeBegin(FacesContext context) throws IOException {

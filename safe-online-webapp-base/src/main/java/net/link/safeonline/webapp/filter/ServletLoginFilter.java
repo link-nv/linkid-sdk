@@ -73,7 +73,8 @@ public class ServletLoginFilter implements Filter {
 		chain.doFilter(loginHttpServletRequestWrapper, response);
 	}
 
-	public void init(FilterConfig config) throws ServletException {
+	public void init(@SuppressWarnings("unused")
+	FilterConfig config) throws ServletException {
 		LOG.debug("init");
 		try {
 			this.authorizationService = EjbUtils.getEJB(

@@ -38,7 +38,7 @@ public class DemoTest extends TestCase {
 	}
 
 	public void testDemoLogonLogout() throws Exception {
-		selenium.setContext("Testing the demo logon and logout",
+		this.selenium.setContext("Testing the demo logon and logout",
 				SeleniumLogLevels.DEBUG);
 
 		this.acceptanceTestManager.openDemoWebApp("/secure/");

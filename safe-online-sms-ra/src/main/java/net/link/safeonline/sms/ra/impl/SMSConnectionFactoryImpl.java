@@ -39,7 +39,7 @@ public class SMSConnectionFactoryImpl implements SMSConnectionFactory {
 		SMSConnection smsConnection = null;
 		try {
 			smsConnection = (SMSConnection) this.connectionManager
-					.allocateConnection(smsManagedConnectionFactory, null);
+					.allocateConnection(this.smsManagedConnectionFactory, null);
 		} catch (ResourceException e) {
 			throw new NamingException("Unable to get Connection: " + e);
 		}

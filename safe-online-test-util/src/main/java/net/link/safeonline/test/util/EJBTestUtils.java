@@ -274,10 +274,9 @@ public final class EJBTestUtils {
 	 * @author fcorneli
 	 * 
 	 */
-	private static class TestContainerMethodInterceptor implements
-			MethodInterceptor {
+	static class TestContainerMethodInterceptor implements MethodInterceptor {
 
-		private static final Log LOG = LogFactory
+		private static final Log interceptorLOG = LogFactory
 				.getLog(TestContainerMethodInterceptor.class);
 
 		private final Object object;
@@ -297,8 +296,9 @@ public final class EJBTestUtils {
 			this.sessionContext = sessionContext;
 		}
 
-		public Object intercept(Object obj, Method method, Object[] args,
-				MethodProxy proxy) throws Throwable {
+		public Object intercept(@SuppressWarnings("unused")
+		Object obj, Method method, Object[] args, @SuppressWarnings("unused")
+		MethodProxy proxy) throws Throwable {
 			checkSessionBean();
 			Class<?> clazz = this.object.getClass();
 			checkSecurity(clazz, method);
@@ -331,7 +331,7 @@ public final class EJBTestUtils {
 				 * The following is not 100% correct, but will do for most of
 				 * the tests.
 				 */
-				LOG.debug("transaction management: REQUIRED_NEW");
+				interceptorLOG.debug("transaction management: REQUIRED_NEW");
 				entityTransaction.commit();
 				entityTransaction.begin();
 				break;
@@ -524,8 +524,7 @@ public final class EJBTestUtils {
 
 	}
 
-	private static class TestPolicyContextHandler implements
-			PolicyContextHandler {
+	static class TestPolicyContextHandler implements PolicyContextHandler {
 
 		private final Subject subject;
 
@@ -544,16 +543,16 @@ public final class EJBTestUtils {
 			}
 		}
 
-		public Object getContext(String key, Object data)
-				throws PolicyContextException {
+		@SuppressWarnings("unused")
+		public Object getContext(String key, Object data) {
 			return this.subject;
 		}
 
-		public String[] getKeys() throws PolicyContextException {
+		public String[] getKeys() {
 			return new String[] { "javax.security.auth.Subject.container" };
 		}
 
-		public boolean supports(String key) throws PolicyContextException {
+		public boolean supports(String key) {
 			if ("javax.security.auth.Subject.container".equals(key)) {
 				return true;
 			}
@@ -561,7 +560,7 @@ public final class EJBTestUtils {
 		}
 	}
 
-	private static class TestSessionContext implements SessionContext {
+	static class TestSessionContext implements SessionContext {
 
 		private final Principal principal;
 
@@ -643,7 +642,8 @@ public final class EJBTestUtils {
 		}
 
 		@SuppressWarnings("deprecation")
-		public boolean isCallerInRole(java.security.Identity arg0) {
+		public boolean isCallerInRole(@SuppressWarnings("unused")
+		java.security.Identity arg0) {
 			return false;
 		}
 
@@ -659,20 +659,21 @@ public final class EJBTestUtils {
 			return false;
 		}
 
-		public Object lookup(String arg0) {
+		public Object lookup(@SuppressWarnings("unused")
+		String arg0) {
 			return null;
 		}
 
 		public void setRollbackOnly() throws IllegalStateException {
 		}
 
-		public <T> T getBusinessObject(Class<T> arg0)
-				throws IllegalStateException {
+		public <T> T getBusinessObject(@SuppressWarnings("unused")
+		Class<T> arg0) throws IllegalStateException {
 			return null;
 		}
 	}
 
-	private static class TestTimer implements Timer {
+	static class TestTimer implements Timer {
 
 		public void cancel() throws IllegalStateException,
 				NoSuchObjectLocalException, EJBException {
@@ -699,31 +700,35 @@ public final class EJBTestUtils {
 		}
 	}
 
-	private static class TestTimerService implements TimerService {
+	static class TestTimerService implements TimerService {
 
-		private static final Log LOG = LogFactory
+		private static final Log serviceLOG = LogFactory
 				.getLog(TestTimerService.class);
 
+		@SuppressWarnings("unused")
 		public Timer createTimer(long arg0, Serializable arg1)
 				throws IllegalArgumentException, IllegalStateException,
 				EJBException {
 			return null;
 		}
 
+		@SuppressWarnings("unused")
 		public Timer createTimer(Date arg0, Serializable arg1)
 				throws IllegalArgumentException, IllegalStateException,
 				EJBException {
-			LOG.debug("createTimer");
+			serviceLOG.debug("createTimer");
 			Timer testTimer = new TestTimer();
 			return testTimer;
 		}
 
+		@SuppressWarnings("unused")
 		public Timer createTimer(long arg0, long arg1, Serializable arg2)
 				throws IllegalArgumentException, IllegalStateException,
 				EJBException {
 			return null;
 		}
 
+		@SuppressWarnings("unused")
 		public Timer createTimer(Date arg0, long arg1, Serializable arg2)
 				throws IllegalArgumentException, IllegalStateException,
 				EJBException {
@@ -736,29 +741,37 @@ public final class EJBTestUtils {
 		}
 	}
 
-	private static class TestLog implements org.jboss.seam.log.Log {
+	static class TestLog implements org.jboss.seam.log.Log {
 
+		@SuppressWarnings("unused")
 		public void debug(Object obj, Object... aobj) {
 		}
 
+		@SuppressWarnings("unused")
 		public void debug(Object obj, Throwable throwable, Object... aobj) {
 		}
 
+		@SuppressWarnings("unused")
 		public void error(Object obj, Object... aobj) {
 		}
 
+		@SuppressWarnings("unused")
 		public void error(Object obj, Throwable throwable, Object... aobj) {
 		}
 
+		@SuppressWarnings("unused")
 		public void fatal(Object obj, Object... aobj) {
 		}
 
+		@SuppressWarnings("unused")
 		public void fatal(Object obj, Throwable throwable, Object... aobj) {
 		}
 
+		@SuppressWarnings("unused")
 		public void info(Object obj, Object... aobj) {
 		}
 
+		@SuppressWarnings("unused")
 		public void info(Object obj, Throwable throwable, Object... aobj) {
 		}
 
@@ -786,15 +799,19 @@ public final class EJBTestUtils {
 			return false;
 		}
 
+		@SuppressWarnings("unused")
 		public void trace(Object obj, Object... aobj) {
 		}
 
+		@SuppressWarnings("unused")
 		public void trace(Object obj, Throwable throwable, Object... aobj) {
 		}
 
+		@SuppressWarnings("unused")
 		public void warn(Object obj, Object... aobj) {
 		}
 
+		@SuppressWarnings("unused")
 		public void warn(Object obj, Throwable throwable, Object... aobj) {
 		}
 	}

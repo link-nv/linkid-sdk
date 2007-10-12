@@ -117,13 +117,14 @@ public class PkiTestUtils {
 			boolean caCert, boolean timeStampingPurpose, URI ocspUri)
 			throws IOException, InvalidKeyException, IllegalStateException,
 			NoSuchAlgorithmException, SignatureException, CertificateException {
+		String finalSignatureAlgorithm = signatureAlgorithm;
 		if (null == signatureAlgorithm) {
-			signatureAlgorithm = "SHA512WithRSAEncryption";
+			finalSignatureAlgorithm = "SHA512WithRSAEncryption";
 		}
 		X509V3CertificateGenerator certificateGenerator = new X509V3CertificateGenerator();
 		certificateGenerator.reset();
 		certificateGenerator.setPublicKey(subjectPublicKey);
-		certificateGenerator.setSignatureAlgorithm(signatureAlgorithm);
+		certificateGenerator.setSignatureAlgorithm(finalSignatureAlgorithm);
 		certificateGenerator.setNotBefore(notBefore.toDate());
 		certificateGenerator.setNotAfter(notAfter.toDate());
 		X509Principal issuerDN;

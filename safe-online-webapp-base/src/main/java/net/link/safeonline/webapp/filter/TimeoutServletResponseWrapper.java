@@ -66,7 +66,7 @@ public class TimeoutServletResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	@Override
-	public ServletOutputStream getOutputStream() throws IOException {
+	public ServletOutputStream getOutputStream() {
 		LOG.debug("get output stream");
 		return this.bufferedServletOutputStream;
 	}

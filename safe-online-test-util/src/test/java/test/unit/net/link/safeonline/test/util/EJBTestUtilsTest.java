@@ -30,16 +30,16 @@ public class EJBTestUtilsTest extends TestCase {
 
 	public static class TestClass implements TestIface {
 
-		private static final Log LOG = LogFactory.getLog(TestClass.class);
+		private static final Log testLOG = LogFactory.getLog(TestClass.class);
 
 		public void func() {
-			LOG.debug("func invoked");
+			testLOG.debug("func invoked");
 		}
 	}
 
 	private static class TestInvocationHandler implements InvocationHandler {
 
-		private static final Log LOG = LogFactory
+		private static final Log handlerLOG = LogFactory
 				.getLog(TestInvocationHandler.class);
 
 		private final Object object;
@@ -48,9 +48,9 @@ public class EJBTestUtilsTest extends TestCase {
 			this.object = object;
 		}
 
-		public Object invoke(Object proxy, Method method, Object[] args)
-				throws Throwable {
-			LOG.debug("invoke");
+		public Object invoke(@SuppressWarnings("unused")
+		Object proxy, Method method, Object[] args) throws Throwable {
+			handlerLOG.debug("invoke");
 			return method.invoke(this.object, args);
 		}
 	}
@@ -74,7 +74,8 @@ public class EJBTestUtilsTest extends TestCase {
 
 	private static class TestInterceptor implements MethodInterceptor {
 
-		private static final Log LOG = LogFactory.getLog(TestInterceptor.class);
+		private static final Log interceptorLOG = LogFactory
+				.getLog(TestInterceptor.class);
 
 		private final Object object;
 
@@ -82,9 +83,10 @@ public class EJBTestUtilsTest extends TestCase {
 			this.object = object;
 		}
 
-		public Object intercept(Object obj, Method method, Object[] args,
-				MethodProxy proxy) throws Throwable {
-			LOG.debug("intercept");
+		public Object intercept(@SuppressWarnings("unused")
+		Object obj, Method method, Object[] args, @SuppressWarnings("unused")
+		MethodProxy proxy) throws Throwable {
+			interceptorLOG.debug("intercept");
 			return method.invoke(this.object, args);
 		}
 	}

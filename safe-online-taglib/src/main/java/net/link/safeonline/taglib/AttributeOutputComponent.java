@@ -28,7 +28,7 @@ import net.link.safeonline.entity.DatatypeType;
  */
 public class AttributeOutputComponent extends UIOutput {
 
-	public static final String COMPONENT_TYPE = "net.link.component.attributeOutput";
+	public static final String ATTRIBUTE_OUTPUT_COMPONENT_TYPE = "net.link.component.attributeOutput";
 
 	@Override
 	public void encodeBegin(FacesContext context) throws IOException {
@@ -146,8 +146,10 @@ public class AttributeOutputComponent extends UIOutput {
 	public static class CompoundedAttributeValueEncoder implements
 			AttributeValueEncoder {
 
-		public void encode(AttributeDO attribute, ResponseWriter response,
-				FacesContext context) throws IOException {
+		public void encode(@SuppressWarnings("unused")
+		AttributeDO attribute, @SuppressWarnings("unused")
+		ResponseWriter response, @SuppressWarnings("unused")
+		FacesContext context) {
 			// empty
 		}
 	}

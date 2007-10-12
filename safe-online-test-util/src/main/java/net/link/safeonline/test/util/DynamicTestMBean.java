@@ -12,12 +12,8 @@ import java.util.Map;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
-import javax.management.AttributeNotFoundException;
 import javax.management.DynamicMBean;
-import javax.management.InvalidAttributeValueException;
-import javax.management.MBeanException;
 import javax.management.MBeanInfo;
-import javax.management.ReflectionException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,12 +46,12 @@ public class DynamicTestMBean implements DynamicMBean {
 		this.actionHandlers.put(actionName, action);
 	}
 
-	public Object getAttribute(String attribute)
-			throws AttributeNotFoundException, MBeanException,
-			ReflectionException {
+	@SuppressWarnings("unused")
+	public Object getAttribute(String attribute) {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public AttributeList getAttributes(String[] attributes) {
 		return null;
 	}
@@ -65,8 +61,9 @@ public class DynamicTestMBean implements DynamicMBean {
 				null, null);
 	}
 
-	public Object invoke(String actionName, Object[] params, String[] signature)
-			throws MBeanException, ReflectionException {
+	public Object invoke(String actionName, Object[] params,
+			@SuppressWarnings("unused")
+			String[] signature) {
 		LOG.debug("invoked: " + actionName);
 		MBeanActionHandler actionHandler = this.actionHandlers.get(actionName);
 		if (null == actionHandler) {
@@ -76,11 +73,11 @@ public class DynamicTestMBean implements DynamicMBean {
 		return result;
 	}
 
-	public void setAttribute(Attribute attribute)
-			throws AttributeNotFoundException, InvalidAttributeValueException,
-			MBeanException, ReflectionException {
+	@SuppressWarnings("unused")
+	public void setAttribute(Attribute attribute) {
 	}
 
+	@SuppressWarnings("unused")
 	public AttributeList setAttributes(AttributeList attributes) {
 		return null;
 	}

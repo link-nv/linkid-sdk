@@ -87,9 +87,9 @@ public class TimeoutFilter implements Filter {
 			 * context for the requested session Id.
 			 */
 			HttpSession session = httpRequest.getSession();
-			Object loginSessionAttribute = session
+			Object tempLoginSessionAttribute = session
 					.getAttribute(this.loginSessionAttribute);
-			if (null != loginSessionAttribute) {
+			if (null != tempLoginSessionAttribute) {
 				addLoginCookie(httpRequest, httpResponse);
 			} else {
 				/*

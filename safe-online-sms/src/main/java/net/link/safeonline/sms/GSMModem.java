@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class GSMModem implements SMSC {
 
-	Log LOG = LogFactory.getLog(GSMModem.class);
+	private static final Log LOG = LogFactory.getLog(GSMModem.class);
 
 	SerialCommunication serialComm;
 

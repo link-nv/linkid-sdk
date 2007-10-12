@@ -51,8 +51,8 @@ public class WebServiceTestUtils {
 		this.httpServer.setExecutor(this.executorService);
 		this.httpServer.start();
 
-		HttpContext httpContext = httpServer.createContext("/test");
-		endpoint.publish(httpContext);
+		HttpContext httpContext = this.httpServer.createContext("/test");
+		this.endpoint.publish(httpContext);
 	}
 
 	public String getEndpointAddress() {

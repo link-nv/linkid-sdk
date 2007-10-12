@@ -16,7 +16,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,17 +60,17 @@ public class TimeoutFilterTest {
 
 		private static final long serialVersionUID = 1L;
 
-		private static final Log LOG = LogFactory.getLog(TestServlet.class);
+		private static final Log testServletLOG = LogFactory
+				.getLog(TestServlet.class);
 
 		@Override
 		protected void doGet(HttpServletRequest request,
-				HttpServletResponse response) throws ServletException,
-				IOException {
-			LOG.debug("writing to print writer");
+				HttpServletResponse response) throws IOException {
+			testServletLOG.debug("writing to print writer");
 
 			HttpSession session = request.getSession();
 			String username = (String) session.getAttribute("username");
-			LOG.debug("username: " + username);
+			testServletLOG.debug("username: " + username);
 
 			PrintWriter out = response.getWriter();
 			out.println("hello world: " + username);

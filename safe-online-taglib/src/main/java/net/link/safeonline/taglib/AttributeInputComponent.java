@@ -37,10 +37,9 @@ import org.apache.myfaces.renderkit.html.util.AddResourceFactory;
  */
 public class AttributeInputComponent extends UIInput {
 
-	public static final String COMPONENT_TYPE = "net.link.component.attributeInput";
+	public static final String ATTRIBUTE_INPUT_COMPONENT_TYPE = "net.link.component.attributeInput";
 
-	private static final Log LOG = LogFactory
-			.getLog(AttributeInputComponent.class);
+	static final Log LOG = LogFactory.getLog(AttributeInputComponent.class);
 
 	public AttributeInputComponent() {
 		setRendererType(null);
@@ -107,8 +106,9 @@ public class AttributeInputComponent extends UIInput {
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	@Override
-	public void encodeChildren(FacesContext context) throws IOException {
+	public void encodeChildren(FacesContext context) {
 		// do not render children
 	}
 
@@ -162,15 +162,19 @@ public class AttributeInputComponent extends UIInput {
 	@SupportedType(DatatypeType.COMPOUNDED)
 	public static class CompoundedRenderer implements Renderer {
 
+		@SuppressWarnings("unused")
 		public void decode(FacesContext context, UIInput inputComponent) {
+			// empty
 		}
 
-		public void encodeBegin(FacesContext context, UIInput inputComponent)
-				throws IOException {
+		@SuppressWarnings("unused")
+		public void encodeBegin(FacesContext context, UIInput inputComponent) {
+			// empty
 		}
 
-		public void encodeEnd(FacesContext context, UIInput inputComponent)
-				throws IOException {
+		@SuppressWarnings("unused")
+		public void encodeEnd(FacesContext context, UIInput inputComponent) {
+			// empty
 		}
 	}
 
@@ -198,8 +202,8 @@ public class AttributeInputComponent extends UIInput {
 			}
 		}
 
-		public void encodeEnd(FacesContext context, UIInput inputComponent)
-				throws IOException {
+		public void encodeEnd(FacesContext context, @SuppressWarnings("unused")
+		UIInput inputComponent) throws IOException {
 			ResponseWriter responseWriter = context.getResponseWriter();
 
 			responseWriter.endElement("input");
@@ -253,8 +257,8 @@ public class AttributeInputComponent extends UIInput {
 			}
 		}
 
-		public void encodeEnd(FacesContext context, UIInput inputComponent)
-				throws IOException {
+		public void encodeEnd(FacesContext context, @SuppressWarnings("unused")
+		UIInput inputComponent) throws IOException {
 			ResponseWriter responseWriter = context.getResponseWriter();
 			responseWriter.endElement("input");
 		}
@@ -316,8 +320,8 @@ public class AttributeInputComponent extends UIInput {
 			}
 		}
 
-		public void encodeEnd(FacesContext context, UIInput inputComponent)
-				throws IOException {
+		public void encodeEnd(FacesContext context, @SuppressWarnings("unused")
+		UIInput inputComponent) throws IOException {
 			ResponseWriter responseWriter = context.getResponseWriter();
 			responseWriter.endElement("input");
 		}
@@ -436,8 +440,8 @@ public class AttributeInputComponent extends UIInput {
 			return clientId + ".year";
 		}
 
-		public void encodeEnd(FacesContext context, UIInput inputComponent)
-				throws IOException {
+		public void encodeEnd(FacesContext context, @SuppressWarnings("unused")
+		UIInput inputComponent) throws IOException {
 			ResponseWriter responseWriter = context.getResponseWriter();
 			responseWriter.endElement("span");
 		}
@@ -593,8 +597,8 @@ public class AttributeInputComponent extends UIInput {
 			return true;
 		}
 
-		public void encodeEnd(FacesContext context, UIInput inputComponent)
-				throws IOException {
+		public void encodeEnd(FacesContext context, @SuppressWarnings("unused")
+		UIInput inputComponent) throws IOException {
 			ResponseWriter responseWriter = context.getResponseWriter();
 
 			responseWriter.endElement("input");

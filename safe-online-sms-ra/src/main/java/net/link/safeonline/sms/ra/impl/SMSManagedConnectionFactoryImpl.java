@@ -39,21 +39,22 @@ public class SMSManagedConnectionFactoryImpl implements
 		this.serialPorts = new ArrayList<String>();
 	}
 
-	public Object createConnectionFactory() throws ResourceException {
+	public Object createConnectionFactory() {
 		throw new UnsupportedOperationException(
 				"Cannot be used in unmanaged env");
 	}
 
-	public Object createConnectionFactory(ConnectionManager connectionManager)
-			throws ResourceException {
+	public Object createConnectionFactory(ConnectionManager connectionManager) {
 		LOG.debug("Creating a ConnectionFactory");
 		return new SMSConnectionFactoryImpl(connectionManager, this);
 	}
 
-	public ManagedConnection createManagedConnection(Subject arg0,
+	public ManagedConnection createManagedConnection(
+			@SuppressWarnings("unused")
+			Subject arg0, @SuppressWarnings("unused")
 			ConnectionRequestInfo arg1) throws ResourceException {
 		LOG.debug("Creating a managed connection");
-		if (serialPorts.size() == 0) {
+		if (this.serialPorts.size() == 0) {
 			LOG.debug("Failed");
 			throw new ResourceAllocationException();
 		}
@@ -64,18 +65,20 @@ public class SMSManagedConnectionFactoryImpl implements
 		return managedConnection;
 	}
 
-	public PrintWriter getLogWriter() throws ResourceException {
+	public PrintWriter getLogWriter() {
 		return null;
 	}
 
-	public void setLogWriter(PrintWriter arg0) throws ResourceException {
+	@SuppressWarnings("unused")
+	public void setLogWriter(PrintWriter arg0) {
 		// empty
 	}
 
 	@SuppressWarnings("unchecked")
-	public ManagedConnection matchManagedConnections(Set set, Subject subject,
-			ConnectionRequestInfo connectionRequestInfo)
-			throws ResourceException {
+	public ManagedConnection matchManagedConnections(Set set,
+			@SuppressWarnings("unused")
+			Subject subject, @SuppressWarnings("unused")
+			ConnectionRequestInfo connectionRequestInfo) {
 		LOG.debug("Matching connections");
 		return (ManagedConnection) set.iterator().next();
 	}

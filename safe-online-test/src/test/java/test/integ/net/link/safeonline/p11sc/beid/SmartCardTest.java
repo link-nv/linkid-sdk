@@ -9,7 +9,6 @@ package test.integ.net.link.safeonline.p11sc.beid;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -177,6 +176,9 @@ public class SmartCardTest extends TestCase {
 		}
 		assertNotNull(existingDriverLocation);
 		LOG.debug("existing driver location: " + existingDriverLocation);
+		if (null == existingDriverLocation) {
+			throw new Exception("driver location is null");
+		}
 		PKCS11 pkcs11 = PKCS11.getInstance(existingDriverLocation
 				.getAbsolutePath(), null, false);
 		assertNotNull(pkcs11);
@@ -461,18 +463,19 @@ public class SmartCardTest extends TestCase {
 		moduleMap.clear();
 	}
 
-	private static class TestCallbackHandler implements CallbackHandler {
+	static class TestCallbackHandler implements CallbackHandler {
 
-		private static final Log LOG = LogFactory
+		private static final Log HandlerLOG = LogFactory
 				.getLog(TestCallbackHandler.class);
 
-		public void handle(Callback[] callbacks) throws IOException,
-				UnsupportedCallbackException {
+		public void handle(Callback[] callbacks)
+				throws UnsupportedCallbackException {
 			for (Callback callback : callbacks) {
-				LOG.debug("callback type: " + callback.getClass().getName());
+				HandlerLOG.debug("callback type: "
+						+ callback.getClass().getName());
 				if (callback instanceof PasswordCallback) {
 					PasswordCallback passwordCallback = (PasswordCallback) callback;
-					LOG.debug("password required");
+					HandlerLOG.debug("password required");
 					char[] pin = getPin();
 					if (null == pin) {
 						throw new UnsupportedCallbackException(callback,
@@ -484,7 +487,7 @@ public class SmartCardTest extends TestCase {
 		}
 	}
 
-	private static char[] getPin() {
+	static char[] getPin() {
 		JLabel promptLabel = new JLabel("Give your PIN:");
 
 		JPasswordField passwordField = new JPasswordField(8);

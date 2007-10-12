@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class IdentityAppletTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(IdentityAppletTest.class);
+	static final Log LOG = LogFactory.getLog(IdentityAppletTest.class);
 
 	private static class AppletFrame extends JFrame {
 
@@ -53,7 +53,9 @@ public class IdentityAppletTest extends TestCase {
 			this.parameters.put(name, value);
 		}
 
+		@SuppressWarnings("unused")
 		public void appletResize(int width, int height) {
+			// empty
 		}
 
 		public AppletContext getAppletContext() {

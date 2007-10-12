@@ -33,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AttributeValidator implements Validator {
 
-	private static final Log LOG = LogFactory.getLog(AttributeValidator.class);
+	static final Log LOG = LogFactory.getLog(AttributeValidator.class);
 
 	public static final String VALIDATOR_ID = "net.link.validator.attribute";
 

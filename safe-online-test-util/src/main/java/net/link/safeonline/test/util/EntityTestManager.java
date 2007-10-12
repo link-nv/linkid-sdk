@@ -175,46 +175,47 @@ public class EntityTestManager {
 			this.field = getEntityManagerField(object);
 		}
 
-		private Field getEntityManagerField(Object object) {
-			Class<?> clazz = object.getClass();
+		private Field getEntityManagerField(Object target) {
+			Class<?> clazz = target.getClass();
 			Field[] fields = clazz.getDeclaredFields();
-			for (Field field : fields) {
-				PersistenceContext persistenceContextAnnotation = field
+			for (Field currentField : fields) {
+				PersistenceContext persistenceContextAnnotation = currentField
 						.getAnnotation(PersistenceContext.class);
 				if (null == persistenceContextAnnotation) {
 					continue;
 				}
-				if (false == EntityManager.class.isAssignableFrom(field
+				if (false == EntityManager.class.isAssignableFrom(currentField
 						.getType())) {
 					throw new RuntimeException("field type not correct");
 				}
-				field.setAccessible(true);
-				return field;
+				currentField.setAccessible(true);
+				return currentField;
 			}
 			throw new RuntimeException("no entity manager field found");
 		}
 
-		private static final Log LOG = LogFactory
+		private static final Log interceptorLOG = LogFactory
 				.getLog(TransactionMethodInterceptor.class);
 
-		public Object intercept(Object obj, Method method, Object[] args,
-				MethodProxy proxy) throws Throwable {
+		public Object intercept(@SuppressWarnings("unused")
+		Object obj, Method method, Object[] args, @SuppressWarnings("unused")
+		MethodProxy proxy) throws Throwable {
 			EntityManager entityManager = this.entityManagerFactory
 					.createEntityManager();
 			try {
 				this.field.set(this.object, entityManager);
-				LOG.debug("begin transaction");
+				interceptorLOG.debug("begin transaction");
 				entityManager.getTransaction().begin();
 				Object result = method.invoke(this.object, args);
-				LOG.debug("commit transaction");
+				interceptorLOG.debug("commit transaction");
 				entityManager.getTransaction().commit();
 				return result;
 			} catch (InvocationTargetException e) {
-				LOG.debug("rollback transaction");
+				interceptorLOG.debug("rollback transaction");
 				entityManager.getTransaction().rollback();
 				throw e.getTargetException();
 			} catch (Exception e) {
-				LOG.error("exception received");
+				interceptorLOG.error("exception received");
 				throw e;
 			} finally {
 				entityManager.close();

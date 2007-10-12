@@ -12,13 +12,11 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -114,7 +112,7 @@ public class ServletLoginFilterTest extends TestCase {
 
 		private static final long serialVersionUID = 1L;
 
-		private static final Log LOG = LogFactory
+		private static final Log testServletLOG = LogFactory
 				.getLog(ServletLoginFilterTestServlet.class);
 
 		private static boolean invoked;
@@ -153,12 +151,12 @@ public class ServletLoginFilterTest extends TestCase {
 
 		@Override
 		protected void doGet(HttpServletRequest request,
-				HttpServletResponse response) throws ServletException,
-				IOException {
-			LOG.debug("doGet");
+				@SuppressWarnings("unused")
+				HttpServletResponse response) {
+			testServletLOG.debug("doGet");
 			ServletLoginFilterTestServlet.invoked = true;
 			Principal principal = request.getUserPrincipal();
-			LOG.debug("user principal: " + principal);
+			testServletLOG.debug("user principal: " + principal);
 			ServletLoginFilterTestServlet.lastUserPrincipal = principal;
 
 			for (String expectedRole : ServletLoginFilterTestServlet.expectedRoles

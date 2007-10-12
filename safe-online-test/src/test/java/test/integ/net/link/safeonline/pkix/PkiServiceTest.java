@@ -53,14 +53,14 @@ public class PkiServiceTest extends TestCase {
 
 		this.initialContext = IntegrationTestUtils.getInitialContext();
 		IntegrationTestUtils.setupLoginConfig();
-		this.pkiService = getPkiService(initialContext);
-		this.subjectService = getSubjectService(initialContext);
+		this.pkiService = getPkiService(this.initialContext);
+		this.subjectService = getSubjectService(this.initialContext);
 	}
 
 	public void testTrustDomain() throws Exception {
 		// setup
 		String trustDomainName = UUID.randomUUID().toString();
-		SubjectEntity adminSubject = subjectService
+		SubjectEntity adminSubject = this.subjectService
 				.findSubjectFromUserName("admin");
 
 		// operate
@@ -120,7 +120,7 @@ public class PkiServiceTest extends TestCase {
 		String dn = "CN=Test";
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, dn);
-		SubjectEntity adminSubject = subjectService
+		SubjectEntity adminSubject = this.subjectService
 				.findSubjectFromUserName("admin");
 
 		// operate: add trust domain

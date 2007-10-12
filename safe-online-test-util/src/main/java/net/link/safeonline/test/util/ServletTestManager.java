@@ -51,11 +51,11 @@ public class ServletTestManager {
 		return setUp(servletClass, servletInitParameters, null, null, null);
 	}
 
-	private Session session;
+	Session session;
 
 	private class LocalHashSessionManager extends HashSessionManager {
 
-		private final Log LOG = LogFactory
+		private final Log managerLOG = LogFactory
 				.getLog(LocalHashSessionManager.class);
 
 		private final Map<String, Object> initialSessionAttributes;
@@ -67,18 +67,18 @@ public class ServletTestManager {
 
 		@Override
 		protected Session newSession(HttpServletRequest request) {
-			LOG.debug("newSession");
-			Session session = (Session) super.newSession(request);
+			this.managerLOG.debug("newSession");
+			Session newSession = (Session) super.newSession(request);
 			if (null != this.initialSessionAttributes) {
 				for (Map.Entry<String, Object> entry : this.initialSessionAttributes
 						.entrySet()) {
 					String key = entry.getKey();
 					Object value = entry.getValue();
-					session.setAttribute(key, value);
+					newSession.setAttribute(key, value);
 				}
 			}
-			ServletTestManager.this.session = session;
-			return session;
+			ServletTestManager.this.session = newSession;
+			return newSession;
 		}
 	}
 
@@ -157,6 +157,7 @@ public class ServletTestManager {
 		return attribute;
 	}
 
+	@SuppressWarnings("unused")
 	public void setSessionAttribute(String name, Object value) {
 		if (null == this.session) {
 			return;

@@ -36,6 +36,7 @@ public class TestSOAPMessageContext implements SOAPMessageContext {
 		this.properties.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, outbound);
 	}
 
+	@SuppressWarnings("unused")
 	public Object[] getHeaders(QName name, JAXBContext context, boolean required) {
 		return null;
 	}
@@ -52,20 +53,25 @@ public class TestSOAPMessageContext implements SOAPMessageContext {
 		this.message = message;
 	}
 
+	@SuppressWarnings("unused")
 	public Scope getScope(String scope) {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public void setScope(String scopeName, Scope scope) {
+		// empty
 	}
 
 	public void clear() {
 	}
 
+	@SuppressWarnings("unused")
 	public boolean containsKey(Object key) {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	public boolean containsValue(Object value) {
 		return false;
 	}
@@ -91,9 +97,11 @@ public class TestSOAPMessageContext implements SOAPMessageContext {
 		return this.properties.put(key, value);
 	}
 
+	@SuppressWarnings("unused")
 	public void putAll(Map<? extends String, ? extends Object> t) {
 	}
 
+	@SuppressWarnings("unused")
 	public Object remove(Object key) {
 		return null;
 	}

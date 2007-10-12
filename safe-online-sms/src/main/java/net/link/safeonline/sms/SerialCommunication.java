@@ -51,37 +51,39 @@ public class SerialCommunication {
 			CommPortIdentifier portId = (CommPortIdentifier) portList
 					.nextElement();
 
-			if (portId.getName().equals(serialPortName)) {
-				LOG.debug("Found port " + serialPortName);
+			if (portId.getName().equals(this.serialPortName)) {
+				LOG.debug("Found port " + this.serialPortName);
 
 				portFound = true;
 
 				try {
-					serialPort = (SerialPort) portId.open("GSMModem", 2000);
+					this.serialPort = (SerialPort) portId
+							.open("GSMModem", 2000);
 				} catch (PortInUseException e) {
 					LOG.debug("Port in use.");
 					throw new SerialCommunicationsException();
 				}
 
 				try {
-					outputStream = serialPort.getOutputStream();
-					br = new BufferedReader(new InputStreamReader(serialPort
-							.getInputStream()));
+					this.outputStream = this.serialPort.getOutputStream();
+					this.br = new BufferedReader(new InputStreamReader(
+							this.serialPort.getInputStream()));
 				} catch (IOException e) {
 					LOG.debug("Error opening input or output stream");
 					throw new SerialCommunicationsException();
 				}
 
 				try {
-					serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,
-							SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+					this.serialPort.setSerialPortParams(9600,
+							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+							SerialPort.PARITY_NONE);
 				} catch (UnsupportedCommOperationException e) {
 					LOG.debug("Could not set port parameters");
 					throw new SerialCommunicationsException();
 				}
 
 				try {
-					serialPort.notifyOnOutputEmpty(true);
+					this.serialPort.notifyOnOutputEmpty(true);
 				} catch (Exception e) {
 					LOG.debug("Error setting event notification");
 					throw new SerialCommunicationsException();
@@ -91,13 +93,13 @@ public class SerialCommunication {
 		}
 
 		if (!portFound) {
-			LOG.debug("port " + serialPortName + " not found.");
+			LOG.debug("port " + this.serialPortName + " not found.");
 			throw new SerialCommunicationsException();
 		}
 	}
 
 	public void close() {
-		serialPort.close();
+		this.serialPort.close();
 	}
 
 	public void write(String message) throws SerialCommunicationsException {
@@ -133,7 +135,7 @@ public class SerialCommunication {
 	}
 
 	public String getSerialPortName() {
-		return serialPortName;
+		return this.serialPortName;
 	}
 
 	public void setSerialPortName(String serialPortName) {

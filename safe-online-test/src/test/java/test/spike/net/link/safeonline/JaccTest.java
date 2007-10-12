@@ -12,13 +12,12 @@ import java.util.UUID;
 
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
-import javax.security.jacc.PolicyContextException;
 import javax.security.jacc.PolicyContextHandler;
+
+import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import junit.framework.TestCase;
 
 public class JaccTest extends TestCase {
 
@@ -61,7 +60,7 @@ public class JaccTest extends TestCase {
 		}
 	}
 
-	private static class TestSubjectPolicyContextHandler implements
+	static class TestSubjectPolicyContextHandler implements
 			PolicyContextHandler {
 
 		private static final String SUBJECT_CONTEXT_KEY = "javax.security.auth.Subject.container";
@@ -72,16 +71,16 @@ public class JaccTest extends TestCase {
 			this.subject = subject;
 		}
 
-		public Object getContext(String key, Object data)
-				throws PolicyContextException {
+		@SuppressWarnings("unused")
+		public Object getContext(String key, Object data) {
 			return this.subject;
 		}
 
-		public String[] getKeys() throws PolicyContextException {
+		public String[] getKeys() {
 			return new String[] { SUBJECT_CONTEXT_KEY };
 		}
 
-		public boolean supports(String key) throws PolicyContextException {
+		public boolean supports(String key) {
 			return SUBJECT_CONTEXT_KEY.equals(key);
 		}
 	}
