@@ -303,9 +303,6 @@
 
     <!-- The EJBDeployer needs the JTA transaction manager service -->
     <depends optional-attribute-name="TransactionManagerServiceName">jboss:service=TransactionManager</depends>
-    <!-- The dynamic class loading simple web server -->
-    <depends optional-attribute-name="WebServiceName">jboss:service=WebService</depends>
-    
   </mbean>
 
 </server>

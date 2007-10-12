@@ -18,9 +18,7 @@
 				<exclude>
 					server/default/deploy/jmx-console.war/**
 				</exclude>
-				<exclude>
-					server/default/deploy/management/console-mgr.sar/**
-				</exclude>
+				<exclude>server/default/deploy/management/**</exclude>
 				<exclude>
 					server/default/deploy/http-invoker.sar/**
 				</exclude>
@@ -30,6 +28,9 @@
 				</exclude>
 				<exclude>
 					server/default/deploy/monitoring-service.xml
+				</exclude>
+				<exclude>
+					server/default/lib/jboss-monitoring.jar
 				</exclude>
 				<exclude>
 					server/default/deploy/jbossws.sar/jbossws-context.war
@@ -45,6 +46,48 @@
 				</exclude>
 				<exclude>
 					server/default/deploy/bsh-deployer.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/mail-service.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/cache-invalidation-service.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/client-deployer-service.xml
+				</exclude>
+				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
+				<exclude>server/default/lib/hsqldb.jar</exclude>
+				<exclude>server/default/lib/hsqldb-plugin.jar</exclude>
+				<exclude>
+					server/default/deploy/jms/hsqldb-jdbc-state-service.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/properties-service.xml
+				</exclude>
+				<exclude>
+					server/default/lib/properties-plugin.jar
+				</exclude>
+				<exclude>
+					server/default/deploy/scheduler-service.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/schedule-manager-service.xml
+				</exclude>
+				<exclude>
+					server/default/lib/scheduler-plugin.jar
+				</exclude>
+				<exclude>
+					server/default/lib/scheduler-plugin-example.jar
+				</exclude>
+				<exclude>
+					server/default/deploy/uuid-key-generator.sar/**
+				</exclude>
+				<exclude>
+					server/default/lib/autonumber-plugin.jar
+				</exclude>
+				<exclude>
+					server/default/conf/xmdesc/JNDIView-xmbean.xml
 				</exclude>
 				<exclude>
 					server/default/conf/props/*.properties
