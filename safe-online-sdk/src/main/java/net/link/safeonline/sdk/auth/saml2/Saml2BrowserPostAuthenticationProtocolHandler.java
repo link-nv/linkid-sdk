@@ -34,11 +34,13 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.Log4JLogChute;
 import org.apache.xml.security.utils.Base64;
+import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Subject;
@@ -232,6 +234,9 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 
 	public String finalizeAuthentication(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) throws ServletException {
+
+		DateTime now = new DateTime();
+
 		if (false == "POST".equals(httpRequest.getMethod())) {
 			return null;
 		}
@@ -279,6 +284,14 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		}
 
 		Assertion assertion = assertions.get(0);
+
+		Conditions conditions = assertion.getConditions();
+		DateTime notBefore = conditions.getNotBefore();
+		DateTime notOnOrAfter = conditions.getNotOnOrAfter();
+		if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
+			throw new ServletException("invalid SAML message timeframe");
+		}
+
 		Subject subject = assertion.getSubject();
 		if (null == subject) {
 			throw new ServletException("missing Assertion Subject");

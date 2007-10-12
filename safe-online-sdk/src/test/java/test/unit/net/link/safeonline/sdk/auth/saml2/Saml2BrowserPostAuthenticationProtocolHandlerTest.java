@@ -43,6 +43,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -177,8 +178,14 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
 		InputStream xmlInputStream = Saml2BrowserPostAuthenticationProtocolHandlerTest.class
 				.getResourceAsStream("/test-saml-response.xml");
+		String xmlInputString = IOUtils.toString(xmlInputStream);
+		DateTime now = new DateTime();
+		xmlInputString = replaceAll("replaceWithCurrentTime", now.toString(),
+				xmlInputString);
+		xmlInputString = replaceAll("replaceWithCurrentPlusValidityTime", now
+				.plusMinutes(10).toString(), xmlInputString);
 		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-		IOUtils.copy(xmlInputStream, byteOutputStream);
+		IOUtils.copy(IOUtils.toInputStream(xmlInputString), byteOutputStream);
 		byte[] samlResponse = byteOutputStream.toByteArray();
 		byte[] encodedSamlResponse = Base64.encodeBase64(samlResponse);
 		NameValuePair[] data = { new NameValuePair("SAMLResponse", new String(
@@ -197,5 +204,21 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 				.getSessionAttribute("username");
 		LOG.debug("authenticated username: " + username);
 		assertNotNull(username);
+	}
+
+	private static String replaceAll(String oldStr, String newStr,
+			String inString) {
+		int start;
+		while (true) {
+			start = inString.indexOf(oldStr);
+			if (start == -1)
+				break;
+			StringBuffer sb = new StringBuffer();
+			sb.append(inString.substring(0, start));
+			sb.append(newStr);
+			sb.append(inString.substring(start + oldStr.length()));
+			inString = sb.toString();
+		}
+		return inString;
 	}
 }
