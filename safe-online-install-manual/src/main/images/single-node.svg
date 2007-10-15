@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="12cm"
+   height="12cm"
+   id="svg2160"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docname="single-node.svg"
+   sodipodi:docbase="/home/fcorneli/SafeOnline/safe-online/safe-online-install-manual/src/main/images"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <metadata
+     id="metadata2173">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs2171">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3173">
+      <stop
+         style="stop-color:#0000ff;stop-opacity:1;"
+         offset="0"
+         id="stop3175" />
+      <stop
+         style="stop-color:#0000ff;stop-opacity:0;"
+         offset="1"
+         id="stop3177" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3141">
+      <stop
+         id="stop3163"
+         offset="0"
+         style="stop-color:#0000ff;stop-opacity:0.00392157;" />
+      <stop
+         style="stop-color:#0000ff;stop-opacity:0;"
+         offset="0.5"
+         id="stop3165" />
+      <stop
+         style="stop-color:#0000ff;stop-opacity:0;"
+         offset="1"
+         id="stop3145" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3154">
+      <stop
+         style="stop-color:#0000ff;stop-opacity:1;"
+         offset="0"
+         id="stop3156" />
+      <stop
+         style="stop-color:#0000ff;stop-opacity:0;"
+         offset="1"
+         id="stop3158" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3154"
+       id="radialGradient3162"
+       cx="209.46429"
+       cy="204.24075"
+       fx="209.46429"
+       fy="204.24075"
+       r="173.10405"
+       gradientTransform="matrix(1,0,0,1.0844921,-2.0894147,-16.212027)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3154"
+       id="linearGradient3147"
+       x1="77.928902"
+       y1="150.75339"
+       x2="341.58459"
+       y2="150.75339"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3173"
+       id="linearGradient3179"
+       x1="77.9289"
+       y1="297.89278"
+       x2="341.5846"
+       y2="297.89278"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="926"
+     inkscape:window-width="1153"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="0.95720373"
+     inkscape:cx="212.59842"
+     inkscape:cy="212.59842"
+     inkscape:window-x="0"
+     inkscape:window-y="49"
+     inkscape:current-layer="g2162" />
+  <g
+     style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"
+     id="g2162">
+    <rect
+       style="opacity:0.7;fill:url(#radialGradient3162);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3152"
+       width="337.30777"
+       height="366.55963"
+       x="38.720989"
+       y="22.005642"
+       inkscape:transform-center-y="286.26561"
+       inkscape:transform-center-x="-21.698165" />
+    <rect
+       style="opacity:0.7;fill:url(#linearGradient3147);fill-opacity:1.0;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2175"
+       width="260.1124"
+       height="127.43427"
+       x="79.700554"
+       y="87.036255"
+       inkscape:transform-center-y="99.520088"
+       inkscape:transform-center-x="-16.732381" />
+    <rect
+       style="opacity:0.7;fill:url(#linearGradient3179);fill-opacity:1.0;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3164"
+       width="260.1124"
+       height="127.43427"
+       x="79.700554"
+       y="234.17564"
+       inkscape:transform-center-y="99.520088"
+       inkscape:transform-center-x="-16.732381" />
+    <text
+       xml:space="preserve"
+       style="font-size:25.06952095px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="63.471344"
+       y="46.032516"
+       id="text3166"
+       transform="scale(0.8259739,1.210692)"><tspan
+         sodipodi:role="line"
+         id="tspan3168"
+         x="63.471344"
+         y="46.032516">Hosting operating system</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:45.49119568px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="193.43378"
+       y="123.42149"
+       id="text3170"
+       transform="scale(0.7075139,1.4133998)"><tspan
+         sodipodi:role="line"
+         id="tspan3172"
+         x="193.43378"
+         y="123.42149">JBoss AS</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:57.4683342px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="143.64249"
+       y="292.36353"
+       id="text3174"
+       transform="scale(0.9106568,1.0981086)"><tspan
+         sodipodi:role="line"
+         id="tspan3176"
+         x="143.64249"
+         y="292.36353">DBMS</tspan></text>
+  </g>
+</svg>

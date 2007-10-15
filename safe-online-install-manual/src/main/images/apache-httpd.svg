@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="/home/fcorneli/SafeOnline/safe-online/safe-online-install-manual/src/main/images"
+   sodipodi:docname="apache-httpd.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path4131"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3138">
+      <stop
+         style="stop-color:#0000ff;stop-opacity:1;"
+         offset="0"
+         id="stop3140" />
+      <stop
+         style="stop-color:#0000ff;stop-opacity:0;"
+         offset="1"
+         id="stop3142" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3138"
+       id="linearGradient3148"
+       x1="207.08127"
+       y1="77.56498"
+       x2="264.13739"
+       y2="77.56498"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3138"
+       id="linearGradient4327"
+       gradientUnits="userSpaceOnUse"
+       x1="207.08127"
+       y1="77.56498"
+       x2="264.13739"
+       y2="77.56498"
+       gradientTransform="translate(233.16831,-1.7738037e-6)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3138"
+       id="linearGradient4331"
+       gradientUnits="userSpaceOnUse"
+       x1="207.08127"
+       y1="77.56498"
+       x2="264.13739"
+       y2="77.56498"
+       gradientTransform="translate(466.33662,-1.8322754e-7)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="375"
+     inkscape:cy="859.51232"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:window-width="1389"
+     inkscape:window-height="872"
+     inkscape:window-x="0"
+     inkscape:window-y="49" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:0.7;fill:url(#linearGradient3148);fill-opacity:1.0;stroke:#000000;stroke-width:3.54330707;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2160"
+       width="168.57143"
+       height="94.285713"
+       x="33.245823"
+       y="30.422121" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.654;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;marker-start:none;marker-end:url(#Arrow1Lend);stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 201.0537,79.585282 L 264.62663,79.585282"
+       id="path3150"
+       inkscape:connector-type="polyline" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.65400004;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow1Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline"
+       d="M 433.89386,75.544668 L 497.46679,75.544668"
+       id="path4323"
+       inkscape:connector-type="polyline" />
+    <rect
+       style="opacity:0.7;fill:url(#linearGradient4327);fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4325"
+       width="168.57143"
+       height="94.285713"
+       x="266.41412"
+       y="30.422121" />
+    <rect
+       style="opacity:0.7;fill:url(#linearGradient4331);fill-opacity:1;stroke:#000000;stroke-width:3.54330707;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4329"
+       width="168.57143"
+       height="94.285713"
+       x="499.58246"
+       y="30.422121" />
+    <text
+       xml:space="preserve"
+       style="font-size:32.46343231px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="61.803616"
+       y="60.989578"
+       id="text4333"
+       transform="scale(0.6688986,1.4949949)"><tspan
+         sodipodi:role="line"
+         id="tspan4335"
+         x="61.803616"
+         y="60.989578">Apache Httpd</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:45.11274338px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="524.62543"
+       y="57.21022"
+       id="text4337"
+       transform="scale(0.5596945,1.7866889)"><tspan
+         sodipodi:role="line"
+         id="tspan4339"
+         x="524.62543"
+         y="57.21022">JBoss AS</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:46.68710327px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="838.77667"
+       y="62.801773"
+       id="text4341"
+       transform="scale(0.6338207,1.5777332)"><tspan
+         sodipodi:role="line"
+         id="tspan4343"
+         x="838.77667"
+         y="62.801773">MySQL</tspan></text>
+  </g>
+</svg>

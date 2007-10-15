@@ -19,10 +19,10 @@
          APR (HTTP/AJP) Connector: /docs/apr.html
          Define a non-SSL HTTP/1.1 Connector on port 8080
     -->
-    <Connector port="${safe-online.host.port}" address="${jboss.bind.address}"    
+    <Connector port="${safe-online.jboss.host.port}" address="${jboss.bind.address}"    
          maxThreads="250" maxHttpHeaderSize="8192"
          emptySessionPath="true" protocol="HTTP/1.1"
-         enableLookups="false" redirectPort="${safe-online.host.port.ssl}" acceptCount="100"
+         enableLookups="false" redirectPort="${safe-online.jboss.host.port.ssl}" acceptCount="100"
          connectionTimeout="20000" disableUploadTimeout="true" />
 
     <!-- Define a SSL HTTP/1.1 Connector on port 8443
@@ -30,7 +30,7 @@
          connector should be using the OpenSSL style configuration
          described in the APR documentation -->
     
-    <Connector port="${safe-online.host.port.ssl}" protocol="HTTP/1.1" SSLEnabled="true"
+    <Connector port="${safe-online.jboss.host.port.ssl}" protocol="HTTP/1.1" SSLEnabled="true"
                maxThreads="150" scheme="https" secure="true"
                clientAuth="false" sslProtocol="TLS"
                keystoreFile="${jboss.server.home.dir}/conf/ssl.jks"
@@ -38,7 +38,7 @@
 
     <!-- Define an AJP 1.3 Connector on port 8009 -->
     <Connector port="8009" address="${jboss.bind.address}" protocol="AJP/1.3"
-         emptySessionPath="true" enableLookups="false" redirectPort="${safe-online.host.port.ssl}" />
+         emptySessionPath="true" enableLookups="false" redirectPort="${safe-online.jboss.host.port.ssl}" />
 
       <Engine name="jboss.web" defaultHost="localhost">
 

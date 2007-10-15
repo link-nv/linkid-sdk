@@ -35,39 +35,107 @@
 			identity data. It brings to users a central identity
 			management.
 		</para>
+		<para>
+			OLAS offers several services to applications:
+			<orderedlist>
+				<listitem>
+					<para>
+						Authentication service: if an application calls
+						this service the user is authenticated by OLAS
+						using one of his configured devices. Upon
+						success the application is informed and can
+						grant access to the user.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Attribute service: an application can query the
+						user’s attributes and use their values in its
+						business processes. Attributes can only be read
+						if the user has given explicit permission to do
+						so.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Data service: an application can push attributes
+						to the user’s profile. These attributes could
+						then be used by other applications (if allowed
+						by the user and the providing application).
+					</para>
+				</listitem>
+			</orderedlist>
+		</para>
 		<section>
 			<title>Java</title>
-			<para>OLAS was written in Java.</para>
+			<para>
+				OLAS was written in the Java programming language. This
+				means that OLAS can be hosted on every platform that has
+				a Java JVM available. This also means that OLAS is
+				completely independent from the hosting operating
+				system. The different JVM vendors that have been tested
+				for hosting the OLAS service are listed below.
+			</para>
 			<section>
 				<title>Sun JDK 1.5</title>
-				<para>Sun JDK 1.5.0_13.</para>
-				<para>What about BEA JRockit?</para>
+				<para>
+					OLAS is known to run without any problems on the Sun
+					JDK 1.5.0_13. This JVM can be downloaded from:
+					<programlisting>
+						http://java.sun.com/
+					</programlisting>
+				</para>
+			</section>
+			<section>
+				<title>BEA JRockit 5.0</title>
+				<para>
+					OLAS is known to run without any problems on BEA
+					JRockit 5.0 R27.3.1. This JVM can be downloaded
+					from:
+				</para>
+				<programlisting>http://bea.com/</programlisting>
 			</section>
 		</section>
 		<section>
 			<title>JavaEE Application Server</title>
 			<para>
 				OLAS is a JavaEE application that requires a JavaEE
-				application server as runtime environment.
+				application server as runtime environment. JavaEE is a
+				widely used platform for Java server programming. The
+				different JavaEE application servers that have been
+				tested for hosting the OLAS product are listed below.
 			</para>
 			<section>
 				<title>JBoss Application Server</title>
 				<para>
-					OLAS uses JBoss AS 4.2 as application server.
+					OLAS uses JBoss AS 4.2 as application server. This
+					application server can be downloaded from:
+					<programlisting>
+						http://labs.jboss.com/jbossas/downloads/
+					</programlisting>
+					As OLAS comes pre-packaged with the JBoss
+					application server one does not need to install
+					JBoss AS manually. This has been done because the
+					JBoss Application Server needs some OLAS specific
+					tweaking.
 				</para>
 			</section>
 		</section>
 		<section>
 			<title>Database</title>
 			<para>
-				OLAS is using the JPA J2EE layer for persistence. Before
+				OLAS is using the Java Persistence API (JPA) layer for
+				persistence. Because of the usage of this abstraction
+				layer, different DBMS products can be supported. Before
 				being able to start the OLAS application one needs to
 				initialize the OLAS database. This can be done via the
-				OLAS command line interface (CLI).
+				OLAS command line interface (CLI). The different
+				database products that are supported by OLAS are listed
+				below.
 			</para>
 			<section>
 				<title>MySQL</title>
-				<para>MySQL 5.0 support.</para>
+				<para>OLAS has explicit support for MySQL 5.0.</para>
 			</section>
 		</section>
 	</chapter>
@@ -75,18 +143,50 @@
 	<chapter id="topology">
 		<title>OLAS Topology</title>
 		<para>
-			Different setup topologies are possible for hosting OLAS
+			Different setup topologies are possible for hosting OLAS.
 		</para>
 		<section>
 			<title>Single node configuration</title>
 			<para>
 				This is the most simple configuration for hosting the
-				OLAS services.
+				OLAS services. Here you run OLAS and the DBMS on the
+				same machine.
+				<mediaobject>
+					<imageobject>
+						<imagedata format="SVG" fileref="single-node.svg" scale="50" scalefit="1"/>
+					</imageobject>
+					<caption>OLAS and DBMS on the same machine.</caption>
+				</mediaobject>
+			</para>
+		</section>
+		<section>
+			<title>Dedicated Database</title>
+			<para>
+				Instead of running the DBMS on the same machine that
+				hosts the OLAS service one can also host the database on
+				a dedicated machine.
 			</para>
 		</section>
 		<section>
 			<title>Apache HTTPD front-end</title>
-			<para>For SSL.</para>
+			<para>If you want to run OLAS on the standard HTTP and SSL port 80 and 433 one has two options:
+			<itemizedlist>
+				<listitem>
+					<para>Run JBoss AS at root privilege.</para>
+				</listitem>
+				<listitem>
+					<para>Put an Apache HTTPD web server in front of JBoss AS.</para>
+				</listitem>
+			</itemizedlist>
+			Next diagram highlights this setup.		
+			<mediaobject>
+					<imageobject>
+						<imagedata format="SVG" fileref="apache-httpd.svg" scale="50" scalefit="1"/>
+					</imageobject>
+					<caption>OLAS using an Apache HTTPD web server as front-end</caption>
+				</mediaobject>
+			When choosing to put an Apache web server in front of JBoss AS one needs to configure
+			</para>
 		</section>
 	</chapter>
 
@@ -104,7 +204,9 @@
 			<para>
 				The OLAS services and web applications are bundled as an
 				EAR.
-				<programlisting>server/default/deploy/SafeOnline.ear</programlisting>
+				<programlisting>
+					server/default/deploy/SafeOnline.ear
+				</programlisting>
 				The EAR contains:
 				<itemizedlist>
 					<listitem>
@@ -125,23 +227,26 @@
 		<title>Command Line Interface</title>
 		<para>
 			The OLAS application comes with a CLI to manage the database
-			schema. If the OLAS application is started without correctly 
-			initializing the database one will receive error messages that 
-			look as follows:
-			</para>
-			<para>
-			<programlisting>ObjectName: persistence.units:ear=SafeOnline.ear,
-  unitName=SafeOnlineEntityManager
-State: FAILED
-Reason: javax.persistence.PersistenceException:
-  org.hibernate.HibernateException: Missing table: access_audit
+			schema. If the OLAS application is started without correctly
+			initializing the database one will receive error messages
+			that look as follows:
+		</para>
+		<para>
+			<programlisting>
+				ObjectName: persistence.units:ear=SafeOnline.ear,
+				unitName=SafeOnlineEntityManager State: FAILED Reason:
+				javax.persistence.PersistenceException:
+				org.hibernate.HibernateException: Missing table:
+				access_audit
 			</programlisting>
 		</para>
 		<section>
 			<title>Running the CLI</title>
 			<para>The OLAS CLI can be started via</para>
 			<para>
-				<command>java -jar server/default/deploy/SafeOnline.ear</command>
+				<command>
+					java -jar server/default/deploy/SafeOnline.ear
+				</command>
 			</para>
 		</section>
 		<section>
@@ -192,11 +297,14 @@ Reason: javax.persistence.PersistenceException:
 	<chapter id="deployment">
 		<title>Deployment</title>
 		<para>Describe how to deploy the OLAS service.</para>
-		<programlisting>cd jboss/bin
-./run.sh
-		</programlisting>
-		<tip><para>If <command>run.sh</command> is not executable one should try:
-		<code>chmod +x run.sh</code></para>
+		<programlisting>cd jboss/bin ./run.sh</programlisting>
+		<tip>
+			<para>
+				If
+				<command>run.sh</command>
+				is not executable one should try:
+				<code>chmod +x run.sh</code>
+			</para>
 		</tip>
 	</chapter>
 </book>

@@ -105,6 +105,12 @@
 				<safe-online.host.port.ssl>
 					8443
 				</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>
+					8080
+				</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>
+					8443
+				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
 			</properties>
 		</profile>
@@ -135,6 +141,12 @@
 				<safe-online.host.port.ssl>
 					8443
 				</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>
+					8080
+				</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>
+					8443
+				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
 			</properties>
 			<modules>
@@ -171,6 +183,12 @@
 				<safe-online.host.port.ssl>
 					8443
 				</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>
+					8080
+				</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>
+					8443
+				</safe-online.jboss.host.port.ssl>
 				<debug.mode>false</debug.mode>
 			</properties>
 			<modules>
@@ -201,10 +219,16 @@
 					validate
 				</safe-online.hibernate.hbm2ddl.auto>
 				<safe-online.host.name>localhost</safe-online.host.name>
-				<safe-online.host.port>8080</safe-online.host.port>
+				<safe-online.host.port>80</safe-online.host.port>
 				<safe-online.host.port.ssl>
-					8443
+					443
 				</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>
+					8080
+				</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>
+					8443
+				</safe-online.jboss.host.port.ssl>
 				<debug.mode>false</debug.mode>
 			</properties>
 			<modules>

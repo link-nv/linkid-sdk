@@ -17,7 +17,7 @@ Apache HTTP Server
  
 ** Mac
  
- Download/install latest {{{www.openssl.org}OpenSSL}} into /usr/local
+ Download/install latest {{{http://www.openssl.org}OpenSSL}} into /usr/local
  IMPORTANT! Version OpenSSL 0.9.8e is needed with Apache 2.2.4
  
  Download/install latest Apache
@@ -44,10 +44,14 @@ openssl req -new -x509 -nodes -out server.crt -keyout server.key
  On Fedora Core the <<<proxy_ajp>>> Apache Module can be configured via <<</etc/httpd/conf.d/proxy_ajp.conf>>>.
  
 +---+
-ProxyPass /safe-online/ ajp://localhost:8009/safe-online/
+ProxyPass /olas/ ajp://localhost:8009/olas/
+ProxyPass /olas-oper/ ajp://localhost:8009/olas-oper/
+ProxyPass /olas-owner/ ajp://localhost:8009/olas-owner/
+ProxyPass /olas-helpdesk/ ajp://localhost:8009/olas-helpdesk/
 ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 +---+
 
  Per default the JBoss Tomcat accepts AJP connections.
  
- The configuration for this is located in <<<$JBOSS_HOME/server/default/deploy/jbossweb-tomcat55.sar/server.xml>>> or <<<$JBOSS_HOME/server/default/deploy/jboss-web.deployer/server.xml>>> on mac.
+ The configuration for this is located in
+ <<<$JBOSS_HOME/server/default/deploy/jboss-web.deployer/server.xml>>>.
