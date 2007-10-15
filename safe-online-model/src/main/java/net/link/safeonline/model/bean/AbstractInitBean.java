@@ -50,6 +50,7 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.entity.UsageAgreementPK;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
@@ -439,12 +440,14 @@ public abstract class AbstractInitBean implements Startable {
 			ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
 					.findApplicationOwner(application.owner);
 			long identityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
+			long usageAgreementVersion = UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION;
 			ApplicationEntity newApplication = this.applicationDAO
 					.addApplication(applicationName, null, applicationOwner,
 							application.allowUserSubscription,
 							application.removable, application.description,
 							application.applicationUrl,
-							application.certificate, identityVersion);
+							application.certificate, identityVersion,
+							usageAgreementVersion);
 			newApplication
 					.setIdentifierMappingAllowed(application.idmappingAccess);
 

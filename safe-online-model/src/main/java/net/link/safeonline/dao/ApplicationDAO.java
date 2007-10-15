@@ -55,7 +55,8 @@ public interface ApplicationDAO {
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable,
 			String description, URL applicationUrl,
-			X509Certificate certificate, long initialIdentityVersion);
+			X509Certificate certificate, long initialIdentityVersion,
+			long usageAgreementVersion);
 
 	/**
 	 * Gives back a list of all application registered within the SafeOnline

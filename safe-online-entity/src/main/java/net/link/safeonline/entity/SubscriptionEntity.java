@@ -82,6 +82,8 @@ public class SubscriptionEntity implements Serializable {
 
 	private Long confirmedIdentityVersion;
 
+	private Long confirmedUsageAgreementVersion;
+
 	private Date lastLogin;
 
 	public SubscriptionEntity() {
@@ -144,6 +146,15 @@ public class SubscriptionEntity implements Serializable {
 
 	public void setConfirmedIdentityVersion(Long confirmedIdentityVersion) {
 		this.confirmedIdentityVersion = confirmedIdentityVersion;
+	}
+
+	public Long getConfirmedUsageAgreementVersion() {
+		return this.confirmedUsageAgreementVersion;
+	}
+
+	public void setConfirmedUsageAgreementVersion(
+			Long confirmedUsageAgreementVersion) {
+		this.confirmedUsageAgreementVersion = confirmedUsageAgreementVersion;
 	}
 
 	public Date getLastLogin() {

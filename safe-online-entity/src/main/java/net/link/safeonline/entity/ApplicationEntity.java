@@ -96,6 +96,8 @@ public class ApplicationEntity implements Serializable {
 
 	private long currentApplicationIdentity;
 
+	private long currentApplicationUsageAgreement;
+
 	private transient X509Certificate certificate;
 
 	private String certificateIdentifier;
@@ -123,26 +125,26 @@ public class ApplicationEntity implements Serializable {
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner) {
-		this(name, applicationOwner, null, null, true, true, null, 0);
+		this(name, applicationOwner, null, null, true, true, null, 0, 0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description) {
-		this(name, applicationOwner, description, null, true, true, null, 0);
+		this(name, applicationOwner, description, null, true, true, null, 0, 0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description,
 			X509Certificate certificate) {
 		this(name, applicationOwner, description, null, true, true,
-				certificate, 0);
+				certificate, 0, 0);
 	}
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
 			X509Certificate certificate) {
 		this(name, friendlyName, applicationOwner, description, null, true,
-				true, certificate, 0);
+				true, certificate, 0, 0);
 	}
 
 	public ApplicationEntity(String name,
@@ -155,32 +157,34 @@ public class ApplicationEntity implements Serializable {
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable) {
 		this(name, null, applicationOwner, null, null, allowUserSubscription,
-				removable, null, 0);
+				removable, null, 0, 0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description,
 			boolean allowUserSubscription, boolean removable) {
 		this(name, applicationOwner, description, null, allowUserSubscription,
-				removable, null, 0);
+				removable, null, 0, 0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description,
 			boolean allowUserSubscription, boolean removable,
-			X509Certificate certificate, long identityVersion) {
+			X509Certificate certificate, long identityVersion,
+			long usageAgreementVersion) {
 		this(name, null, applicationOwner, description, null,
 				allowUserSubscription, removable, certificate, identityVersion,
-				false);
+				usageAgreementVersion, false);
 	}
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
 			boolean allowUserSubscription, boolean removable,
-			X509Certificate certificate, long identityVersion) {
+			X509Certificate certificate, long identityVersion,
+			long usageAgreementVersion) {
 		this(name, friendlyName, applicationOwner, description, null,
 				allowUserSubscription, removable, certificate, identityVersion,
-				false);
+				usageAgreementVersion, false);
 	}
 
 	public ApplicationEntity(String name,
@@ -190,28 +194,29 @@ public class ApplicationEntity implements Serializable {
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, URL applicationUrl) {
-		this(name, applicationOwner, null, applicationUrl, true, true, null, 0);
+		this(name, applicationOwner, null, applicationUrl, true, true, null, 0,
+				0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description,
 			URL applicationUrl) {
 		this(name, applicationOwner, description, applicationUrl, true, true,
-				null, 0);
+				null, 0, 0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description,
 			URL applicationUrl, X509Certificate certificate) {
 		this(name, applicationOwner, description, applicationUrl, true, true,
-				certificate, 0);
+				certificate, 0, 0);
 	}
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
 			URL applicationUrl, X509Certificate certificate) {
 		this(name, friendlyName, applicationOwner, description, applicationUrl,
-				true, true, certificate, 0);
+				true, true, certificate, 0, 0);
 	}
 
 	public ApplicationEntity(String name,
@@ -224,39 +229,42 @@ public class ApplicationEntity implements Serializable {
 			ApplicationOwnerEntity applicationOwner, URL applicationUrl,
 			boolean allowUserSubscription, boolean removable) {
 		this(name, null, applicationOwner, null, applicationUrl,
-				allowUserSubscription, removable, null, 0);
+				allowUserSubscription, removable, null, 0, 0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description,
 			URL applicationUrl, boolean allowUserSubscription, boolean removable) {
 		this(name, applicationOwner, description, applicationUrl,
-				allowUserSubscription, removable, null, 0);
+				allowUserSubscription, removable, null, 0, 0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, String description,
 			URL applicationUrl, boolean allowUserSubscription,
-			boolean removable, X509Certificate certificate, long identityVersion) {
+			boolean removable, X509Certificate certificate,
+			long identityVersion, long usageAgreementVersion) {
 		this(name, null, applicationOwner, description, applicationUrl,
 				allowUserSubscription, removable, certificate, identityVersion,
-				false);
-	}
-
-	public ApplicationEntity(String name, String friendlyName,
-			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, boolean allowUserSubscription,
-			boolean removable, X509Certificate certificate, long identityVersion) {
-		this(name, friendlyName, applicationOwner, description, applicationUrl,
-				allowUserSubscription, removable, certificate, identityVersion,
-				false);
+				usageAgreementVersion, false);
 	}
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
 			URL applicationUrl, boolean allowUserSubscription,
 			boolean removable, X509Certificate certificate,
-			long identityVersion, boolean deviceRestriction) {
+			long identityVersion, long usageAgreementVersion) {
+		this(name, friendlyName, applicationOwner, description, applicationUrl,
+				allowUserSubscription, removable, certificate, identityVersion,
+				usageAgreementVersion, false);
+	}
+
+	public ApplicationEntity(String name, String friendlyName,
+			ApplicationOwnerEntity applicationOwner, String description,
+			URL applicationUrl, boolean allowUserSubscription,
+			boolean removable, X509Certificate certificate,
+			long identityVersion, long usageAgreementVersion,
+			boolean deviceRestriction) {
 		this.name = name;
 		this.friendlyName = friendlyName;
 		this.applicationOwner = applicationOwner;
@@ -417,6 +425,23 @@ public class ApplicationEntity implements Serializable {
 
 	public void setCurrentApplicationIdentity(long currentApplicationIdentity) {
 		this.currentApplicationIdentity = currentApplicationIdentity;
+	}
+
+	/**
+	 * Gives back the current application usage agreement version number. Each
+	 * application can have multiple usage agreement identities. Each
+	 * application usage agreement has a version number. This field marks the
+	 * currently active application usage agreement version.
+	 * 
+	 * @return
+	 */
+	public long getCurrentApplicationUsageAgreement() {
+		return this.currentApplicationUsageAgreement;
+	}
+
+	public void setCurrentApplicationUsageAgreement(
+			long currentApplicationUsageAgreement) {
+		this.currentApplicationUsageAgreement = currentApplicationUsageAgreement;
 	}
 
 	/**
