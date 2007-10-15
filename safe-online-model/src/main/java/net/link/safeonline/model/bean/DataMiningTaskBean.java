@@ -8,8 +8,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import org.jboss.annotation.ejb.LocalBinding;
-
 import net.link.safeonline.Task;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.StatisticDAO;
@@ -20,10 +18,16 @@ import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.model.Applications;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
+
 @Stateless
 @Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DataMiningTaskBean")
 public class DataMiningTaskBean implements Task {
+
+	public final static Log LOG = LogFactory.getLog(DataMiningTaskBean.class);
 
 	public static final String name = "Data mining task";
 
@@ -48,6 +52,7 @@ public class DataMiningTaskBean implements Task {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void perform() throws Exception {
 
+		LOG.debug("cleanDomain: " + dataMiningDomain);
 		this.statisticDAO.cleanDomain(dataMiningDomain);
 
 		for (ApplicationEntity application : this.applications
@@ -56,17 +61,25 @@ public class DataMiningTaskBean implements Task {
 			for (ApplicationIdentityAttributeEntity attribute : this.applications
 					.getCurrentApplicationIdentity(application)) {
 
+				LOG.debug("findOrAddStatisticByNameDomainAndApplication: "
+						+ attribute.getAttributeTypeName() + ","
+						+ application.getName());
 				StatisticEntity statistic = this.statisticDAO
 						.findOrAddStatisticByNameDomainAndApplication(attribute
 								.getAttributeTypeName(), dataMiningDomain,
 								application);
 
-				Map<String, Long> result = this.attributeTypeDAO.categorize(
+				LOG.debug("categorize " + application.getName() + " - "
+						+ attribute.getAttributeTypeName());
+				Map<Object, Long> result = this.attributeTypeDAO.categorize(
 						application, attribute.getAttributeType());
+				LOG.debug("result.size: " + result.size());
 
-				for (String key : result.keySet()) {
+				for (Object key : result.keySet()) {
+					LOG.debug("key.toString: " + key.toString());
 					StatisticDataPointEntity datapoint = this.statisticDataPointDAO
-							.findOrAddStatisticDataPoint(key, statistic);
+							.findOrAddStatisticDataPoint(key.toString(),
+									statistic);
 					datapoint.setX(result.get(key));
 				}
 

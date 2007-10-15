@@ -7,6 +7,10 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.StatisticDataPointEntity.DELETE_WHERE_STATISTIC;
+import static net.link.safeonline.entity.StatisticDataPointEntity.DELETE_WHERE_STATISTIC_EXPIRED;
+import static net.link.safeonline.entity.StatisticDataPointEntity.QUERY_WHERE_NAME_AND_STATISTIC;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -26,10 +30,6 @@ import javax.persistence.Table;
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
-
-import static net.link.safeonline.entity.StatisticDataPointEntity.DELETE_WHERE_STATISTIC;
-import static net.link.safeonline.entity.StatisticDataPointEntity.QUERY_WHERE_NAME_AND_STATISTIC;
-import static net.link.safeonline.entity.StatisticDataPointEntity.DELETE_WHERE_STATISTIC_EXPIRED;
 
 @Entity
 @Table(name = "statistic_data_point")

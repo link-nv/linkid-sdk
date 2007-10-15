@@ -7,12 +7,18 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.StatisticEntity.QUERY_ALL;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_DELETE_WHERE_DOMAIN;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_APPLICATION;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_DOMAIN_AND_NULL;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_DOMAIN;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
@@ -27,11 +33,8 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION;
-import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_APPLICATION;
-import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_DOMAIN_AND_NULL;
-import static net.link.safeonline.entity.StatisticEntity.QUERY_ALL;
-import static net.link.safeonline.entity.StatisticEntity.QUERY_DELETE_WHERE_DOMAIN;
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 @Entity
 @Table(name = "statistic", uniqueConstraints = @UniqueConstraint(columnNames = {
@@ -48,6 +51,9 @@ import static net.link.safeonline.entity.StatisticEntity.QUERY_DELETE_WHERE_DOMA
 		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT Statistic "
 				+ "FROM StatisticEntity AS Statistic "
 				+ "WHERE Statistic.application = :application"),
+		@NamedQuery(name = QUERY_WHERE_DOMAIN, query = "SELECT Statistic "
+				+ "FROM StatisticEntity AS Statistic "
+				+ "WHERE Statistic.domain = :domain"),
 		@NamedQuery(name = QUERY_ALL, query = "SELECT Statistic "
 				+ "FROM StatisticEntity AS Statistic"),
 		@NamedQuery(name = QUERY_DELETE_WHERE_DOMAIN, query = "DELETE "
@@ -66,6 +72,8 @@ public class StatisticEntity implements Serializable {
 	public static final String QUERY_ALL = "stat.all";
 
 	public static final String QUERY_DELETE_WHERE_DOMAIN = "stat.deldomain";
+
+	public static final String QUERY_WHERE_DOMAIN = "stat.domain";
 
 	private long id;
 
@@ -110,7 +118,7 @@ public class StatisticEntity implements Serializable {
 		this.creationTime = creationTime;
 	}
 
-	@OneToMany(mappedBy = "statistic", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "statistic")
 	public List<StatisticDataPointEntity> getStatisticDataPoints() {
 		return statisticDataPoints;
 	}
@@ -183,6 +191,12 @@ public class StatisticEntity implements Serializable {
 		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_DOMAIN);
 		query.setParameter("domain", domain);
 		return query;
+	}
+
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_DOMAIN)
+		List<StatisticEntity> listStatistics(@QueryParam("domain")
+		String domain);
 	}
 
 }

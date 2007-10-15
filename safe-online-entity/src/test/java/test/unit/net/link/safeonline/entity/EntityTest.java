@@ -864,6 +864,7 @@ public class EntityTest {
 		entityManager.persist(data);
 		entityManager.flush();
 		entityManager.remove(stat);
+		entityManager.remove(data); // cascading gone in statistic data model
 		entityManager.flush();
 
 		StatisticDataPointEntity result = entityManager.find(

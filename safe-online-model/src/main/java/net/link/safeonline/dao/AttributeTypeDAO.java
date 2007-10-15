@@ -69,7 +69,7 @@ public interface AttributeTypeDAO {
 	 * @param attributeType
 	 * @return
 	 */
-	Map<String, Long> categorize(ApplicationEntity application,
+	Map<Object, Long> categorize(ApplicationEntity application,
 			AttributeTypeEntity attributeType);
 
 	/**

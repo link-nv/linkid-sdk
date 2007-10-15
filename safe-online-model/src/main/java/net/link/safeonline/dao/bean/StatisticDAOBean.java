@@ -10,6 +10,8 @@ package net.link.safeonline.dao.bean;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,14 +19,27 @@ import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.StatisticDAO;
+import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticEntity;
+import net.link.safeonline.jpa.QueryObjectFactory;
 
 @Stateless
 public class StatisticDAOBean implements StatisticDAO {
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
+
+	@EJB
+	StatisticDataPointDAO statisticDataPointDAO;
+
+	private StatisticEntity.QueryInterface queryObject;
+
+	@PostConstruct
+	public void postConstructCallback() {
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager, StatisticEntity.QueryInterface.class);
+	}
 
 	public StatisticEntity addStatistic(String name, String domain,
 			ApplicationEntity application) {
@@ -73,9 +88,14 @@ public class StatisticDAOBean implements StatisticDAO {
 	}
 
 	public void cleanDomain(String domain) {
+		List<StatisticEntity> statistics = this.queryObject
+				.listStatistics(domain);
+		for (StatisticEntity statisticEntity : statistics) {
+			this.statisticDataPointDAO
+					.cleanStatisticDataPoints(statisticEntity);
+		}
 		Query query = StatisticEntity.createQueryDeleteWhereDomain(
 				this.entityManager, domain);
 		query.executeUpdate();
 	}
-
 }

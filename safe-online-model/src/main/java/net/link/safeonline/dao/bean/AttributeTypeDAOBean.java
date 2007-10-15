@@ -27,6 +27,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
@@ -149,15 +150,35 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		return attributeTypeDescription;
 	}
 
-	public Map<String, Long> categorize(ApplicationEntity application,
+	public Map<Object, Long> categorize(ApplicationEntity application,
 			AttributeTypeEntity attributeType) {
-		Query query = this.queryObject.createQueryCategorize(application,
-				attributeType);
+		LOG.debug("categorize: " + attributeType.getName());
+		Query query;
+		if (attributeType.getType().equals(DatatypeType.STRING))
+			query = this.queryObject.createQueryCategorizeString(application,
+					attributeType);
+		else if (attributeType.getType().equals(DatatypeType.LOGIN))
+			query = this.queryObject.createQueryCategorizeLogin(application,
+					attributeType);
+		else if (attributeType.getType().equals(DatatypeType.BOOLEAN))
+			query = this.queryObject.createQueryCategorizeBoolean(application,
+					attributeType);
+		else if (attributeType.getType().equals(DatatypeType.INTEGER))
+			query = this.queryObject.createQueryCategorizeInteger(application,
+					attributeType);
+		else if (attributeType.getType().equals(DatatypeType.DOUBLE))
+			query = this.queryObject.createQueryCategorizeDouble(application,
+					attributeType);
+		else if (attributeType.getType().equals(DatatypeType.DATE))
+			query = this.queryObject.createQueryCategorizeDate(application,
+					attributeType);
+		else
+			return null;
 		List<?> results = query.getResultList();
-		Map<String, Long> result = new HashMap<String, Long>();
+		Map<Object, Long> result = new HashMap<Object, Long>();
 		for (Iterator<?> iter = results.iterator(); iter.hasNext();) {
 			Object[] values = (Object[]) iter.next();
-			result.put((String) values[0], (Long) values[1]);
+			result.put(values[0], (Long) values[1]);
 		}
 		return result;
 	}

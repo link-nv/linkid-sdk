@@ -139,11 +139,11 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 		subscription.setConfirmedIdentityVersion(Long.valueOf(1));
 
 		// operate
-		Map<String, Long> result = this.testedInstance.categorize(application,
+		Map<Object, Long> result = this.testedInstance.categorize(application,
 				attributeType);
 
 		// verify
-		for (String value : result.keySet()) {
+		for (Object value : result.keySet()) {
 			if (value.equals(attributeValue)) {
 				assertEquals(result.get(value), Long.valueOf(1));
 			}
