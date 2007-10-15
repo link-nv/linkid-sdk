@@ -193,7 +193,7 @@ public class ApplicationBean implements Application {
 			LOG.debug("application url: " + this.applicationUrl);
 
 		URL newApplicationUrl = null;
-		if (null != this.applicationUrl || this.applicationUrl.length() == 0)
+		if (null != this.applicationUrl && this.applicationUrl.length() != 0)
 			try {
 				newApplicationUrl = new URL(this.applicationUrl);
 			} catch (MalformedURLException e) {
@@ -282,7 +282,6 @@ public class ApplicationBean implements Application {
 	}
 
 	public void setApplicationUrl(String applicationUrl) {
-
 		this.applicationUrl = applicationUrl;
 	}
 
