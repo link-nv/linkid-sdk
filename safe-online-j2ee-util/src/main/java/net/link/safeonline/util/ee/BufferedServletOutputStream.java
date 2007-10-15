@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.webapp.filter;
+package net.link.safeonline.util.ee;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class BufferedServletOutputStream extends ServletOutputStream {
 	}
 
 	@Override
-	public void write(int b) {
+	public void write(int b) throws IOException {
 		this.buffer.write(b);
 	}
 
@@ -44,7 +44,7 @@ public class BufferedServletOutputStream extends ServletOutputStream {
 	}
 
 	@Override
-	public void write(byte[] b, int off, int len) {
+	public void write(byte[] b, int off, int len) throws IOException {
 		this.buffer.write(b, off, len);
 	}
 

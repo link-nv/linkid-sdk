@@ -89,7 +89,6 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 				clientPrivateKey);
 	}
 
-	@SuppressWarnings("unchecked")
 	public <Type> Type getAttributeValue(String userId, String attributeName,
 			Class<Type> valueClass) throws AttributeNotFoundException,
 			RequestDeniedException, ConnectException {
@@ -108,7 +107,6 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	private <Type> Type getAttributeValue(ResponseType response,
 			Class<Type> valueClass) {
 		List<Object> assertions = response.getAssertionOrEncryptedAssertion();
@@ -141,9 +139,9 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 			/*
 			 * Multi-valued attribute.
 			 */
-			Class componentType = valueClass.getComponentType();
-			Type result = (Type) Array.newInstance(componentType,
-					attributeValues.size());
+			Class<?> componentType = valueClass.getComponentType();
+			Type result = valueClass.cast(Array.newInstance(componentType,
+					attributeValues.size()));
 
 			int idx = 0;
 			for (Object attributeValue : attributeValues) {
@@ -186,7 +184,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 						+ valueClass.getName() + "; actual type: "
 						+ value.getClass().getName());
 			}
-			Type attributeValue = (Type) value;
+			Type attributeValue = valueClass.cast(value);
 			return attributeValue;
 		}
 

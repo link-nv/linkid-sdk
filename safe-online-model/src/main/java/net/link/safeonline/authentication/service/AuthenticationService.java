@@ -7,7 +7,6 @@
 
 package net.link.safeonline.authentication.service;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 
 import javax.ejb.Local;

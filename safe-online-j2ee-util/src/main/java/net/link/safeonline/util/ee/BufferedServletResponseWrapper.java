@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.webapp.filter;
+package net.link.safeonline.util.ee;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -20,7 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Timeout servlet response wrapper.
+ * Buffered servlet response wrapper.
  * 
  * <p>
  * See also: Servlet API version 2.4 specifications.
@@ -29,10 +29,10 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  * 
  */
-public class TimeoutServletResponseWrapper extends HttpServletResponseWrapper {
+public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
 
 	private static final Log LOG = LogFactory
-			.getLog(TimeoutServletResponseWrapper.class);
+			.getLog(BufferedServletResponseWrapper.class);
 
 	private final HttpServletResponse origResponse;
 
@@ -40,7 +40,7 @@ public class TimeoutServletResponseWrapper extends HttpServletResponseWrapper {
 
 	private PrintWriter writer;
 
-	public TimeoutServletResponseWrapper(HttpServletResponse response) {
+	public BufferedServletResponseWrapper(HttpServletResponse response) {
 		super(response);
 		this.origResponse = response;
 		this.bufferedServletOutputStream = new BufferedServletOutputStream();
@@ -66,7 +66,7 @@ public class TimeoutServletResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	@Override
-	public ServletOutputStream getOutputStream() {
+	public ServletOutputStream getOutputStream() throws IOException {
 		LOG.debug("get output stream");
 		return this.bufferedServletOutputStream;
 	}

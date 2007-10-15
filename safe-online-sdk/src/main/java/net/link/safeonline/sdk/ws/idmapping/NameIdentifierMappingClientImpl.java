@@ -89,6 +89,8 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
 		NameIDMappingResponseType response = this.port
 				.nameIdentifierMappingQuery(request);
 
+		retrieveHeadersFromPort(this.port);
+
 		StatusType status = response.getStatus();
 		StatusCodeType statusCode = status.getStatusCode();
 		String errorCode = statusCode.getValue();

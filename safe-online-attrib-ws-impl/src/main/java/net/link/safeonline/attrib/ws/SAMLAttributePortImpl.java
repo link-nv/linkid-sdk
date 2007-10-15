@@ -244,7 +244,6 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		return response;
 	}
 
-	@SuppressWarnings("unchecked")
 	private AssertionType getAttributeAssertion(String subjectLogin,
 			Map<String, Object> attributes) {
 		AssertionType assertion = new AssertionType();

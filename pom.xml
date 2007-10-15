@@ -59,6 +59,10 @@
 				<role>development</role>
 			</roles>
 			<timezone>+1</timezone>
+			<properties>
+				<msn>lhunath@lyndir.com</msn>
+				<private-email>lhunath@gmail.com</private-email>
+			</properties>
 		</developer>
 	</developers>
 	<scm>
@@ -112,7 +116,11 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
+				<safe-online.profiling>true</safe-online.profiling>
 			</properties>
+			<modules>
+				<module>safe-online-test-performance</module>
+			</modules>
 		</profile>
 		<profile>
 			<id>env-demo</id>

@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -77,7 +79,7 @@ public class TimeoutFilter implements Filter {
 			 * We wrap the response since we need to be able to add cookies
 			 * after the body has been committed.
 			 */
-			TimeoutServletResponseWrapper timeoutResponseWrapper = new TimeoutServletResponseWrapper(
+			BufferedServletResponseWrapper timeoutResponseWrapper = new BufferedServletResponseWrapper(
 					httpResponse);
 			LOG.debug("chain.doFilter");
 			chain.doFilter(request, timeoutResponseWrapper);
