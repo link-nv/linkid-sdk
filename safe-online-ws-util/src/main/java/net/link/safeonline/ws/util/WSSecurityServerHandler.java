@@ -74,10 +74,13 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 		return headers;
 	}
 
-	public void close(MessageContext messageContext) {
+	public void close(@SuppressWarnings("unused")
+	MessageContext messageContext) {
+		// empty
 	}
 
-	public boolean handleFault(SOAPMessageContext soapMessageContext) {
+	public boolean handleFault(@SuppressWarnings("unused")
+	SOAPMessageContext soapMessageContext) {
 		return true;
 	}
 

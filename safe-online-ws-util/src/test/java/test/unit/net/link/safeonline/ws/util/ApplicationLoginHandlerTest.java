@@ -83,23 +83,24 @@ public class ApplicationLoginHandlerTest extends TestCase {
 
 		private Principal authenticatedPrincipal;
 
-		public boolean abort() throws LoginException {
+		public boolean abort() {
 			LOG.debug("abort");
 			return false;
 		}
 
-		public boolean commit() throws LoginException {
+		public boolean commit() {
 			LOG.debug("commit");
 			this.subject.getPrincipals().add(this.authenticatedPrincipal);
 			return true;
 		}
 
-		public void initialize(Subject subject,
-				CallbackHandler callbackHandler, Map<String, ?> sharedState,
+		public void initialize(Subject newSubject,
+				CallbackHandler newCallbackHandler, @SuppressWarnings("unused")
+				Map<String, ?> sharedState, @SuppressWarnings("unused")
 				Map<String, ?> options) {
 			LOG.debug("initialize");
-			this.subject = subject;
-			this.callbackHandler = callbackHandler;
+			this.subject = newSubject;
+			this.callbackHandler = newCallbackHandler;
 		}
 
 		public boolean login() throws LoginException {

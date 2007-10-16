@@ -10,7 +10,7 @@ package net.link.safeonline.util.webapp.filter;
 /**
  * 
  * 
- * @author lhunath
+ * @author mbillemo
  */
 public enum ProfileStats {
 
@@ -28,11 +28,11 @@ public enum ProfileStats {
 
 	public String getDescription() {
 
-		return description;
+		return this.description;
 	}
 
 	public String getHeader() {
 
-		return header;
+		return this.header;
 	}
 }

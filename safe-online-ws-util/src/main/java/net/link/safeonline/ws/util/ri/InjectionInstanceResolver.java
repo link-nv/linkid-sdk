@@ -50,7 +50,8 @@ public class InjectionInstanceResolver<T> extends
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T resolve(Packet request) {
+	public T resolve(@SuppressWarnings("unused")
+	Packet request) {
 		T instance = (T) instances.get(this.clazz);
 		if (null == instance) {
 			LOG.debug("creating new instance for class: "

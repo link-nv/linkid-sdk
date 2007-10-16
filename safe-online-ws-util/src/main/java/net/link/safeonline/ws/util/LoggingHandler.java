@@ -45,7 +45,9 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public void close(MessageContext context) {
+		// empty
 	}
 
 	public boolean handleFault(SOAPMessageContext soapContext) {

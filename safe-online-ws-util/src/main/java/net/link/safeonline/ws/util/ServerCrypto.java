@@ -18,54 +18,54 @@ import java.security.cert.X509Certificate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.Crypto;
 
 public class ServerCrypto implements Crypto {
 
 	private static final Log LOG = LogFactory.getLog(ServerCrypto.class);
 
-	public String getAliasForX509Cert(Certificate certificate)
-			throws WSSecurityException {
+	@SuppressWarnings("unused")
+	public String getAliasForX509Cert(Certificate certificate) {
 		return null;
 	}
 
-	public String getAliasForX509Cert(String issuer) throws WSSecurityException {
+	@SuppressWarnings("unused")
+	public String getAliasForX509Cert(String issuer) {
 		return null;
 	}
 
-	public String getAliasForX509Cert(byte[] subjectKeyIdentifier)
-			throws WSSecurityException {
+	@SuppressWarnings("unused")
+	public String getAliasForX509Cert(byte[] subjectKeyIdentifier) {
 		return null;
 	}
 
-	public String getAliasForX509Cert(String issuer, BigInteger serialNumber)
-			throws WSSecurityException {
+	@SuppressWarnings("unused")
+	public String getAliasForX509Cert(String issuer, BigInteger serialNumber) {
 		return null;
 	}
 
-	public String getAliasForX509CertThumb(byte[] thumb)
-			throws WSSecurityException {
+	@SuppressWarnings("unused")
+	public String getAliasForX509CertThumb(byte[] thumb) {
 		return null;
 	}
 
-	public String[] getAliasesForDN(String subjectDN)
-			throws WSSecurityException {
+	@SuppressWarnings("unused")
+	public String[] getAliasesForDN(String subjectDN) {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public byte[] getCertificateData(boolean reverse,
-			X509Certificate[] certificates) throws WSSecurityException {
+			X509Certificate[] certificates) {
 		return null;
 	}
 
-	public CertificateFactory getCertificateFactory()
-			throws WSSecurityException {
+	public CertificateFactory getCertificateFactory() {
 		return null;
 	}
 
-	public X509Certificate[] getCertificates(String alias)
-			throws WSSecurityException {
+	@SuppressWarnings("unused")
+	public X509Certificate[] getCertificates(String alias) {
 		return null;
 	}
 
@@ -77,23 +77,23 @@ public class ServerCrypto implements Crypto {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public PrivateKey getPrivateKey(String alias, String password)
 			throws Exception {
 		return null;
 	}
 
-	public byte[] getSKIBytesFromCert(X509Certificate certificate)
-			throws WSSecurityException {
+	@SuppressWarnings("unused")
+	public byte[] getSKIBytesFromCert(X509Certificate certificate) {
 		return null;
 	}
 
-	public X509Certificate[] getX509Certificates(byte[] data, boolean reverse)
-			throws WSSecurityException {
+	@SuppressWarnings("unused")
+	public X509Certificate[] getX509Certificates(byte[] data, boolean reverse) {
 		return null;
 	}
 
-	public X509Certificate loadCertificate(InputStream inputStream)
-			throws WSSecurityException {
+	public X509Certificate loadCertificate(InputStream inputStream) {
 		LOG.debug("loadCertificate");
 		CertificateFactory certificateFactory;
 		try {
@@ -111,8 +111,8 @@ public class ServerCrypto implements Crypto {
 		return certificate;
 	}
 
-	public boolean validateCertPath(X509Certificate[] certificates)
-			throws WSSecurityException {
+	@SuppressWarnings("unused")
+	public boolean validateCertPath(X509Certificate[] certificates) {
 		return false;
 	}
 }

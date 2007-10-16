@@ -92,7 +92,7 @@ public class EjbUtilsTest extends TestCase {
 		assertEquals(testObject, result.get(0));
 	}
 
-	private static class TestType {
+	static class TestType {
 
 	}
 }

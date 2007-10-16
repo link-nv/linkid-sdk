@@ -28,7 +28,7 @@ public class BufferedServletOutputStream extends ServletOutputStream {
 	}
 
 	@Override
-	public void write(int b) throws IOException {
+	public void write(int b) {
 		this.buffer.write(b);
 	}
 
@@ -44,7 +44,7 @@ public class BufferedServletOutputStream extends ServletOutputStream {
 	}
 
 	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
+	public void write(byte[] b, int off, int len) {
 		this.buffer.write(b, off, len);
 	}
 

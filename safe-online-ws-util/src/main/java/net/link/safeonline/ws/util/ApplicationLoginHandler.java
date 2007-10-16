@@ -43,9 +43,12 @@ public class ApplicationLoginHandler implements SOAPHandler<SOAPMessageContext> 
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public void close(MessageContext context) {
+		// empty
 	}
 
+	@SuppressWarnings("unused")
 	public boolean handleFault(SOAPMessageContext context) {
 		return true;
 	}

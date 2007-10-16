@@ -50,9 +50,12 @@ public class ApplicationCertificateMapperHandler implements
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public void close(MessageContext context) {
+		// empty
 	}
 
+	@SuppressWarnings("unused")
 	public boolean handleFault(SOAPMessageContext context) {
 		return true;
 	}
@@ -88,6 +91,7 @@ public class ApplicationCertificateMapperHandler implements
 				applicationName);
 	}
 
+	@SuppressWarnings("unused")
 	private void logout(SOAPMessageContext context) {
 		LOG.debug("logout");
 	}

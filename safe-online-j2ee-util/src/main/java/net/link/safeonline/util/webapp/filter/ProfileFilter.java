@@ -1,6 +1,6 @@
 package net.link.safeonline.util.webapp.filter;
 
-import static net.link.safeonline.util.webapp.filter.ProfileStats.*;
+import static net.link.safeonline.util.webapp.filter.ProfileStats.REQUEST_TIME;
 
 import java.io.IOException;
 
@@ -50,7 +50,7 @@ public class ProfileFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 
 		/* Check to see if we're enabled and response type is compatible. */
-		if (!enabled || !(response instanceof HttpServletResponse)) {
+		if (!this.enabled || !(response instanceof HttpServletResponse)) {
 			LOG.debug("profile filter disabled");
 			chain.doFilter(request, response);
 			return;
