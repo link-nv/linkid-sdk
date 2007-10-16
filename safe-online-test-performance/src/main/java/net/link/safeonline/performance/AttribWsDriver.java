@@ -25,12 +25,12 @@ import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
-import net.link.safeonline.webapp.filter.ProfileStats;
+import net.link.safeonline.util.webapp.filter.ProfileStats;
 
 /**
  * TODO: Work.
  * 
- * @author lhunath
+ * @author mbillemo
  */
 public class AttribWsDriver extends ProfileDriver {
 
@@ -46,17 +46,17 @@ public class AttribWsDriver extends ProfileDriver {
 	@Override
 	public void prepare() {
 
-		services = new HashMap<String, AttributeClient>();
+		this.services = new HashMap<String, AttributeClient>();
 
-		addService(services, "Lawyer Demo", DemoLawyerKeyStoreUtils
+		addService(this.services, "Lawyer Demo", DemoLawyerKeyStoreUtils
 				.getPrivateKeyEntry());
-		addService(services, "Mandate Demo", DemoMandateKeyStoreUtils
+		addService(this.services, "Mandate Demo", DemoMandateKeyStoreUtils
 				.getPrivateKeyEntry());
-		addService(services, "Payment Demo", DemoPaymentKeyStoreUtils
+		addService(this.services, "Payment Demo", DemoPaymentKeyStoreUtils
 				.getPrivateKeyEntry());
-		addService(services, "Prescription Demo", DemoPrescriptionKeyStoreUtils
-				.getPrivateKeyEntry());
-		addService(services, "Ticket Demo", DemoTicketKeyStoreUtils
+		addService(this.services, "Prescription Demo",
+				DemoPrescriptionKeyStoreUtils.getPrivateKeyEntry());
+		addService(this.services, "Ticket Demo", DemoTicketKeyStoreUtils
 				.getPrivateKeyEntry());
 	}
 
@@ -83,9 +83,9 @@ public class AttribWsDriver extends ProfileDriver {
 	@Override
 	public Map<ProfileStats, Number> run() {
 
-		LOG.debug("profiling " + services.size() + " services");
+		LOG.debug("profiling " + this.services.size() + " services");
 
-		for (Map.Entry<String, AttributeClient> serviceEntry : services
+		for (Map.Entry<String, AttributeClient> serviceEntry : this.services
 				.entrySet()) {
 			AttributeClient service = serviceEntry.getValue();
 			String serviceName = serviceEntry.getKey();

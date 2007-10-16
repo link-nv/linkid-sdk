@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.link.safeonline.webapp.filter.ProfileStats;
+import net.link.safeonline.util.webapp.filter.ProfileStats;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * 
  * 
- * @author lhunath
+ * @author mbillemo
  */
 public abstract class ProfileDriver {
 

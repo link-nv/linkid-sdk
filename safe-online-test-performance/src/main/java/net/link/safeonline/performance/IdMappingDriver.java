@@ -14,7 +14,7 @@ import java.util.Map;
 
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
-import net.link.safeonline.webapp.filter.ProfileStats;
+import net.link.safeonline.util.webapp.filter.ProfileStats;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * 
  * 
- * @author lhunath
+ * @author mbillemo
  */
 public class IdMappingDriver extends ProfileDriver {
 
@@ -59,7 +59,7 @@ public class IdMappingDriver extends ProfileDriver {
 			throw new RuntimeException(
 					"The certificate in the keystore needs to be of X509 format.");
 
-		service = new NameIdentifierMappingClientImpl(host,
+		this.service = new NameIdentifierMappingClientImpl(this.host,
 				(X509Certificate) serviceEntry.getCertificate(), serviceEntry
 						.getPrivateKey());
 	}
@@ -69,8 +69,8 @@ public class IdMappingDriver extends ProfileDriver {
 
 		Map<ProfileStats, Number> stats = new HashMap<ProfileStats, Number>();
 
-		LOG.debug("retrieving user ID for " + user);
-		service.getUserId(user);
+		LOG.debug("retrieving user ID for " + this.user);
+		this.service.getUserId(this.user);
 
 		for (ProfileStats stat : ProfileStats.values())
 			stats.put(stat, getHeader(stat));
@@ -80,7 +80,7 @@ public class IdMappingDriver extends ProfileDriver {
 
 	private Number getHeader(ProfileStats header) {
 
-		Object result = service.getHeader(header.getHeader()).getFirst();
+		Object result = this.service.getHeader(header.getHeader()).getFirst();
 		try {
 			return Integer.parseInt(String.valueOf(result));
 		} catch (NumberFormatException a) {

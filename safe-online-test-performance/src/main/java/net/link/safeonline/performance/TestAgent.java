@@ -12,11 +12,11 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import net.link.safeonline.webapp.filter.ProfileStats;
+import net.link.safeonline.util.webapp.filter.ProfileStats;
 
 /**
  * 
- * @author lhunath
+ * @author mbillemo
  */
 public class TestAgent {
 
@@ -26,12 +26,12 @@ public class TestAgent {
 
 	public TestAgent() {
 
-		driver = new IdMappingDriver("localhost:8443", "admin");
+		this.driver = new IdMappingDriver("localhost:8443", "admin");
 	}
 
 	private void runTest() {
 
-		for (Map<ProfileStats, Number> iteration : driver.execute())
+		for (Map<ProfileStats, Number> iteration : this.driver.execute())
 			for (Map.Entry<ProfileStats, Number> stat : iteration.entrySet())
 				LOG.info(String.format("%20s : %-10s (%s)", stat.getKey()
 						.getHeader(), stat.getValue(), stat.getKey()
@@ -39,9 +39,6 @@ public class TestAgent {
 	}
 
 	public static void main(String[] args) {
-
-		org.apache.log4j.BasicConfigurator.configure();
-
 		new TestAgent().runTest();
 	}
 }

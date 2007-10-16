@@ -116,11 +116,25 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
-				<safe-online.profiling>true</safe-online.profiling>
+				<safe-online.profiling><![CDATA[
+					<filter>
+						<filter-name>ProfileFilter</filter-name>
+						<filter-class>
+							net.link.safeonline.util.webapp.filter.ProfileFilter
+						</filter-class>
+						<init-param>
+							<param-name>ProfilingEnabled</param-name>
+            				<param-value>true</param-value>
+						</init-param>
+					</filter>
+
+    				<filter-mapping>
+        				<filter-name>ProfileFilter</filter-name>
+        				<url-pattern>/*</url-pattern>
+    				</filter-mapping>
+				]]>
+				</safe-online.profiling>
 			</properties>
-			<modules>
-				<module>safe-online-test-performance</module>
-			</modules>
 		</profile>
 		<profile>
 			<id>env-demo</id>
@@ -498,6 +512,7 @@
 		<module>safe-online-webapp-common</module>
 		<module>safe-online-idmapping-ws</module>
 		<module>safe-online-idmapping-ws-impl</module>
+		<module>safe-online-test-performance</module>
 	</modules>
 	<repositories>
 		<repository>
