@@ -8,7 +8,14 @@
 package net.link.safeonline.sdk.auth.filter;
 
 import java.io.IOException;
+import java.security.Principal;
 
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.Filter;
@@ -20,10 +27,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.util.ee.SecurityManagerUtils;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.mx.util.MBeanServerLocator;
+import org.jboss.security.SimplePrincipal;
 import org.jboss.security.auth.callback.UsernamePasswordHandler;
 
 /**
@@ -152,10 +159,47 @@ public class JAASLoginFilter implements Filter {
 		LOG.debug("trying to flush JBoss credential cache for " + username
 				+ " on security domain " + securityDomain);
 		try {
-			SecurityManagerUtils.flushCredentialCache(username, securityDomain);
+			flushCredentialCache(username, securityDomain);
 		} finally {
 			session
 					.removeAttribute(FLUSH_JBOSS_CREDENTIAL_CACHE_ATTRIBUTE_NAME);
+		}
+	}
+
+	private void flushCredentialCache(String login, String securityDomain) {
+		LOG.debug("flush credential cache for " + login
+				+ " on security domain " + securityDomain);
+		Principal user = new SimplePrincipal(login);
+		ObjectName jaasMgr;
+		try {
+			jaasMgr = new ObjectName(
+					"jboss.security:service=JaasSecurityManager");
+		} catch (MalformedObjectNameException e) {
+			String msg = "ObjectName error: " + e.getMessage();
+			LOG.error(msg);
+			throw new RuntimeException(msg, e);
+		} catch (NullPointerException e) {
+			throw new RuntimeException("NPE: " + e.getMessage(), e);
+		}
+		Object[] params = { securityDomain, user };
+		String[] signature = { String.class.getName(),
+				Principal.class.getName() };
+		MBeanServer server = MBeanServerLocator.locateJBoss();
+		try {
+			server.invoke(jaasMgr, "flushAuthenticationCache", params,
+					signature);
+		} catch (InstanceNotFoundException e) {
+			String msg = "instance not found: " + e.getMessage();
+			LOG.error(msg);
+			throw new RuntimeException(msg, e);
+		} catch (MBeanException e) {
+			String msg = "mbean error: " + e.getMessage();
+			LOG.error(msg);
+			throw new RuntimeException(msg, e);
+		} catch (ReflectionException e) {
+			String msg = "reflection error: " + e.getMessage();
+			LOG.error(msg);
+			throw new RuntimeException(msg, e);
 		}
 	}
 }

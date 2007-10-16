@@ -1,0 +1,1 @@
+java -jar safe-online-app-console-1.0-SNAPSHOT.jar

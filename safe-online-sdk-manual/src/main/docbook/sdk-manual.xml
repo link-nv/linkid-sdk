@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<book lang="en">
+	<bookinfo>
+		<title>OLAS SDK Manual</title>
+		<copyright>
+			<year>2007</year>
+			<holder>LIN-K N.V.</holder>
+		</copyright>
+		<date>16/10/2007</date>
+		<abstract>
+			<para>
+				This document contains SDK manual for the OLAS product.
+			</para>
+		</abstract>
+		<releaseinfo>1.0.0</releaseinfo>
+		<productname>OLAS</productname>
+		<productnumber>1.0.0</productnumber>
+		<authorgroup>
+			<author>
+				<firstname>Frank</firstname>
+				<surname>Cornelis</surname>
+			</author>
+		</authorgroup>
+	</bookinfo>
+
+	<chapter id="introduction">
+		<title>Introduction</title>
+		<para>
+			OLAS is an authentication, signature and user data exchange
+			service. It allows 3th party web application to authenticate
+			users, involve users in transactions and obtain user
+			identity data. It brings to users a central identity
+			management.
+		</para>
+		<para>
+			OLAS offers several services to applications:
+			<orderedlist>
+				<listitem>
+					<para>
+						Authentication service: if an application calls
+						this service the user is authenticated by OLAS
+						using one of his configured devices. Upon
+						success the application is informed and can
+						grant access to the user.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Attribute service: an application can query the
+						user’s attributes and use their values in its
+						business processes. Attributes can only be read
+						if the user has given explicit permission to do
+						so.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Data service: an application can push attributes
+						to the user’s profile. These attributes could
+						then be used by other applications (if allowed
+						by the user and the providing application).
+					</para>
+				</listitem>
+			</orderedlist>
+		</para>
+	</chapter>
+</book>

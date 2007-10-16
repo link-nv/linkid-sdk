@@ -7,16 +7,22 @@
 		<format>zip</format>
 	</formats>
 	<dependencySets>
-		<dependencySet></dependencySet>
+		<dependencySet>
+			<excludes>
+				<exclude>
+					net.lin-k.safe-online:safe-online-sdk-manual
+				</exclude>
+			</excludes>
+		</dependencySet>
 	</dependencySets>
-	<includeBaseDirectory>true</includeBaseDirectory>
 	<files>
 		<file>
-			<source>${basedir}/src/files/README.txt</source>
+			<source>target/files/sdk-manual.pdf</source>
+			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
-			<source>${basedir}/src/files/app-console.sh</source>
-			<fileMode>0500</fileMode>
+			<source>src/files/README.txt</source>
+			<outputDirectory>/</outputDirectory>
 		</file>
 	</files>
 </assembly>
