@@ -42,6 +42,7 @@
 			<artifactId>safe-online-sdk-deploy-ctx</artifactId>
 			<type>pom</type>
 			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<reporting>

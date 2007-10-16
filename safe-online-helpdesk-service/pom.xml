@@ -14,8 +14,8 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Helpdesk Service</name>
 	<description>
-		Provides the Helpdesk Web Application security domain as a service
-		via the SafeOnline Authentication Web Service.
+		Provides the Helpdesk Web Application security domain as a
+		service via the SafeOnline Authentication Web Service.
 	</description>
 	<build>
 		<plugins>
@@ -42,6 +42,7 @@
 			<artifactId>safe-online-sdk-deploy-ctx</artifactId>
 			<type>pom</type>
 			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<reporting>
