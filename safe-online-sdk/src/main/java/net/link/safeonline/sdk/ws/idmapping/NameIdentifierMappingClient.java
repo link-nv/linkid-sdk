@@ -14,6 +14,10 @@ import net.link.safeonline.sdk.ws.MessageAccessor;
 /**
  * Identifier Mapping Service Client interface.
  * 
+ * The calling application must have explicit permission to use the name
+ * identifier mapping web service. This permission can be granted by the
+ * operator.
+ * 
  * @author fcorneli
  * 
  */
@@ -23,9 +27,13 @@ public interface NameIdentifierMappingClient extends MessageAccessor {
 	 * Gives back the user Id corresponding with the given username.
 	 * 
 	 * @param username
-	 * @return
+	 *            the user name.
+	 * @return the user Id corresponding with the user name.
 	 * @throws SubjectNotFoundException
+	 *             in case no subject was found for the given username.
 	 * @throws RequestDeniedException
+	 *             in case the calling application has no permission to use the
+	 *             name identifier mapping service.
 	 */
 	String getUserId(String username) throws SubjectNotFoundException,
 			RequestDeniedException;

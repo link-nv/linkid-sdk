@@ -35,7 +35,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * SOAP Handler for TargetIdentity SOAP Header handling.
  * 
+ * <p>
  * Specifications: Liberty ID-WSF SOAP Binding Specification 2.0
+ * </p>
  * 
  * @author fcorneli
  * 

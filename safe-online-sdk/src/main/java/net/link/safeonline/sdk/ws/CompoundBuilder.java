@@ -72,10 +72,23 @@ public class CompoundBuilder {
 		}
 	}
 
+	/**
+	 * Gives back the resulting compound object.
+	 * 
+	 * @return
+	 */
 	public Object getCompound() {
 		return this.compoundAttribute;
 	}
 
+	/**
+	 * Sets a property (i.e. a member attribute) on the compounded object.
+	 * 
+	 * @param memberName
+	 *            the name of the member attribute.
+	 * @param memberAttributeValue
+	 *            the value of the member attribute.
+	 */
 	@SuppressWarnings("unchecked")
 	public void setCompoundProperty(String memberName,
 			Object memberAttributeValue) {
@@ -114,6 +127,12 @@ public class CompoundBuilder {
 		}
 	}
 
+	/**
+	 * Sets the compounded attribute Id. Every compounded attribute record has
+	 * an identifier.
+	 * 
+	 * @param attributeId
+	 */
 	@SuppressWarnings("unchecked")
 	public void setCompoundId(String attributeId) {
 		if (this.isMap) {

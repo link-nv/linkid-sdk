@@ -27,11 +27,17 @@
 
 	<chapter id="introduction">
 		<title>Introduction</title>
+		<abstract>
+			<para>
+				This chapter will bring a short overview of the services
+				offered by OLAS.
+			</para>
+		</abstract>
 		<para>
 			OLAS is an authentication, signature and user data exchange
-			service. It allows 3th party web application to authenticate
-			users, involve users in transactions and obtain user
-			identity data. It brings to users a central identity
+			service. It allows 3th party web applications to
+			authenticate users, involve users in transactions and obtain
+			user identity data. It brings to users a central identity
 			management.
 		</para>
 		<para>
@@ -63,7 +69,287 @@
 						by the user and the providing application).
 					</para>
 				</listitem>
+				<listitem>
+					<para>
+						Name Identifier Mapping service: via this
+						service an application can perform a mapping
+						from a username to the user identifier. Of
+						course this service is only available for an
+						application after explicit authorization has
+						been given by the operator.
+					</para>
+				</listitem>
 			</orderedlist>
+			The SafeOnline SDK contains Java components to ease the
+			communication with the OLAS services. Besides client
+			components for these web service you'll also find various
+			components in this SDK to ease integration of the SafeOnline
+			authentication mechanism within servlet container based web
+			applications.
 		</para>
+		<section>
+			<title>Concepts</title>
+			<para>
+				Some key concepts will be elaborated on to provide a
+				good understanding of the different SDK components.
+				<variablelist>
+					<varlistentry>
+						<term>Application</term>
+						<listitem>
+							<para>
+								The entity that invokes operations on
+								the OLAS web services and OLAS
+								authentication web application. Every
+								application is trusted by the OLAS
+								services via an X509 certificate and
+								corresponding private key.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Operator</term>
+						<listitem>
+							<para>
+								The entity that manages the OLAS
+								services and defines the trust
+								relationship and access control towards
+								applications.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>Application Owner</term>
+						<listitem>
+							<para>
+								Every application is owned by an
+								application owner. The application owner
+								can manage its application via the OLAS
+								application owner web application.
+							</para>
+						</listitem>
+					</varlistentry>
+				</variablelist>
+				The SDK itself is bundled in the file
+				<code>safe-online-sdk-1.0.jar</code>
+				. All the other JAR files are required dependencies. As
+				web service software stack we're using the Sun JAX-WS
+				2.1 RI.
+			</para>
+		</section>
+	</chapter>
+
+	<chapter id="ws">
+		<title>Web Services</title>
+		<abstract>
+			<para>
+				This chapter describes the web services that OLAS offers
+				towards applications. We're also demonstrating how to
+				use the SDK client components to invoke operations on
+				the different web services.
+			</para>
+		</abstract>
+		<para>
+			A web service definition is composed out of a WSDL and a set
+			of XSD files. For every web service you'll find the web
+			service definition files in the file:
+			<code>safe-online-xxx-ws-1.0.jar</code>
+			. This file also contains the JAX-WS 2.1 stub classes and
+			the corresponding JAXB 2 annotated Java classes for XML
+			binding.
+		</para>
+		<para>
+			Every OLAS web service is secured via server-side SSL and a
+			client-side WS-Security signature on the SOAP message body.
+		</para>
+		<para>
+			Basically every web service comes with a corresponding SDK
+			client component. For example, the Name Identifier Mapping
+			web service can be accessed via the
+			<code>NameIdentifierMappingClient</code>
+			SDK component. Every web service client component has a main
+			constructor that requires the following parameters:
+			<variablelist>
+				<varlistentry>
+					<term>location</term>
+					<listitem>
+						<para>
+							The location of the OLAS web service. This
+							is composed out of
+							<code>host:port</code>
+							information.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>certificate</term>
+					<listitem>
+						<para>
+							The client X509 certificate that will be
+							used during the creation of the WS-Security
+							signature.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>private key</term>
+					<listitem>
+						<para>
+							The private key that corresponds with the
+							client X509 certificate. This key will be
+							used for creating the WS-Security signature.
+						</para>
+					</listitem>
+				</varlistentry>
+			</variablelist>
+		</para>
+		<para>
+			The exact operations exposed by the different SDK web
+			service client components can be found within the Javadoc
+			documentation that comes with the SDK package.
+		</para>
+	</chapter>
+
+	<chapter id="auth-webapp">
+		<title>Authentication Web Application</title>
+		<abstract>
+			<para>
+				This chapter will give an overview of the functionality
+				provided by the OLAS authentication web application.
+			</para>
+		</abstract>
+		<para>
+			The OLAS authentication web application is used to
+			authentication users via a web interface. In more detail the
+			OLAS authentication web application allows you to:
+			<itemizedlist>
+				<listitem>
+					<para>
+						Register new users. A new user is also required
+						to directly register an initial authentication
+						device.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Authenticate existing users via a device
+						required by the requesting application.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Register new authentication devices if an
+						application requires to do so.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Subscribe a user to an application if he hasn't
+						done that yet.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Let the user confirm the usage of the identity
+						attributes required by the requesting
+						application.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Let the user fill in missing identity attributes
+						as required by the requesting application.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Generate an authentication token according to
+						the authentication protocol used by the
+						requesting application.
+					</para>
+				</listitem>
+			</itemizedlist>
+			The OLAS authentication web application supports different
+			authentication protocol that can be used by the applications
+			to initiate a new user authentication process. The most
+			important authentication protocol is the SAML version 2.0
+			Browser POST profile.
+		</para>
+		<para>
+			There are different ways of initiating a new user
+			authentication process from within an application, depending
+			on the type of application. We can make a distinction
+			between the following two types of web applications:
+			<orderedlist>
+				<listitem>
+					<para>
+						Web resource based web applications like
+						servlet-based or JSP web application. This type
+						of web application will probably use a servlet
+						filter to initiate the user authentication
+						process when the user wants to access a certain
+						web page that requires authentication.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						MVC based web application. For example: JSF/Seam
+						based web application. This type of web
+						application will probably directly initiate the
+						authentication process via an explicit user
+						action like pressing a login button on a form.
+					</para>
+				</listitem>
+			</orderedlist>
+			For both type of web application the OLAS SDK offers utility
+			classes to initiate and of course also finalize a user
+			authentication process.
+		</para>
+		<section>
+			<title>Authentication Filter</title>
+			<para>
+				When you decide to handle the authentication process
+				invocation via servlet filters you can use the following
+				SDK servlet filter components:
+				<variablelist>
+					<varlistentry>
+						<term>
+							<code>AuthenticationFilter</code>
+						</term>
+						<listitem>
+							<para>
+								This filter can be used to initiate the
+								authentication process.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>
+							<code>LoginFilter</code>
+						</term>
+						<listitem>
+							<para>
+								This filter can be used to finalize an
+								authentication process.
+							</para>
+						</listitem>
+					</varlistentry>
+				</variablelist>
+				Both of these servlet filters should be configured via
+				the
+				<code>web.xml</code>
+				servlet web application deployment descriptor.
+				Configuration parameters of these filters are described
+				within the Javadoc API documentation of the OLAS SDK.
+			</para>
+		</section>
+		<section>
+			<title>Direct application-level initiation</title>
+			<para>
+				Direct invocation of the authentication protocol handler
+				is also possible. An example of this is given by
+				<code>SafeOnlineLoginUtils</code>
+				that can be used on Seam/JSF-based web applications.
+			</para>
+		</section>
 	</chapter>
 </book>

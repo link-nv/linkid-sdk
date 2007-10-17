@@ -24,6 +24,13 @@ public class CompoundUtil {
 		// empty
 	}
 
+	/**
+	 * Gives back <code>true</code> if the given value represents a compounded
+	 * object.
+	 * 
+	 * @param attributeValue
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static boolean isCompound(Object attributeValue) {
 		if (null == attributeValue) {
@@ -35,6 +42,12 @@ public class CompoundUtil {
 		return null != compoundAnnotation;
 	}
 
+	/**
+	 * Gives back the attribute Id of given the compounded object.
+	 * 
+	 * @param attributeValue
+	 * @return
+	 */
 	public static String getAttributeId(Object attributeValue) {
 		Class<?> clazz = attributeValue.getClass();
 		Method[] methods = clazz.getMethods();
@@ -62,6 +75,14 @@ public class CompoundUtil {
 		throw new IllegalArgumentException("no @CompoundId property found");
 	}
 
+	/**
+	 * Gives back the setter method that corresponds with the given getter for a
+	 * certain class.
+	 * 
+	 * @param clazz
+	 * @param getMethod
+	 * @return
+	 */
 	public static Method getSetMethod(Class<?> clazz, Method getMethod) {
 		String methodName = getMethod.getName();
 		String propertyName;

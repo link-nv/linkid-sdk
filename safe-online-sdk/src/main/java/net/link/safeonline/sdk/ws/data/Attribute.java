@@ -22,15 +22,31 @@ public class Attribute<Type> {
 
 	private final Type value;
 
+	/**
+	 * Main constructor.
+	 * 
+	 * @param name
+	 * @param value
+	 */
 	public Attribute(String name, Type value) {
 		this.name = name;
 		this.value = value;
 	}
 
+	/**
+	 * Gives back the name of the attribute.
+	 * 
+	 * @return
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	/**
+	 * Gives back the value of the attribute.
+	 * 
+	 * @return
+	 */
 	public Type getValue() {
 		return this.value;
 	}

@@ -7,6 +7,12 @@
 
 package net.link.safeonline.sdk.exception;
 
+/**
+ * Thrown in case the subject was not found.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class SubjectNotFoundException extends Exception {
 
 	private static final long serialVersionUID = 1L;

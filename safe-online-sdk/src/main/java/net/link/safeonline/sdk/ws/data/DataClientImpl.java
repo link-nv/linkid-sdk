@@ -61,6 +61,13 @@ import org.apache.commons.logging.LogFactory;
 
 import com.sun.xml.ws.client.ClientTransportException;
 
+/**
+ * Implementation of the data client. This class is using JAX-WS, secured via
+ * WS-Security and server-side SSL.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class DataClientImpl extends AbstractMessageAccessor implements
 		DataClient {
 

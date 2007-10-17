@@ -7,6 +7,12 @@
 
 package net.link.safeonline.sdk.exception;
 
+/**
+ * Thrown in case the request has been denied by the service.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class RequestDeniedException extends Exception {
 
 	private static final long serialVersionUID = 1L;

@@ -33,6 +33,13 @@ import oasis.names.tc.saml._2_0.protocol.StatusType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Implementation of the name identifier mapping interface. This class is using
+ * JAX-WS, secured via WS-Security and server-side SSL.
+ * 
+ * @author fcorneli
+ * 
+ */
 public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
 		implements NameIdentifierMappingClient {
 

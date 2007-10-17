@@ -15,6 +15,15 @@
 			</excludes>
 		</dependencySet>
 	</dependencySets>
+	<fileSets>
+		<fileSet>
+			<directory>target/files/javadoc</directory>
+			<outputDirectory>/javadoc</outputDirectory>
+			<excludes>
+				<exclude>META-INF/**</exclude>
+			</excludes>
+		</fileSet>
+	</fileSets>
 	<files>
 		<file>
 			<source>target/files/sdk-manual.pdf</source>
