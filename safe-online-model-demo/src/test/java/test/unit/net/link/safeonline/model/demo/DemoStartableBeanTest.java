@@ -25,6 +25,7 @@ import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
+import net.link.safeonline.dao.bean.UsageAgreementDAOBean;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
@@ -39,6 +40,8 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.entity.UsageAgreementEntity;
+import net.link.safeonline.entity.UsageAgreementTextEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -49,6 +52,7 @@ import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
 import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
+import net.link.safeonline.model.bean.UsageAgreementManagerBean;
 import net.link.safeonline.model.beid.BeIdStartableBean;
 import net.link.safeonline.model.demo.DemoStartableBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
@@ -79,7 +83,8 @@ public class DemoStartableBeanTest {
 			AttributeProviderDAOBean.class, DeviceDAOBean.class,
 			AllowedDeviceDAOBean.class, PasswordManagerBean.class,
 			SubjectServiceBean.class, SubjectIdentifierDAOBean.class,
-			IdGeneratorBean.class };
+			IdGeneratorBean.class, UsageAgreementDAOBean.class,
+			UsageAgreementManagerBean.class };
 
 	@Before
 	public void setUp() throws Exception {
@@ -97,7 +102,8 @@ public class DemoStartableBeanTest {
 				AttributeProviderEntity.class, DeviceEntity.class,
 				AllowedDeviceEntity.class,
 				CompoundedAttributeTypeMemberEntity.class,
-				SubjectIdentifierEntity.class);
+				SubjectIdentifierEntity.class, UsageAgreementEntity.class,
+				UsageAgreementTextEntity.class);
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 

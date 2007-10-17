@@ -2,7 +2,10 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk">
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">
@@ -20,70 +23,116 @@
 
 		<h1>#{selectedApplication.name}</h1>
 
-		<p><h:outputText value="#{selectedApplication.description}"
-			escape="false" /></p>
+		<rich:tabPanel switchType="client">
 
-		<table>
-			<tr>
-				<th>#{msgs.applicationOwner}:</th>
-				<td>#{selectedApplication.applicationOwner.name}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.ownerUserAllowedToSubscribe}:</th>
-				<td>#{selectedApplication.allowUserSubscription}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.removable}:</th>
-				<td>#{selectedApplication.removable}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.ownerNumberOfSubscriptions}:</th>
-				<td>#{numberOfSubscriptions}</td>
-			</tr>
-			<tr>
-				<th>#{msgs.identityVersion}:</th>
-				<td>#{selectedApplication.currentApplicationIdentity}</td>
-			</tr>
-		</table>
+			<rich:tab label="#{msgs.generic}">
 
-		<h2>#{msgs.certificate}:</h2>
-		<pre>
-		<h:outputText value="#{selectedApplication.certificate}" />
-		</pre>
+				<table>
+					<tr>
+						<th>#{msgs.applicationOwner}:</th>
+						<td>#{selectedApplication.applicationOwner.name}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.ownerUserAllowedToSubscribe}:</th>
+						<td>#{selectedApplication.allowUserSubscription}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.removable}:</th>
+						<td>#{selectedApplication.removable}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.ownerNumberOfSubscriptions}:</th>
+						<td>#{numberOfSubscriptions}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.identityVersion}:</th>
+						<td>#{selectedApplication.currentApplicationIdentity}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.usageAgreementVersion}</th>
+						<td>#{selectedApplication.currentApplicationUsageAgreement}</td>
+					</tr>
+				</table>
+			</rich:tab>
 
-		<h:dataTable value="#{selectedApplicationIdentity}" var="item">
-			<h:column>
-				<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
-				<h:outputText value="#{item.attributeTypeName}" />
-			</h:column>
+			<rich:tab label="#{msgs.description}">
+				<p><h:outputText value="#{selectedApplication.description}"
+					escape="true" rendered="#{!empty selectedApplication.description}" />
+				<h:outputText value="#{msgs.noDescription}"
+					rendered="#{empty selectedApplication.description}" /></p>
+				<!-- XSS vulnerability possible: do not set escape="false" -->
+			</rich:tab>
 
-			<h:column>
-				<f:facet name="header">#{msgs.required}</f:facet>
-				<h:outputText value="#{item.required}" />
-			</h:column>
-		</h:dataTable>
+			<rich:tab label="#{msgs.usageAgreement}">
+				#{msgs.usageAgreementVersion}:<so:nbsp />#{selectedApplication.currentApplicationUsageAgreement}
+				<a4j:form id="usageAgreementForm" ajaxSubmit="true"
+					reRender="usage-agreement-data">
+					<rich:dataTable id="usage-agreement-data" var="item"
+						value="#{selectedApplicationUsageAgreements}" rows="10"
+						styleClass="listingTable"
+						rowClasses="listingTable_Row1,listingTable_Row2">
+						<h:column>
+							<a4j:commandLink id="view-agreement"
+								value="#{msgs.version}: #{item.usageAgreementVersion}"
+								action="#{ownerApplication.viewUsageAgreement}" />
+						</h:column>
+						<f:facet name="footer">
+							<rich:datascroller for="usage-agreement-data" />
+						</f:facet>
+					</rich:dataTable>
+				</a4j:form>
+			</rich:tab>
 
-		<p>#{msgs.isDeviceRestriction}: <h:selectBooleanCheckbox
-			value="#{selectedApplication.deviceRestriction}" disabled="true" /></p>
+			<rich:tab label="#{msgs.accessControl}">
+				<p><h:outputText value="#{msgs.certificate}:" /></p>
+				<pre><h:outputText value="#{selectedApplication.certificate}"
+					rendered="#{!empty selectedApplication.certificate}" /></pre>
+				<p><h:outputText value="#{msgs.noCertificate}"
+					rendered="#{empty selectedApplication.certificate}" /></p>
+			</rich:tab>
 
-		<h:dataTable value="#{allowedDevices}" var="item">
-			<h:column>
-				<f:facet name="header">#{msgs.name}</f:facet>
-				<h:outputText value="#{item.device.name}" />
-			</h:column>
-			<h:column>
-				<f:facet name="header">#{msgs.allowed}</f:facet>
-				<h:selectBooleanCheckbox value="#{item.allowed}" disabled="true" />
-			</h:column>
-			<h:column>
-				<f:facet name="header">#{msgs.weight}</f:facet>
-				<h:outputText value="#{item.weight}" />
-			</h:column>
-		</h:dataTable>
+			<rich:tab label="#{msgs.applicationIdentity}">
+				<h:dataTable value="#{selectedApplicationIdentity}" var="item">
+					<h:column>
+						<f:facet name="header">#{msgs.applicationIdentity}</f:facet>
+						<h:outputText value="#{item.attributeTypeName}" />
+					</h:column>
 
-		<h:form>
-			<h:commandButton value="#{msgs.backaction}" action="back" />
-		</h:form>
+					<h:column>
+						<f:facet name="header">#{msgs.required}</f:facet>
+						<h:outputText value="#{item.required}" />
+					</h:column>
+				</h:dataTable>
+			</rich:tab>
+
+			<rich:tab label="#{msgs.devices}">
+				<p>#{msgs.isDeviceRestriction}: <h:selectBooleanCheckbox
+					value="#{selectedApplication.deviceRestriction}" disabled="true" /></p>
+
+				<h:dataTable value="#{allowedDevices}" var="item">
+					<h:column>
+						<f:facet name="header">#{msgs.name}</f:facet>
+						<h:outputText value="#{item.device.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{msgs.allowed}</f:facet>
+						<h:selectBooleanCheckbox value="#{item.allowed}" disabled="true" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">#{msgs.weight}</f:facet>
+						<h:outputText value="#{item.weight}" />
+					</h:column>
+				</h:dataTable>
+			</rich:tab>
+		</rich:tabPanel>
+
+		<rich:spacer height="10" />
+		<a4j:form>
+			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back" />
+			<so:nbsp />
+			<a4j:commandButton value="#{msgs.editaction}"
+				action="#{ownerApplication.edit}" id="edit" />
+		</a4j:form>
 
 	</ui:define>
 	<ui:define name="sidebar">

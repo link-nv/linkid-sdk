@@ -5,6 +5,13 @@
 <faces-config xmlns="http://java.sun.com/JSF/Configuration">
 
 	<component>
+		<component-type>net.link.component.outputText</component-type>
+		<component-class>
+			net.link.safeonline.taglib.OutputText
+		</component-class>
+	</component>
+
+	<component>
 		<component-type>
 			net.link.component.attributeOutput
 		</component-type>

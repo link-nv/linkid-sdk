@@ -12,9 +12,11 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -27,6 +29,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.UsageAgreementNotFoundException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.dao.AllowedDeviceDAO;
@@ -38,6 +41,7 @@ import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.dao.UsageAgreementDAO;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
@@ -50,10 +54,12 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementPK;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
+import net.link.safeonline.model.UsageAgreementManager;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.service.SubjectService;
@@ -157,6 +163,32 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
+	protected static class UsageAgreement {
+		final String application;
+
+		final Set<UsageAgreementText> usageAgreementTexts;
+
+		public UsageAgreement(String application) {
+			this.application = application;
+			this.usageAgreementTexts = new HashSet<UsageAgreementText>();
+		}
+
+		public void addUsageAgreementText(UsageAgreementText usageAgreementText) {
+			this.usageAgreementTexts.add(usageAgreementText);
+		}
+	}
+
+	protected static class UsageAgreementText {
+		final String language;
+
+		final String text;
+
+		public UsageAgreementText(String language, String text) {
+			this.language = language;
+			this.text = text;
+		}
+	}
+
 	protected List<Subscription> subscriptions;
 
 	protected List<AttributeTypeEntity> attributeTypes;
@@ -164,6 +196,8 @@ public abstract class AbstractInitBean implements Startable {
 	protected List<AttributeTypeDescriptionEntity> attributeTypeDescriptions;
 
 	protected List<Identity> identities;
+
+	protected List<UsageAgreement> usageAgreements;
 
 	protected List<X509Certificate> trustedCertificates;
 
@@ -173,6 +207,9 @@ public abstract class AbstractInitBean implements Startable {
 
 	@EJB
 	private ApplicationIdentityManager applicationIdentityService;
+
+	@EJB
+	private UsageAgreementManager usageAgreementManager;
 
 	public abstract int getPriority();
 
@@ -187,6 +224,7 @@ public abstract class AbstractInitBean implements Startable {
 		this.registeredApplications = new LinkedList<Application>();
 		this.subscriptions = new LinkedList<Subscription>();
 		this.identities = new LinkedList<Identity>();
+		this.usageAgreements = new LinkedList<UsageAgreement>();
 		this.attributeTypeDescriptions = new LinkedList<AttributeTypeDescriptionEntity>();
 		this.trustedCertificates = new LinkedList<X509Certificate>();
 		this.attributeProviders = new LinkedList<AttributeProviderEntity>();
@@ -206,6 +244,7 @@ public abstract class AbstractInitBean implements Startable {
 			initApplications();
 			initSubscriptions();
 			initIdentities();
+			initUsageAgreements();
 			initApplicationTrustPoints();
 			initAttributeProviders();
 			initAttributes();
@@ -247,6 +286,9 @@ public abstract class AbstractInitBean implements Startable {
 
 	@EJB
 	private ApplicationIdentityDAO applicationIdentityDAO;
+
+	@EJB
+	private UsageAgreementDAO usageAgreementDAO;
 
 	@EJB
 	private AttributeProviderDAO attributeProviderDAO;
@@ -440,7 +482,7 @@ public abstract class AbstractInitBean implements Startable {
 			ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
 					.findApplicationOwner(application.owner);
 			long identityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
-			long usageAgreementVersion = UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION;
+			long usageAgreementVersion = UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION;
 			ApplicationEntity newApplication = this.applicationDAO
 					.addApplication(applicationName, null, applicationOwner,
 							application.allowUserSubscription,
@@ -486,6 +528,33 @@ public abstract class AbstractInitBean implements Startable {
 				this.LOG.debug("Could not update application identity");
 				throw new RuntimeException(
 						"could not update the application identity: "
+								+ e.getMessage(), e);
+			}
+		}
+	}
+
+	private void initUsageAgreements() {
+		for (UsageAgreement usageAgreement : this.usageAgreements) {
+			ApplicationEntity application = this.applicationDAO
+					.findApplication(usageAgreement.application);
+			UsageAgreementEntity usageAgreementEntity = this.usageAgreementDAO
+					.addUsageAgreement(application,
+							UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
+			for (UsageAgreementText usageAgreementText : usageAgreement.usageAgreementTexts) {
+				this.usageAgreementDAO.addUsageAgreementText(
+						usageAgreementEntity, usageAgreementText.text,
+						usageAgreementText.language);
+			}
+			try {
+				this.usageAgreementManager.setUsageAgreement(application,
+						UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
+			} catch (UsageAgreementNotFoundException e) {
+				this.LOG
+						.debug("could not set usage agreement for application: "
+								+ application.getName());
+				throw new RuntimeException(
+						"could not set usage agreement for application: "
+								+ application.getName() + " : "
 								+ e.getMessage(), e);
 			}
 		}

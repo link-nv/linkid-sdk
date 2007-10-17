@@ -19,6 +19,7 @@ import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -285,17 +286,26 @@ public class EntityTest {
 	@Test
 	public void testAddUsageAgreement() throws Exception {
 		// setup
+		SubjectEntity subject = new SubjectEntity("test-login");
+		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
+				"owner", subject);
+		ApplicationEntity application = new ApplicationEntity(
+				"test-application", applicationOwner);
 		UsageAgreementEntity usageAgreementv1 = new UsageAgreementEntity(
-				"test-application", 1L);
+				application, 1L);
 		UsageAgreementEntity usageAgreementv2 = new UsageAgreementEntity(
-				"test-application", 2L);
+				application, 2L);
 		UsageAgreementTextEntity usageAgreementTextv1En = new UsageAgreementTextEntity(
-				usageAgreementv1, "This is a usage agreement.", "en");
+				usageAgreementv1, "This is a usage agreement.", Locale.ENGLISH
+						.getLanguage());
 		UsageAgreementTextEntity usageAgreementTextv1Fr = new UsageAgreementTextEntity(
-				usageAgreementv1, "Ceci est un accord d'utilisation.", "fr");
+				usageAgreementv1, "Dit is een gebruikers overeenkomst.", "nl");
 
 		// operate
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(subject);
+		entityManager.persist(applicationOwner);
+		entityManager.persist(application);
 		entityManager.persist(usageAgreementv1);
 		entityManager.persist(usageAgreementv2);
 		entityManager.persist(usageAgreementTextv1En);
@@ -304,22 +314,22 @@ public class EntityTest {
 		// verify
 		entityManager = this.entityTestManager.refreshEntityManager();
 		UsageAgreementEntity resultAgreementv1 = entityManager.find(
-				UsageAgreementEntity.class, new UsageAgreementPK(
-						"test-application", 1L));
+				UsageAgreementEntity.class, new UsageAgreementPK(application
+						.getName(), 1L));
 		assertNotNull(resultAgreementv1);
 		UsageAgreementEntity resultAgreementv2 = entityManager.find(
-				UsageAgreementEntity.class, new UsageAgreementPK(
-						"test-application", 2L));
+				UsageAgreementEntity.class, new UsageAgreementPK(application
+						.getName(), 2L));
 		assertNotNull(resultAgreementv2);
 		assertFalse(resultAgreementv1.equals(resultAgreementv2));
 
 		UsageAgreementTextEntity resultAgreementTextv1En = entityManager.find(
 				UsageAgreementTextEntity.class, new UsageAgreementTextPK(
-						usageAgreementv1, "en"));
+						usageAgreementv1, Locale.ENGLISH.getLanguage()));
 		assertNotNull(resultAgreementTextv1En);
 		UsageAgreementTextEntity resultAgreementTextv1Fr = entityManager.find(
 				UsageAgreementTextEntity.class, new UsageAgreementTextPK(
-						usageAgreementv1, "fr"));
+						usageAgreementv1, "nl"));
 		assertNotNull(resultAgreementTextv1Fr);
 	}
 

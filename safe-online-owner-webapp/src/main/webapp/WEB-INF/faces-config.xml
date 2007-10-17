@@ -52,6 +52,14 @@
 			<from-outcome>back</from-outcome>
 			<to-view-id>/applications.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit-application</from-outcome>
+			<to-view-id>/application-edit.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-usage-agreement</from-outcome>
+			<to-view-id>/usage-agreement-view.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -86,4 +94,24 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<navigation-rule>
+		<from-view-id>/usage-agreement-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>viewtext</from-outcome>
+			<to-view-id>/usage-agreement-text-view.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/application-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/usage-agreement-text-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/usage-agreement-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
 </faces-config>

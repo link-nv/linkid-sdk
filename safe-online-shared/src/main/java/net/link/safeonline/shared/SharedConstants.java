@@ -31,6 +31,8 @@ public class SharedConstants {
 
 	public static final String DECODING_ERROR = "DECODING_ERROR";
 
+	public static final String USAGE_AGREEMENT_NOT_FOUND_ERROR = "USAGE_AGREEMENT_NOT_FOUND_ERROR";
+
 	private SharedConstants() {
 		// empty
 	}

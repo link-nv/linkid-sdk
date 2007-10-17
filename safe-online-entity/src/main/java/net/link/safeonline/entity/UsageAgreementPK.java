@@ -17,7 +17,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Embeddable
 public class UsageAgreementPK implements Serializable {
 
-	public static final long INITIAL_USAGE_AGREEMENT_VERSION = 1;
+	public static final Long DRAFT_USAGE_AGREEMENT_VERSION = -1L;
+
+	public static final Long EMPTY_USAGE_AGREEMENT_VERSION = 0L;
+
+	public static final Long INITIAL_USAGE_AGREEMENT_VERSION = 1L;
 
 	private static final long serialVersionUID = 1L;
 

@@ -55,6 +55,10 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	public static final String DEMO_MANDATE_APPLICATION_NAME = "demo-mandate";
 
+	public static final String LICENSE_AGREEMENT_CONFIRM_TEXT_EN = "PLEASE READ THIS SOFTWARE LICENSE AGREEMENT (\"LICENSE\") CAREFULLY BEFORE USING THE SOFTWARE.  BY USING THE SOFTWARE, YOU ARE AGREEING TO BE BOUND BY THE TERMS OF THIS LICENSE.  IF YOU ARE ACCESSING THE SOFTWARE ELECTRONICALLY, SIGNIFY YOUR AGREEMENT TO BE BOUND BY THE TERMS OF THIS LICENSE BY CLICKING THE \"AGREE/ACCEPT\" BUTTON. IF YOU DO NOT AGREE TO THE TERMS OF THIS LICENSE, DO NOT USE THE SOFTWARE AND (IF APPLICABLE) RETURN THE APPLE SOFTWARE TO THE PLACE WHERE YOU OBTAINED IT FOR A REFUND OR, IF THE SOFTWARE WAS ACCESSED ELECTRONICALLY, CLICK \"DISAGREE/DECLINE\".";
+
+	public static final String LICENSE_AGREEMENT_CONFIRM_TEXT_NL = "GELIEVE ZORGVULDIG DEZE OVEREENKOMST VAN DE VERGUNNING VAN SOFTWARE (\"LICENSE \") TE LEZEN ALVORENS DE SOFTWARE TE GEBRUIKEN.";
+
 	public DemoStartableBean() {
 		configDemoUsers();
 
@@ -146,6 +150,23 @@ public class DemoStartableBean extends AbstractInitBean {
 								false) }));
 
 		/*
+		 * Application usage agreements
+		 */
+		UsageAgreement usageAgreement = new UsageAgreement(
+				DEMO_MANDATE_APPLICATION_NAME);
+		usageAgreement.addUsageAgreementText(new UsageAgreementText(
+				Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV"
+						+ "\n" + "Software License Agreement for "
+						+ DEMO_MANDATE_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+		usageAgreement.addUsageAgreementText(new UsageAgreementText("nl",
+				"Nederlands" + "\n\n" + "Lin-k NV" + "\n"
+						+ "Software Gebruikers Overeenkomst voor "
+						+ DEMO_MANDATE_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+		this.usageAgreements.add(usageAgreement);
+
+		/*
 		 * Register admin
 		 */
 		String mandateAdmin = "mandate-admin";
@@ -183,6 +204,23 @@ public class DemoStartableBean extends AbstractInitBean {
 		List<String> devices = new LinkedList<String>();
 		devices.add(BeIdConstants.BEID_DEVICE_ID);
 		this.allowedDevices.put(DEMO_TICKET_APPLICATION_NAME, devices);
+
+		/*
+		 * Application usage agreements
+		 */
+		UsageAgreement usageAgreement = new UsageAgreement(
+				DEMO_TICKET_APPLICATION_NAME);
+		usageAgreement.addUsageAgreementText(new UsageAgreementText(
+				Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV"
+						+ "\n" + "Software License Agreement for "
+						+ DEMO_TICKET_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+		usageAgreement.addUsageAgreementText(new UsageAgreementText("nl",
+				"Nederlands" + "\n\n" + "Lin-k NV" + "\n"
+						+ "Software Gebruikers Overeenkomst voor "
+						+ DEMO_TICKET_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+		this.usageAgreements.add(usageAgreement);
 	}
 
 	private void configPaymentDemo() {
@@ -264,6 +302,23 @@ public class DemoStartableBean extends AbstractInitBean {
 				DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, paymentAdmin));
 		paymentAdminAttribute.setBooleanValue(true);
 		this.attributes.add(paymentAdminAttribute);
+
+		/*
+		 * Application usage agreements
+		 */
+		UsageAgreement usageAgreement = new UsageAgreement(
+				DEMO_PAYMENT_APPLICATION_NAME);
+		usageAgreement.addUsageAgreementText(new UsageAgreementText(
+				Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV"
+						+ "\n" + "Software License Agreement for "
+						+ DEMO_PAYMENT_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+		usageAgreement.addUsageAgreementText(new UsageAgreementText("nl",
+				"Nederlands" + "\n\n" + "Lin-k NV" + "\n"
+						+ "Software Gebruikers Overeenkomst voor "
+						+ DEMO_PAYMENT_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+		this.usageAgreements.add(usageAgreement);
 	}
 
 	private void configPrescriptionDemo() {
@@ -350,6 +405,23 @@ public class DemoStartableBean extends AbstractInitBean {
 				prescriptionAdmin));
 		prescriptionAdminAttribute.setBooleanValue(true);
 		this.attributes.add(prescriptionAdminAttribute);
+
+		/*
+		 * Application usage agreements
+		 */
+		UsageAgreement usageAgreement = new UsageAgreement(
+				DEMO_PRESCRIPTION_APPLICATION_NAME);
+		usageAgreement.addUsageAgreementText(new UsageAgreementText(
+				Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV"
+						+ "\n" + "Software License Agreement for "
+						+ DEMO_PRESCRIPTION_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+		usageAgreement.addUsageAgreementText(new UsageAgreementText("nl",
+				"Nederlands" + "\n\n" + "Lin-k NV" + "\n"
+						+ "Software Gebruikers Overeenkomst voor "
+						+ DEMO_PRESCRIPTION_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+		this.usageAgreements.add(usageAgreement);
 	}
 
 	private void configLawyerDemo() {
@@ -416,6 +488,23 @@ public class DemoStartableBean extends AbstractInitBean {
 				DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, "baradmin"));
 		barAdminBarAdminAttribute.setBooleanValue(true);
 		this.attributes.add(barAdminBarAdminAttribute);
+
+		/*
+		 * Application usage agreements
+		 */
+		UsageAgreement usageAgreement = new UsageAgreement(
+				DEMO_LAWYER_APPLICATION_NAME);
+		usageAgreement.addUsageAgreementText(new UsageAgreementText(
+				Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV"
+						+ "\n" + "Software License Agreement for "
+						+ DEMO_LAWYER_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+		usageAgreement.addUsageAgreementText(new UsageAgreementText("nl",
+				"Nederlands" + "\n\n" + "Lin-k NV" + "\n"
+						+ "Software Gebruikers Overeenkomst voor "
+						+ DEMO_LAWYER_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+		this.usageAgreements.add(usageAgreement);
 	}
 
 	private void configLawyerDemoAttribute(String attributeName,

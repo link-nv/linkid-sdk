@@ -17,6 +17,15 @@
 	</tag>
 
 	<tag>
+		<tag-name>outputText</tag-name>
+		<component>
+			<component-type>
+				net.link.component.outputText
+			</component-type>
+		</component>
+	</tag>
+
+	<tag>
 		<tag-name>outputAttribute</tag-name>
 		<component>
 			<component-type>

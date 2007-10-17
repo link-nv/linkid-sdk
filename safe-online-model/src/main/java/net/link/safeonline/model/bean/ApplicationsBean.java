@@ -11,11 +11,14 @@ import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.UsageAgreementNotFoundException;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
+import net.link.safeonline.dao.UsageAgreementDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
+import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.model.Applications;
 
 @Stateless
@@ -28,6 +31,9 @@ public class ApplicationsBean implements Applications {
 
 	@EJB
 	private ApplicationIdentityDAO applicationIdentityDAO;
+
+	@EJB
+	private UsageAgreementDAO usageAgreememtDAO;
 
 	public ApplicationEntity getApplication(String applicationName)
 			throws ApplicationNotFoundException {
@@ -62,5 +68,24 @@ public class ApplicationsBean implements Applications {
 			LOG.debug("attribute: " + attribute);
 		}
 		return attributes;
+	}
+
+	public UsageAgreementEntity getCurrentUsageAgreement(
+			ApplicationEntity application) {
+		LOG.debug("get current application usage agreement: "
+				+ application.getName());
+
+		long currentUsageAgreementVersion = application
+				.getCurrentApplicationUsageAgreement();
+		UsageAgreementEntity usageAgreement;
+		try {
+			usageAgreement = this.usageAgreememtDAO.getUsageAgreement(
+					application, currentUsageAgreementVersion);
+		} catch (UsageAgreementNotFoundException e) {
+			LOG.debug("empty usage agreement for appliaction: "
+					+ application.getName());
+			return null;
+		}
+		return usageAgreement;
 	}
 }

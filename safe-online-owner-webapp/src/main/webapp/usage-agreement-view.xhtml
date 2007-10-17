@@ -2,6 +2,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
 	xmlns:a4j="http://richfaces.org/a4j"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
@@ -19,32 +21,35 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.applications}</h1>
+		<h1>#{selectedApplication.name}</h1>
 
-		<a4j:form id="apps">
-			<rich:dataTable id="app-data" var="item"
-				value="#{ownerApplicationList}" rows="10" styleClass="listingTable"
+		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{selectedUsageAgreement.usageAgreementVersion}
+		</h2>
+
+		<a4j:form id="usageAgreementForm" ajaxSubmit="true"
+			reRender="usage-agreement-text-data">
+			<rich:dataTable id="usage-agreement-text-data" var="item"
+				value="#{usageAgreementTextList}" rows="10"
+				styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
-					<f:facet name="header">#{msgs.application}</f:facet>
-					<a4j:commandLink id="view" value="#{item.name}"
-						action="#{ownerApplication.view}" />
-				</h:column>
-				<h:column>
-					<a4j:commandLink id="edit" value="#{msgs.editaction}"
-						action="#{ownerApplication.edit}" />
-				</h:column>
-				<h:column>
-					<a4j:commandLink id="stat" value="#{msgs.statistic}"
-						action="#{ownerApplication.viewStats}" />
+					<f:facet name="header">#{msgs.language}</f:facet>
+					<a4j:commandLink id="viewtext"
+						value="#{msgs.language}: #{item.pk.language}"
+						action="#{ownerUsageAgreement.viewText}" />
 				</h:column>
 				<f:facet name="footer">
-					<rich:datascroller for="app-data" />
+					<rich:datascroller for="usage-agreement-text-data" />
 				</f:facet>
 			</rich:dataTable>
-
-			<h:messages styleClass="error" />
 		</a4j:form>
+
+		<rich:spacer height="10" />
+		<a4j:form>
+			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back" />
+			<so:nbsp />
+		</a4j:form>
+
 
 	</ui:define>
 	<ui:define name="sidebar">

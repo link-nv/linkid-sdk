@@ -26,6 +26,7 @@ import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.owner.Application;
 import net.link.safeonline.owner.DeviceEntry;
 import net.link.safeonline.owner.OwnerConstants;
@@ -88,6 +89,16 @@ public class ApplicationBean implements Application {
 	@DataModel(value = "selectedApplicationIdentity")
 	private Set<ApplicationIdentityAttributeEntity> selectedApplicationIdentity;
 
+	@SuppressWarnings("unused")
+	@DataModel(value = "selectedApplicationUsageAgreements")
+	private List<UsageAgreementEntity> selectedApplicationUsageAgreements;
+
+	@SuppressWarnings("unused")
+	@DataModelSelection("selectedApplicationUsageAgreements")
+	@Out(value = "selectedUsageAgreement", required = false, scope = ScopeType.SESSION)
+	@In(value = "selectedUsageAgreement", required = false)
+	private UsageAgreementEntity selectedUsageAgreement;
+
 	@DataModel
 	private List<DeviceEntry> allowedDevices;
 
@@ -97,6 +108,26 @@ public class ApplicationBean implements Application {
 		LOG.debug("application list factory");
 		this.ownerApplicationList = this.applicationService
 				.getOwnedApplications();
+	}
+
+	@Factory("selectedApplicationUsageAgreements")
+	@RolesAllowed(OwnerConstants.OWNER_ROLE)
+	public void usageAgreementListFactory() {
+		LOG.debug("usage agreement list factory");
+		try {
+			this.selectedApplicationUsageAgreements = this.applicationService
+					.getUsageAgreements(this.selectedApplication.getName());
+		} catch (ApplicationNotFoundException e) {
+			LOG.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+			return;
+		} catch (PermissionDeniedException e) {
+			LOG.debug("permission denied.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			return;
+		}
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
@@ -209,5 +240,13 @@ public class ApplicationBean implements Application {
 			}
 		}
 
+	}
+
+	@RolesAllowed(OwnerConstants.OWNER_ROLE)
+	public String viewUsageAgreement() {
+		LOG.debug("view usage agreement for application: "
+				+ this.selectedApplication.getName() + ", version="
+				+ this.selectedUsageAgreement.getUsageAgreementVersion());
+		return "view-usage-agreement";
 	}
 }
