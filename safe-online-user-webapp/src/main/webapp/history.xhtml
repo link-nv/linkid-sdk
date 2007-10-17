@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:rich="http://richfaces.org/rich">
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -13,7 +14,7 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<h:form>
+		<a4j:form id="historyForm" ajaxSubmit="true" reRender="data">
 			<rich:dataTable id="data" var="item" value="#{history.list}"
 				rows="10" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2"
@@ -34,7 +35,7 @@
 				</f:facet>
 
 			</rich:dataTable>
-		</h:form>
+		</a4j:form>
 
 	</ui:define>
 	<ui:define name="sidebar">

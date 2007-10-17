@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
 	xmlns:n="http://gravel.jboss.org/jsf/1.0/navigation">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
@@ -14,8 +15,8 @@
 
 		<p>#{msgs.user}: #{mandateUser}</p>
 
-		<h:form>
-			<rich:dataTable value="#{mandates}" var="item">
+		<a4j:form id="mandateForm" ajaxSubmit="true" reRender="mandate-data">
+			<rich:dataTable id="mandate-data" value="#{mandates}" var="item">
 				<rich:column>
 					<f:facet name="header">#{msgs.company}</f:facet>
 					<h:outputText value="#{item.companyName}" />
@@ -28,23 +29,23 @@
 
 				<rich:column>
 					<f:facet name="header">#{msgs.actions}</f:facet>
-					<h:commandLink id="remove" value="#{msgs.remove}"
+					<a4j:commandLink id="remove" value="#{msgs.remove}"
 						action="#{mandateSearch.removeMandate}">
 						<n:nav outcome="success" viewId="/admin/mandates.xhtml" />
-					</h:commandLink>
+					</a4j:commandLink>
 				</rich:column>
 			</rich:dataTable>
 
 			<h:messages styleClass="error" globalOnly="true" />
 
-			<h:commandButton id="add" value="#{msgs.add}" action="add">
+			<a4j:commandButton id="add" value="#{msgs.add}" action="add">
 				<n:nav outcome="add" viewId="/admin/mandate-add.xhtml" />
-			</h:commandButton>
+			</a4j:commandButton>
 
-			<h:commandButton id="search" value="#{msgs.search}" action="search">
+			<a4j:commandButton id="search" value="#{msgs.search}" action="search">
 				<n:nav outcome="search" viewId="/admin/search.xhtml" />
-			</h:commandButton>
-		</h:form>
+			</a4j:commandButton>
+		</a4j:form>
 
 	</ui:define>
 

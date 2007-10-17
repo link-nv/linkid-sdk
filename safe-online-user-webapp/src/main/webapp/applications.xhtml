@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:rich="http://richfaces.org/rich">
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -14,7 +15,7 @@
 	</ui:define>
 	<ui:define name="content">
 
-		<h:form>
+		<a4j:form id="subscriptionForm" ajaxSubmit="true" reRender="sub-data">
 			<rich:dataTable id="sub-data" var="item" value="#{subscriptionList}"
 				rows="10" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2"
@@ -23,10 +24,10 @@
 					<f:facet name="header">
 						<h:outputLabel value="#{msgs.applications}" />
 					</f:facet>
-					<h:commandLink value="#{item.application.friendlyName}"
+					<a4j:commandLink value="#{item.application.friendlyName}"
 						action="#{subscriptions.viewSubscription}"
 						rendered="#{!empty item.application.friendlyName}" />
-					<h:commandLink value="#{item.application.name}"
+					<a4j:commandLink value="#{item.application.name}"
 						action="#{subscriptions.viewSubscription}"
 						rendered="#{empty item.application.friendlyName}" />
 				</h:column>
@@ -34,7 +35,7 @@
 					<f:facet name="header">
 						<h:outputLabel value="#{msgs.action}" />
 					</f:facet>
-					<h:commandLink value="#{msgs.unsubscribe}"
+					<a4j:commandLink value="#{msgs.unsubscribe}"
 						action="#{subscriptions.unsubscribe}" />
 				</h:column>
 				<f:facet name="footer">
@@ -43,7 +44,7 @@
 			</rich:dataTable>
 
 			<h:messages styleClass="error" />
-		</h:form>
+		</a4j:form>
 
 	</ui:define>
 	<ui:define name="sidebar">

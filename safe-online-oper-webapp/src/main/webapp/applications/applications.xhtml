@@ -5,7 +5,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:rich="http://richfaces.org/rich">
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">
@@ -23,14 +24,14 @@
 
 		<h2>#{msgs.applications}</h2>
 
-		<h:form>
+		<a4j:form id="applicationForm" ajaxSubmit="true" reRender="app-data">
 			<rich:dataTable id="app-data" var="item"
 				value="#{operApplicationList}" rows="10" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
 					<f:facet name="header">#{msgs.application}</f:facet>
-					<h:commandLink value="#{item.name}"
+					<a4j:commandLink value="#{item.name}"
 						action="#{operApplication.view}" />
 				</h:column>
 				<h:column>
@@ -39,7 +40,7 @@
 				</h:column>
 				<h:column>
 					<f:facet name="header">#{msgs.action}</f:facet>
-					<h:commandLink value="#{msgs.removeaction}"
+					<a4j:commandLink value="#{msgs.removeaction}"
 						action="#{operApplication.removeApplication}" />
 				</h:column>
 				<f:facet name="footer">
@@ -51,7 +52,7 @@
 
 			<h:commandButton value="#{msgs.addaction}" id="add"
 				action="add-application" />
-		</h:form>
+		</a4j:form>
 
 	</ui:define>
 	<ui:define name="sidebar">

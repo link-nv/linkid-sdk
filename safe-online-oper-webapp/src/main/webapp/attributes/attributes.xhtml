@@ -4,7 +4,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:rich="http://richfaces.org/rich">
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">
@@ -22,22 +23,22 @@
 
 		<h2>#{msgs.attributes}</h2>
 
-		<h:form>
+		<a4j:form id="attributeTypeForm" ajaxSubmit="true" reRender="attributes-data">
 			<rich:dataTable id="attributes-data" var="item"
 				value="#{attributeTypeList}" rows="10" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
-					<h:commandLink value="#{item.name}" action="#{attributes.view}" />
+					<a4j:commandLink value="#{item.name}" action="#{attributes.view}" />
 				</h:column>
 				<f:facet name="footer">
 					<rich:datascroller for="attributes-data" />
 				</f:facet>
 			</rich:dataTable>
 
-			<h:commandButton value="#{msgs.addaction}" id="add" action="add"
+			<a4j:commandButton value="#{msgs.addaction}" id="add" action="add"
 				rendered="#{isUserInRole['global-operator']}" />
-		</h:form>
+		</a4j:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
