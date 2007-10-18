@@ -17,6 +17,8 @@ import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubjectServ
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubscriptionService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getUserRegistrationService;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -36,8 +38,10 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
@@ -128,10 +132,21 @@ public class IdentifierMappingWebServiceTest {
 		// operate & verify
 		NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl(
 				"localhost:8443", this.certificate, this.privateKey);
+		client.setCaptureMessages(true);
 		String resultUserId = client.getUserId(login);
 		LOG.debug("userId: " + resultUserId);
 		assertNotNull(resultUserId);
 		assertEquals(userId, resultUserId);
+		LOG.debug("client outbound message: "
+				+ DomTestUtils.domToString(client.getOutboundMessage()));
+		File tmpFile = File.createTempFile("idmapping-outbound-", ".xml");
+		IOUtils.write(DomTestUtils.domToString(client.getOutboundMessage()),
+				new FileOutputStream(tmpFile));
+		LOG.debug("client inbound message: "
+				+ DomTestUtils.domToString(client.getInboundMessage()));
+		tmpFile = File.createTempFile("idmapping-inbound-", ".xml");
+		IOUtils.write(DomTestUtils.domToString(client.getInboundMessage()),
+				new FileOutputStream(tmpFile));
 	}
 
 	@Test
