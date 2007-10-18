@@ -57,10 +57,10 @@ public interface MessageAccessor {
 	 * @param name
 	 *            The name of the header.
 	 */
-	LinkedList<Object> getHeader(String name);
+	LinkedList<String> getHeader(String name);
 
 	/**
 	 * Retrieve all header data from the result of the previous service request.
 	 */
-	Map<String, List<Object>> getHeaders();
+	Map<String, List<String>> getHeaders();
 }

@@ -12,7 +12,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import net.link.safeonline.util.webapp.filter.ProfileStats;
+import net.link.safeonline.util.filter.ProfileStats;
 
 /**
  * 

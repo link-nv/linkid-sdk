@@ -120,7 +120,7 @@
 					<filter>
 						<filter-name>ProfileFilter</filter-name>
 						<filter-class>
-							net.link.safeonline.util.webapp.filter.ProfileFilter
+							net.link.safeonline.util.filter.ProfileFilter
 						</filter-class>
 						<init-param>
 							<param-name>ProfilingEnabled</param-name>

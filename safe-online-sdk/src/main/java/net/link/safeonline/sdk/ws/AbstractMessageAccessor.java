@@ -84,15 +84,15 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
 	/**
 	 * {@inheritDoc}
 	 */
-	public LinkedList<Object> getHeader(String name) {
+	public LinkedList<String> getHeader(String name) {
 
-		return new LinkedList<Object>(getHeaders().get(name));
+		return new LinkedList<String>(getHeaders().get(name));
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<Object>> getHeaders() {
+	public Map<String, List<String>> getHeaders() {
 
-		return (Map<String, List<Object>>) responseContext
+		return (Map<String, List<String>>) responseContext
 				.get(MessageContext.HTTP_RESPONSE_HEADERS);
 	}
 }

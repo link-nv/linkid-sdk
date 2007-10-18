@@ -14,7 +14,7 @@ import java.util.Map;
 
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
-import net.link.safeonline.util.webapp.filter.ProfileStats;
+import net.link.safeonline.util.filter.ProfileStats;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -72,6 +72,7 @@ public class IdMappingDriver extends ProfileDriver {
 		LOG.debug("retrieving user ID for " + this.user);
 		this.service.getUserId(this.user);
 
+		System.out.println(service.getHeaders());
 		for (ProfileStats stat : ProfileStats.values())
 			stats.put(stat, getHeader(stat));
 
@@ -80,21 +81,21 @@ public class IdMappingDriver extends ProfileDriver {
 
 	private Number getHeader(ProfileStats header) {
 
-		Object result = this.service.getHeader(header.getHeader()).getFirst();
+		String result = this.service.getHeader(header.getHeader()).getFirst();
 		try {
-			return Integer.parseInt(String.valueOf(result));
+			return Integer.parseInt(result);
 		} catch (NumberFormatException a) {
 			try {
-				return Double.parseDouble(String.valueOf(result));
+				return Double.parseDouble(result);
 			} catch (NumberFormatException b) {
 				try {
-					return Float.parseFloat(String.valueOf(result));
+					return Float.parseFloat(result);
 				} catch (NumberFormatException c) {
 					try {
-						return Long.parseLong(String.valueOf(result));
+						return Long.parseLong(result);
 					} catch (NumberFormatException d) {
 						try {
-							return Short.parseShort(String.valueOf(result));
+							return Short.parseShort(result);
 						} catch (NumberFormatException e) {
 							throw new NumberFormatException(
 									"The header data for "

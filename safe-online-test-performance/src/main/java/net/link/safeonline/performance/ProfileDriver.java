@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.link.safeonline.util.webapp.filter.ProfileStats;
+import net.link.safeonline.util.filter.ProfileStats;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +38,7 @@ public abstract class ProfileDriver {
 			iterations.add(run());
 		} catch (Exception e) {
 			LOG.error(e);
+			e.printStackTrace();
 		}
 
 		return iterations;

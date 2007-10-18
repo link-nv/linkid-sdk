@@ -28,4 +28,21 @@
 
 	</enterprise-beans>
 
+	<interceptors>
+		<interceptor>
+			<interceptor-class>
+				net.link.safeonline.interceptor.ProfileInterceptor
+			</interceptor-class>
+		</interceptor>
+	</interceptors>
+
+	<assembly-descriptor>
+		<interceptor-binding>
+			<ejb-name>*</ejb-name>
+			<interceptor-class>
+				net.link.safeonline.interceptor.ProfileInterceptor
+			</interceptor-class>
+		</interceptor-binding>
+	</assembly-descriptor>
+
 </ejb-jar>

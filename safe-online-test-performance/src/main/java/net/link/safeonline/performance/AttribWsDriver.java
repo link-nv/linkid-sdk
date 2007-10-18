@@ -25,7 +25,7 @@ import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
-import net.link.safeonline.util.webapp.filter.ProfileStats;
+import net.link.safeonline.util.filter.ProfileStats;
 
 /**
  * TODO: Work.
