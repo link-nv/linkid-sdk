@@ -136,6 +136,154 @@
 				2.1 RI.
 			</para>
 		</section>
+		<section>
+			<title>Attributes</title>
+			<para>
+				Every subject (i.e. user) has different attributes. An
+				attribute is composed of a name and a value. For
+				example: the attribute with name 'Age' has value '18'.
+				Different types of attributes are possible. We define
+				the following attribute categories:
+			</para>
+			<section>
+				<title>Single-valued Attributes</title>
+				<para>
+					A single-valued attribute is, as the name suggests,
+					an attribute with only one single value attached to
+					it. This value of the attribute is of a certain
+					type. Supported types are:
+					<itemizedlist>
+						<listitem>
+							<para>String</para>
+						</listitem>
+						<listitem>
+							<para>Boolean</para>
+						</listitem>
+						<listitem>
+							<para>Integer</para>
+						</listitem>
+						<listitem>
+							<para>Double</para>
+						</listitem>
+						<listitem>
+							<para>Date</para>
+						</listitem>
+					</itemizedlist>
+					An example of a single-valued attribute is 'Age'
+					with value '18'.
+				</para>
+			</section>
+			<section>
+				<title>Multi-valued Attributes</title>
+				<para>
+					A multi-valued attribute is an attribute where the
+					attribute value is a collection of primitive values.
+					An example is the 'GSM' attribute with values '1234'
+					and '5678'.
+				</para>
+			</section>
+			<section>
+				<title>Compounded Attributes</title>
+				<para>
+					A compounded attribute is an attribute that is
+					composed of other attributes. These other attributes
+					are called the member attributes of the compounded
+					attribute. A compounded attribute only really makes
+					sense if the member attributes are multi-valued. The
+					following picture highlights the principal behind
+					compounded attributes.
+					<mediaobject>
+						<imageobject>
+							<imagedata format="SVG"
+								fileref="compounded-attribute.svg" scale="50" scalefit="1" />
+						</imageobject>
+						<caption>The attribute matrix.</caption>
+					</mediaobject>
+					The operator can define new attribute types within
+					the OLAS system. Every subject can have values for
+					these attributes. A multi-valued attribute is simply
+					a grouping of attribute values over the horizontal
+					axis. A compounded attribute is defined as a
+					grouping of attribute values over the vertical axis.
+				</para>
+			</section>
+		</section>
+		<section>
+			<title>Application Identity</title>
+			<para>
+				Every application can define its own application
+				identity. An application identity is a set of attribute
+				types over which the application wants access for a
+				given subscribed subject. The application identity is
+				managed by the OLAS operator and has a version which
+				allows it to evolve over time. Before a user can log in
+				into an application, he has to confirm usage of the
+				attributes as defined in the current application
+				identity.
+			</para>
+			<para>
+				The SDK provides a unique way of defining an identity
+				card in Java 5 that matches the application identity as
+				defined within the OLAS service. An example of this is
+				given below.
+				<programlisting>
+@IdentityCard
+public static class MyIdentityCard {
+	private String name;
+	private MyCompounded[] compoundedAttribute;
+	
+	@IdentityAttribute("compounded-attribute")
+	public MyCompounded[] getCompoundAttribute() {
+		return this.compoundAttribute;
+	}
+	
+	public void setCompoundAttribute(MyCompounded[] compoundAttribute) {
+		this.compoundAttribute = compoundAttribute;
+	}
+	
+	@IdentityAttribute("name")
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+			this.name = name;
+	}
+}
+
+@Compound("compounded-attribute")
+public static class MyCompounded {
+	private String member0;
+
+	private String member1;
+
+	@CompoundMember("member1")
+	public String getMember0() {
+		return this.member0;
+	}
+
+	public void setMember0(String member0) {
+		this.member0 = member0;
+	}
+
+	@CompoundMember("member2")
+	public String getMember1() {
+		return this.member1;
+	}
+
+	public void setMember1(String member1) {
+		this.member1 = member1;
+	}
+}		
+				</programlisting>
+			</para>
+			<para>
+				Thus a developer can define identity cards as classes in
+				Java 5 that correspond with the OLAS application
+				identity. These classes will be recognized by the
+				different SDK component for retrieving attribute values.
+			</para>
+		</section>
 	</chapter>
 
 	<chapter id="ws">
@@ -160,11 +308,41 @@
 		<para>
 			Every OLAS web service is secured via server-side SSL and a
 			client-side WS-Security signature on the SOAP message body.
+			The WS-Security signature is according to OASIS Web Services
+			Security: SOAP Message Security 1.0 Standard 200401, March
+			2004.
+		</para>
+		<para>
+			The request SOAP messages are to be signed with the X509v3
+			application certificate. The certificate must be attached as
+			<code>BinarySecurityToken</code>
+			within the
+			<code>Security</code>
+			SOAP header element according to 6.3 Binary Security Tokens.
+			The WS-Security SOAP header should also contain a
+			<code>Timestamp</code>
+			according to section 10 - Security Timestamps of the OASIS
+			WS-Security 1.0 specification. The WS-Security signature
+			should sign both the SOAP body and the WS-Security
+			<code>Timestamp</code>
+			element. The
+			<code>KeyInfo</code>
+			XML Digital Signature element should contain a corresponding
+			<code>SecurityTokenReference</code>
+			according to 7.2 - Direct References.
+		</para>
+		<para>
+			The response SOAP messages will contain an unsigned
+			<code>Timestamp</code>
+			WS-Security SOAP header. This was done for compatibility
+			with .NET.
 		</para>
 		<para>
 			Basically every web service comes with a corresponding SDK
-			client component. For example, the Name Identifier Mapping
-			web service can be accessed via the
+			client component. These client components will take care of
+			the correct creation of the WS-Security signatures. For
+			example, the Name Identifier Mapping web service can be
+			accessed via the
 			<code>NameIdentifierMappingClient</code>
 			SDK component. Every web service client component has a main
 			constructor that requires the following parameters:
@@ -340,6 +518,60 @@
 				servlet web application deployment descriptor.
 				Configuration parameters of these filters are described
 				within the Javadoc API documentation of the OLAS SDK.
+				Below you'll find an example of how to configure the
+				OLAS SDK filters to secure a certain section of a web
+				application.
+				<programlisting>
+&lt;filter>
+	&lt;filter-name>AuthenticationFilter&lt;/filter-name>
+	&lt;filter-class>
+		net.link.safeonline.sdk.auth.filter.AuthenticationFilter
+	&lt;/filter-class>
+	&lt;init-param>
+		&lt;param-name>SafeOnlineAuthenticationServiceUrl&lt;/param-name>
+		&lt;param-value>
+			https://olas.lin-k.net/olas-auth/
+		&lt;/param-value>
+	&lt;/init-param>
+	&lt;init-param>
+		&lt;param-name>ApplicationName&lt;/param-name>
+		&lt;param-value>demo-application&lt;/param-value>
+	&lt;/init-param>
+	&lt;init-param>
+		&lt;param-name>AuthenticationProtocol&lt;/param-name>
+		&lt;param-value>SAML2_BROWSER_POST&lt;/param-value>
+	&lt;/init-param>
+	&lt;init-param>
+		&lt;param-name>KeyStoreType&lt;/param-name>
+		&lt;param-value>pkcs12&lt;/param-value>
+	&lt;/init-param>
+	&lt;init-param>
+		&lt;param-name>KeyStoreFile&lt;/param-name>
+		&lt;param-value>/etc/pki/demo-app.p12&lt;/param-value>
+	&lt;/init-param>
+	&lt;init-param>
+		&lt;param-name>KeyStorePassword&lt;/param-name>
+		&lt;param-value>secret&lt;/param-value>
+	&lt;/init-param>
+&lt;/filter>
+
+&lt;filter>
+	&lt;filter-name>LoginFilter&lt;/filter-name>
+	&lt;filter-class>
+		net.link.safeonline.sdk.auth.filter.LoginFilter
+	&lt;/filter-class>
+&lt;/filter>
+
+&lt;filter-mapping>
+	&lt;filter-name>LoginFilter&lt;/filter-name>
+	&lt;url-pattern>/secure/*&lt;/url-pattern>
+&lt;/filter-mapping>
+
+&lt;filter-mapping>
+	&lt;filter-name>AuthenticationFilter&lt;/filter-name>
+	&lt;url-pattern>/secure/*&lt;/url-pattern>
+&lt;/filter-mapping>
+				</programlisting>
 			</para>
 		</section>
 		<section>
@@ -349,6 +581,11 @@
 				is also possible. An example of this is given by
 				<code>SafeOnlineLoginUtils</code>
 				that can be used on Seam/JSF-based web applications.
+				Notice that in this case the usage of the
+				<code>LoginFilter</code>
+				is still required to be able to process the
+				authentication response as received from the OLAS
+				authentication web application.
 			</para>
 		</section>
 	</chapter>
