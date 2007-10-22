@@ -71,8 +71,7 @@ public class ProfileData extends LinkedList<Call> {
 	 */
 	public static ProfileData getProfileData() {
 
-		if (null == handler)
-			handler = new BasicPolicyHandler<ProfileData>();
+		handler = BasicPolicyHandler.getHandlerFor(ProfileData.class);
 
 		if (!handler.supports(KEY))
 			handler.register(KEY, new ProfileData());

@@ -35,6 +35,16 @@ public class BasicPolicyHandler<T> extends HashMap<String, Map<String, T>>
 
 	private static final long serialVersionUID = 1L;
 
+	private static final Map<Class<?>, BasicPolicyHandler<?>> handlers = new HashMap<Class<?>, BasicPolicyHandler<?>>();
+
+	/**
+	 * Make sure this constructor is private.
+	 */
+	private BasicPolicyHandler() {
+
+		// Must be private.
+	}
+
 	/**
 	 * @see #getContext(String, Object)
 	 */
@@ -46,7 +56,8 @@ public class BasicPolicyHandler<T> extends HashMap<String, Map<String, T>>
 	/**
 	 * {@inheritDoc}
 	 */
-	public T getContext(String key, Object data) {
+	public T getContext(String key, @SuppressWarnings("unused")
+	Object data) {
 
 		return getContext().get(key);
 	}
@@ -100,5 +111,17 @@ public class BasicPolicyHandler<T> extends HashMap<String, Map<String, T>>
 			put(contextId, new HashMap<String, T>());
 
 		return get(contextId);
+	}
+
+	/**
+	 * Get a policy handler for the given class. This method makes sure there is
+	 * only one handler for a certain type in the entire application.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> BasicPolicyHandler<T> getHandlerFor(Class<T> type) {
+
+		if (!handlers.containsKey(type))
+			handlers.put(type, new BasicPolicyHandler<T>());
+		return (BasicPolicyHandler<T>) handlers.get(type);
 	}
 }
