@@ -10,8 +10,6 @@ package net.link.safeonline.performance;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import net.link.safeonline.util.jacc.ProfileData;
-
 /**
  * 
  * @author mbillemo
@@ -20,21 +18,18 @@ public class TestAgent {
 
 	private static final Log LOG = LogFactory.getLog(TestAgent.class);
 
-	private IdMappingDriver driver;
-
 	public TestAgent() {
 
-		this.driver = new IdMappingDriver("localhost:8443", "admin");
 	}
 
-	private void runTest() {
+	private void runTest(Scenario scenario) {
 
-		for (ProfileData iteration : this.driver.execute())
-			LOG.info(iteration);
+		for (Scenario.Request request : scenario.getRequests())
+			new TestAgentWorker(request).start();
 	}
 
 	public static void main(String[] args) {
 
-		new TestAgent().runTest();
+		new TestAgent().runTest(Scenario.getIdMappingScenario());
 	}
 }

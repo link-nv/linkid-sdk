@@ -15,14 +15,18 @@ package net.link.safeonline.performance;
 
 public class TestConsole {
 
+	private Scenario scenario;
+
 	/**
 	 * Create a new {@link TestConsole} instance.
 	 */
 	public TestConsole() {
 
-		/*
-		 * TODO: Shoal implementation for communication between Agents and
-		 * Console
-		 */
+		scenario = Scenario.getIdMappingScenario();
+	}
+
+	public static void main(String[] args) {
+
+		new TestConsole();
 	}
 }
