@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.security.jacc.PolicyContextException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,8 +29,6 @@ import net.link.safeonline.util.filter.ProfileStats;
 public class ProfileData extends LinkedList<Call> {
 
 	private static final long serialVersionUID = 1L;
-
-	private static BasicPolicyHandler<ProfileData> handler;
 
 	private static final Log LOG = LogFactory.getLog(ProfileData.class);
 
@@ -71,12 +71,20 @@ public class ProfileData extends LinkedList<Call> {
 	 */
 	public static ProfileData getProfileData() {
 
-		handler = BasicPolicyHandler.getHandlerFor(ProfileData.class);
+		BasicPolicyHandler<ProfileData> handler = BasicPolicyHandler
+				.getHandlerFor(ProfileData.class);
 
 		if (!handler.supports(KEY))
 			handler.register(KEY, new ProfileData());
 
-		return handler.getContext(KEY);
+		try {
+			return handler.getContext(KEY);
+		}
+
+		// For some reason we couldn't find the profile data in JACC.
+		catch (PolicyContextException e) {
+			return null;
+		}
 	}
 
 	/**

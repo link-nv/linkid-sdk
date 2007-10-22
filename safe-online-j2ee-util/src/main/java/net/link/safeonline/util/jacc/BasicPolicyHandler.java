@@ -7,7 +7,9 @@
 
 package net.link.safeonline.util.jacc;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.security.jacc.PolicyContext;
@@ -30,25 +32,30 @@ import javax.security.jacc.PolicyContextHandler;
  * 
  * @author mbillemo
  */
-public class BasicPolicyHandler<T> extends HashMap<String, Map<String, T>>
-		implements PolicyContextHandler {
+public class BasicPolicyHandler<T> extends HashMap<String, T> implements
+		PolicyContextHandler {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Map<Class<?>, BasicPolicyHandler<?>> handlers = new HashMap<Class<?>, BasicPolicyHandler<?>>();
 
+	private List<String> keys;
+
+	private Class<T> type;
+
 	/**
 	 * Make sure this constructor is private.
 	 */
-	private BasicPolicyHandler() {
+	private BasicPolicyHandler(Class<T> type, String... keys) {
 
-		// Must be private.
+		this.type = type;
+		this.keys = Arrays.asList(keys);
 	}
 
 	/**
 	 * @see #getContext(String, Object)
 	 */
-	public T getContext(String key) {
+	public T getContext(String key) throws PolicyContextException {
 
 		return getContext(key, null);
 	}
@@ -57,9 +64,18 @@ public class BasicPolicyHandler<T> extends HashMap<String, Map<String, T>>
 	 * {@inheritDoc}
 	 */
 	public T getContext(String key, @SuppressWarnings("unused")
-	Object data) {
+	Object data) throws PolicyContextException {
 
-		return getContext().get(key);
+		try {
+			if (supports(key))
+				return this.type.cast(PolicyContext.getContext(key));
+
+			return null;
+		}
+
+		catch (ClassCastException e) {
+			throw new PolicyContextException(e);
+		}
 	}
 
 	/**
@@ -67,7 +83,7 @@ public class BasicPolicyHandler<T> extends HashMap<String, Map<String, T>>
 	 */
 	public String[] getKeys() {
 
-		return getContext().keySet().toArray(new String[size()]);
+		return this.keys.toArray(new String[this.keys.size()]);
 	}
 
 	/**
@@ -75,18 +91,23 @@ public class BasicPolicyHandler<T> extends HashMap<String, Map<String, T>>
 	 */
 	public boolean supports(String key) {
 
-		return getContext().containsKey(key);
+		return this.keys.contains(key);
 	}
 
 	/**
 	 * Register an object in the active JACC Context.<br>
 	 * {@inheritDoc}
 	 */
-	public T register(String key, T value) {
+	public boolean register(String key, T value) {
 
 		try {
+			if (!supports(key))
+				return false;
+
 			PolicyContext.registerHandler(key, this, true);
-			return getContext().put(key, value);
+			put(key, value);
+
+			return true;
 		}
 
 		catch (PolicyContextException e) {
@@ -95,33 +116,21 @@ public class BasicPolicyHandler<T> extends HashMap<String, Map<String, T>>
 	}
 
 	/**
-	 * Retrieve the active JACC Context (the context for the active thread).
-	 */
-	private Map<String, T> getContext() {
-
-		// Obtain the current JACC Context's ID.
-		// If none is set, set it to something unique to this thread (its name).
-		String contextId = PolicyContext.getContextID();
-		if (null == contextId)
-			PolicyContext.setContextID(contextId = Thread.currentThread()
-					.getName());
-
-		// Create a backing hashmap for this context if there is none yet.
-		if (!containsKey(contextId))
-			put(contextId, new HashMap<String, T>());
-
-		return get(contextId);
-	}
-
-	/**
-	 * Get a policy handler for the given class. This method makes sure there is
-	 * only one handler for a certain type in the entire application.
+	 * Get a policy handler that manages objects of the given class. This method
+	 * makes sure there is only one handler for a certain type in the entire
+	 * application.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> BasicPolicyHandler<T> getHandlerFor(Class<T> type) {
+	public static <T> BasicPolicyHandler<T> getHandlerFor(Class<T> type,
+			String... keys) {
+
+		String[] handleKeys = keys;
+		if (null == handleKeys || handleKeys.length == 0)
+			handleKeys = new String[] { type.getClass().toString() };
 
 		if (!handlers.containsKey(type))
-			handlers.put(type, new BasicPolicyHandler<T>());
+			handlers.put(type, new BasicPolicyHandler<T>(type, handleKeys));
+
 		return (BasicPolicyHandler<T>) handlers.get(type);
 	}
 }

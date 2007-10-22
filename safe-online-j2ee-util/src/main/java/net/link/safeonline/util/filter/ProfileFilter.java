@@ -79,7 +79,8 @@ public class ProfileFilter implements Filter {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(FilterConfig filterConfig) {
+	public void init(@SuppressWarnings("unused")
+	FilterConfig filterConfig) {
 
 		/* Nothing to initialize. */
 	}
