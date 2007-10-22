@@ -37,7 +37,7 @@ public class UsageAgreementTextPK implements Serializable {
 	}
 
 	public String getOwner() {
-		return owner;
+		return this.owner;
 	}
 
 	public void setOwner(String owner) {

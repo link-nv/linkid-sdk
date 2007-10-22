@@ -31,8 +31,8 @@ public class ProfileInterceptor {
 	public Object aroundInvoke(InvocationContext context) throws Exception {
 
 		// Check to see whether profiling has been enabled.
-		profileData = ProfileData.getProfileData();
-		if (!profileData.isEnabled())
+		this.profileData = ProfileData.getProfileData();
+		if (!this.profileData.isEnabled())
 			return context.proceed();
 
 		LOG.debug("Profiler Intercepting: " + context.getMethod());
@@ -48,7 +48,8 @@ public class ProfileInterceptor {
 		long duration = startTime - System.currentTimeMillis();
 
 		// Record the stats for the call and release the lock.
-		profileData.add(new Call(context.getMethod(), startTime, duration));
+		this.profileData
+				.add(new Call(context.getMethod(), startTime, duration));
 		unlock(context);
 
 		return result;

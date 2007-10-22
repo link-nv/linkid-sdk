@@ -141,18 +141,10 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
 	public UsageAgreementTextEntity findUsageAgreementText(
 			UsageAgreementEntity usageAgreement, String language)
 			throws UsageAgreementTextNotFoundException {
-		LOG.debug("find usage agreement text: language=" + language
-				+ " version=" + usageAgreement.getUsageAgreementVersion());
-		UsageAgreementTextPK usageAgreementTextPK = new UsageAgreementTextPK(
-				usageAgreement.getApplication().getName(), usageAgreement
-						.getUsageAgreementVersion(), language);
-		UsageAgreementTextEntity usageAgreementText = this.entityManager.find(
-				UsageAgreementTextEntity.class, usageAgreementTextPK);
-		if (null == usageAgreement) {
-			LOG.debug("usage agreement text version; "
-					+ usageAgreement.getUsageAgreementVersion()
-					+ " not found for application: "
-					+ usageAgreement.getApplication().getName());
+
+		UsageAgreementTextEntity usageAgreementText = getUsageAgreementText(
+				usageAgreement, language);
+		if (null == usageAgreementText) {
 			throw new UsageAgreementTextNotFoundException(usageAgreement
 					.getUsageAgreementVersion());
 		}
@@ -168,7 +160,7 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
 						.getUsageAgreementVersion(), language);
 		UsageAgreementTextEntity usageAgreementText = this.entityManager.find(
 				UsageAgreementTextEntity.class, usageAgreementTextPK);
-		if (null == usageAgreement) {
+		if (null == usageAgreementText) {
 			LOG.debug("usage agreement text version; "
 					+ usageAgreement.getUsageAgreementVersion()
 					+ " not found for application: "

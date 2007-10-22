@@ -48,8 +48,8 @@ public class ProfileFilter implements Filter {
 
 		// Start collecting data. This clears and enables the profiler.
 		LOG.debug("Enabling profiler.");
-		profileData = ProfileData.getProfileData();
-		profileData.start();
+		this.profileData = ProfileData.getProfileData();
+		this.profileData.start();
 
 		// Buffer the response so we can add our own headers.
 		BufferedServletResponseWrapper responseWrapper = new BufferedServletResponseWrapper(
@@ -62,17 +62,17 @@ public class ProfileFilter implements Filter {
 			long duration = System.currentTimeMillis() - startTime;
 
 			// Assign global statistics to profiling data.
-			profileData.setStatistic(REQUEST_TIME, duration);
+			this.profileData.setStatistic(REQUEST_TIME, duration);
 
 			// Add our profiling results as HTTP headers.
-			for (Map.Entry<String, String> header : profileData.getHeaders()
-					.entrySet())
+			for (Map.Entry<String, String> header : this.profileData
+					.getHeaders().entrySet())
 				responseWrapper.addHeader(header.getKey(), header.getValue());
 		}
 
 		finally {
 			responseWrapper.commit();
-			profileData.stop();
+			this.profileData.stop();
 		}
 	}
 

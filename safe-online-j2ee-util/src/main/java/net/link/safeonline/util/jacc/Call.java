@@ -44,7 +44,7 @@ public class Call {
 	 */
 	public String getSignature() {
 
-		return signature;
+		return this.signature;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class Call {
 	 */
 	public long getDuration() {
 
-		return duration;
+		return this.duration;
 	}
 
 	/**
@@ -60,6 +60,6 @@ public class Call {
 	 */
 	public Date getInitiated() {
 
-		return initiated;
+		return this.initiated;
 	}
 }

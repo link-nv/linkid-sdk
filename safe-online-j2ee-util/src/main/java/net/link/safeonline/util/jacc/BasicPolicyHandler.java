@@ -33,6 +33,8 @@ import javax.security.jacc.PolicyContextHandler;
 public class BasicPolicyHandler<T> extends HashMap<String, Map<String, T>>
 		implements PolicyContextHandler {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * @see #getContext(String, Object)
 	 */

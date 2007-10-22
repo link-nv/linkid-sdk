@@ -56,7 +56,7 @@ public class SubjectEntity implements Serializable {
 	}
 
 	public Long getConfirmedUsageAgreementVersion() {
-		return confirmedUsageAgreementVersion;
+		return this.confirmedUsageAgreementVersion;
 	}
 
 	public void setConfirmedUsageAgreementVersion(

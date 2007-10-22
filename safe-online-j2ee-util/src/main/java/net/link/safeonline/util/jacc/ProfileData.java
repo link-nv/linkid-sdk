@@ -22,9 +22,11 @@ import net.link.safeonline.util.filter.ProfileStats;
 /**
  * 
  * 
- * @author lhunath
+ * @author mbillemo
  */
 public class ProfileData extends LinkedList<Call> {
+
+	private static final long serialVersionUID = 1L;
 
 	private static BasicPolicyHandler<ProfileData> handler;
 
@@ -85,7 +87,7 @@ public class ProfileData extends LinkedList<Call> {
 
 		super();
 
-		statistics = new HashMap<ProfileStats, Long>();
+		this.statistics = new HashMap<ProfileStats, Long>();
 	}
 
 	/**
@@ -124,7 +126,7 @@ public class ProfileData extends LinkedList<Call> {
 
 			try {
 				if (null != statistic)
-					statistics.put(statistic, Long.parseLong(value));
+					this.statistics.put(statistic, Long.parseLong(value));
 
 				else if (methodMatcher.matches()) {
 					int index = Integer.parseInt(methodMatcher.group(1));
@@ -176,7 +178,7 @@ public class ProfileData extends LinkedList<Call> {
 			entry++;
 		}
 
-		for (Map.Entry<ProfileStats, Long> statisticEntry : statistics
+		for (Map.Entry<ProfileStats, Long> statisticEntry : this.statistics
 				.entrySet()) {
 			String statistic = statisticEntry.getKey().getHeader();
 			String timing = String.valueOf(statisticEntry.getValue());
@@ -192,7 +194,7 @@ public class ProfileData extends LinkedList<Call> {
 	 */
 	public Long getStatistic(ProfileStats statistic) {
 
-		return statistics.get(statistic);
+		return this.statistics.get(statistic);
 	}
 
 	/**
@@ -200,7 +202,7 @@ public class ProfileData extends LinkedList<Call> {
 	 */
 	public void setStatistic(ProfileStats statistic, Long value) {
 
-		statistics.put(statistic, value);
+		this.statistics.put(statistic, value);
 	}
 
 	/**
@@ -210,7 +212,7 @@ public class ProfileData extends LinkedList<Call> {
 	 */
 	public void start() {
 
-		enabled = true;
+		this.enabled = true;
 		clear();
 	}
 
@@ -221,7 +223,7 @@ public class ProfileData extends LinkedList<Call> {
 	 */
 	public void stop() {
 
-		enabled = false;
+		this.enabled = false;
 	}
 
 	/**
@@ -229,7 +231,7 @@ public class ProfileData extends LinkedList<Call> {
 	 */
 	public boolean isEnabled() {
 
-		return enabled;
+		return this.enabled;
 	}
 
 	/**
@@ -241,7 +243,7 @@ public class ProfileData extends LinkedList<Call> {
 	public void clear() {
 
 		super.clear();
-		statistics.clear();
+		this.statistics.clear();
 	}
 
 	/**
@@ -253,7 +255,8 @@ public class ProfileData extends LinkedList<Call> {
 		StringBuffer result = new StringBuffer();
 
 		result.append("Statistics:\n");
-		for (Map.Entry<ProfileStats, Long> statistic : statistics.entrySet()) {
+		for (Map.Entry<ProfileStats, Long> statistic : this.statistics
+				.entrySet()) {
 			result.append(statistic.getKey().getDescription());
 			result.append(":  ");
 			result.append(statistic.getValue());

@@ -322,8 +322,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 				.getUsageAgreementText(usageAgreement, language);
 		if (null == usageAgreementText)
 			return null;
-		else
-			return usageAgreementText.getText();
+		return usageAgreementText.getText();
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -340,7 +339,6 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 				.getUsageAgreementText(usageAgreement, language);
 		if (null == usageAgreementText)
 			return null;
-		else
-			return usageAgreementText.getText();
+		return usageAgreementText.getText();
 	}
 }

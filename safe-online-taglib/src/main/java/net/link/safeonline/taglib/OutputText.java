@@ -30,8 +30,8 @@ public class OutputText extends HtmlOutputText {
 	}
 
 	public void renderOutputText(FacesContext facesContext,
-			UIComponent component, String text, boolean escape)
-			throws IOException {
+			UIComponent component, String text, @SuppressWarnings("unused")
+			boolean escape) throws IOException {
 		if (text != null) {
 			ResponseWriter writer = facesContext.getResponseWriter();
 			boolean span = false;
