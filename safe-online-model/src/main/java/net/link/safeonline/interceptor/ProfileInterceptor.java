@@ -10,7 +10,9 @@ package net.link.safeonline.interceptor;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
-import net.link.safeonline.util.jacc.BasicPolicyHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import net.link.safeonline.util.jacc.ProfileData;
 
 /**
@@ -20,16 +22,26 @@ import net.link.safeonline.util.jacc.ProfileData;
  */
 public class ProfileInterceptor {
 
-	private static final ProfileData profileData = new ProfileData();
+	private static final Log LOG = LogFactory.getLog(ProfileInterceptor.class);
 
-	// Create a policy handler that will manage our profiled data.
-	static {
-		BasicPolicyHandler<ProfileData> handler = new BasicPolicyHandler<ProfileData>();
-		handler.put(ProfileData.KEY, profileData);
+	private ProfileData profileData;
+
+	/**
+	 * Create a new {@link ProfileInterceptor} instance.
+	 */
+	public ProfileInterceptor() {
+
+		profileData = ProfileData.getProfileData();
 	}
 
 	@AroundInvoke
 	public Object aroundInvoke(InvocationContext context) throws Exception {
+
+		// Check to see whether profiling has been enabled.
+		if (!profileData.isEnabled())
+			return context.proceed();
+
+		LOG.debug("Profiler Intercepting: " + context.getMethod());
 
 		// Lock the context to prevent internal calls from being intercepted.
 		if (isLocked(context))
@@ -42,7 +54,7 @@ public class ProfileInterceptor {
 		long duration = System.currentTimeMillis() - startTime;
 
 		// Record the stats for the call and release the lock.
-		profileData.put(context.getMethod().toGenericString(), duration);
+		profileData.add(context.getMethod().toGenericString(), duration);
 		unlock(context);
 
 		return result;

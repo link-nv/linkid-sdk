@@ -17,7 +17,6 @@ import java.security.cert.X509Certificate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.Crypto;
 
 /**
@@ -40,47 +39,40 @@ public class ClientCrypto implements Crypto {
 		this.privateKey = privateKey;
 	}
 
-	public String getAliasForX509Cert(Certificate certificate)
-			throws WSSecurityException {
+	public String getAliasForX509Cert(Certificate cert) {
 		return null;
 	}
 
-	public String getAliasForX509Cert(String issuer) throws WSSecurityException {
+	public String getAliasForX509Cert(String issuer) {
 		return null;
 	}
 
-	public String getAliasForX509Cert(byte[] subjectKeyIdentifier)
-			throws WSSecurityException {
+	public String getAliasForX509Cert(byte[] subjectKeyIdentifier) {
 		return null;
 	}
 
-	public String getAliasForX509Cert(String issuer, BigInteger serialNumber)
-			throws WSSecurityException {
+	public String getAliasForX509Cert(String issuer, BigInteger serialNumber) {
 		return null;
 	}
 
-	public String getAliasForX509CertThumb(byte[] thumb)
-			throws WSSecurityException {
+	public String getAliasForX509CertThumb(byte[] thumb) {
 		return null;
 	}
 
-	public String[] getAliasesForDN(String subjectDN)
-			throws WSSecurityException {
+	public String[] getAliasesForDN(String subjectDN) {
 		return null;
 	}
 
 	public byte[] getCertificateData(boolean reverse,
-			X509Certificate[] certificates) throws WSSecurityException {
+			X509Certificate[] certificates) {
 		return null;
 	}
 
-	public CertificateFactory getCertificateFactory()
-			throws WSSecurityException {
+	public CertificateFactory getCertificateFactory() {
 		return null;
 	}
 
-	public X509Certificate[] getCertificates(String alias)
-			throws WSSecurityException {
+	public X509Certificate[] getCertificates(String alias) {
 		LOG.debug("getCertificates for alias: " + alias);
 		X509Certificate[] certificates = new X509Certificate[] { this.certificate };
 		return certificates;
@@ -100,23 +92,19 @@ public class ClientCrypto implements Crypto {
 		return this.privateKey;
 	}
 
-	public byte[] getSKIBytesFromCert(X509Certificate certificate)
-			throws WSSecurityException {
+	public byte[] getSKIBytesFromCert(X509Certificate cert) {
 		return null;
 	}
 
-	public X509Certificate[] getX509Certificates(byte[] data, boolean reverse)
-			throws WSSecurityException {
+	public X509Certificate[] getX509Certificates(byte[] data, boolean reverse) {
 		return null;
 	}
 
-	public X509Certificate loadCertificate(InputStream inputStream)
-			throws WSSecurityException {
+	public X509Certificate loadCertificate(InputStream inputStream) {
 		return null;
 	}
 
-	public boolean validateCertPath(X509Certificate[] certificates)
-			throws WSSecurityException {
+	public boolean validateCertPath(X509Certificate[] certificates) {
 		return false;
 	}
 }

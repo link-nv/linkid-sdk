@@ -114,8 +114,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 		return this.signaturePrivateKey;
 	}
 
-	public void init(List<SmartCardConfig> smartCardConfigs) {
-		this.smartCardConfigs = smartCardConfigs;
+	public void init(List<SmartCardConfig> newSmartCardConfigs) {
+		this.smartCardConfigs = newSmartCardConfigs;
 	}
 
 	public boolean isOpen() {
@@ -454,7 +454,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
 	private static class PKCS11CallbackHandler implements CallbackHandler {
 
-		private static final Log LOG = LogFactory
+		private static final Log pkcsLOG = LogFactory
 				.getLog(PKCS11CallbackHandler.class);
 
 		private final SmartCardPinCallback smartCardPinCallback;
@@ -469,17 +469,16 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 			this.smartCardPinCallback = smartCardPinCallback;
 		}
 
-		public void handle(Callback[] callbacks) throws IOException,
-				UnsupportedCallbackException {
-			LOG.debug("callback handle");
+		public void handle(Callback[] callbacks)
+				throws UnsupportedCallbackException {
+			pkcsLOG.debug("callback handle");
 			for (Callback callback : callbacks) {
 				if (callback instanceof TextOutputCallback) {
 					TextOutputCallback textOutputCallback = (TextOutputCallback) callback;
-					LOG
-							.debug("text output: "
-									+ textOutputCallback.getMessage());
+					pkcsLOG.debug("text output: "
+							+ textOutputCallback.getMessage());
 				} else if (callback instanceof PasswordCallback) {
-					LOG.debug("password callback");
+					pkcsLOG.debug("password callback");
 					PasswordCallback passwordCallback = (PasswordCallback) callback;
 					if (null == this.smartCardPinCallback) {
 						throw new RuntimeException(

@@ -12,7 +12,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -70,8 +69,7 @@ public class AuthenticationFilterTest {
 
 		@Override
 		protected void doGet(HttpServletRequest request,
-				HttpServletResponse response) throws ServletException,
-				IOException {
+				HttpServletResponse response) throws ServletException {
 			throw new ServletException("should never get called");
 		}
 	}

@@ -318,20 +318,20 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 			Attribute<Type> resultAttribute = new Attribute<Type>(
 					attributeName, values);
 			return resultAttribute;
-		} else {
-			/*
-			 * Single-valued attribute expected.
-			 */
-			if (false == expectedValueClass.isInstance(firstAttributeValue)) {
-				throw new IllegalArgumentException("type mismatch: expected "
-						+ expectedValueClass.getName() + "; received: "
-						+ firstAttributeValue.getClass().getName());
-			}
-			Type value = (Type) firstAttributeValue;
-
-			Attribute<Type> dataValue = new Attribute<Type>(name, value);
-			return dataValue;
 		}
+
+		/*
+		 * Single-valued attribute expected.
+		 */
+		if (false == expectedValueClass.isInstance(firstAttributeValue)) {
+			throw new IllegalArgumentException("type mismatch: expected "
+					+ expectedValueClass.getName() + "; received: "
+					+ firstAttributeValue.getClass().getName());
+		}
+		Type value = (Type) firstAttributeValue;
+
+		Attribute<Type> dataValue = new Attribute<Type>(name, value);
+		return dataValue;
 	}
 
 	private Object convertFromXmlDatatypeToClientDatatype(Object value) {

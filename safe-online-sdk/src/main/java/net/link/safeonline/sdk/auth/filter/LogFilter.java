@@ -69,7 +69,7 @@ public class LogFilter implements Filter {
 		chain.doFilter(request, response);
 	}
 
-	public void init(FilterConfig config) throws ServletException {
+	public void init(FilterConfig config) {
 		LOG.debug("init");
 	}
 }

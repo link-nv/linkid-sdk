@@ -9,9 +9,8 @@ package net.link.safeonline.performance;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import net.link.safeonline.util.filter.ProfileStats;
+import net.link.safeonline.util.jacc.ProfileData;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,11 +26,11 @@ public abstract class ProfileDriver {
 
 	protected abstract void prepare() throws Exception;
 
-	protected abstract Map<ProfileStats, Number> run() throws Exception;
+	protected abstract ProfileData run() throws Exception;
 
-	public List<Map<ProfileStats, Number>> execute() {
+	public List<ProfileData> execute() {
 
-		List<Map<ProfileStats, Number>> iterations = new ArrayList<Map<ProfileStats, Number>>();
+		List<ProfileData> iterations = new ArrayList<ProfileData>();
 
 		try {
 			prepare();

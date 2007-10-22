@@ -35,4 +35,13 @@ public enum ProfileStats {
 
 		return this.header;
 	}
+
+	public static ProfileStats getStatFor(String header) {
+
+		for (ProfileStats stat : values())
+			if (stat.getHeader().equalsIgnoreCase(header))
+				return stat;
+
+		return null;
+	}
 }

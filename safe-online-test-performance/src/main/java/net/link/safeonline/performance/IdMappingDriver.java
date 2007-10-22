@@ -9,12 +9,10 @@ package net.link.safeonline.performance;
 
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
-import net.link.safeonline.util.filter.ProfileStats;
+import net.link.safeonline.util.jacc.ProfileData;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,47 +63,11 @@ public class IdMappingDriver extends ProfileDriver {
 	}
 
 	@Override
-	protected Map<ProfileStats, Number> run() throws Exception {
-
-		Map<ProfileStats, Number> stats = new HashMap<ProfileStats, Number>();
+	protected ProfileData run() throws Exception {
 
 		LOG.debug("retrieving user ID for " + this.user);
 		this.service.getUserId(this.user);
 
-		System.out.println(service.getHeaders());
-		for (ProfileStats stat : ProfileStats.values())
-			stats.put(stat, getHeader(stat));
-
-		return stats;
-	}
-
-	private Number getHeader(ProfileStats header) {
-
-		String result = this.service.getHeader(header.getHeader()).getFirst();
-		try {
-			return Integer.parseInt(result);
-		} catch (NumberFormatException a) {
-			try {
-				return Double.parseDouble(result);
-			} catch (NumberFormatException b) {
-				try {
-					return Float.parseFloat(result);
-				} catch (NumberFormatException c) {
-					try {
-						return Long.parseLong(result);
-					} catch (NumberFormatException d) {
-						try {
-							return Short.parseShort(result);
-						} catch (NumberFormatException e) {
-							throw new NumberFormatException(
-									"The header data for "
-											+ header.getHeader()
-											+ " does not contain a valid number: "
-											+ result);
-						}
-					}
-				}
-			}
-		}
+		return new ProfileData(this.service.getHeaders());
 	}
 }

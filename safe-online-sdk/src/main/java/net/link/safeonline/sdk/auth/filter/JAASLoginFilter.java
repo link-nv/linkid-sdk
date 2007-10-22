@@ -68,7 +68,7 @@ public class JAASLoginFilter implements Filter {
 
 	private String loginContextName;
 
-	public void init(FilterConfig config) throws ServletException {
+	public void init(FilterConfig config) {
 		this.loginContextName = getInitParameter(config, LOGIN_CONTEXT_PARAM,
 				DEFAULT_LOGIN_CONTEXT);
 		LOG.debug("JAAS login context: " + this.loginContextName);

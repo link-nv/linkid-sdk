@@ -64,7 +64,7 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 
 	private Principal authenticatedPrincipal;
 
-	public boolean abort() throws LoginException {
+	public boolean abort() {
 		LOG.debug("abort");
 
 		this.authenticatedPrincipal = null;
@@ -103,8 +103,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 		return optionValue;
 	}
 
-	public void initialize(Subject subject, CallbackHandler callbackHandler,
-			@SuppressWarnings("unchecked")
+	public void initialize(Subject newSubject,
+			CallbackHandler newCallbackHandler, @SuppressWarnings("unchecked")
 			Map sharedState, @SuppressWarnings("unchecked")
 			Map options) {
 		LOG.debug("initialize: " + this);
@@ -113,9 +113,9 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 				OPTION_AUTHENTICATION_SERVICE_JNDI_NAME,
 				DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME);
 
-		this.subject = subject;
-		this.callbackHandler = callbackHandler;
-		LOG.debug("subject: " + subject);
+		this.subject = newSubject;
+		this.callbackHandler = newCallbackHandler;
+		LOG.debug("subject: " + newSubject);
 		LOG.debug("callback handler type: "
 				+ this.callbackHandler.getClass().getName());
 	}

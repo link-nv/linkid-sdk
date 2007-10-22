@@ -276,31 +276,21 @@ public class AttributeEntity implements Serializable {
 		DatatypeType datatype = this.attributeType.getType();
 		switch (datatype) {
 		case STRING:
-		case LOGIN: {
-			String stringValue = (String) value;
-			this.setStringValue(stringValue);
+		case LOGIN:
+			this.setStringValue((String) value);
 			break;
-		}
-		case BOOLEAN: {
-			Boolean booleanValue = (Boolean) value;
-			this.setBooleanValue(booleanValue);
+		case BOOLEAN:
+			this.setBooleanValue((Boolean) value);
 			break;
-		}
-		case INTEGER: {
-			Integer integerValue = (Integer) value;
-			this.setIntegerValue(integerValue);
+		case INTEGER:
+			this.setIntegerValue((Integer) value);
 			break;
-		}
-		case DOUBLE: {
-			Double doubleValue = (Double) value;
-			this.setDoubleValue(doubleValue);
+		case DOUBLE:
+			this.setDoubleValue((Double) value);
 			break;
-		}
-		case DATE: {
-			Date dateValue = (Date) value;
-			this.setDateValue(dateValue);
+		case DATE:
+			this.setDateValue((Date) value);
 			break;
-		}
 		default:
 			throw new EJBException("datatype not supported: " + datatype);
 		}
@@ -312,11 +302,11 @@ public class AttributeEntity implements Serializable {
 		switch (datatype) {
 		case STRING:
 		case LOGIN:
-			String stringValue = this.getStringValue();
-			if (null == stringValue) {
+			String value = this.getStringValue();
+			if (null == value) {
 				return true;
 			}
-			return stringValue.length() == 0;
+			return value.length() == 0;
 		case BOOLEAN:
 			return null == this.getBooleanValue();
 		case INTEGER:

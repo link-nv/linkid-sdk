@@ -151,7 +151,7 @@ public class AuthenticationProtocolManager {
 	 * @throws ServletException
 	 */
 	public static AuthenticationProtocolHandler findAuthenticationProtocolHandler(
-			HttpServletRequest httpRequest) throws ServletException {
+			HttpServletRequest httpRequest) {
 		HttpSession session = httpRequest.getSession();
 		AuthenticationProtocolHandler protocolHandler = (AuthenticationProtocolHandler) session
 				.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE);

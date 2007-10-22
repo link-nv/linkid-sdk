@@ -5,7 +5,6 @@ import static net.link.safeonline.util.filter.ProfileStats.REQUEST_TIME;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.security.jacc.PolicyContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -34,20 +33,24 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ProfileFilter implements Filter {
 
-	public static final String PROFILING_ENABLED = "ProfilingEnabled";
-
 	private static final Log LOG = LogFactory.getLog(ProfileFilter.class);
 
-	public void destroy() {
-
-		LOG.debug("destroy");
-	}
+	private ProfileData profileData;
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 
+		// Only attempt to profile HTTP requests.
+		if (!(response instanceof HttpServletResponse)) {
+			chain.doFilter(request, response);
+			return;
+		}
+
+		// Start collecting data. This clears and enables the profiler.
+		LOG.debug("Enabling profiler.");
+		profileData.start();
+
 		// Buffer the response so we can add our own headers.
-		LOG.debug("profiling enabled");
 		BufferedServletResponseWrapper responseWrapper = new BufferedServletResponseWrapper(
 				(HttpServletResponse) response);
 
@@ -57,30 +60,18 @@ public class ProfileFilter implements Filter {
 			chain.doFilter(request, responseWrapper);
 			long duration = System.currentTimeMillis() - startTime;
 
-			// Add our profiling results as HTTP headers.
-			LOG.debug("Setting HEADER: " + REQUEST_TIME.getHeader() + "  =>  "
-					+ String.valueOf(duration));
-			responseWrapper.addHeader(REQUEST_TIME.getHeader(), String
-					.valueOf(duration));
-			try {
-				ProfileData profileData = (ProfileData) PolicyContext
-						.getContext(ProfileData.KEY);
-				for (Map.Entry<String, String> header : profileData
-						.getHeaders().entrySet()) {
-					LOG.debug("Setting HEADER: " + header.getKey() + "  =>  "
-							+ header.getValue());
-					responseWrapper.addHeader(header.getKey(), header
-							.getValue());
-				}
-			}
+			// Assign global statistics to profiling data.
+			profileData.setStatistic(REQUEST_TIME, duration);
 
-			catch (Exception e) {
-				LOG.error("Couldn't retrieve profile data from JACC.", e);
-			}
+			// Add our profiling results as HTTP headers.
+			for (Map.Entry<String, String> header : profileData.getHeaders()
+					.entrySet())
+				responseWrapper.addHeader(header.getKey(), header.getValue());
 		}
 
 		finally {
 			responseWrapper.commit();
+			profileData.stop();
 		}
 	}
 
@@ -89,6 +80,14 @@ public class ProfileFilter implements Filter {
 	 */
 	public void init(FilterConfig filterConfig) {
 
-		/* Nothing to do. */
+		profileData = ProfileData.getProfileData();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void destroy() {
+
+		/* Aargh. */
 	}
 }

@@ -7,12 +7,10 @@
 
 package net.link.safeonline.performance;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import net.link.safeonline.util.filter.ProfileStats;
+import net.link.safeonline.util.jacc.ProfileData;
 
 /**
  * 
@@ -31,14 +29,12 @@ public class TestAgent {
 
 	private void runTest() {
 
-		for (Map<ProfileStats, Number> iteration : this.driver.execute())
-			for (Map.Entry<ProfileStats, Number> stat : iteration.entrySet())
-				LOG.info(String.format("%20s : %-10s (%s)", stat.getKey()
-						.getHeader(), stat.getValue(), stat.getKey()
-						.getDescription()));
+		for (ProfileData iteration : this.driver.execute())
+			LOG.info(iteration);
 	}
 
 	public static void main(String[] args) {
+
 		new TestAgent().runTest();
 	}
 }

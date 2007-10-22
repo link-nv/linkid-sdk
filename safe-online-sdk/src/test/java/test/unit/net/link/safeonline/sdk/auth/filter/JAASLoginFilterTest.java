@@ -22,7 +22,6 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -84,12 +83,12 @@ public class JAASLoginFilterTest {
 			LOG.debug("constructor");
 		}
 
-		public boolean abort() throws LoginException {
+		public boolean abort() {
 			LOG.debug("abort");
 			return true;
 		}
 
-		public boolean commit() throws LoginException {
+		public boolean commit() {
 			LOG.debug("commit");
 			return true;
 		}
@@ -116,12 +115,12 @@ public class JAASLoginFilterTest {
 			assertNotNull(name);
 		}
 
-		public boolean login() throws LoginException {
+		public boolean login() {
 			LOG.debug("login");
 			return true;
 		}
 
-		public boolean logout() throws LoginException {
+		public boolean logout() {
 			LOG.debug("logout");
 			return true;
 		}

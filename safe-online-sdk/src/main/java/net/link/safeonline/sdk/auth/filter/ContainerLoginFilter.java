@@ -41,7 +41,7 @@ public class ContainerLoginFilter implements Filter {
 			.getName()
 			+ ".ALREADY_PROCESSED";
 
-	public void init(FilterConfig config) throws ServletException {
+	public void init(FilterConfig config) {
 		// empty
 	}
 

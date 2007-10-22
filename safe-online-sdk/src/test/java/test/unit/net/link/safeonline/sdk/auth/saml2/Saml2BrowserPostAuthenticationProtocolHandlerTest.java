@@ -100,7 +100,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
 		private static final long serialVersionUID = 1L;
 
-		private static final Log LOG = LogFactory
+		private static final Log srtLOG = LogFactory
 				.getLog(SamlResponseTestServlet.class);
 
 		@SuppressWarnings("unchecked")
@@ -108,7 +108,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 		protected void doPost(HttpServletRequest request,
 				HttpServletResponse response) throws ServletException,
 				IOException {
-			LOG.debug("doGet");
+			srtLOG.debug("doGet");
 			AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
 					.createAuthenticationProtocolHandler(
 							AuthenticationProtocol.SAML2_BROWSER_POST,

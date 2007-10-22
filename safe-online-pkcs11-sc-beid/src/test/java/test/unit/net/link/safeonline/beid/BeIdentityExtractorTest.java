@@ -38,14 +38,13 @@ public class BeIdentityExtractorTest extends TestCase {
 		this.testedInstance.init(this.testIdentityDataCollector);
 	}
 
-	private static class TestIdentityDataCollector implements
-			IdentityDataCollector {
+	static class TestIdentityDataCollector implements IdentityDataCollector {
 
-		private String countryCode;
+		String countryCode;
 
-		private String givenName;
+		String givenName;
 
-		private String surname;
+		String surname;
 
 		public void setCountryCode(String countryCode) {
 			this.countryCode = countryCode;

@@ -25,7 +25,7 @@ import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
-import net.link.safeonline.util.filter.ProfileStats;
+import net.link.safeonline.util.jacc.ProfileData;
 
 /**
  * TODO: Work.
@@ -81,7 +81,7 @@ public class AttribWsDriver extends ProfileDriver {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<ProfileStats, Number> run() {
+	public ProfileData run() {
 
 		LOG.debug("profiling " + this.services.size() + " services");
 

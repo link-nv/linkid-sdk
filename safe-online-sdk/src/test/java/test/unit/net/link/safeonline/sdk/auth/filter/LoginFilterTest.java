@@ -14,11 +14,9 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,14 +60,13 @@ public class LoginFilterTest {
 
 		private static final long serialVersionUID = 1L;
 
-		private static final Log LOG = LogFactory
+		private static final Log ltLOG = LogFactory
 				.getLog(LoginTestServlet.class);
 
 		@Override
 		protected void doGet(HttpServletRequest request,
-				HttpServletResponse response) throws ServletException,
-				IOException {
-			LOG.debug("doGet");
+				HttpServletResponse response) {
+			ltLOG.debug("doGet");
 		}
 	}
 

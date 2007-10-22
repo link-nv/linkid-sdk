@@ -89,7 +89,7 @@ public class LoginFilter implements Filter {
 		chain.doFilter(request, response);
 	}
 
-	public void init(FilterConfig config) throws ServletException {
+	public void init(FilterConfig config) {
 		LOG.debug("init");
 		this.sessionParameter = config
 				.getInitParameter(USERNAME_SESSION_PARAMETER);

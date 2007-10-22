@@ -35,8 +35,7 @@ import org.junit.Test;
 
 public class SafeOnlineTrustManagerTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(SafeOnlineTrustManagerTest.class);
+	static final Log LOG = LogFactory.getLog(SafeOnlineTrustManagerTest.class);
 
 	@Test
 	public void trustAllSSLConnection() throws Exception {

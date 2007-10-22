@@ -169,24 +169,24 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 			}
 
 			return result;
-		} else {
-			/*
-			 * Single-valued attribute.
-			 */
-			// TODO: what about single-valued compounds?
-			Object value = attributeValues.get(0);
-			if (null == value) {
-				return null;
-			}
-
-			if (false == valueClass.isInstance(value)) {
-				throw new IllegalArgumentException("expected type: "
-						+ valueClass.getName() + "; actual type: "
-						+ value.getClass().getName());
-			}
-			Type attributeValue = valueClass.cast(value);
-			return attributeValue;
 		}
+
+		/*
+		 * Single-valued attribute.
+		 */
+		// TODO: what about single-valued compounds?
+		Object value = attributeValues.get(0);
+		if (null == value) {
+			return null;
+		}
+
+		if (false == valueClass.isInstance(value)) {
+			throw new IllegalArgumentException("expected type: "
+					+ valueClass.getName() + "; actual type: "
+					+ value.getClass().getName());
+		}
+		Type attributeValue = valueClass.cast(value);
+		return attributeValue;
 
 	}
 
