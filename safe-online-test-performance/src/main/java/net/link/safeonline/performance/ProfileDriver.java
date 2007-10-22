@@ -7,6 +7,9 @@
 
 package net.link.safeonline.performance;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.link.safeonline.util.jacc.ProfileData;
 
 import org.apache.commons.logging.Log;
@@ -24,4 +27,19 @@ public abstract class ProfileDriver {
 	protected abstract void prepare() throws Exception;
 
 	protected abstract ProfileData run() throws Exception;
+
+	public List<ProfileData> execute() {
+
+		List<ProfileData> iterations = new ArrayList<ProfileData>();
+
+		try {
+			prepare();
+			iterations.add(run());
+		} catch (Exception e) {
+			LOG.error(e);
+			e.printStackTrace();
+		}
+
+		return iterations;
+	}
 }
