@@ -55,7 +55,7 @@ public class ProfileData extends LinkedList<Call> {
 	/**
 	 * The header used to identify the time at which the method was completed.
 	 */
-	private static final String COMPLETED_HEADER = "X-Profiled-Completed-";
+	private static final String DURATION_HEADER = "X-Profiled-Duration-";
 
 	private Map<ProfileStats, Long> statistics;
 
@@ -101,7 +101,7 @@ public class ProfileData extends LinkedList<Call> {
 				Pattern.CASE_INSENSITIVE);
 		Pattern initiatedRegex = Pattern.compile(INITIATED_HEADER + "(\\d+)",
 				Pattern.CASE_INSENSITIVE);
-		Pattern completedRegex = Pattern.compile(COMPLETED_HEADER + "(\\d+)",
+		Pattern completedRegex = Pattern.compile(DURATION_HEADER + "(\\d+)",
 				Pattern.CASE_INSENSITIVE);
 
 		// We'll first collect data we care about in arrays.
@@ -167,11 +167,11 @@ public class ProfileData extends LinkedList<Call> {
 		for (Call call : this) {
 			String methodSig = call.getSignature();
 			String initiated = String.valueOf(call.getInitiated().getTime());
-			String completed = String.valueOf(call.getCompleted().getTime());
+			String duration = String.valueOf(call.getDuration());
 
 			headers.put(METHODSIG_HEADER + entry, methodSig);
 			headers.put(INITIATED_HEADER + entry, initiated);
-			headers.put(COMPLETED_HEADER + entry, completed);
+			headers.put(DURATION_HEADER + entry, duration);
 
 			entry++;
 		}

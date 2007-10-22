@@ -45,10 +45,10 @@ public class ProfileInterceptor {
 		// Make the call that needs profiling.
 		long startTime = System.currentTimeMillis();
 		Object result = context.proceed();
-		long endTime = System.currentTimeMillis();
+		long duration = startTime - System.currentTimeMillis();
 
 		// Record the stats for the call and release the lock.
-		profileData.add(new Call(context.getMethod(), startTime, endTime));
+		profileData.add(new Call(context.getMethod(), startTime, duration));
 		unlock(context);
 
 		return result;
