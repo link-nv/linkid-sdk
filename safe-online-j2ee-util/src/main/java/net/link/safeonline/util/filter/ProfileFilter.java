@@ -48,6 +48,7 @@ public class ProfileFilter implements Filter {
 
 		// Start collecting data. This clears and enables the profiler.
 		LOG.debug("Enabling profiler.");
+		profileData = ProfileData.getProfileData();
 		profileData.start();
 
 		// Buffer the response so we can add our own headers.
@@ -80,7 +81,7 @@ public class ProfileFilter implements Filter {
 	 */
 	public void init(FilterConfig filterConfig) {
 
-		profileData = ProfileData.getProfileData();
+		/* Nothing to initialize. */
 	}
 
 	/**

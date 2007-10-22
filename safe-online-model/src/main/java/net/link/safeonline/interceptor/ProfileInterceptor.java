@@ -13,6 +13,7 @@ import javax.interceptor.InvocationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import net.link.safeonline.util.jacc.Call;
 import net.link.safeonline.util.jacc.ProfileData;
 
 /**
@@ -26,18 +27,11 @@ public class ProfileInterceptor {
 
 	private ProfileData profileData;
 
-	/**
-	 * Create a new {@link ProfileInterceptor} instance.
-	 */
-	public ProfileInterceptor() {
-
-		profileData = ProfileData.getProfileData();
-	}
-
 	@AroundInvoke
 	public Object aroundInvoke(InvocationContext context) throws Exception {
 
 		// Check to see whether profiling has been enabled.
+		profileData = ProfileData.getProfileData();
 		if (!profileData.isEnabled())
 			return context.proceed();
 
@@ -51,10 +45,10 @@ public class ProfileInterceptor {
 		// Make the call that needs profiling.
 		long startTime = System.currentTimeMillis();
 		Object result = context.proceed();
-		long duration = System.currentTimeMillis() - startTime;
+		long endTime = System.currentTimeMillis();
 
 		// Record the stats for the call and release the lock.
-		profileData.add(context.getMethod().toGenericString(), duration);
+		profileData.add(new Call(context.getMethod(), startTime, endTime));
 		unlock(context);
 
 		return result;

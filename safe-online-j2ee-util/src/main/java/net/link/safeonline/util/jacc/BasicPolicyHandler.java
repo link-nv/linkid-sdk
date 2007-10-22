@@ -8,6 +8,7 @@
 package net.link.safeonline.util.jacc;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
@@ -29,15 +30,23 @@ import javax.security.jacc.PolicyContextHandler;
  * 
  * @author mbillemo
  */
-public class BasicPolicyHandler<T> extends HashMap<String, T> implements
-		PolicyContextHandler {
+public class BasicPolicyHandler<T> extends HashMap<String, Map<String, T>>
+		implements PolicyContextHandler {
+
+	/**
+	 * @see #getContext(String, Object)
+	 */
+	public T getContext(String key) {
+
+		return getContext(key, null);
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public T getContext(String key, Object data) {
 
-		return get(key);
+		return getContext().get(key);
 	}
 
 	/**
@@ -45,7 +54,7 @@ public class BasicPolicyHandler<T> extends HashMap<String, T> implements
 	 */
 	public String[] getKeys() {
 
-		return keySet().toArray(new String[size()]);
+		return getContext().keySet().toArray(new String[size()]);
 	}
 
 	/**
@@ -53,22 +62,41 @@ public class BasicPolicyHandler<T> extends HashMap<String, T> implements
 	 */
 	public boolean supports(String key) {
 
-		return containsKey(key);
+		return getContext().containsKey(key);
 	}
 
 	/**
+	 * Register an object in the active JACC Context.<br>
 	 * {@inheritDoc}
 	 */
-	@Override
-	public T put(String key, T value) {
+	public T register(String key, T value) {
 
 		try {
 			PolicyContext.registerHandler(key, this, true);
-			return super.put(key, value);
+			return getContext().put(key, value);
 		}
 
 		catch (PolicyContextException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	/**
+	 * Retrieve the active JACC Context (the context for the active thread).
+	 */
+	private Map<String, T> getContext() {
+
+		// Obtain the current JACC Context's ID.
+		// If none is set, set it to something unique to this thread (its name).
+		String contextId = PolicyContext.getContextID();
+		if (null == contextId)
+			PolicyContext.setContextID(contextId = Thread.currentThread()
+					.getName());
+
+		// Create a backing hashmap for this context if there is none yet.
+		if (!containsKey(contextId))
+			put(contextId, new HashMap<String, T>());
+
+		return get(contextId);
 	}
 }

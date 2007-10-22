@@ -8,6 +8,7 @@
 package net.link.safeonline.util.jacc;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -23,9 +24,9 @@ import net.link.safeonline.util.filter.ProfileStats;
  * 
  * @author lhunath
  */
-public class ProfileData extends HashMap<String, Long> {
+public class ProfileData extends LinkedList<Call> {
 
-	private static ProfileData instance;
+	private static BasicPolicyHandler<ProfileData> handler;
 
 	private static final Log LOG = LogFactory.getLog(ProfileData.class);
 
@@ -41,33 +42,40 @@ public class ProfileData extends HashMap<String, Long> {
 	public static final String KEY = ProfileData.class.getName();
 
 	/**
-	 * The header used to identify the method for a profile entry.
+	 * The header used to identify the method signature for a profile entry.
 	 */
-	private static final String METHOD_HEADER = "X-Profiled-Method-";
+	private static final String METHODSIG_HEADER = "X-Profiled-Method-";
 
 	/**
-	 * The header used to identify the time it took for a profile entry's method
-	 * to execute.
+	 * The header used to identify the time at which the method call was
+	 * initiated.
 	 */
-	private static final String TIMING_HEADER = "X-Profiled-Timing-";
+	private static final String INITIATED_HEADER = "X-Profiled-Initiated-";
+
+	/**
+	 * The header used to identify the time at which the method was completed.
+	 */
+	private static final String COMPLETED_HEADER = "X-Profiled-Completed-";
 
 	private Map<ProfileStats, Long> statistics;
 
 	private boolean enabled;
 
 	/**
-	 * Retrieve the {@link ProfileData} singleton. If it hasn't been created
-	 * yet, create it and register it with the JACC context.
+	 * Retrieve the {@link ProfileData} registered with the active JACC Context
+	 * (the context for the active thread). If we haven't created a handler yet,
+	 * then do so. If we haven't registered a {@link ProfileData} with the
+	 * handler yet for the current context, do so as well.
 	 */
 	public static ProfileData getProfileData() {
 
-		if (instance == null) {
-			instance = new ProfileData();
-			new BasicPolicyHandler<ProfileData>()
-					.put(ProfileData.KEY, instance);
-		}
+		if (null == handler)
+			handler = new BasicPolicyHandler<ProfileData>();
 
-		return instance;
+		if (!handler.supports(KEY))
+			handler.register(KEY, new ProfileData());
+
+		return handler.getContext(KEY);
 	}
 
 	/**
@@ -89,14 +97,17 @@ public class ProfileData extends HashMap<String, Long> {
 		this();
 
 		// Prepare the patterns to match our headers against.
-		Pattern methodRegex = Pattern.compile(METHOD_HEADER + "(\\d+)",
+		Pattern methodSigRegex = Pattern.compile(METHODSIG_HEADER + "(\\d+)",
 				Pattern.CASE_INSENSITIVE);
-		Pattern timingRegex = Pattern.compile(TIMING_HEADER + "(\\d+)",
+		Pattern initiatedRegex = Pattern.compile(INITIATED_HEADER + "(\\d+)",
+				Pattern.CASE_INSENSITIVE);
+		Pattern completedRegex = Pattern.compile(COMPLETED_HEADER + "(\\d+)",
 				Pattern.CASE_INSENSITIVE);
 
 		// We'll first collect data we care about in arrays.
 		String[] methods = new String[headers.size()];
-		Long[] timings = new Long[headers.size()];
+		Long[] initiated = new Long[headers.size()];
+		Long[] completed = new Long[headers.size()];
 
 		// Parse every header to see if it's a profiler header and extract
 		// interesting data into the arrays.
@@ -106,8 +117,9 @@ public class ProfileData extends HashMap<String, Long> {
 				continue;
 
 			String value = headerEntry.getValue().get(0);
-			Matcher methodMatcher = methodRegex.matcher(header);
-			Matcher timingMatcher = timingRegex.matcher(header);
+			Matcher methodMatcher = methodSigRegex.matcher(header);
+			Matcher initiatedMatcher = initiatedRegex.matcher(header);
+			Matcher completedMatcher = completedRegex.matcher(header);
 			ProfileStats statistic = ProfileStats.getStatFor(header);
 
 			try {
@@ -119,9 +131,14 @@ public class ProfileData extends HashMap<String, Long> {
 					methods[index] = value;
 				}
 
-				else if (timingMatcher.matches()) {
-					int index = Integer.parseInt(timingMatcher.group(1));
-					timings[index] = Long.parseLong(value);
+				else if (initiatedMatcher.matches()) {
+					int index = Integer.parseInt(initiatedMatcher.group(1));
+					initiated[index] = Long.parseLong(value);
+				}
+
+				else if (completedMatcher.matches()) {
+					int index = Integer.parseInt(completedMatcher.group(1));
+					completed[index] = Long.parseLong(value);
 				}
 			}
 
@@ -134,7 +151,8 @@ public class ProfileData extends HashMap<String, Long> {
 		// Now fill up our instance of ProfileData with the values we collected
 		// in the arrays.
 		for (int i = 0; i < headers.size(); ++i)
-			put(methods[i], timings[i]);
+			if (null != methods[i])
+				add(new Call(methods[i], initiated[i], completed[i]));
 	}
 
 	/**
@@ -146,12 +164,14 @@ public class ProfileData extends HashMap<String, Long> {
 		Map<String, String> headers = new HashMap<String, String>();
 		int entry = 0;
 
-		for (Map.Entry<String, Long> profileEntry : entrySet()) {
-			String method = profileEntry.getKey();
-			String timing = String.valueOf(profileEntry.getValue());
+		for (Call call : this) {
+			String methodSig = call.getSignature();
+			String initiated = String.valueOf(call.getInitiated().getTime());
+			String completed = String.valueOf(call.getCompleted().getTime());
 
-			headers.put(METHOD_HEADER + entry, method);
-			headers.put(TIMING_HEADER + entry, timing);
+			headers.put(METHODSIG_HEADER + entry, methodSig);
+			headers.put(INITIATED_HEADER + entry, initiated);
+			headers.put(COMPLETED_HEADER + entry, completed);
 
 			entry++;
 		}
@@ -165,19 +185,6 @@ public class ProfileData extends HashMap<String, Long> {
 		}
 
 		return headers;
-	}
-
-	/**
-	 * Add the given time to the given method. If no time is known for the
-	 * method so far, the given time will be assigned to it.
-	 */
-	public void add(String method, long time) {
-
-		Long value = get(method);
-		if (null != value)
-			time += value;
-
-		put(method, time);
 	}
 
 	/**
@@ -253,13 +260,11 @@ public class ProfileData extends HashMap<String, Long> {
 			result.append('\n');
 		}
 
-		result.append("\nCalls:\n");
-		for (Map.Entry<String, Long> call : entrySet()) {
-			result.append(call.getKey());
-			result.append(":  ");
-			result.append(call.getValue());
-			result.append('\n');
-		}
+		result.append("\nCalls (" + size() + "):\n");
+		for (Call call : this)
+			result.append(String.format("[%s] Spent %d ms in '%s'.%n", call
+					.getInitiated().toString(), call.getDuration(), call
+					.getSignature()));
 
 		return result.toString();
 	}
