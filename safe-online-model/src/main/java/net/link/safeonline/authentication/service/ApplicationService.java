@@ -21,11 +21,9 @@ import net.link.safeonline.authentication.exception.ExistingApplicationException
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.UsageAgreementNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
-import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 /**
@@ -196,53 +194,4 @@ public interface ApplicationService {
 
 	void setIdentifierMappingServiceAccess(String applicationName,
 			boolean access) throws ApplicationNotFoundException;
-
-	/**
-	 * Update the draft usage agreement text for the specified language. If no
-	 * draft was present, create it ...
-	 * 
-	 * @param applicationName
-	 * @param language
-	 * @param text
-	 * @throws ApplicationNotFoundException
-	 * @throws PermissionDeniedException
-	 */
-	void updateUsageAgreementText(String applicationName, String language,
-			String text) throws ApplicationNotFoundException,
-			PermissionDeniedException;
-
-	/**
-	 * Commits the draft usage agreement to a new version.
-	 * 
-	 * @param applicationName
-	 * @throws ApplicationNotFoundException
-	 * @throws PermissionDeniedException
-	 * @throws UsageAgreementNotFoundException
-	 */
-	void updateUsageAgreement(String applicationName)
-			throws ApplicationNotFoundException, PermissionDeniedException,
-			UsageAgreementNotFoundException;
-
-	/**
-	 * Returns currently associate usage agreement with the specified
-	 * application.
-	 * 
-	 * @param applicationName
-	 * @return
-	 * @throws PermissionDeniedException
-	 * @throws ApplicationNotFoundException
-	 */
-	UsageAgreementEntity getCurrentUsageAgreement(String applicationName)
-			throws PermissionDeniedException, ApplicationNotFoundException;
-
-	/**
-	 * Get all usage agreements of the specified application.
-	 * 
-	 * @param applicationName
-	 * @return
-	 * @throws ApplicationNotFoundException
-	 * @throws PermissionDeniedException
-	 */
-	List<UsageAgreementEntity> getUsageAgreements(String applicationName)
-			throws ApplicationNotFoundException, PermissionDeniedException;
 }

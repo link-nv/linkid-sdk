@@ -24,20 +24,7 @@ public interface UsageAgreementManager {
 	 * @param application
 	 * @throws UsageAgreementNotFoundException
 	 */
-	void updateUsageAgreement(ApplicationEntity application)
-			throws UsageAgreementNotFoundException;
-
-	/**
-	 * Updates/creates a draft usage agreement text for the specified
-	 * application. If no draft usage agreement exists for this application,
-	 * creates one.
-	 * 
-	 * @param application
-	 * @param language
-	 * @param text
-	 */
-	void updateUsageAgreementText(ApplicationEntity application,
-			String language, String text);
+	void updateUsageAgreement(ApplicationEntity application);
 
 	/**
 	 * Set the usage agreement version of the specified application to the

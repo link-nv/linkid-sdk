@@ -24,6 +24,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
+import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.user.Subscriptions;
 import net.link.safeonline.user.UserConstants;
@@ -56,6 +57,9 @@ public class SubscriptionsBean implements Subscriptions {
 
 	@EJB
 	private IdentityService identityService;
+
+	@EJB
+	private UsageAgreementService usageAgreementService;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -136,5 +140,22 @@ public class SubscriptionsBean implements Subscriptions {
 	@Remove
 	@Destroy
 	public void destroyCallback() {
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String getUsageAgreement() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
+		try {
+			return this.usageAgreementService.getUsageAgreementText(
+					this.selectedSubscription.getApplication().getName(),
+					viewLocale.getLanguage(), this.selectedSubscription
+							.getConfirmedUsageAgreementVersion());
+		} catch (ApplicationNotFoundException e) {
+			LOG.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+			return null;
+		}
 	}
 }

@@ -18,5 +18,7 @@ public interface Subscriptions {
 
 	String unsubscribe();
 
+	String getUsageAgreement();
+
 	void destroyCallback();
 }

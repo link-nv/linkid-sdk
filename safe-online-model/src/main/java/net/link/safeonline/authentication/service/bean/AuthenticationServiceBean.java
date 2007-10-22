@@ -40,6 +40,7 @@ import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
@@ -48,6 +49,7 @@ import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.PasswordManager;
+import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
@@ -151,6 +153,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	@EJB
 	private CredentialService credentialService;
+
+	@EJB
+	private UsageAgreementService usageAgreementService;
 
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
@@ -326,13 +331,24 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			throw new DevicePolicyException();
 	}
 
+	private void checkRequiredUsageAgreement(String applicationId)
+			throws ApplicationNotFoundException,
+			UsageAgreementAcceptationRequiredException,
+			SubscriptionNotFoundException {
+		boolean requiresUsageAgreementAcceptation = this.usageAgreementService
+				.requiresUsageAgreementAcceptation(applicationId);
+		if (true == requiresUsageAgreementAcceptation)
+			throw new UsageAgreementAcceptationRequiredException();
+	}
+
 	@Remove
 	public void commitAuthentication(@NonEmptyString
 	String applicationId, Set<AuthenticationDevice> requiredDevicePolicy)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,
-			EmptyDevicePolicyException, DevicePolicyException {
+			EmptyDevicePolicyException, DevicePolicyException,
+			UsageAgreementAcceptationRequiredException {
 		LOG.debug("commitAuthentication for application: " + applicationId);
 
 		checkStateBeforeCommit();
@@ -342,6 +358,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		checkRequiredMissingAttributes(applicationId);
 
 		checkDevicePolicy(applicationId, requiredDevicePolicy);
+
+		checkRequiredUsageAgreement(applicationId);
 
 		if (null != this.expectedApplicationId) {
 			/*

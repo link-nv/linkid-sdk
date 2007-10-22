@@ -7,10 +7,13 @@
 
 package net.link.safeonline.auth.bean;
 
+import java.util.Locale;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationSubscription;
@@ -22,6 +25,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
+import net.link.safeonline.authentication.service.UsageAgreementService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -48,6 +52,9 @@ public class AuthenticationSubscriptionBean implements
 	@EJB
 	private SubscriptionService subscriptionService;
 
+	@EJB
+	private UsageAgreementService usageAgreementService;
+
 	@In(create = true)
 	FacesMessages facesMessages;
 
@@ -56,20 +63,48 @@ public class AuthenticationSubscriptionBean implements
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String subscribe() {
-		this.log.debug("subscribe to application #0", this.applicationId);
+
 		try {
-			this.subscriptionService.subscribe(this.applicationId);
+			if (!this.subscriptionService.isSubscribed(this.applicationId)) {
+				try {
+					this.log.debug("subscribe to application #0",
+							this.applicationId);
+					this.subscriptionService.subscribe(this.applicationId);
+				} catch (ApplicationNotFoundException e) {
+					this.facesMessages.addFromResourceBundle(
+							FacesMessage.SEVERITY_ERROR,
+							"errorApplicationNotFound");
+					return null;
+				} catch (AlreadySubscribedException e) {
+					this.facesMessages.addFromResourceBundle(
+							FacesMessage.SEVERITY_ERROR,
+							"errorAlreadySubscribed");
+					return null;
+				} catch (PermissionDeniedException e) {
+					this.facesMessages.addFromResourceBundle(
+							FacesMessage.SEVERITY_ERROR,
+							"errorPermissionDenied");
+					return null;
+				}
+			}
 		} catch (ApplicationNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
-		} catch (AlreadySubscribedException e) {
+		}
+
+		this.log.debug("confirm usage agreement for application #0",
+				this.applicationId);
+		try {
+			this.usageAgreementService
+					.confirmUsageAgreementVersion(this.applicationId);
+		} catch (SubscriptionNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAlreadySubscribed");
+					FacesMessage.SEVERITY_ERROR, "subscriptionNotFoundMsg");
 			return null;
-		} catch (PermissionDeniedException e) {
+		} catch (ApplicationNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		}
 
@@ -123,5 +158,20 @@ public class AuthenticationSubscriptionBean implements
 		AuthenticationUtils.commitAuthentication(this.facesMessages);
 
 		return null;
+	}
+
+	@RolesAllowed(AuthenticationConstants.USER_ROLE)
+	public String getUsageAgreement() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
+		try {
+			return this.usageAgreementService.getUsageAgreementText(
+					this.applicationId, viewLocale.getLanguage());
+		} catch (ApplicationNotFoundException e) {
+			this.log.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+			return null;
+		}
 	}
 }

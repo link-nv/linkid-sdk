@@ -22,6 +22,7 @@ import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -128,12 +129,14 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	 * @throws ApplicationIdentityNotFoundException
 	 * @throws EmptyDevicePolicyException
 	 * @throws DevicePolicyException
+	 * @throws UsageAgreementAcceptationRequiredException
 	 */
 	public static void commitAuthentication(HttpSession session,
 			String applicationId) throws SubscriptionNotFoundException,
 			ApplicationNotFoundException, ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,
-			EmptyDevicePolicyException, DevicePolicyException {
+			EmptyDevicePolicyException, DevicePolicyException,
+			UsageAgreementAcceptationRequiredException {
 
 		Set<AuthenticationDevice> requiredDevices = LoginManager
 				.getRequiredDevices(session);

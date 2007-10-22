@@ -8,6 +8,7 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.UsageAgreementEntity.QUERY_WHERE_APPLICATION;
+import static net.link.safeonline.entity.UsageAgreementEntity.DELETE_WHERE_APPLICATION_AND_VERSION;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -29,20 +30,28 @@ import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
-@NamedQueries( { @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT usageAgreement "
-		+ "FROM UsageAgreementEntity AS usageAgreement "
-		+ "WHERE usageAgreement.application = :application "
-		+ "ORDER BY usageAgreement.pk.usageAgreementVersion DESC") })
+@NamedQueries( {
+		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT usageAgreement "
+				+ "FROM UsageAgreementEntity AS usageAgreement "
+				+ "WHERE usageAgreement.application = :application "
+				+ "ORDER BY usageAgreement.pk.usageAgreementVersion DESC"),
+		@NamedQuery(name = DELETE_WHERE_APPLICATION_AND_VERSION, query = "DELETE "
+				+ "FROM UsageAgreementEntity AS usageAgreement "
+				+ "WHERE usageAgreement.application = :application "
+				+ "AND usageAgreement.pk.usageAgreementVersion = :usageAgreementVersion") })
 public class UsageAgreementEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_WHERE_APPLICATION = "ua.app";
+
+	public static final String DELETE_WHERE_APPLICATION_AND_VERSION = "ua.remove.app.version";
 
 	public static final String APPLICATION_COLUMN_NAME = "application";
 
@@ -62,6 +71,7 @@ public class UsageAgreementEntity implements Serializable {
 			Long usageAgreementVersion) {
 		this.pk = new UsageAgreementPK(application.getName(),
 				usageAgreementVersion);
+		this.application = application;
 		this.usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
 	}
 
@@ -93,12 +103,8 @@ public class UsageAgreementEntity implements Serializable {
 	}
 
 	@Transient
-	public void releaseNewVersion(Long usageAgreementVersion) {
+	public void setUsageAgreementVersion(Long usageAgreementVersion) {
 		this.pk.setUsageAgreementVersion(usageAgreementVersion);
-		for (UsageAgreementTextEntity usageAgreementText : this.usageAgreementTexts) {
-			usageAgreementText.getPk().setUsageAgreementVersion(
-					usageAgreementVersion);
-		}
 	}
 
 	@Transient
@@ -145,6 +151,11 @@ public class UsageAgreementEntity implements Serializable {
 		List<UsageAgreementEntity> listUsageAgreements(
 				@QueryParam("application")
 				ApplicationEntity application);
+
+		@UpdateMethod(DELETE_WHERE_APPLICATION_AND_VERSION)
+		void removeUsageAgreement(@QueryParam("application")
+		ApplicationEntity application, @QueryParam("usageAgreementVersion")
+		Long usageAgreementVersion);
 	}
 
 }

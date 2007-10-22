@@ -35,13 +35,12 @@ public class UsageAgreementManagerBean implements UsageAgreementManager {
 		LOG.debug("set usage agreement for application: "
 				+ application.getName() + " to version: "
 				+ usageAgreementVersion);
-		this.usageAgreementDAO.getUsageAgreement(application,
+		this.usageAgreementDAO.findUsageAgreement(application,
 				usageAgreementVersion);
 		application.setCurrentApplicationUsageAgreement(usageAgreementVersion);
 	}
 
-	public void updateUsageAgreement(ApplicationEntity application)
-			throws UsageAgreementNotFoundException {
+	public void updateUsageAgreement(ApplicationEntity application) {
 		LOG.debug("update usage agreement for application: "
 				+ application.getName());
 		UsageAgreementEntity draftUsageAgreement = this.usageAgreementDAO
@@ -53,35 +52,22 @@ public class UsageAgreementManagerBean implements UsageAgreementManager {
 		else
 			newUsageAgreementVersion = application
 					.getCurrentApplicationUsageAgreement() + 1;
-		draftUsageAgreement.releaseNewVersion(newUsageAgreementVersion);
+
+		UsageAgreementEntity newUsageAgreement = this.usageAgreementDAO
+				.addUsageAgreement(application, newUsageAgreementVersion);
+
+		for (UsageAgreementTextEntity draftUsageAgreementText : draftUsageAgreement
+				.getUsageAgreementTexts()) {
+			this.usageAgreementDAO.addUsageAgreementText(newUsageAgreement,
+					draftUsageAgreementText.getText(), draftUsageAgreementText
+							.getLanguage());
+		}
+
+		this.usageAgreementDAO.removeusageAgreement(application,
+				UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
+
+		LOG.debug("update application to version: " + newUsageAgreementVersion);
 		application
 				.setCurrentApplicationUsageAgreement(newUsageAgreementVersion);
-	}
-
-	public void updateUsageAgreementText(ApplicationEntity application,
-			String language, String text) {
-		LOG.debug("update usage agreement text for application: "
-				+ application.getName() + ", language: " + language);
-		UsageAgreementEntity draftUsageAgreement;
-		try {
-			draftUsageAgreement = this.usageAgreementDAO
-					.getUsageAgreement(application,
-							UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
-		} catch (UsageAgreementNotFoundException e) {
-			LOG.debug("create draft usage agreement for application: "
-					+ application.getName());
-			draftUsageAgreement = this.usageAgreementDAO
-					.addUsageAgreement(application,
-							UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
-		}
-
-		UsageAgreementTextEntity draftUsageAgreementText = draftUsageAgreement
-				.getUsageAgreementText(language);
-		if (null == draftUsageAgreementText) {
-			draftUsageAgreementText = this.usageAgreementDAO
-					.addUsageAgreementText(draftUsageAgreement, text, language);
-		} else {
-			draftUsageAgreementText.setText(text);
-		}
 	}
 }

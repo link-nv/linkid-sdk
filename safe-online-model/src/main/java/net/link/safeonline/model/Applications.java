@@ -9,7 +9,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
-import net.link.safeonline.entity.UsageAgreementEntity;
 
 @Local
 public interface Applications {
@@ -25,6 +24,4 @@ public interface Applications {
 			ApplicationEntity application)
 			throws ApplicationIdentityNotFoundException;
 
-	public UsageAgreementEntity getCurrentUsageAgreement(
-			ApplicationEntity application);
 }

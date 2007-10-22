@@ -325,12 +325,15 @@ public class EntityTest {
 
 		UsageAgreementTextEntity resultAgreementTextv1En = entityManager.find(
 				UsageAgreementTextEntity.class, new UsageAgreementTextPK(
-						usageAgreementv1, Locale.ENGLISH.getLanguage()));
+						usageAgreementv1.getApplication().getName(),
+						usageAgreementv1.getUsageAgreementVersion(),
+						Locale.ENGLISH.getLanguage()));
 		assertNotNull(resultAgreementTextv1En);
-		UsageAgreementTextEntity resultAgreementTextv1Fr = entityManager.find(
+		UsageAgreementTextEntity resultAgreementTextv1Nl = entityManager.find(
 				UsageAgreementTextEntity.class, new UsageAgreementTextPK(
-						usageAgreementv1, "nl"));
-		assertNotNull(resultAgreementTextv1Fr);
+						usageAgreementv1.getApplication().getName(),
+						usageAgreementv1.getUsageAgreementVersion(), "nl"));
+		assertNotNull(resultAgreementTextv1Nl);
 	}
 
 	@Test

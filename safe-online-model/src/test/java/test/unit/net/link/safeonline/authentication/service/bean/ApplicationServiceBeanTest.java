@@ -10,7 +10,6 @@ package test.unit.net.link.safeonline.authentication.service.bean;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,8 +27,6 @@ import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBe
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.entity.UsageAgreementEntity;
-import net.link.safeonline.entity.UsageAgreementPK;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.service.bean.SubjectServiceBean;
@@ -71,45 +68,6 @@ public class ApplicationServiceBeanTest extends TestCase {
 	protected void tearDown() throws Exception {
 		this.entityTestManager.tearDown();
 		super.tearDown();
-	}
-
-	public void testUsageAgreementUseCase() throws Exception {
-		// setup
-		EntityManager entityManager = this.entityTestManager.getEntityManager();
-		SubjectService subjectService = EJBTestUtils.newInstance(
-				SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-				entityManager);
-		String ownerId = subjectService.findSubjectFromUserName("owner")
-				.getUserId();
-
-		ApplicationService applicationService = EJBTestUtils.newInstance(
-				ApplicationServiceBean.class,
-				SafeOnlineTestContainer.sessionBeans, entityManager, ownerId,
-				SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
-
-		// operate
-		UsageAgreementEntity usageAgreement = applicationService
-				.getCurrentUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
-
-		// verify
-		assertNull(usageAgreement);
-
-		// operate
-		entityManager.getTransaction().commit();
-		entityManager.getTransaction().begin();
-		applicationService.updateUsageAgreementText(
-				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-				Locale.ENGLISH.getLanguage(), "test-usage-agreement");
-		applicationService
-				.updateUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
-		entityManager.getTransaction().commit();
-		usageAgreement = applicationService
-				.getCurrentUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
-
-		// verify
-		assertEquals(new Long(
-				UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION + 1),
-				usageAgreement.getUsageAgreementVersion());
 	}
 
 	public void testApplicationIdentityUseCase() throws Exception {

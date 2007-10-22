@@ -16,15 +16,41 @@ public interface UsageAgreement {
 	 */
 	void usageAgreementTextListFactory();
 
+	void draftUsageAgreementsTextsFactory();
+
+	void currentUsageAgreementsTextsFactory();
+
 	/*
 	 * Actions
 	 */
 	String viewText();
 
+	String saveText();
+
+	String createUsageAgreement();
+
+	String editDraftText();
+
+	String removeDraftText();
+
+	String editCurrentText();
+
+	String addText();
+
+	String releaseDraft();
+
+	String removeDraft();
+
 	/*
 	 * Accessors
 	 */
-	String getText();
+	boolean getDraftUsageAgreementIsEmpty();
+
+	boolean getCurrentUsageAgreementIsEmpty();
+
+	void setLanguage(String language);
+
+	String getLanguage();
 
 	/*
 	 * Lifecycle

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 
 import javax.ejb.Local;
@@ -25,6 +26,7 @@ import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
@@ -77,13 +79,15 @@ public interface AuthenticationService {
 	 * @throws MissingAttributeException
 	 * @throws EmptyDevicePolicyException
 	 * @throws DevicePolicyException
+	 * @throws UsageAgreementAcceptationRequiredException
 	 */
 	void commitAuthentication(String applicationId,
 			Set<AuthenticationDevice> requiredDevicePolicy)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,
-			EmptyDevicePolicyException, DevicePolicyException;
+			EmptyDevicePolicyException, DevicePolicyException,
+			UsageAgreementAcceptationRequiredException;
 
 	/**
 	 * Authenticates a user via an authentication statement. The given session

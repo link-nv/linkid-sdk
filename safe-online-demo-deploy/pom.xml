@@ -142,6 +142,15 @@
 								true
 							</includeInApplicationXml>
 						</jarModule>
+                                                <jarModule>
+                                                        <groupId>net.lin-k.safe-online</groupId>
+                                                        <artifactId>
+                                                                safe-online-idmapping-ws
+                                                        </artifactId>
+                                                        <includeInApplicationXml>
+                                                                true
+                                                        </includeInApplicationXml>
+                                                </jarModule>>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>
@@ -611,6 +620,12 @@
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+                <dependency>
+                        <groupId>net.lin-k.safe-online</groupId>
+                        <artifactId>safe-online-idmapping-ws</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                        <scope>provided</scope>
+                </dependency>
 	</dependencies>
 	<reporting>
 		<plugins>

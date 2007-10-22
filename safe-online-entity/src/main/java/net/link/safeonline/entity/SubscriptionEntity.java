@@ -95,6 +95,7 @@ public class SubscriptionEntity implements Serializable {
 		this.subscriptionOwnerType = subscriptionOwnerType;
 		this.subject = subject;
 		this.application = application;
+		this.confirmedUsageAgreementVersion = UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION;
 		this.pk = new SubscriptionPK(subject, application);
 	}
 

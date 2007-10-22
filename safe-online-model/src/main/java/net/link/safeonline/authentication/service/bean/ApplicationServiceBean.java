@@ -34,7 +34,6 @@ import net.link.safeonline.authentication.exception.ExistingApplicationException
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.exception.UsageAgreementNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.ApplicationServiceRemote;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
@@ -45,7 +44,6 @@ import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
-import net.link.safeonline.dao.UsageAgreementDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
@@ -55,12 +53,10 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
-import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
 import net.link.safeonline.model.ApplicationOwnerManager;
 import net.link.safeonline.model.Applications;
 import net.link.safeonline.model.SubjectManager;
-import net.link.safeonline.model.UsageAgreementManager;
 import net.link.safeonline.pkix.PkiUtils;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.SubjectService;
@@ -111,12 +107,6 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	@EJB
 	private ApplicationIdentityManager applicationIdentityService;
-
-	@EJB
-	private UsageAgreementManager usageAgreementManager;
-
-	@EJB
-	private UsageAgreementDAO usageAgreementDAO;
 
 	@EJB
 	private Applications applications;
@@ -418,57 +408,4 @@ public class ApplicationServiceBean implements ApplicationService,
 				.getApplication(applicationName);
 		application.setIdentifierMappingAllowed(access);
 	}
-
-	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-	public void updateUsageAgreement(String applicationName)
-			throws ApplicationNotFoundException, PermissionDeniedException,
-			UsageAgreementNotFoundException {
-		LOG.debug("update application usage agreement: " + applicationName);
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationName);
-		checkWritePermission(application);
-
-		this.usageAgreementManager.updateUsageAgreement(application);
-
-	}
-
-	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-	public void updateUsageAgreementText(String applicationName,
-			String language, String text) throws ApplicationNotFoundException,
-			PermissionDeniedException {
-		LOG.debug("update application draft usage agreement: "
-				+ applicationName);
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationName);
-		checkWritePermission(application);
-
-		this.usageAgreementManager.updateUsageAgreementText(application,
-				language, text);
-
-	}
-
-	@RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE,
-			SafeOnlineRoles.OPERATOR_ROLE })
-	public UsageAgreementEntity getCurrentUsageAgreement(String applicationName)
-			throws PermissionDeniedException, ApplicationNotFoundException {
-		LOG.debug("get current usage agreement for application: "
-				+ applicationName);
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationName);
-		checkReadPermission(application);
-
-		return this.applications.getCurrentUsageAgreement(application);
-	}
-
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-	public List<UsageAgreementEntity> getUsageAgreements(String applicationName)
-			throws ApplicationNotFoundException, PermissionDeniedException {
-		LOG.debug("get usage agreements for application: " + applicationName);
-		ApplicationEntity application = this.applicationDAO
-				.getApplication(applicationName);
-		checkReadPermission(application);
-
-		return this.usageAgreementDAO.listUsageAgreements(application);
-	}
-
 }

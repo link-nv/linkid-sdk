@@ -12,13 +12,21 @@ import javax.ejb.Local;
 @Local
 public interface Application {
 
+	/*
+	 * Accessors
+	 */
+
+	/*
+	 * Factories
+	 */
 	void applicationListFactory();
 
 	void usageAgreementListFactory();
 
+	/*
+	 * Actions
+	 */
 	String view();
-
-	void destroyCallback();
 
 	String edit();
 
@@ -29,4 +37,12 @@ public interface Application {
 	void allowedDevices();
 
 	String viewUsageAgreement();
+
+	String editUsageAgreement();
+
+	/*
+	 * Lifecycle
+	 */
+	void destroyCallback();
+
 }

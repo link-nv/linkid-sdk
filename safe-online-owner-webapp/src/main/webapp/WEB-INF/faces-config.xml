@@ -44,6 +44,10 @@
 			<from-outcome>viewstats</from-outcome>
 			<to-view-id>/stats.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit-usage-agreement</from-outcome>
+			<to-view-id>/usage-agreements.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -113,5 +117,24 @@
 			<to-view-id>/usage-agreement-view.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-	
+
+	<navigation-rule>
+		<from-view-id>/usage-agreements.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>edittext</from-outcome>
+			<to-view-id>/usage-agreement-text-edit.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/usage-agreement-text-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/usage-agreements.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saved</from-outcome>
+			<to-view-id>/usage-agreements.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 </faces-config>

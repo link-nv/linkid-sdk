@@ -23,32 +23,23 @@
 
 		<h1>#{selectedApplication.name}</h1>
 
-		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{selectedUsageAgreement.usageAgreementVersion}
-		</h2>
+		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{msgs.draft}</h2>
 
-		<a4j:form id="usageAgreementForm" ajaxSubmit="true"
-			reRender="usage-agreement-text-data">
-			<rich:dataTable id="usage-agreement-text-data" var="item"
-				value="#{usageAgreementTextList}" rows="10"
-				styleClass="listingTable"
-				rowClasses="listingTable_Row1,listingTable_Row2">
-				<h:column>
-					<a4j:commandLink id="viewtext"
-						value="#{msgs.language}: #{item.language}"
-						action="#{ownerUsageAgreement.viewText}" />
-				</h:column>
-				<f:facet name="footer">
-					<rich:datascroller for="usage-agreement-text-data" />
-				</f:facet>
-			</rich:dataTable>
-		</a4j:form>
-
-		<rich:spacer height="10" />
 		<a4j:form>
-			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back" />
-			<so:nbsp />
-		</a4j:form>
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputLabel
+						value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
+				</f:facet>
+				<p><h:inputTextarea value="#{selectedUsageAgreementText.text}"
+					escape="false" cols="60" rows="10" /></p>
+			</rich:panel>
 
+			<a4j:commandButton value="#{msgs.saveaction}"
+				action="#{ownerUsageAgreement.saveText}" id="save" />
+			<so:nbsp />
+			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back" />
+		</a4j:form>
 
 	</ui:define>
 	<ui:define name="sidebar">

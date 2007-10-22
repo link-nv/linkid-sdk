@@ -1,0 +1,136 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="title">
+		<h:outputFormat value="#{msgs.ownerTitle}">
+			<f:param value="#{initParam['CommercialName']}" />
+		</h:outputFormat>
+	</ui:define>
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="applications" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h1>#{selectedApplication.name}</h1>
+
+		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{selectedApplication.currentApplicationUsageAgreement}
+		</h2>
+
+		<rich:tabPanel id="usagePanel" switchType="client">
+
+			<rich:tab label="#{msgs.version}: #{msgs.draft}"
+				rendered="#{!ownerUsageAgreement.draftUsageAgreementIsEmpty}">
+
+				<a4j:form id="editDraftForm" reRender="usagePanel" ajaxSubmit="true">
+					<h:panelGrid columns="2" border="0">
+						<a4j:commandLink value="#{msgs.releaseaction}"
+							action="#{ownerUsageAgreement.releaseDraft}" />
+						<a4j:commandLink value="#{msgs.removeaction}"
+							action="#{ownerUsageAgreement.removeDraft}" />
+					</h:panelGrid>
+
+				</a4j:form>
+
+				<a4j:form id="addDraftLanguageForm" reRender="usagePanel"
+					ajaxSubmit="true">
+					<f:facet name="aroundInvalidField">
+						<s:span styleClass="error" />
+					</f:facet>
+					<h:panelGrid columns="4" border="0">
+						<h:outputLabel value="#{msgs.language}" />
+						<s:decorate>
+							<h:inputText id="language"
+								value="#{ownerUsageAgreement.language}" required="true" />
+						</s:decorate>
+						<h:message for="language" styleClass="error" />
+						<a4j:commandLink value="#{msgs.addaction}"
+							action="#{ownerUsageAgreement.addText}" />
+					</h:panelGrid>
+				</a4j:form>
+
+				<a4j:form id="editDraftTextsForm" reRender="usagePanel"
+					ajaxSubmit="true">
+					<rich:dataTable id="draft-text-data" var="item"
+						value="#{draftUsageAgreementsTexts}" rows="10"
+						styleClass="listingTable"
+						rowClasses="listingTable_Row1,listingTable_Row2">
+						<h:column>
+							<a4j:commandLink id="edit-draft-text"
+								value="#{msgs.language}: #{item.language}"
+								action="#{ownerUsageAgreement.editDraftText}" />
+						</h:column>
+						<h:column>
+							<a4j:commandLink id="remove-draft-text"
+								value="#{msgs.removeaction}"
+								action="#{ownerUsageAgreement.removeDraftText}" />
+						</h:column>
+
+						<f:facet name="footer">
+							<rich:datascroller for="draft-text-data" />
+						</f:facet>
+					</rich:dataTable>
+				</a4j:form>
+			</rich:tab>
+
+			<rich:tab
+				label="#{msgs.version}: #{selectedApplication.currentApplicationUsageAgreement}"
+				rendered="#{!ownerUsageAgreement.currentUsageAgreementIsEmpty}">
+				<a4j:form id="editCurrentForm" reRender="usagePanel"
+					ajaxSubmit="true">
+					<h:panelGrid columns="1" border="0">
+						<h:outputLabel
+							value="#{msgs.version}: #{selectedApplication.currentApplicationUsageAgreement}" />
+					</h:panelGrid>
+					<rich:dataTable id="current-text-data" var="item"
+						value="#{currentUsageAgreementsTexts}" rows="10"
+						styleClass="listingTable"
+						rowClasses="listingTable_Row1,listingTable_Row2">
+						<h:column>
+							<a4j:commandLink id="edit-current-text"
+								value="#{msgs.language}: #{item.language}"
+								action="#{ownerUsageAgreement.editCurrentText}"
+								rendered="#{ownerUsageAgreement.draftUsageAgreementIsEmpty}" />
+							<a4j:commandLink id="view-current-text"
+								value="#{msgs.language}: #{item.language}"
+								action="#{ownerUsageAgreement.viewText}"
+								rendered="#{!ownerUsageAgreement.draftUsageAgreementIsEmpty}" />
+						</h:column>
+						<f:facet name="footer">
+							<rich:datascroller for="current-text-data" />
+						</f:facet>
+					</rich:dataTable>
+
+					<a4j:commandButton id="create-agreement"
+						value="#{msgs.createaction}"
+						action="#{ownerUsageAgreement.createUsageAgreement}"
+						rendered="#{ownerUsageAgreement.draftUsageAgreementIsEmpty}" />
+				</a4j:form>
+			</rich:tab>
+		</rich:tabPanel>
+
+		<a4j:form id="createForm" reRender="usagePanel" ajaxSubmit="true">
+			<a4j:commandButton id="create-agreement" value="#{msgs.createaction}"
+				action="#{ownerUsageAgreement.createUsageAgreement}"
+				rendered="#{ownerUsageAgreement.currentUsageAgreementIsEmpty}" />
+		</a4j:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{ownerLogin}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

@@ -7,18 +7,23 @@
 
 package net.link.safeonline.entity;
 
-import java.io.Serializable;
+import static net.link.safeonline.entity.UsageAgreementTextEntity.DELETE_WHERE_APPLICATION_AND_VERSION;
+import static net.link.safeonline.entity.UsageAgreementTextEntity.QUERY_WHERE_APPLICATION_AND_VERSION;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
+import java.io.Serializable;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
+
+import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -26,21 +31,27 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 @Entity
+@NamedQueries( {
+		@NamedQuery(name = QUERY_WHERE_APPLICATION_AND_VERSION, query = "SELECT usageAgreementText "
+				+ "FROM UsageAgreementTextEntity AS usageAgreementText "
+				+ "WHERE usageAgreementText.pk.application = :application "
+				+ "AND usageAgreementText.pk.usageAgreementVersion = :usageAgreementVersion "
+				+ "ORDER BY usageAgreementText.pk.language DESC"),
+		@NamedQuery(name = DELETE_WHERE_APPLICATION_AND_VERSION, query = "DELETE "
+				+ "FROM UsageAgreementTextEntity AS usageAgreementText "
+				+ "WHERE usageAgreementText.pk.application = :application "
+				+ "AND usageAgreementText.pk.usageAgreementVersion = :usageAgreementVersion") })
 public class UsageAgreementTextEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String APPLICATION_COLUMN_NAME = "application";
+	public static final String QUERY_WHERE_APPLICATION_AND_VERSION = "uat.app.version";
 
-	public static final String USAGE_AGREEMENT_VERSION_COLUMN_NAME = "usageAgreementVersion";
-
-	public static final String LANGUAGE_COLUMN_NAME = "language";
+	public static final String DELETE_WHERE_APPLICATION_AND_VERSION = "uat.del.app.version";
 
 	private String text;
 
 	private UsageAgreementTextPK pk;
-
-	private UsageAgreementEntity usageAgreement;
 
 	public UsageAgreementTextEntity() {
 		// empty
@@ -48,14 +59,9 @@ public class UsageAgreementTextEntity implements Serializable {
 
 	public UsageAgreementTextEntity(UsageAgreementEntity usageAgreement,
 			String text, String language) {
-		this.usageAgreement = usageAgreement;
 		this.text = text;
-		this.pk = new UsageAgreementTextPK(usageAgreement, language);
-	}
-
-	@Transient
-	public String getLanguage() {
-		return this.pk.getLanguage();
+		this.pk = new UsageAgreementTextPK(usageAgreement.getApplication()
+				.getName(), usageAgreement.getUsageAgreementVersion(), language);
 	}
 
 	@Lob
@@ -69,10 +75,6 @@ public class UsageAgreementTextEntity implements Serializable {
 	}
 
 	@EmbeddedId
-	@AttributeOverrides( {
-			@AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
-			@AttributeOverride(name = "usageAgreement", column = @Column(name = USAGE_AGREEMENT_VERSION_COLUMN_NAME)),
-			@AttributeOverride(name = "language", column = @Column(name = LANGUAGE_COLUMN_NAME)) })
 	public UsageAgreementTextPK getPk() {
 		return this.pk;
 	}
@@ -81,16 +83,24 @@ public class UsageAgreementTextEntity implements Serializable {
 		this.pk = pk;
 	}
 
-	@ManyToOne(optional = false)
-	@JoinColumns( {
-			@JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false, referencedColumnName = UsageAgreementEntity.APPLICATION_COLUMN_NAME),
-			@JoinColumn(name = USAGE_AGREEMENT_VERSION_COLUMN_NAME, insertable = false, updatable = false, referencedColumnName = UsageAgreementEntity.USAGE_AGREEMENT_VERSION_COLUMN_NAME) })
-	public UsageAgreementEntity getUsageAgreement() {
-		return usageAgreement;
+	@Transient
+	public String getLanguage() {
+		return this.pk.getLanguage();
 	}
 
-	public void setUsageAgreement(UsageAgreementEntity usageAgreement) {
-		this.usageAgreement = usageAgreement;
+	@Transient
+	public Long getUsageAgreementVersion() {
+		return this.pk.getUsageAgreementVersion();
+	}
+
+	@Transient
+	public void setUsageAgreementVersion(Long usageAgreementVersion) {
+		this.pk.setUsageAgreementVersion(usageAgreementVersion);
+	}
+
+	@Transient
+	public String getApplication() {
+		return this.pk.getApplication();
 	}
 
 	@Override
@@ -117,6 +127,19 @@ public class UsageAgreementTextEntity implements Serializable {
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
 				.append("pk", this.pk).append("text", this.text).toString();
+	}
+
+	public interface QueryInterface {
+		@QueryMethod(QUERY_WHERE_APPLICATION_AND_VERSION)
+		List<UsageAgreementTextEntity> listUsageAgreementTexts(
+				@QueryParam("application")
+				String applicationName, @QueryParam("usageAgreementVersion")
+				Long usageAgreementVersion);
+
+		@UpdateMethod(DELETE_WHERE_APPLICATION_AND_VERSION)
+		void removeUsageAgreementTexts(@QueryParam("application")
+		String applicationName, @QueryParam("usageAgreementVersion")
+		Long usageAgreementVersion);
 	}
 
 }

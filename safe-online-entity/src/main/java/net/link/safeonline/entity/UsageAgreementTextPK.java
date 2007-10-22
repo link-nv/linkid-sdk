@@ -29,12 +29,11 @@ public class UsageAgreementTextPK implements Serializable {
 		// empty
 	}
 
-	public UsageAgreementTextPK(UsageAgreementEntity usageAgreement,
+	public UsageAgreementTextPK(String application, Long usageAgreementVersion,
 			String language) {
 		this.language = language;
-		this.usageAgreementVersion = usageAgreement.getPk()
-				.getUsageAgreementVersion();
-		this.application = usageAgreement.getPk().getApplication();
+		this.usageAgreementVersion = usageAgreementVersion;
+		this.application = application;
 	}
 
 	public String getApplication() {

@@ -3,7 +3,9 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">
@@ -21,36 +23,41 @@
 
 		<h1>#{selectedApplication.name}</h1>
 
-		<h:form>
-			<h1>#{msgs.description}:</h1>
-			<p><h:inputTextarea value="#{selectedApplication.description}"
-				escape="false" cols="60" rows="10" /></p>
+		<a4j:form id="editForm">
+			<rich:tabPanel switchType="client">
 
-			<h2>#{msgs.allowedDevices}:</h2>
-			<p>#{msgs.isDeviceRestriction}: <h:selectBooleanCheckbox
-				value="#{selectedApplication.deviceRestriction}" /></p>
-			<h:dataTable value="#{allowedDevices}" var="item">
-				<h:column>
-					<f:facet name="header">#{msgs.name}</f:facet>
-					<h:outputLabel for="included" value="#{item.device.name}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.allowed}</f:facet>
-					<h:selectBooleanCheckbox value="#{item.allowed}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.weight}</f:facet>
-					<h:inputText value="#{item.weight}" />
-				</h:column>
-			</h:dataTable>
+				<rich:tab label="#{msgs.description}">
+					<p><h:inputTextarea value="#{selectedApplication.description}"
+						escape="false" cols="150" rows="10" /></p>
+				</rich:tab>
 
-			<h:commandButton value="#{msgs.saveaction}"
+				<rich:tab label="#{msgs.devices}">
+					<p>#{msgs.isDeviceRestriction}: <h:selectBooleanCheckbox
+						value="#{selectedApplication.deviceRestriction}" /></p>
+					<rich:dataTable value="#{allowedDevices}" var="item">
+						<h:column>
+							<f:facet name="header">#{msgs.name}</f:facet>
+							<h:outputLabel value="#{item.device.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.allowed}</f:facet>
+							<h:selectBooleanCheckbox value="#{item.allowed}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.weight}</f:facet>
+							<h:inputText value="#{item.weight}" />
+						</h:column>
+					</rich:dataTable>
+
+				</rich:tab>
+			</rich:tabPanel>
+
+			<a4j:commandButton id="save" value="#{msgs.saveaction}"
 				action="#{ownerApplication.save}" />
 			<so:nbsp />
-			<h:commandButton value="#{msgs.cancelaction}" action="cancel"
-				immediate="true" />
-		</h:form>
-
+			<a4j:commandButton id="cancel" value="#{msgs.cancelaction}"
+				action="cancel" immediate="true" />
+		</a4j:form>
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">

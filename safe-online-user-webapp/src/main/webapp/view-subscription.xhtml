@@ -2,7 +2,10 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk">
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -14,48 +17,52 @@
 	<ui:define name="content">
 
 		<!-- <h2>#{msgs.subscription} #{selectedSubscription.application.friendlyName}</h2> -->
-		<table>
-			<tr>
-				<td>
-				<h2><h:outputText value="#{msgs.subscription}" /></h2>
-				</td>
-				<td>
-				<h2><h:outputText
-					value="#{selectedSubscription.application.friendlyName}"
-					rendered="#{!empty selectedSubscription.application.friendlyName}" />
-				<h:outputText value="#{selectedSubscription.application.name}"
-					rendered="#{empty selectedSubscription.application.friendlyName}" /></h2>
-				</td>
-			</tr>
-		</table>
-		<p>#{msgs.description}:</p>
-		<p><h:outputText
-			value="#{selectedSubscription.application.description}"
-			escape="false" /></p>
-		<p>#{msgs.userOwner}:
-		#{selectedSubscription.subscriptionOwnerType}</p>
 
-		<h2>#{msgs.confirmedIdentity}</h2>
+		<rich:tabPanel id="subscriptionPanel" switchType="client">
 
-		<h:dataTable id="data" var="item"
-			value="#{confirmedIdentityAttributes}" preserveDataModel="false"
-			styleClass="listingTable"
-			rowClasses="listingTable_Row1,listingTable_Row2">
+			<rich:tab label="#{msgs.information}">
+				<h:panelGrid columns="2" border="0">
+					<h:outputLabel value="#{msgs.name}" />
+					<h:outputLabel
+						value="#{selectedSubscription.application.friendlyName}"
+						rendered="#{!empty selectedSubscription.application.friendlyName}" />
+					<h:outputLabel value="#{selectedSubscription.application.name}"
+						rendered="#{empty selectedSubscription.application.friendlyName}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2" border="0">
+					<h:outputLabel value="#{msgs.userOwner}" />
+					<h:outputLabel
+						value="#{selectedSubscription.subscriptionOwnerType}" />
+				</h:panelGrid>
+			</rich:tab>
 
-			<h:column>
-				<f:facet name="header">#{msgs.name}</f:facet>
-				<h:outputText value="#{item.name}"
-					rendered="#{empty item.humanReadableName}" />
-				<h:outputText value="#{item.humanReadableName}"
-					rendered="#{!empty item.humanReadableName}" />
-			</h:column>
+			<rich:tab label="#{msgs.description}">
+				<so:outputText
+					value="#{selectedSubscription.application.description}" />
+			</rich:tab>
 
-		</h:dataTable>
+			<rich:tab label="#{msgs.usageAgreement}">
+				<so:outputText value="#{subscriptions.usageAgreement}" />
+			</rich:tab>
 
+			<rich:tab label="#{msgs.confirmedIdentity}">
+				<rich:dataTable id="data" var="item"
+					value="#{confirmedIdentityAttributes}" preserveDataModel="false"
+					styleClass="listingTable"
+					rowClasses="listingTable_Row1,listingTable_Row2">
+					<h:column>
+						<f:facet name="header">#{msgs.name}</f:facet>
+						<h:outputLabel value="#{item.name}"
+							rendered="#{empty item.humanReadableName}" />
+						<h:outputLabel value="#{item.humanReadableName}"
+							rendered="#{!empty item.humanReadableName}" />
+					</h:column>
+				</rich:dataTable>
+			</rich:tab>
+		</rich:tabPanel>
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" action="back" />
 		</h:form>
-
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">

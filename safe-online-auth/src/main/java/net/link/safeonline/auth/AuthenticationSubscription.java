@@ -16,4 +16,9 @@ public interface AuthenticationSubscription {
 	 * Actions.
 	 */
 	String subscribe();
+
+	/*
+	 * Accessors
+	 */
+	String getUsageAgreement();
 }

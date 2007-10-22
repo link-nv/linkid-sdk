@@ -26,6 +26,7 @@ import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
+import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -55,6 +56,8 @@ public class LoginServlet extends HttpServlet {
 
 	private DevicePolicyService devicePolicyService;
 
+	private UsageAgreementService usageAgreementService;
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -71,6 +74,9 @@ public class LoginServlet extends HttpServlet {
 		this.devicePolicyService = EjbUtils.getEJB(
 				"SafeOnline/DevicePolicyServiceBean/local",
 				DevicePolicyService.class);
+		this.usageAgreementService = EjbUtils.getEJB(
+				"SafeOnline/UsageAgreementServiceBean/local",
+				UsageAgreementService.class);
 	}
 
 	@Override
@@ -165,6 +171,16 @@ public class LoginServlet extends HttpServlet {
 		try {
 			subscriptionRequired = !this.subscriptionService
 					.isSubscribed(applicationId);
+			if (!subscriptionRequired)
+				try {
+					subscriptionRequired = this.usageAgreementService
+							.requiresUsageAgreementAcceptation(applicationId);
+				} catch (SubscriptionNotFoundException e) {
+					LOG.debug("subscription not found: " + applicationId);
+					HelpdeskLogger.add(session, "subscription not found: "
+							+ applicationId, LogLevelType.ERROR);
+					throw new ServletException("subscription not found");
+				}
 		} catch (ApplicationNotFoundException e) {
 			LOG.debug("application not found: " + applicationId);
 			HelpdeskLogger.add(session, "application not found: "
