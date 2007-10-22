@@ -56,12 +56,7 @@ public class OutputText extends HtmlOutputText {
 								HTML.COMMON_PASSTROUGH_ATTRIBUTES);
 			}
 
-			if (escape) {
-				writer.writeText(text, JSFAttr.VALUE_ATTR);
-			} else {
-				writer.write(text);
-			}
-
+			writer.writeText(text, JSFAttr.VALUE_ATTR);
 			if (span) {
 				writer.endElement(HTML.SPAN_ELEM);
 			}

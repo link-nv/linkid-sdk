@@ -124,6 +124,10 @@
 			<from-outcome>edittext</from-outcome>
 			<to-view-id>/usage-agreement-text-edit.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>viewtext</from-outcome>
+			<to-view-id>/usage-agreement-text-view.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>

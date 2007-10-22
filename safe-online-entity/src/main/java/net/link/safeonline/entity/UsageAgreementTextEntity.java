@@ -7,8 +7,8 @@
 
 package net.link.safeonline.entity;
 
-import static net.link.safeonline.entity.UsageAgreementTextEntity.DELETE_WHERE_APPLICATION_AND_VERSION;
-import static net.link.safeonline.entity.UsageAgreementTextEntity.QUERY_WHERE_APPLICATION_AND_VERSION;
+import static net.link.safeonline.entity.UsageAgreementTextEntity.QUERY_WHERE_OWNER_AND_VERSION;
+import static net.link.safeonline.entity.UsageAgreementTextEntity.DELETE_WHERE_OWNER_AND_VERSION;
 
 import java.io.Serializable;
 import java.util.List;
@@ -32,22 +32,22 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 @Entity
 @NamedQueries( {
-		@NamedQuery(name = QUERY_WHERE_APPLICATION_AND_VERSION, query = "SELECT usageAgreementText "
+		@NamedQuery(name = QUERY_WHERE_OWNER_AND_VERSION, query = "SELECT usageAgreementText "
 				+ "FROM UsageAgreementTextEntity AS usageAgreementText "
-				+ "WHERE usageAgreementText.pk.application = :application "
-				+ "AND usageAgreementText.pk.usageAgreementVersion = :usageAgreementVersion "
+				+ "WHERE usageAgreementText.pk.owner = :owner "
+				+ "AND usageAgreementText.pk.usageAgreementVersion = :version "
 				+ "ORDER BY usageAgreementText.pk.language DESC"),
-		@NamedQuery(name = DELETE_WHERE_APPLICATION_AND_VERSION, query = "DELETE "
+		@NamedQuery(name = DELETE_WHERE_OWNER_AND_VERSION, query = "DELETE "
 				+ "FROM UsageAgreementTextEntity AS usageAgreementText "
-				+ "WHERE usageAgreementText.pk.application = :application "
-				+ "AND usageAgreementText.pk.usageAgreementVersion = :usageAgreementVersion") })
+				+ "WHERE usageAgreementText.pk.owner = :owner "
+				+ "AND usageAgreementText.pk.usageAgreementVersion = :version") })
 public class UsageAgreementTextEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String QUERY_WHERE_APPLICATION_AND_VERSION = "uat.app.version";
+	public static final String QUERY_WHERE_OWNER_AND_VERSION = "uat.owner.version";
 
-	public static final String DELETE_WHERE_APPLICATION_AND_VERSION = "uat.del.app.version";
+	public static final String DELETE_WHERE_OWNER_AND_VERSION = "uat.del.owner.version";
 
 	private String text;
 
@@ -55,6 +55,15 @@ public class UsageAgreementTextEntity implements Serializable {
 
 	public UsageAgreementTextEntity() {
 		// empty
+	}
+
+	public UsageAgreementTextEntity(
+			GlobalUsageAgreementEntity globalUsageAgreement, String text,
+			String language) {
+		this.text = text;
+		this.pk = new UsageAgreementTextPK(
+				GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT,
+				globalUsageAgreement.getUsageAgreementVersion(), language);
 	}
 
 	public UsageAgreementTextEntity(UsageAgreementEntity usageAgreement,
@@ -99,8 +108,8 @@ public class UsageAgreementTextEntity implements Serializable {
 	}
 
 	@Transient
-	public String getApplication() {
-		return this.pk.getApplication();
+	public String getOwner() {
+		return this.pk.getOwner();
 	}
 
 	@Override
@@ -130,15 +139,15 @@ public class UsageAgreementTextEntity implements Serializable {
 	}
 
 	public interface QueryInterface {
-		@QueryMethod(QUERY_WHERE_APPLICATION_AND_VERSION)
+		@QueryMethod(QUERY_WHERE_OWNER_AND_VERSION)
 		List<UsageAgreementTextEntity> listUsageAgreementTexts(
-				@QueryParam("application")
-				String applicationName, @QueryParam("usageAgreementVersion")
+				@QueryParam("owner")
+				String ownerName, @QueryParam("version")
 				Long usageAgreementVersion);
 
-		@UpdateMethod(DELETE_WHERE_APPLICATION_AND_VERSION)
-		void removeUsageAgreementTexts(@QueryParam("application")
-		String applicationName, @QueryParam("usageAgreementVersion")
+		@UpdateMethod(DELETE_WHERE_OWNER_AND_VERSION)
+		void removeUsageAgreementTexts(@QueryParam("owner")
+		String ownerName, @QueryParam("version")
 		Long usageAgreementVersion);
 	}
 

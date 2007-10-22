@@ -32,6 +32,9 @@ public class SubjectEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String userId;
+
+	private Long confirmedUsageAgreementVersion;
+
 	public static final String QUERY_ALL = "sub.all";
 
 	public SubjectEntity() {
@@ -40,6 +43,7 @@ public class SubjectEntity implements Serializable {
 
 	public SubjectEntity(String userId) {
 		this.userId = userId;
+		this.confirmedUsageAgreementVersion = GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION;
 	}
 
 	@Id
@@ -49,6 +53,15 @@ public class SubjectEntity implements Serializable {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public Long getConfirmedUsageAgreementVersion() {
+		return confirmedUsageAgreementVersion;
+	}
+
+	public void setConfirmedUsageAgreementVersion(
+			Long confirmedUsageAgreementVersion) {
+		this.confirmedUsageAgreementVersion = confirmedUsageAgreementVersion;
 	}
 
 	@Override

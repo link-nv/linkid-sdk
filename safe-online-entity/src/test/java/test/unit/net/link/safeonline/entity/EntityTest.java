@@ -41,6 +41,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.StatisticDataPointEntity;
@@ -113,7 +114,8 @@ public class EntityTest {
 					AuditAuditEntity.class, HelpdeskContextEntity.class,
 					CompoundedAttributeTypeMemberEntity.class,
 					AccessAuditEntity.class, UsageAgreementEntity.class,
-					UsageAgreementTextEntity.class);
+					UsageAgreementTextEntity.class,
+					GlobalUsageAgreementEntity.class);
 		} catch (Exception e) {
 			LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
 			throw new RuntimeException("JPA annotations incorrect: "
@@ -281,6 +283,54 @@ public class EntityTest {
 		assertNotNull(entityManager.find(SubjectEntity.class, "test-login"));
 		assertNotNull(entityManager.find(ApplicationEntity.class,
 				"test-application"));
+	}
+
+	@Test
+	public void testAddGlobalUsageAgreement() throws Exception {
+		// setup
+		GlobalUsageAgreementEntity globalUsageAgreementv1 = new GlobalUsageAgreementEntity(
+				1L);
+		GlobalUsageAgreementEntity globalUsageAgreementv2 = new GlobalUsageAgreementEntity(
+				2L);
+		UsageAgreementTextEntity usageAgreementTextv1En = new UsageAgreementTextEntity(
+				globalUsageAgreementv1, "This is a usage agreement.",
+				Locale.ENGLISH.getLanguage());
+		UsageAgreementTextEntity usageAgreementTextv1Fr = new UsageAgreementTextEntity(
+				globalUsageAgreementv1, "Dit is een gebruikers overeenkomst.",
+				"nl");
+
+		// operate
+		EntityManager entityManager = this.entityTestManager.getEntityManager();
+		entityManager.persist(globalUsageAgreementv1);
+		entityManager.persist(globalUsageAgreementv2);
+		entityManager.persist(usageAgreementTextv1En);
+		entityManager.persist(usageAgreementTextv1Fr);
+
+		// verify
+		entityManager = this.entityTestManager.refreshEntityManager();
+		GlobalUsageAgreementEntity resultAgreementv1 = entityManager.find(
+				GlobalUsageAgreementEntity.class, 1L);
+		assertNotNull(resultAgreementv1);
+		GlobalUsageAgreementEntity resultAgreementv2 = entityManager.find(
+				GlobalUsageAgreementEntity.class, 2L);
+		assertNotNull(resultAgreementv2);
+		assertFalse(resultAgreementv1.equals(resultAgreementv2));
+
+		UsageAgreementTextEntity resultAgreementTextv1En = entityManager.find(
+				UsageAgreementTextEntity.class, new UsageAgreementTextPK(
+						GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT,
+						globalUsageAgreementv1.getUsageAgreementVersion(),
+						Locale.ENGLISH.getLanguage()));
+		assertNotNull(resultAgreementTextv1En);
+		UsageAgreementTextEntity resultAgreementTextv1Nl = entityManager
+				.find(
+						UsageAgreementTextEntity.class,
+						new UsageAgreementTextPK(
+								GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT,
+								globalUsageAgreementv1
+										.getUsageAgreementVersion(), "nl"));
+		assertNotNull(resultAgreementTextv1Nl);
+
 	}
 
 	@Test

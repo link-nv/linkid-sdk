@@ -130,7 +130,7 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
 	public void removeUsageAgreementText(
 			UsageAgreementTextEntity usageAgreementText) {
 		UsageAgreementPK usageAgreementPK = new UsageAgreementPK(
-				usageAgreementText.getApplication(), usageAgreementText
+				usageAgreementText.getOwner(), usageAgreementText
 						.getUsageAgreementVersion());
 		UsageAgreementEntity usageAgreement = this.entityManager.find(
 				UsageAgreementEntity.class, usageAgreementPK);

@@ -348,6 +348,7 @@ public class UsageAgreementBean implements UsageAgreement {
 			return null;
 		}
 		this.currentUsageAgreementsTextsFactory();
+		this.draftUsageAgreementsTextsFactory();
 		return "success";
 	}
 
@@ -369,6 +370,7 @@ public class UsageAgreementBean implements UsageAgreement {
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
+		this.currentUsageAgreementsTextsFactory();
 		this.draftUsageAgreementsTextsFactory();
 		return "success";
 	}
