@@ -111,7 +111,7 @@ public class StatisticEntity implements Serializable {
 	}
 
 	public Date getCreationTime() {
-		return creationTime;
+		return this.creationTime;
 	}
 
 	public void setCreationTime(Date creationTime) {
@@ -120,7 +120,7 @@ public class StatisticEntity implements Serializable {
 
 	@OneToMany(mappedBy = "statistic")
 	public List<StatisticDataPointEntity> getStatisticDataPoints() {
-		return statisticDataPoints;
+		return this.statisticDataPoints;
 	}
 
 	public void setStatisticDataPoints(
@@ -131,7 +131,7 @@ public class StatisticEntity implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "application")
 	public ApplicationEntity getApplication() {
-		return application;
+		return this.application;
 	}
 
 	public void setApplication(ApplicationEntity application) {
@@ -139,7 +139,7 @@ public class StatisticEntity implements Serializable {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -147,7 +147,7 @@ public class StatisticEntity implements Serializable {
 	}
 
 	public String getDomain() {
-		return domain;
+		return this.domain;
 	}
 
 	public void setDomain(String domain) {

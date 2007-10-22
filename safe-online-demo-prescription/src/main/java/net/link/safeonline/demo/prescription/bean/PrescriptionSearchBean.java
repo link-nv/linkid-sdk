@@ -18,8 +18,8 @@ import net.link.safeonline.demo.prescription.UserStatus;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
-import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.Attribute;
+import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -29,7 +29,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -42,9 +41,6 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
 	@Logger
 	private Log log;
 
-	@In(create = true)
-	FacesMessages facesMessages;
-
 	@In("name")
 	@Out(scope = ScopeType.SESSION)
 	private String name;
@@ -55,7 +51,7 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
 
 	@RolesAllowed(PrescriptionConstants.ADMIN_ROLE)
 	public String search() {
-		log.debug("search: " + this.name);
+		this.log.debug("search: " + this.name);
 
 		this.userStatus = new UserStatus();
 
@@ -64,11 +60,11 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean
 		try {
 			userId = mappingClient.getUserId(this.name);
 		} catch (SubjectNotFoundException e) {
-			log.debug("subject not found: #0", this.name);
+			this.log.debug("subject not found: #0", this.name);
 			this.facesMessages.add("subject not found");
 			return null;
 		} catch (RequestDeniedException e) {
-			log.debug("request denied");
+			this.log.debug("request denied");
 			this.facesMessages.add("request denied");
 			return null;
 		}

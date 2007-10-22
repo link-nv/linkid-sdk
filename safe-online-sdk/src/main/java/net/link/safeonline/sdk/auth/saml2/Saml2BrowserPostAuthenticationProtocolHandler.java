@@ -124,13 +124,13 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 
 	private Challenge<String> challenge;
 
-	public void init(String authnServiceUrl, String applicationName,
-			KeyPair applicationKeyPair, Map<String, String> configParams) {
+	public void init(String inAuthnServiceUrl, String inApplicationName,
+			KeyPair inApplicationKeyPair, Map<String, String> inConfigParams) {
 		LOG.debug("init");
-		this.authnServiceUrl = authnServiceUrl + "/entry";
-		this.applicationName = applicationName;
-		this.applicationKeyPair = applicationKeyPair;
-		this.configParams = configParams;
+		this.authnServiceUrl = inAuthnServiceUrl + "/entry";
+		this.applicationName = inApplicationName;
+		this.applicationKeyPair = inApplicationKeyPair;
+		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
 	}
 

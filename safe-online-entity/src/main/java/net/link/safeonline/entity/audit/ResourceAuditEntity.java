@@ -109,7 +109,7 @@ public class ResourceAuditEntity implements Serializable {
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	public Date getEventDate() {
-		return eventDate;
+		return this.eventDate;
 	}
 
 	public void setEventDate(Date eventDate) {
@@ -144,7 +144,7 @@ public class ResourceAuditEntity implements Serializable {
 	}
 
 	public String getSourceComponent() {
-		return sourceComponent;
+		return this.sourceComponent;
 	}
 
 	public void setSourceComponent(String sourceComponent) {

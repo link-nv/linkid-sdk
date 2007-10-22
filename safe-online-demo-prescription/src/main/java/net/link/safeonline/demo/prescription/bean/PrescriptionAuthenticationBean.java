@@ -32,7 +32,7 @@ public class PrescriptionAuthenticationBean implements
 	private FacesMessages facesMessages;
 
 	public String authenticate(String target) {
-		log.debug("authentication for target: #0", target);
+		this.log.debug("authentication for target: #0", target);
 		String result = SafeOnlineLoginUtils.login(this.facesMessages,
 				this.log, target);
 		return result;

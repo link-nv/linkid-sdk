@@ -50,11 +50,11 @@ public class MandateLoginModule implements LoginModule {
 
 	private AuthorizationService authorizationService;
 
-	public void initialize(Subject subject, CallbackHandler callbackHandler,
+	public void initialize(Subject inSubject, CallbackHandler inCallbackHandler,
 			Map<String, ?> sharedState, Map<String, ?> options) {
 		LOG.debug("initialize");
-		this.subject = subject;
-		this.callbackHandler = callbackHandler;
+		this.subject = inSubject;
+		this.callbackHandler = inCallbackHandler;
 
 		this.authorizationService = AuthorizationServiceFactory.newInstance();
 	}

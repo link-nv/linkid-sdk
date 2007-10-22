@@ -21,7 +21,6 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Context;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -40,18 +39,15 @@ public class TicketLogonBean extends AbstractTicketDataClientBean implements
 	@In
 	Context sessionContext;
 
-	@In(create = true)
-	FacesMessages facesMessages;
-
 	public String login() {
-		log.debug("login");
+		this.log.debug("login");
 
 		return SafeOnlineLoginUtils.login(this.facesMessages, this.log,
 				"overview.seam");
 	}
 
 	public String logout() {
-		log.debug("logout");
+		this.log.debug("logout");
 		this.sessionContext.set("username", null);
 		Seam.invalidateSession();
 		return "logout-success";

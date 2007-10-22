@@ -63,7 +63,7 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements
 	@Factory("mandates")
 	@RolesAllowed(MandateConstants.ADMIN_ROLE)
 	public void mandatesFactory() {
-		log.debug("mandates factory for user: #0", this.mandateUser);
+		this.log.debug("mandates factory for user: #0", this.mandateUser);
 
 		NameIdentifierMappingClient mappingClient = super.getMappingClient();
 		String mandateUserId;
@@ -104,7 +104,7 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements
 	public void userMandatesFactory() {
 		Principal callerPrincipal = this.context.getCallerPrincipal();
 		String username = callerPrincipal.getName();
-		log.debug("user mandates factory for user #0", username);
+		this.log.debug("user mandates factory for user #0", username);
 
 		NameIdentifierMappingClient mappingClient = super.getMappingClient();
 		String userId;

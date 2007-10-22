@@ -66,7 +66,7 @@ public class PaymentServiceEntryBean implements PaymentServiceEntry {
 	}
 
 	public void init() {
-		log.debug("init; username #0; recipient #1; amount #2", this.user,
+		this.log.debug("init; username #0; recipient #1; amount #2", this.user,
 				this.recipient, this.amount);
 		if (null == this.user) {
 			this.facesMessages.add("user request parameter is null");

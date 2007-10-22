@@ -290,7 +290,7 @@ public class UsageAgreementBean implements UsageAgreement {
 		try {
 			this.selectedUsageAgreementText = this.usageAgreementService
 					.createDraftUsageAgreementText(this.selectedApplication
-							.getName(), language, "");
+							.getName(), this.language, "");
 		} catch (ApplicationNotFoundException e) {
 			LOG.debug("application not found.");
 			this.facesMessages.addFromResourceBundle(

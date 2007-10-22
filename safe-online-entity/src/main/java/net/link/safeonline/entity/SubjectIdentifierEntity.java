@@ -65,7 +65,7 @@ public class SubjectIdentifierEntity implements Serializable {
 
 	@EmbeddedId
 	public SubjectIdentifierPK getPk() {
-		return pk;
+		return this.pk;
 	}
 
 	public void setPk(SubjectIdentifierPK pk) {

@@ -63,7 +63,7 @@ public class PaymentEntity implements Serializable {
 
 	@ManyToOne
 	public UserEntity getOwner() {
-		return owner;
+		return this.owner;
 	}
 
 	public void setOwner(UserEntity owner) {
@@ -81,7 +81,7 @@ public class PaymentEntity implements Serializable {
 	@Id
 	@GeneratedValue
 	public long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(long id) {

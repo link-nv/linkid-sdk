@@ -190,8 +190,8 @@ public class LoginServlet extends HttpServlet {
 				session, response);
 	}
 
-	private void redirectToRolesPage(HttpSession session,
-			HttpServletResponse response) throws IOException {
+	private void redirectToRolesPage(@SuppressWarnings("unused")
+	HttpSession session, HttpServletResponse response) throws IOException {
 		response.sendRedirect("./roles.seam");
 	}
 

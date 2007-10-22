@@ -111,7 +111,7 @@ public class TrustPointEntity implements Serializable {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "domain", insertable = false, updatable = false)
 	public TrustDomainEntity getTrustDomain() {
-		return trustDomain;
+		return this.trustDomain;
 	}
 
 	public void setTrustDomain(TrustDomainEntity trustDomain) {
@@ -121,7 +121,7 @@ public class TrustPointEntity implements Serializable {
 	@Transient
 	public X509Certificate getCertificate() {
 		if (null != this.certificate) {
-			return certificate;
+			return this.certificate;
 		}
 		try {
 			CertificateFactory certificateFactory = CertificateFactory

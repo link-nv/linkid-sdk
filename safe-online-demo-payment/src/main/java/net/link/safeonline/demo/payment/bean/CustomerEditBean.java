@@ -12,23 +12,22 @@ import java.net.ConnectException;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateful;
 
+import net.link.safeonline.demo.payment.CustomerEdit;
+import net.link.safeonline.demo.payment.CustomerStatus;
+import net.link.safeonline.demo.payment.PaymentConstants;
+import net.link.safeonline.model.demo.DemoConstants;
+import net.link.safeonline.sdk.exception.AttributeNotFoundException;
+import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.data.DataClient;
+
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
-
-import net.link.safeonline.demo.payment.PaymentConstants;
-import net.link.safeonline.demo.payment.CustomerEdit;
-import net.link.safeonline.demo.payment.CustomerStatus;
-import net.link.safeonline.model.demo.DemoConstants;
-import net.link.safeonline.sdk.exception.AttributeNotFoundException;
-import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.exception.SubjectNotFoundException;
-import net.link.safeonline.sdk.ws.data.DataClient;
 
 @Stateful
 @Name("customerEdit")
@@ -39,9 +38,6 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements
 
 	@Logger
 	private Log log;
-
-	@In(create = true)
-	FacesMessages facesMessages;
 
 	@In("name")
 	@Out("name")
@@ -54,7 +50,7 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements
 
 	@RolesAllowed(PaymentConstants.ADMIN_ROLE)
 	public String persist() {
-		log
+		this.log
 				.debug(
 						"---------------------------------------- save #0 -----------------------------",
 						this.name);
@@ -88,11 +84,12 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements
 		DataClient dataClient = getDataClient();
 		if (null == dataClient.getAttributeValue(this.name, attributeName,
 				attributeValue.getClass())) {
-			log.debug("create attribute #0 for #1", attributeName, this.name);
+			this.log.debug("create attribute #0 for #1", attributeName,
+					this.name);
 			dataClient
 					.createAttribute(this.name, attributeName, attributeValue);
 		} else {
-			log.debug("set attribute #0 for #1", attributeName, this.name);
+			this.log.debug("set attribute #0 for #1", attributeName, this.name);
 			dataClient.setAttributeValue(this.name, attributeName,
 					attributeValue);
 		}

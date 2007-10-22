@@ -133,7 +133,7 @@ public class SubscriptionEntity implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	public SubscriptionOwnerType getSubscriptionOwnerType() {
-		return subscriptionOwnerType;
+		return this.subscriptionOwnerType;
 	}
 
 	public void setSubscriptionOwnerType(
@@ -159,7 +159,7 @@ public class SubscriptionEntity implements Serializable {
 	}
 
 	public Date getLastLogin() {
-		return lastLogin;
+		return this.lastLogin;
 	}
 
 	public void setLastLogin(Date lastLogin) {

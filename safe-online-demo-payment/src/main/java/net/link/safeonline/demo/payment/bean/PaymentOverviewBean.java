@@ -67,7 +67,7 @@ public class PaymentOverviewBean extends AbstractPaymentDataClientBean
 		Principal principal = this.sessionContext.getCallerPrincipal();
 		String userId = principal.getName();
 		String username = getUsername(userId);
-		log.debug("username #0", username);
+		this.log.debug("username #0", username);
 		return username;
 	}
 }

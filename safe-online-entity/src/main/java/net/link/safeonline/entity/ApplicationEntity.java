@@ -107,7 +107,7 @@ public class ApplicationEntity implements Serializable {
 	private boolean identifierMappingAllowed;
 
 	public boolean isDeviceRestriction() {
-		return deviceRestriction;
+		return this.deviceRestriction;
 	}
 
 	public void setDeviceRestriction(boolean deviceRestriction) {
@@ -124,95 +124,6 @@ public class ApplicationEntity implements Serializable {
 	}
 
 	public ApplicationEntity(String name, String friendlyName,
-			ApplicationOwnerEntity applicationOwner) {
-		this(name, applicationOwner, null, null, true, true, null, 0, 0);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, String description) {
-		this(name, applicationOwner, description, null, true, true, null, 0, 0);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, String description,
-			X509Certificate certificate) {
-		this(name, applicationOwner, description, null, true, true,
-				certificate, 0, 0);
-	}
-
-	public ApplicationEntity(String name, String friendlyName,
-			ApplicationOwnerEntity applicationOwner, String description,
-			X509Certificate certificate) {
-		this(name, friendlyName, applicationOwner, description, null, true,
-				true, certificate, 0, 0);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner,
-			boolean allowUserSubscription) {
-		this(name, applicationOwner, null, null, true, true);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner,
-			boolean allowUserSubscription, boolean removable) {
-		this(name, null, applicationOwner, null, null, allowUserSubscription,
-				removable, null, 0, 0);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, String description,
-			boolean allowUserSubscription, boolean removable) {
-		this(name, applicationOwner, description, null, allowUserSubscription,
-				removable, null, 0, 0);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, String description,
-			boolean allowUserSubscription, boolean removable,
-			X509Certificate certificate, long identityVersion,
-			long usageAgreementVersion) {
-		this(name, null, applicationOwner, description, null,
-				allowUserSubscription, removable, certificate, identityVersion,
-				usageAgreementVersion, false);
-	}
-
-	public ApplicationEntity(String name, String friendlyName,
-			ApplicationOwnerEntity applicationOwner, String description,
-			boolean allowUserSubscription, boolean removable,
-			X509Certificate certificate, long identityVersion,
-			long usageAgreementVersion) {
-		this(name, friendlyName, applicationOwner, description, null,
-				allowUserSubscription, removable, certificate, identityVersion,
-				usageAgreementVersion, false);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, URL applicationUrl) {
-		this(name, applicationOwner, applicationUrl, true);
-	}
-
-	public ApplicationEntity(String name, String friendlyName,
-			ApplicationOwnerEntity applicationOwner, URL applicationUrl) {
-		this(name, applicationOwner, null, applicationUrl, true, true, null, 0,
-				0);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl) {
-		this(name, applicationOwner, description, applicationUrl, true, true,
-				null, 0, 0);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, X509Certificate certificate) {
-		this(name, applicationOwner, description, applicationUrl, true, true,
-				certificate, 0, 0);
-	}
-
-	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
 			URL applicationUrl, X509Certificate certificate) {
 		this(name, friendlyName, applicationOwner, description, applicationUrl,
@@ -222,7 +133,8 @@ public class ApplicationEntity implements Serializable {
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, URL applicationUrl,
 			boolean allowUserSubscription) {
-		this(name, applicationOwner, applicationUrl, true, true);
+		this(name, applicationOwner, applicationUrl, allowUserSubscription,
+				true);
 	}
 
 	public ApplicationEntity(String name,
@@ -230,23 +142,6 @@ public class ApplicationEntity implements Serializable {
 			boolean allowUserSubscription, boolean removable) {
 		this(name, null, applicationOwner, null, applicationUrl,
 				allowUserSubscription, removable, null, 0, 0);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, boolean allowUserSubscription, boolean removable) {
-		this(name, applicationOwner, description, applicationUrl,
-				allowUserSubscription, removable, null, 0, 0);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, boolean allowUserSubscription,
-			boolean removable, X509Certificate certificate,
-			long identityVersion, long usageAgreementVersion) {
-		this(name, null, applicationOwner, description, applicationUrl,
-				allowUserSubscription, removable, certificate, identityVersion,
-				usageAgreementVersion, false);
 	}
 
 	public ApplicationEntity(String name, String friendlyName,
@@ -274,6 +169,7 @@ public class ApplicationEntity implements Serializable {
 		this.removable = removable;
 		this.deviceRestriction = deviceRestriction;
 		this.currentApplicationIdentity = identityVersion;
+		this.currentApplicationUsageAgreement = usageAgreementVersion;
 		if (null != certificate) {
 			try {
 				this.encodedCert = certificate.getEncoded();
@@ -328,7 +224,7 @@ public class ApplicationEntity implements Serializable {
 	 */
 	public URL getApplicationUrl() {
 
-		return applicationUrl;
+		return this.applicationUrl;
 	}
 
 	/**
@@ -472,7 +368,7 @@ public class ApplicationEntity implements Serializable {
 	@Transient
 	public X509Certificate getCertificate() {
 		if (null != this.certificate) {
-			return certificate;
+			return this.certificate;
 		}
 		if (null == this.encodedCert) {
 			return null;
@@ -505,8 +401,8 @@ public class ApplicationEntity implements Serializable {
 			throw new EJBException("certificate encoding error");
 		}
 		this.setEncodedCert(encodedCertificate);
-		String certificateIdentifier = toCertificateIdentifier(encodedCertificate);
-		this.setCertificateIdentifier(certificateIdentifier);
+		this
+				.setCertificateIdentifier(toCertificateIdentifier(encodedCertificate));
 	}
 
 	/**

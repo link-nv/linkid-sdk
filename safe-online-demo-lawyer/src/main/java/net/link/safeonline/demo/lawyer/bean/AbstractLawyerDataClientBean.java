@@ -72,7 +72,7 @@ public abstract class AbstractLawyerDataClientBean implements
 
 	@PostConstruct
 	public void postConstructCallback() {
-		log.debug("postConstruct");
+		this.log.debug("postConstruct");
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		this.wsHostName = externalContext.getInitParameter("WsHostName");
@@ -86,7 +86,7 @@ public abstract class AbstractLawyerDataClientBean implements
 
 	@PostActivate
 	public void postActivateCallback() {
-		log.debug("postActivate");
+		this.log.debug("postActivate");
 		String location = this.wsHostName + ":" + this.wsHostPort;
 		this.dataClient = new DataClientImpl(location, this.certificate,
 				this.privateKey);
@@ -98,7 +98,7 @@ public abstract class AbstractLawyerDataClientBean implements
 
 	@PrePassivate
 	public void prePassivateCallback() {
-		log.debug("prePassivate");
+		this.log.debug("prePassivate");
 		this.dataClient = null;
 		this.attributeClient = null;
 	}
@@ -106,7 +106,7 @@ public abstract class AbstractLawyerDataClientBean implements
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		log.debug("destroy");
+		this.log.debug("destroy");
 		this.dataClient = null;
 		this.attributeClient = null;
 		this.wsHostName = null;
@@ -152,16 +152,16 @@ public abstract class AbstractLawyerDataClientBean implements
 		Attribute<Boolean> suspendedAttribute;
 		Attribute<String> barAttribute;
 		Attribute<Boolean> barAdminAttribute;
-		DataClient dataClient = getDataClient();
+		DataClient currentDataClient = getDataClient();
 		try {
-			lawyerAttribute = dataClient.getAttributeValue(userId,
+			lawyerAttribute = currentDataClient.getAttributeValue(userId,
 					DemoConstants.LAWYER_ATTRIBUTE_NAME, Boolean.class);
-			suspendedAttribute = dataClient.getAttributeValue(userId,
+			suspendedAttribute = currentDataClient.getAttributeValue(userId,
 					DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME,
 					Boolean.class);
-			barAttribute = dataClient.getAttributeValue(userId,
+			barAttribute = currentDataClient.getAttributeValue(userId,
 					DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, String.class);
-			barAdminAttribute = dataClient.getAttributeValue(userId,
+			barAdminAttribute = currentDataClient.getAttributeValue(userId,
 					DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
 					Boolean.class);
 		} catch (ConnectException e) {
@@ -199,9 +199,9 @@ public abstract class AbstractLawyerDataClientBean implements
 	 */
 	protected String getUsername(String userId) {
 		String username = null;
-		AttributeClient attributeClient = getAttributeClient();
+		AttributeClient currentAttributeClient = getAttributeClient();
 		try {
-			username = attributeClient.getAttributeValue(userId,
+			username = currentAttributeClient.getAttributeValue(userId,
 					DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());
@@ -214,7 +214,7 @@ public abstract class AbstractLawyerDataClientBean implements
 			return null;
 		}
 
-		log.debug("username = " + username);
+		this.log.debug("username = " + username);
 		return username;
 	}
 }

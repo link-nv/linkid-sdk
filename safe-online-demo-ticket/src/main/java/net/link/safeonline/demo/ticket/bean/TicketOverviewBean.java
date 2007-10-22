@@ -59,14 +59,14 @@ public class TicketOverviewBean extends AbstractTicketDataClientBean implements
 			this.entityManager.persist(user);
 		}
 		this.ticketList = user.getTickets();
-		log.debug("Ticket List: " + this.ticketList.size());
+		this.log.debug("Ticket List: " + this.ticketList.size());
 	}
 
 	private String getUsername() {
 		Principal principal = this.sessionContext.getCallerPrincipal();
 		String userId = principal.getName();
 		String username = getUsername(userId);
-		log.debug("username #0", username);
+		this.log.debug("username #0", username);
 		return username;
 	}
 }

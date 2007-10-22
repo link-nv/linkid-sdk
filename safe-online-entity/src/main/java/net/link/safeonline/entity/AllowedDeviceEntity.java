@@ -102,7 +102,7 @@ public class AllowedDeviceEntity implements Serializable {
 	}
 
 	public int getWeight() {
-		return weight;
+		return this.weight;
 	}
 
 	public void setWeight(int weight) {

@@ -18,7 +18,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Context;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -33,18 +32,15 @@ public class MandateLogonBean extends AbstractMandateDataClientBean implements
 	@In
 	Context sessionContext;
 
-	@In(create = true)
-	FacesMessages facesMessages;
-
 	public String login() {
-		log.debug("login");
+		this.log.debug("login");
 		String result = SafeOnlineLoginUtils.login(this.facesMessages,
 				this.log, "login");
 		return result;
 	}
 
 	public String logout() {
-		log.debug("logout");
+		this.log.debug("logout");
 		this.sessionContext.set("username", null);
 		Seam.invalidateSession();
 		return "logout-success";

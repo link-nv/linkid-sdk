@@ -37,7 +37,7 @@ public class UsageAgreementTextPK implements Serializable {
 	}
 
 	public String getApplication() {
-		return application;
+		return this.application;
 	}
 
 	public void setApplication(String application) {
@@ -45,7 +45,7 @@ public class UsageAgreementTextPK implements Serializable {
 	}
 
 	public Long getUsageAgreementVersion() {
-		return usageAgreementVersion;
+		return this.usageAgreementVersion;
 	}
 
 	public void setUsageAgreementVersion(Long usageAgreementVersion) {

@@ -82,7 +82,7 @@ public class PrescriptionPatientBean implements PrescriptionPatient {
 
 	@RolesAllowed(PrescriptionConstants.PATIENT_ROLE)
 	public String view() {
-		log.debug("view: #0", this.selectedPrescription.getId());
+		this.log.debug("view: #0", this.selectedPrescription.getId());
 		return "view";
 	}
 }

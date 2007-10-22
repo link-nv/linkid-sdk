@@ -38,7 +38,7 @@ public class AttributeBean {
 	private PrivateKey privateKey;
 
 	public String getSubjectLogin() {
-		return subjectLogin;
+		return this.subjectLogin;
 	}
 
 	public void setSubjectLogin(String subjectLogin) {

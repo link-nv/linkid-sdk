@@ -119,7 +119,7 @@ public class AuditAuditEntity implements Serializable {
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	public Date getEventDate() {
-		return eventDate;
+		return this.eventDate;
 	}
 
 	public void setEventDate(Date eventDate) {

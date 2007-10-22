@@ -37,7 +37,7 @@ public class DeviceEntity implements Serializable {
 
 	@Id
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -46,7 +46,7 @@ public class DeviceEntity implements Serializable {
 
 	@OneToMany
 	public List<AttributeTypeEntity> getAttributeTypes() {
-		return attributeTypes;
+		return this.attributeTypes;
 	}
 
 	public void setAttributeTypes(List<AttributeTypeEntity> attributeTypes) {

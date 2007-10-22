@@ -89,7 +89,7 @@ public class UsageAgreementEntity implements Serializable {
 
 	@OneToMany(fetch = FetchType.EAGER)
 	public Set<UsageAgreementTextEntity> getUsageAgreementTexts() {
-		return usageAgreementTexts;
+		return this.usageAgreementTexts;
 	}
 
 	public void setUsageAgreementTexts(

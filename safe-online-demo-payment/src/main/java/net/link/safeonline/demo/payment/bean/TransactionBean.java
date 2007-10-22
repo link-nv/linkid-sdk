@@ -36,7 +36,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -64,9 +63,6 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements
 	@In(value = NEW_PAYMENT_NAME, required = false)
 	private PaymentEntity newPayment;
 
-	@In(create = true)
-	FacesMessages facesMessages;
-
 	private String getUserId() {
 		Principal principal = this.sessionContext.getCallerPrincipal();
 		return principal.getName();
@@ -74,13 +70,13 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements
 
 	private String getUsername() {
 		String username = getUsername(getUserId());
-		log.debug("username #0", username);
+		this.log.debug("username #0", username);
 		return username;
 	}
 
 	@RolesAllowed("user")
 	public String confirm() {
-		log.debug("confirm");
+		this.log.debug("confirm");
 		LOG.debug("confirm");
 		UserEntity user = this.entityManager.find(UserEntity.class, this
 				.getUsername());
@@ -107,7 +103,7 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements
 	@Factory("visas")
 	@RolesAllowed("user")
 	public List<SelectItem> visasFactory() {
-		log.debug("visas factory");
+		this.log.debug("visas factory");
 		String userId = getUserId();
 		String[] values;
 		try {
@@ -116,17 +112,17 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements
 					String[].class);
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found: " + e.getMessage();
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.add(msg);
 			return new LinkedList<SelectItem>();
 		} catch (RequestDeniedException e) {
 			String msg = "request denied";
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.add(msg);
 			return new LinkedList<SelectItem>();
 		} catch (ConnectException e) {
 			String msg = "Connection error. Check your SSL setup.";
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.add(msg);
 			return new LinkedList<SelectItem>();
 		}

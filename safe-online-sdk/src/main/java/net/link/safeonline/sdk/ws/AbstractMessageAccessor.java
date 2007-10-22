@@ -92,7 +92,7 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
 	@SuppressWarnings("unchecked")
 	public Map<String, List<String>> getHeaders() {
 
-		return (Map<String, List<String>>) responseContext
+		return (Map<String, List<String>>) this.responseContext
 				.get(MessageContext.HTTP_RESPONSE_HEADERS);
 	}
 }

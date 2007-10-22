@@ -59,7 +59,7 @@ public class MyTestEntity implements Serializable {
 
 	@Id
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {

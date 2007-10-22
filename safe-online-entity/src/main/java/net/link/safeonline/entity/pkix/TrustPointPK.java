@@ -14,7 +14,6 @@ import java.security.cert.X509Certificate;
 import javax.ejb.EJBException;
 import javax.persistence.Embeddable;
 
-
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -46,17 +45,16 @@ public class TrustPointPK implements Serializable {
 
 	public TrustPointPK(TrustDomainEntity trustDomain,
 			X509Certificate certificate) {
-		String subjectName = getSubjectName(certificate);
-		String keyId = getSubjectKeyId(certificate);
+		String newSubjectName = getSubjectName(certificate);
+		String newKeyId = getSubjectKeyId(certificate);
 
 		this.domain = trustDomain.getId();
-		this.subjectName = subjectName;
-		this.keyId = keyId;
+		this.subjectName = newSubjectName;
+		this.keyId = newKeyId;
 	}
 
 	private String getSubjectName(X509Certificate certificate) {
-		String subjectName = certificate.getSubjectX500Principal().toString();
-		return subjectName;
+		return certificate.getSubjectX500Principal().toString();
 	}
 
 	public static String getSubjectKeyId(X509Certificate certificate) {

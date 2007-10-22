@@ -201,9 +201,10 @@ public class DemoStartableBean extends AbstractInitBean {
 								DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true,
 								false) }));
 
-		List<String> devices = new LinkedList<String>();
-		devices.add(BeIdConstants.BEID_DEVICE_ID);
-		this.allowedDevices.put(DEMO_TICKET_APPLICATION_NAME, devices);
+		List<String> tempAllowedDevices = new LinkedList<String>();
+		tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
+		this.allowedDevices.put(DEMO_TICKET_APPLICATION_NAME,
+				tempAllowedDevices);
 
 		/*
 		 * Application usage agreements

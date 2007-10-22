@@ -196,6 +196,7 @@ public class AuthnRequestFactory {
 
 	@SuppressWarnings("unchecked")
 	private static <Type extends SAMLObject> Type buildXMLObject(
+			@SuppressWarnings("unused")
 			Class<Type> clazz, QName objectQName) {
 		XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory()
 				.getBuilder(objectQName);

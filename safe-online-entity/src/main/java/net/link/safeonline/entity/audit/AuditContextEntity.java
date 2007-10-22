@@ -73,7 +73,7 @@ public class AuditContextEntity implements Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreationTime() {
-		return creationTime;
+		return this.creationTime;
 	}
 
 	public void setCreationTime(Date time) {

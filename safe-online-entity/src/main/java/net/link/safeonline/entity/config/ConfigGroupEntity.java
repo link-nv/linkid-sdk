@@ -51,7 +51,7 @@ public class ConfigGroupEntity implements Serializable {
 
 	@OneToMany(mappedBy = "configGroup", fetch = FetchType.EAGER)
 	public List<ConfigItemEntity> getConfigItems() {
-		return configItems;
+		return this.configItems;
 	}
 
 	public void setConfigItems(List<ConfigItemEntity> configItems) {
@@ -60,7 +60,7 @@ public class ConfigGroupEntity implements Serializable {
 
 	@Id
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {

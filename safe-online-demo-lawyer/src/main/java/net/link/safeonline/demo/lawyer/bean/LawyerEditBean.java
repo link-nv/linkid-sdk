@@ -12,15 +12,6 @@ import java.net.ConnectException;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateful;
 
-import org.jboss.annotation.ejb.LocalBinding;
-import org.jboss.annotation.security.SecurityDomain;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
-import org.jboss.seam.core.FacesMessages;
-import org.jboss.seam.log.Log;
-
 import net.link.safeonline.demo.lawyer.LawyerConstants;
 import net.link.safeonline.demo.lawyer.LawyerEdit;
 import net.link.safeonline.demo.lawyer.LawyerStatus;
@@ -29,6 +20,14 @@ import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.DataClient;
+
+import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
+import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("lawyerEdit")
@@ -39,9 +38,6 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements
 
 	@Logger
 	private Log log;
-
-	@In(create = true)
-	FacesMessages facesMessages;
 
 	@In("name")
 	@Out("name")
@@ -54,7 +50,7 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements
 
 	@RolesAllowed(LawyerConstants.ADMIN_ROLE)
 	public String persist() {
-		log
+		this.log
 				.debug(
 						"---------------------------------------- save #0 -----------------------------",
 						this.name);
@@ -96,10 +92,11 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements
 		DataClient dataClient = getDataClient();
 		if (null == dataClient.getAttributeValue(userId, attributeName,
 				attributeValue.getClass())) {
-			log.debug("create attribute #0 for #1", attributeName, this.name);
+			this.log.debug("create attribute #0 for #1", attributeName,
+					this.name);
 			dataClient.createAttribute(userId, attributeName, attributeValue);
 		} else {
-			log.debug("set attribute #0 for #1", attributeName, this.name);
+			this.log.debug("set attribute #0 for #1", attributeName, this.name);
 			dataClient.setAttributeValue(userId, attributeName, attributeValue);
 		}
 	}

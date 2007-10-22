@@ -209,16 +209,17 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 	private static String replaceAll(String oldStr, String newStr,
 			String inString) {
 		int start;
+		String resultString = inString;
 		while (true) {
-			start = inString.indexOf(oldStr);
+			start = resultString.indexOf(oldStr);
 			if (start == -1)
 				break;
 			StringBuffer sb = new StringBuffer();
-			sb.append(inString.substring(0, start));
+			sb.append(resultString.substring(0, start));
 			sb.append(newStr);
-			sb.append(inString.substring(start + oldStr.length()));
-			inString = sb.toString();
+			sb.append(resultString.substring(start + oldStr.length()));
+			resultString = sb.toString();
 		}
-		return inString;
+		return resultString;
 	}
 }

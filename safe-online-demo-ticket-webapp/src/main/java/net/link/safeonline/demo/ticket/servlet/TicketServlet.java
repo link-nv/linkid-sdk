@@ -43,9 +43,8 @@ public class TicketServlet extends HttpServlet {
 	}
 
 	private TicketService getTicketService() {
-		TicketService ticketService = EjbUtils.getEJB(
-				TicketService.LOCAL_BINDING, TicketService.class);
-		return ticketService;
+		return EjbUtils
+				.getEJB(TicketService.LOCAL_BINDING, TicketService.class);
 	}
 
 	@Override

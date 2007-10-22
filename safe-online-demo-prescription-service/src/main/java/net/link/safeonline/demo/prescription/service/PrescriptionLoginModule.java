@@ -52,10 +52,11 @@ public class PrescriptionLoginModule implements LoginModule {
 
 	private String role;
 
-	public void initialize(Subject subject, CallbackHandler callbackHandler,
-			Map<String, ?> sharedState, Map<String, ?> options) {
-		this.subject = subject;
-		this.callbackHandler = callbackHandler;
+	public void initialize(Subject inSubject,
+			CallbackHandler inCallbackHandler, Map<String, ?> sharedState,
+			Map<String, ?> options) {
+		this.subject = inSubject;
+		this.callbackHandler = inCallbackHandler;
 	}
 
 	public boolean login() throws LoginException {
@@ -96,8 +97,8 @@ public class PrescriptionLoginModule implements LoginModule {
 		this.authenticatedPrincipal = new SimplePrincipal(sessionUsername);
 
 		// authorization
-		String role = (String) httpSession.getAttribute("role");
-		this.role = role;
+		String inRole = (String) httpSession.getAttribute("role");
+		this.role = inRole;
 
 		return true;
 	}

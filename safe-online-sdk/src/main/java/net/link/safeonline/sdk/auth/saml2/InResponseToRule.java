@@ -51,10 +51,11 @@ public class InResponseToRule implements SecurityPolicyRule {
 		if (samlMsg instanceof StatusResponseType) {
 			StatusResponseType statusResponse = (StatusResponseType) samlMsg;
 			String actualInResponseTo = statusResponse.getInResponseTo();
-			if (!expectedInResponseTo.equals(actualInResponseTo)) {
+			if (!this.expectedInResponseTo.equals(actualInResponseTo)) {
 				throw new SecurityPolicyException(
-						"Response not in response to " + expectedInResponseTo
-								+ " but to " + actualInResponseTo);
+						"Response not in response to "
+								+ this.expectedInResponseTo + " but to "
+								+ actualInResponseTo);
 			}
 		}
 	}

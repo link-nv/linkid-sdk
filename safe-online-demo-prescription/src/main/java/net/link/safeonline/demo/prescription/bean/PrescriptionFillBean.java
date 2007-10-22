@@ -85,7 +85,7 @@ public class PrescriptionFillBean extends AbstractPrescriptionDataClientBean
 
 	@RolesAllowed(PrescriptionConstants.PHARMACIST_ROLE)
 	public String view() {
-		log.debug("view: #0", this.selectedPrescription.getId());
+		this.log.debug("view: #0", this.selectedPrescription.getId());
 		return "view";
 	}
 
@@ -94,7 +94,7 @@ public class PrescriptionFillBean extends AbstractPrescriptionDataClientBean
 
 	@RolesAllowed(PrescriptionConstants.PHARMACIST_ROLE)
 	public String fill() {
-		log.debug("filling: #0", this.fillPrescription.getId());
+		this.log.debug("filling: #0", this.fillPrescription.getId());
 		this.fillPrescription.setFilled(true);
 		Principal pharmacistPrincipal = this.sessionContext
 				.getCallerPrincipal();

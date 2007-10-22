@@ -27,7 +27,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -39,9 +38,6 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
 
 	@Logger
 	private Log log;
-
-	@In(create = true)
-	FacesMessages facesMessages;
 
 	@In("userStatus")
 	@Out("userStatus")
@@ -83,10 +79,10 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean
 		DataClient dataClient = getDataClient();
 		String userId = this.userStatus.getUserId();
 		if (null == dataClient.getAttributeValue(userId, attributeName, null)) {
-			log.debug("create attribute #0 for #1", attributeName, userId);
+			this.log.debug("create attribute #0 for #1", attributeName, userId);
 			dataClient.createAttribute(userId, attributeName, attributeValue);
 		} else {
-			log.debug("set attribute #0 for #1", attributeName, userId);
+			this.log.debug("set attribute #0 for #1", attributeName, userId);
 			dataClient.setAttributeValue(userId, attributeName, attributeValue);
 		}
 	}

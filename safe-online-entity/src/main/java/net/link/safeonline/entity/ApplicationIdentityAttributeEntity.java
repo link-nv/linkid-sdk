@@ -138,7 +138,7 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
 	}
 
 	public boolean isDataMining() {
-		return dataMining;
+		return this.dataMining;
 	}
 
 	public void setDataMining(boolean dataMining) {

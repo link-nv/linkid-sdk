@@ -51,11 +51,12 @@ public class PaymentLoginModule implements LoginModule {
 
 	private String role;
 
-	public void initialize(Subject subject, CallbackHandler callbackHandler,
-			Map<String, ?> sharedState, Map<String, ?> options) {
+	public void initialize(Subject inSubject,
+			CallbackHandler inCallbackHandler, Map<String, ?> sharedState,
+			Map<String, ?> options) {
 		LOG.debug("initialize");
-		this.subject = subject;
-		this.callbackHandler = callbackHandler;
+		this.subject = inSubject;
+		this.callbackHandler = inCallbackHandler;
 	}
 
 	public boolean login() throws LoginException {
@@ -96,8 +97,8 @@ public class PaymentLoginModule implements LoginModule {
 		this.authenticatedPrincipal = new SimplePrincipal(sessionUsername);
 
 		// authorization
-		String role = (String) httpSession.getAttribute("role");
-		this.role = role;
+		String inRole = (String) httpSession.getAttribute("role");
+		this.role = inRole;
 
 		return true;
 	}

@@ -56,7 +56,7 @@ public class User implements Serializable {
 
 	@Id
 	public String getSafeOnlineUserName() {
-		return safeOnlineUserName;
+		return this.safeOnlineUserName;
 	}
 
 	public void setSafeOnlineUserName(String safeOnlineUserName) {
@@ -65,7 +65,7 @@ public class User implements Serializable {
 
 	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
 	public List<Ticket> getTickets() {
-		return tickets;
+		return this.tickets;
 	}
 
 	public void setTickets(List<Ticket> tickets) {

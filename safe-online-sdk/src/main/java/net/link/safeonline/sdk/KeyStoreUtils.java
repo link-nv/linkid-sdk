@@ -196,10 +196,11 @@ public class KeyStoreUtils {
 	public static X509Certificate generateCertificate(
 			PublicKey subjectPublicKey, String subjectDn,
 			PrivateKey issuerPrivateKey, X509Certificate issuerCert,
-			DateTime notBefore, DateTime notAfter, String signatureAlgorithm,
+			DateTime notBefore, DateTime notAfter, String inSignatureAlgorithm,
 			boolean caCert, boolean timeStampingPurpose, URI ocspUri)
 			throws IOException, InvalidKeyException, IllegalStateException,
 			NoSuchAlgorithmException, SignatureException, CertificateException {
+		String signatureAlgorithm = inSignatureAlgorithm;
 		if (null == signatureAlgorithm) {
 			signatureAlgorithm = "SHA512WithRSAEncryption";
 		}

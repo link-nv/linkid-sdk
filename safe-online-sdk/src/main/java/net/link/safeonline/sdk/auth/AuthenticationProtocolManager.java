@@ -91,7 +91,7 @@ public class AuthenticationProtocolManager {
 	public static AuthenticationProtocolHandler createAuthenticationProtocolHandler(
 			AuthenticationProtocol authenticationProtocol,
 			String authnServiceUrl, String applicationName,
-			KeyPair applicationKeyPair, Map<String, String> configParams,
+			KeyPair applicationKeyPair, Map<String, String> inConfigParams,
 			HttpServletRequest httpRequest) throws ServletException {
 		HttpSession session = httpRequest.getSession();
 		if (null != session.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE)) {
@@ -113,6 +113,7 @@ public class AuthenticationProtocolManager {
 		if (null == applicationName) {
 			throw new ServletException("application name cannot be null");
 		}
+		Map<String, String> configParams = inConfigParams;
 		if (null == configParams) {
 			/*
 			 * While optional for the authentication protocol manager, the

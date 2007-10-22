@@ -48,12 +48,12 @@ public class DemoStatTaskBean implements Task {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void perform() {
-		ApplicationEntity application = applicationDAO
+		ApplicationEntity application = this.applicationDAO
 				.findApplication(DemoStartableBean.DEMO_APPLICATION_NAME);
 		if (application == null) {
 			return;
 		}
-		StatisticEntity statistic = statisticDAO
+		StatisticEntity statistic = this.statisticDAO
 				.findStatisticByNameDomainAndApplication(STAT_NAME,
 						STAT_DOMAIN, application);
 		if (statistic == null) {
@@ -61,7 +61,7 @@ public class DemoStatTaskBean implements Task {
 					application);
 		}
 		Random generator = new Random();
-		statisticDataPointDAO.cleanStatisticDataPoints(statistic);
+		this.statisticDataPointDAO.cleanStatisticDataPoints(statistic);
 		this.statisticDataPointDAO.addStatisticDataPoint("cat A", statistic,
 				generator.nextInt(), generator.nextInt(), generator.nextInt());
 		this.statisticDataPointDAO.addStatisticDataPoint("cat B", statistic,

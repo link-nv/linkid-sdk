@@ -38,7 +38,7 @@ public class UserEntity implements Serializable {
 
 	@Id
 	public String getSafeOnlineUserName() {
-		return safeOnlineUserName;
+		return this.safeOnlineUserName;
 	}
 
 	public void setSafeOnlineUserName(String safeOnlineUserName) {

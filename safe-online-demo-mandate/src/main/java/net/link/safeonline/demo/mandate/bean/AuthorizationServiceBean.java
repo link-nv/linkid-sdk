@@ -66,7 +66,8 @@ public class AuthorizationServiceBean implements AuthorizationService {
 	}
 
 	private AttributeClient getAttributeClient() {
-		ResourceBundle config = ResourceBundle.getBundle(WEBSERVICE_CONFIG);
+		ResourceBundle config = ResourceBundle
+				.getBundle(this.WEBSERVICE_CONFIG);
 		String wsHostName = config.getString("WsHostName");
 		String wsHostPort = config.getString("WsHostPort");
 

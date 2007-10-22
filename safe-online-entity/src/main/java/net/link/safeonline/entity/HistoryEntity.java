@@ -69,7 +69,7 @@ public class HistoryEntity implements Serializable {
 
 	@ManyToOne(optional = false)
 	public SubjectEntity getSubject() {
-		return subject;
+		return this.subject;
 	}
 
 	public void setSubject(SubjectEntity subject) {
@@ -79,7 +79,7 @@ public class HistoryEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(long id) {
@@ -101,7 +101,7 @@ public class HistoryEntity implements Serializable {
 
 	@Column(name = "histevent", nullable = false)
 	public HistoryEventType getEvent() {
-		return event;
+		return this.event;
 	}
 
 	public void setEvent(HistoryEventType event) {
@@ -111,7 +111,7 @@ public class HistoryEntity implements Serializable {
 	@Column(name = "whendate", nullable = false)
 	@Temporal(value = TemporalType.TIMESTAMP)
 	public Date getWhen() {
-		return when;
+		return this.when;
 	}
 
 	public void setWhen(Date when) {
@@ -119,7 +119,7 @@ public class HistoryEntity implements Serializable {
 	}
 
 	public String getApplication() {
-		return application;
+		return this.application;
 	}
 
 	public void setApplication(String application) {
@@ -127,7 +127,7 @@ public class HistoryEntity implements Serializable {
 	}
 
 	public String getInfo() {
-		return info;
+		return this.info;
 	}
 
 	public void setInfo(String info) {

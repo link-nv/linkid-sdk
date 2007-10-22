@@ -338,11 +338,12 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		if (null == value) {
 			return null;
 		}
+		Object result = value;
 		if (value instanceof XMLGregorianCalendar) {
 			XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
-			value = calendar.toGregorianCalendar().getTime();
+			result = calendar.toGregorianCalendar().getTime();
 		}
-		return value;
+		return result;
 	}
 
 	public void createAttribute(String userId, String attributeName,

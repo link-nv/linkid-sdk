@@ -30,7 +30,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -44,9 +43,6 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean
 
 	@Resource
 	private SessionContext sessionContext;
-
-	@In(create = true)
-	FacesMessages facesMessages;
 
 	@PersistenceContext(unitName = "DemoPaymentEntityManager")
 	private EntityManager entityManager;
@@ -74,7 +70,7 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean
 
 	public String getUsername() {
 		String username = getUsername(getUserId());
-		log.debug("username #0", username);
+		this.log.debug("username #0", username);
 		return username;
 	}
 
@@ -84,14 +80,14 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean
 	}
 
 	public String authenticate() {
-		log.debug("authenticate");
+		this.log.debug("authenticate");
 		String result = SafeOnlineLoginUtils.login(this.facesMessages,
 				this.log, "cards.seam");
 		return result;
 	}
 
 	public String commit() {
-		log.debug("commit");
+		this.log.debug("commit");
 		String username = getUsername();
 		if (null == username) {
 			this.facesMessages.add("username is null. user not authenticated");
@@ -101,10 +97,11 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean
 			this.facesMessages.add("authenticated user != requested user");
 			return null;
 		}
-		UserEntity user = this.entityManager.find(UserEntity.class, username);
-		if (user == null) {
-			user = new UserEntity(username);
-			this.entityManager.persist(user);
+		UserEntity targetUser = this.entityManager.find(UserEntity.class,
+				username);
+		if (targetUser == null) {
+			targetUser = new UserEntity(username);
+			this.entityManager.persist(targetUser);
 		}
 
 		Date paymentDate = new Date();
@@ -114,7 +111,7 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean
 		newPayment.setMessage(this.message);
 		newPayment.setPaymentDate(paymentDate);
 		newPayment.setVisa(this.visa);
-		newPayment.setOwner(user);
+		newPayment.setOwner(targetUser);
 
 		this.entityManager.persist(newPayment);
 
@@ -124,7 +121,7 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean
 	}
 
 	public String done() {
-		log.debug("done. redirect to #0", this.target);
+		this.log.debug("done. redirect to #0", this.target);
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		Seam.invalidateSession();

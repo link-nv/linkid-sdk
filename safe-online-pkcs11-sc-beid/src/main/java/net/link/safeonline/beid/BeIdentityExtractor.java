@@ -23,9 +23,9 @@ public class BeIdentityExtractor implements IdentityDataExtractor {
 
 	private IdentityDataCollector identityDataCollector;
 
-	public void init(IdentityDataCollector identityDataCollector) {
+	public void init(IdentityDataCollector inIdentityDataCollector) {
 		LOG.debug("init");
-		this.identityDataCollector = identityDataCollector;
+		this.identityDataCollector = inIdentityDataCollector;
 	}
 
 	public void postPkcs11(X509Certificate authenticationCertificate) {

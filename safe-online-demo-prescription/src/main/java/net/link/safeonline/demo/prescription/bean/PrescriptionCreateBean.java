@@ -77,7 +77,7 @@ public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean
 
 	@RolesAllowed(PrescriptionConstants.CARE_PROVIDER_ROLE)
 	public String create() {
-		log.debug("create prescription for patient: #0", this.patient);
+		this.log.debug("create prescription for patient: #0", this.patient);
 		Principal careProviderPrincipal = this.sessionContext
 				.getCallerPrincipal();
 		String careProvider = careProviderPrincipal.getName();
@@ -87,7 +87,7 @@ public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean
 		PrescriptionEntity prescription = new PrescriptionEntity(this.patient,
 				patientName, careProvider, careProviderName);
 		this.entityManager.persist(prescription);
-		log.debug("prescription id: #0", prescription.getId());
+		this.log.debug("prescription id: #0", prescription.getId());
 		for (String selectedMedicine : this.selectedMedicines) {
 			PrescriptionMedicineEntity prescriptionMedicine = new PrescriptionMedicineEntity(
 					prescription, selectedMedicine);

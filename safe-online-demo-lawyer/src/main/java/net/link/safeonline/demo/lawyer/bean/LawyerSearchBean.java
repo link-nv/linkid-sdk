@@ -24,7 +24,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -37,9 +36,6 @@ public class LawyerSearchBean extends AbstractLawyerDataClientBean implements
 	@Logger
 	private Log log;
 
-	@In(create = true)
-	FacesMessages facesMessages;
-
 	@In("name")
 	@Out(scope = ScopeType.SESSION)
 	private String name;
@@ -50,7 +46,7 @@ public class LawyerSearchBean extends AbstractLawyerDataClientBean implements
 
 	@RolesAllowed(LawyerConstants.ADMIN_ROLE)
 	public String search() {
-		log.debug("search: " + this.name);
+		this.log.debug("search: " + this.name);
 		NameIdentifierMappingClient nameClient = getNameIdentifierMappingClient();
 		String userId;
 		try {
@@ -62,11 +58,11 @@ public class LawyerSearchBean extends AbstractLawyerDataClientBean implements
 			this.facesMessages.add("request denied");
 			return null;
 		}
-		LawyerStatus lawyerStatus = getLawyerStatus(userId);
-		if (null == lawyerStatus) {
+		LawyerStatus currentLawyerStatus = getLawyerStatus(userId);
+		if (null == currentLawyerStatus) {
 			return null;
 		}
-		this.lawyerStatus = lawyerStatus;
+		this.lawyerStatus = currentLawyerStatus;
 		return "success";
 	}
 }

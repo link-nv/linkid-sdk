@@ -31,7 +31,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -43,9 +42,6 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements
 
 	@Logger
 	private Log log;
-
-	@In(create = true)
-	FacesMessages facesMessages;
 
 	@SuppressWarnings("unused")
 	@DataModel
@@ -71,7 +67,7 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements
 
 	@RolesAllowed(MandateConstants.ADMIN_ROLE)
 	public String search() {
-		log.debug("search for #0", this.name);
+		this.log.debug("search for #0", this.name);
 
 		NameIdentifierMappingClient mappingClient = getMappingClient();
 		String userId;
@@ -114,7 +110,7 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements
 
 	@RolesAllowed(MandateConstants.ADMIN_ROLE)
 	public String removeMandate() {
-		log.debug("remove mandate : " + this.selectedMandate);
+		this.log.debug("remove mandate : " + this.selectedMandate);
 
 		NameIdentifierMappingClient mappingClient = getMappingClient();
 		String userId;

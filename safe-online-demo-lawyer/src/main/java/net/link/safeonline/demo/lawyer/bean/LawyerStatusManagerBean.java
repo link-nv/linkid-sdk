@@ -19,10 +19,8 @@ import net.link.safeonline.demo.lawyer.LawyerStatusManager;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -35,16 +33,13 @@ public class LawyerStatusManagerBean extends AbstractLawyerDataClientBean
 	@Logger
 	private Log log;
 
-	@In(create = true)
-	FacesMessages facesMessages;
-
 	@Resource
 	private SessionContext sessionContext;
 
 	@Factory("lawyerStatus")
 	@RolesAllowed( { LawyerConstants.USER_ROLE, LawyerConstants.ADMIN_ROLE })
 	public LawyerStatus lawyerStatusFactory() {
-		log.debug("lawyerStatusFactory");
+		this.log.debug("lawyerStatusFactory");
 		String subjectLogin = this.sessionContext.getCallerPrincipal()
 				.getName();
 		LawyerStatus lawyerStatus = getLawyerStatus(subjectLogin);

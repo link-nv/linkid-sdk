@@ -53,7 +53,7 @@ public class ConfigItemEntity implements Serializable {
 
 	@ManyToOne
 	public ConfigGroupEntity getConfigGroup() {
-		return configGroup;
+		return this.configGroup;
 	}
 
 	public void setConfigGroup(ConfigGroupEntity configGroup) {
@@ -62,7 +62,7 @@ public class ConfigItemEntity implements Serializable {
 
 	@Id
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -70,7 +70,7 @@ public class ConfigItemEntity implements Serializable {
 	}
 
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
 	public void setValue(String value) {

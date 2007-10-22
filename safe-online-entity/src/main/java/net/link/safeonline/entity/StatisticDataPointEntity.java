@@ -91,7 +91,7 @@ public class StatisticDataPointEntity implements Serializable {
 	}
 
 	public long getX() {
-		return x;
+		return this.x;
 	}
 
 	public void setX(long x) {
@@ -99,7 +99,7 @@ public class StatisticDataPointEntity implements Serializable {
 	}
 
 	public long getY() {
-		return y;
+		return this.y;
 	}
 
 	public void setY(long y) {
@@ -107,7 +107,7 @@ public class StatisticDataPointEntity implements Serializable {
 	}
 
 	public long getZ() {
-		return z;
+		return this.z;
 	}
 
 	public void setZ(long z) {
@@ -133,7 +133,7 @@ public class StatisticDataPointEntity implements Serializable {
 	}
 
 	public Date getCreationTime() {
-		return creationTime;
+		return this.creationTime;
 	}
 
 	public void setCreationTime(Date creationTime) {

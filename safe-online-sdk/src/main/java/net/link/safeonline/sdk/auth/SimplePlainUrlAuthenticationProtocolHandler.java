@@ -52,27 +52,28 @@ public class SimplePlainUrlAuthenticationProtocolHandler implements
 
 	private String applicationName;
 
-	public void init(String authnServiceUrl, String applicationName,
+	public void init(String inAuthnServiceUrl, String inApplicationName,
 			KeyPair applicationKeyPair, Map<String, String> configParams) {
 		LOG.debug("init");
-		this.authnServiceUrl = authnServiceUrl + "/entry";
-		this.applicationName = applicationName;
+		this.authnServiceUrl = inAuthnServiceUrl + "/entry";
+		this.applicationName = inApplicationName;
 	}
 
 	public void initiateAuthentication(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse, String targetUrl)
 			throws IOException {
 		LOG.debug("redirecting to: " + this.authnServiceUrl);
+		String Url = targetUrl;
 		if (null == targetUrl) {
 			/*
 			 * In this case we default to the request URL.
 			 */
-			targetUrl = httpRequest.getRequestURL().toString();
+			Url = httpRequest.getRequestURL().toString();
 		}
-		LOG.debug("target url: " + targetUrl);
+		LOG.debug("target url: " + Url);
 		String redirectUrl = this.authnServiceUrl + "?application="
 				+ URLEncoder.encode(this.applicationName, "UTF-8") + "&target="
-				+ URLEncoder.encode(targetUrl, "UTF-8");
+				+ URLEncoder.encode(Url, "UTF-8");
 		httpResponse.sendRedirect(redirectUrl);
 	}
 

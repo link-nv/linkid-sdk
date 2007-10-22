@@ -33,7 +33,7 @@ public class PrescriptionEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(long id) {

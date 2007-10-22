@@ -306,6 +306,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 						/*
 						 * Compounded attribute.
 						 */
+						@SuppressWarnings("unchecked")
 						Map<String, Object> compoundedAttributeValues = (Map<String, Object>) item;
 
 						AttributeType compoundedAttribute = new AttributeType();

@@ -27,7 +27,6 @@ import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -48,12 +47,9 @@ public class MandateAddBean extends AbstractMandateDataClientBean implements
 	@In(value = NEW_MANDATE, required = false)
 	private Mandate newMandate;
 
-	@In(create = true)
-	FacesMessages facesMessages;
-
 	@RolesAllowed(MandateConstants.ADMIN_ROLE)
 	public String add() {
-		log.debug("add new mandate for user #0", this.mandateUser);
+		this.log.debug("add new mandate for user #0", this.mandateUser);
 
 		NameIdentifierMappingClient mappingClient = getMappingClient();
 		String mandateUserId;
@@ -81,7 +77,6 @@ public class MandateAddBean extends AbstractMandateDataClientBean implements
 
 	@Factory(NEW_MANDATE)
 	public Mandate newMandateFactory() {
-		Mandate newMandate = new Mandate();
-		return newMandate;
+		return new Mandate();
 	}
 }

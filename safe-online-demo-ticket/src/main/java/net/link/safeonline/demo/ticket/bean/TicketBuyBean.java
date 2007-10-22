@@ -40,12 +40,10 @@ import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -78,9 +76,6 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements
 	@SuppressWarnings("unused")
 	@Out(required = false)
 	private Date endDate;
-
-	@In(create = true)
-	FacesMessages facesMessages;
 
 	public enum TicketPeriod {
 		DAY("one day", Period.days(1)), WEEK("one week", Period.weeks(1)), MONTH(
@@ -154,7 +149,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements
 
 	private String getUsername() {
 		String username = getUsername(getUserId());
-		log.debug("username #0", username);
+		this.log.debug("username #0", username);
 		return username;
 	}
 
@@ -198,23 +193,23 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements
 			}
 		} catch (AttributeNotFoundException e) {
 			String msg = "attribute not found: " + e.getMessage();
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
 		} catch (RequestDeniedException e) {
 			String msg = "request denied";
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
 		} catch (ConnectException e) {
 			String msg = "Connection error. Check your SSL setup.";
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.add(msg);
 			return null;
 		} catch (Exception e) {
 			String msg = "Error occurred: " + e.getMessage();
-			log.debug(msg, e);
-			log.debug("exception type: " + e.getClass().getName());
+			this.log.debug(msg, e);
+			this.log.debug("exception type: " + e.getClass().getName());
 			this.facesMessages.add(msg);
 			return null;
 		}
@@ -275,7 +270,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements
 					+ URLEncoder.encode(target, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			String msg = "URL encoding error";
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.add(msg);
 			return;
 		}
@@ -284,7 +279,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements
 			externalContext.redirect(redirectUrl);
 		} catch (IOException e) {
 			String msg = "IO redirect error";
-			log.debug(msg);
+			this.log.debug(msg);
 			this.facesMessages.add(msg);
 			return;
 		}
