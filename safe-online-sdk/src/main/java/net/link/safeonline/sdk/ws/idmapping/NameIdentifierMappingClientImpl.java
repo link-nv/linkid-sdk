@@ -103,7 +103,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
 		String errorCode = statusCode.getValue();
 		SamlpTopLevelErrorCode topLevelErrorCode = SamlpTopLevelErrorCode
 				.getSamlpTopLevelErrorCode(errorCode);
-		if (SamlpTopLevelErrorCode.SUCCESS == topLevelErrorCode)
+		if (SamlpTopLevelErrorCode.SUCCESS != topLevelErrorCode)
 			throw new RuntimeException(
 					"error occured on identifier mapping service");
 
