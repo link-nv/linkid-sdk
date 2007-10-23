@@ -32,6 +32,8 @@ public class ProfileInterceptor {
 
 		// Check to see whether profiling has been enabled.
 		this.profileData = ProfileData.getProfileData();
+		if (null == this.profileData)
+			return context.proceed();
 		if (!this.profileData.isEnabled())
 			return context.proceed();
 
