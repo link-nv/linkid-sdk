@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xpath.XPathAPI;
+import org.apache.xpath.objects.XObject;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -99,6 +100,14 @@ public class AuthnRequestFactoryTest {
 				.unmarshalXMLSignature(validateContext);
 		boolean resultValidity = signature.validate(validateContext);
 		assertTrue(resultValidity);
+
+		Element dsNsElement = resultDocument.createElement("nsElement");
+		dsNsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
+				"http://www.w3.org/2000/09/xmldsig#");
+		XObject xObject = XPathAPI.eval(resultDocument,
+				"count(//ds:Reference)", dsNsElement);
+		LOG.debug("count: " + xObject.num());
+		assertEquals(1.0, xObject.num(), 0);
 	}
 
 	@Test

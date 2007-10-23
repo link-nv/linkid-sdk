@@ -21,7 +21,6 @@ import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;
-import org.opensaml.common.impl.SAMLObjectContentReference;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
@@ -161,8 +160,6 @@ public class AuthnRequestFactory {
 			signature
 					.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
 		}
-		signature.getContentReferences().add(
-				new SAMLObjectContentReference(request));
 		request.setSignature(signature);
 		BasicCredential signingCredential = SecurityHelper
 				.getSimpleCredential(applicationKeyPair.getPublic(),
@@ -181,7 +178,7 @@ public class AuthnRequestFactory {
 					+ e.getMessage(), e);
 		}
 
-		// sign after marshalling of course
+		// sign after marshaling of course
 		Signer.signObject(signature);
 
 		String result;
