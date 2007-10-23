@@ -49,6 +49,10 @@ public class ProfileFilter implements Filter {
 		// Start collecting data. This clears and enables the profiler.
 		LOG.debug("Enabling profiler.");
 		this.profileData = ProfileData.getProfileData();
+		if (null == this.profileData) {
+			chain.doFilter(request, response);
+			return;
+		}
 		this.profileData.start();
 
 		// Buffer the response so we can add our own headers.
