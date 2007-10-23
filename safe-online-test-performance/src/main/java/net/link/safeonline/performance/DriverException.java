@@ -57,7 +57,7 @@ public class DriverException extends Exception {
 	@Override
 	public String toString() {
 
-		return "At " + new Date(occurredTime) + " this happened:\\n"
-				+ exception;
+		return "At " + new Date(this.occurredTime) + " this happened:\\n"
+				+ this.exception;
 	}
 }
