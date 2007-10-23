@@ -48,7 +48,7 @@ public class IdMappingDriver extends ProfileDriver {
 	}
 
 	@Override
-	protected void prepare() throws Exception {
+	protected void prepare() {
 
 		PrivateKeyEntry serviceEntry = DemoLawyerKeyStoreUtils
 				.getPrivateKeyEntry();
@@ -63,11 +63,17 @@ public class IdMappingDriver extends ProfileDriver {
 	}
 
 	@Override
-	protected ProfileData run() throws Exception {
+	protected ProfileData run() throws DriverException {
 
-		LOG.debug("retrieving user ID for " + this.user);
-		this.service.getUserId(this.user);
+		try {
+			LOG.debug("retrieving user ID for " + this.user);
+			this.service.getUserId(this.user);
 
-		return new ProfileData(this.service.getHeaders());
+			return new ProfileData(this.service.getHeaders());
+		}
+
+		catch (Exception e) {
+			throw new DriverException(e);
+		}
 	}
 }

@@ -10,8 +10,6 @@ package net.link.safeonline.performance;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import net.link.safeonline.util.jacc.ProfileData;
-
 /**
  * 
  * @author mbillemo
@@ -29,8 +27,11 @@ public class TestAgent {
 
 	private void runTest() {
 
-		for (ProfileData iteration : this.driver.execute())
-			LOG.info(iteration);
+		try {
+			LOG.info(this.driver.run());
+		} catch (DriverException e) {
+			LOG.error("Driver failed:", e);
+		}
 	}
 
 	public static void main(String[] args) {

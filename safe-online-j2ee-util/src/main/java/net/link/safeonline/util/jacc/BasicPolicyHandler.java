@@ -116,18 +116,20 @@ public class BasicPolicyHandler<T> extends HashMap<String, T> implements
 	}
 
 	/**
-	 * Get a policy handler that manages objects of the given class. This method
-	 * makes sure there is only one handler for a certain type in the entire
-	 * application.
+	 * Get a policy handler that manages objects of the given class.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> BasicPolicyHandler<T> getHandlerFor(Class<T> type,
 			String... keys) {
 
+		// Which keys do we handle?
+		// If no keys were given, use classname of the generic type as key.
 		String[] handleKeys = keys;
 		if (null == handleKeys || handleKeys.length == 0)
 			handleKeys = new String[] { type.getClass().toString() };
 
+		// Make a handler for the given type or use an existing handler to
+		// register the type's key(s).
 		if (!handlers.containsKey(type))
 			handlers.put(type, new BasicPolicyHandler<T>(type, handleKeys));
 
