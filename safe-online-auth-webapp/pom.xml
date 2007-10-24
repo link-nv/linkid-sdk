@@ -58,6 +58,15 @@
 							<targetPath>/</targetPath>
 						</dependency>
 					</dependencies>
+					<webResources>
+                        <resource>
+                            <directory>
+                                ${basedir}/src/main/webapp/WEB-INF
+                            </directory>
+                            <targetPath>WEB-INF</targetPath>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
 				</configuration>
 			</plugin>
 			<plugin>
