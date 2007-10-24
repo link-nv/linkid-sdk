@@ -20,5 +20,7 @@ public interface Subscriptions {
 
 	String getUsageAgreement();
 
+	String getGlobalUsageAgreement();
+
 	void destroyCallback();
 }

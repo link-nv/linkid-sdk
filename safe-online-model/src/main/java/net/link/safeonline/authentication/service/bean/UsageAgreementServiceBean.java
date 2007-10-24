@@ -477,4 +477,18 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 		return usageAgreementText.getText();
 	}
 
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public String getGlobalUsageAgreementText(String language,
+			Long usageAgreementVersion) {
+		GlobalUsageAgreementEntity usageAgreement = this.usageAgreementDAO
+				.getGlobalUsageAgreement(usageAgreementVersion);
+		if (null == usageAgreement)
+			return null;
+		UsageAgreementTextEntity usageAgreementText = this.usageAgreementDAO
+				.getGlobalUsageAgreementText(usageAgreement, language);
+		if (null == usageAgreementText)
+			return null;
+		return usageAgreementText.getText();
+	}
+
 }

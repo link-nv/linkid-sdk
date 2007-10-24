@@ -25,7 +25,9 @@ import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.user.Subscriptions;
 import net.link.safeonline.user.UserConstants;
 
@@ -60,6 +62,9 @@ public class SubscriptionsBean implements Subscriptions {
 
 	@EJB
 	private UsageAgreementService usageAgreementService;
+
+	@EJB
+	private SubjectManager subjectManager;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -157,5 +162,15 @@ public class SubscriptionsBean implements Subscriptions {
 					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		}
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String getGlobalUsageAgreement() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		return this.usageAgreementService.getGlobalUsageAgreementText(
+				viewLocale.getLanguage(), subject
+						.getConfirmedUsageAgreementVersion());
 	}
 }

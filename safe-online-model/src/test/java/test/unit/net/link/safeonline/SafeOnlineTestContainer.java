@@ -41,6 +41,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
@@ -131,5 +132,6 @@ public class SafeOnlineTestContainer {
 			CompoundedAttributeTypeMemberEntity.class,
 			HelpdeskContextEntity.class, HelpdeskEventEntity.class,
 			HistoryEntity.class, SubjectIdentifierEntity.class,
-			UsageAgreementEntity.class, UsageAgreementTextEntity.class };
+			UsageAgreementEntity.class, UsageAgreementTextEntity.class,
+			GlobalUsageAgreementEntity.class };
 }

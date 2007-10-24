@@ -260,4 +260,14 @@ public interface UsageAgreementService {
 	 * @return
 	 */
 	String getGlobalUsageAgreementText(String language);
+
+	/**
+	 * Get current global usage agreement text for specified language and
+	 * version.
+	 * 
+	 * @param language
+	 * @return
+	 */
+	String getGlobalUsageAgreementText(String language,
+			Long usageAgreementVersion);
 }

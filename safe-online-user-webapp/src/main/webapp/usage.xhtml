@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="usage" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h2>#{msgs.usageAgreementOLAS}</h2>
+
+		<rich:panel>
+			<pre width="100">#{subscriptions.globalUsageAgreement}</pre>
+		</rich:panel>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{login}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>
