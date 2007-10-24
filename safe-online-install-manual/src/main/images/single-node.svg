@@ -8,14 +8,15 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="12cm"
-   height="12cm"
+   width="340.85107"
+   height="370.10294"
    id="svg2160"
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
    sodipodi:docname="single-node.svg"
    sodipodi:docbase="/home/fcorneli/SafeOnline/safe-online/safe-online-install-manual/src/main/images"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0">
   <metadata
      id="metadata2173">
     <rdf:RDF>
@@ -91,10 +92,10 @@
        inkscape:collect="always"
        xlink:href="#linearGradient3173"
        id="linearGradient3179"
-       x1="77.9289"
-       y1="297.89278"
-       x2="341.5846"
-       y2="297.89278"
+       x1="77.928902"
+       y1="297.89279"
+       x2="341.58459"
+       y2="297.89279"
        gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
@@ -116,8 +117,9 @@
      inkscape:window-y="49"
      inkscape:current-layer="g2162" />
   <g
-     style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"
-     id="g2162">
+     style="fill-opacity:0.7;stroke:#000000;stroke-width:0.1cm"
+     id="g2162"
+     transform="translate(-36.949336,-20.233988)">
     <rect
        style="opacity:0.7;fill:url(#radialGradient3162);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3152"
@@ -128,7 +130,7 @@
        inkscape:transform-center-y="286.26561"
        inkscape:transform-center-x="-21.698165" />
     <rect
-       style="opacity:0.7;fill:url(#linearGradient3147);fill-opacity:1.0;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:0.7;fill:url(#linearGradient3147);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect2175"
        width="260.1124"
        height="127.43427"
@@ -137,7 +139,7 @@
        inkscape:transform-center-y="99.520088"
        inkscape:transform-center-x="-16.732381" />
     <rect
-       style="opacity:0.7;fill:url(#linearGradient3179);fill-opacity:1.0;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:0.7;fill:url(#linearGradient3179);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.54330707;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3164"
        width="260.1124"
        height="127.43427"
