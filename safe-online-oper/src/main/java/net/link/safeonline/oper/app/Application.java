@@ -66,6 +66,8 @@ public interface Application {
 
 	void setIdmapping(boolean idmapping);
 
+	String getUsageAgreement();
+
 	/*
 	 * Actions.
 	 */

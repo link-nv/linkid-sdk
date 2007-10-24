@@ -23,25 +23,18 @@
 		<div class="infobox"><ui:include
 			src="/WEB-INF/incl/appinfo.xhtml" /></div>
 
-		<h2>#{msgs.usageAgreement}</h2>
+		<h2>#{msgs.usageAgreementOLAS}</h2>
 
 		<div>
 
-		<p><fmt:message bundle="#{msgs}" key="subscriptionNotFoundMsg">
-			<fmt:param value="#{applicationId}" />
-		</fmt:message></p>
-
 		<p><t:messages globalOnly="true" styleClass="error" /></p>
 
-		<rich:panel rendered="#{authSubscription.usageAgreement != null}">
-			<pre width="100">#{authSubscription.usageAgreement}</pre>
+		<rich:panel
+			rendered="#{!empty globalAgreementConfirmation.usageAgreement}">
+			<pre width="100">#{globalAgreementConfirmation.usageAgreement}</pre>
 		</rich:panel> <h:form>
-			<h:commandButton action="#{authSubscription.subscribe}" id="confirm"
-				value="#{msgs.confirm}"
-				rendered="#{!empty authSubscription.usageAgreement}" />
-			<h:commandButton action="#{authSubscription.subscribe}"
-				id="subscribe" value="#{msgs.subscribe}"
-				rendered="#{empty authSubscription.usageAgreement}" />
+			<h:commandButton action="#{globalAgreementConfirmation.confirm}"
+				id="confirm" value="#{msgs.confirm}" />
 			<so:nbsp />
 			<h:commandButton action="reject" id="reject" value="#{msgs.reject}"
 				immediate="true" />

@@ -13,6 +13,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.UsageAgreementNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementTextNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementTextEntity;
 
@@ -36,8 +37,8 @@ public interface UsageAgreementDAO {
 	 * 
 	 * @param usageAgreement
 	 */
-	void removeusageAgreement(ApplicationEntity application,
-			Long draftUsageAgreementVersion);
+	void removeUsageAgreement(ApplicationEntity application,
+			Long usageAgreementVersion);
 
 	List<UsageAgreementTextEntity> listUsageAgreementTexts(
 			ApplicationEntity application, Long usageAgreementVersion);
@@ -54,4 +55,23 @@ public interface UsageAgreementDAO {
 			UsageAgreementEntity usageAgreement, String language)
 			throws UsageAgreementTextNotFoundException;
 
+	GlobalUsageAgreementEntity addGlobalUsageAgreement(
+			Long draftGlobalUsageAgreementVersion);
+
+	GlobalUsageAgreementEntity getGlobalUsageAgreement();
+
+	GlobalUsageAgreementEntity getGlobalUsageAgreement(
+			Long draftGlobalUsageAgreementVersion);
+
+	UsageAgreementTextEntity addGlobalUsageAgreementText(
+			GlobalUsageAgreementEntity draftUsageAgreement, String text,
+			String language);
+
+	void removeGlobalUsageAgreement(Long usageAgreementVersion);
+
+	UsageAgreementTextEntity getGlobalUsageAgreementText(
+			GlobalUsageAgreementEntity usageAgreement, String language);
+
+	void removeGlobalUsageAgreementText(
+			UsageAgreementTextEntity usageAgreementText);
 }

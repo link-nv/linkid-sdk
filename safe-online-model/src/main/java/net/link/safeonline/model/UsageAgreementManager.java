@@ -36,4 +36,9 @@ public interface UsageAgreementManager {
 	 */
 	void setUsageAgreement(ApplicationEntity application,
 			Long usageAgreementVersion) throws UsageAgreementNotFoundException;
+
+	/**
+	 * Updates current draft global usage agreement.
+	 */
+	void updateGlobalUsageAgreement();
 }

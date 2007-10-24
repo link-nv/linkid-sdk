@@ -152,4 +152,26 @@
 		</navigation-case>
 	</navigation-rule>
 
+	<navigation-rule>
+		<from-view-id>/global-confirmation.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>reject</from-action>
+			<to-view-id>
+				/global-confirmation-rejection.xhtml
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>subscription-required</from-outcome>
+			<to-view-id>/subscription.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>confirmation-required</from-outcome>
+			<to-view-id>/identity-confirmation.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>missing-attributes</from-outcome>
+			<to-view-id>/missing-attributes.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
 </faces-config>

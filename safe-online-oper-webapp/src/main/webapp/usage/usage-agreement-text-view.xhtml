@@ -9,22 +9,20 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="title">
-		<h:outputFormat value="#{msgs.ownerTitle}">
+		<h:outputFormat value="#{msgs.operatorTitle}">
 			<f:param value="#{initParam['CommercialName']}" />
 		</h:outputFormat>
 	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="applications" />
+			<ui:param name="subpage" value="usage" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{selectedApplication.name}</h1>
-
-		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{selectedUsageAgreement.usageAgreementVersion}
-		</h2>
+		<h1>#{msgs.usageAgreementVersion}:<so:nbsp />#{selectedUsageAgreementText.usageAgreementVersion}
+		</h1>
 
 		<rich:panel>
 			<f:facet name="header">
@@ -42,7 +40,7 @@
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{ownerLogin}" />
+			<ui:param name="loginComp" value="#{operLogin}" />
 		</ui:include>
 	</ui:define>
 </ui:composition>

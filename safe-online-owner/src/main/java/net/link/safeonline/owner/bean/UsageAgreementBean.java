@@ -177,12 +177,39 @@ public class UsageAgreementBean implements UsageAgreement {
 	 */
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	public boolean getCurrentUsageAgreementIsEmpty() {
-		return null == this.currentUsageAgreement;
+		try {
+			return null == this.usageAgreementService
+					.getCurrentUsageAgreement(this.selectedApplication
+							.getName());
+		} catch (ApplicationNotFoundException e) {
+			LOG.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+			return false;
+		} catch (PermissionDeniedException e) {
+			LOG.debug("permission denied.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			return false;
+		}
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	public boolean getDraftUsageAgreementIsEmpty() {
-		return null == this.draftUsageAgreement;
+		try {
+			return null == this.usageAgreementService
+					.getDraftUsageAgreement(this.selectedApplication.getName());
+		} catch (ApplicationNotFoundException e) {
+			LOG.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+			return false;
+		} catch (PermissionDeniedException e) {
+			LOG.debug("permission denied.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			return false;
+		}
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)

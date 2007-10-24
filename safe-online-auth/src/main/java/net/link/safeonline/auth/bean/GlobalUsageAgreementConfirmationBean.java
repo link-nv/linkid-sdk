@@ -1,10 +1,3 @@
-/*
- * SafeOnline project.
- * 
- * Copyright 2006-2007 Lin.k N.V. All rights reserved.
- * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
- */
-
 package net.link.safeonline.auth.bean;
 
 import java.util.Locale;
@@ -16,12 +9,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.AuthenticationConstants;
-import net.link.safeonline.auth.AuthenticationSubscription;
 import net.link.safeonline.auth.AuthenticationUtils;
-import net.link.safeonline.authentication.exception.AlreadySubscribedException;
+import net.link.safeonline.auth.GlobalUsageAgreementConfirmation;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -36,12 +27,12 @@ import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateless
-@Name("authSubscription")
+@Name("globalAgreementConfirmation")
 @LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX
-		+ "AuthenticationSubscriptionBean/local")
+		+ "GlobalUsageAgreementConfirmationBean/local")
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
-public class AuthenticationSubscriptionBean implements
-		AuthenticationSubscription {
+public class GlobalUsageAgreementConfirmationBean implements
+		GlobalUsageAgreementConfirmation {
 
 	@Logger
 	private Log log;
@@ -55,65 +46,43 @@ public class AuthenticationSubscriptionBean implements
 	@EJB
 	private UsageAgreementService usageAgreementService;
 
-	@In(create = true)
-	FacesMessages facesMessages;
-
 	@EJB
 	private IdentityService identityService;
 
+	@In(create = true)
+	FacesMessages facesMessages;
+
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String subscribe() {
+	public String confirm() {
 
-		try {
-			if (!this.subscriptionService.isSubscribed(this.applicationId)) {
-				try {
-					this.log.debug("subscribe to application #0",
-							this.applicationId);
-					this.subscriptionService.subscribe(this.applicationId);
-				} catch (ApplicationNotFoundException e) {
-					this.facesMessages.addFromResourceBundle(
-							FacesMessage.SEVERITY_ERROR,
-							"errorApplicationNotFound");
-					return null;
-				} catch (AlreadySubscribedException e) {
-					this.facesMessages.addFromResourceBundle(
-							FacesMessage.SEVERITY_ERROR,
-							"errorAlreadySubscribed");
-					return null;
-				} catch (PermissionDeniedException e) {
-					this.facesMessages.addFromResourceBundle(
-							FacesMessage.SEVERITY_ERROR,
-							"errorPermissionDenied");
-					return null;
-				}
-			}
-		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		}
-
-		try {
-			if (this.usageAgreementService
-					.requiresUsageAgreementAcceptation(this.applicationId)) {
-				this.log.debug("confirm usage agreement for application #0",
-						this.applicationId);
-				this.usageAgreementService
-						.confirmUsageAgreementVersion(this.applicationId);
-			}
-		} catch (SubscriptionNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "subscriptionNotFoundMsg");
-			return null;
-		} catch (ApplicationNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		}
+		this.log.debug("confirm global usage agreement");
+		this.usageAgreementService.confirmGlobalUsageAgreementVersion();
 
 		/*
-		 * After successful subscription we continue the workflow as usual.
+		 * After successful confirmation we continue the workflow as usual.
 		 */
+		boolean subscriptionRequired;
+		try {
+			subscriptionRequired = !this.subscriptionService
+					.isSubscribed(this.applicationId);
+			if (!subscriptionRequired)
+				try {
+					subscriptionRequired = this.usageAgreementService
+							.requiresUsageAgreementAcceptation(this.applicationId);
+				} catch (SubscriptionNotFoundException e) {
+					this.facesMessages.addFromResourceBundle(
+							FacesMessage.SEVERITY_ERROR,
+							"errorSubscriptionNotFound");
+					return null;
+				}
+		} catch (ApplicationNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+			return null;
+		}
+		this.log.debug("subscription required: " + subscriptionRequired);
+		if (true == subscriptionRequired)
+			return "subscription-required";
 
 		boolean confirmationRequired;
 		try {
@@ -167,14 +136,7 @@ public class AuthenticationSubscriptionBean implements
 	public String getUsageAgreement() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
-		try {
-			return this.usageAgreementService.getUsageAgreementText(
-					this.applicationId, viewLocale.getLanguage());
-		} catch (ApplicationNotFoundException e) {
-			this.log.debug("application not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		}
+		return this.usageAgreementService
+				.getGlobalUsageAgreementText(viewLocale.getLanguage());
 	}
 }

@@ -341,6 +341,14 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			throw new UsageAgreementAcceptationRequiredException();
 	}
 
+	private void checkRequiredGlobalUsageAgreement()
+			throws UsageAgreementAcceptationRequiredException {
+		boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService
+				.requiresGlobalUsageAgreementAcceptation();
+		if (true == requiresGlobalUsageAgreementAcceptation)
+			throw new UsageAgreementAcceptationRequiredException();
+	}
+
 	@Remove
 	public void commitAuthentication(@NonEmptyString
 	String applicationId, Set<AuthenticationDevice> requiredDevicePolicy)
@@ -358,6 +366,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		checkRequiredMissingAttributes(applicationId);
 
 		checkDevicePolicy(applicationId, requiredDevicePolicy);
+
+		checkRequiredGlobalUsageAgreement();
 
 		checkRequiredUsageAgreement(applicationId);
 

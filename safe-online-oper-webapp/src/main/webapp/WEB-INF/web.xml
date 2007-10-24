@@ -108,6 +108,20 @@
 	</filter>
 
 	<filter>
+		<filter-name>Seam Exception Filter</filter-name>
+		<filter-class>
+			org.jboss.seam.servlet.SeamExceptionFilter
+		</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>Seam Redirect Filter</filter-name>
+		<filter-class>
+			org.jboss.seam.servlet.SeamRedirectFilter
+		</filter-class>
+	</filter>
+
+	<filter>
 		<filter-name>ServletLoginFilter</filter-name>
 		<filter-class>
 			net.link.safeonline.webapp.filter.ServletLoginFilter
@@ -174,6 +188,16 @@
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
 		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>Seam Exception Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>Seam Redirect Filter</filter-name>
+		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>

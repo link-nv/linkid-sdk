@@ -37,12 +37,11 @@
 			</rich:tab>
 
 			<rich:tab label="#{msgs.description}">
-				<so:outputText
-					value="#{selectedSubscription.application.description}" />
+				<pre width="100">#{selectedSubscription.application.description}</pre>
 			</rich:tab>
 
 			<rich:tab label="#{msgs.confirmedUsageAgreement}">
-				<so:outputText value="#{subscriptions.usageAgreement}" />
+				<pre width="100">#{subscriptions.usageAgreement}</pre>
 			</rich:tab>
 
 			<rich:tab label="#{msgs.confirmedIdentity}">

@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
@@ -34,6 +36,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.SubscriptionService;
+import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.ctrl.Convertor;
 import net.link.safeonline.ctrl.ConvertorUtil;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -83,6 +86,9 @@ public class ApplicationBean implements Application {
 
 	@EJB
 	private SubjectService subjectService;
+
+	@EJB
+	private UsageAgreementService usageAgreementService;
 
 	private String name;
 
@@ -570,4 +576,24 @@ public class ApplicationBean implements Application {
 			return output;
 		}
 	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String getUsageAgreement() {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
+		try {
+			String text = this.usageAgreementService.getUsageAgreementText(
+					this.selectedApplication.getName(), viewLocale
+							.getLanguage());
+			if (null == text)
+				return "";
+			return text;
+		} catch (ApplicationNotFoundException e) {
+			LOG.debug("application not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+			return null;
+		}
+	}
+
 }

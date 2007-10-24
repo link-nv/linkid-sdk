@@ -14,6 +14,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementTextEntity;
 
@@ -169,7 +170,8 @@ public interface UsageAgreementService {
 			throws ApplicationNotFoundException;
 
 	/**
-	 * Get version of application's usage agreement texts for specified language
+	 * Get version of application's usage agreement texts for specified
+	 * language.
 	 * 
 	 * @param applicationName
 	 * @param language
@@ -179,4 +181,83 @@ public interface UsageAgreementService {
 	 */
 	String getUsageAgreementText(String applicationName, String language,
 			Long usageAgreementVersion) throws ApplicationNotFoundException;
+
+	/**
+	 * Commit the draft global usage agreement to a new version.
+	 */
+	void updateGlobalUsageAgreement();
+
+	/**
+	 * Remove current draft global usage agreement.
+	 */
+	void removeDraftGlobalUsageAgreement();
+
+	/**
+	 * Create ( if not already created ) new draft global usage agreement text
+	 * for the specified language.
+	 * 
+	 * @param language
+	 * @param text
+	 * @return
+	 */
+	UsageAgreementTextEntity createDraftGlobalUsageAgreementText(
+			String language, String text);
+
+	/**
+	 * Set draft global usage agreement text for the specified language.
+	 * 
+	 * @param language
+	 * @param text
+	 */
+	void setDraftGlobalUsageAgreementText(String language, String text);
+
+	/**
+	 * Remove draft global usage agreement text for the specified language.
+	 * 
+	 * @param language
+	 */
+	void removeDraftGlobalUsageAgreementText(String language);
+
+	/**
+	 * Create draft usage agreement from the specified version.
+	 * 
+	 * @param currentUsageAgreement
+	 * @return
+	 */
+	GlobalUsageAgreementEntity createDraftGlobalUsageAgreement();
+
+	/**
+	 * Return draft global usage agreement.
+	 * 
+	 * @return
+	 */
+	GlobalUsageAgreementEntity getDraftGlobalUsageAgreement();
+
+	/**
+	 * Return current global usage agreement.
+	 * 
+	 * @return
+	 */
+	GlobalUsageAgreementEntity getCurrentGlobalUsageAgreement();
+
+	/**
+	 * Check whether authenticating subject has accepted the global usage
+	 * agreement.
+	 * 
+	 * @return
+	 */
+	boolean requiresGlobalUsageAgreementAcceptation();
+
+	/**
+	 * Authenticating subject confirms to the global usage agreement
+	 */
+	void confirmGlobalUsageAgreementVersion();
+
+	/**
+	 * Get current global usage agreement text for specified language
+	 * 
+	 * @param language
+	 * @return
+	 */
+	String getGlobalUsageAgreementText(String language);
 }

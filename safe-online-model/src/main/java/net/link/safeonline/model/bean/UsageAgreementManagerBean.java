@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import net.link.safeonline.authentication.exception.UsageAgreementNotFoundException;
 import net.link.safeonline.dao.UsageAgreementDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementPK;
 import net.link.safeonline.entity.UsageAgreementTextEntity;
@@ -63,11 +64,41 @@ public class UsageAgreementManagerBean implements UsageAgreementManager {
 							.getLanguage());
 		}
 
-		this.usageAgreementDAO.removeusageAgreement(application,
+		this.usageAgreementDAO.removeUsageAgreement(application,
 				UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
 
 		LOG.debug("update application to version: " + newUsageAgreementVersion);
 		application
 				.setCurrentApplicationUsageAgreement(newUsageAgreementVersion);
+	}
+
+	public void updateGlobalUsageAgreement() {
+		LOG.debug("update global usage agreement");
+		GlobalUsageAgreementEntity draftUsageAgreement = this.usageAgreementDAO
+				.getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+		GlobalUsageAgreementEntity currentUsageAgreement = this.usageAgreementDAO
+				.getGlobalUsageAgreement();
+		long newUsageAgreementVersion;
+		long currentUsageAgreementVersion = currentUsageAgreement
+				.getUsageAgreementVersion().longValue();
+		if (currentUsageAgreementVersion == GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION
+				.longValue()
+				|| currentUsageAgreementVersion == GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
+						.longValue())
+			newUsageAgreementVersion = GlobalUsageAgreementEntity.INITIAL_GLOBAL_USAGE_AGREEMENT_VERSION;
+		else
+			newUsageAgreementVersion = currentUsageAgreement
+					.getUsageAgreementVersion() + 1;
+		GlobalUsageAgreementEntity newUsageAgreement = this.usageAgreementDAO
+				.addGlobalUsageAgreement(newUsageAgreementVersion);
+		for (UsageAgreementTextEntity draftUsageAgreementText : draftUsageAgreement
+				.getUsageAgreementTexts()) {
+			this.usageAgreementDAO.addGlobalUsageAgreementText(
+					newUsageAgreement, draftUsageAgreementText.getText(),
+					draftUsageAgreementText.getLanguage());
+		}
+
+		this.usageAgreementDAO
+				.removeGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
 	}
 }

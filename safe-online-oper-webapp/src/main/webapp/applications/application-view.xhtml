@@ -69,6 +69,10 @@
 				<!-- XSS vulnerability possible: do not set escape="false" -->
 			</rich:tab>
 
+			<rich:tab label="#{msgs.usageAgreement}">
+				<pre width="100">#{operApplication.usageAgreement}</pre>
+			</rich:tab>
+
 			<rich:tab label="#{msgs.accessControl}">
 				<h:panelGrid columns="2">
 					<h:outputText value="#{msgs.accessControlIdmappingService}:" />

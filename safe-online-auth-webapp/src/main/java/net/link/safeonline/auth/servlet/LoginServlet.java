@@ -88,6 +88,14 @@ public class LoginServlet extends HttpServlet {
 		AuthenticationDevice device = getDevice(session);
 		String username = getUsername(session);
 
+		boolean globalConfirmationRequired = performGlobalUsageAgreementCheck();
+		if (true == globalConfirmationRequired) {
+			redirectToGlobalConfirmation(response);
+			return;
+		}
+		HelpdeskLogger.add(session,
+				"global usage agreement confirmation found", LogLevelType.INFO);
+
 		boolean devicePolicyCheck = performDevicePolicyCheck(session,
 				applicationId, device);
 		if (false == devicePolicyCheck) {
@@ -130,6 +138,11 @@ public class LoginServlet extends HttpServlet {
 	String username, @SuppressWarnings("unused")
 	HttpSession session, HttpServletResponse response) throws IOException {
 		response.sendRedirect("./register-device.seam");
+	}
+
+	private boolean performGlobalUsageAgreementCheck() {
+		return this.usageAgreementService
+				.requiresGlobalUsageAgreementAcceptation();
 	}
 
 	private boolean performMissingAttributesCheck(HttpSession session,
@@ -269,6 +282,12 @@ public class LoginServlet extends HttpServlet {
 	private void redirectToSubscription(HttpServletResponse response)
 			throws IOException {
 		String redirectUrl = "./subscription.seam";
+		response.sendRedirect(redirectUrl);
+	}
+
+	private void redirectToGlobalConfirmation(HttpServletResponse response)
+			throws IOException {
+		String redirectUrl = "./global-confirmation.seam";
 		response.sendRedirect(redirectUrl);
 	}
 }

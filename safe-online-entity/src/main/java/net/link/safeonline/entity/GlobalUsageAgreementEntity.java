@@ -7,6 +7,8 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.GlobalUsageAgreementEntity.QUERY_CURRENT_GLOBAL;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,10 +16,18 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
+
 @Entity
+@NamedQueries( { @NamedQuery(name = QUERY_CURRENT_GLOBAL, query = "SELECT usageAgreement "
+		+ "FROM GlobalUsageAgreementEntity AS usageAgreement "
+		+ "WHERE usageAgreement.usageAgreementVersion = (SELECT MAX(usageAgreement.usageAgreementVersion) "
+		+ "FROM GlobalUsageAgreementEntity as usageAgreement)") })
 public class GlobalUsageAgreementEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -28,7 +38,9 @@ public class GlobalUsageAgreementEntity implements Serializable {
 
 	public static final Long EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION = 0L;
 
-	public static final Long INITIAL_GLOBAL_USAGE_AGREEMENT_VERSION = 0L;
+	public static final Long INITIAL_GLOBAL_USAGE_AGREEMENT_VERSION = 1L;
+
+	public static final String QUERY_CURRENT_GLOBAL = "gua.cur";
 
 	private Long usageAgreementVersion;
 
@@ -70,4 +82,10 @@ public class GlobalUsageAgreementEntity implements Serializable {
 		}
 		return null;
 	}
+
+	public interface QueryInterface {
+		@QueryMethod(QUERY_CURRENT_GLOBAL)
+		GlobalUsageAgreementEntity getCurrentGlobalUsageAgreement();
+	}
+
 }

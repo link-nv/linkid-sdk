@@ -700,4 +700,47 @@
 
 	<!-- End audit navigation rules -->
 
+	<!-- Begin usage agreement navigation rules -->
+	<navigation-rule>
+		<from-view-id>/usage/usage-agreements.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>edittext</from-outcome>
+			<to-view-id>
+				/usage/usage-agreement-text-edit.seam
+			</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>viewtext</from-outcome>
+			<to-view-id>
+				/usage/usage-agreement-text-view.seam
+			</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>
+			/usage/usage-agreement-text-edit.xhtml
+		</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/usage/usage-agreements.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saved</from-outcome>
+			<to-view-id>/usage/usage-agreements.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>
+			/usage/usage-agreement-text-view.xhtml
+		</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/usage/usage-agreements.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<!-- Begin usage agreement navigation rules -->
+
 </faces-config>

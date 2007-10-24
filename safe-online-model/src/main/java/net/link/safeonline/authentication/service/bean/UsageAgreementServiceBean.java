@@ -30,6 +30,7 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.UsageAgreementDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.UsageAgreementEntity;
@@ -254,7 +255,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 				.getApplication(applicationName);
 		checkWritePermission(application);
 
-		this.usageAgreementDAO.removeusageAgreement(application,
+		this.usageAgreementDAO.removeUsageAgreement(application,
 				UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
 	}
 
@@ -274,16 +275,8 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 
 		long confirmedUsageAgreementVersion = subscription
 				.getConfirmedUsageAgreementVersion();
-
-		LOG
-				.debug("application version: "
-						+ currentUsageAgreementVersion
-						+ " subscription version: "
-						+ subscription.getConfirmedUsageAgreementVersion()
-						+ " equals?"
-						+ (currentUsageAgreementVersion == currentUsageAgreementVersion));
-
-		if (confirmedUsageAgreementVersion != currentUsageAgreementVersion) {
+		if (confirmedUsageAgreementVersion != currentUsageAgreementVersion
+				&& currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION) {
 			return true;
 		}
 		return false;
@@ -341,4 +334,147 @@ public class UsageAgreementServiceBean implements UsageAgreementService,
 			return null;
 		return usageAgreementText.getText();
 	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public GlobalUsageAgreementEntity createDraftGlobalUsageAgreement() {
+		LOG.debug("create draft global usage agreement");
+		GlobalUsageAgreementEntity draftUsageAgreement = this.usageAgreementDAO
+				.addGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+		GlobalUsageAgreementEntity usageAgreement = this.usageAgreementDAO
+				.getGlobalUsageAgreement();
+		if (null != usageAgreement) {
+			for (UsageAgreementTextEntity usageAgreementText : usageAgreement
+					.getUsageAgreementTexts()) {
+				this.usageAgreementDAO.addGlobalUsageAgreementText(
+						draftUsageAgreement, usageAgreementText.getText(),
+						usageAgreementText.getLanguage());
+			}
+		}
+		return draftUsageAgreement;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public UsageAgreementTextEntity createDraftGlobalUsageAgreementText(
+			String language, String text) {
+		LOG.debug("create draft usage agreement text: language=" + language);
+		GlobalUsageAgreementEntity usageAgreement = getDraftGlobalUsageAgreement();
+		UsageAgreementTextEntity usageAgreementText = usageAgreement
+				.getUsageAgreementText(language);
+		if (null == usageAgreementText)
+			usageAgreementText = this.usageAgreementDAO
+					.addGlobalUsageAgreementText(usageAgreement, text, language);
+		return usageAgreementText;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void setDraftGlobalUsageAgreementText(String language, String text) {
+		LOG.debug("set draft usage agreement text: language=" + language);
+
+		GlobalUsageAgreementEntity usageAgreement = this.usageAgreementDAO
+				.getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+
+		UsageAgreementTextEntity usageAgreementText = this.usageAgreementDAO
+				.getGlobalUsageAgreementText(usageAgreement, language);
+		usageAgreementText.setText(text);
+	}
+
+	@RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.USER_ROLE })
+	public GlobalUsageAgreementEntity getCurrentGlobalUsageAgreement() {
+		LOG.debug("get current usage agreement");
+		GlobalUsageAgreementEntity usageAgreement = this.usageAgreementDAO
+				.getGlobalUsageAgreement();
+		if (null == usageAgreement)
+			return null;
+		if (usageAgreement.getUsageAgreementVersion().longValue() == GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
+				.longValue())
+			return null;
+		return usageAgreement;
+
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public GlobalUsageAgreementEntity getDraftGlobalUsageAgreement() {
+		LOG.debug("get draft usage agreement");
+		return this.usageAgreementDAO
+				.getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void removeDraftGlobalUsageAgreement() {
+		LOG.debug("remove draft usage agreement");
+
+		this.usageAgreementDAO
+				.removeGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void removeDraftGlobalUsageAgreementText(String language) {
+		LOG.debug("remove draft usage agreement text language=" + language);
+
+		GlobalUsageAgreementEntity usageAgreement = this.usageAgreementDAO
+				.getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+		UsageAgreementTextEntity usageAgreementText = this.usageAgreementDAO
+				.getGlobalUsageAgreementText(usageAgreement, language);
+
+		this.usageAgreementDAO
+				.removeGlobalUsageAgreementText(usageAgreementText);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void updateGlobalUsageAgreement() {
+		LOG.debug("update global usage agreement");
+		this.usageAgreementManager.updateGlobalUsageAgreement();
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public boolean requiresGlobalUsageAgreementAcceptation() {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		LOG.debug("is confirmation required by subject " + subject.getUserId());
+
+		GlobalUsageAgreementEntity globalUsageAgreement = this.usageAgreementDAO
+				.getGlobalUsageAgreement();
+		if (null == globalUsageAgreement)
+			return false;
+		long currentUsageAgreementVersion = globalUsageAgreement
+				.getUsageAgreementVersion();
+
+		long confirmedUsageAgreementVersion = subject
+				.getConfirmedUsageAgreementVersion();
+		if (confirmedUsageAgreementVersion != currentUsageAgreementVersion
+				&& currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
+						.longValue()) {
+			return true;
+		}
+		return false;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public void confirmGlobalUsageAgreementVersion() {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		LOG.debug("confirm global usage agreement for subject "
+				+ subject.getUserId());
+
+		GlobalUsageAgreementEntity usageAgreement = this.usageAgreementDAO
+				.getGlobalUsageAgreement();
+		if (null == usageAgreement)
+			subject
+					.setConfirmedUsageAgreementVersion(GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION);
+		else
+			subject.setConfirmedUsageAgreementVersion(usageAgreement
+					.getUsageAgreementVersion());
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public String getGlobalUsageAgreementText(String language) {
+		GlobalUsageAgreementEntity usageAgreement = this.usageAgreementDAO
+				.getGlobalUsageAgreement();
+		if (null == usageAgreement)
+			return null;
+		UsageAgreementTextEntity usageAgreementText = this.usageAgreementDAO
+				.getGlobalUsageAgreementText(usageAgreement, language);
+		if (null == usageAgreementText)
+			return null;
+		return usageAgreementText.getText();
+	}
+
 }
