@@ -512,10 +512,10 @@
 		<module>safe-online-webapp-common</module>
 		<module>safe-online-idmapping-ws</module>
 		<module>safe-online-idmapping-ws-impl</module>
-		<module>safe-online-performance-base</module>
 		<module>safe-online-performance-console-base</module>
 		<module>safe-online-performance-console-swing</module>
 		<module>safe-online-performance-agent</module>
+		<module>safe-online-performance-scenario-base</module>
 		<module>safe-online-performance-scenario</module>
 	</modules>
 	<repositories>
