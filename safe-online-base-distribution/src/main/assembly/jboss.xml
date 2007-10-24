@@ -7,7 +7,7 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>target/files/jboss-4.2.1.GA</directory>
+			<directory>target/files/jboss-4.2.2.GA</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
 				<exclude>**/jboss-saaj.jar</exclude>
