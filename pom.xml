@@ -519,7 +519,7 @@
 		<module>safe-online-idmapping-ws-impl</module>
 		<module>safe-online-performance-console-base</module>
 		<module>safe-online-performance-console-swing</module>
-		<module>safe-online-performance-agent</module>
+		<module>safe-online-performance-agent-service</module>
 		<module>safe-online-performance-scenario-base</module>
 		<module>safe-online-performance-scenario</module>
 		<module>safe-online-sts-ws</module>
