@@ -332,6 +332,66 @@ public static class MyCompounded {
 			according to 7.2 - Direct References.
 		</para>
 		<para>
+			An example SOAP message with WS-Security header is given in
+			the following example (we removed the namespace declaration attributes for readability).
+			<programlisting>
+&lt;soap:Envelope>
+	&lt;soap:Header>
+		&lt;wsse:Security soap:mustUnderstand="1">
+			&lt;wsse:BinarySecurityToken
+				EncodingType="http://docs.oasis-open.org/...#Base64Binary"
+				ValueType="http://docs.oasis-open.org/...#X509v3"
+				wsu:Id="the-cert">
+				...
+			&lt;/wsse:BinarySecurityToken>
+			&lt;ds:Signature>
+				&lt;ds:SignedInfo>
+					&lt;ds:CanonicalizationMethod
+						Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					&lt;ds:SignatureMethod
+						Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+					&lt;ds:Reference URI="#the-body">
+						&lt;ds:Transforms>
+							&lt;ds:Transform
+								Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+						&lt;/ds:Transforms>
+						&lt;ds:DigestMethod
+							Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+						&lt;ds:DigestValue>...&lt;/ds:DigestValue>
+					&lt;/ds:Reference>
+					&lt;ds:Reference URI="#the-timestamp">
+						&lt;ds:Transforms>
+							&lt;ds:Transform
+								Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+						&lt;/ds:Transforms>
+						&lt;ds:DigestMethod
+							Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+						&lt;ds:DigestValue>...&lt;/ds:DigestValue>
+					&lt;/ds:Reference>
+				&lt;/ds:SignedInfo>
+				&lt;ds:SignatureValue>
+					...
+				&lt;/ds:SignatureValue>
+				&lt;ds:KeyInfo>
+					&lt;wsse:SecurityTokenReference>
+						&lt;wsse:Reference URI="#the-cert" 
+							ValueType="http://docs.oasis-open.org/...#X509v3"/>
+					&lt;/wsse:SecurityTokenReference>
+				&lt;/ds:KeyInfo>
+			&lt;/ds:Signature>
+			&lt;wsu:Timestamp
+				wsu:Id="the-timestamp">
+				&lt;wsu:Created>2007-01-01T00:00:00.000Z&lt;/wsu:Created>
+			&lt;/wsu:Timestamp>
+		&lt;/wss:Security>
+	&lt;/soap:Header>
+	&lt;soap:Body wsu:Id="the-body">
+		...
+	&lt;/soap:Body>
+&lt;/soap:Envelope>
+			</programlisting>
+		</para>
+		<para>
 			The response SOAP messages will contain an unsigned
 			<code>Timestamp</code>
 			WS-Security SOAP header. This was done for compatibility
