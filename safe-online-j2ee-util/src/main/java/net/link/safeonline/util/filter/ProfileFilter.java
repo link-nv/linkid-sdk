@@ -1,7 +1,5 @@
 package net.link.safeonline.util.filter;
 
-import static net.link.safeonline.util.filter.ProfileStats.REQUEST_TIME;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -15,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
 import net.link.safeonline.util.jacc.ProfileData;
+import net.link.safeonline.util.jacc.ProfileDataLockedException;
+import net.link.safeonline.util.jacc.ProfilingPolicyContextHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,11 +22,6 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Servlet Filter profiles the request and adds the results as headers of the
  * response.<br>
- * <br>
- * One header identifies the total request processing time and multiple other
- * headers go into detail about the calls that were made onto the model. The
- * data for these headers is collected from the JACC Context as a
- * {@link ProfileData} object.
  * 
  * @author mbillemo
  * 
@@ -34,8 +29,6 @@ import org.apache.commons.logging.LogFactory;
 public class ProfileFilter implements Filter {
 
 	private static final Log LOG = LogFactory.getLog(ProfileFilter.class);
-
-	private ProfileData profileData;
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
@@ -46,14 +39,10 @@ public class ProfileFilter implements Filter {
 			return;
 		}
 
-		// Start collecting data. This clears and enables the profiler.
 		LOG.debug("Enabling profiler.");
-		this.profileData = ProfileData.getProfileData();
-		if (null == this.profileData) {
-			chain.doFilter(request, response);
-			return;
-		}
-		this.profileData.start();
+		ProfileData profileData = new ProfileData();
+		// publish the profile data on JACC
+		ProfilingPolicyContextHandler.setProfileData(profileData);
 
 		// Buffer the response so we can add our own headers.
 		BufferedServletResponseWrapper responseWrapper = new BufferedServletResponseWrapper(
@@ -65,18 +54,24 @@ public class ProfileFilter implements Filter {
 			chain.doFilter(request, responseWrapper);
 			long duration = System.currentTimeMillis() - startTime;
 
-			// Assign global statistics to profiling data.
-			this.profileData.setStatistic(REQUEST_TIME, duration);
+			if (profileData.isLocked()) {
+				LOG.debug("someone forgot to unlock the profile data");
+				profileData.unlock();
+			}
+			try {
+				profileData.addMeasurement(request.getLocalAddr(), duration);
+			} catch (ProfileDataLockedException e) {
+				// empty
+			}
 
 			// Add our profiling results as HTTP headers.
-			for (Map.Entry<String, String> header : this.profileData
-					.getHeaders().entrySet())
+			for (Map.Entry<String, String> header : profileData.getHeaders()
+					.entrySet())
 				responseWrapper.addHeader(header.getKey(), header.getValue());
 		}
 
 		finally {
 			responseWrapper.commit();
-			this.profileData.stop();
 		}
 	}
 
@@ -85,15 +80,13 @@ public class ProfileFilter implements Filter {
 	 */
 	public void init(@SuppressWarnings("unused")
 	FilterConfig filterConfig) {
-
-		/* Nothing to initialize. */
+		// empty
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void destroy() {
-
-		/* Aargh. */
+		// empty
 	}
 }

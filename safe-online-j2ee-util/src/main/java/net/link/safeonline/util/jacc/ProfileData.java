@@ -8,40 +8,24 @@
 package net.link.safeonline.util.jacc;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.security.jacc.PolicyContextException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import net.link.safeonline.util.filter.ProfileStats;
 
 /**
  * 
  * 
  * @author mbillemo
  */
-public class ProfileData extends LinkedList<Call> {
+public class ProfileData {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(ProfileData.class);
-
-	/**
-	 * Just a string that is used to identify the profiler's data.<br>
-	 * <br>
-	 * It is used by the {@link ProfileInterceptor} to identify its lock onto
-	 * the {@link javax.interceptor.InvocationContext} and by both the
-	 * {@link ProfileInterceptor} and
-	 * {@link net.link.safeonline.util.webapp.filter.ProfileFilter} to
-	 * communicate {@link ProfileData} over the JACC Context.
-	 */
-	public static final String KEY = ProfileData.class.getName();
 
 	/**
 	 * The header used to identify the method signature for a profile entry.
@@ -49,52 +33,17 @@ public class ProfileData extends LinkedList<Call> {
 	private static final String METHODSIG_HEADER = "X-Profiled-Method-";
 
 	/**
-	 * The header used to identify the time at which the method call was
-	 * initiated.
-	 */
-	private static final String INITIATED_HEADER = "X-Profiled-Initiated-";
-
-	/**
-	 * The header used to identify the time at which the method was completed.
+	 * The header used to communicate the duration of the call
 	 */
 	private static final String DURATION_HEADER = "X-Profiled-Duration-";
 
-	private Map<ProfileStats, Long> statistics;
+	private Map<String, Long> measurements;
 
-	private boolean enabled;
+	private boolean locked = false;
 
-	/**
-	 * Retrieve the {@link ProfileData} registered with the active JACC Context
-	 * (the context for the active thread). If we haven't created a handler yet,
-	 * then do so. If we haven't registered a {@link ProfileData} with the
-	 * handler yet for the current context, do so as well.
-	 */
-	public static ProfileData getProfileData() {
+	public ProfileData() {
 
-		BasicPolicyHandler<ProfileData> handler = BasicPolicyHandler
-				.getHandlerFor(ProfileData.class);
-
-		if (!handler.supports(KEY))
-			handler.register(KEY, new ProfileData());
-
-		try {
-			return handler.getContext(KEY);
-		}
-
-		// For some reason we couldn't find the profile data in JACC.
-		catch (PolicyContextException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Create a new {@link ProfileData} instance from scratch.
-	 */
-	private ProfileData() {
-
-		super();
-
-		this.statistics = new HashMap<ProfileStats, Long>();
+		this.measurements = new HashMap<String, Long>();
 	}
 
 	/**
@@ -108,15 +57,12 @@ public class ProfileData extends LinkedList<Call> {
 		// Prepare the patterns to match our headers against.
 		Pattern methodSigRegex = Pattern.compile(METHODSIG_HEADER + "(\\d+)",
 				Pattern.CASE_INSENSITIVE);
-		Pattern initiatedRegex = Pattern.compile(INITIATED_HEADER + "(\\d+)",
-				Pattern.CASE_INSENSITIVE);
 		Pattern completedRegex = Pattern.compile(DURATION_HEADER + "(\\d+)",
 				Pattern.CASE_INSENSITIVE);
 
 		// We'll first collect data we care about in arrays.
 		String[] methods = new String[headers.size()];
-		Long[] initiated = new Long[headers.size()];
-		Long[] completed = new Long[headers.size()];
+		Long[] timings = new Long[headers.size()];
 
 		// Parse every header to see if it's a profiler header and extract
 		// interesting data into the arrays.
@@ -127,27 +73,15 @@ public class ProfileData extends LinkedList<Call> {
 
 			String value = headerEntry.getValue().get(0);
 			Matcher methodMatcher = methodSigRegex.matcher(header);
-			Matcher initiatedMatcher = initiatedRegex.matcher(header);
 			Matcher completedMatcher = completedRegex.matcher(header);
-			ProfileStats statistic = ProfileStats.getStatFor(header);
 
 			try {
-				if (null != statistic)
-					this.statistics.put(statistic, Long.parseLong(value));
-
-				else if (methodMatcher.matches()) {
+				if (methodMatcher.matches()) {
 					int index = Integer.parseInt(methodMatcher.group(1));
 					methods[index] = value;
-				}
-
-				else if (initiatedMatcher.matches()) {
-					int index = Integer.parseInt(initiatedMatcher.group(1));
-					initiated[index] = Long.parseLong(value);
-				}
-
-				else if (completedMatcher.matches()) {
+				} else if (completedMatcher.matches()) {
 					int index = Integer.parseInt(completedMatcher.group(1));
-					completed[index] = Long.parseLong(value);
+					timings[index] = Long.parseLong(value);
 				}
 			}
 
@@ -161,7 +95,7 @@ public class ProfileData extends LinkedList<Call> {
 		// in the arrays.
 		for (int i = 0; i < headers.size(); ++i)
 			if (null != methods[i])
-				add(new Call(methods[i], initiated[i], completed[i]));
+				this.measurements.put(methods[i], timings[i]);
 	}
 
 	/**
@@ -173,84 +107,49 @@ public class ProfileData extends LinkedList<Call> {
 		Map<String, String> headers = new HashMap<String, String>();
 		int entry = 0;
 
-		for (Call call : this) {
-			String methodSig = call.getSignature();
-			String initiated = String.valueOf(call.getInitiated().getTime());
-			String duration = String.valueOf(call.getDuration());
-
-			headers.put(METHODSIG_HEADER + entry, methodSig);
-			headers.put(INITIATED_HEADER + entry, initiated);
-			headers.put(DURATION_HEADER + entry, duration);
+		for (String measurement : this.measurements.keySet()) {
+			headers.put(METHODSIG_HEADER + entry, measurement);
+			headers.put(DURATION_HEADER + entry, this.measurements.get(
+					measurement).toString());
 
 			entry++;
-		}
-
-		for (Map.Entry<ProfileStats, Long> statisticEntry : this.statistics
-				.entrySet()) {
-			String statistic = statisticEntry.getKey().getHeader();
-			String timing = String.valueOf(statisticEntry.getValue());
-
-			headers.put(statistic, timing);
 		}
 
 		return headers;
 	}
 
-	/**
-	 * Retrieve the value for the given statistic.
-	 */
-	public Long getStatistic(ProfileStats statistic) {
+	public Map<String, Long> getMeasurements() {
 
-		return this.statistics.get(statistic);
+		return this.measurements;
 	}
 
-	/**
-	 * Assign a value to the given statistic.
-	 */
-	public void setStatistic(ProfileStats statistic, Long value) {
+	public void addMeasurement(String method, Long value)
+			throws ProfileDataLockedException {
 
-		this.statistics.put(statistic, value);
+		if (this.locked)
+			throw new ProfileDataLockedException();
+		this.measurements.put(method, value);
 	}
 
-	/**
-	 * Enable the profiler. This also clears any existing profiling data.
-	 * 
-	 * @see ProfileData#clear()
-	 */
-	public void start() {
+	public void clear() throws ProfileDataLockedException {
 
-		this.enabled = true;
-		clear();
+		if (this.locked)
+			throw new ProfileDataLockedException();
+		this.measurements.clear();
 	}
 
-	/**
-	 * Disable the profiler. This prevents further requests in the same
-	 * Application Server thread not intended for profiling from performing
-	 * unnecessary tasks.
-	 */
-	public void stop() {
-
-		this.enabled = false;
+	public boolean isLocked() {
+		return this.locked;
 	}
 
-	/**
-	 * Check to see if the profiler has been enabled.
-	 */
-	public boolean isEnabled() {
-
-		return this.enabled;
+	public void lock() throws ProfileDataLockedException {
+		if (this.locked)
+			throw new ProfileDataLockedException();
+		this.locked = true;
 	}
 
-	/**
-	 * Resets the {@link ProfileData} collected so far. Call this whenever you
-	 * start profiling to prevent previous profiling runs from having their
-	 * results merged with this run's data.
-	 */
-	@Override
-	public void clear() {
-
-		super.clear();
-		this.statistics.clear();
+	public void unlock() {
+		this.locked = false;
 	}
 
 	/**
@@ -261,20 +160,13 @@ public class ProfileData extends LinkedList<Call> {
 
 		StringBuffer result = new StringBuffer();
 
-		result.append("Statistics:\n");
-		for (Map.Entry<ProfileStats, Long> statistic : this.statistics
-				.entrySet()) {
-			result.append(statistic.getKey().getDescription());
+		result.append("Measurements:\n");
+		for (Map.Entry<String, Long> measurement : this.measurements.entrySet()) {
+			result.append(measurement.getKey());
 			result.append(":  ");
-			result.append(statistic.getValue());
+			result.append(measurement.getValue());
 			result.append('\n');
 		}
-
-		result.append("\nCalls (" + size() + "):\n");
-		for (Call call : this)
-			result.append(String.format("[%s] Spent %d ms in '%s'.%n", call
-					.getInitiated().toString(), call.getDuration(), call
-					.getSignature()));
 
 		return result.toString();
 	}

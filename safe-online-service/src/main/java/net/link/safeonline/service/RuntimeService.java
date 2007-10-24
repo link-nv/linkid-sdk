@@ -14,6 +14,7 @@ import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
 
 import net.link.safeonline.audit.AuditContextPolicyContextHandler;
+import net.link.safeonline.util.jacc.ProfilingPolicyContextHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +40,7 @@ public class RuntimeService extends ServiceMBeanSupport implements
 		LOG.debug("start");
 		registerBouncyCastle();
 		registerAuditContextPolicyContextHandler();
+		registerProfilingPolicyContextHandler();
 	}
 
 	@Override
@@ -75,6 +77,20 @@ public class RuntimeService extends ServiceMBeanSupport implements
 			PolicyContext.registerHandler(
 					AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY,
 					auditContextPolicyContextHandler, false);
+		}
+	}
+
+	private void registerProfilingPolicyContextHandler()
+			throws PolicyContextException {
+		@SuppressWarnings("unchecked")
+		Set<String> handlerKeys = PolicyContext.getHandlerKeys();
+		if (false == handlerKeys
+				.contains(ProfilingPolicyContextHandler.PROFILING_CONTEXT_KEY)) {
+			LOG.debug("Registering profiling policy context handler...");
+			ProfilingPolicyContextHandler profilingPolicyContextHandler = new ProfilingPolicyContextHandler();
+			PolicyContext.registerHandler(
+					ProfilingPolicyContextHandler.PROFILING_CONTEXT_KEY,
+					profilingPolicyContextHandler, false);
 		}
 	}
 }
