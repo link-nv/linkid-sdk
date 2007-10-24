@@ -35,7 +35,7 @@ import org.jboss.security.SimplePrincipal;
  * request.getUserPrincipal and request.isUserInRole methods. This filter does
  * not provide web resource protection itself.
  * 
- * See also: {@link http://securityfilter.sourceforge.net/}.
+ * @see <a href="http://securityfilter.sourceforge.net/test">SecurityFilter</a>
  * 
  * @author fcorneli
  * 

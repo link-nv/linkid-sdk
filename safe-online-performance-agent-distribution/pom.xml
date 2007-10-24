@@ -1,40 +1,115 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<?xml version="1.0"?>
+<project>
 	<parent>
-		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k</groupId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.lin-k.safe-online</groupId>
-	<artifactId>safe-online-performance-agent-distribution</artifactId>
-	<packaging>jar</packaging>
+	<artifactId>safe-online-demo-distribution</artifactId>
+	<name>SafeOnline Demo Distribution</name>
 	<version>1.0-SNAPSHOT</version>
-	<name>SafeOnline Performance Agent Distribution</name>
-	<description>Distribution of the SafeOnline Performance testing agent.</description>
-	<reporting>
+	<packaging>pom</packaging>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changes-plugin</artifactId>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>changes-report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>filter</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>net.lin-k.safe-online</groupId>
+									<artifactId>safe-online-base-distribution</artifactId>
+									<version>1.0-SNAPSHOT</version>
+									<type>zip</type>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>
+								${project.build.directory}/files
+							</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-performance-agent-service
+									</artifactId>
+									<version>1.0-SNAPSHOT</version>
+									<type>sar</type>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>
+								${project.build.directory}/files
+							</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>
+							src/main/assembly/jboss.xml
+						</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
-	</reporting>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-performance-agent-service</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<type>sar</type>
+		</dependency>
+	</dependencies>
 </project>

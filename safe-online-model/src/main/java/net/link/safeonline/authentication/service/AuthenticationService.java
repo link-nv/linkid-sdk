@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 
 import javax.ejb.Local;
@@ -68,7 +69,6 @@ public interface AuthenticationService {
 	 * 
 	 * @param applicationId
 	 * @param requiredDevicePolicy
-	 * @return
 	 * @throws SubscriptionNotFoundException
 	 *             in case the subject is not subscribed to the application.
 	 * @throws ApplicationNotFoundException

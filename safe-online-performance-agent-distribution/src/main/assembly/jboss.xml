@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<assembly xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>
+				target/files/safe-online-base-distribution-1.0-SNAPSHOT/jboss
+			</directory>
+			<outputDirectory>jboss</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/classes/jboss</directory>
+			<outputDirectory>jboss</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/files/sar</directory>
+			<outputDirectory>
+				jboss/server/default/deploy
+			</outputDirectory>
+		</fileSet>
+	</fileSets>
+	<files>
+		<file>
+			<source>
+				target/files/safe-online-performance-agent-service-1.0-SNAPSHOT.sar
+			</source>
+			<outputDirectory>
+				jboss/server/default/deploy
+			</outputDirectory>
+		</file>
+	</files>
+</assembly>

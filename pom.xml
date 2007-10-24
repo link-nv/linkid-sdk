@@ -1566,7 +1566,7 @@
 		<webui-jsf.version>4.1-b6</webui-jsf.version>
 		<dataprovider.version>4.1-b6</dataprovider.version>
 		<json.version>4.1-b6</json.version>
-		<jgroups.version>2.2.5</jgroups.version>
+		<jgroups.version>2.5.0-GA</jgroups.version>
 		<gravel.version>1.0.0.GA</gravel.version>
 		<velocity.version>1.5</velocity.version>
 		<xercesImpl.version>2.8.1</xercesImpl.version>

@@ -96,7 +96,6 @@ public class BasicPolicyHandler<T> extends HashMap<String, T> implements
 
 	/**
 	 * Register an object in the active JACC Context.<br>
-	 * {@inheritDoc}
 	 */
 	public boolean register(String key, T value) {
 
