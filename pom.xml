@@ -417,6 +417,11 @@
 					<artifactId>maven-jdocbook-plugin</artifactId>
 					<version>${maven-jdocbook-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven-javadoc-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -1583,5 +1588,8 @@
 		<maven-jdocbook-plugin.version>
 			2.0.1-15795
 		</maven-jdocbook-plugin.version>
+		<maven-javadoc-plugin.version>
+			2.3
+		</maven-javadoc-plugin.version>
 	</properties>
 </project>
