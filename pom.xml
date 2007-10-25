@@ -582,6 +582,7 @@
 		<module>safe-online-performance-scenario-base</module>
 		<module>safe-online-performance-scenario</module>
 		<module>safe-online-sts-ws</module>
+		<module>safe-online-sts-ws-impl</module>
 	</modules>
 	<repositories>
 		<repository>

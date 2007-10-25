@@ -6,13 +6,15 @@ SafeOnline JBoss Application Server
  
  In this document we will use <<<$JBOSS_HOME>>> to denote the installation directory of JBoss AS.
  It is <<not>> needed to define <<<$JBOSS_HOME>>> as environment variable.
+ 
+ Different JBoss configurations are available via the <<<safe-online-xxx-distribution>>> artifacts.
 
  
 * Installation
 
 ** Basic configuration
 
- Download JBoss AS 4.2.1.GA from http://labs.jboss.com/portal/jbossas/download/index.html
+ Download JBoss AS 4.2.2.GA from http://labs.jboss.com/portal/jbossas/download/index.html
 
 +---+
 unzip jboss-4.x.x.GA.zip
@@ -28,17 +30,17 @@ JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=128m"
 +---+
 
 
-** JAX-WS RI 2.1.1 runtime libraries
+** JAX-WS RI 2.1.2 runtime libraries
 
  The JBoss SAAJ implementation <<<jboss-saaj.jar>>> (SAAJ 1.2) will conflict with JAX-WS SAAJ (SAAJ 1.3). 
  One needs to remove <<<jboss-saaj.jar>>> from <<<$JBOSS_HOME/server/default/lib>>>.
 
- Download <<<JAXWS2.1.1_20070501.jar>>> from {{https://jax-ws.dev.java.net/2.1.1/}}.
+ Download <<<JAXWS2.1.2-20070917.jar>>> from {{https://jax-ws.dev.java.net/2.1.2/}}.
  
  Run the installer via:
  
 +---+
-java -jar JAXWS2.1.1_20070501.jar
+java -jar JAXWS2.1.2-20070917.jar
 +---+
  
  Copy all JARs from <<<$JAXWS-RI/lib>>> to <<<$JBOSS_HOME/server/default/lib/>>>.

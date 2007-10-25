@@ -23,4 +23,11 @@
 		service="{urn:oasis:names:tc:SAML:2.0:protocol}NameIdentifierMappingService"
 		port="{urn:oasis:names:tc:SAML:2.0:protocol}NameIdentifierMappingPort" />
 
+	<endpoint name="SafeOnline-Security-Token-Service"
+		implementation="net.link.safeonline.sts.ws.SecurityTokenServicePortImpl"
+		url-pattern="/sts"
+		interface="org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort"
+		service="{http://docs.oasis-open.org/ws-sx/ws-trust/200512/}SecurityTokenService"
+		port="{http://docs.oasis-open.org/ws-sx/ws-trust/200512/}SecurityTokenServicePort" />
+
 </endpoints>

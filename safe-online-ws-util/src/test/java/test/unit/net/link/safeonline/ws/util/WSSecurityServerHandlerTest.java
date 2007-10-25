@@ -640,7 +640,7 @@ public class WSSecurityServerHandlerTest {
 
 		Element bodyElement = document.createElementNS(
 				"http://schemas.xmlsoap.org/soap/envelope/", "soap:Body");
-		String bodyId = "id-" + UUID.randomUUID().toString();
+		String bodyId = "id-body-" + UUID.randomUUID().toString();
 		bodyElement.setAttributeNS(null, "Id", bodyId);
 		envelopeElement.appendChild(bodyElement);
 
@@ -653,12 +653,13 @@ public class WSSecurityServerHandlerTest {
 				XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512,
 				Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS);
 		securityElement.appendChild(signature.getElement());
-		/*
-		 * { Transforms transforms = new Transforms(document); transforms
-		 * .addTransform(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS);
-		 * signature.addDocument("#" + bodyId, transforms,
-		 * MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512); }
-		 */
+		{
+			Transforms transforms = new Transforms(document);
+			transforms
+					.addTransform(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS);
+			signature.addDocument("#" + bodyId, transforms,
+					MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512);
+		}
 		{
 			Transforms transforms = new Transforms(document);
 			transforms
@@ -711,6 +712,8 @@ public class WSSecurityServerHandlerTest {
 					.get(WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS);
 			if (null != signedElements) {
 				LOG.debug("signed elements: " + signedElements);
+				assertTrue(signedElements.contains(bodyId));
+				assertTrue(signedElements.contains(timestampId));
 			}
 		}
 	}

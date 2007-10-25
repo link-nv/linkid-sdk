@@ -7,65 +7,57 @@
 
 package net.link.safeonline.sts.ws;
 
-import java.security.PublicKey;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.bind.JAXBElement;
-import javax.xml.transform.TransformerException;
+import javax.xml.ws.WebServiceContext;
 
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.ws.util.ri.Injection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xpath.XPathAPI;
 import org.joda.time.DateTime;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.ObjectFactory;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenResponseType;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenType;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.ValidateTargetType;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.AuthnContextClassRef;
+import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.io.Unmarshaller;
 import org.opensaml.xml.io.UnmarshallingException;
-import org.opensaml.xml.security.x509.BasicX509Credential;
-import org.opensaml.xml.signature.Signature;
-import org.opensaml.xml.signature.SignatureValidator;
-import org.opensaml.xml.validation.ValidationException;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of WS-Trust 1.3 STS JAX-WS web service endpoint.
+ * Implementation of WS-Trust 1.3 STS JAX-WS web service endpoint. Beware that
+ * we validate both the WS-Security and SAML token signature via SOAP handlers.
+ * The signature validation cannot be done within the endpoint implemention
+ * since JAXB somehow breaks the signature digests.
  * 
  * @author fcorneli
  */
 @WebService(endpointInterface = "org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort")
-@HandlerChain(file = "app-auth-ws-handlers.xml")
+@HandlerChain(file = "sts-ws-handlers.xml")
 @Injection
 public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 
 	private static final Log LOG = LogFactory
 			.getLog(SecurityTokenServicePortImpl.class);
 
-	private PublicKey publicKey;
-
-	@PostConstruct
-	public void postConstructCallback() {
-		LOG.debug("post construct");
-		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-		this.publicKey = identityServiceClient.getPublicKey();
-	}
+	@Resource
+	private WebServiceContext context;
 
 	public RequestSecurityTokenResponseType requestSecurityToken(
 			RequestSecurityTokenType request) {
@@ -92,31 +84,25 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 			throw new RuntimeException("only supporting the validation binding");
 		}
 		if (null == validateTarget) {
-			throw new RuntimeException("ValidateTarget is required");
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"ValidateTarget is required");
+			return response;
 		}
 		Element tokenElement = (Element) validateTarget.getAny();
 		if (null == tokenElement) {
-			throw new RuntimeException("missing token to validate");
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"missing token to validate");
+			return response;
 		}
 
-		Element nsElement = tokenElement.getOwnerDocument().createElement(
-				"nsElement");
-		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds",
-				"http://www.w3.org/2000/09/xmldsig#");
-
-		Element signatureElement;
-		try {
-			signatureElement = (Element) XPathAPI.selectSingleNode(
-					tokenElement, "ds:Signature", nsElement);
-		} catch (TransformerException e) {
-			throw new RuntimeException("XPath error");
-		}
-		try {
-			XMLSignature xmlSignature = new XMLSignature(signatureElement, null);
-			boolean result = xmlSignature.checkSignatureValue(this.publicKey);
-			LOG.debug("result of XML Signature validation: " + result);
-		} catch (XMLSecurityException e) {
-			throw new RuntimeException("XML security error");
+		boolean result = TokenValidationHandler.getValidity(this.context);
+		if (false == result) {
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"token signature not valid");
+			return response;
 		}
 
 		Unmarshaller unmarshaller = Configuration.getUnmarshallerFactory()
@@ -126,15 +112,33 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 			tokenXmlObject = unmarshaller.unmarshall(tokenElement);
 		} catch (UnmarshallingException e) {
 			LOG.debug("error parsing token: " + e.getMessage(), e);
-			throw new RuntimeException("error parsing token");
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"error parsing token");
+			return response;
 		}
 		if (false == tokenXmlObject instanceof Response) {
-			throw new RuntimeException("token not a SAML2 Response");
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"token not a SAML2 Response");
+			return response;
 		}
 		Response samlResponse = (Response) tokenXmlObject;
+
+		if (false == StatusCode.SUCCESS_URI.equals(samlResponse.getStatus()
+				.getStatusCode())) {
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"invalid SAML2 token status code");
+			return response;
+		}
+
 		List<Assertion> assertions = samlResponse.getAssertions();
 		if (assertions.isEmpty()) {
-			throw new RuntimeException("missing Assertion in SAML2 Response");
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"missing Assertion in SAML2 Response");
+			return response;
 		}
 		Assertion assertion = assertions.get(0);
 
@@ -143,34 +147,51 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 		DateTime notOnOrAfter = conditions.getNotOnOrAfter();
 		DateTime now = new DateTime();
 		if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
-			throw new RuntimeException("invalid SAML message timeframe");
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"invalid SAML message timeframe");
+			return response;
 		}
 
 		Subject subject = assertion.getSubject();
 		if (null == subject) {
-			throw new RuntimeException("missing Assertion Subject");
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"missing Assertion Subject");
+			return response;
 		}
 		NameID subjectName = subject.getNameID();
 		String subjectNameValue = subjectName.getValue();
 		LOG.debug("subject name value: " + subjectNameValue);
 
-		BasicX509Credential basicX509Credential = new BasicX509Credential();
-		basicX509Credential.setPublicKey(this.publicKey);
-		SignatureValidator signatureValidator = new SignatureValidator(
-				basicX509Credential);
-		Signature signature = samlResponse.getSignature();
-		if (null == signature) {
-			throw new RuntimeException("SAML token has no Signature element");
+		List<AuthnStatement> authnStatements = assertion.getAuthnStatements();
+		if (authnStatements.isEmpty()) {
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"no authentication statement present");
+			return response;
 		}
-		try {
-			signatureValidator.validate(samlResponse.getSignature());
-		} catch (ValidationException e) {
-			LOG.error("validation error: " + e.getMessage(), e);
-			throw new RuntimeException(
-					"SAML2 response token signature not valid");
-		}
+		AuthnStatement authnStatement = authnStatements.get(0);
+		AuthnContextClassRef authnContextClassRef = authnStatement
+				.getAuthnContext().getAuthnContextClassRef();
+		String authnDevice = authnContextClassRef.getAuthnContextClassRef();
+		LOG.debug("authentication device: " + authnDevice);
 
+		RequestSecurityTokenResponseType response = createResponse(
+				SecurityTokenServiceConstants.STATUS_VALID, null);
+		return response;
+	}
+
+	private RequestSecurityTokenResponseType createResponse(String statusCode,
+			String reason) {
+		ObjectFactory objectFactory = new ObjectFactory();
 		RequestSecurityTokenResponseType response = new RequestSecurityTokenResponseType();
+		StatusType status = objectFactory.createStatusType();
+		status.setCode(statusCode);
+		if (null != reason) {
+			status.setReason(reason);
+		}
+		response.getAny().add(objectFactory.createStatus(status));
 		return response;
 	}
 }

@@ -22,21 +22,21 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jboss-maven-plugin</artifactId>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webResources>
-                        <resource>
-                            <directory>
-                                ${basedir}/src/main/webapp/WEB-INF
-                            </directory>
-                            <targetPath>WEB-INF</targetPath>
-                            <filtering>true</filtering>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>
+								${basedir}/src/main/webapp/WEB-INF
+							</directory>
+							<targetPath>WEB-INF</targetPath>
+							<filtering>true</filtering>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -115,6 +115,34 @@
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
 					<artifactId>safe-online-j2ee-util</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-sts-ws-impl</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>net.lin-k.safe-online</groupId>
+					<artifactId>safe-online-model</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.lin-k.safe-online</groupId>
+					<artifactId>safe-online-j2ee-util</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>opensaml</groupId>
+					<artifactId>xmltooling</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>opensaml</groupId>
+					<artifactId>openws</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>opensaml</groupId>
+					<artifactId>opensaml</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
