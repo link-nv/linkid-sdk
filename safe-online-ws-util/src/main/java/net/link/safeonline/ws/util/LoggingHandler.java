@@ -7,6 +7,9 @@
 
 package net.link.safeonline.ws.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Set;
 
@@ -26,6 +29,7 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
@@ -67,6 +71,22 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 		SOAPPart soapPart = soapMessage.getSOAPPart();
 		LOG.debug("SOAP message (outbound: " + outboundProperty + "): "
 				+ toString(soapPart));
+		try {
+			File tmpFile;
+			if (true == outboundProperty) {
+				tmpFile = File.createTempFile("outbound-soap-", ".xml");
+			} else {
+				tmpFile = File.createTempFile("inbound-soap-", ".xml");
+			}
+			FileOutputStream outputStream = new FileOutputStream(tmpFile);
+			try {
+				IOUtils.write(toString(soapPart), outputStream);
+			} finally {
+				IOUtils.closeQuietly(outputStream);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("IO error: " + e.getMessage());
+		}
 		return true;
 	}
 
