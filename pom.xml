@@ -134,6 +134,25 @@
     				</filter-mapping>
 				]]>
 				</safe-online.profiling>
+				<safe-online.profiling.interceptor><![CDATA[
+					<interceptors>
+						<interceptor>
+							<interceptor-class>
+								net.link.safeonline.interceptor.ProfileInterceptor
+							</interceptor-class>
+						</interceptor>
+					</interceptors>
+
+					<assembly-descriptor>
+						<interceptor-binding>
+							<ejb-name>*</ejb-name>
+							<interceptor-class>
+								net.link.safeonline.interceptor.ProfileInterceptor
+							</interceptor-class>
+						</interceptor-binding>
+					</assembly-descriptor>
+				]]>
+				</safe-online.profiling.interceptor>
 			</properties>
 		</profile>
 		<profile>
