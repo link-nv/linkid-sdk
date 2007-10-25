@@ -6,6 +6,9 @@
  */
 package net.link.safeonline.owner.bean;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
@@ -176,39 +179,39 @@ public class UsageAgreementBean implements UsageAgreement {
 	 * Accessors
 	 */
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public boolean getCurrentUsageAgreementIsEmpty() {
+	public UsageAgreementEntity getCurrentUsageAgreement() {
 		try {
-			return null == this.usageAgreementService
+			return this.usageAgreementService
 					.getCurrentUsageAgreement(this.selectedApplication
 							.getName());
 		} catch (ApplicationNotFoundException e) {
 			LOG.debug("application not found.");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return false;
+			return null;
 		} catch (PermissionDeniedException e) {
 			LOG.debug("permission denied.");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return false;
+			return null;
 		}
 	}
 
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
-	public boolean getDraftUsageAgreementIsEmpty() {
+	public UsageAgreementEntity getDraftUsageAgreement() {
 		try {
-			return null == this.usageAgreementService
+			return this.usageAgreementService
 					.getDraftUsageAgreement(this.selectedApplication.getName());
 		} catch (ApplicationNotFoundException e) {
 			LOG.debug("application not found.");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return false;
+			return null;
 		} catch (PermissionDeniedException e) {
 			LOG.debug("permission denied.");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return false;
+			return null;
 		}
 	}
 
@@ -222,6 +225,22 @@ public class UsageAgreementBean implements UsageAgreement {
 		this.language = language;
 	}
 
+	@RolesAllowed(OwnerConstants.OWNER_ROLE)
+	public List<String> autocompleteLanguage(Object event) {
+		String languagePrefix = event.toString();
+		LOG.debug("auto-complete language: " + languagePrefix);
+		List<String> languages = new LinkedList<String>();
+		Locale[] locales = Locale.getAvailableLocales();
+		for (Locale locale : locales) {
+			if (locale.getLanguage().toLowerCase().startsWith(
+					languagePrefix.toLowerCase())) {
+				if (!languages.contains(locale.getLanguage()))
+					languages.add(locale.getLanguage());
+			}
+		}
+		return languages;
+	}
+
 	/*
 	 * Actions
 	 */
@@ -229,6 +248,22 @@ public class UsageAgreementBean implements UsageAgreement {
 	public String viewText() {
 		LOG.debug("view usage agreement text: language="
 				+ this.selectedUsageAgreementText.getLanguage());
+		return "viewtext";
+	}
+
+	@RolesAllowed(OwnerConstants.OWNER_ROLE)
+	public String viewCurrentText() {
+		LOG.debug("view text: language="
+				+ this.selectedCurrentUsageAgreementText.getLanguage());
+		this.selectedUsageAgreementText = this.selectedCurrentUsageAgreementText;
+		return "viewtext";
+	}
+
+	@RolesAllowed(OwnerConstants.OWNER_ROLE)
+	public String viewDraftText() {
+		LOG.debug("view draft text: language="
+				+ this.selectedDraftUsageAgreementText.getLanguage());
+		this.selectedUsageAgreementText = this.selectedDraftUsageAgreementText;
 		return "viewtext";
 	}
 

@@ -6,6 +6,9 @@
  */
 package net.link.safeonline.oper.usage.bean;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
@@ -130,6 +133,22 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
 				+ this.globalCurrentUsageAgreement.getUsageAgreementVersion());
 		return this.globalCurrentUsageAgreement.getUsageAgreementVersion()
 				.toString();
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public List<String> autocompleteLanguage(Object event) {
+		String languagePrefix = event.toString();
+		LOG.debug("auto-complete language: " + languagePrefix);
+		List<String> languages = new LinkedList<String>();
+		Locale[] locales = Locale.getAvailableLocales();
+		for (Locale locale : locales) {
+			if (locale.getLanguage().toLowerCase().startsWith(
+					languagePrefix.toLowerCase())) {
+				if (!languages.contains(locale.getLanguage()))
+					languages.add(locale.getLanguage());
+			}
+		}
+		return languages;
 	}
 
 	/*
@@ -261,5 +280,4 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
 		this.currentUsageAgreementsTexts = this.globalCurrentUsageAgreement
 				.getUsageAgreementTexts();
 	}
-
 }

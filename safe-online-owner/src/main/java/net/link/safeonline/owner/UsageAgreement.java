@@ -6,7 +6,11 @@
  */
 package net.link.safeonline.owner;
 
+import java.util.List;
+
 import javax.ejb.Local;
+
+import net.link.safeonline.entity.UsageAgreementEntity;
 
 @Local
 public interface UsageAgreement {
@@ -24,6 +28,10 @@ public interface UsageAgreement {
 	 * Actions
 	 */
 	String viewText();
+
+	String viewCurrentText();
+
+	String viewDraftText();
 
 	String saveText();
 
@@ -44,13 +52,15 @@ public interface UsageAgreement {
 	/*
 	 * Accessors
 	 */
-	boolean getDraftUsageAgreementIsEmpty();
+	UsageAgreementEntity getDraftUsageAgreement();
 
-	boolean getCurrentUsageAgreementIsEmpty();
+	UsageAgreementEntity getCurrentUsageAgreement();
 
 	void setLanguage(String language);
 
 	String getLanguage();
+
+	List<String> autocompleteLanguage(Object event);
 
 	/*
 	 * Lifecycle

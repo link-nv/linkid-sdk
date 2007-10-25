@@ -23,13 +23,12 @@
 
 		<h1>#{selectedApplication.name}</h1>
 
-		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{selectedApplication.currentApplicationUsageAgreement}
-		</h2>
+		<h2>#{msgs.usageAgreement}</h2>
 
 		<rich:tabPanel id="usagePanel" switchType="client">
 
 			<rich:tab label="#{msgs.version}: #{msgs.draft}"
-				rendered="#{!ownerUsageAgreement.draftUsageAgreementIsEmpty}">
+				rendered="#{!empty ownerUsageAgreement.draftUsageAgreement}">
 
 				<a4j:form id="editDraftForm" reRender="usagePanel" ajaxSubmit="true">
 					<h:panelGrid columns="2" border="0">
@@ -40,22 +39,30 @@
 					</h:panelGrid>
 				</a4j:form>
 
-				<a4j:form id="addDraftLanguageForm" reRender="usagePanel"
-					ajaxSubmit="true">
+				<h:form id="addDraftLanguageForm">
 					<f:facet name="aroundInvalidField">
 						<s:span styleClass="error" />
 					</f:facet>
 					<h:panelGrid columns="4" border="0">
 						<h:outputLabel value="#{msgs.language}" />
-						<s:decorate>
-							<h:inputText id="language"
-								value="#{ownerUsageAgreement.language}" required="true" />
-						</s:decorate>
+						<h:panelGroup>
+							<s:decorate>
+								<h:inputText id="language"
+									value="#{ownerUsageAgreement.language}" required="true" />
+							</s:decorate>
+							<rich:suggestionbox for="language"
+								suggestionAction="#{ownerUsageAgreement.autocompleteLanguage}"
+								var="languageInput" selfRendered="true">
+								<h:column>
+									<h:outputText value="#{languageInput}" />
+								</h:column>
+							</rich:suggestionbox>
+						</h:panelGroup>
 						<h:message for="language" styleClass="error" />
-						<a4j:commandLink value="#{msgs.addaction}"
+						<h:commandLink value="#{msgs.addaction}"
 							action="#{ownerUsageAgreement.addText}" />
 					</h:panelGrid>
-				</a4j:form>
+				</h:form>
 
 				<a4j:form id="editDraftTextsForm" reRender="usagePanel"
 					ajaxSubmit="true">
@@ -64,8 +71,12 @@
 						styleClass="listingTable"
 						rowClasses="listingTable_Row1,listingTable_Row2">
 						<h:column>
-							<a4j:commandLink id="edit-draft-text"
+							<a4j:commandLink id="view-draft-text"
 								value="#{msgs.language}: #{item.language}"
+								action="#{ownerUsageAgreement.viewDraftText}" />
+						</h:column>
+						<h:column>
+							<a4j:commandLink id="edit-draft-text" value="#{msgs.editaction}"
 								action="#{ownerUsageAgreement.editDraftText}" />
 						</h:column>
 						<h:column>
@@ -83,7 +94,7 @@
 
 			<rich:tab
 				label="#{msgs.version}: #{selectedApplication.currentApplicationUsageAgreement}"
-				rendered="#{!ownerUsageAgreement.currentUsageAgreementIsEmpty}">
+				rendered="#{!empty ownerUsageAgreement.currentUsageAgreement}">
 				<a4j:form id="editCurrentForm" reRender="usagePanel"
 					ajaxSubmit="true">
 					<rich:dataTable id="current-text-data" var="item"
@@ -93,31 +104,30 @@
 						<h:column>
 							<a4j:commandLink id="edit-current-text"
 								value="#{msgs.language}: #{item.language}"
-								action="#{ownerUsageAgreement.editCurrentText}"
-								rendered="#{ownerUsageAgreement.draftUsageAgreementIsEmpty}" />
+								action="#{ownerUsageAgreement.viewCurrentText}" />
+						</h:column>
+						<h:column>
 							<a4j:commandLink id="view-current-text"
-								value="#{msgs.language}: #{item.language}"
-								action="#{ownerUsageAgreement.viewText}"
-								rendered="#{!ownerUsageAgreement.draftUsageAgreementIsEmpty}" />
+								value="#{msgs.editaction}"
+								action="#{ownerUsageAgreement.editCurrentText}" />
 						</h:column>
 						<f:facet name="footer">
 							<rich:datascroller for="current-text-data" />
 						</f:facet>
 					</rich:dataTable>
 
-					<a4j:commandButton id="create-agreement"
-						value="#{msgs.createaction}"
+					<a4j:commandButton id="edit-agreement" value="#{msgs.editaction}"
 						action="#{ownerUsageAgreement.createUsageAgreement}"
-						rendered="#{ownerUsageAgreement.draftUsageAgreementIsEmpty}" />
+						rendered="#{empty ownerUsageAgreement.draftUsageAgreement}" />
 				</a4j:form>
 			</rich:tab>
 		</rich:tabPanel>
 
-		<a4j:form id="createForm" reRender="usagePanel" ajaxSubmit="true">
-			<a4j:commandButton id="create-agreement" value="#{msgs.createaction}"
+		<h:form>
+			<h:commandButton id="create-agreement" value="#{msgs.createaction}"
 				action="#{ownerUsageAgreement.createUsageAgreement}"
-				rendered="#{ownerUsageAgreement.currentUsageAgreementIsEmpty}" />
-		</a4j:form>
+				rendered="#{empty ownerUsageAgreement.currentUsageAgreement and empty owerUsageAgreement.draftUsageAgreement}" />
+		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">

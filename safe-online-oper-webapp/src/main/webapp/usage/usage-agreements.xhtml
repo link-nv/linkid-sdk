@@ -28,8 +28,7 @@
 			<rich:tab label="#{msgs.version}: #{msgs.draft}"
 				rendered="#{!empty globalUsageAgreement.draftUsageAgreement}">
 
-				<a4j:form id="editDraftForm" ajaxSubmit="true"
-					reRender="contentHeader,usagePanel">
+				<a4j:form id="editDraftForm" ajaxSubmit="true" reRender="usagePanel">
 					<h:panelGrid columns="2" border="0">
 						<a4j:commandLink value="#{msgs.releaseaction}"
 							action="#{globalUsageAgreement.releaseDraft}" />
@@ -38,22 +37,30 @@
 					</h:panelGrid>
 				</a4j:form>
 
-				<a4j:form id="addDraftLanguageForm" reRender="usagePanel"
-					ajaxSubmit="true">
+				<h:form id="addDraftLanguageForm">
 					<f:facet name="aroundInvalidField">
 						<s:span styleClass="error" />
 					</f:facet>
 					<h:panelGrid columns="4" border="0">
-						<h:outputLabel value="#{msgs.language}" />
-						<s:decorate>
-							<h:inputText id="language"
-								value="#{globalUsageAgreement.language}" required="true" />
-						</s:decorate>
+						<h:outputLabel for="language" value="#{msgs.language}" />
+						<h:panelGroup>
+							<s:decorate>
+								<h:inputText id="language"
+									value="#{globalUsageAgreement.language}" required="true" />
+							</s:decorate>
+							<rich:suggestionbox for="language"
+								suggestionAction="#{globalUsageAgreement.autocompleteLanguage}"
+								var="languageInput" selfRendered="true">
+								<h:column>
+									<h:outputText value="#{languageInput}" />
+								</h:column>
+							</rich:suggestionbox>
+						</h:panelGroup>
 						<h:message for="language" styleClass="error" />
-						<a4j:commandLink value="#{msgs.addaction}"
+						<h:commandLink value="#{msgs.addaction}"
 							action="#{globalUsageAgreement.addText}" />
 					</h:panelGrid>
-				</a4j:form>
+				</h:form>
 
 				<a4j:form id="editDraftTextsForm" reRender="usagePanel"
 					ajaxSubmit="true">

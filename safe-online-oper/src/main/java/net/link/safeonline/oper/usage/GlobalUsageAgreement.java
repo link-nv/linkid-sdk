@@ -7,6 +7,8 @@
 
 package net.link.safeonline.oper.usage;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
@@ -25,6 +27,8 @@ public interface GlobalUsageAgreement {
 	GlobalUsageAgreementEntity getDraftUsageAgreement();
 
 	String getUsageAgreementVersion();
+
+	List<String> autocompleteLanguage(Object event);
 
 	/*
 	 * Actions
