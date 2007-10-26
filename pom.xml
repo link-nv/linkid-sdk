@@ -189,6 +189,8 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
+				<safe-online.profiling></safe-online.profiling>
+				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
 			</properties>
 			<modules>
 				<module>safe-online-base-distribution</module>
@@ -231,6 +233,8 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>false</debug.mode>
+				<safe-online.profiling></safe-online.profiling>
+				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
 			</properties>
 			<modules>
 				<module>safe-online-base-distribution</module>
@@ -271,6 +275,8 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>false</debug.mode>
+				<safe-online.profiling></safe-online.profiling>
+				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
 			</properties>
 			<modules>
 				<module>safe-online-base-distribution</module>
@@ -313,6 +319,8 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
+				<safe-online.profiling></safe-online.profiling>
+				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
 			</properties>
 			<modules>
 				<module>safe-online-sdk-manual</module>
