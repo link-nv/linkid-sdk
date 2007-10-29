@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
@@ -84,7 +85,7 @@ public class SafeOnlineLoginUtils {
 			String targetPage) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		
+
 		String safeOnlineAuthenticationServiceUrl = getInitParameter(
 				externalContext, SAFE_ONLINE_AUTH_SERVICE_URL_INIT_PARAM);
 		log.debug("redirecting to #0", safeOnlineAuthenticationServiceUrl);
@@ -110,6 +111,7 @@ public class SafeOnlineLoginUtils {
 		String keyStoreFile = externalContext
 				.getInitParameter(KEY_STORE_FILE_INIT_PARAM);
 		KeyPair keyPair;
+		X509Certificate certificate;
 		if (null != keyStoreResource || null != keyStoreFile) {
 			if (null != keyStoreResource && null != keyStoreFile) {
 				throw new RuntimeException(
@@ -141,8 +143,10 @@ public class SafeOnlineLoginUtils {
 							keyStorePassword, keyStorePassword);
 			keyPair = new KeyPair(privateKeyEntry.getCertificate()
 					.getPublicKey(), privateKeyEntry.getPrivateKey());
+			certificate = (X509Certificate) privateKeyEntry.getCertificate();
 		} else {
 			keyPair = null;
+			certificate = null;
 		}
 
 		HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext
@@ -167,8 +171,8 @@ public class SafeOnlineLoginUtils {
 					.createAuthenticationProtocolHandler(
 							authenticationProtocol,
 							safeOnlineAuthenticationServiceUrl,
-							applicationName, keyPair, configParams,
-							httpServletRequest);
+							applicationName, keyPair, certificate,
+							configParams, httpServletRequest);
 		} catch (ServletException e) {
 			throw new RuntimeException(
 					"could not init authentication protocol handler: "

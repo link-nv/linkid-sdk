@@ -64,7 +64,7 @@ public class AuthenticationProtocolManagerTest {
 		AuthenticationProtocolHandler simpleAuthenticationProtocolHandler = AuthenticationProtocolManager
 				.createAuthenticationProtocolHandler(
 						AuthenticationProtocol.SIMPLE_PLAIN_URL,
-						"http://authn.service", "app-name", null, null,
+						"http://authn.service", "app-name", null, null, null,
 						this.mockHttpServletRequest);
 
 		// verify
@@ -91,7 +91,7 @@ public class AuthenticationProtocolManagerTest {
 				.createAuthenticationProtocolHandler(
 						AuthenticationProtocol.SAML2_BROWSER_POST,
 						"http://authn.service", "application-id", null, null,
-						this.mockHttpServletRequest);
+						null, this.mockHttpServletRequest);
 
 		// verify
 		verify(this.mockObjects);

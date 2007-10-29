@@ -70,7 +70,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 	public boolean handleMessage(SOAPMessageContext soapContext) {
 		Boolean outboundProperty = (Boolean) soapContext
 				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
-		if (false == outboundProperty) {
+		if (true == outboundProperty) {
 			return true;
 		}
 		SOAPMessage soapMessage = soapContext.getMessage();
@@ -88,6 +88,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 		try {
 			XMLSignature xmlSignature = new XMLSignature(tokenSignatureElement,
 					null);
+			LOG.debug("checking token signature");
 			result = xmlSignature.checkSignatureValue(this.publicKey);
 		} catch (XMLSecurityException e) {
 			LOG.error("XML signature error: " + e.getMessage(), e);
@@ -100,6 +101,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 	}
 
 	private void setValidity(Boolean validity, SOAPMessageContext soapContext) {
+		LOG.debug("validity: " + validity);
 		soapContext.put(VALIDITY_CONTEXT_VAR, validity);
 		soapContext.setScope(VALIDITY_CONTEXT_VAR, Scope.APPLICATION);
 	}

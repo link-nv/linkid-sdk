@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.auth;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.KeyPair;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -37,12 +38,16 @@ public interface AuthenticationProtocolHandler extends Serializable {
 	 * @param applicationKeyPair
 	 *            the application RSA key pair used to sign the authentication
 	 *            request.
+	 * @param applicationCertificate
+	 *            the application certificate used to sign the WS-Security
+	 *            signatures.
 	 * @param configParams
 	 *            additional specific authentication protocol configuration
 	 *            parameters.
 	 */
 	void init(String authnServiceUrl, String applicationName,
-			KeyPair applicationKeyPair, Map<String, String> configParams);
+			KeyPair applicationKeyPair, X509Certificate applicationCertificate,
+			Map<String, String> configParams);
 
 	/**
 	 * Initiates the authentication request towards the SafeOnline

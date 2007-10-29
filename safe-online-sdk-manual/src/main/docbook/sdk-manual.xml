@@ -11,7 +11,8 @@
 		<date>16/10/2007</date>
 		<abstract>
 			<para>
-				This document contains SDK manual for the OLAS product.
+				This document contains the SDK manual for the OLAS
+				product.
 			</para>
 		</abstract>
 		<releaseinfo>1.0.0</releaseinfo>
@@ -77,6 +78,14 @@
 						course this service is only available for an
 						application after explicit authorization has
 						been given by the operator.
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Security Token Service: via this service an
+						application can validate an authentication token
+						that has been received from the authentication
+						web application.
 					</para>
 				</listitem>
 			</orderedlist>
@@ -227,6 +236,7 @@
 				defined within the OLAS service. An example of this is
 				given below.
 				<programlisting>
+<![CDATA[
 @IdentityCard
 public static class MyIdentityCard {
 	private String name;
@@ -274,7 +284,8 @@ public static class MyCompounded {
 	public void setMember1(String member1) {
 		this.member1 = member1;
 	}
-}		
+}
+]]>
 				</programlisting>
 			</para>
 			<para>
@@ -335,60 +346,62 @@ public static class MyCompounded {
 			An example SOAP message with WS-Security header is given in
 			the following example (we removed the namespace declaration attributes for readability).
 			<programlisting>
-&lt;soap:Envelope>
-	&lt;soap:Header>
-		&lt;wsse:Security soap:mustUnderstand="1">
-			&lt;wsse:BinarySecurityToken
+<![CDATA[
+<soap:Envelope>
+	<soap:Header>
+		<wsse:Security soap:mustUnderstand="1">
+			<wsse:BinarySecurityToken
 				EncodingType="http://docs.oasis-open.org/...#Base64Binary"
 				ValueType="http://docs.oasis-open.org/...#X509v3"
 				wsu:Id="the-cert">
 				...
-			&lt;/wsse:BinarySecurityToken>
-			&lt;ds:Signature>
-				&lt;ds:SignedInfo>
-					&lt;ds:CanonicalizationMethod
+			</wsse:BinarySecurityToken>
+			<ds:Signature>
+				<ds:SignedInfo>
+					<ds:CanonicalizationMethod
 						Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-					&lt;ds:SignatureMethod
+					<ds:SignatureMethod
 						Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-					&lt;ds:Reference URI="#the-body">
-						&lt;ds:Transforms>
-							&lt;ds:Transform
+					<ds:Reference URI="#the-body">
+						<ds:Transforms>
+							<ds:Transform
 								Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-						&lt;/ds:Transforms>
-						&lt;ds:DigestMethod
+						</ds:Transforms>
+						<ds:DigestMethod
 							Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-						&lt;ds:DigestValue>...&lt;/ds:DigestValue>
-					&lt;/ds:Reference>
-					&lt;ds:Reference URI="#the-timestamp">
-						&lt;ds:Transforms>
-							&lt;ds:Transform
+						<ds:DigestValue>...</ds:DigestValue>
+					</ds:Reference>
+					<ds:Reference URI="#the-timestamp">
+						<ds:Transforms>
+							<ds:Transform
 								Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-						&lt;/ds:Transforms>
-						&lt;ds:DigestMethod
+						</ds:Transforms>
+						<ds:DigestMethod
 							Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-						&lt;ds:DigestValue>...&lt;/ds:DigestValue>
-					&lt;/ds:Reference>
-				&lt;/ds:SignedInfo>
-				&lt;ds:SignatureValue>
+						<ds:DigestValue>...</ds:DigestValue>
+					</ds:Reference>
+				</ds:SignedInfo>
+				<ds:SignatureValue>
 					...
-				&lt;/ds:SignatureValue>
-				&lt;ds:KeyInfo>
-					&lt;wsse:SecurityTokenReference>
-						&lt;wsse:Reference URI="#the-cert" 
+				</ds:SignatureValue>
+				<ds:KeyInfo>
+					<wsse:SecurityTokenReference>
+						<wsse:Reference URI="#the-cert" 
 							ValueType="http://docs.oasis-open.org/...#X509v3"/>
-					&lt;/wsse:SecurityTokenReference>
-				&lt;/ds:KeyInfo>
-			&lt;/ds:Signature>
-			&lt;wsu:Timestamp
+					</wsse:SecurityTokenReference>
+				</ds:KeyInfo>
+			</ds:Signature>
+			<wsu:Timestamp
 				wsu:Id="the-timestamp">
-				&lt;wsu:Created>2007-01-01T00:00:00.000Z&lt;/wsu:Created>
-			&lt;/wsu:Timestamp>
-		&lt;/wss:Security>
-	&lt;/soap:Header>
-	&lt;soap:Body wsu:Id="the-body">
+				<wsu:Created>2007-01-01T00:00:00.000Z</wsu:Created>
+			</wsu:Timestamp>
+		</wss:Security>
+	</soap:Header>
+	<soap:Body wsu:Id="the-body">
 		...
-	&lt;/soap:Body>
-&lt;/soap:Envelope>
+	</soap:Body>
+</soap:Envelope>
+]]>
 			</programlisting>
 		</para>
 		<para>
@@ -582,55 +595,57 @@ public static class MyCompounded {
 				OLAS SDK filters to secure a certain section of a web
 				application.
 				<programlisting>
-&lt;filter>
-	&lt;filter-name>AuthenticationFilter&lt;/filter-name>
-	&lt;filter-class>
+<![CDATA[
+<filter>
+	<filter-name>AuthenticationFilter</filter-name>
+	<filter-class>
 		net.link.safeonline.sdk.auth.filter.AuthenticationFilter
-	&lt;/filter-class>
-	&lt;init-param>
-		&lt;param-name>SafeOnlineAuthenticationServiceUrl&lt;/param-name>
-		&lt;param-value>
+	</filter-class>
+	<init-param>
+		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
+		<param-value>
 			https://olas.lin-k.net/olas-auth/
-		&lt;/param-value>
-	&lt;/init-param>
-	&lt;init-param>
-		&lt;param-name>ApplicationName&lt;/param-name>
-		&lt;param-value>demo-application&lt;/param-value>
-	&lt;/init-param>
-	&lt;init-param>
-		&lt;param-name>AuthenticationProtocol&lt;/param-name>
-		&lt;param-value>SAML2_BROWSER_POST&lt;/param-value>
-	&lt;/init-param>
-	&lt;init-param>
-		&lt;param-name>KeyStoreType&lt;/param-name>
-		&lt;param-value>pkcs12&lt;/param-value>
-	&lt;/init-param>
-	&lt;init-param>
-		&lt;param-name>KeyStoreFile&lt;/param-name>
-		&lt;param-value>/etc/pki/demo-app.p12&lt;/param-value>
-	&lt;/init-param>
-	&lt;init-param>
-		&lt;param-name>KeyStorePassword&lt;/param-name>
-		&lt;param-value>secret&lt;/param-value>
-	&lt;/init-param>
-&lt;/filter>
+		</param-value>
+	</init-param>
+	<init-param>
+		<param-name>ApplicationName</param-name>
+		<param-value>demo-application</param-value>
+	</init-param>
+	<init-param>
+		<param-name>AuthenticationProtocol</param-name>
+		<param-value>SAML2_BROWSER_POST</param-value>
+	</init-param>
+	<init-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>pkcs12</param-value>
+	</init-param>
+	<init-param>
+		<param-name>KeyStoreFile</param-name>
+		<param-value>/etc/pki/demo-app.p12</param-value>
+	</init-param>
+	<init-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</init-param>
+</filter>
 
-&lt;filter>
-	&lt;filter-name>LoginFilter&lt;/filter-name>
-	&lt;filter-class>
+<filter>
+	<filter-name>LoginFilter</filter-name>
+	<filter-class>
 		net.link.safeonline.sdk.auth.filter.LoginFilter
-	&lt;/filter-class>
-&lt;/filter>
+	</filter-class>
+</filter>
 
-&lt;filter-mapping>
-	&lt;filter-name>LoginFilter&lt;/filter-name>
-	&lt;url-pattern>/secure/*&lt;/url-pattern>
-&lt;/filter-mapping>
+<filter-mapping>
+	<filter-name>LoginFilter</filter-name>
+	<url-pattern>/secure/*</url-pattern>
+</filter-mapping>
 
-&lt;filter-mapping>
-	&lt;filter-name>AuthenticationFilter&lt;/filter-name>
-	&lt;url-pattern>/secure/*&lt;/url-pattern>
-&lt;/filter-mapping>
+<filter-mapping>
+	<filter-name>AuthenticationFilter</filter-name>
+	<url-pattern>/secure/*</url-pattern>
+</filter-mapping>
+]]>
 				</programlisting>
 			</para>
 		</section>

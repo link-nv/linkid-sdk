@@ -9,11 +9,19 @@ package net.link.safeonline.sdk.ws.sts;
 
 import net.link.safeonline.sdk.ws.MessageAccessor;
 
+import org.w3c.dom.Element;
+
 /**
  * Interface for Security Token Service WS-Trust client.
  * 
  * @author fcorneli
  */
 public interface SecurityTokenServiceClient extends MessageAccessor {
-	void invoke();
+
+	/**
+	 * Validate the given (SAML) token.
+	 * 
+	 * @param token
+	 */
+	void validate(Element token);
 }

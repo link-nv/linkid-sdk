@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.auth.saml2;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.KeyPair;
+import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +23,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.SupportedAuthenticationProtocol;
+import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;
+import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +37,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.Log4JLogChute;
+import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
@@ -52,6 +57,8 @@ import org.opensaml.ws.security.provider.HTTPRule;
 import org.opensaml.ws.security.provider.MandatoryIssuerRule;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
 import org.opensaml.xml.ConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Implementation class for the SAML2 browser POST authentication protocol.
@@ -64,6 +71,9 @@ import org.opensaml.xml.ConfigurationException;
  * custom SAML2 Browser POST template resource.</li>
  * <li><code>Saml2Devices</code>: contains the list of allowed
  * authentication devices, comma separated string</li>
+ * <li><code>WsLocation</code>: contains the location of the OLAS web
+ * services. If present this handler will use the STS web service for SAML
+ * authentication token validation.</li>
  * </ul>
  * 
  * <p>
@@ -114,24 +124,28 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 
 	private String applicationName;
 
-	/**
-	 * We mark the key pair as transient since we don't want to serialize the
-	 * private key in the HTTP session.
-	 */
-	private transient KeyPair applicationKeyPair;
+	private KeyPair applicationKeyPair;
+
+	private X509Certificate applicationCertificate;
 
 	private Map<String, String> configParams;
 
 	private Challenge<String> challenge;
 
+	private String wsLocation;
+
 	public void init(String inAuthnServiceUrl, String inApplicationName,
-			KeyPair inApplicationKeyPair, Map<String, String> inConfigParams) {
+			KeyPair inApplicationKeyPair,
+			X509Certificate inApplicationCertificate,
+			Map<String, String> inConfigParams) {
 		LOG.debug("init");
 		this.authnServiceUrl = inAuthnServiceUrl + "/entry";
 		this.applicationName = inApplicationName;
 		this.applicationKeyPair = inApplicationKeyPair;
+		this.applicationCertificate = inApplicationCertificate;
 		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
+		this.wsLocation = inConfigParams.get("WsLocation");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -277,6 +291,27 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 			throw new ServletException("SAML message not an response message");
 		}
 		Response samlResponse = (Response) samlMessage;
+
+		if (null != this.wsLocation) {
+			byte[] decodedSamlResponse;
+			try {
+				decodedSamlResponse = Base64.decode(encodedSamlResponse);
+			} catch (Base64DecodingException e) {
+				throw new ServletException("BASE64 decoding error");
+			}
+			Document samlDocument;
+			try {
+				samlDocument = DomUtils.parseDocument(new String(
+						decodedSamlResponse));
+			} catch (Exception e) {
+				throw new ServletException("DOM parsing error");
+			}
+			Element samlElement = samlDocument.getDocumentElement();
+			SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(
+					this.wsLocation, this.applicationCertificate,
+					this.applicationKeyPair.getPrivate());
+			stsClient.validate(samlElement);
+		}
 
 		List<Assertion> assertions = samlResponse.getAssertions();
 		if (assertions.isEmpty()) {

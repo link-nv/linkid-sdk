@@ -9,20 +9,27 @@ package net.link.safeonline.sdk.ws.sts;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.ws.BindingProvider;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenResponseType;
-import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenType;
-import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenService;
-import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort;
 
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.ObjectFactory;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenResponseType;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenType;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenService;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.ValidateTargetType;
+import org.w3c.dom.Element;
 
 /**
  * Implementation of Security Token Service Client.
@@ -66,13 +73,45 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
 				"https://" + location + "/safe-online-ws/sts");
 	}
-	
-	public void invoke() {
+
+	public void validate(Element token) {
 		LOG.debug("invoke");
 		RequestSecurityTokenType request = new RequestSecurityTokenType();
-		
+		ObjectFactory objectFactory = new ObjectFactory();
+		JAXBElement<String> requestType = objectFactory
+				.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate");
+		request.getAny().add(requestType);
+
+		ValidateTargetType validateTarget = new ValidateTargetType();
+		validateTarget.setAny(token);
+		request.getAny()
+				.add(objectFactory.createValidateTarget(validateTarget));
+
 		SafeOnlineTrustManager.configureSsl();
-		
-		RequestSecurityTokenResponseType response = this.port.requestSecurityToken(request);
+
+		RequestSecurityTokenResponseType response = this.port
+				.requestSecurityToken(request);
+
+		StatusType status = null;
+		List<Object> results = response.getAny();
+		for (Object result : results) {
+			if (result instanceof JAXBElement) {
+				JAXBElement<?> resultElement = (JAXBElement<?>) result;
+				Object value = resultElement.getValue();
+				if (value instanceof StatusType) {
+					status = (StatusType) value;
+				}
+			}
+		}
+		if (null == status) {
+			throw new RuntimeException("no Status found in response");
+		}
+		String statusCode = status.getCode();
+		if (SecurityTokenServiceConstants.STATUS_VALID.equals(statusCode)) {
+			return;
+		}
+		String reason = status.getReason();
+		LOG.debug("reason: " + reason);
+		throw new RuntimeException("token found to be invalid: " + reason);
 	}
 }

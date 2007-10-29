@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
 /**
  * Implementation of WS-Trust 1.3 STS JAX-WS web service endpoint. Beware that
  * we validate both the WS-Security and SAML token signature via SOAP handlers.
- * The signature validation cannot be done within the endpoint implemention
+ * The signature validation cannot be done within the endpoint implementation
  * since JAXB somehow breaks the signature digests.
  * 
  * @author fcorneli
@@ -99,6 +99,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 
 		boolean result = TokenValidationHandler.getValidity(this.context);
 		if (false == result) {
+			LOG.debug("token signature not valid");
 			RequestSecurityTokenResponseType response = createResponse(
 					SecurityTokenServiceConstants.STATUS_INVALID,
 					"token signature not valid");
@@ -125,8 +126,10 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 		}
 		Response samlResponse = (Response) tokenXmlObject;
 
-		if (false == StatusCode.SUCCESS_URI.equals(samlResponse.getStatus()
-				.getStatusCode())) {
+		String samlStatusCode = samlResponse.getStatus().getStatusCode()
+				.getValue();
+		if (false == StatusCode.SUCCESS_URI.equals(samlStatusCode)) {
+			LOG.debug("SAML status code: " + samlStatusCode);
 			RequestSecurityTokenResponseType response = createResponse(
 					SecurityTokenServiceConstants.STATUS_INVALID,
 					"invalid SAML2 token status code");

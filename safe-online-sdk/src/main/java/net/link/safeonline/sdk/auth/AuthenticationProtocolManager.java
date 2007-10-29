@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.auth;
 
 import java.security.KeyPair;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,6 +83,7 @@ public class AuthenticationProtocolManager {
 	 * @param authnServiceUrl
 	 * @param applicationName
 	 * @param applicationKeyPair
+	 * @param applicationCertificate
 	 * @param configParams
 	 *            the optional protocol handler configuration parameters.
 	 * @param httpRequest
@@ -91,8 +93,9 @@ public class AuthenticationProtocolManager {
 	public static AuthenticationProtocolHandler createAuthenticationProtocolHandler(
 			AuthenticationProtocol authenticationProtocol,
 			String authnServiceUrl, String applicationName,
-			KeyPair applicationKeyPair, Map<String, String> inConfigParams,
-			HttpServletRequest httpRequest) throws ServletException {
+			KeyPair applicationKeyPair, X509Certificate applicationCertificate,
+			Map<String, String> inConfigParams, HttpServletRequest httpRequest)
+			throws ServletException {
 		HttpSession session = httpRequest.getSession();
 		if (null != session.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE)) {
 			LOG
@@ -130,7 +133,7 @@ public class AuthenticationProtocolManager {
 					+ authnProtocolHandlerClass.getName());
 		}
 		protocolHandler.init(authnServiceUrl, applicationName,
-				applicationKeyPair, configParams);
+				applicationKeyPair, applicationCertificate, configParams);
 
 		/*
 		 * We save the stateful protocol handler into the HTTP session as

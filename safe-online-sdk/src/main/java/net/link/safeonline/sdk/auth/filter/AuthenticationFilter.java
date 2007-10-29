@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -118,6 +119,8 @@ public class AuthenticationFilter implements Filter {
 
 	private KeyPair applicationKeyPair;
 
+	private X509Certificate applicationCertificate;
+
 	private Map<String, String> configParams;
 
 	@SuppressWarnings("unchecked")
@@ -168,6 +171,8 @@ public class AuthenticationFilter implements Filter {
 			this.applicationKeyPair = new KeyPair(privateKeyEntry
 					.getCertificate().getPublicKey(), privateKeyEntry
 					.getPrivateKey());
+			this.applicationCertificate = (X509Certificate) privateKeyEntry
+					.getCertificate();
 		}
 
 		this.configParams = new HashMap<String, String>();
@@ -221,7 +226,8 @@ public class AuthenticationFilter implements Filter {
 						this.authenticationProtocol,
 						this.safeOnlineAuthenticationServiceUrl,
 						this.applicationName, this.applicationKeyPair,
-						this.configParams, httpRequest);
+						this.applicationCertificate, this.configParams,
+						httpRequest);
 		String targetUrl = httpRequest.getRequestURL().toString();
 		authenticationProtocolHandler.initiateAuthentication(httpRequest,
 				httpResponse, targetUrl);

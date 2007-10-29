@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.auth;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.security.KeyPair;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +54,8 @@ public class SimplePlainUrlAuthenticationProtocolHandler implements
 	private String applicationName;
 
 	public void init(String inAuthnServiceUrl, String inApplicationName,
-			KeyPair applicationKeyPair, Map<String, String> configParams) {
+			KeyPair applicationKeyPair, X509Certificate applicationCertificate,
+			Map<String, String> configParams) {
 		LOG.debug("init");
 		this.authnServiceUrl = inAuthnServiceUrl + "/entry";
 		this.applicationName = inApplicationName;

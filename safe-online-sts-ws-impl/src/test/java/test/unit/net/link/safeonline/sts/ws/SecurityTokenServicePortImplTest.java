@@ -11,6 +11,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.KeyPair;
@@ -29,6 +30,7 @@ import net.link.safeonline.authentication.service.ApplicationAuthenticationServi
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
 import net.link.safeonline.sts.ws.SecurityTokenServicePortImpl;
 import net.link.safeonline.test.util.DummyLoginModule;
@@ -53,6 +55,7 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenResponseTy
 import org.oasis_open.docs.ws_sx.ws_trust._200512.RequestSecurityTokenType;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenService;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort;
+import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.ValidateTargetType;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLVersion;
@@ -195,7 +198,7 @@ public class SecurityTokenServicePortImplTest {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings( { "unchecked", "null" })
 	@Test
 	public void testWS() throws Exception {
 		// setup
@@ -237,6 +240,20 @@ public class SecurityTokenServicePortImplTest {
 		// verify
 		verify(this.mockObjects);
 		assertNotNull(response);
+		StatusType status = null;
+		List<Object> results = response.getAny();
+		for (Object result : results) {
+			if (result instanceof JAXBElement) {
+				JAXBElement<?> resultElement = (JAXBElement<?>) result;
+				Object value = resultElement.getValue();
+				if (value instanceof StatusType) {
+					status = (StatusType) value;
+				}
+			}
+		}
+		assertNotNull(status);
+		String statusCode = status.getCode();
+		assertEquals(SecurityTokenServiceConstants.STATUS_VALID, statusCode);
 	}
 
 	private Element createAuthResponse(String inResponseTo, String issuerName,
