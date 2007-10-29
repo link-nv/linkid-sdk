@@ -5,6 +5,8 @@ package net.link.safeonline.performance.console.jgroups;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,8 +29,6 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 
 	private static final Log LOG = LogFactory.getLog(AgentDiscoverer.class);
 
-	private static final String PROFILER_JGROUPS_GROUP = "net.lin-k.safe-online.performance";
-
 	private JChannel channel;
 
 	private List<AgentStateListener> agentStateListeners;
@@ -38,6 +38,9 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 	 */
 	public AgentDiscoverer() {
 
+		ResourceBundle properties = ResourceBundle.getBundle("console");
+		String group = properties.getString("jgroups.group");
+
 		try {
 			this.agentStateListeners = new ArrayList<AgentStateListener>();
 
@@ -45,7 +48,7 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 				this.channel = new JChannel();
 
 			if (!this.channel.isConnected())
-				this.channel.connect(PROFILER_JGROUPS_GROUP);
+				this.channel.connect(group);
 		}
 
 		catch (ChannelException e) {
@@ -67,11 +70,26 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 	}
 
 	/**
+	 * Retrieve the members currently part of the group, excluding ourselves.
+	 */
+	public Vector<Address> getMembers() {
+
+		return getMembers(false);
+	}
+
+	/**
 	 * Retrieve the members currently part of the group.
 	 */
-	public List<Address> getMembers() {
+	public Vector<Address> getMembers(boolean includingSelf) {
 
-		return this.channel.getView().getMembers();
+		Vector<Address> members = this.channel.getView().getMembers();
+
+		if (includingSelf)
+			return members;
+
+		members = new Vector<Address>(members);
+		members.remove(this.channel.getLocalAddress());
+		return members;
 	}
 
 	/**
@@ -180,5 +198,13 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 
 		for (AgentStateListener listener : this.agentStateListeners)
 			listener.channelShunned();
+	}
+
+	/**
+	 * @return the name of the JGroups group of agents.
+	 */
+	public String getGroupName() {
+
+		return this.channel.getClusterName();
 	}
 }

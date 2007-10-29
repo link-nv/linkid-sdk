@@ -6,7 +6,9 @@
 
 	<classpath codebase="." archives="lib/*.jar" />
 
-	<mbean code="" name="">
+    <mbean code="net.link.safeonline.performance.agent.AgentService"
+           name="safeonline.performance:name=AgentService">
+       <attribute name="Group">${safe-online.profiling.group}</attribute>
 	</mbean>
 
 </server>

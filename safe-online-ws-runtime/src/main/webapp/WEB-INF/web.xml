@@ -29,6 +29,6 @@
 		<session-timeout>5</session-timeout>
 	</session-config>
 
-	${safe-online.profiling}
+	${safe-online.profiling.filter}
 
 </web-app>

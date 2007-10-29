@@ -14,6 +14,16 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Performance Console Base</name>
 	<description>The base for the SafeOnline Performance Testing Console (interaction with the agent).</description>
+    <build>
+        <resources>
+            <resource>
+                <directory>
+                    ${basedir}/src/main/resources
+                </directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -32,6 +42,14 @@
 					<artifactId>servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jnp-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jbossall-client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

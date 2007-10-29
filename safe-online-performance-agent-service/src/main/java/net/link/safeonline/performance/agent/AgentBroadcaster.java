@@ -16,25 +16,17 @@ public class AgentBroadcaster {
 
 	private static final Log LOG = LogFactory.getLog(AgentBroadcaster.class);
 
-	private static final String PROFILER_JGROUPS_GROUP = "net.lin-k.safe-online.performance";
-
 	private JChannel channel;
+	private String group;
 
 	/**
-	 * Join the Profiler's JGroup using the package name as group name.
+	 * Connect to the JGroups channel and join the performance agents group.
 	 */
-	public AgentBroadcaster() {
+	public void start() {
 
 		try {
-			if (null == this.channel || !this.channel.isOpen()) {
-				LOG.debug("Opening a JGroups Channel.");
-				this.channel = new JChannel();
-			}
-
-			if (!this.channel.isConnected()) {
-				LOG.debug("Joining the Performance Agents group.");
-				this.channel.connect(PROFILER_JGROUPS_GROUP);
-			}
+			this.channel = new JChannel();
+			this.channel.connect(getGroup());
 		}
 
 		catch (ChannelException e) {
@@ -43,25 +35,35 @@ public class AgentBroadcaster {
 	}
 
 	/**
-	 * Check whether this {@link AgentBroadcaster} is still connected to the
-	 * rest of the group.
+	 * Disconnect from the JGroups group and close the channel.
 	 */
-	private boolean isConnected() {
+	public void stop() {
 
-		return this.channel.isConnected();
+		this.channel.close();
 	}
 
-	public static void main(String[] args) {
+	/**
+	 * @return the JGroups group to join.
+	 */
+	public String getGroup() {
 
-		AgentBroadcaster broadcaster = new AgentBroadcaster();
+		return this.group;
+	}
 
-		while (broadcaster.isConnected())
-			try {
-				Thread.sleep(100);
-			}
+	/**
+	 * @param group
+	 *            the JGroups group to join.
+	 */
+	public void setGroup(String group) {
 
-			catch (InterruptedException e) {
-				System.exit(0);
-			}
+		this.group = group;
+	}
+
+	/**
+	 * @return true if we are connected to the JGroups group.
+	 */
+	public boolean isConnected() {
+
+		return this.channel.isConnected();
 	}
 }
