@@ -10,12 +10,7 @@ package net.link.safeonline.performance;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
-import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
-import net.link.safeonline.util.jacc.ProfileData;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * 
@@ -24,52 +19,41 @@ import org.apache.commons.logging.LogFactory;
  */
 public class IdMappingDriver extends ProfileDriver {
 
-	private static final Log LOG = LogFactory.getLog(IdMappingDriver.class);
+	public IdMappingDriver(String hostname) {
 
-	private String host;
-
-	private String user;
-
-	private NameIdentifierMappingClientImpl service;
+		super(hostname);
+	}
 
 	/**
-	 * Create a new {@link IdMappingDriver} instance.
+	 * Retrieve the ID of the user with the given username.
 	 * 
-	 * @param hostname
-	 *            The hostname of the host that's running the idmapping
-	 *            webservice.
+	 * @param applicationKey
+	 *            The certificate of the application making the request. This
+	 *            identifies the application and gives the request the
+	 *            application's authority.
 	 * @param username
-	 *            The username to map to ID in this test.
+	 *            The username that the application wishes to know the ID for.
+	 * @return The ID of the user with the given username.
+	 * @throws DriverException
+	 *             Any exception that occurred during the request will be
+	 *             wrapped into this one.
 	 */
-	public IdMappingDriver(String hostname, String username) {
+	public String getUserId(PrivateKeyEntry applicationKey, String username)
+			throws DriverException {
 
-		this.host = hostname;
-		this.user = username;
-	}
-
-	@Override
-	protected void prepare() {
-
-		PrivateKeyEntry serviceEntry = DemoLawyerKeyStoreUtils
-				.getPrivateKeyEntry();
-
-		if (!(serviceEntry.getCertificate() instanceof X509Certificate))
-			throw new RuntimeException(
+		if (!(applicationKey.getCertificate() instanceof X509Certificate))
+			throw new DriverException(
 					"The certificate in the keystore needs to be of X509 format.");
 
-		this.service = new NameIdentifierMappingClientImpl(this.host,
-				(X509Certificate) serviceEntry.getCertificate(), serviceEntry
-						.getPrivateKey());
-	}
-
-	@Override
-	protected ProfileData run() throws DriverException {
+		NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(
+				this.host, (X509Certificate) applicationKey.getCertificate(),
+				applicationKey.getPrivateKey());
 
 		try {
-			LOG.debug("retrieving user ID for " + this.user);
-			this.service.getUserId(this.user);
+			String result = service.getUserId(username);
+			addProfileData(service);
 
-			return new ProfileData(this.service.getHeaders());
+			return result;
 		}
 
 		catch (Exception e) {

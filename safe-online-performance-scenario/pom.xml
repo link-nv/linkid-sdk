@@ -42,10 +42,6 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>jgroups</groupId>
-			<artifactId>jgroups</artifactId>
-		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>

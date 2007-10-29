@@ -20,13 +20,14 @@ public class DriverException extends Exception {
 	private Exception exception;
 	private long occurredTime;
 
-	/**
-	 * Create a new {@link DriverException} instance.
-	 */
+	public DriverException(String string) {
+
+		this(new RuntimeException(string));
+	}
+
 	public DriverException(Exception exception) {
 
-		this.occurredTime = System.currentTimeMillis();
-		this.exception = exception;
+		this(System.currentTimeMillis(), exception);
 	}
 
 	public DriverException(long occurredTime, Exception exception) {

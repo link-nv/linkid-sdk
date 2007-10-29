@@ -7,101 +7,58 @@
 
 package net.link.safeonline.performance;
 
-import java.net.ConnectException;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
-import net.link.safeonline.demo.mandate.keystore.DemoMandateKeyStoreUtils;
-import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
-import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStoreUtils;
-import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
-import net.link.safeonline.sdk.exception.AttributeNotFoundException;
-import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
-import net.link.safeonline.util.jacc.ProfileData;
 
 /**
- * TODO: Work.
  * 
  * @author mbillemo
  */
 public class AttribWsDriver extends ProfileDriver {
 
-	private static final Log LOG = LogFactory.getLog(AttribWsDriver.class);
+	public AttribWsDriver(String hostname) {
 
-	private static final String OLAS_HOSTNAME = "localhost";
-
-	private HashMap<String, AttributeClient> services;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void prepare() {
-
-		this.services = new HashMap<String, AttributeClient>();
-
-		addService(this.services, "Lawyer Demo", DemoLawyerKeyStoreUtils
-				.getPrivateKeyEntry());
-		addService(this.services, "Mandate Demo", DemoMandateKeyStoreUtils
-				.getPrivateKeyEntry());
-		addService(this.services, "Payment Demo", DemoPaymentKeyStoreUtils
-				.getPrivateKeyEntry());
-		addService(this.services, "Prescription Demo",
-				DemoPrescriptionKeyStoreUtils.getPrivateKeyEntry());
-		addService(this.services, "Ticket Demo", DemoTicketKeyStoreUtils
-				.getPrivateKeyEntry());
+		super(hostname);
 	}
 
-	private void addService(Map<String, AttributeClient> demoServices,
-			String serviceName, PrivateKeyEntry serviceEntry) {
+	/**
+	 * Retrieve the attributes for a given user.
+	 * 
+	 * @param applicationKey
+	 *            The certificate of the application making the request. This
+	 *            identifies the application and gives the request the
+	 *            application's authority.
+	 * @param userId
+	 *            The ID of the user whose attributes are being requested.
+	 * @return A map of attributes belonging to the user containing all
+	 *         attributes the application has access to.
+	 * @throws DriverException
+	 *             Any exception that occurred during the request will be
+	 *             wrapped into this one.
+	 */
+	public Map<String, Object> getAttributes(PrivateKeyEntry applicationKey,
+			String userId) throws DriverException {
 
-		LOG.debug("preparing service " + serviceName);
-
-		if (!(serviceEntry.getCertificate() instanceof X509Certificate)) {
-			LOG.error("invalid key format: type is not X509 but "
-					+ serviceEntry.getCertificate().getType());
-			throw new RuntimeException(
+		if (!(applicationKey.getCertificate() instanceof X509Certificate))
+			throw new DriverException(
 					"The certificate in the keystore needs to be of X509 format.");
+
+		AttributeClientImpl service = new AttributeClientImpl(this.host,
+				(X509Certificate) applicationKey.getCertificate(),
+				applicationKey.getPrivateKey());
+
+		try {
+			Map<String, Object> result = service.getAttributeValues(userId);
+			addProfileData(service);
+
+			return result;
 		}
 
-		demoServices.put("lawyer", new AttributeClientImpl(OLAS_HOSTNAME,
-				(X509Certificate) serviceEntry.getCertificate(), serviceEntry
-						.getPrivateKey()));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ProfileData run() {
-
-		LOG.debug("profiling " + this.services.size() + " services");
-
-		for (Map.Entry<String, AttributeClient> serviceEntry : this.services
-				.entrySet()) {
-			AttributeClient service = serviceEntry.getValue();
-			String serviceName = serviceEntry.getKey();
-
-			LOG.debug("profiling " + serviceName);
-			try {
-				service.getAttributeValues("TODO: userId");
-			} catch (ConnectException e) {
-				LOG.error("couldn't connect to service provider", e);
-			} catch (RequestDeniedException e) {
-				LOG.error("service provider denied request", e);
-			} catch (AttributeNotFoundException e) {
-				LOG.error("attributes couldn't be found", e);
-			}
+		catch (Exception e) {
+			throw new DriverException(e);
 		}
-
-		return null;
 	}
 }
