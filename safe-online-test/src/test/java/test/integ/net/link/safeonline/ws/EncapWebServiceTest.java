@@ -34,13 +34,15 @@ public class EncapWebServiceTest {
 
 	private static final String INVALID_MOBILE = "012345678910";
 
+	private static final String ENCAP_LOCATION = "http://localhost:8080/safe-online-encap-ws/services";
+
 	private static final Log LOG = LogFactory.getLog(EncapWebServiceTest.class);
 
 	@Test
 	public void testEncapActivate() throws MalformedURLException,
 			RemoteException {
 		// setup
-		String endpoint = "http://localhost:8080/safe-online-encap-ws/services/mSecBankIdActivation";
+		String endpoint = ENCAP_LOCATION + "/mSecBankIdActivation";
 		URL endpointURL = new URL(endpoint);
 		MSecBankIdActivationSoapBindingStub activationStub = new MSecBankIdActivationSoapBindingStub(
 				endpointURL, new Service());
@@ -54,7 +56,7 @@ public class EncapWebServiceTest {
 	@Test
 	public void testEncapLock() throws MalformedURLException, RemoteException {
 		// setup
-		String endpoint = "http://localhost:8080/safe-online-encap-ws/services/mSecBankIdAdministration";
+		String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
 		URL endpointURL = new URL(endpoint);
 		MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(
 				endpointURL, new Service());
@@ -73,7 +75,7 @@ public class EncapWebServiceTest {
 	@Test
 	public void testEncapUnLock() throws MalformedURLException, RemoteException {
 		// setup
-		String endpoint = "http://localhost:8080/safe-online-encap-ws/services/mSecBankIdAdministration";
+		String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
 		URL endpointURL = new URL(endpoint);
 		MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(
 				endpointURL, new Service());
@@ -92,7 +94,7 @@ public class EncapWebServiceTest {
 	@Test
 	public void testEncapRemove() throws MalformedURLException, RemoteException {
 		// setup
-		String endpoint = "http://localhost:8080/safe-online-encap-ws/services/mSecBankIdAdministration";
+		String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
 		URL endpointURL = new URL(endpoint);
 		MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(
 				endpointURL, new Service());
@@ -112,7 +114,7 @@ public class EncapWebServiceTest {
 	public void testEncapShowStatus() throws MalformedURLException,
 			RemoteException {
 		// setup
-		String endpoint = "http://localhost:8080/safe-online-encap-ws/services/mSecBankIdAdministration";
+		String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
 		URL endpointURL = new URL(endpoint);
 		MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(
 				endpointURL, new Service());
@@ -132,7 +134,7 @@ public class EncapWebServiceTest {
 	public void testEncapChallenge() throws MalformedURLException,
 			RemoteException {
 		// setup
-		String endpoint = "http://localhost:8080/safe-online-encap-ws/services/mSecBankId";
+		String endpoint = ENCAP_LOCATION + "/mSecBankId";
 		URL endpointURL = new URL(endpoint);
 		MSecBankIdSoapBindingStub authStub = new MSecBankIdSoapBindingStub(
 				endpointURL, new Service());
