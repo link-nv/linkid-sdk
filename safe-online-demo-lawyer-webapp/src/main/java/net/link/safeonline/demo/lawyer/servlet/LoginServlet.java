@@ -24,9 +24,9 @@ import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
-import net.link.safeonline.sdk.ws.data.Attribute;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,7 +65,7 @@ public class LoginServlet extends HttpServlet {
 		PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
 
 		LOG.debug("creating dataclient to: " + wsHostName + ":" + wsHostPort);
-		
+
 		this.dataClient = new DataClientImpl(wsHostName + ":" + wsHostPort,
 				clientCertificate, clientPrivateKey);
 	}

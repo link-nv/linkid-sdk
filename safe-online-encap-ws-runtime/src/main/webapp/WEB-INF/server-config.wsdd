@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="http://xml.apache.org/axis/wsdd/"
+	xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+	<globalConfiguration>
+		<parameter name="adminPassword" value="admin" />
+		<parameter name="attachments.Directory" value="./attachments" />
+		<parameter name="attachments.implementation"
+			value="org.apache.axis.attachments.AttachmentsImpl" />
+		<parameter name="sendXsiTypes" value="true" />
+		<parameter name="sendMultiRefs" value="true" />
+		<parameter name="sendXMLDeclaration" value="true" />
+		<parameter name="axis.sendMinimizedElements" value="true" />
+		<requestFlow>
+			<handler type="java:org.apache.axis.handlers.JWSHandler">
+				<parameter name="scope" value="session" />
+			</handler>
+			<handler type="java:org.apache.axis.handlers.JWSHandler">
+				<parameter name="scope" value="request" />
+				<parameter name="extension" value=".jwr" />
+			</handler>
+		</requestFlow>
+	</globalConfiguration>
+	<handler name="LocalResponder"
+		type="java:org.apache.axis.transport.local.LocalResponder" />
+	<handler name="URLMapper"
+		type="java:org.apache.axis.handlers.http.URLMapper" />
+	<handler name="Authenticate"
+		type="java:org.apache.axis.handlers.SimpleAuthenticationHandler" />
+	<service name="AdminService" provider="java:MSG">
+		<parameter name="allowedMethods" value="AdminService" />
+		<parameter name="enableRemoteAdmin" value="false" />
+		<parameter name="className" value="org.apache.axis.utils.Admin" />
+		<namespace>http://xml.apache.org/axis/wsdd/</namespace>
+	</service>
+	<service name="Version" provider="java:RPC">
+		<parameter name="allowedMethods" value="getVersion" />
+		<parameter name="className" value="org.apache.axis.Version" />
+	</service>
+	<transport name="http">
+		<requestFlow>
+			<handler type="URLMapper" />
+			<handler
+				type="java:org.apache.axis.handlers.http.HTTPAuthHandler" />
+		</requestFlow>
+	</transport>
+	<transport name="local">
+		<responseFlow>
+			<handler type="LocalResponder" />
+		</responseFlow>
+	</transport>
+
+	<!-- Services from BankIdActivationService WSDL service -->
+
+	<service name="mSecBankIdActivation" provider="java:RPC" style="rpc"
+		use="encoded">
+		<parameter name="wsdlTargetNamespace"
+			value="urn:net:link:safe-online:encap:activation:1.0" />
+		<parameter name="wsdlServiceElement"
+			value="BankIdActivationService" />
+		<parameter name="schemaUnqualified"
+			value="urn:net:link:safe-online:encap:1.0:types" />
+		<parameter name="wsdlServicePort" value="mSecBankIdActivation" />
+		<parameter name="className"
+			value="net.link.safeonline.encap.activation.ws.EncapActivationSoapBindingImpl" />
+		<parameter name="wsdlPortType" value="BankIdActivation" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<parameter name="allowedMethods" value="*" />
+
+		<typeMapping xmlns:ns="urn:net:link:safe-online:encap:1.0:types"
+			qname="ns:ActivationInitResponse"
+			type="java:types._0._1.encap.safe_online.link.net.ActivationInitResponse"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+		<typeMapping xmlns:ns="urn:net:link:safe-online:encap:1.0:types"
+			qname="ns:MSecResponse"
+			type="java:types._0._1.encap.safe_online.link.net.MSecResponse"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+	</service>
+
+	<!-- Services from BankIdAdministrationService WSDL service -->
+
+	<service name="mSecBankIdAdministration" provider="java:RPC"
+		style="rpc" use="encoded">
+		<parameter name="wsdlTargetNamespace"
+			value="urn:net:link:safe-online:encap:administration:1.0" />
+		<parameter name="wsdlServiceElement"
+			value="BankIdAdministrationService" />
+		<parameter name="schemaUnqualified"
+			value="urn:net:link:safe-online:encap:1.0:types" />
+		<parameter name="wsdlServicePort"
+			value="mSecBankIdAdministration" />
+		<parameter name="className"
+			value="net.link.safeonline.encap.administration.ws.EncapAdministrationSoapBindingImpl" />
+		<parameter name="wsdlPortType" value="BankIdAdministration" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<parameter name="allowedMethods" value="*" />
+
+		<typeMapping xmlns:ns="urn:net:link:safe-online:encap:1.0:types"
+			qname="ns:MSecResponse"
+			type="java:types._0._1.encap.safe_online.link.net.MSecResponse"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+	</service>
+
+	<!-- Services from BankIdAuthenticationService WSDL service -->
+
+	<service name="mSecBankId" provider="java:RPC" style="rpc"
+		use="encoded">
+		<parameter name="wsdlTargetNamespace"
+			value="urn:net:link:safe-online:encap:authentication:1.0" />
+		<parameter name="wsdlServiceElement"
+			value="BankIdAuthenticationService" />
+		<parameter name="schemaUnqualified"
+			value="urn:net:link:safe-online:encap:1.0:types,urn:net:link:safe-online:encap:authentication:1.0:types" />
+		<parameter name="wsdlServicePort" value="mSecBankId" />
+		<parameter name="className"
+			value="net.link.safeonline.encap.authentication.ws.EncapAuthenticationSoapBindingImpl" />
+		<parameter name="wsdlPortType" value="BankIdAuthentication" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<parameter name="allowedMethods" value="*" />
+
+		<typeMapping
+			xmlns:ns="urn:net:link:safe-online:encap:authentication:1.0:types"
+			qname="ns:ChallengeResponse"
+			type="java:types._0._1.authentication.encap.safe_online.link.net.ChallengeResponse"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+		<typeMapping xmlns:ns="urn:net:link:safe-online:encap:1.0:types"
+			qname="ns:MSecResponse"
+			type="java:types._0._1.encap.safe_online.link.net.MSecResponse"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+		<typeMapping
+			xmlns:ns="urn:net:link:safe-online:encap:authentication:1.0:types"
+			qname="ns:VerifyResponse"
+			type="java:types._0._1.authentication.encap.safe_online.link.net.VerifyResponse"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+	</service>
+
+</deployment>
