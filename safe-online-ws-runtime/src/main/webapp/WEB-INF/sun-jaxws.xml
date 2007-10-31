@@ -30,4 +30,10 @@
 		service="{http://docs.oasis-open.org/ws-sx/ws-trust/200512/}SecurityTokenService"
 		port="{http://docs.oasis-open.org/ws-sx/ws-trust/200512/}SecurityTokenServicePort" />
 
+	<endpoint name="SafeOnline-Ping-Service"
+		implementation="net.link.safeonline.ping.ws.PingPortImpl"
+		url-pattern="/ping" interface="net.lin_k.safe_online.ping.PingPort"
+		service="{urn:net:lin-k:safe-online:ping}PingService"
+		port="{urn:net:lin-k:safe-online:ping}PingPort" />
+
 </endpoints>

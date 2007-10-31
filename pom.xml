@@ -116,9 +116,9 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
-                <safe-online.profiling.group>
-                    net.lin-k.safe-online.performance
-                </safe-online.profiling.group>
+				<safe-online.profiling.group>
+					net.lin-k.safe-online.performance
+				</safe-online.profiling.group>
 				<safe-online.profiling.filter><![CDATA[
 					<filter>
 						<filter-name>ProfileFilter</filter-name>
@@ -599,6 +599,8 @@
 		<module>safe-online-performance-scenario</module>
 		<module>safe-online-sts-ws</module>
 		<module>safe-online-sts-ws-impl</module>
+		<module>safe-online-ping-ws</module>
+		<module>safe-online-ping-ws-impl</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -1643,8 +1645,8 @@
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
 		<javassist.version>3.0</javassist.version>
-		<richfaces-api.version>3.1.1-GA</richfaces-api.version>
-		<richfaces-impl.version>3.1.1-GA</richfaces-impl.version>
+		<richfaces-api.version>3.1.2-GA</richfaces-api.version>
+		<richfaces-impl.version>3.1.2-GA</richfaces-impl.version>
 		<richfaces-suggestionbox.version>
 			3.1.0
 		</richfaces-suggestionbox.version>
@@ -1654,12 +1656,12 @@
 			3.1.0
 		</richfaces-datascroller.version>
 		<richfaces-tabPanel.version>3.1.0</richfaces-tabPanel.version>
-		<richfaces-ui.version>3.1.1-GA</richfaces-ui.version>
+		<richfaces-ui.version>3.1.2-GA</richfaces-ui.version>
 		<webui-jsf.version>4.1-b6</webui-jsf.version>
 		<dataprovider.version>4.1-b6</dataprovider.version>
 		<json.version>4.1-b6</json.version>
 		<jgroups.version>2.5.0-GA</jgroups.version>
-		<gravel.version>1.0.0.GA</gravel.version>
+		<gravel.version>1.0.1.GA</gravel.version>
 		<velocity.version>1.5</velocity.version>
 		<xercesImpl.version>2.8.1</xercesImpl.version>
 		<rxtx.version>2.1.7</rxtx.version>

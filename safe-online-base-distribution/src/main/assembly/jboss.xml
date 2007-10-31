@@ -21,8 +21,19 @@
 				<exclude>bin/wsrunclient.*</exclude>
 				<exclude>bin/wstools.*</exclude>
 				<exclude>bin/classpath.sh</exclude>
+				<exclude>bin/run.sh</exclude>
+				<exclude>bin/shutdown.sh</exclude>
 				<exclude>jar-versions.xml</exclude>
 			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>target/files/jboss-4.2.2.GA</directory>
+			<outputDirectory>jboss</outputDirectory>
+			<includes>
+				<include>bin/run.sh</include>
+				<include>bin/shutdown.sh</include>
+			</includes>
+			<fileMode>0500</fileMode>
 		</fileSet>
 		<fileSet>
 			<directory>target/files/jaxws-ri/lib</directory>
