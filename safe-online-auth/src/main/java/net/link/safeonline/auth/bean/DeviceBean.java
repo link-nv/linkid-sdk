@@ -114,6 +114,8 @@ public class DeviceBean implements Device {
 	static {
 		deviceNames.put("password", "Username/password");
 		deviceNames.put("beid", "Belgium Identity Card");
+		deviceNames.put("weak mobile", "Self Provided Mobile");
+		deviceNames.put("strong mobile", "Telco Provided Mobile");
 	}
 
 	private void deviceNameDecoration(List<SelectItem> selectItems) {

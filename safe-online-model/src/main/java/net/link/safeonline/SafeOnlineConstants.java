@@ -65,6 +65,13 @@ public class SafeOnlineConstants {
 
 	public static final String LOGIN_IDENTIFIER_DOMAIN = "login";
 
+	/**
+	 * Mobile device attributes
+	 */
+	public static final String WEAK_MOBILE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:weak-mobile";
+
+	public static final String STRONG_MOBILE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:strong-mobile";
+
 	private SafeOnlineConstants() {
 		// empty
 	}

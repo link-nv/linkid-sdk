@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.encap.administration;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 
@@ -27,7 +28,10 @@ public class EncapAdministrationClientImpl implements EncapAdministrationClient 
 
 	private MSecBankIdAdministrationSoapBindingStub adminStub;
 
-	public EncapAdministrationClientImpl(URL endpointURL) throws AxisFault {
+	public EncapAdministrationClientImpl(String location) throws AxisFault,
+			MalformedURLException {
+		URL endpointURL = new URL("http://" + location
+				+ "/services/mSecBankIdAdministration");
 		this.adminStub = new MSecBankIdAdministrationSoapBindingStub(
 				endpointURL, new Service());
 	}

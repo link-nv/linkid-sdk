@@ -20,10 +20,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
-import types._0._1.activation.encap.safe_online.link.net.ActivationInitResponse;
-import types._0._1.administration.encap.safe_online.link.net.MSecResponse;
 import types._0._1.authentication.encap.safe_online.link.net.ChallengeResponse;
 import types._0._1.authentication.encap.safe_online.link.net.VerifyResponse;
+import types._0._1.encap.safe_online.link.net.ActivationInitResponse;
+import types._0._1.encap.safe_online.link.net.MSecResponse;
 import _0._1.activation.encap.safe_online.link.net.MSecBankIdActivationSoapBindingStub;
 import _0._1.administration.encap.safe_online.link.net.MSecBankIdAdministrationSoapBindingStub;
 import _0._1.authentication.encap.safe_online.link.net.MSecBankIdSoapBindingStub;

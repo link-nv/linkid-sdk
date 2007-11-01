@@ -55,6 +55,22 @@
 						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>
+								safe-online-encap-sdk
+							</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>axis</groupId>
+							<artifactId>axis</artifactId>
+							<includeInApplicationXml>
+								true
+							</includeInApplicationXml>
+						</jarModule>
+						<jarModule>
+							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>safe-online-sts-ws</artifactId>
 							<includeInApplicationXml>
 								true

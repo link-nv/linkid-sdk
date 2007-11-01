@@ -8,7 +8,6 @@
 package net.link.safeonline.authentication.service.bean;
 
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
@@ -16,9 +15,9 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialManager;
-import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
+import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.UserRegistrationManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -52,17 +51,13 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	private CredentialManager credentialManager;
 
 	@EJB
-	private PasswordManager passwordController;
+	private PasswordDeviceService passwordDeviceService;
 
 	public void registerUser(String login, String password)
 			throws ExistingUserException, AttributeTypeNotFoundException {
 		SubjectEntity newSubject = this.userRegistrationManager
 				.registerUser(login);
-		try {
-			this.passwordController.setPassword(newSubject, password);
-		} catch (PermissionDeniedException e) {
-			throw new EJBException("Not allowed to set password");
-		}
+		this.passwordDeviceService.register(newSubject, password);
 	}
 
 	public boolean isLoginFree(String login) {

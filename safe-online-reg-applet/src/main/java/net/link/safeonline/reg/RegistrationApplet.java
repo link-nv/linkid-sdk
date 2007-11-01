@@ -7,15 +7,12 @@
 
 package net.link.safeonline.reg;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import net.link.safeonline.applet.AppletBase;
 import net.link.safeonline.applet.InfoLevel;
 import net.link.safeonline.p11sc.SmartCard;
-import net.link.safeonline.shared.statement.RegistrationStatement;
 
 public class RegistrationApplet extends AppletBase {
 
@@ -35,12 +32,9 @@ public class RegistrationApplet extends AppletBase {
 		outputDetailMessage("Session: " + sessionId);
 		outputDetailMessage("Application: " + applicationId);
 		outputDetailMessage("User: " + user);
-
-		X509Certificate authCert = smartCard.getAuthenticationCertificate();
-		PrivateKey authPrivateKey = smartCard.getAuthenticationPrivateKey();
-		RegistrationStatement statement = new RegistrationStatement(user,
-				sessionId, applicationId, authCert, authPrivateKey);
-		byte[] statementData = statement.generateStatement();
-		return statementData;
+		byte[] registrationStatement = RegistrationStatementFactory
+				.createRegistrationStatement(user, sessionId, applicationId,
+						smartCard);
+		return registrationStatement;
 	}
 }

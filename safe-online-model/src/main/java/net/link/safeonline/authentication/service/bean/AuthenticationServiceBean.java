@@ -13,7 +13,6 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
 
-import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Set;
 
@@ -25,7 +24,6 @@ import javax.interceptor.Interceptors;
 
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
-import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
@@ -45,30 +43,23 @@ import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.AuthenticationState;
-import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
-import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
-import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.device.BeIdDeviceService;
+import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
-import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.entity.pkix.TrustDomainEntity;
-import net.link.safeonline.model.UserRegistrationManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
-import net.link.safeonline.pkix.model.PkiProvider;
-import net.link.safeonline.pkix.model.PkiProviderManager;
-import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
@@ -122,15 +113,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	private HistoryDAO historyDAO;
 
 	@EJB
-	private PkiProviderManager pkiProviderManager;
-
-	@EJB
-	private PkiValidator pkiValidator;
-
-	@EJB
-	private SubjectIdentifierDAO subjectIdentifierDAO;
-
-	@EJB
 	private StatisticDAO statisticDAO;
 
 	@EJB
@@ -140,51 +122,24 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	private IdentityService identityService;
 
 	@EJB
-	private SecurityAuditLogger securityAuditLogger;
-
-	@EJB
-	private UserRegistrationManager userRegistrationManager;
-
-	@EJB
-	private PasswordManager passwordManager;
-
-	@EJB
 	private DevicePolicyService devicePolicyService;
-
-	@EJB
-	private CredentialService credentialService;
 
 	@EJB
 	private UsageAgreementService usageAgreementService;
 
+	@EJB
+	private PasswordDeviceService passwordDeviceService;
+
+	@EJB
+	private BeIdDeviceService beIdDeviceService;
+
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
 	String password) throws SubjectNotFoundException, DeviceNotFoundException {
-		LOG.debug("authenticate \"" + login + "\"");
-
-		SubjectEntity subject = this.subjectService
-				.getSubjectFromUserName(login);
-
-		boolean validationResult = false;
-
-		try {
-			validationResult = this.passwordManager.validatePassword(subject,
-					password);
-		} catch (DeviceNotFoundException e) {
-			addExceptionHistoryEntry(subject,
-					HistoryEventType.LOGIN_PASSWORD_ATTRIBUTE_NOT_FOUND, null,
-					null);
-			throw e;
-		}
-
-		if (!validationResult) {
-			addHistoryEntry(subject, HistoryEventType.LOGIN_INCORRECT_PASSWORD,
-					null, null);
-			this.securityAuditLogger.addSecurityAudit(
-					SecurityThreatType.DECEPTION, subject.getUserId(),
-					"incorrect password");
+		SubjectEntity subject = this.passwordDeviceService.authenticate(login,
+				password);
+		if (null == subject)
 			return false;
-		}
 
 		/*
 		 * Safe the state in this stateful session bean.
@@ -200,17 +155,15 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return true;
 	}
 
+	public boolean authenticate(String login, String challengeId,
+			String OTPValue) {
+		return true;
+	}
+
 	private void addHistoryEntry(SubjectEntity subject, HistoryEventType event,
 			String application, String info) {
 		Date now = new Date();
 		this.historyDAO.addHistoryEntry(now, subject, event, application, info);
-	}
-
-	private void addExceptionHistoryEntry(SubjectEntity subject,
-			HistoryEventType event, String application, String info) {
-		Date now = new Date();
-		this.historyDAO.addHExceptionHistoryEntry(now, subject, event,
-				application, info);
 	}
 
 	public boolean authenticate(@NonEmptyString
@@ -218,45 +171,12 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	byte[] authenticationStatementData) throws ArgumentIntegrityException,
 			TrustDomainNotFoundException, SubjectNotFoundException,
 			DecodingException {
-		LOG.debug("authenticate session: " + sessionId);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);
-
-		X509Certificate certificate = authenticationStatement.verifyIntegrity();
-		if (null == certificate) {
-			throw new ArgumentIntegrityException();
-		}
-
-		String statementSessionId = authenticationStatement.getSessionId();
-
-		PkiProvider pkiProvider = this.pkiProviderManager
-				.findPkiProvider(certificate);
-		if (null == pkiProvider) {
-			throw new ArgumentIntegrityException();
-		}
-		TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
-		boolean validationResult = this.pkiValidator.validateCertificate(
-				trustDomain, certificate);
-		if (false == validationResult) {
-			throw new ArgumentIntegrityException();
-		}
-
-		if (false == sessionId.equals(statementSessionId)) {
-			this.securityAuditLogger.addSecurityAudit(
-					SecurityThreatType.DECEPTION, "session Id mismatch");
-			throw new ArgumentIntegrityException();
-		}
-
-		String identifierDomainName = pkiProvider.getIdentifierDomainName();
-		String identifier = pkiProvider.getSubjectIdentifier(certificate);
-		SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
-				identifierDomainName, identifier);
-		if (null == subject) {
-			String event = "no subject was found for the given user certificate";
-			LOG.warn(event);
-			throw new SubjectNotFoundException();
-		}
-		LOG.debug("subject: " + subject);
+		SubjectEntity subject = this.beIdDeviceService.authenticate(sessionId,
+				authenticationStatement);
+		if (null == subject)
+			return false;
 
 		/*
 		 * Safe the state.
@@ -425,7 +345,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	byte[] identityStatementData) throws TrustDomainNotFoundException,
 			PermissionDeniedException, ArgumentIntegrityException,
 			AttributeTypeNotFoundException {
-		this.credentialService.mergeIdentityStatement(identityStatementData);
+		this.beIdDeviceService.register(identityStatementData);
 
 		this.authenticationDevice = AuthenticationDevice.BEID;
 		return true;
@@ -441,51 +361,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		RegistrationStatement registrationStatement = new RegistrationStatement(
 				registrationStatementData);
 
-		X509Certificate certificate = registrationStatement.verifyIntegrity();
-		if (null == certificate) {
-			throw new ArgumentIntegrityException();
-		}
-
-		PkiProvider pkiProvider = this.pkiProviderManager
-				.findPkiProvider(certificate);
-		if (null == pkiProvider) {
-			throw new ArgumentIntegrityException();
-		}
-		TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
-		boolean validationResult = this.pkiValidator.validateCertificate(
-				trustDomain, certificate);
-		if (false == validationResult) {
-			throw new ArgumentIntegrityException();
-		}
-
-		String statementSessionId = registrationStatement.getSessionId();
-		if (false == sessionId.equals(statementSessionId)) {
-			this.securityAuditLogger.addSecurityAudit(
-					SecurityThreatType.DECEPTION, "session Id mismatch");
-			throw new ArgumentIntegrityException();
-		}
-
-		String statementUsername = registrationStatement.getUsername();
-		if (false == username.equals(statementUsername)) {
-			this.securityAuditLogger.addSecurityAudit(
-					SecurityThreatType.DECEPTION, "username mismatch");
-			throw new ArgumentIntegrityException();
-		}
-
-		String domain = pkiProvider.getIdentifierDomainName();
-		String identifier = pkiProvider.getSubjectIdentifier(certificate);
-		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
-				.findSubject(domain, identifier);
-		if (null != existingMappedSubject) {
-			throw new ArgumentIntegrityException();
-		}
-
-		SubjectEntity subject = this.userRegistrationManager
-				.registerUser(username);
-		this.subjectIdentifierDAO.addSubjectIdentifier(domain, identifier,
-				subject);
-
-		pkiProvider.storeAdditionalAttributes(subject, certificate);
+		SubjectEntity subject = this.beIdDeviceService.registerAndAuthenticate(
+				sessionId, username, registrationStatement);
 
 		/*
 		 * Safe the state.

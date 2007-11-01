@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.ws.encap.authentication;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 
@@ -29,7 +30,9 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
 
 	private MSecBankIdSoapBindingStub authStub;
 
-	public EncapAuthenticationClientImpl(URL endpointURL) throws AxisFault {
+	public EncapAuthenticationClientImpl(String location) throws AxisFault,
+			MalformedURLException {
+		URL endpointURL = new URL("http://" + location + "/services/mSecBankId");
 		this.authStub = new MSecBankIdSoapBindingStub(endpointURL,
 				new Service());
 	}

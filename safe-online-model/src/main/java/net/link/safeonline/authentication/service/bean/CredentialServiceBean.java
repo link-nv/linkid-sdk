@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.CredentialServiceRemote;
 import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -52,14 +53,16 @@ public class CredentialServiceBean implements CredentialService,
 	@EJB
 	private PasswordManager passwordController;
 
+	@EJB
+	private PasswordDeviceService passwordDeviceService;
+
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void changePassword(String oldPassword, String newPassword)
 			throws PermissionDeniedException, DeviceNotFoundException {
 		LOG.debug("change password");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 
-		this.passwordController.changePassword(subject, oldPassword,
-				newPassword);
+		this.passwordDeviceService.update(subject, oldPassword, newPassword);
 
 		SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);

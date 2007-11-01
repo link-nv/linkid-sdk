@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
 import net.link.safeonline.shared.SharedConstants;
@@ -39,19 +39,19 @@ public class IdentityServlet extends AbstractStatementServlet {
 
 	private static final Log LOG = LogFactory.getLog(IdentityServlet.class);
 
-	private CredentialService credentialService;
+	private BeIdDeviceService beIdDeviceService;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 
-		loadCredentialService();
+		loadBeIdDeviceService();
 	}
 
-	private void loadCredentialService() {
-		this.credentialService = EjbUtils.getEJB(
-				"SafeOnline/CredentialServiceBean/local",
-				CredentialService.class);
+	private void loadBeIdDeviceService() {
+		this.beIdDeviceService = EjbUtils.getEJB(
+				"SafeOnline/BeIdDeviceServiceBean/local",
+				BeIdDeviceService.class);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class IdentityServlet extends AbstractStatementServlet {
 			throws IOException {
 		PrintWriter writer = response.getWriter();
 		try {
-			this.credentialService.mergeIdentityStatement(statementData);
+			this.beIdDeviceService.update(statementData);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (TrustDomainNotFoundException e) {
 			LOG.error("trust domain not found: " + e.getMessage(), e);

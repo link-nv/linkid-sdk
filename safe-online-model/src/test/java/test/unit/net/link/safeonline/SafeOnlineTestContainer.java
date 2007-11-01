@@ -8,6 +8,7 @@
 package test.unit.net.link.safeonline;
 
 import net.link.safeonline.audit.bean.ResourceAuditLoggerBean;
+import net.link.safeonline.audit.bean.SecurityAuditLoggerBean;
 import net.link.safeonline.audit.dao.bean.AccessAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.AuditAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
@@ -30,6 +31,8 @@ import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.dao.bean.UsageAgreementDAOBean;
+import net.link.safeonline.device.bean.BeIdDeviceServiceBean;
+import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
@@ -116,7 +119,9 @@ public class SafeOnlineTestContainer {
 			AccessAuditDAOBean.class, SecurityAuditDAOBean.class,
 			ResourceAuditDAOBean.class, PasswordManagerBean.class,
 			SubjectServiceBean.class, IdGeneratorBean.class,
-			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class };
+			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class,
+			PasswordDeviceServiceBean.class, BeIdDeviceServiceBean.class,
+			SecurityAuditLoggerBean.class };
 
 	public static final Class<?>[] entities = new Class[] {
 			SubjectEntity.class, ApplicationEntity.class,

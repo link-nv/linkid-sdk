@@ -19,7 +19,8 @@ import javax.ejb.EJBException;
  * 
  */
 public enum AuthenticationDevice {
-	PASSWORD("password"), BEID("beid");
+	PASSWORD("password"), BEID("beid"), WEAK_MOBILE("weak mobile"), STRONG_MOBILE(
+			"strong mobile");
 
 	private final String deviceName;
 

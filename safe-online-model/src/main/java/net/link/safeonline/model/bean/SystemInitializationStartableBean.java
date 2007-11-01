@@ -150,11 +150,43 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				loginAttributeType, "nl", "Login naam", null));
 
-		List<AttributeTypeEntity> deviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
-		deviceAttributeTypeList.add(passwordHashAttributeType);
-		deviceAttributeTypeList.add(passwordSeedAttributeType);
-		deviceAttributeTypeList.add(passwordAlgorithmAttributeType);
-		this.devices.put("password", deviceAttributeTypeList);
+		/*
+		 * Mobile device attribute types
+		 */
+		AttributeTypeEntity weakMobileAttributeType = new AttributeTypeEntity(
+				SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE, DatatypeType.STRING,
+				true, true);
+		this.attributeTypes.add(weakMobileAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				weakMobileAttributeType, Locale.ENGLISH.getLanguage(),
+				"Self provided mobile", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				weakMobileAttributeType, "nl", "Zelf verstrekt gsm nummer",
+				null));
+		AttributeTypeEntity strongMobileAttributeType = new AttributeTypeEntity(
+				SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE,
+				DatatypeType.STRING, true, false);
+		this.attributeTypes.add(strongMobileAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				strongMobileAttributeType, Locale.ENGLISH.getLanguage(),
+				"Telco provided mobile", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				strongMobileAttributeType, "nl",
+				"Gsm nummer uitgegeven door telco", null));
+
+		List<AttributeTypeEntity> passwordDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
+		passwordDeviceAttributeTypeList.add(passwordHashAttributeType);
+		passwordDeviceAttributeTypeList.add(passwordSeedAttributeType);
+		passwordDeviceAttributeTypeList.add(passwordAlgorithmAttributeType);
+		this.devices.put("password", passwordDeviceAttributeTypeList);
+
+		List<AttributeTypeEntity> weakMobileDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
+		weakMobileDeviceAttributeTypeList.add(weakMobileAttributeType);
+		this.devices.put("weak mobile", weakMobileDeviceAttributeTypeList);
+
+		List<AttributeTypeEntity> strongMobileDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
+		strongMobileDeviceAttributeTypeList.add(strongMobileAttributeType);
+		this.devices.put("strong mobile", strongMobileDeviceAttributeTypeList);
 	}
 
 	@Override
