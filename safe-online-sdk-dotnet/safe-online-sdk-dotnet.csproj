@@ -1,0 +1,55 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{542A3854-44CB-4A14-8600-371E26A6B005}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <RootNamespace>safe_online_sdk_dotnet</RootNamespace>
+    <AssemblyName>safe-online-sdk-dotnet</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>target\Debug\</OutputPath>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>target\Release\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <ItemGroup>
+    <Reference Include="nunit.framework" />
+    <Reference Include="System" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\main\cs\PingClient.cs" />
+    <Compile Include="target\services\SafeOnlinePingWebService.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="src\main\cs\AssemblyInfo.cs" />
+    <Compile Include="src\main\cs\PingClientImpl.cs" />
+    <Compile Include="src\test\cs\TestPingClient.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src" />
+    <Folder Include="src\main" />
+    <Folder Include="src\main\cs" />
+    <Folder Include="src\main\wsdl" />
+    <Folder Include="src\test" />
+    <Folder Include="src\test\cs" />
+  </ItemGroup>
+  <Target Name="BeforeBuild">
+    <MakeDir Directories="target\services" />
+    <Exec Command="svcutil /directory:target\services ../safe-online-ping-ws/src/main/resources/safe-online-ping.wsdl" />
+  </Target>
+</Project>
