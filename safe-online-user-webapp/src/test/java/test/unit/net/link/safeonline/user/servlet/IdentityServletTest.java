@@ -18,7 +18,7 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
 import net.link.safeonline.user.servlet.IdentityServlet;
@@ -44,7 +44,7 @@ public class IdentityServletTest {
 
 	private HttpClient httpClient;
 
-	private CredentialService mockCredentialServiceBean;
+	private BeIdDeviceService mockBeIdDeviceServiceBean;
 
 	private ServletTestManager servletTestManager;
 
@@ -55,10 +55,10 @@ public class IdentityServletTest {
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
 
-		this.mockCredentialServiceBean = createMock(CredentialService.class);
+		this.mockBeIdDeviceServiceBean = createMock(BeIdDeviceService.class);
 		this.jndiTestUtils.bindComponent(
-				"SafeOnline/CredentialServiceBean/local",
-				this.mockCredentialServiceBean);
+				"SafeOnline/BeIdDeviceServiceBean/local",
+				this.mockBeIdDeviceServiceBean);
 
 		this.servletTestManager = new ServletTestManager();
 		this.servletTestManager.setUp(IdentityServlet.class);
@@ -108,18 +108,18 @@ public class IdentityServletTest {
 		postMethod.setRequestEntity(requestEntity);
 
 		// expectations
-		this.mockCredentialServiceBean.mergeIdentityStatement(EasyMock
-				.aryEq("test-message".getBytes()));
+		this.mockBeIdDeviceServiceBean.update(EasyMock.aryEq("test-message"
+				.getBytes()));
 
 		// prepare
-		replay(this.mockCredentialServiceBean);
+		replay(this.mockBeIdDeviceServiceBean);
 
 		// operate
 		int result = this.httpClient.executeMethod(postMethod);
 
 		// verify
 		assertEquals(HttpServletResponse.SC_OK, result);
-		verify(this.mockCredentialServiceBean);
+		verify(this.mockBeIdDeviceServiceBean);
 	}
 
 	@Test
@@ -142,11 +142,11 @@ public class IdentityServletTest {
 		httpURLConnection.disconnect();
 
 		// expectations
-		this.mockCredentialServiceBean.mergeIdentityStatement(EasyMock
-				.aryEq("test-message".getBytes()));
+		this.mockBeIdDeviceServiceBean.update(EasyMock.aryEq("test-message"
+				.getBytes()));
 
 		// prepare
-		replay(this.mockCredentialServiceBean);
+		replay(this.mockBeIdDeviceServiceBean);
 
 		// operate
 		int responseCode = httpURLConnection.getResponseCode();
@@ -154,6 +154,6 @@ public class IdentityServletTest {
 		// verify
 		LOG.debug("response code: " + responseCode);
 		assertEquals(HttpServletResponse.SC_OK, responseCode);
-		verify(this.mockCredentialServiceBean);
+		verify(this.mockBeIdDeviceServiceBean);
 	}
 }
