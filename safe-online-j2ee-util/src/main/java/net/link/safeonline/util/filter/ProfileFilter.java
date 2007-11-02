@@ -9,6 +9,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
@@ -59,7 +60,9 @@ public class ProfileFilter implements Filter {
 				profileData.unlock();
 			}
 			try {
-				profileData.addMeasurement(request.getLocalAddr(), duration);
+				HttpServletRequest httpRequest = (HttpServletRequest) request;
+				String method = httpRequest.getContextPath();
+				profileData.addMeasurement(method, duration);
 			} catch (ProfileDataLockedException e) {
 				// empty
 			}
