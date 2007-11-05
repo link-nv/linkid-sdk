@@ -12,6 +12,9 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPFactory;
+import javax.xml.soap.SOAPFault;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.transform.TransformerException;
@@ -20,6 +23,7 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.MessageContext.Scope;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -52,6 +56,10 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 	@PostConstruct
 	public void postConstructCallback() {
 		LOG.debug("post construct");
+		System
+				.setProperty(
+						"com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace",
+						"true");
 		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 		this.publicKey = identityServiceClient.getPublicKey();
 	}
@@ -92,7 +100,8 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 			result = xmlSignature.checkSignatureValue(this.publicKey);
 		} catch (XMLSecurityException e) {
 			LOG.error("XML signature error: " + e.getMessage(), e);
-			throw new RuntimeException("XML signature error");
+			throw createSOAPFaultException("XML signature error",
+					"InvalidSecurityToken");
 		}
 
 		setValidity(result, soapContext);
@@ -141,5 +150,19 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 			return false;
 		}
 		return validity;
+	}
+
+	private SOAPFaultException createSOAPFaultException(String faultString,
+			String wstFaultCode) {
+		SOAPFault soapFault;
+		try {
+			SOAPFactory soapFactory = SOAPFactory.newInstance();
+			soapFault = soapFactory.createFault(faultString, new QName(
+					"http://docs.oasis-open.org/ws-sx/ws-trust/200512",
+					wstFaultCode, "wst"));
+		} catch (SOAPException e) {
+			throw new RuntimeException("SOAP error");
+		}
+		return new SOAPFaultException(soapFault);
 	}
 }

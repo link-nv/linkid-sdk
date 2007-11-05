@@ -12,9 +12,13 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPFactory;
+import javax.xml.soap.SOAPFault;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
@@ -41,6 +45,10 @@ public class ApplicationCertificateMapperHandler implements
 
 	@PostConstruct
 	public void postConstructCallback() {
+		System
+				.setProperty(
+						"com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace",
+						"true");
 		this.applicationAuthenticationService = EjbUtils.getEJB(
 				"SafeOnline/ApplicationAuthenticationServiceBean/local",
 				ApplicationAuthenticationService.class);
@@ -84,7 +92,8 @@ public class ApplicationCertificateMapperHandler implements
 			applicationName = this.applicationAuthenticationService
 					.authenticate(certificate);
 		} catch (ApplicationNotFoundException e) {
-			throw new RuntimeException("unknown application");
+			throw createSOAPFaultException("unknown application",
+					"FailedAuthentication");
 		}
 
 		context.put(ApplicationLoginHandler.APPLICATION_NAME_PROPERTY,
@@ -94,5 +103,22 @@ public class ApplicationCertificateMapperHandler implements
 	@SuppressWarnings("unused")
 	private void logout(SOAPMessageContext context) {
 		LOG.debug("logout");
+	}
+
+	private SOAPFaultException createSOAPFaultException(String faultString,
+			String wsseFaultCode) {
+		SOAPFault soapFault;
+		try {
+			SOAPFactory soapFactory = SOAPFactory.newInstance();
+			soapFault = soapFactory
+					.createFault(
+							faultString,
+							new QName(
+									"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+									wsseFaultCode, "wsse"));
+		} catch (SOAPException e) {
+			throw new RuntimeException("SOAP error");
+		}
+		return new SOAPFaultException(soapFault);
 	}
 }

@@ -12,9 +12,13 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPFactory;
+import javax.xml.soap.SOAPFault;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -42,6 +46,10 @@ public class ApplicationCertificateValidatorHandler implements
 
 	@PostConstruct
 	public void postConstructCallback() {
+		System
+				.setProperty(
+						"com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace",
+						"true");
 		this.pkiValidator = EjbUtils.getEJB(
 				"SafeOnline/PkiValidatorBean/local", PkiValidator.class);
 	}
@@ -85,15 +93,35 @@ public class ApplicationCertificateValidatorHandler implements
 					SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 					certificate);
 		} catch (TrustDomainNotFoundException e) {
-			throw new RuntimeException("application trust domain not found");
+			throw createSOAPFaultException(
+					"application trust domain not found",
+					"FailedAuthentication");
 		}
 		if (false == result) {
-			throw new RuntimeException("certificate not trusted");
+			throw createSOAPFaultException("certificate not trusted",
+					"FailedAuthentication");
 		}
 	}
 
 	@SuppressWarnings("unused")
 	private void logout(SOAPMessageContext context) {
 		LOG.debug("logout");
+	}
+
+	private SOAPFaultException createSOAPFaultException(String faultString,
+			String wsseFaultCode) {
+		SOAPFault soapFault;
+		try {
+			SOAPFactory soapFactory = SOAPFactory.newInstance();
+			soapFault = soapFactory
+					.createFault(
+							faultString,
+							new QName(
+									"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+									wsseFaultCode, "wsse"));
+		} catch (SOAPException e) {
+			throw new RuntimeException("SOAP error");
+		}
+		return new SOAPFaultException(soapFault);
 	}
 }
