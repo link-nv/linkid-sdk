@@ -320,6 +320,10 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 			return SafeOnlineAuthnContextClass.PASSWORD_PROTECTED_TRANSPORT;
 		case BEID:
 			return SafeOnlineAuthnContextClass.SMART_CARD_PKI;
+		case WEAK_MOBILE:
+			return SafeOnlineAuthnContextClass.MOBILE;
+		case STRONG_MOBILE:
+			return SafeOnlineAuthnContextClass.MOBILE;
 		default:
 			throw new ProtocolException("unsupported device: " + device);
 		}

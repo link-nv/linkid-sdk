@@ -13,6 +13,8 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
 
+import java.net.MalformedURLException;
+import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Set;
 
@@ -35,6 +37,7 @@ import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
+import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -53,6 +56,7 @@ import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.device.PasswordDeviceService;
+import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.StatisticDataPointEntity;
@@ -65,6 +69,7 @@ import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.annotation.NotNull;
 
+import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -133,6 +138,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private BeIdDeviceService beIdDeviceService;
 
+	@EJB
+	private WeakMobileDeviceService weakMobileDeviceService;
+
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
 	String password) throws SubjectNotFoundException, DeviceNotFoundException {
@@ -155,9 +163,38 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return true;
 	}
 
-	public boolean authenticate(String login, String challengeId,
-			String OTPValue) {
+	public boolean authenticate(@NotNull
+	AuthenticationDevice device, @NonEmptyString
+	String login, @NonEmptyString
+	String challengeId, @NonEmptyString
+	String mobileOTP) throws AxisFault, SubjectNotFoundException,
+			MalformedURLException, RemoteException, MobileRegistrationException {
+		SubjectEntity subject;
+		if (device == AuthenticationDevice.WEAK_MOBILE)
+			subject = this.weakMobileDeviceService.authenticate(login,
+					challengeId, mobileOTP);
+		else
+			subject = null;
+		/*
+		 * Safe the state in this stateful session bean.
+		 */
+		this.authenticationState = USER_AUTHENTICATED;
+		this.authenticatedSubject = subject;
+		this.authenticationDevice = device;
+		this.expectedApplicationId = null;
+
+		/*
+		 * Communicate that the authentication process can continue.
+		 */
 		return true;
+	}
+
+	public String requestMobileOTP(@NotNull
+	AuthenticationDevice device, @NonEmptyString
+	String mobile) throws MalformedURLException, RemoteException {
+		if (device == AuthenticationDevice.WEAK_MOBILE)
+			return this.weakMobileDeviceService.requestOTP(mobile);
+		return null;
 	}
 
 	private void addHistoryEntry(SubjectEntity subject, HistoryEventType event,

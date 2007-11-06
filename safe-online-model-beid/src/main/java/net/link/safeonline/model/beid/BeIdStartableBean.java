@@ -24,6 +24,7 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
@@ -88,7 +89,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 
 		deviceAttributeTypeList.add(nrnAttributeType);
 
-		this.devices.put(BeIdConstants.BEID_DEVICE_ID, deviceAttributeTypeList);
+		this.devices.put(new Device(BeIdConstants.BEID_DEVICE_ID,
+				DeviceType.SMARTCARD), deviceAttributeTypeList);
 
 	}
 

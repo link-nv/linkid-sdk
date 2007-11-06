@@ -18,6 +18,9 @@ import org.apache.axis.AxisFault;
 @Local
 public interface MobileManager {
 
+	String requestOTP(String mobile) throws MalformedURLException,
+			RemoteException, AxisFault;
+
 	boolean verifyOTP(String challengeId, String OTPValue) throws AxisFault,
 			MalformedURLException, RemoteException;
 

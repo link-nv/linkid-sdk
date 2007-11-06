@@ -26,9 +26,7 @@
 		<h:form>
 			<h:selectOneRadio value="#{device.selection}" layout="pageDirection"
 				required="true">
-				<f:selectItem itemLabel="#{msgs.usernamePassword}"
-					itemValue="password" />
-				<f:selectItem itemLabel="#{msgs.beId}" itemValue="beid" />
+				<f:selectItems value="#{allDevices}" />
 			</h:selectOneRadio>
 
 			<h:messages styleClass="error" />

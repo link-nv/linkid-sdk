@@ -30,6 +30,14 @@
 			<from-outcome>beid</from-outcome>
 			<to-view-id>/beid.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>mobileWeak</from-outcome>
+			<to-view-id>/mobile.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>mobileStrong</from-outcome>
+			<to-view-id>/mobile.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -42,6 +50,15 @@
 			<from-outcome>beid</from-outcome>
 			<to-view-id>/beid.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>mobileWeak</from-outcome>
+			<to-view-id>/mobile.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>mobileStrong</from-outcome>
+			<to-view-id>/mobile.xhtml</to-view-id>
+		</navigation-case>
+
 	</navigation-rule>
 
 	<navigation-rule>
@@ -74,6 +91,11 @@
 			<from-outcome>password</from-outcome>
 			<to-view-id>/new-user-password.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>mobileWeak</from-outcome>
+			<to-view-id>/new-user-mobile.xhtml</to-view-id>
+		</navigation-case>
+
 	</navigation-rule>
 
 	<navigation-rule>
@@ -85,6 +107,10 @@
 		<navigation-case>
 			<from-outcome>password</from-outcome>
 			<to-view-id>/register-password.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>mobileWeak</from-outcome>
+			<to-view-id>/register-mobile.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
@@ -121,6 +147,30 @@
 	</navigation-rule>
 
 	<navigation-rule>
+		<from-view-id>/mobile.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>help</from-action>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/register-password.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>help</from-action>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/register-mobile.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>help</from-action>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
 		<from-view-id>/register-beid.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>help</from-action>
@@ -129,7 +179,23 @@
 	</navigation-rule>
 
 	<navigation-rule>
+		<from-view-id>/new-user-password.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>help</from-action>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
 		<from-view-id>/new-user-beid.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>help</from-action>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/new-user-mobile.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>help</from-action>
 			<to-view-id>/help.xhtml</to-view-id>

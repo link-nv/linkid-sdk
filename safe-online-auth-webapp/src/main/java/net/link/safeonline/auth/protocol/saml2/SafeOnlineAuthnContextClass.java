@@ -20,7 +20,8 @@ public enum SafeOnlineAuthnContextClass {
 
 	PASSWORD_PROTECTED_TRANSPORT(
 			"urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"), SMART_CARD_PKI(
-			"urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI");
+			"urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI"), MOBILE(
+			"urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract");
 
 	private final String samlName;
 

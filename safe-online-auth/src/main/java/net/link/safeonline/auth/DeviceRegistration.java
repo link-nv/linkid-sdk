@@ -7,7 +7,10 @@
 
 package net.link.safeonline.auth;
 
+import java.util.List;
+
 import javax.ejb.Local;
+import javax.faces.model.SelectItem;
 
 @Local
 public interface DeviceRegistration {
@@ -25,12 +28,23 @@ public interface DeviceRegistration {
 
 	String getUsername();
 
+	String getMobile();
+
+	void setMobile(String mobile);
+
 	/*
 	 * Actions.
 	 */
 	String deviceNext();
 
 	String passwordNext();
+
+	String mobileNext();
+
+	/*
+	 * Factories
+	 */
+	List<SelectItem> allDevicesFactory();
 
 	/*
 	 * Lifecycle.

@@ -28,6 +28,14 @@ public class MobileManagerBean implements MobileManager {
 	@Configurable(name = "Encap Organisation ID", group = "Encap")
 	private String encapOrganisationId = "safe-online";
 
+	public String requestOTP(String mobile) throws RemoteException,
+			MalformedURLException {
+		EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(
+				this.encapServerLocation);
+		return encapAuthenticationClient.challenge(mobile,
+				this.encapOrganisationId);
+	}
+
 	public boolean verifyOTP(String challengeId, String OTPValue)
 			throws MalformedURLException, RemoteException {
 		EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(

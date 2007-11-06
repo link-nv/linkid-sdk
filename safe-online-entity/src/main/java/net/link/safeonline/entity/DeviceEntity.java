@@ -1,9 +1,17 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
 package net.link.safeonline.entity;
 
 import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -25,14 +33,17 @@ public class DeviceEntity implements Serializable {
 
 	private String name;
 
+	private DeviceType deviceType;
+
 	private List<AttributeTypeEntity> attributeTypes;
 
 	public DeviceEntity() {
 		// empty
 	}
 
-	public DeviceEntity(String name) {
+	public DeviceEntity(String name, DeviceType deviceType) {
 		this.name = name;
+		this.deviceType = deviceType;
 	}
 
 	@Id
@@ -42,6 +53,15 @@ public class DeviceEntity implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public DeviceType getDeviceType() {
+		return this.deviceType;
+	}
+
+	public void setDeviceType(DeviceType deviceType) {
+		this.deviceType = deviceType;
 	}
 
 	@OneToMany

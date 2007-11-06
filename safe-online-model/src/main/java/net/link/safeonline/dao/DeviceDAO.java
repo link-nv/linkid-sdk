@@ -13,11 +13,12 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceType;
 
 @Local
 public interface DeviceDAO {
 
-	DeviceEntity addDevice(String name);
+	DeviceEntity addDevice(String name, DeviceType deviceType);
 
 	List<DeviceEntity> listDevices();
 

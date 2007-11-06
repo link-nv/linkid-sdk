@@ -18,6 +18,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
 @Stateless
@@ -34,8 +35,8 @@ public class DeviceDAOBean implements DeviceDAO {
 				this.entityManager, DeviceEntity.QueryInterface.class);
 	}
 
-	public DeviceEntity addDevice(String name) {
-		DeviceEntity device = new DeviceEntity(name);
+	public DeviceEntity addDevice(String name, DeviceType deviceType) {
+		DeviceEntity device = new DeviceEntity(name, deviceType);
 		this.entityManager.persist(device);
 		return device;
 	}

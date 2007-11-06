@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Set;
 
 import javax.ejb.EJB;
@@ -30,11 +31,14 @@ import net.link.safeonline.authentication.service.DevicePolicyService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.FacesMessages;
+import org.jboss.seam.core.ResourceBundle;
 
 @Stateful
 @Name("device")
@@ -58,6 +62,10 @@ public class DeviceBean implements Device {
 	@In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
 	private Set<AuthenticationDevice> requiredDevicePolicy;
 
+	@SuppressWarnings("unused")
+	@Out(required = false, scope = ScopeType.SESSION)
+	private AuthenticationDevice deviceSelection;
+
 	@Remove
 	@Destroy
 	public void destroyCallback() {
@@ -70,6 +78,8 @@ public class DeviceBean implements Device {
 
 	public void setSelection(String deviceSelection) {
 		this.selection = deviceSelection;
+		this.deviceSelection = AuthenticationDevice
+				.getAuthenticationDevice(this.selection);
 	}
 
 	public String next() {
@@ -109,23 +119,42 @@ public class DeviceBean implements Device {
 		return applicationDevices;
 	}
 
+	@Factory("allDevices")
+	public List<SelectItem> allDevicesFactory() {
+		LOG.debug("all devices factory");
+		List<SelectItem> allDevices = new LinkedList<SelectItem>();
+		Set<AuthenticationDevice> devices = this.devicePolicyService
+				.getDevices();
+		for (AuthenticationDevice device : devices) {
+			String deviceName = device.getDeviceName();
+			SelectItem allDevice = new SelectItem(deviceName);
+			allDevices.add(allDevice);
+		}
+		deviceNameDecoration(allDevices);
+		return allDevices;
+	}
+
 	private static final Map<String, String> deviceNames = new HashMap<String, String>();
 
 	static {
 		deviceNames.put("password", "Username/password");
 		deviceNames.put("beid", "Belgium Identity Card");
-		deviceNames.put("weak mobile", "Self Provided Mobile");
-		deviceNames.put("strong mobile", "Telco Provided Mobile");
 	}
 
 	private void deviceNameDecoration(List<SelectItem> selectItems) {
 		for (SelectItem selectItem : selectItems) {
 			String deviceId = (String) selectItem.getValue();
-			String deviceName = deviceNames.get(deviceId);
-			if (null == deviceName) {
-				deviceName = deviceId;
+			try {
+				java.util.ResourceBundle bundle = ResourceBundle.instance();
+				String deviceName = bundle.getString(deviceId);
+				if (null == deviceName) {
+					deviceName = deviceId;
+				}
+				selectItem.setLabel(deviceName);
+
+			} catch (MissingResourceException e) {
+				LOG.debug("resource not found: " + deviceId);
 			}
-			selectItem.setLabel(deviceName);
 		}
 	}
 }

@@ -58,6 +58,10 @@ public class SafeOnlineConstants {
 
 	public static final String BEID_AUTH_DEVICE = "beid";
 
+	public static final String WEAK_MOBILE_AUTH_DEVICE = "mobileWeak";
+
+	public static final String STRONG_MOBILE_AUTH_DEVICE = "mobileStrong";
+
 	/**
 	 * The login attribute name and login service provider domain
 	 */

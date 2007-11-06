@@ -7,7 +7,10 @@
 
 package net.link.safeonline.auth;
 
+import java.util.List;
+
 import javax.ejb.Local;
+import javax.faces.model.SelectItem;
 
 @Local
 public interface AccountRegistration {
@@ -40,6 +43,19 @@ public interface AccountRegistration {
 
 	void setCaptcha(String captcha);
 
+	String getMobile();
+
+	void setMobile(String mobile);
+
+	String getMobileOTP();
+
+	void setMobileOTP(String mobileOTP);
+
+	/*
+	 * Factories
+	 */
+	List<SelectItem> allDevicesFactory();
+
 	/*
 	 * Actions.
 	 */
@@ -48,4 +64,8 @@ public interface AccountRegistration {
 	String deviceNext();
 
 	String passwordNext();
+
+	String mobileRegister();
+
+	String mobileNext();
 }

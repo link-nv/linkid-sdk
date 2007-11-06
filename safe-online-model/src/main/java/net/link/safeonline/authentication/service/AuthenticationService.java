@@ -7,6 +7,8 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.net.MalformedURLException;
+import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 
@@ -23,11 +25,14 @@ import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
+import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+
+import org.apache.axis.AxisFault;
 
 /**
  * Authentication service interface. This service allows the authentication web
@@ -61,6 +66,42 @@ public interface AuthenticationService {
 	 */
 	boolean authenticate(String login, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException;
+
+	/**
+	 * Authenticates a user for a certain application. This method is used by
+	 * the authentication web service. If <code>true</code> is returned the
+	 * authentication process can proceed, else {@link #abort()} should be
+	 * invoked.
+	 * 
+	 * @param device
+	 * @param login
+	 * @param challengeId
+	 * @param mobileOTP
+	 * @return <code>true</code> if the user was authenticated correctly,
+	 *         <code>false</code> otherwise.
+	 * @throws RemoteException
+	 * @throws MalformedURLException
+	 * @throws SubjectNotFoundException
+	 * @throws AxisFault
+	 * @throws MobileRegistrationException
+	 */
+	boolean authenticate(AuthenticationDevice device, String login,
+			String challengeId, String mobileOTP) throws AxisFault,
+			SubjectNotFoundException, MalformedURLException, RemoteException,
+			MobileRegistrationException;
+
+	/**
+	 * Request a OTP be generated for the authenticating users. Returns the
+	 * challenge ID for this OTP.
+	 * 
+	 * @param device
+	 * @param mobile
+	 * @return
+	 * @throws MalformedURLException
+	 * @throws RemoteException
+	 */
+	String requestMobileOTP(AuthenticationDevice device, String mobile)
+			throws MalformedURLException, RemoteException;
 
 	AuthenticationDevice getAuthenticationDevice();
 

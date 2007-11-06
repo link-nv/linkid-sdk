@@ -7,12 +7,20 @@
 
 package net.link.safeonline.auth.bean;
 
+import java.net.MalformedURLException;
+import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.MissingResourceException;
+import java.util.Set;
+
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.AccountRegistration;
@@ -20,20 +28,27 @@ import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
+import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 
+import org.apache.axis.AxisFault;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
+import org.jboss.seam.core.ResourceBundle;
 import org.jboss.seam.log.Log;
 
 import com.octo.captcha.service.CaptchaServiceException;
@@ -49,6 +64,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	@EJB
 	private UserRegistrationService userRegistrationService;
 
+	@EJB
+	private DevicePolicyService devicePolicyService;
+
 	@In
 	private AuthenticationService authenticationService;
 
@@ -61,12 +79,20 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	private String password;
 
+	private String mobile;
+
+	private String mobileOTP;
+
 	private String captcha;
 
 	@SuppressWarnings("unused")
 	@In(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	@Out(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	private String requestedUsername;
+
+	@In(required = false, scope = ScopeType.SESSION)
+	@Out(required = false, scope = ScopeType.SESSION)
+	private String challengeId;
 
 	@Remove
 	@Destroy
@@ -221,4 +247,138 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	public void setCaptcha(String captcha) {
 		this.captcha = captcha;
 	}
+
+	public String getMobile() {
+		return this.mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String mobileNext() {
+		this.log.debug("mobileNext");
+		super.clearUsername();
+
+		try {
+			this.authenticationService.authenticate(
+					AuthenticationDevice.WEAK_MOBILE, this.requestedUsername,
+					this.challengeId, this.mobileOTP);
+		} catch (AxisFault e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+			HelpdeskLogger.add("login: failed to contact encap webservice for "
+					+ this.login, LogLevelType.ERROR);
+			return null;
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+			HelpdeskLogger.add("login: subject not found for " + this.login,
+					LogLevelType.ERROR);
+			return null;
+		} catch (MalformedURLException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+			HelpdeskLogger.add("login: encap webservice not available",
+					LogLevelType.ERROR);
+			return null;
+		} catch (RemoteException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+			HelpdeskLogger.add("login: failed to contact encap webservice for "
+					+ this.login, LogLevelType.ERROR);
+			return null;
+		} catch (MobileRegistrationException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+			return null;
+		}
+
+		super.login(this.login, AuthenticationDevice.WEAK_MOBILE);
+		this.challengeId = null;
+		return null;
+	}
+
+	public String mobileRegister() {
+		this.log.debug("mobile register: " + this.mobile);
+		try {
+			this.userRegistrationService.registerMobile(this.requestedUsername,
+					this.mobile);
+		} catch (ExistingUserException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
+			return null;
+		} catch (RemoteException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+			return null;
+		} catch (MalformedURLException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+			return null;
+		} catch (MobileRegistrationException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+			return null;
+		} catch (AttributeTypeNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
+			return null;
+		}
+		try {
+			this.challengeId = this.userRegistrationService
+					.requestMobileOTP(this.mobile);
+			this.log.debug("recevied challengeId: " + this.challengeId);
+		} catch (MalformedURLException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+			return null;
+		} catch (RemoteException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+			return null;
+		}
+		return null;
+	}
+
+	@Factory("allDevices")
+	public List<SelectItem> allDevicesFactory() {
+		this.log.debug("all devices factory");
+		List<SelectItem> allDevices = new LinkedList<SelectItem>();
+		Set<AuthenticationDevice> devices = this.devicePolicyService
+				.getDevices();
+		for (AuthenticationDevice authDevice : devices) {
+			String deviceName = authDevice.getDeviceName();
+			SelectItem allDevice = new SelectItem(deviceName);
+			allDevices.add(allDevice);
+		}
+		deviceNameDecoration(allDevices);
+		return allDevices;
+	}
+
+	private void deviceNameDecoration(List<SelectItem> selectItems) {
+		for (SelectItem selectItem : selectItems) {
+			String deviceId = (String) selectItem.getValue();
+			try {
+				java.util.ResourceBundle bundle = ResourceBundle.instance();
+				String deviceName = bundle.getString(deviceId);
+				if (null == deviceName) {
+					deviceName = deviceId;
+				}
+				selectItem.setLabel(deviceName);
+
+			} catch (MissingResourceException e) {
+				this.log.debug("resource not found: " + deviceId);
+			}
+		}
+	}
+
+	public String getMobileOTP() {
+		return this.mobileOTP;
+	}
+
+	public void setMobileOTP(String mobileOTP) {
+		this.mobileOTP = mobileOTP;
+	}
+
 }

@@ -19,6 +19,7 @@ import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
@@ -89,7 +90,8 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 		ApplicationEntity application = this.applicationDAO.addApplication(
 				"testapp", null, applicationOwner, null, null, null);
 
-		DeviceEntity device = this.deviceDAO.addDevice("testdevice");
+		DeviceEntity device = this.deviceDAO.addDevice("testdevice",
+				DeviceType.HASH);
 		AllowedDeviceEntity allowedDevice = this.testedInstance
 				.addAllowedDevice(application, device, 0);
 		List<AllowedDeviceEntity> allowedDevices = this.testedInstance
@@ -98,7 +100,8 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 	}
 
 	public void testAllowedDeviceNoApplication() {
-		DeviceEntity device = this.deviceDAO.addDevice("testdevice");
+		DeviceEntity device = this.deviceDAO.addDevice("testdevice",
+				DeviceType.HASH);
 		try {
 			this.testedInstance.addAllowedDevice(null, device, 0);
 			this.entityTestManager.getEntityManager().flush();
@@ -137,7 +140,8 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 		ApplicationEntity application = this.applicationDAO.addApplication(
 				"testapp", null, applicationOwner, null, null, null);
 
-		DeviceEntity device = this.deviceDAO.addDevice("testdevice");
+		DeviceEntity device = this.deviceDAO.addDevice("testdevice",
+				DeviceType.HASH);
 		this.testedInstance.addAllowedDevice(application, device, 0);
 		this.testedInstance.deleteAllowedDevices(application);
 		List<AllowedDeviceEntity> allowedDevices = this.testedInstance

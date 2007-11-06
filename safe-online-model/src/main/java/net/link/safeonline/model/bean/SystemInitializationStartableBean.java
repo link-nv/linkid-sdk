@@ -20,6 +20,7 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStoreUtils;
 import net.link.safeonline.oper.keystore.OperKeyStoreUtils;
@@ -178,15 +179,21 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		passwordDeviceAttributeTypeList.add(passwordHashAttributeType);
 		passwordDeviceAttributeTypeList.add(passwordSeedAttributeType);
 		passwordDeviceAttributeTypeList.add(passwordAlgorithmAttributeType);
-		this.devices.put("password", passwordDeviceAttributeTypeList);
+		this.devices.put(new Device(
+				SafeOnlineConstants.USERNAME_PASSWORD_AUTH_DEVICE,
+				DeviceType.HASH), passwordDeviceAttributeTypeList);
 
 		List<AttributeTypeEntity> weakMobileDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
 		weakMobileDeviceAttributeTypeList.add(weakMobileAttributeType);
-		this.devices.put("weak mobile", weakMobileDeviceAttributeTypeList);
+		this.devices.put(
+				new Device(SafeOnlineConstants.WEAK_MOBILE_AUTH_DEVICE,
+						DeviceType.MOBILE), weakMobileDeviceAttributeTypeList);
 
 		List<AttributeTypeEntity> strongMobileDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
 		strongMobileDeviceAttributeTypeList.add(strongMobileAttributeType);
-		this.devices.put("strong mobile", strongMobileDeviceAttributeTypeList);
+		this.devices.put(new Device(
+				SafeOnlineConstants.STRONG_MOBILE_AUTH_DEVICE,
+				DeviceType.MOBILE), strongMobileDeviceAttributeTypeList);
 	}
 
 	@Override

@@ -51,6 +51,7 @@ import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -189,6 +190,18 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
+	protected static class Device {
+		final String deviceName;
+
+		final DeviceType deviceType;
+
+		public Device(String deviceName, DeviceType deviceType) {
+			this.deviceName = deviceName;
+			this.deviceType = deviceType;
+		}
+
+	}
+
 	protected List<Subscription> subscriptions;
 
 	protected List<AttributeTypeEntity> attributeTypes;
@@ -215,7 +228,7 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected List<AttributeEntity> attributes;
 
-	protected Map<String, List<AttributeTypeEntity>> devices;
+	protected Map<Device, List<AttributeTypeEntity>> devices;
 
 	public AbstractInitBean() {
 		this.applicationOwnersAndLogin = new HashMap<String, String>();
@@ -229,7 +242,7 @@ public abstract class AbstractInitBean implements Startable {
 		this.trustedCertificates = new LinkedList<X509Certificate>();
 		this.attributeProviders = new LinkedList<AttributeProviderEntity>();
 		this.attributes = new LinkedList<AttributeEntity>();
-		this.devices = new HashMap<String, List<AttributeTypeEntity>>();
+		this.devices = new HashMap<Device, List<AttributeTypeEntity>>();
 		this.allowedDevices = new HashMap<String, List<String>>();
 	}
 
@@ -561,12 +574,14 @@ public abstract class AbstractInitBean implements Startable {
 	}
 
 	private void initDevices() {
-		for (String deviceName : this.devices.keySet()) {
-			DeviceEntity device = this.deviceDAO.findDevice(deviceName);
-			if (device == null) {
-				device = this.deviceDAO.addDevice(deviceName);
+		for (Device device : this.devices.keySet()) {
+			DeviceEntity deviceEntity = this.deviceDAO
+					.findDevice(device.deviceName);
+			if (deviceEntity == null) {
+				deviceEntity = this.deviceDAO.addDevice(device.deviceName,
+						device.deviceType);
 			}
-			device.setAttributeTypes(this.devices.get(deviceName));
+			deviceEntity.setAttributeTypes(this.devices.get(device.deviceName));
 		}
 	}
 

@@ -76,4 +76,17 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 		}
 		return devicePolicy;
 	}
+
+	public Set<AuthenticationDevice> getDevices() {
+		LOG.debug("get devices");
+		Set<AuthenticationDevice> allDvices = new HashSet<AuthenticationDevice>();
+		List<DeviceEntity> deviceList = this.devices.listDevices();
+		for (DeviceEntity device : deviceList) {
+			String deviceName = device.getName();
+			AuthenticationDevice authnDevice = AuthenticationDevice
+					.getAuthenticationDevice(deviceName);
+			allDvices.add(authnDevice);
+		}
+		return allDvices;
+	}
 }

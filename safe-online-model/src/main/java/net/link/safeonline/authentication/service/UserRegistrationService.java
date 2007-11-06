@@ -7,13 +7,16 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.net.MalformedURLException;
+import java.rmi.RemoteException;
+import java.security.NoSuchAlgorithmException;
+
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
+import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 /**
  * User registration service interface.
@@ -44,29 +47,36 @@ public interface UserRegistrationService {
 			throws ExistingUserException, AttributeTypeNotFoundException;
 
 	/**
-	 * Registers a new user using the identity statement.
-	 * 
-	 * @param login
-	 * @param identityStatementData
-	 * @throws ExistingUserException
-	 * @throws AttributeTypeNotFoundException
-	 * @throws ArgumentIntegrityException
-	 * @throws PermissionDeniedException
-	 * @throws TrustDomainNotFoundException
-	 * @throws NoSuchAlgorithmException
-	 * @throws SubjectIdNotUniqueException
-	 * @throws SubjectNotFoundException
-	 */
-	void registerUser(String login, byte[] identityStatementData)
-			throws ExistingUserException, TrustDomainNotFoundException,
-			PermissionDeniedException, ArgumentIntegrityException,
-			AttributeTypeNotFoundException;
-
-	/**
 	 * Checks whether the given login Id is still free to use or not.
 	 * 
 	 * @param login
 	 * @return
 	 */
 	boolean isLoginFree(String login);
+
+	/**
+	 * Registers a new user within the system
+	 * 
+	 * @param login
+	 * @param mobile
+	 * @throws MobileRegistrationException
+	 * @throws MalformedURLException
+	 * @throws RemoteException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws ExistingUserException
+	 */
+	void registerMobile(String login, String mobile) throws RemoteException,
+			MalformedURLException, MobileRegistrationException,
+			ExistingUserException, AttributeTypeNotFoundException;
+
+	/**
+	 * Make mobile services generate registering user an OTP
+	 * 
+	 * @param mobile
+	 * @return challengeId of the sent OTP
+	 * @throws MalformedURLException
+	 * @throws RemoteException
+	 */
+	String requestMobileOTP(String mobile) throws MalformedURLException,
+			RemoteException;
 }

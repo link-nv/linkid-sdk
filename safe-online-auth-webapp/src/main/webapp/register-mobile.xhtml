@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
+	</ui:define>
+
+	<ui:define name="content">
+
+		<div class="infobox"><ui:include
+			src="/WEB-INF/incl/appinfo.xhtml" /></div>
+
+		<h2>#{msgs.registerANewDevice}</h2>
+		<h2>#{msgs.mobile}</h2>
+
+		<table>
+			<tr>
+				<th>#{msgs.login}:</th>
+				<td>#{deviceRegistration.username}</td>
+			</tr>
+		</table>
+
+		<h:form>
+			<t:messages globalOnly="true" styleClass="error" />
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+			<h:panelGrid id="register-panel" columns="4">
+				<h:outputLabel for="mobile" value="#{msgs.mobile}" />
+				<s:decorate>
+					<h:inputText id="mobile" value="#{deviceRegistration.mobile}"
+						required="true">
+						<f:validateLength minimum="10" maximum="10" />
+					</h:inputText>
+				</s:decorate>
+				<h:message for="mobile" styleClass="error" />
+				<h:commandButton action="#{deviceRegistration.mobileNext}"
+					id="register" value="#{msgs.registerMobile}" />
+			</h:panelGrid>
+		</h:form>
+
+		<h:form>
+			<h:commandLink value="#{msgs.helpaction}" action="help"
+				immediate="true" styleClass="help" />
+		</h:form>
+	</ui:define>
+</ui:composition>
+</body>
+</html>

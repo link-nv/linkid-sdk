@@ -39,4 +39,11 @@ public interface DevicePolicyService {
 	Set<AuthenticationDevice> getDevicePolicy(String applicationId,
 			Set<AuthenticationDevice> requiredDevicePolicy)
 			throws ApplicationNotFoundException, EmptyDevicePolicyException;
+
+	/**
+	 * Returns all devices
+	 * 
+	 * @return
+	 */
+	Set<AuthenticationDevice> getDevices();
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
@@ -47,7 +48,8 @@ public class DeviceDAOBeanTest extends TestCase {
 	}
 
 	public void testDevice() {
-		DeviceEntity device = this.testedInstance.addDevice("testdevice");
+		DeviceEntity device = this.testedInstance.addDevice("testdevice",
+				DeviceType.HASH);
 		List<DeviceEntity> devices = this.testedInstance.listDevices();
 		assertEquals(device, devices.get(0));
 	}
