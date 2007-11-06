@@ -819,16 +819,16 @@
 	<distributionManagement>
 		<repository>
 			<id>buildserver-release-repository</id>
-			<url>scp://buildserver/maven2</url>
+			<url>scpexe://buildserver/maven2</url>
 		</repository>
 		<snapshotRepository>
 			<id>buildserver-snapshot-repository</id>
-			<url>scp://buildserver/maven2-snapshots</url>
+			<url>scpexe://buildserver/maven2-snapshots</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 		<site>
 			<id>buildserver-site-repository</id>
-			<url>scp://buildserver/site/safe-online</url>
+			<url>scpexe://buildserver/site/safe-online</url>
 		</site>
 	</distributionManagement>
 	<dependencyManagement>
