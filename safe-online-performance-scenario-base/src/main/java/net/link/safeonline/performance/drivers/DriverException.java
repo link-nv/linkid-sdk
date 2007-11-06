@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.performance;
+package net.link.safeonline.performance.drivers;
 
 import java.util.Date;
 
@@ -17,7 +17,6 @@ import java.util.Date;
 public class DriverException extends Exception {
 
 	private static final long serialVersionUID = 1L;
-	private Exception exception;
 	private long occurredTime;
 
 	public DriverException(String string) {
@@ -32,8 +31,9 @@ public class DriverException extends Exception {
 
 	public DriverException(long occurredTime, Exception exception) {
 
+		super(exception);
+
 		this.occurredTime = occurredTime;
-		this.exception = exception;
 	}
 
 	/**
@@ -45,20 +45,12 @@ public class DriverException extends Exception {
 	}
 
 	/**
-	 * Retrieve the exception of this {@link DriverException}.
-	 */
-	public Exception getException() {
-
-		return this.exception;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
 
-		return "At " + new Date(this.occurredTime) + " this happened:\\n"
-				+ this.exception;
+		return "At " + new Date(this.occurredTime) + " this happened:\n"
+				+ getCause();
 	}
 }

@@ -49,6 +49,9 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 
 			if (!this.channel.isConnected())
 				this.channel.connect(group);
+
+			this.channel.addChannelListener(this);
+			this.channel.setReceiver(this);
 		}
 
 		catch (ChannelException e) {
@@ -70,26 +73,19 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 	}
 
 	/**
-	 * Retrieve the members currently part of the group, excluding ourselves.
+	 * Retrieve the {@link Address} that this client has in the group.
 	 */
-	public Vector<Address> getMembers() {
+	public Address getSelf() {
 
-		return getMembers(false);
+		return this.channel.getLocalAddress();
 	}
 
 	/**
 	 * Retrieve the members currently part of the group.
 	 */
-	public Vector<Address> getMembers(boolean includingSelf) {
+	public Vector<Address> getMembers() {
 
-		Vector<Address> members = this.channel.getView().getMembers();
-
-		if (includingSelf)
-			return members;
-
-		members = new Vector<Address>(members);
-		members.remove(this.channel.getLocalAddress());
-		return members;
+		return this.channel.getView().getMembers();
 	}
 
 	/**

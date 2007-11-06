@@ -74,6 +74,16 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jcommon</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jnp-client</artifactId>
 			<scope>test</scope>

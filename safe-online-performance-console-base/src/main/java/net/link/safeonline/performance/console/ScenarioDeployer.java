@@ -46,7 +46,7 @@ public class ScenarioDeployer {
 	/**
 	 * Retrieve an {@link InitialContext} for the JNDI of the given agent.
 	 */
-	private InitialContext getInitialContext(Address agent)
+	public static InitialContext getInitialContext(Address agent)
 			throws NamingException {
 
 		Hashtable<String, String> environment = new Hashtable<String, String>();

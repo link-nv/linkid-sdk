@@ -18,6 +18,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Deploys an application that is contained in a byte array.
  * 
@@ -25,26 +28,22 @@ import javax.naming.NamingException;
  */
 public class ScenarioDeployer {
 
+	private static final Log LOG = LogFactory.getLog(ScenarioDeployer.class);
+
 	private File applicationFile;
-
-	public void stop() {
-
-		// Should we undeploy or leave that up to the AS to clean up?
-	}
-
-	public static InitialContext getInitialContext() throws NamingException {
-
-		Hashtable<String, String> environment = new Hashtable<String, String>();
-
-		environment.put(Context.INITIAL_CONTEXT_FACTORY,
-				"org.jnp.interfaces.NamingContextFactory");
-		environment.put(Context.PROVIDER_URL, "localhost:1099");
-
-		return new InitialContext(environment);
-	}
 
 	public void upload(byte[] application) throws IOException {
 
+		// Undeploy any existing scenario first.
+		if (null != this.applicationFile && this.applicationFile.exists())
+			try {
+				undeploy();
+			} catch (Exception e) {
+				LOG.error("Couldn't undeploy existing scenario: "
+						+ this.applicationFile, e);
+			}
+
+		// Create a temporary file to write the scenario into.
 		this.applicationFile = File.createTempFile("scenario", ".ear");
 		this.applicationFile.deleteOnExit();
 
@@ -57,15 +56,15 @@ public class ScenarioDeployer {
 	public void deploy() throws JMException, NamingException,
 			MalformedURLException, IOException {
 
+		invoke("deploy", new URL[] { this.applicationFile.toURI().toURL() },
+				new String[] { URL.class.getName() });
+	}
+
+	public void undeploy() throws JMException, NamingException,
+			MalformedURLException, IOException {
+
 		try {
-			InitialContext context = getInitialContext();
-			MBeanServerConnection applicationServer = (MBeanServerConnection) context
-					.lookup("jmx/invoker/RMIAdaptor");
-
-			ObjectName mainDeployer = new ObjectName(
-					"jboss.system:service=MainDeployer");
-
-			applicationServer.invoke(mainDeployer, "deploy",
+			invoke("undeploy",
 					new URL[] { this.applicationFile.toURI().toURL() },
 					new String[] { URL.class.getName() });
 		}
@@ -74,5 +73,31 @@ public class ScenarioDeployer {
 			if (null != this.applicationFile && this.applicationFile.exists())
 				this.applicationFile.delete();
 		}
+	}
+
+	private Object invoke(String methodName, Object[] parameters,
+			String[] signature) throws JMException, NamingException,
+			MalformedURLException, IOException {
+
+		InitialContext context = getInitialContext();
+		MBeanServerConnection applicationServer = (MBeanServerConnection) context
+				.lookup("jmx/invoker/RMIAdaptor");
+
+		ObjectName mainDeployer = new ObjectName(
+				"jboss.system:service=MainDeployer");
+
+		return applicationServer.invoke(mainDeployer, methodName, parameters,
+				signature);
+	}
+
+	private static InitialContext getInitialContext() throws NamingException {
+
+		Hashtable<String, String> environment = new Hashtable<String, String>();
+
+		environment.put(Context.INITIAL_CONTEXT_FACTORY,
+				"org.jnp.interfaces.NamingContextFactory");
+		environment.put(Context.PROVIDER_URL, "localhost:1099");
+
+		return new InitialContext(environment);
 	}
 }

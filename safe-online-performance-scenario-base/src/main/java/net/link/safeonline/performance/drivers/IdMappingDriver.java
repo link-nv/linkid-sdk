@@ -5,11 +5,12 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.performance;
+package net.link.safeonline.performance.drivers;
 
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
+import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
 /**
@@ -21,7 +22,7 @@ public class IdMappingDriver extends ProfileDriver {
 
 	public IdMappingDriver(String hostname) {
 
-		super(hostname);
+		super(hostname, "User ID Mapping Driver");
 	}
 
 	/**
@@ -57,7 +58,14 @@ public class IdMappingDriver extends ProfileDriver {
 		}
 
 		catch (Exception e) {
+			addProfileError(e);
 			throw new DriverException(e);
 		}
+	}
+
+	public static void main(String... args) throws DriverException {
+
+		System.out.println(new IdMappingDriver("localhost:8443").getUserId(
+				DemoLawyerKeyStoreUtils.getPrivateKeyEntry(), "admin"));
 	}
 }

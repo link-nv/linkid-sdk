@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.performance;
+package net.link.safeonline.performance.drivers;
 
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
@@ -21,7 +21,7 @@ public class AttribWsDriver extends ProfileDriver {
 
 	public AttribWsDriver(String hostname) {
 
-		super(hostname);
+		super(hostname, "User Attribute Driver");
 	}
 
 	/**

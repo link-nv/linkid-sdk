@@ -10,10 +10,27 @@
 	</parent>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-performance-scenario</artifactId>
-	<packaging>jar</packaging>
+	<packaging>ejb</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Performance Scenario</name>
 	<description>Scenario for testing SafeOnline's performance.</description>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ejb-plugin</artifactId>
+				<configuration>
+					<ejbVersion>3.0</ejbVersion>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+					<generateClient>true</generateClient>
+				</configuration>
+			</plugin>
+        </plugins>
+    </build>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -25,6 +42,36 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-performance-scenario-base</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+   		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-keystore</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+   		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-lawyer-keystore</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+   		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-mandate-keystore</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+   		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-payment-keystore</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+   		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-prescription-keystore</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+   		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-ticket-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -41,6 +88,14 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jcommon</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>

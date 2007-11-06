@@ -37,7 +37,7 @@ public interface AgentServiceMBean {
 
 	/**
 	 * Called by JBoss when this service has been fully deployed and
-	 * Initialised.
+	 * initialised.
 	 */
 	public void start();
 
