@@ -65,12 +65,10 @@
         <dependency>
             <groupId>com.jgoodies</groupId>
             <artifactId>forms</artifactId>
-            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.jgoodies</groupId>
             <artifactId>looks</artifactId>
-            <version>2.1.4</version>
         </dependency>
 		<dependency>
 			<groupId>jfree</groupId>

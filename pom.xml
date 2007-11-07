@@ -1496,6 +1496,16 @@
 				<artifactId>axis-jaxrpc</artifactId>
 				<version>${axis-jaxrpc.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>com.jgoodies</groupId>
+                <artifactId>forms</artifactId>
+                <version>${jgoodies-forms.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jgoodies</groupId>
+                <artifactId>looks</artifactId>
+                <version>${jgoodies-looks.version}</version>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1692,5 +1702,7 @@
 		<axistools-maven-plugin.version>
 			1.1
 		</axistools-maven-plugin.version>
+        <jgoodies-forms.version>1.1.0</jgoodies-forms.version>
+        <jgoodies-looks.version>2.1.4</jgoodies-looks.version>
 	</properties>
 </project>
