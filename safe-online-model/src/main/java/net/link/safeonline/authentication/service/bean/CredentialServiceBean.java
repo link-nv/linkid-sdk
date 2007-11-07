@@ -108,6 +108,5 @@ public class CredentialServiceBean implements CredentialService,
 
 		SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
-
 	}
 }

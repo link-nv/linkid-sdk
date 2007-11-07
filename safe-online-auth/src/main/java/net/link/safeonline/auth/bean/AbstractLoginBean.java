@@ -16,6 +16,7 @@ import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
+import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.service.SubjectService;
 
 import org.jboss.seam.ScopeType;
@@ -50,6 +51,9 @@ public class AbstractLoginBean {
 	@In(required = false, scope = ScopeType.SESSION)
 	private AuthenticationDevice authenticationDevice;
 
+	@In
+	private AuthenticationService authenticationService;
+
 	@In(create = true)
 	FacesMessages facesMessages;
 
@@ -80,6 +84,8 @@ public class AbstractLoginBean {
 	 */
 	protected void relogin(AuthenticationDevice inputAuthenticationDevice) {
 		this.authenticationDevice = inputAuthenticationDevice;
+		this.authenticationService
+				.setAuthenticationDevice(this.authenticationDevice);
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		String redirectUrl = "./login";

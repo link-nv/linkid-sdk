@@ -420,4 +420,10 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	public AuthenticationDevice getAuthenticationDevice() {
 		return this.authenticationDevice;
 	}
+
+	public void setAuthenticationDevice(
+			AuthenticationDevice authenticationDevice) {
+		this.authenticationDevice = authenticationDevice;
+	}
+
 }

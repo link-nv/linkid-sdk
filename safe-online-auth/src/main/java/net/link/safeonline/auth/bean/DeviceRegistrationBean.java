@@ -28,8 +28,6 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.helpdesk.HelpdeskLogger;
-import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -112,20 +110,14 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 		} catch (RemoteException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			HelpdeskLogger.add("Failed to connect to mobile encap server",
-					LogLevelType.ERROR);
 			return null;
 		} catch (MalformedURLException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			HelpdeskLogger.add("Mobile encap server not reachable",
-					LogLevelType.ERROR);
 			return null;
 		} catch (MobileRegistrationException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			HelpdeskLogger.add("Encap server failed to authenticate mobile: "
-					+ this.mobile, LogLevelType.ERROR);
 			return null;
 		}
 		super.relogin(AuthenticationDevice.WEAK_MOBILE);

@@ -103,8 +103,6 @@ public interface AuthenticationService {
 	String requestMobileOTP(AuthenticationDevice device, String mobile)
 			throws MalformedURLException, RemoteException;
 
-	AuthenticationDevice getAuthenticationDevice();
-
 	/**
 	 * Commits the authentication for the given application.
 	 * 
@@ -206,4 +204,7 @@ public interface AuthenticationService {
 	 */
 	String getUsername();
 
+	void setAuthenticationDevice(AuthenticationDevice authenticationDevice);
+
+	AuthenticationDevice getAuthenticationDevice();
 }
