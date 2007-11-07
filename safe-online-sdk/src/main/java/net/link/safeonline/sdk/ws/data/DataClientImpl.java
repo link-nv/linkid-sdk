@@ -149,6 +149,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		ModifyResponseType modifyResponse;
 		try {
 			modifyResponse = this.port.modify(modify);
+
+			retrieveHeadersFromPort(this.port);
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
 		}
@@ -206,6 +208,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		QueryResponseType queryResponse;
 		try {
 			queryResponse = this.port.query(query);
+
+			retrieveHeadersFromPort(this.port);
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
 		}
@@ -367,6 +371,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		CreateResponseType createResponse;
 		try {
 			createResponse = this.port.create(create);
+
+			retrieveHeadersFromPort(this.port);
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
 		}
@@ -502,6 +508,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		DeleteResponseType deleteResponse;
 		try {
 			deleteResponse = this.port.delete(delete);
+
+			retrieveHeadersFromPort(this.port);
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
 		}

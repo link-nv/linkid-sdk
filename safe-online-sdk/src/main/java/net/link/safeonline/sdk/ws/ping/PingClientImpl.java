@@ -11,13 +11,13 @@ import java.net.ConnectException;
 
 import javax.xml.ws.BindingProvider;
 
-import com.sun.xml.ws.client.ClientTransportException;
-
 import net.lin_k.safe_online.ping.PingPort;
 import net.lin_k.safe_online.ping.PingService;
 import net.lin_k.safe_online.ping.Request;
 import net.link.safeonline.ping.ws.PingServiceFactory;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
+
+import com.sun.xml.ws.client.ClientTransportException;
 
 public class PingClientImpl extends AbstractMessageAccessor implements
 		PingClient {
@@ -43,6 +43,8 @@ public class PingClientImpl extends AbstractMessageAccessor implements
 		Request request = new Request();
 		try {
 			this.pingPort.pingOperation(request);
+
+			retrieveHeadersFromPort(this.pingPort);
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
 		}

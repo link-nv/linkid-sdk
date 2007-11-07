@@ -195,6 +195,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 		ResponseType response;
 		try {
 			response = this.port.attributeQuery(request);
+			retrieveHeadersFromPort(this.port);
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
 		}
