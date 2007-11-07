@@ -7,9 +7,6 @@
 
 package net.link.safeonline.authentication.service.bean;
 
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -18,7 +15,6 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialManager;
 import net.link.safeonline.authentication.service.CredentialService;
@@ -26,7 +22,6 @@ import net.link.safeonline.authentication.service.CredentialServiceRemote;
 import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -61,9 +56,6 @@ public class CredentialServiceBean implements CredentialService,
 	@EJB
 	private PasswordDeviceService passwordDeviceService;
 
-	@EJB
-	private WeakMobileDeviceService weakMobileDeviceService;
-
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void changePassword(String oldPassword, String newPassword)
 			throws PermissionDeniedException, DeviceNotFoundException {
@@ -74,13 +66,6 @@ public class CredentialServiceBean implements CredentialService,
 
 		SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
-	}
-
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void setPassword(String password) throws PermissionDeniedException {
-		LOG.debug("set password");
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		this.passwordDeviceService.register(subject, password);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -99,14 +84,4 @@ public class CredentialServiceBean implements CredentialService,
 		return this.passwordController.isPasswordConfigured(subject);
 	}
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void registerMobile(String mobile) throws RemoteException,
-			MalformedURLException, MobileRegistrationException {
-		LOG.debug("register mobile: " + mobile);
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		this.weakMobileDeviceService.register(subject, mobile);
-
-		SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
-				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
-	}
 }

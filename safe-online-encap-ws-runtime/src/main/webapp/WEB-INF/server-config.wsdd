@@ -54,11 +54,11 @@
 	<service name="mSecBankIdActivation" provider="java:RPC" style="rpc"
 		use="encoded">
 		<parameter name="wsdlTargetNamespace"
-			value="urn:net:link:safe-online:encap:activation:1.0" />
+			value="urn:http://msec.bankId/activation" />
 		<parameter name="wsdlServiceElement"
 			value="BankIdActivationService" />
 		<parameter name="schemaUnqualified"
-			value="urn:net:link:safe-online:encap:1.0:types" />
+			value="http://bus.server.msec.encap" />
 		<parameter name="wsdlServicePort" value="mSecBankIdActivation" />
 		<parameter name="className"
 			value="net.link.safeonline.encap.activation.ws.EncapActivationSoapBindingImpl" />
@@ -66,15 +66,15 @@
 		<parameter name="typeMappingVersion" value="1.2" />
 		<parameter name="allowedMethods" value="*" />
 
-		<typeMapping xmlns:ns="urn:net:link:safe-online:encap:1.0:types"
-			qname="ns:ActivationInitResponse"
-			type="java:types._0._1.encap.safe_online.link.net.ActivationInitResponse"
+		<typeMapping xmlns:ns="http://bus.server.msec.encap"
+			qname="ns:MSecResponse"
+			type="java:encap.msec.server.bus.MSecResponse"
 			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
 			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
 			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
-		<typeMapping xmlns:ns="urn:net:link:safe-online:encap:1.0:types"
-			qname="ns:MSecResponse"
-			type="java:types._0._1.encap.safe_online.link.net.MSecResponse"
+		<typeMapping xmlns:ns="http://bus.server.msec.encap"
+			qname="ns:ActivationInitResponse"
+			type="java:encap.msec.server.bus.ActivationInitResponse"
 			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
 			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
 			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
@@ -85,11 +85,11 @@
 	<service name="mSecBankIdAdministration" provider="java:RPC"
 		style="rpc" use="encoded">
 		<parameter name="wsdlTargetNamespace"
-			value="urn:net:link:safe-online:encap:administration:1.0" />
+			value="urn:http://msec.bankId/administration" />
 		<parameter name="wsdlServiceElement"
 			value="BankIdAdministrationService" />
 		<parameter name="schemaUnqualified"
-			value="urn:net:link:safe-online:encap:1.0:types" />
+			value="urn:http://msec.bankId.response" />
 		<parameter name="wsdlServicePort"
 			value="mSecBankIdAdministration" />
 		<parameter name="className"
@@ -98,9 +98,8 @@
 		<parameter name="typeMappingVersion" value="1.2" />
 		<parameter name="allowedMethods" value="*" />
 
-		<typeMapping xmlns:ns="urn:net:link:safe-online:encap:1.0:types"
-			qname="ns:MSecResponse"
-			type="java:types._0._1.encap.safe_online.link.net.MSecResponse"
+		<typeMapping xmlns:ns="urn:http://msec.bankId.response"
+			qname="ns:MSecResponse" type="java:http.MSecResponse"
 			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
 			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
 			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
@@ -111,11 +110,11 @@
 	<service name="mSecBankId" provider="java:RPC" style="rpc"
 		use="encoded">
 		<parameter name="wsdlTargetNamespace"
-			value="urn:net:link:safe-online:encap:authentication:1.0" />
+			value="urn:http://msec.bankId.challenge" />
 		<parameter name="wsdlServiceElement"
 			value="BankIdAuthenticationService" />
 		<parameter name="schemaUnqualified"
-			value="urn:net:link:safe-online:encap:1.0:types,urn:net:link:safe-online:encap:authentication:1.0:types" />
+			value="http://domain.bankid.msec.encap,http://bus.server.msec.encap" />
 		<parameter name="wsdlServicePort" value="mSecBankId" />
 		<parameter name="className"
 			value="net.link.safeonline.encap.authentication.ws.EncapAuthenticationSoapBindingImpl" />
@@ -123,26 +122,25 @@
 		<parameter name="typeMappingVersion" value="1.2" />
 		<parameter name="allowedMethods" value="*" />
 
-		<typeMapping
-			xmlns:ns="urn:net:link:safe-online:encap:authentication:1.0:types"
+		<typeMapping xmlns:ns="http://domain.bankid.msec.encap"
 			qname="ns:ChallengeResponse"
-			type="java:types._0._1.authentication.encap.safe_online.link.net.ChallengeResponse"
+			type="java:encap.msec.bankid.domain.ChallengeResponse"
 			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
 			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
 			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
-		<typeMapping xmlns:ns="urn:net:link:safe-online:encap:1.0:types"
-			qname="ns:MSecResponse"
-			type="java:types._0._1.encap.safe_online.link.net.MSecResponse"
-			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
-		<typeMapping
-			xmlns:ns="urn:net:link:safe-online:encap:authentication:1.0:types"
+		<typeMapping xmlns:ns="http://domain.bankid.msec.encap"
 			qname="ns:VerifyResponse"
-			type="java:types._0._1.authentication.encap.safe_online.link.net.VerifyResponse"
+			type="java:encap.msec.bankid.domain.VerifyResponse"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+		<typeMapping xmlns:ns="http://bus.server.msec.encap"
+			qname="ns:MSecResponse"
+			type="java:encap.msec.server.bus.MSecResponse"
 			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
 			deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
 			encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
 	</service>
+
 
 </deployment>

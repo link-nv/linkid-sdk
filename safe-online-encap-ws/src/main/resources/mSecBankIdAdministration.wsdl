@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions
-	targetNamespace="urn:net:link:safe-online:encap:administration:1.0"
+	targetNamespace="urn:http://msec.bankId/administration"
 	xmlns:apachesoap="http://xml.apache.org/xml-soap"
-	xmlns:impl="urn:net:link:safe-online:encap:administration:1.0"
-	xmlns:intf="urn:net:link:safe-online:encap:administration:1.0"
+	xmlns:impl="urn:http://msec.bankId/administration"
+	xmlns:intf="urn:http://msec.bankId/administration"
 	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-	xmlns:tns1="urn:net:link:safe-online:encap:1.0:types"
+	xmlns:tns1="urn:http://msec.bankId.response"
 	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
 	xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<!--WSDL created by Apache Axis version: 1.4
 		Built on Apr 22, 2006 (06:55:48 PDT)-->
 	<wsdl:types>
-		<schema
-			targetNamespace="urn:net:link:safe-online:encap:1.0:types"
+		<schema targetNamespace="urn:http://msec.bankId.response"
 			xmlns="http://www.w3.org/2001/XMLSchema">
 			<import
 				namespace="http://schemas.xmlsoap.org/soap/encoding/" />
@@ -40,150 +39,214 @@
 	</wsdl:types>
 
 	<wsdl:message name="showStatusRequest">
+
 		<wsdl:part name="msisdn" type="xsd:string" />
+
 		<wsdl:part name="serviceProviderId" type="xsd:string" />
+
 	</wsdl:message>
 
 	<wsdl:message name="lockResponse">
+
 		<wsdl:part name="lockReturn" type="tns1:MSecResponse" />
+
 	</wsdl:message>
 
 	<wsdl:message name="lockRequest">
+
 		<wsdl:part name="msisdn" type="xsd:string" />
+
 		<wsdl:part name="serviceProviderId" type="xsd:string" />
+
 	</wsdl:message>
 
 	<wsdl:message name="unLockRequest">
+
 		<wsdl:part name="msisdn" type="xsd:string" />
+
 		<wsdl:part name="serviceProviderId" type="xsd:string" />
+
 	</wsdl:message>
 
 	<wsdl:message name="showStatusResponse">
+
 		<wsdl:part name="showStatusReturn" type="tns1:MSecResponse" />
+
 	</wsdl:message>
 
 	<wsdl:message name="removeResponse">
+
 		<wsdl:part name="removeReturn" type="tns1:MSecResponse" />
+
 	</wsdl:message>
 
 	<wsdl:message name="unLockResponse">
+
 		<wsdl:part name="unLockReturn" type="tns1:MSecResponse" />
+
 	</wsdl:message>
 
 	<wsdl:message name="removeRequest">
+
 		<wsdl:part name="msisdn" type="xsd:string" />
+
 		<wsdl:part name="serviceProviderId" type="xsd:string" />
+
 	</wsdl:message>
 
 	<wsdl:portType name="BankIdAdministration">
+
 		<wsdl:operation name="unLock"
 			parameterOrder="msisdn serviceProviderId">
+
 			<wsdl:input message="impl:unLockRequest"
 				name="unLockRequest" />
+
 			<wsdl:output message="impl:unLockResponse"
 				name="unLockResponse" />
+
 		</wsdl:operation>
 
 		<wsdl:operation name="lock"
 			parameterOrder="msisdn serviceProviderId">
+
 			<wsdl:input message="impl:lockRequest" name="lockRequest" />
+
 			<wsdl:output message="impl:lockResponse"
 				name="lockResponse" />
+
 		</wsdl:operation>
 
 		<wsdl:operation name="remove"
 			parameterOrder="msisdn serviceProviderId">
+
 			<wsdl:input message="impl:removeRequest"
 				name="removeRequest" />
+
 			<wsdl:output message="impl:removeResponse"
 				name="removeResponse" />
+
 		</wsdl:operation>
 
 		<wsdl:operation name="showStatus"
 			parameterOrder="msisdn serviceProviderId">
+
 			<wsdl:input message="impl:showStatusRequest"
 				name="showStatusRequest" />
+
 			<wsdl:output message="impl:showStatusResponse"
 				name="showStatusResponse" />
+
 		</wsdl:operation>
+
 	</wsdl:portType>
 
 	<wsdl:binding name="mSecBankIdAdministrationSoapBinding"
 		type="impl:BankIdAdministration">
+
 		<wsdlsoap:binding style="rpc"
 			transport="http://schemas.xmlsoap.org/soap/http" />
 
 		<wsdl:operation name="unLock">
+
 			<wsdlsoap:operation soapAction="" />
+
 			<wsdl:input name="unLockRequest">
+
 				<wsdlsoap:body
 					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-					namespace="urn:net:link:safe-online:encap:administration:1.0"
-					use="encoded" />
+					namespace="urn:http://msec.bankId/administration" use="encoded" />
+
 			</wsdl:input>
+
 			<wsdl:output name="unLockResponse">
+
 				<wsdlsoap:body
 					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-					namespace="urn:net:link:safe-online:encap:administration:1.0"
-					use="encoded" />
+					namespace="urn:http://msec.bankId/administration" use="encoded" />
+
 			</wsdl:output>
+
 		</wsdl:operation>
 
 		<wsdl:operation name="lock">
+
 			<wsdlsoap:operation soapAction="" />
+
 			<wsdl:input name="lockRequest">
+
 				<wsdlsoap:body
 					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-					namespace="urn:net:link:safe-online:encap:administration:1.0"
-					use="encoded" />
+					namespace="urn:http://msec.bankId/administration" use="encoded" />
+
 			</wsdl:input>
+
 			<wsdl:output name="lockResponse">
+
 				<wsdlsoap:body
 					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-					namespace="urn:net:link:safe-online:encap:administration:1.0"
-					use="encoded" />
+					namespace="urn:http://msec.bankId/administration" use="encoded" />
+
 			</wsdl:output>
+
 		</wsdl:operation>
 
 		<wsdl:operation name="remove">
+
 			<wsdlsoap:operation soapAction="" />
+
 			<wsdl:input name="removeRequest">
+
 				<wsdlsoap:body
 					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-					namespace="urn:net:link:safe-online:encap:administration:1.0"
-					use="encoded" />
+					namespace="urn:http://msec.bankId/administration" use="encoded" />
+
 			</wsdl:input>
+
 			<wsdl:output name="removeResponse">
+
 				<wsdlsoap:body
 					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-					namespace="urn:net:link:safe-online:encap:administration:1.0"
-					use="encoded" />
+					namespace="urn:http://msec.bankId/administration" use="encoded" />
+
 			</wsdl:output>
+
 		</wsdl:operation>
 
 		<wsdl:operation name="showStatus">
+
 			<wsdlsoap:operation soapAction="" />
+
 			<wsdl:input name="showStatusRequest">
+
 				<wsdlsoap:body
 					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-					namespace="urn:net:link:safe-online:encap:administration:1.0"
-					use="encoded" />
+					namespace="urn:http://msec.bankId/administration" use="encoded" />
+
 			</wsdl:input>
+
 			<wsdl:output name="showStatusResponse">
+
 				<wsdlsoap:body
 					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-					namespace="urn:net:link:safe-online:encap:administration:1.0"
-					use="encoded" />
+					namespace="urn:http://msec.bankId/administration" use="encoded" />
+
 			</wsdl:output>
+
 		</wsdl:operation>
+
 	</wsdl:binding>
 
 	<wsdl:service name="BankIdAdministrationService">
+
 		<wsdl:port binding="impl:mSecBankIdAdministrationSoapBinding"
 			name="mSecBankIdAdministration">
+
 			<wsdlsoap:address
-				location="http://localhost:8080/safe-online-encap-ws/services/mSecBankIdAdministration" />
+				location="http://server2.encap.no:8081/pp-encap-r1/services/mSecBankIdAdministration" />
+
 		</wsdl:port>
+
 	</wsdl:service>
 
 </wsdl:definitions>

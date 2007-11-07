@@ -63,6 +63,7 @@ import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
@@ -107,6 +108,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	@EJB
 	private SubjectService subjectService;
+
+	@EJB
+	private SubjectManager subjectManager;
 
 	@EJB
 	private ApplicationDAO applicationDAO;
@@ -421,9 +425,21 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return this.authenticationDevice;
 	}
 
-	public void setAuthenticationDevice(
-			AuthenticationDevice authenticationDevice) {
-		this.authenticationDevice = authenticationDevice;
+	public void registerMobile(String mobile) throws RemoteException,
+			MalformedURLException, MobileRegistrationException {
+		LOG.debug("register mobile: " + mobile);
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		this.weakMobileDeviceService.register(subject, mobile);
+
+		this.authenticationDevice = AuthenticationDevice.WEAK_MOBILE;
+	}
+
+	public void setPassword(String password) throws PermissionDeniedException {
+		LOG.debug("set password");
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		this.passwordDeviceService.register(subject, password);
+
+		this.authenticationDevice = AuthenticationDevice.PASSWORD;
 	}
 
 }

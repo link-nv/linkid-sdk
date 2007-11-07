@@ -7,11 +7,11 @@
 
 package net.link.safeonline.encap.authentication;
 
-import javax.xml.rpc.ServiceException;
+import http.BankIdAuthentication;
+import http.BankIdAuthenticationService;
+import http.BankIdAuthenticationServiceLocator;
 
-import _0._1.authentication.encap.safe_online.link.net.BankIdAuthentication;
-import _0._1.authentication.encap.safe_online.link.net.BankIdAuthenticationService;
-import _0._1.authentication.encap.safe_online.link.net.BankIdAuthenticationServiceLocator;
+import javax.xml.rpc.ServiceException;
 
 /**
  * Factory for SafeOnlineAuthenticationService.

@@ -7,11 +7,11 @@
 
 package net.link.safeonline.encap.administration.ws;
 
-import javax.xml.rpc.ServiceException;
+import http.BankIdAdministration;
+import http.BankIdAdministrationService;
+import http.BankIdAdministrationServiceLocator;
 
-import _0._1.administration.encap.safe_online.link.net.BankIdAdministration;
-import _0._1.administration.encap.safe_online.link.net.BankIdAdministrationService;
-import _0._1.administration.encap.safe_online.link.net.BankIdAdministrationServiceLocator;
+import javax.xml.rpc.ServiceException;
 
 /**
  * Factory for SafeOnlineAuthenticationService.

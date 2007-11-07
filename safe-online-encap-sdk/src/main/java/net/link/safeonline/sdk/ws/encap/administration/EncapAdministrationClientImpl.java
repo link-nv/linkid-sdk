@@ -7,6 +7,9 @@
 
 package net.link.safeonline.sdk.ws.encap.administration;
 
+import http.MSecBankIdAdministrationSoapBindingStub;
+import http.MSecResponse;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -17,9 +20,6 @@ import org.apache.axis.AxisFault;
 import org.apache.axis.client.Service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import types._0._1.encap.safe_online.link.net.MSecResponse;
-import _0._1.administration.encap.safe_online.link.net.MSecBankIdAdministrationSoapBindingStub;
 
 public class EncapAdministrationClientImpl implements EncapAdministrationClient {
 

@@ -7,9 +7,9 @@
 
 package test.unit.net.link.safeonline.encap.authentication.ws;
 
+import http.BankIdAuthentication;
 import junit.framework.TestCase;
 import net.link.safeonline.encap.authentication.SafeOnlineEncapAuthenticationServiceFactory;
-import _0._1.authentication.encap.safe_online.link.net.BankIdAuthentication;
 
 public class SafeOnlineEncapAuthenticationServiceFactoryTest extends TestCase {
 

@@ -7,15 +7,11 @@
 
 package net.link.safeonline.authentication.service;
 
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
-
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
@@ -38,15 +34,6 @@ public interface CredentialService {
 	 */
 	void changePassword(String oldPassword, String newPassword)
 			throws PermissionDeniedException, DeviceNotFoundException;
-
-	/**
-	 * Sets the password of a user. This method should be used in case the user
-	 * did not yet had a password registered as authentication device.
-	 * 
-	 * @param password
-	 * @throws PermissionDeniedException
-	 */
-	void setPassword(String password) throws PermissionDeniedException;
 
 	/**
 	 * Merges the identity statement with the current user subject. The identity
@@ -75,15 +62,4 @@ public interface CredentialService {
 	 * @return
 	 */
 	boolean isPasswordConfigured();
-
-	/**
-	 * Registers a mobile for a user
-	 * 
-	 * @param mobile
-	 * @throws MalformedURLException
-	 * @throws RemoteException
-	 * @throws MobileRegistrationException
-	 */
-	void registerMobile(String mobile) throws RemoteException,
-			MalformedURLException, MobileRegistrationException;
 }

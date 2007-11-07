@@ -7,6 +7,8 @@
 
 package net.link.safeonline.sdk.ws.encap.activation;
 
+import http.MSecBankIdActivationSoapBindingStub;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -18,9 +20,8 @@ import org.apache.axis.client.Service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import types._0._1.encap.safe_online.link.net.ActivationInitResponse;
-import types._0._1.encap.safe_online.link.net.MSecResponse;
-import _0._1.activation.encap.safe_online.link.net.MSecBankIdActivationSoapBindingStub;
+import encap.msec.server.bus.ActivationInitResponse;
+import encap.msec.server.bus.MSecResponse;
 
 public class EncapActivationClientImpl implements EncapActivationClient {
 
@@ -44,6 +45,12 @@ public class EncapActivationClientImpl implements EncapActivationClient {
 		ActivationInitResponse response = this.activationStub.activate(mobile,
 				orgId, userId);
 		LOG.debug("activation result: " + response.getStatus());
+		LOG.debug("activation info: " + response.getAdditionalInfo());
+		LOG.debug("activation app id: " + response.getAppId());
+		LOG.debug("activation client id: " + response.getClientId());
+		LOG.debug("activation so: " + response.getSecureObject());
+		LOG.debug("activation sp id: " + response.getServiceProviderId());
+		LOG.debug("activation session id: " + response.getSessionId());
 		if (EncapConstants.ENCAP_SUCCES == response.getStatus())
 			return true;
 		return false;

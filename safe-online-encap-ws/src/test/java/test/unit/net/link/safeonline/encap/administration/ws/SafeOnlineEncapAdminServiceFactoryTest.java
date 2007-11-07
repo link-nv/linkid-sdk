@@ -7,9 +7,9 @@
 
 package test.unit.net.link.safeonline.encap.administration.ws;
 
+import http.BankIdAdministration;
 import junit.framework.TestCase;
 import net.link.safeonline.encap.administration.ws.SafeOnlineEncapAdministrationServiceFactory;
-import _0._1.administration.encap.safe_online.link.net.BankIdAdministration;
 
 public class SafeOnlineEncapAdminServiceFactoryTest extends TestCase {
 

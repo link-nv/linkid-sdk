@@ -14,15 +14,16 @@
 
 package net.link.safeonline.encap.activation.ws;
 
+import http.BankIdActivation;
+
 import java.rmi.RemoteException;
 import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import types._0._1.encap.safe_online.link.net.ActivationInitResponse;
-import types._0._1.encap.safe_online.link.net.MSecResponse;
-import _0._1.activation.encap.safe_online.link.net.BankIdActivation;
+import encap.msec.server.bus.ActivationInitResponse;
+import encap.msec.server.bus.MSecResponse;
 
 public class EncapActivationSoapBindingImpl implements BankIdActivation {
 

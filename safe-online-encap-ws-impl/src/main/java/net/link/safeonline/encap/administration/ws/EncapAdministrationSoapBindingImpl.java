@@ -14,13 +14,13 @@
 
 package net.link.safeonline.encap.administration.ws;
 
+import http.BankIdAdministration;
+import http.MSecResponse;
+
 import java.rmi.RemoteException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import types._0._1.encap.safe_online.link.net.MSecResponse;
-import _0._1.administration.encap.safe_online.link.net.BankIdAdministration;
 
 public class EncapAdministrationSoapBindingImpl implements BankIdAdministration {
 

@@ -182,6 +182,26 @@ public interface AuthenticationService {
 			ArgumentIntegrityException, AttributeTypeNotFoundException;
 
 	/**
+	 * Registers a mobile for a logged in user.
+	 * 
+	 * @param mobile
+	 * @throws RemoteException
+	 * @throws MalformedURLException
+	 * @throws MobileRegistrationException
+	 */
+	void registerMobile(String mobile) throws RemoteException,
+			MalformedURLException, MobileRegistrationException;
+
+	/**
+	 * Sets the password of a user. This method should be used in case the user
+	 * did not yet had a password registered as authentication device.
+	 * 
+	 * @param password
+	 * @throws PermissionDeniedException
+	 */
+	void setPassword(String password) throws PermissionDeniedException;
+
+	/**
 	 * Aborts the current authentication procedure.
 	 */
 	void abort();
@@ -203,8 +223,6 @@ public interface AuthenticationService {
 	 * @return
 	 */
 	String getUsername();
-
-	void setAuthenticationDevice(AuthenticationDevice authenticationDevice);
 
 	AuthenticationDevice getAuthenticationDevice();
 }

@@ -26,13 +26,14 @@ import net.link.safeonline.auth.DeviceRegistration;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
-import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.ResourceBundle;
@@ -55,8 +56,8 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 
 	private String mobile;
 
-	@EJB
-	private CredentialService credentialService;
+	@In
+	private AuthenticationService authenticationService;
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
@@ -92,7 +93,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	public String passwordNext() {
 		this.log.debug("passwordNext");
 		try {
-			this.credentialService.setPassword(this.password);
+			this.authenticationService.setPassword(this.password);
 		} catch (PermissionDeniedException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
@@ -106,7 +107,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	public String mobileNext() {
 		this.log.debug("mobileNext");
 		try {
-			this.credentialService.registerMobile(this.mobile);
+			this.authenticationService.registerMobile(this.mobile);
 		} catch (RemoteException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");

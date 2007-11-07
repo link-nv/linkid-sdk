@@ -8,6 +8,9 @@ package test.integ.net.link.safeonline.ws;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import http.MSecBankIdActivationSoapBindingStub;
+import http.MSecBankIdAdministrationSoapBindingStub;
+import http.MSecBankIdSoapBindingStub;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,13 +23,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
-import types._0._1.authentication.encap.safe_online.link.net.ChallengeResponse;
-import types._0._1.authentication.encap.safe_online.link.net.VerifyResponse;
-import types._0._1.encap.safe_online.link.net.ActivationInitResponse;
-import types._0._1.encap.safe_online.link.net.MSecResponse;
-import _0._1.activation.encap.safe_online.link.net.MSecBankIdActivationSoapBindingStub;
-import _0._1.administration.encap.safe_online.link.net.MSecBankIdAdministrationSoapBindingStub;
-import _0._1.authentication.encap.safe_online.link.net.MSecBankIdSoapBindingStub;
+import encap.msec.bankid.domain.ChallengeResponse;
+import encap.msec.bankid.domain.VerifyResponse;
+import encap.msec.server.bus.ActivationInitResponse;
 
 public class EncapWebServiceTest {
 
@@ -62,7 +61,7 @@ public class EncapWebServiceTest {
 				endpointURL, new Service());
 
 		// operate
-		MSecResponse adminResponse = adminStub.lock(VALID_MOBILE, "-1");
+		http.MSecResponse adminResponse = adminStub.lock(VALID_MOBILE, "-1");
 		// verify
 		assertEquals(EncapConstants.ENCAP_SUCCES, adminResponse.getStatus());
 
@@ -81,7 +80,7 @@ public class EncapWebServiceTest {
 				endpointURL, new Service());
 
 		// operate
-		MSecResponse adminResponse = adminStub.unLock(VALID_MOBILE, "-1");
+		http.MSecResponse adminResponse = adminStub.unLock(VALID_MOBILE, "-1");
 		// verify
 		assertEquals(EncapConstants.ENCAP_SUCCES, adminResponse.getStatus());
 
@@ -100,7 +99,7 @@ public class EncapWebServiceTest {
 				endpointURL, new Service());
 
 		// operate
-		MSecResponse adminResponse = adminStub.remove(VALID_MOBILE, "-1");
+		http.MSecResponse adminResponse = adminStub.remove(VALID_MOBILE, "-1");
 		// verify
 		assertEquals(EncapConstants.ENCAP_SUCCES, adminResponse.getStatus());
 
@@ -120,7 +119,8 @@ public class EncapWebServiceTest {
 				endpointURL, new Service());
 
 		// operate
-		MSecResponse adminResponse = adminStub.showStatus(VALID_MOBILE, "-1");
+		http.MSecResponse adminResponse = adminStub.showStatus(VALID_MOBILE,
+				"-1");
 		// verify
 		assertEquals(EncapConstants.ENCAP_SUCCES, adminResponse.getStatus());
 

@@ -7,6 +7,8 @@
 
 package net.link.safeonline.sdk.ws.encap.authentication;
 
+import http.MSecBankIdSoapBindingStub;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -18,10 +20,9 @@ import org.apache.axis.client.Service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import types._0._1.authentication.encap.safe_online.link.net.ChallengeResponse;
-import types._0._1.authentication.encap.safe_online.link.net.VerifyResponse;
-import types._0._1.encap.safe_online.link.net.MSecResponse;
-import _0._1.authentication.encap.safe_online.link.net.MSecBankIdSoapBindingStub;
+import encap.msec.bankid.domain.ChallengeResponse;
+import encap.msec.bankid.domain.VerifyResponse;
+import encap.msec.server.bus.MSecResponse;
 
 public class EncapAuthenticationClientImpl implements EncapAuthenticationClient {
 
@@ -48,6 +49,9 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
 	public String challenge(String mobile, String orgId) throws RemoteException {
 		LOG.debug("challenge mobile=" + mobile + " orgId=" + orgId);
 		ChallengeResponse response = this.authStub.challenge(mobile, orgId);
+		LOG.debug("response info: " + response.getAdditionalInfo());
+		LOG.debug("response challenge ID: " + response.getChallengeId());
+		LOG.debug("response status: " + response.getStatus());
 		if (response.getStatus() == EncapConstants.ENCAP_FAILURE)
 			return null;
 		return response.getChallengeId();
