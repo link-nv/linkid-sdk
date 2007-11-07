@@ -25,21 +25,27 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>BouncyCastle.Crypto.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="nunit.framework" />
     <Reference Include="System" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\main\cs\KeyStoreUtil.cs" />
     <Compile Include="src\main\cs\IdMappingClient.cs" />
     <Compile Include="src\main\cs\IdMappingClientImpl.cs" />
     <Compile Include="src\main\cs\PingClient.cs" />
+    <Compile Include="src\test\cs\KeyStoreUtilTest.cs" />
     <Compile Include="src\test\cs\TestIdMapping.cs" />
     <Compile Include="target\services\SafeOnlinePingWebService.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-  	<Compile Include="target\services\SafeOnlineNameIdentifierMappingWebService.cs">
+    <Compile Include="target\services\SafeOnlineNameIdentifierMappingWebService.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
