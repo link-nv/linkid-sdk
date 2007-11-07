@@ -12,10 +12,14 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.ExecutionException;
 
+import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +44,7 @@ public class ServicesUtils extends Observable {
 	private ApplicationConsoleManager consoleManager = ApplicationConsoleManager
 			.getInstance();
 
+	private NameIdentifierMappingClient nameClient = null;
 	private AttributeClient attributeClient = null;
 	private DataClient dataClient = null;
 
@@ -50,6 +55,26 @@ public class ServicesUtils extends Observable {
 		if (null == servicesUtilsInstance)
 			servicesUtilsInstance = new ServicesUtils();
 		return servicesUtilsInstance;
+	}
+
+	/*
+	 * 
+	 * Name Identifier web service methods
+	 * 
+	 */
+	NameIdentifierMappingClient getNameIdentifierMappingClient() {
+		if (null == this.nameClient)
+			this.nameClient = new NameIdentifierMappingClientImpl(
+					this.consoleManager.getLocation(),
+					(X509Certificate) this.consoleManager.getIdentity()
+							.getCertificate(), this.consoleManager
+							.getIdentity().getPrivateKey());
+		return this.nameClient;
+	}
+
+	public String getUserId(String username) throws SubjectNotFoundException,
+			RequestDeniedException {
+		return getNameIdentifierMappingClient().getUserId(username);
 	}
 
 	/*
@@ -74,7 +99,8 @@ public class ServicesUtils extends Observable {
 			@Override
 			protected Map<String, Object> doInBackground() throws Exception {
 				Map<String, Object> attributes = null;
-				attributes = getAttributeClient().getAttributeValues(user);
+				attributes = getAttributeClient().getAttributeValues(
+						getUserId(user));
 				return attributes;
 			}
 
@@ -125,8 +151,8 @@ public class ServicesUtils extends Observable {
 			@Override
 			protected Boolean doInBackground() throws Exception {
 
-				getDataClient().setAttributeValue(userName, attributeName,
-						attributeValue);
+				getDataClient().setAttributeValue(getUserId(userName),
+						attributeName, attributeValue);
 				return Boolean.TRUE;
 			}
 
@@ -160,8 +186,8 @@ public class ServicesUtils extends Observable {
 
 			@Override
 			protected Boolean doInBackground() throws Exception {
-				getDataClient().removeAttribute(userName, attributeName,
-						attributeId);
+				getDataClient().removeAttribute(getUserId(userName),
+						attributeName, attributeId);
 				return Boolean.TRUE;
 			}
 
@@ -196,8 +222,8 @@ public class ServicesUtils extends Observable {
 
 			@Override
 			protected Boolean doInBackground() throws Exception {
-				getDataClient().createAttribute(userName, attributeName,
-						attributeValue);
+				getDataClient().createAttribute(getUserId(userName),
+						attributeName, attributeValue);
 				return Boolean.TRUE;
 			}
 

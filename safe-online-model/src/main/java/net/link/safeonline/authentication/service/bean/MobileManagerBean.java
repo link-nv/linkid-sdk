@@ -26,7 +26,7 @@ public class MobileManagerBean implements MobileManager {
 	private String encapServerLocation = "localhost:8080/safe-online-encap-ws";
 
 	@Configurable(name = "Encap Organisation ID", group = "Encap")
-	private String encapOrganisationId = "safe-online";
+	private String encapOrganisationId = "encap";
 
 	public String requestOTP(String mobile) throws RemoteException,
 			MalformedURLException {

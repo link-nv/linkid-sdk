@@ -1,15 +1,9 @@
 package test.spike.net.link.safeonline;
 
-import static org.junit.Assert.assertTrue;
-
-import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 
 import javax.xml.namespace.QName;
 import javax.xml.rpc.ServiceException;
-
-import net.link.safeonline.sdk.ws.encap.activation.EncapActivationClient;
-import net.link.safeonline.sdk.ws.encap.activation.EncapActivationClientImpl;
 
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
@@ -41,16 +35,5 @@ public class AxisTest {
 		} catch (RemoteException e) {
 			LOG.debug("error invoking version call");
 		}
-	}
-
-	@Test
-	public void testActivationWebservice() throws MalformedURLException,
-			RemoteException {
-		String location = "test.encap.no/pp-encap-r1";
-		// String location = "localhost:8080/safe-online-encap-ws";
-		EncapActivationClient activationClient = new EncapActivationClientImpl(
-				location);
-		boolean result = activationClient.activate("32494575697", "enCap", "");
-		assertTrue(result);
 	}
 }

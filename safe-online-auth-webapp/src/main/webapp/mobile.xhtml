@@ -30,17 +30,17 @@
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
-			<h:panelGrid id="auth-panel" columns="7">
+			<h:panelGrid id="auth-panel-editable" columns="7">
 				<h:outputLabel for="loginnameText" value="#{msgs.login}" />
 				<s:decorate>
 					<h:inputText id="loginnameText" value="#{mobileLogon.loginname}"
-						required="true" />
+						required="true" readonly="#{!empty mobileLogon.challengeId}" />
 				</s:decorate>
 				<t:message for="loginnameText" styleClass="error" />
 				<h:outputLabel for="mobile" value="#{msgs.mobile}" />
 				<s:decorate>
 					<h:inputText id="mobile" value="#{mobileLogon.mobile}"
-						required="true" />
+						required="true" readonly="#{!empty mobileLogon.challengeId}" />
 				</s:decorate>
 				<t:message for="mobile" styleClass="error" />
 				<h:commandButton id="generateOTP" value="#{msgs.mobileRequestOTP}"

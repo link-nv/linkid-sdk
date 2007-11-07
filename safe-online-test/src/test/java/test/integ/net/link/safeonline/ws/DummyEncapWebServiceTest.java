@@ -27,7 +27,7 @@ import encap.msec.bankid.domain.ChallengeResponse;
 import encap.msec.bankid.domain.VerifyResponse;
 import encap.msec.server.bus.ActivationInitResponse;
 
-public class EncapWebServiceTest {
+public class DummyEncapWebServiceTest {
 
 	private static final String VALID_MOBILE = "0900444555";
 
@@ -35,7 +35,7 @@ public class EncapWebServiceTest {
 
 	private static final String ENCAP_LOCATION = "http://localhost:8080/safe-online-encap-ws/services";
 
-	private static final Log LOG = LogFactory.getLog(EncapWebServiceTest.class);
+	private static final Log LOG = LogFactory.getLog(DummyEncapWebServiceTest.class);
 
 	@Test
 	public void testEncapActivate() throws MalformedURLException,
