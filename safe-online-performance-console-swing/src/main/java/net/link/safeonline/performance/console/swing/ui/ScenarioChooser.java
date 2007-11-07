@@ -130,16 +130,19 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		case UPLOAD:
 			this.sideButton.add(this.browseButton);
 			this.actionButton.add(this.uploadButton);
+			this.scenarioField.setEnabled(true);
 			break;
 
 		case DEPLOY:
 			this.sideButton.add(this.resetButton);
 			this.actionButton.add(this.deployButton);
+			this.scenarioField.setEnabled(false);
 			break;
 
 		case EXECUTE:
 			this.sideButton.add(this.resetButton);
 			this.actionButton.add(this.executeButton);
+			this.scenarioField.setEnabled(false);
 			break;
 		}
 
@@ -154,6 +157,7 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	 */
 	public void setButtonsEnabled(boolean buttonsEnabled) {
 
+		this.resetButton.setEnabled(buttonsEnabled);
 		this.uploadButton.setEnabled(buttonsEnabled);
 		this.deployButton.setEnabled(buttonsEnabled);
 		this.executeButton.setEnabled(buttonsEnabled);
