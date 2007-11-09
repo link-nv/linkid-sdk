@@ -48,8 +48,10 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 	public SystemInitializationStartableBean() {
 		configureAttributeTypes();
 
-		this.authorizedUsers.put("admin", "admin");
-		this.authorizedUsers.put("owner", "secret");
+		this.authorizedUsers.put("admin", new AuthenticationDevice("admin",
+				null, null));
+		this.authorizedUsers.put("owner", new AuthenticationDevice("secret",
+				null, null));
 
 		this.applicationOwnersAndLogin.put("owner", "owner");
 

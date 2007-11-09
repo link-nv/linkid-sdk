@@ -25,6 +25,7 @@ import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
+import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -69,26 +70,25 @@ public interface AuthenticationService {
 
 	/**
 	 * Authenticates a user for a certain application. This method is used by
-	 * the authentication web service. If <code>true</code> is returned the
+	 * the authentication web service. If a non-null username is returned the
 	 * authentication process can proceed, else {@link #abort()} should be
 	 * invoked.
 	 * 
 	 * @param device
-	 * @param login
+	 * @param mobile
 	 * @param challengeId
 	 * @param mobileOTP
-	 * @return <code>true</code> if the user was authenticated correctly,
-	 *         <code>false</code> otherwise.
+	 * @return username or null if authentication failed
 	 * @throws RemoteException
 	 * @throws MalformedURLException
 	 * @throws SubjectNotFoundException
 	 * @throws AxisFault
-	 * @throws MobileRegistrationException
+	 * @throws MobileAuthenticationException
 	 */
-	boolean authenticate(AuthenticationDevice device, String login,
+	String authenticate(AuthenticationDevice device, String mobile,
 			String challengeId, String mobileOTP) throws AxisFault,
 			SubjectNotFoundException, MalformedURLException, RemoteException,
-			MobileRegistrationException;
+			MobileAuthenticationException;
 
 	/**
 	 * Request a OTP be generated for the authenticating users. Returns the
@@ -188,9 +188,11 @@ public interface AuthenticationService {
 	 * @throws RemoteException
 	 * @throws MalformedURLException
 	 * @throws MobileRegistrationException
+	 * @throws ArgumentIntegrityException
 	 */
 	void registerMobile(String mobile) throws RemoteException,
-			MalformedURLException, MobileRegistrationException;
+			MalformedURLException, MobileRegistrationException,
+			ArgumentIntegrityException;
 
 	/**
 	 * Sets the password of a user. This method should be used in case the user

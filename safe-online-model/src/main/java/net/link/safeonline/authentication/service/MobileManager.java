@@ -24,7 +24,7 @@ public interface MobileManager {
 	boolean verifyOTP(String challengeId, String OTPValue) throws AxisFault,
 			MalformedURLException, RemoteException;
 
-	boolean activate(String mobile, SubjectEntity subject)
+	String activate(String mobile, SubjectEntity subject)
 			throws RemoteException, MalformedURLException;
 
 	void remove(String mobile) throws RemoteException, MalformedURLException;

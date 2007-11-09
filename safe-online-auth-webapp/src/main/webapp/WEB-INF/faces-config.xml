@@ -149,6 +149,10 @@
 	<navigation-rule>
 		<from-view-id>/mobile.xhtml</from-view-id>
 		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/main.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
 			<from-action>help</from-action>
 			<to-view-id>/help.xhtml</to-view-id>
 		</navigation-case>

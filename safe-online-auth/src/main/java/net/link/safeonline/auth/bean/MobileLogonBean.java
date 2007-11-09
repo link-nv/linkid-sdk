@@ -1,3 +1,9 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
 package net.link.safeonline.auth.bean;
 
 import java.net.MalformedURLException;
@@ -10,7 +16,7 @@ import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.MobileLogon;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
@@ -44,8 +50,6 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 
 	private String challengeId;
 
-	private String loginname;
-
 	private String mobile;
 
 	private String mobileOTP;
@@ -74,24 +78,16 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 		this.challengeId = challengeId;
 	}
 
-	public String getLoginname() {
-		return this.loginname;
-	}
-
-	public void setLoginname(String loginname) {
-		this.loginname = loginname;
-	}
-
 	public String login() {
-		LOG.debug("login: " + this.loginname);
-		HelpdeskLogger.add("login: " + this.loginname, LogLevelType.INFO);
+		LOG.debug("login: " + this.mobile);
+		HelpdeskLogger.add("login: " + this.mobile, LogLevelType.INFO);
 		super.clearUsername();
-
+		String loginname;
 		try {
-			boolean authenticated = this.authenticationService.authenticate(
-					this.deviceSelection, this.loginname, this.challengeId,
+			loginname = this.authenticationService.authenticate(
+					this.deviceSelection, this.mobile, this.challengeId,
 					this.mobileOTP);
-			if (false == authenticated) {
+			if (null == loginname) {
 				/*
 				 * The abort will be correctly handled by the authentication
 				 * service manager. That way we allow the user to retry the
@@ -99,7 +95,7 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 				 */
 				this.facesMessages.addFromResourceBundle(
 						FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-				HelpdeskLogger.add("login failed: " + this.loginname,
+				HelpdeskLogger.add("login failed: " + this.mobile,
 						LogLevelType.ERROR);
 				return null;
 			}
@@ -107,13 +103,12 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
 			HelpdeskLogger.add("login: failed to contact encap webservice for "
-					+ this.loginname, LogLevelType.ERROR);
+					+ this.mobile, LogLevelType.ERROR);
 			return null;
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-			HelpdeskLogger.add(
-					"login: subject not found for " + this.loginname,
+			HelpdeskLogger.add("login: subject not found for " + this.mobile,
 					LogLevelType.ERROR);
 			return null;
 		} catch (MalformedURLException e) {
@@ -126,32 +121,40 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
 			HelpdeskLogger.add("login: failed to contact encap webservice for "
-					+ this.loginname, LogLevelType.ERROR);
+					+ this.mobile, LogLevelType.ERROR);
 			return null;
-		} catch (MobileRegistrationException e) {
+		} catch (MobileAuthenticationException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
 			return null;
 		}
 
-		super.login(this.loginname, this.deviceSelection);
+		super.login(loginname, this.deviceSelection);
 		HelpdeskLogger.clear();
 		destroyCallback();
 		return null;
 	}
 
 	public String requestOTP() {
-		LOG.debug("request OTP: user=" + this.loginname + " mobile="
-				+ this.mobile);
+		LOG.debug("request OTP: mobile=" + this.mobile);
 		try {
 			this.challengeId = this.authenticationService.requestMobileOTP(
 					this.deviceSelection, this.mobile);
 			LOG.debug("received challengeId: " + this.challengeId);
 		} catch (MalformedURLException e) {
+			LOG.debug("requestOTP: MalformedURLException thrown: "
+					+ e.getMessage());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;
 		} catch (RemoteException e) {
+			LOG.debug("requestOTP: RemoteException thrown: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+			return null;
+		} catch (Exception e) {
+			LOG.debug("requestOTP: Exception thrown: " + e.getMessage()
+					+ " class: " + e.getCause().getClass().getCanonicalName());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;

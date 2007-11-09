@@ -23,6 +23,7 @@ import javax.faces.model.SelectItem;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.DeviceRegistration;
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
@@ -119,6 +120,10 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 		} catch (MobileRegistrationException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+			return null;
+		} catch (ArgumentIntegrityException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorMobileTaken");
 			return null;
 		}
 		super.relogin(AuthenticationDevice.WEAK_MOBILE);

@@ -305,7 +305,9 @@ public class AttribService extends JPanel implements Observer {
 					attributeName);
 			this.attributeTreeModel.insertNodeInto(attributeNameNode, root,
 					root.getChildCount());
-			if (attributeValue.getClass().isArray()) {
+			if (null == attributeValue) {
+				addSingleValueAttribute(attributeNameNode, "");
+			} else if (attributeValue.getClass().isArray()) {
 				addMultiValueAttribute(attributeNameNode, attributeValue);
 			} else {
 				addSingleValueAttribute(attributeNameNode, attributeValue);

@@ -13,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
@@ -59,15 +60,17 @@ public interface UserRegistrationService {
 	 * 
 	 * @param login
 	 * @param mobile
+	 * @return activation code for mobile client app
 	 * @throws MobileRegistrationException
 	 * @throws MalformedURLException
 	 * @throws RemoteException
 	 * @throws AttributeTypeNotFoundException
 	 * @throws ExistingUserException
+	 * @throws ArgumentIntegrityException
 	 */
-	void registerMobile(String login, String mobile) throws RemoteException,
+	String registerMobile(String login, String mobile) throws RemoteException,
 			MalformedURLException, MobileRegistrationException,
-			ExistingUserException, AttributeTypeNotFoundException;
+			ExistingUserException, AttributeTypeNotFoundException, ArgumentIntegrityException;
 
 	/**
 	 * Make mobile services generate registering user an OTP

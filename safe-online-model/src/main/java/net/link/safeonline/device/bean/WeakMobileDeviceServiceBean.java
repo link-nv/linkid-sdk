@@ -14,18 +14,26 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.MobileManager;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.device.WeakMobileDeviceServiceRemote;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
@@ -39,10 +47,16 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 	private SubjectService subjectService;
 
 	@EJB
+	private SubjectIdentifierDAO subjectIdentifierDAO;
+
+	@EJB
 	private MobileManager mobileManager;
 
 	@EJB
 	private AttributeDAO attributeDAO;
+
+	@EJB
+	private AttributeTypeDAO attributeTypeDAO;
 
 	@EJB
 	private HistoryDAO historyDAO;
@@ -50,11 +64,11 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 	@EJB
 	private SecurityAuditLogger securityAuditLogger;
 
-	public SubjectEntity authenticate(String login, String challengeId,
+	public SubjectEntity authenticate(String mobile, String challengeId,
 			String mobileOTP) throws MalformedURLException, RemoteException,
-			SubjectNotFoundException, MobileRegistrationException {
-		SubjectEntity subject = this.subjectService
-				.getSubjectFromUserName(login);
+			SubjectNotFoundException, MobileAuthenticationException {
+		SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
+				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile);
 
 		boolean result = this.mobileManager.verifyOTP(challengeId, mobileOTP);
 		if (false == result) {
@@ -63,22 +77,51 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 			this.securityAuditLogger.addSecurityAudit(
 					SecurityThreatType.DECEPTION, subject.getUserId(),
 					"incorrect mobile OTP");
-			throw new MobileRegistrationException();
+			throw new MobileAuthenticationException();
 		}
 		return subject;
 	}
 
-	public void register(SubjectEntity subject, String mobile)
+	public String register(SubjectEntity subject, String mobile)
 			throws RemoteException, MalformedURLException,
-			MobileRegistrationException {
-		boolean result = this.mobileManager.activate(mobile, subject);
-		if (false == result)
+			MobileRegistrationException, ArgumentIntegrityException {
+		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
+				.findSubject(SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
+						mobile);
+		if (null != existingMappedSubject) {
+			throw new ArgumentIntegrityException();
+		}
+		String activationCode = this.mobileManager.activate(mobile, subject);
+		if (null == activationCode)
 			throw new MobileRegistrationException();
+		setMobile(subject, mobile);
+		this.subjectIdentifierDAO.addSubjectIdentifier(
+				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile,
+				subject);
+		return activationCode;
 	}
 
-	public void remove() throws RemoteException, MalformedURLException {
-		String mobile = "";
-		this.mobileManager.remove(mobile);
+	private void setMobile(SubjectEntity subject, String mobile) {
+		AttributeTypeEntity mobileAttributeType;
+		try {
+			mobileAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
+		} catch (AttributeTypeNotFoundException e) {
+			throw new EJBException("weak mobile attribute type not found");
+		}
+		try {
+			AttributeEntity mobileAttribute = this.attributeDAO.getAttribute(
+					mobileAttributeType, subject);
+			mobileAttribute.setStringValue(mobile);
+		} catch (AttributeNotFoundException e) {
+			this.attributeDAO
+					.addAttribute(mobileAttributeType, subject, mobile);
+		}
+	}
+
+	public void remove(String mobile) throws RemoteException,
+			MalformedURLException {
+		// TODO Auto-generated method stub
 	}
 
 	public void update(SubjectEntity subject, String oldMobile, String newMobile) {
@@ -98,10 +141,6 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		AttributeEntity weakMobileAttribute = this.attributeDAO.findAttribute(
 				SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE, subject);
 		mobileList.add(weakMobileAttribute.getStringValue());
-		AttributeEntity strongMobileAttribute = this.attributeDAO
-				.findAttribute(SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE,
-						subject);
-		mobileList.add(strongMobileAttribute.getStringValue());
 		return mobileList;
 	}
 }

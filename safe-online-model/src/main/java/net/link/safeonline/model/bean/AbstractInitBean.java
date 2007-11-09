@@ -40,6 +40,7 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.UsageAgreementDAO;
 import net.link.safeonline.entity.AllowedDeviceEntity;
@@ -72,7 +73,22 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected final Log LOG = LogFactory.getLog(this.getClass());
 
-	protected Map<String, String> authorizedUsers;
+	protected Map<String, AuthenticationDevice> authorizedUsers;
+
+	protected static class AuthenticationDevice {
+		final String password;
+
+		final String weakMobile;
+
+		final String strongMobile;
+
+		public AuthenticationDevice(String password, String weakMobile,
+				String strongMobile) {
+			this.password = password;
+			this.weakMobile = weakMobile;
+			this.strongMobile = strongMobile;
+		}
+	}
 
 	protected Map<String, String> applicationOwnersAndLogin;
 
@@ -233,7 +249,7 @@ public abstract class AbstractInitBean implements Startable {
 	public AbstractInitBean() {
 		this.applicationOwnersAndLogin = new HashMap<String, String>();
 		this.attributeTypes = new LinkedList<AttributeTypeEntity>();
-		this.authorizedUsers = new HashMap<String, String>();
+		this.authorizedUsers = new HashMap<String, AuthenticationDevice>();
 		this.registeredApplications = new LinkedList<Application>();
 		this.subscriptions = new LinkedList<Subscription>();
 		this.identities = new LinkedList<Identity>();
@@ -275,6 +291,9 @@ public abstract class AbstractInitBean implements Startable {
 
 	@EJB
 	private SubjectService subjectService;
+
+	@EJB
+	private SubjectIdentifierDAO subjectIdentifierDAO;
 
 	@EJB
 	private ApplicationDAO applicationDAO;
@@ -512,7 +531,7 @@ public abstract class AbstractInitBean implements Startable {
 	}
 
 	private void initSubjects() throws AttributeTypeNotFoundException {
-		for (Map.Entry<String, String> authorizedUser : this.authorizedUsers
+		for (Map.Entry<String, AuthenticationDevice> authorizedUser : this.authorizedUsers
 				.entrySet()) {
 			String login = authorizedUser.getKey();
 			SubjectEntity subject = this.subjectService
@@ -522,11 +541,36 @@ public abstract class AbstractInitBean implements Startable {
 			}
 			subject = this.subjectService.addSubject(login);
 
-			String password = authorizedUser.getValue();
+			AuthenticationDevice device = authorizedUser.getValue();
+			String password = device.password;
 			try {
 				this.passwordManager.setPassword(subject, password);
 			} catch (PermissionDeniedException e) {
 				throw new EJBException("could not set password");
+			}
+			if (null != device.weakMobile) {
+				SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
+						.findSubject(
+								SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
+								device.weakMobile);
+				if (null != existingMappedSubject) {
+					throw new EJBException("weak mobile " + device.weakMobile
+							+ " already registered");
+				}
+				AttributeTypeEntity mobileAttributeType;
+				try {
+					mobileAttributeType = this.attributeTypeDAO
+							.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
+				} catch (AttributeTypeNotFoundException e) {
+					throw new EJBException(
+							"weak mobile attribute type not found");
+				}
+				this.attributeDAO.addAttribute(mobileAttributeType, subject,
+						device.weakMobile);
+				this.subjectIdentifierDAO.addSubjectIdentifier(
+						SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
+						device.weakMobile, subject);
+
 			}
 		}
 	}

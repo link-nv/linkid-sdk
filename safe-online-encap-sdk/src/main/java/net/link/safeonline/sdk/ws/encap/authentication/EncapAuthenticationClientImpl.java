@@ -63,6 +63,8 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
 				+ OTPValue);
 		VerifyResponse response = this.authStub
 				.verifyOTP(challengeId, OTPValue);
+		LOG.debug("response info: " + response.getAdditionalInfo());
+		LOG.debug("response status: " + response.getStatus());
 		if (EncapConstants.ENCAP_SUCCES == response.getStatus())
 			return true;
 		if (EncapConstants.ENCAP_FAILURE_NO_INFO == response.getStatus())
@@ -73,5 +75,4 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
 		}
 		return false;
 	}
-
 }

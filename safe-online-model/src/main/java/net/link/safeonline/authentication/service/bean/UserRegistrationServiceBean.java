@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
@@ -68,14 +69,14 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 		return existingSubject == null;
 	}
 
-	public void registerMobile(String login, String mobile)
+	public String registerMobile(String login, String mobile)
 			throws RemoteException, MalformedURLException,
 			MobileRegistrationException, ExistingUserException,
-			AttributeTypeNotFoundException {
+			AttributeTypeNotFoundException, ArgumentIntegrityException {
 		LOG.debug("register user: " + login);
 		SubjectEntity newSubject = this.userRegistrationManager
 				.registerUser(login);
-		this.weakMobileDeviceService.register(newSubject, mobile);
+		return this.weakMobileDeviceService.register(newSubject, mobile);
 	}
 
 	public String requestMobileOTP(String mobile) throws MalformedURLException,

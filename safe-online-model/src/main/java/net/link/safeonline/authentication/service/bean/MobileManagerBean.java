@@ -43,7 +43,7 @@ public class MobileManagerBean implements MobileManager {
 		return encapAuthenticationClient.verifyOTP(challengeId, OTPValue);
 	}
 
-	public boolean activate(String mobile, SubjectEntity subject)
+	public String activate(String mobile, SubjectEntity subject)
 			throws RemoteException, MalformedURLException {
 		EncapActivationClient encapActivationClient = new EncapActivationClientImpl(
 				this.encapServerLocation);

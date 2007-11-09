@@ -31,12 +31,6 @@
 				<s:span styleClass="error" />
 			</f:facet>
 			<h:panelGrid id="auth-panel-editable" columns="7">
-				<h:outputLabel for="loginnameText" value="#{msgs.login}" />
-				<s:decorate>
-					<h:inputText id="loginnameText" value="#{mobileLogon.loginname}"
-						required="true" readonly="#{!empty mobileLogon.challengeId}" />
-				</s:decorate>
-				<t:message for="loginnameText" styleClass="error" />
 				<h:outputLabel for="mobile" value="#{msgs.mobile}" />
 				<s:decorate>
 					<h:inputText id="mobile" value="#{mobileLogon.mobile}"
@@ -49,7 +43,7 @@
 			</h:panelGrid>
 		</a4j:form>
 
-		<a4j:form id="otp-form" ajaxSubmit="true" reRender="otp-form">
+		<h:form id="otp-form">
 			<t:messages globalOnly="true" styleClass="error" />
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
@@ -65,7 +59,7 @@
 				<h:commandButton action="#{mobileLogon.login}" id="login"
 					value="#{msgs.loginaction}" />
 			</h:panelGrid>
-		</a4j:form>
+		</h:form>
 
 		<h:form>
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"

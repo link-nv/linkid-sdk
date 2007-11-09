@@ -38,7 +38,7 @@ public class EncapActivationClientImpl implements EncapActivationClient {
 				endpointURL, new Service());
 	}
 
-	public boolean activate(String mobile, String orgId, String userId)
+	public String activate(String mobile, String orgId, String userId)
 			throws RemoteException {
 		LOG.debug("activate: " + mobile + ", " + orgId + ", " + userId);
 
@@ -52,8 +52,8 @@ public class EncapActivationClientImpl implements EncapActivationClient {
 		LOG.debug("activation sp id: " + response.getServiceProviderId());
 		LOG.debug("activation session id: " + response.getSessionId());
 		if (EncapConstants.ENCAP_SUCCES == response.getStatus())
-			return true;
-		return false;
+			return response.getSessionId();
+		return null;
 	}
 
 	public boolean cancelSession(String sessionId) throws RemoteException {

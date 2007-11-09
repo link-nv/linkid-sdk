@@ -170,7 +170,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		 * Register admin
 		 */
 		String mandateAdmin = "mandate-admin";
-		this.authorizedUsers.put(mandateAdmin, "secret");
+		this.authorizedUsers.put(mandateAdmin, new AuthenticationDevice(
+				"secret", null, null));
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				mandateAdmin, DEMO_MANDATE_APPLICATION_NAME));
@@ -227,7 +228,8 @@ public class DemoStartableBean extends AbstractInitBean {
 	private void configPaymentDemo() {
 
 		String paymentAdmin = "payment-admin";
-		this.authorizedUsers.put(paymentAdmin, "secret");
+		this.authorizedUsers.put(paymentAdmin, new AuthenticationDevice(
+				"secret", null, null));
 
 		/*
 		 * Register the payment and ticket demo application within SafeOnline.
@@ -324,7 +326,8 @@ public class DemoStartableBean extends AbstractInitBean {
 
 	private void configPrescriptionDemo() {
 		String prescriptionAdmin = "prescription-admin";
-		this.authorizedUsers.put(prescriptionAdmin, "secret");
+		this.authorizedUsers.put(prescriptionAdmin, new AuthenticationDevice(
+				"secret", null, null));
 
 		/*
 		 * Register the prescription demo application within SafeOnline.
@@ -426,7 +429,8 @@ public class DemoStartableBean extends AbstractInitBean {
 	}
 
 	private void configLawyerDemo() {
-		this.authorizedUsers.put("baradmin", "secret");
+		this.authorizedUsers.put("baradmin", new AuthenticationDevice("secret",
+				null, null));
 
 		PrivateKeyEntry demoLawyerPrivateKeyEntry = DemoLawyerKeyStoreUtils
 				.getPrivateKeyEntry();
@@ -544,10 +548,14 @@ public class DemoStartableBean extends AbstractInitBean {
 	}
 
 	private void configDemoUsers() {
-		this.authorizedUsers.put("fcorneli", "secret");
-		this.authorizedUsers.put("dieter", "secret");
-		this.authorizedUsers.put("mario", "secret");
-		this.authorizedUsers.put("wvdhaute", "secret");
+		this.authorizedUsers.put("fcorneli", new AuthenticationDevice("secret",
+				null, null));
+		this.authorizedUsers.put("dieter", new AuthenticationDevice("secret",
+				null, null));
+		this.authorizedUsers.put("mario", new AuthenticationDevice("secret",
+				null, null));
+		this.authorizedUsers.put("wvdhaute", new AuthenticationDevice("secret",
+				"+32494575697", null));
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"fcorneli", DEMO_APPLICATION_NAME));

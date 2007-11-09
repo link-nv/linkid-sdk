@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_ALL;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,8 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
-
-import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_ALL;
 
 @Entity
 @Table(name = "devices")

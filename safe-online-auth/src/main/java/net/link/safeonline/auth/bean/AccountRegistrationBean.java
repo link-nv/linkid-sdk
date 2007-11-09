@@ -25,9 +25,11 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.AccountRegistration;
 import net.link.safeonline.auth.AuthenticationConstants;
+import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
+import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
@@ -262,7 +264,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 		try {
 			this.authenticationService.authenticate(
-					AuthenticationDevice.WEAK_MOBILE, this.requestedUsername,
+					AuthenticationDevice.WEAK_MOBILE, this.mobile,
 					this.challengeId, this.mobileOTP);
 		} catch (AxisFault e) {
 			this.facesMessages.addFromResourceBundle(
@@ -288,9 +290,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			HelpdeskLogger.add("login: failed to contact encap webservice for "
 					+ this.login, LogLevelType.ERROR);
 			return null;
-		} catch (MobileRegistrationException e) {
+		} catch (MobileAuthenticationException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
 			return null;
 		}
 
@@ -323,6 +325,10 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		} catch (AttributeTypeNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
+			return null;
+		} catch (ArgumentIntegrityException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorMobileTaken");
 			return null;
 		}
 		try {

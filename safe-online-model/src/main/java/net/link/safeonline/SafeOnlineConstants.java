@@ -76,6 +76,10 @@ public class SafeOnlineConstants {
 
 	public static final String STRONG_MOBILE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:strong-mobile";
 
+	public static final String WEAK_MOBILE_IDENTIFIER_DOMAIN = "weak-mobile";
+
+	public static final String STRONG_MOBILE_IDENTIFIER_DOMAIN = "strong-mobile";
+
 	private SafeOnlineConstants() {
 		// empty
 	}

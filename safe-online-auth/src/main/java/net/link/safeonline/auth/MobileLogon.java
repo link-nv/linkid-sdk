@@ -20,10 +20,6 @@ public interface MobileLogon {
 
 	void setChallengeId(String challengeId);
 
-	String getLoginname();
-
-	void setLoginname(String loginname);
-
 	/*
 	 * Actions.
 	 */
