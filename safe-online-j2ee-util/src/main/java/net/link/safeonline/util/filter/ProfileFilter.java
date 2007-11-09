@@ -1,15 +1,20 @@
 package net.link.safeonline.util.filter;
 
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Map;
 
+import javax.management.MBeanServerConnection;
+import javax.management.ObjectName;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
@@ -51,18 +56,26 @@ public class ProfileFilter implements Filter {
 
 		try {
 			// Execute and profile the process.
+			long startFreeMem = getFreeMemory();
 			long startTime = System.currentTimeMillis();
 			chain.doFilter(request, responseWrapper);
-			long duration = System.currentTimeMillis() - startTime;
+			long deltaTime = System.currentTimeMillis() - startTime;
+			long endFreeMem = getFreeMemory();
+			long usedMem = startFreeMem - endFreeMem;
 
 			if (profileData.isLocked()) {
 				LOG.debug("someone forgot to unlock the profile data");
 				profileData.unlock();
 			}
 			try {
-				HttpServletRequest httpRequest = (HttpServletRequest) request;
-				String method = httpRequest.getContextPath();
-				profileData.addMeasurement(method, duration);
+				profileData.addMeasurement(ProfileData.REQUEST_START_TIME,
+						startTime);
+				profileData.addMeasurement(ProfileData.REQUEST_DELTA_TIME,
+						deltaTime);
+				profileData.addMeasurement(ProfileData.REQUEST_USED_MEM,
+						usedMem);
+				profileData.addMeasurement(ProfileData.REQUEST_FREE_MEM,
+						endFreeMem);
 			} catch (ProfileDataLockedException e) {
 				// empty
 			}
@@ -76,6 +89,32 @@ public class ProfileFilter implements Filter {
 		finally {
 			responseWrapper.commit();
 		}
+	}
+
+	private long getFreeMemory() {
+
+		long free = 0;
+		try {
+			MBeanServerConnection rmi = (MBeanServerConnection) getInitialContext()
+					.lookup("jmx/invoker/RMIAdaptor");
+			free = (Long) rmi.getAttribute(new ObjectName(
+					"jboss.system:type=ServerInfo"), "FreeMemory");
+		} catch (Exception e) {
+			LOG.error("Failed to read in free memory through JMX.", e);
+		}
+
+		return free;
+	}
+
+	private static InitialContext getInitialContext() throws NamingException {
+
+		Hashtable<String, String> environment = new Hashtable<String, String>();
+
+		environment.put(Context.INITIAL_CONTEXT_FACTORY,
+				"org.jnp.interfaces.NamingContextFactory");
+		environment.put(Context.PROVIDER_URL, "localhost:1099");
+
+		return new InitialContext(environment);
 	}
 
 	/**

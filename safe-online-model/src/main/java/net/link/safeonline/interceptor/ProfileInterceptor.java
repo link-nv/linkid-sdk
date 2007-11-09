@@ -48,8 +48,7 @@ public class ProfileInterceptor {
 		profileData.unlock();
 
 		// Record the stats for the call and release the lock.
-		profileData.addMeasurement(context.getMethod().toGenericString(),
-				duration);
+		profileData.addMeasurement(context.getMethod(), duration);
 
 		return result;
 	}

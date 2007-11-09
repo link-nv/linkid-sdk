@@ -37,14 +37,21 @@ public abstract class ProfileDriver {
 		this.title = title;
 	}
 
-	protected void addProfileData(AbstractMessageAccessor service) {
+	protected void startNewIteration() {
 
-		this.profileData.add(new ProfileData(service.getHeaders()));
+		this.profileData.add(null);
+		this.profileError.add(null);
 	}
 
-	protected void addProfileError(Exception error) {
+	protected void setIterationData(AbstractMessageAccessor service) {
 
-		this.profileError.add(error);
+		ProfileData data = new ProfileData(service.getHeaders());
+		this.profileData.set(this.profileData.size() - 1, data);
+	}
+
+	protected void setIterationError(Exception error) {
+
+		this.profileError.set(this.profileError.size() - 1, error);
 	}
 
 	public List<ProfileData> getProfileData() {

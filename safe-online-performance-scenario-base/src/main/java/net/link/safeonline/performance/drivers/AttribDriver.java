@@ -17,9 +17,9 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
  * 
  * @author mbillemo
  */
-public class AttribWsDriver extends ProfileDriver {
+public class AttribDriver extends ProfileDriver {
 
-	public AttribWsDriver(String hostname) {
+	public AttribDriver(String hostname) {
 
 		super(hostname, "User Attribute Driver");
 	}
@@ -46,18 +46,20 @@ public class AttribWsDriver extends ProfileDriver {
 			throw new DriverException(
 					"The certificate in the keystore needs to be of X509 format.");
 
-		AttributeClientImpl service = new AttributeClientImpl(this.host,
-				(X509Certificate) applicationKey.getCertificate(),
-				applicationKey.getPrivateKey());
-
+		startNewIteration();
 		try {
+			AttributeClientImpl service = new AttributeClientImpl(this.host,
+					(X509Certificate) applicationKey.getCertificate(),
+					applicationKey.getPrivateKey());
+
 			Map<String, Object> result = service.getAttributeValues(userId);
-			addProfileData(service);
+			setIterationData(service);
 
 			return result;
 		}
 
 		catch (Exception e) {
+			setIterationError(e);
 			throw new DriverException(e);
 		}
 	}

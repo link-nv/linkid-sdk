@@ -7,6 +7,8 @@
 
 package net.link.safeonline.util.jacc;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,41 @@ public class ProfileData {
 	 * The header used to communicate the duration of the call
 	 */
 	private static final String DURATION_HEADER = "X-Profiled-Duration-";
+
+	/**
+	 * The measurement string for the time the request took. This is the
+	 * difference of time between the start and end of the request in
+	 * milliseconds.
+	 */
+	public static final String REQUEST_DELTA_TIME = "RequestTime";
+	/**
+	 * The measurement string for the memory the request used. This is the
+	 * difference of memory between the start and end of the request in bytes.
+	 */
+	public static final String REQUEST_USED_MEM = "RequestMemory";
+
+	/**
+	 * The measurement string for the amount of free memory at the end of the
+	 * request in bytes.
+	 */
+	public static final String REQUEST_FREE_MEM = "FinalMemory";
+
+	/**
+	 * The time at which the request was made in seconds since the UNIX Epoch.
+	 */
+	public static final String REQUEST_START_TIME = "StartTime";
+
+	/**
+	 * A list of measurement keys that have a special meaning in the request.
+	 * (Meaning, they are not names of method signatures.)
+	 */
+	private static List<String> requestKeys = new ArrayList<String>();
+	static {
+		requestKeys.add(REQUEST_START_TIME);
+		requestKeys.add(REQUEST_DELTA_TIME);
+		requestKeys.add(REQUEST_USED_MEM);
+		requestKeys.add(REQUEST_FREE_MEM);
+	}
 
 	private Map<String, Long> measurements;
 
@@ -118,9 +155,27 @@ public class ProfileData {
 		return headers;
 	}
 
+	public static boolean isRequestKey(String key) {
+
+		return requestKeys.contains(key);
+	}
+
 	public Map<String, Long> getMeasurements() {
 
 		return this.measurements;
+	}
+
+	public void addMeasurement(Method method, Long value)
+			throws ProfileDataLockedException {
+
+		// Compress the generic form of the method's signature.
+		// Trim off throws declarations.
+		// java.lang.method -> j~l~method
+		String methodName = method.toGenericString();
+		methodName = methodName.replaceAll("(\\w)\\w{2,}\\.", "$1~");
+		methodName = methodName.replaceFirst(" throws [^\\(\\)]*", "");
+
+		this.addMeasurement(methodName, value);
 	}
 
 	public void addMeasurement(String method, Long value)

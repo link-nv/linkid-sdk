@@ -41,7 +41,7 @@ public class Charts {
 		// Tab contents.
 		for (Address agent : map.keySet()) {
 
-			JPanel agentCharts = new JPanel(new GridLayout(0, 1, 5, 5));
+			JPanel agentCharts = new JPanel(new GridLayout(0, 1, 0, 20));
 			agentCharts.setBorder(Borders.DLU4_BORDER);
 			for (JFreeChart chart : map.get(agent))
 				agentCharts.add(new JLabel(new ImageIcon(chart

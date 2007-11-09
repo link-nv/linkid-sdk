@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
-import net.link.safeonline.performance.drivers.AttribWsDriver;
+import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
 import net.link.safeonline.performance.drivers.ProfileDriver;
 
@@ -25,10 +25,10 @@ import org.apache.commons.logging.LogFactory;
 public class BasicScenario implements Scenario {
 
 	private static final Log LOG = LogFactory.getLog(BasicScenario.class);
-	private static final int ITERATIONS = 5;
+	private static final int ITERATIONS = 50;
 
 	private IdMappingDriver idDriver;
-	private AttribWsDriver attribDriver;
+	private AttribDriver attribDriver;
 
 	/**
 	 * @{inheritDoc}
@@ -39,7 +39,7 @@ public class BasicScenario implements Scenario {
 
 		LOG.debug("building drivers..");
 		drivers.add(this.idDriver = new IdMappingDriver(hostname));
-		drivers.add(this.attribDriver = new AttribWsDriver(hostname));
+		drivers.add(this.attribDriver = new AttribDriver(hostname));
 
 		return drivers;
 	}

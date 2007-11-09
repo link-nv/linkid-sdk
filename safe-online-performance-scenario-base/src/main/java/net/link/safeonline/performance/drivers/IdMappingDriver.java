@@ -10,7 +10,6 @@ package net.link.safeonline.performance.drivers;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
-import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
 /**
@@ -46,26 +45,21 @@ public class IdMappingDriver extends ProfileDriver {
 			throw new DriverException(
 					"The certificate in the keystore needs to be of X509 format.");
 
-		NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(
-				this.host, (X509Certificate) applicationKey.getCertificate(),
-				applicationKey.getPrivateKey());
-
+		startNewIteration();
 		try {
+			NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(
+					this.host, (X509Certificate) applicationKey
+							.getCertificate(), applicationKey.getPrivateKey());
+
 			String result = service.getUserId(username);
-			addProfileData(service);
+			setIterationData(service);
 
 			return result;
 		}
 
 		catch (Exception e) {
-			addProfileError(e);
+			setIterationError(e);
 			throw new DriverException(e);
 		}
-	}
-
-	public static void main(String... args) throws DriverException {
-
-		System.out.println(new IdMappingDriver("localhost:8443").getUserId(
-				DemoLawyerKeyStoreUtils.getPrivateKeyEntry(), "admin"));
 	}
 }
