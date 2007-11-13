@@ -418,6 +418,17 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 				LOG.warn("no appropriate PKCS11 getInstance method found");
 				return 0; // best effort
 			}
+			try {
+				/*
+				 * It has been reported that one needs to wait for 5
+				 * milliseconds between the getInstance and the C_GetSlotList
+				 * invocation for the BeID smart card to avoid possible
+				 * CKR_BUFFER_TOO_SMALL errors..
+				 */
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				throw new RuntimeException("could not sleep");
+			}
 			long[] slotIds = pkcs11.C_GetSlotList(true);
 			LOG.debug("number of PKCS11 slots: " + slotIds.length);
 			for (int currSlotIdx = 0; currSlotIdx < slotIds.length; currSlotIdx++) {

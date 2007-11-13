@@ -19,7 +19,7 @@ You can build the entire project via:
 	mvn clean install
 If you run into an OutOfMemoryError while running Maven you can use the
 following environment variable to increase the available memory:
-export MAVEN_OPTS="-Xms128m -Xmx512m -XX:PermSize=256m -XX:MaxPermSize=256m"
+export MAVEN_OPTS="-Xms256m -Xmx768m -XX:PermSize=256m -XX:MaxPermSize=256m"
 
 
 === 4. Documentation
