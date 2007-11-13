@@ -32,6 +32,7 @@ import net.link.safeonline.entity.AttributeProviderPK;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
@@ -67,7 +68,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		X509Certificate demoCertificate = (X509Certificate) demoPrivateKeyEntry
 				.getCertificate();
 		this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME,
-				"owner", demoCertificate));
+				"owner", demoCertificate, IdScopeType.USER));
 
 		this.trustedCertificates.add(demoCertificate);
 
@@ -94,7 +95,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.trustedCertificates.add(demoMandateCertificate);
 		this.registeredApplications.add(new Application(
 				DEMO_MANDATE_APPLICATION_NAME, "owner", null, null, true, true,
-				demoMandateCertificate, true));
+				demoMandateCertificate, true, IdScopeType.SUBSCRIPTION));
 
 		/*
 		 * Subscribe the demo users to the mandate demo application.
@@ -189,7 +190,8 @@ public class DemoStartableBean extends AbstractInitBean {
 
 		this.trustedCertificates.add(demoTicketCertificate);
 		this.registeredApplications.add(new Application(
-				DEMO_TICKET_APPLICATION_NAME, "owner", demoTicketCertificate));
+				DEMO_TICKET_APPLICATION_NAME, "owner", demoTicketCertificate,
+				IdScopeType.SUBSCRIPTION));
 
 		this.identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME,
 				new IdentityAttributeTypeDO[] {
@@ -241,9 +243,9 @@ public class DemoStartableBean extends AbstractInitBean {
 
 		this.trustedCertificates.add(demoPaymentCertificate);
 
-		this.registeredApplications
-				.add(new Application(DEMO_PAYMENT_APPLICATION_NAME, "owner",
-						demoPaymentCertificate));
+		this.registeredApplications.add(new Application(
+				DEMO_PAYMENT_APPLICATION_NAME, "owner", demoPaymentCertificate,
+				IdScopeType.SUBSCRIPTION));
 
 		/*
 		 * Subscribe the payment admin.
@@ -339,7 +341,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.trustedCertificates.add(demoPrescriptionCertificate);
 		this.registeredApplications.add(new Application(
 				DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, null, true,
-				true, demoPrescriptionCertificate, true));
+				true, demoPrescriptionCertificate, true,
+				IdScopeType.SUBSCRIPTION));
 
 		/*
 		 * Subscribe the prescription admin.
@@ -438,7 +441,7 @@ public class DemoStartableBean extends AbstractInitBean {
 				.getCertificate();
 		this.registeredApplications.add(new Application(
 				DEMO_LAWYER_APPLICATION_NAME, "owner", null, null, true, true,
-				demoLawyerCertificate, true));
+				demoLawyerCertificate, true, IdScopeType.SUBSCRIPTION));
 		this.trustedCertificates.add(demoLawyerCertificate);
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
@@ -555,7 +558,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.authorizedUsers.put("mario", new AuthenticationDevice("secret",
 				null, null));
 		this.authorizedUsers.put("wvdhaute", new AuthenticationDevice("secret",
-				"+32494575697", null));
+				new String[] { "+32494575697" }, null));
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"fcorneli", DEMO_APPLICATION_NAME));

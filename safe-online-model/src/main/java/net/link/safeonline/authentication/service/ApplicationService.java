@@ -24,6 +24,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 /**
@@ -192,6 +193,23 @@ public interface ApplicationService {
 			boolean deviceRestriction) throws ApplicationNotFoundException,
 			PermissionDeniedException;
 
+	/**
+	 * Set the application's permission to use the id mapping ws.
+	 * 
+	 * @param applicationName
+	 * @param access
+	 * @throws ApplicationNotFoundException
+	 */
 	void setIdentifierMappingServiceAccess(String applicationName,
 			boolean access) throws ApplicationNotFoundException;
+
+	/**
+	 * Set the application's id generation scope
+	 * 
+	 * @param applicationName
+	 * @param idScope
+	 * @throws ApplicationNotFoundException
+	 */
+	void setIdScope(String applicationName, IdScopeType idScope)
+			throws ApplicationNotFoundException;
 }

@@ -250,8 +250,10 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 			HttpServletResponse authnResponse) throws ProtocolException {
 		PrivateKey privateKey = this.identityServiceClient.getPrivateKey();
 		PublicKey publicKey = this.identityServiceClient.getPublicKey();
-		String userId = (String) session.getAttribute("username");
-		String target = (String) session.getAttribute("target");
+		String userId = (String) session
+				.getAttribute(LoginManager.USERNAME_ATTRIBUTE);
+		String target = (String) session
+				.getAttribute(LoginManager.TARGET_ATTRIBUTE);
 		LOG.debug("user Id: " + userId);
 		LOG.debug("target URL: " + target);
 

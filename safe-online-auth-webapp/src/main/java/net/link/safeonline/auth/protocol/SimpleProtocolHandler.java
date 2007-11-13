@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.auth.LoginManager;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -55,7 +57,8 @@ public class SimpleProtocolHandler implements ProtocolHandler {
 		 * From this moment on we're sure that the user is really trying to use
 		 * the simple authentication protocol.
 		 */
-		String target = authnRequest.getParameter("target");
+		String target = authnRequest
+				.getParameter(LoginManager.TARGET_ATTRIBUTE);
 		if (null == target) {
 			/*
 			 * The simple authentication protocol really requires the "target"
@@ -73,8 +76,10 @@ public class SimpleProtocolHandler implements ProtocolHandler {
 
 	public void authnResponse(HttpSession session,
 			HttpServletResponse authnResponse) throws ProtocolException {
-		String userId = (String) session.getAttribute("username");
-		String target = (String) session.getAttribute("target");
+		String userId = (String) session
+				.getAttribute(LoginManager.USERNAME_ATTRIBUTE);
+		String target = (String) session
+				.getAttribute(LoginManager.TARGET_ATTRIBUTE);
 
 		String redirectUrl;
 		try {

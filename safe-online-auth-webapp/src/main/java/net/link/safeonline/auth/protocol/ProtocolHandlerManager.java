@@ -18,7 +18,11 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
+import net.link.safeonline.authentication.service.UserIdMappingService;
+import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -146,6 +150,30 @@ public class ProtocolHandlerManager {
 			throw new ProtocolException("missing device session attribute");
 		}
 
+		String applicationName = LoginManager.findApplication(session);
+		if (null == applicationName) {
+			throw new ProtocolException(
+					"incorrect authentication state (missing application name)");
+		}
+
+		/*
+		 * Retrieve the wanted user id for this application's id scope.
+		 */
+		String userId = null;
+		try {
+			userId = getUserId(applicationName, username);
+		} catch (SubscriptionNotFoundException e) {
+			throw new ProtocolException(
+					"unable to retrieve user id (subscription not found)");
+		} catch (ApplicationNotFoundException e) {
+			throw new ProtocolException(
+					"unable to retrieve user id (application not found)");
+		}
+		if (null == userId) {
+			throw new ProtocolException("unable to retrieve user id");
+		}
+		session.setAttribute(LoginManager.USERNAME_ATTRIBUTE, userId);
+
 		try {
 			protocolHandler.authnResponse(session, response);
 		} catch (ProtocolException e) {
@@ -161,5 +189,13 @@ public class ProtocolHandlerManager {
 		 * context.
 		 */
 		session.invalidate();
+	}
+
+	private static String getUserId(String applicationName, String username)
+			throws SubscriptionNotFoundException, ApplicationNotFoundException {
+		UserIdMappingService userIdMappingService = EjbUtils.getEJB(
+				"SafeOnline/UserIdMappingServiceBean/local",
+				UserIdMappingService.class);
+		return userIdMappingService.getApplicationUserId(applicationName, username);
 	}
 }

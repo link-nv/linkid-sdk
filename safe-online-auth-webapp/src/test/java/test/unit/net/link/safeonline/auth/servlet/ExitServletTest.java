@@ -18,9 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.security.KeyPair;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.xml.XMLConstants;
 
@@ -32,10 +30,8 @@ import net.link.safeonline.auth.servlet.ExitServlet;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.ctrl.ControlBaseConstants;
+import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.dao.HistoryDAO;
-import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
-import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.DomTestUtils;
@@ -122,25 +118,26 @@ public class ExitServletTest {
 		expect(mockSubjectService.getSubjectLogin("test-user-name"))
 				.andStubReturn("test-user-name");
 		HistoryDAO mockHistoryDAO = createMock(HistoryDAO.class);
-		HelpdeskManager mockHelpdeskManager = createMock(HelpdeskManager.class);
-		List<HelpdeskEventEntity> helpdeskContext = new Vector<HelpdeskEventEntity>();
-		expect(mockHelpdeskManager.persist("ExitServlet", helpdeskContext))
-				.andStubReturn(new Long(1));
+		UserIdMappingService mockUserIdMappingServiceBean = createMock(UserIdMappingService.class);
+		expect(
+				mockUserIdMappingServiceBean.getApplicationUserId("test-application-id",
+						"test-user-name")).andStubReturn("0");
 		this.mockObjects = new Object[] { mockSamlAuthorityService,
-				this.mockAuthenticationService, mockHelpdeskManager,
-				mockSubjectService };
+				this.mockAuthenticationService, mockSubjectService,
+				mockUserIdMappingServiceBean };
 		this.jndiTestUtils.setUp();
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				mockSamlAuthorityService);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/HelpdeskManagerBean/local", mockHelpdeskManager);
 		this.jndiTestUtils.bindComponent("SafeOnline/SubjectManagerBean/local",
 				mockSubjectManager);
 		this.jndiTestUtils.bindComponent("SafeOnline/SubjectServiceBean/local",
 				mockSubjectService);
 		this.jndiTestUtils.bindComponent("SafeOnline/HistoryDAOBean/local",
 				mockHistoryDAO);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/UserIdMappingServiceBean/local",
+				mockUserIdMappingServiceBean);
 
 		this.exitServletTestManager = new ServletTestManager();
 		Map<String, String> servletInitParams = new HashMap<String, String>();
@@ -164,10 +161,6 @@ public class ExitServletTest {
 		initialSessionAttributes.put(
 				Saml2PostProtocolHandler.IN_RESPONSE_TO_ATTRIBUTE,
 				this.inResponseTo);
-
-		helpdeskContext.add(new HelpdeskEventEntity());
-		initialSessionAttributes.put(ControlBaseConstants.HELPDESK_CONTEXT,
-				helpdeskContext);
 
 		this.exitServletTestManager.setUp(ExitServlet.class, servletInitParams,
 				null, null, initialSessionAttributes);

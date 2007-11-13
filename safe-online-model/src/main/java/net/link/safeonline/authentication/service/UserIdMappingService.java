@@ -10,31 +10,33 @@ package net.link.safeonline.authentication.service;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 
-/**
- * Interface for identifier mapping service component.
- * 
- * @author fcorneli
- * 
- */
 @Local
-public interface IdentifierMappingService {
+public interface UserIdMappingService {
+
+	/**
+	 * Returns the application specific user id as specified in the
+	 * application's id scope.
+	 * 
+	 * @param applicationName
+	 * @param userId
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 * @throws SubscriptionNotFoundException
+	 */
+	String getApplicationUserId(String applicationName, String userId)
+			throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
 	/**
 	 * Returns the SafeOnline global user id using the application's id scope
 	 * settings and provided application id.
 	 * 
-	 * @param username
+	 * @param applicationName
+	 * @param applicationUserId
 	 * @return
-	 * @throws PermissionDeniedException
 	 * @throws ApplicationNotFoundException
-	 * @throws SubscriptionNotFoundException
-	 * @throws SubjectNotFoundException
 	 */
-	String getUserId(String username) throws PermissionDeniedException,
-			ApplicationNotFoundException, SubscriptionNotFoundException,
-			SubjectNotFoundException;
+	String getUserId(String applicationName, String applicationUserId)
+			throws ApplicationNotFoundException;
 }

@@ -17,6 +17,7 @@ import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
+import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
@@ -26,6 +27,7 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
@@ -44,6 +46,10 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 	private ApplicationIdentityDAOBean applicationIdentityDAO;
 
 	private SubscriptionDAOBean subscriptionDAO;
+
+	private IdGeneratorBean idGenerator;
+
+	private SubjectIdentifierDAOBean subjectIdentifierDAO;
 
 	private AttributeTypeDAOBean testedInstance;
 
@@ -64,6 +70,8 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 		this.attributeDAO = new AttributeDAOBean();
 		this.applicationIdentityDAO = new ApplicationIdentityDAOBean();
 		this.subscriptionDAO = new SubscriptionDAOBean();
+		this.idGenerator = new IdGeneratorBean();
+		this.subjectIdentifierDAO = new SubjectIdentifierDAOBean();
 
 		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
 				.getEntityManager());
@@ -79,6 +87,10 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 				.getEntityManager());
 		EJBTestUtils.inject(this.subscriptionDAO, this.entityTestManager
 				.getEntityManager());
+		EJBTestUtils.inject(this.subscriptionDAO, this.idGenerator);
+		EJBTestUtils.inject(this.subscriptionDAO, this.subjectIdentifierDAO);
+		EJBTestUtils.inject(this.subjectIdentifierDAO, this.entityTestManager
+				.getEntityManager());
 
 		EJBTestUtils.init(this.testedInstance);
 		EJBTestUtils.init(this.applicationDAO);
@@ -87,6 +99,7 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 		EJBTestUtils.init(this.attributeDAO);
 		EJBTestUtils.init(this.applicationIdentityDAO);
 		EJBTestUtils.init(this.subscriptionDAO);
+		EJBTestUtils.init(this.subjectIdentifierDAO);
 	}
 
 	@Override

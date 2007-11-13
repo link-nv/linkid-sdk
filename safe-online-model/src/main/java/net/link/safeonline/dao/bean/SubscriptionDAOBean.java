@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,6 +19,7 @@ import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -25,6 +27,7 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.entity.SubscriptionPK;
 import net.link.safeonline.jpa.QueryObjectFactory;
+import net.link.safeonline.model.IdGenerator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +41,12 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	private EntityManager entityManager;
 
 	private SubscriptionEntity.QueryInterface queryObject;
+
+	@EJB
+	private IdGenerator idGenerator;
+
+	@EJB
+	private SubjectIdentifierDAO subjectIdentifierDAO;
 
 	@PostConstruct
 	public void postConstructCallback() {
@@ -58,10 +67,15 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 
 	public void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
 			SubjectEntity subject, ApplicationEntity application) {
+		String userApplicationId = this.idGenerator.generateId();
 		LOG.debug("add subscription for " + subject.getUserId() + " to "
-				+ application.getName());
+				+ application.getName() + "  applicationUserId = "
+				+ userApplicationId);
+		this.subjectIdentifierDAO.addSubjectIdentifier(
+				SafeOnlineConstants.APPLICATION_USER_IDENTIFIER_DOMAIN,
+				userApplicationId, subject);
 		SubscriptionEntity subscription = new SubscriptionEntity(
-				subscriptionOwnerType, subject, application);
+				subscriptionOwnerType, subject, userApplicationId, application);
 		this.entityManager.persist(subscription);
 	}
 
@@ -78,6 +92,9 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		if (null == subscription) {
 			throw new SubscriptionNotFoundException();
 		}
+		this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(
+				SafeOnlineConstants.APPLICATION_USER_IDENTIFIER_DOMAIN,
+				subscription.getUserApplicationId(), subject);
 		this.entityManager.remove(subscription);
 	}
 

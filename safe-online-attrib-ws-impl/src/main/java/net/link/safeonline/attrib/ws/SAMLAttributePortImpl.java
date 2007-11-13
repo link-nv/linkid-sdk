@@ -25,11 +25,16 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.authentication.service.UserIdMappingService;
+import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.model.ApplicationManager;
+import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.ws.common.SamlpSecondLevelErrorCode;
 import net.link.safeonline.ws.common.SamlpTopLevelErrorCode;
 import net.link.safeonline.ws.common.WebServiceConstants;
@@ -111,9 +116,28 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			}
 			NameIDType nameId = (NameIDType) value;
 			String subjectLogin = nameId.getValue();
-			return subjectLogin;
+			try {
+				return getUserId(subjectLogin);
+			} catch (ApplicationNotFoundException e) {
+				return null;
+			}
 		}
 		return null;
+	}
+
+	private String getUserId(String applicationUserId)
+			throws ApplicationNotFoundException {
+		ApplicationManager applicationManager = EjbUtils.getEJB(
+				"SafeOnline/ApplicationManagerBean/local",
+				ApplicationManager.class);
+		ApplicationEntity application = applicationManager
+				.getCallerApplication();
+
+		UserIdMappingService userIdMappingService = EjbUtils.getEJB(
+				"SafeOnline/UserIdMappingServiceBean/local",
+				UserIdMappingService.class);
+		return userIdMappingService.getUserId(application.getName(),
+				applicationUserId);
 	}
 
 	public ResponseType attributeQuery(AttributeQueryType request) {

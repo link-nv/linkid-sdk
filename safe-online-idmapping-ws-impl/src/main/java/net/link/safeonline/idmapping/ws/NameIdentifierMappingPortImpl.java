@@ -20,8 +20,10 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentifierMappingService;
 import net.link.safeonline.ws.common.SamlpSecondLevelErrorCode;
 import net.link.safeonline.ws.common.SamlpTopLevelErrorCode;
@@ -90,12 +92,20 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 		String userId;
 		try {
 			userId = this.identifierMappingService.getUserId(username);
-		} catch (SubjectNotFoundException e) {
-			LOG.debug("subject not found: " + username);
-			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL);
-			return response;
 		} catch (PermissionDeniedException e) {
 			LOG.debug("permission denied: " + e.getMessage());
+			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+			return response;
+		} catch (SubscriptionNotFoundException e) {
+			LOG.debug("subscription not found: " + username);
+			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+			return response;
+		} catch (ApplicationNotFoundException e) {
+			LOG.debug("application not found: " + username);
+			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+			return response;
+		} catch (SubjectNotFoundException e) {
+			LOG.debug("subject not found: " + username);
 			NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
 			return response;
 		}

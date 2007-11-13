@@ -224,7 +224,7 @@ public class EntityTest {
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application", applicationOwner);
 		SubscriptionEntity subscription = new SubscriptionEntity(
-				SubscriptionOwnerType.SUBJECT, subject, application);
+				SubscriptionOwnerType.SUBJECT, subject, "0", application);
 
 		// operate & verify
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -246,7 +246,7 @@ public class EntityTest {
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application", applicationOwner);
 		SubscriptionEntity subscription = new SubscriptionEntity(
-				SubscriptionOwnerType.SUBJECT, subject, application);
+				SubscriptionOwnerType.SUBJECT, subject, "0", application);
 
 		// operate: add subscription
 		EntityManager entityManager = this.entityTestManager.getEntityManager();

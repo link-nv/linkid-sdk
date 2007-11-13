@@ -50,6 +50,7 @@ import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -407,5 +408,13 @@ public class ApplicationServiceBean implements ApplicationService,
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
 		application.setIdentifierMappingAllowed(access);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void setIdScope(String applicationName, IdScopeType idScope)
+			throws ApplicationNotFoundException {
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationName);
+		application.setIdScope(idScope);
 	}
 }

@@ -73,10 +73,10 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		boolean result = this.mobileManager.verifyOTP(challengeId, mobileOTP);
 		if (false == result) {
 			this.historyDAO.addHistoryEntry(new Date(), subject,
-					HistoryEventType.LOGIN_INCORRECT_MOBILE_OTP, null, null);
+					HistoryEventType.LOGIN_INCORRECT_MOBILE_TOKEN, null, null);
 			this.securityAuditLogger.addSecurityAudit(
 					SecurityThreatType.DECEPTION, subject.getUserId(),
-					"incorrect mobile OTP");
+					"incorrect mobile token");
 			throw new MobileAuthenticationException();
 		}
 		return subject;

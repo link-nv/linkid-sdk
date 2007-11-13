@@ -21,6 +21,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceType;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStoreUtils;
 import net.link.safeonline.oper.keystore.OperKeyStoreUtils;
@@ -67,19 +68,20 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		// TODO: Fill in the correct URL.
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
-				"The SafeOnline User Web Application.", null, userCert));
+				"The SafeOnline User Web Application.", null, false, false,
+				userCert, false, IdScopeType.USER));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
 				"owner", "The SafeOnline Operator Web Application.", null,
-				false, false, operCert, false));
+				false, false, operCert, false, IdScopeType.USER));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
 				"owner", "The SafeOnline Application Owner Web Application.",
-				null, false, false, ownerCert, false));
+				null, false, false, ownerCert, false, IdScopeType.USER));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
 				"owner", "The SafeOnline Helpdesk Web Application.", null,
-				false, false, helpdeskCert, false));
+				false, false, helpdeskCert, false, IdScopeType.USER));
 
 		this.trustedCertificates.add(userCert);
 		this.trustedCertificates.add(operCert);
@@ -159,6 +161,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		AttributeTypeEntity weakMobileAttributeType = new AttributeTypeEntity(
 				SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE, DatatypeType.STRING,
 				true, true);
+		weakMobileAttributeType.setMultivalued(true);
 		this.attributeTypes.add(weakMobileAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				weakMobileAttributeType, Locale.ENGLISH.getLanguage(),
@@ -169,6 +172,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		AttributeTypeEntity strongMobileAttributeType = new AttributeTypeEntity(
 				SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE,
 				DatatypeType.STRING, true, false);
+		weakMobileAttributeType.setMultivalued(true);
 		this.attributeTypes.add(strongMobileAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				strongMobileAttributeType, Locale.ENGLISH.getLanguage(),

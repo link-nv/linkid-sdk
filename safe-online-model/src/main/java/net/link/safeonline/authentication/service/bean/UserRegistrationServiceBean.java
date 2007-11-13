@@ -65,7 +65,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 
 	public boolean isLoginFree(String login) {
 		SubjectEntity existingSubject;
-		existingSubject = this.subjectService.findSubject(login);
+		existingSubject = this.subjectService.findSubjectFromUserName(login);
 		return existingSubject == null;
 	}
 

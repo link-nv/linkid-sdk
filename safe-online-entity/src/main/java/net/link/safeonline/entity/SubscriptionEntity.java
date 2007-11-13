@@ -84,6 +84,8 @@ public class SubscriptionEntity implements Serializable {
 
 	private Long confirmedUsageAgreementVersion;
 
+	private String userApplicationId;
+
 	private Date lastLogin;
 
 	public SubscriptionEntity() {
@@ -91,9 +93,11 @@ public class SubscriptionEntity implements Serializable {
 	}
 
 	public SubscriptionEntity(SubscriptionOwnerType subscriptionOwnerType,
-			SubjectEntity subject, ApplicationEntity application) {
+			SubjectEntity subject, String userApplicationId,
+			ApplicationEntity application) {
 		this.subscriptionOwnerType = subscriptionOwnerType;
 		this.subject = subject;
+		this.userApplicationId = userApplicationId;
 		this.application = application;
 		this.confirmedUsageAgreementVersion = UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION;
 		this.pk = new SubscriptionPK(subject, application);
@@ -156,6 +160,14 @@ public class SubscriptionEntity implements Serializable {
 	public void setConfirmedUsageAgreementVersion(
 			Long confirmedUsageAgreementVersion) {
 		this.confirmedUsageAgreementVersion = confirmedUsageAgreementVersion;
+	}
+
+	public String getUserApplicationId() {
+		return this.userApplicationId;
+	}
+
+	public void setUserApplicationId(String userApplicationId) {
+		this.userApplicationId = userApplicationId;
 	}
 
 	public Date getLastLogin() {

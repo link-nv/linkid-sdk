@@ -106,6 +106,8 @@ public class ApplicationEntity implements Serializable {
 
 	private boolean identifierMappingAllowed;
 
+	private IdScopeType idScope;
+
 	public boolean isDeviceRestriction() {
 		return this.deviceRestriction;
 	}
@@ -419,6 +421,20 @@ public class ApplicationEntity implements Serializable {
 		this.identifierMappingAllowed = identifierMappingAllowed;
 	}
 
+	/**
+	 * The id scope field is used to determine which type of id should be
+	 * returned to the caller application.
+	 * 
+	 * @return
+	 */
+	public IdScopeType getIdScope() {
+		return this.idScope;
+	}
+
+	public void setIdScope(IdScopeType idScope) {
+		this.idScope = idScope;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -478,4 +494,5 @@ public class ApplicationEntity implements Serializable {
 		String certificateIdentifier = DigestUtils.shaHex(encodedCertificate);
 		return certificateIdentifier;
 	}
+
 }

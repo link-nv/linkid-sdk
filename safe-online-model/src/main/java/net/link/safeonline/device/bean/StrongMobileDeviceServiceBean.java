@@ -79,10 +79,10 @@ public class StrongMobileDeviceServiceBean implements
 		boolean result = this.mobileManager.verifyOTP(challengeId, mobileOTP);
 		if (false == result) {
 			this.historyDAO.addHistoryEntry(new Date(), subject,
-					HistoryEventType.LOGIN_INCORRECT_MOBILE_OTP, null, null);
+					HistoryEventType.LOGIN_INCORRECT_MOBILE_TOKEN, null, null);
 			this.securityAuditLogger.addSecurityAudit(
 					SecurityThreatType.DECEPTION, subject.getUserId(),
-					"incorrect mobile OTP");
+					"incorrect mobile token");
 			throw new MobileAuthenticationException();
 		}
 		return subject;
@@ -101,7 +101,8 @@ public class StrongMobileDeviceServiceBean implements
 			throw new PermissionDeniedException("");
 
 		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
-				.findSubject(SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
+				.findSubject(
+						SafeOnlineConstants.STRONG_MOBILE_IDENTIFIER_DOMAIN,
 						mobile);
 		if (null != existingMappedSubject) {
 			throw new ArgumentIntegrityException();
@@ -111,7 +112,7 @@ public class StrongMobileDeviceServiceBean implements
 			throw new MobileRegistrationException();
 		setMobile(subject, mobile);
 		this.subjectIdentifierDAO.addSubjectIdentifier(
-				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile,
+				SafeOnlineConstants.STRONG_MOBILE_IDENTIFIER_DOMAIN, mobile,
 				subject);
 		return activationCode;
 	}
@@ -127,9 +128,9 @@ public class StrongMobileDeviceServiceBean implements
 		AttributeTypeEntity mobileAttributeType;
 		try {
 			mobileAttributeType = this.attributeTypeDAO
-					.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
+					.getAttributeType(SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE);
 		} catch (AttributeTypeNotFoundException e) {
-			throw new EJBException("weak mobile attribute type not found");
+			throw new EJBException("strong mobile attribute type not found");
 		}
 		try {
 			AttributeEntity mobileAttribute = this.attributeDAO.getAttribute(
@@ -146,9 +147,10 @@ public class StrongMobileDeviceServiceBean implements
 		List<String> mobileList = new LinkedList<String>();
 		SubjectEntity subject = this.subjectService
 				.findSubjectFromUserName(login);
-		AttributeEntity weakMobileAttribute = this.attributeDAO.findAttribute(
-				SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE, subject);
-		mobileList.add(weakMobileAttribute.getStringValue());
+		AttributeEntity strongMobileAttribute = this.attributeDAO
+				.findAttribute(SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE,
+						subject);
+		mobileList.add(strongMobileAttribute.getStringValue());
 		return mobileList;
 	}
 }

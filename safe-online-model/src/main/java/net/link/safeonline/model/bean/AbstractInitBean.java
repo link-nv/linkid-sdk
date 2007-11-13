@@ -53,6 +53,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceType;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -78,15 +79,15 @@ public abstract class AbstractInitBean implements Startable {
 	protected static class AuthenticationDevice {
 		final String password;
 
-		final String weakMobile;
+		final String[] weakMobiles;
 
-		final String strongMobile;
+		final String[] strongMobiles;
 
-		public AuthenticationDevice(String password, String weakMobile,
-				String strongMobile) {
+		public AuthenticationDevice(String password, String[] weakMobiles,
+				String[] strongMobiles) {
 			this.password = password;
-			this.weakMobile = weakMobile;
-			this.strongMobile = strongMobile;
+			this.weakMobiles = weakMobiles;
+			this.strongMobiles = strongMobiles;
 		}
 	}
 
@@ -109,10 +110,12 @@ public abstract class AbstractInitBean implements Startable {
 
 		final boolean idmappingAccess;
 
+		final IdScopeType idScope;
+
 		public Application(String name, String owner, String description,
 				URL applicationUrl, boolean allowUserSubscription,
 				boolean removable, X509Certificate certificate,
-				boolean idmappingAccess) {
+				boolean idmappingAccess, IdScopeType idScope) {
 			this.name = name;
 			this.owner = owner;
 			this.description = description;
@@ -121,33 +124,21 @@ public abstract class AbstractInitBean implements Startable {
 			this.removable = removable;
 			this.certificate = certificate;
 			this.idmappingAccess = idmappingAccess;
+			this.idScope = idScope;
 		}
 
 		public Application(String name, String owner, String description,
 				URL applicationUrl, boolean allowUserSubscription,
 				boolean removable) {
 			this(name, owner, description, applicationUrl,
-					allowUserSubscription, removable, null, false);
-		}
-
-		public Application(String name, String owner, String description,
-				URL applicationUrl) {
-			this(name, owner, description, applicationUrl, true, true);
-		}
-
-		public Application(String name, String owner, String description,
-				URL applicationUrl, X509Certificate certificate) {
-			this(name, owner, description, applicationUrl, true, true,
-					certificate, false);
-		}
-
-		public Application(String name, String owner) {
-			this(name, owner, null, null);
+					allowUserSubscription, removable, null, false,
+					IdScopeType.USER);
 		}
 
 		public Application(String name, String owner,
-				X509Certificate certificate) {
-			this(name, owner, null, null, certificate);
+				X509Certificate certificate, IdScopeType idScope) {
+			this(name, owner, null, null, true, true, certificate, false,
+					idScope);
 		}
 	}
 
@@ -524,6 +515,7 @@ public abstract class AbstractInitBean implements Startable {
 							usageAgreementVersion);
 			newApplication
 					.setIdentifierMappingAllowed(application.idmappingAccess);
+			newApplication.setIdScope(application.idScope);
 
 			this.applicationIdentityDAO.addApplicationIdentity(newApplication,
 					identityVersion);
@@ -548,31 +540,58 @@ public abstract class AbstractInitBean implements Startable {
 			} catch (PermissionDeniedException e) {
 				throw new EJBException("could not set password");
 			}
-			if (null != device.weakMobile) {
-				SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
-						.findSubject(
-								SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
-								device.weakMobile);
-				if (null != existingMappedSubject) {
-					throw new EJBException("weak mobile " + device.weakMobile
-							+ " already registered");
-				}
-				AttributeTypeEntity mobileAttributeType;
-				try {
-					mobileAttributeType = this.attributeTypeDAO
-							.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
-				} catch (AttributeTypeNotFoundException e) {
-					throw new EJBException(
-							"weak mobile attribute type not found");
-				}
-				this.attributeDAO.addAttribute(mobileAttributeType, subject,
-						device.weakMobile);
-				this.subjectIdentifierDAO.addSubjectIdentifier(
-						SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
-						device.weakMobile, subject);
-
+			if (null != device.weakMobiles) {
+				for (String mobile : device.weakMobiles)
+					addWeakMobile(mobile, subject);
+			}
+			if (null != device.strongMobiles) {
+				for (String mobile : device.strongMobiles)
+					addStrongMobile(mobile, subject);
 			}
 		}
+	}
+
+	private void addWeakMobile(String mobile, SubjectEntity subject) {
+		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
+				.findSubject(SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
+						mobile);
+		if (null != existingMappedSubject) {
+			throw new EJBException("weak mobile " + mobile
+					+ " already registered");
+		}
+		AttributeTypeEntity mobileAttributeType;
+		try {
+			mobileAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
+		} catch (AttributeTypeNotFoundException e) {
+			throw new EJBException("weak mobile attribute type not found");
+		}
+		this.attributeDAO.addAttribute(mobileAttributeType, subject, mobile);
+		this.subjectIdentifierDAO.addSubjectIdentifier(
+				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile,
+				subject);
+	}
+
+	private void addStrongMobile(String mobile, SubjectEntity subject) {
+		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
+				.findSubject(
+						SafeOnlineConstants.STRONG_MOBILE_IDENTIFIER_DOMAIN,
+						mobile);
+		if (null != existingMappedSubject) {
+			throw new EJBException("strong mobile " + mobile
+					+ " already registered");
+		}
+		AttributeTypeEntity mobileAttributeType;
+		try {
+			mobileAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE);
+		} catch (AttributeTypeNotFoundException e) {
+			throw new EJBException("strong mobile attribute type not found");
+		}
+		this.attributeDAO.addAttribute(mobileAttributeType, subject, mobile);
+		this.subjectIdentifierDAO.addSubjectIdentifier(
+				SafeOnlineConstants.STRONG_MOBILE_IDENTIFIER_DOMAIN, mobile,
+				subject);
 	}
 
 	private void initIdentities() {
