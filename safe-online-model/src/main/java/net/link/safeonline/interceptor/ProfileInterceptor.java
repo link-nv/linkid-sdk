@@ -17,7 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * 
+ * EJB3 Interceptor for profiling method invocations.
  * 
  * @author mbillemo
  */
@@ -31,10 +31,15 @@ public class ProfileInterceptor {
 		ProfileData profileData = ProfilingPolicyContextHandler
 				.getProfileData();
 
-		if (null == profileData)
+		if (null == profileData) {
+			LOG
+					.error("profile interceptor should not be active while profile filter is not");
 			return context.proceed();
-		if (profileData.isLocked())
+		}
+
+		if (profileData.isLocked()) {
 			return context.proceed();
+		}
 
 		LOG.debug("Profiler Intercepting: " + context.getMethod());
 
@@ -42,14 +47,16 @@ public class ProfileInterceptor {
 
 		// Make the call that needs profiling.
 		long startTime = System.currentTimeMillis();
-		Object result = context.proceed();
-		long duration = System.currentTimeMillis() - startTime;
+		try {
+			Object result = context.proceed();
+			return result;
+		} finally {
+			long endTime = System.currentTimeMillis();
+			long duration = endTime - startTime;
 
-		profileData.unlock();
-
-		// Record the stats for the call and release the lock.
-		profileData.addMeasurement(context.getMethod(), duration);
-
-		return result;
+			// Record the stats for the call and release the lock.
+			profileData.unlock();
+			profileData.addMeasurement(context.getMethod(), duration);
+		}
 	}
 }
