@@ -13,9 +13,7 @@
 	<packaging>ear</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Performance Scenario Deploy</name>
-	<description>
-		SafeOnline Deployable Scenario Package
-	</description>
+	<description>SafeOnline Deployable Scenario Package</description>
 	<build>
 		<plugins>
 			<plugin>
@@ -81,15 +79,15 @@
 								true
 							</includeInApplicationXml>
 						</jarModule>
-                        <jarModule>
-                            <groupId>net.lin-k.safe-online</groupId>
-                            <artifactId>
-                                safe-online-demo-prescription-keystore
-                            </artifactId>
-   							<includeInApplicationXml>
+						<jarModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>
+								safe-online-demo-prescription-keystore
+							</artifactId>
+							<includeInApplicationXml>
 								true
 							</includeInApplicationXml>
-                        </jarModule>
+						</jarModule>
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>
@@ -148,6 +146,12 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -161,7 +165,9 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-prescription-keystore</artifactId>
+			<artifactId>
+				safe-online-demo-prescription-keystore
+			</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -195,11 +201,21 @@
 					<groupId>commons-collections</groupId>
 					<artifactId>commons-collections</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-collections</groupId>
+					<artifactId>commons-collections</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -211,12 +227,102 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-performance-scenario</artifactId>
 			<version>1.0-SNAPSHOT</version>
-            <type>ejb</type>
+			<type>ejb</type>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-performance-scenario-base</artifactId>
+			<artifactId>
+				safe-online-performance-scenario-base
+			</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.xml.ws</groupId>
+					<artifactId>jaxws-tools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.xml.ws</groupId>
+					<artifactId>jaxws-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jws</groupId>
+					<artifactId>jsr181-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jboss</groupId>
+					<artifactId>jbosssx-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jboss</groupId>
+					<artifactId>jmx-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.xml.soap</groupId>
+					<artifactId>saaj-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.faces</groupId>
+					<artifactId>jsf-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.xml.bind</groupId>
+					<artifactId>jaxb-xjc</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.xml.stream</groupId>
+					<artifactId>sjsxp</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.xml.messaging.saaj</groupId>
+					<artifactId>saaj-impl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.xml.bind</groupId>
+					<artifactId>jaxb-impl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jvnet.staxex</groupId>
+					<artifactId>stax-ex</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.xml.stream.buffer</groupId>
+					<artifactId>streambuffer</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jboss.seam</groupId>
+					<artifactId>jboss-seam</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.activation</groupId>
+					<artifactId>activation</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-collections</groupId>
+					<artifactId>commons-collections</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<reporting>
