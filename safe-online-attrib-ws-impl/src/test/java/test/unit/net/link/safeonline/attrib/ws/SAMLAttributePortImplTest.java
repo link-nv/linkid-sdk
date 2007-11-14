@@ -7,7 +7,6 @@
 
 package test.unit.net.link.safeonline.attrib.ws;
 
-import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -167,7 +166,7 @@ public class SAMLAttributePortImplTest {
 								this.certificate));
 
 		expect(
-				this.mockUserIdMappingService.getUserId((String) anyObject(),
+				this.mockUserIdMappingService.getUserId("test-application",
 						this.testSubjectLogin)).andStubReturn(
 				this.testSubjectId);
 

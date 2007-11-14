@@ -7,7 +7,6 @@
 
 package test.unit.net.link.safeonline.data.ws;
 
-import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.aryEq;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
@@ -118,6 +117,8 @@ public class DataServicePortImplTest {
 
 	private String targetIdentity;
 
+	private String applicationName;
+
 	private String testSubjectId;
 
 	@SuppressWarnings("unchecked")
@@ -125,6 +126,7 @@ public class DataServicePortImplTest {
 	public void setUp() throws Exception {
 		this.targetIdentity = "test-target-identity-"
 				+ UUID.randomUUID().toString();
+		this.applicationName = "application-" + UUID.randomUUID().toString();
 		this.testSubjectId = UUID.randomUUID().toString();
 
 		this.jndiTestUtils = new JndiTestUtils();
@@ -159,7 +161,7 @@ public class DataServicePortImplTest {
 				"SafeOnline/UserIdMappingServiceBean/local",
 				this.mockUserIdMappingService);
 		expect(
-				this.mockUserIdMappingService.getUserId((String) anyObject(),
+				this.mockUserIdMappingService.getUserId(this.applicationName,
 						this.targetIdentity)).andStubReturn(this.testSubjectId);
 
 		this.mockObjects = new Object[] { this.mockAttributeProviderService,
@@ -257,7 +259,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void queryUnsupportedObjectType() throws Exception {
 		// setup
-		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
 		QueryItemType queryItem = new QueryItemType();
 		query.getQueryItem().add(queryItem);
@@ -271,7 +272,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		// prepare
 		replay(this.mockObjects);
@@ -292,7 +293,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void queryMissingSelect() throws Exception {
 		// setup
-		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
 		QueryItemType queryItem = new QueryItemType();
 		query.getQueryItem().add(queryItem);
@@ -306,7 +306,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		// prepare
 		replay(this.mockObjects);
@@ -327,7 +327,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void queryMissingTargetIdentity() throws Exception {
 		// setup
-		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
 		QueryItemType queryItem = new QueryItemType();
 		query.getQueryItem().add(queryItem);
@@ -344,7 +343,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		// prepare
 		replay(this.mockObjects);
@@ -366,7 +365,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void queryTargetIdentityNotSigned() throws Exception {
 		// setup
-		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
 		QueryItemType queryItem = new QueryItemType();
 		query.getQueryItem().add(queryItem);
@@ -393,7 +391,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		// prepare
 		replay(this.mockObjects);
@@ -414,7 +412,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void queryMultivaluedAttribute() throws Exception {
 		// setup
-		String applicationName = "application-" + UUID.randomUUID().toString();
 		QueryType query = new QueryType();
 		QueryItemType queryItem = new QueryItemType();
 		query.getQueryItem().add(queryItem);
@@ -446,7 +443,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		AttributeTypeEntity attributeType = new AttributeTypeEntity();
 		attributeType.setName(attributeName);
@@ -527,7 +524,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void modifyMissingModifyItem() throws Exception {
 		// setup
-		String applicationName = "test-application-name";
 		ModifyType request = new ModifyType();
 
 		// expectations
@@ -538,7 +534,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		// prepare
 		replay(this.mockObjects);
@@ -558,7 +554,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void modifyMissingObjectType() throws Exception {
 		// setup
-		String applicationName = "test-application-name";
 		ModifyType request = new ModifyType();
 		ModifyItemType modifyItem = new ModifyItemType();
 		request.getModifyItem().add(modifyItem);
@@ -571,7 +566,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		// prepare
 		replay(this.mockObjects);
@@ -592,7 +587,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void modifyMissingSelect() throws Exception {
 		// setup
-		String applicationName = "test-application-name";
 		ModifyType request = new ModifyType();
 		ModifyItemType modifyItem = new ModifyItemType();
 		request.getModifyItem().add(modifyItem);
@@ -606,7 +600,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		// prepare
 		replay(this.mockObjects);
@@ -628,7 +622,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void modifyMissingNewData() throws Exception {
 		// setup
-		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
 
 		ModifyType request = new ModifyType();
@@ -657,7 +650,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		// prepare
 		replay(this.mockObjects);
@@ -679,7 +672,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void modifyAttributeNameMismatch() throws Exception {
 		// setup
-		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
 
 		ModifyType request = new ModifyType();
@@ -712,7 +704,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		// prepare
 		replay(this.mockObjects);
@@ -733,7 +725,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void modifySingleValuesAttribute() throws Exception {
 		// setup
-		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
 
 		ModifyType request = new ModifyType();
@@ -769,7 +760,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		this.mockAttributeProviderService.setAttribute(this.testSubjectId,
 				attributeName, attributeValue);
@@ -791,7 +782,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void modifyNullAttributeValue() throws Exception {
 		// setup
-		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
 
 		ModifyType request = new ModifyType();
@@ -826,7 +816,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		this.mockAttributeProviderService.setAttribute(this.testSubjectId,
 				attributeName, attributeValue);
@@ -848,7 +838,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void modifyMultivaluedAttribute() throws Exception {
 		// setup
-		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
 
 		ModifyType request = new ModifyType();
@@ -890,7 +879,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		this.mockAttributeProviderService.setAttribute(eq(this.testSubjectId),
 				eq(attributeName), aryEq(new String[] { attributeValue1,
@@ -913,7 +902,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void createMultivaluedAttribute() throws Exception {
 		// setup
-		String applicationName = "test-application-name";
 		String attributeName = "test-attribute-name";
 
 		CreateType request = new CreateType();
@@ -952,7 +940,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		this.mockAttributeProviderService.createAttribute(
 				eq(this.testSubjectId), eq(attributeName), aryEq(new String[] {
@@ -975,7 +963,6 @@ public class DataServicePortImplTest {
 	@Test
 	public void delete() throws Exception {
 		// setup
-		String applicationName = "test-application-name";
 		DeleteType delete = new DeleteType();
 		String attributeName = "test-attribute-name";
 		DeleteItemType deleteItem = new DeleteItemType();
@@ -1003,7 +990,7 @@ public class DataServicePortImplTest {
 								this.certificate)).andReturn(true);
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(applicationName);
+				.andReturn(this.applicationName);
 
 		this.mockAttributeProviderService.removeAttribute(this.testSubjectId,
 				attributeName);
