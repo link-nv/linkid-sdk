@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.data.ws;
 
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.aryEq;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
@@ -55,6 +56,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AttributeProviderService;
+import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.data.ws.DataServiceConstants;
 import net.link.safeonline.data.ws.DataServiceFactory;
@@ -108,6 +110,8 @@ public class DataServicePortImplTest {
 
 	private ConfigurationManager mockConfigurationManager;
 
+	private UserIdMappingService mockUserIdMappingService;
+
 	private Object[] mockObjects;
 
 	private X509Certificate certificate;
@@ -143,9 +147,17 @@ public class DataServicePortImplTest {
 						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
 				Long.MAX_VALUE);
 
+		this.mockUserIdMappingService = createMock(UserIdMappingService.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/UserIdMappingServiceBean/local",
+				this.mockUserIdMappingService);
+		expect(
+				this.mockUserIdMappingService.getUserId((String) anyObject(),
+						(String) anyObject())).andStubReturn("1");
+
 		this.mockObjects = new Object[] { this.mockAttributeProviderService,
 				this.mockAuthenticationService, this.mockPkiValidator,
-				this.mockConfigurationManager };
+				this.mockConfigurationManager, this.mockUserIdMappingService };
 
 		this.webServiceTestUtils = new WebServiceTestUtils();
 
