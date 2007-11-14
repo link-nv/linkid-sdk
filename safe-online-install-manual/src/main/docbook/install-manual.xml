@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY mysql-create-account SYSTEM 
+  "../../../../safe-online-sql-ddl/src/main/resources/mysql-create-account.sql">
+<!ENTITY mysql-create-database SYSTEM
+ "../../../../safe-online-sql-ddl/src/main/resources/mysql-create-database.sql">
+]>
 <book lang="en">
 	<bookinfo>
 		<title>OLAS Installation Manual</title>
@@ -62,6 +67,14 @@
 						to the user’s profile. These attributes could
 						then be used by other applications (if allowed
 						by the user and the providing application).
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Validation service: an application can use this
+						service to validate the authentication response
+						tokens received from the authentication web
+						application.
 					</para>
 				</listitem>
 			</orderedlist>
@@ -135,7 +148,16 @@
 			</para>
 			<section>
 				<title>MySQL</title>
-				<para>OLAS has explicit support for MySQL 5.0.</para>
+				<para>
+					OLAS has explicit support for MySQL 5.0. Before
+					being able to use OLAS with a MySQL database one has
+					to create an account on the DBMS. The following
+					MySQL script can be used to create such an account.
+					<programlisting>&mysql-create-account;</programlisting>
+					After creating a MySQL account one needs to create an OLAS
+					database. This can be done via the following script.
+					<programlisting>&mysql-create-database;</programlisting>
+				</para>
 			</section>
 		</section>
 	</chapter>
@@ -192,11 +214,44 @@
 
 	<chapter id="package">
 		<title>OLAS Distribution Package</title>
-		<para>Describe the content of the ZIP</para>
+		<para>
+			The distribution ZIP contains a pre-configured JBoss
+			Application Server together with the OLAS JavaEE EAR file.
+		</para>
 		<section>
 			<title>Pre-configured JBoss AS</title>
 			<para>
-				Describe what has been pre-configured on the JBoss AS.
+				We deliver the OLAS services with a pre-configured JBoss
+				AS since OLAS has some specific requirements towards to
+				JavaEE container. The main customizations are:
+				<itemizedlist>
+					<listitem>
+						<para>
+							Inclusion of the Sun JAX-WS 2.1 RI web
+							service runtime.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Inclusion of the JBoss Seam runtime.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Security hardening of the JBoss AS
+							container.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							Production configuration, mainly targeting
+							data persistence.
+						</para>
+					</listitem>
+				</itemizedlist>
+				The exact customizations can be extracted by
+				investigating the difference between the OLAS JBoss AS
+				and a plain vanilla JBoss AS.
 			</para>
 		</section>
 		<section>
@@ -251,15 +306,35 @@
 		</section>
 		<section>
 			<title>Connecting to a database</title>
-			<para>JDBC drivers</para>
+			<para>
+				Via the CLI main menu one can create a new database
+				connection. Here you can enter a JDBC driver JAR
+				location. After that step the different available
+				database plugins will be listed. Select the appropriate
+				one. After this step DBMS specific settings will be
+				asked for. For example, for MySQL the JDBC connection
+				URL looks like:
+				<programlisting>jdbc:mysql://localhost/safeonline</programlisting>
+				After going through all questions the CLI will have an
+				open connection to the OLAS database.
+			</para>
 		</section>
 		<section>
 			<title>Database schema verification</title>
-			<para>TODO</para>
+			<para>
+				The OLAS database contains a metadata table that
+				contains the schema version of the specific OLAS that
+				you're about to deploy. Via the CLI one can verify
+				whether the OLAS database version is in line with the
+				requirements of the deploying OLAS.
+			</para>
 		</section>
 		<section>
 			<title>Database schema initialization</title>
-			<para>TODO.</para>
+			<para>
+				The tables of a fresh database can also be initialized
+				via the CLI.
+			</para>
 		</section>
 	</chapter>
 
@@ -296,15 +371,7 @@
 
 	<chapter id="deployment">
 		<title>Deployment</title>
-		<para>Describe how to deploy the OLAS service.</para>
+		<para>Deploy the OLAS service via:</para>
 		<programlisting>cd jboss/bin ./run.sh</programlisting>
-		<tip>
-			<para>
-				If
-				<command>run.sh</command>
-				is not executable one should try:
-				<code>chmod +x run.sh</code>
-			</para>
-		</tip>
 	</chapter>
 </book>

@@ -48,6 +48,7 @@ ProxyPass /olas/ ajp://localhost:8009/olas/
 ProxyPass /olas-oper/ ajp://localhost:8009/olas-oper/
 ProxyPass /olas-owner/ ajp://localhost:8009/olas-owner/
 ProxyPass /olas-helpdesk/ ajp://localhost:8009/olas-helpdesk/
+ProxyPass /olas-auth/ ajp://localhost:8009/olas-auth/
 ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 +---+
 
