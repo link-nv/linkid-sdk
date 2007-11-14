@@ -1,0 +1,15 @@
+SafeOnline Performance Agent Distribution
+
+ This artifact produces a ZIP containing a JBoss Application Service bundled with the performance agent service.
+ 
+* Linux
+
+ The performance agent service is using JGroups for discovery.
+ 
+ This requires multicast to be allowed on a firewalled linux box.
+ 
+ On Fedora this can be achieved via:
+ 
++---+
+iptables --insert RH-Firewall-1-INPUT -d 224.0.0.0/4 -j ACCEPT
++---+
