@@ -259,6 +259,10 @@
 			<version>1.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>jtidy</artifactId>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>

@@ -24,10 +24,10 @@ public class XPathUtil {
 	 */
 	public XPathUtil() {
 
-		flush();
+		renew();
 	}
 
-	public void flush() {
+	public void renew() {
 
 		this.xpath = new CachedXPathAPI();
 	}
