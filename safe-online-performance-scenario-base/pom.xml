@@ -10,27 +10,12 @@
 	</parent>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-performance-scenario-base</artifactId>
-	<packaging>ejb</packaging>
+	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Performance Scenario Base</name>
-	<description>Base project for all performance testing scenarios.</description>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-ejb-plugin</artifactId>
-				<configuration>
-					<ejbVersion>3.0</ejbVersion>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-					<generateClient>true</generateClient>
-				</configuration>
-			</plugin>
-        </plugins>
-    </build>
+	<description>
+		Base project for all performance testing scenarios.
+	</description>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -46,22 +31,12 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-attrib-ws</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-idmapping-ws</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
+			<artifactId>commons-logging-api</artifactId>
 			<exclusions>
 				<!-- http://jira.codehaus.org/browse/MNG-2686 -->
 				<exclusion>
@@ -70,48 +45,46 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>jtidy</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-        </dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.hibernate</groupId>
+			<artifactId>jtidy</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
 		</dependency>
-   		<dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-payment-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-prescription-keystore</artifactId>
+			<artifactId>
+				safe-online-demo-prescription-keystore
+			</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>

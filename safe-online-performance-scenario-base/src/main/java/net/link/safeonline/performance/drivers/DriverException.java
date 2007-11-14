@@ -17,22 +17,23 @@ import java.util.Date;
 public class DriverException extends Exception {
 
 	private static final long serialVersionUID = 1L;
-	private long occurredTime;
+	private final long occurredTime;
 
-	public DriverException(String string) {
-
-		this(new RuntimeException(string));
+	public DriverException(String message) {
+		this(System.currentTimeMillis(), message);
 	}
 
 	public DriverException(Exception exception) {
-
 		this(System.currentTimeMillis(), exception);
 	}
 
 	public DriverException(long occurredTime, Exception exception) {
-
 		super(exception);
+		this.occurredTime = occurredTime;
+	}
 
+	public DriverException(long occurredTime, String message) {
+		super(message);
 		this.occurredTime = occurredTime;
 	}
 

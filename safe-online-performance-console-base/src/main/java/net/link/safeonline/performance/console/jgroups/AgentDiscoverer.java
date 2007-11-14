@@ -40,6 +40,7 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 
 		ResourceBundle properties = ResourceBundle.getBundle("console");
 		String group = properties.getString("jgroups.group");
+		LOG.debug("jgroups.group: " + group);
 
 		try {
 			this.agentStateListeners = new ArrayList<AgentStateListener>();
@@ -55,7 +56,9 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 		}
 
 		catch (ChannelException e) {
-			LOG.error("Couldn't establish the JGroups channel.", e);
+			String msg = "Couldn't establish the JGroups channel.";
+			LOG.error(msg, e);
+			throw new RuntimeException(msg, e);
 		}
 	}
 

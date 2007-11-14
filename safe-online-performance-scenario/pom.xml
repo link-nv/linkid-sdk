@@ -13,7 +13,9 @@
 	<packaging>ejb</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Performance Scenario</name>
-	<description>Scenario for testing SafeOnline's performance.</description>
+	<description>
+		Scenario for testing SafeOnline's performance.
+	</description>
 	<build>
 		<plugins>
 			<plugin>
@@ -29,8 +31,8 @@
 					<generateClient>true</generateClient>
 				</configuration>
 			</plugin>
-        </plugins>
-    </build>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -41,42 +43,46 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-performance-scenario-base</artifactId>
+			<artifactId>
+				safe-online-performance-scenario-base
+			</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-lawyer-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-mandate-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-payment-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-prescription-keystore</artifactId>
+			<artifactId>
+				safe-online-demo-prescription-keystore
+			</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-ticket-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
+			<artifactId>commons-logging-api</artifactId>
 			<exclusions>
 				<!-- http://jira.codehaus.org/browse/MNG-2686 -->
 				<exclusion>
@@ -84,10 +90,6 @@
 					<artifactId>servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>jfree</groupId>
