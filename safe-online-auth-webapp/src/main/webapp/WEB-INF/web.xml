@@ -133,7 +133,7 @@
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
-	${safe-online.profiling}
+	${safe-online.profiling.filter}
 
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>

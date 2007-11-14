@@ -28,7 +28,12 @@ import org.w3c.tidy.Tidy;
  */
 public class AuthDriver extends ProfileDriver {
 
+	public static void main(String[] args) throws Exception {
+		new AuthDriver("localhost:8443").login("demo-lawyer", "admin", "admin");
+	}
+
 	private HttpClient client;
+
 	private Tidy tidy;
 
 	private XPathUtil xpath;
@@ -142,6 +147,8 @@ public class AuthDriver extends ProfileDriver {
 		}
 
 		catch (Exception e) {
+			setIterationError(e);
+
 			if (e instanceof DriverException)
 				throw (DriverException) e;
 			throw new DriverException(e);
@@ -204,6 +211,11 @@ public class AuthDriver extends ProfileDriver {
 		// Execute the request.
 		request.setFollowRedirects(false);
 		this.client.executeMethod(request);
+
+		// Retrieve the performance headers.
+		System.err.println("==========");
+		for (Header header : request.getResponseHeaders())
+			System.err.println(header.getName() + " = " + header.getValue());
 
 		// Perform a manual redirect if required,
 		// but first check if we're coming from the auth-webapp exit.

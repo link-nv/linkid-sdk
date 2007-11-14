@@ -11,4 +11,6 @@
 		anything useful.
 	</description>
 
+	${safe-online.profiling.filter}
+
 </web-app>
