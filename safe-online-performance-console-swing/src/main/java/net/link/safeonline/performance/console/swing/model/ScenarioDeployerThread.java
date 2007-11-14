@@ -47,8 +47,9 @@ public class ScenarioDeployerThread extends ScenarioThread {
 	 * {@inheritDoc}
 	 */
 	@Override
-	void done() {
+	void done(boolean success) {
 
-		this.chooser.setDeploymentPhase(DeploymentPhase.EXECUTE);
+		if(success)
+			this.chooser.setDeploymentPhase(DeploymentPhase.EXECUTE);
 	}
 }

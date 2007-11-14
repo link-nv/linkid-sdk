@@ -51,7 +51,7 @@ public class ConsoleData {
 	 */
 	public Map<Address, Agent> getAgents() {
 
-		return Collections.unmodifiableMap(this.agents);
+		return Collections.unmodifiableMap(new HashMap<Address, Agent>(this.agents));
 	}
 
 	/**

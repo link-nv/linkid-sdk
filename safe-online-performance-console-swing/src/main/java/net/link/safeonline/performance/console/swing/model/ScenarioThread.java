@@ -25,8 +25,8 @@ public abstract class ScenarioThread extends Thread {
 	private static Log LOG = LogFactory.getLog(ScenarioThread.class);
 
 	Map<Address, Agent> agents;
-	ScenarioDeployer scenarioDeployer;
 	ScenarioChooser chooser;
+	ScenarioDeployer scenarioDeployer;
 
 	public ScenarioThread(Map<Address, Agent> agents, ScenarioChooser chooser) {
 
@@ -41,6 +41,7 @@ public abstract class ScenarioThread extends Thread {
 	@Override
 	public void run() {
 
+		boolean success = true;
 		try {
 			this.chooser.setButtonsEnabled(false);
 
@@ -56,24 +57,25 @@ public abstract class ScenarioThread extends Thread {
 				catch (Exception e) {
 					agent.setError(e);
 					LOG.error("Scenario Failed During Execution", e);
+					success = false;
 				}
 			}
 		}
 
 		finally {
-			done();
+			done(success);
 
 			this.chooser.setButtonsEnabled(true);
 		}
 	}
 
 	/**
+	 * Code to execute after the task has been completed.
+	 */
+	abstract void done(boolean success);
+
+	/**
 	 * Perform the action that needs to be performed on each selected agent.
 	 */
 	abstract void process(Address address, Agent agent) throws Exception;
-
-	/**
-	 * Code to execute after the task has been completed.
-	 */
-	abstract void done();
 }

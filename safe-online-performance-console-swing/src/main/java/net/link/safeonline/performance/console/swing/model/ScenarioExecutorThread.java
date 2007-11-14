@@ -71,9 +71,10 @@ public class ScenarioExecutorThread extends ScenarioThread {
 	 * @{inheritDoc}
 	 */
 	@Override
-	void done() {
+	void done(boolean success) {
 
-		new Charts(this.charts);
+		if(success)
+			new Charts(this.charts);
 	}
 
 }
