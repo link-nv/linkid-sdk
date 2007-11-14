@@ -160,7 +160,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		 */
 		AttributeTypeEntity weakMobileAttributeType = new AttributeTypeEntity(
 				SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE, DatatypeType.STRING,
-				true, true);
+				false, false);
 		weakMobileAttributeType.setMultivalued(true);
 		this.attributeTypes.add(weakMobileAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
@@ -171,7 +171,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 				null));
 		AttributeTypeEntity strongMobileAttributeType = new AttributeTypeEntity(
 				SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE,
-				DatatypeType.STRING, true, false);
+				DatatypeType.STRING, false, false);
 		weakMobileAttributeType.setMultivalued(true);
 		this.attributeTypes.add(strongMobileAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
