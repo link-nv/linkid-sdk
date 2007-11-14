@@ -100,10 +100,18 @@ public class SAMLAttributePortImplTest {
 
 	private X509Certificate certificate;
 
+	private String testSubjectLogin;
+
+	private String testSubjectId;
+
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {
 		LOG.debug("setup");
+
+		this.testSubjectLogin = "test-subject-login-"
+				+ UUID.randomUUID().toString();
+		this.testSubjectId = UUID.randomUUID().toString();
 
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
@@ -160,7 +168,8 @@ public class SAMLAttributePortImplTest {
 
 		expect(
 				this.mockUserIdMappingService.getUserId((String) anyObject(),
-						(String) anyObject())).andStubReturn("1");
+						this.testSubjectLogin)).andStubReturn(
+				this.testSubjectId);
 
 		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 
@@ -205,8 +214,7 @@ public class SAMLAttributePortImplTest {
 		AttributeQueryType request = new AttributeQueryType();
 		SubjectType subject = new SubjectType();
 		NameIDType subjectName = new NameIDType();
-		String testSubjectLogin = "test-subject-login";
-		subjectName.setValue(testSubjectLogin);
+		subjectName.setValue(this.testSubjectLogin);
 		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
 		request.setSubject(subject);
 
@@ -226,7 +234,7 @@ public class SAMLAttributePortImplTest {
 		// expectations
 		expect(
 				this.mockAttributeService.getConfirmedAttributeValue(
-						testSubjectLogin, testAttributeName)).andReturn(
+						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValue);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn("test-application-name");
@@ -254,7 +262,7 @@ public class SAMLAttributePortImplTest {
 				+ resultSubjectContent.get(0).getValue().getClass().getName());
 		NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
 				.getValue();
-		assertEquals(testSubjectLogin, resultSubjectName.getValue());
+		assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
 		List<StatementAbstractType> resultStatements = resultAssertion
 				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
@@ -293,9 +301,7 @@ public class SAMLAttributePortImplTest {
 		AttributeQueryType request = new AttributeQueryType();
 		SubjectType subject = new SubjectType();
 		NameIDType subjectName = new NameIDType();
-		String testSubjectLogin = "test-subject-login-"
-				+ UUID.randomUUID().toString();
-		subjectName.setValue(testSubjectLogin);
+		subjectName.setValue(this.testSubjectLogin);
 		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
 		request.setSubject(subject);
 
@@ -319,7 +325,7 @@ public class SAMLAttributePortImplTest {
 		// expectations
 		expect(
 				this.mockAttributeService.getConfirmedAttributeValue(
-						testSubjectLogin, testAttributeName)).andReturn(
+						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValues);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn("test-application-name");
@@ -347,7 +353,7 @@ public class SAMLAttributePortImplTest {
 				+ resultSubjectContent.get(0).getValue().getClass().getName());
 		NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
 				.getValue();
-		assertEquals(testSubjectLogin, resultSubjectName.getValue());
+		assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
 		List<StatementAbstractType> resultStatements = resultAssertion
 				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
@@ -393,9 +399,7 @@ public class SAMLAttributePortImplTest {
 		AttributeQueryType request = new AttributeQueryType();
 		SubjectType subject = new SubjectType();
 		NameIDType subjectName = new NameIDType();
-		String testSubjectLogin = "test-subject-login-"
-				+ UUID.randomUUID().toString();
-		subjectName.setValue(testSubjectLogin);
+		subjectName.setValue(this.testSubjectLogin);
 		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
 		request.setSubject(subject);
 
@@ -425,7 +429,7 @@ public class SAMLAttributePortImplTest {
 		// expectations
 		expect(
 				this.mockAttributeService.getConfirmedAttributeValue(
-						testSubjectLogin, testAttributeName)).andReturn(
+						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValues);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn("test-application-name");
@@ -453,7 +457,7 @@ public class SAMLAttributePortImplTest {
 				+ resultSubjectContent.get(0).getValue().getClass().getName());
 		NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
 				.getValue();
-		assertEquals(testSubjectLogin, resultSubjectName.getValue());
+		assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
 		List<StatementAbstractType> resultStatements = resultAssertion
 				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
@@ -491,9 +495,7 @@ public class SAMLAttributePortImplTest {
 		AttributeQueryType request = new AttributeQueryType();
 		SubjectType subject = new SubjectType();
 		NameIDType subjectName = new NameIDType();
-		String testSubjectLogin = "test-subject-login-"
-				+ UUID.randomUUID().toString();
-		subjectName.setValue(testSubjectLogin);
+		subjectName.setValue(this.testSubjectLogin);
 		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
 		request.setSubject(subject);
 
@@ -514,7 +516,7 @@ public class SAMLAttributePortImplTest {
 		// expectations
 		expect(
 				this.mockAttributeService.getConfirmedAttributeValue(
-						testSubjectLogin, testAttributeName)).andReturn(
+						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValue);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn("test-application-name");
@@ -542,7 +544,7 @@ public class SAMLAttributePortImplTest {
 				+ resultSubjectContent.get(0).getValue().getClass().getName());
 		NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0)
 				.getValue();
-		assertEquals(testSubjectLogin, resultSubjectName.getValue());
+		assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
 		List<StatementAbstractType> resultStatements = resultAssertion
 				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
@@ -573,8 +575,7 @@ public class SAMLAttributePortImplTest {
 		AttributeQueryType request = new AttributeQueryType();
 		SubjectType subject = new SubjectType();
 		NameIDType subjectName = new NameIDType();
-		String testSubjectLogin = "test-subject-login";
-		subjectName.setValue(testSubjectLogin);
+		subjectName.setValue(this.testSubjectLogin);
 		subject.getContent().add(samlObjectFactory.createNameID(subjectName));
 		request.setSubject(subject);
 
@@ -587,7 +588,7 @@ public class SAMLAttributePortImplTest {
 		// expectations
 		expect(
 				this.mockAttributeService.getConfirmedAttributeValue(
-						testSubjectLogin, testAttributeName)).andThrow(
+						this.testSubjectId, testAttributeName)).andThrow(
 				new AttributeNotFoundException());
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn("test-application-name");

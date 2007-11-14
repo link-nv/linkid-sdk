@@ -116,9 +116,16 @@ public class DataServicePortImplTest {
 
 	private X509Certificate certificate;
 
+	private String targetIdentity;
+
+	private String testSubjectId;
+
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {
+		this.targetIdentity = "test-target-identity-"
+				+ UUID.randomUUID().toString();
+		this.testSubjectId = UUID.randomUUID().toString();
 
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
@@ -153,7 +160,7 @@ public class DataServicePortImplTest {
 				this.mockUserIdMappingService);
 		expect(
 				this.mockUserIdMappingService.getUserId((String) anyObject(),
-						(String) anyObject())).andStubReturn("1");
+						this.targetIdentity)).andStubReturn(this.testSubjectId);
 
 		this.mockObjects = new Object[] { this.mockAttributeProviderService,
 				this.mockAuthenticationService, this.mockPkiValidator,
@@ -372,8 +379,7 @@ public class DataServicePortImplTest {
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
-		String targetIdentity = "test-target-identity";
-		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		targetIdentityClientHandler.setTargetIdentity(this.targetIdentity);
 		handlerChain.add(targetIdentityClientHandler);
 		LoggingHandler loggingHandler = new LoggingHandler();
 		handlerChain.add(loggingHandler);
@@ -422,8 +428,7 @@ public class DataServicePortImplTest {
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
-		String targetIdentity = "test-target-identity";
-		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		targetIdentityClientHandler.setTargetIdentity(this.targetIdentity);
 		handlerChain.add(0, targetIdentityClientHandler);
 		LoggingHandler loggingHandler = new LoggingHandler();
 		handlerChain.add(loggingHandler);
@@ -461,8 +466,9 @@ public class DataServicePortImplTest {
 		attributes.add(attribute2);
 
 		expect(
-				this.mockAttributeProviderService.getAttributes(targetIdentity,
-						attributeName)).andReturn(attributes);
+				this.mockAttributeProviderService.getAttributes(
+						this.testSubjectId, attributeName)).andReturn(
+				attributes);
 
 		// prepare
 		replay(this.mockObjects);
@@ -637,8 +643,7 @@ public class DataServicePortImplTest {
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
-		String targetIdentity = "test-target-identity";
-		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		targetIdentityClientHandler.setTargetIdentity(this.targetIdentity);
 		handlerChain.add(0, targetIdentityClientHandler);
 		LoggingHandler loggingHandler = new LoggingHandler();
 		handlerChain.add(loggingHandler);
@@ -693,8 +698,7 @@ public class DataServicePortImplTest {
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
-		String targetIdentity = "test-target-identity";
-		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		targetIdentityClientHandler.setTargetIdentity(this.targetIdentity);
 		handlerChain.add(0, targetIdentityClientHandler);
 		LoggingHandler loggingHandler = new LoggingHandler();
 		handlerChain.add(loggingHandler);
@@ -751,8 +755,7 @@ public class DataServicePortImplTest {
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
-		String targetIdentity = "test-target-identity";
-		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		targetIdentityClientHandler.setTargetIdentity(this.targetIdentity);
 		handlerChain.add(0, targetIdentityClientHandler);
 		LoggingHandler loggingHandler = new LoggingHandler();
 		handlerChain.add(loggingHandler);
@@ -768,7 +771,7 @@ public class DataServicePortImplTest {
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(applicationName);
 
-		this.mockAttributeProviderService.setAttribute(targetIdentity,
+		this.mockAttributeProviderService.setAttribute(this.testSubjectId,
 				attributeName, attributeValue);
 
 		// prepare
@@ -809,8 +812,7 @@ public class DataServicePortImplTest {
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
-		String targetIdentity = "test-target-identity";
-		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		targetIdentityClientHandler.setTargetIdentity(this.targetIdentity);
 		handlerChain.add(0, targetIdentityClientHandler);
 		LoggingHandler loggingHandler = new LoggingHandler();
 		handlerChain.add(loggingHandler);
@@ -826,7 +828,7 @@ public class DataServicePortImplTest {
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(applicationName);
 
-		this.mockAttributeProviderService.setAttribute(targetIdentity,
+		this.mockAttributeProviderService.setAttribute(this.testSubjectId,
 				attributeName, attributeValue);
 
 		// prepare
@@ -874,8 +876,7 @@ public class DataServicePortImplTest {
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
-		String targetIdentity = "test-target-identity";
-		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		targetIdentityClientHandler.setTargetIdentity(this.targetIdentity);
 		handlerChain.add(0, targetIdentityClientHandler);
 		LoggingHandler loggingHandler = new LoggingHandler();
 		handlerChain.add(loggingHandler);
@@ -891,7 +892,7 @@ public class DataServicePortImplTest {
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(applicationName);
 
-		this.mockAttributeProviderService.setAttribute(eq(targetIdentity),
+		this.mockAttributeProviderService.setAttribute(eq(this.testSubjectId),
 				eq(attributeName), aryEq(new String[] { attributeValue1,
 						attributeValue2 }));
 
@@ -937,8 +938,7 @@ public class DataServicePortImplTest {
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
-		String targetIdentity = "test-target-identity";
-		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		targetIdentityClientHandler.setTargetIdentity(this.targetIdentity);
 		handlerChain.add(0, targetIdentityClientHandler);
 		LoggingHandler loggingHandler = new LoggingHandler();
 		handlerChain.add(loggingHandler);
@@ -954,9 +954,9 @@ public class DataServicePortImplTest {
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(applicationName);
 
-		this.mockAttributeProviderService.createAttribute(eq(targetIdentity),
-				eq(attributeName), aryEq(new String[] { attributeValue1,
-						attributeValue2 }));
+		this.mockAttributeProviderService.createAttribute(
+				eq(this.testSubjectId), eq(attributeName), aryEq(new String[] {
+						attributeValue1, attributeValue2 }));
 
 		// prepare
 		replay(this.mockObjects);
@@ -989,8 +989,7 @@ public class DataServicePortImplTest {
 		Binding binding = bindingProvider.getBinding();
 		List<Handler> handlerChain = binding.getHandlerChain();
 		TargetIdentityClientHandler targetIdentityClientHandler = new TargetIdentityClientHandler();
-		String targetIdentity = "test-target-identity";
-		targetIdentityClientHandler.setTargetIdentity(targetIdentity);
+		targetIdentityClientHandler.setTargetIdentity(this.targetIdentity);
 		handlerChain.add(0, targetIdentityClientHandler);
 		LoggingHandler loggingHandler = new LoggingHandler();
 		handlerChain.add(loggingHandler);
@@ -1006,7 +1005,7 @@ public class DataServicePortImplTest {
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(applicationName);
 
-		this.mockAttributeProviderService.removeAttribute(targetIdentity,
+		this.mockAttributeProviderService.removeAttribute(this.testSubjectId,
 				attributeName);
 
 		// prepare
