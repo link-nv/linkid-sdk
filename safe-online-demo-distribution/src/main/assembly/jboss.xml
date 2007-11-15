@@ -25,16 +25,6 @@
 			</includes>
 			<fileMode>0500</fileMode>
 		</fileSet>
-		<fileSet>
-			<directory>target/classes/jboss</directory>
-			<outputDirectory>jboss</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>target/files/ear</directory>
-			<outputDirectory>
-				jboss/server/default/deploy
-			</outputDirectory>
-		</fileSet>
 	</fileSets>
 	<files>
 		<file>
