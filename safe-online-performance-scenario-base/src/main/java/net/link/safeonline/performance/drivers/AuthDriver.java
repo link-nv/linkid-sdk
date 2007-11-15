@@ -12,6 +12,9 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
+import net.link.safeonline.util.jacc.ProfileData;
+import net.link.safeonline.util.jacc.ProfileDataLockedException;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -19,6 +22,8 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
 import org.w3c.tidy.DOMTextImpl;
 import org.w3c.tidy.Tidy;
@@ -27,15 +32,12 @@ import org.w3c.tidy.Tidy;
  * @author mbillemo
  */
 public class AuthDriver extends ProfileDriver {
-
-	public static void main(String[] args) throws Exception {
-		new AuthDriver("localhost:8443").login("demo-lawyer", "admin", "admin");
-	}
+	private static final Log LOG = LogFactory.getLog(AuthDriver.class);
 
 	private HttpClient client;
-
+	private List<ProfileData> iterationDatas;
+	private String location;
 	private Tidy tidy;
-
 	private XPathUtil xpath;
 
 	public AuthDriver(String hostname) {
@@ -45,6 +47,7 @@ public class AuthDriver extends ProfileDriver {
 		this.tidy = new Tidy();
 		this.xpath = new XPathUtil();
 		this.client = new HttpClient();
+		this.iterationDatas = new ArrayList<ProfileData>();
 
 		this.tidy.setQuiet(true);
 		this.tidy.setShowWarnings(false);
@@ -63,25 +66,28 @@ public class AuthDriver extends ProfileDriver {
 		String[] keys, values;
 		Map<String, String> data;
 
+		startNewIteration();
 		try {
-			// Request Modes (new/existing user).
+			LOG.debug("Requesting First Page.");
 			keys = new String[] { "application", "target" };
 			values = new String[] { application, "" };
 			reply = request(action, method, keys, values);
 
-			// Select 'Existing User' Mode.
-			data = getHiddenFormData(reply);
-			action = this.xpath.getString(reply, "@action");
-			method = this.xpath.getString(reply, "@method");
-			submit = getFieldName("submit", "existing", reply);
-			data.put(submit, null);
+			if (this.location.startsWith("first-time")) {
+				LOG.debug("Received Login Modes (new/existing user)");
+				data = getHiddenFormData(reply);
+				action = this.xpath.getString(reply, "@action");
+				method = this.xpath.getString(reply, "@method");
+				submit = getFieldName("submit", "existing", reply);
+				data.put(submit, null);
 
-			// Request Devices.
-			keys = data.keySet().toArray(new String[0]);
-			values = data.values().toArray(new String[0]);
-			reply = request(action, method, keys, values);
+				LOG.debug("Selecting Existing User");
+				keys = data.keySet().toArray(new String[0]);
+				values = data.values().toArray(new String[0]);
+				reply = request(action, method, keys, values);
+			}
 
-			// Select 'Password' Device.
+			LOG.debug("Received Authentication Devices");
 			data = getHiddenFormData(reply);
 			action = this.xpath.getString(reply, "@action");
 			method = this.xpath.getString(reply, "@method");
@@ -93,12 +99,12 @@ public class AuthDriver extends ProfileDriver {
 			data.put(deviceKey, deviceValue);
 			data.put(submit, "");
 
-			// Request Authentication Fields.
+			LOG.debug("Selecting Password Device");
 			keys = data.keySet().toArray(new String[0]);
 			values = data.values().toArray(new String[0]);
 			reply = request(action, method, keys, values);
 
-			// Fill in fields.
+			LOG.debug("Received Authentication Device Fields");
 			data = getHiddenFormData(reply);
 			action = this.xpath.getString(reply, "@action");
 			method = this.xpath.getString(reply, "@method");
@@ -109,38 +115,38 @@ public class AuthDriver extends ProfileDriver {
 			data.put(passKey, password);
 			data.put(submit, "");
 
-			// Request Usage Agreement.
+			LOG.debug("Submitting Authentication Credentials for Fields");
 			keys = data.keySet().toArray(new String[0]);
 			values = data.values().toArray(new String[0]);
 			reply = request(action, method, keys, values);
 			if (reply instanceof ResultNode)
-				return reply.getNodeValue();
+				return reply.getNodeValue(); // Possible exit.
 
-			// Confirm Usage Agreement.
+			LOG.debug("Received Usage Agreement");
 			data = getHiddenFormData(reply);
 			action = this.xpath.getString(reply, "@action");
 			method = this.xpath.getString(reply, "@method");
 			submit = getFieldName("submit", "confirm", reply);
 			data.put(submit, null);
 
-			// Request Attributes Confirmation.
+			LOG.debug("Confirming Usage Agreement");
 			keys = data.keySet().toArray(new String[0]);
 			values = data.values().toArray(new String[0]);
 			reply = request(action, method, keys, values);
 
-			// Agree on Usage of Attributes.
+			LOG.debug("Received Attributes");
 			data = getHiddenFormData(reply);
 			action = this.xpath.getString(reply, "@action");
 			method = this.xpath.getString(reply, "@method");
 			submit = getFieldName("submit", "agree", reply);
 			data.put(submit, null);
 
-			// Request Usage Agreement.
+			LOG.debug("Agreeing on Usage of Attributes");
 			keys = data.keySet().toArray(new String[0]);
 			values = data.values().toArray(new String[0]);
 			reply = request(action, method, keys, values);
 			if (reply instanceof ResultNode)
-				return reply.getNodeValue();
+				return reply.getNodeValue(); // Possible exit.
 
 			throw new DriverException(
 					"Expected authentication cycle to have ended by now.");
@@ -152,6 +158,29 @@ public class AuthDriver extends ProfileDriver {
 			if (e instanceof DriverException)
 				throw (DriverException) e;
 			throw new DriverException(e);
+		}
+
+		finally {
+			ProfileData iterationData = new ProfileData();
+			for (ProfileData requestData : this.iterationDatas)
+				for (Map.Entry<String, Long> measurement : requestData
+						.getMeasurements().entrySet())
+					try {
+						String key = measurement.getKey();
+						Long value = measurement.getValue();
+
+						if (ProfileData.isRequestKey(key)
+								&& iterationData.getMeasurements().containsKey(
+										key))
+							value += iterationData.getMeasurements().get(key);
+
+						iterationData.addMeasurement(measurement.getKey(),
+								measurement.getValue());
+					} catch (ProfileDataLockedException e) {
+						setIterationError(e);
+					}
+
+			setIterationData(iterationData);
 		}
 	}
 
@@ -213,9 +242,14 @@ public class AuthDriver extends ProfileDriver {
 		this.client.executeMethod(request);
 
 		// Retrieve the performance headers.
-		System.err.println("==========");
-		for (Header header : request.getResponseHeaders())
-			System.err.println(header.getName() + " = " + header.getValue());
+		Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
+		for (Header header : request.getResponseHeaders()) {
+			List<String> headerValues = new ArrayList<String>();
+			headerValues.add(header.getValue());
+
+			requestHeaders.put(header.getName(), headerValues);
+		}
+		this.iterationDatas.add(new ProfileData(requestHeaders));
 
 		// Perform a manual redirect if required,
 		// but first check if we're coming from the auth-webapp exit.
@@ -240,8 +274,9 @@ public class AuthDriver extends ProfileDriver {
 		// Check for errors; if any, throw them.
 		String error = this.xpath.getString(root, "//*[@class='error']");
 		if (null != error && error.length() > 0)
-			throw new DriverException(error);
+			throw new DriverException(path + ": " + error);
 
+		this.location = request.getURI().toString().replaceFirst(".*/", "");
 		return this.xpath.getNode(root, "//form");
 	}
 

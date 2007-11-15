@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.performance.console.swing.ui;
 
-import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +45,7 @@ public class Charts {
 			agentCharts.setBorder(Borders.DLU4_BORDER);
 			for (JFreeChart chart : map.get(agent))
 				agentCharts.add(new JLabel(new ImageIcon(chart
-						.createBufferedImage(700, 500))));
+						.createBufferedImage(1200, 800))));
 
 			agents.addTab(agent.toString(), new JScrollPane(agentCharts));
 		}
@@ -53,10 +53,9 @@ public class Charts {
 		// Frame.
 		JFrame frame = new JFrame("Performance Testing Charts");
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(800, 600));
 		frame.setContentPane(agents);
 		frame.pack();
-		frame.setLocationRelativeTo(null);
+		frame.setState(Frame.MAXIMIZED_BOTH);
 		frame.setVisible(true);
 	}
 }

@@ -62,11 +62,6 @@ public class ScenarioBean implements ScenarioRemote {
 		return createGraphs();
 	}
 
-	protected void register(ProfileDriver... profileDrivers) {
-
-		this.drivers.addAll(Arrays.asList(profileDrivers));
-	}
-
 	/**
 	 * @return the graphs of the statistics collected during the execution of
 	 *         this scenario.
@@ -136,10 +131,14 @@ public class ScenarioBean implements ScenarioRemote {
 					while (error.getCause() != null)
 						error = error.getCause();
 
-					String message = String.format("%s: %s (%s:%d)", error
-							.getClass().toString(), error.getMessage(), error
-							.getStackTrace()[0].getClassName(), error
-							.getStackTrace()[0].getLineNumber());
+					StackTraceElement errorSource = error.getStackTrace()[0];
+					String errorClass = ProfileData.compressSignature(error
+							.getClass().getName());
+					String errorSourceClass = ProfileData
+							.compressSignature(errorSource.getClassName());
+					String message = String.format("%s: %s (%s:%d)",
+							errorClass, error.getMessage(), errorSourceClass,
+							errorSource.getLineNumber());
 					errorsData.addValue(1, message, "Test " + i);
 				}
 			}
@@ -218,5 +217,10 @@ public class ScenarioBean implements ScenarioRemote {
 		charts.add(requestChart);
 
 		return charts;
+	}
+
+	protected void register(ProfileDriver... profileDrivers) {
+
+		this.drivers.addAll(Arrays.asList(profileDrivers));
 	}
 }

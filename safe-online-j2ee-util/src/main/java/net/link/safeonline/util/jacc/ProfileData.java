@@ -25,31 +25,12 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ProfileData {
 
-	private static final long serialVersionUID = 1L;
-
-	private static final Log LOG = LogFactory.getLog(ProfileData.class);
-
-	/**
-	 * The header used to identify the method signature for a profile entry.
-	 */
-	private static final String METHODSIG_HEADER = "X-Profiled-Method-";
-
-	/**
-	 * The header used to communicate the duration of the call
-	 */
-	private static final String DURATION_HEADER = "X-Profiled-Duration-";
-
 	/**
 	 * The measurement string for the time the request took. This is the
 	 * difference of time between the start and end of the request in
 	 * milliseconds.
 	 */
 	public static final String REQUEST_DELTA_TIME = "RequestTime";
-	/**
-	 * The measurement string for the memory the request used. This is the
-	 * difference of memory between the start and end of the request in bytes.
-	 */
-	public static final String REQUEST_USED_MEM = "RequestMemory";
 
 	/**
 	 * The measurement string for the amount of free memory at the end of the
@@ -63,10 +44,29 @@ public class ProfileData {
 	public static final String REQUEST_START_TIME = "StartTime";
 
 	/**
+	 * The measurement string for the memory the request used. This is the
+	 * difference of memory between the start and end of the request in bytes.
+	 */
+	public static final String REQUEST_USED_MEM = "RequestMemory";
+
+	/**
+	 * The header used to communicate the duration of the call
+	 */
+	private static final String DURATION_HEADER = "X-Profiled-Duration-";
+	private static final Log LOG = LogFactory.getLog(ProfileData.class);
+
+	/**
+	 * The header used to identify the method signature for a profile entry.
+	 */
+	private static final String METHODSIG_HEADER = "X-Profiled-Method-";
+
+	/**
 	 * A list of measurement keys that have a special meaning in the request.
 	 * (Meaning, they are not names of method signatures.)
 	 */
 	private static List<String> requestKeys = new ArrayList<String>();
+
+	private static final long serialVersionUID = 1L;
 	static {
 		requestKeys.add(REQUEST_START_TIME);
 		requestKeys.add(REQUEST_DELTA_TIME);
@@ -74,9 +74,25 @@ public class ProfileData {
 		requestKeys.add(REQUEST_FREE_MEM);
 	}
 
-	private Map<String, Long> measurements;
+	/**
+	 * Compress the generic form of the method's signature. Trim off throws
+	 * declarations.<br />
+	 * java.lang.method -> j~l~method
+	 */
+	public static String compressSignature(String signature) {
+
+		String compressed = signature.replaceAll("(\\w)\\w{2,}\\.", "$1~");
+		return compressed.replaceFirst(" throws [^\\(\\)]*", "");
+	}
+
+	public static boolean isRequestKey(String key) {
+
+		return requestKeys.contains(key);
+	}
 
 	private boolean locked = false;
+
+	private Map<String, Long> measurements;
 
 	public ProfileData() {
 
@@ -135,6 +151,27 @@ public class ProfileData {
 				this.measurements.put(methods[i], timings[i]);
 	}
 
+	public void addMeasurement(Method method, Long value)
+			throws ProfileDataLockedException {
+
+		this.addMeasurement(compressSignature(method.toGenericString()), value);
+	}
+
+	public void addMeasurement(String method, Long value)
+			throws ProfileDataLockedException {
+
+		if (this.locked)
+			throw new ProfileDataLockedException();
+		this.measurements.put(method, value);
+	}
+
+	public void clear() throws ProfileDataLockedException {
+
+		if (this.locked)
+			throw new ProfileDataLockedException();
+		this.measurements.clear();
+	}
+
 	/**
 	 * Create a map that links HTTP headers to data. You can use these headers
 	 * to transport profile data over an HTTP connection.
@@ -155,42 +192,9 @@ public class ProfileData {
 		return headers;
 	}
 
-	public static boolean isRequestKey(String key) {
-
-		return requestKeys.contains(key);
-	}
-
 	public Map<String, Long> getMeasurements() {
 
 		return this.measurements;
-	}
-
-	public void addMeasurement(Method method, Long value)
-			throws ProfileDataLockedException {
-
-		// Compress the generic form of the method's signature.
-		// Trim off throws declarations.
-		// java.lang.method -> j~l~method
-		String methodName = method.toGenericString();
-		methodName = methodName.replaceAll("(\\w)\\w{2,}\\.", "$1~");
-		methodName = methodName.replaceFirst(" throws [^\\(\\)]*", "");
-
-		this.addMeasurement(methodName, value);
-	}
-
-	public void addMeasurement(String method, Long value)
-			throws ProfileDataLockedException {
-
-		if (this.locked)
-			throw new ProfileDataLockedException();
-		this.measurements.put(method, value);
-	}
-
-	public void clear() throws ProfileDataLockedException {
-
-		if (this.locked)
-			throw new ProfileDataLockedException();
-		this.measurements.clear();
 	}
 
 	public boolean isLocked() {
@@ -201,10 +205,6 @@ public class ProfileData {
 		if (this.locked)
 			throw new ProfileDataLockedException();
 		this.locked = true;
-	}
-
-	public void unlock() {
-		this.locked = false;
 	}
 
 	/**
@@ -224,5 +224,9 @@ public class ProfileData {
 		}
 
 		return result.toString();
+	}
+
+	public void unlock() {
+		this.locked = false;
 	}
 }

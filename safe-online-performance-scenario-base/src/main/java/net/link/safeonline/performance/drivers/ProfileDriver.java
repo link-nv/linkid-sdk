@@ -20,12 +20,12 @@ import net.link.safeonline.util.jacc.ProfileData;
  */
 public abstract class ProfileDriver {
 
-	protected List<ProfileData> profileData = new ArrayList<ProfileData>();
-	protected List<Exception> profileError = new ArrayList<Exception>();
-
+	private String title;
 	protected String host;
 
-	private String title;
+	protected List<ProfileData> profileData = new ArrayList<ProfileData>();
+
+	protected List<Exception> profileError = new ArrayList<Exception>();
 
 	/**
 	 * @param hostname
@@ -37,21 +37,9 @@ public abstract class ProfileDriver {
 		this.title = title;
 	}
 
-	protected void startNewIteration() {
+	public String getHost() {
 
-		this.profileData.add(null);
-		this.profileError.add(null);
-	}
-
-	protected void setIterationData(AbstractMessageAccessor service) {
-
-		ProfileData data = new ProfileData(service.getHeaders());
-		this.profileData.set(this.profileData.size() - 1, data);
-	}
-
-	protected void setIterationError(Exception error) {
-
-		this.profileError.set(this.profileError.size() - 1, error);
+		return this.host;
 	}
 
 	public List<ProfileData> getProfileData() {
@@ -62,11 +50,6 @@ public abstract class ProfileDriver {
 	public List<Exception> getProfileError() {
 
 		return this.profileError;
-	}
-
-	public String getHost() {
-
-		return this.host;
 	}
 
 	public String getTitle() {
@@ -82,5 +65,26 @@ public abstract class ProfileDriver {
 
 		return String.format("%s%n---%n%nHost: %s%n%s", getTitle(), getHost(),
 				getProfileData());
+	}
+
+	protected void setIterationData(AbstractMessageAccessor service) {
+
+		setIterationData(new ProfileData(service.getHeaders()));
+	}
+
+	protected void setIterationData(ProfileData data) {
+
+		this.profileData.set(this.profileData.size() - 1, data);
+	}
+
+	protected void setIterationError(Exception error) {
+
+		this.profileError.set(this.profileError.size() - 1, error);
+	}
+
+	protected void startNewIteration() {
+
+		this.profileData.add(null);
+		this.profileError.add(null);
 	}
 }

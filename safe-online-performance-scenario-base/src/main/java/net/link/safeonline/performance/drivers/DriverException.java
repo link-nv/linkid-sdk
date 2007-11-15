@@ -19,10 +19,6 @@ public class DriverException extends Exception {
 	private static final long serialVersionUID = 1L;
 	private final long occurredTime;
 
-	public DriverException(String message) {
-		this(System.currentTimeMillis(), message);
-	}
-
 	public DriverException(Exception exception) {
 		this(System.currentTimeMillis(), exception);
 	}
@@ -35,6 +31,10 @@ public class DriverException extends Exception {
 	public DriverException(long occurredTime, String message) {
 		super(message);
 		this.occurredTime = occurredTime;
+	}
+
+	public DriverException(String message) {
+		this(System.currentTimeMillis(), message);
 	}
 
 	/**
@@ -52,6 +52,6 @@ public class DriverException extends Exception {
 	public String toString() {
 
 		return "At " + new Date(this.occurredTime) + " this happened:\n"
-				+ getCause();
+				+ getMessage();
 	}
 }
