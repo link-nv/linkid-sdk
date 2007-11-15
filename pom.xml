@@ -321,6 +321,10 @@
 				]]>
 				</safe-online.profiling.interceptor>
 			</properties>
+			<modules>
+				<module>safe-online-base-distribution</module>
+				<module>safe-online-performance-distribution</module>
+			</modules>
 		</profile>
 		<profile>
 			<id>env-local-pilot</id>
@@ -1774,7 +1778,7 @@
 		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
 		<jcaptcha-all.version>1.0-RC6</jcaptcha-all.version>
 		<mysql-connector-java.version>
-			5.0.5
+			5.1.5
 		</mysql-connector-java.version>
 		<maven-jdocbook-plugin.version>
 			2.0.1-15795

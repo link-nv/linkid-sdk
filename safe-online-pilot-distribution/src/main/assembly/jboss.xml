@@ -130,7 +130,7 @@
 			</outputDirectory>
 		</file>
 		<file>
-			<source>target/files/mysql-connector-java-5.0.5.jar</source>
+			<source>target/files/mysql-connector-java-5.1.5.jar</source>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</file>
 		<file>
