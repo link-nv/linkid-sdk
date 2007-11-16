@@ -7,25 +7,38 @@
 
 package net.link.safeonline.performance.drivers;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.util.jacc.ProfileData;
 
 /**
- * 
+ * Abstract class of a service driver. This class manages the internals; such as
+ * collecting profile data, exceptions and execution speed for iterations.<br />
+ * <br />
+ * Implementing drivers need to declare methods specific to their functionality
+ * in which they should call {@link #startNewIteration()} before performing any
+ * driver logic and {@link #setIterationData(AbstractMessageAccessor)} once they
+ * have completed their task; or {@link #setIterationError(Exception)} if an
+ * error occurred during the work they were doing. <br />
+ * <br />
+ * The profiling data will be gathered by this class and can later be retrieved
+ * by using the getters ({@link #getProfileData()}, {@link #getProfileError()},
+ * {@link #getProfileSpeed()}).
  * 
  * @author mbillemo
  */
 public abstract class ProfileDriver {
 
+	private long iterationStart;
 	private String title;
+
 	protected String host;
-
-	protected List<ProfileData> profileData = new ArrayList<ProfileData>();
-
-	protected List<Exception> profileError = new ArrayList<Exception>();
+	protected LinkedList<ProfileData> profileData = new LinkedList<ProfileData>();
+	protected LinkedList<Exception> profileError = new LinkedList<Exception>();
+	protected LinkedList<Double> profileSpeed = new LinkedList<Double>();
 
 	/**
 	 * @param hostname
@@ -44,12 +57,17 @@ public abstract class ProfileDriver {
 
 	public List<ProfileData> getProfileData() {
 
-		return this.profileData;
+		return Collections.unmodifiableList(this.profileData);
 	}
 
 	public List<Exception> getProfileError() {
 
-		return this.profileError;
+		return Collections.unmodifiableList(this.profileError);
+	}
+
+	public List<Double> getProfileSpeed() {
+
+		return Collections.unmodifiableList(this.profileSpeed);
 	}
 
 	public String getTitle() {
@@ -74,17 +92,32 @@ public abstract class ProfileDriver {
 
 	protected void setIterationData(ProfileData data) {
 
-		this.profileData.set(this.profileData.size() - 1, data);
+		this.profileData.removeLast();
+		this.profileData.addLast(data);
 	}
 
 	protected void setIterationError(Exception error) {
 
-		this.profileError.set(this.profileError.size() - 1, error);
+		this.profileError.removeLast();
+		this.profileError.addLast(error);
 	}
 
 	protected void startNewIteration() {
 
+		Double speed = null;
+		if (0 != this.iterationStart && null != this.profileData.getLast()) {
+			Long requestTime = this.profileData.getLast().getMeasurements()
+					.get(ProfileData.REQUEST_DELTA_TIME);
+			Long iterationTime = System.currentTimeMillis()
+					- this.iterationStart;
+
+			speed = 1000d / (requestTime + iterationTime);
+		}
+
 		this.profileData.add(null);
 		this.profileError.add(null);
+		this.profileSpeed.add(speed);
+
+		this.iterationStart = System.currentTimeMillis();
 	}
 }

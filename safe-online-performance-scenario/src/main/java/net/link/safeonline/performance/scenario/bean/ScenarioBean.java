@@ -26,12 +26,15 @@ import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
-import org.jfree.chart.renderer.category.StackedBarRenderer;
+import org.jfree.chart.renderer.category.StackedAreaRenderer;
+import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.statistics.BoxAndWhiskerCalculator;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import org.jfree.data.xy.DefaultXYDataset;
 
 /**
  * @author mbillemo
@@ -82,17 +85,21 @@ public class ScenarioBean implements ScenarioRemote {
 		for (ProfileDriver driver : this.drivers) {
 
 			// Dataset for a Bar Chart of method timings per iteration.
+			int iterations = driver.getProfileData().size();
+			DefaultXYDataset memoryData = new DefaultXYDataset();
 			DefaultCategoryDataset timingData = new DefaultCategoryDataset();
-			DefaultCategoryDataset freeMemoryData = new DefaultCategoryDataset();
-			DefaultCategoryDataset usedMemoryData = new DefaultCategoryDataset();
 			DefaultCategoryDataset errorsData = new DefaultCategoryDataset();
+			DefaultCategoryDataset speedData = new DefaultCategoryDataset();
 			Map<String, List<Long>> driverMethods = new HashMap<String, List<Long>>();
 			driversMethods.put(driver.getTitle(), driverMethods);
+			double[][] beforeMemorySet = new double[2][iterations];
+			double[][] afterMemorySet = new double[2][iterations];
 
-			for (int i = 0; i < driver.getProfileData().size(); ++i) {
+			for (Integer i = 0; i < iterations; ++i) {
 
 				ProfileData data = driver.getProfileData().get(i);
 				Throwable error = driver.getProfileError().get(i);
+				Double speed = driver.getProfileSpeed().get(i);
 
 				// If there's profile data for this iteration..
 				if (null != data) {
@@ -103,7 +110,7 @@ public class ScenarioBean implements ScenarioRemote {
 
 						// Collect Iteration Timing Chart Data.
 						if (!ProfileData.isRequestKey(method))
-							timingData.addValue(timing, method, "Test " + i);
+							timingData.addValue(timing, method, i);
 
 						// Collect Method Timing Chart Data.
 						if (!driverMethods.containsKey(method))
@@ -113,18 +120,21 @@ public class ScenarioBean implements ScenarioRemote {
 
 					// Add Request Time at the end.
 					// (so it's on the bottom of the chart's legend).
-					long total = data.getMeasurements().get(
+					long requestTime = data.getMeasurements().get(
 							ProfileData.REQUEST_DELTA_TIME);
-					long freeMemory = data.getMeasurements().get(
+					long beforeMemory = data.getMeasurements().get(
 							ProfileData.REQUEST_FREE_MEM);
-					long usedMemory = data.getMeasurements().get(
-							ProfileData.REQUEST_USED_MEM);
-					timingData.addValue(total, "Request Time", "Total " + i);
-					freeMemoryData.addValue(freeMemory, "Free Memory",
-							"Memory For " + i);
-					usedMemoryData.addValue(usedMemory, "Used Memory",
-							"Memory For " + i);
+					long afterMemory = data.getMeasurements().get(
+							ProfileData.REQUEST_USED_MEM)
+							+ beforeMemory;
+					timingData.addValue(requestTime, "Request Time", i);
+					afterMemorySet[0][i] = i;
+					beforeMemorySet[0][i] = i;
+					afterMemorySet[1][i] = afterMemory;
+					beforeMemorySet[1][i] = beforeMemory;
 				}
+				memoryData.addSeries("Memory Before", beforeMemorySet);
+				memoryData.addSeries("Memory After", afterMemorySet);
 
 				// If there's an exception for this iteration..
 				if (null != error) {
@@ -139,43 +149,47 @@ public class ScenarioBean implements ScenarioRemote {
 					String message = String.format("%s: %s (%s:%d)",
 							errorClass, error.getMessage(), errorSourceClass,
 							errorSource.getLineNumber());
-					errorsData.addValue(1, message, "Test " + i);
+					errorsData.addValue(1, message, i);
 				}
+
+				// If there's a speed for this iteration..
+				if (null != speed)
+					speedData.addValue(speed, "Requests per Second", i);
 			}
 
 			// Bar Charts.
 			catAxis = new CategoryAxis("Iterations");
 			valueAxis = new NumberAxis("Time Elapsed");
 			CategoryPlot timingPlot = new CategoryPlot(timingData, catAxis,
-					valueAxis, new StackedBarRenderer());
+					valueAxis, new StackedAreaRenderer());
 			JFreeChart timingChart = new JFreeChart("Timing for: "
 					+ driver.getTitle(), timingPlot);
 
 			catAxis = new CategoryAxis("Iterations");
-			valueAxis = new NumberAxis("Available Memory");
-			CategoryPlot freeMemoryPlot = new CategoryPlot(freeMemoryData,
-					catAxis, valueAxis, new BarRenderer());
-			JFreeChart freeMemoryChart = new JFreeChart("Free Memory for: "
-					+ driver.getTitle(), freeMemoryPlot);
-
-			catAxis = new CategoryAxis("Iterations");
 			valueAxis = new NumberAxis("Used Memory");
-			CategoryPlot usedMemoryPlot = new CategoryPlot(usedMemoryData,
-					catAxis, valueAxis, new BarRenderer());
-			JFreeChart usedMemoryChart = new JFreeChart("Memory Usage for: "
-					+ driver.getTitle(), usedMemoryPlot);
+			XYPlot memoryPlot = new XYPlot(memoryData, new NumberAxis(catAxis
+					.getLabel()), valueAxis, new XYDifferenceRenderer());
+			JFreeChart memoryChart = new JFreeChart("Memory Usage for: "
+					+ driver.getTitle(), memoryPlot);
 
 			catAxis = new CategoryAxis("Iterations");
 			valueAxis = new NumberAxis("Exceptions");
 			CategoryPlot errorsPlot = new CategoryPlot(errorsData, catAxis,
-					valueAxis, new StackedBarRenderer());
+					valueAxis, new AreaRenderer());
 			JFreeChart errorsChart = new JFreeChart("Exceptions for: "
 					+ driver.getTitle(), errorsPlot);
 
+			catAxis = new CategoryAxis("Iterations");
+			valueAxis = new NumberAxis("Requests Per Second");
+			CategoryPlot speedPlot = new CategoryPlot(speedData, catAxis,
+					valueAxis, new AreaRenderer());
+			JFreeChart speedChart = new JFreeChart("Speed for: "
+					+ driver.getTitle(), speedPlot);
+
 			// Image.
+			charts.add(speedChart);
 			charts.add(timingChart);
-			charts.add(freeMemoryChart);
-			charts.add(usedMemoryChart);
+			charts.add(memoryChart);
 			charts.add(errorsChart);
 		}
 
