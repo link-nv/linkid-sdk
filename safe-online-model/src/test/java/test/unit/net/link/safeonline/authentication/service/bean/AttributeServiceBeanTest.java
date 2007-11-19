@@ -39,6 +39,7 @@ import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBe
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.AttributeTypeService;
@@ -125,6 +126,7 @@ public class AttributeServiceBeanTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						null,
 						Arrays
@@ -185,6 +187,7 @@ public class AttributeServiceBeanTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						null,
 						Arrays
@@ -252,6 +255,7 @@ public class AttributeServiceBeanTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						null,
 						Arrays
@@ -330,6 +334,7 @@ public class AttributeServiceBeanTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						null,
 						Arrays
@@ -412,6 +417,7 @@ public class AttributeServiceBeanTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						null,
 						Arrays
@@ -490,6 +496,7 @@ public class AttributeServiceBeanTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						null,
 						Arrays
@@ -573,6 +580,7 @@ public class AttributeServiceBeanTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						null,
 						Arrays
@@ -693,6 +701,7 @@ public class AttributeServiceBeanTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						null,
 						Arrays

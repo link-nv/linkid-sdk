@@ -7,10 +7,8 @@
 
 package net.link.safeonline.auth.bean;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Set;
 
@@ -48,8 +46,6 @@ public class DeviceBean implements Device {
 
 	private static final Log LOG = LogFactory.getLog(DeviceBean.class);
 
-	private String selection;
-
 	@In(create = true)
 	FacesMessages facesMessages;
 
@@ -62,35 +58,34 @@ public class DeviceBean implements Device {
 	@In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
 	private Set<AuthenticationDevice> requiredDevicePolicy;
 
-	@SuppressWarnings("unused")
 	@Out(required = false, scope = ScopeType.SESSION)
 	private AuthenticationDevice deviceSelection;
 
 	@Remove
 	@Destroy
 	public void destroyCallback() {
-		this.selection = null;
 	}
 
 	public String getSelection() {
-		return this.selection;
+		if (null == this.deviceSelection)
+			return null;
+		return this.deviceSelection.getDeviceName();
 	}
 
 	public void setSelection(String deviceSelection) {
-		this.selection = deviceSelection;
 		this.deviceSelection = AuthenticationDevice
-				.getAuthenticationDevice(this.selection);
+				.getAuthenticationDevice(deviceSelection);
 	}
 
 	public String next() {
-		LOG.debug("next: " + this.selection);
-		if (null == this.selection) {
+		LOG.debug("next: " + this.deviceSelection.getDeviceName());
+		if (null == this.deviceSelection) {
 			LOG.debug("Please make a selection.");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorMakeSelection");
 			return null;
 		}
-		return this.selection;
+		return this.deviceSelection.getDeviceName();
 	}
 
 	@Factory("applicationDevices")
@@ -134,19 +129,12 @@ public class DeviceBean implements Device {
 		return allDevices;
 	}
 
-	private static final Map<String, String> deviceNames = new HashMap<String, String>();
-
-	static {
-		deviceNames.put("password", "Username/password");
-		deviceNames.put("beid", "Belgium Identity Card");
-	}
-
 	private void deviceNameDecoration(List<SelectItem> selectItems) {
 		for (SelectItem selectItem : selectItems) {
 			String deviceId = (String) selectItem.getValue();
 			try {
-				java.util.ResourceBundle bundle = ResourceBundle.instance();
-				String deviceName = bundle.getString(deviceId);
+				String deviceName = ResourceBundle.instance().getString(
+						deviceId);
 				if (null == deviceName) {
 					deviceName = deviceId;
 				}

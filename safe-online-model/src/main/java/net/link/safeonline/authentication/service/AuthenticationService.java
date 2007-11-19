@@ -78,7 +78,7 @@ public interface AuthenticationService {
 	 * @param mobile
 	 * @param challengeId
 	 * @param mobileOTP
-	 * @return username or null if authentication failed
+	 * @return username
 	 * @throws RemoteException
 	 * @throws MalformedURLException
 	 * @throws SubjectNotFoundException
@@ -92,7 +92,7 @@ public interface AuthenticationService {
 
 	/**
 	 * Request a OTP be generated for the authenticating users. Returns the
-	 * challenge ID for this OTP.
+	 * challenge ID for this OTP, used for later verification.
 	 * 
 	 * @param device
 	 * @param mobile

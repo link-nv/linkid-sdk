@@ -21,6 +21,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.service.SubjectService;
 
 /**
@@ -62,8 +63,14 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 	private String getSubscriptionId(ApplicationEntity application,
 			String userId) throws SubscriptionNotFoundException {
 		SubjectEntity subject = this.subjectService.findSubject(userId);
-		SubscriptionEntity subscription = this.subscriptionDAO.getSubscription(
-				subject, application);
+		SubscriptionEntity subscription = this.subscriptionDAO
+				.findSubscription(subject, application);
+		if (null == subscription) {
+			this.subscriptionDAO.addSubscription(
+					SubscriptionOwnerType.APPLICATION, subject, application);
+			subscription = this.subscriptionDAO.getSubscription(subject,
+					application);
+		}
 		return subscription.getUserApplicationId();
 	}
 

@@ -30,6 +30,8 @@ public interface Application {
 
 	List<SelectItem> availableApplicationOwnersFactory();
 
+	List<SelectItem> appliactionIdScopeFactory();
+
 	/*
 	 * Lifecycle.
 	 */
@@ -67,6 +69,10 @@ public interface Application {
 	void setIdmapping(boolean idmapping);
 
 	String getUsageAgreement();
+
+	void setApplicationIdScope(String applicationIdScope);
+
+	String getApplicationIdScope();
 
 	/*
 	 * Actions.

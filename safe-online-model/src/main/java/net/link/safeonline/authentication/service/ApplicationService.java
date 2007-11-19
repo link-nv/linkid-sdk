@@ -66,6 +66,7 @@ public interface ApplicationService {
 	 * @param applicationOwnerName
 	 * @param description
 	 * @param idMappingServiceAccess
+	 * @param idScope
 	 * @param encodedCertificate
 	 *            the optional application certificate.
 	 * @param initialApplicationIdentityAttributes
@@ -78,8 +79,8 @@ public interface ApplicationService {
 	 */
 	void addApplication(String name, String friendlyName,
 			String applicationOwnerName, String description,
-			boolean idMappingServiceAccess, URL applicationUrl,
-			byte[] encodedCertificate,
+			boolean idMappingServiceAccess, IdScopeType idScope,
+			URL applicationUrl, byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,

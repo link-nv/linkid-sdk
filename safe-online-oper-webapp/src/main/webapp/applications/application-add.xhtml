@@ -43,14 +43,14 @@
 									required="true" />
 							</s:decorate>* <h:message for="name" styleClass="error" /></td>
 						</tr>
-                        <tr>
-                            <td><h:outputLabel for="friendlyName"
-                                value="#{msgs.friendlyname}" />:</td>
-                            <td><s:decorate>
-                                <h:inputText id="friendlyName"
-                                    value="#{operApplication.friendlyName}" />
-                            </s:decorate></td>
-                        </tr>
+						<tr>
+							<td><h:outputLabel for="friendlyName"
+								value="#{msgs.friendlyname}" />:</td>
+							<td><s:decorate>
+								<h:inputText id="friendlyName"
+									value="#{operApplication.friendlyName}" />
+							</s:decorate></td>
+						</tr>
 						<tr>
 							<td><h:outputLabel for="owner"
 								value="#{msgs.applicationOwner}" />:</td>
@@ -61,15 +61,25 @@
 								</h:selectOneMenu>
 							</s:decorate>* <h:message for="owner" styleClass="error" /></td>
 						</tr>
-                        <tr>
-                            <td><h:outputLabel for="applicationUrl"
-                                value="#{msgs.applicationUrl}" />:</td>
-                            <td><s:decorate>
-                                <h:inputText id="applicationUrl"
-                                    value="#{operApplication.applicationUrl}">
-                                </h:inputText>
-                            </s:decorate> <h:message for="applicationUrl" styleClass="error" /></td>
-                        </tr>
+						<tr>
+							<td><h:outputLabel for="applicationUrl"
+								value="#{msgs.applicationUrl}" />:</td>
+							<td><s:decorate>
+								<h:inputText id="applicationUrl"
+									value="#{operApplication.applicationUrl}">
+								</h:inputText>
+							</s:decorate> <h:message for="applicationUrl" styleClass="error" /></td>
+						</tr>
+						<tr>
+							<td><h:outputLabel for="applicationIdScope"
+								value="#{msgs.applicationIdScope}" />:</td>
+							<td><s:decorate>
+								<h:selectOneMenu id="applicationIdScope"
+									value="#{operApplication.applicationIdScope}" required="true">
+									<f:selectItems value="#{applicationIdScopes}" />
+								</h:selectOneMenu>
+							</s:decorate>* <h:message for="applicationIdScope" styleClass="error" /></td>
+						</tr>
 					</table>
 				</rich:tab>
 

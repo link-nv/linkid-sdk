@@ -38,6 +38,14 @@
 							<h:inputText id="applicationUrl"
 								value="#{operApplication.applicationUrl}" />
 						</s:decorate>
+						<h:outputLabel for="applicationIdScope"
+							value="#{msgs.applicationIdScope}" />
+						<s:decorate>
+							<h:selectOneMenu id="applicationIdScope"
+								value="#{operApplication.applicationIdScope}" required="true">
+								<f:selectItems value="#{applicationIdScopes}" />
+							</h:selectOneMenu>
+						</s:decorate>
 					</h:panelGrid>
 				</rich:tab>
 

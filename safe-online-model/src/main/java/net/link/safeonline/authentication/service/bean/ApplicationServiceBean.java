@@ -133,8 +133,8 @@ public class ApplicationServiceBean implements ApplicationService,
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void addApplication(String name, String friendlyName,
 			String applicationOwnerName, String description,
-			boolean idMappingServiceAccess, URL applicationUrl,
-			byte[] encodedCertificate,
+			boolean idMappingServiceAccess, IdScopeType idScope,
+			URL applicationUrl, byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
@@ -153,6 +153,8 @@ public class ApplicationServiceBean implements ApplicationService,
 				applicationUrl, certificate);
 
 		application.setIdentifierMappingAllowed(idMappingServiceAccess);
+
+		application.setIdScope(idScope);
 
 		setInitialApplicationIdentity(initialApplicationIdentityAttributes,
 				application);

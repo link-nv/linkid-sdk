@@ -8,12 +8,12 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.AttributeEntity.ATTRIBUTE_TYPE_PARAM;
+import static net.link.safeonline.entity.AttributeEntity.DELETE_WHERE_SUBJECT;
 import static net.link.safeonline.entity.AttributeEntity.MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT;
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE;
 import static net.link.safeonline.entity.AttributeEntity.QUERY_WHERE_SUBJECT_AND_VISIBLE;
 import static net.link.safeonline.entity.AttributeEntity.SUBJECT_PARAM;
-import static net.link.safeonline.entity.AttributeEntity.DELETE_WHERE_SUBJECT;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -55,7 +55,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Table(name = "attribute")
 @NamedQueries( {
 		@NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT attribute FROM AttributeEntity AS attribute "
-				+ "WHERE attribute.subject = :" + SUBJECT_PARAM),
+				+ "WHERE attribute.subject = :"
+				+ SUBJECT_PARAM
+				+ " ORDER BY attribute.attributeType, attribute.attributeIndex"),
 		@NamedQuery(name = QUERY_WHERE_SUBJECT_AND_VISIBLE, query = "SELECT attribute FROM AttributeEntity AS attribute "
 				+ "WHERE attribute.subject = :"
 				+ SUBJECT_PARAM

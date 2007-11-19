@@ -43,6 +43,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.app.Application;
 import net.link.safeonline.oper.app.IdentityAttribute;
@@ -103,6 +104,8 @@ public class ApplicationBean implements Application {
 	private UploadedFile upFile;
 
 	private boolean idmapping;
+
+	private String applicationIdScope;
 
 	@SuppressWarnings("unused")
 	@Out
@@ -230,7 +233,9 @@ public class ApplicationBean implements Application {
 			}
 			this.applicationService.addApplication(this.name,
 					this.friendlyName, this.applicationOwner, this.description,
-					this.idmapping, newApplicationUrl, encodedCertificate,
+					this.idmapping, IdScopeType
+							.valueOf(this.applicationIdScope),
+					newApplicationUrl, encodedCertificate,
 					tempIdentityAttributes);
 
 		} catch (ExistingApplicationException e) {
@@ -321,6 +326,14 @@ public class ApplicationBean implements Application {
 
 	public void setIdmapping(boolean idmapping) {
 		this.idmapping = idmapping;
+	}
+
+	public String getApplicationIdScope() {
+		return this.applicationIdScope;
+	}
+
+	public void setApplicationIdScope(String applicationIdScope) {
+		this.applicationIdScope = applicationIdScope;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -430,13 +443,25 @@ public class ApplicationBean implements Application {
 		return byteArrayOutputStream.toByteArray();
 	}
 
+	@Factory("applicationIdScopes")
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public List<SelectItem> appliactionIdScopeFactory() {
+		List<SelectItem> applicationIdScopes = new LinkedList<SelectItem>();
+		for (IdScopeType currentType : IdScopeType.values()) {
+			applicationIdScopes.add(new SelectItem(currentType.name(),
+					currentType.name()));
+
+		}
+		return applicationIdScopes;
+	}
+
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String save() {
 		String applicationId = this.selectedApplication.getName();
 		LOG.debug("save application: " + applicationId);
 
 		URL newApplicationUrl = null;
-		if (null != this.applicationUrl || this.applicationUrl.length() == 0)
+		if (null != this.applicationUrl && this.applicationUrl.length() != 0)
 			try {
 				newApplicationUrl = new URL(this.applicationUrl);
 			} catch (MalformedURLException e) {
@@ -529,6 +554,20 @@ public class ApplicationBean implements Application {
 			return null;
 		}
 
+		if (null != this.applicationIdScope) {
+			LOG.debug("updating application id scope");
+			try {
+				this.applicationService.setIdScope(applicationId, IdScopeType
+						.valueOf(this.applicationIdScope));
+			} catch (ApplicationNotFoundException e) {
+				LOG.debug("application not found");
+				this.facesMessages
+						.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
+								"errorApplicationNotFound");
+				return null;
+			}
+		}
+
 		applicationListFactory();
 		return "success";
 	}
@@ -554,6 +593,8 @@ public class ApplicationBean implements Application {
 					.toExternalForm();
 		}
 		this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
+
+		this.applicationIdScope = this.selectedApplication.getIdScope().name();
 
 		return "edit";
 	}

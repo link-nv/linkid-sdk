@@ -103,7 +103,8 @@ public interface AttributeDAO {
 	AttributeEntity findAttribute(SubjectEntity subject,
 			AttributeTypeEntity attributeType, long index);
 
-	AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject);
+	AttributeEntity findAttribute(String attributeTypeName,
+			SubjectEntity subject);
 
 	AttributeEntity findAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject);

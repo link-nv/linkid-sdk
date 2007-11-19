@@ -52,6 +52,7 @@ import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.AttributeTypeService;
@@ -133,9 +134,10 @@ public class IdentityServiceBeanTest {
 		attributeTypeService.add(new AttributeTypeEntity(
 				"test-attribute-type-2", DatatypeType.STRING, false, false));
 		applicationService.addApplication(applicationName, null,
-				"test-application-owner-name", null, false, null, null,
-				Collections.singletonList(new IdentityAttributeTypeDO(
-						"test-attribute-type", true, false)));
+				"test-application-owner-name", null, false, IdScopeType.USER,
+				null, null, Collections
+						.singletonList(new IdentityAttributeTypeDO(
+								"test-attribute-type", true, false)));
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager, subject
@@ -232,9 +234,10 @@ public class IdentityServiceBeanTest {
 				"test-compounded-type", DatatypeType.COMPOUNDED, false, false));
 
 		applicationService.addApplication(applicationName, null,
-				"test-application-owner-name", null, false, null, null,
-				Collections.singletonList(new IdentityAttributeTypeDO(
-						"test-compounded-type", true, false)));
+				"test-application-owner-name", null, false, IdScopeType.USER,
+				null, null, Collections
+						.singletonList(new IdentityAttributeTypeDO(
+								"test-compounded-type", true, false)));
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager, subject
@@ -303,8 +306,8 @@ public class IdentityServiceBeanTest {
 		applicationService.registerApplicationOwner(
 				"test-application-owner-name", ownerSubject.getUserId());
 		applicationService.addApplication(applicationName, null,
-				"test-application-owner-name", null, false, null, null,
-				new LinkedList<IdentityAttributeTypeDO>());
+				"test-application-owner-name", null, false, IdScopeType.USER,
+				null, null, new LinkedList<IdentityAttributeTypeDO>());
 
 		EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");
 
@@ -1289,8 +1292,8 @@ public class IdentityServiceBeanTest {
 		initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(
 				compoundedAttributeName, true, false));
 		applicationService.addApplication(applicationName, null,
-				applicationOwnerName, null, false, null, null,
-				initialApplicationIdentityAttributes);
+				applicationOwnerName, null, false, IdScopeType.USER, null,
+				null, initialApplicationIdentityAttributes);
 
 		// operate: save attribute
 		IdentityService identityService = EJBTestUtils.newInstance(

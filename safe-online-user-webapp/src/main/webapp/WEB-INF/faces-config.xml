@@ -137,6 +137,10 @@
 			<from-action>remove</from-action>
 			<to-view-id>/remove.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-action>merge</from-action>
+			<to-view-id>/merge/merge.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -144,6 +148,70 @@
 		<navigation-case>
 			<from-action>cancel</from-action>
 			<to-view-id>/actions.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/merge/merge.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>merge-login</from-action>
+			<to-view-id>/merge/merge-login.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/merge/merge-login.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>password</from-outcome>
+			<to-view-id>/merge/username-password.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>beid</from-outcome>
+			<to-view-id>/merge/beid.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>mobileWeak</from-outcome>
+			<to-view-id>/merge/mobile.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>mobileStrong</from-outcome>
+			<to-view-id>/merge/mobile.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/merge/username-password.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/merge/merge-overview.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/merge/merge-login.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>help</from-action>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/merge/beid.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>help</from-action>
+			<to-view-id>/help.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/merge/mobile.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/merge/merge-login.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>help</from-action>
+			<to-view-id>/help.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

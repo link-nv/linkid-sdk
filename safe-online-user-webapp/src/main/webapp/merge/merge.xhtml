@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="main" />
+			<ui:param name="subpage" value="merge" />
+		</ui:include>
+	</ui:define>
+
+	<ui:define name="content">
+		<h2>#{msgs.mergeAccount}</h2>
+
+		<f:facet name="aroundInvalidField">
+			<s:span styleClass="error" />
+		</f:facet>
+
+		<h:form>
+			<h:panelGrid columns="3">
+				<h:outputLabel for="source" value="#{msgs.user} :" />
+				<s:decorate>
+					<h:inputText id="source" value="#{merge.source}" required="true" />
+				</s:decorate>
+				<h:message for="source" styleClass="error" />
+			</h:panelGrid>
+
+			<h:commandButton action="merge-login" id="merge"
+				value="#{msgs.merge}" />
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<ui:include src="/WEB-INF/incl/login.xhtml">
+			<ui:param name="loginComp" value="#{login}" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+</body>
+</html>

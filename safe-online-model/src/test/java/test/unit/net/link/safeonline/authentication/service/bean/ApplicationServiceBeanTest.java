@@ -26,6 +26,7 @@ import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.SubjectService;
@@ -157,7 +158,7 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 		applicationService.addApplication(testApplicationName,
 				testApplicationFriendlyName, testApplicationOwnerName, null,
-				false, null, null, initialIdentity);
+				false, IdScopeType.USER, null, null, initialIdentity);
 
 		EntityTransaction entityTransaction = entityManager.getTransaction();
 		entityTransaction.commit();

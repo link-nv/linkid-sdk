@@ -3,37 +3,38 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="actions" />
+			<ui:param name="subpage" value="merge" />
 		</ui:include>
 	</ui:define>
-
-
 	<ui:define name="content">
-		<h1>#{msgs.actions}</h1>
 
 		<h:form>
-			<h:commandButton action="remove" id="remove"
-				value="#{msgs.removeAccount}" />
-			<h:commandButton action="merge" id="merge"
-				value="#{msgs.mergeAccount}" />
+			<h:selectOneRadio value="#{merge.deviceSelection}"
+				layout="pageDirection" required="true">
+				<f:selectItems value="#{deviceList}" />
+			</h:selectOneRadio>
+
+			<h:messages styleClass="error" />
+
+			<h:commandButton action="#{merge.next}" id="next"
+				value="#{msgs.next}" />
 		</h:form>
+
 	</ui:define>
-
-
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">
 			<ui:param name="loginComp" value="#{login}" />
 		</ui:include>
 	</ui:define>
-
 </ui:composition>
 </body>
-
 </html>
