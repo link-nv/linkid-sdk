@@ -111,7 +111,8 @@ public abstract class ProfileDriver {
 			Long iterationTime = System.currentTimeMillis()
 					- this.iterationStart;
 
-			speed = 1000d / (requestTime + iterationTime);
+			if (null != requestTime)
+				speed = 1000d / (requestTime + iterationTime);
 		}
 
 		this.profileData.add(null);

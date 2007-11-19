@@ -18,7 +18,6 @@ import net.link.safeonline.performance.console.swing.ui.Charts;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 import net.link.safeonline.performance.scenario.ScenarioRemote;
 
-import org.jfree.chart.JFreeChart;
 import org.jgroups.Address;
 
 /**
@@ -29,9 +28,9 @@ import org.jgroups.Address;
  */
 public class ScenarioExecutorThread extends ScenarioThread {
 
-	private int port;
+	private Map<Address, List<byte[]>> charts;
 	private String hostname;
-	private Map<Address, List<JFreeChart>> charts;
+	private int port;
 
 	public ScenarioExecutorThread(Map<Address, Agent> map,
 			ScenarioChooser chooser, String hostname, int port) {
@@ -40,7 +39,17 @@ public class ScenarioExecutorThread extends ScenarioThread {
 
 		this.hostname = hostname;
 		this.port = port;
-		this.charts = new HashMap<Address, List<JFreeChart>>();
+		this.charts = new HashMap<Address, List<byte[]>>();
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	void done(boolean success) {
+
+		if (success)
+			new Charts(this.charts);
 	}
 
 	/**
@@ -66,15 +75,4 @@ public class ScenarioExecutorThread extends ScenarioThread {
 			agent.setExecuting(false);
 		}
 	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	void done(boolean success) {
-
-		if(success)
-			new Charts(this.charts);
-	}
-
 }

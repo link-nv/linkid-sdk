@@ -273,6 +273,10 @@ public class AuthDriver extends ProfileDriver {
 
 		// Check for errors; if any, throw them.
 		String error = this.xpath.getString(root, "//*[@class='error']");
+		if ((null == error || error.length() == 0)
+				&& this.xpath.getString(root, "/html/head/title").endsWith(
+						"Error report"))
+			error = this.xpath.getString(root, "//h1");
 		if (null != error && error.length() > 0)
 			throw new DriverException(path + ": " + error);
 

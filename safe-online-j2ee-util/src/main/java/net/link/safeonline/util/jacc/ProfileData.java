@@ -9,6 +9,7 @@ package net.link.safeonline.util.jacc;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -189,19 +190,27 @@ public class ProfileData {
 			entry++;
 		}
 
-		return headers;
+		return Collections.unmodifiableMap(headers);
+	}
+
+	public long getMeasurement(String key) {
+
+		Long measurement = this.measurements.get(key);
+		return measurement == null ? 0 : measurement;
 	}
 
 	public Map<String, Long> getMeasurements() {
 
-		return this.measurements;
+		return Collections.unmodifiableMap(this.measurements);
 	}
 
 	public boolean isLocked() {
+
 		return this.locked;
 	}
 
 	public void lock() throws ProfileDataLockedException {
+
 		if (this.locked)
 			throw new ProfileDataLockedException();
 		this.locked = true;
@@ -227,6 +236,7 @@ public class ProfileData {
 	}
 
 	public void unlock() {
+
 		this.locked = false;
 	}
 }

@@ -12,8 +12,6 @@ import javax.ejb.Remote;
 
 import net.link.safeonline.performance.drivers.DriverException;
 
-import org.jfree.chart.JFreeChart;
-
 /**
  * @author mbillemo
  * 
@@ -21,5 +19,5 @@ import org.jfree.chart.JFreeChart;
 @Remote
 public interface ScenarioRemote {
 
-	public List<JFreeChart> execute(String hostname) throws DriverException;
+	public List<byte[]> execute(String hostname) throws DriverException;
 }

@@ -19,7 +19,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import org.jfree.chart.JFreeChart;
 import org.jgroups.Address;
 
 import com.jgoodies.forms.factories.Borders;
@@ -31,7 +30,7 @@ import com.jgoodies.looks.Options;
  */
 public class Charts {
 
-	public Charts(Map<Address, List<JFreeChart>> map) {
+	public Charts(Map<Address, List<byte[]>> map) {
 
 		// Tabs.
 		JTabbedPane agents = new JTabbedPane();
@@ -43,9 +42,8 @@ public class Charts {
 
 			JPanel agentCharts = new JPanel(new GridLayout(0, 1, 0, 20));
 			agentCharts.setBorder(Borders.DLU4_BORDER);
-			for (JFreeChart chart : map.get(agent))
-				agentCharts.add(new JLabel(new ImageIcon(chart
-						.createBufferedImage(1200, 800))));
+			for (byte[] chart : map.get(agent))
+				agentCharts.add(new JLabel(new ImageIcon(chart)));
 
 			agents.addTab(agent.toString(), new JScrollPane(agentCharts));
 		}
