@@ -29,7 +29,7 @@ public class AgentBroadcaster {
 	public void start() {
 
 		try {
-			this.channel = new JChannel();
+			this.channel = new JChannel(getClass().getResource("/jgroups.xml"));
 			this.channel.connect(getGroup());
 		}
 

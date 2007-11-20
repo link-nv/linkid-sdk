@@ -96,7 +96,6 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	 * subject.
 	 * 
 	 * @param subject
-	 * @return
 	 * @throws SubjectMismatchException
 	 */
 	private void setAuthenticatedSubject(SubjectEntity subject)

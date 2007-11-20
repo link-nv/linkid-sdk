@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -13,10 +15,13 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.filechooser.FileFilter;
 
+import net.link.safeonline.performance.console.swing.data.Agent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.model.ScenarioDeployerThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioExecutorThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioUploaderThread;
+
+import org.jgroups.Address;
 
 /**
  * This class keeps and listens to the UI components that upload, deploy and
@@ -30,16 +35,16 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	private static final long serialVersionUID = 1L;
 
 	private JButton browseButton;
-	private JButton resetButton;
-	private JButton uploadButton;
+	private ConsoleData consoleData;
 	private JButton deployButton;
 	private JButton executeButton;
+	private JButton resetButton;
 
-	protected JTextField scenarioField;
-	protected JPanel sideButton;
+	private JButton uploadButton;
 	protected JPanel actionButton;
+	protected JTextField scenarioField;
 
-	private ConsoleData consoleData;
+	protected JPanel sideButton;
 
 	public ScenarioChooser(ConsoleData consoleData) {
 
@@ -64,15 +69,6 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 
 		this.uploadButton.setEnabled(null != getScenarioFile());
 		setDeploymentPhase(DeploymentPhase.UPLOAD);
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	public void caretUpdate(CaretEvent e) {
-
-		if (e.getSource().equals(this.scenarioField))
-			this.uploadButton.setEnabled(null != getScenarioFile());
 	}
 
 	/**
@@ -113,9 +109,35 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 					.start();
 
 		else if (this.executeButton.equals(e.getSource()))
-			new ScenarioExecutorThread(this.consoleData.getAgents(), this,
-					this.consoleData.getHostname(), this.consoleData.getPort())
-					.start();
+			for (Map.Entry<Address, Agent> agentEntry : this.consoleData
+					.getAgents().entrySet()) {
+
+				Map<Address, Agent> agentMap = new HashMap<Address, Agent>();
+				agentMap.put(agentEntry.getKey(), agentEntry.getValue());
+
+				new ScenarioExecutorThread(agentMap, this, this.consoleData
+						.getHostname(), this.consoleData.getPort()).start();
+			}
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
+	public void caretUpdate(CaretEvent e) {
+
+		if (e.getSource().equals(this.scenarioField))
+			this.uploadButton.setEnabled(null != getScenarioFile());
+	}
+
+	/**
+	 * Disable buttons that shouldn't be used.
+	 */
+	public void setButtonsEnabled(boolean buttonsEnabled) {
+
+		this.resetButton.setEnabled(buttonsEnabled);
+		this.uploadButton.setEnabled(buttonsEnabled);
+		this.deployButton.setEnabled(buttonsEnabled);
+		this.executeButton.setEnabled(buttonsEnabled);
 	}
 
 	/**
@@ -153,17 +175,6 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * Disable buttons that shouldn't be used.
-	 */
-	public void setButtonsEnabled(boolean buttonsEnabled) {
-
-		this.resetButton.setEnabled(buttonsEnabled);
-		this.uploadButton.setEnabled(buttonsEnabled);
-		this.deployButton.setEnabled(buttonsEnabled);
-		this.executeButton.setEnabled(buttonsEnabled);
-	}
-
-	/**
 	 * Parse the picked or typed file out of the scenario file field.
 	 * 
 	 * @return <code>null</code> if the file is non-existing, unreadable, or
@@ -182,6 +193,6 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	}
 
 	public enum DeploymentPhase {
-		UPLOAD, DEPLOY, EXECUTE;
+		DEPLOY, EXECUTE, UPLOAD;
 	}
 }

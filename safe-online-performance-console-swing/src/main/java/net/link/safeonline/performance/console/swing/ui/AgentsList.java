@@ -80,7 +80,9 @@ public class AgentsList extends JList implements AgentStateListener,
 	 */
 	public void agentSuspected(Address agentAddress) {
 
-		this.consoleData.getAgent(agentAddress).setHealthy(false);
+		Agent agent = this.consoleData.getAgent(agentAddress);
+		if(null != agent)
+			agent.setHealthy(false);
 	}
 
 	/**

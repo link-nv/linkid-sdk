@@ -29,9 +29,9 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 
 	private static final Log LOG = LogFactory.getLog(AgentDiscoverer.class);
 
-	private JChannel channel;
-
 	private List<AgentStateListener> agentStateListeners;
+
+	private JChannel channel;
 
 	/**
 	 * Join the Profiler's JGroup using the package name as group name.
@@ -46,7 +46,8 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 			this.agentStateListeners = new ArrayList<AgentStateListener>();
 
 			if (null == this.channel || !this.channel.isOpen())
-				this.channel = new JChannel();
+				this.channel = new JChannel(getClass().getResource(
+						"/jgroups.xml"));
 
 			if (!this.channel.isConnected())
 				this.channel.connect(group);
@@ -70,85 +71,12 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 		this.agentStateListeners.add(listener);
 	}
 
-	public void removeAgentStateListener(AgentStateListener listener) {
-
-		this.agentStateListeners.remove(listener);
-	}
-
-	/**
-	 * Retrieve the {@link Address} that this client has in the group.
-	 */
-	public Address getSelf() {
-
-		return this.channel.getLocalAddress();
-	}
-
-	/**
-	 * Retrieve the members currently part of the group.
-	 */
-	public Vector<Address> getMembers() {
-
-		return this.channel.getView().getMembers();
-	}
-
-	/**
-	 * Check whether the {@link AgentDiscoverer} is still connected to the
-	 * group.
-	 */
-	public boolean isConnected() {
-
-		return this.channel.isConnected();
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
 	public void block() {
 
 		this.channel.blockOk();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void suspect(Address suspected_mbr) {
-
-		for (AgentStateListener listener : this.agentStateListeners)
-			listener.agentSuspected(suspected_mbr);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void viewAccepted(View new_view) {
-
-		for (AgentStateListener listener : this.agentStateListeners)
-			listener.membersChanged(new_view.getMembers());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public byte[] getState() {
-
-		// We dont't care about state.
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void receive(Message m) {
-
-		// We dont't care about messages.
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setState(byte[] s) {
-
-		// We dont't care about state.
 	}
 
 	/**
@@ -199,11 +127,89 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 			listener.channelShunned();
 	}
 
+	public void close() {
+
+		this.channel.close();
+	}
+
 	/**
 	 * @return the name of the JGroups group of agents.
 	 */
 	public String getGroupName() {
 
 		return this.channel.getClusterName();
+	}
+
+	/**
+	 * Retrieve the members currently part of the group.
+	 */
+	public Vector<Address> getMembers() {
+
+		return this.channel.getView().getMembers();
+	}
+
+	/**
+	 * Retrieve the {@link Address} that this client has in the group.
+	 */
+	public Address getSelf() {
+
+		return this.channel.getLocalAddress();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public byte[] getState() {
+
+		// We dont't care about state.
+		return null;
+	}
+
+	/**
+	 * Check whether the {@link AgentDiscoverer} is still connected to the
+	 * group.
+	 */
+	public boolean isConnected() {
+
+		return this.channel.isConnected();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void receive(Message m) {
+
+		// We dont't care about messages.
+	}
+
+	public void removeAgentStateListener(AgentStateListener listener) {
+
+		this.agentStateListeners.remove(listener);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setState(byte[] s) {
+
+		// We dont't care about state.
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void suspect(Address suspected_mbr) {
+
+		for (AgentStateListener listener : this.agentStateListeners)
+			listener.agentSuspected(suspected_mbr);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void viewAccepted(View new_view) {
+
+		for (AgentStateListener listener : this.agentStateListeners)
+			listener.membersChanged(new_view.getMembers());
 	}
 }

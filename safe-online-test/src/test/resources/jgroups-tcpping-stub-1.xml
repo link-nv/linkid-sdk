@@ -1,0 +1,7 @@
+<config>
+    <TCP start_port="7800" />
+    <TCPPING initial_hosts="localhost[7805]"
+        port_range="5"
+        timeout="3000"
+        num_initial_members="2" />
+</config>
