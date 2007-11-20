@@ -55,43 +55,7 @@
 						<jarModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId>
-								safe-online-demo-ticket-keystore
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
-						</jarModule>
-						<jarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-payment-keystore
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
-						</jarModule>
-						<jarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-lawyer-keystore
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
-						</jarModule>
-						<jarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-prescription-keystore
-							</artifactId>
-							<includeInApplicationXml>
-								true
-							</includeInApplicationXml>
-						</jarModule>
-						<jarModule>
-							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>
-								safe-online-demo-mandate-keystore
+								safe-online-performance-keystore
 							</artifactId>
 							<includeInApplicationXml>
 								true
@@ -144,35 +108,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-ticket-keystore</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-payment-keystore</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-lawyer-keystore</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>
-				safe-online-demo-prescription-keystore
-			</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-demo-mandate-keystore</artifactId>
+			<artifactId>safe-online-performance-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

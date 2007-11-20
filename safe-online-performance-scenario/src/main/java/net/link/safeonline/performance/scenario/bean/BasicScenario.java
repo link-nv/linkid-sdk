@@ -10,11 +10,11 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
 import net.link.safeonline.performance.drivers.ProfileDriver;
+import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,8 +39,8 @@ public class BasicScenario implements Scenario {
 	public void execute() throws Exception {
 
 		// Initialize givens (application, username, password).
-		String applicationName = "demo-lawyer", username = "admin", password = "admin", userId;
-		PrivateKeyEntry applicationKey = DemoLawyerKeyStoreUtils
+		String applicationName = "performance-application", username = "admin", password = "admin", userId;
+		PrivateKeyEntry applicationKey = PerformanceKeyStoreUtils
 				.getPrivateKeyEntry();
 
 		LOG.debug("getting id..");
