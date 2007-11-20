@@ -15,10 +15,10 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.util.List;
 import java.util.Map;
 
-import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
+import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import org.junit.Test;
  */
 public class PerformanceDriverTest {
 
-	private static final PrivateKeyEntry APPL = DemoLawyerKeyStoreUtils
+	private static final PrivateKeyEntry APPL = PerformanceKeyStoreUtils
 			.getPrivateKeyEntry();
 	private static final String OLAS_HOSTNAME = "localhost:8443";
 	private static final String PASS = "admin";
