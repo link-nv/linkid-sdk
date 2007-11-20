@@ -5,16 +5,23 @@
 package net.link.safeonline.performance.drivers;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 import javax.xml.transform.TransformerException;
 
+import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.util.jacc.ProfileData;
 import net.link.safeonline.util.jacc.ProfileDataLockedException;
 
+import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -22,6 +29,9 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpConnectionParams;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
@@ -32,7 +42,7 @@ import org.w3c.tidy.Tidy;
  * @author mbillemo
  */
 public class AuthDriver extends ProfileDriver {
-	private static final Log LOG = LogFactory.getLog(AuthDriver.class);
+	static final Log LOG = LogFactory.getLog(AuthDriver.class);
 
 	private HttpClient client;
 	private List<ProfileData> iterationDatas;
@@ -44,6 +54,11 @@ public class AuthDriver extends ProfileDriver {
 
 		super(hostname, "Authentication Driver");
 
+		SafeOnlineTrustManager.configureSsl();
+
+		Protocol.registerProtocol("https", new Protocol("https",
+				new MySSLSocketFactory(), 443));
+
 		this.tidy = new Tidy();
 		this.xpath = new XPathUtil();
 		this.client = new HttpClient();
@@ -51,6 +66,36 @@ public class AuthDriver extends ProfileDriver {
 
 		this.tidy.setQuiet(true);
 		this.tidy.setShowWarnings(false);
+	}
+
+	public static class MySSLSocketFactory implements ProtocolSocketFactory {
+
+		public Socket createSocket(String host, int port) throws IOException,
+				UnknownHostException {
+			LOG.debug("createSocket: " + host + ":" + port);
+			return null;
+		}
+
+		public Socket createSocket(String host, int port,
+				InetAddress localAddress, int localPort) throws IOException,
+				UnknownHostException {
+			LOG.debug("createSocket: " + host + ":" + port + ", local: "
+					+ localAddress + ":" + localPort);
+			return null;
+		}
+
+		public Socket createSocket(String host, int port,
+				InetAddress localAddress, int localPort,
+				HttpConnectionParams params) throws IOException,
+				UnknownHostException, ConnectTimeoutException {
+			LOG.debug("createSocket: " + host + ":" + port + ", local: "
+					+ localAddress + ":" + localPort + ", params: " + params);
+			SSLSocketFactory sslSocketFactory = HttpsURLConnection
+					.getDefaultSSLSocketFactory();
+			Socket socket = sslSocketFactory.createSocket(host, port,
+					localAddress, localPort);
+			return socket;
+		}
 	}
 
 	/**
@@ -239,6 +284,7 @@ public class AuthDriver extends ProfileDriver {
 
 		// Execute the request.
 		request.setFollowRedirects(false);
+
 		this.client.executeMethod(request);
 
 		// Retrieve the performance headers.
