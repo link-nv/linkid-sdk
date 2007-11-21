@@ -5,8 +5,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:t="http://myfaces.apache.org/tomahawk">
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -17,24 +17,104 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<h2>#{msgs.mergeAccount}</h2>
+		<h2>#{source} : #{msgs.provenDevices}</h2>
 
-		<f:facet name="aroundInvalidField">
-			<s:span styleClass="error" />
-		</f:facet>
+		<rich:dataTable id="proven-devices-table" var="item"
+			value="#{provenDevices}" rows="10" styleClass="listingTable"
+			rowClasses="listingTable_Row1,listingTable_Row2"
+			columnClasses="listingTable_ColumnTop,listingTable_Column">
+			<h:column>
+				<h:outputLabel value="#{item}" />
+			</h:column>
+		</rich:dataTable>
 
-		<h:form>
-			<h:panelGrid columns="3">
-				<h:outputLabel for="source" value="#{msgs.user} :" />
-				<s:decorate>
-					<h:inputText id="source" value="#{merge.source}" required="true" />
-				</s:decorate>
-				<h:message for="source" styleClass="error" />
-			</h:panelGrid>
+		<h2>#{msgs.preview}</h2>
 
-			<h:commandButton action="merge-login" id="merge"
-				value="#{msgs.merge}" />
-		</h:form>
+		<h:panelGrid columns="2">
+			<rich:dataTable id="preserved-subscriptions-table" var="item"
+				value="#{preservedSubscriptions}" rows="10"
+				styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2"
+				columnClasses="listingTable_ColumnTop,listingTable_Column">
+				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="#{msgs.mergePreservedSubscriptions}" />
+					</f:facet>
+					<h:outputLabel value="#{item.application.friendlyName}"
+						rendered="#{!empty item.application.friendlyName}" />
+					<h:outputLabel value="#{item.application.name}"
+						rendered="#{empty item.application.friendlyName}" />
+				</h:column>
+			</rich:dataTable>
+			<rich:dataTable id="imported-subscriptions-table" var="item"
+				value="#{importedSubscriptions}" rows="10" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2"
+				columnClasses="listingTable_ColumnTop,listingTable_Column">
+				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="#{msgs.mergeImportedSubscriptions}" />
+					</f:facet>
+					<h:outputLabel value="#{item.applicationName}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="#{msgs.mergeDevicePolicy}" />
+					</f:facet>
+					<h:outputLabel value="#{item.deviceRestrictionList}"
+						rendered="#{!empty item.deviceRestrictionList}" />
+					<h:outputLabel value="#{msgs.any}"
+						rendered="#{empty item.deviceRestrictionList}" />
+				</h:column>
+			</rich:dataTable>
+		</h:panelGrid>
+
+		<h:panelGrid columns="2" style="vertical-align:top">
+			<rich:dataTable id="preserved-attributes-table" var="item"
+				value="#{preservedAttributes}" rows="10" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2"
+				columnClasses="listingTable_ColumnTop,listingTable_Column">
+				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="#{msgs.mergePreservedAttributes}" />
+					</f:facet>
+					<so:outputAttributeName value="#{item}" />
+				</h:column>
+				<h:column>
+					<so:outputAttribute value="#{item}" />
+				</h:column>
+			</rich:dataTable>
+			<rich:dataTable id="imported-attributes-table" var="item"
+				value="#{importedAttributes}" rows="10" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2"
+				columnClasses="listingTable_ColumnTop,listingTable_Column">
+				<h:column>
+					<f:facet name="header">
+						<h:outputLabel value="#{msgs.mergeImportedAttributes}" />
+					</f:facet>
+					<so:outputAttributeName value="#{item}" />
+				</h:column>
+				<h:column>
+					<so:outputAttribute value="#{item}" />
+				</h:column>
+			</rich:dataTable>
+		</h:panelGrid>
+
+		<rich:dataTable id="merged-attributes-table" var="item"
+			value="#{mergedAttributes}" rows="10" styleClass="listingTable"
+			rowClasses="listingTable_Row1,listingTable_Row2"
+			columnClasses="listingTable_ColumnTop,listingTable_Column">
+			<h:column>
+				<f:facet name="header">
+					<h:outputLabel value="#{msgs.mergeMergedAttributes}" />
+				</f:facet>
+				<so:outputAttributeName value="#{item}" />
+			</h:column>
+			<h:column>
+				<so:outputAttribute value="#{item}" />
+			</h:column>
+		</rich:dataTable>
+
+
 
 	</ui:define>
 	<ui:define name="sidebar">

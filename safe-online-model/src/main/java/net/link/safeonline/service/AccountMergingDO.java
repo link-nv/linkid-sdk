@@ -39,7 +39,7 @@ public class AccountMergingDO implements Serializable {
 
 	private List<SubscriptionEntity> preservedSubscriptions;
 
-	private List<SubscriptionEntity> importedSubscriptions;
+	private List<SubscriptionDO> importedSubscriptions;
 
 	private List<AttributeDO> preservedAttributes;
 
@@ -66,15 +66,14 @@ public class AccountMergingDO implements Serializable {
 		this.preservedSubscriptions = preservedSubscriptions;
 	}
 
-	public List<SubscriptionEntity> getImportedSubscriptions() {
+	public List<SubscriptionDO> getImportedSubscriptions() {
 		return this.importedSubscriptions;
 	}
 
-	public void addImportedSubscription(
-			SubscriptionEntity importedSubscriptionEntity) {
+	public void addImportedSubscription(SubscriptionDO importedSubscriptionDO) {
 		if (null == this.importedSubscriptions)
-			this.importedSubscriptions = new LinkedList<SubscriptionEntity>();
-		this.importedSubscriptions.add(importedSubscriptionEntity);
+			this.importedSubscriptions = new LinkedList<SubscriptionDO>();
+		this.importedSubscriptions.add(importedSubscriptionDO);
 	}
 
 	public List<AttributeDO> getPreservedAttributes() {
@@ -87,6 +86,27 @@ public class AccountMergingDO implements Serializable {
 
 	public List<AttributeDO> getMergedAttributes() {
 		return this.mergedAttributes;
+	}
+
+	public List<AttributeDO> getVisiblePreservedAttributes() {
+		return getVisibleAttributes(this.preservedAttributes);
+	}
+
+	public List<AttributeDO> getVisibleImportedAttributes() {
+		return getVisibleAttributes(this.importedAttributes);
+	}
+
+	public List<AttributeDO> getVisibleMergedAttributes() {
+		return getVisibleAttributes(this.mergedAttributes);
+	}
+
+	private List<AttributeDO> getVisibleAttributes(List<AttributeDO> attributes) {
+		List<AttributeDO> visibleAttributes = new LinkedList<AttributeDO>();
+		for (AttributeDO attribute : attributes) {
+			if (attribute.isUserVisible())
+				visibleAttributes.add(attribute);
+		}
+		return visibleAttributes;
 	}
 
 	public Map<AttributeDO, AttributeDO> getChoosableAttributes() {
@@ -123,9 +143,12 @@ public class AccountMergingDO implements Serializable {
 			LOG.debug("preserved subscription: "
 					+ subscription.getApplication().getName());
 		}
-		for (SubscriptionEntity subscription : this.importedSubscriptions) {
-			LOG.debug("imported subscription: "
-					+ subscription.getApplication().getName());
+		if (null != this.importedSubscriptions) {
+			for (SubscriptionDO subscription : this.importedSubscriptions) {
+				LOG.debug("imported subscription: "
+						+ subscription.getSubscription().getApplication()
+								.getName());
+			}
 		}
 		for (AttributeDO attribute : this.preservedAttributes) {
 			LOG.debug("preserved attribute: " + attribute.getName() + " ("
@@ -147,16 +170,18 @@ public class AccountMergingDO implements Serializable {
 					+ attribute.getValue());
 
 		}
-		for (Entry<AttributeDO, AttributeDO> choosableAttribute : this.choosableAttributes
-				.entrySet()) {
-			AttributeDO sourceAttribute = choosableAttribute.getKey();
-			AttributeDO targetAttribute = choosableAttribute.getValue();
-			LOG.debug("choosable attribute: " + sourceAttribute.getName()
-					+ " (" + sourceAttribute.getType() + ")");
-			LOG.debug("  * source: " + sourceAttribute.getIndex() + ": "
-					+ sourceAttribute.getValue());
-			LOG.debug("  * target: " + targetAttribute.getIndex() + ": "
-					+ targetAttribute.getValue());
+		if (null != this.choosableAttributes) {
+			for (Entry<AttributeDO, AttributeDO> choosableAttribute : this.choosableAttributes
+					.entrySet()) {
+				AttributeDO sourceAttribute = choosableAttribute.getKey();
+				AttributeDO targetAttribute = choosableAttribute.getValue();
+				LOG.debug("choosable attribute: " + sourceAttribute.getName()
+						+ " (" + sourceAttribute.getType() + ")");
+				LOG.debug("  * source: " + sourceAttribute.getIndex() + ": "
+						+ sourceAttribute.getValue());
+				LOG.debug("  * target: " + targetAttribute.getIndex() + ": "
+						+ targetAttribute.getValue());
+			}
 		}
 
 	}

@@ -9,10 +9,10 @@ package test.integ.net.link.safeonline.ws;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assert.assertNotNull;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeTypeService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
@@ -41,6 +41,7 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.ws.annotation.Compound;
@@ -159,7 +160,8 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, null, this.certificate.getEncoded(),
+				null, false, IdScopeType.USER, null, this.certificate
+						.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -253,7 +255,8 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, null, this.certificate.getEncoded(),
+				null, false, IdScopeType.USER, null, this.certificate
+						.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -345,7 +348,8 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, null, this.certificate.getEncoded(),
+				null, false, IdScopeType.USER, null, this.certificate
+						.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -470,7 +474,8 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, null, this.certificate.getEncoded(), Arrays
+				null, false, IdScopeType.USER, null, this.certificate
+						.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),

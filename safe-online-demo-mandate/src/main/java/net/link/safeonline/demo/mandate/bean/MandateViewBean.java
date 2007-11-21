@@ -106,24 +106,10 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements
 		String username = callerPrincipal.getName();
 		this.log.debug("user mandates factory for user #0", username);
 
-		NameIdentifierMappingClient mappingClient = super.getMappingClient();
-		String userId;
-		try {
-			userId = mappingClient.getUserId(username);
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addToControl("name", "subject not found");
-			this.userMandates = new Mandate[] {};
-			return;
-		} catch (RequestDeniedException e) {
-			this.facesMessages.add("request denied");
-			this.userMandates = new Mandate[] {};
-			return;
-		}
-
 		DataClient dataClient = getDataClient();
 		Attribute<Mandate[]> mandateAttribute = null;
 		try {
-			mandateAttribute = dataClient.getAttributeValue(userId,
+			mandateAttribute = dataClient.getAttributeValue(username,
 					DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());

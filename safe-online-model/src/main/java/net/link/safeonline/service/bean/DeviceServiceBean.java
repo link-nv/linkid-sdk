@@ -7,8 +7,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
-import org.jboss.annotation.security.SecurityDomain;
-
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.entity.AllowedDeviceEntity;
@@ -18,6 +16,8 @@ import net.link.safeonline.model.Devices;
 import net.link.safeonline.service.ApplicationOwnerAccessControlInterceptor;
 import net.link.safeonline.service.DeviceService;
 
+import org.jboss.annotation.security.SecurityDomain;
+
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class DeviceServiceBean implements DeviceService {
@@ -25,7 +25,7 @@ public class DeviceServiceBean implements DeviceService {
 	@EJB
 	private Devices devices;
 
-	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
+	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.USER_ROLE })
 	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
 	public List<AllowedDeviceEntity> listAllowedDevices(
 			ApplicationEntity application) {

@@ -92,7 +92,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	}
 
 	/**
-	 * Checks if already re-authenticated if we're dealing with the same
+	 * Checks, if already re-authenticated, if we're dealing with the same
 	 * subject.
 	 * 
 	 * @param subject
@@ -193,7 +193,6 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	}
 
 	@Remove
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void abort() {
 		LOG.debug("abort");
 		this.authenticatedSubject = null;

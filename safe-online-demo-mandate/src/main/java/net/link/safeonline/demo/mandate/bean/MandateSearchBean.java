@@ -84,6 +84,7 @@ public class MandateSearchBean extends AbstractMandateDataClientBean implements
 		DataClient dataClient = getDataClient();
 		Attribute<Mandate[]> mandateAttribute;
 		try {
+			this.log.debug("get attribute value for user: " + userId);
 			mandateAttribute = dataClient.getAttributeValue(userId,
 					DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
 		} catch (ConnectException e) {

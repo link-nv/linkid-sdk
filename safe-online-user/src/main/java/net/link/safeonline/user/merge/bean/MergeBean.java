@@ -7,6 +7,7 @@
 
 package net.link.safeonline.user.merge.bean;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -17,11 +18,12 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.authentication.service.ReAuthenticationService;
 import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.user.merge.Merge;
 
@@ -55,11 +57,6 @@ public class MergeBean implements Merge {
 
 	@Out(required = false, scope = ScopeType.SESSION)
 	private AuthenticationDevice deviceSelection;
-
-	@SuppressWarnings("unused")
-	@Out(required = false, scope = ScopeType.SESSION)
-	@EJB
-	private ReAuthenticationService reAuthenticationService;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -128,6 +125,23 @@ public class MergeBean implements Merge {
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String getSource() {
 		return this.source;
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String start() {
+		LOG.debug("start");
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		String redirectUrl = "./entry";
+		LOG.debug("redirecting to: " + redirectUrl);
+		try {
+			externalContext.redirect(redirectUrl);
+		} catch (IOException e) {
+			LOG.debug("IO error: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
+		}
+		return null;
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

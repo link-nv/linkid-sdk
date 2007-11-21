@@ -12,12 +12,12 @@ import java.util.Date;
 
 import javax.ejb.EJBException;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Attribute Data Object. Used to transfer data between service and user
@@ -62,6 +62,8 @@ public class AttributeDO implements Serializable, Cloneable {
 	private boolean member;
 
 	private boolean required;
+
+	private boolean userVisible;
 
 	public AttributeDO(String name, DatatypeType type, boolean multivalued,
 			long index, String humanReadableName, String description,
@@ -329,6 +331,19 @@ public class AttributeDO implements Serializable, Cloneable {
 
 	public void setRequired(boolean required) {
 		this.required = required;
+	}
+
+	/**
+	 * Marks whether this attribute is user visible or not.
+	 * 
+	 * @return
+	 */
+	public boolean isUserVisible() {
+		return this.userVisible;
+	}
+
+	public void setUserVisible(boolean userVisible) {
+		this.userVisible = userVisible;
 	}
 
 	@Override

@@ -39,6 +39,7 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.service.SubjectService;
@@ -201,7 +202,8 @@ public class AuthenticationTest {
 			public Object run() throws Exception {
 
 				applicationService.addApplication(applicationName, null,
-						appOwnerName, null, false, null, null, null);
+						appOwnerName, null, false, IdScopeType.USER, null,
+						null, null);
 				return null;
 			}
 		});
@@ -241,7 +243,7 @@ public class AuthenticationTest {
 				.getUserId());
 
 		applicationService.addApplication(applicationName, null, appOwnerName,
-				null, false, null, null, null);
+				null, false, IdScopeType.USER, null, null, null);
 
 		String userLogin = "login-" + UUID.randomUUID().toString();
 		final String userPassword = "secret";
@@ -334,7 +336,7 @@ public class AuthenticationTest {
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, null, appOwnerName,
-				null, false, null, null, null);
+				null, false, IdScopeType.USER, null, null, null);
 
 		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		applicationService.setApplicationDescription(applicationName,
@@ -383,7 +385,8 @@ public class AuthenticationTest {
 		// operate: create application
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, null,
-				applicationOwnerName, null, false, null, null, null);
+				applicationOwnerName, null, false, IdScopeType.USER, null,
+				null, null);
 
 		// operate: change application description via application owner
 		IntegrationTestUtils.login(ownerSubject.getUserId(), ownerPassword);

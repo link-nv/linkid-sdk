@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.annotation.security.RolesAllowed;
@@ -18,9 +19,13 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeDO;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -38,6 +43,7 @@ import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.service.AccountMergingDO;
 import net.link.safeonline.service.AccountMergingService;
 import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.service.SubscriptionDO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,6 +66,9 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	private SubscriptionDAO subscriptionDAO;
 
 	@EJB
+	private DevicePolicyService devicePolicyService;
+
+	@EJB
 	private AttributeDAO attributeDAO;
 
 	@EJB
@@ -67,7 +76,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public AccountMergingDO getAccountMergingDO(String sourceAccountName)
-			throws SubjectNotFoundException, AttributeTypeNotFoundException {
+			throws SubjectNotFoundException, AttributeTypeNotFoundException,
+			ApplicationNotFoundException, EmptyDevicePolicyException {
 		LOG.debug("merge account: " + sourceAccountName);
 		SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
 		SubjectEntity sourceSubject = this.subjectService
@@ -86,7 +96,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
 				.listAttributes(targetSubject);
 		Map<AttributeTypeEntity, List<AttributeEntity>> sourceAttributes = this.attributeDAO
 				.listAttributes(sourceSubject);
-		mergeAttributes(accountMergingDO, targetAttributes, sourceAttributes);
+		mergeAttributes(accountMergingDO, targetSubject, targetAttributes,
+				sourceSubject, sourceAttributes);
 
 		return accountMergingDO;
 	}
@@ -110,16 +121,20 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	 * 
 	 * @param targetSubscriptions
 	 * @param sourceSubscriptions
+	 * @throws EmptyDevicePolicyException
+	 * @throws ApplicationNotFoundException
 	 */
 	private void mergeSubscriptions(AccountMergingDO accountMergingDO,
 			List<SubscriptionEntity> targetSubscriptions,
-			List<SubscriptionEntity> sourceSubscriptions) {
+			List<SubscriptionEntity> sourceSubscriptions)
+			throws ApplicationNotFoundException, EmptyDevicePolicyException {
 		accountMergingDO.setPreservedSubscriptions(targetSubscriptions);
 		for (SubscriptionEntity sourceSubscription : sourceSubscriptions) {
 			SubscriptionEntity targetSubscription = getSubscription(
 					targetSubscriptions, sourceSubscription.getApplication());
 			if (null == targetSubscription) {
-				accountMergingDO.addImportedSubscription(sourceSubscription);
+				accountMergingDO
+						.addImportedSubscription(getSubscriptionDO(sourceSubscription));
 			}
 		}
 	}
@@ -132,6 +147,13 @@ public class AccountMergingServiceBean implements AccountMergingService {
 				return subscription;
 		}
 		return null;
+	}
+
+	private SubscriptionDO getSubscriptionDO(SubscriptionEntity subscription)
+			throws ApplicationNotFoundException, EmptyDevicePolicyException {
+		Set<AuthenticationDevice> allowedDevices = this.devicePolicyService
+				.getDevicePolicy(subscription.getApplication().getName(), null);
+		return new SubscriptionDO(subscription, allowedDevices);
 	}
 
 	/**
@@ -150,7 +172,9 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	 * @throws AttributeTypeNotFoundException
 	 */
 	private void mergeAttributes(AccountMergingDO accountMergingDO,
+			SubjectEntity targetSubject,
 			Map<AttributeTypeEntity, List<AttributeEntity>> targetAttributes,
+			SubjectEntity sourceSubject,
 			Map<AttributeTypeEntity, List<AttributeEntity>> sourceAttributes)
 			throws AttributeTypeNotFoundException {
 
@@ -170,15 +194,47 @@ public class AccountMergingServiceBean implements AccountMergingService {
 			if (null == targetAttribute) {
 				importedAttributesList.addAll(sourceAttribute.getValue());
 			} else if (sourceAttributeType.isMultivalued()) {
-				mergeAttribute(targetAttribute, sourceAttribute);
-				preservedAttributeMap.remove(sourceAttributeType);
+				/*
+				 * compounded attributes should be merged as one big attribute
+				 */
+				if (sourceAttributeType.getType().equals(
+						DatatypeType.COMPOUNDED)) {
+					List<AttributeEntity> mergedCompoundedAttributes = mergeCompoundedAttribute(
+							targetSubject, sourceSubject, targetAttribute,
+							sourceAttribute);
+					targetAttribute.setValue(new LinkedList<AttributeEntity>());
+					for (AttributeEntity mergedCompoundedAttribute : mergedCompoundedAttributes) {
+						targetAttribute.getValue().add(
+								mergedCompoundedAttribute);
+						List<AttributeEntity> mergedCompoundedMembers = mergedCompoundedAttribute
+								.getMembers();
+						for (AttributeEntity mergedCompoundedMember : mergedCompoundedMembers) {
+							targetAttribute.getValue().add(
+									mergedCompoundedMember);
+						}
+					}
+
+				}
+				/*
+				 * dealt with when the parent compounded attribute is handled
+				 */
+				else if (sourceAttributeType.isCompoundMember()) {
+					preservedAttributeMap.remove(targetAttribute.getKey());
+					continue;
+				} else
+					mergeAttribute(targetAttribute, sourceAttribute);
 				mergedAttributesList.addAll(targetAttribute.getValue());
+				preservedAttributeMap.remove(targetAttribute.getKey());
 			} else if (sourceAttributeType.isUserEditable()) {
-				preservedAttributeMap.remove(sourceAttributeType);
 				choosableAttributesMap.put(targetAttribute.getValue(),
 						sourceAttribute.getValue());
 			}
 		}
+
+		/*
+		 * now convert the resulted lists/maps to AttributeDO's for the
+		 * presentation layer
+		 */
 		for (Entry<AttributeTypeEntity, List<AttributeEntity>> preservedAttribute : preservedAttributeMap
 				.entrySet()) {
 			List<AttributeEntity> preservedAttributes = preservedAttribute
@@ -199,7 +255,93 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	}
 
 	/**
-	 * Merges two multivalued attributes, removing doubles
+	 * Merge two compounded multivalued attributes, removing doubles.
+	 * 
+	 * for each compound ( source and target ) : fetch all its members in a list
+	 * then compare all attributes in these lists with each other ...
+	 * 
+	 * @param targetAttributes
+	 * @param sourceAttributes
+	 * @return
+	 */
+	private List<AttributeEntity> mergeCompoundedAttribute(
+			SubjectEntity targetSubject, SubjectEntity sourceSubject,
+			Entry<AttributeTypeEntity, List<AttributeEntity>> targetAttributes,
+			Entry<AttributeTypeEntity, List<AttributeEntity>> sourceAttributes) {
+
+		fetchCompoundedMemberAttributes(targetSubject, targetAttributes);
+		fetchCompoundedMemberAttributes(sourceSubject, sourceAttributes);
+		/*
+		 * lets merge
+		 */
+		List<AttributeEntity> targetResultAttributes = new LinkedList<AttributeEntity>(
+				targetAttributes.getValue());
+		for (AttributeEntity sourceAttribute : sourceAttributes.getValue()) {
+			List<AttributeEntity> sourceMembers = sourceAttribute.getMembers();
+			boolean found = false;
+			for (AttributeEntity targetAttribute : targetAttributes.getValue()) {
+				List<AttributeEntity> targetMembers = targetAttribute
+						.getMembers();
+				if (compoundEqual(sourceMembers, targetMembers)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				sourceAttribute
+						.setAttributeIndex(targetResultAttributes.size());
+				for (AttributeEntity sourceMember : sourceMembers) {
+					sourceMember.setAttributeIndex(sourceAttribute
+							.getAttributeIndex());
+				}
+				targetResultAttributes.add(sourceAttribute);
+				break;
+			}
+		}
+		return targetResultAttributes;
+	}
+
+	/**
+	 * Fetch the compounded attributes' member attributes
+	 * 
+	 * @param subject
+	 * @param attributes
+	 */
+	private void fetchCompoundedMemberAttributes(SubjectEntity subject,
+			Entry<AttributeTypeEntity, List<AttributeEntity>> attributes) {
+		List<CompoundedAttributeTypeMemberEntity> members = attributes.getKey()
+				.getMembers();
+		for (AttributeEntity attribute : attributes.getValue()) {
+			for (CompoundedAttributeTypeMemberEntity member : members) {
+				AttributeEntity memberAttribute = this.attributeDAO
+						.findAttribute(subject, member.getMember(), attribute
+								.getAttributeIndex());
+				if (null != memberAttribute) {
+					attribute.getMembers().add(memberAttribute);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Compares the attribute members of one compounded attribute to another one
+	 * 
+	 * @param sourceMembers
+	 * @param targetMembers
+	 * @return
+	 */
+	private boolean compoundEqual(List<AttributeEntity> sourceMembers,
+			List<AttributeEntity> targetMembers) {
+		for (AttributeEntity sourceMember : sourceMembers) {
+			if (!getAttributeValue(targetMembers, sourceMember))
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Merges two multivalued attributes, removing doubles. Compounded
+	 * attributes are not handled here.
 	 * 
 	 * @param sourceAttribute
 	 * @param targetAttribute
@@ -274,6 +416,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 			DatatypeType datatype = attributeType.getType();
 			boolean multivalued = attributeType.isMultivalued();
 			long index = attribute.getAttributeIndex();
+			boolean userVisible = attributeType.isUserVisible();
 
 			String humanReadableName = null;
 			String description = null;
@@ -293,6 +436,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 					multivalued, index, humanReadableName, description,
 					editable, true, stringValue, booleanValue);
 			attributeView.setValue(attribute);
+			attributeView.setUserVisible(userVisible);
 			attributesView.add(attributeView);
 		}
 

@@ -45,6 +45,8 @@ import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +54,9 @@ import org.junit.Test;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class AccountMergingServiceBeanTest {
+
+	static final Log LOG = LogFactory
+			.getLog(AccountMergingServiceBeanTest.class);
 
 	private EntityTestManager entityTestManager;
 
@@ -102,20 +107,23 @@ public class AccountMergingServiceBeanTest {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-admin", "global-operator");
 		AttributeTypeEntity attributeType1 = addAttributeType(
-				"test-attribute-1", DatatypeType.STRING, true, false);
+				"urn::net:lin-k:safe-online:attribute:1", DatatypeType.STRING,
+				true, false);
 		AttributeTypeEntity attributeType2 = addAttributeType(
-				"test-attribute-2", DatatypeType.STRING, true, false);
+				"urn::net:lin-k:safe-online:attribute:2", DatatypeType.STRING,
+				true, false);
 		AttributeTypeEntity attributeTypeMultivalued = addAttributeType(
-				"test-attribute-multi-1", DatatypeType.STRING, true, true);
+				"urn::net:lin-k:safe-online:attribute:multi",
+				DatatypeType.STRING, true, true);
 		AttributeTypeEntity attributeTypeCompounded = addAttributeType(
-				"test-attribute-compound-1", DatatypeType.COMPOUNDED, true,
-				false);
+				"urn::net:lin-k:safe-online:attribute:compound",
+				DatatypeType.COMPOUNDED, true, true);
 		AttributeTypeEntity attributeTypeCompoundMember1 = addAttributeType(
-				"test-attribute-compound-member-1", DatatypeType.STRING, true,
-				false);
+				"urn::net:lin-k:safe-online:attribute:compound:member-1",
+				DatatypeType.STRING, true, true);
 		AttributeTypeEntity attributeTypeCompoundMember2 = addAttributeType(
-				"test-attribute-compound-member-2", DatatypeType.STRING, true,
-				false);
+				"urn::net:lin-k:safe-online:attribute:compound:member-2",
+				DatatypeType.STRING, true, true);
 		attributeTypeCompounded
 				.addMember(attributeTypeCompoundMember1, 0, true);
 		attributeTypeCompounded
@@ -133,13 +141,18 @@ public class AccountMergingServiceBeanTest {
 		Application application3 = new Application("test-application-3", Arrays
 				.asList(new AttributeTypeEntity[] { attributeTypeCompounded }),
 				entityManager);
+		Application application4 = new Application("test-application-4", Arrays
+				.asList(new AttributeTypeEntity[] { attributeType1 }),
+				entityManager);
 
 		// subscribe
 		targetAccount.addSubscription(application1);
 		targetAccount.addSubscription(application2);
+		targetAccount.addSubscription(application3);
 		sourceAccount.addSubscription(application1);
 		sourceAccount.addSubscription(application2);
 		sourceAccount.addSubscription(application3);
+		sourceAccount.addSubscription(application4);
 
 		// operate
 		AccountMergingService accountMergingService = EJBTestUtils.newInstance(
@@ -153,12 +166,13 @@ public class AccountMergingServiceBeanTest {
 		accountMergingDO.log();
 
 		// verify
-		assertEquals(3, accountMergingDO.getPreservedSubscriptions().size());
+		// keep in mind olas-user subscription and 3 password attributes ...
+		assertEquals(4, accountMergingDO.getPreservedSubscriptions().size());
 		assertEquals(1, accountMergingDO.getImportedSubscriptions().size());
-		assertEquals(4, accountMergingDO.getPreservedAttributes().size());
+		assertEquals(6, accountMergingDO.getPreservedAttributes().size());
 		assertEquals(2, accountMergingDO.getChoosableAttributes().size());
-		assertEquals(3, accountMergingDO.getImportedAttributes().size());
-		assertEquals(4, accountMergingDO.getMergedAttributes().size());
+		assertEquals(0, accountMergingDO.getImportedAttributes().size());
+		assertEquals(10, accountMergingDO.getMergedAttributes().size());
 	}
 
 	private class Account {
@@ -208,25 +222,33 @@ public class AccountMergingServiceBeanTest {
 
 		private void addAttributeValue(AttributeTypeEntity attributeType,
 				IdentityService identityService) throws Exception {
+			LOG.debug("adding attribute value for: " + attributeType.getName()
+					+ "(" + attributeType.getType() + ")");
 			AttributeDO attribute = new AttributeDO(attributeType.getName(),
-					attributeType.getType());
-			attribute.setEditable(attributeType.isUserEditable());
+					attributeType.getType(), attributeType.isMultivalued(), 0,
+					attributeType.getName(), null, attributeType
+							.isUserEditable(), false, null, null);
+			attribute.setMember(attributeType.isCompoundMember());
 			if (DatatypeType.COMPOUNDED == attributeType.getType()) {
+				attribute.setCompounded(true);
+				identityService.saveAttribute(attribute);
 				for (CompoundedAttributeTypeMemberEntity member : attributeType
 						.getMembers()) {
+					LOG.debug("add compounded member value: "
+							+ member.getMember().getName() + "("
+							+ member.getMember().getType() + ")");
 					addAttributeValue(member.getMember(), identityService);
 				}
 			} else {
-				attribute.setStringValue(attribute.getName() + "-value-"
-						+ UUID.randomUUID().toString());
+				attribute.setStringValue(UUID.randomUUID().toString());
 				identityService.saveAttribute(attribute);
 				if (attributeType.isMultivalued()) {
 					AttributeDO attribute2 = new AttributeDO(attributeType
-							.getName(), attributeType.getType());
-					attribute2.setEditable(attributeType.isUserEditable());
-					attribute2.setStringValue(attribute2.getName() + "-value-"
-							+ UUID.randomUUID().toString());
-					attribute2.setIndex(1);
+							.getName(), attributeType.getType(), attributeType
+							.isMultivalued(), 1, attributeType.getName(), null,
+							attributeType.isUserEditable(), false, null, null);
+					attribute2.setMember(attributeType.isCompoundMember());
+					attribute2.setStringValue(UUID.randomUUID().toString());
 					identityService.saveAttribute(attribute2);
 				}
 			}

@@ -154,8 +154,8 @@
 	<navigation-rule>
 		<from-view-id>/merge/merge.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>merge-login</from-action>
-			<to-view-id>/merge/merge-login.xhtml</to-view-id>
+			<from-action>merge-entry</from-action>
+			<to-view-id>/merge/entry</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

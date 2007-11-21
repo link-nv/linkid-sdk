@@ -221,9 +221,33 @@
 	</servlet>
 
 	<servlet>
+		<servlet-name>ReAuthenticationServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.user.servlet.ReAuthenticationServlet
+		</servlet-class>
+		<init-param>
+			<param-name>LoginUrl</param-name>
+			<param-value>merge-login.seam</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ReAuthenticationServlet</servlet-name>
+		<url-pattern>/merge/entry</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet>
 		<servlet-name>IdentityServlet</servlet-name>
 		<servlet-class>
 			net.link.safeonline.user.servlet.IdentityServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.user.servlet.AuthenticationServlet
 		</servlet-class>
 	</servlet>
 
@@ -236,6 +260,12 @@
 		<servlet-name>IdentityServlet</servlet-name>
 		<url-pattern>/identity/*</url-pattern>
 	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<url-pattern>/authentication</url-pattern>
+	</servlet-mapping>
+
 
 	<session-config>
 		<session-timeout>5</session-timeout>

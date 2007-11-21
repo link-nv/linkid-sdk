@@ -43,6 +43,7 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
@@ -131,6 +132,7 @@ public class DataWebServiceTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						this.certificate.getEncoded(),
 						Arrays
@@ -248,7 +250,8 @@ public class DataWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, null, this.certificate.getEncoded(), Arrays
+				null, false, IdScopeType.USER, null, this.certificate
+						.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -403,7 +406,8 @@ public class DataWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, null, this.certificate.getEncoded(), Arrays
+				null, false, IdScopeType.USER, null, this.certificate
+						.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -497,7 +501,8 @@ public class DataWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, null, this.certificate.getEncoded(), Arrays
+				null, false, IdScopeType.USER, null, this.certificate
+						.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -595,6 +600,7 @@ public class DataWebServiceTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						this.certificate.getEncoded(),
 						Arrays
@@ -699,7 +705,8 @@ public class DataWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, null, this.certificate.getEncoded(), Arrays
+				null, false, IdScopeType.USER, null, this.certificate
+						.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),

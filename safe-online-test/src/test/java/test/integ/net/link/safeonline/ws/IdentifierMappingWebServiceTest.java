@@ -33,6 +33,7 @@ import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
@@ -113,6 +114,7 @@ public class IdentifierMappingWebServiceTest {
 						"owner",
 						null,
 						true,
+						IdScopeType.USER,
 						null,
 						this.certificate.getEncoded(),
 						Arrays
@@ -189,6 +191,7 @@ public class IdentifierMappingWebServiceTest {
 						"owner",
 						null,
 						false,
+						IdScopeType.USER,
 						null,
 						this.certificate.getEncoded(),
 						Arrays

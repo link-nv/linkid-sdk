@@ -2,4 +2,7 @@
 <!DOCTYPE pages PUBLIC 
 	"-//JBoss/Seam Pages Configuration DTD 1.2//EN"
 	"http://jboss.com/products/seam/pages-1.2.dtd">
-<pages></pages>
+<pages>
+	<page view-id="/merge/merge-overview.xhtml"
+		action="#{mergeOverview.init}" />
+</pages>

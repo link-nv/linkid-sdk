@@ -39,6 +39,8 @@ public interface Merge {
 	/*
 	 * Actions.
 	 */
+	String start();
+
 	String next();
 
 }
