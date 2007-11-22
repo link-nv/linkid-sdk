@@ -509,12 +509,12 @@
 					<version>${maven-jaxb-plugin.version}</version>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.maven.plugin</groupId>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>${maven-jar-plugin.version}</version>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.maven.plugin</groupId>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>${maven-assembly-plugin.version}</version>
 				</plugin>
@@ -1718,14 +1718,14 @@
 		<jetty-servlet-tester.version>
 			6.1.5
 		</jetty-servlet-tester.version>
-		<commons-httpclient.version>3.0.1</commons-httpclient.version>
+		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<jetty.version>6.1.5</jetty.version>
 		<trinidad-api.version>1.2.1</trinidad-api.version>
 		<trinidad-impl.version>1.2.1</trinidad-impl.version>
 		<maven-jaxb-plugin.version>1.1</maven-jaxb-plugin.version>
 		<maven-jar-plugin.version>2.1</maven-jar-plugin.version>
 		<maven-assembly-plugin.version>
-			2.1
+			2.2-beta-1
 		</maven-assembly-plugin.version>
 		<maven-dependency-plugin.version>
 			2.0-alpha-5-SNAPSHOT
