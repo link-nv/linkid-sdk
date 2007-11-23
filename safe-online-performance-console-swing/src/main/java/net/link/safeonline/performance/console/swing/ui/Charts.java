@@ -7,7 +7,8 @@
 package net.link.safeonline.performance.console.swing.ui;
 
 import java.awt.Frame;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collection;
@@ -37,6 +38,7 @@ public class Charts extends WindowAdapter {
 	private static Charts instance;
 	private JTabbedPane agents;
 	private JFrame frame;
+	private GridBagConstraints tabConstraints;
 
 	private Charts() {
 
@@ -50,9 +52,14 @@ public class Charts extends WindowAdapter {
 		this.frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.frame.addWindowListener(this);
 		this.frame.setContentPane(this.agents);
-		this.frame.pack();
+		this.frame.setSize(640, 480);
 		this.frame.setState(Frame.MAXIMIZED_BOTH);
 		this.frame.setVisible(true);
+
+		this.tabConstraints = new GridBagConstraints();
+		this.tabConstraints.fill = GridBagConstraints.BOTH;
+		this.tabConstraints.weightx = this.tabConstraints.weighty = 1;
+		this.tabConstraints.gridx = 0;
 	}
 
 	private void addTab(Address agent, List<byte[]> chartList) {
@@ -61,12 +68,18 @@ public class Charts extends WindowAdapter {
 			if (this.agents.getTitleAt(tab).equals(agent.toString()))
 				return;
 
-		JPanel agentCharts = new JPanel(new GridLayout(0, 1, 0, 20));
+		this.tabConstraints.gridy = 0;
+		JPanel agentCharts = new JPanel(new GridBagLayout());
 		agentCharts.setBorder(Borders.DLU4_BORDER);
-		for (byte[] chart : chartList)
-			agentCharts.add(new JLabel(new ImageIcon(chart)));
+		for (byte[] chart : chartList) {
+			agentCharts.add(new JLabel(new ImageIcon(chart)),
+					this.tabConstraints);
+
+			this.tabConstraints.gridy++;
+		}
 
 		this.agents.addTab(agent.toString(), new JScrollPane(agentCharts));
+		this.frame.pack();
 	}
 
 	/**

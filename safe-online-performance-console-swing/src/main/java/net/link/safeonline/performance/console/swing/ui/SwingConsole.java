@@ -5,9 +5,15 @@ package net.link.safeonline.performance.console.swing.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -35,6 +41,7 @@ public class SwingConsole {
 		this.consoleData = new ConsoleData();
 
 		initLnF();
+		initExceptionDialog();
 		buildUI();
 	}
 
@@ -45,6 +52,37 @@ public class SwingConsole {
 			UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
 		}
+	}
+
+	private void initExceptionDialog() {
+
+		Thread
+				.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+					public void uncaughtException(Thread t, Throwable e) {
+
+						JDialog dialog = new JDialog((Frame) null,
+								"Uncaught exception: " + e.getMessage());
+						JPanel pane = new JPanel(new BorderLayout());
+						pane.setBorder(Borders.DIALOG_BORDER);
+						dialog.setContentPane(pane);
+
+						StringWriter writer = new StringWriter();
+						e.printStackTrace(new PrintWriter(writer));
+						String stackTrace = writer.getBuffer().toString();
+						e.printStackTrace();
+
+						pane.add(new JLabel(
+								"An uncaught exception was thrown in thread "
+										+ t.toString() + ":"),
+								BorderLayout.NORTH);
+						pane.add(new JTextArea(stackTrace));
+
+						dialog.pack();
+						dialog.setLocationRelativeTo(null);
+						dialog.setVisible(true);
+					}
+				});
 	}
 
 	private void buildUI() {
@@ -67,31 +105,37 @@ public class SwingConsole {
 		OlasPrefs olasPrefs = new OlasPrefs(this.consoleData);
 
 		// JGoodies Forms layout definition.
-		FormLayout layout = new FormLayout("p, 5dlu, 0:g, 5dlu, p, 5dlu, p",
-				"p, 5dlu, t:p:g, 10dlu, p, 5dlu, p, 10dlu, p, 5dlu, p, 5dlu, p");
+		FormLayout layout = new FormLayout("p, 5dlu, 0:g, 5dlu, p",
+				"p, 5dlu, t:p:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout, pane);
 
 		builder.appendSeparator("Members of group "
 				+ this.consoleData.getAgentDiscoverer().getGroupName());
 		builder.nextRow();
 
-		builder.append(agentsList, 7);
+		builder.append(agentsList, 5);
 		builder.nextRow();
 
-		builder.appendSeparator("OLAS Location");
+		builder.appendSeparator("Preferences");
 		builder.nextRow();
 
-		builder.append("Hostname:", olasPrefs.hostname);
-		builder.append("Port:", olasPrefs.port);
+		builder.append("Workers:");
+		builder.append("Hostname:");
+		builder.append("Port:");
 		builder.nextRow();
-
-		builder.appendSeparator("Scenario Deployer");
+		builder.append(olasPrefs.workers);
+		builder.append(olasPrefs.hostname);
+		builder.append(olasPrefs.port);
 		builder.nextRow();
 
 		builder.append("EAR Package:", scenarioChooser.scenarioField);
-		builder.append(scenarioChooser.sideButton, 3);
+		builder.append(scenarioChooser.sideButton);
 		builder.nextRow();
-		builder.append(scenarioChooser.actionButton, 7);
+
+		builder.appendSeparator("Actions");
+		builder.nextRow();
+
+		builder.append(scenarioChooser.actionButton, 5);
 
 		// Visualise the lot.
 		frame.pack();

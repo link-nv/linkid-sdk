@@ -32,7 +32,7 @@ public class ConsoleData {
 	private Map<Address, Agent> agents;
 	private AgentDiscoverer agentDiscoverer;
 	private String hostname = "localhost";
-	private int port = 8443;
+	private int port = 8443, workers = 5;
 
 	public ConsoleData() {
 
@@ -49,9 +49,10 @@ public class ConsoleData {
 	 * @return an unmodifiable view of the currently known agents for read-only
 	 *         access.
 	 */
-	public Map<Address, Agent> getAgents() {
+	public synchronized Map<Address, Agent> getAgents() {
 
-		return Collections.unmodifiableMap(new HashMap<Address, Agent>(this.agents));
+		return Collections.unmodifiableMap(new HashMap<Address, Agent>(
+				this.agents));
 	}
 
 	/**
@@ -96,7 +97,7 @@ public class ConsoleData {
 	 * @param hostname
 	 *            the hostname of the OLAS application.
 	 */
-	public void setHostname(String hostname) {
+	public synchronized void setHostname(String hostname) {
 
 		this.hostname = hostname;
 	}
@@ -104,7 +105,7 @@ public class ConsoleData {
 	/**
 	 * @return the hostname of the OLAS application.
 	 */
-	public String getHostname() {
+	public synchronized String getHostname() {
 
 		return this.hostname;
 	}
@@ -113,7 +114,7 @@ public class ConsoleData {
 	 * @param port
 	 *            the port of the OLAS application.
 	 */
-	public void setPort(int port) {
+	public synchronized void setPort(int port) {
 
 		this.port = port;
 	}
@@ -121,8 +122,25 @@ public class ConsoleData {
 	/**
 	 * @return the port of the OLAS application.
 	 */
-	public int getPort() {
+	public synchronized int getPort() {
 
 		return this.port;
+	}
+
+	/**
+	 * @return the amount of simultaneous threads that execute a scenario.
+	 */
+	public synchronized int getWorkers() {
+
+		return this.workers;
+	}
+
+	/**
+	 * @param workers
+	 *            The amount of simultaneous threads that execute a scenario.
+	 */
+	public synchronized void setWorkers(int workers) {
+
+		this.workers = workers;
 	}
 }

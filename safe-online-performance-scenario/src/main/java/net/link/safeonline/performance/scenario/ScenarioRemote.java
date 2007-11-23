@@ -19,5 +19,6 @@ import net.link.safeonline.performance.drivers.DriverException;
 @Remote
 public interface ScenarioRemote {
 
-	public List<byte[]> execute(String hostname) throws DriverException;
+	public List<byte[]> execute(String hostname, int workers)
+			throws DriverException;
 }

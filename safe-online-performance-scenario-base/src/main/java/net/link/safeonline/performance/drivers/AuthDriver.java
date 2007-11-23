@@ -138,18 +138,14 @@ public class AuthDriver extends ProfileDriver {
 
 		public void checkServerTrusted(X509Certificate[] chain, String authType)
 				throws CertificateException {
-			if (null == chain) {
+			if (null == chain)
 				throw new CertificateException("null certificate chain");
-			}
-			if (0 == chain.length) {
+			if (0 == chain.length)
 				throw new CertificateException("empty certificate chain");
-			}
-			if (null == authType) {
+			if (null == authType)
 				throw new CertificateException("null authentication type");
-			}
-			if (0 == authType.length()) {
+			if (0 == authType.length())
 				throw new CertificateException("empty authentication type");
-			}
 			LOG.debug("server certificate: " + chain[0].getSubjectDN());
 		}
 
@@ -175,7 +171,7 @@ public class AuthDriver extends ProfileDriver {
 			PrivateKey privateKey = application.getPrivateKey();
 			KeyPair keyPair = new KeyPair(publicKey, privateKey);
 			String authnRequest = AuthnRequestFactory.createAuthnRequest(
-					"performance-application", keyPair,
+					applicationName, keyPair,
 					"http://www.lin-k.net/performance-application", null, null);
 			String encodedAuthnRequest = new String(Base64
 					.encodeBase64(authnRequest.getBytes()));
@@ -192,9 +188,8 @@ public class AuthDriver extends ProfileDriver {
 
 			String jsessionId = getJSessionId();
 
-			if (HttpStatus.SC_MOVED_TEMPORARILY != statusCode) {
+			if (HttpStatus.SC_MOVED_TEMPORARILY != statusCode)
 				throw new DriverException("moved");
-			}
 			Header locationHeader = postMethod.getResponseHeader("Location");
 			String locationValue = locationHeader.getValue();
 			LOG.debug("location: " + locationValue);
@@ -347,12 +342,11 @@ public class AuthDriver extends ProfileDriver {
 	}
 
 	private String getJSessionId() throws DriverException {
-		for (Cookie cookie : this.client.getState().getCookies()) {
+		for (Cookie cookie : this.client.getState().getCookies())
 			if ("JSESSIONID".equals(cookie.getName())) {
 				String jsessionId = cookie.getValue();
 				return jsessionId;
 			}
-		}
 		throw new DriverException("no jsessionid cookie");
 	}
 
@@ -382,9 +376,8 @@ public class AuthDriver extends ProfileDriver {
 		String actionValue = formNode.getAttributes().getNamedItem("action")
 				.getNodeValue();
 		LOG.debug("action value: " + actionValue);
-		if (false == actionValue.startsWith("http")) {
+		if (false == actionValue.startsWith("http"))
 			actionValue = "https://" + this.host + actionValue;
-		}
 		PostMethod postMethod = new PostMethod(actionValue);
 		postMethod.addParameters(submitFields.toArray(new NameValuePair[] {}));
 
@@ -393,9 +386,8 @@ public class AuthDriver extends ProfileDriver {
 
 	private int executeRequest(HttpMethodBase method, String jsessionId)
 			throws HttpException, IOException {
-		if (null != jsessionId) {
+		if (null != jsessionId)
 			method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
-		}
 		int statusCode = this.client.executeMethod(method);
 		Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
 		for (Header header : method.getResponseHeaders()) {

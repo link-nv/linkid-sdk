@@ -180,7 +180,9 @@ public class AgentsList extends JList implements AgentStateListener,
 				enabled &= state.equals(agent.getState());
 			}
 
-		this.scenarioChooser.setDeploymentPhase(state);
-		this.scenarioChooser.setButtonsEnabled(enabled);
+		if (enabled)
+			this.scenarioChooser.enableButtonsFor(state);
+		else
+			this.scenarioChooser.disableButtons();
 	}
 }

@@ -26,6 +26,7 @@ public class OlasPrefs extends JPanel implements FocusListener {
 
 	protected JTextField hostname;
 	protected JTextField port;
+	protected JTextField workers;
 	protected ConsoleData consoleData;
 
 	/**
@@ -37,9 +38,14 @@ public class OlasPrefs extends JPanel implements FocusListener {
 
 		this.hostname = new JTextField(consoleData.getHostname());
 		this.port = new JTextField(String.valueOf(consoleData.getPort()));
+		this.workers = new JTextField(String.valueOf(consoleData.getWorkers()));
+
 		this.hostname.addFocusListener(this);
 		this.port.addFocusListener(this);
+		this.workers.addFocusListener(this);
+
 		this.port.setColumns(5);
+		this.workers.setColumns(5);
 	}
 
 	/**
@@ -52,12 +58,18 @@ public class OlasPrefs extends JPanel implements FocusListener {
 
 		else if (this.port.equals(e.getSource()))
 			this.consoleData.setPort(Integer.parseInt(this.port.getText()));
+
+		else if (this.workers.equals(e.getSource()))
+			this.consoleData.setWorkers(Integer
+					.parseInt(this.workers.getText()));
 	}
 
 	/**
 	 * @{inheritDoc}
 	 */
 	public void focusGained(FocusEvent e) {
+
+		focusLost(e);
 	}
 
 }

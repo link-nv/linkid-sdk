@@ -12,6 +12,7 @@ import javax.naming.InitialContext;
 
 import net.link.safeonline.performance.console.ScenarioDeployer;
 import net.link.safeonline.performance.console.swing.data.Agent;
+import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.data.Agent.State;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 import net.link.safeonline.performance.scenario.ScenarioRemote;
@@ -26,16 +27,13 @@ import org.jgroups.Address;
  */
 public class ScenarioExecutorThread extends ScenarioThread {
 
-	private String hostname;
-	private int port;
+	private ConsoleData consoleData;
 
 	public ScenarioExecutorThread(Map<Address, Agent> map,
-			ScenarioChooser chooser, String hostname, int port) {
+			ScenarioChooser chooser, ConsoleData consoleData) {
 
 		super(State.EXECUTE, map, chooser);
-
-		this.hostname = hostname;
-		this.port = port;
+		this.consoleData = consoleData;
 	}
 
 	/**
@@ -48,8 +46,9 @@ public class ScenarioExecutorThread extends ScenarioThread {
 		ScenarioRemote scenario = (ScenarioRemote) context
 				.lookup("SafeOnline/ScenarioBean");
 
-		agent.setCharts(scenario.execute(String.format("%s:%d", this.hostname,
-				this.port)));
+		agent.setCharts(scenario.execute(String.format("%s:%d",
+				this.consoleData.getHostname(), this.consoleData.getPort()),
+				this.consoleData.getWorkers()));
 
 	}
 }

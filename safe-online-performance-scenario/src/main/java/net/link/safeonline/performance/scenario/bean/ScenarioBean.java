@@ -12,6 +12,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateless;
 
@@ -34,6 +37,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYAreaRenderer2;
+import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
 import org.jfree.data.statistics.BoxAndWhiskerCalculator;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
@@ -48,7 +52,7 @@ import org.jfree.data.xy.XYSeries;
 @RemoteBinding(jndiBinding = "SafeOnline/ScenarioBean")
 public class ScenarioBean implements ScenarioRemote {
 
-	private static final Log LOG = LogFactory.getLog(ScenarioBean.class);
+	static final Log LOG = LogFactory.getLog(ScenarioBean.class);
 
 	private List<ProfileDriver> drivers;
 
@@ -62,18 +66,32 @@ public class ScenarioBean implements ScenarioRemote {
 		this.encoder = ImageEncoderFactory.newInstance("png", 0.9f, true);
 	}
 
-	public List<byte[]> execute(String hostname) {
+	public List<byte[]> execute(String hostname, int workers) {
 
-		Scenario scenario = new BasicScenario();
+		final Scenario scenario = new BasicScenario();
 		this.drivers = scenario.prepare(hostname);
 
+		ExecutorService pool = Executors.newFixedThreadPool(workers);
+
 		// Execute the scenario story.
-		for (int iteration = 0; iteration < scenario.getIterations(); ++iteration)
-			try {
-				scenario.execute();
-			} catch (Exception e) {
-				LOG.error("Test " + iteration + " failed.", e);
-			}
+		final int[] iteration = new int[1];
+		for (int i = 0; i < scenario.getIterations(); iteration[0] = ++i)
+			pool.execute(new Runnable() {
+				public void run() {
+					try {
+						scenario.execute();
+					} catch (Exception e) {
+						LOG.error("Test " + iteration[0] + " failed.", e);
+					}
+				}
+			});
+
+		pool.shutdown();
+		try {
+			while (!pool.awaitTermination(1, TimeUnit.SECONDS))
+				Thread.yield();
+		} catch (InterruptedException e) {
+		}
 
 		// Generate the resulting statistical information.
 		return createGraphs();
@@ -105,6 +123,7 @@ public class ScenarioBean implements ScenarioRemote {
 			Map<String, XYSeries> timingSet = new HashMap<String, XYSeries>();
 			Map<String, XYSeries> errorsSet = new HashMap<String, XYSeries>();
 			XYSeries speedsSet = new XYSeries("Speed", true, false);
+			XYSeries requestSet = new XYSeries("Request Time", true, false);
 			XYSeries afterMemorySet = new XYSeries("Memory After", true, false);
 			XYSeries beforeMemorySet = new XYSeries("Memory Before", true,
 					false);
@@ -150,6 +169,7 @@ public class ScenarioBean implements ScenarioRemote {
 							+ ": " + beforeMemory + " -> " + afterMemory);
 					// TODO: timingData.addValue(requestTime, "Request Time",
 					// i);
+					requestSet.add((double) i, requestTime);
 					beforeMemorySet.add((double) i, beforeMemory);
 					afterMemorySet.add((double) i, afterMemory);
 				}
@@ -181,10 +201,12 @@ public class ScenarioBean implements ScenarioRemote {
 			}
 
 			// Convert XY data into XY Datasets and discard the temporary data.
+			DefaultTableXYDataset requestData = new DefaultTableXYDataset();
 			DefaultTableXYDataset speedsData = new DefaultTableXYDataset();
 			DefaultTableXYDataset timingData = new DefaultTableXYDataset();
 			DefaultTableXYDataset memoryData = new DefaultTableXYDataset();
 			DefaultTableXYDataset errorsData = new DefaultTableXYDataset();
+			requestData.addSeries(requestSet);
 			speedsData.addSeries(speedsSet);
 			memoryData.addSeries(beforeMemorySet);
 			memoryData.addSeries(afterMemorySet);
@@ -192,7 +214,7 @@ public class ScenarioBean implements ScenarioRemote {
 				timingData.addSeries(timingSeries);
 			for (XYSeries errorsSeries : errorsSet.values())
 				errorsData.addSeries(errorsSeries);
-			beforeMemorySet = afterMemorySet = null;
+			requestSet = beforeMemorySet = afterMemorySet = null;
 			timingSet = null;
 
 			// Bar Charts.
@@ -204,17 +226,22 @@ public class ScenarioBean implements ScenarioRemote {
 
 			XYPlot speedsPlot = new XYPlot(speedsData, iterationAxis,
 					speedsAxis, new XYAreaRenderer2());
-			XYPlot timingPlot = new XYPlot(timingData, iterationAxis,
-					timingAxis, new StackedXYAreaRenderer2());
-			XYPlot memoryPlot = new XYPlot(memoryData, iterationAxis,
-					memoryAxis, new XYDifferenceRenderer());
+			XYPlot timingPlot = new XYPlot();
+			timingPlot.setDataset(0, requestData);
+			timingPlot.setDomainAxis(0, iterationAxis);
+			timingPlot.setRangeAxis(0, timingAxis);
+			timingPlot.setRenderer(0, new XYAreaRenderer2());
+			timingPlot.setDataset(1, timingData);
+			timingPlot.setRenderer(1, new StackedXYAreaRenderer2());
+			timingPlot.setDataset(2, memoryData);
+			timingPlot.setRangeAxis(2, memoryAxis);
+			timingPlot.setRenderer(2, new XYDifferenceRenderer());
 			XYPlot errorsPlot = new XYPlot(errorsData, iterationAxis,
-					errorsAxis, new XYAreaRenderer2());
+					errorsAxis, new XYBarRenderer());
 
 			CombinedDomainXYPlot timingAndMemoryPlot = new CombinedDomainXYPlot(
 					iterationAxis);
 			timingAndMemoryPlot.add(speedsPlot);
-			timingAndMemoryPlot.add(memoryPlot);
 			timingAndMemoryPlot.add(timingPlot);
 			timingAndMemoryPlot.add(errorsPlot);
 			JFreeChart iterationChart = new JFreeChart("Statistics for: "

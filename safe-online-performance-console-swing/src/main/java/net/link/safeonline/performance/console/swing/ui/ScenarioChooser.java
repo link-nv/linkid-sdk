@@ -1,6 +1,7 @@
 package net.link.safeonline.performance.console.swing.ui;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -68,10 +69,14 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		this.chartsButton.addActionListener(this);
 
 		this.sideButton = new JPanel(new BorderLayout());
-		this.actionButton = new JPanel(new BorderLayout());
+		this.actionButton = new JPanel(new GridLayout(1, 0, 10, 5));
+		this.actionButton.add(this.uploadButton);
+		this.actionButton.add(this.deployButton);
+		this.actionButton.add(this.executeButton);
+		this.actionButton.add(this.chartsButton);
 
 		this.uploadButton.setEnabled(null != getScenarioFile());
-		setDeploymentPhase(State.RESET);
+		enableButtonsFor(State.RESET);
 	}
 
 	/**
@@ -100,21 +105,20 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 				this.scenarioField.setText(chooser.getSelectedFile().getPath());
 		}
 
-		else if (this.uploadButton.equals(e.getSource()))
-			new ScenarioUploaderThread(getSelectedAgents(), this,
-					getScenarioFile()).run();
-
 		else if (this.resetButton.equals(e.getSource()))
 			for (Agent agent : this.consoleData.getAgents().values())
 				agent.reset();
+
+		else if (this.uploadButton.equals(e.getSource()))
+			new ScenarioUploaderThread(getSelectedAgents(), this,
+					getScenarioFile()).run();
 
 		else if (this.deployButton.equals(e.getSource()))
 			new ScenarioDeployerThread(getSelectedAgents(), this).run();
 
 		else if (this.executeButton.equals(e.getSource()))
 			new ScenarioExecutorThread(getSelectedAgents(), this,
-					this.consoleData.getHostname(), this.consoleData.getPort())
-					.run();
+					this.consoleData).run();
 
 		else if (this.chartsButton.equals(e.getSource()))
 			Charts.display(getSelectedAgents().values());
@@ -142,56 +146,55 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * Disable buttons that shouldn't be used.
+	 * Disable buttons while working.
 	 */
-	public void setButtonsEnabled(boolean buttonsEnabled) {
+	public void disableButtons() {
 
-		this.resetButton.setEnabled(buttonsEnabled);
-		this.uploadButton.setEnabled(buttonsEnabled
-				&& null != getScenarioFile());
-		this.deployButton.setEnabled(buttonsEnabled);
-		this.executeButton.setEnabled(buttonsEnabled);
-		this.chartsButton.setEnabled(buttonsEnabled);
+		this.resetButton.setEnabled(false);
+		this.uploadButton.setEnabled(false);
+		this.deployButton.setEnabled(false);
+		this.executeButton.setEnabled(false);
+		this.chartsButton.setEnabled(false);
 	}
 
 	/**
-	 * Show the right buttons.
+	 * Enable the right buttons. Disable the ones that shouldn't be touched.
 	 */
-	public void setDeploymentPhase(State currentState) {
-
-		this.sideButton.removeAll();
-		this.actionButton.removeAll();
+	public void enableButtonsFor(State currentState) {
 
 		switch (currentState) {
 		case RESET:
-			this.sideButton.add(this.browseButton);
-			this.actionButton.add(this.uploadButton);
-			this.scenarioField.setEnabled(true);
+			this.resetButton.setEnabled(false);
+			this.uploadButton.setEnabled(null != getScenarioFile());
+			this.deployButton.setEnabled(false);
+			this.executeButton.setEnabled(false);
+			this.chartsButton.setEnabled(false);
 			break;
 
 		case UPLOAD:
-			this.sideButton.add(this.resetButton);
-			this.actionButton.add(this.deployButton);
-			this.scenarioField.setEnabled(false);
+			this.resetButton.setEnabled(true);
+			this.uploadButton.setEnabled(null != getScenarioFile());
+			this.deployButton.setEnabled(true);
+			this.executeButton.setEnabled(false);
+			this.chartsButton.setEnabled(false);
 			break;
 
 		case DEPLOY:
-			this.sideButton.add(this.resetButton);
-			this.actionButton.add(this.executeButton);
-			this.scenarioField.setEnabled(false);
+			this.resetButton.setEnabled(true);
+			this.uploadButton.setEnabled(null != getScenarioFile());
+			this.deployButton.setEnabled(false);
+			this.executeButton.setEnabled(true);
+			this.chartsButton.setEnabled(false);
 			break;
 
 		case EXECUTE:
-			this.sideButton.add(this.resetButton);
-			this.actionButton.add(this.chartsButton);
-			this.scenarioField.setEnabled(false);
+			this.resetButton.setEnabled(true);
+			this.uploadButton.setEnabled(null != getScenarioFile());
+			this.deployButton.setEnabled(false);
+			this.executeButton.setEnabled(true);
+			this.chartsButton.setEnabled(true);
 			break;
 		}
-
-		this.sideButton.validate();
-		this.sideButton.repaint();
-		this.actionButton.validate();
-		this.actionButton.repaint();
 	}
 
 	/**

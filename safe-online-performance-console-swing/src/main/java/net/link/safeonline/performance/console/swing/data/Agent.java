@@ -56,7 +56,9 @@ public class Agent {
 	public void setError(Exception error) {
 
 		this.error = error;
-		LOG.error("Scenario Failed During Execution", error);
+
+		if (null != error)
+			LOG.error("Scenario Failed During Execution", error);
 	}
 
 	/**

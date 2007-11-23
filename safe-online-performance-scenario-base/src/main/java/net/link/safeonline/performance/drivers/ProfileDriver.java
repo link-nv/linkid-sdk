@@ -7,6 +7,7 @@
 
 package net.link.safeonline.performance.drivers;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,19 +56,22 @@ public abstract class ProfileDriver {
 		return this.host;
 	}
 
-	public List<ProfileData> getProfileData() {
+	public synchronized List<ProfileData> getProfileData() {
 
-		return Collections.unmodifiableList(this.profileData);
+		return Collections.unmodifiableList(new ArrayList<ProfileData>(
+				this.profileData));
 	}
 
-	public List<Exception> getProfileError() {
+	public synchronized List<Exception> getProfileError() {
 
-		return Collections.unmodifiableList(this.profileError);
+		return Collections.unmodifiableList(new ArrayList<Exception>(
+				this.profileError));
 	}
 
-	public List<Double> getProfileSpeed() {
+	public synchronized List<Double> getProfileSpeed() {
 
-		return Collections.unmodifiableList(this.profileSpeed);
+		return Collections.unmodifiableList(new ArrayList<Double>(
+				this.profileSpeed));
 	}
 
 	public String getTitle() {
@@ -90,19 +94,19 @@ public abstract class ProfileDriver {
 		setIterationData(new ProfileData(service.getHeaders()));
 	}
 
-	protected void setIterationData(ProfileData data) {
+	protected synchronized void setIterationData(ProfileData data) {
 
 		this.profileData.removeLast();
 		this.profileData.addLast(data);
 	}
 
-	protected void setIterationError(Exception error) {
+	protected synchronized void setIterationError(Exception error) {
 
 		this.profileError.removeLast();
 		this.profileError.addLast(error);
 	}
 
-	protected void startNewIteration() {
+	protected synchronized void startNewIteration() {
 
 		Double speed = null;
 		if (0 != this.iterationStart && null != this.profileData.getLast()) {
