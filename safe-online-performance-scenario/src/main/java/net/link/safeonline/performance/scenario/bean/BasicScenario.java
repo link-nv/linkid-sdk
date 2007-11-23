@@ -44,7 +44,8 @@ public class BasicScenario implements Scenario {
 				.getPrivateKeyEntry();
 
 		LOG.debug("getting id..");
-		userId = this.authDriver.login(applicationName, username, password);
+		userId = this.authDriver.login(applicationKey, applicationName,
+				username, password);
 
 		LOG.debug("verify id..");
 		if (!userId.equals(this.idDriver.getUserId(applicationKey, username)))

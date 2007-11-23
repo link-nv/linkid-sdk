@@ -31,7 +31,8 @@ public class PerformanceDriverTest {
 
 	private static final PrivateKeyEntry APPL = PerformanceKeyStoreUtils
 			.getPrivateKeyEntry();
-	private static final String OLAS_HOSTNAME = "sebeco-dev-10:8443";
+	// private static final String OLAS_HOSTNAME = "sebeco-dev-10:8443";
+	private static final String OLAS_HOSTNAME = "localhost:8443";
 	private static final String PASS = "admin";
 	private static final String USER = "admin";
 	private AttribDriver attribDriver;
@@ -50,7 +51,8 @@ public class PerformanceDriverTest {
 	public void testAttrib() throws Exception {
 
 		// User needs to authenticate before we can get to the attributes.
-		String uuid = this.authDriver.login("demo-lawyer", USER, PASS);
+		String uuid = this.authDriver.login(APPL, "performance-application",
+				USER, PASS);
 
 		getAttributes(APPL, uuid);
 	}
@@ -115,7 +117,8 @@ public class PerformanceDriverTest {
 	private String login(String username, String password) throws Exception {
 
 		// Authenticate User.
-		String uuid = this.authDriver.login("demo-lawyer", username, password);
+		String uuid = this.authDriver.login(APPL, "performance-application",
+				username, password);
 
 		// State assertions.
 		assertNotNull(uuid);

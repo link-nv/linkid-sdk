@@ -8,24 +8,40 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.xml.transform.TransformerException;
 
-import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
+import net.link.safeonline.sdk.DomUtils;
+import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.util.jacc.ProfileData;
 import net.link.safeonline.util.jacc.ProfileDataLockedException;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.ConnectTimeoutException;
+import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpMethodBase;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -34,8 +50,13 @@ import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.tidy.DOMTextImpl;
+import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -46,29 +67,40 @@ public class AuthDriver extends ProfileDriver {
 
 	private HttpClient client;
 	private List<ProfileData> iterationDatas;
-	private String location;
 	private Tidy tidy;
-	private XPathUtil xpath;
 
 	public AuthDriver(String hostname) {
-
 		super(hostname, "Authentication Driver");
-
-		SafeOnlineTrustManager.configureSsl();
 
 		Protocol.registerProtocol("https", new Protocol("https",
 				new MySSLSocketFactory(), 443));
 
-		this.tidy = new Tidy();
-		this.xpath = new XPathUtil();
 		this.client = new HttpClient();
 		this.iterationDatas = new ArrayList<ProfileData>();
 
+		this.tidy = new Tidy();
 		this.tidy.setQuiet(true);
 		this.tidy.setShowWarnings(false);
 	}
 
 	public static class MySSLSocketFactory implements ProtocolSocketFactory {
+
+		private final SSLSocketFactory sslSocketFactory;
+
+		public MySSLSocketFactory() {
+			try {
+				SSLContext sslContext = SSLContext.getInstance("TLS");
+				SecureRandom secureRandom = new SecureRandom();
+				TrustManager trustManager = new MyTrustManager();
+				TrustManager[] trustManagers = { trustManager };
+				sslContext.init(null, trustManagers, secureRandom);
+				this.sslSocketFactory = sslContext.getSocketFactory();
+			} catch (NoSuchAlgorithmException e) {
+				throw new RuntimeException("no such algo");
+			} catch (KeyManagementException e) {
+				throw new RuntimeException("key error");
+			}
+		}
 
 		public Socket createSocket(String host, int port) throws IOException,
 				UnknownHostException {
@@ -90,11 +122,39 @@ public class AuthDriver extends ProfileDriver {
 				UnknownHostException, ConnectTimeoutException {
 			LOG.debug("createSocket: " + host + ":" + port + ", local: "
 					+ localAddress + ":" + localPort + ", params: " + params);
-			SSLSocketFactory sslSocketFactory = HttpsURLConnection
-					.getDefaultSSLSocketFactory();
-			Socket socket = sslSocketFactory.createSocket(host, port,
+
+			Socket socket = this.sslSocketFactory.createSocket(host, port,
 					localAddress, localPort);
 			return socket;
+		}
+	}
+
+	static class MyTrustManager implements X509TrustManager {
+
+		public void checkClientTrusted(X509Certificate[] chain, String authType)
+				throws CertificateException {
+			throw new CertificateException("cannot verify client certificates");
+		}
+
+		public void checkServerTrusted(X509Certificate[] chain, String authType)
+				throws CertificateException {
+			if (null == chain) {
+				throw new CertificateException("null certificate chain");
+			}
+			if (0 == chain.length) {
+				throw new CertificateException("empty certificate chain");
+			}
+			if (null == authType) {
+				throw new CertificateException("null authentication type");
+			}
+			if (0 == authType.length()) {
+				throw new CertificateException("empty authentication type");
+			}
+			LOG.debug("server certificate: " + chain[0].getSubjectDN());
+		}
+
+		public X509Certificate[] getAcceptedIssuers() {
+			return null;
 		}
 	}
 
@@ -103,98 +163,155 @@ public class AuthDriver extends ProfileDriver {
 	 * 
 	 * @return The user's UUID.
 	 */
-	public String login(String application, String username, String password)
-			throws DriverException {
-
-		Node reply;
-		String submit, action = "/olas-auth/entry", method = "get";
-		String[] keys, values;
-		Map<String, String> data;
+	public String login(PrivateKeyEntry application, String applicationName,
+			String username, String password) throws DriverException {
 
 		startNewIteration();
 		try {
-			LOG.debug("Requesting First Page.");
-			keys = new String[] { "application", "target" };
-			values = new String[] { application, "" };
-			reply = request(action, method, keys, values);
+			/*
+			 * Prepare authentication request token
+			 */
+			PublicKey publicKey = application.getCertificate().getPublicKey();
+			PrivateKey privateKey = application.getPrivateKey();
+			KeyPair keyPair = new KeyPair(publicKey, privateKey);
+			String authnRequest = AuthnRequestFactory.createAuthnRequest(
+					"performance-application", keyPair,
+					"http://www.lin-k.net/performance-application", null, null);
+			String encodedAuthnRequest = new String(Base64
+					.encodeBase64(authnRequest.getBytes()));
 
-			if (this.location.startsWith("first-time")) {
-				LOG.debug("Received Login Modes (new/existing user)");
-				data = getHiddenFormData(reply);
-				action = this.xpath.getString(reply, "@action");
-				method = this.xpath.getString(reply, "@method");
-				submit = getFieldName("submit", "existing", reply);
-				data.put(submit, null);
+			String uri = "https://" + this.host + "/olas-auth/entry";
+			LOG.debug("URI: " + uri);
+			PostMethod postMethod = new PostMethod(uri);
+			postMethod.setRequestHeader("Cookie", "deflowered=true");
+			postMethod.addParameter(new NameValuePair("SAMLRequest",
+					encodedAuthnRequest));
 
-				LOG.debug("Selecting Existing User");
-				keys = data.keySet().toArray(new String[0]);
-				values = data.values().toArray(new String[0]);
-				reply = request(action, method, keys, values);
+			LOG.debug("initial request");
+			int statusCode = executeRequest(postMethod, null);
+
+			String jsessionId = getJSessionId();
+
+			if (HttpStatus.SC_MOVED_TEMPORARILY != statusCode) {
+				throw new DriverException("moved");
 			}
+			Header locationHeader = postMethod.getResponseHeader("Location");
+			String locationValue = locationHeader.getValue();
+			LOG.debug("location: " + locationValue);
+			postMethod = new PostMethod(locationValue);
 
-			LOG.debug("Received Authentication Devices");
-			data = getHiddenFormData(reply);
-			action = this.xpath.getString(reply, "@action");
-			method = this.xpath.getString(reply, "@method");
-			submit = getFieldName("submit", "next", reply);
-			String deviceValue = "password";
-			String deviceKey = this.xpath.getString(reply,
-					".//input[@type='radio' and @value='%s']/@name",
-					deviceValue);
-			data.put(deviceKey, deviceValue);
-			data.put(submit, "");
+			postMethod.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
+			statusCode = executeRequest(postMethod, jsessionId);
+			Document resultDocument = this.tidy.parseDOM(postMethod
+					.getResponseBodyAsStream(), null);
+			LOG.debug("result document: "
+					+ DomUtils.domToString(resultDocument));
 
-			LOG.debug("Selecting Password Device");
-			keys = data.keySet().toArray(new String[0]);
-			values = data.values().toArray(new String[0]);
-			reply = request(action, method, keys, values);
+			Node formNode = XPathAPI.selectSingleNode(resultDocument, "//form");
 
-			LOG.debug("Received Authentication Device Fields");
-			data = getHiddenFormData(reply);
-			action = this.xpath.getString(reply, "@action");
-			method = this.xpath.getString(reply, "@method");
-			submit = getFieldName("submit", "login", reply);
-			String userKey = getFieldName("text", "username", reply);
-			String passKey = getFieldName("password", "password", reply);
-			data.put(userKey, username);
-			data.put(passKey, password);
-			data.put(submit, "");
+			Node passwordInputNode = XPathAPI.selectSingleNode(formNode,
+					"//input[@type='radio' and @value='password']");
+			String passwordFieldName = passwordInputNode.getAttributes()
+					.getNamedItem("name").getNodeValue();
+			String passwordFieldValue = passwordInputNode.getAttributes()
+					.getNamedItem("value").getNodeValue();
+			LOG.debug("radio attribute: " + passwordFieldName + "="
+					+ passwordFieldValue);
 
-			LOG.debug("Submitting Authentication Credentials for Fields");
-			keys = data.keySet().toArray(new String[0]);
-			values = data.values().toArray(new String[0]);
-			reply = request(action, method, keys, values);
-			if (reply instanceof ResultNode)
-				return reply.getNodeValue(); // Possible exit.
+			postMethod = createFormPostMethod(formNode);
+			postMethod.addParameter(new NameValuePair(passwordFieldName,
+					passwordFieldValue));
 
-			LOG.debug("Received Usage Agreement");
-			data = getHiddenFormData(reply);
-			action = this.xpath.getString(reply, "@action");
-			method = this.xpath.getString(reply, "@method");
-			submit = getFieldName("submit", "confirm", reply);
-			data.put(submit, null);
+			/*
+			 * Select password device
+			 */
+			LOG.debug("select password device");
+			statusCode = executeRequest(postMethod, jsessionId);
 
-			LOG.debug("Confirming Usage Agreement");
-			keys = data.keySet().toArray(new String[0]);
-			values = data.values().toArray(new String[0]);
-			reply = request(action, method, keys, values);
+			resultDocument = this.tidy.parseDOM(postMethod
+					.getResponseBodyAsStream(), null);
+			LOG.debug("result document: "
+					+ DomUtils.domToString(resultDocument));
 
-			LOG.debug("Received Attributes");
-			data = getHiddenFormData(reply);
-			action = this.xpath.getString(reply, "@action");
-			method = this.xpath.getString(reply, "@method");
-			submit = getFieldName("submit", "agree", reply);
-			data.put(submit, null);
+			formNode = XPathAPI.selectSingleNode(resultDocument, "//form");
+			postMethod = createFormPostMethod(formNode);
+			Node usernameInputNode = XPathAPI.selectSingleNode(formNode,
+					"//input[@type='text']");
+			String usernameFieldName = usernameInputNode.getAttributes()
+					.getNamedItem("name").getNodeValue();
+			passwordInputNode = XPathAPI.selectSingleNode(formNode,
+					"//input[@type='password']");
+			passwordFieldName = passwordInputNode.getAttributes().getNamedItem(
+					"name").getNodeValue();
+			postMethod.addParameter(usernameFieldName, username);
+			postMethod.addParameter(passwordFieldName, password);
 
-			LOG.debug("Agreeing on Usage of Attributes");
-			keys = data.keySet().toArray(new String[0]);
-			values = data.values().toArray(new String[0]);
-			reply = request(action, method, keys, values);
-			if (reply instanceof ResultNode)
-				return reply.getNodeValue(); // Possible exit.
+			/*
+			 * Enter password
+			 */
+			LOG.debug("enter password");
+			statusCode = executeRequest(postMethod, jsessionId);
 
-			throw new DriverException(
-					"Expected authentication cycle to have ended by now.");
+			locationHeader = postMethod.getResponseHeader("Location");
+			locationValue = locationHeader.getValue();
+			LOG.debug("location: " + locationValue);
+			GetMethod getMethod = new GetMethod(locationValue);
+
+			statusCode = executeRequest(getMethod, jsessionId);
+			resultDocument = this.tidy.parseDOM(getMethod
+					.getResponseBodyAsStream(), null);
+			LOG.debug("result document: "
+					+ DomUtils.domToString(resultDocument));
+
+			formNode = XPathAPI.selectSingleNode(resultDocument, "//form");
+			if (null == XPathAPI.selectSingleNode(formNode,
+					"//input[@type='hidden' and @name='SAMLResponse']")) {
+				/*
+				 * Subscribe
+				 */
+				LOG.debug("Subscribe step");
+				postMethod = createFormPostMethod(formNode);
+				statusCode = executeRequest(postMethod, jsessionId);
+				resultDocument = this.tidy.parseDOM(postMethod
+						.getResponseBodyAsStream(), null);
+
+				/*
+				 * Exit
+				 */
+				locationHeader = postMethod.getResponseHeader("Location");
+				locationValue = locationHeader.getValue();
+				LOG.debug("location: " + locationValue);
+				getMethod = new GetMethod(locationValue);
+				statusCode = executeRequest(getMethod, jsessionId);
+				resultDocument = this.tidy.parseDOM(getMethod
+						.getResponseBodyAsStream(), null);
+
+				LOG.debug("result document: "
+						+ DomUtils.domToString(resultDocument));
+				formNode = XPathAPI.selectSingleNode(resultDocument, "//form");
+			}
+			Node samlResponseInputNode = XPathAPI.selectSingleNode(formNode,
+					"//input[@name='SAMLResponse']");
+			String encodedSamlResponseValue = samlResponseInputNode
+					.getAttributes().getNamedItem("value").getNodeValue();
+			LOG.debug("encoded SAML Response: " + encodedSamlResponseValue);
+
+			String samlResponseValue = new String(Base64
+					.decodeBase64(encodedSamlResponseValue.getBytes()));
+			LOG.debug("SAML Response: " + samlResponseValue);
+			Document samlResponse = DomUtils.parseDocument(samlResponseValue);
+			Element nsElement = samlResponse.createElement("nsElement");
+			nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:samlp",
+					"urn:oasis:names:tc:SAML:2.0:protocol");
+			nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml",
+					"urn:oasis:names:tc:SAML:2.0:assertion");
+			Node subjectNameNode = XPathAPI.selectSingleNode(samlResponse,
+					"/samlp:Response/saml:Assertion/saml:Subject/saml:NameID",
+					nsElement);
+			String subjectName = subjectNameNode.getTextContent();
+			LOG.debug("subject name: " + subjectName);
+
+			return subjectName;
 		}
 
 		catch (Exception e) {
@@ -229,119 +346,65 @@ public class AuthDriver extends ProfileDriver {
 		}
 	}
 
-	private String getFieldName(String type, String nameKey, Node form)
-			throws TransformerException {
-
-		return this.xpath.getString(form,
-				".//input[@type='%s' and contains(@name,':%s')]/@name", type,
-				nameKey);
+	private String getJSessionId() throws DriverException {
+		for (Cookie cookie : this.client.getState().getCookies()) {
+			if ("JSESSIONID".equals(cookie.getName())) {
+				String jsessionId = cookie.getValue();
+				return jsessionId;
+			}
+		}
+		throw new DriverException("no jsessionid cookie");
 	}
 
-	private Map<String, String> getHiddenFormData(Node form)
+	private PostMethod createFormPostMethod(Node formNode)
 			throws TransformerException {
-
-		List<Node> hiddenNodes = this.xpath.getNodes(form,
-				"input[@type='hidden']");
-
-		Map<String, String> data = new HashMap<String, String>();
-		for (Node hiddenNode : hiddenNodes) {
-			String dataKey = this.xpath.getString(hiddenNode, "@name");
-			String dataValue = this.xpath.getString(hiddenNode, "@value");
-
-			data.put(dataKey, dataValue);
+		NodeIterator hiddenInputNodeIterator = XPathAPI.selectNodeIterator(
+				formNode, "//input[@type='hidden']");
+		Node hiddenInputNode;
+		List<NameValuePair> submitFields = new LinkedList<NameValuePair>();
+		while (null != (hiddenInputNode = hiddenInputNodeIterator.nextNode())) {
+			NamedNodeMap attributes = hiddenInputNode.getAttributes();
+			String name = attributes.getNamedItem("name").getNodeValue();
+			String value = attributes.getNamedItem("value").getNodeValue();
+			LOG.debug("attribute: " + name + "=" + value);
+			submitFields.add(new NameValuePair(name, value));
 		}
 
-		return data;
+		Node submitInputNode = XPathAPI.selectSingleNode(formNode,
+				"//input[@type='submit']");
+		Node submitNameNode = submitInputNode.getAttributes().getNamedItem(
+				"name");
+		if (null != submitNameNode) {
+			String submitName = submitNameNode.getNodeValue();
+			submitFields.add(new NameValuePair(submitName, ""));
+		}
+
+		String actionValue = formNode.getAttributes().getNamedItem("action")
+				.getNodeValue();
+		LOG.debug("action value: " + actionValue);
+		if (false == actionValue.startsWith("http")) {
+			actionValue = "https://" + this.host + actionValue;
+		}
+		PostMethod postMethod = new PostMethod(actionValue);
+		postMethod.addParameters(submitFields.toArray(new NameValuePair[] {}));
+
+		return postMethod;
 	}
 
-	private Node request(String path, String method, String[] keys,
-			String[] values) throws HttpException, IOException,
-			TransformerException, DriverException {
-
-		// Gather the parameters for the method.
-		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-		if (null != keys && null != values)
-			for (int pair = 0; pair < keys.length; ++pair)
-				parameters.add(new NameValuePair(keys[pair], values[pair]));
-
-		// Initialize the request method.
-		HttpMethod request;
-		String url;
-		if (path.startsWith("https://"))
-			url = path;
-		else
-			url = String.format("https://%s%s", this.host, path);
-		if (null == method || "get".equalsIgnoreCase(method)) {
-			request = new GetMethod(url);
-			request.setQueryString(parameters.toArray(new NameValuePair[0]));
-		} else if ("post".equalsIgnoreCase(method)) {
-			PostMethod postRequest = new PostMethod(url);
-			postRequest.addParameters(parameters.toArray(new NameValuePair[0]));
-			request = postRequest;
-		} else
-			throw new IllegalArgumentException(
-					"'method' argument must be either GET or POST (or NULL).");
-
-		// Execute the request.
-		request.setFollowRedirects(false);
-
-		this.client.executeMethod(request);
-
-		// Retrieve the performance headers.
+	private int executeRequest(HttpMethodBase method, String jsessionId)
+			throws HttpException, IOException {
+		if (null != jsessionId) {
+			method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
+		}
+		int statusCode = this.client.executeMethod(method);
 		Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
-		for (Header header : request.getResponseHeaders()) {
+		for (Header header : method.getResponseHeaders()) {
 			List<String> headerValues = new ArrayList<String>();
 			headerValues.add(header.getValue());
 
 			requestHeaders.put(header.getName(), headerValues);
 		}
 		this.iterationDatas.add(new ProfileData(requestHeaders));
-
-		// Perform a manual redirect if required,
-		// but first check if we're coming from the auth-webapp exit.
-		Header redirect = request.getResponseHeader("Location");
-		if (null != redirect && redirect.getValue().length() > 0) {
-			if (request.getURI().toString().endsWith("/exit")) {
-				String redirection = request.getResponseHeader("Location")
-						.getValue();
-				String uuid = redirection.replaceFirst(
-						".*[?&]username=([^&]*).*", "$1");
-
-				return new ResultNode(uuid); // Authentication Done.
-			}
-
-			return request(redirect.getValue(), null, null, null);
-		}
-
-		// Parse the result into an HTML DOM.
-		Node root = this.tidy.parseDOM(request.getResponseBodyAsStream(), null);
-		this.xpath.renew();
-
-		// Check for errors; if any, throw them.
-		String error = this.xpath.getString(root, "//*[@class='error']");
-		if (null == error || error.length() == 0) {
-			error = this.xpath.getString(root,
-					"//title[contains(text(),'Error')]/text()");
-			String errorMessage = this.xpath.getString(root, "//h1");
-			if (error.endsWith("Error Report") && null != errorMessage
-					&& errorMessage.length() > 0)
-				error = errorMessage;
-		}
-		if (error.length() > 0)
-			throw new DriverException(path + ": " + error);
-
-		this.location = request.getURI().toString().replaceFirst(".*/", "");
-		return this.xpath.getNode(root, "//form");
-	}
-
-	static class ResultNode extends DOMTextImpl {
-
-		private static final long serialVersionUID = 1L;
-
-		public ResultNode(String uuid) {
-
-			super(new org.w3c.tidy.Node(org.w3c.tidy.Node.TEXT_NODE, uuid
-					.getBytes(), 0, uuid.length()));
-		}
+		return statusCode;
 	}
 }

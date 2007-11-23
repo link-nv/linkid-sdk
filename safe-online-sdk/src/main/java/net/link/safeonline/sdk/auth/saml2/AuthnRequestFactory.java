@@ -86,6 +86,8 @@ public class AuthnRequestFactory {
 	 *            the optional location of the assertion consumer service. This
 	 *            location can be used by the IdP to send back the SAML response
 	 *            message.
+	 * @param challenge
+	 *            the optional challenge (output variable).
 	 * @param devices
 	 *            the optional list of allowed authentication devices.
 	 * @return
