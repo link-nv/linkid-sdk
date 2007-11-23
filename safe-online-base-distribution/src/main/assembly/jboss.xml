@@ -31,6 +31,13 @@
 			<directory>target/files/jboss-4.2.2.GA</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
+				<include>client/jbossall-client.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target/files/jboss-4.2.2.GA</directory>
+			<outputDirectory>jboss</outputDirectory>
+			<includes>
 				<include>bin/run.sh</include>
 				<include>bin/shutdown.sh</include>
 			</includes>
