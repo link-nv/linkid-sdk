@@ -2,7 +2,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
@@ -26,10 +25,6 @@
 		<h2>#{msgs.usageAgreement}</h2>
 
 		<div>
-
-		<p><fmt:message bundle="#{msgs}" key="subscriptionNotFoundMsg">
-			<fmt:param value="#{applicationId}" />
-		</fmt:message></p>
 
 		<p><t:messages globalOnly="true" styleClass="error" /></p>
 

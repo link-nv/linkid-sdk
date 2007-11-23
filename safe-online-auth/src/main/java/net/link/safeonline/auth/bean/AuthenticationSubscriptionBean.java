@@ -103,7 +103,8 @@ public class AuthenticationSubscriptionBean implements
 			}
 		} catch (SubscriptionNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "subscriptionNotFoundMsg");
+					FacesMessage.SEVERITY_ERROR, "subscriptionNotFoundMsg",
+					this.applicationId);
 			return null;
 		} catch (ApplicationNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
