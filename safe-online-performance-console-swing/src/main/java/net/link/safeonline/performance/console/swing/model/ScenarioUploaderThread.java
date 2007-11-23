@@ -7,8 +7,8 @@ import java.io.File;
 import java.util.Map;
 
 import net.link.safeonline.performance.console.swing.data.Agent;
+import net.link.safeonline.performance.console.swing.data.Agent.State;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
-import net.link.safeonline.performance.console.swing.ui.ScenarioChooser.DeploymentPhase;
 
 import org.jgroups.Address;
 
@@ -25,7 +25,7 @@ public class ScenarioUploaderThread extends ScenarioThread {
 	public ScenarioUploaderThread(Map<Address, Agent> map,
 			ScenarioChooser chooser, File application) {
 
-		super(map, chooser);
+		super(State.UPLOAD, map, chooser);
 		this.application = application;
 	}
 
@@ -35,25 +35,6 @@ public class ScenarioUploaderThread extends ScenarioThread {
 	@Override
 	void process(Address address, Agent agent) throws Exception {
 
-		try {
-			if (!agent.setUploading(true))
-				return;
-
-			this.scenarioDeployer.upload(address, this.application);
-		}
-
-		finally {
-			agent.setUploading(false);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void done(boolean success) {
-
-		if(success)
-			this.chooser.setDeploymentPhase(DeploymentPhase.DEPLOY);
+		this.scenarioDeployer.upload(address, this.application);
 	}
 }

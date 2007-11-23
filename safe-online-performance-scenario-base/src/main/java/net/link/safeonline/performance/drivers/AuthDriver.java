@@ -319,11 +319,15 @@ public class AuthDriver extends ProfileDriver {
 
 		// Check for errors; if any, throw them.
 		String error = this.xpath.getString(root, "//*[@class='error']");
-		if ((null == error || error.length() == 0)
-				&& this.xpath.getString(root, "/html/head/title").endsWith(
-						"Error report"))
-			error = this.xpath.getString(root, "//h1");
-		if (null != error && error.length() > 0)
+		if (null == error || error.length() == 0) {
+			error = this.xpath.getString(root,
+					"//title[contains(text(),'Error')]/text()");
+			String errorMessage = this.xpath.getString(root, "//h1");
+			if (error.endsWith("Error Report") && null != errorMessage
+					&& errorMessage.length() > 0)
+				error = errorMessage;
+		}
+		if (error.length() > 0)
 			throw new DriverException(path + ": " + error);
 
 		this.location = request.getURI().toString().replaceFirst(".*/", "");

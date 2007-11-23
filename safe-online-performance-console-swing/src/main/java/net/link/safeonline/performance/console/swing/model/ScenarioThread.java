@@ -7,10 +7,9 @@ import java.util.Map;
 
 import net.link.safeonline.performance.console.ScenarioDeployer;
 import net.link.safeonline.performance.console.swing.data.Agent;
+import net.link.safeonline.performance.console.swing.data.Agent.State;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jgroups.Address;
 
 /**
@@ -20,16 +19,17 @@ import org.jgroups.Address;
  * 
  * @author mbillemo
  */
-public abstract class ScenarioThread extends Thread {
+public abstract class ScenarioThread implements Runnable {
 
-	private static Log LOG = LogFactory.getLog(ScenarioThread.class);
-
+	State state;
 	Map<Address, Agent> agents;
 	ScenarioChooser chooser;
 	ScenarioDeployer scenarioDeployer;
 
-	public ScenarioThread(Map<Address, Agent> agents, ScenarioChooser chooser) {
+	public ScenarioThread(State state, Map<Address, Agent> agents,
+			ScenarioChooser chooser) {
 
+		this.state = state;
 		this.agents = agents;
 		this.chooser = chooser;
 		this.scenarioDeployer = new ScenarioDeployer();
@@ -38,41 +38,32 @@ public abstract class ScenarioThread extends Thread {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void run() {
 
-		boolean success = true;
-		try {
-			this.chooser.setButtonsEnabled(false);
+		for (final Map.Entry<Address, Agent> agentEntry : this.agents
+				.entrySet())
 
-			for (Map.Entry<Address, Agent> agentEntry : this.agents.entrySet()) {
-				Agent agent = agentEntry.getValue();
+			new Thread() {
+				@Override
+				public void run() {
 
-				try {
-					agent.setError(null);
-					if (agent.isSelected())
+					Agent agent = agentEntry.getValue();
+					if (!agent.startAction(ScenarioThread.this.state))
+						return;
+
+					try {
+						agent.setError(null);
 						process(agentEntry.getKey(), agent);
+						agent.stopAction(true);
+					}
+
+					catch (Exception e) {
+						agent.setError(e);
+						agent.stopAction(false);
+					}
 				}
-
-				catch (Exception e) {
-					agent.setError(e);
-					LOG.error("Scenario Failed During Execution", e);
-					success = false;
-				}
-			}
-		}
-
-		finally {
-			done(success);
-
-			this.chooser.setButtonsEnabled(true);
-		}
+			}.start();
 	}
-
-	/**
-	 * Code to execute after the task has been completed.
-	 */
-	abstract void done(boolean success);
 
 	/**
 	 * Perform the action that needs to be performed on each selected agent.

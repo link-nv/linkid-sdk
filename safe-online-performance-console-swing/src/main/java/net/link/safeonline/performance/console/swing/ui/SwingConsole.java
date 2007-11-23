@@ -61,9 +61,10 @@ public class SwingConsole {
 
 		// Objects for each paragraph.
 		// They will handle their components' events.
-		AgentsList agentsList = new AgentsList(this.consoleData);
-		OlasPrefs olasPrefs = new OlasPrefs(this.consoleData);
 		ScenarioChooser scenarioChooser = new ScenarioChooser(this.consoleData);
+		AgentsList agentsList = new AgentsList(this.consoleData,
+				scenarioChooser);
+		OlasPrefs olasPrefs = new OlasPrefs(this.consoleData);
 
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout("p, 5dlu, 0:g, 5dlu, p, 5dlu, p",

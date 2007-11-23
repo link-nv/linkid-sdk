@@ -52,6 +52,16 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 			if (!this.channel.isConnected())
 				this.channel.connect(group);
 
+
+	        Runtime.getRuntime().addShutdownHook( new Thread( "JGroups ShutdownHook" ) {
+	            
+	            @Override
+	            public void run() {
+	            
+	                close();
+	            }
+	        });
+	        
 			this.channel.addChannelListener(this);
 			this.channel.setReceiver(this);
 		}

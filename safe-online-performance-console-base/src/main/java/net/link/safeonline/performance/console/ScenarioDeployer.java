@@ -51,7 +51,8 @@ public class ScenarioDeployer {
 
 		Hashtable<String, String> environment = new Hashtable<String, String>();
 
-		String jndiUrl = agent.toString().split(":")[0] + ":1099";
+		String jndiUrl = String.format("jnp://%s:1099", agent.toString().split(
+				":")[0]);
 		environment.put(Context.INITIAL_CONTEXT_FACTORY,
 				"org.jnp.interfaces.NamingContextFactory");
 		environment.put(Context.PROVIDER_URL, jndiUrl);

@@ -6,15 +6,13 @@
  */
 package net.link.safeonline.performance.console.swing.model;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.naming.InitialContext;
 
 import net.link.safeonline.performance.console.ScenarioDeployer;
 import net.link.safeonline.performance.console.swing.data.Agent;
-import net.link.safeonline.performance.console.swing.ui.Charts;
+import net.link.safeonline.performance.console.swing.data.Agent.State;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 import net.link.safeonline.performance.scenario.ScenarioRemote;
 
@@ -28,28 +26,16 @@ import org.jgroups.Address;
  */
 public class ScenarioExecutorThread extends ScenarioThread {
 
-	private Map<Address, List<byte[]>> charts;
 	private String hostname;
 	private int port;
 
 	public ScenarioExecutorThread(Map<Address, Agent> map,
 			ScenarioChooser chooser, String hostname, int port) {
 
-		super(map, chooser);
+		super(State.EXECUTE, map, chooser);
 
 		this.hostname = hostname;
 		this.port = port;
-		this.charts = new HashMap<Address, List<byte[]>>();
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	void done(boolean success) {
-
-		if (success)
-			new Charts(this.charts);
 	}
 
 	/**
@@ -58,21 +44,12 @@ public class ScenarioExecutorThread extends ScenarioThread {
 	@Override
 	void process(Address address, Agent agent) throws Exception {
 
-		try {
-			if (!agent.setExecuting(true))
-				return;
+		InitialContext context = ScenarioDeployer.getInitialContext(address);
+		ScenarioRemote scenario = (ScenarioRemote) context
+				.lookup("SafeOnline/ScenarioBean");
 
-			InitialContext context = ScenarioDeployer
-					.getInitialContext(address);
-			ScenarioRemote scenario = (ScenarioRemote) context
-					.lookup("SafeOnline/ScenarioBean");
+		agent.setCharts(scenario.execute(String.format("%s:%d", this.hostname,
+				this.port)));
 
-			this.charts.put(address, scenario.execute(String.format("%s:%d",
-					this.hostname, this.port)));
-		}
-
-		finally {
-			agent.setExecuting(false);
-		}
 	}
 }

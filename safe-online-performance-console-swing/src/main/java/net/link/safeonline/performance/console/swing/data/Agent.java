@@ -3,8 +3,13 @@
  */
 package net.link.safeonline.performance.console.swing.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.link.safeonline.performance.console.swing.ui.AgentStatusListener;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jgroups.Address;
 
 /**
@@ -17,17 +22,19 @@ import org.jgroups.Address;
  */
 public class Agent {
 
+	private static Log LOG = LogFactory.getLog(Agent.class);
+
 	private static final long serialVersionUID = 1L;
 
+	private List<AgentStatusListener> agentStatusListeners;
 	private Address agentAddress;
 	private Exception error;
 	private boolean healthy;
-	private boolean uploading;
-	private boolean deploying;
-	private boolean executing;
 	private boolean selected;
+	private State state;
+	private State transit;
 
-	private AgentStatusListener agentStatusListener;
+	private List<byte[]> charts;
 
 	/**
 	 * Create a new {@link Agent} component based off the agent at the given
@@ -35,7 +42,10 @@ public class Agent {
 	 */
 	public Agent(Address agentAddress) {
 
+		this.agentStatusListeners = new ArrayList<AgentStatusListener>();
 		this.agentAddress = agentAddress;
+		this.state = State.RESET;
+
 		setHealthy(true);
 	}
 
@@ -46,6 +56,7 @@ public class Agent {
 	public void setError(Exception error) {
 
 		this.error = error;
+		LOG.error("Scenario Failed During Execution", error);
 	}
 
 	/**
@@ -71,98 +82,47 @@ public class Agent {
 
 		this.healthy = healthy;
 
-		if (null != this.agentStatusListener)
-			this.agentStatusListener.statusChanged(this);
+		for (AgentStatusListener listener : this.agentStatusListeners)
+			listener.statusChanged(this);
 	}
 
 	private boolean isLocked() {
 
-		return isUploading() || isDeploying() || isExecuting();
+		return this.transit != null;
 	}
 
 	/**
-	 * @param uploading
-	 *            Set this to true to make this agent indicate that a file is
-	 *            being uploaded to it.
-	 * 
 	 * @return <code>true</code> if agent is available for this action.
 	 */
-	public boolean setUploading(boolean uploading) {
+	public boolean startAction(State action) {
 
-		if (uploading && isLocked())
+		if (isLocked())
 			return false;
 
-		this.uploading = uploading;
+		this.transit = action;
 
-		if (null != this.agentStatusListener)
-			this.agentStatusListener.statusChanged(this);
-
+		fireAgentStatus();
 		return true;
 	}
 
 	/**
-	 * @return <code>true</code> if a file is being uploaded to this agent.
-	 */
-	public boolean isUploading() {
-
-		return this.uploading;
-	}
-
-	/**
-	 * @param deploying
-	 *            Set this to <code>true</code> to make this agent indicate
-	 *            that an application is being deployed on it.
+	 * Signal the current action has stopped with success or not. This will
+	 * transit the agent into the state it was performing if successful.
 	 * 
-	 * @return <code>true</code> if agent is available for this action.
+	 * @param success
+	 *            <code>true</code> if the action was a success.
 	 */
-	public boolean setDeploying(boolean deploying) {
+	public void stopAction(boolean success) {
 
-		if (deploying && isLocked())
-			return false;
+		if (this.transit == null)
+			throw new IllegalStateException("No ongoing action to stop.");
 
-		this.deploying = deploying;
+		if (success)
+			this.state = this.transit;
 
-		if (null != this.agentStatusListener)
-			this.agentStatusListener.statusChanged(this);
+		this.transit = null;
 
-		return true;
-	}
-
-	/**
-	 * @return <code>true</code> if this agent is deploying an application.
-	 */
-	public boolean isDeploying() {
-
-		return this.deploying;
-	}
-
-	/**
-	 * @param executing
-	 *            <code>true</code> to make this agent indicate that it is
-	 *            executing a scenario.
-	 * 
-	 * @return <code>true</code> if agent is available for this action.
-	 */
-	public boolean setExecuting(boolean executing) {
-
-		if (executing && isLocked())
-			return false;
-
-		this.executing = executing;
-
-		if (null != this.agentStatusListener)
-			this.agentStatusListener.statusChanged(this);
-
-		return true;
-	}
-
-	/**
-	 * @return <code>true</code> to make this agent indicate that it is
-	 *         executing a scenario.
-	 */
-	public boolean isExecuting() {
-
-		return this.executing;
+		fireAgentStatus();
 	}
 
 	/**
@@ -188,28 +148,112 @@ public class Agent {
 	@Override
 	public String toString() {
 
-		String action = "Idle";
-		if (this.executing)
-			action = "Executing";
-		else if (this.deploying)
-			action = "Deploying";
-		else if (this.uploading)
-			action = "Receiving";
+		String health = this.healthy ? "Healthy" : "Unavailable";
+		String action = State.RESET.getTransitioning();
+		if (null != this.transit)
+			action = this.transit.getTransitioning();
 
-		String health = "Unavailable";
-		if (this.healthy)
-			health = "Healthy";
-
-		return String.format("[%s:%s] %s", health, action, this.agentAddress);
+		return String.format("[%s:%s:%s] %s", health, this.state.getState(),
+				action, this.agentAddress);
 	}
 
 	/**
-	 * Define the object that should be notified when this agent changes. This
+	 * Define an object that should be notified when this agent changes. This
 	 * should be an object that can fire the appropriate events in the UI
 	 * required to render the change in this {@link Agent}'s status.
 	 */
-	public void setAgentStatusListener(AgentStatusListener agentStatusListener) {
+	public void addAgentStatusListener(AgentStatusListener agentStatusListener) {
 
-		this.agentStatusListener = agentStatusListener;
+		if (!this.agentStatusListeners.contains(agentStatusListener))
+			this.agentStatusListeners.add(agentStatusListener);
+	}
+
+	public enum State {
+		RESET("Ready", "Idle"), UPLOAD("Scenario Uploaded", "Receiving"), DEPLOY(
+				"Scenario Deployed", "Deploying"), EXECUTE("Charts Available",
+				"Executing");
+
+		private String state;
+		private String transitioning;
+
+		private State(String state, String transitioning) {
+
+			this.state = state;
+			this.transitioning = transitioning;
+		}
+
+		public String getState() {
+
+			return this.state;
+		}
+
+		public String getTransitioning() {
+
+			return this.transitioning;
+		}
+	}
+
+	/**
+	 * Retrieve the current state transition action of the agent.
+	 */
+	public State getAction() {
+
+		return this.transit;
+	}
+
+	/**
+	 * Retrieve the current state of the agent.
+	 */
+	public State getState() {
+
+		return this.state;
+	}
+
+	/**
+	 * Reset this agent's current state if it is not doing something already.
+	 * 
+	 * @return <code>true</code> if the agent was not locked.
+	 */
+	public boolean reset() {
+
+		if (isLocked())
+			return false;
+
+		this.state = State.RESET;
+		return true;
+	}
+
+	/**
+	 * Manually fire an agent status event forcing the UI to update itself for
+	 * this agent.
+	 */
+	public void fireAgentStatus() {
+
+		for (AgentStatusListener listener : this.agentStatusListeners)
+			listener.statusChanged(this);
+	}
+
+	/**
+	 * Retrieve the JGroups address of this {@link Agent}.
+	 */
+	public Address getAddress() {
+
+		return this.agentAddress;
+	}
+
+	/**
+	 * Retrieve charts created by this {@link Agent}'s scenario.
+	 */
+	public List<byte[]> getCharts() {
+
+		return this.charts;
+	}
+
+	/**
+	 * Save charts created by this {@link Agent}'s scenario.
+	 */
+	public void setCharts(List<byte[]> charts) {
+
+		this.charts = charts;
 	}
 }

@@ -17,6 +17,7 @@ import javax.swing.filechooser.FileFilter;
 
 import net.link.safeonline.performance.console.swing.data.Agent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
+import net.link.safeonline.performance.console.swing.data.Agent.State;
 import net.link.safeonline.performance.console.swing.model.ScenarioDeployerThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioExecutorThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioUploaderThread;
@@ -34,17 +35,17 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 
 	private static final long serialVersionUID = 1L;
 
-	private JButton browseButton;
 	private ConsoleData consoleData;
+	private JButton browseButton;
+	private JButton resetButton;
+	private JButton uploadButton;
 	private JButton deployButton;
 	private JButton executeButton;
-	private JButton resetButton;
-
-	private JButton uploadButton;
-	protected JPanel actionButton;
-	protected JTextField scenarioField;
+	private JButton chartsButton;
 
 	protected JPanel sideButton;
+	protected JPanel actionButton;
+	protected JTextField scenarioField;
 
 	public ScenarioChooser(ConsoleData consoleData) {
 
@@ -55,20 +56,22 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		this.scenarioField.addCaretListener(this);
 		this.browseButton = new JButton("Browse ...");
 		this.browseButton.addActionListener(this);
-		this.uploadButton = new JButton("Upload This Scenario");
+		this.uploadButton = new JButton("Upload this Scenario");
 		this.uploadButton.addActionListener(this);
 		this.resetButton = new JButton("Reset");
 		this.resetButton.addActionListener(this);
-		this.deployButton = new JButton("Deploy This Scenario");
+		this.deployButton = new JButton("Deploy this Scenario");
 		this.deployButton.addActionListener(this);
-		this.executeButton = new JButton("Execute This Scenario");
+		this.executeButton = new JButton("Execute this Scenario");
 		this.executeButton.addActionListener(this);
+		this.chartsButton = new JButton("View Charts on this Scenario");
+		this.chartsButton.addActionListener(this);
 
 		this.sideButton = new JPanel(new BorderLayout());
 		this.actionButton = new JPanel(new BorderLayout());
 
 		this.uploadButton.setEnabled(null != getScenarioFile());
-		setDeploymentPhase(DeploymentPhase.UPLOAD);
+		setDeploymentPhase(State.RESET);
 	}
 
 	/**
@@ -98,26 +101,34 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		}
 
 		else if (this.uploadButton.equals(e.getSource()))
-			new ScenarioUploaderThread(this.consoleData.getAgents(), this,
-					getScenarioFile()).start();
+			new ScenarioUploaderThread(getSelectedAgents(), this,
+					getScenarioFile()).run();
 
 		else if (this.resetButton.equals(e.getSource()))
-			setDeploymentPhase(DeploymentPhase.UPLOAD);
+			for (Agent agent : this.consoleData.getAgents().values())
+				agent.reset();
 
 		else if (this.deployButton.equals(e.getSource()))
-			new ScenarioDeployerThread(this.consoleData.getAgents(), this)
-					.start();
+			new ScenarioDeployerThread(getSelectedAgents(), this).run();
 
 		else if (this.executeButton.equals(e.getSource()))
-			for (Map.Entry<Address, Agent> agentEntry : this.consoleData
-					.getAgents().entrySet()) {
+			new ScenarioExecutorThread(getSelectedAgents(), this,
+					this.consoleData.getHostname(), this.consoleData.getPort())
+					.run();
 
-				Map<Address, Agent> agentMap = new HashMap<Address, Agent>();
-				agentMap.put(agentEntry.getKey(), agentEntry.getValue());
+		else if (this.chartsButton.equals(e.getSource()))
+			Charts.display(getSelectedAgents().values());
+	}
 
-				new ScenarioExecutorThread(agentMap, this, this.consoleData
-						.getHostname(), this.consoleData.getPort()).start();
-			}
+	private Map<Address, Agent> getSelectedAgents() {
+
+		Map<Address, Agent> selectedAgents = new HashMap<Address, Agent>();
+		for (Map.Entry<Address, Agent> agentEntry : this.consoleData
+				.getAgents().entrySet())
+			if (agentEntry.getValue().isSelected())
+				selectedAgents.put(agentEntry.getKey(), agentEntry.getValue());
+
+		return selectedAgents;
 	}
 
 	/**
@@ -126,7 +137,8 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	public void caretUpdate(CaretEvent e) {
 
 		if (e.getSource().equals(this.scenarioField))
-			this.uploadButton.setEnabled(null != getScenarioFile());
+			for (Agent agent : this.consoleData.getAgents().values())
+				agent.fireAgentStatus();
 	}
 
 	/**
@@ -135,35 +147,43 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	public void setButtonsEnabled(boolean buttonsEnabled) {
 
 		this.resetButton.setEnabled(buttonsEnabled);
-		this.uploadButton.setEnabled(buttonsEnabled);
+		this.uploadButton.setEnabled(buttonsEnabled
+				&& null != getScenarioFile());
 		this.deployButton.setEnabled(buttonsEnabled);
 		this.executeButton.setEnabled(buttonsEnabled);
+		this.chartsButton.setEnabled(buttonsEnabled);
 	}
 
 	/**
 	 * Show the right buttons.
 	 */
-	public void setDeploymentPhase(DeploymentPhase phase) {
+	public void setDeploymentPhase(State currentState) {
 
 		this.sideButton.removeAll();
 		this.actionButton.removeAll();
 
-		switch (phase) {
-		case UPLOAD:
+		switch (currentState) {
+		case RESET:
 			this.sideButton.add(this.browseButton);
 			this.actionButton.add(this.uploadButton);
 			this.scenarioField.setEnabled(true);
 			break;
 
-		case DEPLOY:
+		case UPLOAD:
 			this.sideButton.add(this.resetButton);
 			this.actionButton.add(this.deployButton);
 			this.scenarioField.setEnabled(false);
 			break;
 
-		case EXECUTE:
+		case DEPLOY:
 			this.sideButton.add(this.resetButton);
 			this.actionButton.add(this.executeButton);
+			this.scenarioField.setEnabled(false);
+			break;
+
+		case EXECUTE:
+			this.sideButton.add(this.resetButton);
+			this.actionButton.add(this.chartsButton);
 			this.scenarioField.setEnabled(false);
 			break;
 		}
@@ -190,9 +210,5 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		}
 
 		return null;
-	}
-
-	public enum DeploymentPhase {
-		DEPLOY, EXECUTE, UPLOAD;
 	}
 }
