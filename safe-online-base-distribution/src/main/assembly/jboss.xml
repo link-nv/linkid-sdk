@@ -24,6 +24,7 @@
 				<exclude>bin/run.sh</exclude>
 				<exclude>bin/shutdown.sh</exclude>
 				<exclude>jar-versions.xml</exclude>
+				<exclude>server/default/lib/jboss-jaxws.jar</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet>
