@@ -82,15 +82,15 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements
 			RequestDeniedException, SubjectNotFoundException,
 			AttributeNotFoundException {
 		DataClient dataClient = getDataClient();
-		if (null == dataClient.getAttributeValue(this.name, attributeName,
+		if (null == dataClient.getAttributeValue(this.customerStatus.getUserId(), attributeName,
 				attributeValue.getClass())) {
 			this.log.debug("create attribute #0 for #1", attributeName,
 					this.name);
 			dataClient
-					.createAttribute(this.name, attributeName, attributeValue);
+					.createAttribute(this.customerStatus.getUserId(), attributeName, attributeValue);
 		} else {
 			this.log.debug("set attribute #0 for #1", attributeName, this.name);
-			dataClient.setAttributeValue(this.name, attributeName,
+			dataClient.setAttributeValue(this.customerStatus.getUserId(), attributeName,
 					attributeValue);
 		}
 	}

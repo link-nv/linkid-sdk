@@ -244,8 +244,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.trustedCertificates.add(demoPaymentCertificate);
 
 		this.registeredApplications.add(new Application(
-				DEMO_PAYMENT_APPLICATION_NAME, "owner", demoPaymentCertificate,
-				IdScopeType.SUBSCRIPTION));
+				DEMO_PAYMENT_APPLICATION_NAME, "owner", null, null, true, true,
+				demoPaymentCertificate, true, IdScopeType.SUBSCRIPTION));
 
 		/*
 		 * Subscribe the payment admin.

@@ -32,6 +32,8 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
@@ -58,6 +60,8 @@ public abstract class AbstractPaymentDataClientBean implements
 	private transient DataClient dataClient;
 
 	private transient AttributeClient attributeClient;
+
+	private transient NameIdentifierMappingClient mappingClient;
 
 	private String wsHostName;
 	private String wsHostPort;
@@ -87,6 +91,9 @@ public abstract class AbstractPaymentDataClientBean implements
 				+ this.wsHostPort, this.certificate, this.privateKey);
 		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
 				+ this.wsHostPort, this.certificate, this.privateKey);
+		this.mappingClient = new NameIdentifierMappingClientImpl(
+				this.wsHostName + ":" + this.wsHostPort, this.certificate,
+				this.privateKey);
 	}
 
 	@PrePassivate
@@ -122,6 +129,13 @@ public abstract class AbstractPaymentDataClientBean implements
 		return this.attributeClient;
 	}
 
+	protected NameIdentifierMappingClient getMappingClient() {
+		if (null == this.mappingClient) {
+			throw new EJBException("mapping client not yet initialized");
+		}
+		return this.mappingClient;
+	}
+	
 	/**
 	 * Gives back the lawyer status of a subject. This method also sets the
 	 * {@link FacesMessages} in case something goes wrong.
@@ -130,16 +144,31 @@ public abstract class AbstractPaymentDataClientBean implements
 	 * @return the lawyer status or <code>null</code> in case of error.
 	 */
 	protected CustomerStatus getCustomerStatus(String subjectLogin) {
+		
+		String userId;
+		NameIdentifierMappingClient myMappingClient = getMappingClient();
+		try {
+			userId = myMappingClient.getUserId(subjectLogin);
+		} catch (SubjectNotFoundException e) {
+			this.log.debug("subject not found: #0", subjectLogin);
+			this.facesMessages.add("subject not found");
+			return null;
+		} catch (RequestDeniedException e) {
+			this.log.debug("request denied");
+			this.facesMessages.add("request denied");
+			return null;
+		}
+		
 		boolean junior = false;
 		boolean paymentAdmin = false;
 		Attribute<Boolean> juniorAttribute;
 		Attribute<Boolean> paymentAdminAttribute;
 		DataClient currentDataClient = getDataClient();
 		try {
-			juniorAttribute = currentDataClient.getAttributeValue(subjectLogin,
+			juniorAttribute = currentDataClient.getAttributeValue(userId,
 					DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
 			paymentAdminAttribute = currentDataClient.getAttributeValue(
-					subjectLogin, DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME,
+					userId, DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME,
 					Boolean.class);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());
@@ -158,7 +187,7 @@ public abstract class AbstractPaymentDataClientBean implements
 				&& null != paymentAdminAttribute.getValue()) {
 			paymentAdmin = paymentAdminAttribute.getValue();
 		}
-		CustomerStatus customerStatus = new CustomerStatus(junior, paymentAdmin);
+		CustomerStatus customerStatus = new CustomerStatus(userId,junior, paymentAdmin);
 		return customerStatus;
 	}
 
