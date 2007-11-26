@@ -71,7 +71,9 @@ public class AgentsList extends JList implements AgentStateListener,
 					this.model.addElement(agent);
 					agent.addAgentStatusListener(this);
 				}
-				setSelectedValue(agent, false);
+
+				int endIndex = getModel().getSize() - 1;
+				addSelectionInterval(endIndex, endIndex);
 			}
 
 		// Remove stale agents from the list.

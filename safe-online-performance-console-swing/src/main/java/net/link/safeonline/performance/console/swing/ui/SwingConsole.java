@@ -107,6 +107,7 @@ public class SwingConsole {
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout("p, 5dlu, 0:g, 5dlu, p",
 				"p, 5dlu, t:p:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
+		layout.setColumnGroups(new int[][] { { 1, 5 } });
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout, pane);
 
 		builder.appendSeparator("Members of group "

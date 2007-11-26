@@ -83,9 +83,7 @@ public class Agent {
 	public void setHealthy(boolean healthy) {
 
 		this.healthy = healthy;
-
-		for (AgentStatusListener listener : this.agentStatusListeners)
-			listener.statusChanged(this);
+		fireAgentStatus();
 	}
 
 	private boolean isLocked() {
@@ -170,31 +168,6 @@ public class Agent {
 			this.agentStatusListeners.add(agentStatusListener);
 	}
 
-	public enum State {
-		RESET("Ready", "Idle"), UPLOAD("Scenario Uploaded", "Receiving"), DEPLOY(
-				"Scenario Deployed", "Deploying"), EXECUTE("Charts Available",
-				"Executing");
-
-		private String state;
-		private String transitioning;
-
-		private State(String state, String transitioning) {
-
-			this.state = state;
-			this.transitioning = transitioning;
-		}
-
-		public String getState() {
-
-			return this.state;
-		}
-
-		public String getTransitioning() {
-
-			return this.transitioning;
-		}
-	}
-
 	/**
 	 * Retrieve the current state transition action of the agent.
 	 */
@@ -222,6 +195,8 @@ public class Agent {
 			return false;
 
 		this.state = State.RESET;
+		fireAgentStatus();
+
 		return true;
 	}
 
@@ -257,5 +232,30 @@ public class Agent {
 	public void setCharts(List<byte[]> charts) {
 
 		this.charts = charts;
+	}
+
+	public enum State {
+		RESET("Ready", "Idle"), UPLOAD("Scenario Uploaded", "Receiving"), DEPLOY(
+				"Scenario Deployed", "Deploying"), EXECUTE("Charts Available",
+				"Executing");
+
+		private String state;
+		private String transitioning;
+
+		private State(String state, String transitioning) {
+
+			this.state = state;
+			this.transitioning = transitioning;
+		}
+
+		public String getState() {
+
+			return this.state;
+		}
+
+		public String getTransitioning() {
+
+			return this.transitioning;
+		}
 	}
 }

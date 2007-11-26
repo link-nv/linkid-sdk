@@ -201,6 +201,9 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 			this.chartsButton.setEnabled(true);
 			break;
 		}
+
+		this.sideButton.validate();
+		this.sideButton.repaint();
 	}
 
 	/**
