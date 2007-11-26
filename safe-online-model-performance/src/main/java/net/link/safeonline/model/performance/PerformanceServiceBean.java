@@ -18,10 +18,10 @@ import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 
 @Stateless
-@LocalBinding(jndiBinding = PerformanceService.JNDI_BINDING_NAME)
+@RemoteBinding(jndiBinding = PerformanceService.JNDI_BINDING_NAME)
 public class PerformanceServiceBean implements PerformanceService {
 
 	private static final Log LOG = LogFactory
