@@ -162,8 +162,11 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	 */
 	public void enableButtonsFor(State currentState) {
 
+		this.sideButton.removeAll();
+
 		switch (currentState) {
 		case RESET:
+			this.sideButton.add(this.browseButton);
 			this.resetButton.setEnabled(false);
 			this.uploadButton.setEnabled(null != getScenarioFile());
 			this.deployButton.setEnabled(false);
@@ -172,6 +175,7 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 			break;
 
 		case UPLOAD:
+			this.sideButton.add(this.resetButton);
 			this.resetButton.setEnabled(true);
 			this.uploadButton.setEnabled(null != getScenarioFile());
 			this.deployButton.setEnabled(true);
@@ -180,6 +184,7 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 			break;
 
 		case DEPLOY:
+			this.sideButton.add(this.resetButton);
 			this.resetButton.setEnabled(true);
 			this.uploadButton.setEnabled(null != getScenarioFile());
 			this.deployButton.setEnabled(false);
@@ -188,6 +193,7 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 			break;
 
 		case EXECUTE:
+			this.sideButton.add(this.resetButton);
 			this.resetButton.setEnabled(true);
 			this.uploadButton.setEnabled(null != getScenarioFile());
 			this.deployButton.setEnabled(false);

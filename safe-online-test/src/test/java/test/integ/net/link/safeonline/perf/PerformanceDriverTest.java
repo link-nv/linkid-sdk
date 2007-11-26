@@ -31,8 +31,8 @@ public class PerformanceDriverTest {
 
 	private static final PrivateKeyEntry APPL = PerformanceKeyStoreUtils
 			.getPrivateKeyEntry();
-	// private static final String OLAS_HOSTNAME = "sebeco-dev-10:8443";
-	private static final String OLAS_HOSTNAME = "localhost:8443";
+	private static final String OLAS_HOSTNAME = "sebeco-dev-10:8443";
+	// private static final String OLAS_HOSTNAME = "localhost:8443";
 	private static final String PASS = "admin";
 	private static final String USER = "admin";
 	private AttribDriver attribDriver;
