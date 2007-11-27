@@ -214,9 +214,8 @@ public class AccountMergingServiceBeanTest {
 					this.subject.getUserId(), "user");
 			identityService.confirmIdentity(application.applicationName);
 
-			for (AttributeTypeEntity attributeType : application.attributeTypes) {
+			for (AttributeTypeEntity attributeType : application.attributeTypes)
 				addAttributeValue(attributeType, identityService);
-			}
 
 		}
 
@@ -273,13 +272,12 @@ public class AccountMergingServiceBeanTest {
 					SafeOnlineTestContainer.sessionBeans, this.entityManager,
 					"test-operator", "operator");
 			List<IdentityAttributeTypeDO> applicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
-			for (AttributeTypeEntity attributeType : this.attributeTypes) {
+			for (AttributeTypeEntity attributeType : this.attributeTypes)
 				applicationIdentityAttributes.add(new IdentityAttributeTypeDO(
 						attributeType.getName(), true, false));
-			}
 			applicationService.addApplication(this.applicationName, null,
-					"owner", null, false, IdScopeType.USER, null, null,
-					applicationIdentityAttributes);
+					"owner", null, false, IdScopeType.USER, null, null, null,
+					null, applicationIdentityAttributes);
 		}
 	}
 

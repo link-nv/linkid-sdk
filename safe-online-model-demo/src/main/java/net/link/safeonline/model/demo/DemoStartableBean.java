@@ -94,8 +94,9 @@ public class DemoStartableBean extends AbstractInitBean {
 		 */
 		this.trustedCertificates.add(demoMandateCertificate);
 		this.registeredApplications.add(new Application(
-				DEMO_MANDATE_APPLICATION_NAME, "owner", null, null, true, true,
-				demoMandateCertificate, true, IdScopeType.SUBSCRIPTION));
+				DEMO_MANDATE_APPLICATION_NAME, "owner", null, null, null, null,
+				true, true, demoMandateCertificate, true,
+				IdScopeType.SUBSCRIPTION));
 
 		/*
 		 * Subscribe the demo users to the mandate demo application.
@@ -244,8 +245,9 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.trustedCertificates.add(demoPaymentCertificate);
 
 		this.registeredApplications.add(new Application(
-				DEMO_PAYMENT_APPLICATION_NAME, "owner", null, null, true, true,
-				demoPaymentCertificate, true, IdScopeType.SUBSCRIPTION));
+				DEMO_PAYMENT_APPLICATION_NAME, "owner", null, null, null, null,
+				true, true, demoPaymentCertificate, true,
+				IdScopeType.SUBSCRIPTION));
 
 		/*
 		 * Subscribe the payment admin.
@@ -340,8 +342,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				.getCertificate();
 		this.trustedCertificates.add(demoPrescriptionCertificate);
 		this.registeredApplications.add(new Application(
-				DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, null, true,
-				true, demoPrescriptionCertificate, true,
+				DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, null, null,
+				null, true, true, demoPrescriptionCertificate, true,
 				IdScopeType.SUBSCRIPTION));
 
 		/*
@@ -440,8 +442,9 @@ public class DemoStartableBean extends AbstractInitBean {
 		X509Certificate demoLawyerCertificate = (X509Certificate) demoLawyerPrivateKeyEntry
 				.getCertificate();
 		this.registeredApplications.add(new Application(
-				DEMO_LAWYER_APPLICATION_NAME, "owner", null, null, true, true,
-				demoLawyerCertificate, true, IdScopeType.SUBSCRIPTION));
+				DEMO_LAWYER_APPLICATION_NAME, "owner", null, null, null, null,
+				true, true, demoLawyerCertificate, true,
+				IdScopeType.SUBSCRIPTION));
 		this.trustedCertificates.add(demoLawyerCertificate);
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
@@ -537,16 +540,14 @@ public class DemoStartableBean extends AbstractInitBean {
 			this.attributeProviders.add(attributeProvider);
 		}
 
-		if (null != enName) {
+		if (null != enName)
 			this.attributeTypeDescriptions
 					.add(new AttributeTypeDescriptionEntity(attributeType,
 							Locale.ENGLISH.getLanguage(), enName, null));
-		}
-		if (null != nlName) {
+		if (null != nlName)
 			this.attributeTypeDescriptions
 					.add(new AttributeTypeDescriptionEntity(attributeType,
 							"nl", nlName, null));
-		}
 		return attributeType;
 	}
 

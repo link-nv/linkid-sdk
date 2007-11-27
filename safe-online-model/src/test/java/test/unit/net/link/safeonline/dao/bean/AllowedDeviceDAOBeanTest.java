@@ -87,8 +87,9 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 		this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
 				.findApplicationOwner("testowner");
-		ApplicationEntity application = this.applicationDAO.addApplication(
-				"testapp", null, applicationOwner, null, null, null);
+		ApplicationEntity application = this.applicationDAO
+				.addApplication("testapp", null, applicationOwner, null, null,
+						null, null, null);
 
 		DeviceEntity device = this.deviceDAO.addDevice("testdevice",
 				DeviceType.HASH);
@@ -118,8 +119,9 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 		this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
 				.findApplicationOwner("testowner");
-		ApplicationEntity application = this.applicationDAO.addApplication(
-				"testapp", null, applicationOwner, null, null, null);
+		ApplicationEntity application = this.applicationDAO
+				.addApplication("testapp", null, applicationOwner, null, null,
+						null, null, null);
 
 		try {
 			this.testedInstance.addAllowedDevice(application, null, 0);
@@ -137,8 +139,9 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 		this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
 		ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
 				.findApplicationOwner("testowner");
-		ApplicationEntity application = this.applicationDAO.addApplication(
-				"testapp", null, applicationOwner, null, null, null);
+		ApplicationEntity application = this.applicationDAO
+				.addApplication("testapp", null, applicationOwner, null, null,
+						null, null, null);
 
 		DeviceEntity device = this.deviceDAO.addDevice("testdevice",
 				DeviceType.HASH);

@@ -64,19 +64,19 @@ public class AuthenticationWebApplicationTest {
 			.getLog(AuthenticationWebApplicationTest.class);
 
 	@Test
-	public void testLogin() throws DriverException {
+	public void testLogin() throws Exception {
 		PrivateKeyEntry privateKeyEntry = PerformanceKeyStoreUtils
-		.getPrivateKeyEntry();
+				.getPrivateKeyEntry();
 		PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 		PublicKey publicKey = privateKeyEntry.getCertificate().getPublicKey();
 
 		Protocol.registerProtocol("https", new Protocol("https",
 				new MySSLSocketFactory(), 443));
-		
+
 		HttpClient httpClient = new HttpClient();
-		
+
 		String uri = "https://localhost:8443/olas-auth/entry";
-		
+
 		PostMethod postMethod = new PostMethod(uri);
 		postMethod.setRequestHeader("Cookie", "deflowered=true");
 
@@ -97,9 +97,8 @@ public class AuthenticationWebApplicationTest {
 		String jsessionId = null;
 		for (Cookie cookie : httpClient.getState().getCookies()) {
 			LOG.debug("client side cookie: " + cookie);
-			if ("JSESSIONID".equals(cookie.getName())) {
+			if ("JSESSIONID".equals(cookie.getName()))
 				jsessionId = cookie.getValue();
-			}
 		}
 		assertNotNull(jsessionId);
 
@@ -141,11 +140,6 @@ public class AuthenticationWebApplicationTest {
 				null);
 		LOG.debug("result document: "
 				+ DomTestUtils.domToString(resultDocument));
-	}
-	
-	public String login(PrivateKeyEntry application, String applicationName,
-			String username, String password) throws DriverException {
-		
 	}
 
 	private PostMethod createFormPostMethod(Node formNode, String jsessionId)
@@ -235,18 +229,14 @@ public class AuthenticationWebApplicationTest {
 
 		public void checkServerTrusted(X509Certificate[] chain, String authType)
 				throws CertificateException {
-			if (null == chain) {
+			if (null == chain)
 				throw new CertificateException("null certificate chain");
-			}
-			if (0 == chain.length) {
+			if (0 == chain.length)
 				throw new CertificateException("empty certificate chain");
-			}
-			if (null == authType) {
+			if (null == authType)
 				throw new CertificateException("null authentication type");
-			}
-			if (0 == authType.length()) {
+			if (0 == authType.length())
 				throw new CertificateException("empty authentication type");
-			}
 			LOG.debug("server certificate: " + chain[0].getSubjectDN());
 		}
 

@@ -12,6 +12,7 @@ import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_CERTID;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_USER_ALL;
 
+import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -86,6 +87,10 @@ public class ApplicationEntity implements Serializable {
 
 	protected URL applicationUrl;
 
+	protected URL applicationLogo;
+
+	protected Color applicationColor;
+
 	protected boolean allowUserSubscription;
 
 	protected boolean removable;
@@ -122,51 +127,60 @@ public class ApplicationEntity implements Serializable {
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner) {
-		this(name, applicationOwner, null, true);
+		this(name, applicationOwner, null, null, null, true);
 	}
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, X509Certificate certificate) {
+			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			X509Certificate certificate) {
 		this(name, friendlyName, applicationOwner, description, applicationUrl,
-				true, true, certificate, 0, 0);
+				applicationLogo, applicationColor, true, true, certificate, 0,
+				0);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, URL applicationUrl,
+			URL applicationLogo, Color applicationColor,
 			boolean allowUserSubscription) {
-		this(name, applicationOwner, applicationUrl, allowUserSubscription,
-				true);
+		this(name, applicationOwner, applicationUrl, applicationLogo,
+				applicationColor, allowUserSubscription, true);
 	}
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, URL applicationUrl,
+			URL applicationLogo, Color applicationColor,
 			boolean allowUserSubscription, boolean removable) {
 		this(name, null, applicationOwner, null, applicationUrl,
-				allowUserSubscription, removable, null, 0, 0);
+				applicationLogo, applicationColor, allowUserSubscription,
+				removable, null, 0, 0);
 	}
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, boolean allowUserSubscription,
-			boolean removable, X509Certificate certificate,
-			long identityVersion, long usageAgreementVersion) {
+			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			boolean allowUserSubscription, boolean removable,
+			X509Certificate certificate, long identityVersion,
+			long usageAgreementVersion) {
 		this(name, friendlyName, applicationOwner, description, applicationUrl,
-				allowUserSubscription, removable, certificate, identityVersion,
-				usageAgreementVersion, false);
+				applicationLogo, applicationColor, allowUserSubscription,
+				removable, certificate, identityVersion, usageAgreementVersion,
+				false);
 	}
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, boolean allowUserSubscription,
-			boolean removable, X509Certificate certificate,
-			long identityVersion, long usageAgreementVersion,
-			boolean deviceRestriction) {
+			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			boolean allowUserSubscription, boolean removable,
+			X509Certificate certificate, long identityVersion,
+			long usageAgreementVersion, boolean deviceRestriction) {
 		this.name = name;
 		this.friendlyName = friendlyName;
 		this.applicationOwner = applicationOwner;
 		this.description = description;
 		this.applicationUrl = applicationUrl;
+		this.applicationLogo = applicationLogo;
+		this.applicationColor = applicationColor;
 		this.allowUserSubscription = allowUserSubscription;
 		this.removable = removable;
 		this.deviceRestriction = deviceRestriction;
@@ -235,6 +249,38 @@ public class ApplicationEntity implements Serializable {
 	public void setApplicationUrl(URL applicationUrl) {
 
 		this.applicationUrl = applicationUrl;
+	}
+
+	/**
+	 * Retrieve the logo of this application.
+	 */
+	public URL getApplicationLogo() {
+
+		return this.applicationLogo;
+	}
+
+	/**
+	 * Set the logo of this application.
+	 */
+	public void setApplicationLogo(URL applicationLogo) {
+
+		this.applicationLogo = applicationLogo;
+	}
+
+	/**
+	 * Retrieve the base color of this application's theme.
+	 */
+	public Color getApplicationColor() {
+
+		return this.applicationColor;
+	}
+
+	/**
+	 * Set the base color of this application's theme.
+	 */
+	public void setApplicationColor(Color applicationColor) {
+
+		this.applicationColor = applicationColor;
 	}
 
 	/**
@@ -369,12 +415,10 @@ public class ApplicationEntity implements Serializable {
 
 	@Transient
 	public X509Certificate getCertificate() {
-		if (null != this.certificate) {
+		if (null != this.certificate)
 			return this.certificate;
-		}
-		if (null == this.encodedCert) {
+		if (null == this.encodedCert)
 			return null;
-		}
 		try {
 			CertificateFactory certificateFactory = CertificateFactory
 					.getInstance("X.509");
@@ -402,9 +446,8 @@ public class ApplicationEntity implements Serializable {
 		} catch (CertificateEncodingException e) {
 			throw new EJBException("certificate encoding error");
 		}
-		this.setEncodedCert(encodedCertificate);
-		this
-				.setCertificateIdentifier(toCertificateIdentifier(encodedCertificate));
+		setEncodedCert(encodedCertificate);
+		setCertificateIdentifier(toCertificateIdentifier(encodedCertificate));
 	}
 
 	/**
@@ -437,12 +480,10 @@ public class ApplicationEntity implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (false == obj instanceof ApplicationEntity) {
+		if (false == obj instanceof ApplicationEntity)
 			return false;
-		}
 		ApplicationEntity rhs = (ApplicationEntity) obj;
 		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
 	}

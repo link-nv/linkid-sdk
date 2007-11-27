@@ -7,6 +7,7 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.awt.Color;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -53,11 +54,12 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	public ApplicationEntity addApplication(String applicationName,
 			String applicationFriendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, X509Certificate certificate) {
+			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			X509Certificate certificate) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
 				applicationFriendlyName, applicationOwner, description,
-				applicationUrl, certificate);
+				applicationUrl, applicationLogo, applicationColor, certificate);
 		this.entityManager.persist(application);
 		return application;
 	}
@@ -77,9 +79,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	public ApplicationEntity getApplication(String applicationName)
 			throws ApplicationNotFoundException {
 		ApplicationEntity application = findApplication(applicationName);
-		if (null == application) {
+		if (null == application)
 			throw new ApplicationNotFoundException();
-		}
 		return application;
 	}
 
@@ -87,13 +88,14 @@ public class ApplicationDAOBean implements ApplicationDAO {
 			String applicationFriendlyName,
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable,
-			String description, URL applicationUrl,
-			X509Certificate certificate, long initialIdentityVersion,
-			long usageAgreementVersion) {
+			String description, URL applicationUrl, URL applicationLogo,
+			Color applicationColor, X509Certificate certificate,
+			long initialIdentityVersion, long usageAgreementVersion) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
 				applicationFriendlyName, applicationOwner, description,
-				applicationUrl, allowUserSubscription, removable, certificate,
+				applicationUrl, applicationLogo, applicationColor,
+				allowUserSubscription, removable, certificate,
 				initialIdentityVersion, usageAgreementVersion);
 		this.entityManager.persist(application);
 		return application;
@@ -119,9 +121,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
 		Query query = ApplicationEntity.createQueryWhereCertificate(
 				this.entityManager, certificate);
 		List<ApplicationEntity> applications = query.getResultList();
-		if (applications.isEmpty()) {
+		if (applications.isEmpty())
 			throw new ApplicationNotFoundException();
-		}
 		ApplicationEntity application = applications.get(0);
 		return application;
 	}

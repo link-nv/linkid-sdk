@@ -106,9 +106,8 @@ public class AttributeServiceBean implements AttributeService,
 			LOG
 					.debug("identity attribute: "
 							+ attribute.getAttributeTypeName());
-			if (attribute.getAttributeTypeName().equals(attributeName)) {
+			if (attribute.getAttributeTypeName().equals(attributeName))
 				return attribute.getAttributeType();
-			}
 		}
 		LOG.debug("attribute not in set of confirmed identity attributes");
 		throw new PermissionDeniedException(
@@ -155,15 +154,13 @@ public class AttributeServiceBean implements AttributeService,
 		}
 
 		/*
-		 * Filter the datamining attributes
+		 * Filter the data mining attributes
 		 */
 		List<ApplicationIdentityAttributeEntity> attributes = new ArrayList<ApplicationIdentityAttributeEntity>();
 		for (ApplicationIdentityAttributeEntity attribute : confirmedApplicationIdentity
-				.getAttributes()) {
-			if (!attribute.isDataMining()) {
+				.getAttributes())
+			if (!attribute.isDataMining())
 				attributes.add(attribute);
-			}
-		}
 		return attributes;
 	}
 
@@ -180,9 +177,8 @@ public class AttributeServiceBean implements AttributeService,
 					.getAttributeType();
 			List<AttributeEntity> attributes = this.attributeDAO
 					.listAttributes(subject, attributeType);
-			if (attributes.isEmpty()) {
+			if (attributes.isEmpty())
 				continue;
-			}
 			String attributeName = confirmedAttribute.getAttributeTypeName();
 			LOG.debug("confirmed attribute: " + attributeName);
 			Object value;
@@ -201,42 +197,37 @@ public class AttributeServiceBean implements AttributeService,
 			AttributeTypeEntity attributeType, SubjectEntity subject)
 			throws AttributeNotFoundException {
 		DatatypeType datatype = attributeType.getType();
-		if (attributeType.isMultivalued()) {
+		if (attributeType.isMultivalued())
 			switch (datatype) {
 			case STRING:
 			case LOGIN: {
 				String[] values = new String[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++) {
+				for (int idx = 0; idx < values.length; idx++)
 					values[idx] = attributes.get(idx).getStringValue();
-				}
 				return values;
 			}
 			case BOOLEAN: {
 				Boolean[] values = new Boolean[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++) {
+				for (int idx = 0; idx < values.length; idx++)
 					values[idx] = attributes.get(idx).getBooleanValue();
-				}
 				return values;
 			}
 			case INTEGER: {
 				Integer[] values = new Integer[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++) {
+				for (int idx = 0; idx < values.length; idx++)
 					values[idx] = attributes.get(idx).getIntegerValue();
-				}
 				return values;
 			}
 			case DOUBLE: {
 				Double[] values = new Double[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++) {
+				for (int idx = 0; idx < values.length; idx++)
 					values[idx] = attributes.get(idx).getDoubleValue();
-				}
 				return values;
 			}
 			case DATE: {
 				Date[] values = new Date[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++) {
+				for (int idx = 0; idx < values.length; idx++)
 					values[idx] = attributes.get(idx).getDateValue();
-				}
 				return values;
 			}
 			case COMPOUNDED: {
@@ -255,11 +246,10 @@ public class AttributeServiceBean implements AttributeService,
 							values[idx] = memberMap;
 						}
 						Object memberValue;
-						if (null != attribute) {
+						if (null != attribute)
 							memberValue = attribute.getValue();
-						} else {
+						else
 							memberValue = null;
-						}
 						memberMap.put(memberAttributeType.getName(),
 								memberValue);
 					}
@@ -269,13 +259,11 @@ public class AttributeServiceBean implements AttributeService,
 			default:
 				throw new EJBException("datatype not supported: " + datatype);
 			}
-		}
 		/*
 		 * Single-valued attribute.
 		 */
-		if (attributes.isEmpty()) {
+		if (attributes.isEmpty())
 			throw new AttributeNotFoundException();
-		}
 		AttributeEntity attribute = attributes.get(0);
 		return attribute.getValue();
 	}

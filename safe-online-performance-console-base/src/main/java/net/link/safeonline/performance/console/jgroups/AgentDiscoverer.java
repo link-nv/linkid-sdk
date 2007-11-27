@@ -1,5 +1,8 @@
-/**
+/*
+ * SafeOnline project.
  * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 package net.link.safeonline.performance.console.jgroups;
 
@@ -52,16 +55,16 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 			if (!this.channel.isConnected())
 				this.channel.connect(group);
 
+			Runtime.getRuntime().addShutdownHook(
+					new Thread("JGroups ShutdownHook") {
 
-	        Runtime.getRuntime().addShutdownHook( new Thread( "JGroups ShutdownHook" ) {
-	            
-	            @Override
-	            public void run() {
-	            
-	                close();
-	            }
-	        });
-	        
+						@Override
+						public void run() {
+
+							close();
+						}
+					});
+
 			this.channel.addChannelListener(this);
 			this.channel.setReceiver(this);
 		}

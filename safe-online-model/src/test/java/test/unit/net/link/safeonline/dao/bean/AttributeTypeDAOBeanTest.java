@@ -135,7 +135,7 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 		// setup application
 		String applicationName = UUID.randomUUID().toString();
 		ApplicationEntity application = this.applicationDAO.addApplication(
-				applicationName, null, owner, null, null, null);
+				applicationName, null, owner, null, null, null, null, null);
 
 		// setup application identity
 		this.applicationIdentityDAO.addApplicationIdentity(application, 1);
@@ -156,11 +156,9 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 				attributeType);
 
 		// verify
-		for (Object value : result.keySet()) {
-			if (value.equals(attributeValue)) {
+		for (Object value : result.keySet())
+			if (value.equals(attributeValue))
 				assertEquals(result.get(value), Long.valueOf(1));
-			}
-		}
 
 	}
 }

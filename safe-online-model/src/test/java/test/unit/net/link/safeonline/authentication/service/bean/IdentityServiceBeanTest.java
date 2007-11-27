@@ -135,7 +135,7 @@ public class IdentityServiceBeanTest {
 				"test-attribute-type-2", DatatypeType.STRING, false, false));
 		applicationService.addApplication(applicationName, null,
 				"test-application-owner-name", null, false, IdScopeType.USER,
-				null, null, Collections
+				null, null, null, null, Collections
 						.singletonList(new IdentityAttributeTypeDO(
 								"test-attribute-type", true, false)));
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
@@ -235,7 +235,7 @@ public class IdentityServiceBeanTest {
 
 		applicationService.addApplication(applicationName, null,
 				"test-application-owner-name", null, false, IdScopeType.USER,
-				null, null, Collections
+				null, null, null, null, Collections
 						.singletonList(new IdentityAttributeTypeDO(
 								"test-compounded-type", true, false)));
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
@@ -307,7 +307,8 @@ public class IdentityServiceBeanTest {
 				"test-application-owner-name", ownerSubject.getUserId());
 		applicationService.addApplication(applicationName, null,
 				"test-application-owner-name", null, false, IdScopeType.USER,
-				null, null, new LinkedList<IdentityAttributeTypeDO>());
+				null, null, null, null,
+				new LinkedList<IdentityAttributeTypeDO>());
 
 		EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");
 
@@ -879,7 +880,8 @@ public class IdentityServiceBeanTest {
 					ApplicationDAOBean.class,
 					SafeOnlineTestContainer.sessionBeans, entityManager);
 			ApplicationEntity application = applicationDAO.addApplication(
-					applicationName, null, applicationOwner, null, null, null);
+					applicationName, null, applicationOwner, null, null, null,
+					null, null);
 
 			AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(
 					AttributeTypeDAOBean.class,
@@ -1293,7 +1295,7 @@ public class IdentityServiceBeanTest {
 				compoundedAttributeName, true, false));
 		applicationService.addApplication(applicationName, null,
 				applicationOwnerName, null, false, IdScopeType.USER, null,
-				null, initialApplicationIdentityAttributes);
+				null, null, null, initialApplicationIdentityAttributes);
 
 		// operate: save attribute
 		IdentityService identityService = EJBTestUtils.newInstance(

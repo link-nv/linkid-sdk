@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.awt.Color;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -80,7 +81,8 @@ public interface ApplicationService {
 	void addApplication(String name, String friendlyName,
 			String applicationOwnerName, String description,
 			boolean idMappingServiceAccess, IdScopeType idScope,
-			URL applicationUrl, byte[] encodedCertificate,
+			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
@@ -167,6 +169,26 @@ public interface ApplicationService {
 	 * @throws ApplicationNotFoundException
 	 */
 	void updateApplicationUrl(String applicationId, URL applicationUrl)
+			throws ApplicationNotFoundException;
+
+	/**
+	 * Updates the application Logo for the given application.
+	 * 
+	 * @param applicationId
+	 * @param applicationLogo
+	 * @throws ApplicationNotFoundException
+	 */
+	void updateApplicationLogo(String applicationId, URL applicationLogo)
+			throws ApplicationNotFoundException;
+
+	/**
+	 * Updates the application Color for the given application.
+	 * 
+	 * @param applicationId
+	 * @param applicationColor
+	 * @throws ApplicationNotFoundException
+	 */
+	void updateApplicationColor(String applicationId, Color applicationColor)
 			throws ApplicationNotFoundException;
 
 	/**

@@ -158,7 +158,8 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 		applicationService.addApplication(testApplicationName,
 				testApplicationFriendlyName, testApplicationOwnerName, null,
-				false, IdScopeType.USER, null, null, initialIdentity);
+				false, IdScopeType.USER, null, null, null, null,
+				initialIdentity);
 
 		EntityTransaction entityTransaction = entityManager.getTransaction();
 		entityTransaction.commit();

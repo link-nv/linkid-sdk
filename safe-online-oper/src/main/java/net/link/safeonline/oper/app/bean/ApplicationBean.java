@@ -7,6 +7,7 @@
 
 package net.link.safeonline.oper.app.bean;
 
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,6 +100,10 @@ public class ApplicationBean implements Application {
 
 	private String applicationUrl;
 
+	private String applicationLogo;
+
+	private String applicationColor;
+
 	private String applicationOwner;
 
 	private UploadedFile upFile;
@@ -130,6 +135,8 @@ public class ApplicationBean implements Application {
 		this.name = null;
 		this.description = null;
 		this.applicationUrl = null;
+		this.applicationLogo = null;
+		this.applicationColor = null;
 	}
 
 	public static final String OPER_APPLICATION_LIST_NAME = "operApplicationList";
@@ -201,7 +208,8 @@ public class ApplicationBean implements Application {
 		if (null != this.applicationUrl)
 			LOG.debug("application url: " + this.applicationUrl);
 
-		URL newApplicationUrl = null;
+		Color newApplicationColor = null;
+		URL newApplicationUrl = null, newApplicationLogo = null;
 		if (null != this.applicationUrl && this.applicationUrl.length() != 0)
 			try {
 				newApplicationUrl = new URL(this.applicationUrl);
@@ -212,12 +220,32 @@ public class ApplicationBean implements Application {
 						"errorIllegalUrl", this.applicationUrl);
 				return null;
 			}
+		if (null != this.applicationLogo && this.applicationLogo.length() != 0)
+			try {
+				newApplicationLogo = new URL(this.applicationLogo);
+			} catch (MalformedURLException e) {
+				LOG.debug("illegal Logo URL format: " + this.applicationLogo);
+				this.facesMessages.addToControlFromResourceBundle(
+						"applicationLogo", FacesMessage.SEVERITY_ERROR,
+						"errorIllegalLogoUrl", this.applicationLogo);
+				return null;
+			}
+		if (null != this.applicationColor
+				&& this.applicationColor.length() != 0)
+			try {
+				newApplicationColor = Color.decode(this.applicationColor);
+			} catch (NumberFormatException e) {
+				LOG.debug("illegal Color format: " + this.applicationColor);
+				this.facesMessages.addToControlFromResourceBundle(
+						"applicationColor", FacesMessage.SEVERITY_ERROR,
+						"errorIllegalColor", this.applicationColor);
+				return null;
+			}
 
 		List<IdentityAttributeTypeDO> tempIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
 		for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
-			if (false == viewIdentityAttribute.isIncluded()) {
+			if (false == viewIdentityAttribute.isIncluded())
 				continue;
-			}
 			LOG.debug("include attribute: " + viewIdentityAttribute.getName());
 			IdentityAttributeTypeDO identityAttribute = new IdentityAttributeTypeDO(
 					viewIdentityAttribute.getName(), viewIdentityAttribute
@@ -226,17 +254,16 @@ public class ApplicationBean implements Application {
 		}
 		try {
 			byte[] encodedCertificate;
-			if (null != this.upFile) {
+			if (null != this.upFile)
 				encodedCertificate = getUpFileContent();
-			} else {
+			else
 				encodedCertificate = null;
-			}
 			this.applicationService.addApplication(this.name,
 					this.friendlyName, this.applicationOwner, this.description,
 					this.idmapping, IdScopeType
 							.valueOf(this.applicationIdScope),
-					newApplicationUrl, encodedCertificate,
-					tempIdentityAttributes);
+					newApplicationUrl, newApplicationLogo, newApplicationColor,
+					encodedCertificate, tempIdentityAttributes);
 
 		} catch (ExistingApplicationException e) {
 			LOG.debug("application already exists: " + this.name);
@@ -294,6 +321,26 @@ public class ApplicationBean implements Application {
 
 	public void setApplicationUrl(String applicationUrl) {
 		this.applicationUrl = applicationUrl;
+	}
+
+	public String getApplicationLogo() {
+
+		return this.applicationLogo;
+	}
+
+	public void setApplicationLogo(String applicationLogo) {
+
+		this.applicationLogo = applicationLogo;
+	}
+
+	public String getApplicationColor() {
+
+		return this.applicationColor;
+	}
+
+	public void setApplicationColor(String applicationColor) {
+
+		this.applicationColor = applicationColor;
 	}
 
 	public String getName() {
@@ -403,10 +450,9 @@ public class ApplicationBean implements Application {
 		 * Construct a map for fast lookup. The key is the attribute type name.
 		 */
 		Map<String, ApplicationIdentityAttributeEntity> currentIdentity = new HashMap<String, ApplicationIdentityAttributeEntity>();
-		for (ApplicationIdentityAttributeEntity applicationIdentityAttribute : currentIdentityAttributes) {
+		for (ApplicationIdentityAttributeEntity applicationIdentityAttribute : currentIdentityAttributes)
 			currentIdentity.put(applicationIdentityAttribute
 					.getAttributeTypeName(), applicationIdentityAttribute);
-		}
 
 		/*
 		 * The view receives a full attribute list, annotated with included and
@@ -423,12 +469,10 @@ public class ApplicationBean implements Application {
 					.get(attributeType.getName());
 			if (null != currentIdentityAttribute) {
 				included = true;
-				if (currentIdentityAttribute.isRequired()) {
+				if (currentIdentityAttribute.isRequired())
 					required = true;
-				}
-				if (currentIdentityAttribute.isDataMining()) {
+				if (currentIdentityAttribute.isDataMining())
 					dataMining = true;
-				}
 			}
 			IdentityAttribute identityAttribute = new IdentityAttribute(
 					attributeType.getName(), included, required, dataMining);
@@ -447,11 +491,9 @@ public class ApplicationBean implements Application {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<SelectItem> appliactionIdScopeFactory() {
 		List<SelectItem> applicationIdScopes = new LinkedList<SelectItem>();
-		for (IdScopeType currentType : IdScopeType.values()) {
+		for (IdScopeType currentType : IdScopeType.values())
 			applicationIdScopes.add(new SelectItem(currentType.name(),
 					currentType.name()));
-
-		}
 		return applicationIdScopes;
 	}
 
@@ -460,7 +502,8 @@ public class ApplicationBean implements Application {
 		String applicationId = this.selectedApplication.getName();
 		LOG.debug("save application: " + applicationId);
 
-		URL newApplicationUrl = null;
+		Color newApplicationColor = null;
+		URL newApplicationUrl = null, newApplicationLogo = null;
 		if (null != this.applicationUrl && this.applicationUrl.length() != 0)
 			try {
 				newApplicationUrl = new URL(this.applicationUrl);
@@ -469,6 +512,27 @@ public class ApplicationBean implements Application {
 				this.facesMessages.addToControlFromResourceBundle(
 						"applicationUrl", FacesMessage.SEVERITY_ERROR,
 						"errorIllegalUrl", this.applicationUrl);
+				return null;
+			}
+		if (null != this.applicationLogo && this.applicationLogo.length() != 0)
+			try {
+				newApplicationLogo = new URL(this.applicationLogo);
+			} catch (MalformedURLException e) {
+				LOG.debug("illegal Logo URL format: " + this.applicationLogo);
+				this.facesMessages.addToControlFromResourceBundle(
+						"applicationLogo", FacesMessage.SEVERITY_ERROR,
+						"errorIllegalLogoUrl", this.applicationLogo);
+				return null;
+			}
+		if (null != this.applicationColor
+				&& this.applicationColor.length() != 0)
+			try {
+				newApplicationColor = Color.decode(this.applicationColor);
+			} catch (NumberFormatException e) {
+				LOG.debug("illegal Color format: " + this.applicationColor);
+				this.facesMessages.addToControlFromResourceBundle(
+						"applicationColor", FacesMessage.SEVERITY_ERROR,
+						"errorIllegalColor", this.applicationColor);
 				return null;
 			}
 
@@ -498,9 +562,8 @@ public class ApplicationBean implements Application {
 
 		List<IdentityAttributeTypeDO> tempNewIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
 		for (IdentityAttribute identityAttribute : this.identityAttributes) {
-			if (false == identityAttribute.isIncluded()) {
+			if (false == identityAttribute.isIncluded())
 				continue;
-			}
 			IdentityAttributeTypeDO newIdentityAttribute = new IdentityAttributeTypeDO(
 					identityAttribute.getName(),
 					identityAttribute.isRequired(), identityAttribute
@@ -513,6 +576,10 @@ public class ApplicationBean implements Application {
 					tempNewIdentityAttributes);
 			this.applicationService.updateApplicationUrl(applicationId,
 					newApplicationUrl);
+			this.applicationService.updateApplicationLogo(applicationId,
+					newApplicationLogo);
+			this.applicationService.updateApplicationColor(applicationId,
+					newApplicationColor);
 
 			/*
 			 * Refresh the selected application.
@@ -588,10 +655,17 @@ public class ApplicationBean implements Application {
 		 */
 		LOG.debug("edit application: " + this.selectedApplication.getName());
 
-		if (null != this.selectedApplication.getApplicationUrl()) {
+		if (null != this.selectedApplication.getApplicationUrl())
 			this.applicationUrl = this.selectedApplication.getApplicationUrl()
 					.toExternalForm();
-		}
+		if (null != this.selectedApplication.getApplicationLogo())
+			this.applicationLogo = this.selectedApplication
+					.getApplicationLogo().toExternalForm();
+		if (null != this.selectedApplication.getApplicationColor())
+			this.applicationColor = String.format("#%02x%02x%02x",
+					this.selectedApplication.getApplicationColor().getRed(),
+					this.selectedApplication.getApplicationColor().getGreen(),
+					this.selectedApplication.getApplicationColor().getBlue());
 		this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
 
 		this.applicationIdScope = this.selectedApplication.getIdScope().name();

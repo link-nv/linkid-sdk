@@ -34,8 +34,8 @@ public class PerformanceStartableBean extends AbstractInitBean {
 				.getCertificate();
 
 		this.registeredApplications.add(new Application(
-				PERFORMANCE_APPLICATION_NAME, "owner", null, null, true, false,
-				perfCertificate, true, IdScopeType.USER));
+				PERFORMANCE_APPLICATION_NAME, "owner", null, null, null, null,
+				true, false, perfCertificate, true, IdScopeType.USER));
 		this.trustedCertificates.add(perfCertificate);
 	}
 

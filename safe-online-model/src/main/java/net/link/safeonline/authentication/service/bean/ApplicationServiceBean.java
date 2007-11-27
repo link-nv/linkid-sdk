@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.awt.Color;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -134,7 +135,8 @@ public class ApplicationServiceBean implements ApplicationService,
 	public void addApplication(String name, String friendlyName,
 			String applicationOwnerName, String description,
 			boolean idMappingServiceAccess, IdScopeType idScope,
-			URL applicationUrl, byte[] encodedCertificate,
+			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
@@ -150,7 +152,7 @@ public class ApplicationServiceBean implements ApplicationService,
 
 		ApplicationEntity application = this.applicationDAO.addApplication(
 				name, friendlyName, applicationOwner, description,
-				applicationUrl, certificate);
+				applicationUrl, applicationLogo, applicationColor, certificate);
 
 		application.setIdentifierMappingAllowed(idMappingServiceAccess);
 
@@ -177,9 +179,8 @@ public class ApplicationServiceBean implements ApplicationService,
 			ApplicationIdentityEntity applicationIdentity,
 			List<IdentityAttributeTypeDO> applicationIdentityAttributes)
 			throws AttributeTypeNotFoundException {
-		if (null == applicationIdentityAttributes) {
+		if (null == applicationIdentityAttributes)
 			return;
-		}
 		for (IdentityAttributeTypeDO identityAttribute : applicationIdentityAttributes) {
 			AttributeTypeEntity attributeType = this.attributeTypeDAO
 					.getAttributeType(identityAttribute.getName());
@@ -193,9 +194,8 @@ public class ApplicationServiceBean implements ApplicationService,
 			throws ExistingApplicationException {
 		ApplicationEntity existingApplication = this.applicationDAO
 				.findApplication(name);
-		if (null != existingApplication) {
+		if (null != existingApplication)
 			throw new ExistingApplicationException();
-		}
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -206,9 +206,8 @@ public class ApplicationServiceBean implements ApplicationService,
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(name);
 
-		if (false == application.isRemovable()) {
+		if (false == application.isRemovable())
 			throw new PermissionDeniedException("application not removable");
-		}
 
 		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
 				.listSubscriptions(application);
@@ -217,16 +216,14 @@ public class ApplicationServiceBean implements ApplicationService,
 		 * and application identities for the moment. Postpone this until be
 		 * understand better what data needs to be preserved.
 		 */
-		for (SubscriptionEntity subscription : subscriptions) {
+		for (SubscriptionEntity subscription : subscriptions)
 			this.subscriptionDAO.removeSubscription(subscription);
-		}
 
 		List<ApplicationIdentityEntity> applicationIdentities = this.applicationIdentityDAO
 				.listApplicationIdentities(application);
-		for (ApplicationIdentityEntity applicationIdentity : applicationIdentities) {
+		for (ApplicationIdentityEntity applicationIdentity : applicationIdentities)
 			this.applicationIdentityDAO
 					.removeApplicationIdentity(applicationIdentity);
-		}
 
 		this.attributeProviderDAO.removeAttributeProviders(application);
 
@@ -247,10 +244,9 @@ public class ApplicationServiceBean implements ApplicationService,
 				.getApplicationOwner();
 		SubjectEntity requiredSubject = applicationOwner.getAdmin();
 		SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
-		if (false == requiredSubject.equals(actualSubject)) {
+		if (false == requiredSubject.equals(actualSubject))
 			throw new PermissionDeniedException(
 					"application owner admin mismatch");
-		}
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
@@ -278,9 +274,8 @@ public class ApplicationServiceBean implements ApplicationService,
 
 		ApplicationEntity ownerApplication = this.applicationDAO
 				.findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
-		if (null == ownerApplication) {
+		if (null == ownerApplication)
 			throw new EJBException("SafeOnline owner application not found");
-		}
 
 		/*
 		 * Subscribe the new application owner to the SafeOnline owner web
@@ -302,9 +297,8 @@ public class ApplicationServiceBean implements ApplicationService,
 			throws ExistingApplicationOwnerException {
 		ApplicationOwnerEntity existingApplicationOwner = this.applicationOwnerDAO
 				.findApplicationOwner(name);
-		if (null != existingApplicationOwner) {
+		if (null != existingApplicationOwner)
 			throw new ExistingApplicationOwnerException();
-		}
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -340,17 +334,15 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	private void checkReadPermission(ApplicationEntity application)
 			throws PermissionDeniedException {
-		if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)) {
+		if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE))
 			return;
-		}
 		ApplicationOwnerEntity applicationOwner = application
 				.getApplicationOwner();
 		SubjectEntity expectedSubject = applicationOwner.getAdmin();
 		SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
-		if (false == expectedSubject.equals(actualSubject)) {
+		if (false == expectedSubject.equals(actualSubject))
 			throw new PermissionDeniedException(
 					"application owner admin mismatch");
-		}
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -367,6 +359,18 @@ public class ApplicationServiceBean implements ApplicationService,
 	public void updateApplicationUrl(String applicationId, URL applicationUrl)
 			throws ApplicationNotFoundException {
 		getApplication(applicationId).setApplicationUrl(applicationUrl);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void updateApplicationLogo(String applicationId, URL applicationLogo)
+			throws ApplicationNotFoundException {
+		getApplication(applicationId).setApplicationLogo(applicationLogo);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void updateApplicationColor(String applicationId,
+			Color applicationColor) throws ApplicationNotFoundException {
+		getApplication(applicationId).setApplicationColor(applicationColor);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

@@ -129,6 +129,8 @@ public class AttributeServiceBeanTest {
 						IdScopeType.USER,
 						null,
 						null,
+						null,
+						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
 										testAttributeName, true, false) }));
@@ -188,6 +190,8 @@ public class AttributeServiceBeanTest {
 						null,
 						false,
 						IdScopeType.USER,
+						null,
+						null,
 						null,
 						null,
 						Arrays
@@ -256,6 +260,8 @@ public class AttributeServiceBeanTest {
 						null,
 						false,
 						IdScopeType.USER,
+						null,
+						null,
 						null,
 						null,
 						Arrays
@@ -335,6 +341,8 @@ public class AttributeServiceBeanTest {
 						null,
 						false,
 						IdScopeType.USER,
+						null,
+						null,
 						null,
 						null,
 						Arrays
@@ -420,6 +428,8 @@ public class AttributeServiceBeanTest {
 						IdScopeType.USER,
 						null,
 						null,
+						null,
+						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
 										testAttributeName, true, false) }));
@@ -497,6 +507,8 @@ public class AttributeServiceBeanTest {
 						null,
 						false,
 						IdScopeType.USER,
+						null,
+						null,
 						null,
 						null,
 						Arrays
@@ -581,6 +593,8 @@ public class AttributeServiceBeanTest {
 						null,
 						false,
 						IdScopeType.USER,
+						null,
+						null,
 						null,
 						null,
 						Arrays
@@ -704,6 +718,8 @@ public class AttributeServiceBeanTest {
 						IdScopeType.USER,
 						null,
 						null,
+						null,
+						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
 										compoundName, true, false) }));
@@ -757,9 +773,8 @@ public class AttributeServiceBeanTest {
 		assertEquals(Map[].class, result.getClass());
 		Map[] resultMapArray = (Map[]) result;
 		assertEquals(2, resultMapArray.length);
-		for (Map resultMap : resultMapArray) {
+		for (Map resultMap : resultMapArray)
 			LOG.debug("result map: " + resultMap);
-		}
 
 		Map<String, Object> firstResult = resultMapArray[0];
 		assertEquals("value 0", firstResult.get(firstMemberName));
@@ -792,11 +807,9 @@ public class AttributeServiceBeanTest {
 	}
 
 	private boolean contains(String[] list, String value) {
-		for (String entry : list) {
-			if (value.equals(entry)) {
+		for (String entry : list)
+			if (value.equals(entry))
 				return true;
-			}
-		}
 		return false;
 	}
 }

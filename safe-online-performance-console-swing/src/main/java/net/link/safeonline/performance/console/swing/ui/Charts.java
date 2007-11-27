@@ -6,9 +6,12 @@
  */
 package net.link.safeonline.performance.console.swing.ui;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collection;
@@ -20,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.Scrollable;
 import javax.swing.WindowConstants;
 
 import net.link.safeonline.performance.console.swing.data.Agent;
@@ -38,7 +42,6 @@ public class Charts extends WindowAdapter {
 	private static Charts instance;
 	private JTabbedPane agents;
 	private JFrame frame;
-	private GridBagConstraints tabConstraints;
 
 	private Charts() {
 
@@ -50,16 +53,11 @@ public class Charts extends WindowAdapter {
 		// Frame.
 		this.frame = new JFrame("Performance Testing Charts");
 		this.frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.frame.addWindowListener(this);
+		this.frame.setPreferredSize(new Dimension(640, 480));
+		this.frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		this.frame.setContentPane(this.agents);
-		this.frame.setSize(640, 480);
-		this.frame.setState(Frame.MAXIMIZED_BOTH);
+		this.frame.addWindowListener(this);
 		this.frame.setVisible(true);
-
-		this.tabConstraints = new GridBagConstraints();
-		this.tabConstraints.fill = GridBagConstraints.BOTH;
-		this.tabConstraints.weightx = this.tabConstraints.weighty = 1;
-		this.tabConstraints.gridx = 0;
 	}
 
 	private void addTab(Address agent, List<byte[]> chartList) {
@@ -68,18 +66,8 @@ public class Charts extends WindowAdapter {
 			if (this.agents.getTitleAt(tab).equals(agent.toString()))
 				return;
 
-		this.tabConstraints.gridy = 0;
-		JPanel agentCharts = new JPanel(new GridBagLayout());
-		agentCharts.setBorder(Borders.DLU4_BORDER);
-		for (byte[] chart : chartList) {
-			agentCharts.add(new JLabel(new ImageIcon(chart)),
-					this.tabConstraints);
-
-			this.tabConstraints.gridy++;
-		}
-
+		AgentCharts agentCharts = new AgentCharts(chartList);
 		this.agents.addTab(agent.toString(), new JScrollPane(agentCharts));
-		this.frame.pack();
 	}
 
 	/**
@@ -92,9 +80,6 @@ public class Charts extends WindowAdapter {
 		instance = null;
 	}
 
-	/**
-	 * TODO: Describe method.
-	 */
 	public static void display(Collection<Agent> agents) {
 
 		if (instance == null)
@@ -102,5 +87,69 @@ public class Charts extends WindowAdapter {
 
 		for (Agent agent : agents)
 			instance.addTab(agent.getAddress(), agent.getCharts());
+	}
+
+	private static class AgentCharts extends JPanel implements Scrollable {
+
+		private static final long serialVersionUID = 1L;
+		private static final int INCREMENT = 50;
+		private static GridBagConstraints tabConstraints = new GridBagConstraints(
+				0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER,
+				GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0);
+
+		public AgentCharts(List<byte[]> chartList) {
+
+			super(new GridBagLayout());
+			setBorder(Borders.DLU4_BORDER);
+
+			tabConstraints.gridy = 0;
+			for (byte[] chart : chartList) {
+				add(new JLabel(new ImageIcon(chart)), tabConstraints);
+
+				tabConstraints.gridy++;
+			}
+		}
+
+		/**
+		 * @{inheritDoc}
+		 */
+		public Dimension getPreferredScrollableViewportSize() {
+
+			return getPreferredSize();
+		}
+
+		/**
+		 * @{inheritDoc}
+		 */
+		public int getScrollableBlockIncrement(Rectangle visibleRect,
+				int orientation, int direction) {
+
+			return INCREMENT * 10;
+		}
+
+		/**
+		 * @{inheritDoc}
+		 */
+		public boolean getScrollableTracksViewportHeight() {
+
+			return false;
+		}
+
+		/**
+		 * @{inheritDoc}
+		 */
+		public boolean getScrollableTracksViewportWidth() {
+
+			return false;
+		}
+
+		/**
+		 * @{inheritDoc}
+		 */
+		public int getScrollableUnitIncrement(Rectangle visibleRect,
+				int orientation, int direction) {
+
+			return INCREMENT;
+		}
 	}
 }

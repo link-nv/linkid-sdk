@@ -65,23 +65,26 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
 
-		// TODO: Fill in the correct URL.
+		// TODO: Fill in the correct Home URL and Logo URL.
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
-				"The SafeOnline User Web Application.", null, false, false,
-				userCert, false, IdScopeType.USER));
+				"The SafeOnline User Web Application.", null, null, null,
+				false, false, userCert, false, IdScopeType.USER));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
 				"owner", "The SafeOnline Operator Web Application.", null,
-				false, false, operCert, false, IdScopeType.USER));
+				null, null, false, false, operCert, false, IdScopeType.USER));
 		this.registeredApplications.add(new Application(
 				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
 				"owner", "The SafeOnline Application Owner Web Application.",
-				null, false, false, ownerCert, false, IdScopeType.USER));
-		this.registeredApplications.add(new Application(
-				SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
-				"owner", "The SafeOnline Helpdesk Web Application.", null,
-				false, false, helpdeskCert, false, IdScopeType.USER));
+				null, null, null, false, false, ownerCert, false,
+				IdScopeType.USER));
+		this.registeredApplications
+				.add(new Application(
+						SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
+						"owner", "The SafeOnline Helpdesk Web Application.",
+						null, null, null, false, false, helpdeskCert, false,
+						IdScopeType.USER));
 
 		this.trustedCertificates.add(userCert);
 		this.trustedCertificates.add(operCert);

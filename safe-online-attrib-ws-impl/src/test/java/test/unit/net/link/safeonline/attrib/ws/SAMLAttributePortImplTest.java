@@ -162,8 +162,8 @@ public class SAMLAttributePortImplTest {
 		expect(this.mockApplicationManager.getCallerApplication())
 				.andStubReturn(
 						new ApplicationEntity("test-application", null,
-								new ApplicationOwnerEntity(), null, null,
-								this.certificate));
+								new ApplicationOwnerEntity(), null, null, null,
+								null, this.certificate));
 
 		expect(
 				this.mockUserIdMappingService.getUserId("test-application",

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.bean;
 
+import java.awt.Color;
 import java.net.URL;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
@@ -100,6 +101,10 @@ public abstract class AbstractInitBean implements Startable {
 
 		final URL applicationUrl;
 
+		final URL applicationLogo;
+
+		final Color applicationColor;
+
 		final String owner;
 
 		final boolean allowUserSubscription;
@@ -113,13 +118,16 @@ public abstract class AbstractInitBean implements Startable {
 		final IdScopeType idScope;
 
 		public Application(String name, String owner, String description,
-				URL applicationUrl, boolean allowUserSubscription,
+				URL applicationUrl, URL applicationLogo,
+				Color applicationColor, boolean allowUserSubscription,
 				boolean removable, X509Certificate certificate,
 				boolean idmappingAccess, IdScopeType idScope) {
 			this.name = name;
 			this.owner = owner;
 			this.description = description;
 			this.applicationUrl = applicationUrl;
+			this.applicationLogo = applicationLogo;
+			this.applicationColor = applicationColor;
 			this.allowUserSubscription = allowUserSubscription;
 			this.removable = removable;
 			this.certificate = certificate;
@@ -128,17 +136,18 @@ public abstract class AbstractInitBean implements Startable {
 		}
 
 		public Application(String name, String owner, String description,
-				URL applicationUrl, boolean allowUserSubscription,
+				URL applicationUrl, URL applicationLogo,
+				Color applicationColor, boolean allowUserSubscription,
 				boolean removable) {
-			this(name, owner, description, applicationUrl,
-					allowUserSubscription, removable, null, false,
-					IdScopeType.USER);
+			this(name, owner, description, applicationUrl, applicationLogo,
+					applicationColor, allowUserSubscription, removable, null,
+					false, IdScopeType.USER);
 		}
 
 		public Application(String name, String owner,
 				X509Certificate certificate, IdScopeType idScope) {
-			this(name, owner, null, null, true, true, certificate, false,
-					idScope);
+			this(name, owner, null, null, null, null, true, true, certificate,
+					false, idScope);
 		}
 	}
 
@@ -323,9 +332,8 @@ public abstract class AbstractInitBean implements Startable {
 	private PasswordManager passwordManager;
 
 	private void initApplicationTrustPoints() {
-		for (X509Certificate certificate : this.trustedCertificates) {
+		for (X509Certificate certificate : this.trustedCertificates)
 			addCertificateAsTrustPoint(certificate);
-		}
 	}
 
 	private void initAttributes() {
@@ -343,9 +351,8 @@ public abstract class AbstractInitBean implements Startable {
 
 			AttributeEntity existingAttribute = this.attributeDAO
 					.findAttribute(attributeTypeName, subject);
-			if (null != existingAttribute) {
+			if (null != existingAttribute)
 				continue;
-			}
 
 			AttributeTypeEntity attributeType;
 			try {
@@ -369,21 +376,18 @@ public abstract class AbstractInitBean implements Startable {
 			String attributeName = attributeProvider.getAttributeTypeName();
 			ApplicationEntity application = this.applicationDAO
 					.findApplication(applicationName);
-			if (null == application) {
+			if (null == application)
 				throw new EJBException("application not found: "
 						+ applicationName);
-			}
 			AttributeTypeEntity attributeType = this.attributeTypeDAO
 					.findAttributeType(attributeName);
-			if (null == attributeType) {
+			if (null == attributeType)
 				throw new EJBException("attribute type not found: "
 						+ attributeName);
-			}
 			AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO
 					.findAttributeProvider(application, attributeType);
-			if (null != existingAttributeProvider) {
+			if (null != existingAttributeProvider)
 				continue;
-			}
 			this.attributeProviderDAO.addAttributeProvider(application,
 					attributeType);
 		}
@@ -417,9 +421,8 @@ public abstract class AbstractInitBean implements Startable {
 	private void initTrustDomains() {
 		TrustDomainEntity applicationsTrustDomain = this.trustDomainDAO
 				.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-		if (null != applicationsTrustDomain) {
+		if (null != applicationsTrustDomain)
 			return;
-		}
 
 		applicationsTrustDomain = this.trustDomainDAO
 				.addTrustDomain(
@@ -430,9 +433,8 @@ public abstract class AbstractInitBean implements Startable {
 	private void initAttributeTypes() {
 		for (AttributeTypeEntity attributeType : this.attributeTypes) {
 			if (null != this.attributeTypeDAO.findAttributeType(attributeType
-					.getName())) {
+					.getName()))
 				continue;
-			}
 			this.attributeTypeDAO.addAttributeType(attributeType);
 		}
 	}
@@ -441,9 +443,8 @@ public abstract class AbstractInitBean implements Startable {
 		for (AttributeTypeDescriptionEntity attributeTypeDescription : this.attributeTypeDescriptions) {
 			AttributeTypeDescriptionEntity existingDescription = this.attributeTypeDAO
 					.findDescription(attributeTypeDescription.getPk());
-			if (null != existingDescription) {
+			if (null != existingDescription)
 				continue;
-			}
 			AttributeTypeEntity attributeType;
 			try {
 				attributeType = this.attributeTypeDAO
@@ -469,9 +470,8 @@ public abstract class AbstractInitBean implements Startable {
 					.findApplication(applicationName);
 			SubscriptionEntity subscriptionEntity = this.subscriptionDAO
 					.findSubscription(subject, application);
-			if (null != subscriptionEntity) {
+			if (null != subscriptionEntity)
 				continue;
-			}
 			this.subscriptionDAO.addSubscription(subscriptionOwnerType,
 					subject, application);
 		}
@@ -482,9 +482,8 @@ public abstract class AbstractInitBean implements Startable {
 				.entrySet()) {
 			String name = applicationOwnerAndLogin.getKey();
 			String login = applicationOwnerAndLogin.getValue();
-			if (null != this.applicationOwnerDAO.findApplicationOwner(name)) {
+			if (null != this.applicationOwnerDAO.findApplicationOwner(name))
 				continue;
-			}
 			SubjectEntity adminSubject = this.subjectService
 					.findSubjectFromUserName(login);
 			this.applicationOwnerDAO.addApplicationOwner(name, adminSubject);
@@ -497,9 +496,8 @@ public abstract class AbstractInitBean implements Startable {
 			ApplicationEntity existingApplication = this.applicationDAO
 					.findApplication(applicationName);
 			if (null != existingApplication) {
-				if (null != application.certificate) {
+				if (null != application.certificate)
 					existingApplication.setCertificate(application.certificate);
-				}
 				continue;
 			}
 			ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO
@@ -511,6 +509,8 @@ public abstract class AbstractInitBean implements Startable {
 							application.allowUserSubscription,
 							application.removable, application.description,
 							application.applicationUrl,
+							application.applicationLogo,
+							application.applicationColor,
 							application.certificate, identityVersion,
 							usageAgreementVersion);
 			newApplication
@@ -528,9 +528,8 @@ public abstract class AbstractInitBean implements Startable {
 			String login = authorizedUser.getKey();
 			SubjectEntity subject = this.subjectService
 					.findSubjectFromUserName(login);
-			if (null != subject) {
+			if (null != subject)
 				continue;
-			}
 			subject = this.subjectService.addSubject(login);
 
 			AuthenticationDevice device = authorizedUser.getValue();
@@ -540,14 +539,12 @@ public abstract class AbstractInitBean implements Startable {
 			} catch (PermissionDeniedException e) {
 				throw new EJBException("could not set password");
 			}
-			if (null != device.weakMobiles) {
+			if (null != device.weakMobiles)
 				for (String mobile : device.weakMobiles)
 					addWeakMobile(mobile, subject);
-			}
-			if (null != device.strongMobiles) {
+			if (null != device.strongMobiles)
 				for (String mobile : device.strongMobiles)
 					addStrongMobile(mobile, subject);
-			}
 		}
 	}
 
@@ -555,10 +552,9 @@ public abstract class AbstractInitBean implements Startable {
 		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
 				.findSubject(SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
 						mobile);
-		if (null != existingMappedSubject) {
+		if (null != existingMappedSubject)
 			throw new EJBException("weak mobile " + mobile
 					+ " already registered");
-		}
 		AttributeTypeEntity mobileAttributeType;
 		try {
 			mobileAttributeType = this.attributeTypeDAO
@@ -577,10 +573,9 @@ public abstract class AbstractInitBean implements Startable {
 				.findSubject(
 						SafeOnlineConstants.STRONG_MOBILE_IDENTIFIER_DOMAIN,
 						mobile);
-		if (null != existingMappedSubject) {
+		if (null != existingMappedSubject)
 			throw new EJBException("strong mobile " + mobile
 					+ " already registered");
-		}
 		AttributeTypeEntity mobileAttributeType;
 		try {
 			mobileAttributeType = this.attributeTypeDAO
@@ -595,7 +590,7 @@ public abstract class AbstractInitBean implements Startable {
 	}
 
 	private void initIdentities() {
-		for (Identity identity : this.identities) {
+		for (Identity identity : this.identities)
 			try {
 				this.applicationIdentityService.updateApplicationIdentity(
 						identity.application, Arrays
@@ -606,7 +601,6 @@ public abstract class AbstractInitBean implements Startable {
 						"could not update the application identity: "
 								+ e.getMessage(), e);
 			}
-		}
 	}
 
 	private void initUsageAgreements() {
@@ -616,11 +610,10 @@ public abstract class AbstractInitBean implements Startable {
 			UsageAgreementEntity usageAgreementEntity = this.usageAgreementDAO
 					.addUsageAgreement(application,
 							UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
-			for (UsageAgreementText usageAgreementText : usageAgreement.usageAgreementTexts) {
+			for (UsageAgreementText usageAgreementText : usageAgreement.usageAgreementTexts)
 				this.usageAgreementDAO.addUsageAgreementText(
 						usageAgreementEntity, usageAgreementText.text,
 						usageAgreementText.language);
-			}
 			try {
 				this.usageAgreementManager.setUsageAgreement(application,
 						UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
@@ -640,10 +633,9 @@ public abstract class AbstractInitBean implements Startable {
 		for (Device device : this.devices.keySet()) {
 			DeviceEntity deviceEntity = this.deviceDAO
 					.findDevice(device.deviceName);
-			if (deviceEntity == null) {
+			if (deviceEntity == null)
 				deviceEntity = this.deviceDAO.addDevice(device.deviceName,
 						device.deviceType);
-			}
 			deviceEntity.setAttributeTypes(this.devices.get(device.deviceName));
 		}
 	}
@@ -662,10 +654,9 @@ public abstract class AbstractInitBean implements Startable {
 				DeviceEntity device = this.deviceDAO.getDevice(deviceName);
 				AllowedDeviceEntity allowedDevice = this.allowedDeviceDAO
 						.findAllowedDevice(application, device);
-				if (null == allowedDevice) {
+				if (null == allowedDevice)
 					this.allowedDeviceDAO.addAllowedDevice(application, device,
 							0);
-				}
 			}
 		}
 	}
