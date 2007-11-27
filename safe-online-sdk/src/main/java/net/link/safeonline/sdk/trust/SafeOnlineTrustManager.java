@@ -45,7 +45,7 @@ public class SafeOnlineTrustManager implements X509TrustManager {
 	/**
 	 * Configure the SSL for usage with SafeOnline.
 	 */
-	public static void configureSsl() {
+	public static synchronized void configureSsl() {
 		if (null == socketFactory) {
 			initSocketFactory();
 			HttpsURLConnection.setDefaultSSLSocketFactory(socketFactory);
