@@ -10,19 +10,13 @@ package net.link.safeonline.audit.bean;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.MessageDriven;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
@@ -33,8 +27,11 @@ import javax.rmi.PortableRemoteObject;
 import net.link.safeonline.audit.AuditBackend;
 import net.link.safeonline.audit.AuditConstants;
 import net.link.safeonline.audit.AuditMessage;
+import net.link.safeonline.audit.dao.AccessAuditDAO;
 import net.link.safeonline.audit.dao.AuditAuditDAO;
 import net.link.safeonline.audit.dao.AuditContextDAO;
+import net.link.safeonline.audit.dao.ResourceAuditDAO;
+import net.link.safeonline.audit.dao.SecurityAuditDAO;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 
@@ -43,23 +40,27 @@ import org.apache.commons.logging.LogFactory;
 
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_BACKEND_QUEUE_NAME) })
+		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_BACKEND_QUEUE_NAME),
+		@ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class AuditBackendProcessorBean implements MessageListener {
 
 	private static final Log LOG = LogFactory
 			.getLog(AuditBackendProcessorBean.class);
-
-	@Resource(mappedName = AuditConstants.CONNECTION_FACTORY_NAME)
-	private ConnectionFactory factory;
-
-	@Resource(mappedName = AuditConstants.AUDIT_SANITIZER_QUEUE_NAME)
-	private Queue auditQueue;
 
 	@EJB
 	private AuditAuditDAO auditAuditDAO;
 
 	@EJB
 	private AuditContextDAO auditContextDAO;
+
+	@EJB
+	private ResourceAuditDAO resourceAuditDAO;
+
+	@EJB
+	private SecurityAuditDAO securityAuditDAO;
+
+	@EJB
+	private AccessAuditDAO accessAuditDAO;
 
 	public void onMessage(Message message) {
 		AuditMessage auditMessage;
@@ -85,7 +86,40 @@ public class AuditBackendProcessorBean implements MessageListener {
 			}
 		}
 
-		sanitizeForwarding(auditMessage);
+		if (requiresSanitation(auditContextId)) {
+			sanitize(auditContextId);
+		}
+	}
+
+	private void sanitize(long auditContextId) {
+		LOG.debug("sanitizing audit context: " + auditContextId);
+		this.accessAuditDAO.cleanup(auditContextId);
+		try {
+			this.auditContextDAO.removeAuditContext(auditContextId);
+		} catch (AuditContextNotFoundException e) {
+			throw new EJBException(
+					"audit context not found: " + auditContextId, e);
+		}
+	}
+
+	private boolean requiresSanitation(long auditContextId) {
+		if (this.resourceAuditDAO.hasRecords(auditContextId)) {
+			LOG.debug("has resource audit records");
+			return false;
+		}
+		if (this.securityAuditDAO.hasRecords(auditContextId)) {
+			LOG.debug("has security audit records");
+			return false;
+		}
+		if (this.auditAuditDAO.hasRecords(auditContextId)) {
+			LOG.debug("has audit audit records");
+			return false;
+		}
+		if (this.accessAuditDAO.hasErrorRecords(auditContextId)) {
+			LOG.debug("has access audit error records");
+			return false;
+		}
+		return true;
 	}
 
 	private void addAuditAudit(Exception exception, long auditContextId) {
@@ -126,30 +160,5 @@ public class AuditBackendProcessorBean implements MessageListener {
 			auditBackends.add(startable);
 		}
 		return auditBackends;
-	}
-
-	public void sanitizeForwarding(AuditMessage auditMessage) {
-		try {
-			Connection connection = this.factory.createConnection();
-			try {
-				Session session = connection.createSession(true, 0);
-				try {
-					MessageProducer producer = session
-							.createProducer(this.auditQueue);
-					try {
-						Message message = auditMessage.getJMSMessage(session);
-						producer.send(message);
-					} finally {
-						producer.close();
-					}
-				} finally {
-					session.close();
-				}
-			} finally {
-				connection.close();
-			}
-		} catch (JMSException e) {
-			throw new EJBException();
-		}
 	}
 }

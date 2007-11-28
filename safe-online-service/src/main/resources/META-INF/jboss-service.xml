@@ -63,12 +63,4 @@
 		</depends>
 	</mbean>
 
-	<mbean code="org.jboss.mq.server.jmx.Queue"
-		name="safeonline:service=Queue,name=auditSanitizer">
-		<attribute name="JNDIName">queue/auditSanitizer</attribute>
-		<depends optional-attribute-name="DestinationManager">
-			jboss.mq:service=DestinationManager
-		</depends>
-	</mbean>
-
 </server>
