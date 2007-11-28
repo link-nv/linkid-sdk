@@ -100,7 +100,6 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		return activationCode;
 	}
 
-	// TODO multivalued attribute support
 	private void setMobile(SubjectEntity subject, String mobile) {
 		AttributeTypeEntity mobileAttributeType;
 		try {
@@ -109,15 +108,13 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("weak mobile attribute type not found");
 		}
-		AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(
-				mobileAttributeType, subject);
-		if (null == mobileAttribute)
-			mobileAttribute = this.attributeDAO.addAttribute(
-					mobileAttributeType, subject, mobile);
+		List<AttributeEntity> mobileAttributes = this.attributeDAO
+				.listAttributes(subject, mobileAttributeType);
+		AttributeEntity mobileAttribute = this.attributeDAO.addAttribute(
+				mobileAttributeType, subject, mobileAttributes.size());
 		mobileAttribute.setStringValue(mobile);
 	}
 
-	// TODO multivalued attribute support
 	public void remove(SubjectEntity subject, String mobile)
 			throws RemoteException, MalformedURLException {
 		AttributeTypeEntity mobileAttributeType;
@@ -130,10 +127,12 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(
 				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile,
 				subject);
-		AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(
-				mobileAttributeType, subject);
-		if (null != mobileAttribute)
-			this.attributeDAO.removeAttribute(mobileAttribute);
+		List<AttributeEntity> mobileAttributes = this.attributeDAO
+				.listAttributes(subject, mobileAttributeType);
+		for (AttributeEntity mobileAttribute : mobileAttributes) {
+			if (mobileAttribute.getStringValue().equals(mobile))
+				this.attributeDAO.removeAttribute(mobileAttribute);
+		}
 		this.mobileManager.remove(mobile);
 	}
 
@@ -146,14 +145,21 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		return this.mobileManager.requestOTP(mobile);
 	}
 
-	// TODO multivalued attribute support
 	public List<String> getMobiles(String login) {
+		AttributeTypeEntity mobileAttributeType;
+		try {
+			mobileAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
+		} catch (AttributeTypeNotFoundException e) {
+			throw new EJBException("weak mobile attribute type not found");
+		}
 		List<String> mobileList = new LinkedList<String>();
 		SubjectEntity subject = this.subjectService
 				.findSubjectFromUserName(login);
-		AttributeEntity weakMobileAttribute = this.attributeDAO.findAttribute(
-				SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE, subject);
-		mobileList.add(weakMobileAttribute.getStringValue());
+		List<AttributeEntity> mobileAttributes = this.attributeDAO
+				.listAttributes(subject, mobileAttributeType);
+		for (AttributeEntity mobileAttribute : mobileAttributes)
+			mobileList.add(mobileAttribute.getStringValue());
 		return mobileList;
 	}
 }

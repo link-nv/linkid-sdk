@@ -1006,24 +1006,26 @@ public class IdentityServiceBean implements IdentityService,
 					description = attributeTypeDescription.getDescription();
 				}
 			}
-			AttributeEntity attribute = this.attributeDAO.findAttribute(
-					attributeType, subject);
-			String stringValue;
-			Boolean booleanValue;
-			long index;
-			if (null != attribute) {
-				stringValue = attribute.getStringValue();
-				booleanValue = attribute.getBooleanValue();
-				index = attribute.getAttributeIndex();
-			} else {
-				stringValue = null;
-				booleanValue = null;
-				index = 0;
+			List<AttributeEntity> attributeList = this.attributeDAO
+					.listAttributes(subject, attributeType);
+			for (AttributeEntity attribute : attributeList) {
+				String stringValue;
+				Boolean booleanValue;
+				long index;
+				if (null != attribute) {
+					stringValue = attribute.getStringValue();
+					booleanValue = attribute.getBooleanValue();
+					index = attribute.getAttributeIndex();
+				} else {
+					stringValue = null;
+					booleanValue = null;
+					index = 0;
+				}
+				AttributeDO attributeView = new AttributeDO(name, type,
+						multivalued, index, humanReabableName, description,
+						editable, dataMining, stringValue, booleanValue);
+				attributes.add(attributeView);
 			}
-			AttributeDO attributeView = new AttributeDO(name, type,
-					multivalued, index, humanReabableName, description,
-					editable, dataMining, stringValue, booleanValue);
-			attributes.add(attributeView);
 		}
 		return attributes;
 	}

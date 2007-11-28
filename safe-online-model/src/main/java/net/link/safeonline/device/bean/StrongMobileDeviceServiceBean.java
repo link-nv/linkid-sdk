@@ -131,23 +131,28 @@ public class StrongMobileDeviceServiceBean implements
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("weak mobile attribute type not found");
 		}
-		AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(
-				mobileAttributeType, subject);
-		if (null == mobileAttribute)
-			mobileAttribute = this.attributeDAO.addAttribute(
-					mobileAttributeType, subject, mobile);
+		List<AttributeEntity> mobileAttributes = this.attributeDAO
+				.listAttributes(subject, mobileAttributeType);
+		AttributeEntity mobileAttribute = this.attributeDAO.addAttribute(
+				mobileAttributeType, subject, mobileAttributes.size());
 		mobileAttribute.setStringValue(mobile);
 	}
 
-	// TODO multivalued attribute support
 	public List<String> getMobiles(String login) {
+		AttributeTypeEntity mobileAttributeType;
+		try {
+			mobileAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE);
+		} catch (AttributeTypeNotFoundException e) {
+			throw new EJBException("strong mobile attribute type not found");
+		}
 		List<String> mobileList = new LinkedList<String>();
 		SubjectEntity subject = this.subjectService
 				.findSubjectFromUserName(login);
-		AttributeEntity strongMobileAttribute = this.attributeDAO
-				.findAttribute(SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE,
-						subject);
-		mobileList.add(strongMobileAttribute.getStringValue());
+		List<AttributeEntity> mobileAttributes = this.attributeDAO
+				.listAttributes(subject, mobileAttributeType);
+		for (AttributeEntity mobileAttribute : mobileAttributes)
+			mobileList.add(mobileAttribute.getStringValue());
 		return mobileList;
 	}
 }

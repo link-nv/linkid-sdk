@@ -521,7 +521,7 @@ public class DemoStartableBean extends AbstractInitBean {
 	private void configLawyerDemoAttribute(String attributeName,
 			DatatypeType datatype, String enName, String nlName) {
 		configDemoAttribute(attributeName, datatype, false,
-				DEMO_LAWYER_APPLICATION_NAME, enName, nlName, true, true);
+				DEMO_LAWYER_APPLICATION_NAME, enName, nlName, true, false);
 	}
 
 	private AttributeTypeEntity configDemoAttribute(String attributeName,
