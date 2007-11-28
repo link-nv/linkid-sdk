@@ -7,6 +7,8 @@
 
 package net.link.safeonline.dao.bean;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -58,6 +60,11 @@ public class SubjectIdentifierDAOBean implements SubjectIdentifierDAO {
 		}
 		SubjectEntity subject = subjectIdentifierEntity.getSubject();
 		return subject;
+	}
+
+	public List<SubjectIdentifierEntity> getSubjectIdentifiers(
+			SubjectEntity subject) {
+		return this.queryObject.getWhereSubject(subject);
 	}
 
 	public void removeOtherSubjectIdentifiers(String domain, String identifier,

@@ -13,6 +13,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.service.ChoosableAttributeDO;
 import net.link.safeonline.service.SubscriptionDO;
 
 @Local
@@ -30,6 +31,8 @@ public interface MergeOverview {
 	 */
 	List<String> provenDeviceListFactory();
 
+	List<String> neededDeviceListFactory();
+
 	List<SubscriptionEntity> preservedSubscriptionsListFactory();
 
 	List<SubscriptionDO> importedSubscriptionsListFactory();
@@ -39,5 +42,12 @@ public interface MergeOverview {
 	List<AttributeDO> importedAttributesListFactory();
 
 	List<AttributeDO> mergedAttributesListFactory();
+
+	List<ChoosableAttributeDO> choosableAttributesListFactory();
+
+	/*
+	 * Actions
+	 */
+	String commit();
 
 }

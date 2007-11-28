@@ -35,6 +35,9 @@ public interface SubscriptionDAO {
 	void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
 			SubjectEntity subject, ApplicationEntity application);
 
+	void addSubscription(SubscriptionEntity sourceSubscription,
+			SubjectEntity subject);
+
 	List<SubscriptionEntity> listSubsciptions(SubjectEntity subject);
 
 	List<SubscriptionEntity> listSubscriptions(ApplicationEntity application);

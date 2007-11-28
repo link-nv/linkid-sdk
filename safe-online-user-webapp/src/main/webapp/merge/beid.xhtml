@@ -7,29 +7,21 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.authentication}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
 		<ui:param name="page" value="main" />
 		<ui:param name="subpage" value="merge" />
 	</ui:define>
-
 	<ui:define name="content">
-		<div class="infobox"><ui:include
-			src="/WEB-INF/incl/appinfo.xhtml" /></div>
 		<h2>#{msgs.authenticateBeId}</h2>
+
 		<div><applet name="AuthenticationApplet"
 			code="net.link.safeonline.auth.AuthenticationApplet.class"
-			archive="safe-online-auth-applet-package.jar" width="450"
+			archive="../safe-online-auth-applet-package.jar" width="450"
 			height="200">
 			<param name="SmartCardConfig" value="beid" />
 			<param name="ServletPath" value="authentication" />
-			<param name="TargetPath" value="login" />
+			<param name="TargetPath" value="merge-overview.seam" />
 			<param name="HelpPath" value="help.seam?location=merge.beid.seam" />
 			<param name="SessionId"
 				value="#{facesContext.externalContext.request.session.id}" />
@@ -41,6 +33,7 @@
 		</h:form>
 		<p><a href="./merge-login.seam">#{msgs.tryAnotherDevice}</a></p>
 		</div>
+
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">

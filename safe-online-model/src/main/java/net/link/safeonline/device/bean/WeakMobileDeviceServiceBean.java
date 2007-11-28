@@ -20,7 +20,6 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
@@ -101,6 +100,7 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		return activationCode;
 	}
 
+	// TODO multivalued attribute support
 	private void setMobile(SubjectEntity subject, String mobile) {
 		AttributeTypeEntity mobileAttributeType;
 		try {
@@ -109,19 +109,32 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("weak mobile attribute type not found");
 		}
-		try {
-			AttributeEntity mobileAttribute = this.attributeDAO.getAttribute(
-					mobileAttributeType, subject);
-			mobileAttribute.setStringValue(mobile);
-		} catch (AttributeNotFoundException e) {
-			this.attributeDAO
-					.addAttribute(mobileAttributeType, subject, mobile);
-		}
+		AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(
+				mobileAttributeType, subject);
+		if (null == mobileAttribute)
+			mobileAttribute = this.attributeDAO.addAttribute(
+					mobileAttributeType, subject, mobile);
+		mobileAttribute.setStringValue(mobile);
 	}
 
-	public void remove(String mobile) throws RemoteException,
-			MalformedURLException {
-		// TODO Auto-generated method stub
+	// TODO multivalued attribute support
+	public void remove(SubjectEntity subject, String mobile)
+			throws RemoteException, MalformedURLException {
+		AttributeTypeEntity mobileAttributeType;
+		try {
+			mobileAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
+		} catch (AttributeTypeNotFoundException e) {
+			throw new EJBException("weak mobile attribute type not found");
+		}
+		this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(
+				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile,
+				subject);
+		AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(
+				mobileAttributeType, subject);
+		if (null != mobileAttribute)
+			this.attributeDAO.removeAttribute(mobileAttribute);
+		this.mobileManager.remove(mobile);
 	}
 
 	public void update(SubjectEntity subject, String oldMobile, String newMobile) {

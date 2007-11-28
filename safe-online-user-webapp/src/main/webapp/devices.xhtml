@@ -6,7 +6,8 @@
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
-	xmlns:c="http://java.sun.com/jstl/core">
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -84,8 +85,68 @@
 				value="Extract Identity" />
 		</h:form>
 
-		<t:messages globalOnly="true" styleClass="error" />
+		<h2>#{msgs.mobileWeak}</h2>
 
+		<h:dataTable id="mobile-weak-data" var="item"
+			value="#{mobileWeakAttributes}" preserveDataModel="false"
+			styleClass="listingTable"
+			rowClasses="listingTable_Row1,listingTable_Row2">
+			<h:column>
+				<f:facet name="header">#{msgs.mobile}</f:facet>
+				<so:outputAttribute value="#{item}" />
+			</h:column>
+		</h:dataTable>
+
+
+		<a4j:form id="weak-mobile-register-form" ajaxSubmit="true"
+			reRender="weak-mobile-register-form,weak-mobile-confirm-form">
+			<t:messages globalOnly="true" styleClass="error" />
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+			<h:panelGrid id="register-panel" columns="4">
+				<h:outputLabel for="mobile" value="#{msgs.mobile}" />
+				<s:decorate>
+					<h:inputText id="mobile" value="#{devicesBean.mobile}"
+						required="true"
+						readonly="#{!empty devicesBean.mobileActivationCode}">
+						<f:validateLength minimum="10" maximum="10" />
+					</h:inputText>
+				</s:decorate>
+				<h:message for="mobile" styleClass="error" />
+				<h:commandButton action="#{devicesBean.mobileRegister}"
+					id="register" value="#{msgs.registerMobile}"
+					rendered="#{empty devicesBean.mobileActivationCode}" />
+			</h:panelGrid>
+		</a4j:form>
+
+		<a4j:form id="weak-mobile-confirm-form" ajaxSubmit="true"
+			reRender="weak-mobile-register-form,weak-mobile-confirm-form,mobile-weak-data">
+			<h:panelGrid id="activation-panel" columns="4"
+				rendered="#{!empty devicesBean.mobileActivationCode}">
+				<h:outputLabel
+					value="#{msgs.activationCode}: #{devicesBean.mobileActivationCode}" />
+				<h:commandButton id="activation-ok"
+					action="#{devicesBean.mobileActivationOk}" value="#{msgs.confirm}" />
+				<h:commandButton id="activation-cancel"
+					action="#{devicesBean.mobileActivationCancel}"
+					value="#{msgs.cancelaction}" />
+			</h:panelGrid>
+		</a4j:form>
+
+		<h2>#{msgs.mobileStrong}</h2>
+
+		<h:dataTable id="mobile-strong-data" var="item"
+			value="#{mobileStrongAttributes}" preserveDataModel="false"
+			styleClass="listingTable"
+			rowClasses="listingTable_Row1,listingTable_Row2">
+			<h:column>
+				<f:facet name="header">#{msgs.mobile}</f:facet>
+				<so:outputAttribute value="#{item}" />
+			</h:column>
+		</h:dataTable>
+
+		<t:messages globalOnly="true" styleClass="error" />
 	</ui:define>
 	<ui:define name="sidebar">
 		<ui:include src="/WEB-INF/incl/login.xhtml">

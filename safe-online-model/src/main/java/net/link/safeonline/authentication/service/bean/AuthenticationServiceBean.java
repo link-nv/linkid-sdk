@@ -436,14 +436,23 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return this.authenticationDevice;
 	}
 
-	public void registerMobile(String mobile) throws RemoteException,
+	public String registerMobile(String mobile) throws RemoteException,
 			MalformedURLException, MobileRegistrationException,
 			ArgumentIntegrityException {
 		LOG.debug("register mobile: " + mobile);
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		this.weakMobileDeviceService.register(subject, mobile);
+		String activationCode = this.weakMobileDeviceService.register(subject,
+				mobile);
 
 		this.authenticationDevice = AuthenticationDevice.WEAK_MOBILE;
+		return activationCode;
+	}
+
+	public void removeMobile(String mobile) throws RemoteException,
+			MalformedURLException {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		this.weakMobileDeviceService.remove(subject, mobile);
+		this.authenticationDevice = null;
 	}
 
 	public void setPassword(String password) throws PermissionDeniedException {

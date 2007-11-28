@@ -29,6 +29,44 @@
 			</tr>
 		</table>
 
+		<a4j:form id="mobile-register-form" ajaxSubmit="true"
+			reRender="mobile-register-form,mobile-confirm-form">
+			<t:messages globalOnly="true" styleClass="error" />
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+			<h:panelGrid id="register-panel" columns="4">
+				<h:outputLabel for="mobile" value="#{msgs.mobile}" />
+				<s:decorate>
+					<h:inputText id="mobile" value="#{devicesBean.mobile}"
+						required="true"
+						readonly="#{!empty deviceRegistration.mobileActivationCode}">
+						<f:validateLength minimum="10" maximum="10" />
+					</h:inputText>
+				</s:decorate>
+				<h:message for="mobile" styleClass="error" />
+				<h:commandButton action="#{deviceRegistration.mobileRegister}"
+					id="register" value="#{msgs.registerMobile}"
+					rendered="#{empty deviceRegistration.mobileActivationCode}" />
+			</h:panelGrid>
+		</a4j:form>
+
+		<a4j:form id="mobile-confirm-form" ajaxSubmit="true"
+			reRender="mobile-register-form,mobile-confirm-form">
+			<h:panelGrid id="activation-panel" columns="4"
+				rendered="#{!empty devicesBean.mobileActivationCode}">
+				<h:outputLabel
+					value="#{msgs.activationCode}: #{deviceRegistration.mobileActivationCode}" />
+				<h:commandButton id="activation-ok"
+					action="#{deviceRegistration.mobileActivationOk}"
+					value="#{msgs.confirm}" />
+				<h:commandButton id="activation-cancel"
+					action="#{deviceRegistration.mobileActivationCancel}"
+					value="#{msgs.cancelaction}" />
+			</h:panelGrid>
+		</a4j:form>
+
+
 		<h:form>
 			<t:messages globalOnly="true" styleClass="error" />
 			<f:facet name="aroundInvalidField">

@@ -8,8 +8,8 @@ package net.link.safeonline.authentication.service.bean;
 
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -57,7 +57,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
 	private SubjectEntity authenticatedSubject;
 
-	private List<AuthenticationDevice> authenticationDevices;
+	private Set<AuthenticationDevice> authenticationDevices;
 
 	@EJB
 	private SubjectService subjectService;
@@ -80,31 +80,35 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<AuthenticationDevice> getAuthenticatedDevices() {
+	public Set<AuthenticationDevice> getAuthenticatedDevices() {
 		return this.authenticationDevices;
 	}
 
 	private void addAuthenticationDevice(
 			AuthenticationDevice authenticationDevice) {
+		LOG
+				.debug("set re-auth device: "
+						+ authenticationDevice.getDeviceName());
 		if (null == this.authenticationDevices)
-			this.authenticationDevices = new LinkedList<AuthenticationDevice>();
+			this.authenticationDevices = new HashSet<AuthenticationDevice>();
 		this.authenticationDevices.add(authenticationDevice);
 	}
 
 	/**
-	 * Checks, if already re-authenticated, if we're dealing with the same
-	 * subject.
+	 * Sets the re-authenticated subject. If already set checks if its the same.
 	 * 
 	 * @param subject
 	 * @throws SubjectMismatchException
 	 */
-	private void setAuthenticatedSubject(SubjectEntity subject)
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public void setAuthenticatedSubject(SubjectEntity subject)
 			throws SubjectMismatchException {
+		LOG.debug("set re-auth subject: " + subject.getUserId());
 		if (null == this.authenticatedSubject) {
 			this.authenticatedSubject = subject;
 			return;
 		}
-		if (this.authenticatedSubject != subject)
+		if (!this.authenticatedSubject.equals(subject))
 			throw new SubjectMismatchException();
 	}
 
@@ -117,6 +121,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 				password);
 		if (null == subject)
 			return false;
+		LOG.debug("sucessfully authenticated " + login);
 
 		/*
 		 * Safe the state in this stateful session bean.
@@ -176,6 +181,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	byte[] authenticationStatementData) throws ArgumentIntegrityException,
 			TrustDomainNotFoundException, SubjectNotFoundException,
 			DecodingException, SubjectMismatchException {
+		LOG.debug("authenticate session: " + sessionId);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);
 		SubjectEntity subject = this.beIdDeviceService.authenticate(sessionId,
@@ -192,6 +198,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		return true;
 	}
 
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	@Remove
 	public void abort() {
 		LOG.debug("abort");

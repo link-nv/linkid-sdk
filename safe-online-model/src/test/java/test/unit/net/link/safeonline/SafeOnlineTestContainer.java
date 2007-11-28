@@ -14,6 +14,7 @@ import net.link.safeonline.audit.dao.bean.AuditAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
 import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
+import net.link.safeonline.authentication.service.bean.AccountServiceBean;
 import net.link.safeonline.authentication.service.bean.CredentialManagerBean;
 import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
 import net.link.safeonline.authentication.service.bean.MobileManagerBean;
@@ -129,7 +130,7 @@ public class SafeOnlineTestContainer {
 			WeakMobileDeviceServiceBean.class,
 			StrongMobileDeviceServiceBean.class, MobileManagerBean.class,
 			SecurityAuditLoggerBean.class, DevicePolicyServiceBean.class,
-			DevicesBean.class };
+			DevicesBean.class, AccountServiceBean.class };
 
 	public static final Class<?>[] entities = new Class[] {
 			SubjectEntity.class, ApplicationEntity.class,

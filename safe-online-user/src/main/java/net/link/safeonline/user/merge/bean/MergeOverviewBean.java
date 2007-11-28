@@ -7,15 +7,19 @@
 
 package net.link.safeonline.user.merge.bean;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -27,6 +31,7 @@ import net.link.safeonline.authentication.service.ReAuthenticationService;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.service.AccountMergingDO;
 import net.link.safeonline.service.AccountMergingService;
+import net.link.safeonline.service.ChoosableAttributeDO;
 import net.link.safeonline.service.SubscriptionDO;
 import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.user.merge.MergeOverview;
@@ -35,10 +40,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.core.ResourceBundle;
 
@@ -47,11 +55,14 @@ import org.jboss.seam.core.ResourceBundle;
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX
 		+ "MergeOverviewBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
+@Scope(ScopeType.SESSION)
 public class MergeOverviewBean implements MergeOverview {
 
 	private static final Log LOG = LogFactory.getLog(MergeOverviewBean.class);
 
 	private static final String PROVEN_DEVICE_LIST_NAME = "provenDevices";
+
+	private static final String NEEDED_DEVICE_LIST_NAME = "neededDevices";
 
 	private static final String PRESERVED_SUBSCRIPTIONS_LIST_NAME = "preservedSubscriptions";
 
@@ -77,6 +88,8 @@ public class MergeOverviewBean implements MergeOverview {
 	@EJB
 	private AccountMergingService accountMergingService;
 
+	@In(required = false)
+	@Out(scope = ScopeType.SESSION)
 	private AccountMergingDO accountMergingDO;
 
 	@Remove
@@ -88,7 +101,17 @@ public class MergeOverviewBean implements MergeOverview {
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public void init() {
 		LOG.debug("init");
+		if (null != this.accountMergingDO)
+			return;
 		try {
+			if (null == this.reAuthenticationService.getAuthenticatedDevices()) {
+				LOG.debug("no authentication device proven for user: "
+						+ this.source);
+				this.facesMessages.addToControlFromResourceBundle("user",
+						FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+				return;
+			}
+
 			this.accountMergingDO = this.accountMergingService
 					.getAccountMergingDO(this.source);
 			this.accountMergingDO.log();
@@ -119,12 +142,26 @@ public class MergeOverviewBean implements MergeOverview {
 	@Factory(PROVEN_DEVICE_LIST_NAME)
 	public List<String> provenDeviceListFactory() {
 		LOG.debug("provenDeviceListFactory");
-		List<AuthenticationDevice> devices = this.reAuthenticationService
+		Set<AuthenticationDevice> devices = this.reAuthenticationService
 				.getAuthenticatedDevices();
 		return deviceNameDecoration(devices);
 	}
 
-	private List<String> deviceNameDecoration(List<AuthenticationDevice> devices) {
+	@RolesAllowed(UserConstants.USER_ROLE)
+	@Factory(NEEDED_DEVICE_LIST_NAME)
+	public List<String> neededDeviceListFactory() {
+		LOG.debug("neededDeviceListFactory");
+		Set<AuthenticationDevice> neededDevices = this.accountMergingDO
+				.getNeededProvenDevices();
+		Set<AuthenticationDevice> provenDevices = this.reAuthenticationService
+				.getAuthenticatedDevices();
+		if (null == neededDevices)
+			return null;
+		neededDevices.removeAll(provenDevices);
+		return deviceNameDecoration(neededDevices);
+	}
+
+	private List<String> deviceNameDecoration(Set<AuthenticationDevice> devices) {
 		List<String> decoratedDevices = new LinkedList<String>();
 		for (AuthenticationDevice device : devices) {
 			String deviceId = device.getDeviceName();
@@ -188,10 +225,41 @@ public class MergeOverviewBean implements MergeOverview {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	@Factory(CHOOSABLE_ATTRIBUTES_LIST_NAME)
-	public List<AttributeDO> choosableAttributesListFactory() {
+	public List<ChoosableAttributeDO> choosableAttributesListFactory() {
 		LOG.debug("choosableAttributesListFactory");
 		if (null == this.accountMergingDO)
 			return null;
-		return this.accountMergingDO.getMergedAttributes();
+		return this.accountMergingDO.getChoosableAttributes();
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String commit() {
+		try {
+			this.accountMergingService.mergeAccount(this.accountMergingDO);
+		} catch (AttributeTypeNotFoundException e) {
+			String msg = "attribute type not found";
+			LOG.error(msg);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
+			return null;
+		} catch (SubjectNotFoundException e) {
+			LOG.debug("source user " + this.source + " not found");
+			this.facesMessages.addToControlFromResourceBundle("user",
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			return null;
+		}
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		String redirectUrl = "./exit";
+		LOG.debug("redirecting to: " + redirectUrl);
+		try {
+			externalContext.redirect(redirectUrl);
+		} catch (IOException e) {
+			LOG.debug("IO error: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
+			return null;
+		}
+		return null;
 	}
 }

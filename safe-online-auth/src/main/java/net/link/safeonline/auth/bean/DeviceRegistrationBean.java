@@ -32,11 +32,15 @@ import net.link.safeonline.authentication.service.DevicePolicyService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.ResourceBundle;
 import org.jboss.seam.log.Log;
 
@@ -55,7 +59,11 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 
 	private String password;
 
+	@Out(required = false, scope = ScopeType.CONVERSATION)
+	@In(required = false)
 	private String mobile;
+
+	private String mobileActivationCode;
 
 	@In
 	private AuthenticationService authenticationService;
@@ -67,6 +75,10 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	@Destroy
 	public void destroyCallback() {
 		this.log.debug("destroy");
+		this.device = null;
+		this.password = null;
+		this.mobile = null;
+		this.mobileActivationCode = null;
 	}
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
@@ -104,11 +116,13 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 		return null;
 	}
 
+	@Begin
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
-	public String mobileNext() {
-		this.log.debug("mobileNext");
+	public String mobileRegister() {
+		this.log.debug("register mobile: " + this.mobile);
 		try {
-			this.authenticationService.registerMobile(this.mobile);
+			this.mobileActivationCode = this.authenticationService
+					.registerMobile(this.mobile);
 		} catch (RemoteException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
@@ -126,8 +140,34 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 					FacesMessage.SEVERITY_ERROR, "errorMobileTaken");
 			return null;
 		}
-		super.relogin(AuthenticationDevice.WEAK_MOBILE);
-		return null;
+		return "";
+	}
+
+	@End
+	@RolesAllowed(AuthenticationConstants.USER_ROLE)
+	public String mobileActivationOk() {
+		this.log.debug("mobile activation ok: " + this.mobile);
+		this.mobileActivationCode = null;
+		return "";
+	}
+
+	@End
+	@RolesAllowed(AuthenticationConstants.USER_ROLE)
+	public String mobileActivationCancel() {
+		this.log.debug("mobile activation canceled: " + this.mobile);
+		this.mobileActivationCode = null;
+		try {
+			this.authenticationService.removeMobile(this.mobile);
+		} catch (RemoteException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+			return null;
+		} catch (MalformedURLException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+			return null;
+		}
+		return "";
 	}
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
@@ -148,6 +188,11 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
+	}
+
+	@RolesAllowed(AuthenticationConstants.USER_ROLE)
+	public String getMobileActivationCode() {
+		return this.mobileActivationCode;
 	}
 
 	@Factory("allDevices")

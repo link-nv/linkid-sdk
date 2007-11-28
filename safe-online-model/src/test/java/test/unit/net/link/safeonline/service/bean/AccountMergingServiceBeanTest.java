@@ -29,6 +29,9 @@ import net.link.safeonline.authentication.service.bean.IdentityServiceBean;
 import net.link.safeonline.authentication.service.bean.SubscriptionServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.bean.AttributeDAOBean;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
@@ -169,10 +172,39 @@ public class AccountMergingServiceBeanTest {
 		// keep in mind olas-user subscription and 3 password attributes ...
 		assertEquals(4, accountMergingDO.getPreservedSubscriptions().size());
 		assertEquals(1, accountMergingDO.getImportedSubscriptions().size());
-		assertEquals(6, accountMergingDO.getPreservedAttributes().size());
+		assertEquals(4, accountMergingDO.getPreservedAttributes().size());
 		assertEquals(2, accountMergingDO.getChoosableAttributes().size());
 		assertEquals(0, accountMergingDO.getImportedAttributes().size());
-		assertEquals(10, accountMergingDO.getMergedAttributes().size());
+		assertEquals(8, accountMergingDO.getMergedAttributesToAdd().size());
+
+		// operate
+		accountMergingService.mergeAccount(accountMergingDO);
+
+		// verify
+		AttributeDAO attributeDAO = EJBTestUtils.newInstance(
+				AttributeDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+				entityManager, targetAccount.subject.getUserId(),
+				SafeOnlineRoles.USER_ROLE);
+		List<AttributeEntity> targetAttributesType1 = attributeDAO
+				.listAttributes(targetAccount.subject, attributeType1);
+		List<AttributeEntity> targetAttributesType2 = attributeDAO
+				.listAttributes(targetAccount.subject, attributeType2);
+		List<AttributeEntity> targetAttributesTypeMultivalued = attributeDAO
+				.listAttributes(targetAccount.subject, attributeTypeMultivalued);
+		List<AttributeEntity> targetAttributesTypeCompounded = attributeDAO
+				.listAttributes(targetAccount.subject, attributeTypeCompounded);
+		List<AttributeEntity> targetAttributesTypeCompoundMember1 = attributeDAO
+				.listAttributes(targetAccount.subject,
+						attributeTypeCompoundMember1);
+		List<AttributeEntity> targetAttributesTypeCompoundMember2 = attributeDAO
+				.listAttributes(targetAccount.subject,
+						attributeTypeCompoundMember2);
+		assertEquals(1, targetAttributesType1.size());
+		assertEquals(1, targetAttributesType2.size());
+		assertEquals(4, targetAttributesTypeMultivalued.size());
+		assertEquals(4, targetAttributesTypeCompounded.size());
+		assertEquals(4, targetAttributesTypeCompoundMember1.size());
+		assertEquals(4, targetAttributesTypeCompoundMember2.size());
 	}
 
 	private class Account {
@@ -231,6 +263,12 @@ public class AccountMergingServiceBeanTest {
 			if (DatatypeType.COMPOUNDED == attributeType.getType()) {
 				attribute.setCompounded(true);
 				identityService.saveAttribute(attribute);
+				AttributeDO attribute2 = new AttributeDO(attributeType
+						.getName(), attributeType.getType(), attributeType
+						.isMultivalued(), 1, attributeType.getName(), null,
+						attributeType.isUserEditable(), false, null, null);
+				attribute2.setCompounded(true);
+				identityService.saveAttribute(attribute2);
 				for (CompoundedAttributeTypeMemberEntity member : attributeType
 						.getMembers()) {
 					LOG.debug("add compounded member value: "

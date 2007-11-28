@@ -36,7 +36,10 @@ public interface AccountMergingService {
 	 * Commit the calculated changes from merging with the source account.
 	 * 
 	 * @param mergeData
+	 * @throws AttributeTypeNotFoundException
+	 * @throws SubjectNotFoundException
 	 */
-	void mergeAccount(AccountMergingDO accountMergingDO);
+	void mergeAccount(AccountMergingDO accountMergingDO)
+			throws AttributeTypeNotFoundException, SubjectNotFoundException;
 
 }

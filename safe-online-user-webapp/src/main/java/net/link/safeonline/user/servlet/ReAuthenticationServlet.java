@@ -24,8 +24,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * This HTTP session listener manages the life-cycle of the re-authentication
- * service instance used by the user web application.
+ * This HTTP servlet initializes a stateful ReAuthentication service bean used
+ * by the user web application.
  * 
  * @author wvdhaute
  * 
@@ -34,7 +34,7 @@ public class ReAuthenticationServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String RE_AUTH_SERVICE_ATTRIBUTE = "reAuthenticationService";
+	private static final String RE_AUTH_SERVICE_ATTRIBUTE = "reAuthenticationService";
 
 	public static final String LOGIN_URL_INIT_PARAM = "LoginUrl";
 

@@ -182,7 +182,7 @@ public interface AuthenticationService {
 			ArgumentIntegrityException, AttributeTypeNotFoundException;
 
 	/**
-	 * Registers a mobile for a logged in user.
+	 * Registers a mobile for a logged in user. Returns activation code.
 	 * 
 	 * @param mobile
 	 * @throws RemoteException
@@ -190,9 +190,19 @@ public interface AuthenticationService {
 	 * @throws MobileRegistrationException
 	 * @throws ArgumentIntegrityException
 	 */
-	void registerMobile(String mobile) throws RemoteException,
+	String registerMobile(String mobile) throws RemoteException,
 			MalformedURLException, MobileRegistrationException,
 			ArgumentIntegrityException;
+
+	/**
+	 * User canceled the mobile activation. Remove just registered mobile.
+	 * 
+	 * @param mobile
+	 * @throws MalformedURLException
+	 * @throws RemoteException
+	 */
+	void removeMobile(String mobile) throws RemoteException,
+			MalformedURLException;
 
 	/**
 	 * Sets the password of a user. This method should be used in case the user

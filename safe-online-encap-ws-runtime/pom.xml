@@ -68,7 +68,6 @@
 		<dependency>
 			<groupId>axis</groupId>
 			<artifactId>axis</artifactId>
-
 		</dependency>
 	</dependencies>
 	<reporting>

@@ -22,8 +22,13 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.SubjectMismatchException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.authentication.service.ReAuthenticationService;
+import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.user.merge.Merge;
 
@@ -61,8 +66,14 @@ public class MergeBean implements Merge {
 	@In(create = true)
 	FacesMessages facesMessages;
 
+	@In(required = false)
+	private ReAuthenticationService reAuthenticationService;
+
 	@EJB
 	private DevicePolicyService devicePolicyService;
+
+	@EJB
+	private SubjectService subjectService;
 
 	@Remove
 	@Destroy
@@ -146,6 +157,22 @@ public class MergeBean implements Merge {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String next() {
+		try {
+			SubjectEntity sourceSubject = this.subjectService
+					.getSubjectFromUserName(this.source);
+			this.reAuthenticationService.setAuthenticatedSubject(sourceSubject);
+		} catch (SubjectNotFoundException e) {
+			LOG.debug("source user " + this.source + " not found");
+			this.facesMessages.addToControlFromResourceBundle("user",
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			return null;
+		} catch (SubjectMismatchException e) {
+			LOG.debug("source user " + this.source
+					+ " differs from authenticated source subject");
+			this.facesMessages.addToControlFromResourceBundle("user",
+					FacesMessage.SEVERITY_ERROR, "errorSubjectMismatch");
+			return null;
+		}
 		LOG.debug("next: " + this.deviceSelection.getDeviceName());
 		if (null == this.deviceSelection) {
 			LOG.debug("Please make a selection.");

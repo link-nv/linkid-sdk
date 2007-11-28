@@ -636,7 +636,7 @@ public abstract class AbstractInitBean implements Startable {
 			if (deviceEntity == null)
 				deviceEntity = this.deviceDAO.addDevice(device.deviceName,
 						device.deviceType);
-			deviceEntity.setAttributeTypes(this.devices.get(device.deviceName));
+			deviceEntity.setAttributeTypes(this.devices.get(device));
 		}
 	}
 

@@ -24,6 +24,9 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.service.SubjectService;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * This service serves as a mapping between the SafeOnline global user id and
  * the required application's user id as specified in the application's id
@@ -35,6 +38,9 @@ import net.link.safeonline.service.SubjectService;
 
 @Stateless
 public class UserIdMappingServiceBean implements UserIdMappingService {
+
+	private final static Log LOG = LogFactory
+			.getLog(UserIdMappingServiceBean.class);
 
 	@EJB
 	private ApplicationDAO applicationDAO;
@@ -76,6 +82,7 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 
 	public String getUserId(String applicationName, String applicationUserId)
 			throws ApplicationNotFoundException {
+		LOG.debug("getUserId: " + applicationName + ", " + applicationUserId);
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
 		IdScopeType idScope = application.getIdScope();
@@ -87,6 +94,7 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 	}
 
 	private String getUserIdFromSubscription(String applicationUserId) {
+		LOG.debug("getUserIdFromSubscription: " + applicationUserId);
 		return this.subjectIdentifierDAO.findSubject(
 				SafeOnlineConstants.APPLICATION_USER_IDENTIFIER_DOMAIN,
 				applicationUserId).getUserId();

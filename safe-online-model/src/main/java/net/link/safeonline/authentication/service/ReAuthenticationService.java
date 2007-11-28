@@ -9,7 +9,7 @@ package net.link.safeonline.authentication.service;
 
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
-import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Local;
 
@@ -19,6 +19,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 import org.apache.axis.AxisFault;
@@ -39,11 +40,20 @@ import org.apache.axis.AxisFault;
 public interface ReAuthenticationService {
 
 	/**
-	 * Returns the list of devices the user has authenticated successfully with.
+	 * Returns the set of devices the user has authenticated successfully with.
 	 * 
 	 * @return
 	 */
-	List<AuthenticationDevice> getAuthenticatedDevices();
+	Set<AuthenticationDevice> getAuthenticatedDevices();
+
+	/**
+	 * Sets the source subject.
+	 * 
+	 * @param subject
+	 * @throws SubjectMismatchException
+	 */
+	void setAuthenticatedSubject(SubjectEntity subject)
+			throws SubjectMismatchException;
 
 	/**
 	 * Authenticates using a username-password device.

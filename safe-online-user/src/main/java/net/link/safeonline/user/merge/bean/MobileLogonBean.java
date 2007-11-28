@@ -145,7 +145,7 @@ public class MobileLogonBean implements MobileLogon {
 
 		HelpdeskLogger.clear();
 		destroyCallback();
-		return null;
+		return "success";
 	}
 
 	public String requestOTP() {
@@ -158,18 +158,17 @@ public class MobileLogonBean implements MobileLogon {
 			LOG.debug("requestOTP: MalformedURLException thrown: "
 					+ e.getMessage());
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
 			return null;
 		} catch (RemoteException e) {
 			LOG.debug("requestOTP: RemoteException thrown: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
 			return null;
 		} catch (Exception e) {
-			LOG.debug("requestOTP: Exception thrown: " + e.getMessage()
-					+ " class: " + e.getCause().getClass().getCanonicalName());
+			LOG.debug("requestOTP: Exception thrown: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
 			return null;
 		}
 		return null;

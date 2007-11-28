@@ -84,6 +84,15 @@ public interface SubjectService {
 	String getSubjectLogin(String userId);
 
 	/**
+	 * Same as getSubjectLogin but this can be called from within exception
+	 * handling code ( meaning a transaction is created )
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	String getExceptionSubjectLogin(String userId);
+
+	/**
 	 * Returns list of users' login names.
 	 * 
 	 * @return

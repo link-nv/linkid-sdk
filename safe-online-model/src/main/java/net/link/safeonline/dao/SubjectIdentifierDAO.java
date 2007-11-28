@@ -7,9 +7,12 @@
 
 package net.link.safeonline.dao;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.SubjectIdentifierEntity;
 
 @Local
 public interface SubjectIdentifierDAO {
@@ -36,4 +39,12 @@ public interface SubjectIdentifierDAO {
 	 * @param subject
 	 */
 	void removeSubjectIdentifiers(SubjectEntity subject);
+
+	/**
+	 * Returns list of subject identifiers for the given subject.
+	 * 
+	 * @param subject
+	 * @return
+	 */
+	List<SubjectIdentifierEntity> getSubjectIdentifiers(SubjectEntity subject);
 }

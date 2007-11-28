@@ -7,7 +7,12 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_OTHER_IDENTIFIERS;
+import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_SUBJECT;
+import static net.link.safeonline.entity.SubjectIdentifierEntity.GET_WHERE_SUBJECT;
+
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -17,11 +22,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
-
-import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_OTHER_IDENTIFIERS;
-import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_SUBJECT;
 
 /**
  * Subject Identifier entity. This entity allows us to unambiguously map from an
@@ -40,6 +43,8 @@ import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_SU
 				+ "subjectIdentifier.subject = :subject AND "
 				+ "subjectIdentifier.pk.identifier <> :identifier"),
 		@NamedQuery(name = DELETE_WHERE_SUBJECT, query = "DELETE FROM SubjectIdentifierEntity AS subjectIdentifier "
+				+ "WHERE subjectIdentifier.subject = :subject"),
+		@NamedQuery(name = GET_WHERE_SUBJECT, query = "FROM SubjectIdentifierEntity AS subjectIdentifier "
 				+ "WHERE subjectIdentifier.subject = :subject") })
 public class SubjectIdentifierEntity implements Serializable {
 
@@ -48,6 +53,8 @@ public class SubjectIdentifierEntity implements Serializable {
 	public static final String DELETE_WHERE_OTHER_IDENTIFIERS = "sie.del";
 
 	public static final String DELETE_WHERE_SUBJECT = "sei.del.subject";
+
+	public static final String GET_WHERE_SUBJECT = "sei.subject";
 
 	private SubjectIdentifierPK pk;
 
@@ -83,6 +90,10 @@ public class SubjectIdentifierEntity implements Serializable {
 	}
 
 	public interface QueryInterface {
+		@QueryMethod(GET_WHERE_SUBJECT)
+		List<SubjectIdentifierEntity> getWhereSubject(@QueryParam("subject")
+		SubjectEntity subject);
+
 		@UpdateMethod(DELETE_WHERE_OTHER_IDENTIFIERS)
 		int deleteWhereOtherIdentifiers(@QueryParam("domain")
 		String domain, @QueryParam("identifier")

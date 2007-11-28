@@ -8,14 +8,14 @@
 package net.link.safeonline.service;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import net.link.safeonline.authentication.service.AttributeDO;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 
@@ -37,6 +37,8 @@ public class AccountMergingDO implements Serializable {
 
 	private SubjectEntity sourceSubject;
 
+	private Set<AuthenticationDevice> neededProvenDevices;
+
 	private List<SubscriptionEntity> preservedSubscriptions;
 
 	private List<SubscriptionDO> importedSubscriptions;
@@ -47,7 +49,9 @@ public class AccountMergingDO implements Serializable {
 
 	private List<AttributeDO> mergedAttributes;
 
-	private Map<AttributeDO, AttributeDO> choosableAttributes;
+	private List<AttributeDO> mergedAttributesToAdd;
+
+	private List<ChoosableAttributeDO> choosableAttributes;
 
 	public AccountMergingDO(SubjectEntity sourceSubject) {
 		this.sourceSubject = sourceSubject;
@@ -55,6 +59,16 @@ public class AccountMergingDO implements Serializable {
 
 	public SubjectEntity getSourceSubject() {
 		return this.sourceSubject;
+	}
+
+	public Set<AuthenticationDevice> getNeededProvenDevices() {
+		return this.neededProvenDevices;
+	}
+
+	public void addNeededProvenDevices(Set<AuthenticationDevice> devices) {
+		if (null == this.neededProvenDevices)
+			this.neededProvenDevices = new HashSet<AuthenticationDevice>();
+		this.neededProvenDevices.addAll(devices);
 	}
 
 	public List<SubscriptionEntity> getPreservedSubscriptions() {
@@ -88,6 +102,10 @@ public class AccountMergingDO implements Serializable {
 		return this.mergedAttributes;
 	}
 
+	public List<AttributeDO> getMergedAttributesToAdd() {
+		return this.mergedAttributesToAdd;
+	}
+
 	public List<AttributeDO> getVisiblePreservedAttributes() {
 		return getVisibleAttributes(this.preservedAttributes);
 	}
@@ -109,7 +127,7 @@ public class AccountMergingDO implements Serializable {
 		return visibleAttributes;
 	}
 
-	public Map<AttributeDO, AttributeDO> getChoosableAttributes() {
+	public List<ChoosableAttributeDO> getChoosableAttributes() {
 		return this.choosableAttributes;
 	}
 
@@ -127,60 +145,80 @@ public class AccountMergingDO implements Serializable {
 		this.mergedAttributes = mergedAttributes;
 	}
 
-	public void addChoosableAttributes(List<AttributeDO> sourceAttributes,
-			List<AttributeDO> targetAttributes) {
+	public void setMergedAttributesToAdd(List<AttributeDO> mergedAttributesToAdd) {
+		this.mergedAttributesToAdd = mergedAttributesToAdd;
+	}
+
+	public void addChoosableAttributes(List<AttributeDO> targetAttributes,
+			List<AttributeDO> sourceAttributes) {
 		if (null == this.choosableAttributes)
-			this.choosableAttributes = new HashMap<AttributeDO, AttributeDO>();
-		Iterator<AttributeDO> sourceIt = sourceAttributes.iterator();
+			this.choosableAttributes = new LinkedList<ChoosableAttributeDO>();
 		Iterator<AttributeDO> targetIt = targetAttributes.iterator();
+		Iterator<AttributeDO> sourceIt = sourceAttributes.iterator();
 		while (sourceIt.hasNext() && targetIt.hasNext()) {
-			this.choosableAttributes.put(sourceIt.next(), targetIt.next());
+			ChoosableAttributeDO choosableAttributeDO = new ChoosableAttributeDO(
+					targetIt.next(), sourceIt.next());
+			this.choosableAttributes.add(choosableAttributeDO);
 		}
 	}
 
 	public void log() {
+		LOG.debug("Preserved subscriptions:");
 		for (SubscriptionEntity subscription : this.preservedSubscriptions) {
-			LOG.debug("preserved subscription: "
-					+ subscription.getApplication().getName());
+			LOG.debug("  * " + subscription.getApplication().getName());
 		}
+		LOG.debug("Imported subscriptions:");
 		if (null != this.importedSubscriptions) {
 			for (SubscriptionDO subscription : this.importedSubscriptions) {
-				LOG.debug("imported subscription: "
+				LOG.debug("  * "
 						+ subscription.getSubscription().getApplication()
 								.getName());
 			}
 		}
+		LOG.debug("Needed proven devices:");
+		if (null != this.neededProvenDevices) {
+			for (AuthenticationDevice device : this.neededProvenDevices) {
+				LOG.debug("  * " + device.getDeviceName());
+			}
+		}
+		LOG.debug("Preserved attributes:");
 		for (AttributeDO attribute : this.preservedAttributes) {
-			LOG.debug("preserved attribute: " + attribute.getName() + " ("
-					+ attribute.getType() + ")");
 			LOG.debug("  * " + attribute.getIndex() + ": "
-					+ attribute.getValue());
+					+ attribute.getType() + ": " + attribute.getValue());
 		}
+		LOG.debug("Imported attributes:");
 		for (AttributeDO attribute : this.importedAttributes) {
-			LOG.debug("imported attribute: " + attribute.getName() + " ("
-					+ attribute.getType() + ")");
 			LOG.debug("  * " + attribute.getIndex() + ": "
-					+ attribute.getValue());
-
+					+ attribute.getType() + ": " + attribute.getValue());
 		}
+		LOG.debug("Merged attributes:");
 		for (AttributeDO attribute : this.mergedAttributes) {
-			LOG.debug("merged attribute: " + attribute.getName() + " ("
-					+ attribute.getType() + ")");
 			LOG.debug("  * " + attribute.getIndex() + ": "
-					+ attribute.getValue());
-
+					+ attribute.getType() + ": " + attribute.getValue());
 		}
+		LOG.debug("To-be-added merged attributes:");
+		for (AttributeDO attribute : this.mergedAttributesToAdd) {
+			LOG.debug("  * " + attribute.getIndex() + ": "
+					+ attribute.getType() + ": " + attribute.getValue());
+		}
+
+		LOG.debug("Choosable attributes:");
 		if (null != this.choosableAttributes) {
-			for (Entry<AttributeDO, AttributeDO> choosableAttribute : this.choosableAttributes
-					.entrySet()) {
-				AttributeDO sourceAttribute = choosableAttribute.getKey();
-				AttributeDO targetAttribute = choosableAttribute.getValue();
-				LOG.debug("choosable attribute: " + sourceAttribute.getName()
-						+ " (" + sourceAttribute.getType() + ")");
-				LOG.debug("  * source: " + sourceAttribute.getIndex() + ": "
-						+ sourceAttribute.getValue());
-				LOG.debug("  * target: " + targetAttribute.getIndex() + ": "
-						+ targetAttribute.getValue());
+			for (ChoosableAttributeDO choosableAttribute : this.choosableAttributes) {
+				LOG.debug("  * "
+						+ choosableAttribute.getSourceAttribute().getIndex()
+						+ ": "
+						+ choosableAttribute.getSourceAttribute().getType());
+				LOG.debug("    * source: "
+						+ choosableAttribute.getSourceAttribute().getIndex()
+						+ ": "
+						+ choosableAttribute.getSourceAttribute().getValue()
+						+ " (selected:" + choosableAttribute.isSourceSelected()
+						+ ")");
+				LOG.debug("    * target: "
+						+ choosableAttribute.getTargetAttribute().getIndex()
+						+ ": "
+						+ choosableAttribute.getTargetAttribute().getValue());
 			}
 		}
 

@@ -21,7 +21,6 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
@@ -130,16 +129,14 @@ public class StrongMobileDeviceServiceBean implements
 			mobileAttributeType = this.attributeTypeDAO
 					.getAttributeType(SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE);
 		} catch (AttributeTypeNotFoundException e) {
-			throw new EJBException("strong mobile attribute type not found");
+			throw new EJBException("weak mobile attribute type not found");
 		}
-		try {
-			AttributeEntity mobileAttribute = this.attributeDAO.getAttribute(
-					mobileAttributeType, subject);
-			mobileAttribute.setStringValue(mobile);
-		} catch (AttributeNotFoundException e) {
-			this.attributeDAO
-					.addAttribute(mobileAttributeType, subject, mobile);
-		}
+		AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(
+				mobileAttributeType, subject);
+		if (null == mobileAttribute)
+			mobileAttribute = this.attributeDAO.addAttribute(
+					mobileAttributeType, subject, mobile);
+		mobileAttribute.setStringValue(mobile);
 	}
 
 	// TODO multivalued attribute support

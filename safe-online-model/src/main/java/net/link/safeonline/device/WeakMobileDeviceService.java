@@ -34,7 +34,8 @@ public interface WeakMobileDeviceService {
 
 	void update(SubjectEntity subject, String oldMobile, String newMobile);
 
-	void remove(String mobile) throws RemoteException, MalformedURLException;
+	void remove(SubjectEntity subject, String mobile) throws RemoteException,
+			MalformedURLException;
 
 	String requestOTP(String mobile) throws MalformedURLException,
 			RemoteException;

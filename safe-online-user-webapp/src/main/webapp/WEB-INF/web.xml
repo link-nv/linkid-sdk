@@ -210,6 +210,21 @@
 	</filter-mapping>
 
 	<filter-mapping>
+		<filter-name>Login Filter</filter-name>
+		<servlet-name>AuthenticationServlet</servlet-name>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>Login Filter</filter-name>
+		<servlet-name>ReAuthenticationServlet</servlet-name>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>Login Filter</filter-name>
+		<servlet-name>ReAuthenticationExitServlet</servlet-name>
+	</filter-mapping>
+
+	<filter-mapping>
 		<filter-name>ajax4jsf</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
@@ -236,6 +251,21 @@
 		<url-pattern>/merge/entry</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>ReAuthenticationExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.user.servlet.ReAuthenticationExitServlet
+		</servlet-class>
+		<init-param>
+			<param-name>ExitUrl</param-name>
+			<param-value>../actions.seam</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ReAuthenticationExitServlet</servlet-name>
+		<url-pattern>/merge/exit</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>IdentityServlet</servlet-name>
@@ -263,7 +293,7 @@
 
 	<servlet-mapping>
 		<servlet-name>AuthenticationServlet</servlet-name>
-		<url-pattern>/authentication</url-pattern>
+		<url-pattern>/merge/authentication</url-pattern>
 	</servlet-mapping>
 
 

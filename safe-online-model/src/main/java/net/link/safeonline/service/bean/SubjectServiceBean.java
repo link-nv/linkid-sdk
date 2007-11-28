@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -85,6 +87,15 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
 			throws SubjectNotFoundException {
 		LOG.debug("get subject user id: " + userId);
 		return this.subjectDAO.getSubject(userId);
+	}
+
+	/*
+	 * This can be called from e.g. HelpdeskLogger after an exception has been
+	 * thrown so needs a transaction created
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public String getExceptionSubjectLogin(String userId) {
+		return this.getSubjectLogin(userId);
 	}
 
 	public String getSubjectLogin(String userId) {

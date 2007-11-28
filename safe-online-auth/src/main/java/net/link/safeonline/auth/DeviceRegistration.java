@@ -39,7 +39,11 @@ public interface DeviceRegistration {
 
 	String passwordNext();
 
-	String mobileNext();
+	String mobileRegister();
+
+	String mobileActivationOk();
+
+	String mobileActivationCancel();
 
 	/*
 	 * Factories

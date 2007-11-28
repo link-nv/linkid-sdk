@@ -79,6 +79,20 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		this.entityManager.persist(subscription);
 	}
 
+	public void addSubscription(SubscriptionEntity sourceSubscription,
+			SubjectEntity subject) {
+		LOG.debug("add subscription ( from source subscription ) for "
+				+ subject.getUserId() + " to "
+				+ sourceSubscription.getApplication().getName()
+				+ "  applicationUserId = "
+				+ sourceSubscription.getUserApplicationId());
+		SubscriptionEntity subscription = new SubscriptionEntity(
+				sourceSubscription.getSubscriptionOwnerType(), subject,
+				sourceSubscription.getUserApplicationId(), sourceSubscription
+						.getApplication());
+		this.entityManager.persist(subscription);
+	}
+
 	public List<SubscriptionEntity> listSubsciptions(SubjectEntity subject) {
 		LOG.debug("get subscriptions for subject: " + subject.getUserId());
 		List<SubscriptionEntity> subscriptions = this.queryObject

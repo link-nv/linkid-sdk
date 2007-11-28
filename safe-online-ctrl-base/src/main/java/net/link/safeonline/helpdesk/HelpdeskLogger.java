@@ -88,7 +88,7 @@ public class HelpdeskLogger {
 			SubjectService subjectService = EjbUtils
 					.getEJB("SafeOnline/SubjectServiceBean/local",
 							SubjectService.class);
-			principal = subjectService.getSubjectLogin(principal);
+			principal = subjectService.getExceptionSubjectLogin(principal);
 			if (null == principal)
 				principal = UNKNOWN_USER;
 
