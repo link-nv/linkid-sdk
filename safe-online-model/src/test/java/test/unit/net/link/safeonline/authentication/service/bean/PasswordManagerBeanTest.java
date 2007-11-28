@@ -8,14 +8,14 @@ import java.util.UUID;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.PasswordManager;
-import net.link.safeonline.authentication.service.bean.PasswordManagerBean;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
+import net.link.safeonline.device.backend.PasswordManager;
+import net.link.safeonline.device.backend.bean.PasswordManagerBean;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;

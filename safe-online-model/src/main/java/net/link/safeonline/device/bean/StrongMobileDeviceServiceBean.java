@@ -26,7 +26,6 @@ import net.link.safeonline.authentication.exception.MobileAuthenticationExceptio
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.MobileManager;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -34,6 +33,7 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.StrongMobileDeviceService;
 import net.link.safeonline.device.StrongMobileDeviceServiceRemote;
+import net.link.safeonline.device.backend.MobileManager;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEventType;

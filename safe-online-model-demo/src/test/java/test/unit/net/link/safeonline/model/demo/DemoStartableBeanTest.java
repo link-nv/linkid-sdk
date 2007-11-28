@@ -11,7 +11,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.Startable;
-import net.link.safeonline.authentication.service.bean.PasswordManagerBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
@@ -26,6 +25,7 @@ import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.dao.bean.UsageAgreementDAOBean;
+import net.link.safeonline.device.backend.bean.PasswordManagerBean;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;

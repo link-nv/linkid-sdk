@@ -1,4 +1,4 @@
-package net.link.safeonline.authentication.service.bean;
+package net.link.safeonline.device.backend.bean;
 
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
@@ -6,9 +6,9 @@ import java.rmi.RemoteException;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
-import net.link.safeonline.authentication.service.MobileManager;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
+import net.link.safeonline.device.backend.MobileManager;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.sdk.ws.encap.activation.EncapActivationClient;
 import net.link.safeonline.sdk.ws.encap.activation.EncapActivationClientImpl;

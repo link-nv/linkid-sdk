@@ -4,7 +4,7 @@
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.authentication.service.bean;
+package net.link.safeonline.device.backend.bean;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -23,9 +23,9 @@ import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.device.backend.PasswordManager;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.authentication.service.bean;
+package net.link.safeonline.device.backend.bean;
 
 import java.security.cert.X509Certificate;
 
@@ -19,10 +19,12 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.CredentialManager;
+import net.link.safeonline.authentication.service.bean.IdentityStatement;
+import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
+import net.link.safeonline.device.backend.CredentialManager;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;

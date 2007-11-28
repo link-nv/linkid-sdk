@@ -20,13 +20,13 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.CredentialManager;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.CredentialServiceRemote;
-import net.link.safeonline.authentication.service.PasswordManager;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.device.WeakMobileDeviceService;
+import net.link.safeonline.device.backend.CredentialManager;
+import net.link.safeonline.device.backend.PasswordManager;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
