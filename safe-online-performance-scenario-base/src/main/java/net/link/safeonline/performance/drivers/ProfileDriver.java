@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.util.jacc.ProfileData;
@@ -33,13 +34,15 @@ import net.link.safeonline.util.jacc.ProfileData;
  */
 public abstract class ProfileDriver {
 
-	private long iterationStart;
+	private static final int ITERATIONS_FOR_SPEED = 5;
+
 	private String title;
 
 	protected String host;
 	protected LinkedList<ProfileData> profileData = new LinkedList<ProfileData>();
 	protected LinkedList<Exception> profileError = new LinkedList<Exception>();
 	protected LinkedList<Double> profileSpeed = new LinkedList<Double>();
+	protected LinkedList<Long> iterationStart = new LinkedList<Long>();
 
 	/**
 	 * @param hostname
@@ -96,33 +99,37 @@ public abstract class ProfileDriver {
 
 	protected synchronized void setIterationData(ProfileData data) {
 
+		calculateSpeed();
 		this.profileData.removeLast();
 		this.profileData.addLast(data);
 	}
 
 	protected synchronized void setIterationError(Exception error) {
 
+		calculateSpeed();
 		this.profileError.removeLast();
 		this.profileError.addLast(error);
 	}
 
+	private synchronized void calculateSpeed() {
+
+		if (this.iterationStart.size() < ITERATIONS_FOR_SPEED)
+			return;
+
+		long startTime = 0, stopTime = System.currentTimeMillis();
+		ListIterator<Long> iterator = this.iterationStart.listIterator();
+		for (int i = ITERATIONS_FOR_SPEED; i > 0; --i)
+			startTime = iterator.previous();
+
+		this.profileSpeed.removeLast();
+		this.profileSpeed.addLast(5d / (stopTime - startTime));
+	}
+
 	protected synchronized void startNewIteration() {
-
-		Double speed = null;
-		if (0 != this.iterationStart && null != this.profileData.getLast()) {
-			Long requestTime = this.profileData.getLast().getMeasurements()
-					.get(ProfileData.REQUEST_DELTA_TIME);
-			Long iterationTime = System.currentTimeMillis()
-					- this.iterationStart;
-
-			if (null != requestTime)
-				speed = 1000d / (requestTime + iterationTime);
-		}
 
 		this.profileData.add(null);
 		this.profileError.add(null);
-		this.profileSpeed.add(speed);
-
-		this.iterationStart = System.currentTimeMillis();
+		this.profileSpeed.add(null);
+		this.iterationStart.add(System.currentTimeMillis());
 	}
 }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -27,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.RemoteBinding;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.encoders.ImageEncoder;
@@ -104,7 +106,7 @@ public class ScenarioBean implements ScenarioRemote {
 	private List<byte[]> createGraphs() {
 
 		// List of charts generated as a result of this scenario.
-		List<byte[]> charts = new ArrayList<byte[]>();
+		LinkedList<byte[]> charts = new LinkedList<byte[]>();
 		CategoryAxis catAxis;
 		ValueAxis valueAxis;
 
@@ -135,43 +137,44 @@ public class ScenarioBean implements ScenarioRemote {
 				Double speed = driver.getProfileSpeed().get(i);
 
 				// If there's profile data for this iteration..
-				if (null != data && null != data.getMeasurements()) {
-					for (Map.Entry<String, Long> measurement : data
-							.getMeasurements().entrySet()) {
-						String method = measurement.getKey();
-						Long timing = measurement.getValue();
+				if (null == data || null == data.getMeasurements())
+					continue;
 
-						// Collect Iteration Timing Chart Data.
-						if (!ProfileData.isRequestKey(method)) {
-							if (!timingSet.containsKey(method))
-								timingSet.put(method, new XYSeries(method,
-										true, false));
+				// General iteration request statistics.
+				double startTime = data
+						.getMeasurement(ProfileData.REQUEST_START_TIME);
+				double requestTime = data
+						.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
+				double beforeMemory = data
+						.getMeasurement(ProfileData.REQUEST_FREE_MEM);
+				double afterMemory = data
+						.getMeasurement(ProfileData.REQUEST_USED_MEM)
+						+ beforeMemory;
+				double endTime = startTime + requestTime;
+				beforeMemorySet.add(startTime, beforeMemory);
+				afterMemorySet.add(endTime, afterMemory);
+				requestSet.add(startTime, requestTime);
 
-							timingSet.get(method).add(i, timing);
-						}
+				// Per-method iteration statistics.
+				for (Map.Entry<String, Long> measurement : data
+						.getMeasurements().entrySet()) {
 
-						// Collect Method Timing Chart Data.
-						if (!driverMethods.containsKey(method))
-							driverMethods.put(method, new ArrayList<Long>());
-						driverMethods.get(method).add(timing);
+					String method = measurement.getKey();
+					Long timing = measurement.getValue();
+
+					// Collect Iteration Timing Chart Data.
+					if (!ProfileData.isRequestKey(method)) {
+						if (!timingSet.containsKey(method))
+							timingSet.put(method, new XYSeries(method, true,
+									false));
+
+						timingSet.get(method).add(startTime, timing);
 					}
 
-					// Add Request Time at the end.
-					// (so it's on the bottom of the chart's legend).
-					double requestTime = data
-							.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
-					double beforeMemory = data
-							.getMeasurement(ProfileData.REQUEST_FREE_MEM);
-					double afterMemory = data
-							.getMeasurement(ProfileData.REQUEST_USED_MEM)
-							+ beforeMemory;
-					LOG.debug("Chart " + driver.getTitle() + ", Iteration " + i
-							+ ": " + beforeMemory + " -> " + afterMemory);
-					// TODO: timingData.addValue(requestTime, "Request Time",
-					// i);
-					requestSet.add((double) i, requestTime);
-					beforeMemorySet.add((double) i, beforeMemory);
-					afterMemorySet.add((double) i, afterMemory);
+					// Collect Method Timing Chart Data.
+					if (!driverMethods.containsKey(method))
+						driverMethods.put(method, new ArrayList<Long>());
+					driverMethods.get(method).add(timing);
 				}
 
 				// If there's an exception for this iteration..
@@ -192,12 +195,12 @@ public class ScenarioBean implements ScenarioRemote {
 						errorsSet.put(message, new XYSeries(message, true,
 								false));
 
-					errorsSet.get(message).add((double) i, 1);
+					errorsSet.get(message).add(startTime, 1);
 				}
 
 				// If there's a speed for this iteration..
 				if (null != speed)
-					speedsSet.add(i, speed);
+					speedsSet.add(startTime, speed);
 			}
 
 			// Convert XY data into XY Datasets and discard the temporary data.
@@ -217,18 +220,18 @@ public class ScenarioBean implements ScenarioRemote {
 			requestSet = beforeMemorySet = afterMemorySet = null;
 			timingSet = null;
 
-			// Bar Charts.
-			NumberAxis iterationAxis = new NumberAxis("Iterations");
+			// Driver Charts.
+			DateAxis timeAxis = new DateAxis("Time");
 			NumberAxis speedsAxis = new NumberAxis("Requests Per Second");
 			NumberAxis timingAxis = new NumberAxis("Time Elapsed");
 			NumberAxis memoryAxis = new NumberAxis("Used Memory");
 			NumberAxis errorsAxis = new NumberAxis("Exceptions");
 
-			XYPlot speedsPlot = new XYPlot(speedsData, iterationAxis,
-					speedsAxis, new XYAreaRenderer2());
+			XYPlot speedsPlot = new XYPlot(speedsData, timeAxis, speedsAxis,
+					new XYAreaRenderer2());
 			XYPlot timingPlot = new XYPlot();
 			timingPlot.setDataset(0, requestData);
-			timingPlot.setDomainAxis(0, iterationAxis);
+			timingPlot.setDomainAxis(0, timeAxis);
 			timingPlot.setRangeAxis(0, timingAxis);
 			timingPlot.setRenderer(0, new XYAreaRenderer2());
 			timingPlot.setDataset(1, timingData);
@@ -236,11 +239,11 @@ public class ScenarioBean implements ScenarioRemote {
 			timingPlot.setDataset(2, memoryData);
 			timingPlot.setRangeAxis(2, memoryAxis);
 			timingPlot.setRenderer(2, new XYDifferenceRenderer());
-			XYPlot errorsPlot = new XYPlot(errorsData, iterationAxis,
-					errorsAxis, new XYBarRenderer());
+			XYPlot errorsPlot = new XYPlot(errorsData, timeAxis, errorsAxis,
+					new XYBarRenderer());
 
 			CombinedDomainXYPlot timingAndMemoryPlot = new CombinedDomainXYPlot(
-					iterationAxis);
+					timeAxis);
 			timingAndMemoryPlot.add(speedsPlot);
 			timingAndMemoryPlot.add(timingPlot);
 			timingAndMemoryPlot.add(errorsPlot);
@@ -269,7 +272,7 @@ public class ScenarioBean implements ScenarioRemote {
 							methodName, driverTitle);
 			}
 
-		// Box Charts.
+		// Scenario Charts.
 		catAxis = new CategoryAxis("Methods");
 		valueAxis = new NumberAxis("Time Elapsed");
 		CategoryPlot timingPlot = new CategoryPlot(driversMethodSet, catAxis,
