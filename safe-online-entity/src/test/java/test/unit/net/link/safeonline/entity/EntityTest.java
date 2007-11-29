@@ -240,13 +240,15 @@ public class EntityTest {
 	@Test
 	public void testAddSubscription() throws Exception {
 		// setup
+		String userApplicationId = UUID.randomUUID().toString();
 		SubjectEntity subject = new SubjectEntity("test-login");
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", subject);
 		ApplicationEntity application = new ApplicationEntity(
 				"test-application", applicationOwner);
 		SubscriptionEntity subscription = new SubscriptionEntity(
-				SubscriptionOwnerType.SUBJECT, subject, "0", application);
+				SubscriptionOwnerType.SUBJECT, subject, userApplicationId,
+				application);
 
 		// operate: add subscription
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -273,6 +275,10 @@ public class EntityTest {
 				.getNumberOfSubscriptions(application);
 		LOG.debug("count: " + count);
 		assertEquals(1, (long) count);
+
+		resultSubscription = subscriptionQueryObject
+				.getSubscription(userApplicationId);
+		assertNotNull(resultSubscription);
 
 		// operate: remove subscription
 		entityManager.remove(resultSubscription);

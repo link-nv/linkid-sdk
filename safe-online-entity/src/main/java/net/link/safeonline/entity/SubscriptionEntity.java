@@ -7,6 +7,13 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.SubscriptionEntity.DELETE_ALL_SUBJECT;
+import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_APPLICATION;
+import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE;
+import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_APPLICATION;
+import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT;
+import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_USER_APPLICATION_ID;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -33,12 +40,7 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-
-import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_SUBJECT;
-import static net.link.safeonline.entity.SubscriptionEntity.QUERY_WHERE_APPLICATION;
-import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_APPLICATION;
-import static net.link.safeonline.entity.SubscriptionEntity.QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE;
-import static net.link.safeonline.entity.SubscriptionEntity.DELETE_ALL_SUBJECT;
+import org.hibernate.annotations.Index;
 
 @Entity
 @Table(name = "subscription")
@@ -57,7 +59,10 @@ import static net.link.safeonline.entity.SubscriptionEntity.DELETE_ALL_SUBJECT;
 				+ "FROM SubscriptionEntity AS subscription "
 				+ "WHERE subscription.application = :application"),
 		@NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM SubscriptionEntity AS subscription "
-				+ "WHERE subscription.subject = :subject") })
+				+ "WHERE subscription.subject = :subject"),
+		@NamedQuery(name = QUERY_WHERE_USER_APPLICATION_ID, query = "SELECT subscription "
+				+ "FROM SubscriptionEntity AS subscription "
+				+ "WHERE subscription.userApplicationId = :userApplicationId") })
 public class SubscriptionEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -69,6 +74,8 @@ public class SubscriptionEntity implements Serializable {
 	public static final String QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE = "sub.count.app.active";
 
 	public static final String QUERY_WHERE_APPLICATION = "sub.application";
+
+	public static final String QUERY_WHERE_USER_APPLICATION_ID = "sub.userapplicationid";
 
 	public static final String DELETE_ALL_SUBJECT = "sub.del.sub";
 
@@ -162,6 +169,8 @@ public class SubscriptionEntity implements Serializable {
 		this.confirmedUsageAgreementVersion = confirmedUsageAgreementVersion;
 	}
 
+	@Column(unique = true)
+	@Index(name = "subscription_user_id")
 	public String getUserApplicationId() {
 		return this.userApplicationId;
 	}
@@ -220,6 +229,10 @@ public class SubscriptionEntity implements Serializable {
 		@QueryMethod(QUERY_WHERE_APPLICATION)
 		List<SubscriptionEntity> listSubscriptions(@QueryParam("application")
 		ApplicationEntity application);
+
+		@QueryMethod(QUERY_WHERE_USER_APPLICATION_ID)
+		SubscriptionEntity getSubscription(@QueryParam("userApplicationId")
+		String userApplicationId);
 
 		@UpdateMethod(DELETE_ALL_SUBJECT)
 		void deleteAll(@QueryParam("subject")

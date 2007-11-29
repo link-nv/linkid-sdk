@@ -19,7 +19,6 @@ import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -45,9 +44,6 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	@EJB
 	private IdGenerator idGenerator;
 
-	@EJB
-	private SubjectIdentifierDAO subjectIdentifierDAO;
-
 	@PostConstruct
 	public void postConstructCallback() {
 		this.queryObject = QueryObjectFactory.createQueryObject(
@@ -71,9 +67,6 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		LOG.debug("add subscription for " + subject.getUserId() + " to "
 				+ application.getName() + "  applicationUserId = "
 				+ userApplicationId);
-		this.subjectIdentifierDAO.addSubjectIdentifier(
-				SafeOnlineConstants.APPLICATION_USER_IDENTIFIER_DOMAIN,
-				userApplicationId, subject);
 		SubscriptionEntity subscription = new SubscriptionEntity(
 				subscriptionOwnerType, subject, userApplicationId, application);
 		this.entityManager.persist(subscription);
@@ -106,9 +99,6 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		if (null == subscription) {
 			throw new SubscriptionNotFoundException();
 		}
-		this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(
-				SafeOnlineConstants.APPLICATION_USER_IDENTIFIER_DOMAIN,
-				subscription.getUserApplicationId(), subject);
 		this.entityManager.remove(subscription);
 	}
 
@@ -158,4 +148,12 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	public void removeAllSubscriptions(SubjectEntity subject) {
 		this.queryObject.deleteAll(subject);
 	}
+
+	public SubscriptionEntity getSubscription(String userApplicationId) {
+		LOG
+				.debug("get subscriptions for subscription id: "
+						+ userApplicationId);
+		return this.queryObject.getSubscription(userApplicationId);
+	}
+
 }

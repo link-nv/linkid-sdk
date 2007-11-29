@@ -10,12 +10,10 @@ package net.link.safeonline.authentication.service.bean;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.dao.ApplicationDAO;
-import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.IdScopeType;
@@ -50,9 +48,6 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 
 	@EJB
 	private SubjectService subjectService;
-
-	@EJB
-	private SubjectIdentifierDAO subjectIdentifierDAO;
 
 	public String getApplicationUserId(String applicationName, String userId)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException {
@@ -95,9 +90,8 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 
 	private String getUserIdFromSubscription(String applicationUserId) {
 		LOG.debug("getUserIdFromSubscription: " + applicationUserId);
-		return this.subjectIdentifierDAO.findSubject(
-				SafeOnlineConstants.APPLICATION_USER_IDENTIFIER_DOMAIN,
-				applicationUserId).getUserId();
+		SubscriptionEntity subscription = this.subscriptionDAO
+				.getSubscription(applicationUserId);
+		return subscription.getSubject().getUserId();
 	}
-
 }
