@@ -73,6 +73,7 @@ public interface ApplicationService {
 	 * @param initialApplicationIdentityAttributes
 	 *            the optional attribute types that make up the initial
 	 *            application identity. Can be <code>null</code>.
+	 * @param skipMessageIntegrityCheck
 	 * @throws ExistingApplicationException
 	 * @throws ApplicationOwnerNotFoundException
 	 * @throws CertificateEncodingException
@@ -83,7 +84,8 @@ public interface ApplicationService {
 			boolean idMappingServiceAccess, IdScopeType idScope,
 			URL applicationUrl, byte[] newApplicationLogo,
 			Color applicationColor, byte[] encodedCertificate,
-			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
+			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
+			boolean skipMessageIntegrityCheck)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
 			AttributeTypeNotFoundException;
@@ -234,5 +236,15 @@ public interface ApplicationService {
 	 * @throws ApplicationNotFoundException
 	 */
 	void setIdScope(String applicationName, IdScopeType idScope)
+			throws ApplicationNotFoundException;
+
+	/**
+	 * Sets the message integrity check requirement for the given application.
+	 * 
+	 * @param skipMessageIntegrityCheck
+	 * @throws ApplicationNotFoundException
+	 */
+	void setSkipMessageIntegrityCheck(String applicationName,
+			boolean skipMessageIntegrityCheck)
 			throws ApplicationNotFoundException;
 }

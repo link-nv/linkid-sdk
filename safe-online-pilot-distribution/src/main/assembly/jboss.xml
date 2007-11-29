@@ -138,6 +138,10 @@
 			<outputDirectory>jboss/</outputDirectory>
 		</file>
 		<file>
+			<source>target/files/maintenance-manual.pdf</source>
+			<outputDirectory>jboss/</outputDirectory>
+		</file>
+		<file>
 			<source>
 				target/files/safe-online-base-distribution-1.0-SNAPSHOT/jboss/readme.html
 			</source>

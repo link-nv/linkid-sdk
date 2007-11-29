@@ -137,7 +137,8 @@ public class ApplicationServiceBean implements ApplicationService,
 			boolean idMappingServiceAccess, IdScopeType idScope,
 			URL applicationUrl, byte[] applicationLogo, Color applicationColor,
 			byte[] encodedCertificate,
-			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
+			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
+			boolean skipMessageIntegrityCheck)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
 			AttributeTypeNotFoundException {
@@ -157,6 +158,8 @@ public class ApplicationServiceBean implements ApplicationService,
 		application.setIdentifierMappingAllowed(idMappingServiceAccess);
 
 		application.setIdScope(idScope);
+
+		application.setSkipMessageIntegrityCheck(skipMessageIntegrityCheck);
 
 		setInitialApplicationIdentity(initialApplicationIdentityAttributes,
 				application);
@@ -422,5 +425,14 @@ public class ApplicationServiceBean implements ApplicationService,
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
 		application.setIdScope(idScope);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void setSkipMessageIntegrityCheck(String applicationName,
+			boolean skipMessageIntegrityCheck)
+			throws ApplicationNotFoundException {
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationName);
+		application.setSkipMessageIntegrityCheck(skipMessageIntegrityCheck);
 	}
 }

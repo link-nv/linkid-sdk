@@ -104,6 +104,7 @@
 				<safe-online.hibernate.hbm2ddl.auto>
 					create-drop
 				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.show.sql>true</safe-online.show.sql>
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>8080</safe-online.host.port>
 				<safe-online.host.port.ssl>
@@ -180,6 +181,7 @@
 				<safe-online.hibernate.hbm2ddl.auto>
 					create-drop
 				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.show.sql>true</safe-online.show.sql>
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>8080</safe-online.host.port>
 				<safe-online.host.port.ssl>
@@ -222,6 +224,7 @@
 				<safe-online.hibernate.hbm2ddl.auto>
 					create-drop
 				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.show.sql>true</safe-online.show.sql>
 				<safe-online.host.name>
 					buildserver
 				</safe-online.host.name>
@@ -266,6 +269,7 @@
 				<safe-online.hibernate.hbm2ddl.auto>
 					validate
 				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.show.sql>false</safe-online.show.sql>
 				<safe-online.host.name>
 					sebeco-dev-10
 				</safe-online.host.name>
@@ -348,6 +352,7 @@
 				<safe-online.hibernate.hbm2ddl.auto>
 					validate
 				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.show.sql>false</safe-online.show.sql>
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>80</safe-online.host.port>
 				<safe-online.host.port.ssl>
@@ -367,6 +372,7 @@
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-root-webapp</module>
 				<module>safe-online-install-manual</module>
+				<module>safe-online-maintenance-manual</module>
 				<module>safe-online-pilot-distribution</module>
 			</modules>
 		</profile>

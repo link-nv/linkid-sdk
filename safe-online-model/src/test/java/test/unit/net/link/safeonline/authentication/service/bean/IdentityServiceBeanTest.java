@@ -137,7 +137,7 @@ public class IdentityServiceBeanTest {
 				"test-application-owner-name", null, false, IdScopeType.USER,
 				null, null, null, null, Collections
 						.singletonList(new IdentityAttributeTypeDO(
-								"test-attribute-type", true, false)));
+								"test-attribute-type", true, false)), false);
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager, subject
@@ -237,7 +237,7 @@ public class IdentityServiceBeanTest {
 				"test-application-owner-name", null, false, IdScopeType.USER,
 				null, null, null, null, Collections
 						.singletonList(new IdentityAttributeTypeDO(
-								"test-compounded-type", true, false)));
+								"test-compounded-type", true, false)), false);
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager, subject
@@ -308,7 +308,7 @@ public class IdentityServiceBeanTest {
 		applicationService.addApplication(applicationName, null,
 				"test-application-owner-name", null, false, IdScopeType.USER,
 				null, null, null, null,
-				new LinkedList<IdentityAttributeTypeDO>());
+				new LinkedList<IdentityAttributeTypeDO>(), false);
 
 		EJBTestUtils.setJBossPrincipal("test-application-owner-login", "owner");
 
@@ -1295,7 +1295,7 @@ public class IdentityServiceBeanTest {
 				compoundedAttributeName, true, false));
 		applicationService.addApplication(applicationName, null,
 				applicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, initialApplicationIdentityAttributes);
+				null, null, null, initialApplicationIdentityAttributes, false);
 
 		// operate: save attribute
 		IdentityService identityService = EJBTestUtils.newInstance(

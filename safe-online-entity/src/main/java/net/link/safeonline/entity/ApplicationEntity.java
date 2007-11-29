@@ -113,6 +113,8 @@ public class ApplicationEntity implements Serializable {
 
 	private IdScopeType idScope;
 
+	private boolean skipMessageIntegrityCheck;
+
 	public boolean isDeviceRestriction() {
 		return this.deviceRestriction;
 	}
@@ -478,6 +480,21 @@ public class ApplicationEntity implements Serializable {
 
 	public void setIdScope(IdScopeType idScope) {
 		this.idScope = idScope;
+	}
+
+	/**
+	 * When set to <code>true</code> the WS-Security SOAP handlers will not
+	 * check whether the SOAP body has been signed. This is required for
+	 * compatability with .NET 3.0 WCF clients.
+	 * 
+	 * @return
+	 */
+	public boolean isSkipMessageIntegrityCheck() {
+		return this.skipMessageIntegrityCheck;
+	}
+
+	public void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck) {
+		this.skipMessageIntegrityCheck = skipMessageIntegrityCheck;
 	}
 
 	@Override

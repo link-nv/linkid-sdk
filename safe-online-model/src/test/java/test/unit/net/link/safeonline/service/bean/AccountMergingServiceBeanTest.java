@@ -315,7 +315,7 @@ public class AccountMergingServiceBeanTest {
 						attributeType.getName(), true, false));
 			applicationService.addApplication(this.applicationName, null,
 					"owner", null, false, IdScopeType.USER, null, null, null,
-					null, applicationIdentityAttributes);
+					null, applicationIdentityAttributes, false);
 		}
 	}
 

@@ -11,10 +11,13 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.dao.ConfigItemDAO;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.config.model.ConfigurationManager;
+import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
 @Stateless
@@ -26,6 +29,9 @@ public class ConfigurationManagerBean implements ConfigurationManager {
 
 	@EJB
 	private ConfigItemDAO configItemDAO;
+
+	@EJB
+	private ApplicationDAO applicationDAO;
 
 	public ConfigItemEntity findConfigItem(String name) {
 		return this.configItemDAO.findConfigItem(name);
@@ -40,5 +46,14 @@ public class ConfigurationManagerBean implements ConfigurationManager {
 
 	public long getMaximumWsSecurityTimestampOffset() {
 		return this.maxWsSecurityTimestampOffset;
+	}
+
+	public boolean skipMessageIntegrityCheck(String applicationName)
+			throws ApplicationNotFoundException {
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationName);
+		boolean skipMessageIntegrityCheck = application
+				.isSkipMessageIntegrityCheck();
+		return skipMessageIntegrityCheck;
 	}
 }

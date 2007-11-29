@@ -11,7 +11,8 @@
 		<properties>
 			<property name="hibernate.dialect"
 				value="${safe-online.dialect}" />
-			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.show_sql"
+				value="${safe-online.show.sql}" />
 			<property name="hibernate.hbm2ddl.auto"
 				value="${safe-online.hibernate.hbm2ddl.auto}" />
 			<property name="hibernate.use_sql_comments" value="true" />

@@ -90,6 +90,14 @@
 						</h:panelGroup>
 
 						<h:panelGroup>
+							<h:selectBooleanCheckbox
+								value="#{operApplication.skipMessageIntegrityCheck}"
+								id="skipMessageIntegrityCheck" />
+							<h:outputLabel for="skipMessageIntegrityCheck"
+								value="#{msgs.skipMessageIntegrityCheck}" />
+						</h:panelGroup>
+
+						<h:panelGroup>
 							<s:decorate>
 								<tr:inputFile id="certificate" label="#{msgs.certificate}:"
 									value="#{operApplication.upFile}" />

@@ -114,6 +114,8 @@ public class ApplicationBean implements Application {
 
 	private String applicationIdScope;
 
+	private boolean skipMessageIntegrityCheck;
+
 	@SuppressWarnings("unused")
 	@Out
 	private long numberOfSubscriptions;
@@ -266,7 +268,8 @@ public class ApplicationBean implements Application {
 					this.idmapping, IdScopeType
 							.valueOf(this.applicationIdScope),
 					newApplicationUrl, newApplicationLogo, newApplicationColor,
-					encodedCertificate, tempIdentityAttributes);
+					encodedCertificate, tempIdentityAttributes,
+					this.skipMessageIntegrityCheck);
 
 		} catch (ExistingApplicationException e) {
 			LOG.debug("application already exists: " + this.name);
@@ -394,6 +397,14 @@ public class ApplicationBean implements Application {
 
 	public void setApplicationIdScope(String applicationIdScope) {
 		this.applicationIdScope = applicationIdScope;
+	}
+
+	public boolean isSkipMessageIntegrityCheck() {
+		return this.skipMessageIntegrityCheck;
+	}
+
+	public void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck) {
+		this.skipMessageIntegrityCheck = skipMessageIntegrityCheck;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -649,6 +660,16 @@ public class ApplicationBean implements Application {
 			}
 		}
 
+		try {
+			this.applicationService.setSkipMessageIntegrityCheck(applicationId,
+					this.skipMessageIntegrityCheck);
+		} catch (ApplicationNotFoundException e) {
+			LOG.debug("application not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+			return null;
+		}
+
 		applicationListFactory();
 		return "success";
 	}
@@ -681,6 +702,9 @@ public class ApplicationBean implements Application {
 					this.selectedApplication.getApplicationColor().getGreen(),
 					this.selectedApplication.getApplicationColor().getBlue());
 		this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
+
+		this.skipMessageIntegrityCheck = this.selectedApplication
+				.isSkipMessageIntegrityCheck();
 
 		this.applicationIdScope = this.selectedApplication.getIdScope().name();
 

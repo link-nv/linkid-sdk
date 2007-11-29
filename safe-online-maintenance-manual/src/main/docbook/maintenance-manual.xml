@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<book lang="en">
+	<bookinfo>
+		<title>OLAS Maintenance Manual</title>
+		<copyright>
+			<year>2007</year>
+			<holder>LIN-K N.V.</holder>
+		</copyright>
+		<date>28/11/2007</date>
+		<abstract>
+			<para>
+				This document contains maintenance manual for the OLAS
+				product.
+			</para>
+		</abstract>
+		<releaseinfo>1.0.0</releaseinfo>
+		<productname>OLAS</productname>
+		<productnumber>1.0.0</productnumber>
+		<authorgroup>
+			<author>
+				<firstname>Frank</firstname>
+				<surname>Cornelis</surname>
+			</author>
+		</authorgroup>
+	</bookinfo>
+
+	<chapter id="introduction">
+		<title>Introduction</title>
+		<para>
+			OLAS is an authentication, signature and user data exchange
+			service. It allows 3th party web application to authenticate
+			users, involve users in transactions and obtain user
+			identity data. It brings to users a central identity
+			management.
+		</para>
+	</chapter>
+
+	<chapter id="database">
+		<title>Database</title>
+		<abstract>
+			This chapter described the maintenance procedures for the
+			OLAS database.
+		</abstract>
+		<section>
+			<title>Database Recovery</title>
+			<para>
+				In case the OLAS JavaEE application runs out of DBMS
+				connections the JBoss transaction manager will start
+				writing database recovery files to:
+				<programlisting>$JBOSS_HOME/server/default/data/tx-object-store/</programlisting>
+				When rebooting the JBoss application server the JBoss
+				transaction manager will try to recover via the data
+				stored in disk files.
+				<caution>
+					We still get an non-Serializable XAResource error.
+					We need to investigate on this so that full recovery
+					from the disk files is possible. Exact error
+					message: Could not find new XAResource to use for
+					recovering non-serializable XAResource
+				</caution>
+			</para>
+		</section>
+	</chapter>
+
+</book>

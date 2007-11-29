@@ -9,6 +9,7 @@ package net.link.safeonline.config.model;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
 /**
@@ -25,4 +26,18 @@ public interface ConfigurationManager {
 	ConfigItemEntity findConfigItem(String name);
 
 	long getMaximumWsSecurityTimestampOffset();
+
+	/**
+	 * Returns <code>true</code> if the given application wants to skip
+	 * integrity at the SOAP message level. Some applications might skip message
+	 * level integrity check because the client side components are unable of
+	 * signing the SOAP body since SSL already provides transport level
+	 * integrity. For example: Microsoft .NET 3.0 WCF clients.
+	 * 
+	 * @param applicationName
+	 * @return
+	 * @throws ApplicationNotFoundException
+	 */
+	boolean skipMessageIntegrityCheck(String applicationName)
+			throws ApplicationNotFoundException;
 }

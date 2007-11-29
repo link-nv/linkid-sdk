@@ -136,6 +136,13 @@
 							<h:outputLabel for="idmapping"
 								value="#{msgs.accessControlIdmappingService}" />
 						</h:panelGroup>
+						<h:panelGroup>
+							<h:selectBooleanCheckbox
+								value="#{operApplication.skipMessageIntegrityCheck}"
+								id="skipMessageIntegrityCheck" />
+							<h:outputLabel for="skipMessageIntegrityCheck"
+								value="#{msgs.skipMessageIntegrityCheck}" />
+						</h:panelGroup>
 					</h:panelGrid>
 				</rich:tab>
 

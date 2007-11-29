@@ -86,6 +86,10 @@ public interface Application {
 
 	String getApplicationIdScope();
 
+	boolean isSkipMessageIntegrityCheck();
+
+	void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck);
+
 	/*
 	 * Actions.
 	 */

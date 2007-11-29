@@ -133,7 +133,8 @@ public class AttributeServiceBeanTest {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true, false) }));
+										testAttributeName, true, false) }),
+						false);
 
 		AttributeService attributeService = EJBTestUtils.newInstance(
 				AttributeServiceBean.class,
@@ -196,7 +197,8 @@ public class AttributeServiceBeanTest {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true, false) }));
+										testAttributeName, true, false) }),
+						false);
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -266,7 +268,8 @@ public class AttributeServiceBeanTest {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true, false) }));
+										testAttributeName, true, false) }),
+						false);
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -347,7 +350,8 @@ public class AttributeServiceBeanTest {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true, false) }));
+										testAttributeName, true, false) }),
+						false);
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -432,7 +436,8 @@ public class AttributeServiceBeanTest {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true, false) }));
+										testAttributeName, true, false) }),
+						false);
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -513,7 +518,8 @@ public class AttributeServiceBeanTest {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true, true) }));
+										testAttributeName, true, true) }),
+						false);
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -599,7 +605,8 @@ public class AttributeServiceBeanTest {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										testAttributeName, true, false) }));
+										testAttributeName, true, false) }),
+						false);
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
@@ -722,7 +729,7 @@ public class AttributeServiceBeanTest {
 						null,
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										compoundName, true, false) }));
+										compoundName, true, false) }), false);
 
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,

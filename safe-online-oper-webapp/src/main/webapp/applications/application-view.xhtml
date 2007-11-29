@@ -31,7 +31,7 @@
 					<tr>
 						<th>#{msgs.applicationOwner}:</th>
 						<td>#{selectedApplication.applicationOwner.name}</td>
-                    </tr>
+					</tr>
 					<tr>
 						<th>#{msgs.operatorApplicationOwnerAdmin}:</th>
 						<td>#{ownerAdminName}</td>
@@ -52,34 +52,27 @@
 						<th>#{msgs.applicationIdScope}:</th>
 						<td>#{selectedApplication.idScope}</td>
 					</tr>
-                    <tr>
-                        <td colspan="2">
-                            <h:graphicImage
-                                url="#{selectedApplication.applicationLogo}"
-                                rendered="#{!empty selectedApplication.applicationLogo}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.applicationColor}:</th>
-                        <td>
-                            <h:inputText
-                                disabled="true"
-                                value="#{selectedApplication.applicationColor}"
-                                style="background: ${operApplication.applicationColor}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>#{msgs.applicationUrl}:</th>
-                        <td><h:outputLink
-	                            value="#{selectedApplication.applicationUrl}"
-	                            rendered="#{!empty selectedApplication.applicationUrl}">
+					<tr>
+						<td colspan="2"><h:graphicImage
+							url="#{selectedApplication.applicationLogo}"
+							rendered="#{!empty selectedApplication.applicationLogo}" /></td>
+					</tr>
+					<tr>
+						<th>#{msgs.applicationColor}:</th>
+						<td><h:inputText disabled="true"
+							value="#{selectedApplication.applicationColor}"
+							style="background: ${operApplication.applicationColor}" /></td>
+					</tr>
+					<tr>
+						<th>#{msgs.applicationUrl}:</th>
+						<td><h:outputLink
+							value="#{selectedApplication.applicationUrl}"
+							rendered="#{!empty selectedApplication.applicationUrl}">
                                 #{selectedApplication.applicationUrl}
-                            </h:outputLink>
-                            <h:outputText
-	                            value="#{msgs.noApplicationUrl}"
-	                            rendered="#{empty selectedApplication.applicationUrl}" />
-                        </td>
-                    </tr>
+                            </h:outputLink> <h:outputText
+							value="#{msgs.noApplicationUrl}"
+							rendered="#{empty selectedApplication.applicationUrl}" /></td>
+					</tr>
 				</table>
 			</rich:tab>
 
@@ -100,6 +93,10 @@
 					<h:outputText value="#{msgs.accessControlIdmappingService}:" />
 					<h:outputText
 						value="#{selectedApplication.identifierMappingAllowed}" />
+
+					<h:outputText value="#{msgs.skipMessageIntegrityCheck}:" />
+					<h:outputText
+						value="#{selectedApplication.skipMessageIntegrityCheck}" />
 				</h:panelGrid>
 
 				<p><h:outputText value="#{msgs.certificate}:" /></p>
