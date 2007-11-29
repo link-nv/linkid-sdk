@@ -100,7 +100,9 @@ public class ApplicationBean implements Application {
 
 	private String applicationUrl;
 
-	private String applicationLogo;
+	private UploadedFile applicationLogoFile;
+
+	private byte[] applicationLogo;
 
 	private String applicationColor;
 
@@ -208,8 +210,9 @@ public class ApplicationBean implements Application {
 		if (null != this.applicationUrl)
 			LOG.debug("application url: " + this.applicationUrl);
 
+		URL newApplicationUrl = null;
 		Color newApplicationColor = null;
-		URL newApplicationUrl = null, newApplicationLogo = null;
+		byte[] newApplicationLogo = null;
 		if (null != this.applicationUrl && this.applicationUrl.length() != 0)
 			try {
 				newApplicationUrl = new URL(this.applicationUrl);
@@ -220,14 +223,14 @@ public class ApplicationBean implements Application {
 						"errorIllegalUrl", this.applicationUrl);
 				return null;
 			}
-		if (null != this.applicationLogo && this.applicationLogo.length() != 0)
+		if (null != this.applicationLogoFile)
 			try {
-				newApplicationLogo = new URL(this.applicationLogo);
-			} catch (MalformedURLException e) {
-				LOG.debug("illegal Logo URL format: " + this.applicationLogo);
+				newApplicationLogo = getUpFileContent(this.applicationLogoFile);
+			} catch (IOException e) {
+				LOG.debug("couldn't fetch uploaded data for application logo.");
 				this.facesMessages.addToControlFromResourceBundle(
 						"applicationLogo", FacesMessage.SEVERITY_ERROR,
-						"errorIllegalLogoUrl", this.applicationLogo);
+						"errorUploadLogo");
 				return null;
 			}
 		if (null != this.applicationColor
@@ -255,7 +258,7 @@ public class ApplicationBean implements Application {
 		try {
 			byte[] encodedCertificate;
 			if (null != this.upFile)
-				encodedCertificate = getUpFileContent();
+				encodedCertificate = getUpFileContent(this.upFile);
 			else
 				encodedCertificate = null;
 			this.applicationService.addApplication(this.name,
@@ -323,14 +326,24 @@ public class ApplicationBean implements Application {
 		this.applicationUrl = applicationUrl;
 	}
 
-	public String getApplicationLogo() {
+	public byte[] getApplicationLogo() {
 
 		return this.applicationLogo;
 	}
 
-	public void setApplicationLogo(String applicationLogo) {
+	public void setApplicationLogo(byte[] applicationLogo) {
 
 		this.applicationLogo = applicationLogo;
+	}
+
+	public void setApplicationLogoFile(UploadedFile applicationLogoFile) {
+
+		this.applicationLogoFile = applicationLogoFile;
+	}
+
+	public UploadedFile getApplicationLogoFile() {
+
+		return this.applicationLogoFile;
 	}
 
 	public String getApplicationColor() {
@@ -480,8 +493,8 @@ public class ApplicationBean implements Application {
 		}
 	}
 
-	private byte[] getUpFileContent() throws IOException {
-		InputStream inputStream = this.upFile.getInputStream();
+	private byte[] getUpFileContent(UploadedFile file) throws IOException {
+		InputStream inputStream = file.getInputStream();
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		IOUtils.copy(inputStream, byteArrayOutputStream);
 		return byteArrayOutputStream.toByteArray();
@@ -502,8 +515,9 @@ public class ApplicationBean implements Application {
 		String applicationId = this.selectedApplication.getName();
 		LOG.debug("save application: " + applicationId);
 
+		URL newApplicationUrl = null;
+		byte[] newApplicationLogo = null;
 		Color newApplicationColor = null;
-		URL newApplicationUrl = null, newApplicationLogo = null;
 		if (null != this.applicationUrl && this.applicationUrl.length() != 0)
 			try {
 				newApplicationUrl = new URL(this.applicationUrl);
@@ -514,14 +528,14 @@ public class ApplicationBean implements Application {
 						"errorIllegalUrl", this.applicationUrl);
 				return null;
 			}
-		if (null != this.applicationLogo && this.applicationLogo.length() != 0)
+		if (null != this.applicationLogoFile)
 			try {
-				newApplicationLogo = new URL(this.applicationLogo);
-			} catch (MalformedURLException e) {
-				LOG.debug("illegal Logo URL format: " + this.applicationLogo);
+				newApplicationLogo = getUpFileContent(this.applicationLogoFile);
+			} catch (IOException e) {
+				LOG.debug("couldn't fetch uploaded data for application logo.");
 				this.facesMessages.addToControlFromResourceBundle(
 						"applicationLogo", FacesMessage.SEVERITY_ERROR,
-						"errorIllegalLogoUrl", this.applicationLogo);
+						"errorUploadLogo");
 				return null;
 			}
 		if (null != this.applicationColor
@@ -540,7 +554,7 @@ public class ApplicationBean implements Application {
 			LOG.debug("updating application certificate");
 			try {
 				this.applicationService.updateApplicationCertificate(
-						applicationId, getUpFileContent());
+						applicationId, getUpFileContent(this.upFile));
 			} catch (CertificateEncodingException e) {
 				LOG.debug("certificate encoding error");
 				this.facesMessages.addFromResourceBundle(
@@ -660,7 +674,7 @@ public class ApplicationBean implements Application {
 					.toExternalForm();
 		if (null != this.selectedApplication.getApplicationLogo())
 			this.applicationLogo = this.selectedApplication
-					.getApplicationLogo().toExternalForm();
+					.getApplicationLogo();
 		if (null != this.selectedApplication.getApplicationColor())
 			this.applicationColor = String.format("#%02x%02x%02x",
 					this.selectedApplication.getApplicationColor().getRed(),
@@ -710,5 +724,4 @@ public class ApplicationBean implements Application {
 			return null;
 		}
 	}
-
 }

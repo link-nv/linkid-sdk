@@ -116,6 +116,8 @@ public class IdentifierMappingWebServiceTest {
 						true,
 						IdScopeType.USER,
 						null,
+						null,
+						null,
 						this.certificate.getEncoded(),
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
@@ -192,6 +194,8 @@ public class IdentifierMappingWebServiceTest {
 						null,
 						false,
 						IdScopeType.USER,
+						null,
+						null,
 						null,
 						this.certificate.getEncoded(),
 						Arrays

@@ -56,6 +56,18 @@ public interface Application {
 
 	void setApplicationUrl(String applicationUrl);
 
+	byte[] getApplicationLogo();
+
+	void setApplicationLogo(byte[] applicationLogo);
+
+	UploadedFile getApplicationLogoFile();
+
+	void setApplicationLogoFile(UploadedFile applicationLogoFile);
+
+	String getApplicationColor();
+
+	void setApplicationColor(String applicationColor);
+
 	String getApplicationOwner();
 
 	void setApplicationOwner(String applicationOwner);

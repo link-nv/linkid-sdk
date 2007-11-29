@@ -33,13 +33,26 @@
 			<rich:tabPanel id="tabs" switchType="client">
 				<rich:tab id="generic-tab" label="#{msgs.generic}">
 					<h:panelGrid columns="2">
-						<h:outputLabel for="applicationUrl" value="#{msgs.applicationUrl}" />
+						<h:outputLabel for="applicationUrl" value="#{msgs.applicationUrl}:" />
 						<s:decorate>
 							<h:inputText id="applicationUrl"
 								value="#{operApplication.applicationUrl}" />
 						</s:decorate>
-						<h:outputLabel for="applicationIdScope"
-							value="#{msgs.applicationIdScope}" />
+						
+						<h:outputLabel for="applicationLogo" value="#{msgs.applicationLogo}:" />
+						<s:decorate>
+							<tr:inputFile id="applicationLogo"
+	                            value="#{operApplication.applicationLogoFile}" />
+						</s:decorate>
+						
+						<h:outputLabel for="applicationColor" value="#{msgs.applicationColor}:" />
+						<s:decorate>
+							<h:inputText id="applicationColor"
+								value="#{operApplication.applicationColor}"
+							    style="border-color: #{operApplication.applicationColor}" />
+						</s:decorate>
+						
+						<h:outputLabel for="applicationIdScope" value="#{msgs.applicationIdScope}:" />
 						<s:decorate>
 							<h:selectOneMenu id="applicationIdScope"
 								value="#{operApplication.applicationIdScope}" required="true">

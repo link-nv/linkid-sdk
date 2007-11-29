@@ -49,14 +49,14 @@ public interface ApplicationDAO {
 	ApplicationEntity addApplication(String applicationName,
 			String applicationFriendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			URL applicationUrl, byte[] applicationLogo, Color applicationColor,
 			X509Certificate certificate);
 
 	ApplicationEntity addApplication(String applicationName,
 			String applicationFriendlyName,
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable,
-			String description, URL applicationUrl, URL applicationLogo,
+			String description, URL applicationUrl, byte[] applicationLogo,
 			Color applicationColor, X509Certificate certificate,
 			long initialIdentityVersion, long usageAgreementVersion);
 

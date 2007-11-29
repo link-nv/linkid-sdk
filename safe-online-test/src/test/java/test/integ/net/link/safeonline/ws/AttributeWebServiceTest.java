@@ -133,13 +133,12 @@ public class AttributeWebServiceTest {
 
 		List<AttributeDO> resultAttributeDOs = identityService
 				.listAttributes(null);
-		for (AttributeDO resultAttribute : resultAttributeDOs) {
+		for (AttributeDO resultAttribute : resultAttributeDOs)
 			if (SafeOnlineConstants.NAME_ATTRIBUTE.equals(resultAttribute
 					.getName())) {
 				LOG.debug("result name: " + resultAttribute.getStringValue());
 				assertEquals(testName, resultAttribute.getStringValue());
 			}
-		}
 
 		// operate: register new attribute type
 		AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
@@ -160,8 +159,8 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, IdScopeType.USER, null, this.certificate
-						.getEncoded(),
+				null, false, IdScopeType.USER, null, null, null,
+				this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -255,8 +254,8 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, IdScopeType.USER, null, this.certificate
-						.getEncoded(),
+				null, false, IdScopeType.USER, null, null, null,
+				this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -348,8 +347,8 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, IdScopeType.USER, null, this.certificate
-						.getEncoded(),
+				null, false, IdScopeType.USER, null, null, null,
+				this.certificate.getEncoded(),
 				Arrays.asList(new IdentityAttributeTypeDO[] {
 						new IdentityAttributeTypeDO(
 								SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -474,8 +473,8 @@ public class AttributeWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, IdScopeType.USER, null, this.certificate
-						.getEncoded(), Arrays
+				null, false, IdScopeType.USER, null, null, null,
+				this.certificate.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -614,11 +613,9 @@ public class AttributeWebServiceTest {
 	}
 
 	private boolean contains(String value, Object[] items) {
-		for (Object item : items) {
-			if (value.equals(item)) {
+		for (Object item : items)
+			if (value.equals(item))
 				return true;
-			}
-		}
 		return false;
 	}
 }

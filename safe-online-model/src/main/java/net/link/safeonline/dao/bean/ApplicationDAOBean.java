@@ -54,7 +54,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
 	public ApplicationEntity addApplication(String applicationName,
 			String applicationFriendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			URL applicationUrl, byte[] applicationLogo, Color applicationColor,
 			X509Certificate certificate) {
 		LOG.debug("adding application: " + applicationName);
 		ApplicationEntity application = new ApplicationEntity(applicationName,
@@ -88,7 +88,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
 			String applicationFriendlyName,
 			ApplicationOwnerEntity applicationOwner,
 			boolean allowUserSubscription, boolean removable,
-			String description, URL applicationUrl, URL applicationLogo,
+			String description, URL applicationUrl, byte[] applicationLogo,
 			Color applicationColor, X509Certificate certificate,
 			long initialIdentityVersion, long usageAgreementVersion) {
 		LOG.debug("adding application: " + applicationName);

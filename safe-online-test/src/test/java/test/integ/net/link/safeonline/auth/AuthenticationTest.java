@@ -203,7 +203,7 @@ public class AuthenticationTest {
 
 				applicationService.addApplication(applicationName, null,
 						appOwnerName, null, false, IdScopeType.USER, null,
-						null, null);
+						null, null, null, null);
 				return null;
 			}
 		});
@@ -243,7 +243,7 @@ public class AuthenticationTest {
 				.getUserId());
 
 		applicationService.addApplication(applicationName, null, appOwnerName,
-				null, false, IdScopeType.USER, null, null, null);
+				null, false, IdScopeType.USER, null, null, null, null, null);
 
 		String userLogin = "login-" + UUID.randomUUID().toString();
 		final String userPassword = "secret";
@@ -289,18 +289,16 @@ public class AuthenticationTest {
 		// JAAS caches the credentials...
 		List<SubscriptionEntity> subscriptions = subscriptionService
 				.listSubscriptions();
-		for (SubscriptionEntity subscription : subscriptions) {
+		for (SubscriptionEntity subscription : subscriptions)
 			LOG.debug("subscription: " + subscription);
-		}
 		assertEquals(1, subscriptions.size());
 
 		subscriptionService.subscribe(applicationName);
 
 		subscriptions = subscriptionService.listSubscriptions();
 		assertEquals(2, subscriptions.size());
-		for (SubscriptionEntity subscription : subscriptions) {
+		for (SubscriptionEntity subscription : subscriptions)
 			LOG.debug("subscription: " + subscription);
-		}
 
 		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
 		applicationService.removeApplication(applicationName);
@@ -336,7 +334,7 @@ public class AuthenticationTest {
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, null, appOwnerName,
-				null, false, IdScopeType.USER, null, null, null);
+				null, false, IdScopeType.USER, null, null, null, null, null);
 
 		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		applicationService.setApplicationDescription(applicationName,
@@ -386,7 +384,7 @@ public class AuthenticationTest {
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, null,
 				applicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null);
+				null, null, null, null);
 
 		// operate: change application description via application owner
 		IntegrationTestUtils.login(ownerSubject.getUserId(), ownerPassword);

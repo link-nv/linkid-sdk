@@ -81,8 +81,8 @@ public interface ApplicationService {
 	void addApplication(String name, String friendlyName,
 			String applicationOwnerName, String description,
 			boolean idMappingServiceAccess, IdScopeType idScope,
-			URL applicationUrl, URL applicationLogo, Color applicationColor,
-			byte[] encodedCertificate,
+			URL applicationUrl, byte[] newApplicationLogo,
+			Color applicationColor, byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
 			ApplicationOwnerNotFoundException, CertificateEncodingException,
@@ -175,10 +175,10 @@ public interface ApplicationService {
 	 * Updates the application Logo for the given application.
 	 * 
 	 * @param applicationId
-	 * @param applicationLogo
+	 * @param newApplicationLogo
 	 * @throws ApplicationNotFoundException
 	 */
-	void updateApplicationLogo(String applicationId, URL applicationLogo)
+	void updateApplicationLogo(String applicationId, byte[] newApplicationLogo)
 			throws ApplicationNotFoundException;
 
 	/**

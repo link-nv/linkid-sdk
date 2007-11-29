@@ -134,6 +134,8 @@ public class DataWebServiceTest {
 						false,
 						IdScopeType.USER,
 						null,
+						null,
+						null,
 						this.certificate.getEncoded(),
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
@@ -227,31 +229,28 @@ public class DataWebServiceTest {
 		AttributeTypeEntity firstMemberAttributeType = new AttributeTypeEntity(
 				TEST_MEMBER_0_NAME, DatatypeType.STRING, true, true);
 		firstMemberAttributeType.setMultivalued(true);
-		if (false == existingAttributeTypes.contains(firstMemberAttributeType)) {
+		if (false == existingAttributeTypes.contains(firstMemberAttributeType))
 			attributeTypeService.add(firstMemberAttributeType);
-		}
 
 		AttributeTypeEntity secondMemberAttributeType = new AttributeTypeEntity(
 				TEST_MEMBER_1_NAME, DatatypeType.BOOLEAN, true, true);
 		secondMemberAttributeType.setMultivalued(true);
-		if (false == existingAttributeTypes.contains(secondMemberAttributeType)) {
+		if (false == existingAttributeTypes.contains(secondMemberAttributeType))
 			attributeTypeService.add(secondMemberAttributeType);
-		}
 
 		AttributeTypeEntity compoundAttributeType = new AttributeTypeEntity(
 				TEST_COMP_NAME, DatatypeType.COMPOUNDED, true, true);
 		compoundAttributeType.setMultivalued(true);
 		compoundAttributeType.addMember(firstMemberAttributeType, 0, true);
 		compoundAttributeType.addMember(secondMemberAttributeType, 1, true);
-		if (false == existingAttributeTypes.contains(compoundAttributeType)) {
+		if (false == existingAttributeTypes.contains(compoundAttributeType))
 			attributeTypeService.add(compoundAttributeType);
-		}
 
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, IdScopeType.USER, null, this.certificate
-						.getEncoded(), Arrays
+				null, false, IdScopeType.USER, null, null, null,
+				this.certificate.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -406,8 +405,8 @@ public class DataWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, IdScopeType.USER, null, this.certificate
-						.getEncoded(), Arrays
+				null, false, IdScopeType.USER, null, null, null,
+				this.certificate.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -501,8 +500,8 @@ public class DataWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, IdScopeType.USER, null, this.certificate
-						.getEncoded(), Arrays
+				null, false, IdScopeType.USER, null, null, null,
+				this.certificate.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),
@@ -602,6 +601,8 @@ public class DataWebServiceTest {
 						false,
 						IdScopeType.USER,
 						null,
+						null,
+						null,
 						this.certificate.getEncoded(),
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
@@ -663,9 +664,8 @@ public class DataWebServiceTest {
 		LOG.debug("Response SOAP message: "
 				+ DomTestUtils.domToString(resultMessage));
 		LOG.debug("result values: " + result.getValue());
-		for (String value : result.getValue()) {
+		for (String value : result.getValue())
 			LOG.debug("result value: " + value);
-		}
 		assertEquals(attributeValue1, result.getValue()[0]);
 		assertEquals(attributeValue2, result.getValue()[1]);
 	}
@@ -705,8 +705,8 @@ public class DataWebServiceTest {
 		// operate: add application with certificate
 		ApplicationService applicationService = getApplicationService(initialContext);
 		applicationService.addApplication(testApplicationName, null, "owner",
-				null, false, IdScopeType.USER, null, this.certificate
-						.getEncoded(), Arrays
+				null, false, IdScopeType.USER, null, null, null,
+				this.certificate.getEncoded(), Arrays
 						.asList(new IdentityAttributeTypeDO[] {
 								new IdentityAttributeTypeDO(
 										SafeOnlineConstants.NAME_ATTRIBUTE),

@@ -87,7 +87,7 @@ public class ApplicationEntity implements Serializable {
 
 	protected URL applicationUrl;
 
-	protected URL applicationLogo;
+	protected byte[] applicationLogo;
 
 	protected Color applicationColor;
 
@@ -132,7 +132,7 @@ public class ApplicationEntity implements Serializable {
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			URL applicationUrl, byte[] applicationLogo, Color applicationColor,
 			X509Certificate certificate) {
 		this(name, friendlyName, applicationOwner, description, applicationUrl,
 				applicationLogo, applicationColor, true, true, certificate, 0,
@@ -141,7 +141,7 @@ public class ApplicationEntity implements Serializable {
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, URL applicationUrl,
-			URL applicationLogo, Color applicationColor,
+			byte[] applicationLogo, Color applicationColor,
 			boolean allowUserSubscription) {
 		this(name, applicationOwner, applicationUrl, applicationLogo,
 				applicationColor, allowUserSubscription, true);
@@ -149,7 +149,7 @@ public class ApplicationEntity implements Serializable {
 
 	public ApplicationEntity(String name,
 			ApplicationOwnerEntity applicationOwner, URL applicationUrl,
-			URL applicationLogo, Color applicationColor,
+			byte[] applicationLogo, Color applicationColor,
 			boolean allowUserSubscription, boolean removable) {
 		this(name, null, applicationOwner, null, applicationUrl,
 				applicationLogo, applicationColor, allowUserSubscription,
@@ -158,7 +158,7 @@ public class ApplicationEntity implements Serializable {
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			URL applicationUrl, byte[] applicationLogo, Color applicationColor,
 			boolean allowUserSubscription, boolean removable,
 			X509Certificate certificate, long identityVersion,
 			long usageAgreementVersion) {
@@ -170,7 +170,7 @@ public class ApplicationEntity implements Serializable {
 
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
-			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			URL applicationUrl, byte[] applicationLogo, Color applicationColor,
 			boolean allowUserSubscription, boolean removable,
 			X509Certificate certificate, long identityVersion,
 			long usageAgreementVersion, boolean deviceRestriction) {
@@ -254,7 +254,9 @@ public class ApplicationEntity implements Serializable {
 	/**
 	 * Retrieve the logo of this application.
 	 */
-	public URL getApplicationLogo() {
+	@Lob
+	@Column(length = 4 * 1024, nullable = true)
+	public byte[] getApplicationLogo() {
 
 		return this.applicationLogo;
 	}
@@ -262,7 +264,7 @@ public class ApplicationEntity implements Serializable {
 	/**
 	 * Set the logo of this application.
 	 */
-	public void setApplicationLogo(URL applicationLogo) {
+	public void setApplicationLogo(byte[] applicationLogo) {
 
 		this.applicationLogo = applicationLogo;
 	}

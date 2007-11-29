@@ -135,7 +135,7 @@ public class ApplicationServiceBean implements ApplicationService,
 	public void addApplication(String name, String friendlyName,
 			String applicationOwnerName, String description,
 			boolean idMappingServiceAccess, IdScopeType idScope,
-			URL applicationUrl, URL applicationLogo, Color applicationColor,
+			URL applicationUrl, byte[] applicationLogo, Color applicationColor,
 			byte[] encodedCertificate,
 			List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes)
 			throws ExistingApplicationException,
@@ -362,8 +362,8 @@ public class ApplicationServiceBean implements ApplicationService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateApplicationLogo(String applicationId, URL applicationLogo)
-			throws ApplicationNotFoundException {
+	public void updateApplicationLogo(String applicationId,
+			byte[] applicationLogo) throws ApplicationNotFoundException {
 		getApplication(applicationId).setApplicationLogo(applicationLogo);
 	}
 

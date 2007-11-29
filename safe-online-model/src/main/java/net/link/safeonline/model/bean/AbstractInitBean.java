@@ -101,7 +101,7 @@ public abstract class AbstractInitBean implements Startable {
 
 		final URL applicationUrl;
 
-		final URL applicationLogo;
+		final byte[] applicationLogo;
 
 		final Color applicationColor;
 
@@ -118,7 +118,7 @@ public abstract class AbstractInitBean implements Startable {
 		final IdScopeType idScope;
 
 		public Application(String name, String owner, String description,
-				URL applicationUrl, URL applicationLogo,
+				URL applicationUrl, byte[] applicationLogo,
 				Color applicationColor, boolean allowUserSubscription,
 				boolean removable, X509Certificate certificate,
 				boolean idmappingAccess, IdScopeType idScope) {
@@ -136,7 +136,7 @@ public abstract class AbstractInitBean implements Startable {
 		}
 
 		public Application(String name, String owner, String description,
-				URL applicationUrl, URL applicationLogo,
+				URL applicationUrl, byte[] applicationLogo,
 				Color applicationColor, boolean allowUserSubscription,
 				boolean removable) {
 			this(name, owner, description, applicationUrl, applicationLogo,
