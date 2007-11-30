@@ -8,7 +8,6 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -18,6 +17,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialService;
@@ -93,7 +93,7 @@ public class CredentialServiceBean implements CredentialService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public String registerMobile(String mobile) throws RemoteException,
+	public String registerMobile(String mobile) throws MobileException,
 			MalformedURLException, MobileRegistrationException,
 			ArgumentIntegrityException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -101,7 +101,7 @@ public class CredentialServiceBean implements CredentialService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void removeMobile(String mobile) throws RemoteException,
+	public void removeMobile(String mobile) throws MobileException,
 			MalformedURLException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		this.weakMobileDeviceService.remove(subject, mobile);

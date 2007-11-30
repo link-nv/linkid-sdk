@@ -35,7 +35,6 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.IdentityServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
@@ -46,6 +45,7 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;

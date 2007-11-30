@@ -13,6 +13,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.data.AccountMergingDO;
 
 @Local
 public interface AccountMergingService {

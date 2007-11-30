@@ -135,7 +135,7 @@ public abstract class AbstractPaymentDataClientBean implements
 		}
 		return this.mappingClient;
 	}
-	
+
 	/**
 	 * Gives back the lawyer status of a subject. This method also sets the
 	 * {@link FacesMessages} in case something goes wrong.
@@ -144,7 +144,7 @@ public abstract class AbstractPaymentDataClientBean implements
 	 * @return the lawyer status or <code>null</code> in case of error.
 	 */
 	protected CustomerStatus getCustomerStatus(String subjectLogin) {
-		
+
 		String userId;
 		NameIdentifierMappingClient myMappingClient = getMappingClient();
 		try {
@@ -158,7 +158,7 @@ public abstract class AbstractPaymentDataClientBean implements
 			this.facesMessages.add("request denied");
 			return null;
 		}
-		
+
 		boolean junior = false;
 		boolean paymentAdmin = false;
 		Attribute<Boolean> juniorAttribute;
@@ -167,9 +167,8 @@ public abstract class AbstractPaymentDataClientBean implements
 		try {
 			juniorAttribute = currentDataClient.getAttributeValue(userId,
 					DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
-			paymentAdminAttribute = currentDataClient.getAttributeValue(
-					userId, DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME,
-					Boolean.class);
+			paymentAdminAttribute = currentDataClient.getAttributeValue(userId,
+					DemoConstants.PAYMENT_ADMIN_ATTRIBUTE_NAME, Boolean.class);
 		} catch (ConnectException e) {
 			this.facesMessages.add("connection error: " + e.getMessage());
 			return null;
@@ -187,7 +186,8 @@ public abstract class AbstractPaymentDataClientBean implements
 				&& null != paymentAdminAttribute.getValue()) {
 			paymentAdmin = paymentAdminAttribute.getValue();
 		}
-		CustomerStatus customerStatus = new CustomerStatus(userId,junior, paymentAdmin);
+		CustomerStatus customerStatus = new CustomerStatus(userId, junior,
+				paymentAdmin);
 		return customerStatus;
 	}
 

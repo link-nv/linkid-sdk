@@ -2164,6 +2164,17 @@
 			<artifactId>safe-online-performance-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>axis</groupId>
+			<artifactId>axis</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>axis</groupId>
+					<artifactId>axis-saaj</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>

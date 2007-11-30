@@ -14,7 +14,6 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDom
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Set;
 
@@ -38,6 +37,7 @@ import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -72,7 +72,6 @@ import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.annotation.NotNull;
 
-import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -176,9 +175,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	AuthenticationDevice device, @NonEmptyString
 	String mobile, @NonEmptyString
 	String challengeId, @NonEmptyString
-	String mobileOTP) throws AxisFault, SubjectNotFoundException,
-			MalformedURLException, RemoteException,
-			MobileAuthenticationException {
+	String mobileOTP) throws SubjectNotFoundException, MalformedURLException,
+			MobileException, MobileAuthenticationException {
 		SubjectEntity subject;
 		if (device == AuthenticationDevice.WEAK_MOBILE)
 			subject = this.weakMobileDeviceService.authenticate(mobile,
@@ -204,7 +202,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	public String requestMobileOTP(@NotNull
 	AuthenticationDevice device, @NonEmptyString
-	String mobile) throws MalformedURLException, RemoteException {
+	String mobile) throws MalformedURLException, MobileException {
 		if (device == AuthenticationDevice.WEAK_MOBILE)
 			return this.weakMobileDeviceService.requestOTP(mobile);
 		else if (device == AuthenticationDevice.STRONG_MOBILE)
@@ -436,7 +434,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return this.authenticationDevice;
 	}
 
-	public String registerMobile(String mobile) throws RemoteException,
+	public String registerMobile(String mobile) throws MobileException,
 			MalformedURLException, MobileRegistrationException,
 			ArgumentIntegrityException {
 		LOG.debug("register mobile: " + mobile);
@@ -448,7 +446,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return activationCode;
 	}
 
-	public void removeMobile(String mobile) throws RemoteException,
+	public void removeMobile(String mobile) throws MobileException,
 			MalformedURLException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		this.weakMobileDeviceService.remove(subject, mobile);

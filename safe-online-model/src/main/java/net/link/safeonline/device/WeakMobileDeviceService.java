@@ -7,38 +7,36 @@
 package net.link.safeonline.device;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.List;
 
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.SubjectEntity;
-
-import org.apache.axis.AxisFault;
 
 @Local
 public interface WeakMobileDeviceService {
 
 	SubjectEntity authenticate(String mobile, String challengeId,
-			String mobileOTP) throws AxisFault, MalformedURLException,
-			RemoteException, SubjectNotFoundException,
-			MobileAuthenticationException;
+			String mobileOTP) throws MalformedURLException,
+			SubjectNotFoundException, MobileAuthenticationException,
+			MobileException;
 
 	String register(SubjectEntity subject, String mobile)
-			throws RemoteException, MalformedURLException,
+			throws MobileException, MalformedURLException,
 			MobileRegistrationException, ArgumentIntegrityException;
 
 	void update(SubjectEntity subject, String oldMobile, String newMobile);
 
-	void remove(SubjectEntity subject, String mobile) throws RemoteException,
+	void remove(SubjectEntity subject, String mobile) throws MobileException,
 			MalformedURLException;
 
 	String requestOTP(String mobile) throws MalformedURLException,
-			RemoteException;
+			MobileException;
 
 	List<String> getMobiles(String login);
 }

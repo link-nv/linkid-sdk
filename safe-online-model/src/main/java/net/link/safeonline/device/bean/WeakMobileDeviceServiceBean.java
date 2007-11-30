@@ -8,7 +8,6 @@
 package net.link.safeonline.device.bean;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +21,7 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
@@ -64,7 +64,7 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 	private SecurityAuditLogger securityAuditLogger;
 
 	public SubjectEntity authenticate(String mobile, String challengeId,
-			String mobileOTP) throws MalformedURLException, RemoteException,
+			String mobileOTP) throws MalformedURLException, MobileException,
 			SubjectNotFoundException, MobileAuthenticationException {
 		SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
 				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile);
@@ -82,7 +82,7 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 	}
 
 	public String register(SubjectEntity subject, String mobile)
-			throws RemoteException, MalformedURLException,
+			throws MobileException, MalformedURLException,
 			MobileRegistrationException, ArgumentIntegrityException {
 		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
 				.findSubject(SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
@@ -116,7 +116,7 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 	}
 
 	public void remove(SubjectEntity subject, String mobile)
-			throws RemoteException, MalformedURLException {
+			throws MobileException, MalformedURLException {
 		AttributeTypeEntity mobileAttributeType;
 		try {
 			mobileAttributeType = this.attributeTypeDAO
@@ -141,7 +141,7 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 	}
 
 	public String requestOTP(String mobile) throws MalformedURLException,
-			RemoteException {
+			MobileException {
 		return this.mobileManager.requestOTP(mobile);
 	}
 

@@ -7,25 +7,23 @@
 package net.link.safeonline.device.backend;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.entity.SubjectEntity;
-
-import org.apache.axis.AxisFault;
 
 @Local
 public interface MobileManager {
 
 	String requestOTP(String mobile) throws MalformedURLException,
-			RemoteException, AxisFault;
+			MobileException;
 
-	boolean verifyOTP(String challengeId, String OTPValue) throws AxisFault,
-			MalformedURLException, RemoteException;
+	boolean verifyOTP(String challengeId, String OTPValue)
+			throws MalformedURLException, MobileException;
 
 	String activate(String mobile, SubjectEntity subject)
-			throws RemoteException, MalformedURLException;
+			throws MalformedURLException, MobileException;
 
-	void remove(String mobile) throws RemoteException, MalformedURLException;
+	void remove(String mobile) throws MalformedURLException, MobileException;
 }

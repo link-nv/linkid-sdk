@@ -15,8 +15,8 @@ import java.util.Locale;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;

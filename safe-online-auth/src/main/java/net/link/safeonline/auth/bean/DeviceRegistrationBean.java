@@ -8,7 +8,6 @@
 package net.link.safeonline.auth.bean;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -24,6 +23,7 @@ import javax.faces.model.SelectItem;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.DeviceRegistration;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
@@ -123,7 +123,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 		try {
 			this.mobileActivationCode = this.authenticationService
 					.registerMobile(this.mobile);
-		} catch (RemoteException e) {
+		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;
@@ -158,7 +158,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 		this.mobileActivationCode = null;
 		try {
 			this.authenticationService.removeMobile(this.mobile);
-		} catch (RemoteException e) {
+		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;

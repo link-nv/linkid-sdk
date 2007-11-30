@@ -19,7 +19,7 @@
 			org.jboss.seam.jsf.SeamPhaseListener
 		</phase-listener>
 	</lifecycle>
-
+	
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>login-success</from-outcome>

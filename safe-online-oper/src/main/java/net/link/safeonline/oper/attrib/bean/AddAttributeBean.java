@@ -17,6 +17,17 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
+import net.link.safeonline.ctrl.Convertor;
+import net.link.safeonline.ctrl.ConvertorUtil;
+import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.oper.OperatorConstants;
+import net.link.safeonline.oper.attrib.AddAttribute;
+import net.link.safeonline.service.AttributeTypeService;
+
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
@@ -30,17 +41,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
-
-import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
-import net.link.safeonline.ctrl.Convertor;
-import net.link.safeonline.ctrl.ConvertorUtil;
-import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.DatatypeType;
-import net.link.safeonline.oper.OperatorConstants;
-import net.link.safeonline.oper.attrib.AddAttribute;
-import net.link.safeonline.service.AttributeTypeService;
 
 @Stateful
 @Name("addAttribute")

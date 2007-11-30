@@ -84,6 +84,10 @@
 			<param-name>ErrorPage</param-name>
 			<param-value>/error.seam</param-value>
 		</init-param>
+		<init-param>
+			<param-name>MainPage</param-name>
+			<param-value>/main.seam</param-value>
+		</init-param>
 	</filter>
 
 	<filter>

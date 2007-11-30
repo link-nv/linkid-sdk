@@ -5,9 +5,8 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.service;
+package net.link.safeonline.data;
 
-import net.link.safeonline.authentication.service.AttributeDO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

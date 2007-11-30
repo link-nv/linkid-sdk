@@ -8,7 +8,6 @@
 package net.link.safeonline.user.bean;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -29,11 +28,12 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.user.Devices;
 import net.link.safeonline.user.UserConstants;
@@ -257,7 +257,7 @@ public class DevicesBean implements Devices {
 		try {
 			this.mobileActivationCode = this.credentialService
 					.registerMobile(this.mobile);
-		} catch (RemoteException e) {
+		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;
@@ -292,7 +292,7 @@ public class DevicesBean implements Devices {
 		this.mobileActivationCode = null;
 		try {
 			this.credentialService.removeMobile(this.mobile);
-		} catch (RemoteException e) {
+		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;

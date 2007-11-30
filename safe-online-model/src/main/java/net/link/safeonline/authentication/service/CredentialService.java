@@ -8,13 +8,13 @@
 package net.link.safeonline.authentication.service;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -47,9 +47,9 @@ public interface CredentialService {
 	 * @throws ArgumentIntegrityException
 	 * @throws MobileRegistrationException
 	 * @throws MalformedURLException
-	 * @throws RemoteException
+	 * @throws MobileException
 	 */
-	String registerMobile(String mobile) throws RemoteException,
+	String registerMobile(String mobile) throws MobileException,
 			MalformedURLException, MobileRegistrationException,
 			ArgumentIntegrityException;
 
@@ -57,10 +57,10 @@ public interface CredentialService {
 	 * Removes a mobile for the current user.
 	 * 
 	 * @param mobile
-	 * @throws RemoteException
+	 * @throws MobileException
 	 * @throws MalformedURLException
 	 */
-	void removeMobile(String mobile) throws RemoteException,
+	void removeMobile(String mobile) throws MobileException,
 			MalformedURLException;
 
 	/**

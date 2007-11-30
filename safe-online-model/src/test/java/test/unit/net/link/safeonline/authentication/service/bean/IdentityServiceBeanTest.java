@@ -25,7 +25,6 @@ import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.ApplicationService;
-import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -45,6 +44,7 @@ import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;

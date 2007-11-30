@@ -17,7 +17,7 @@ import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import net.link.safeonline.authentication.service.AttributeDO;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DatatypeType;
 
 /**

@@ -11,10 +11,10 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.service.AttributeDO;
+import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.data.ChoosableAttributeDO;
+import net.link.safeonline.data.SubscriptionDO;
 import net.link.safeonline.entity.SubscriptionEntity;
-import net.link.safeonline.service.ChoosableAttributeDO;
-import net.link.safeonline.service.SubscriptionDO;
 
 @Local
 public interface MergeOverview {

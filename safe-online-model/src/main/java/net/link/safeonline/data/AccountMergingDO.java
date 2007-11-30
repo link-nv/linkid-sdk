@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.service;
+package net.link.safeonline.data;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;

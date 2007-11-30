@@ -12,12 +12,9 @@
 	<artifactId>safe-online-encap-ws</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>
-		SafeOnline Encap Dummy Web Services Definition
-	</name>
+	<name>SafeOnline Encap Dummy Web Services Definition</name>
 	<description>
-		Contains WSDLs for the SafeOnline Encap Dummy Web
-		Services.
+		Contains WSDLs for the SafeOnline Encap Dummy Web Services.
 	</description>
 	<build>
 		<plugins>
@@ -48,6 +45,12 @@
 		<dependency>
 			<groupId>axis</groupId>
 			<artifactId>axis</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>axis</groupId>
+					<artifactId>axis-saaj</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>

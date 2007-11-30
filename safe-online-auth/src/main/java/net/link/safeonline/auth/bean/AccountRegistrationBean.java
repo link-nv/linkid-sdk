@@ -8,7 +8,6 @@
 package net.link.safeonline.auth.bean;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -30,6 +29,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
@@ -39,7 +39,6 @@ import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 
-import org.apache.axis.AxisFault;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
@@ -266,12 +265,6 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			this.authenticationService.authenticate(
 					AuthenticationDevice.WEAK_MOBILE, this.mobile,
 					this.challengeId, this.mobileOTP);
-		} catch (AxisFault e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-			HelpdeskLogger.add("login: failed to contact encap webservice for "
-					+ this.login, LogLevelType.ERROR);
-			return null;
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
@@ -284,7 +277,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			HelpdeskLogger.add("login: encap webservice not available",
 					LogLevelType.ERROR);
 			return null;
-		} catch (RemoteException e) {
+		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
 			HelpdeskLogger.add("login: failed to contact encap webservice for "
@@ -310,7 +303,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
 			return null;
-		} catch (RemoteException e) {
+		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;
@@ -339,7 +332,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;
-		} catch (RemoteException e) {
+		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;

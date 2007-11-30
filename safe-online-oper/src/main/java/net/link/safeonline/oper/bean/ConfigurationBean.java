@@ -14,6 +14,11 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
+import net.link.safeonline.config.service.ConfigurationService;
+import net.link.safeonline.entity.config.ConfigGroupEntity;
+import net.link.safeonline.oper.Configuration;
+import net.link.safeonline.oper.OperatorConstants;
+
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.Destroy;
@@ -22,11 +27,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.core.FacesMessages;
-
-import net.link.safeonline.config.service.ConfigurationService;
-import net.link.safeonline.entity.config.ConfigGroupEntity;
-import net.link.safeonline.oper.Configuration;
-import net.link.safeonline.oper.OperatorConstants;
 
 @Stateful
 @Name("configuration")

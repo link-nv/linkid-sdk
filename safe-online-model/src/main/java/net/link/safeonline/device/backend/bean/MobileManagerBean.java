@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.device.backend.MobileManager;
@@ -28,33 +29,54 @@ public class MobileManagerBean implements MobileManager {
 	@Configurable(name = "Encap Organisation ID", group = "Encap")
 	private String encapOrganisationId = "encap";
 
-	public String requestOTP(String mobile) throws RemoteException,
-			MalformedURLException {
-		EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(
-				this.encapServerLocation);
-		return encapAuthenticationClient.challenge(mobile,
-				this.encapOrganisationId);
+	/*
+	 * RemoteException are transformed to a MobileException, else they get
+	 * wrapped by JBoss into EJBTransactionRolledbackException
+	 */
+	public String requestOTP(String mobile) throws MalformedURLException,
+			MobileException {
+		try {
+			EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(
+					this.encapServerLocation);
+			return encapAuthenticationClient.challenge(mobile,
+					this.encapOrganisationId);
+		} catch (RemoteException e) {
+			throw new MobileException(e.getMessage());
+		}
 	}
 
 	public boolean verifyOTP(String challengeId, String OTPValue)
-			throws MalformedURLException, RemoteException {
-		EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(
-				this.encapServerLocation);
-		return encapAuthenticationClient.verifyOTP(challengeId, OTPValue);
+			throws MalformedURLException, MobileException {
+		try {
+			EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(
+					this.encapServerLocation);
+			return encapAuthenticationClient.verifyOTP(challengeId, OTPValue);
+		} catch (RemoteException e) {
+			throw new MobileException(e.getMessage());
+		}
 	}
 
 	public String activate(String mobile, SubjectEntity subject)
-			throws RemoteException, MalformedURLException {
-		EncapActivationClient encapActivationClient = new EncapActivationClientImpl(
-				this.encapServerLocation);
-		return encapActivationClient.activate(mobile, this.encapOrganisationId,
-				subject.getUserId());
+			throws MobileException, MalformedURLException {
+		try {
+			EncapActivationClient encapActivationClient = new EncapActivationClientImpl(
+					this.encapServerLocation);
+			return encapActivationClient.activate(mobile,
+					this.encapOrganisationId, subject.getUserId());
+		} catch (RemoteException e) {
+			throw new MobileException(e.getMessage());
+		}
 	}
 
-	public void remove(String mobile) throws RemoteException,
+	public void remove(String mobile) throws MobileException,
 			MalformedURLException {
-		EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(
-				this.encapServerLocation);
-		encapAdministrationClient.remove(mobile, this.encapOrganisationId);
+		try {
+			EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(
+					this.encapServerLocation);
+			encapAdministrationClient.remove(mobile, this.encapOrganisationId);
+		} catch (RemoteException e) {
+			throw new MobileException(e.getMessage());
+		}
+
 	}
 }

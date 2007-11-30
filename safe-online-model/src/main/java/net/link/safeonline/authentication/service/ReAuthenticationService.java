@@ -8,7 +8,6 @@
 package net.link.safeonline.authentication.service;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.Set;
 
 import javax.ejb.Local;
@@ -17,6 +16,7 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.SubjectEntity;
@@ -80,14 +80,15 @@ public interface ReAuthenticationService {
 	 * @throws AxisFault
 	 * @throws SubjectNotFoundException
 	 * @throws MalformedURLException
-	 * @throws RemoteException
+	 * @throws MobileException
 	 * @throws MobileAuthenticationException
 	 * @throws SubjectMismatchException
 	 */
 	String authenticate(AuthenticationDevice device, String mobile,
-			String challengeId, String mobileOTP) throws AxisFault,
-			SubjectNotFoundException, MalformedURLException, RemoteException,
-			MobileAuthenticationException, SubjectMismatchException;
+			String challengeId, String mobileOTP)
+			throws SubjectNotFoundException, MalformedURLException,
+			MobileException, MobileAuthenticationException,
+			SubjectMismatchException;
 
 	/**
 	 * Requests an OTP for a mobile device. Returns the challenge ID for this
@@ -97,10 +98,10 @@ public interface ReAuthenticationService {
 	 * @param mobile
 	 * @return
 	 * @throws MalformedURLException
-	 * @throws RemoteException
+	 * @throws MobileException
 	 */
 	String requestMobileOTP(AuthenticationDevice device, String mobile)
-			throws MalformedURLException, RemoteException;
+			throws MalformedURLException, MobileException;
 
 	/**
 	 * Authenticates using an authentication statement. The given session Id

@@ -16,13 +16,13 @@ import javax.ejb.Stateless;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.seam.deployment.ConfigurableScanner;
 
 import net.link.safeonline.Startable;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.dao.ConfigGroupDAO;
 import net.link.safeonline.config.dao.ConfigItemDAO;
 import net.link.safeonline.config.model.ConfigStartable;
-import net.link.safeonline.config.model.ConfigurableScanner;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 

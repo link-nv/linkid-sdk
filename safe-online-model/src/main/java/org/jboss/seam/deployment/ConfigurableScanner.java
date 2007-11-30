@@ -5,13 +5,12 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.config.model;
+package org.jboss.seam.deployment;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javassist.bytecode.ClassFile;
-
 import net.link.safeonline.common.Configurable;
 
 import org.apache.commons.logging.Log;

@@ -8,7 +8,6 @@
 package net.link.safeonline.authentication.service;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 
@@ -26,6 +25,7 @@ import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -79,16 +79,16 @@ public interface AuthenticationService {
 	 * @param challengeId
 	 * @param mobileOTP
 	 * @return username
-	 * @throws RemoteException
+	 * @throws MobileException
 	 * @throws MalformedURLException
 	 * @throws SubjectNotFoundException
 	 * @throws AxisFault
 	 * @throws MobileAuthenticationException
 	 */
 	String authenticate(AuthenticationDevice device, String mobile,
-			String challengeId, String mobileOTP) throws AxisFault,
-			SubjectNotFoundException, MalformedURLException, RemoteException,
-			MobileAuthenticationException;
+			String challengeId, String mobileOTP)
+			throws SubjectNotFoundException, MalformedURLException,
+			MobileException, MobileAuthenticationException;
 
 	/**
 	 * Request a OTP be generated for the authenticating users. Returns the
@@ -98,10 +98,10 @@ public interface AuthenticationService {
 	 * @param mobile
 	 * @return
 	 * @throws MalformedURLException
-	 * @throws RemoteException
+	 * @throws MobileException
 	 */
 	String requestMobileOTP(AuthenticationDevice device, String mobile)
-			throws MalformedURLException, RemoteException;
+			throws MalformedURLException, MobileException;
 
 	/**
 	 * Commits the authentication for the given application.
@@ -185,12 +185,12 @@ public interface AuthenticationService {
 	 * Registers a mobile for a logged in user. Returns activation code.
 	 * 
 	 * @param mobile
-	 * @throws RemoteException
+	 * @throws MobileException
 	 * @throws MalformedURLException
 	 * @throws MobileRegistrationException
 	 * @throws ArgumentIntegrityException
 	 */
-	String registerMobile(String mobile) throws RemoteException,
+	String registerMobile(String mobile) throws MobileException,
 			MalformedURLException, MobileRegistrationException,
 			ArgumentIntegrityException;
 
@@ -199,9 +199,9 @@ public interface AuthenticationService {
 	 * 
 	 * @param mobile
 	 * @throws MalformedURLException
-	 * @throws RemoteException
+	 * @throws MobileException
 	 */
-	void removeMobile(String mobile) throws RemoteException,
+	void removeMobile(String mobile) throws MobileException,
 			MalformedURLException;
 
 	/**

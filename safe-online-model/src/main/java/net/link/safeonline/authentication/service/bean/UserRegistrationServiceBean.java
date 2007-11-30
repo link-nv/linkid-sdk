@@ -8,7 +8,6 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -16,6 +15,7 @@ import javax.ejb.Stateless;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
@@ -70,7 +70,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	}
 
 	public String registerMobile(String login, String mobile)
-			throws RemoteException, MalformedURLException,
+			throws MobileException, MalformedURLException,
 			MobileRegistrationException, ExistingUserException,
 			AttributeTypeNotFoundException, ArgumentIntegrityException {
 		LOG.debug("register user: " + login);
@@ -80,7 +80,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	}
 
 	public String requestMobileOTP(String mobile) throws MalformedURLException,
-			RemoteException {
+			MobileException {
 		LOG.debug("generate mobile otp: " + mobile);
 		return this.weakMobileDeviceService.requestOTP(mobile);
 	}

@@ -8,7 +8,6 @@
 package net.link.safeonline.authentication.service;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.ejb.Local;
@@ -16,6 +15,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
@@ -63,14 +63,15 @@ public interface UserRegistrationService {
 	 * @return activation code for mobile client app
 	 * @throws MobileRegistrationException
 	 * @throws MalformedURLException
-	 * @throws RemoteException
+	 * @throws MobileException
 	 * @throws AttributeTypeNotFoundException
 	 * @throws ExistingUserException
 	 * @throws ArgumentIntegrityException
 	 */
-	String registerMobile(String login, String mobile) throws RemoteException,
+	String registerMobile(String login, String mobile) throws MobileException,
 			MalformedURLException, MobileRegistrationException,
-			ExistingUserException, AttributeTypeNotFoundException, ArgumentIntegrityException;
+			ExistingUserException, AttributeTypeNotFoundException,
+			ArgumentIntegrityException;
 
 	/**
 	 * Make mobile services generate registering user an OTP
@@ -78,8 +79,8 @@ public interface UserRegistrationService {
 	 * @param mobile
 	 * @return challengeId of the sent OTP
 	 * @throws MalformedURLException
-	 * @throws RemoteException
+	 * @throws MobileException
 	 */
 	String requestMobileOTP(String mobile) throws MalformedURLException,
-			RemoteException;
+			MobileException;
 }

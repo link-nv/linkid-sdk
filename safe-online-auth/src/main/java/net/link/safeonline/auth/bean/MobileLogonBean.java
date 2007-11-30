@@ -7,7 +7,6 @@
 package net.link.safeonline.auth.bean;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Remove;
@@ -17,13 +16,13 @@ import javax.faces.application.FacesMessage;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.MobileLogon;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 
-import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
@@ -99,12 +98,6 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 						LogLevelType.ERROR);
 				return null;
 			}
-		} catch (AxisFault e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-			HelpdeskLogger.add("login: failed to contact encap webservice for "
-					+ this.mobile, LogLevelType.ERROR);
-			return null;
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
@@ -117,7 +110,7 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 			HelpdeskLogger.add("login: encap webservice not available",
 					LogLevelType.ERROR);
 			return null;
-		} catch (RemoteException e) {
+		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
 			HelpdeskLogger.add("login: failed to contact encap webservice for "
@@ -147,13 +140,8 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;
-		} catch (RemoteException e) {
-			LOG.debug("requestOTP: RemoteException thrown: " + e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
-			return null;
-		} catch (Exception e) {
-			LOG.debug("requestOTP: Exception thrown: " + e.getMessage());
+		} catch (MobileException e) {
+			LOG.debug("requestOTP: MobileException thrown: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
 			return null;

@@ -18,8 +18,8 @@ import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.user.AttributeEdit;
 import net.link.safeonline.user.UserConstants;
 

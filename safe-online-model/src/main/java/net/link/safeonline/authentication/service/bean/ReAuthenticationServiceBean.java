@@ -7,7 +7,6 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,6 +24,7 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
@@ -41,7 +41,6 @@ import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.annotation.NotNull;
 
-import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.security.SecurityDomain;
@@ -140,9 +139,9 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	AuthenticationDevice device, @NonEmptyString
 	String mobile, @NonEmptyString
 	String challengeId, @NonEmptyString
-	String mobileOTP) throws AxisFault, SubjectNotFoundException,
-			MalformedURLException, RemoteException,
-			MobileAuthenticationException, SubjectMismatchException {
+	String mobileOTP) throws SubjectNotFoundException, MalformedURLException,
+			MobileException, MobileAuthenticationException,
+			SubjectMismatchException {
 		SubjectEntity subject;
 		if (device == AuthenticationDevice.WEAK_MOBILE)
 			subject = this.weakMobileDeviceService.authenticate(mobile,
@@ -167,7 +166,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public String requestMobileOTP(@NotNull
 	AuthenticationDevice device, @NonEmptyString
-	String mobile) throws MalformedURLException, RemoteException {
+	String mobile) throws MalformedURLException, MobileException {
 		if (device == AuthenticationDevice.WEAK_MOBILE)
 			return this.weakMobileDeviceService.requestOTP(mobile);
 		else if (device == AuthenticationDevice.STRONG_MOBILE)

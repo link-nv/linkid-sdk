@@ -23,8 +23,8 @@ import net.link.safeonline.auth.IdentityConfirmation;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.data.AttributeDO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

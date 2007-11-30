@@ -13,7 +13,7 @@ import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import net.link.safeonline.authentication.service.AttributeDO;
+import net.link.safeonline.data.AttributeDO;
 
 /**
  * JSF output component for name of {@link AttributeDO}. The visual effect will

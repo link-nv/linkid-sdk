@@ -19,7 +19,6 @@ import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.ApplicationService;
-import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -31,6 +30,8 @@ import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBe
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
+import net.link.safeonline.data.AccountMergingDO;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
@@ -38,7 +39,6 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
-import net.link.safeonline.service.AccountMergingDO;
 import net.link.safeonline.service.AccountMergingService;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.SubjectService;

@@ -12,6 +12,10 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
+import net.link.safeonline.authentication.service.AccountService;
+import net.link.safeonline.user.Actions;
+import net.link.safeonline.user.UserConstants;
+
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.Seam;
@@ -19,10 +23,6 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
-
-import net.link.safeonline.authentication.service.AccountService;
-import net.link.safeonline.user.Actions;
-import net.link.safeonline.user.UserConstants;
 
 @Stateful
 @Name("actions")

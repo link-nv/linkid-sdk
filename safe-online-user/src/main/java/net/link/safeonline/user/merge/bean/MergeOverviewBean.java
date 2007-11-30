@@ -25,14 +25,14 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.ReAuthenticationService;
+import net.link.safeonline.data.AccountMergingDO;
+import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.data.ChoosableAttributeDO;
+import net.link.safeonline.data.SubscriptionDO;
 import net.link.safeonline.entity.SubscriptionEntity;
-import net.link.safeonline.service.AccountMergingDO;
 import net.link.safeonline.service.AccountMergingService;
-import net.link.safeonline.service.ChoosableAttributeDO;
-import net.link.safeonline.service.SubscriptionDO;
 import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.user.merge.MergeOverview;
 
