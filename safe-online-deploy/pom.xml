@@ -2158,6 +2158,7 @@
 			<artifactId>safe-online-model-performance</artifactId>
 			<type>ejb</type>
 			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
