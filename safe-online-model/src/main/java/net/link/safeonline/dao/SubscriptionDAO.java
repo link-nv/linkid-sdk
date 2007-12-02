@@ -7,6 +7,7 @@
 
 package net.link.safeonline.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -35,8 +36,9 @@ public interface SubscriptionDAO {
 	void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
 			SubjectEntity subject, ApplicationEntity application);
 
-	void addSubscription(SubscriptionEntity sourceSubscription,
-			SubjectEntity subject);
+	void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
+			SubjectEntity subject, ApplicationEntity application,
+			String subscriptionUserId);
 
 	List<SubscriptionEntity> listSubsciptions(SubjectEntity subject);
 
@@ -50,7 +52,7 @@ public interface SubscriptionDAO {
 	long getNumberOfSubscriptions(ApplicationEntity application);
 
 	long getActiveNumberOfSubscriptions(ApplicationEntity application,
-			long activeLimitInMillis);
+			Date activeLimit);
 
 	void loggedIn(SubscriptionEntity subscription);
 

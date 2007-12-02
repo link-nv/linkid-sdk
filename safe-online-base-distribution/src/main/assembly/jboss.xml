@@ -55,7 +55,7 @@
 	<files>
 		<file>
 			<source>
-				target/files/jboss-seam-1.2.1.GA.jar
+				target/files/jboss-seam-1.2.1.GA-safe-online.jar
 			</source>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</file>

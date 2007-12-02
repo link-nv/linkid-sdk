@@ -16,16 +16,15 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.tasks.dao.TaskHistoryDAO;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Stateless
 public class TaskHistoryDAOBean implements TaskHistoryDAO {
@@ -76,9 +75,7 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
 	public void clearAllTasksHistory(long ageInMillis) {
 		LOG.debug("Clearing history older than " + ageInMillis
 				+ "for all tasks");
-
-		Query query = TaskHistoryEntity.createQueryDeleteWhereOlder(
-				this.entityManager, ageInMillis);
-		query.executeUpdate();
+		Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
+		this.queryObject.clearAllTasksHistory(ageLimit);
 	}
 }

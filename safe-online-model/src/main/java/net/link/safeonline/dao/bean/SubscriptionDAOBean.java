@@ -15,7 +15,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -63,26 +62,23 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 
 	public void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
 			SubjectEntity subject, ApplicationEntity application) {
-		String userApplicationId = this.idGenerator.generateId();
+		String subscriptionUserId = this.idGenerator.generateId();
 		LOG.debug("add subscription for " + subject.getUserId() + " to "
-				+ application.getName() + "  applicationUserId = "
-				+ userApplicationId);
+				+ application.getName() + "  subscriptionUserId = "
+				+ subscriptionUserId);
 		SubscriptionEntity subscription = new SubscriptionEntity(
-				subscriptionOwnerType, subject, userApplicationId, application);
+				subscriptionOwnerType, subject, subscriptionUserId, application);
 		this.entityManager.persist(subscription);
 	}
 
-	public void addSubscription(SubscriptionEntity sourceSubscription,
-			SubjectEntity subject) {
-		LOG.debug("add subscription ( from source subscription ) for "
-				+ subject.getUserId() + " to "
-				+ sourceSubscription.getApplication().getName()
-				+ "  applicationUserId = "
-				+ sourceSubscription.getUserApplicationId());
+	public void addSubscription(SubscriptionOwnerType subscriptionOwnerType,
+			SubjectEntity subject, ApplicationEntity application,
+			String subscriptionUserId) {
+		LOG.debug("add subscription for " + subject.getUserId() + " to "
+				+ application.getName() + "  subscriptionUserId = "
+				+ subscriptionUserId);
 		SubscriptionEntity subscription = new SubscriptionEntity(
-				sourceSubscription.getSubscriptionOwnerType(), subject,
-				sourceSubscription.getUserApplicationId(), sourceSubscription
-						.getApplication());
+				subscriptionOwnerType, subject, subscriptionUserId, application);
 		this.entityManager.persist(subscription);
 	}
 
@@ -133,12 +129,9 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	}
 
 	public long getActiveNumberOfSubscriptions(ApplicationEntity application,
-			long activeLimitInMillis) {
-		Query query = SubscriptionEntity
-				.createQueryCountWhereApplicationAndActive(this.entityManager,
-						application, activeLimitInMillis);
-		Long countResult = (Long) query.getSingleResult();
-		return countResult;
+			Date activeLimit) {
+		return this.queryObject.getNumberOfActiveSubscriptions(application,
+				activeLimit);
 	}
 
 	public void loggedIn(SubscriptionEntity subscription) {
@@ -149,11 +142,9 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 		this.queryObject.deleteAll(subject);
 	}
 
-	public SubscriptionEntity getSubscription(String userApplicationId) {
-		LOG
-				.debug("get subscriptions for subscription id: "
-						+ userApplicationId);
-		return this.queryObject.getSubscription(userApplicationId);
+	public SubscriptionEntity getSubscription(String subscriptionUserId) {
+		LOG.debug("get subscriptions for : " + subscriptionUserId);
+		return this.queryObject.getSubscription(subscriptionUserId);
 	}
 
 }

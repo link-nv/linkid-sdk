@@ -7,11 +7,12 @@
 
 package net.link.safeonline.pkix.dao.bean;
 
+import java.util.Date;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
@@ -86,10 +87,8 @@ public class CachedOcspResponseDAOBean implements CachedOcspResponseDAO {
 	public void clearOcspCacheExpiredForTrustDomain(
 			TrustDomainEntity trustDomain) {
 		LOG.debug("clearing expired ocsp cache entries");
-
-		Query query = CachedOcspResponseEntity.createQueryDeleteExpired(
-				this.entityManager, trustDomain);
-		query.executeUpdate();
+		this.queryObject.deleteExpired(trustDomain, new Date(System
+				.currentTimeMillis()
+				- trustDomain.getOcspCacheTimeOutMillis()));
 	}
-
 }

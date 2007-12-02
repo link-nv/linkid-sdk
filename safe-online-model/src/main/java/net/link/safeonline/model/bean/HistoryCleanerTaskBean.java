@@ -7,6 +7,8 @@
 
 package net.link.safeonline.model.bean;
 
+import java.util.Date;
+
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -14,12 +16,12 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 
-import org.jboss.annotation.ejb.LocalBinding;
-
 import net.link.safeonline.Task;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.dao.HistoryDAO;
+
+import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @Local(Task.class)
@@ -47,8 +49,8 @@ public class HistoryCleanerTaskBean implements Task {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void perform() throws Exception {
 		long ageInMillis = this.configAgeInMillis;
-
-		this.historyDAO.clearAllHistory(ageInMillis);
+		Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
+		this.historyDAO.clearAllHistory(ageLimit);
 	}
 
 }

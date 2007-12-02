@@ -23,14 +23,12 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
@@ -62,7 +60,7 @@ import org.hibernate.annotations.Index;
 				+ "WHERE subscription.subject = :subject"),
 		@NamedQuery(name = QUERY_WHERE_USER_APPLICATION_ID, query = "SELECT subscription "
 				+ "FROM SubscriptionEntity AS subscription "
-				+ "WHERE subscription.userApplicationId = :userApplicationId") })
+				+ "WHERE subscription.subscriptionUserId = :subscriptionUserId") })
 public class SubscriptionEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -91,7 +89,7 @@ public class SubscriptionEntity implements Serializable {
 
 	private Long confirmedUsageAgreementVersion;
 
-	private String userApplicationId;
+	private String subscriptionUserId;
 
 	private Date lastLogin;
 
@@ -100,11 +98,11 @@ public class SubscriptionEntity implements Serializable {
 	}
 
 	public SubscriptionEntity(SubscriptionOwnerType subscriptionOwnerType,
-			SubjectEntity subject, String userApplicationId,
+			SubjectEntity subject, String subscriptionUserId,
 			ApplicationEntity application) {
 		this.subscriptionOwnerType = subscriptionOwnerType;
 		this.subject = subject;
-		this.userApplicationId = userApplicationId;
+		this.subscriptionUserId = subscriptionUserId;
 		this.application = application;
 		this.confirmedUsageAgreementVersion = UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION;
 		this.pk = new SubscriptionPK(subject, application);
@@ -171,12 +169,12 @@ public class SubscriptionEntity implements Serializable {
 
 	@Column(unique = true)
 	@Index(name = "subscription_user_id")
-	public String getUserApplicationId() {
-		return this.userApplicationId;
+	public String getSubscriptionUserId() {
+		return this.subscriptionUserId;
 	}
 
-	public void setUserApplicationId(String userApplicationId) {
-		this.userApplicationId = userApplicationId;
+	public void setSubscriptionUserId(String subscriptionUserId) {
+		this.subscriptionUserId = subscriptionUserId;
 	}
 
 	public Date getLastLogin() {
@@ -206,21 +204,15 @@ public class SubscriptionEntity implements Serializable {
 				.toString();
 	}
 
-	public static Query createQueryCountWhereApplicationAndActive(
-			EntityManager entityManager, ApplicationEntity application,
-			long activeLimitInMillis) {
-		Query query = entityManager
-				.createNamedQuery(QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE);
-		query.setParameter("application", application);
-		query.setParameter("lastLogin", new Date(System.currentTimeMillis()
-				- activeLimitInMillis));
-		return query;
-	}
-
 	public interface QueryInterface {
 		@QueryMethod(QUERY_WHERE_SUBJECT)
 		List<SubscriptionEntity> listSubsciptions(@QueryParam("subject")
 		SubjectEntity subject);
+
+		@QueryMethod(QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE)
+		long getNumberOfActiveSubscriptions(@QueryParam("application")
+		ApplicationEntity application, @QueryParam("lastLogin")
+		Date lastLogin);
 
 		@QueryMethod(QUERY_COUNT_WHERE_APPLICATION)
 		long getNumberOfSubscriptions(@QueryParam("application")
@@ -231,8 +223,8 @@ public class SubscriptionEntity implements Serializable {
 		ApplicationEntity application);
 
 		@QueryMethod(QUERY_WHERE_USER_APPLICATION_ID)
-		SubscriptionEntity getSubscription(@QueryParam("userApplicationId")
-		String userApplicationId);
+		SubscriptionEntity getSubscription(@QueryParam("subscriptionUserId")
+		String subscriptionUserId);
 
 		@UpdateMethod(DELETE_ALL_SUBJECT)
 		void deleteAll(@QueryParam("subject")

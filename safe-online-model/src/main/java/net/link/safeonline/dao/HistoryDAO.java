@@ -41,11 +41,11 @@ public interface HistoryDAO {
 	List<HistoryEntity> getHistory(SubjectEntity subject);
 
 	/**
-	 * Deletes all history entries older than a given age in milliseconds
+	 * Deletes all history entries older than a given age limit
 	 * 
 	 * @param ageInMillis
 	 */
-	void clearAllHistory(long ageInMillis);
+	void clearAllHistory(Date ageLimit);
 
 	/**
 	 * Deletes all history entries of the given user.

@@ -29,7 +29,9 @@ import net.link.safeonline.authentication.service.bean.SubscriptionServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
+import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.data.AccountMergingDO;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.AttributeEntity;
@@ -38,6 +40,7 @@ import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.AccountMergingService;
 import net.link.safeonline.service.AttributeTypeService;
@@ -181,6 +184,14 @@ public class AccountMergingServiceBeanTest {
 		accountMergingService.mergeAccount(accountMergingDO);
 
 		// verify
+		SubscriptionDAO subscriptionDAO = EJBTestUtils.newInstance(
+				SubscriptionDAOBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager,
+				targetAccount.subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+		List<SubscriptionEntity> subscriptions = subscriptionDAO
+				.listSubsciptions(targetAccount.subject);
+		assertEquals(4, subscriptions.size());
+
 		AttributeDAO attributeDAO = EJBTestUtils.newInstance(
 				AttributeDAOBean.class, SafeOnlineTestContainer.sessionBeans,
 				entityManager, targetAccount.subject.getUserId(),

@@ -81,9 +81,7 @@ public class StatisticServiceBean implements StatisticService,
 	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
 	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
 	public List<StatisticEntity> getStatistics(ApplicationEntity application) {
-		List<StatisticEntity> result = this.statisticDAO
-				.listStatistics(application);
-		return result;
+		return this.statisticDAO.listStatistics(application);
 	}
 
 }

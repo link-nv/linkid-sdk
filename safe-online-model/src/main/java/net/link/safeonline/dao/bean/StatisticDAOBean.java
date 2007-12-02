@@ -15,7 +15,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.StatisticDAO;
@@ -57,15 +56,15 @@ public class StatisticDAOBean implements StatisticDAO {
 
 	public StatisticEntity findStatisticByNameDomainAndApplication(String name,
 			String domain, ApplicationEntity application) {
-		Query query = StatisticEntity.createQueryWhereNameDomainAndApplication(
-				this.entityManager, name, domain, application);
-		StatisticEntity result = null;
 		try {
-			result = (StatisticEntity) query.getSingleResult();
+			if (null == application)
+				return this.queryObject.findStatisticWhereNameAndDomain(name,
+						domain);
+			return this.queryObject.findStatisticWhereNameDomainAndApplication(
+					name, domain, application);
 		} catch (Exception e) {
 			return null;
 		}
-		return result;
 	}
 
 	public StatisticEntity findOrAddStatisticByNameDomainAndApplication(
@@ -79,12 +78,10 @@ public class StatisticDAOBean implements StatisticDAO {
 		return statistic;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<StatisticEntity> listStatistics(ApplicationEntity application) {
-		Query query = StatisticEntity.createQueryWhereApplication(
-				this.entityManager, application);
-		List<StatisticEntity> result = query.getResultList();
-		return result;
+		if (null == application)
+			return this.queryObject.listStatistics();
+		return this.queryObject.listStatistics(application);
 	}
 
 	public void cleanDomain(String domain) {
@@ -94,8 +91,6 @@ public class StatisticDAOBean implements StatisticDAO {
 			this.statisticDataPointDAO
 					.cleanStatisticDataPoints(statisticEntity);
 		}
-		Query query = StatisticEntity.createQueryDeleteWhereDomain(
-				this.entityManager, domain);
-		query.executeUpdate();
+		this.queryObject.deleteWhereDomain(domain);
 	}
 }

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.bean;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -15,8 +16,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
-
-import org.jboss.annotation.ejb.LocalBinding;
 
 import net.link.safeonline.Task;
 import net.link.safeonline.common.Configurable;
@@ -28,6 +27,8 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
+
+import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @Local(Task.class)
@@ -70,8 +71,9 @@ public class UsageStatisticTaskBean implements Task {
 	public void perform() throws Exception {
 		List<ApplicationEntity> applicationList = this.applicationDAO
 				.listApplications();
-		long activeLimit = this.activeLimitInMillis;
-		long age = this.ageInMillis;
+		Date activeLimit = new Date(System.currentTimeMillis()
+				- this.activeLimitInMillis);
+		Date ageLimit = new Date(System.currentTimeMillis() - this.ageInMillis);
 
 		for (ApplicationEntity application : applicationList) {
 			long totalSubscriptions = this.subscriptionDAO
@@ -89,10 +91,10 @@ public class UsageStatisticTaskBean implements Task {
 			this.statisticDataPointDAO.addStatisticDataPoint(statisticName,
 					statistic, totalSubscriptions, activeSubscriptions,
 					loginCounterDP.getX());
-			this.statisticDataPointDAO.cleanStatisticDataPoints(statistic, age);
+			this.statisticDataPointDAO.cleanStatisticDataPoints(statistic,
+					ageLimit);
 			loginCounterDP.setX(0);
 
 		}
 	}
-
 }

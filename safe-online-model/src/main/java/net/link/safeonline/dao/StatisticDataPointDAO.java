@@ -7,6 +7,7 @@
 
 package net.link.safeonline.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -28,6 +29,6 @@ public interface StatisticDataPointDAO {
 
 	void cleanStatisticDataPoints(StatisticEntity statistic);
 
-	void cleanStatisticDataPoints(StatisticEntity statistic, long ageInMillis);
+	void cleanStatisticDataPoints(StatisticEntity statistic, Date ageLimit);
 
 }

@@ -10,9 +10,9 @@ package net.link.safeonline.entity;
 import static net.link.safeonline.entity.StatisticEntity.QUERY_ALL;
 import static net.link.safeonline.entity.StatisticEntity.QUERY_DELETE_WHERE_DOMAIN;
 import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_APPLICATION;
+import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_DOMAIN;
 import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION;
 import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_NAME_DOMAIN_AND_NULL;
-import static net.link.safeonline.entity.StatisticEntity.QUERY_WHERE_DOMAIN;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,12 +28,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 @Entity
 @Table(name = "statistic", uniqueConstraints = @UniqueConstraint(columnNames = {
@@ -154,48 +153,32 @@ public class StatisticEntity implements Serializable {
 		this.domain = domain;
 	}
 
-	public static Query createQueryWhereNameDomainAndApplication(
-			EntityManager entityManager, String name, String domain,
-			ApplicationEntity application) {
-		Query query = null;
-		if (application == null) {
-			query = entityManager
-					.createNamedQuery(QUERY_WHERE_NAME_DOMAIN_AND_NULL);
-			query.setParameter("name", name);
-			query.setParameter("domain", domain);
-			return query;
-		}
-		query = entityManager
-				.createNamedQuery(QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION);
-		query.setParameter("domain", domain);
-		query.setParameter("name", name);
-		query.setParameter("application", application);
-
-		return query;
-	}
-
-	public static Query createQueryWhereApplication(
-			EntityManager entityManager, ApplicationEntity application) {
-		Query query = null;
-		if (application == null) {
-			query = entityManager.createNamedQuery(QUERY_ALL);
-			return query;
-		}
-		query = entityManager.createNamedQuery(QUERY_WHERE_APPLICATION);
-		query.setParameter("application", application);
-		return query;
-	}
-
-	public static Query createQueryDeleteWhereDomain(
-			EntityManager entityManager, String domain) {
-		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_DOMAIN);
-		query.setParameter("domain", domain);
-		return query;
-	}
-
 	public interface QueryInterface {
+		@QueryMethod(QUERY_ALL)
+		List<StatisticEntity> listStatistics();
+
 		@QueryMethod(QUERY_WHERE_DOMAIN)
 		List<StatisticEntity> listStatistics(@QueryParam("domain")
+		String domain);
+
+		@QueryMethod(QUERY_WHERE_APPLICATION)
+		List<StatisticEntity> listStatistics(@QueryParam("application")
+		ApplicationEntity application);
+
+		@QueryMethod(QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION)
+		StatisticEntity findStatisticWhereNameDomainAndApplication(
+				@QueryParam("name")
+				String name, @QueryParam("domain")
+				String domain, @QueryParam("application")
+				ApplicationEntity application);
+
+		@QueryMethod(QUERY_WHERE_NAME_DOMAIN_AND_NULL)
+		StatisticEntity findStatisticWhereNameAndDomain(@QueryParam("name")
+		String name, @QueryParam("domain")
+		String domain);
+
+		@UpdateMethod(QUERY_DELETE_WHERE_DOMAIN)
+		void deleteWhereDomain(@QueryParam("domain")
 		String domain);
 	}
 

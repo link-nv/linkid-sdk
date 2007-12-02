@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package org.jboss.seam.deployment;
+package net.link.safeonline.config.model;
 
 import java.util.HashSet;
 import java.util.Set;

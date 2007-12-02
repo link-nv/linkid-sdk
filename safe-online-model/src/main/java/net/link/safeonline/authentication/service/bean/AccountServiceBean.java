@@ -10,6 +10,8 @@ package net.link.safeonline.authentication.service.bean;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -68,6 +70,7 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void removeAccount(String userId) throws SubjectNotFoundException {
 		LOG.debug("remove account: " + userId);

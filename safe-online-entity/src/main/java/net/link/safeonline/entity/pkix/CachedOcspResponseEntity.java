@@ -7,19 +7,22 @@
 
 package net.link.safeonline.entity.pkix;
 
+import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_DELETE_ALL;
+import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_DELETE_EXPIRED;
+import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_DELETE_PER_DOMAIN;
+import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_WHERE_KEY;
+
 import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
@@ -30,11 +33,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Index;
-
-import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_DELETE_ALL;
-import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_DELETE_EXPIRED;
-import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_DELETE_PER_DOMAIN;
-import static net.link.safeonline.entity.pkix.CachedOcspResponseEntity.QUERY_WHERE_KEY;
 
 @Entity
 @Table(name = "cached_ocsp_responses")
@@ -169,14 +167,10 @@ public class CachedOcspResponseEntity implements Serializable {
 		@UpdateMethod(QUERY_DELETE_PER_DOMAIN)
 		void deletePerDomain(@QueryParam("trustDomain")
 		TrustDomainEntity trustDomain);
-	}
 
-	public static Query createQueryDeleteExpired(EntityManager entityManager,
-			TrustDomainEntity trustDomain) {
-		Query query = entityManager.createNamedQuery(QUERY_DELETE_EXPIRED);
-		query.setParameter("expiryTime", new Date(System.currentTimeMillis()
-				- trustDomain.getOcspCacheTimeOutMillis()));
-		query.setParameter("trustDomain", trustDomain);
-		return query;
+		@UpdateMethod(QUERY_DELETE_EXPIRED)
+		void deleteExpired(@QueryParam("trustDomain")
+		TrustDomainEntity trustDomain, @QueryParam("expiryTime")
+		Date expiryTime);
 	}
 }

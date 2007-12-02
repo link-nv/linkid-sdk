@@ -132,16 +132,6 @@ public class AccountMergingServiceBean implements AccountMergingService {
 		SubjectEntity sourceSubject = this.subjectService
 				.getSubject(accountMergingDO.getSourceSubject().getUserId());
 		/*
-		 * Add subscriptions
-		 */
-		if (null != accountMergingDO.getImportedSubscriptions()) {
-			for (SubscriptionDO importingSubscription : accountMergingDO
-					.getImportedSubscriptions()) {
-				this.subscriptionDAO.addSubscription(importingSubscription
-						.getSubscription(), targetSubject);
-			}
-		}
-		/*
 		 * Add attributes
 		 */
 		commitMerge(accountMergingDO.getMergedAttributesToAdd());
@@ -163,13 +153,36 @@ public class AccountMergingServiceBean implements AccountMergingService {
 		 */
 		List<SubjectIdentifierEntity> sourceSubjectIdentifiers = this.subjectIdentifierDAO
 				.getSubjectIdentifiers(sourceSubject);
-		for (SubjectIdentifierEntity subjectIdentifier : sourceSubjectIdentifiers) {
+		for (SubjectIdentifierEntity subjectIdentifier : sourceSubjectIdentifiers)
 			subjectIdentifier.setSubject(targetSubject);
-		}
+
 		/*
-		 * Remove source account, without removing the subject identifiers
+		 * Remove the remaining subject identifier in the login domain
+		 */
+		String targetSubjectLogin = this.subjectService
+				.getSubjectLogin(targetSubject.getUserId());
+		this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(
+				SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN,
+				targetSubjectLogin, targetSubject);
+		/*
+		 * Remove source account, without removing the subject identifiers.
 		 */
 		this.accountService.removeAccount(sourceSubject.getUserId());
+
+		/*
+		 * Update subscriptions
+		 */
+		if (null != accountMergingDO.getImportedSubscriptions()) {
+			for (SubscriptionDO importingSubscription : accountMergingDO
+					.getImportedSubscriptions()) {
+				this.subscriptionDAO.addSubscription(importingSubscription
+						.getSubscription().getSubscriptionOwnerType(),
+						targetSubject, importingSubscription.getSubscription()
+								.getApplication(), importingSubscription
+								.getSubscription().getSubscriptionUserId());
+			}
+		}
+
 	}
 
 	/**

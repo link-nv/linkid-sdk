@@ -7,9 +7,9 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.HistoryEntity.DELETE_ALL;
 import static net.link.safeonline.entity.HistoryEntity.QUERY_DELETE_WHERE_OLDER;
 import static net.link.safeonline.entity.HistoryEntity.QUERY_WHERE_SUBJECT;
-import static net.link.safeonline.entity.HistoryEntity.DELETE_ALL;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,14 +17,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -134,14 +132,6 @@ public class HistoryEntity implements Serializable {
 		this.info = info;
 	}
 
-	public static Query createQueryDeleteWhereOlder(
-			EntityManager entityManager, long ageInMillis) {
-		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_OLDER);
-		Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
-		query.setParameter("ageLimit", ageLimit);
-		return query;
-	}
-
 	public interface QueryInterface {
 		@QueryMethod(QUERY_WHERE_SUBJECT)
 		List<HistoryEntity> getHistory(@QueryParam("subject")
@@ -150,5 +140,9 @@ public class HistoryEntity implements Serializable {
 		@UpdateMethod(DELETE_ALL)
 		void deleteAll(@QueryParam("subject")
 		SubjectEntity subject);
+
+		@UpdateMethod(QUERY_DELETE_WHERE_OLDER)
+		void deleteWhereOlder(@QueryParam("ageLimit")
+		Date ageLimit);
 	}
 }

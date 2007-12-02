@@ -72,7 +72,7 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 			subscription = this.subscriptionDAO.getSubscription(subject,
 					application);
 		}
-		return subscription.getUserApplicationId();
+		return subscription.getSubscriptionUserId();
 	}
 
 	public String getUserId(String applicationName, String applicationUserId)

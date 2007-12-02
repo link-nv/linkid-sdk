@@ -14,7 +14,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.StatisticDataPointDAO;
@@ -70,11 +69,8 @@ public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
 	}
 
 	public void cleanStatisticDataPoints(StatisticEntity statistic,
-			long ageInMillis) {
-		Query query = StatisticDataPointEntity
-				.createQueryDeleteWhereStatisticExpired(this.entityManager,
-						statistic, ageInMillis);
-		query.executeUpdate();
+			Date ageLimit) {
+		this.queryObject.deleteWhereStatisticExpired(statistic, ageLimit);
 	}
 
 }

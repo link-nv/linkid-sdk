@@ -16,7 +16,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.HistoryDAO;
@@ -84,13 +83,9 @@ public class HistoryDAOBean implements HistoryDAO {
 		return result;
 	}
 
-	public void clearAllHistory(long ageInMillis) {
-		LOG
-				.debug("clearing subject history entries older than: "
-						+ ageInMillis);
-		Query query = HistoryEntity.createQueryDeleteWhereOlder(
-				this.entityManager, ageInMillis);
-		query.executeUpdate();
+	public void clearAllHistory(Date ageLimit) {
+		LOG.debug("clearing subject history entries older than: " + ageLimit);
+		this.queryObject.deleteWhereOlder(ageLimit);
 	}
 
 	public void clearAllHistory(SubjectEntity subject) {

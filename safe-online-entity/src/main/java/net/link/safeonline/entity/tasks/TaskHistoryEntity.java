@@ -7,18 +7,20 @@
 
 package net.link.safeonline.entity.tasks;
 
+import static net.link.safeonline.entity.tasks.TaskHistoryEntity.QUERY_DELETE;
+import static net.link.safeonline.entity.tasks.TaskHistoryEntity.QUERY_DELETE_WHERE_OLDER;
+import static net.link.safeonline.entity.tasks.TaskHistoryEntity.QUERY_DELETE_WHERE_TASK;
+
 import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Query;
 import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryParam;
@@ -27,10 +29,6 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import static net.link.safeonline.entity.tasks.TaskHistoryEntity.QUERY_DELETE;
-import static net.link.safeonline.entity.tasks.TaskHistoryEntity.QUERY_DELETE_WHERE_OLDER;
-import static net.link.safeonline.entity.tasks.TaskHistoryEntity.QUERY_DELETE_WHERE_TASK;
 
 @Entity
 @Table(name = "task_history")
@@ -157,14 +155,6 @@ public class TaskHistoryEntity implements Serializable {
 		return new HashCodeBuilder().append(this.id).toHashCode();
 	}
 
-	public static Query createQueryDeleteWhereOlder(
-			EntityManager entityManager, long ageInMillis) {
-		Query query = entityManager.createNamedQuery(QUERY_DELETE_WHERE_OLDER);
-		Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
-		query.setParameter("ageLimit", ageLimit);
-		return query;
-	}
-
 	public interface QueryInterface {
 		@UpdateMethod(QUERY_DELETE)
 		void clearAllTasksHistory();
@@ -172,5 +162,9 @@ public class TaskHistoryEntity implements Serializable {
 		@UpdateMethod(QUERY_DELETE_WHERE_TASK)
 		void clearTaskHistory(@QueryParam("task")
 		TaskEntity task);
+
+		@UpdateMethod(QUERY_DELETE_WHERE_OLDER)
+		void clearAllTasksHistory(@QueryParam("ageLimit")
+		Date ageLimit);
 	}
 }
