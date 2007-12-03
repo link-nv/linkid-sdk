@@ -7,7 +7,6 @@
 
 package net.link.safeonline.sdk.ws;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,15 +48,6 @@ public interface MessageAccessor {
 	 * @return
 	 */
 	Document getOutboundMessage();
-
-	/**
-	 * Retrieve header data from the given header out of the result of the
-	 * previous service request.
-	 * 
-	 * @param name
-	 *            The name of the header.
-	 */
-	LinkedList<String> getHeader(String name);
 
 	/**
 	 * Retrieve all header data from the result of the previous service request.
