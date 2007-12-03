@@ -183,6 +183,9 @@ public class AccountMergingServiceBeanTest {
 		// operate
 		accountMergingService.mergeAccount(accountMergingDO);
 
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.commit();
+
 		// verify
 		SubscriptionDAO subscriptionDAO = EJBTestUtils.newInstance(
 				SubscriptionDAOBean.class,
@@ -190,7 +193,7 @@ public class AccountMergingServiceBeanTest {
 				targetAccount.subject.getUserId(), SafeOnlineRoles.USER_ROLE);
 		List<SubscriptionEntity> subscriptions = subscriptionDAO
 				.listSubsciptions(targetAccount.subject);
-		assertEquals(4, subscriptions.size());
+		assertEquals(5, subscriptions.size());
 
 		AttributeDAO attributeDAO = EJBTestUtils.newInstance(
 				AttributeDAOBean.class, SafeOnlineTestContainer.sessionBeans,
