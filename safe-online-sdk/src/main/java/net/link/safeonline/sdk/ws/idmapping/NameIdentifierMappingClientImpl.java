@@ -93,10 +93,14 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
 
 		SafeOnlineTrustManager.configureSsl();
 
-		NameIDMappingResponseType response = this.port
-				.nameIdentifierMappingQuery(request);
-
-		retrieveHeadersFromPort(this.port);
+		NameIDMappingResponseType response;
+		try {
+			response = this.port.nameIdentifierMappingQuery(request);
+		} catch (Exception e) {
+			throw retrieveHeadersFromException(e);
+		} finally {
+			retrieveHeadersFromPort(this.port);
+		}
 
 		StatusType status = response.getStatus();
 		StatusCodeType statusCode = status.getStatusCode();
@@ -112,12 +116,10 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
 			String secondErrorCode = secondStatusCode.getValue();
 			SamlpSecondLevelErrorCode secondLevelErrorCode = SamlpSecondLevelErrorCode
 					.getSamlpTopLevelErrorCode(secondErrorCode);
-			if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode) {
+			if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode)
 				throw new SubjectNotFoundException();
-			}
-			if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode) {
+			if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode)
 				throw new RequestDeniedException();
-			}
 			throw new RuntimeException(
 					"error occurred on identifier mapping service: "
 							+ secondErrorCode);

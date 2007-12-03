@@ -54,36 +54,46 @@ public class ProfileFilter implements Filter {
 		BufferedServletResponseWrapper responseWrapper = new BufferedServletResponseWrapper(
 				(HttpServletResponse) response);
 
+		long startFreeMem = getFreeMemory();
+		long startTime = System.currentTimeMillis();
+
 		try {
-			// Execute and profile the process.
-			long startFreeMem = getFreeMemory();
-			long startTime = System.currentTimeMillis();
-			chain.doFilter(request, responseWrapper);
-			long deltaTime = System.currentTimeMillis() - startTime;
-			long endFreeMem = getFreeMemory();
-			long usedMem = startFreeMem - endFreeMem;
-
-			if (profileData.isLocked()) {
-				LOG.debug("someone forgot to unlock the profile data");
-				profileData.unlock();
-			}
 			try {
-				profileData.addMeasurement(ProfileData.REQUEST_START_TIME,
-						startTime);
-				profileData.addMeasurement(ProfileData.REQUEST_DELTA_TIME,
-						deltaTime);
-				profileData.addMeasurement(ProfileData.REQUEST_USED_MEM,
-						usedMem);
-				profileData.addMeasurement(ProfileData.REQUEST_FREE_MEM,
-						endFreeMem);
-			} catch (ProfileDataLockedException e) {
-				// empty
+				chain.doFilter(request, responseWrapper);
 			}
 
-			// Add our profiling results as HTTP headers.
-			for (Map.Entry<String, String> header : profileData.getHeaders()
-					.entrySet())
-				responseWrapper.addHeader(header.getKey(), header.getValue());
+			finally {
+				long deltaTime = System.currentTimeMillis() - startTime;
+				long endFreeMem = getFreeMemory();
+				long usedMem = startFreeMem - endFreeMem;
+
+				try {
+					profileData.addMeasurement(ProfileData.REQUEST_START_TIME,
+							startTime);
+					profileData.addMeasurement(ProfileData.REQUEST_DELTA_TIME,
+							deltaTime);
+					profileData.addMeasurement(ProfileData.REQUEST_USED_MEM,
+							usedMem);
+					profileData.addMeasurement(ProfileData.REQUEST_FREE_MEM,
+							endFreeMem);
+				} catch (ProfileDataLockedException e) {
+				}
+
+				// Add our profiling results as HTTP headers.
+				for (Map.Entry<String, String> header : profileData
+						.getHeaders().entrySet())
+					responseWrapper.addHeader(header.getKey(), header
+							.getValue());
+
+				if (profileData.isLocked()) {
+					LOG.debug("someone forgot to unlock the profile data");
+					profileData.unlock();
+				}
+			}
+		}
+
+		catch (Exception e) {
+			throw new ProfiledException(e, profileData.getHeaders());
 		}
 
 		finally {

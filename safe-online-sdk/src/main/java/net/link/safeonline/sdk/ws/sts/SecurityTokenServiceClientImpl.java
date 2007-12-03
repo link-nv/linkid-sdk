@@ -89,29 +89,29 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor
 
 		SafeOnlineTrustManager.configureSsl();
 
-		RequestSecurityTokenResponseType response = this.port
-				.requestSecurityToken(request);
-
-		retrieveHeadersFromPort(this.port);
+		RequestSecurityTokenResponseType response;
+		try {
+			response = this.port.requestSecurityToken(request);
+		} catch (Exception e) {
+			throw retrieveHeadersFromException(e);
+		} finally {
+			retrieveHeadersFromPort(this.port);
+		}
 
 		StatusType status = null;
 		List<Object> results = response.getAny();
-		for (Object result : results) {
+		for (Object result : results)
 			if (result instanceof JAXBElement) {
 				JAXBElement<?> resultElement = (JAXBElement<?>) result;
 				Object value = resultElement.getValue();
-				if (value instanceof StatusType) {
+				if (value instanceof StatusType)
 					status = (StatusType) value;
-				}
 			}
-		}
-		if (null == status) {
+		if (null == status)
 			throw new RuntimeException("no Status found in response");
-		}
 		String statusCode = status.getCode();
-		if (SecurityTokenServiceConstants.STATUS_VALID.equals(statusCode)) {
+		if (SecurityTokenServiceConstants.STATUS_VALID.equals(statusCode))
 			return;
-		}
 		String reason = status.getReason();
 		LOG.debug("reason: " + reason);
 		throw new RuntimeException("token found to be invalid: " + reason);

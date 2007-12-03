@@ -43,10 +43,12 @@ public class PingClientImpl extends AbstractMessageAccessor implements
 		Request request = new Request();
 		try {
 			this.pingPort.pingOperation(request);
-
-			retrieveHeadersFromPort(this.pingPort);
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
+		} catch (Exception e) {
+			throw retrieveHeadersFromException(e);
+		} finally {
+			retrieveHeadersFromPort(this.pingPort);
 		}
 	}
 }

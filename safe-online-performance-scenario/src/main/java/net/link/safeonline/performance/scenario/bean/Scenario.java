@@ -9,6 +9,7 @@ package net.link.safeonline.performance.scenario.bean;
 import java.util.List;
 
 import net.link.safeonline.performance.drivers.ProfileDriver;
+import net.link.safeonline.sdk.ws.MessageAccessor;
 
 /**
  * @author mbillemo
@@ -22,7 +23,8 @@ public interface Scenario {
 	 * story. You should return all the drivers so that the {@link ScenarioBean}
 	 * can read their profile data after the scenario has completed.
 	 */
-	public List<ProfileDriver> prepare(String hostname);
+	public List<ProfileDriver<? extends MessageAccessor>> prepare(
+			String hostname);
 
 	/**
 	 * This method is called for each iteration of the scenario.

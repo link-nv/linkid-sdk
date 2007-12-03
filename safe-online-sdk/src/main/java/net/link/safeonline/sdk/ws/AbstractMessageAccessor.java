@@ -7,7 +7,8 @@
 
 package net.link.safeonline.sdk.ws;
 
-import java.util.LinkedList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,8 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;
+
+import net.link.safeonline.util.filter.ProfiledException;
 
 import org.w3c.dom.Document;
 
@@ -28,10 +31,11 @@ import org.w3c.dom.Document;
 public abstract class AbstractMessageAccessor implements MessageAccessor {
 
 	protected final MessageLoggerHandler messageLoggerHandler;
-	private Map<String, Object> responseContext;
+	private Map<String, List<String>> responseHeaders;
 
 	public AbstractMessageAccessor() {
 		this.messageLoggerHandler = new MessageLoggerHandler();
+		this.responseHeaders = new HashMap<String, List<String>>();
 	}
 
 	public Document getInboundMessage() {
@@ -70,29 +74,52 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
 	 * of the response.<br>
 	 * <br>
 	 * For example:<br>
-	 * <code>retrieveHeadersFromPort(port);</code>
+	 * <code>finally {
+	 *     retrieveHeadersFromPort(this.port);
+	 * }</code>
 	 */
+	@SuppressWarnings("unchecked")
 	protected void retrieveHeadersFromPort(Object port) {
 
 		if (!(port instanceof BindingProvider))
 			throw new IllegalArgumentException(
 					"Can only retrieve result HTTP headers from a JAX-WS proxy object.");
 
-		this.responseContext = ((BindingProvider) port).getResponseContext();
+		this.responseHeaders = (Map<String, List<String>>) ((BindingProvider) port)
+				.getResponseContext().get(MessageContext.HTTP_RESPONSE_HEADERS);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Call this method when your service request failed with a
+	 * {@link ProfiledException}. This will extract the profile headers from
+	 * the exception..<br>
+	 * <br>
+	 * For example:<br>
+	 * <code>catch (ProfiledException e) {
+	 *     throw retrieveHeadersFromException(e);
+	 * }</code>
 	 */
-	public LinkedList<String> getHeader(String name) {
+	protected RuntimeException retrieveHeadersFromException(Exception e) {
 
-		return new LinkedList<String>(getHeaders().get(name));
+		Throwable cause = e;
+
+		if (e instanceof ProfiledException) {
+			for (Map.Entry<String, String> header : ((ProfiledException) e)
+					.getHeaders().entrySet())
+				this.responseHeaders.put(header.getKey(), Arrays
+						.asList(new String[] { header.getValue() }));
+
+			// Throw the exception wrapped in the ProfiledException.
+			cause = e.getCause();
+		}
+
+		if (cause instanceof RuntimeException)
+			return (RuntimeException) cause;
+		return new RuntimeException(cause);
 	}
 
-	@SuppressWarnings("unchecked")
 	public Map<String, List<String>> getHeaders() {
 
-		return (Map<String, List<String>>) this.responseContext
-				.get(MessageContext.HTTP_RESPONSE_HEADERS);
+		return this.responseHeaders;
 	}
 }

@@ -31,15 +31,8 @@ public class ProfileInterceptor {
 		ProfileData profileData = ProfilingPolicyContextHandler
 				.getProfileData();
 
-		if (null == profileData) {
-			LOG
-					.error("profile interceptor should not be active while profile filter is not");
+		if (null == profileData || profileData.isLocked())
 			return context.proceed();
-		}
-
-		if (profileData.isLocked()) {
-			return context.proceed();
-		}
 
 		LOG.debug("Profiler Intercepting: " + context.getMethod());
 

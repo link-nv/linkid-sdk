@@ -7,14 +7,16 @@
 
 package net.link.safeonline.performance.drivers;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
+import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.util.jacc.ProfileData;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract class of a service driver. This class manages the internals; such as
@@ -22,9 +24,9 @@ import net.link.safeonline.util.jacc.ProfileData;
  * <br />
  * Implementing drivers need to declare methods specific to their functionality
  * in which they should call {@link #startNewIteration()} before performing any
- * driver logic and {@link #setIterationData(AbstractMessageAccessor)} once they
- * have completed their task; or {@link #setIterationError(Exception)} if an
- * error occurred during the work they were doing. <br />
+ * driver logic and {@link #unloadDriver()} once they have completed their task;
+ * or {@link #setDriverError(Exception)} if an error occurred during the work
+ * they were doing. <br />
  * <br />
  * The profiling data will be gathered by this class and can later be retrieved
  * by using the getters ({@link #getProfileData()}, {@link #getProfileError()},
@@ -32,17 +34,17 @@ import net.link.safeonline.util.jacc.ProfileData;
  * 
  * @author mbillemo
  */
-public abstract class ProfileDriver {
+public abstract class ProfileDriver<S extends MessageAccessor> {
 
+	private static final Log LOG = LogFactory.getLog(ProfileDriver.class);
 	private static final int ITERATIONS_FOR_SPEED = 5;
 
+	protected S service;
 	private String title;
-
 	protected String host;
+	protected LinkedList<DriverException> profileError = new LinkedList<DriverException>();
 	protected LinkedList<ProfileData> profileData = new LinkedList<ProfileData>();
-	protected LinkedList<Exception> profileError = new LinkedList<Exception>();
 	protected LinkedList<Double> profileSpeed = new LinkedList<Double>();
-	protected LinkedList<Long> iterationStart = new LinkedList<Long>();
 
 	/**
 	 * @param hostname
@@ -61,20 +63,17 @@ public abstract class ProfileDriver {
 
 	public synchronized List<ProfileData> getProfileData() {
 
-		return Collections.unmodifiableList(new ArrayList<ProfileData>(
-				this.profileData));
+		return Collections.unmodifiableList(this.profileData);
 	}
 
-	public synchronized List<Exception> getProfileError() {
+	public synchronized List<DriverException> getProfileError() {
 
-		return Collections.unmodifiableList(new ArrayList<Exception>(
-				this.profileError));
+		return Collections.unmodifiableList(this.profileError);
 	}
 
 	public synchronized List<Double> getProfileSpeed() {
 
-		return Collections.unmodifiableList(new ArrayList<Double>(
-				this.profileSpeed));
+		return Collections.unmodifiableList(this.profileSpeed);
 	}
 
 	public String getTitle() {
@@ -92,44 +91,73 @@ public abstract class ProfileDriver {
 				getProfileData());
 	}
 
-	protected void setIterationData(AbstractMessageAccessor service) {
+	protected void unloadDriver() {
 
-		setIterationData(new ProfileData(service.getHeaders()));
+		unloadDriver(new ProfileData(this.service.getHeaders()));
 	}
 
-	protected synchronized void setIterationData(ProfileData data) {
+	protected synchronized void unloadDriver(ProfileData data) {
 
 		calculateSpeed();
-		this.profileData.removeLast();
+
+		long time = data.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
+		Double speed = this.profileSpeed.getLast();
+		if (speed == null)
+			speed = -1d;
+		LOG.debug(String.format(
+				"Successful driver request: %d ms, avg %f i/s.", time, speed));
+
+		this.profileData.removeLast(); // Remove the null placeholder.
 		this.profileData.addLast(data);
 	}
 
-	protected synchronized void setIterationError(Exception error) {
+	protected synchronized DriverException setDriverError(Exception error) {
 
 		calculateSpeed();
-		this.profileError.removeLast();
-		this.profileError.addLast(error);
+
+		LOG.debug(String.format("Failed driver request: %s", error));
+
+		DriverException driverException;
+		if (error instanceof DriverException)
+			driverException = (DriverException) error;
+		else
+			driverException = new DriverException(error);
+
+		this.profileError.removeLast(); // Remove the null placeholder.
+		this.profileError.addLast(driverException);
+
+		return driverException;
 	}
 
 	private synchronized void calculateSpeed() {
 
-		if (this.iterationStart.size() < ITERATIONS_FOR_SPEED)
-			return;
+		long steps = 0, time = 0;
+		int start = Math.max(0, this.profileData.size() - ITERATIONS_FOR_SPEED);
+		ListIterator<ProfileData> iter = this.profileData.listIterator(start);
 
-		long startTime = 0, stopTime = System.currentTimeMillis();
-		ListIterator<Long> iterator = this.iterationStart.listIterator();
-		for (int i = ITERATIONS_FOR_SPEED; i > 0; --i)
-			startTime = iterator.previous();
+		while (iter.hasNext()) {
+			ProfileData data = iter.next();
+			if (null != data && null != data.getMeasurements()) {
+				steps++;
+				time += data.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
+			}
+		}
 
-		this.profileSpeed.removeLast();
-		this.profileSpeed.addLast(5d / (stopTime - startTime));
+		this.profileSpeed.removeLast(); // Remove the null placeholder.
+		this.profileSpeed.addLast(steps * 1000d / time);
 	}
 
-	protected synchronized void startNewIteration() {
+	protected void loadDriver(S newService) {
 
+		this.service = newService;
+		loadDriver();
+	}
+
+	protected synchronized void loadDriver() {
+
+		// Null placeholders for this iteration.
 		this.profileData.add(null);
 		this.profileError.add(null);
 		this.profileSpeed.add(null);
-		this.iterationStart.add(System.currentTimeMillis());
 	}
 }

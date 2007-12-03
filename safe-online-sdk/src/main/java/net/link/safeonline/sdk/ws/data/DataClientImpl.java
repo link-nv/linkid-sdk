@@ -149,10 +149,12 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		ModifyResponseType modifyResponse;
 		try {
 			modifyResponse = this.port.modify(modify);
-
-			retrieveHeadersFromPort(this.port);
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
+		} catch (Exception e) {
+			throw retrieveHeadersFromException(e);
+		} finally {
+			retrieveHeadersFromPort(this.port);
 		}
 
 		StatusType status = modifyResponse.getStatus();
@@ -208,10 +210,12 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		QueryResponseType queryResponse;
 		try {
 			queryResponse = this.port.query(query);
-
-			retrieveHeadersFromPort(this.port);
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
+		} catch (Exception e) {
+			throw retrieveHeadersFromException(e);
+		} finally {
+			retrieveHeadersFromPort(this.port);
 		}
 
 		StatusType status = queryResponse.getStatus();
@@ -221,18 +225,15 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		switch (topLevelStatusCode) {
 		case FAILED:
 			List<StatusType> secondLevelStatuses = status.getStatus();
-			if (0 == secondLevelStatuses.size()) {
+			if (0 == secondLevelStatuses.size())
 				throw new RuntimeException("ID-WSF DST error");
-			}
 			StatusType secondLevelStatus = secondLevelStatuses.get(0);
 			SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode
 					.fromCode(secondLevelStatus.getCode());
-			if (SecondLevelStatusCode.NOT_AUTHORIZED == secondLevelStatusCode) {
+			if (SecondLevelStatusCode.NOT_AUTHORIZED == secondLevelStatusCode)
 				throw new RequestDeniedException();
-			}
-			if (SecondLevelStatusCode.DOES_NOT_EXIST == secondLevelStatusCode) {
+			if (SecondLevelStatusCode.DOES_NOT_EXIST == secondLevelStatusCode)
 				throw new SubjectNotFoundException();
-			}
 			throw new RuntimeException("unknown error occurred");
 		case OK:
 			break;
@@ -248,12 +249,11 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		}
 		DataType data = dataList.get(0);
 		AttributeType attribute = data.getAttribute();
-		if (null == attribute) {
+		if (null == attribute)
 			/*
 			 * This happens when the attribute entity does not exist.
 			 */
 			return null;
-		}
 		String name = attribute.getName();
 		List<Object> attributeValues = attribute.getAttributeValue();
 		Object firstAttributeValue = convertFromXmlDatatypeToClientDatatype(attributeValues
@@ -311,11 +311,10 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 
 					Array.set(values, idx, compoundBuilder.getCompound());
 				} else {
-					if (false == componentType.isInstance(attributeValue)) {
+					if (false == componentType.isInstance(attributeValue))
 						throw new IllegalArgumentException("expected type "
 								+ componentType.getName() + "; received: "
 								+ attributeValue.getClass().getName());
-					}
 					Array.set(values, idx, attributeValue);
 				}
 			}
@@ -327,11 +326,10 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		/*
 		 * Single-valued attribute expected.
 		 */
-		if (false == expectedValueClass.isInstance(firstAttributeValue)) {
+		if (false == expectedValueClass.isInstance(firstAttributeValue))
 			throw new IllegalArgumentException("type mismatch: expected "
 					+ expectedValueClass.getName() + "; received: "
 					+ firstAttributeValue.getClass().getName());
-		}
 		Type value = (Type) firstAttributeValue;
 
 		Attribute<Type> dataValue = new Attribute<Type>(name, value);
@@ -339,9 +337,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 	}
 
 	private Object convertFromXmlDatatypeToClientDatatype(Object value) {
-		if (null == value) {
+		if (null == value)
 			return null;
-		}
 		Object result = value;
 		if (value instanceof XMLGregorianCalendar) {
 			XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
@@ -368,22 +365,22 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		newData.setAttribute(attribute);
 		createItem.setNewData(newData);
 
-		CreateResponseType createResponse;
 		try {
-			createResponse = this.port.create(create);
+			CreateResponseType createResponse = this.port.create(create);
+			StatusType status = createResponse.getStatus();
+			LOG.debug("status: " + status.getCode());
 
-			retrieveHeadersFromPort(this.port);
+			TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
+					.fromCode(status.getCode());
+			if (TopLevelStatusCode.OK != topLevelStatusCode)
+				throw new RuntimeException(
+						"error occurred while creating attribute");
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
-		}
-
-		StatusType status = createResponse.getStatus();
-		LOG.debug("status: " + status.getCode());
-		TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
-				.fromCode(status.getCode());
-		if (TopLevelStatusCode.OK != topLevelStatusCode) {
-			throw new RuntimeException(
-					"error occurred while creating attribute");
+		} catch (Exception e) {
+			throw retrieveHeadersFromException(e);
+		} finally {
+			retrieveHeadersFromPort(this.port);
 		}
 	}
 
@@ -399,9 +396,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 	 */
 	private void setAttributeValue(Object attributeValue,
 			AttributeType targetAttribute, boolean isNewAttribute) {
-		if (null == attributeValue) {
+		if (null == attributeValue)
 			return;
-		}
 		List<Object> attributeValues = targetAttribute.getAttributeValue();
 		if (CompoundUtil.isCompound(attributeValue)) {
 			AttributeType compoundAttribute = createCompoundAttribute(
@@ -418,9 +414,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 				Object value = Array.get(attributeValue, idx);
 				attributeValues.add(value);
 			}
-		} else {
+		} else
 			attributeValues.add(attributeValue);
-		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -455,7 +450,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 			}
 			CompoundId compoundIdAnnotation = method
 					.getAnnotation(CompoundId.class);
-			if (null != compoundIdAnnotation) {
+			if (null != compoundIdAnnotation)
 				try {
 					id = (String) method
 							.invoke(attributeValue, new Object[] {});
@@ -463,23 +458,19 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 					throw new RuntimeException(
 							"@Id property not of type string");
 				}
-			}
 		}
-		if (null != id) {
+		if (null != id)
 			compoundAttribute.getOtherAttributes().put(
 					WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, id);
-		} else {
-			if (false == isNewAttribute) {
-				/*
-				 * The @Id property is really required to be able to target the
-				 * correct compound attribute record within the system. In case
-				 * we're creating a new compounded attribute record the
-				 * attribute Id is of no use.
-				 */
-				throw new IllegalArgumentException(
-						"Missing @Id property on compound attribute value");
-			}
-		}
+		else if (false == isNewAttribute)
+			/*
+			 * The @Id property is really required to be able to target the
+			 * correct compound attribute record within the system. In case
+			 * we're creating a new compounded attribute record the attribute Id
+			 * is of no use.
+			 */
+			throw new IllegalArgumentException(
+					"Missing @Id property on compound attribute value");
 		return compoundAttribute;
 	}
 
@@ -500,28 +491,29 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		select.setValue(attributeName);
 		deleteItem.setSelect(select);
 
-		if (null != attributeId) {
+		if (null != attributeId)
 			select.getOtherAttributes().put(
 					WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, attributeId);
-		}
 
 		DeleteResponseType deleteResponse;
 		try {
 			deleteResponse = this.port.delete(delete);
+			StatusType status = deleteResponse.getStatus();
+			LOG.debug("status: " + status.getCode());
 
-			retrieveHeadersFromPort(this.port);
+			TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
+					.fromCode(status.getCode());
+			if (TopLevelStatusCode.OK != topLevelStatusCode) {
+				String comment = status.getComment();
+				throw new RuntimeException(
+						"error occurred while removing attribute: " + comment);
+			}
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
-		}
-
-		StatusType status = deleteResponse.getStatus();
-		LOG.debug("status: " + status.getCode());
-		TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode
-				.fromCode(status.getCode());
-		if (TopLevelStatusCode.OK != topLevelStatusCode) {
-			String comment = status.getComment();
-			throw new RuntimeException(
-					"error occurred while removing attribute: " + comment);
+		} catch (Exception e) {
+			throw retrieveHeadersFromException(e);
+		} finally {
+			retrieveHeadersFromPort(this.port);
 		}
 	}
 
@@ -534,8 +526,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 		if (CompoundUtil.isCompound(value)) {
 			String attributeId = CompoundUtil.getAttributeId(value);
 			removeAttribute(userId, attributeName, attributeId);
-		} else {
+		} else
 			removeAttribute(userId, attributeName, null);
-		}
 	}
 }

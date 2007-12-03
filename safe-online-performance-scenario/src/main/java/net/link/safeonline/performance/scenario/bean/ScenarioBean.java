@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.performance.scenario.bean;
 
+import java.awt.Color;
+import java.awt.Paint;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,8 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateless;
 
+import net.link.safeonline.performance.drivers.DriverException;
 import net.link.safeonline.performance.drivers.ProfileDriver;
 import net.link.safeonline.performance.scenario.ScenarioRemote;
+import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.util.jacc.ProfileData;
 
 import org.apache.commons.logging.Log;
@@ -35,12 +39,13 @@ import org.jfree.chart.encoders.ImageEncoder;
 import org.jfree.chart.encoders.ImageEncoderFactory;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
+import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYAreaRenderer2;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
+import org.jfree.data.general.SeriesException;
 import org.jfree.data.statistics.BoxAndWhiskerCalculator;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.xy.DefaultTableXYDataset;
@@ -56,7 +61,7 @@ public class ScenarioBean implements ScenarioRemote {
 
 	static final Log LOG = LogFactory.getLog(ScenarioBean.class);
 
-	private List<ProfileDriver> drivers;
+	private List<ProfileDriver<? extends MessageAccessor>> drivers;
 
 	private ImageEncoder encoder;
 
@@ -81,6 +86,8 @@ public class ScenarioBean implements ScenarioRemote {
 			pool.execute(new Runnable() {
 				public void run() {
 					try {
+						// Introduce a slight random offset.
+						Thread.sleep((long) (Math.random() * 100));
 						scenario.execute();
 					} catch (Exception e) {
 						LOG.error("Test " + iteration[0] + " failed.", e);
@@ -90,6 +97,7 @@ public class ScenarioBean implements ScenarioRemote {
 
 		pool.shutdown();
 		try {
+			// Wait for scenarios to complete.
 			while (!pool.awaitTermination(1, TimeUnit.SECONDS))
 				Thread.yield();
 		} catch (InterruptedException e) {
@@ -116,107 +124,144 @@ public class ScenarioBean implements ScenarioRemote {
 		Map<String, Map<String, List<Long>>> driversMethods = new HashMap<String, Map<String, List<Long>>>();
 
 		// Collect data from drivers.
-		for (ProfileDriver driver : this.drivers) {
+		LOG.debug("BUILDING CHARTS FOR " + this.drivers.size() + " DRIVERS:");
+		for (ProfileDriver<? extends MessageAccessor> driver : this.drivers) {
 
 			// Dataset for a Bar Chart of method timings per iteration.
 			int iterations = driver.getProfileData().size();
 			Map<String, List<Long>> driverMethods = new HashMap<String, List<Long>>();
 			driversMethods.put(driver.getTitle(), driverMethods);
 			Map<String, XYSeries> timingSet = new HashMap<String, XYSeries>();
-			Map<String, XYSeries> errorsSet = new HashMap<String, XYSeries>();
+			Map<String, List<Long>> errorsSet = new HashMap<String, List<Long>>();
 			XYSeries speedsSet = new XYSeries("Speed", true, false);
 			XYSeries requestSet = new XYSeries("Request Time", true, false);
 			XYSeries afterMemorySet = new XYSeries("Memory After", true, false);
 			XYSeries beforeMemorySet = new XYSeries("Memory Before", true,
 					false);
 
+			LOG.debug(" + driver: " + driver.getTitle());
+			LOG.debug(" + iterations: " + iterations);
 			for (Integer i = 0; i < iterations; ++i) {
 
+				LOG.debug(" * iteration: " + i);
 				ProfileData data = driver.getProfileData().get(i);
-				Throwable error = driver.getProfileError().get(i);
+				DriverException error = driver.getProfileError().get(i);
 				Double speed = driver.getProfileSpeed().get(i);
 
-				// If there's profile data for this iteration..
-				if (null == data || null == data.getMeasurements())
+				// See if we have any information to put on the graph at all..
+				long startTime = 0;
+				if (null != data && null != data.getMeasurements()) {
+					startTime = data
+							.getMeasurement(ProfileData.REQUEST_START_TIME);
+					LOG.debug(String.format(" - request started at: %d",
+							startTime));
+				}
+				if (startTime == 0 && null != error) {
+					startTime = error.getOccurredTime();
+					LOG.debug(String.format(" - error occurred at: %d",
+							startTime));
+				}
+
+				if (startTime == 0) {
+					LOG.warn(" - couldn't find a time for this iteration");
 					continue;
+				}
 
 				// General iteration request statistics.
-				double startTime = data
-						.getMeasurement(ProfileData.REQUEST_START_TIME);
-				double requestTime = data
-						.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
-				double beforeMemory = data
-						.getMeasurement(ProfileData.REQUEST_FREE_MEM);
-				double afterMemory = data
-						.getMeasurement(ProfileData.REQUEST_USED_MEM)
-						+ beforeMemory;
-				double endTime = startTime + requestTime;
-				beforeMemorySet.add(startTime, beforeMemory);
-				afterMemorySet.add(endTime, afterMemory);
-				requestSet.add(startTime, requestTime);
+				if (null != data && null != data.getMeasurements()) {
+					long requestTime = data
+							.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
+					long beforeMemory = data
+							.getMeasurement(ProfileData.REQUEST_FREE_MEM);
+					long afterMemory = data
+							.getMeasurement(ProfileData.REQUEST_USED_MEM)
+							+ beforeMemory;
+					long endTime = startTime + requestTime;
 
-				// Per-method iteration statistics.
-				for (Map.Entry<String, Long> measurement : data
-						.getMeasurements().entrySet()) {
+					LOG.debug(String.format(" - duration:  %d", requestTime));
+					LOG.debug(String.format(" - beforemem: %d", beforeMemory));
+					LOG.debug(String.format(" - aftermem:  %d", afterMemory));
+					LOG.debug(String.format(" - calls:     %d", data
+							.getMeasurements().size() - 4));
+					LOG.debug(String.format(" - call data: %s", data
+							.getMeasurements().values().toString()));
 
-					String method = measurement.getKey();
-					Long timing = measurement.getValue();
-
-					// Collect Iteration Timing Chart Data.
-					if (!ProfileData.isRequestKey(method)) {
-						if (!timingSet.containsKey(method))
-							timingSet.put(method, new XYSeries(method, true,
-									false));
-
-						timingSet.get(method).add(startTime, timing);
+					try {
+						beforeMemorySet.add(startTime, beforeMemory);
+						afterMemorySet.add(startTime, afterMemory);
+						requestSet.add(startTime, requestTime);
+					} catch (SeriesException e) {
+						LOG.warn("Dublicate X at starttime " + startTime
+								+ ", or endtime " + endTime, e);
+						continue; // Duplicate X value; ignore this one.
 					}
 
-					// Collect Method Timing Chart Data.
-					if (!driverMethods.containsKey(method))
-						driverMethods.put(method, new ArrayList<Long>());
-					driverMethods.get(method).add(timing);
+					// Per-method iteration statistics.
+					for (Map.Entry<String, Long> measurement : data
+							.getMeasurements().entrySet()) {
+
+						String method = measurement.getKey();
+						Long timing = measurement.getValue();
+
+						// Collect Iteration Timing Chart Data.
+						if (!ProfileData.isRequestKey(method)) {
+							if (!timingSet.containsKey(method))
+								timingSet.put(method, new XYSeries(method,
+										true, false));
+
+							timingSet.get(method).add(startTime, timing);
+						}
+
+						// Collect Method Timing Chart Data.
+						if (!driverMethods.containsKey(method))
+							driverMethods.put(method, new ArrayList<Long>());
+						driverMethods.get(method).add(timing);
+					}
 				}
 
 				// If there's an exception for this iteration..
 				if (null != error) {
-					while (error.getCause() != null)
-						error = error.getCause();
+					Throwable cause = error;
+					while (cause.getCause() != null)
+						cause = cause.getCause();
 
-					StackTraceElement errorSource = error.getStackTrace()[0];
-					String errorClass = ProfileData.compressSignature(error
+					LOG.debug(" - error: " + error);
+					LOG.debug(" - rootcause: " + cause);
+
+					StackTraceElement errorSource = cause.getStackTrace()[0];
+					String errorClass = ProfileData.compressSignature(cause
 							.getClass().getName());
 					String errorSourceClass = ProfileData
 							.compressSignature(errorSource.getClassName());
 					String message = String.format("%s: %s (%s:%d)",
-							errorClass, error.getMessage(), errorSourceClass,
+							errorClass, cause.getMessage(), errorSourceClass,
 							errorSource.getLineNumber());
 
 					if (!errorsSet.containsKey(message))
-						errorsSet.put(message, new XYSeries(message, true,
-								false));
+						errorsSet.put(message, new ArrayList<Long>());
 
-					errorsSet.get(message).add(startTime, 1);
+					errorsSet.get(message).add(startTime);
 				}
 
 				// If there's a speed for this iteration..
-				if (null != speed)
+				if (null != speed) {
+					LOG.debug(String.format(" - speed:      %f", speed));
 					speedsSet.add(startTime, speed);
+				}
 			}
 
 			// Convert XY data into XY Datasets and discard the temporary data.
+
 			DefaultTableXYDataset requestData = new DefaultTableXYDataset();
 			DefaultTableXYDataset speedsData = new DefaultTableXYDataset();
 			DefaultTableXYDataset timingData = new DefaultTableXYDataset();
 			DefaultTableXYDataset memoryData = new DefaultTableXYDataset();
-			DefaultTableXYDataset errorsData = new DefaultTableXYDataset();
 			requestData.addSeries(requestSet);
 			speedsData.addSeries(speedsSet);
 			memoryData.addSeries(beforeMemorySet);
 			memoryData.addSeries(afterMemorySet);
 			for (XYSeries timingSeries : timingSet.values())
 				timingData.addSeries(timingSeries);
-			for (XYSeries errorsSeries : errorsSet.values())
-				errorsData.addSeries(errorsSeries);
 			requestSet = beforeMemorySet = afterMemorySet = null;
 			timingSet = null;
 
@@ -225,33 +270,44 @@ public class ScenarioBean implements ScenarioRemote {
 			NumberAxis speedsAxis = new NumberAxis("Requests Per Second");
 			NumberAxis timingAxis = new NumberAxis("Time Elapsed");
 			NumberAxis memoryAxis = new NumberAxis("Used Memory");
-			NumberAxis errorsAxis = new NumberAxis("Exceptions");
-
-			XYPlot speedsPlot = new XYPlot(speedsData, timeAxis, speedsAxis,
-					new XYAreaRenderer2());
-			XYPlot timingPlot = new XYPlot();
-			timingPlot.setDataset(0, requestData);
-			timingPlot.setDomainAxis(0, timeAxis);
-			timingPlot.setRangeAxis(0, timingAxis);
-			timingPlot.setRenderer(0, new XYAreaRenderer2());
-			timingPlot.setDataset(1, timingData);
-			timingPlot.setRenderer(1, new StackedXYAreaRenderer2());
-			timingPlot.setDataset(2, memoryData);
-			timingPlot.setRangeAxis(2, memoryAxis);
-			timingPlot.setRenderer(2, new XYDifferenceRenderer());
-			XYPlot errorsPlot = new XYPlot(errorsData, timeAxis, errorsAxis,
-					new XYBarRenderer());
 
 			CombinedDomainXYPlot timingAndMemoryPlot = new CombinedDomainXYPlot(
 					timeAxis);
-			timingAndMemoryPlot.add(speedsPlot);
-			timingAndMemoryPlot.add(timingPlot);
-			timingAndMemoryPlot.add(errorsPlot);
+			if (speedsData.getItemCount() > 0)
+				timingAndMemoryPlot.add(new XYPlot(speedsData, timeAxis,
+						speedsAxis, new XYAreaRenderer2()));
+			if (memoryData.getItemCount() > 0)
+				timingAndMemoryPlot.add(new XYPlot(memoryData, timeAxis,
+						memoryAxis, new XYDifferenceRenderer()));
+			if (timingData.getItemCount() + requestData.getItemCount() > 0) {
+				XYPlot timingPlot = new XYPlot();
+				timingPlot.setDataset(0, timingData);
+				timingPlot.setDataset(1, requestData);
+				timingPlot.setDomainAxis(0, timeAxis);
+				timingPlot.setRangeAxis(0, timingAxis);
+				timingPlot.setRenderer(0, new StackedXYAreaRenderer2());
+				timingPlot.setRenderer(1, new XYAreaRenderer2());
+				timingAndMemoryPlot.add(timingPlot);
+			}
+			for (Map.Entry<String, List<Long>> errors : errorsSet.entrySet()) {
+				Paint paint = new Color((float) Math.random(), (float) Math
+						.random(), (float) Math.random());
+				String label = errors.getKey();
+
+				for (Long time : errors.getValue()) {
+					ValueMarker marker = new ValueMarker(time);
+					marker.setPaint(paint);
+					marker.setLabel(label);
+
+					timingAndMemoryPlot.addDomainMarker(marker);
+				}
+			}
+
 			JFreeChart iterationChart = new JFreeChart("Statistics for: "
 					+ driver.getTitle(), timingAndMemoryPlot);
 
 			// Image.
-			charts.add(getImage(iterationChart, 1000, 2000));
+			charts.add(getImage(iterationChart, 1000, 1000));
 		}
 
 		// Create Box-and-Whisker objects from Method Timing Data.
@@ -304,7 +360,8 @@ public class ScenarioBean implements ScenarioRemote {
 		}
 	}
 
-	protected void register(ProfileDriver... profileDrivers) {
+	protected void register(
+			ProfileDriver<? extends MessageAccessor>... profileDrivers) {
 
 		this.drivers.addAll(Arrays.asList(profileDrivers));
 	}

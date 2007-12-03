@@ -110,16 +110,14 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 	private <Type> Type getAttributeValue(ResponseType response,
 			Class<Type> valueClass) {
 		List<Object> assertions = response.getAssertionOrEncryptedAssertion();
-		if (assertions.isEmpty()) {
+		if (assertions.isEmpty())
 			throw new RuntimeException("No assertions in response");
-		}
 		AssertionType assertion = (AssertionType) assertions.get(0);
 
 		List<StatementAbstractType> statements = assertion
 				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-		if (statements.isEmpty()) {
+		if (statements.isEmpty())
 			throw new RuntimeException("No statements in response assertion");
-		}
 		AttributeStatementType attributeStatement = (AttributeStatementType) statements
 				.get(0);
 		List<Object> attributeObjects = attributeStatement
@@ -128,10 +126,9 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 
 		if (Boolean.valueOf(attribute.getOtherAttributes().get(
 				WebServiceConstants.MULTIVALUED_ATTRIBUTE))
-				^ valueClass.isArray()) {
+				^ valueClass.isArray())
 			throw new IllegalArgumentException(
 					"multivalued and [] type mismatch");
-		}
 
 		List<Object> attributeValues = attribute.getAttributeValue();
 
@@ -162,9 +159,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 					}
 
 					Array.set(result, idx, compoundBuilder.getCompound());
-				} else {
+				} else
 					Array.set(result, idx, attributeValue);
-				}
 				idx++;
 			}
 
@@ -176,15 +172,13 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 		 */
 		// TODO: what about single-valued compounds?
 		Object value = attributeValues.get(0);
-		if (null == value) {
+		if (null == value)
 			return null;
-		}
 
-		if (false == valueClass.isInstance(value)) {
+		if (false == valueClass.isInstance(value))
 			throw new IllegalArgumentException("expected type: "
 					+ valueClass.getName() + "; actual type: "
 					+ value.getClass().getName());
-		}
 		Type attributeValue = valueClass.cast(value);
 		return attributeValue;
 
@@ -192,14 +186,16 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 
 	private ResponseType getResponse(AttributeQueryType request)
 			throws ConnectException {
-		ResponseType response;
+
 		try {
-			response = this.port.attributeQuery(request);
-			retrieveHeadersFromPort(this.port);
+			return this.port.attributeQuery(request);
 		} catch (ClientTransportException e) {
 			throw new ConnectException(e.getMessage());
+		} catch (Exception e) {
+			throw retrieveHeadersFromException(e);
+		} finally {
+			retrieveHeadersFromPort(this.port);
 		}
-		return response;
 	}
 
 	private void checkStatus(ResponseType response)
@@ -218,11 +214,10 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 						.getValue();
 				SamlpSecondLevelErrorCode samlpSecondLevelErrorCode = SamlpSecondLevelErrorCode
 						.getSamlpTopLevelErrorCode(secondLevelStatusCodeValue);
-				if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode) {
+				if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode)
 					throw new AttributeNotFoundException();
-				} else if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode) {
+				else if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode)
 					throw new RequestDeniedException();
-				}
 				LOG.debug("second level status code: "
 						+ secondLevelStatusCode.getValue());
 			}
@@ -286,16 +281,14 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 	private void getAttributeValues(ResponseType response,
 			Map<String, Object> attributes) {
 		List<Object> assertions = response.getAssertionOrEncryptedAssertion();
-		if (0 == assertions.size()) {
+		if (0 == assertions.size())
 			throw new RuntimeException("No assertions in response");
-		}
 		AssertionType assertion = (AssertionType) assertions.get(0);
 
 		List<StatementAbstractType> statements = assertion
 				.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-		if (0 == statements.size()) {
+		if (0 == statements.size())
 			throw new RuntimeException("No statements in response assertion");
-		}
 		AttributeStatementType attributeStatement = (AttributeStatementType) statements
 				.get(0);
 		List<Object> attributeObjects = attributeStatement
@@ -316,17 +309,15 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 				Class<?> componentType = firstAttributeValue.getClass();
 				int size = attributeValues.size();
 				attributeValue = Array.newInstance(componentType, size);
-				for (int idx = 0; idx < size; idx++) {
+				for (int idx = 0; idx < size; idx++)
 					Array.set(attributeValue, idx, attributeValues.get(idx));
-				}
-			} else {
+			} else
 				/*
 				 * Single-valued attribute.
 				 * 
 				 * Here we depend on the xsi:type typing.
 				 */
 				attributeValue = attributeValues.get(0);
-			}
 
 			attributes.put(attributeName, attributeValue);
 		}
@@ -350,10 +341,9 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 			RequestDeniedException, ConnectException {
 		IdentityCard identityCardAnnotation = identityCardClass
 				.getAnnotation(IdentityCard.class);
-		if (null == identityCardAnnotation) {
+		if (null == identityCardAnnotation)
 			throw new IllegalArgumentException(
 					"identity card class should be annotated with @IdentityCard");
-		}
 		Type identityCard;
 		try {
 			identityCard = identityCardClass.newInstance();
@@ -365,9 +355,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 		for (Method method : methods) {
 			IdentityAttribute identityAttributeAnnotation = method
 					.getAnnotation(IdentityAttribute.class);
-			if (null == identityAttributeAnnotation) {
+			if (null == identityAttributeAnnotation)
 				continue;
-			}
 			String attributeName = identityAttributeAnnotation.value();
 			Class valueClass = method.getReturnType();
 			Object attributeValue = getAttributeValue(subjectLogin,

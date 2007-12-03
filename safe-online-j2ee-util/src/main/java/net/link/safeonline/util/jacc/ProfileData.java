@@ -158,7 +158,7 @@ public class ProfileData {
 		this.addMeasurement(compressSignature(method.toGenericString()), value);
 	}
 
-	public void addMeasurement(String method, Long value)
+	public synchronized void addMeasurement(String method, Long value)
 			throws ProfileDataLockedException {
 
 		if (this.locked)
@@ -193,7 +193,7 @@ public class ProfileData {
 		return Collections.unmodifiableMap(headers);
 	}
 
-	public long getMeasurement(String key) {
+	public synchronized long getMeasurement(String key) {
 
 		Long measurement = this.measurements.get(key);
 		return measurement == null ? 0 : measurement;

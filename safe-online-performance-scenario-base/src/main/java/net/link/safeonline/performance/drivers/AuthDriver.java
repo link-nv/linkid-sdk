@@ -32,6 +32,7 @@ import javax.xml.transform.TransformerException;
 
 import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
+import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.util.jacc.ProfileData;
 import net.link.safeonline.util.jacc.ProfileDataLockedException;
 
@@ -63,7 +64,7 @@ import org.w3c.tidy.Tidy;
 /**
  * @author mbillemo
  */
-public class AuthDriver extends ProfileDriver {
+public class AuthDriver extends ProfileDriver<MessageAccessor> {
 
 	static final Log LOG = LogFactory.getLog(AuthDriver.class);
 
@@ -78,7 +79,6 @@ public class AuthDriver extends ProfileDriver {
 				new MySSLSocketFactory(), 443));
 
 		this.clients = new HashMap<Thread, HttpClient>();
-		this.iterationDatas = new ArrayList<ProfileData>();
 
 		this.tidy = new Tidy();
 		this.tidy.setQuiet(true);
@@ -143,19 +143,18 @@ public class AuthDriver extends ProfileDriver {
 		public void checkClientTrusted(X509Certificate[] chain, String authType)
 				throws CertificateException {
 
-			throw new UnsupportedOperationException(
-					"cannot verify client certificates");
+			throw new CertificateException("cannot verify client certificates");
 		}
 
 		public void checkServerTrusted(X509Certificate[] chain, String authType)
 				throws CertificateException {
 
 			if (null == chain)
-				throw new NullPointerException("null certificate chain");
+				throw new CertificateException("null certificate chain");
 			if (0 == chain.length)
 				throw new CertificateException("empty certificate chain");
 			if (null == authType)
-				throw new NullPointerException("null authentication type");
+				throw new CertificateException("null authentication type");
 			if (0 == authType.length())
 				throw new CertificateException("empty authentication type");
 
@@ -169,6 +168,16 @@ public class AuthDriver extends ProfileDriver {
 	}
 
 	/**
+	 * @{inheritDoc}
+	 */
+	@Override
+	protected synchronized void loadDriver() {
+
+		this.iterationDatas = new ArrayList<ProfileData>();
+		super.loadDriver();
+	}
+
+	/**
 	 * Authenticate with OLAS's auth-webapp.
 	 * 
 	 * @return The user's UUID.
@@ -176,7 +185,7 @@ public class AuthDriver extends ProfileDriver {
 	public String login(PrivateKeyEntry application, String applicationName,
 			String username, String password) throws DriverException {
 
-		startNewIteration();
+		loadDriver();
 
 		try {
 			// Prepare authentication request token.
@@ -225,7 +234,6 @@ public class AuthDriver extends ProfileDriver {
 
 			// This redirect sends us either the SAML response
 			// or subscription confirmation request.
-			// TODO: Was a GetMethod; does POST not work?
 			GetMethod getMethod = redirectGetMethod(postMethod);
 			formNode = executeRequest(getMethod, jsessionId);
 			if (null == XPathAPI.selectSingleNode(formNode,
@@ -266,11 +274,7 @@ public class AuthDriver extends ProfileDriver {
 		}
 
 		catch (Exception e) {
-			setIterationError(e);
-
-			if (e instanceof DriverException)
-				throw (DriverException) e;
-			throw new DriverException(e);
+			throw setDriverError(e);
 		}
 
 		finally {
@@ -283,20 +287,16 @@ public class AuthDriver extends ProfileDriver {
 						String key = measurement.getKey();
 						Long value = measurement.getValue();
 
-						if (ProfileData.isRequestKey(key)
-								&& iterationData.getMeasurements().containsKey(
-										key))
-							value += iterationData.getMeasurements().get(key);
+						if (!ProfileData.REQUEST_START_TIME.equals(key)
+								&& !ProfileData.REQUEST_FREE_MEM.equals(key))
+							value += iterationData.getMeasurement(key);
 
 						iterationData.addMeasurement(measurement.getKey(),
 								value);
+					} catch (ProfileDataLockedException e) {
 					}
 
-					catch (ProfileDataLockedException e) {
-						setIterationError(e);
-					}
-
-			setIterationData(iterationData);
+			unloadDriver(iterationData);
 		}
 	}
 

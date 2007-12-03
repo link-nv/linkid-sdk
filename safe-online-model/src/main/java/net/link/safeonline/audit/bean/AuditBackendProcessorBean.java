@@ -41,7 +41,8 @@ import org.apache.commons.logging.LogFactory;
 @MessageDriven(activationConfig = {
 		@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
 		@ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_BACKEND_QUEUE_NAME),
-		@ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
+		@ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
+		@ActivationConfigProperty(propertyName = "maxSession", propertyValue = "2") })
 public class AuditBackendProcessorBean implements MessageListener {
 
 	private static final Log LOG = LogFactory
@@ -78,17 +79,15 @@ public class AuditBackendProcessorBean implements MessageListener {
 		} catch (NamingException e) {
 			throw new EJBException("JNDI error: " + e.getMessage(), e);
 		}
-		for (AuditBackend auditBackend : auditBackends) {
+		for (AuditBackend auditBackend : auditBackends)
 			try {
 				auditBackend.process(auditContextId);
 			} catch (Exception e) {
 				addAuditAudit(e, auditContextId);
 			}
-		}
 
-		if (requiresSanitation(auditContextId)) {
+		if (requiresSanitation(auditContextId))
 			sanitize(auditContextId);
-		}
 	}
 
 	private void sanitize(long auditContextId) {

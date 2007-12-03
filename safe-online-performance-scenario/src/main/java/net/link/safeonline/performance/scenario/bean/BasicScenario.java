@@ -15,6 +15,7 @@ import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
 import net.link.safeonline.performance.drivers.ProfileDriver;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.sdk.ws.MessageAccessor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class BasicScenario implements Scenario {
 
-	private static final int ITERATIONS = 50;
+	private static final int ITERATIONS = 100;
 	private static final Log LOG = LogFactory.getLog(BasicScenario.class);
 
 	private AttribDriver attribDriver;
@@ -67,9 +68,10 @@ public class BasicScenario implements Scenario {
 	/**
 	 * @{inheritDoc}
 	 */
-	public List<ProfileDriver> prepare(String hostname) {
+	public List<ProfileDriver<? extends MessageAccessor>> prepare(
+			String hostname) {
 
-		List<ProfileDriver> drivers = new ArrayList<ProfileDriver>();
+		List<ProfileDriver<? extends MessageAccessor>> drivers = new ArrayList<ProfileDriver<? extends MessageAccessor>>();
 
 		LOG.debug("building drivers..");
 		drivers.add(this.authDriver = new AuthDriver(hostname));
