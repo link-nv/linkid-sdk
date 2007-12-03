@@ -143,6 +143,9 @@ public abstract class ProfileDriver<S extends MessageAccessor> {
 			}
 		}
 
+		if (time + steps == 0)
+			return;
+
 		this.profileSpeed.removeLast(); // Remove the null placeholder.
 		this.profileSpeed.addLast(steps * 1000d / time);
 	}

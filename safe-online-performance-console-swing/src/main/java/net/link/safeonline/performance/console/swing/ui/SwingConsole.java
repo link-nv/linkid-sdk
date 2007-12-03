@@ -37,11 +37,7 @@ import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
  */
 public class SwingConsole {
 
-	private ConsoleData consoleData;
-
 	public SwingConsole() {
-
-		this.consoleData = new ConsoleData();
 
 		initLnF();
 		initExceptionDialog();
@@ -102,10 +98,9 @@ public class SwingConsole {
 
 		// Objects for each paragraph.
 		// They will handle their components' events.
-		ScenarioChooser scenarioChooser = new ScenarioChooser(this.consoleData);
-		AgentsList agentsList = new AgentsList(this.consoleData,
-				scenarioChooser);
-		OlasPrefs olasPrefs = new OlasPrefs(this.consoleData);
+		ScenarioChooser scenarioChooser = new ScenarioChooser();
+		AgentsList agentsList = new AgentsList(scenarioChooser);
+		OlasPrefs olasPrefs = new OlasPrefs();
 
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout("p, 5dlu, 0:g, 5dlu, p",
@@ -113,8 +108,10 @@ public class SwingConsole {
 		layout.setColumnGroups(new int[][] { { 1, 5 } });
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout, pane);
 
-		builder.appendSeparator("Members of group "
-				+ this.consoleData.getAgentDiscoverer().getGroupName());
+		builder
+				.appendSeparator("Group "
+						+ ConsoleData.getInstance().getAgentDiscoverer()
+								.getGroupName());
 		builder.nextRow();
 
 		builder.append(agentsList, 5);

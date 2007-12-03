@@ -27,18 +27,14 @@ public class OlasPrefs extends JPanel implements FocusListener {
 	protected JTextField hostname;
 	protected JTextField port;
 	protected JTextField workers;
-	protected ConsoleData consoleData;
 
-	/**
-	 * @param consoleData
-	 */
-	public OlasPrefs(ConsoleData consoleData) {
+	public OlasPrefs() {
 
-		this.consoleData = consoleData;
-
-		this.hostname = new JTextField(consoleData.getHostname());
-		this.port = new JTextField(String.valueOf(consoleData.getPort()));
-		this.workers = new JTextField(String.valueOf(consoleData.getWorkers()));
+		this.hostname = new JTextField(ConsoleData.getInstance().getHostname());
+		this.port = new JTextField(String.valueOf(ConsoleData.getInstance()
+				.getPort()));
+		this.workers = new JTextField(String.valueOf(ConsoleData.getInstance()
+				.getWorkers()));
 
 		this.hostname.addFocusListener(this);
 		this.port.addFocusListener(this);
@@ -54,14 +50,15 @@ public class OlasPrefs extends JPanel implements FocusListener {
 	public void focusLost(FocusEvent e) {
 
 		if (this.hostname.equals(e.getSource()))
-			this.consoleData.setHostname(this.hostname.getText());
+			ConsoleData.getInstance().setHostname(this.hostname.getText());
 
 		else if (this.port.equals(e.getSource()))
-			this.consoleData.setPort(Integer.parseInt(this.port.getText()));
+			ConsoleData.getInstance().setPort(
+					Integer.parseInt(this.port.getText()));
 
 		else if (this.workers.equals(e.getSource()))
-			this.consoleData.setWorkers(Integer
-					.parseInt(this.workers.getText()));
+			ConsoleData.getInstance().setWorkers(
+					Integer.parseInt(this.workers.getText()));
 	}
 
 	/**

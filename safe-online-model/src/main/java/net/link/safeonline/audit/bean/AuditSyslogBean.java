@@ -10,6 +10,7 @@ package net.link.safeonline.audit.bean;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
@@ -69,17 +70,24 @@ public class AuditSyslogBean implements AuditBackend {
 	@EJB
 	private AuditAuditDAO auditAuditDAO;
 
+	private SyslogAppender syslogAppender;
+
 	@PostConstruct
 	public void init() {
 		LOG.debug("init audit syslog bean ( " + this.syslogHost + " )");
 
-		SyslogAppender syslogAppender = new SyslogAppender();
-		syslogAppender.setSyslogHost(this.syslogHost);
-		syslogAppender.setFacility(this.facility);
-		syslogAppender.setThreshold(Level.toLevel(this.threshold));
-		syslogAppender.setLayout(new SimpleLayout());
+		this.syslogAppender = new SyslogAppender();
+		this.syslogAppender.setSyslogHost(this.syslogHost);
+		this.syslogAppender.setFacility(this.facility);
+		this.syslogAppender.setThreshold(Level.toLevel(this.threshold));
+		this.syslogAppender.setLayout(new SimpleLayout());
 
-		this.logger.addAppender(syslogAppender);
+		this.logger.addAppender(this.syslogAppender);
+	}
+
+	@PreDestroy
+	public void close() {
+		this.syslogAppender.close();
 	}
 
 	private void logSecurityAudits(Long auditContextId) {
@@ -111,7 +119,7 @@ public class AuditSyslogBean implements AuditBackend {
 	private void logAccessAudits(Long auditContextId) {
 		List<AccessAuditEntity> accessAuditEntries = this.accessAuditDAO
 				.listRecords(auditContextId);
-		for (AccessAuditEntity e : accessAuditEntries) {
+		for (AccessAuditEntity e : accessAuditEntries)
 			if (e.getOperationState() != OperationStateType.BEGIN
 					&& e.getOperationState() != OperationStateType.NORMAL_END) {
 				String msg = "Access audit context "
@@ -121,7 +129,6 @@ public class AuditSyslogBean implements AuditBackend {
 				LOG.debug(msg);
 				this.logger.error(msg);
 			}
-		}
 	}
 
 	private void logAuditAudits(Long auditContextId) {
@@ -136,9 +143,8 @@ public class AuditSyslogBean implements AuditBackend {
 	}
 
 	public void process(long auditContextId) {
-		if (0 == this.syslogHost.length()) {
+		if (0 == this.syslogHost.length())
 			LOG.debug("skipping syslog");
-		}
 		logSecurityAudits(auditContextId);
 		logResourceAudits(auditContextId);
 		logAccessAudits(auditContextId);

@@ -31,10 +31,9 @@ public class AgentsList extends JList implements AgentStateListener,
 	private static final long serialVersionUID = 1L;
 
 	private DefaultListModel model;
-	private ConsoleData consoleData;
 	private ScenarioChooser scenarioChooser;
 
-	public AgentsList(ConsoleData consoleData, ScenarioChooser scenarioChooser) {
+	public AgentsList(ScenarioChooser scenarioChooser) {
 
 		addListSelectionListener(this);
 		setModel(this.model = new DefaultListModel());
@@ -42,10 +41,11 @@ public class AgentsList extends JList implements AgentStateListener,
 		setBackground(null);
 		setOpaque(false);
 
-		this.consoleData = consoleData;
 		this.scenarioChooser = scenarioChooser;
-		consoleData.getAgentDiscoverer().addAgentStateListener(this);
-		membersChanged(consoleData.getAgentDiscoverer().getMembers());
+		ConsoleData.getInstance().getAgentDiscoverer().addAgentStateListener(
+				this);
+		membersChanged(ConsoleData.getInstance().getAgentDiscoverer()
+				.getMembers());
 	}
 
 	/**
@@ -68,8 +68,8 @@ public class AgentsList extends JList implements AgentStateListener,
 
 		// Check whether all agents are in the list and add them if need be.
 		for (Address address : addresses)
-			if (!address.equals(this.consoleData.getSelf())) {
-				Agent agent = this.consoleData.getAgent(address);
+			if (!address.equals(ConsoleData.getInstance().getSelf())) {
+				Agent agent = ConsoleData.getInstance().getAgent(address);
 				if (!this.model.contains(agent)) {
 					this.model.addElement(agent);
 					agent.addAgentStatusListener(this);
@@ -80,7 +80,7 @@ public class AgentsList extends JList implements AgentStateListener,
 			}
 
 		// Remove stale agents from the list.
-		for (Agent agent : this.consoleData.removeStaleAgents())
+		for (Agent agent : ConsoleData.getInstance().removeStaleAgents())
 			this.model.removeElement(agent);
 	}
 
@@ -89,7 +89,7 @@ public class AgentsList extends JList implements AgentStateListener,
 	 */
 	public void agentSuspected(Address agentAddress) {
 
-		Agent agent = this.consoleData.getAgent(agentAddress);
+		Agent agent = ConsoleData.getInstance().getAgent(agentAddress);
 		if (null != agent)
 			agent.setHealthy(false);
 	}

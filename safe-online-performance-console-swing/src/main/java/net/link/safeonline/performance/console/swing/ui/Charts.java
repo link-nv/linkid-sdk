@@ -27,6 +27,7 @@ import javax.swing.Scrollable;
 import javax.swing.WindowConstants;
 
 import net.link.safeonline.performance.console.swing.data.Agent;
+import net.link.safeonline.performance.console.swing.data.ConsoleData;
 
 import org.jgroups.Address;
 
@@ -62,12 +63,10 @@ public class Charts extends WindowAdapter {
 
 	private void addTab(Address agent, List<byte[]> chartList) {
 
-		for (int tab = 0; tab < this.agents.getTabCount(); ++tab)
-			if (this.agents.getTitleAt(tab).equals(agent.toString()))
-				return;
-
+		String tabTitle = String.format("%s (x%d)", agent.toString(),
+				ConsoleData.getInstance().getWorkers());
 		AgentCharts agentCharts = new AgentCharts(chartList);
-		this.agents.addTab(agent.toString(), new JScrollPane(agentCharts));
+		this.agents.addTab(tabTitle, new JScrollPane(agentCharts));
 	}
 
 	/**

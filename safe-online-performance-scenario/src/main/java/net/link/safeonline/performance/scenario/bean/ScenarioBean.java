@@ -20,6 +20,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.performance.drivers.DriverException;
 import net.link.safeonline.performance.drivers.ProfileDriver;
@@ -49,6 +51,7 @@ import org.jfree.data.general.SeriesException;
 import org.jfree.data.statistics.BoxAndWhiskerCalculator;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.xy.DefaultTableXYDataset;
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 
 /**
@@ -73,6 +76,7 @@ public class ScenarioBean implements ScenarioRemote {
 		this.encoder = ImageEncoderFactory.newInstance("png", 0.9f, true);
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<byte[]> execute(String hostname, int workers) {
 
 		final Scenario scenario = new BasicScenario();
@@ -228,14 +232,22 @@ public class ScenarioBean implements ScenarioRemote {
 					LOG.debug(" - error: " + error);
 					LOG.debug(" - rootcause: " + cause);
 
-					StackTraceElement errorSource = cause.getStackTrace()[0];
+					int errorSourceLine = -1;
+					String errorSourceClass = null;
+					StackTraceElement errorSource = null;
+
+					if (cause.getStackTrace().length > 0) {
+						errorSource = cause.getStackTrace()[0];
+						errorSourceClass = ProfileData
+								.compressSignature(errorSource.getClassName());
+						errorSourceLine = errorSource.getLineNumber();
+					}
+
 					String errorClass = ProfileData.compressSignature(cause
 							.getClass().getName());
-					String errorSourceClass = ProfileData
-							.compressSignature(errorSource.getClassName());
 					String message = String.format("%s: %s (%s:%d)",
 							errorClass, cause.getMessage(), errorSourceClass,
-							errorSource.getLineNumber());
+							errorSourceLine);
 
 					if (!errorsSet.containsKey(message))
 						errorsSet.put(message, new ArrayList<Long>());
@@ -250,8 +262,29 @@ public class ScenarioBean implements ScenarioRemote {
 				}
 			}
 
-			// Convert XY data into XY Datasets and discard the temporary data.
+			// Calculate averages.
+			double speedAvg = 0, requestAvg = 0, memoryAvg = 0;
+			for (Object item : speedsSet.getItems())
+				if (item instanceof XYDataItem)
+					speedAvg += ((XYDataItem) item).getY().doubleValue();
+			for (Object item : requestSet.getItems())
+				if (item instanceof XYDataItem)
+					requestAvg += ((XYDataItem) item).getY().doubleValue();
+			for (Object item : beforeMemorySet.getItems())
+				if (item instanceof XYDataItem)
+					memoryAvg += ((XYDataItem) item).getY().doubleValue();
+			for (Object item : afterMemorySet.getItems())
+				if (item instanceof XYDataItem)
+					memoryAvg += ((XYDataItem) item).getY().doubleValue();
+			speedAvg /= speedsSet.getItemCount();
+			requestAvg /= requestSet.getItemCount();
+			memoryAvg /= beforeMemorySet.getItemCount()
+					+ afterMemorySet.getItemCount();
+			LOG.debug("speed avg: " + speedAvg);
+			LOG.debug("request avg: " + requestAvg);
+			LOG.debug("memory avg: " + memoryAvg);
 
+			// Convert XY data into XY Datasets and discard the temporary data.
 			DefaultTableXYDataset requestData = new DefaultTableXYDataset();
 			DefaultTableXYDataset speedsData = new DefaultTableXYDataset();
 			DefaultTableXYDataset timingData = new DefaultTableXYDataset();
@@ -273,20 +306,27 @@ public class ScenarioBean implements ScenarioRemote {
 
 			CombinedDomainXYPlot timingAndMemoryPlot = new CombinedDomainXYPlot(
 					timeAxis);
-			if (speedsData.getItemCount() > 0)
-				timingAndMemoryPlot.add(new XYPlot(speedsData, timeAxis,
-						speedsAxis, new XYAreaRenderer2()));
-			if (memoryData.getItemCount() > 0)
-				timingAndMemoryPlot.add(new XYPlot(memoryData, timeAxis,
-						memoryAxis, new XYDifferenceRenderer()));
+			if (speedsData.getItemCount() > 0) {
+				XYPlot speedPlot = new XYPlot(speedsData, timeAxis, speedsAxis,
+						new XYAreaRenderer2());
+				speedPlot.addRangeMarker(new ValueMarker(speedAvg));
+				timingAndMemoryPlot.add(speedPlot);
+			}
+			if (memoryData.getItemCount() > 0) {
+				XYPlot memoryPlot = new XYPlot(memoryData, timeAxis,
+						memoryAxis, new XYDifferenceRenderer());
+				memoryPlot.addRangeMarker(new ValueMarker(memoryAvg));
+				timingAndMemoryPlot.add(memoryPlot);
+			}
 			if (timingData.getItemCount() + requestData.getItemCount() > 0) {
 				XYPlot timingPlot = new XYPlot();
-				timingPlot.setDataset(0, timingData);
+				timingPlot.setDataset(timingData);
 				timingPlot.setDataset(1, requestData);
-				timingPlot.setDomainAxis(0, timeAxis);
-				timingPlot.setRangeAxis(0, timingAxis);
-				timingPlot.setRenderer(0, new StackedXYAreaRenderer2());
+				timingPlot.setDomainAxis(timeAxis);
+				timingPlot.setRangeAxis(timingAxis);
+				timingPlot.setRenderer(new StackedXYAreaRenderer2());
 				timingPlot.setRenderer(1, new XYAreaRenderer2());
+				timingPlot.addRangeMarker(new ValueMarker(requestAvg));
 				timingAndMemoryPlot.add(timingPlot);
 			}
 			for (Map.Entry<String, List<Long>> errors : errorsSet.entrySet()) {

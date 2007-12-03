@@ -29,15 +29,24 @@ import org.jgroups.Address;
  */
 public class ConsoleData {
 
+	private static ConsoleData instance;
 	private Map<Address, Agent> agents;
 	private AgentDiscoverer agentDiscoverer;
 	private String hostname = "localhost";
 	private int port = 8443, workers = 5;
 
-	public ConsoleData() {
+	private ConsoleData() {
 
 		this.agents = new HashMap<Address, Agent>();
 		this.agentDiscoverer = new AgentDiscoverer();
+	}
+
+	public static ConsoleData getInstance() {
+
+		if (null == instance)
+			instance = new ConsoleData();
+
+		return instance;
 	}
 
 	public Address getSelf() {

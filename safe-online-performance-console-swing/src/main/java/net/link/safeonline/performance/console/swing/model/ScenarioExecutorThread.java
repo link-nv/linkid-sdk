@@ -27,13 +27,10 @@ import org.jgroups.Address;
  */
 public class ScenarioExecutorThread extends ScenarioThread {
 
-	private ConsoleData consoleData;
-
 	public ScenarioExecutorThread(Map<Address, Agent> map,
-			ScenarioChooser chooser, ConsoleData consoleData) {
+			ScenarioChooser chooser) {
 
 		super(State.EXECUTE, map, chooser);
-		this.consoleData = consoleData;
 	}
 
 	/**
@@ -46,9 +43,9 @@ public class ScenarioExecutorThread extends ScenarioThread {
 		ScenarioRemote scenario = (ScenarioRemote) context
 				.lookup("SafeOnline/ScenarioBean");
 
-		agent.setCharts(scenario.execute(String.format("%s:%d",
-				this.consoleData.getHostname(), this.consoleData.getPort()),
-				this.consoleData.getWorkers()));
+		agent.setCharts(scenario.execute(String.format("%s:%d", ConsoleData
+				.getInstance().getHostname(), ConsoleData.getInstance()
+				.getPort()), ConsoleData.getInstance().getWorkers()));
 
 	}
 }
