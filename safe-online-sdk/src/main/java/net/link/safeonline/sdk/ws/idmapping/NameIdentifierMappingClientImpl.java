@@ -107,22 +107,24 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
 		String errorCode = statusCode.getValue();
 		SamlpTopLevelErrorCode topLevelErrorCode = SamlpTopLevelErrorCode
 				.getSamlpTopLevelErrorCode(errorCode);
-		if (SamlpTopLevelErrorCode.SUCCESS != topLevelErrorCode)
-			throw new RuntimeException(
-					"error occured on identifier mapping service");
-
-		StatusCodeType secondStatusCode = statusCode.getStatusCode();
-		if (null != secondStatusCode) {
-			String secondErrorCode = secondStatusCode.getValue();
-			SamlpSecondLevelErrorCode secondLevelErrorCode = SamlpSecondLevelErrorCode
-					.getSamlpTopLevelErrorCode(secondErrorCode);
-			if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode)
-				throw new SubjectNotFoundException();
-			if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode)
-				throw new RequestDeniedException();
-			throw new RuntimeException(
-					"error occurred on identifier mapping service: "
-							+ secondErrorCode);
+		if (SamlpTopLevelErrorCode.SUCCESS != topLevelErrorCode) {
+			// throw new RuntimeException("error occured on identifier mapping
+			// service");
+			LOG.error("status code: " + statusCode.getValue());
+			LOG.error("status message: " + status.getStatusMessage());
+			StatusCodeType secondStatusCode = statusCode.getStatusCode();
+			if (null != secondStatusCode) {
+				String secondErrorCode = secondStatusCode.getValue();
+				SamlpSecondLevelErrorCode secondLevelErrorCode = SamlpSecondLevelErrorCode
+						.getSamlpTopLevelErrorCode(secondErrorCode);
+				if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode)
+					throw new SubjectNotFoundException();
+				if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode)
+					throw new RequestDeniedException();
+				throw new RuntimeException(
+						"error occurred on identifier mapping service: "
+								+ secondErrorCode);
+			}
 		}
 
 		NameIDType responseNameId = response.getNameID();

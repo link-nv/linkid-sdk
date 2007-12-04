@@ -121,7 +121,8 @@ public class IdentifierMappingWebServiceTest {
 						this.certificate.getEncoded(),
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										SafeOnlineConstants.NAME_ATTRIBUTE) }));
+										SafeOnlineConstants.NAME_ATTRIBUTE) }),
+						false);
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
@@ -200,7 +201,8 @@ public class IdentifierMappingWebServiceTest {
 						this.certificate.getEncoded(),
 						Arrays
 								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										SafeOnlineConstants.NAME_ATTRIBUTE) }));
+										SafeOnlineConstants.NAME_ATTRIBUTE) }),
+						false);
 
 		// operate: subscribe onto the application and confirm identity usage
 		SubscriptionService subscriptionService = getSubscriptionService(initialContext);

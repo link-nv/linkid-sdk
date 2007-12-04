@@ -134,7 +134,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 				+ accountMergingDO.getSourceSubject().getUserId());
 		if (null != neededDevices && neededDevices.size() != 0)
 			throw new PermissionDeniedException(
-					"Authenticated needed for certain devices");
+					"authentication needed for certain devices");
 		SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
 		SubjectEntity sourceSubject = this.subjectService
 				.getSubject(accountMergingDO.getSourceSubject().getUserId());

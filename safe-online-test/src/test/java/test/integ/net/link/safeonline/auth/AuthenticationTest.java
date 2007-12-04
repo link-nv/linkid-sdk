@@ -32,12 +32,12 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
-import net.link.safeonline.authentication.service.AttributeDO;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
@@ -203,7 +203,7 @@ public class AuthenticationTest {
 
 				applicationService.addApplication(applicationName, null,
 						appOwnerName, null, false, IdScopeType.USER, null,
-						null, null, null, null);
+						null, null, null, null, false);
 				return null;
 			}
 		});
@@ -243,7 +243,8 @@ public class AuthenticationTest {
 				.getUserId());
 
 		applicationService.addApplication(applicationName, null, appOwnerName,
-				null, false, IdScopeType.USER, null, null, null, null, null);
+				null, false, IdScopeType.USER, null, null, null, null, null,
+				false);
 
 		String userLogin = "login-" + UUID.randomUUID().toString();
 		final String userPassword = "secret";
@@ -334,7 +335,8 @@ public class AuthenticationTest {
 
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, null, appOwnerName,
-				null, false, IdScopeType.USER, null, null, null, null, null);
+				null, false, IdScopeType.USER, null, null, null, null, null,
+				false);
 
 		IntegrationTestUtils.login(loginSubject.getUserId(), password);
 		applicationService.setApplicationDescription(applicationName,
@@ -384,7 +386,7 @@ public class AuthenticationTest {
 		String applicationName = "application-" + UUID.randomUUID().toString();
 		applicationService.addApplication(applicationName, null,
 				applicationOwnerName, null, false, IdScopeType.USER, null,
-				null, null, null, null);
+				null, null, null, null, false);
 
 		// operate: change application description via application owner
 		IntegrationTestUtils.login(ownerSubject.getUserId(), ownerPassword);
