@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+<body>
+<ui:composition template="/WEB-INF/template-root.xhtml">
+
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="maintenance" />
+		</ui:include>
+	</ui:define>
+
+	<ui:define name="content">
+		<h1>#{msgs.maintenance}</h1>
+		<h2>#{msgs.operatorTasks}</h2>
+		<p>#{msgs.operatorTaskInfo} <a
+			href="./tasks/tasks.seam">#{msgs.clickHere}</a></p>
+
+		<h2>#{msgs.audit}</h2>
+		<p>#{msgs.operatorAuditInfo} <a href="./audit/audit.seam">#{msgs.clickHere}</a></p>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

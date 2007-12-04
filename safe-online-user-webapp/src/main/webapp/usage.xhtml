@@ -10,23 +10,33 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="usage" />
+			<ui:param name="page" value="account" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.usageAgreementOLAS}</h2>
+		<h1>#{msgs.usageAgreementOLAS}</h1>
 
 		<rich:panel>
-			<pre width="100">#{subscriptions.globalUsageAgreement}</pre>
+			<pre>#{subscriptions.globalUsageAgreement}</pre>
 		</rich:panel>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/account.seam"
+					value="#{msgs.accountManagement}" /></li>
+				<li><h:commandLink action="/history.seam"
+					value="#{msgs.history}" /></li>
+				<li><h:commandLink action="/remove.seam"
+					value="#{msgs.removeAccount}" /></li>
+				<li><h:commandLink action="/merge/merge.seam"
+					value="#{msgs.mergeAccount}" /></li>
+
+			</ul>
+		</h:form>
+		<p>#{msgs.helpUsageAgreement}</p>
 	</ui:define>
 </ui:composition>
 </body>

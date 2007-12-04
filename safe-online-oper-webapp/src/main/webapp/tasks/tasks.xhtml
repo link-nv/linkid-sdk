@@ -10,20 +10,14 @@
 	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="tasks" />
+			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.tasks}</h2>
+		<h1>#{msgs.tasks}</h1>
 
 		<a4j:form id="taskForm" ajaxSubmit="true" reRender="task-data">
 			<rich:dataTable id="task-data" var="item" value="#{taskList}"
@@ -32,7 +26,8 @@
 
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
-					<a4j:commandLink value="#{item.name}" action="#{scheduling.taskView}" />
+					<a4j:commandLink value="#{item.name}"
+						action="#{scheduling.taskView}" />
 				</h:column>
 				<h:column>
 					<f:facet name="header">#{msgs.scheduling}</f:facet>
@@ -40,7 +35,7 @@
 						action="#{scheduling.schedulingView}" />
 				</h:column>
 				<f:facet name="footer">
-					<rich:datascroller for="task-data"/>
+					<rich:datascroller for="task-data" />
 				</f:facet>
 			</rich:dataTable>
 
@@ -48,19 +43,21 @@
 
 			<h:commandButton action="#{scheduling.schedulingListView}"
 				id="schedulings" value="#{msgs.viewschedulingsaction}"
-				immediate="true" />
-			<so:nbsp />
+				immediate="true" styleClass="submit" />
 			<h:commandButton action="#{scheduling.clearAllTasksHistory}"
 				id="clearalltaskhistory" value="#{msgs.clearalltaskshistoryaction}"
-				immediate="true" />
+				immediate="true" styleClass="submit" />
 
 		</a4j:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/audit/audit.seam"
+					value="#{msgs.audit}" /></li>
+			</ul>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </body>

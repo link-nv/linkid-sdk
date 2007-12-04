@@ -7,17 +7,8 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-	</ui:define>
-
 	<ui:define name="content">
-
-		<div class="infobox"><ui:include
-			src="/WEB-INF/incl/appinfo.xhtml" /></div>
-
-		<div>
-		<h2>#{msgs.createAccount}</h2>
+		<h1>#{msgs.createAccount}</h1>
 		<h:form>
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
@@ -49,8 +40,11 @@
 			</table>
 			<t:messages globalOnly="true" styleClass="error" />
 			<h:commandButton action="#{accountRegistration.loginNext}"
-				id="register" value="#{msgs.register}" />
-		</h:form></div>
+				id="register" value="#{msgs.register}" class="submit" />
+		</h:form>
+	</ui:define>
+	<ui:define name="sidebar">
+		<p>#{msgs.helpNewUser}</p>
 	</ui:define>
 </ui:composition>
 </body>

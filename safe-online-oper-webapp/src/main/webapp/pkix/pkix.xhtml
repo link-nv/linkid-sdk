@@ -8,20 +8,14 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="pkix" />
+			<ui:param name="page" value="configuration" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.operatorTrustDomains}</h2>
+		<h1>#{msgs.operatorTrustDomains}</h1>
 
 		<h:form>
 			<t:dataTable id="pkix-data" var="item" value="#{trustDomainList}"
@@ -50,17 +44,24 @@
 
 			<h:messages styleClass="error" />
 
-			<h:commandButton value="#{msgs.addaction}" id="add" action="add" />
-			<so:nbsp />
+			<h:commandButton value="#{msgs.addaction}" id="add" action="add"
+				styleClass="submit" />
 			<h:commandButton value="#{msgs.clearOcspCache}" id="clear-cache"
-				action="#{trustDomain.clearOcspCache}" />
+				action="#{trustDomain.clearOcspCache}" styleClass="submit" />
 		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/configuration.seam"
+					value="#{msgs.operatorGeneralConfiguration}" /></li>
+				<li><h:commandLink action="/authorization/main.seam"
+					value="#{msgs.authorization}" /></li>
+				<li><h:commandLink action="/usage/usage-agreements.seam"
+					value="#{msgs.usageAgreementOLAS}" /></li>
+			</ul>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </body>

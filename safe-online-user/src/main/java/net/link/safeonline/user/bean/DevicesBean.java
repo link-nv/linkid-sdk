@@ -91,7 +91,7 @@ public class DevicesBean implements Devices {
 	FacesMessages facesMessages;
 
 	public String getNewPassword() {
-		return "";
+		return this.newPassword;
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
@@ -100,7 +100,7 @@ public class DevicesBean implements Devices {
 	}
 
 	public String getOldPassword() {
-		return "";
+		return this.oldPassword;
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
@@ -128,7 +128,7 @@ public class DevicesBean implements Devices {
 		}
 
 		this.credentialCacheFlushRequired = true;
-
+		LOG.debug("returning success");
 		return "success";
 	}
 
@@ -282,7 +282,7 @@ public class DevicesBean implements Devices {
 	public String mobileActivationOk() {
 		LOG.debug("mobile activation ok: " + this.mobile);
 		this.mobileActivationCode = null;
-		return "";
+		return "success";
 	}
 
 	@End
@@ -301,6 +301,6 @@ public class DevicesBean implements Devices {
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;
 		}
-		return "";
+		return "cancel";
 	}
 }

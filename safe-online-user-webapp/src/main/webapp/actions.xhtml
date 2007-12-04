@@ -9,8 +9,7 @@
 
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="actions" />
+			<ui:param name="page" value="actions" />
 		</ui:include>
 	</ui:define>
 
@@ -28,9 +27,6 @@
 
 
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
-		</ui:include>
 	</ui:define>
 
 </ui:composition>

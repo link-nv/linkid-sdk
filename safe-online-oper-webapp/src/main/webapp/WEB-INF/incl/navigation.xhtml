@@ -1,56 +1,25 @@
-<div xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:c="http://java.sun.com/jstl/core">
-<div class="nav">
-<ul>
-	<li id="page_main"><a
-		href="#{facesContext.externalContext.requestContextPath}/main.seam">#{msgs.home}</a></li>
-	<li id="page_about"><a
-		href="#{facesContext.externalContext.requestContextPath}/about.seam">#{msgs.about}</a></li>
-	<li id="page_contact"><a
-		href="#{facesContext.externalContext.requestContextPath}/contact.seam">#{msgs.contact}</a></li>
-	<li id="page_legal"><a
-		href="#{facesContext.externalContext.requestContextPath}/legal.seam">#{msgs.legal}</a></li>
-	<li id="page_privacy"><a
-		href="#{facesContext.externalContext.requestContextPath}/privacy.seam">#{msgs.privacy}</a></li>
-</ul>
-</div>
-
-<f:subview rendered="#{username != null and page == 'main'}">
-	<div class="nav">
-	<ul>
-		<li id="subpage_overview"><a
-			href="#{facesContext.externalContext.requestContextPath}/overview.seam">#{msgs.overview}</a></li>
-		<li id="subpage_owners"><a
-			href="#{facesContext.externalContext.requestContextPath}/owners/owners.seam">#{msgs.applicationOwners}</a></li>
-		<li id="subpage_applications"><a
-			href="#{facesContext.externalContext.requestContextPath}/applications/applications.seam">#{msgs.applications}</a></li>
-		<li id="subpage_pkix"><a
-			href="#{facesContext.externalContext.requestContextPath}/pkix/pkix.seam">#{msgs.PKIX}</a></li>
-		<li id="subpage_audit"><a
-			href="#{facesContext.externalContext.requestContextPath}/audit/audit.seam">#{msgs.audit}</a></li>
-		<li id="subpage_tasks"><a
-			href="#{facesContext.externalContext.requestContextPath}/tasks/tasks.seam">#{msgs.tasks}</a></li>
-		<li id="subpage_attributes"><a
+<div xmlns="http://www.w3.org/1999/xhtml">
+	<ul class="menu">
+	<li id="page_home"><a
+			href="#{facesContext.externalContext.requestContextPath}/overview.seam">#{msgs.home}</a></li>
+		<li id="page_applications"><a
+			href="#{facesContext.externalContext.requestContextPath}/applications-main.seam">#{msgs.applications}</a></li>
+		<li id="page_attributes"><a
 			href="#{facesContext.externalContext.requestContextPath}/attributes/attributes.seam">#{msgs.attributes}</a></li>
-		<li id="subpage_configuration"><a
-			href="#{facesContext.externalContext.requestContextPath}/configuration.seam">#{msgs.configuration}</a></li>
-		<li id="subpage_authorization"><a
-			href="#{facesContext.externalContext.requestContextPath}/authorization/main.seam">#{msgs.authorization}</a></li>
-		<li id="subpage_usageagreement"><a
-			href="#{facesContext.externalContext.requestContextPath}/usage/usage-agreements.seam">#{msgs.usageAgreement}</a></li>
-
+		<li id="page_configuration"><a
+			href="#{facesContext.externalContext.requestContextPath}/configuration-main.seam">#{msgs.configuration}</a></li>
+		<li id="page_maintenance"><a
+			href="#{facesContext.externalContext.requestContextPath}/maintenance.seam">#{msgs.maintenance}</a></li>
 	</ul>
-	</div>
-</f:subview> <script language="JavaScript">
+
+
+<script language="JavaScript">
         function setClass(id, className) {
             obj = document.getElementById(id);
             if (obj != null) {
                 obj.className = className;
             }
         }
-        setClass("page_" + "#{page}", "current");
-        setClass("subpage_" + "#{subpage}", "current");
-    </script></div>
+        setClass("page_" + "#{page}", "selected");
+</script>
+</div>

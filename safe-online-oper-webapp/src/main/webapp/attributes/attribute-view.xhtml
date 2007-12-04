@@ -7,23 +7,17 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
+<ui:composition template="/WEB-INF/template-root.xhtml">
 
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="attributes" />
+			<ui:param name="page" value="attributes" />
 		</ui:include>
 	</ui:define>
 
 	<ui:define name="content">
 
-		<h2>#{msgs.attribute} #{selectedAttributeType.name}</h2>
+		<h1>#{msgs.attribute} #{selectedAttributeType.name}</h1>
 
 		<f:subview>
 			<rich:tabPanel id="tabs" switchType="client">
@@ -89,7 +83,8 @@
 							</h:column>
 						</h:dataTable>
 						<rich:spacer height="10" />
-						<h:commandButton action="add" id="add" value="#{msgs.addaction}" />
+						<h:commandButton action="add" id="add" value="#{msgs.addaction}"
+							styleClass="submit" />
 					</h:form>
 				</rich:tab>
 
@@ -110,7 +105,7 @@
 						</h:dataTable>
 						<rich:spacer height="10" />
 						<h:commandButton action="add-provider" id="add-provider"
-							value="#{msgs.addaction}" />
+							value="#{msgs.addaction}" styleClass="submit" />
 
 						<h:messages styleClass="error" globalOnly="true" />
 					</h:form>
@@ -121,15 +116,9 @@
 		<rich:spacer height="10" />
 		<h:form>
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
-				immediate="true" />
+				immediate="true" styleClass="submit" />
 		</h:form>
 
-	</ui:define>
-
-	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
 	</ui:define>
 
 </ui:composition>

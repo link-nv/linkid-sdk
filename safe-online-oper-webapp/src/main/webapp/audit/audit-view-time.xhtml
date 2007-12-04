@@ -8,25 +8,20 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
+			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.operatorAuditRecordsSince} : <h:outputLabel
+		<h1>#{msgs.operatorAuditRecordsSince} : <h:outputLabel
 			value="#{ageLimit}">
 			<f:convertDateTime type="both" timeStyle="medium" dateStyle="short" />
-		</h:outputLabel></h2>
+		</h:outputLabel></h1>
 
 		<h:form>
-			<h3>#{msgs.operatorAccessAuditRecords}</h3>
+			<h2>#{msgs.operatorAccessAuditRecords}</h2>
 			<t:dataTable id="access-audit-data" var="item"
 				renderedIfEmpty="false" value="#{accessAuditRecordList}" rows="15"
 				preserveDataModel="false" styleClass="listingTable"
@@ -70,7 +65,7 @@
 		</h:form>
 
 		<h:form>
-			<h3>#{msgs.operatorSecurityAuditRecords}</h3>
+			<h2>#{msgs.operatorSecurityAuditRecords}</h2>
 			<t:dataTable id="security-audit-data" var="item"
 				renderedIfEmpty="false" value="#{securityAuditRecordList}" rows="15"
 				preserveDataModel="false" styleClass="listingTable"
@@ -114,7 +109,7 @@
 		</h:form>
 
 		<h:form>
-			<h3>#{msgs.operatorResourceAuditRecords}</h3>
+			<h2>#{msgs.operatorResourceAuditRecords}</h2>
 			<t:dataTable id="resource-audit-data" var="item"
 				renderedIfEmpty="false" value="#{resourceAuditRecordList}" rows="15"
 				preserveDataModel="false" styleClass="listingTable"
@@ -162,7 +157,7 @@
 		</h:form>
 
 		<h:form>
-			<h3>#{msgs.operatorAuditAuditRecords}</h3>
+			<h2>#{msgs.operatorAuditAuditRecords}</h2>
 			<t:dataTable id="audit-audit-data" var="item" renderedIfEmpty="false"
 				value="#{auditAuditRecordList}" rows="15" preserveDataModel="false"
 				styleClass="listingTable"
@@ -196,14 +191,17 @@
 
 		<h:form>
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
-				immediate="true" />
+				immediate="true" styleClass="submit" />
 		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/tasks/tasks.seam"
+					value="#{msgs.operatorTasks}" /></li>
+			</ul>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </body>

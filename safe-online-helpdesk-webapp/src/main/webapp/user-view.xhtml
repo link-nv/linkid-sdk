@@ -7,22 +7,17 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.helpdeskTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
+<ui:composition template="/WEB-INF/template-root.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
+			<ui:param name="page" value="user" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.helpdesk} : <h:outputFormat value="#{msgs.userLog}">
+		<h1>#{msgs.helpdesk} : <h:outputFormat value="#{msgs.userLog}">
 			<f:param value="#{selectedUser}" />
-		</h:outputFormat></h2>
+		</h:outputFormat></h1>
 
 		<h:form>
 			<t:dataTable id="helpdesk-user-log-data" var="item"
@@ -60,11 +55,6 @@
 		</h:form>
 
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{helpLogin}" />
-		</ui:include>
 	</ui:define>
 </ui:composition>
 </body>

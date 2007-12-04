@@ -11,21 +11,14 @@
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="applications" />
+			<ui:param name="page" value="applications" />
 		</ui:include>
 	</ui:define>
 
 	<ui:define name="content">
-		<h2>#{msgs.addApplication}</h2>
+		<h1>#{msgs.addApplication}</h1>
 
 		<h:form enctype="multipart/form-data">
 			<f:facet name="aroundInvalidField">
@@ -39,76 +32,63 @@
 						<tr>
 							<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
 							<td><s:decorate>
-									<h:inputText id="name" value="#{operApplication.name}"
-										required="true" />
-								</s:decorate>*
-								<h:message for="name" styleClass="error" />
-							</td>
+								<h:inputText id="name" value="#{operApplication.name}"
+									required="true" />
+							</s:decorate>* <h:message for="name" styleClass="error" /></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="friendlyName"
 								value="#{msgs.friendlyname}" />:</td>
 							<td><s:decorate>
-									<h:inputText id="friendlyName"
-										value="#{operApplication.friendlyName}" />
-								</s:decorate>
-							</td>
+								<h:inputText id="friendlyName"
+									value="#{operApplication.friendlyName}" />
+							</s:decorate></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="owner"
 								value="#{msgs.applicationOwner}" />:</td>
 							<td><s:decorate>
-									<h:selectOneMenu id="owner"
-										value="#{operApplication.applicationOwner}" required="true">
-										<f:selectItems value="#{availableApplicationOwners}" />
-									</h:selectOneMenu>
-								</s:decorate>*
-								<h:message for="owner" styleClass="error" />
-							</td>
+								<h:selectOneMenu id="owner"
+									value="#{operApplication.applicationOwner}" required="true">
+									<f:selectItems value="#{availableApplicationOwners}" />
+								</h:selectOneMenu>
+							</s:decorate>* <h:message for="owner" styleClass="error" /></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="applicationUrl"
 								value="#{msgs.applicationUrl}" />:</td>
 							<td><s:decorate>
-									<h:inputText id="applicationUrl"
-										value="#{operApplication.applicationUrl}">
-									</h:inputText>
-								</s:decorate>
-							    <h:message for="applicationUrl" styleClass="error" />
-						    </td>
+								<h:inputText id="applicationUrl"
+									value="#{operApplication.applicationUrl}">
+								</h:inputText>
+							</s:decorate> <h:message for="applicationUrl" styleClass="error" /></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="applicationLogo"
 								value="#{msgs.applicationLogo}" />:</td>
 							<td><s:decorate>
-		                            <tr:inputFile id="applicationLogo"
-		                                value="#{operApplication.applicationLogoFile}" />
-								</s:decorate>
-							    <h:message for="applicationLogo" styleClass="error" />
-						    </td>
+								<tr:inputFile id="applicationLogo"
+									value="#{operApplication.applicationLogoFile}" />
+							</s:decorate> <h:message for="applicationLogo" styleClass="error" /></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="applicationColor"
 								value="#{msgs.applicationColor}" />:</td>
 							<td><s:decorate>
-									<h:inputText id="applicationColor"
-										value="#{operApplication.applicationColor}">
-									</h:inputText>
-								</s:decorate>
-								<h:message for="applicationColor" styleClass="error" />
-						    </td>
+								<h:inputText id="applicationColor"
+									value="#{operApplication.applicationColor}">
+								</h:inputText>
+							</s:decorate> <h:message for="applicationColor" styleClass="error" /></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="applicationIdScope"
 								value="#{msgs.applicationIdScope}" />:</td>
 							<td><s:decorate>
-									<h:selectOneMenu id="applicationIdScope"
-										value="#{operApplication.applicationIdScope}" required="true">
-										<f:selectItems value="#{applicationIdScopes}" />
-									</h:selectOneMenu>
-							    </s:decorate>*
-							    <h:message for="applicationIdScope" styleClass="error" />
-						    </td>
+								<h:selectOneMenu id="applicationIdScope"
+									value="#{operApplication.applicationIdScope}" required="true">
+									<f:selectItems value="#{applicationIdScopes}" />
+								</h:selectOneMenu>
+							</s:decorate>* <h:message for="applicationIdScope" styleClass="error" /></td>
 						</tr>
 					</table>
 				</rich:tab>
@@ -169,17 +149,19 @@
 			<t:messages styleClass="error" globalOnly="true" />
 
 			<h:commandButton action="#{operApplication.add}" id="add"
-				value="#{msgs.addaction}" />
-			<so:nbsp />
+				value="#{msgs.addaction}" styleClass="submit" />
 			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" />
+				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 		</h:form>
 	</ui:define>
 
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/owners/owners.seam"
+					value="#{msgs.owners}" /></li>
+			</ul>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </body>

@@ -8,20 +8,14 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="tasks" />
+			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.scheduling}: #{selectedScheduling.name}</h2>
+		<h1>#{msgs.scheduling}: #{selectedScheduling.name}</h1>
 
 		<table>
 			<tr>
@@ -58,22 +52,23 @@
 				<f:facet name="next">#{msgs.next}</f:facet>
 			</t:dataScroller>
 			<h:commandButton action="#{scheduling.taskListView}" id="back"
-				value="#{msgs.backaction}" immediate="true" />
-			<so:nbsp />
+				value="#{msgs.backaction}" immediate="true" styleClass="submit" />
 			<h:commandButton action="#{scheduling.performScheduling}"
 				id="performscheduling" value="#{msgs.performschedulingaction}"
-				immediate="true" />
-			<so:nbsp />
+				immediate="true" styleClass="submit" />
 			<h:commandButton action="#{scheduling.editSchedulingView}"
 				id="editscheduling" value="#{msgs.editschedulingaction}"
-				immediate="true" />
+				immediate="true" styleClass="submit" />
 		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/audit/audit.seam"
+					value="#{msgs.audit}" /></li>
+			</ul>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </body>

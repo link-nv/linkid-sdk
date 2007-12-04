@@ -8,20 +8,15 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
+			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
 		<h:form>
-			<h3>#{msgs.operatorResourceAuditRecords}</h3>
+			<h1>#{msgs.operatorResourceAuditRecords}</h1>
 			<t:dataTable id="resource-audit-data" var="item"
 				renderedIfEmpty="false" value="#{resourceAuditRecordList}" rows="15"
 				preserveDataModel="false" styleClass="listingTable"
@@ -68,15 +63,18 @@
 			</t:dataScroller>
 
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
-				immediate="true" />
+				immediate="true" styleClass="submit" />
 		</h:form>
 
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/tasks/tasks.seam"
+					value="#{msgs.operatorTasks}" /></li>
+			</ul>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </body>

@@ -9,28 +9,25 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
+			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
 
 	<ui:define name="content">
-		<h2>#{msgs.audit}</h2>
+		<h1>#{msgs.audit}</h1>
 
 		<h:form>
 			<h:panelGrid columns="2" border="0">
 				<h:commandButton action="#{audit.viewSecurityRecords}"
-					id="viewSecurity" value="#{msgs.viewAuditSecurity}" />
+					id="viewSecurity" value="#{msgs.viewAuditSecurity}"
+					styleClass="submit" />
 				<h:commandButton action="#{audit.viewResourceRecords}"
-					id="viewResource" value="#{msgs.viewAuditResource}" />
+					id="viewResource" value="#{msgs.viewAuditResource}"
+					styleClass="submit" />
 				<h:commandButton action="#{audit.viewAuditRecords}" id="viewAudit"
-					value="Audit Audit Records" />
+					value="Audit Audit Records" styleClass="submit" />
 			</h:panelGrid>
 		</h:form>
 
@@ -46,7 +43,7 @@
 						validator="#{audit.validateId}" required="true" />
 				</s:decorate>
 				<h:commandButton action="#{audit.searchId}" id="searchId"
-					value="#{msgs.searchAction}" />
+					value="#{msgs.searchAction}" styleClass="submit" />
 				<t:message for="searchIdInput" styleClass="error" />
 			</h:panelGrid>
 		</h:form>
@@ -59,7 +56,7 @@
 						validator="#{audit.validateUser}" required="true" />
 				</s:decorate>
 				<h:commandButton action="#{audit.searchUser}" id="searchUser"
-					value="#{msgs.searchAction}" />
+					value="#{msgs.searchAction}" styleClass="submit" />
 				<t:message for="searchUserInput" styleClass="error" />
 			</h:panelGrid>
 		</h:form>
@@ -97,7 +94,8 @@
 				<h:outputLabel value="#{msgs.minutes}" />
 
 				<h:commandButton action="#{audit.searchLastTime}"
-					id="searchLastTime" value="#{msgs.searchAction}" />
+					id="searchLastTime" value="#{msgs.searchAction}"
+					styleClass="submit" />
 
 			</h:panelGrid>
 		</h:form>
@@ -145,9 +143,12 @@
 	</ui:define>
 
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/tasks/tasks.seam"
+					value="#{msgs.operatorTasks}" /></li>
+			</ul>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </body>

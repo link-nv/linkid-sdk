@@ -7,21 +7,10 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.authentication}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-	</ui:define>
 
 	<ui:define name="content">
-		<div class="infobox"><ui:include
-			src="/WEB-INF/incl/appinfo.xhtml" /></div>
-		<h2>#{msgs.authenticateBeId}</h2>
-		<div><applet name="AuthenticationApplet"
+		<h1>#{msgs.authenticateBeId}</h1>
+		<applet name="AuthenticationApplet"
 			code="net.link.safeonline.auth.AuthenticationApplet.class"
 			archive="safe-online-auth-applet-package.jar" width="450"
 			height="200">
@@ -33,12 +22,18 @@
 				value="#{facesContext.externalContext.request.session.id}" />
 			<param name="ApplicationId" value="${applicationId}" />
 			<param name="Language" value="#{localeSelector.language}" />
-		</applet> <h:form>
-			<p><h:commandLink value="#{msgs.helpaction}" action="help"
-				immediate="true" styleClass="help" /></p>
+		</applet>
+	</ui:define>
+	<ui:define name="sidebar>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="help"
+					value="#{msgs.helpaction}" immediate="true"/></li>
+				<li><h:commandLink action="/all-devices.seam"
+					value="#{msgs.tryAnotherDevice}" /></li>
+			</ul>
 		</h:form>
-		<p><a href="./all-devices.seam">#{msgs.tryAnotherDevice}</a></p>
-		</div>
+		<p>#{msgs.helpBeid}</p>
 	</ui:define>
 </ui:composition>
 </body>

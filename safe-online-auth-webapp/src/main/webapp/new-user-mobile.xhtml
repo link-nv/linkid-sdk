@@ -10,16 +10,9 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-	</ui:define>
-
 	<ui:define name="content">
 
-		<div class="infobox"><ui:include
-			src="/WEB-INF/incl/appinfo.xhtml" /></div>
-
-		<h2>#{msgs.createAccount}</h2>
+		<h1>#{msgs.createAccount}</h1>
 		<h2>#{msgs.mobile}</h2>
 
 		<table>
@@ -46,7 +39,7 @@
 				<h:message for="mobile" styleClass="error" />
 				<h:commandButton action="#{accountRegistration.mobileRegister}"
 					id="register" value="#{msgs.registerMobile}"
-					rendered="#{empty challengeId}" />
+					rendered="#{empty challengeId}" class="submit" />
 			</h:panelGrid>
 		</a4j:form>
 
@@ -66,14 +59,19 @@
 				</s:decorate>
 				<h:message for="otp" styleClass="error" />
 				<h:commandButton action="#{accountRegistration.mobileNext}"
-					id="submit" value="#{msgs.submit}" />
+					id="submit" value="#{msgs.submit}" class="submit" />
 			</h:panelGrid>
 		</a4j:form>
 
+	</ui:define>
+	<ui:define name="sidebar">
 		<h:form>
-			<p><h:commandLink value="#{msgs.helpaction}" action="help"
-				immediate="true" styleClass="help" /></p>
+			<ul class="sidemenu">
+				<li><h:commandLink value="#{msgs.helpaction}" action="help"
+					immediate="true" /></li>
+			</ul>
 		</h:form>
+		<p>#{msgs.helpNewUserMobile}</p>
 	</ui:define>
 </ui:composition>
 </body>

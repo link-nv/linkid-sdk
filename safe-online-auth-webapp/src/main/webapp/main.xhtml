@@ -5,22 +5,9 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.authentication}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-	</ui:define>
-
 	<ui:define name="content">
-		<div class="infobox"><ui:include
-			src="/WEB-INF/incl/appinfo.xhtml" /></div>
-		<div>
-		<p>#{msgs.selectDevice}:</p>
+
+		<h1>#{msgs.selectDevice}</h1>
 
 		<h:form>
 			<h:selectOneRadio value="#{device.selection}" layout="pageDirection">
@@ -30,13 +17,20 @@
 			<h:messages styleClass="error" />
 
 			<h:commandButton action="#{device.next}" id="next"
-				value="#{msgs.next}" />
-		</h:form></div>
+				value="#{msgs.next}" class="submit" />
+		</h:form>
 
-		<p><a href="./new-user.seam">#{msgs.newUser}</a></p>
-
-		<p><a href="./all-devices.seam">#{msgs.tryAnotherDevice}</a></p>
-
+	</ui:define>
+	<ui:define name="sidebar">
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/new-user.seam"
+					value="#{msgs.newUser}" /></li>
+				<li><h:commandLink action="/all-devices.seam"
+					value="#{msgs.tryAnotherDevice}" /></li>
+			</ul>
+		</h:form>
+		<p>#{msgs.helpAuthenticationMain}</p>
 	</ui:define>
 </ui:composition>
 </body>

@@ -8,20 +8,14 @@
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="usage=agreements" />
+			<ui:param name="page" value="configuration" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.usageAgreement}</h2>
+		<h1>#{msgs.usageAgreement}</h1>
 
 		<rich:tabPanel id="usagePanel" switchType="client">
 
@@ -116,7 +110,8 @@
 
 					<a4j:commandButton id="edit-agreement" value="#{msgs.editaction}"
 						action="#{globalUsageAgreement.createUsageAgreement}"
-						rendered="#{empty globalUsageAgreement.draftUsageAgreement}" />
+						rendered="#{empty globalUsageAgreement.draftUsageAgreement}"
+						styleClass="submit" />
 				</a4j:form>
 			</rich:tab>
 		</rich:tabPanel>
@@ -124,14 +119,22 @@
 		<h:form>
 			<h:commandButton id="create-agreement" value="#{msgs.createaction}"
 				action="#{globalUsageAgreement.createUsageAgreement}"
-				rendered="#{empty globalUsageAgreement.currentUsageAgreement and empty globalUsageAgreement.draftUsageAgreement}" />
+				rendered="#{empty globalUsageAgreement.currentUsageAgreement and empty globalUsageAgreement.draftUsageAgreement}"
+				styleClass="submit" />
 		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/configuration.seam"
+					value="#{msgs.operatorGeneralConfiguration}" /></li>
+				<li><h:commandLink action="/pkix/pkix.seam"
+					value="#{msgs.PKIX}" /></li>
+				<li><h:commandLink action="/authorization/main.seam"
+					value="#{msgs.authorization}" /></li>
+			</ul>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </body>

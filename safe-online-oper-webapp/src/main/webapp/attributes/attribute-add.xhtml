@@ -8,21 +8,15 @@
 	xmlns:tr="http://myfaces.apache.org/trinidad"
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
+<ui:composition template="/WEB-INF/template-root.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="attributes" />
+			<ui:param name="page" value="attributes" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.addAttribute}</h2>
+		<h1>#{msgs.addAttribute}</h1>
 
 		<h:form>
 			<f:facet name="aroundInvalidField">
@@ -55,18 +49,12 @@
 			<br />
 
 			<h:commandButton action="#{addAttribute.cancel}" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" />
-			<so:nbsp />
+				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 			<h:commandButton value="#{msgs.next}" id="next"
-				action="#{addAttribute.next}" />
+				action="#{addAttribute.next}" styleClass="submit" />
 
 		</h:form>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
 	</ui:define>
 </ui:composition>
 </body>

@@ -9,21 +9,9 @@
 	xmlns:rich="http://richfaces.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.authentication}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-	</ui:define>
-
 	<ui:define name="content">
 
-		<div class="infobox"><ui:include
-			src="/WEB-INF/incl/appinfo.xhtml" /></div>
-		<h2>#{msgs.mobileAuthentication}</h2>
+		<h1>#{msgs.mobileAuthentication}</h1>
 
 		<f:facet name="aroundInvalidField">
 			<s:span styleClass="error" />
@@ -41,7 +29,7 @@
 				<t:message for="mobile" styleClass="error" />
 				<h:commandButton id="generateOTP" value="#{msgs.mobileRequestOTP}"
 					action="#{mobileLogon.requestOTP}"
-					rendered="#{empty mobileLogon.challengeId}" />
+					rendered="#{empty mobileLogon.challengeId}" class="submit" />
 			</h:panelGrid>
 		</a4j:form>
 
@@ -55,18 +43,25 @@
 				</s:decorate>
 				<t:message for="otp" styleClass="error" />
 				<h:commandButton action="#{mobileLogon.login}" id="login"
-					value="#{msgs.loginaction}" />
+					value="#{msgs.loginaction}" class="submit" />
 			</h:panelGrid>
 		</h:form>
 
 		<h:form>
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
-				immediate="true" />
-			<so:nbsp />
-			<h:commandLink value="#{msgs.helpaction}" action="help"
-				immediate="true" styleClass="help" />
-			<a href="./all-devices.seam">#{msgs.tryAnotherDevice}</a>
+				immediate="true" class="submit" />
 		</h:form>
+	</ui:define>
+	<ui:define name="sidebar">
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink value="#{msgs.helpaction}" action="help"
+					immediate="true" /></li>
+				<li><h:commandLink action="/all-devices.seam"
+					value="#{msgs.tryAnotherDevice}" /></li>
+			</ul>
+		</h:form>
+		<p>#{msgs.helpMobileAuthentication}</p>
 	</ui:define>
 </ui:composition>
 </body>

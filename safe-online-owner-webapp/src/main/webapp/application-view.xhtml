@@ -8,17 +8,6 @@
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.ownerTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="applications" />
-		</ui:include>
-	</ui:define>
 	<ui:define name="content">
 
 		<h1>#{selectedApplication.name}</h1>
@@ -128,17 +117,14 @@
 
 		<rich:spacer height="10" />
 		<a4j:form>
-			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back" />
-			<so:nbsp />
+			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back" styleClass="submit"/>
 			<a4j:commandButton value="#{msgs.editaction}"
-				action="#{ownerApplication.edit}" id="edit" />
+				action="#{ownerApplication.edit}" id="edit" styleClass="submit"/>
 		</a4j:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{ownerLogin}" />
-		</ui:include>
+		<p>#{msgs.helpApplicationView}</p>
 	</ui:define>
 </ui:composition>
 </body>

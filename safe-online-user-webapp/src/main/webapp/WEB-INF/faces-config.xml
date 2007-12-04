@@ -112,27 +112,67 @@
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/devices.xhtml</from-view-id>
+		<from-view-id>/device/devices.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>extract</from-action>
-			<to-view-id>/extract-identity.xhtml</to-view-id>
+			<to-view-id>/device/extract-identity.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-outcome>success</from-outcome>
-			<to-view-id>/passwd-confirm.xhtml</to-view-id>
+			<from-outcome>changepass</from-outcome>
+			<to-view-id>/device/passwd-change.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>weakmobile</from-outcome>
+			<to-view-id>/device/mobile-edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>strongmobile</from-outcome>
+			<to-view-id>/device/strongmobile-edit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/passwd-confirm.xhtml</from-view-id>
+		<from-view-id>/device/passwd-change.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>success</from-action>
+			<to-view-id>/device/passwd-confirm.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
+			<to-view-id>/device/devices.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/device/passwd-confirm.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/devices.xhtml</to-view-id>
+			<to-view-id>/device/devices.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/actions.xhtml</from-view-id>
+		<from-view-id>/device/mobile-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/device/mobile-edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>cancel</from-outcome>
+			<to-view-id>/device/devices.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<from-view-id>/device/strongmobile-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
+			<to-view-id>/device/devices.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/account.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>remove</from-action>
 			<to-view-id>/remove.xhtml</to-view-id>
@@ -147,7 +187,7 @@
 		<from-view-id>/remove.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>cancel</from-action>
-			<to-view-id>/actions.xhtml</to-view-id>
+			<to-view-id>/account.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

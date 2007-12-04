@@ -10,13 +10,12 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-		<ui:param name="page" value="main" />
-		<ui:param name="subpage" value="merge" />
+		<ui:param name="page" value="account" />
 	</ui:define>
 
 	<ui:define name="content">
 
-		<h2>#{msgs.mobileAuthentication}</h2>
+		<h1>#{msgs.mobileAuthentication}</h1>
 
 		<f:facet name="aroundInvalidField">
 			<s:span styleClass="error" />
@@ -34,7 +33,8 @@
 				<t:message for="mobile" styleClass="error" />
 				<h:commandButton id="generateOTP" value="#{msgs.mobileRequestOTP}"
 					action="#{mergeMobileLogon.requestOTP}"
-					rendered="#{empty mergeMobileLogon.challengeId}" />
+					rendered="#{empty mergeMobileLogon.challengeId}"
+					styleClass="submit" />
 			</h:panelGrid>
 		</a4j:form>
 
@@ -48,23 +48,31 @@
 				</s:decorate>
 				<t:message for="otp" styleClass="error" />
 				<h:commandButton action="#{mergeMobileLogon.login}" id="login"
-					value="#{msgs.loginaction}" />
+					value="#{msgs.loginaction}" styleClass="submit" />
 			</h:panelGrid>
 		</h:form>
 
 		<h:form>
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
-				immediate="true" />
-			<so:nbsp />
-			<h:commandLink value="#{msgs.helpaction}" action="help"
-				immediate="true" styleClass="help" />
-			<a href="./merge-login.seam">#{msgs.tryAnotherDevice}</a>
+				immediate="true" styleClass="submit" />
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/history.seam"
+					value="#{msgs.history}" /></li>
+				<li><h:commandLink action="/usage.seam"
+					value="#{msgs.usageAgreement}" /></li>
+				<li><h:commandLink action="/remove.seam"
+					value="#{msgs.removeAccount}" /></li>
+				<li><h:commandLink action="/merge-login.seam"
+					value="#{msgs.tryAnotherDevice}" /></li>
+				<li><h:commandLink action="help" value="#{msgs.helpaction}"
+					immediate="true" /></li>
+			</ul>
+		</h:form>
+		<p>#{msgs.helpMergeMobile}</p>
 	</ui:define>
 </ui:composition>
 </body>

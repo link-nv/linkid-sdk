@@ -11,13 +11,12 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="merge" />
+			<ui:param name="page" value="account" />
 		</ui:include>
 	</ui:define>
 
 	<ui:define name="content">
-		<h2>#{source}</h2>
+		<h1>#{source}</h1>
 
 		<rich:dataTable id="proven-devices-table" var="item"
 			value="#{provenDevices}" rows="10" styleClass="listingTable"
@@ -43,7 +42,7 @@
 			</h:column>
 		</rich:dataTable>
 
-		<h2>#{msgs.preview}</h2>
+		<h1>#{msgs.preview}</h1>
 
 		<rich:dataTable id="imported-subscriptions-table" var="item"
 			value="#{importedSubscriptions}"
@@ -121,7 +120,7 @@
 			</h:column>
 		</rich:dataTable>
 
-		<h3>#{msgs.mergeChoosableAttributes}</h3>
+		<h2>#{msgs.mergeChoosableAttributes}</h2>
 
 		<a4j:form ajaxSubmit="true" reRender="choosable-attributes-table">
 			<rich:dataTable id="choosable-attributes-table" var="item"
@@ -158,14 +157,22 @@
 
 		<h:form>
 			<h:commandButton action="#{mergeOverview.commit}" id="merge"
-				value="#{msgs.merge}" rendered="#{empty neededDevices}" />
+				value="#{msgs.merge}" rendered="#{empty neededDevices}" styleClass="submit"/>
 		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/history.seam"
+					value="#{msgs.history}" /></li>
+				<li><h:commandLink action="/usage.seam"
+					value="#{msgs.usageAgreement}" /></li>
+				<li><h:commandLink action="/remove.seam"
+					value="#{msgs.removeAccount}" /></li>
+			</ul>
+		</h:form>
+		<p>#{msgs.helpMergeOverview}</p>
 	</ui:define>
 </ui:composition>
 </body>

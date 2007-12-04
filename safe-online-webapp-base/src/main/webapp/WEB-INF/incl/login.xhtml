@@ -10,14 +10,14 @@
 	<c:when test="#{username == null}">
 		<h:form>
 			<h:commandButton action="#{loginComp.login}" id="login"
-				value="#{msgs.loginaction}" />
+				value="#{msgs.loginaction}" class="submit"/>
 		</h:form>
 	</c:when>
 	<c:otherwise>
 		<p>#{msgs.welcome} #{loginComp.loggedInUsername}.</p>
 		<h:form>
 			<h:commandButton action="#{loginComp.logout}" id="logout"
-				value="#{msgs.logout}" />
+				value="#{msgs.logout}" class="submit"/>
 		</h:form>
 		<so:nbsp />
 	</c:otherwise>

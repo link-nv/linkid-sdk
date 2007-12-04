@@ -10,8 +10,7 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="profile" />
+			<ui:param name="page" value="profile" />
 		</ui:include>
 	</ui:define>
 
@@ -61,9 +60,7 @@
 	</ui:define>
 
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
-		</ui:include>
+		<p>#{msgs.helpProfile}</p>
 	</ui:define>
 </ui:composition>
 </body>

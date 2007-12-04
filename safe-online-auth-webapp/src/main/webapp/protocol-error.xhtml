@@ -6,19 +6,9 @@
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.authentication}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-	</ui:define>
-
+<ui:composition template="/WEB-INF/template-root.xhtml">
 	<ui:define name="content">
-		<h2>#{msgs.protocolError}</h2>
+		<h1>#{msgs.protocolError}</h1>
 
 		<p>#{msgs.protocolErrorInfo}</p>
 

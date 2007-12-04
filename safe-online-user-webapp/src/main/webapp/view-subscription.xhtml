@@ -10,13 +10,12 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="applications" />
+			<ui:param name="page" value="applications" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
 
-		<!-- <h2>#{msgs.subscription} #{selectedSubscription.application.friendlyName}</h2> -->
+		<h1>#{msgs.subscription} #{selectedSubscription.application.friendlyName}</h1>
 
 		<rich:tabPanel id="subscriptionPanel" switchType="client">
 
@@ -37,11 +36,11 @@
 			</rich:tab>
 
 			<rich:tab label="#{msgs.description}">
-				<pre width="100">#{selectedSubscription.application.description}</pre>
+				<pre>#{selectedSubscription.application.description}</pre>
 			</rich:tab>
 
 			<rich:tab label="#{msgs.confirmedUsageAgreement}">
-				<pre width="100">#{subscriptions.usageAgreement}</pre>
+				<pre>#{subscriptions.usageAgreement}</pre>
 			</rich:tab>
 
 			<rich:tab label="#{msgs.confirmedIdentity}">
@@ -60,13 +59,11 @@
 			</rich:tab>
 		</rich:tabPanel>
 		<h:form>
-			<h:commandButton value="#{msgs.backaction}" action="back" />
+			<h:commandButton value="#{msgs.backaction}" action="back" class="submit"/>
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
-		</ui:include>
+		<p>#{msgs.helpSubscription}</p>
 	</ui:define>
 </ui:composition>
 </body>

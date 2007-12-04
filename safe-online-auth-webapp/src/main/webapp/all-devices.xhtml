@@ -6,21 +6,9 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.authentication}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-	</ui:define>
-
 	<ui:define name="content">
-		<div class="infobox"><ui:include
-			src="/WEB-INF/incl/appinfo.xhtml" /></div>
-		<div>
-		<h2>#{msgs.tryAnotherDevice}</h2>
+
+		<h1>#{msgs.tryAnotherDevice}</h1>
 		<p>#{msgs.selectDevice}:</p>
 
 		<h:form>
@@ -32,8 +20,17 @@
 			<h:messages styleClass="error" />
 
 			<h:commandButton action="#{device.next}" id="next"
-				value="#{msgs.next}" />
-		</h:form></div>
+				value="#{msgs.next}" class="submit" />
+		</h:form>
+	</ui:define>
+	<ui:define name="sidebar">
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/new-user.seam"
+					value="#{msgs.newUser}" /></li>
+			</ul>
+		</h:form>
+		<p>#{msgs.helpAllDevices}</p>
 	</ui:define>
 </ui:composition>
 </body>

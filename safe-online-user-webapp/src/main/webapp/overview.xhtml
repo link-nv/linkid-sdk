@@ -8,37 +8,26 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="overview" />
+			<ui:param name="page" value="home" />
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
-		<div class="subcolumn1-2">
-		<h3>#{msgs.userYourProfile}</h3>
+		<h1>#{msgs.overview}</h1>
+		<h2>#{msgs.userYourProfile}</h2>
 		<p>#{msgs.userYourProfileInfo} <a href="./profile/profile.seam">#{msgs.clickHere}</a></p>
 
-		<h3>#{msgs.userYourApplications}</h3>
+		<h2>#{msgs.userYourApplications}</h2>
 		<p>#{msgs.userYourApplicationsInfo} <a href="./applications.seam">#{msgs.clickHere}</a></p>
 
-		<h3>#{msgs.usageAgreement}</h3>
-		<p>#{msgs.usageAgreementInfo} <a href="./usage.seam">#{msgs.clickHere}</a></p>
-
-		</div>
-		<div class="subcolumn2-2">
-		<h3>#{msgs.userYourDevices}</h3>
+		<h2>#{msgs.userYourDevices}</h2>
 		<p>#{msgs.userYourDevicesInfo} <a href="./devices.seam">#{msgs.clickHere}</a></p>
 
-		<h3>#{msgs.userYourHistory}</h3>
-		<p>#{msgs.userYourHistoryInfo} <a href="./history.seam">#{msgs.clickHere}</a></p>
+		<h2>#{msgs.accountManagement}</h2>
+		<p>#{msgs.accountManagementInfo} <a href="./account.seam">#{msgs.clickHere}</a></p>
 
-		<h3>#{msgs.actions}</h3>
-		<p>#{msgs.userActionsInfo} <a href="./actions.seam">#{msgs.clickHere}</a></p>
-		</div>
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
-		</ui:include>
+		<p>#{msgs.helpOverview}</p>
 	</ui:define>
 </ui:composition>
 </body>

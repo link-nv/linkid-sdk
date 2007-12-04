@@ -8,17 +8,6 @@
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.ownerTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="applications" />
-		</ui:include>
-	</ui:define>
 	<ui:define name="content">
 
 		<h1>#{selectedApplication.name}</h1>
@@ -118,7 +107,7 @@
 
 					<a4j:commandButton id="edit-agreement" value="#{msgs.editaction}"
 						action="#{ownerUsageAgreement.createUsageAgreement}"
-						rendered="#{empty ownerUsageAgreement.draftUsageAgreement}" />
+						rendered="#{empty ownerUsageAgreement.draftUsageAgreement}" styleClass="submit"/>
 				</a4j:form>
 			</rich:tab>
 		</rich:tabPanel>
@@ -126,14 +115,13 @@
 		<h:form>
 			<h:commandButton id="create-agreement" value="#{msgs.createaction}"
 				action="#{ownerUsageAgreement.createUsageAgreement}"
-				rendered="#{empty ownerUsageAgreement.currentUsageAgreement and empty owerUsageAgreement.draftUsageAgreement}" />
+				rendered="#{empty ownerUsageAgreement.currentUsageAgreement and empty owerUsageAgreement.draftUsageAgreement}"
+				class="submit" />
 		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{ownerLogin}" />
-		</ui:include>
+		<p>#{msgs.helpUsageAgreements}</p>
 	</ui:define>
 </ui:composition>
 </body>

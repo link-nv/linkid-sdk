@@ -3,31 +3,12 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html">
-<f:view contentType="text/html">
-	<head>
-	<f:loadBundle basename="messages.webapp" var="msgs" />
-	<link rel="stylesheet" type="text/css"
-		href="#{facesContext.externalContext.requestContextPath}/css/style.css" />
-	<title><ui:insert name="title">#{initParam['CommercialName']}</ui:insert></title>
-	</head>
-
-	<body>
-	<div id="document">
-	<div id="header"><ui:insert name="header">
-		<h1><ui:insert name="title">#{initParam['CommercialName']}</ui:insert></h1>
-	</ui:insert></div>
-
-	<div><ui:insert name="topnav" /></div>
-
-	<div id="container"><ui:insert name="sidebar" />
-
-	<div id="content"><ui:insert name="content">Welcome to #{initParam['CommercialName']}.</ui:insert></div>
-	</div>
-
-	<div id="footer"><ui:insert name="footer">
-			Copyright 2006-2007 - LIN.K N.V.
-		</ui:insert></div>
-	</div>
-	</body>
-</f:view>
+<ui:composition template="/WEB-INF/template-root.xhtml">
+	<ui:define name="sidebox">
+		<div id="box"><h:graphicImage value="/images/box_top.gif"
+			border="0" />
+		<div id="box_content"><ui:insert name="sidebar" /></div>
+		<h:graphicImage value="/images/box_bottom.gif" border="0" /></div>
+	</ui:define>
+</ui:composition>
 </html>

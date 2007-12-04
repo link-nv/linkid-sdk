@@ -3,64 +3,31 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html">
 <body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
+<ui:composition template="/WEB-INF/template-root.xhtml">
+	
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="overview" />
+			<ui:param name="page" value="home" />
 		</ui:include>
 	</ui:define>
 
 	<ui:define name="content">
-		<div class="subcolumn1-2">
-		<h3>#{msgs.applicationOwners}</h3>
-		<p>#{msgs.operatorApplicationOwnerInfo} <a
-			href="./owners/owners.seam">#{msgs.clickHere}</a></p>
-
-		<h3>#{msgs.applications}</h3>
+		<h1>#{msgs.overview}</h1>
+		<h2>#{msgs.applications}</h2>
 		<p>#{msgs.operatorApplicationInfo} <a
-			href="./applications/applications.seam">#{msgs.clickHere}</a></p>
+			href="./applications-main.seam">#{msgs.clickHere}</a></p>
 
-		<h3>#{msgs.PKIX}</h3>
-		<p>#{msgs.operatorPKIXInfo} <a href="./pkix/pkix.seam">#{msgs.clickHere}</a></p>
-
-		<h3>#{msgs.audit}</h3>
-		<p>#{msgs.operatorAuditInfo} <a href="./audit/audit.seam">#{msgs.clickHere}</a></p>
-
-		</div>
-
-		<div class="subcolumn2-2">
-		<h3>#{msgs.tasks}</h3>
-		<p>#{msgs.operatorTaskInfo} <a href="./tasks/tasks.seam">#{msgs.clickHere}</a></p>
-
-		<h3>#{msgs.attributes}</h3>
+		<h2>#{msgs.attributes}</h2>
 		<p>#{msgs.operatorAttributeInfo} <a
 			href="./attributes/attributes.seam">#{msgs.clickHere}</a></p>
 
-		<h3>#{msgs.configuration}</h3>
+		<h2>#{msgs.configuration}</h2>
 		<p>#{msgs.operatorConfigurationInfo} <a
-			href="./configuration.seam">#{msgs.clickHere}</a></p>
+			href="./configuration-main.seam">#{msgs.clickHere}</a></p>
 
-		<h3>#{msgs.authorization}</h3>
-		<p>#{msgs.operatorAuthorizationInfo} <a
-			href="./authorization/main.seam">#{msgs.clickHere}</a></p>
-
-		<h3>#{msgs.usageAgreement}</h3>
-		<p>#{msgs.operatorUsageAgreementInfo} <a
-			href="./usage/usage-agreements.seam">#{msgs.clickHere}</a></p>
-
-		</div>
-	</ui:define>
-
-	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h2>#{msgs.maintenance}</h2>
+		<p>#{msgs.operatorMaintenanceInfo} <a
+			href="./maintenance.seam">#{msgs.clickHere}</a></p>
 	</ui:define>
 </ui:composition>
 </body>

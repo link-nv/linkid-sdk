@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="devices" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="content">
+
+		<h1>#{msgs.devices}</h1>
+
+		<h:form>
+			<table class="listingTable">
+				<tr>
+					<th>#{msgs.device}</th>
+					<th>#{msgs.deviceActions}</th>
+				</tr>
+				<tr>
+					<td>#{msgs.usernamePassword}</td>
+					<td><h:commandLink action="changepass" id="changepass"
+						value="#{msgs.deviceUpdate}" /></td>
+				</tr>
+				<tr>
+					<td>#{msgs.beid}</td>
+					<td><h:commandLink action="extract" id="extract"
+						value="#{msgs.deviceRegister}" /></td>
+				</tr>
+				<tr>
+					<td>#{msgs.mobileWeak}</td>
+					<td><h:commandLink action="weakmobile" id="weakmobile"
+						value="#{msgs.deviceUpdate}" /></td>
+				</tr>
+				<tr>
+					<td>#{msgs.mobileStrong}</td>
+					<td><h:commandLink action="strongmobile" id="strongmobile"
+						value="#{msgs.deviceUpdate}" /></td>
+				</tr>
+			</table>
+		</h:form>
+		<t:messages globalOnly="true" styleClass="error" />
+	</ui:define>
+	<ui:define name="sidebar">
+		<p>#{msgs.helpDevices}</p>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

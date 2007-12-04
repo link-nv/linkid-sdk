@@ -8,22 +8,15 @@
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="authorization" />
+			<ui:param name="page" value="configuration" />
 		</ui:include>
 	</ui:define>
 
 	<ui:define name="content">
 
-		<h2>#{msgs.authorization}</h2>
+		<h1>#{msgs.authorization}</h1>
 
 		<h:panelGrid columns="2">
 			<h:outputText value="#{msgs.user}:" />
@@ -39,18 +32,24 @@
 			<h:messages styleClass="error" />
 
 			<h:commandButton value="#{msgs.saveaction}" id="save"
-				action="#{authorizationManager.save}" />
-			<so:nbsp />
+				action="#{authorizationManager.save}" styleClass="submit" />
 			<h:commandButton action="#{authorizationManager.cancel}" id="cancel"
-				value="#{msgs.cancelaction}" />
+				value="#{msgs.cancelaction}" styleClass="submit" />
 		</h:form>
 
 	</ui:define>
 
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/configuration.seam"
+					value="#{msgs.operatorGeneralConfiguration}" /></li>
+				<li><h:commandLink action="/pkix/pkix.seam"
+					value="#{msgs.PKIX}" /></li>
+				<li><h:commandLink action="/usage/usage-agreements.seam"
+					value="#{msgs.usageAgreementOLAS}" /></li>
+			</ul>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </body>

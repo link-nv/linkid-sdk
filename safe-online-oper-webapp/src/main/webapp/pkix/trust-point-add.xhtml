@@ -10,21 +10,15 @@
 	xmlns:tr="http://myfaces.apache.org/trinidad">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.operatorTitle}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="main" />
-			<ui:param name="subpage" value="pkix" />
+			<ui:param name="page" value="configuration" />
 		</ui:include>
 	</ui:define>
 
 	<ui:define name="content">
 
-		<h2>#{msgs.operatorAddTrustPointTo} #{selectedTrustDomain.name}</h2>
+		<h1>#{msgs.operatorAddTrustPointTo} #{selectedTrustDomain.name}</h1>
 
 		<h:form enctype="multipart/form-data">
 			<f:facet name="aroundInvalidField">
@@ -42,17 +36,23 @@
 			</h:panelGrid>
 
 			<h:commandButton action="#{trustPoint.add}" id="add"
-				value="#{msgs.addaction}" />
-			<so:nbsp />
+				value="#{msgs.addaction}" styleClass="submit" />
 			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" />
+				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 		</h:form>
 	</ui:define>
 
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{operLogin}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/configuration.seam"
+					value="#{msgs.operatorGeneralConfiguration}" /></li>
+				<li><h:commandLink action="/authorization/main.seam"
+					value="#{msgs.authorization}" /></li>
+				<li><h:commandLink action="/usage/usage-agreements.seam"
+					value="#{msgs.usageAgreementOLAS}" /></li>
+			</ul>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </body>

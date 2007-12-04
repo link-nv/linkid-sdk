@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+<body>
+<ui:composition template="/WEB-INF/template-root.xhtml">
+
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="configuration" />
+		</ui:include>
+	</ui:define>
+
+	<ui:define name="content">
+		<h1>#{msgs.configuration}</h1>
+		<h2>#{msgs.operatorGeneralConfiguration}</h2>
+		<p>#{msgs.operatorGeneralConfigurationInfo} <a
+			href="./configuration.seam">#{msgs.clickHere}</a></p>
+
+		<h2>#{msgs.PKIX}</h2>
+		<p>#{msgs.operatorPKIXInfo} <a href="./pkix/pkix.seam">#{msgs.clickHere}</a></p>
+
+		<h2>#{msgs.authorization}</h2>
+		<p>#{msgs.operatorAuthorizationInfo} <a
+			href="./authorization/main.seam">#{msgs.clickHere}</a></p>
+
+		<h2>#{msgs.usageAgreementOLAS}</h2>
+		<p>#{msgs.operatorUsageAgreementInfo} <a
+			href="./usage/usage-agreements.seam">#{msgs.clickHere}</a></p>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

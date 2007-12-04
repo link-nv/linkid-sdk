@@ -8,40 +8,32 @@
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.authentication}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-	</ui:define>
 
 	<ui:define name="content">
-		<div class="infobox"><ui:include
-			src="/WEB-INF/incl/appinfo.xhtml" /></div>
 
-		<h2>#{msgs.usageAgreement}</h2>
+		<h1>#{msgs.usageAgreement}</h1>
 
-		<div>
+
 
 		<p><t:messages globalOnly="true" styleClass="error" /></p>
 
 		<rich:panel rendered="#{authSubscription.usageAgreement != null}">
-			<pre width="100">#{authSubscription.usageAgreement}</pre>
-		</rich:panel> <h:form>
+			<pre>#{authSubscription.usageAgreement}</pre>
+		</rich:panel>
+		<h:form>
 			<h:commandButton action="#{authSubscription.subscribe}" id="confirm"
 				value="#{msgs.confirm}"
-				rendered="#{!empty authSubscription.usageAgreement}" />
+				rendered="#{!empty authSubscription.usageAgreement}" class="submit" />
 			<h:commandButton action="#{authSubscription.subscribe}"
 				id="subscribe" value="#{msgs.subscribe}"
-				rendered="#{empty authSubscription.usageAgreement}" />
-			<so:nbsp />
+				rendered="#{empty authSubscription.usageAgreement}" class="submit" />
 			<h:commandButton action="reject" id="reject" value="#{msgs.reject}"
-				immediate="true" />
-		</h:form></div>
+				immediate="true" class="submit" />
+		</h:form>
 
+	</ui:define>
+	<ui:define name="sidebar">
+		<p>#{msgs.helpSubscriptionConfirm}</p>
 	</ui:define>
 
 </ui:composition>

@@ -7,21 +7,9 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="title">
-		<h:outputFormat value="#{msgs.authentication}">
-			<f:param value="#{initParam['CommercialName']}" />
-		</h:outputFormat>
-	</ui:define>
-
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-	</ui:define>
-
 	<ui:define name="content">
-		<div class="infobox"><ui:include
-			src="/WEB-INF/incl/appinfo.xhtml" /></div>
-		<h2>#{msgs.identityConfirmation}</h2>
-		<div>
+		<h1>#{msgs.identityConfirmation}</h1>
+
 		<p>#{msgs.identityConfirmationMsg}</p>
 
 		<h:dataTable var="item" value="#{identityConfirmationList}"
@@ -46,11 +34,13 @@
 
 		<h:form>
 			<h:commandButton action="#{identityConfirmation.agree}" id="agree"
-				value="#{msgs.agree}" />
-			<so:nbsp />
+				value="#{msgs.agree}" class="submit" />
 			<h:commandButton action="reject" id="reject" value="#{msgs.reject}"
-				immediate="true" />
-		</h:form></div>
+				immediate="true" class="submit" />
+		</h:form>
+	</ui:define>
+	<ui:define name="sidebar">
+		<p>#{msgs.helpIdentityConfirmation}</p>
 	</ui:define>
 </ui:composition>
 </body>

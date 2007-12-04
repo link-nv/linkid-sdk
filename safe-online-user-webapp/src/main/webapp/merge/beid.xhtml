@@ -9,13 +9,12 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
-		<ui:param name="page" value="main" />
-		<ui:param name="subpage" value="merge" />
+		<ui:param name="page" value="account" />
 	</ui:define>
 	<ui:define name="content">
-		<h2>#{msgs.authenticateBeId}</h2>
+		<h1>#{msgs.authenticateBeId}</h1>
 
-		<div><applet name="AuthenticationApplet"
+		<applet name="AuthenticationApplet"
 			code="net.link.safeonline.auth.AuthenticationApplet.class"
 			archive="../safe-online-auth-applet-package.jar" width="450"
 			height="200">
@@ -27,18 +26,25 @@
 				value="#{facesContext.externalContext.request.session.id}" />
 			<param name="ApplicationId" value="${applicationId}" />
 			<param name="Language" value="#{localeSelector.language}" />
-		</applet> <h:form>
-			<p><h:commandLink value="#{msgs.helpaction}" action="help"
-				immediate="true" styleClass="help" /></p>
-		</h:form>
-		<p><a href="./merge-login.seam">#{msgs.tryAnotherDevice}</a></p>
-		</div>
+		</applet>
 
 	</ui:define>
 	<ui:define name="sidebar">
-		<ui:include src="/WEB-INF/incl/login.xhtml">
-			<ui:param name="loginComp" value="#{login}" />
-		</ui:include>
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/history.seam"
+					value="#{msgs.history}" /></li>
+				<li><h:commandLink action="/usage.seam"
+					value="#{msgs.usageAgreement}" /></li>
+				<li><h:commandLink action="/remove.seam"
+					value="#{msgs.removeAccount}" /></li>
+				<li><h:commandLink action="/merge-login.seam"
+					value="#{msgs.tryAnotherDevice}" /></li>
+				<li><h:commandLink action="help" value="#{msgs.helpaction}"
+					immediate="true" /></li>
+			</ul>
+		</h:form>
+		<p>#{msgs.helpMergeBeid}</p>
 	</ui:define>
 </ui:composition>
 </body>
