@@ -166,7 +166,8 @@ public class EntityTest {
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", admin);
 		ApplicationEntity application = new ApplicationEntity(
-				"test-application", applicationOwner);
+				"test-application", null, applicationOwner, null, null, null,
+				null, null);
 
 		// operate: add application
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -222,7 +223,8 @@ public class EntityTest {
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", subject);
 		ApplicationEntity application = new ApplicationEntity(
-				"test-application", applicationOwner);
+				"test-application", null, applicationOwner, null, null, null,
+				null, null);
 		SubscriptionEntity subscription = new SubscriptionEntity(
 				SubscriptionOwnerType.SUBJECT, subject, "0", application);
 
@@ -245,7 +247,8 @@ public class EntityTest {
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", subject);
 		ApplicationEntity application = new ApplicationEntity(
-				"test-application", applicationOwner);
+				"test-application", null, applicationOwner, null, null, null,
+				null, null);
 		SubscriptionEntity subscription = new SubscriptionEntity(
 				SubscriptionOwnerType.SUBJECT, subject, userApplicationId,
 				application);
@@ -346,7 +349,8 @@ public class EntityTest {
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", subject);
 		ApplicationEntity application = new ApplicationEntity(
-				"test-application", applicationOwner);
+				"test-application", null, applicationOwner, null, null, null,
+				null, null);
 		UsageAgreementEntity usageAgreementv1 = new UsageAgreementEntity(
 				application, 1L);
 		UsageAgreementEntity usageAgreementv2 = new UsageAgreementEntity(
@@ -873,7 +877,8 @@ public class EntityTest {
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", admin);
 		ApplicationEntity application = new ApplicationEntity(
-				"test-application", applicationOwner);
+				"test-application", null, applicationOwner, null, null, null,
+				null, null);
 		AttributeTypeEntity attributeType1 = new AttributeTypeEntity(
 				"test-attribute-type-1", DatatypeType.STRING, true, true);
 		AttributeTypeEntity attributeType2 = new AttributeTypeEntity(
@@ -933,7 +938,8 @@ public class EntityTest {
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", admin);
 		ApplicationEntity application = new ApplicationEntity(
-				"test-application", applicationOwner);
+				"test-application", null, applicationOwner, null, null, null,
+				null, null);
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
 				"test-attribute-type", DatatypeType.STRING, true, true);
 		ApplicationIdentityEntity applicationIdentity1 = new ApplicationIdentityEntity(
@@ -994,7 +1000,8 @@ public class EntityTest {
 		ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(
 				"owner", admin);
 		ApplicationEntity application = new ApplicationEntity(
-				"test-application", applicationOwner);
+				"test-application", null, applicationOwner, null, null, null,
+				null, null);
 		AttributeTypeEntity attributeType = new AttributeTypeEntity(
 				"test-attribute-type", DatatypeType.STRING, false, false);
 		AttributeProviderEntity attributeProvider = new AttributeProviderEntity(

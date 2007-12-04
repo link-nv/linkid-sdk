@@ -103,7 +103,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 				"test-application-owner", adminSubject);
 
 		ApplicationEntity application = new ApplicationEntity(applicationName,
-				applicationOwner);
+				null, applicationOwner, null, null, null, null, null);
 		expect(this.mockApplicationDAO.findApplication(applicationName))
 				.andStubReturn(application);
 

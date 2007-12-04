@@ -127,11 +127,6 @@ public class ApplicationEntity implements Serializable {
 		// empty
 	}
 
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner) {
-		this(name, applicationOwner, null, null, null, true);
-	}
-
 	public ApplicationEntity(String name, String friendlyName,
 			ApplicationOwnerEntity applicationOwner, String description,
 			URL applicationUrl, byte[] applicationLogo, Color applicationColor,
@@ -139,23 +134,6 @@ public class ApplicationEntity implements Serializable {
 		this(name, friendlyName, applicationOwner, description, applicationUrl,
 				applicationLogo, applicationColor, true, true, certificate, 0,
 				0);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, URL applicationUrl,
-			byte[] applicationLogo, Color applicationColor,
-			boolean allowUserSubscription) {
-		this(name, applicationOwner, applicationUrl, applicationLogo,
-				applicationColor, allowUserSubscription, true);
-	}
-
-	public ApplicationEntity(String name,
-			ApplicationOwnerEntity applicationOwner, URL applicationUrl,
-			byte[] applicationLogo, Color applicationColor,
-			boolean allowUserSubscription, boolean removable) {
-		this(name, null, applicationOwner, null, applicationUrl,
-				applicationLogo, applicationColor, allowUserSubscription,
-				removable, null, 0, 0);
 	}
 
 	public ApplicationEntity(String name, String friendlyName,
