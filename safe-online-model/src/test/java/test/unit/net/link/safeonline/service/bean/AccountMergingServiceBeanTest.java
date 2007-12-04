@@ -10,6 +10,7 @@ package test.unit.net.link.safeonline.service.bean;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -181,7 +183,8 @@ public class AccountMergingServiceBeanTest {
 		assertEquals(8, accountMergingDO.getMergedAttributesToAdd().size());
 
 		// operate
-		accountMergingService.mergeAccount(accountMergingDO);
+		accountMergingService.mergeAccount(accountMergingDO,
+				new HashSet<AuthenticationDevice>());
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.commit();

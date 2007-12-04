@@ -7,12 +7,16 @@
 
 package net.link.safeonline.service;
 
+import java.util.Set;
+
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.data.AccountMergingDO;
 
 @Local
@@ -36,11 +40,15 @@ public interface AccountMergingService {
 	/**
 	 * Commit the calculated changes from merging with the source account.
 	 * 
-	 * @param mergeData
+	 * @param accountMergingDO
+	 * @param neededDevices
 	 * @throws AttributeTypeNotFoundException
 	 * @throws SubjectNotFoundException
+	 * @throws PermissionDeniedException
 	 */
-	void mergeAccount(AccountMergingDO accountMergingDO)
-			throws AttributeTypeNotFoundException, SubjectNotFoundException;
+	void mergeAccount(AccountMergingDO accountMergingDO,
+			Set<AuthenticationDevice> neededDevices)
+			throws AttributeTypeNotFoundException, SubjectNotFoundException,
+			PermissionDeniedException;
 
 }

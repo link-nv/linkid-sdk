@@ -25,6 +25,7 @@ import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
@@ -35,6 +36,7 @@ import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.device.StrongMobileDeviceService;
 import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
@@ -60,6 +62,9 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
 	@EJB
 	private SubjectService subjectService;
+
+	@EJB
+	private SubjectManager subjectManager;
 
 	@EJB
 	private PasswordDeviceService passwordDeviceService;
@@ -98,11 +103,16 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	 * 
 	 * @param subject
 	 * @throws SubjectMismatchException
+	 * @throws PermissionDeniedException
 	 */
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void setAuthenticatedSubject(SubjectEntity subject)
-			throws SubjectMismatchException {
+			throws SubjectMismatchException, PermissionDeniedException {
 		LOG.debug("set re-auth subject: " + subject.getUserId());
+		SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
+		if (targetSubject.equals(subject))
+			throw new PermissionDeniedException(
+					"target subject is equals source subject");
 		if (null == this.authenticatedSubject) {
 			this.authenticatedSubject = subject;
 			return;
@@ -115,7 +125,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
 	String password) throws SubjectNotFoundException, DeviceNotFoundException,
-			SubjectMismatchException {
+			SubjectMismatchException, PermissionDeniedException {
 		SubjectEntity subject = this.passwordDeviceService.authenticate(login,
 				password);
 		if (null == subject)
@@ -141,7 +151,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	String challengeId, @NonEmptyString
 	String mobileOTP) throws SubjectNotFoundException, MalformedURLException,
 			MobileException, MobileAuthenticationException,
-			SubjectMismatchException {
+			SubjectMismatchException, PermissionDeniedException {
 		SubjectEntity subject;
 		if (device == AuthenticationDevice.WEAK_MOBILE)
 			subject = this.weakMobileDeviceService.authenticate(mobile,
@@ -179,7 +189,8 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	String sessionId, @NotNull
 	byte[] authenticationStatementData) throws ArgumentIntegrityException,
 			TrustDomainNotFoundException, SubjectNotFoundException,
-			DecodingException, SubjectMismatchException {
+			DecodingException, SubjectMismatchException,
+			PermissionDeniedException {
 		LOG.debug("authenticate session: " + sessionId);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);

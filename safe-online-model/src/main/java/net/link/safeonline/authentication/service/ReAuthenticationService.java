@@ -17,6 +17,7 @@ import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.SubjectEntity;
@@ -51,9 +52,10 @@ public interface ReAuthenticationService {
 	 * 
 	 * @param subject
 	 * @throws SubjectMismatchException
+	 * @throws PermissionDeniedException
 	 */
 	void setAuthenticatedSubject(SubjectEntity subject)
-			throws SubjectMismatchException;
+			throws SubjectMismatchException, PermissionDeniedException;
 
 	/**
 	 * Authenticates using a username-password device.
@@ -64,10 +66,11 @@ public interface ReAuthenticationService {
 	 * @throws SubjectNotFoundException
 	 * @throws DeviceNotFoundException
 	 * @throws SubjectMismatchException
+	 * @throws PermissionDeniedException
 	 */
 	boolean authenticate(String login, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException,
-			SubjectMismatchException;
+			SubjectMismatchException, PermissionDeniedException;
 
 	/**
 	 * Authenticates using a mobile device
@@ -83,12 +86,13 @@ public interface ReAuthenticationService {
 	 * @throws MobileException
 	 * @throws MobileAuthenticationException
 	 * @throws SubjectMismatchException
+	 * @throws PermissionDeniedException
 	 */
 	String authenticate(AuthenticationDevice device, String mobile,
 			String challengeId, String mobileOTP)
 			throws SubjectNotFoundException, MalformedURLException,
 			MobileException, MobileAuthenticationException,
-			SubjectMismatchException;
+			SubjectMismatchException, PermissionDeniedException;
 
 	/**
 	 * Requests an OTP for a mobile device. Returns the challenge ID for this
@@ -116,11 +120,12 @@ public interface ReAuthenticationService {
 	 * @throws SubjectNotFoundException
 	 * @throws DecodingException
 	 * @throws SubjectMismatchException
+	 * @throws PermissionDeniedException
 	 */
 	boolean authenticate(String sessionId, byte[] authenticationStatementData)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException, DecodingException,
-			SubjectMismatchException;
+			SubjectMismatchException, PermissionDeniedException;
 
 	/**
 	 * Aborts the current authentication procedure.

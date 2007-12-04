@@ -15,6 +15,7 @@ import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
@@ -134,6 +135,12 @@ public class MobileLogonBean implements MobileLogon {
 							LogLevelType.ERROR);
 			return null;
 
+		} catch (PermissionDeniedException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			HelpdeskLogger.add("source subject equals target subject",
+					LogLevelType.ERROR);
+			return null;
 		}
 
 		HelpdeskLogger.clear();

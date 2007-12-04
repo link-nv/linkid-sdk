@@ -13,6 +13,7 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ReAuthenticationService;
@@ -110,6 +111,12 @@ public class UsernamePasswordLogonBean implements UsernamePasswordLogon {
 					.add(
 							"subject does not match already authenticated source subject",
 							LogLevelType.ERROR);
+			return null;
+		} catch (PermissionDeniedException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			HelpdeskLogger.add("source subject equals target subject",
+					LogLevelType.ERROR);
 			return null;
 		}
 		LOG.debug("authenticated " + this.source);

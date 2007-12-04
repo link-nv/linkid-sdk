@@ -23,6 +23,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
@@ -122,12 +123,18 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	 * Commits a merge given an account merging data object.
 	 * 
 	 * @throws SubjectNotFoundException
+	 * @throws PermissionDeniedException
 	 */
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public void mergeAccount(AccountMergingDO accountMergingDO)
-			throws AttributeTypeNotFoundException, SubjectNotFoundException {
+	public void mergeAccount(AccountMergingDO accountMergingDO,
+			Set<AuthenticationDevice> neededDevices)
+			throws AttributeTypeNotFoundException, SubjectNotFoundException,
+			PermissionDeniedException {
 		LOG.debug("commit merge with account "
 				+ accountMergingDO.getSourceSubject().getUserId());
+		if (null != neededDevices && neededDevices.size() != 0)
+			throw new PermissionDeniedException(
+					"Authenticated needed for certain devices");
 		SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
 		SubjectEntity sourceSubject = this.subjectService
 				.getSubject(accountMergingDO.getSourceSubject().getUserId());

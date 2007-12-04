@@ -22,11 +22,13 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.ReAuthenticationService;
+import net.link.safeonline.data.AccountMergingDO;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.user.UserConstants;
@@ -68,6 +70,10 @@ public class MergeBean implements Merge {
 
 	@In(required = false)
 	private ReAuthenticationService reAuthenticationService;
+
+	@In(required = false)
+	@Out(required = false, scope = ScopeType.SESSION)
+	private AccountMergingDO accountMergingDO;
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
@@ -141,6 +147,9 @@ public class MergeBean implements Merge {
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String start() {
 		LOG.debug("start");
+		// reset previous account merging object if present
+		if (null != this.accountMergingDO)
+			this.accountMergingDO = null;
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		String redirectUrl = "./entry";
@@ -171,6 +180,11 @@ public class MergeBean implements Merge {
 					+ " differs from authenticated source subject");
 			this.facesMessages.addToControlFromResourceBundle("user",
 					FacesMessage.SEVERITY_ERROR, "errorSubjectMismatch");
+			return null;
+		} catch (PermissionDeniedException e) {
+			LOG.debug("source user " + this.source + " equals target user");
+			this.facesMessages.addToControlFromResourceBundle("user",
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
 		LOG.debug("next: " + this.deviceSelection.getDeviceName());

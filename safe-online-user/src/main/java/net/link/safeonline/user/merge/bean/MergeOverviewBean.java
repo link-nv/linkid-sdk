@@ -24,6 +24,7 @@ import javax.faces.context.FacesContext;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.ReAuthenticationService;
@@ -151,6 +152,13 @@ public class MergeOverviewBean implements MergeOverview {
 	@Factory(NEEDED_DEVICE_LIST_NAME)
 	public List<String> neededDeviceListFactory() {
 		LOG.debug("neededDeviceListFactory");
+		Set<AuthenticationDevice> neededDevices = getNeededDevices();
+		if (null == neededDevices)
+			return null;
+		return deviceNameDecoration(getNeededDevices());
+	}
+
+	private Set<AuthenticationDevice> getNeededDevices() {
 		Set<AuthenticationDevice> neededDevices = this.accountMergingDO
 				.getNeededProvenDevices();
 		Set<AuthenticationDevice> provenDevices = this.reAuthenticationService
@@ -158,7 +166,7 @@ public class MergeOverviewBean implements MergeOverview {
 		if (null == neededDevices)
 			return null;
 		neededDevices.removeAll(provenDevices);
-		return deviceNameDecoration(neededDevices);
+		return neededDevices;
 	}
 
 	private List<String> deviceNameDecoration(Set<AuthenticationDevice> devices) {
@@ -235,7 +243,8 @@ public class MergeOverviewBean implements MergeOverview {
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String commit() {
 		try {
-			this.accountMergingService.mergeAccount(this.accountMergingDO);
+			this.accountMergingService.mergeAccount(this.accountMergingDO,
+					getNeededDevices());
 		} catch (AttributeTypeNotFoundException e) {
 			String msg = "attribute type not found";
 			LOG.error(msg);
@@ -246,6 +255,12 @@ public class MergeOverviewBean implements MergeOverview {
 			LOG.debug("source user " + this.source + " not found");
 			this.facesMessages.addToControlFromResourceBundle("user",
 					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			return null;
+		} catch (PermissionDeniedException e) {
+			LOG
+					.debug("permission denied, not all needed devices have been auth'd");
+			this.facesMessages.addToControlFromResourceBundle("user",
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
 		FacesContext context = FacesContext.getCurrentInstance();
