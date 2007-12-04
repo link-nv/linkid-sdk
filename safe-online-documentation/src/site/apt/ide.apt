@@ -36,14 +36,4 @@ mvn eclipse:add-maven-repo -Declipse.workspace=/the/path/to/your/eclipse/workspa
 * NetBeans
 
  One should definitely install the mevenide2 plugin for NetBeans.
- This plugin is available from: http://mevenide.codehaus.org
-
- Execute the following in the parent directory:
- 
-+---+
-mvn netbeans-freeform:generate-netbeans-project
-+---+
-
- and open the project in NetBeans.
- 
- There's a problem at the moment where the mvn command is not found through the PATH, had to edit mvn.path in nbproject/project.properties to the full path to the mvn command.
+ This plugin is available from: http://mevenide.codehaus.org or from within the Netbeans plugin dialog itself.
