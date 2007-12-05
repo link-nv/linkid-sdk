@@ -141,6 +141,7 @@ public class ApplicationBean implements Application {
 		this.applicationUrl = null;
 		this.applicationLogo = null;
 		this.applicationColor = null;
+		this.skipMessageIntegrityCheck = false;
 	}
 
 	public static final String OPER_APPLICATION_LIST_NAME = "operApplicationList";
@@ -605,6 +606,14 @@ public class ApplicationBean implements Application {
 					newApplicationLogo);
 			this.applicationService.updateApplicationColor(applicationId,
 					newApplicationColor);
+			this.applicationService.setIdentifierMappingServiceAccess(
+					applicationId, this.idmapping);
+			if (null != this.applicationIdScope) {
+				this.applicationService.setIdScope(applicationId, IdScopeType
+						.valueOf(this.applicationIdScope));
+			}
+			this.applicationService.setSkipMessageIntegrityCheck(applicationId,
+					this.skipMessageIntegrityCheck);
 
 			/*
 			 * Refresh the selected application.
@@ -633,40 +642,6 @@ public class ApplicationBean implements Application {
 			LOG.debug("permission denied.");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
-			return null;
-		}
-
-		try {
-			this.applicationService.setIdentifierMappingServiceAccess(
-					applicationId, this.idmapping);
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
-			return null;
-		}
-
-		if (null != this.applicationIdScope) {
-			LOG.debug("updating application id scope");
-			try {
-				this.applicationService.setIdScope(applicationId, IdScopeType
-						.valueOf(this.applicationIdScope));
-			} catch (ApplicationNotFoundException e) {
-				LOG.debug("application not found");
-				this.facesMessages
-						.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
-								"errorApplicationNotFound");
-				return null;
-			}
-		}
-
-		try {
-			this.applicationService.setSkipMessageIntegrityCheck(applicationId,
-					this.skipMessageIntegrityCheck);
-		} catch (ApplicationNotFoundException e) {
-			LOG.debug("application not found");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 			return null;
 		}
 
