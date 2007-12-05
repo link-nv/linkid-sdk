@@ -13,20 +13,25 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.net.SyslogAppender;
-import org.junit.Test;
+
+import test.spike.net.link.safeonline.TinySyslogAppender.Facility;
 
 public class SyslogTest {
 
-	@Test
-	public void syslogViaLog4j() throws Exception {
+	public static void main(String[] args) {
 		Logger logger = Logger.getLogger(SyslogTest.class);
-		SyslogAppender syslogAppender = new SyslogAppender();
-		syslogAppender.setSyslogHost("127.0.0.1");
-		syslogAppender.setFacility("LOCAL0");
-		syslogAppender.setThreshold(Level.DEBUG);
-		syslogAppender.setLayout(new SimpleLayout());
 
-		logger.addAppender(syslogAppender);
+		TinySyslogAppender mySyslogAppender = new TinySyslogAppender(
+				Facility.LOG_LOCAL0);
+		logger.addAppender(mySyslogAppender);
+
+		SyslogAppender oldSyslogAppender = new SyslogAppender();
+		oldSyslogAppender.setSyslogHost("127.0.0.1");
+		oldSyslogAppender.setFacility("LOCAL0");
+		oldSyslogAppender.setThreshold(Level.DEBUG);
+		oldSyslogAppender.setLayout(new SimpleLayout());
+		logger.addAppender(oldSyslogAppender);
+
 		logger.debug("hello world: " + new Date());
 	}
 }

@@ -16,6 +16,8 @@ import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
 import net.link.safeonline.audit.AuditBackend;
+import net.link.safeonline.audit.TinySyslogAppender;
+import net.link.safeonline.audit.TinySyslogAppender.Facility;
 import net.link.safeonline.audit.dao.AccessAuditDAO;
 import net.link.safeonline.audit.dao.AuditAuditDAO;
 import net.link.safeonline.audit.dao.ResourceAuditDAO;
@@ -33,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.net.SyslogAppender;
 import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
@@ -70,15 +71,14 @@ public class AuditSyslogBean implements AuditBackend {
 	@EJB
 	private AuditAuditDAO auditAuditDAO;
 
-	private SyslogAppender syslogAppender;
+	private TinySyslogAppender syslogAppender;
 
 	@PostConstruct
 	public void init() {
 		LOG.debug("init audit syslog bean ( " + this.syslogHost + " )");
 
-		this.syslogAppender = new SyslogAppender();
-		this.syslogAppender.setSyslogHost(this.syslogHost);
-		this.syslogAppender.setFacility(this.facility);
+		this.syslogAppender = new TinySyslogAppender(Facility
+				.valueOf(this.facility), this.syslogHost);
 		this.syslogAppender.setThreshold(Level.toLevel(this.threshold));
 		this.syslogAppender.setLayout(new SimpleLayout());
 
