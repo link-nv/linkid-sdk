@@ -30,10 +30,4 @@ public interface Scenario {
 	 * This method is called for each iteration of the scenario.
 	 */
 	public void execute() throws Exception;
-
-	/**
-	 * This value determines how many iterations of the scenario will be
-	 * executed.
-	 */
-	public int getIterations();
 }

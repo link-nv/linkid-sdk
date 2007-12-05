@@ -103,8 +103,9 @@ public class SwingConsole {
 		OlasPrefs olasPrefs = new OlasPrefs();
 
 		// JGoodies Forms layout definition.
-		FormLayout layout = new FormLayout("p, 5dlu, 0:g, 5dlu, p",
-				"p, 5dlu, t:p:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
+		FormLayout layout = new FormLayout(
+				"p, 5dlu, 0:g, 5dlu, p",
+				"p, 5dlu, t:p:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
 		layout.setColumnGroups(new int[][] { { 1, 5 } });
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout, pane);
 
@@ -129,7 +130,13 @@ public class SwingConsole {
 		builder.append(olasPrefs.port);
 		builder.nextRow();
 
-		builder.append("EAR Package:", scenarioChooser.scenarioField);
+		builder.append("Duration:");
+		builder.append("EAR Package:");
+		builder.nextColumn();
+		builder.nextRow();
+
+		builder.append(olasPrefs.duration);
+		builder.append(scenarioChooser.scenarioField);
 		builder.append(scenarioChooser.sideButton);
 		builder.nextRow();
 

@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateless;
@@ -77,31 +77,37 @@ public class ScenarioBean implements ScenarioRemote {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public List<byte[]> execute(String hostname, int workers) {
+	public List<byte[]> execute(String hostname, int workers, long duration) {
 
 		final Scenario scenario = new BasicScenario();
 		this.drivers = scenario.prepare(hostname);
 
-		ExecutorService pool = Executors.newFixedThreadPool(workers);
+		ScheduledExecutorService pool = Executors
+				.newScheduledThreadPool(workers);
 
 		// Execute the scenario story.
-		final int[] iteration = new int[1];
-		for (int i = 0; i < scenario.getIterations(); iteration[0] = ++i)
-			pool.execute(new Runnable() {
+		long until = System.currentTimeMillis() + duration;
+		for (int i = 0; i < workers; ++i)
+			pool.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
 					try {
-						// Introduce a slight random offset.
-						Thread.sleep((long) (Math.random() * 100));
 						scenario.execute();
 					} catch (Exception e) {
-						LOG.error("Test " + iteration[0] + " failed.", e);
+						LOG.error("Test failed.", e);
 					}
 				}
-			});
+			}, 0, 100, TimeUnit.MILLISECONDS);
 
+		// Sleep this thread until the specified duration has elapsed.
+		while (System.currentTimeMillis() < until)
+			try {
+				Thread.sleep(until - System.currentTimeMillis());
+			} catch (InterruptedException e) {
+			}
+
+		// Shut down and wait for active scenarios to complete.
 		pool.shutdown();
 		try {
-			// Wait for scenarios to complete.
 			while (!pool.awaitTermination(1, TimeUnit.SECONDS))
 				Thread.yield();
 		} catch (InterruptedException e) {
@@ -176,9 +182,9 @@ public class ScenarioBean implements ScenarioRemote {
 					long requestTime = data
 							.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
 					long beforeMemory = data
-							.getMeasurement(ProfileData.REQUEST_FREE_MEM);
+							.getMeasurement(ProfileData.REQUEST_START_FREE);
 					long afterMemory = data
-							.getMeasurement(ProfileData.REQUEST_USED_MEM)
+							.getMeasurement(ProfileData.REQUEST_END_FREE)
 							+ beforeMemory;
 					long endTime = startTime + requestTime;
 
@@ -256,7 +262,7 @@ public class ScenarioBean implements ScenarioRemote {
 				}
 
 				// If there's a speed for this iteration..
-				if (null != speed) {
+				if (isValid(speed)) {
 					LOG.debug(String.format(" - speed:      %f", speed));
 					speedsSet.add(startTime, speed);
 				}
@@ -289,8 +295,8 @@ public class ScenarioBean implements ScenarioRemote {
 			DefaultTableXYDataset speedsData = new DefaultTableXYDataset();
 			DefaultTableXYDataset timingData = new DefaultTableXYDataset();
 			DefaultTableXYDataset memoryData = new DefaultTableXYDataset();
-			requestData.addSeries(requestSet);
 			speedsData.addSeries(speedsSet);
+			requestData.addSeries(requestSet);
 			memoryData.addSeries(beforeMemorySet);
 			memoryData.addSeries(afterMemorySet);
 			for (XYSeries timingSeries : timingSet.values())
@@ -302,7 +308,7 @@ public class ScenarioBean implements ScenarioRemote {
 			DateAxis timeAxis = new DateAxis("Time");
 			NumberAxis speedsAxis = new NumberAxis("Requests Per Second");
 			NumberAxis timingAxis = new NumberAxis("Time Elapsed");
-			NumberAxis memoryAxis = new NumberAxis("Used Memory");
+			NumberAxis memoryAxis = new NumberAxis("Available Memory");
 
 			CombinedDomainXYPlot timingAndMemoryPlot = new CombinedDomainXYPlot(
 					timeAxis);
@@ -328,18 +334,20 @@ public class ScenarioBean implements ScenarioRemote {
 				timingPlot.setRenderer(1, new XYAreaRenderer2());
 				timingPlot.addRangeMarker(new ValueMarker(requestAvg));
 				timingAndMemoryPlot.add(timingPlot);
-			}
-			for (Map.Entry<String, List<Long>> errors : errorsSet.entrySet()) {
-				Paint paint = new Color((float) Math.random(), (float) Math
-						.random(), (float) Math.random());
-				String label = errors.getKey();
 
-				for (Long time : errors.getValue()) {
-					ValueMarker marker = new ValueMarker(time);
-					marker.setPaint(paint);
-					marker.setLabel(label);
+				for (Map.Entry<String, List<Long>> errors : errorsSet
+						.entrySet()) {
+					Paint paint = new Color((float) Math.random(), (float) Math
+							.random(), (float) Math.random());
+					String label = errors.getKey();
 
-					timingAndMemoryPlot.addDomainMarker(marker);
+					for (Long time : errors.getValue()) {
+						ValueMarker marker = new ValueMarker(time);
+						marker.setPaint(paint);
+						marker.setLabel(label);
+
+						timingPlot.addDomainMarker(marker);
+					}
 				}
 			}
 
@@ -388,6 +396,17 @@ public class ScenarioBean implements ScenarioRemote {
 		charts.add(getImage(requestChart, 1000, 1000));
 
 		return charts;
+	}
+
+	/**
+	 * @return <code>true</code> if the given value is valid and can be placed
+	 *         on a graph.
+	 */
+	private boolean isValid(Double speed) {
+
+		return speed != null && speed != Double.NaN
+				&& speed != Double.POSITIVE_INFINITY
+				&& speed != Double.NEGATIVE_INFINITY;
 	}
 
 	private byte[] getImage(JFreeChart chart, int width, int height) {

@@ -65,16 +65,15 @@ public class ProfileFilter implements Filter {
 			finally {
 				long deltaTime = System.currentTimeMillis() - startTime;
 				long endFreeMem = getFreeMemory();
-				long usedMem = startFreeMem - endFreeMem;
 
 				try {
 					profileData.addMeasurement(ProfileData.REQUEST_START_TIME,
 							startTime);
 					profileData.addMeasurement(ProfileData.REQUEST_DELTA_TIME,
 							deltaTime);
-					profileData.addMeasurement(ProfileData.REQUEST_USED_MEM,
-							usedMem);
-					profileData.addMeasurement(ProfileData.REQUEST_FREE_MEM,
+					profileData.addMeasurement(ProfileData.REQUEST_START_FREE,
+							startFreeMem);
+					profileData.addMeasurement(ProfileData.REQUEST_END_FREE,
 							endFreeMem);
 				} catch (ProfileDataLockedException e) {
 				}

@@ -34,6 +34,7 @@ public class ConsoleData {
 	private AgentDiscoverer agentDiscoverer;
 	private String hostname = "localhost";
 	private int port = 8443, workers = 5;
+	private long duration = 60000;
 
 	private ConsoleData() {
 
@@ -151,5 +152,24 @@ public class ConsoleData {
 	public synchronized void setWorkers(int workers) {
 
 		this.workers = workers;
+	}
+
+	/**
+	 * @return The amount of time to keep the scenario running (in
+	 *         milliseconds).
+	 */
+	public long getDuration() {
+
+		return this.duration;
+	}
+
+	/**
+	 * @param duration
+	 *            The amount of time to keep the scenario running (in
+	 *            milliseconds).
+	 */
+	public void setDuration(long duration) {
+
+		this.duration = duration;
 	}
 }

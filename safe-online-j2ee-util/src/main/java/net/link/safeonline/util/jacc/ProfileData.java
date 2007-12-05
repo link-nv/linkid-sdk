@@ -37,7 +37,7 @@ public class ProfileData {
 	 * The measurement string for the amount of free memory at the end of the
 	 * request in bytes.
 	 */
-	public static final String REQUEST_FREE_MEM = "FinalMemory";
+	public static final String REQUEST_START_FREE = "StartFreeMemory";
 
 	/**
 	 * The time at which the request was made in seconds since the UNIX Epoch.
@@ -48,7 +48,7 @@ public class ProfileData {
 	 * The measurement string for the memory the request used. This is the
 	 * difference of memory between the start and end of the request in bytes.
 	 */
-	public static final String REQUEST_USED_MEM = "RequestMemory";
+	public static final String REQUEST_END_FREE = "EndFreeMemory";
 
 	/**
 	 * The header used to communicate the duration of the call
@@ -71,8 +71,8 @@ public class ProfileData {
 	static {
 		requestKeys.add(REQUEST_START_TIME);
 		requestKeys.add(REQUEST_DELTA_TIME);
-		requestKeys.add(REQUEST_USED_MEM);
-		requestKeys.add(REQUEST_FREE_MEM);
+		requestKeys.add(REQUEST_START_FREE);
+		requestKeys.add(REQUEST_END_FREE);
 	}
 
 	/**

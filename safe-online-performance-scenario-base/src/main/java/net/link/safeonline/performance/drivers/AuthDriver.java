@@ -287,8 +287,9 @@ public class AuthDriver extends ProfileDriver<MessageAccessor> {
 						String key = measurement.getKey();
 						Long value = measurement.getValue();
 
-						if (!ProfileData.REQUEST_START_TIME.equals(key)
-								&& !ProfileData.REQUEST_FREE_MEM.equals(key))
+						// Don't sum any request keys other than DELTA_TIME.
+						if (!ProfileData.isRequestKey(key)
+								|| ProfileData.REQUEST_DELTA_TIME.equals(key))
 							value += iterationData.getMeasurement(key);
 
 						iterationData.addMeasurement(measurement.getKey(),

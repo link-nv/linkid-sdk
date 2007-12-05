@@ -45,7 +45,8 @@ public class ScenarioExecutorThread extends ScenarioThread {
 
 		agent.setCharts(scenario.execute(String.format("%s:%d", ConsoleData
 				.getInstance().getHostname(), ConsoleData.getInstance()
-				.getPort()), ConsoleData.getInstance().getWorkers()));
+				.getPort()), ConsoleData.getInstance().getWorkers(),
+				ConsoleData.getInstance().getDuration()));
 
 	}
 }
