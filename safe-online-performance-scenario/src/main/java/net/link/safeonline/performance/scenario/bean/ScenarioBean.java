@@ -6,9 +6,8 @@
  */
 package net.link.safeonline.performance.scenario.bean;
 
-import java.awt.Color;
-import java.awt.Paint;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,16 +42,19 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.SeriesException;
 import org.jfree.data.statistics.BoxAndWhiskerCalculator;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
+import org.jfree.ui.RectangleAnchor;
 
 /**
  * @author mbillemo
@@ -64,9 +66,9 @@ public class ScenarioBean implements ScenarioRemote {
 
 	static final Log LOG = LogFactory.getLog(ScenarioBean.class);
 
-	private List<ProfileDriver<? extends MessageAccessor>> drivers;
-
 	private ImageEncoder encoder;
+	private DateFormat timeFormat = DateFormat.getTimeInstance();
+	private List<ProfileDriver<? extends MessageAccessor>> drivers;
 
 	/**
 	 * Create a new ScenarioBean instance.
@@ -142,7 +144,9 @@ public class ScenarioBean implements ScenarioRemote {
 			Map<String, List<Long>> driverMethods = new HashMap<String, List<Long>>();
 			driversMethods.put(driver.getTitle(), driverMethods);
 			Map<String, XYSeries> timingSet = new HashMap<String, XYSeries>();
-			Map<String, List<Long>> errorsSet = new HashMap<String, List<Long>>();
+			DefaultCategoryDataset errorsSet = new DefaultCategoryDataset();
+			// Map<String, List<Long>> errorsSet = new HashMap<String,
+			// List<Long>>();
 			XYSeries speedsSet = new XYSeries("Speed", true, false);
 			XYSeries requestSet = new XYSeries("Request Time", true, false);
 			XYSeries afterMemorySet = new XYSeries("Memory After", true, false);
@@ -255,10 +259,12 @@ public class ScenarioBean implements ScenarioRemote {
 							errorClass, cause.getMessage(), errorSourceClass,
 							errorSourceLine);
 
-					if (!errorsSet.containsKey(message))
-						errorsSet.put(message, new ArrayList<Long>());
-
-					errorsSet.get(message).add(startTime);
+					errorsSet.addValue((Number) 1, message, this.timeFormat
+							.format(startTime));
+					// if (!errorsSet.containsKey(message))
+					// errorsSet.put(message, new ArrayList<Long>());
+					//
+					// errorsSet.get(message).add(startTime);
 				}
 
 				// If there's a speed for this iteration..
@@ -306,22 +312,31 @@ public class ScenarioBean implements ScenarioRemote {
 
 			// Driver Charts.
 			DateAxis timeAxis = new DateAxis("Time");
-			NumberAxis speedsAxis = new NumberAxis("Requests Per Second");
-			NumberAxis timingAxis = new NumberAxis("Time Elapsed");
-			NumberAxis memoryAxis = new NumberAxis("Available Memory");
+			NumberAxis speedsAxis = new NumberAxis("Speed (#/s)");
+			NumberAxis timingAxis = new NumberAxis("Time Elapsed (ms)");
+			NumberAxis memoryAxis = new NumberAxis("Available Memory (bytes)");
+			NumberAxis errorAxis = new NumberAxis("Exceptions");
 
 			CombinedDomainXYPlot timingAndMemoryPlot = new CombinedDomainXYPlot(
 					timeAxis);
 			if (speedsData.getItemCount() > 0) {
 				XYPlot speedPlot = new XYPlot(speedsData, timeAxis, speedsAxis,
 						new XYAreaRenderer2());
-				speedPlot.addRangeMarker(new ValueMarker(speedAvg));
+
+				ValueMarker marker = new ValueMarker(speedAvg);
+				marker.setLabel("Average");
+				marker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+				speedPlot.addRangeMarker(marker);
 				timingAndMemoryPlot.add(speedPlot);
 			}
 			if (memoryData.getItemCount() > 0) {
 				XYPlot memoryPlot = new XYPlot(memoryData, timeAxis,
 						memoryAxis, new XYDifferenceRenderer());
-				memoryPlot.addRangeMarker(new ValueMarker(memoryAvg));
+
+				ValueMarker marker = new ValueMarker(memoryAvg);
+				marker.setLabel("Average");
+				marker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+				memoryPlot.addRangeMarker(marker);
 				timingAndMemoryPlot.add(memoryPlot);
 			}
 			if (timingData.getItemCount() + requestData.getItemCount() > 0) {
@@ -332,30 +347,41 @@ public class ScenarioBean implements ScenarioRemote {
 				timingPlot.setRangeAxis(timingAxis);
 				timingPlot.setRenderer(new StackedXYAreaRenderer2());
 				timingPlot.setRenderer(1, new XYAreaRenderer2());
-				timingPlot.addRangeMarker(new ValueMarker(requestAvg));
+
+				ValueMarker marker = new ValueMarker(requestAvg);
+				marker.setLabel("Average");
+				marker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+				timingPlot.addRangeMarker(marker);
 				timingAndMemoryPlot.add(timingPlot);
-
-				for (Map.Entry<String, List<Long>> errors : errorsSet
-						.entrySet()) {
-					Paint paint = new Color((float) Math.random(), (float) Math
-							.random(), (float) Math.random());
-					String label = errors.getKey();
-
-					for (Long time : errors.getValue()) {
-						ValueMarker marker = new ValueMarker(time);
-						marker.setPaint(paint);
-						marker.setLabel(label);
-
-						timingPlot.addDomainMarker(marker);
-					}
-				}
 			}
 
-			JFreeChart iterationChart = new JFreeChart("Statistics for: "
+			JFreeChart statisticsChart = new JFreeChart("Statistics for: "
 					+ driver.getTitle(), timingAndMemoryPlot);
+			charts.add(getImage(statisticsChart, 1000, 1000));
 
-			// Image.
-			charts.add(getImage(iterationChart, 1000, 1000));
+			if (errorsSet.getRowCount() > 0) {
+				CategoryPlot errorsPlot = new CategoryPlot(errorsSet,
+						new CategoryAxis("Occurance"), errorAxis,
+						new BarRenderer());
+
+				JFreeChart errorsChart = new JFreeChart("Errors for: "
+						+ driver.getTitle(), errorsPlot);
+				charts.add(getImage(errorsChart, 1000, 150));
+			}
+			// for (Map.Entry<String, List<Long>> errors : errorsSet.entrySet())
+			// {
+			// Paint paint = new Color((float) Math.random(), (float) Math
+			// .random(), (float) Math.random());
+			// String label = errors.getKey();
+			//
+			// for (Long time : errors.getValue()) {
+			// ValueMarker marker = new ValueMarker(time);
+			// marker.setPaint(paint);
+			// marker.setLabel(label);
+			//
+			// timingPlot.addDomainMarker(marker);
+			// }
+			// }
 		}
 
 		// Create Box-and-Whisker objects from Method Timing Data.

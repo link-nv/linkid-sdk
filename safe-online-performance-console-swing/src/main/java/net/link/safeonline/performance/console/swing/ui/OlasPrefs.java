@@ -43,6 +43,15 @@ public class OlasPrefs extends JPanel implements FocusListener {
 		this.port.addFocusListener(this);
 		this.workers.addFocusListener(this);
 		this.duration.addFocusListener(this);
+
+		this.hostname
+				.setToolTipText("The IP address or DNS resolvable name of the host that is running OLAS.");
+		this.port
+				.setToolTipText("The port on which OLAS' Application Server is configured to serve SSL.");
+		this.workers
+				.setToolTipText("The amount of simultaneous threads the agents should use for firing scenarios at OLAS.");
+		this.duration
+				.setToolTipText("The amount of time to run the tests for (in milliseconds).");
 	}
 
 	/**

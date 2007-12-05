@@ -41,6 +41,8 @@ public class AgentsList extends JList implements AgentStateListener,
 		setBackground(null);
 		setOpaque(false);
 
+		setToolTipText("The list of discovered agents available for performing test on OLAS.");
+
 		this.scenarioChooser = scenarioChooser;
 		ConsoleData.getInstance().getAgentDiscoverer().addAgentStateListener(
 				this);
