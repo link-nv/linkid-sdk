@@ -12,6 +12,7 @@
      can be restricted to specific jars by specifying them in the archives
      attribute.
     -->
+   <classpath codebase="${jboss.server.lib.url:lib}" archives="jaxws-rt.jar"/>
    <classpath codebase="${jboss.server.lib.url:lib}" archives="*"/>
 
    <!-- ==================================================================== -->

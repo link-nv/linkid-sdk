@@ -54,6 +54,10 @@
 			<artifactId>easymock</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>javax.jws</groupId>
+			<artifactId>jsr181-api</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.sun.xml.stream.buffer</groupId>
 			<artifactId>streambuffer</artifactId>
 			<scope>test</scope>

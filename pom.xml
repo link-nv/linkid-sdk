@@ -436,7 +436,7 @@
 			</testResource>
 		</testResources>
 		<directory>target</directory>
-		<finalName>${artifactId}-${version}</finalName>
+		<finalName>${pom.artifactId}-${pom.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
