@@ -157,7 +157,13 @@
 					After creating a MySQL account one needs to create an OLAS
 					database. This can be done via the following script.
 					<programlisting>&mysql-create-database;</programlisting>
+					Correct configuration of the MySQL database can be
+					easily verified via the OLAS CLI.
 				</para>
+			</section>
+			<section>
+				<title>Oracle</title>
+				<para>Describe the Oracle setup.</para>
 			</section>
 		</section>
 	</chapter>
@@ -165,7 +171,10 @@
 	<chapter id="topology">
 		<title>OLAS Topology</title>
 		<para>
-			Different setup topologies are possible for hosting OLAS.
+			Different setup topologies are possible for hosting OLAS. In
+			this chapter we will describe the most common topologies.
+			Please keep in mind that other setups are also possible
+			depending on your scalability needs.
 		</para>
 		<section>
 			<title>Single node configuration</title>
@@ -175,10 +184,19 @@
 				same machine.
 				<mediaobject>
 					<imageobject>
-						<imagedata format="SVG" fileref="single-node.svg" scale="50" scalefit="1"/>
+						<imagedata format="SVG"
+							fileref="single-node.svg" scale="50" scalefit="1" />
 					</imageobject>
-					<caption>OLAS and DBMS on the same machine.</caption>
+					<caption>
+						OLAS and DBMS on the same machine.
+					</caption>
 				</mediaobject>
+				The only downside that this setup brings is that you'll
+				need to run OLAS under root privileges if you want to
+				bind it to the TCP ports 80 (HTTP) and 443 (SSL). If you
+				don't want to run OLAS under root privileges one can opt
+				to bind it to the TCP ports 8080 and 8443. This is the
+				default port assigned of JBoss Application Server.
 			</para>
 		</section>
 		<section>
@@ -186,29 +204,64 @@
 			<para>
 				Instead of running the DBMS on the same machine that
 				hosts the OLAS service one can also host the database on
-				a dedicated machine.
+				a dedicated machine. Such a setup will most likely be
+				preferred when the used DBMS is a clustered database
+				across multiple machines. Most DBMS products these days
+				support some sort of clustering. Please contact your
+				DBMS vendor to see what's possible here.
 			</para>
 		</section>
 		<section>
 			<title>Apache HTTPD front-end</title>
-			<para>If you want to run OLAS on the standard HTTP and SSL port 80 and 433 one has two options:
-			<itemizedlist>
-				<listitem>
-					<para>Run JBoss AS at root privilege.</para>
-				</listitem>
-				<listitem>
-					<para>Put an Apache HTTPD web server in front of JBoss AS.</para>
-				</listitem>
-			</itemizedlist>
-			Next diagram highlights this setup.		
-			<mediaobject>
+			<para>
+				If you want to run OLAS on the standard HTTP and SSL
+				port 80 and 433 one has two options:
+				<itemizedlist>
+					<listitem>
+						<para>Run JBoss AS at root privilege.</para>
+					</listitem>
+					<listitem>
+						<para>
+							Put an Apache HTTPD web server in front of
+							JBoss AS.
+						</para>
+					</listitem>
+				</itemizedlist>
+				Next diagram highlights this later setup.
+				<mediaobject>
 					<imageobject>
-						<imagedata format="SVG" fileref="apache-httpd.svg" scale="50" scalefit="1"/>
+						<imagedata format="SVG"
+							fileref="apache-httpd.svg" scale="50" scalefit="1" />
 					</imageobject>
-					<caption>OLAS using an Apache HTTPD web server as front-end</caption>
+					<caption>
+						OLAS using an Apache HTTPD web server as
+						front-end
+					</caption>
 				</mediaobject>
-			When choosing to put an Apache web server in front of JBoss AS one needs to configure
+				When choosing to put an Apache web server in front of
+				JBoss AS one needs to configure the HTTPD web server.
+				Per default the JBoss AS will accept incoming AJP
+				connections.
 			</para>
+			<section>
+				<title>Configuration on Linux</title>
+				<para>
+					An example configuration for the HTTPD web server
+					under Linux Fedora is given below. The configuration
+					file
+					<code>/etc/httpd/conf.d/proxy_ajp.conf</code>
+					should contain similar entries as the ones below:
+					<programlisting><![CDATA[
+ProxyPass /olas/ ajp://localhost:8009/olas/
+ProxyPass /olas-oper/ ajp://localhost:8009/olas-oper/
+ProxyPass /olas-owner/ ajp://localhost:8009/olas-owner/
+ProxyPass /olas-helpdesk/ ajp://localhost:8009/olas-helpdesk/
+ProxyPass /olas-auth/ ajp://localhost:8009/olas-auth/
+ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
+					]]>
+					</programlisting>
+				</para>
+			</section>
 		</section>
 	</chapter>
 
@@ -219,11 +272,12 @@
 			Application Server together with the OLAS JavaEE EAR file.
 		</para>
 		<section>
-			<title>Pre-configured JBoss AS</title>
+			<title>Pre-configured JBoss Application Server</title>
 			<para>
 				We deliver the OLAS services with a pre-configured JBoss
-				AS since OLAS has some specific requirements towards to
-				JavaEE container. The main customizations are:
+				Application Server (aka JBoss AS) since OLAS has some
+				specific requirements towards to JavaEE container. The
+				main customizations are:
 				<itemizedlist>
 					<listitem>
 						<para>
@@ -251,17 +305,18 @@
 				</itemizedlist>
 				The exact customizations can be extracted by
 				investigating the difference between the OLAS JBoss AS
-				and a plain vanilla JBoss AS.
+				and a plain vanilla JBoss AS. Depending on your topology
+				requirements other OLAS packaging can be delivered.
 			</para>
 		</section>
 		<section>
 			<title>OLAS EAR</title>
 			<para>
 				The OLAS services and web applications are bundled as an
-				EAR.
-				<programlisting>
-					server/default/deploy/SafeOnline.ear
-				</programlisting>
+				EAR. This EAR file can be found at:
+				<code>
+					$JBOSS_HOME/server/default/deploy/SafeOnline.ear
+				</code>
 				The EAR contains:
 				<itemizedlist>
 					<listitem>
@@ -314,7 +369,7 @@
 				one. After this step DBMS specific settings will be
 				asked for. For example, for MySQL the JDBC connection
 				URL looks like:
-				<programlisting>jdbc:mysql://localhost/safeonline</programlisting>
+				<code>jdbc:mysql://localhost/safeonline</code>
 				After going through all questions the CLI will have an
 				open connection to the OLAS database.
 			</para>
@@ -336,18 +391,41 @@
 				via the CLI.
 			</para>
 		</section>
+		<section>
+			<title>Database schema upgrades</title>
+			<para>
+				This CLI has been constructed to also allow for database
+				schema upgrades when installing newer versions of OLAS.
+			</para>
+		</section>
 	</chapter>
 
 	<chapter id="configuration">
 		<title>Pre-deployment Configuration</title>
 		<para>
-			Explain that OLAS requires some minimal configuration before
-			deployment within the application server.
+			The OLAS product has been constructed in such a way that you
+			can run it as is out-of-the-box. But for optimal production
+			environments it is recommended to perform some minimal
+			configuration before deployment within the application
+			server. This chapter will describe the different
+			pre-deployment configuration facets.
 		</para>
 		<section>
 			<title>SSL</title>
 			<para>
-				Describe that we need to configure some keys for SSL.
+				Depending on the OLAS topology, i.e. whether you're
+				using a front-end Apache web server, a different setup
+				of the SSL keys will be required. When you let JBoss
+				Tomcat handle the SSL itself you can configure the used
+				SSL certificate under:
+				<code>$JBOSS_HOME/server/default/conf/ssl.jks</code>
+				This file is using the Java keystore file format. When
+				your keystore is in a different location or in a
+				different format you can configure Tomcat via the
+				following file:
+				<code>
+					$JBOSS_HOME/server/default/deploy/jboss-web.deployer/server.xml
+				</code>
 			</para>
 		</section>
 		<section>
@@ -365,13 +443,17 @@
 		</section>
 		<section>
 			<title>Syslog</title>
-			<para>Describe the need for a syslog service.</para>
+			<para>
+				OLAS is using a syslog service for auditing purposes.
+			</para>
 		</section>
 	</chapter>
 
 	<chapter id="deployment">
 		<title>Deployment</title>
 		<para>Deploy the OLAS service via:</para>
-		<programlisting>cd jboss/bin ./run.sh</programlisting>
+		<programlisting><![CDATA[
+cd jboss/bin
+./run.sh]]></programlisting>
 	</chapter>
 </book>

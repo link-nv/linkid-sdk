@@ -343,6 +343,15 @@ public static class MyCompounded {
 			according to 7.2 - Direct References.
 		</para>
 		<para>
+			Since .NET 3.0 WCF web service clients do not sign the SOAP
+			body per default when using SSL (since in this case the
+			integrity has already been provided by the transport layer)
+			we've foreseen the option within OLAS to disable the
+			verification of the SOAP Body digestion by the WS-Security
+			signature. This can be configured per application by the
+			OLAS operator.
+		</para>
+		<para>
 			An example SOAP message with WS-Security header is given in
 			the following example (we removed the namespace declaration attributes for readability).
 			<programlisting>
