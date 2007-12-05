@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.lin-k</groupId>
+		<artifactId>safe-online</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-performance-console-package</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>SafeOnline Performance Console Package</name>
+	<description>SafeOnline Performance Console Package.</description>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-2-SNAPSHOT</version>
+				<!-- We need version 2.2-beta-2-SNAPSHOT because of a bug in 2.2-beta-1 where
+					safe-online-scenario EJB JAR is included instead of the 
+					safe-online-scenario client JAR -->
+				<configuration>
+					<descriptors>
+						<descriptor>
+							${basedir}/src/assembly/package.xml
+						</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package-zip</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>
+				safe-online-performance-console-swing
+			</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

@@ -55,6 +55,7 @@ public class Charts extends WindowAdapter {
 		this.frame = new JFrame("Performance Testing Charts");
 		this.frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.frame.setPreferredSize(new Dimension(640, 480));
+		this.frame.setSize(new Dimension(640, 480));
 		this.frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		this.frame.setContentPane(this.agents);
 		this.frame.addWindowListener(this);
