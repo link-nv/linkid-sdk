@@ -1631,8 +1631,8 @@
 		</jboss-packaging-maven-plugin.version>
 		<jboss-maven-plugin.version>1.3.1</jboss-maven-plugin.version>
 		<junit.version>4.4</junit.version>
-		<jaxb-xjc.version>2.1.4</jaxb-xjc.version>
-		<jaxb-impl.version>2.1.4</jaxb-impl.version>
+		<jaxb-xjc.version>2.1.5</jaxb-xjc.version>
+		<jaxb-impl.version>2.1.5</jaxb-impl.version>
 		<jsr181-api.version>1.0-MR1</jsr181-api.version>
 		<jaxb-api.version>2.1</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>
