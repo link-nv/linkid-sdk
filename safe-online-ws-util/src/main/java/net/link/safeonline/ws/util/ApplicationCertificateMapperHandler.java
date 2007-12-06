@@ -12,13 +12,9 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPFactory;
-import javax.xml.soap.SOAPFault;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
-import javax.xml.ws.soap.SOAPFaultException;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
@@ -29,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Application Certificate JAX-WS Login Handler. This JAX-WS SOAP handler maps a
- * trusted certificate to an application name. For this it uses the
+ * trusted certificate to an application Id. For this it uses the
  * {@link ApplicationAuthenticationService} service.
  * 
  * @author fcorneli
@@ -37,6 +33,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ApplicationCertificateMapperHandler implements
 		SOAPHandler<SOAPMessageContext> {
+
+	public static final String APPLICATION_ID_PROPERTY = ApplicationCertificateMapperHandler.class
+			.getName()
+			+ ".ApplicationId";
 
 	private static final Log LOG = LogFactory
 			.getLog(ApplicationCertificateMapperHandler.class);
@@ -87,17 +87,16 @@ public class ApplicationCertificateMapperHandler implements
 			throw new RuntimeException(
 					"no client certificate found on JAX-WS context");
 		}
-		String applicationName;
+		String applicationId;
 		try {
-			applicationName = this.applicationAuthenticationService
+			applicationId = this.applicationAuthenticationService
 					.authenticate(certificate);
 		} catch (ApplicationNotFoundException e) {
-			throw createSOAPFaultException("unknown application",
-					"FailedAuthentication");
+			throw WSSecurityUtil.createSOAPFaultException(
+					"unknown application", "FailedAuthentication");
 		}
 
-		context.put(ApplicationLoginHandler.APPLICATION_NAME_PROPERTY,
-				applicationName);
+		setApplicationId(applicationId, context);
 	}
 
 	@SuppressWarnings("unused")
@@ -105,20 +104,25 @@ public class ApplicationCertificateMapperHandler implements
 		LOG.debug("logout");
 	}
 
-	private SOAPFaultException createSOAPFaultException(String faultString,
-			String wsseFaultCode) {
-		SOAPFault soapFault;
-		try {
-			SOAPFactory soapFactory = SOAPFactory.newInstance();
-			soapFault = soapFactory
-					.createFault(
-							faultString,
-							new QName(
-									"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-									wsseFaultCode, "wsse"));
-		} catch (SOAPException e) {
-			throw new RuntimeException("SOAP error");
+	private static void setApplicationId(String applicationId,
+			SOAPMessageContext soapMessageContext) {
+		soapMessageContext.put(APPLICATION_ID_PROPERTY, applicationId);
+	}
+
+	/**
+	 * Gives back the application Id that have been written on the given SOAP
+	 * message context by a handler instance of this type.
+	 * 
+	 * @param soapMessageContext
+	 * @return
+	 */
+	public static String getApplicationId(SOAPMessageContext soapMessageContext) {
+		String applicationId = (String) soapMessageContext
+				.get(APPLICATION_ID_PROPERTY);
+		if (null == applicationId) {
+			throw new RuntimeException(
+					"no application Id found on JAX-WS context");
 		}
-		return new SOAPFaultException(soapFault);
+		return applicationId;
 	}
 }

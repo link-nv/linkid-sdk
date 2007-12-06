@@ -13,6 +13,11 @@
 		</jws:handler>
 		<jws:handler>
 			<jws:handler-class>
+				net.link.safeonline.ws.util.WSSecurityBodyHandler
+			</jws:handler-class>
+		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>
 				net.link.safeonline.ws.util.ApplicationCertificateMapperHandler
 			</jws:handler-class>
 		</jws:handler>

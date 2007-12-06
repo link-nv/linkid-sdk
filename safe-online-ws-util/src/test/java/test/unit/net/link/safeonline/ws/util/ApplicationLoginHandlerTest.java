@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.TestSOAPMessageContext;
+import net.link.safeonline.ws.util.ApplicationCertificateMapperHandler;
 import net.link.safeonline.ws.util.ApplicationLoginHandler;
 import net.link.safeonline.ws.util.WSSecurityServerHandler;
 
@@ -55,7 +56,8 @@ public class ApplicationLoginHandlerTest extends TestCase {
 		SOAPMessageContext context = new TestSOAPMessageContext(null, false);
 
 		String testApplicationName = "test-application-name-" + getName();
-		context.put(ApplicationLoginHandler.APPLICATION_NAME_PROPERTY,
+		context.put(
+				ApplicationCertificateMapperHandler.APPLICATION_ID_PROPERTY,
 				testApplicationName);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();

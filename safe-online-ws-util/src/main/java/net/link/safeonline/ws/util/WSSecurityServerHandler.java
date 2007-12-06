@@ -15,23 +15,17 @@ import java.util.Vector;
 
 import javax.annotation.PostConstruct;
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPBody;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPFactory;
-import javax.xml.soap.SOAPFault;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
-import javax.xml.ws.soap.SOAPFaultException;
 
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSSecurityEngine;
 import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.WSSecurityException;
@@ -138,14 +132,15 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 					document, null, null, crypto);
 		} catch (WSSecurityException e) {
 			LOG.debug("WS-Security error: " + e.getMessage(), e);
-			throw createSOAPFaultException(
+			throw WSSecurityUtil.createSOAPFaultException(
 					"The signature or decryption was invalid", "FailedCheck");
 		}
 		LOG.debug("results: " + wsSecurityEngineResults);
 		if (null == wsSecurityEngineResults) {
-			throw createSOAPFaultException(
-					"An error was discovered processing the <wsse:Security> header.",
-					"InvalidSecurity");
+			throw WSSecurityUtil
+					.createSOAPFaultException(
+							"An error was discovered processing the <wsse:Security> header.",
+							"InvalidSecurity");
 		}
 		Timestamp timestamp = null;
 		Set<String> signedElements = null;
@@ -169,43 +164,24 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 		}
 
 		if (null == signedElements) {
-			throw createSOAPFaultException(
+			throw WSSecurityUtil.createSOAPFaultException(
 					"The signature or decryption was invalid", "FailedCheck");
 		}
 		LOG.debug("signed elements: " + signedElements);
 		soapMessageContext.put(SIGNED_ELEMENTS_CONTEXT_KEY, signedElements);
 
 		/*
-		 * Check whether the SOAP Body has been signed.
-		 */
-		SOAPBody soapBody;
-		try {
-			soapBody = document.getEnvelope().getBody();
-		} catch (SOAPException e) {
-			throw new RuntimeException("error retrieving SOAP Body");
-		}
-		String bodyId = soapBody.getAttributeNS(WSConstants.WSU_NS, "Id");
-		if (null == bodyId || 0 == bodyId.length()) {
-			throw new RuntimeException(
-					"SOAP Body should have a wsu:Id attribute");
-		}
-		if (false == signedElements.contains(bodyId)) {
-			throw createSOAPFaultException("SOAP Body was not signed",
-					"FailedCheck");
-		}
-
-		/*
 		 * Check timestamp.
 		 */
 		if (null == timestamp) {
-			throw createSOAPFaultException(
+			throw WSSecurityUtil.createSOAPFaultException(
 					"missing Timestamp in WS-Security header",
 					"InvalidSecurity");
 		}
 		String timestampId = timestamp.getID();
 		if (false == signedElements.contains(timestampId)) {
-			throw createSOAPFaultException("Timestamp not signed",
-					"FailedCheck");
+			throw WSSecurityUtil.createSOAPFaultException(
+					"Timestamp not signed", "FailedCheck");
 		}
 		Calendar created = timestamp.getCreated();
 		long maxOffset = this.configurationManager
@@ -218,27 +194,10 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 		if (offset > maxOffset) {
 			LOG.debug("timestamp offset: " + offset);
 			LOG.debug("maximum allowed offset: " + maxOffset);
-			throw createSOAPFaultException(
+			throw WSSecurityUtil.createSOAPFaultException(
 					"WS-Security Created Timestamp offset exceeded",
 					"FailedCheck");
 		}
-	}
-
-	private SOAPFaultException createSOAPFaultException(String faultString,
-			String wsseFaultCode) {
-		SOAPFault soapFault;
-		try {
-			SOAPFactory soapFactory = SOAPFactory.newInstance();
-			soapFault = soapFactory
-					.createFault(
-							faultString,
-							new QName(
-									"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-									wsseFaultCode, "wsse"));
-		} catch (SOAPException e) {
-			throw new RuntimeException("SOAP error");
-		}
-		return new SOAPFaultException(soapFault);
 	}
 
 	/**

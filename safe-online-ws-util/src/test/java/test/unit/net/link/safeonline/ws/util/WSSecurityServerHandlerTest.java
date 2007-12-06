@@ -33,6 +33,7 @@ import javax.xml.soap.SOAPPart;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -74,6 +75,8 @@ public class WSSecurityServerHandlerTest {
 
 	private ConfigurationManager mockConfigurationManager;
 
+	private ApplicationAuthenticationService mockApplicationAuthenticationService;
+
 	private Object[] mockObjects;
 
 	@Before
@@ -84,10 +87,16 @@ public class WSSecurityServerHandlerTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ConfigurationManagerBean/local",
 				this.mockConfigurationManager);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/ApplicationAuthenticationServiceBean/local",
+				this.mockApplicationAuthenticationService);
 		this.testedInstance = new WSSecurityServerHandler();
 		this.testedInstance.postConstructCallback();
 
-		this.mockObjects = new Object[] { this.mockConfigurationManager };
+		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+
+		this.mockObjects = new Object[] { this.mockConfigurationManager,
+				this.mockApplicationAuthenticationService };
 	}
 
 	@After
@@ -212,175 +221,6 @@ public class WSSecurityServerHandlerTest {
 
 	static {
 		Init.init();
-	}
-
-	@Test
-	public void signatureCheckingFailsWhenBodyNotSigned() throws Exception {
-		// setup
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, "CN=Test");
-
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-				.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory
-				.newDocumentBuilder();
-		Document document = documentBuilder.newDocument();
-
-		Element envelopeElement = document.createElementNS(
-				"http://schemas.xmlsoap.org/soap/envelope/", "soap:Envelope");
-		envelopeElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap",
-				"http://schemas.xmlsoap.org/soap/envelope/");
-		document.appendChild(envelopeElement);
-
-		Element headerElement = document.createElementNS(
-				"http://schemas.xmlsoap.org/soap/envelope/", "soap:Header");
-		envelopeElement.appendChild(headerElement);
-
-		Element securityElement = document
-				.createElementNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-						"wsse:Security");
-		securityElement
-				.setAttributeNS(
-						Constants.NamespaceSpecNS,
-						"xmlns:wsse",
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
-		securityElement.setAttributeNS("wsse", "mustUnderstand", "1");
-		headerElement.appendChild(securityElement);
-		Element binarySecurityTokenElement = document
-				.createElementNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-						"BinarySecurityToken");
-		securityElement.appendChild(binarySecurityTokenElement);
-		String certId = "id-" + UUID.randomUUID().toString();
-		binarySecurityTokenElement
-				.setAttributeNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
-						"wsu:Id", certId);
-		binarySecurityTokenElement
-				.setAttributeNS(
-						Constants.NamespaceSpecNS,
-						"xmlns:wsu",
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
-		binarySecurityTokenElement
-				.setAttributeNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-						"ValueType",
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3");
-		binarySecurityTokenElement
-				.setAttributeNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-						"EncodingType",
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary");
-		binarySecurityTokenElement.setTextContent(new String(Base64
-				.encode(certificate.getEncoded())));
-
-		Element timestampElement = document
-				.createElementNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
-						"wsu:Timestamp");
-		timestampElement
-				.setAttributeNS(
-						Constants.NamespaceSpecNS,
-						"xmlns:wsu",
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
-		String timestampId = "id-" + UUID.randomUUID().toString();
-		timestampElement
-				.setAttributeNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
-						"wsu:Id", timestampId);
-		securityElement.appendChild(timestampElement);
-		Element createdElement = document
-				.createElementNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
-						"wsu:Created");
-		timestampElement.appendChild(createdElement);
-		timestampElement.setTextContent(new DateTime().toString());
-
-		Element bodyElement = document.createElementNS(
-				"http://schemas.xmlsoap.org/soap/envelope/", "soap:Body");
-		String bodyId = "id-" + UUID.randomUUID().toString();
-		bodyElement
-				.setAttributeNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
-						"wsu:Id", bodyId);
-		envelopeElement.appendChild(bodyElement);
-
-		Element sampleElement = document.createElementNS("tns", "tns:test");
-		bodyElement.appendChild(sampleElement);
-		sampleElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:test",
-				"urn:test");
-
-		XMLSignature signature = new XMLSignature(document, null,
-				XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512,
-				Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS);
-		securityElement.appendChild(signature.getElement());
-		{
-			Transforms transforms = new Transforms(document);
-			transforms
-					.addTransform(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS);
-			signature.addDocument("#" + timestampId, transforms,
-					MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512);
-		}
-
-		Element securityTokenReferenceElement = document
-				.createElementNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-						"wsse:SecurityTokenReference");
-		signature.getKeyInfo().addUnknownElement(securityTokenReferenceElement);
-		Element referenceElement = document
-				.createElementNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-						"wsse:Reference");
-		securityTokenReferenceElement.appendChild(referenceElement);
-		referenceElement
-				.setAttributeNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-						"URI", "#" + certId);
-		referenceElement
-				.setAttributeNS(
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-						"ValueType",
-						"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3");
-
-		signature.sign(keyPair.getPrivate());
-
-		LOG.debug("document: " + DomTestUtils.domToString(document));
-
-		// stubs
-		expect(
-				this.mockConfigurationManager
-						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-				Long.MAX_VALUE);
-
-		// prepare
-		replay(this.mockObjects);
-
-		// operate
-		MessageFactory messageFactory = MessageFactory
-				.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
-		SOAPMessage message = messageFactory.createMessage();
-		DOMSource domSource = new DOMSource(document);
-		SOAPPart soapPart = message.getSOAPPart();
-		soapPart.setContent(domSource);
-
-		message.getSOAPHeader();
-
-		SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(
-				message, false);
-
-		// operate & verify
-		try {
-			this.testedInstance.handleMessage(soapMessageContext);
-			fail();
-		} catch (RuntimeException e) {
-			// expected
-			LOG.debug("expected exception: " + e.getMessage());
-			assertEquals("SOAP Body was not signed", e.getMessage());
-			verify(this.mockObjects);
-		}
 	}
 
 	@Test

@@ -28,7 +28,7 @@ public interface ApplicationAuthenticationService {
 	 * 
 	 * @param certificate
 	 *            the trusted X509 application certificate.
-	 * @return the application name of the authentication application.
+	 * @return the application Id of the authentication application.
 	 * @throws ApplicationNotFoundException
 	 */
 	String authenticate(X509Certificate certificate)
@@ -43,5 +43,17 @@ public interface ApplicationAuthenticationService {
 	 * @throws ApplicationNotFoundException
 	 */
 	X509Certificate getCertificate(String applicationId)
+			throws ApplicationNotFoundException;
+
+	/**
+	 * Checks whether we have to skip the message integrity check. This means
+	 * that the SOAP body should not be signed by the WS-Security signature.
+	 * 
+	 * @param applicationId
+	 *            the application Id.
+	 * @return <code>true</code> if we can skip the message integrity check.
+	 * @throws ApplicationNotFoundException
+	 */
+	boolean skipMessageIntegrityCheck(String applicationId)
 			throws ApplicationNotFoundException;
 }

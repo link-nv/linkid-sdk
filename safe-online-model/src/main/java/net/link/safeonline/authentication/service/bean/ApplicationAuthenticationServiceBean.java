@@ -12,13 +12,13 @@ import java.security.cert.X509Certificate;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.entity.ApplicationEntity;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of application authentication service.
@@ -52,5 +52,14 @@ public class ApplicationAuthenticationServiceBean implements
 				.getApplication(applicationId);
 		X509Certificate certificate = application.getCertificate();
 		return certificate;
+	}
+
+	public boolean skipMessageIntegrityCheck(String applicationId)
+			throws ApplicationNotFoundException {
+		ApplicationEntity application = this.applicationDAO
+				.getApplication(applicationId);
+		boolean skipMessageIntegrityCheck = application
+				.isSkipMessageIntegrityCheck();
+		return skipMessageIntegrityCheck;
 	}
 }

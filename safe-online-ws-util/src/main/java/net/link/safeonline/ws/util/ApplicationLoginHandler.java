@@ -35,8 +35,6 @@ public class ApplicationLoginHandler implements SOAPHandler<SOAPMessageContext> 
 	private static final Log LOG = LogFactory
 			.getLog(ApplicationLoginHandler.class);
 
-	public static final String APPLICATION_NAME_PROPERTY = "net.link.safeonline.application";
-
 	private static final String LOGINCONTEXT_PROPERTY = "net.link.safeonline.logincontext";
 
 	public Set<QName> getHeaders() {
@@ -66,12 +64,8 @@ public class ApplicationLoginHandler implements SOAPHandler<SOAPMessageContext> 
 
 	private void login(SOAPMessageContext context) {
 		LOG.debug("login");
-		String applicationName = (String) context
-				.get(APPLICATION_NAME_PROPERTY);
-		if (null == applicationName) {
-			throw new RuntimeException(
-					"no application name found on JAX-WS context");
-		}
+		String applicationId = ApplicationCertificateMapperHandler
+				.getApplicationId(context);
 
 		X509Certificate certificate = WSSecurityServerHandler
 				.getCertificate(context);
@@ -83,10 +77,10 @@ public class ApplicationLoginHandler implements SOAPHandler<SOAPMessageContext> 
 		try {
 			char[] password = toPassword(certificate);
 			UsernamePasswordHandler callbackHandler = new UsernamePasswordHandler(
-					applicationName, password);
+					applicationId, password);
 			LoginContext loginContext = new LoginContext("client-login",
 					callbackHandler);
-			LOG.debug("performing login for " + applicationName);
+			LOG.debug("performing login for " + applicationId);
 			loginContext.login();
 			context.put(LOGINCONTEXT_PROPERTY, loginContext);
 		} catch (LoginException e) {
