@@ -6,13 +6,15 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="content">
+		<h1>#{msgs.authenticatingFor}: #{applicationId}</h1>
+
 		<p>#{msgs.firstVisitMsg}:</p>
 
 		<h:form>
 			<h:commandButton action="new" id="new" value="#{msgs.newUser}"
-				class="submit" />
+				styleClass="submit" />
 			<h:commandButton action="existing" id="existing"
-				value="#{msgs.existingUser}" class="submit" />
+				value="#{msgs.existingUser}" styleClass="submit" />
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">

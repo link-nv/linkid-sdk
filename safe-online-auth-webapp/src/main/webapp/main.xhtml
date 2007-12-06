@@ -6,8 +6,12 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="content">
+		<h1>#{msgs.authenticatingFor}: #{applicationId}</h1>
+		<ui:include src="/WEB-INF/incl/progress-authentication.xhtml">
+			<ui:param name="stage" value="select" />
+		</ui:include>
 
-		<h1>#{msgs.selectDevice}</h1>
+		<h2>#{msgs.selectDevice}</h2>
 
 		<h:form>
 			<h:selectOneRadio value="#{device.selection}" layout="pageDirection">
@@ -17,7 +21,7 @@
 			<h:messages styleClass="error" />
 
 			<h:commandButton action="#{device.next}" id="next"
-				value="#{msgs.next}" class="submit" />
+				value="#{msgs.next}" styleClass="submit" />
 		</h:form>
 
 	</ui:define>

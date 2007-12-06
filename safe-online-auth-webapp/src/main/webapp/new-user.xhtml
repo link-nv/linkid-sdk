@@ -8,7 +8,11 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 
 	<ui:define name="content">
-		<h1>#{msgs.createAccount}</h1>
+		<h1>#{msgs.authenticatingFor}: #{applicationId}</h1>
+		<ui:include src="/WEB-INF/incl/progress-registration.xhtml">
+			<ui:param name="stage" value="choose" />
+		</ui:include>
+		<h2>#{msgs.createAccount}</h2>
 		<h:form>
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
@@ -40,7 +44,7 @@
 			</table>
 			<t:messages globalOnly="true" styleClass="error" />
 			<h:commandButton action="#{accountRegistration.loginNext}"
-				id="register" value="#{msgs.register}" class="submit" />
+				id="register" value="#{msgs.register}" styleClass="submit" />
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">

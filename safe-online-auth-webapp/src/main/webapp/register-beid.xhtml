@@ -8,11 +8,11 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 
 	<ui:define name="content">
+		<h1>#{msgs.authenticatingFor}: #{applicationId}</h1>
+		<h2>#{msgs.createAccount}</h2>
+		<h3>#{msgs.extractBeId}</h3>
 
-		<h1>#{msgs.createAccount}</h1>
-		<h2>#{msgs.extractBeId}</h2>
-
-		<h3>#{msgs.login}: #{deviceRegistration.username}</h3>
+		<h4>#{msgs.login}: #{deviceRegistration.username}</h4>
 
 		<applet name="IdentityApplet"
 			code="net.link.safeonline.identity.IdentityApplet.class"

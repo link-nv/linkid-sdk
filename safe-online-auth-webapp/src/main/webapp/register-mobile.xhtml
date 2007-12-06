@@ -10,9 +10,9 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="content">
-
-		<h1>#{msgs.registerANewDevice}</h1>
-		<h2>#{msgs.mobile}</h2>
+		<h1>#{msgs.authenticatingFor}: #{applicationId}</h1>
+		<h2>#{msgs.registerANewDevice}</h2>
+		<h3>#{msgs.mobile}</h3>
 
 		<table>
 			<tr>
@@ -40,7 +40,7 @@
 				<h:commandButton action="#{deviceRegistration.mobileRegister}"
 					id="register" value="#{msgs.registerMobile}"
 					rendered="#{empty deviceRegistration.mobileActivationCode}"
-					class="submit" />
+					styleClass="submit" />
 			</h:panelGrid>
 		</a4j:form>
 
@@ -52,10 +52,10 @@
 					value="#{msgs.activationCode}: #{deviceRegistration.mobileActivationCode}" />
 				<h:commandButton id="activation-ok"
 					action="#{deviceRegistration.mobileActivationOk}"
-					value="#{msgs.confirm}" class="submit" />
+					value="#{msgs.confirm}" styleClass="submit" />
 				<h:commandButton id="activation-cancel"
 					action="#{deviceRegistration.mobileActivationCancel}"
-					value="#{msgs.cancelaction}" class="submit" />
+					value="#{msgs.cancelaction}" styleClass="submit" />
 			</h:panelGrid>
 		</a4j:form>
 
@@ -75,7 +75,7 @@
 				</s:decorate>
 				<h:message for="mobile" styleClass="error" />
 				<h:commandButton action="#{deviceRegistration.mobileNext}"
-					id="register" value="#{msgs.registerMobile}" class="submit" />
+					id="register" value="#{msgs.registerMobile}" styleClass="submit" />
 			</h:panelGrid>
 		</h:form>
 

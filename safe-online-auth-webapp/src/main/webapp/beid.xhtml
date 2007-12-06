@@ -9,7 +9,11 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 
 	<ui:define name="content">
-		<h1>#{msgs.authenticateBeId}</h1>
+		<h1>#{msgs.authenticatingFor}: #{applicationId}</h1>
+		<ui:include src="/WEB-INF/incl/progress-authentication.xhtml">
+			<ui:param name="stage" value="authenticate" />
+		</ui:include>
+		<h2>#{msgs.authenticateBeId}</h2>
 		<applet name="AuthenticationApplet"
 			code="net.link.safeonline.auth.AuthenticationApplet.class"
 			archive="safe-online-auth-applet-package.jar" width="450"
@@ -27,8 +31,8 @@
 	<ui:define name="sidebar>
 		<h:form>
 			<ul class="sidemenu">
-				<li><h:commandLink action="help"
-					value="#{msgs.helpaction}" immediate="true"/></li>
+				<li><h:commandLink action="help" value="#{msgs.helpaction}"
+					immediate="true" /></li>
 				<li><h:commandLink action="/all-devices.seam"
 					value="#{msgs.tryAnotherDevice}" /></li>
 			</ul>
