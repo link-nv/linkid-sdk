@@ -40,25 +40,65 @@
 	<chapter id="database">
 		<title>Database</title>
 		<abstract>
-			This chapter described the maintenance procedures for the
-			OLAS database.
+			<para>
+				This chapter described the maintenance procedures for
+				the OLAS database.
+			</para>
 		</abstract>
+		<section>
+			<title>Database backup</title>
+			<para>
+				Every OLAS database schema has a version number. This
+				version number is located in the
+				<code>METADATA</code>
+				table under the table row
+				<code>VERSION</code>
+				. This version number will be used to detect the need
+				for an OLAS database schema update by the OLAS CLI.
+			</para>
+			<para>
+				After a first deployment of OLAS you'll notice that the
+				JBoss AS has created some extra tables in the database.
+				JBoss AS uses these tables as part of its JavaEE
+				implementation. When creating a backup of the OLAS
+				database also take these JBoss tables into
+				consideration. These tables are:
+				<code>HILOSEQUENCES</code>
+				,
+				<code>JMS_MESSAGES</code>
+				,
+				<code>JMS_ROLES</code>
+				,
+				<code>JMS_SUBSCRIPTIONS</code>
+				,
+				<code>JMS_TRANSACTIONS</code>
+				,
+				<code>JMS_USERS</code>
+				, and
+				<code>TIMERS</code>
+			</para>
+		</section>
 		<section>
 			<title>Database Recovery</title>
 			<para>
 				In case the OLAS JavaEE application runs out of DBMS
 				connections the JBoss transaction manager will start
 				writing database recovery files to:
-				<programlisting>$JBOSS_HOME/server/default/data/tx-object-store/</programlisting>
+				<code>
+					$JBOSS_HOME/server/default/data/tx-object-store/
+				</code>
 				When rebooting the JBoss application server the JBoss
 				transaction manager will try to recover via the data
 				stored in disk files.
 				<caution>
-					We still get an non-Serializable XAResource error.
-					We need to investigate on this so that full recovery
-					from the disk files is possible. Exact error
-					message: Could not find new XAResource to use for
-					recovering non-serializable XAResource
+					<para>
+						We still get an non-Serializable XAResource
+						error. We need to investigate on this so that
+						full recovery from the disk files is possible.
+						Exact error message: Could not find new
+						XAResource to use for recovering
+						non-serializable XAResource
+					</para>
 				</caution>
 			</para>
 		</section>
