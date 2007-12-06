@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -46,8 +47,13 @@ public class AgentsList extends JList implements AgentStateListener,
 		this.scenarioChooser = scenarioChooser;
 		ConsoleData.getInstance().getAgentDiscoverer().addAgentStateListener(
 				this);
-		membersChanged(ConsoleData.getInstance().getAgentDiscoverer()
-				.getMembers());
+
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				membersChanged(ConsoleData.getInstance().getAgentDiscoverer()
+						.getMembers());
+			}
+		});
 	}
 
 	/**

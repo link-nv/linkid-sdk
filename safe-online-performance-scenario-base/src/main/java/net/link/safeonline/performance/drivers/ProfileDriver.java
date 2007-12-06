@@ -10,7 +10,6 @@ package net.link.safeonline.performance.drivers;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.util.jacc.ProfileData;
@@ -37,14 +36,12 @@ import org.apache.commons.logging.LogFactory;
 public abstract class ProfileDriver<S extends MessageAccessor> {
 
 	private static final Log LOG = LogFactory.getLog(ProfileDriver.class);
-	private static final int ITERATIONS_FOR_SPEED = 5;
 
 	protected S service;
 	private String title;
 	protected String host;
 	protected LinkedList<DriverException> profileError = new LinkedList<DriverException>();
 	protected LinkedList<ProfileData> profileData = new LinkedList<ProfileData>();
-	protected LinkedList<Double> profileSpeed = new LinkedList<Double>();
 
 	/**
 	 * @param hostname
@@ -71,11 +68,6 @@ public abstract class ProfileDriver<S extends MessageAccessor> {
 		return Collections.unmodifiableList(this.profileError);
 	}
 
-	public synchronized List<Double> getProfileSpeed() {
-
-		return Collections.unmodifiableList(this.profileSpeed);
-	}
-
 	public String getTitle() {
 
 		return this.title;
@@ -98,22 +90,11 @@ public abstract class ProfileDriver<S extends MessageAccessor> {
 
 	protected synchronized void unloadDriver(ProfileData data) {
 
-		calculateSpeed();
-
-		long time = data.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
-		Double speed = this.profileSpeed.getLast();
-		if (speed == null)
-			speed = -1d;
-		LOG.debug(String.format(
-				"Successful driver request: %d ms, avg %f i/s.", time, speed));
-
 		this.profileData.removeLast(); // Remove the null placeholder.
 		this.profileData.addLast(data);
 	}
 
 	protected synchronized DriverException setDriverError(Exception error) {
-
-		calculateSpeed();
 
 		LOG.debug(String.format("Failed driver request: %s", error));
 
@@ -129,27 +110,6 @@ public abstract class ProfileDriver<S extends MessageAccessor> {
 		return driverException;
 	}
 
-	private synchronized void calculateSpeed() {
-
-		long steps = 0, time = 0;
-		int start = Math.max(0, this.profileData.size() - ITERATIONS_FOR_SPEED);
-		ListIterator<ProfileData> iter = this.profileData.listIterator(start);
-
-		while (iter.hasNext()) {
-			ProfileData data = iter.next();
-			if (null != data && null != data.getMeasurements()) {
-				steps++;
-				time += data.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
-			}
-		}
-
-		if (time + steps == 0)
-			return;
-
-		this.profileSpeed.removeLast(); // Remove the null placeholder.
-		this.profileSpeed.addLast(steps * 1000d / time);
-	}
-
 	protected void loadDriver(S newService) {
 
 		this.service = newService;
@@ -161,6 +121,5 @@ public abstract class ProfileDriver<S extends MessageAccessor> {
 		// Null placeholders for this iteration.
 		this.profileData.add(null);
 		this.profileError.add(null);
-		this.profileSpeed.add(null);
 	}
 }

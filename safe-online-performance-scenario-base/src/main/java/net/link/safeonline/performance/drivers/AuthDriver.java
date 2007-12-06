@@ -72,7 +72,10 @@ public class AuthDriver extends ProfileDriver<MessageAccessor> {
 	private List<ProfileData> iterationDatas;
 	private Tidy tidy;
 
+	private String response;
+
 	public AuthDriver(String hostname) {
+
 		super(hostname, "Authentication Driver");
 
 		Protocol.registerProtocol("https", new Protocol("https",
@@ -211,66 +214,76 @@ public class AuthDriver extends ProfileDriver<MessageAccessor> {
 			executeRequest(postMethod, null);
 			String jsessionId = getJSessionId();
 
-			// Receive devices list.
-			postMethod = redirectPostMethod(postMethod);
-			Node formNode = executeRequest(postMethod, jsessionId);
+			try {
+				// Receive devices list.
+				postMethod = redirectPostMethod(postMethod);
+				Node formNode = executeRequest(postMethod, jsessionId);
 
-			// Submit password device selection.
-			LOG.debug("Select Password Device:");
-			Node passwordInputNode = XPathAPI.selectSingleNode(formNode,
-					"//input[@type='radio' and @value='password']");
-			postMethod = submitFormMethod(formNode, passwordInputNode);
-			formNode = executeRequest(postMethod, jsessionId);
+				// Submit password device selection.
+				LOG.debug("Select Password Device:");
+				Node passwordInputNode = XPathAPI.selectSingleNode(formNode,
+						"//input[@type='radio' and @value='password']");
+				postMethod = submitFormMethod(formNode, passwordInputNode);
+				formNode = executeRequest(postMethod, jsessionId);
 
-			// Submit username & password.
-			String usernameKey = XPathAPI.eval(formNode,
-					"//input[@type='text']/@name").str();
-			String passwordKey = XPathAPI.eval(formNode,
-					"//input[@type='password']/@name").str();
-			postMethod = submitFormMethod(formNode, new NameValuePair[] {
-					new NameValuePair(usernameKey, username),
-					new NameValuePair(passwordKey, password) });
-			executeRequest(postMethod, jsessionId);
-
-			// This redirect sends us either the SAML response
-			// or subscription confirmation request.
-			GetMethod getMethod = redirectGetMethod(postMethod);
-			formNode = executeRequest(getMethod, jsessionId);
-			if (null == XPathAPI.selectSingleNode(formNode,
-					"//input[@type='hidden' and @name='SAMLResponse']")) {
-				LOG.debug("No SAML response yet; assuming subscribe request.");
-				postMethod = submitFormMethod(formNode);
+				// Submit username & password.
+				String usernameKey = XPathAPI.eval(formNode,
+						"//input[@type='text']/@name").str();
+				String passwordKey = XPathAPI.eval(formNode,
+						"//input[@type='password']/@name").str();
+				postMethod = submitFormMethod(formNode, new NameValuePair[] {
+						new NameValuePair(usernameKey, username),
+						new NameValuePair(passwordKey, password) });
 				executeRequest(postMethod, jsessionId);
 
-				getMethod = redirectGetMethod(postMethod);
+				// This redirect sends us either the SAML response
+				// or subscription confirmation request.
+				GetMethod getMethod = redirectGetMethod(postMethod);
 				formNode = executeRequest(getMethod, jsessionId);
+				if (null == XPathAPI.selectSingleNode(formNode,
+						"//input[@type='hidden' and @name='SAMLResponse']")) {
+					LOG.debug("No SAML response; assuming subscribe request.");
+					postMethod = submitFormMethod(formNode);
+					executeRequest(postMethod, jsessionId);
+
+					getMethod = redirectGetMethod(postMethod);
+					formNode = executeRequest(getMethod, jsessionId);
+				}
+
+				if (null == XPathAPI.selectSingleNode(formNode,
+						"//input[@type='hidden' and @name='SAMLResponse']"))
+					throw new DriverException("Expected a SAMLResponse!");
+
+				// Retrieve and decode the SAML response.
+				String encodedSamlResponseValue = XPathAPI.eval(formNode,
+						"//input[@name='SAMLResponse']/@value").str();
+				String samlResponseValue = new String(Base64
+						.decodeBase64(encodedSamlResponseValue.getBytes()));
+				LOG.debug("SAML Response: " + samlResponseValue);
+
+				// Parse the subject name out of the SAML response.
+				Document samlResponse = DomUtils
+						.parseDocument(samlResponseValue);
+				Element nsElement = samlResponse.createElement("nsElement");
+				nsElement.setAttributeNS(Constants.NamespaceSpecNS,
+						"xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+				nsElement.setAttributeNS(Constants.NamespaceSpecNS,
+						"xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+				Node subjectNameNode = XPathAPI
+						.selectSingleNode(
+								samlResponse,
+								"/samlp:Response/saml:Assertion/saml:Subject/saml:NameID",
+								nsElement);
+
+				String subjectName = subjectNameNode.getTextContent();
+				LOG.debug("subject name: " + subjectName);
+				return subjectName;
 			}
 
-			if (null == XPathAPI.selectSingleNode(formNode,
-					"//input[@type='hidden' and @name='SAMLResponse']"))
-				throw new DriverException("Expected a SAMLResponse!");
-
-			// Retrieve and decode the SAML response.
-			String encodedSamlResponseValue = XPathAPI.eval(formNode,
-					"//input[@name='SAMLResponse']/@value").str();
-			String samlResponseValue = new String(Base64
-					.decodeBase64(encodedSamlResponseValue.getBytes()));
-			LOG.debug("SAML Response: " + samlResponseValue);
-
-			// Parse the subject name out of the SAML response.
-			Document samlResponse = DomUtils.parseDocument(samlResponseValue);
-			Element nsElement = samlResponse.createElement("nsElement");
-			nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:samlp",
-					"urn:oasis:names:tc:SAML:2.0:protocol");
-			nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml",
-					"urn:oasis:names:tc:SAML:2.0:assertion");
-			Node subjectNameNode = XPathAPI.selectSingleNode(samlResponse,
-					"/samlp:Response/saml:Assertion/saml:Subject/saml:NameID",
-					nsElement);
-
-			String subjectName = subjectNameNode.getTextContent();
-			LOG.debug("subject name: " + subjectName);
-			return subjectName;
+			catch (NullPointerException e) {
+				LOG.error("Unexpected reply:\n" + this.response, e);
+				throw e;
+			}
 		}
 
 		catch (Exception e) {
@@ -401,6 +414,11 @@ public class AuthDriver extends ProfileDriver<MessageAccessor> {
 			requestHeaders.put(header.getName(), headerValues);
 		}
 		this.iterationDatas.add(new ProfileData(requestHeaders));
+
+		// Remember the last non-null response body for debugging purposes.
+		String newResponse = method.getResponseBodyAsString();
+		if (null != newResponse)
+			this.response = newResponse;
 
 		// Parse response body as DOM and extract form node.
 		Document resultDocument = this.tidy.parseDOM(method

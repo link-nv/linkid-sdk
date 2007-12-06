@@ -47,6 +47,7 @@ import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.SeriesException;
 import org.jfree.data.statistics.BoxAndWhiskerCalculator;
@@ -69,6 +70,7 @@ public class ScenarioBean implements ScenarioRemote {
 	private ImageEncoder encoder;
 	private DateFormat timeFormat = DateFormat.getTimeInstance();
 	private List<ProfileDriver<? extends MessageAccessor>> drivers;
+	LinkedList<Long> scenarioStart = new LinkedList<Long>();
 
 	/**
 	 * Create a new ScenarioBean instance.
@@ -93,6 +95,8 @@ public class ScenarioBean implements ScenarioRemote {
 			pool.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
 					try {
+						ScenarioBean.this.scenarioStart.add(System
+								.currentTimeMillis());
 						scenario.execute();
 					} catch (Exception e) {
 						LOG.error("Test failed.", e);
@@ -145,9 +149,6 @@ public class ScenarioBean implements ScenarioRemote {
 			driversMethods.put(driver.getTitle(), driverMethods);
 			Map<String, XYSeries> timingSet = new HashMap<String, XYSeries>();
 			DefaultCategoryDataset errorsSet = new DefaultCategoryDataset();
-			// Map<String, List<Long>> errorsSet = new HashMap<String,
-			// List<Long>>();
-			XYSeries speedsSet = new XYSeries("Speed", true, false);
 			XYSeries requestSet = new XYSeries("Request Time", true, false);
 			XYSeries afterMemorySet = new XYSeries("Memory After", true, false);
 			XYSeries beforeMemorySet = new XYSeries("Memory Before", true,
@@ -160,7 +161,6 @@ public class ScenarioBean implements ScenarioRemote {
 				LOG.debug(" * iteration: " + i);
 				ProfileData data = driver.getProfileData().get(i);
 				DriverException error = driver.getProfileError().get(i);
-				Double speed = driver.getProfileSpeed().get(i);
 
 				// See if we have any information to put on the graph at all..
 				long startTime = 0;
@@ -175,7 +175,6 @@ public class ScenarioBean implements ScenarioRemote {
 					LOG.debug(String.format(" - error occurred at: %d",
 							startTime));
 				}
-
 				if (startTime == 0) {
 					LOG.warn(" - couldn't find a time for this iteration");
 					continue;
@@ -261,24 +260,11 @@ public class ScenarioBean implements ScenarioRemote {
 
 					errorsSet.addValue((Number) 1, message, this.timeFormat
 							.format(startTime));
-					// if (!errorsSet.containsKey(message))
-					// errorsSet.put(message, new ArrayList<Long>());
-					//
-					// errorsSet.get(message).add(startTime);
-				}
-
-				// If there's a speed for this iteration..
-				if (isValid(speed)) {
-					LOG.debug(String.format(" - speed:      %f", speed));
-					speedsSet.add(startTime, speed);
 				}
 			}
 
 			// Calculate averages.
 			double speedAvg = 0, requestAvg = 0, memoryAvg = 0;
-			for (Object item : speedsSet.getItems())
-				if (item instanceof XYDataItem)
-					speedAvg += ((XYDataItem) item).getY().doubleValue();
 			for (Object item : requestSet.getItems())
 				if (item instanceof XYDataItem)
 					requestAvg += ((XYDataItem) item).getY().doubleValue();
@@ -288,7 +274,6 @@ public class ScenarioBean implements ScenarioRemote {
 			for (Object item : afterMemorySet.getItems())
 				if (item instanceof XYDataItem)
 					memoryAvg += ((XYDataItem) item).getY().doubleValue();
-			speedAvg /= speedsSet.getItemCount();
 			requestAvg /= requestSet.getItemCount();
 			memoryAvg /= beforeMemorySet.getItemCount()
 					+ afterMemorySet.getItemCount();
@@ -298,10 +283,8 @@ public class ScenarioBean implements ScenarioRemote {
 
 			// Convert XY data into XY Datasets and discard the temporary data.
 			DefaultTableXYDataset requestData = new DefaultTableXYDataset();
-			DefaultTableXYDataset speedsData = new DefaultTableXYDataset();
 			DefaultTableXYDataset timingData = new DefaultTableXYDataset();
 			DefaultTableXYDataset memoryData = new DefaultTableXYDataset();
-			speedsData.addSeries(speedsSet);
 			requestData.addSeries(requestSet);
 			memoryData.addSeries(beforeMemorySet);
 			memoryData.addSeries(afterMemorySet);
@@ -312,23 +295,12 @@ public class ScenarioBean implements ScenarioRemote {
 
 			// Driver Charts.
 			DateAxis timeAxis = new DateAxis("Time");
-			NumberAxis speedsAxis = new NumberAxis("Speed (#/s)");
 			NumberAxis timingAxis = new NumberAxis("Time Elapsed (ms)");
 			NumberAxis memoryAxis = new NumberAxis("Available Memory (bytes)");
 			NumberAxis errorAxis = new NumberAxis("Exceptions");
 
 			CombinedDomainXYPlot timingAndMemoryPlot = new CombinedDomainXYPlot(
 					timeAxis);
-			if (speedsData.getItemCount() > 0) {
-				XYPlot speedPlot = new XYPlot(speedsData, timeAxis, speedsAxis,
-						new XYAreaRenderer2());
-
-				ValueMarker marker = new ValueMarker(speedAvg);
-				marker.setLabel("Average");
-				marker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
-				speedPlot.addRangeMarker(marker);
-				timingAndMemoryPlot.add(speedPlot);
-			}
 			if (memoryData.getItemCount() > 0) {
 				XYPlot memoryPlot = new XYPlot(memoryData, timeAxis,
 						memoryAxis, new XYDifferenceRenderer());
@@ -368,20 +340,32 @@ public class ScenarioBean implements ScenarioRemote {
 						+ driver.getTitle(), errorsPlot);
 				charts.add(getImage(errorsChart, 1000, 150));
 			}
-			// for (Map.Entry<String, List<Long>> errors : errorsSet.entrySet())
-			// {
-			// Paint paint = new Color((float) Math.random(), (float) Math
-			// .random(), (float) Math.random());
-			// String label = errors.getKey();
-			//
-			// for (Long time : errors.getValue()) {
-			// ValueMarker marker = new ValueMarker(time);
-			// marker.setPaint(paint);
-			// marker.setLabel(label);
-			//
-			// timingPlot.addDomainMarker(marker);
-			// }
-			// }
+		}
+
+		// Create the scenario speed data.
+		List<DefaultTableXYDataset> scenarioSpeedSets = new ArrayList<DefaultTableXYDataset>();
+
+		// Calculate moving averages from the scenario starts for 3 periods.
+		for (int period : new int[] { 1000, 60000, 36000 }) {
+			XYSeries scenarioSpeedSeries = new XYSeries("Period Of " + period
+					/ 1000 + "s", false, false);
+			DefaultTableXYDataset scenarioSpeedSet = new DefaultTableXYDataset();
+			scenarioSpeedSet.addSeries(scenarioSpeedSeries);
+			scenarioSpeedSets.add(scenarioSpeedSet);
+
+			for (long time = this.scenarioStart.getFirst(); time < this.scenarioStart
+					.getLast(); time += period) {
+
+				// Count the scenario starts since ${period} ms to ${time}.
+				int count = 0;
+				for (long start : this.scenarioStart)
+					if (start > time - period && start <= time)
+						count++;
+
+				LOG.debug(" => Period: " + period + ", Time: " + time
+						+ ", Count: " + count);
+				scenarioSpeedSeries.add(time, count);
+			}
 		}
 
 		// Create Box-and-Whisker objects from Method Timing Data.
@@ -403,6 +387,15 @@ public class ScenarioBean implements ScenarioRemote {
 			}
 
 		// Scenario Charts.
+		DateAxis timeAxis = new DateAxis("Time");
+		CombinedDomainXYPlot speedPlot = new CombinedDomainXYPlot(timeAxis);
+		for (DefaultTableXYDataset scenarioSpeedSet : scenarioSpeedSets)
+			speedPlot
+					.add(new XYPlot(scenarioSpeedSet, timeAxis, new NumberAxis(
+							"Speed (#/s)"), new XYLineAndShapeRenderer()));
+		JFreeChart speedChart = new JFreeChart("Request Timings per Driver",
+				speedPlot);
+
 		catAxis = new CategoryAxis("Methods");
 		valueAxis = new NumberAxis("Time Elapsed");
 		CategoryPlot timingPlot = new CategoryPlot(driversMethodSet, catAxis,
@@ -418,21 +411,11 @@ public class ScenarioBean implements ScenarioRemote {
 				requestPlot);
 
 		// Image.
-		charts.add(getImage(methodChart, 1000, 1000));
-		charts.add(getImage(requestChart, 1000, 1000));
+		charts.addFirst(getImage(methodChart, 1000, 1000));
+		charts.addFirst(getImage(requestChart, 1000, 1000));
+		charts.addFirst(getImage(speedChart, 1000, 1000));
 
 		return charts;
-	}
-
-	/**
-	 * @return <code>true</code> if the given value is valid and can be placed
-	 *         on a graph.
-	 */
-	private boolean isValid(Double speed) {
-
-		return speed != null && speed != Double.NaN
-				&& speed != Double.POSITIVE_INFINITY
-				&& speed != Double.NEGATIVE_INFINITY;
 	}
 
 	private byte[] getImage(JFreeChart chart, int width, int height) {
