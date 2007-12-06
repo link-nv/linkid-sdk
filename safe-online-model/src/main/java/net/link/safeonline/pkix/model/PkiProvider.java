@@ -88,4 +88,13 @@ public interface PkiProvider {
 	 * @return
 	 */
 	String getSubjectIdentifier(X509Certificate certificate);
+
+	/**
+	 * Remove additional attributes.
+	 * 
+	 * @param subject
+	 * @param certificate
+	 */
+	void removeAdditionalAttributes(SubjectEntity subject,
+			X509Certificate certificate);
 }

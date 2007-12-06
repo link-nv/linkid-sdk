@@ -166,4 +166,15 @@ public class BeIdPkiProvider implements PkiProvider {
 				attributeEnd);
 		return attributeValue;
 	}
+
+	public void removeAdditionalAttributes(SubjectEntity subject,
+			X509Certificate certificate) {
+		removeAttribute(BeIdConstants.NRN_ATTRIBUTE, subject);
+	}
+
+	private void removeAttribute(String attributeName, SubjectEntity subject) {
+		AttributeEntity attribute = this.attributeDAO.findAttribute(
+				attributeName, subject);
+		this.attributeDAO.removeAttribute(attribute);
+	}
 }

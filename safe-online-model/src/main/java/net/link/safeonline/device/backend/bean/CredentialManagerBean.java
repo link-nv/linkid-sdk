@@ -25,6 +25,7 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.CredentialManager;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -148,5 +149,79 @@ public class CredentialManagerBean implements CredentialManager {
 				.getAttributeType(attributeName);
 		this.attributeDAO
 				.addOrUpdateAttribute(attributeType, subject, 0, value);
+	}
+
+	public void removeIdentity(SubjectEntity subject,
+			byte[] identityStatementData) throws TrustDomainNotFoundException,
+			PermissionDeniedException, ArgumentIntegrityException,
+			AttributeTypeNotFoundException {
+		String login = subject.getUserId();
+
+		/*
+		 * First check integrity of the received identity statement.
+		 */
+		IdentityStatement identityStatement;
+		try {
+			identityStatement = new IdentityStatement(identityStatementData);
+		} catch (DecodingException e) {
+			throw new ArgumentIntegrityException();
+		}
+
+		X509Certificate certificate = identityStatement.verifyIntegrity();
+		if (null == certificate) {
+			throw new ArgumentIntegrityException();
+		}
+
+		PkiProvider pkiProvider = this.pkiProviderManager
+				.findPkiProvider(certificate);
+		if (null == pkiProvider) {
+			throw new ArgumentIntegrityException();
+		}
+
+		TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
+		boolean validationResult = this.pkiValidator.validateCertificate(
+				trustDomain, certificate);
+		if (false == validationResult) {
+			throw new ArgumentIntegrityException();
+		}
+
+		/*
+		 * Check whether the identity statement is owned by the authenticated
+		 * user.
+		 */
+		String user = identityStatement.getUser();
+		if (false == login.equals(user)) {
+			throw new PermissionDeniedException("statement user mismatch");
+		}
+
+		String domain = pkiProvider.getIdentifierDomainName();
+		String identifier = pkiProvider.getSubjectIdentifier(certificate);
+		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
+				.findSubject(domain, identifier);
+		if (subject.equals(existingMappedSubject)) {
+			this.subjectIdentifierDAO.removeSubjectIdentifier(subject, domain,
+					identifier);
+		}
+
+		removeAttribute(IdentityStatementAttributes.SURNAME, subject,
+				pkiProvider);
+		removeAttribute(IdentityStatementAttributes.GIVEN_NAME, subject,
+				pkiProvider);
+
+		pkiProvider.removeAdditionalAttributes(subject, certificate);
+	}
+
+	private void removeAttribute(
+			IdentityStatementAttributes identityStatementAttribute,
+			SubjectEntity subject, PkiProvider pkiProvider)
+			throws AttributeTypeNotFoundException {
+		String attributeName = pkiProvider
+				.mapAttribute(identityStatementAttribute);
+		AttributeTypeEntity attributeType = this.attributeTypeDAO
+				.getAttributeType(attributeName);
+		AttributeEntity attribute = this.attributeDAO.findAttribute(
+				attributeType, subject);
+		this.attributeDAO.removeAttribute(attribute);
+
 	}
 }

@@ -29,7 +29,7 @@ public class Main {
 			}
 		}
 		System.out.println();
-		System.out.print("Make you choice:");
+		System.out.print("Make your choice:");
 	}
 
 	private static final List<AbstractMenuAction> mainMenuActions = new LinkedList<AbstractMenuAction>();

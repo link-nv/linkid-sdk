@@ -104,4 +104,17 @@ public interface CredentialService {
 	 * @return
 	 */
 	boolean isPasswordConfigured();
+
+	/**
+	 * Remove the identity statement information from the current user subject.
+	 * 
+	 * @param identityStatementData
+	 * @throws TrustDomainNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws ArgumentIntegrityException
+	 * @throws AttributeTypeNotFoundException
+	 */
+	void removeIdentity(byte[] identityStatementData)
+			throws TrustDomainNotFoundException, PermissionDeniedException,
+			ArgumentIntegrityException, AttributeTypeNotFoundException;
 }

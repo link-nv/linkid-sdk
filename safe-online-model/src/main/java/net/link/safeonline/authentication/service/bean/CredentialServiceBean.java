@@ -116,6 +116,15 @@ public class CredentialServiceBean implements CredentialService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public void removeIdentity(byte[] identityStatementData)
+			throws TrustDomainNotFoundException, PermissionDeniedException,
+			ArgumentIntegrityException, AttributeTypeNotFoundException {
+		LOG.debug("remove identity");
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		this.credentialManager.removeIdentity(subject, identityStatementData);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public boolean isPasswordConfigured() {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		return this.passwordController.isPasswordConfigured(subject);

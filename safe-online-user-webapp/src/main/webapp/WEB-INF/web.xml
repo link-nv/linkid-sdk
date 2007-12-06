@@ -211,6 +211,11 @@
 
 	<filter-mapping>
 		<filter-name>Login Filter</filter-name>
+		<servlet-name>IdentityRemoveServlet</servlet-name>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>Login Filter</filter-name>
 		<servlet-name>AuthenticationServlet</servlet-name>
 	</filter-mapping>
 
@@ -275,6 +280,13 @@
 	</servlet>
 
 	<servlet>
+		<servlet-name>IdentityRemoveServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.user.servlet.IdentityRemoveServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet>
 		<servlet-name>AuthenticationServlet</servlet-name>
 		<servlet-class>
 			net.link.safeonline.user.servlet.AuthenticationServlet
@@ -288,7 +300,12 @@
 
 	<servlet-mapping>
 		<servlet-name>IdentityServlet</servlet-name>
-		<url-pattern>/identity/*</url-pattern>
+		<url-pattern>/device/identity/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>IdentityRemoveServlet</servlet-name>
+		<url-pattern>/device/identityremove/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

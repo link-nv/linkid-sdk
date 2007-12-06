@@ -22,4 +22,8 @@ public interface CredentialManager {
 			byte[] identityStatementData) throws TrustDomainNotFoundException,
 			PermissionDeniedException, ArgumentIntegrityException,
 			AttributeTypeNotFoundException;
+
+	void removeIdentity(SubjectEntity subject, byte[] identityStatementData)
+			throws TrustDomainNotFoundException, PermissionDeniedException,
+			ArgumentIntegrityException, AttributeTypeNotFoundException;
 }

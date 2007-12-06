@@ -215,6 +215,7 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 		OutputStream outputStream = httpURLConnection.getOutputStream();
 		outputStream.write(statement);
 		outputStream.close();
+
 		httpURLConnection.connect();
 
 		httpURLConnection.disconnect();
