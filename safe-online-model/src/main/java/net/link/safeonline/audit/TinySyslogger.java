@@ -24,7 +24,6 @@ import java.net.SocketException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.helpers.LogLog;
 
 /**
  * <h2>{@link TinySyslogger} - Tiny logger that writes to Syslog.</h2>
@@ -123,7 +122,7 @@ public class TinySyslogger {
 			try {
 				this.socket = new DatagramSocket();
 			} catch (SocketException e) {
-				LogLog.error(
+				LOG.error(
 						"Couldn't create an UDP socket for communication with syslog on "
 								+ host + ":" + port, e);
 				return false;
@@ -163,7 +162,7 @@ public class TinySyslogger {
 			}
 
 			catch (IOException e) {
-				LogLog.error("Couldn't dispatch packet of " + bytes.length
+				LOG.error("Couldn't dispatch packet of " + bytes.length
 						+ " bytes to syslog at " + this.syslog, e);
 			}
 
