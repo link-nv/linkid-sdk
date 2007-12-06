@@ -7,6 +7,8 @@
 
 package net.link.safeonline.service;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -24,8 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * <p>
  * This identity service can be extended later on when other types of identity
- * tokens must be supported. For example: PKCS#12 resource and file key stores
- * or HSMs via PKCS#11 drivers.
+ * tokens must be supported. For example: HSMs via PKCS#11 drivers.
  * </p>
  * 
  * @author fcorneli
@@ -41,6 +42,8 @@ public class IdentityService implements IdentityServiceMBean {
 
 	private String keyStoreResource;
 
+	private String keyStoreFile;
+
 	private String keyStorePassword;
 
 	private String keyStoreType;
@@ -51,8 +54,8 @@ public class IdentityService implements IdentityServiceMBean {
 
 	public void loadKeyPair() {
 		LOG.debug("load private key");
-		if (null == this.keyStoreResource) {
-			throw new RuntimeException("no key store resource set");
+		if (null == this.keyStoreResource && null == this.keyStoreFile) {
+			throw new RuntimeException("no key store resource or file set");
 		}
 		if (null == this.keyStorePassword) {
 			throw new RuntimeException("no key store password set");
@@ -61,14 +64,25 @@ public class IdentityService implements IdentityServiceMBean {
 			throw new RuntimeException("no key store type set");
 		}
 
-		Thread currenThread = Thread.currentThread();
-		ClassLoader classLoader = currenThread.getContextClassLoader();
-		InputStream keyStoreInputStream = classLoader
-				.getResourceAsStream(this.keyStoreResource);
-		if (null == keyStoreInputStream) {
-			throw new RuntimeException("keystore resource not found: "
-					+ this.keyStoreResource);
+		InputStream keyStoreInputStream;
+		if (null != this.keyStoreResource) {
+			Thread currenThread = Thread.currentThread();
+			ClassLoader classLoader = currenThread.getContextClassLoader();
+			keyStoreInputStream = classLoader
+					.getResourceAsStream(this.keyStoreResource);
+			if (null == keyStoreInputStream) {
+				throw new RuntimeException("keystore resource not found: "
+						+ this.keyStoreResource);
+			}
+		} else {
+			try {
+				keyStoreInputStream = new FileInputStream(this.keyStoreFile);
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException("keystore file not found: "
+						+ this.keyStoreFile);
+			}
 		}
+
 		PrivateKeyEntry privateKeyEntry;
 		try {
 			privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(
@@ -121,4 +135,11 @@ public class IdentityService implements IdentityServiceMBean {
 		return this.publicKey;
 	}
 
+	public String getKeyStoreFile() {
+		return this.keyStoreFile;
+	}
+
+	public void setKeyStoreFile(String keyStoreFile) {
+		this.keyStoreFile = keyStoreFile;
+	}
 }

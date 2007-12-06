@@ -29,6 +29,14 @@
 			<default>safe-online-keystore.jks</default>
 		</descriptors>
 	</attribute>
+	<attribute getMethod="getKeyStoreFile"
+		setMethod="setKeyStoreFile">
+		<description>
+			The name of the Identity Key Store File
+		</description>
+		<name>KeyStoreFile</name>
+		<type>java.lang.String</type>
+	</attribute>
 	<attribute getMethod="getKeyStorePassword"
 		setMethod="setKeyStorePassword">
 		<description>

@@ -34,6 +34,10 @@ public interface IdentityServiceMBean {
 
 	String getKeyStoreResource();
 
+	void setKeyStoreFile(String keyStoreFile);
+
+	String getKeyStoreFile();
+
 	void setKeyStorePassword(String keyStorePassword);
 
 	String getKeyStorePassword();

@@ -251,8 +251,7 @@
 					file
 					<code>/etc/httpd/conf.d/proxy_ajp.conf</code>
 					should contain similar entries as the ones below:
-					<programlisting><![CDATA[
-ProxyPass /olas/ ajp://localhost:8009/olas/
+					<programlisting><![CDATA[ProxyPass /olas/ ajp://localhost:8009/olas/
 ProxyPass /olas-oper/ ajp://localhost:8009/olas-oper/
 ProxyPass /olas-owner/ ajp://localhost:8009/olas-owner/
 ProxyPass /olas-helpdesk/ ajp://localhost:8009/olas-helpdesk/
@@ -310,7 +309,7 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 			</para>
 		</section>
 		<section>
-			<title>OLAS EAR</title>
+			<title>OLAS JavaEE EAR</title>
 			<para>
 				The OLAS services and web applications are bundled as an
 				EAR. This EAR file can be found at:
@@ -342,13 +341,11 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 			that look as follows:
 		</para>
 		<para>
-			<programlisting>
-				ObjectName: persistence.units:ear=SafeOnline.ear,
-				unitName=SafeOnlineEntityManager State: FAILED Reason:
-				javax.persistence.PersistenceException:
-				org.hibernate.HibernateException: Missing table:
-				access_audit
-			</programlisting>
+			<programlisting><![CDATA[ObjectName: persistence.units:ear=SafeOnline.ear,
+unitName=SafeOnlineEntityManager
+    State: FAILED
+    Reason: javax.persistence.PersistenceException:
+       org.hibernate.HibernateException: Missing table: access_audit]]></programlisting>
 		</para>
 		<section>
 			<title>Running the CLI</title>
@@ -400,7 +397,7 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 		</section>
 	</chapter>
 
-	<chapter id="configuration">
+	<chapter id="pre-deploy-configuration">
 		<title>Pre-deployment Configuration</title>
 		<para>
 			The OLAS product has been constructed in such a way that you
@@ -410,6 +407,19 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 			server. This chapter will describe the different
 			pre-deployment configuration facets.
 		</para>
+		<section>
+			<title>Database</title>
+			<para>
+				The pre-configured JBoss AS comes with a datasource
+				config depending on the requested DBMS. If for some
+				reason one needs to change the database configuration
+				you can check out the corresponding
+				<code>
+					$JBOSS_HOME/server/default/deploy/...-ds.xml
+				</code>
+				JBoss datasource configuration file.
+			</para>
+		</section>
 		<section>
 			<title>SSL</title>
 			<para>
@@ -429,31 +439,77 @@ ProxyPass /safe-online-ws/ ajp://localhost:8009/safe-online-ws/
 			</para>
 		</section>
 		<section>
-			<title>OLAS X509</title>
+			<title>OLAS Identity Keystore</title>
 			<para>
-				Describe that OLAS needs a certificate of itself to sign
-				the issued SAML tokens.
+				Besides an SSL certificate OLAS also needs a certificate
+				of itself to sign the issued SAML tokens. Per default
+				the OLAS EAR comes bundled with a test keystore under
+				<code>
+					$JBOSS_HOME/server/default/deploy/SafeOnline.ear/safe-online-service.sar/safe-online-keystore.jar
+				</code>
+				One can refer to external keystores by editing the file:
+				<code>
+					$JBOSS_HOME/server/default/deploy/SafeOnline.ear/safe-online-service.sar/META-INF/jboss-service.xml
+				</code>
+				as follows:
+				<programlisting><![CDATA[<mbean name="safeonline:service=Identity"
+    code="net.link.safeonline.service.IdentityService"
+    xmbean-dd="META-INF/identity-xmbean.xml">
+    <attribute name="KeyStoreType">pkcs12</attribute>
+    <attribute name="KeyStoreFile">
+        /location/to/my/keystore.p12
+    </attribute>
+    <attribute name="KeyStorePassword">secret</attribute>
+</mbean>]]></programlisting>
+				This will require a repackaging of
+				<code>safe-online-service.sar</code>
+				and
+				<code>SafeOnline.ear</code>
+				If the JMX Console is available on the hosting JBoss AS
+				one can also reconfigure the used identity keystore at
+				runtime via the JMX interface under
+				<code>safeonline</code>
+				<code>service=Identity</code>
 			</para>
 		</section>
 		<section>
 			<title>Applets</title>
 			<para>
-				Describe that the OLAS Java Applets need to be signed.
+				OLAS comes with a few Java Applets required by certain
+				authentication devices. The corresponding Applet JARS
+				have already been signed and are ready for production
+				usage.
 			</para>
 		</section>
 		<section>
 			<title>Syslog</title>
 			<para>
 				OLAS is using a syslog service for auditing purposes.
+				The syslog server can be configured via the operator web
+				application.
 			</para>
 		</section>
 	</chapter>
 
 	<chapter id="deployment">
 		<title>Deployment</title>
-		<para>Deploy the OLAS service via:</para>
-		<programlisting><![CDATA[
-cd jboss/bin
+		<para>
+			Deploy the OLAS service via:
+			<programlisting><![CDATA[cd jboss/bin
 ./run.sh]]></programlisting>
+	This will start the JBoss AS and will also deploy the OLAS JavaEE application.
+	Check the JBoss console output during startup for exceptions.
+</para>
+	</chapter>
+	
+	<chapter>
+		<title>Post-deployment Configuration</title>
+		<para>
+			After the first deployment of OLAS it is recommended to
+			further configure the OLAS instance via the operator web
+			application configuration screen. The changes made in the
+			configuration section will be made persistent within the
+			database.
+		</para>
 	</chapter>
 </book>
