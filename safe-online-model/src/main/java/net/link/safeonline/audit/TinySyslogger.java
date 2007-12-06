@@ -22,14 +22,12 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
 
 /**
- * <h2>{@link TinySyslogAppender} - log4j appender that appends events onto the
- * syslog.</h2>
+ * <h2>{@link TinySyslogger} - Tiny logger that writes to Syslog.</h2>
  * <p>
  * This implementation requires syslog to be listening for UDP messages on
  * either the default syslog port (514) or a port provided in code.<br>
@@ -43,13 +41,14 @@ import org.apache.log4j.spi.LoggingEvent;
  * 
  * @author mbillemo
  */
-public class TinySyslogAppender extends AppenderSkeleton {
+public class TinySyslogger {
 
+	private static final Log LOG = LogFactory.getLog(TinySyslogger.class);
 	private static final String DEFAULT_SYSLOG_HOST = "localhost";
 	private static final int DEFAULT_SYSLOG_PORT = 514;
 
-	private DatagramSocket socket;
 	private InetSocketAddress syslog;
+	private DatagramSocket socket;
 	private Facility facility;
 
 	/**
@@ -59,7 +58,7 @@ public class TinySyslogAppender extends AppenderSkeleton {
 	 *            The syslog facility to send messages to. This defaults to
 	 *            {@link Facility#USER} if <code>null</code> is given.
 	 */
-	public TinySyslogAppender(Facility facility) {
+	public TinySyslogger(Facility facility) {
 
 		this(facility, DEFAULT_SYSLOG_HOST, DEFAULT_SYSLOG_PORT);
 	}
@@ -73,7 +72,7 @@ public class TinySyslogAppender extends AppenderSkeleton {
 	 * @param host
 	 *            The IP address or hostname of the syslog daemon.
 	 */
-	public TinySyslogAppender(Facility facility, String host) {
+	public TinySyslogger(Facility facility, String host) {
 
 		this(facility, host, DEFAULT_SYSLOG_PORT);
 	}
@@ -89,7 +88,7 @@ public class TinySyslogAppender extends AppenderSkeleton {
 	 * @param port
 	 *            The UDP port on which the syslog daemon is listening.
 	 */
-	public TinySyslogAppender(Facility facility, String host, int port) {
+	public TinySyslogger(Facility facility, String host, int port) {
 
 		setFacility(facility);
 		setRemote(host, port);
@@ -134,43 +133,28 @@ public class TinySyslogAppender extends AppenderSkeleton {
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * Dispatch a message to syslog.
 	 */
-	@Override
-	protected void append(LoggingEvent event) {
-
-		if (!isAsSevereAsThreshold(event.getLevel()))
-			return;
+	public void log(String message) {
 
 		if (null == this.socket) {
-			this.errorHandler
-					.error("No syslog socket available.  Did you forget to connect()?");
+			LOG.error("No syslog socket available; lost message:\n" + message);
 			return;
 		}
 
-		send(event.getLevel(), format(event));
+		send(message);
 	}
 
-	/**
-	 * TODO: Describe method.
-	 */
-	private String format(LoggingEvent event) {
-
-		return String.format("%s: [%5s] %s",
-				event.getLocationInformation().fullInfo, event.getLevel(),
-				event.getRenderedMessage());
-	}
-
-	private void send(Level level, String message) {
+	private void send(String message) {
 
 		// Split at RFC 3164 limit of 1024 bytes.
 		byte[] bytes = message.getBytes();
 		if (bytes.length <= 1029)
 			try {
 				// Prepend the message with the facility and level.
-				bytes = String.format("<%d> %s",
-						this.facility.getId() | level.getSyslogEquivalent(),
-						message).getBytes();
+				bytes = String
+						.format("<%d> %s", this.facility.getId(), message)
+						.getBytes();
 
 				// Create a packet for the message and dispatch it.
 				DatagramPacket packet = new DatagramPacket(bytes, bytes.length,
@@ -185,15 +169,14 @@ public class TinySyslogAppender extends AppenderSkeleton {
 
 		else {
 			int split = message.length() / 2;
-			send(level, message.substring(0, split) + "...");
-			send(level, "..." + message.substring(split));
+			send(message.substring(0, split) + "...");
+			send("..." + message.substring(split));
 		}
 	}
 
 	/**
 	 * @{inheritDoc}
 	 */
-	@Override
 	public void close() {
 
 		this.socket.close();
@@ -203,9 +186,9 @@ public class TinySyslogAppender extends AppenderSkeleton {
 	 * @{inheritDoc}
 	 */
 	@Override
-	public boolean requiresLayout() {
+	protected void finalize() throws Throwable {
 
-		return false;
+		close();
 	}
 
 	public static enum Facility {

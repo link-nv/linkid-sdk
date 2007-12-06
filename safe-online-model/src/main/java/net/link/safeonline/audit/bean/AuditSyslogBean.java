@@ -16,8 +16,8 @@ import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
 import net.link.safeonline.audit.AuditBackend;
-import net.link.safeonline.audit.TinySyslogAppender;
-import net.link.safeonline.audit.TinySyslogAppender.Facility;
+import net.link.safeonline.audit.TinySyslogger;
+import net.link.safeonline.audit.TinySyslogger.Facility;
 import net.link.safeonline.audit.dao.AccessAuditDAO;
 import net.link.safeonline.audit.dao.AuditAuditDAO;
 import net.link.safeonline.audit.dao.ResourceAuditDAO;
@@ -32,9 +32,6 @@ import net.link.safeonline.entity.audit.SecurityAuditEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
@@ -48,13 +45,8 @@ public class AuditSyslogBean implements AuditBackend {
 
 	private static final String CONFIG_GROUP = "Audit syslog";
 
-	Logger logger = Logger.getLogger("syslog");
-
 	@Configurable(name = "Hostname", group = CONFIG_GROUP)
 	private String syslogHost = "127.0.0.1";
-
-	@Configurable(name = "Threshold", group = CONFIG_GROUP)
-	private String threshold = "INFO";
 
 	@Configurable(name = "Facility", group = CONFIG_GROUP)
 	private String facility = "LOCAL0";
@@ -71,23 +63,19 @@ public class AuditSyslogBean implements AuditBackend {
 	@EJB
 	private AuditAuditDAO auditAuditDAO;
 
-	private TinySyslogAppender syslogAppender;
+	private TinySyslogger syslog;
 
 	@PostConstruct
 	public void init() {
 		LOG.debug("init audit syslog bean ( " + this.syslogHost + " )");
 
-		this.syslogAppender = new TinySyslogAppender(Facility
-				.valueOf(this.facility), this.syslogHost);
-		this.syslogAppender.setThreshold(Level.toLevel(this.threshold));
-		this.syslogAppender.setLayout(new SimpleLayout());
-
-		this.logger.addAppender(this.syslogAppender);
+		this.syslog = new TinySyslogger(Facility.valueOf(this.facility),
+				this.syslogHost);
 	}
 
 	@PreDestroy
 	public void close() {
-		this.syslogAppender.close();
+		this.syslog.close();
 	}
 
 	private void logSecurityAudits(Long auditContextId) {
@@ -98,7 +86,7 @@ public class AuditSyslogBean implements AuditBackend {
 					+ e.getAuditContext().getId() + " : principal="
 					+ e.getTargetPrincipal() + " message=" + e.getMessage();
 			LOG.debug(msg);
-			this.logger.error(msg);
+			this.syslog.log(msg);
 		}
 	}
 
@@ -112,7 +100,7 @@ public class AuditSyslogBean implements AuditBackend {
 					+ " source=" + e.getSourceComponent() + " message="
 					+ e.getMessage();
 			LOG.debug(msg);
-			this.logger.error(msg);
+			this.syslog.log(msg);
 		}
 	}
 
@@ -127,7 +115,7 @@ public class AuditSyslogBean implements AuditBackend {
 						+ e.getPrincipal() + " operation=" + e.getOperation()
 						+ "operationState=" + e.getOperationState();
 				LOG.debug(msg);
-				this.logger.error(msg);
+				this.syslog.log(msg);
 			}
 	}
 
@@ -138,7 +126,7 @@ public class AuditSyslogBean implements AuditBackend {
 			String msg = "Audit audit context " + e.getAuditContext().getId()
 					+ " message=" + e.getMessage();
 			LOG.debug(msg);
-			this.logger.error(msg);
+			this.syslog.log(msg);
 		}
 	}
 
