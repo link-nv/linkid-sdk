@@ -31,6 +31,7 @@
 						<s:decorate>
 							<h:inputText id="applicationUrl"
 								value="#{operApplication.applicationUrl}" />
+							<h:message for="applicationUrl" styleClass="error" />
 						</s:decorate>
 
 						<h:outputLabel for="applicationLogo"
@@ -38,6 +39,7 @@
 						<s:decorate>
 							<tr:inputFile id="applicationLogo"
 								value="#{operApplication.applicationLogoFile}" />
+                            <h:message for="applicationLogo" styleClass="error" />
 						</s:decorate>
 
 						<h:outputLabel for="applicationColor"
@@ -46,6 +48,7 @@
 							<h:inputText id="applicationColor"
 								value="#{operApplication.applicationColor}"
 								style="border-color: #{operApplication.applicationColor}" />
+                            <h:message for="applicationColor" styleClass="error" />
 						</s:decorate>
 
 						<h:outputLabel for="applicationIdScope"
@@ -55,6 +58,7 @@
 								value="#{operApplication.applicationIdScope}" required="true">
 								<f:selectItems value="#{applicationIdScopes}" />
 							</h:selectOneMenu>
+                            <h:message for="applicationIdScope" styleClass="error" />
 						</s:decorate>
 					</h:panelGrid>
 				</rich:tab>

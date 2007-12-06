@@ -235,7 +235,7 @@ public class ApplicationEntity implements Serializable {
 	 * Retrieve the logo of this application.
 	 */
 	@Lob
-	@Column(length = 4 * 1024, nullable = true)
+	@Column(length = 10 * 1024, nullable = true)
 	public byte[] getApplicationLogo() {
 
 		return this.applicationLogo;

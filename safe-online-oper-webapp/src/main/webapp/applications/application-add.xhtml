@@ -34,7 +34,8 @@
 							<td><s:decorate>
 								<h:inputText id="name" value="#{operApplication.name}"
 									required="true" />
-							</s:decorate>* <h:message for="name" styleClass="error" /></td>
+							</s:decorate>*
+							<h:message for="name" styleClass="error" /></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="friendlyName"
@@ -52,7 +53,8 @@
 									value="#{operApplication.applicationOwner}" required="true">
 									<f:selectItems value="#{availableApplicationOwners}" />
 								</h:selectOneMenu>
-							</s:decorate>* <h:message for="owner" styleClass="error" /></td>
+							</s:decorate>*
+							<h:message for="owner" styleClass="error" /></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="applicationUrl"
@@ -61,7 +63,8 @@
 								<h:inputText id="applicationUrl"
 									value="#{operApplication.applicationUrl}">
 								</h:inputText>
-							</s:decorate> <h:message for="applicationUrl" styleClass="error" /></td>
+							</s:decorate>
+							<h:message for="applicationUrl" styleClass="error" /></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="applicationLogo"
@@ -69,7 +72,8 @@
 							<td><s:decorate>
 								<tr:inputFile id="applicationLogo"
 									value="#{operApplication.applicationLogoFile}" />
-							</s:decorate> <h:message for="applicationLogo" styleClass="error" /></td>
+							</s:decorate>
+							<h:message for="applicationLogo" styleClass="error" /></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="applicationColor"
@@ -78,7 +82,8 @@
 								<h:inputText id="applicationColor"
 									value="#{operApplication.applicationColor}">
 								</h:inputText>
-							</s:decorate> <h:message for="applicationColor" styleClass="error" /></td>
+							</s:decorate>
+							<h:message for="applicationColor" styleClass="error" /></td>
 						</tr>
 						<tr>
 							<td><h:outputLabel for="applicationIdScope"
@@ -88,7 +93,8 @@
 									value="#{operApplication.applicationIdScope}" required="true">
 									<f:selectItems value="#{applicationIdScopes}" />
 								</h:selectOneMenu>
-							</s:decorate>* <h:message for="applicationIdScope" styleClass="error" /></td>
+							</s:decorate>*
+							<h:message for="applicationIdScope" styleClass="error" /></td>
 						</tr>
 					</table>
 				</rich:tab>

@@ -56,6 +56,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.trinidad.model.UploadedFile;
+import org.hibernate.exception.GenericJDBCException;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
@@ -608,10 +609,9 @@ public class ApplicationBean implements Application {
 					newApplicationColor);
 			this.applicationService.setIdentifierMappingServiceAccess(
 					applicationId, this.idmapping);
-			if (null != this.applicationIdScope) {
+			if (null != this.applicationIdScope)
 				this.applicationService.setIdScope(applicationId, IdScopeType
 						.valueOf(this.applicationIdScope));
-			}
 			this.applicationService.setSkipMessageIntegrityCheck(applicationId,
 					this.skipMessageIntegrityCheck);
 
@@ -622,6 +622,11 @@ public class ApplicationBean implements Application {
 					.getApplication(applicationId);
 			this.applicationIdentityAttributes = this.applicationService
 					.getCurrentApplicationIdentity(applicationId);
+		} catch (GenericJDBCException e) {
+			LOG.debug("invalid data type.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDataType");
+			return null;
 		} catch (ApplicationNotFoundException e) {
 			LOG.debug("application not found");
 			this.facesMessages.addFromResourceBundle(

@@ -35,6 +35,16 @@ import org.apache.commons.logging.LogFactory;
 public class ProfileFilter implements Filter {
 
 	private static final Log LOG = LogFactory.getLog(ProfileFilter.class);
+	private static MBeanServerConnection rmi;
+
+	static {
+		try {
+			rmi = (MBeanServerConnection) getInitialContext().lookup(
+					"jmx/invoker/RMIAdaptor");
+		} catch (NamingException e) {
+			LOG.error("JMX unavailable.", e);
+		}
+	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
@@ -102,17 +112,14 @@ public class ProfileFilter implements Filter {
 
 	private long getFreeMemory() {
 
-		long free = 0;
 		try {
-			MBeanServerConnection rmi = (MBeanServerConnection) getInitialContext()
-					.lookup("jmx/invoker/RMIAdaptor");
-			free = (Long) rmi.getAttribute(new ObjectName(
+			return (Long) rmi.getAttribute(new ObjectName(
 					"jboss.system:type=ServerInfo"), "FreeMemory");
 		} catch (Exception e) {
 			LOG.error("Failed to read in free memory through JMX.", e);
 		}
 
-		return free;
+		return -1;
 	}
 
 	private static InitialContext getInitialContext() throws NamingException {
