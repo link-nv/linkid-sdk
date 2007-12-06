@@ -22,6 +22,7 @@ public class DatabasePluginManager {
 
 	static {
 		databasePlugins.add(new MySqlDatabasePlugin());
+		databasePlugins.add(new PostgreSqlDatabasePlugin());
 	}
 
 	private DatabasePluginManager() {
