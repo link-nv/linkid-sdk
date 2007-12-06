@@ -86,8 +86,10 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService,
 		}
 	}
 
-	public void remove() {
-		// TODO remove password attributes
+	public void remove(SubjectEntity subject, String password)
+			throws DeviceNotFoundException, PermissionDeniedException {
+		LOG.debug("remove " + subject.getUserId());
+		this.passwordManager.removePassword(subject, password);
 	}
 
 	public void update(SubjectEntity subject, String oldPassword,

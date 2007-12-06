@@ -16,28 +16,35 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
+		<h1>#{msgs.usernamePassword}</h1>
 
-		<h1>#{msgs.mobileStrong}</h1>
+		<h:form>
 
-		<h:dataTable id="mobile-strong-data" var="item"
-			value="#{mobileStrongAttributes}" preserveDataModel="false"
-			styleClass="listingTable"
-			rowClasses="listingTable_Row1,listingTable_Row2">
-			<h:column>
-				<f:facet name="header">#{msgs.mobile}</f:facet>
-				<so:outputAttribute value="#{item}" />
-			</h:column>
-		</h:dataTable>
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+
+			<h:panelGrid columns="4">
+				<h:outputLabel for="oldpassword" value="#{msgs.oldPassword}" />
+				<s:decorate>
+					<h:inputSecret id="oldpassword" value="#{devicesBean.oldPassword}"
+						required="true" />
+				</s:decorate>
+				<h:message for="oldpassword" styleClass="error" />
+				<h:commandButton value="#{msgs.removeaction}"
+					action="#{devicesBean.removePassword}" />
+			</h:panelGrid>
+
+		</h:form>
 
 		<h:form>
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
 				class="submit" />
 		</h:form>
 
-		<t:messages globalOnly="true" styleClass="error" />
 	</ui:define>
 	<ui:define name="sidebar">
-		<p>#{msgs.helpStrongMobileEdit}</p>
+		<p>#{msgs.helpPasswordRemove}</p>
 	</ui:define>
 </ui:composition>
 </body>

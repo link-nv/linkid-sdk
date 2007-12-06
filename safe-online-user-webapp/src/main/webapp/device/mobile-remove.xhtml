@@ -16,28 +16,34 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="content">
+		<h1>#{msgs.mobileWeak}</h1>
 
-		<h1>#{msgs.mobileStrong}</h1>
-
-		<h:dataTable id="mobile-strong-data" var="item"
-			value="#{mobileStrongAttributes}" preserveDataModel="false"
-			styleClass="listingTable"
-			rowClasses="listingTable_Row1,listingTable_Row2">
-			<h:column>
-				<f:facet name="header">#{msgs.mobile}</f:facet>
-				<so:outputAttribute value="#{item}" />
-			</h:column>
-		</h:dataTable>
+		<a4j:form id="mobileRemoveForm" ajaxSubmit="true"
+			reRender="mobile-data">
+			<h:dataTable id="mobile-data" var="item"
+				value="#{mobileWeakAttributes}" preserveDataModel="false"
+				styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+				<h:column>
+					<f:facet name="header">#{msgs.mobile}</f:facet>
+					<so:outputAttribute value="#{item}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.action}</f:facet>
+					<a4j:commandLink id="mobileremove" value="#{msgs.removeaction}"
+						action="#{devicesBean.removeMobile}" />
+				</h:column>
+			</h:dataTable>
+		</a4j:form>
 
 		<h:form>
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
 				class="submit" />
 		</h:form>
 
-		<t:messages globalOnly="true" styleClass="error" />
 	</ui:define>
 	<ui:define name="sidebar">
-		<p>#{msgs.helpStrongMobileEdit}</p>
+		<p>#{msgs.helpMobileRemove}</p>
 	</ui:define>
 </ui:composition>
 </body>

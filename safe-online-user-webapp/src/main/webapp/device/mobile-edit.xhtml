@@ -47,7 +47,7 @@
 				<h:message for="mobile" styleClass="error" />
 				<h:commandButton action="#{devicesBean.mobileRegister}"
 					id="register" value="#{msgs.registerMobile}"
-					rendered="#{empty devicesBean.mobileActivationCode}" class="submit"/>
+					rendered="#{empty devicesBean.mobileActivationCode}" class="submit" />
 			</h:panelGrid>
 		</a4j:form>
 
@@ -58,12 +58,18 @@
 				<h:outputLabel
 					value="#{msgs.activationCode}: #{devicesBean.mobileActivationCode}" />
 				<h:commandButton id="activation-ok"
-					action="#{devicesBean.mobileActivationOk}" value="#{msgs.confirm}" class="submit"/>
+					action="#{devicesBean.mobileActivationOk}" value="#{msgs.confirm}"
+					class="submit" />
 				<h:commandButton id="activation-cancel"
 					action="#{devicesBean.mobileActivationCancel}"
-					value="#{msgs.cancelaction}" class="submit"/>
+					value="#{msgs.cancelaction}" class="submit" />
 			</h:panelGrid>
 		</a4j:form>
+
+		<h:form>
+			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
+				class="submit" />
+		</h:form>
 		<t:messages globalOnly="true" styleClass="error" />
 	</ui:define>
 	<ui:define name="sidebar">

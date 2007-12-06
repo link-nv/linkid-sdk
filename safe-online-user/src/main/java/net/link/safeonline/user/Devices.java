@@ -40,11 +40,15 @@ public interface Devices {
 	 */
 	String changePassword();
 
+	String removePassword();
+
 	String mobileRegister();
 
 	String mobileActivationOk();
 
 	String mobileActivationCancel();
+
+	String removeMobile();
 
 	/*
 	 * Lifecycle.

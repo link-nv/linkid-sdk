@@ -124,9 +124,8 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("weak mobile attribute type not found");
 		}
-		this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(
-				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile,
-				subject);
+		this.subjectIdentifierDAO.removeSubjectIdentifier(subject,
+				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile);
 		List<AttributeEntity> mobileAttributes = this.attributeDAO
 				.listAttributes(subject, mobileAttributeType);
 		for (AttributeEntity mobileAttribute : mobileAttributes) {

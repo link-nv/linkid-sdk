@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.net.MalformedURLException;
+import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -17,16 +18,22 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.CredentialServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.device.backend.CredentialManager;
 import net.link.safeonline.device.backend.PasswordManager;
+import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -64,6 +71,12 @@ public class CredentialServiceBean implements CredentialService,
 	@EJB
 	private WeakMobileDeviceService weakMobileDeviceService;
 
+	@EJB
+	private DeviceDAO deviceDAO;
+
+	@EJB
+	private AttributeDAO attributeDAO;
+
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void changePassword(String oldPassword, String newPassword)
 			throws PermissionDeniedException, DeviceNotFoundException {
@@ -71,6 +84,22 @@ public class CredentialServiceBean implements CredentialService,
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 
 		this.passwordDeviceService.update(subject, oldPassword, newPassword);
+
+		SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
+				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public void removePassword(String password) throws DeviceNotFoundException,
+			PermissionDeniedException, LastDeviceException {
+		LOG.debug("remove password");
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+
+		if (lastDevice(subject))
+			throw new LastDeviceException(
+					"At least 1 authentication device needed ...");
+
+		this.passwordDeviceService.remove(subject, password);
 
 		SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
@@ -102,9 +131,31 @@ public class CredentialServiceBean implements CredentialService,
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void removeMobile(String mobile) throws MobileException,
-			MalformedURLException {
+			MalformedURLException, LastDeviceException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
+
+		if (lastDevice(subject))
+			throw new LastDeviceException(
+					"At least 1 authentication device needed ...");
 		this.weakMobileDeviceService.remove(subject, mobile);
 	}
 
+	private boolean lastDevice(SubjectEntity subject) {
+		List<DeviceEntity> devices = this.deviceDAO.listDevices();
+		int devicesFound = 0;
+		for (DeviceEntity device : devices) {
+			List<AttributeTypeEntity> deviceAttributeTypes = device
+					.getAttributeTypes();
+			for (AttributeTypeEntity deviceAttributeType : deviceAttributeTypes) {
+				List<AttributeEntity> deviceAttributes = this.attributeDAO
+						.listAttributes(subject, deviceAttributeType);
+				if (null != deviceAttributes) {
+					devicesFound += deviceAttributes.size();
+					break;
+				}
+			}
+		}
+		LOG.debug("# devices found: " + devicesFound);
+		return (1 == devicesFound);
+	}
 }

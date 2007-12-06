@@ -24,6 +24,7 @@ public interface PasswordDeviceService {
 	void update(SubjectEntity subject, String oldPassword, String newPassword)
 			throws PermissionDeniedException, DeviceNotFoundException;
 
-	void remove();
+	void remove(SubjectEntity subject, String password)
+			throws DeviceNotFoundException, PermissionDeniedException;
 
 }

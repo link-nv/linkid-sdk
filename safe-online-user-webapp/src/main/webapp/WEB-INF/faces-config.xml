@@ -19,7 +19,7 @@
 			org.jboss.seam.jsf.SeamPhaseListener
 		</phase-listener>
 	</lifecycle>
-	
+
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>login-success</from-outcome>
@@ -122,8 +122,16 @@
 			<to-view-id>/device/passwd-change.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
+			<from-outcome>removepass</from-outcome>
+			<to-view-id>/device/passwd-remove.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
 			<from-outcome>weakmobile</from-outcome>
 			<to-view-id>/device/mobile-edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>removemobile</from-outcome>
+			<to-view-id>/device/mobile-remove.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>strongmobile</from-outcome>
@@ -152,6 +160,18 @@
 	</navigation-rule>
 
 	<navigation-rule>
+		<from-view-id>/device/passwd-remove.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/device/devices.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>success</from-action>
+			<to-view-id>/device/devices.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
 		<from-view-id>/device/mobile-edit.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>success</from-outcome>
@@ -161,8 +181,25 @@
 			<from-outcome>cancel</from-outcome>
 			<to-view-id>/device/devices.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
+			<to-view-id>/device/devices.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
-	
+
+	<navigation-rule>
+		<from-view-id>/device/mobile-remove.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/device/devices.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>back</from-outcome>
+			<to-view-id>/device/devices.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+
 	<navigation-rule>
 		<from-view-id>/device/strongmobile-edit.xhtml</from-view-id>
 		<navigation-case>

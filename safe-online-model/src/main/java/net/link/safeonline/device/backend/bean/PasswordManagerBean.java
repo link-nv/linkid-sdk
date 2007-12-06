@@ -15,8 +15,6 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
@@ -29,6 +27,8 @@ import net.link.safeonline.device.backend.PasswordManager;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 @Stateless
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
@@ -46,12 +46,13 @@ public class PasswordManagerBean implements PasswordManager {
 			String newPassword) throws PermissionDeniedException,
 			DeviceNotFoundException {
 
-		if (!validatePassword(subject, oldPassword)) {
-			throw new PermissionDeniedException("password mismatch");
+		if (isPasswordConfigured(subject)) {
+			if (!validatePassword(subject, oldPassword)) {
+				throw new PermissionDeniedException("password mismatch");
+			}
 		}
 
 		setPasswordWithForce(subject, newPassword);
-
 	}
 
 	public void setPassword(SubjectEntity subject, String password)
@@ -167,6 +168,18 @@ public class PasswordManagerBean implements PasswordManager {
 			return false;
 		}
 		return true;
+	}
+
+	public void removePassword(SubjectEntity subject, String password)
+			throws DeviceNotFoundException, PermissionDeniedException {
+
+		if (!validatePassword(subject, password))
+			throw new PermissionDeniedException("password mismatch");
+
+		Password currentPassword = getPasswordAttribute(subject);
+		this.attributeDAO.removeAttribute(currentPassword.algorithm);
+		this.attributeDAO.removeAttribute(currentPassword.hash);
+		this.attributeDAO.removeAttribute(currentPassword.seed);
 	}
 
 	private static class Password {

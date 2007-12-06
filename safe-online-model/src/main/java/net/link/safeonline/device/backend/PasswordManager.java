@@ -27,4 +27,7 @@ public interface PasswordManager {
 
 	boolean isPasswordConfigured(SubjectEntity subject);
 
+	void removePassword(SubjectEntity subject, String password)
+			throws DeviceNotFoundException, PermissionDeniedException;
+
 }

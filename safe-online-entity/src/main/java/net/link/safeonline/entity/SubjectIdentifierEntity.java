@@ -7,6 +7,7 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_IDENTIFIER;
 import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_OTHER_IDENTIFIERS;
 import static net.link.safeonline.entity.SubjectIdentifierEntity.DELETE_WHERE_SUBJECT;
 import static net.link.safeonline.entity.SubjectIdentifierEntity.GET_WHERE_SUBJECT;
@@ -44,6 +45,10 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 				+ "subjectIdentifier.pk.identifier <> :identifier"),
 		@NamedQuery(name = DELETE_WHERE_SUBJECT, query = "DELETE FROM SubjectIdentifierEntity AS subjectIdentifier "
 				+ "WHERE subjectIdentifier.subject = :subject"),
+		@NamedQuery(name = DELETE_WHERE_IDENTIFIER, query = "DELETE FROM SubjectIdentifierEntity AS subjectIdentifier "
+				+ "WHERE subjectIdentifier.subject = :subject AND "
+				+ "subjectIdentifier.pk.domain = :domain AND "
+				+ "subjectIdentifier.pk.identifier = :identifier"),
 		@NamedQuery(name = GET_WHERE_SUBJECT, query = "FROM SubjectIdentifierEntity AS subjectIdentifier "
 				+ "WHERE subjectIdentifier.subject = :subject") })
 public class SubjectIdentifierEntity implements Serializable {
@@ -52,9 +57,11 @@ public class SubjectIdentifierEntity implements Serializable {
 
 	public static final String DELETE_WHERE_OTHER_IDENTIFIERS = "sie.del";
 
-	public static final String DELETE_WHERE_SUBJECT = "sei.del.subject";
+	public static final String DELETE_WHERE_SUBJECT = "sie.del.subject";
 
-	public static final String GET_WHERE_SUBJECT = "sei.subject";
+	public static final String DELETE_WHERE_IDENTIFIER = "sie.del.id";
+
+	public static final String GET_WHERE_SUBJECT = "sie.subject";
 
 	private SubjectIdentifierPK pk;
 
@@ -103,5 +110,11 @@ public class SubjectIdentifierEntity implements Serializable {
 		@UpdateMethod(DELETE_WHERE_SUBJECT)
 		void deleteWhereSubject(@QueryParam("subject")
 		SubjectEntity subject);
+
+		@UpdateMethod(DELETE_WHERE_IDENTIFIER)
+		void deleteWhereIdentifier(@QueryParam("subject")
+		SubjectEntity subject, @QueryParam("domain")
+		String domain, @QueryParam("identifier")
+		String identifier);
 	}
 }

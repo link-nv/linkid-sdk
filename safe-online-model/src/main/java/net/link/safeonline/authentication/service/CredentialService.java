@@ -14,6 +14,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -40,6 +41,18 @@ public interface CredentialService {
 			throws PermissionDeniedException, DeviceNotFoundException;
 
 	/**
+	 * Removes the password of the current user. For this to happen the password
+	 * must match.
+	 * 
+	 * @param password
+	 * @throws DeviceNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws LastDeviceException
+	 */
+	void removePassword(String password) throws DeviceNotFoundException,
+			PermissionDeniedException, LastDeviceException;
+
+	/**
 	 * Registers a mobile for the current user.
 	 * 
 	 * @param mobile
@@ -59,9 +72,10 @@ public interface CredentialService {
 	 * @param mobile
 	 * @throws MobileException
 	 * @throws MalformedURLException
+	 * @throws LastDeviceException
 	 */
 	void removeMobile(String mobile) throws MobileException,
-			MalformedURLException;
+			MalformedURLException, LastDeviceException;
 
 	/**
 	 * Merges the identity statement with the current user subject. The identity

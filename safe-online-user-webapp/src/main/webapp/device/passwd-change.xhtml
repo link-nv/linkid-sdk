@@ -58,10 +58,8 @@
 			</table>
 			<h:commandButton action="#{devicesBean.changePassword}" id="change"
 				value="#{msgs.saveaction}" class="submit" />
-		</h:form>
-		<h:form>
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
-				class="submit" />
+				class="submit" immediate="true" />
 		</h:form>
 		<t:messages globalOnly="true" styleClass="error" />
 	</ui:define>

@@ -28,6 +28,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -50,6 +51,8 @@ import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.core.FacesMessages;
 
@@ -60,6 +63,8 @@ import org.jboss.seam.core.FacesMessages;
 public class DevicesBean implements Devices {
 
 	private static final Log LOG = LogFactory.getLog(DevicesBean.class);
+
+	private static final String MOBILE_WEAK_ATTRIBUTE_LIST_NAME = "mobileWeakAttributes";
 
 	private String oldPassword;
 
@@ -72,6 +77,12 @@ public class DevicesBean implements Devices {
 	private String mobile;
 
 	private String mobileActivationCode;
+
+	@DataModel(MOBILE_WEAK_ATTRIBUTE_LIST_NAME)
+	List<AttributeDO> mobileWeakAttributes;
+
+	@DataModelSelection(MOBILE_WEAK_ATTRIBUTE_LIST_NAME)
+	private AttributeDO selectedMobile;
 
 	@PostConstruct
 	public void postConstructCallback() {
@@ -129,6 +140,33 @@ public class DevicesBean implements Devices {
 
 		this.credentialCacheFlushRequired = true;
 		LOG.debug("returning success");
+		return "success";
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String removePassword() {
+		try {
+			this.credentialService.removePassword(this.oldPassword);
+		} catch (PermissionDeniedException e) {
+			String msg = "old password not correct";
+			LOG.debug(msg);
+			this.facesMessages.addToControlFromResourceBundle("oldpassword",
+					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotCorrect");
+			return null;
+		} catch (DeviceNotFoundException e) {
+			String msg = "there is no old password";
+			LOG.debug(msg);
+			this.facesMessages.addToControlFromResourceBundle("oldpassword",
+					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotFound");
+			return null;
+		} catch (LastDeviceException e) {
+			LOG.debug(e.getMessage());
+			this.facesMessages.addToControlFromResourceBundle("oldpassword",
+					FacesMessage.SEVERITY_ERROR, "errorLastDevice");
+			return null;
+		}
+
+		this.credentialCacheFlushRequired = true;
 		return "success";
 	}
 
@@ -196,12 +234,11 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	@Factory("mobileWeakAttributes")
+	@Factory(MOBILE_WEAK_ATTRIBUTE_LIST_NAME)
 	public List<AttributeDO> mobileWeakAttributesFactory() {
 		Locale locale = getViewLocale();
-		List<AttributeDO> mobileWeakAttributes;
 		try {
-			mobileWeakAttributes = this.identityService.listAttributes(
+			this.mobileWeakAttributes = this.identityService.listAttributes(
 					SafeOnlineConstants.WEAK_MOBILE_AUTH_DEVICE, locale);
 		} catch (DeviceNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
@@ -209,7 +246,7 @@ public class DevicesBean implements Devices {
 			LOG.error("device not found");
 			return new LinkedList<AttributeDO>();
 		}
-		return mobileWeakAttributes;
+		return this.mobileWeakAttributes;
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
@@ -282,6 +319,7 @@ public class DevicesBean implements Devices {
 	public String mobileActivationOk() {
 		LOG.debug("mobile activation ok: " + this.mobile);
 		this.mobileActivationCode = null;
+		this.mobileWeakAttributesFactory();
 		return "success";
 	}
 
@@ -300,7 +338,34 @@ public class DevicesBean implements Devices {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
 			return null;
+		} catch (LastDeviceException e) {
+			LOG.debug(e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorLastDevice");
+			return null;
 		}
 		return "cancel";
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String removeMobile() {
+		try {
+			this.credentialService.removeMobile(this.selectedMobile
+					.getStringValue());
+		} catch (MobileException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRemovalFailed");
+			return null;
+		} catch (MalformedURLException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "mobileRemovalFailed");
+			return null;
+		} catch (LastDeviceException e) {
+			LOG.debug(e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorLastDevice");
+			return null;
+		}
+		return "success";
 	}
 }

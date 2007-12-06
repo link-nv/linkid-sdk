@@ -41,6 +41,15 @@ public interface SubjectIdentifierDAO {
 	void removeSubjectIdentifiers(SubjectEntity subject);
 
 	/**
+	 * Remove specified subject identifier.
+	 * 
+	 * @param domain
+	 * @param identifier
+	 */
+	void removeSubjectIdentifier(SubjectEntity subject, String domain,
+			String identifier);
+
+	/**
 	 * Returns list of subject identifiers for the given subject.
 	 * 
 	 * @param subject

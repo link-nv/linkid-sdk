@@ -29,21 +29,29 @@
 					<td>#{msgs.usernamePassword}</td>
 					<td><h:commandLink action="changepass" id="changepass"
 						value="#{msgs.deviceUpdate}" /></td>
+					<td><c:if test="#{devicesBean.passwordConfigured}">
+						<h:commandLink action="removepass" id="removepass"
+							value="#{msgs.deviceRemove}" />
+					</c:if></td>
 				</tr>
 				<tr>
 					<td>#{msgs.beid}</td>
 					<td><h:commandLink action="extract" id="extract"
 						value="#{msgs.deviceRegister}" /></td>
+					<td></td>
 				</tr>
 				<tr>
 					<td>#{msgs.mobileWeak}</td>
 					<td><h:commandLink action="weakmobile" id="weakmobile"
 						value="#{msgs.deviceUpdate}" /></td>
+					<td><h:commandLink action="removemobile" id="removemobile"
+						value="#{msgs.deviceRemove}" /></td>
 				</tr>
 				<tr>
 					<td>#{msgs.mobileStrong}</td>
 					<td><h:commandLink action="strongmobile" id="strongmobile"
 						value="#{msgs.deviceUpdate}" /></td>
+					<td></td>
 				</tr>
 			</table>
 		</h:form>
