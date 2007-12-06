@@ -17,7 +17,26 @@
 		The SafeOnline SQL Data Definition Language.
 	</description>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>filter</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -37,7 +56,7 @@
 									<path
 										refid="maven.plugin.classpath" />
 									<pathelement
-										location="${basedir}/src/main/resources" />
+										location="${project.build.directory}/classes/resources" />
 								</path>
 								<taskdef
 									classname="org.hibernate.tool.ant.HibernateToolTask"
@@ -51,7 +70,7 @@
 									</classpath>
 									<!-- jpaconfiguration can directly use the PAR -->
 									<annotationconfiguration
-										configurationfile="${basedir}/src/main/resources/mysql-safe-online.cfg.xml" />
+										configurationfile="${project.build.directory}/classes/resources/mysql-safe-online.cfg.xml" />
 									<hbm2ddl export="false"
 										format="true" outputfilename="mysql-safe-online-ddl.sql" />
 								</hibernatetool>
@@ -59,7 +78,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+</plugin>
 		</plugins>
 	</build>
 	<dependencies>
