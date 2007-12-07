@@ -1602,11 +1602,11 @@
 				<artifactId>looks</artifactId>
 				<version>${jgoodies-looks.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>jmimemagic</groupId>
-                <artifactId>jmimemagic</artifactId>
+			<dependency>
+				<groupId>jmimemagic</groupId>
+				<artifactId>jmimemagic</artifactId>
 				<version>${jmimemagic.version}</version>
-            </dependency>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
