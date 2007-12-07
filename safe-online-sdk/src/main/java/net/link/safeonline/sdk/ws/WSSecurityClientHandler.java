@@ -61,6 +61,8 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 
 	private final PrivateKey privateKey;
 
+	private boolean skipBodySigning;
+
 	/**
 	 * Main constructor.
 	 * 
@@ -74,6 +76,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 			PrivateKey privateKey) {
 		this.certificate = certificate;
 		this.privateKey = privateKey;
+		this.skipBodySigning = false;
 	}
 
 	public Set<QName> getHeaders() {
@@ -135,10 +138,12 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 					.getSOAPConstants(document.getDocumentElement());
 
 			Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
-			WSEncryptionPart wsEncryptionPart = new WSEncryptionPart(
-					soapConstants.getBodyQName().getLocalPart(), soapConstants
-							.getEnvelopeURI(), "Content");
-			wsEncryptionParts.add(wsEncryptionPart);
+			if (false == this.skipBodySigning) {
+				WSEncryptionPart wsEncryptionPart = new WSEncryptionPart(
+						soapConstants.getBodyQName().getLocalPart(),
+						soapConstants.getEnvelopeURI(), "Content");
+				wsEncryptionParts.add(wsEncryptionPart);
+			}
 
 			WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
 			wsSecTimeStamp.setTimeToLive(0);
@@ -168,6 +173,20 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 		} catch (WSSecurityException e) {
 			throw new RuntimeException("WSS4J error: " + e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * When <code>true</code> the SOAP Body will not get signed by the
+	 * WS-Security signature. This behavior is similar to .NET WCF clients.
+	 * 
+	 * @return
+	 */
+	public boolean isSkipBodySigning() {
+		return this.skipBodySigning;
+	}
+
+	public void setSkipBodySigning(boolean skipBodySigning) {
+		this.skipBodySigning = skipBodySigning;
 	}
 
 	/**
