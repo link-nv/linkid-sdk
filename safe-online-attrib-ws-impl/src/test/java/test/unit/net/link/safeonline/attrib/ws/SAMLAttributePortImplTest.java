@@ -103,6 +103,8 @@ public class SAMLAttributePortImplTest {
 
 	private String testSubjectId;
 
+	private String testApplicationId = "test-application-name";
+
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {
@@ -161,12 +163,12 @@ public class SAMLAttributePortImplTest {
 
 		expect(this.mockApplicationManager.getCallerApplication())
 				.andStubReturn(
-						new ApplicationEntity("test-application", null,
+						new ApplicationEntity(this.testApplicationId, null,
 								new ApplicationOwnerEntity(), null, null, null,
 								null, this.certificate));
 
 		expect(
-				this.mockUserIdMappingService.getUserId("test-application",
+				this.mockUserIdMappingService.getUserId(this.testApplicationId,
 						this.testSubjectLogin)).andStubReturn(
 				this.testSubjectId);
 
@@ -237,6 +239,10 @@ public class SAMLAttributePortImplTest {
 				testAttributeValue);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn("test-application-name");
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.testApplicationId))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -327,7 +333,11 @@ public class SAMLAttributePortImplTest {
 						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValues);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn("test-application-name");
+				.andReturn(this.testApplicationId);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.testApplicationId))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -431,7 +441,11 @@ public class SAMLAttributePortImplTest {
 						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValues);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn("test-application-name");
+				.andReturn(this.testApplicationId);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.testApplicationId))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -518,7 +532,11 @@ public class SAMLAttributePortImplTest {
 						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValue);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn("test-application-name");
+				.andReturn(this.testApplicationId);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.testApplicationId))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -590,7 +608,11 @@ public class SAMLAttributePortImplTest {
 						this.testSubjectId, testAttributeName)).andThrow(
 				new AttributeNotFoundException());
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn("test-application-name");
+				.andReturn(this.testApplicationId);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.testApplicationId))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);

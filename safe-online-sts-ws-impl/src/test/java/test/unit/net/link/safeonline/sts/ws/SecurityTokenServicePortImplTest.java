@@ -162,6 +162,7 @@ public class SecurityTokenServicePortImplTest {
 		SecurityTokenServicePort port = new SecurityTokenServicePortImpl();
 		this.webServiceTestUtils.setUp(port);
 
+		String testApplicationName = "test-application-name";
 		expect(
 				this.mockConfigurationManager
 						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
@@ -170,7 +171,11 @@ public class SecurityTokenServicePortImplTest {
 				this.mockPkiValidator.validateCertificate("applications",
 						this.certificate)).andStubReturn(true);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andStubReturn("test-application");
+				.andStubReturn(testApplicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(testApplicationName))
+				.andReturn(false);
 
 		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 	}

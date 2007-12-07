@@ -273,6 +273,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -307,6 +311,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -344,6 +352,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -392,6 +404,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -444,6 +460,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		AttributeTypeEntity attributeType = new AttributeTypeEntity();
 		attributeType.setName(attributeName);
@@ -535,6 +555,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -567,6 +591,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -601,6 +629,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -651,6 +683,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -705,6 +741,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
@@ -761,6 +801,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		this.mockAttributeProviderService.setAttribute(this.testSubjectId,
 				attributeName, attributeValue);
@@ -817,6 +861,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		this.mockAttributeProviderService.setAttribute(this.testSubjectId,
 				attributeName, attributeValue);
@@ -880,6 +928,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		this.mockAttributeProviderService.setAttribute(eq(this.testSubjectId),
 				eq(attributeName), aryEq(new String[] { attributeValue1,
@@ -941,6 +993,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		this.mockAttributeProviderService.createAttribute(
 				eq(this.testSubjectId), eq(attributeName), aryEq(new String[] {
@@ -991,6 +1047,10 @@ public class DataServicePortImplTest {
 
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
 				.andReturn(this.applicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(this.applicationName))
+				.andReturn(false);
 
 		this.mockAttributeProviderService.removeAttribute(this.testSubjectId,
 				attributeName);

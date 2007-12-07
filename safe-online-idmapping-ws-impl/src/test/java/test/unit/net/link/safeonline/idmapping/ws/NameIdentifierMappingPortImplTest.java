@@ -121,6 +121,7 @@ public class NameIdentifierMappingPortImplTest {
 		handlerChain.add(loggingHandler);
 		binding.setHandlerChain(handlerChain);
 
+		String testApplicationName = "test-application-name";
 		expect(
 				this.mockConfigurationManager
 						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
@@ -130,7 +131,11 @@ public class NameIdentifierMappingPortImplTest {
 						.anyObject(), (X509Certificate) EasyMock.anyObject()))
 				.andStubReturn(true);
 		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn("test-application-name");
+				.andReturn(testApplicationName);
+		expect(
+				this.mockAuthenticationService
+						.skipMessageIntegrityCheck(testApplicationName))
+				.andReturn(false);
 
 		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 	}
