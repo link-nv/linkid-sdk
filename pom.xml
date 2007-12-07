@@ -1607,6 +1607,11 @@
 				<artifactId>jmimemagic</artifactId>
 				<version>${jmimemagic.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<version>${xml-maven-plugin.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1807,5 +1812,6 @@
 		<jgoodies-looks.version>2.1.4</jgoodies-looks.version>
 		<jtidy.version>r8-20060801</jtidy.version>
 		<jmimemagic.version>0.1.2</jmimemagic.version>
+		<xml-maven-plugin.version>1.0-beta-2</xml-maven-plugin.version>
 	</properties>
 </project>
