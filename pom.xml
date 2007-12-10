@@ -331,11 +331,11 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>env-local-pilot</id>
+			<id>env-local-pilot-mysql</id>
 			<activation>
 				<property>
 					<name>env</name>
-					<value>local-pilot</value>
+					<value>local-pilot-mysql</value>
 				</property>
 			</activation>
 			<properties>
@@ -374,6 +374,54 @@
 				<module>safe-online-install-manual</module>
 				<module>safe-online-maintenance-manual</module>
 				<module>safe-online-pilot-distribution</module>
+				<module>safe-online-pilot-mysql-distribution</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>env-local-pilot-postgres</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>local-pilot-postgres</value>
+				</property>
+			</activation>
+			<properties>
+				<isGlobalOperator>true</isGlobalOperator>
+				<defaultCronExpression>
+					0 0 3 * * ?
+				</defaultCronExpression>
+				<safe-online.data.source>
+					SafeOnlineDS
+				</safe-online.data.source>
+				<safe-online.dialect>
+					org.hibernate.dialect.PostgreSQLDialect
+				</safe-online.dialect>
+				<safe-online.hibernate.hbm2ddl.auto>
+					validate
+				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.show.sql>false</safe-online.show.sql>
+				<safe-online.host.name>localhost</safe-online.host.name>
+				<safe-online.host.port>80</safe-online.host.port>
+				<safe-online.host.port.ssl>
+					443
+				</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>
+					8080
+				</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>
+					8443
+				</safe-online.jboss.host.port.ssl>
+				<debug.mode>false</debug.mode>
+				<safe-online.profiling.filter></safe-online.profiling.filter>
+				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
+			</properties>
+			<modules>
+				<module>safe-online-base-distribution</module>
+				<module>safe-online-root-webapp</module>
+				<module>safe-online-install-manual</module>
+				<module>safe-online-maintenance-manual</module>
+				<module>safe-online-pilot-distribution</module>
+				<module>safe-online-pilot-postgres-distribution</module>
 			</modules>
 		</profile>
 		<profile>
@@ -1577,6 +1625,11 @@
 				<version>${mysql-connector-java.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-as</artifactId>
 				<type>zip</type>
@@ -1799,6 +1852,7 @@
 		<mysql-connector-java.version>
 			5.1.5
 		</mysql-connector-java.version>
+		<postgresql.version>8.2-504.jdbc3</postgresql.version>
 		<maven-jdocbook-plugin.version>
 			2.0.1-15795
 		</maven-jdocbook-plugin.version>

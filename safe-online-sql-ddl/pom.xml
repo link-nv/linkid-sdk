@@ -74,11 +74,22 @@
 									<hbm2ddl export="false"
 										format="true" outputfilename="mysql-safe-online-ddl.sql" />
 								</hibernatetool>
+								<hibernatetool
+									destdir="${project.build.directory}/classes">
+									<classpath>
+										<path refid="jpatoolslib" />
+									</classpath>
+									<!-- jpaconfiguration can directly use the PAR -->
+									<annotationconfiguration
+										configurationfile="${project.build.directory}/classes/resources/postgresql-safe-online.cfg.xml" />
+									<hbm2ddl export="false"
+										format="true" outputfilename="postgresql-safe-online-ddl.sql" />
+								</hibernatetool>
 							</tasks>
 						</configuration>
 					</execution>
 				</executions>
-</plugin>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>

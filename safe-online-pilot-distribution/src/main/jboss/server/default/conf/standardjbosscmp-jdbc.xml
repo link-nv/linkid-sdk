@@ -14,7 +14,7 @@
 <jbosscmp-jdbc>
 
    <defaults>
-      <datasource>java:/SafeOnlineDS</datasource>
+      <datasource>java:/${safe-online.data.source}</datasource>
       <!-- optional since 4.0 <datasource-mapping>Hypersonic SQL</datasource-mapping> -->
 
       <create-table>true</create-table>

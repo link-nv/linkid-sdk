@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<assembly xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>
+				target/files/safe-online-pilot-distribution-1.0-SNAPSHOT/jboss
+			</directory>
+			<outputDirectory>jboss</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>
+				target/files/safe-online-pilot-distribution-1.0-SNAPSHOT/jboss
+			</directory>
+			<outputDirectory>jboss</outputDirectory>
+			<includes>
+				<include>bin/*.sh</include>
+			</includes>
+			<fileMode>0500</fileMode>
+		</fileSet>
+		<fileSet>
+			<directory>target/classes/jboss</directory>
+			<outputDirectory>jboss</outputDirectory>
+		</fileSet>
+	</fileSets>
+	<files>
+		<file>
+			<source>target/files/mysql-connector-java-5.1.5.jar</source>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</file>
+	</files>
+</assembly>

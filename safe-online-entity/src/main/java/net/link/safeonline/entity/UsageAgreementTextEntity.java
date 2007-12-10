@@ -7,8 +7,8 @@
 
 package net.link.safeonline.entity;
 
-import static net.link.safeonline.entity.UsageAgreementTextEntity.QUERY_WHERE_OWNER_AND_VERSION;
 import static net.link.safeonline.entity.UsageAgreementTextEntity.DELETE_WHERE_OWNER_AND_VERSION;
+import static net.link.safeonline.entity.UsageAgreementTextEntity.QUERY_WHERE_OWNER_AND_VERSION;
 
 import java.io.Serializable;
 import java.util.List;
