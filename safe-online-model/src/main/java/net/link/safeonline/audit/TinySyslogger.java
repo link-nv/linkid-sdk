@@ -21,6 +21,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,9 +48,10 @@ public class TinySyslogger {
 	private static final Log LOG = LogFactory.getLog(TinySyslogger.class);
 	private static final String DEFAULT_SYSLOG_HOST = "localhost";
 	private static final int DEFAULT_SYSLOG_PORT = 514;
+	private static final Map<InetSocketAddress, DatagramSocket> sockets = Collections
+			.synchronizedMap(new HashMap<InetSocketAddress, DatagramSocket>());
 
 	private InetSocketAddress syslog;
-	private DatagramSocket socket;
 	private Facility facility;
 
 	/**
@@ -116,11 +120,12 @@ public class TinySyslogger {
 	 */
 	public boolean setRemote(String host, int port) {
 
+		close();
 		this.syslog = new InetSocketAddress(host, port);
 
-		if (this.socket == null)
+		if (!sockets.containsKey(this.syslog))
 			try {
-				this.socket = new DatagramSocket();
+				sockets.put(this.syslog, new DatagramSocket());
 			} catch (SocketException e) {
 				LOG.error(
 						"Couldn't create an UDP socket for communication with syslog on "
@@ -136,7 +141,7 @@ public class TinySyslogger {
 	 */
 	public void log(String message) {
 
-		if (null == this.socket) {
+		if (!sockets.containsKey(this.syslog)) {
 			LOG.error("No syslog socket available; lost message:\n" + message);
 			return;
 		}
@@ -158,7 +163,7 @@ public class TinySyslogger {
 				// Create a packet for the message and dispatch it.
 				DatagramPacket packet = new DatagramPacket(bytes, bytes.length,
 						this.syslog);
-				this.socket.send(packet);
+				sockets.get(this.syslog).send(packet);
 			}
 
 			catch (IOException e) {
@@ -178,7 +183,8 @@ public class TinySyslogger {
 	 */
 	public void close() {
 
-		this.socket.close();
+		if (sockets.containsKey(this.syslog))
+			sockets.remove(this.syslog).close();
 	}
 
 	/**
