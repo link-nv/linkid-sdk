@@ -120,7 +120,7 @@
 				<safe-online.profiling.group>
 					net.lin-k.safe-online.performance
 				</safe-online.profiling.group>
-				<safe-online.profiling.filter><![CDATA[
+                <safe-online.profiling.filter><![CDATA[-->
 					<filter>
 						<filter-name>ProfileFilter</filter-name>
 						<filter-class>
@@ -136,9 +136,9 @@
         				<filter-name>ProfileFilter</filter-name>
         				<url-pattern>/*</url-pattern>
     				</filter-mapping>
-				]]>
+                <!--]]>
 				</safe-online.profiling.filter>
-				<safe-online.profiling.interceptor><![CDATA[
+                <safe-online.profiling.interceptor><![CDATA[-->
 					<interceptors>
 						<interceptor>
 							<interceptor-class>
@@ -155,7 +155,7 @@
 							</interceptor-class>
 						</interceptor-binding>
 					</assembly-descriptor>
-				]]>
+                <!--]]>
 				</safe-online.profiling.interceptor>
 			</properties>
 		</profile>
@@ -608,6 +608,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-eclipse-plugin</artifactId>
 					<version>${maven-eclipse-plugin.version}</version>
+                    <configuration>
+                        <wtpmanifest>true</wtpmanifest>
+                        <wtpapplicationxml>true</wtpapplicationxml>
+                        <wtpversion>1.5</wtpversion>
+                    </configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>

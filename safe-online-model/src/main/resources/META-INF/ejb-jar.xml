@@ -28,6 +28,6 @@
 
 	</enterprise-beans>
 
-	${safe-online.profiling.interceptor}
+	<!-- ${safe-online.profiling.interceptor} -->
 
 </ejb-jar>
