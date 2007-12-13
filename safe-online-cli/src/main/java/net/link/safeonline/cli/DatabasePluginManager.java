@@ -23,6 +23,7 @@ public class DatabasePluginManager {
 	static {
 		databasePlugins.add(new MySqlDatabasePlugin());
 		databasePlugins.add(new PostgreSqlDatabasePlugin());
+		databasePlugins.add(new OracleDatabasePlugin());
 	}
 
 	private DatabasePluginManager() {
