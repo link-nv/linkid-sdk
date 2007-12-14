@@ -51,6 +51,10 @@ import net.link.safeonline.oper.app.IdentityAttribute;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.SubjectService;
+import net.sf.jmimemagic.Magic;
+import net.sf.jmimemagic.MagicException;
+import net.sf.jmimemagic.MagicMatchNotFoundException;
+import net.sf.jmimemagic.MagicParseException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -230,11 +234,33 @@ public class ApplicationBean implements Application {
 		if (null != this.applicationLogoFile)
 			try {
 				newApplicationLogo = getUpFileContent(this.applicationLogoFile);
+				if (!Magic.getMagicMatch(newApplicationLogo).getMimeType()
+						.startsWith("image/"))
+					throw new MagicException(
+							"Application logo requires an image/* MIME type.");
 			} catch (IOException e) {
 				LOG.debug("couldn't fetch uploaded data for application logo.");
 				this.facesMessages.addToControlFromResourceBundle(
 						"applicationLogo", FacesMessage.SEVERITY_ERROR,
-						"errorUploadLogo");
+						"errorUploadLogoFetch");
+				return null;
+			} catch (MagicParseException e) {
+				LOG.debug("uploaded logo is not an image.");
+				this.facesMessages.addToControlFromResourceBundle(
+						"applicationLogo", FacesMessage.SEVERITY_ERROR,
+						"errorUploadLogoType");
+				return null;
+			} catch (MagicMatchNotFoundException e) {
+				LOG.debug("uploaded logo is not an image.");
+				this.facesMessages.addToControlFromResourceBundle(
+						"applicationLogo", FacesMessage.SEVERITY_ERROR,
+						"errorUploadLogoType");
+				return null;
+			} catch (MagicException e) {
+				LOG.debug("uploaded logo is not an image.");
+				this.facesMessages.addToControlFromResourceBundle(
+						"applicationLogo", FacesMessage.SEVERITY_ERROR,
+						"errorUploadLogoType");
 				return null;
 			}
 		if (null != this.applicationColor

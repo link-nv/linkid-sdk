@@ -252,6 +252,13 @@
 	</filter-mapping>
 
 	<servlet>
+		<servlet-name>Logo Servlet</servlet-name>
+		<servlet-class>
+            net.link.safeonline.webapp.resources.ApplicationLogoServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
@@ -270,6 +277,11 @@
 			org.jboss.seam.servlet.ResourceServlet
 		</servlet-class>
 	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Logo Servlet</servlet-name>
+        <url-pattern>/logo</url-pattern>
+	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>

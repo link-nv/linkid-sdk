@@ -86,6 +86,10 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>jmimemagic</groupId>
+			<artifactId>jmimemagic</artifactId>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>
