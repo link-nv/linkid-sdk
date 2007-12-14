@@ -346,25 +346,29 @@ public class ScenarioBean implements ScenarioRemote {
 		List<DefaultTableXYDataset> scenarioSpeedSets = new ArrayList<DefaultTableXYDataset>();
 
 		// Calculate moving averages from the scenario starts for 3 periods.
-		for (int period : new int[] { 1000, 60000, 36000 }) {
+		for (int period : new int[] { 1000, 60000, 36000000 }) {
 			XYSeries scenarioSpeedSeries = new XYSeries("Period Of " + period
 					/ 1000 + "s", false, false);
 			DefaultTableXYDataset scenarioSpeedSet = new DefaultTableXYDataset();
 			scenarioSpeedSet.addSeries(scenarioSpeedSeries);
 			scenarioSpeedSets.add(scenarioSpeedSet);
 
-			for (long time = this.scenarioStart.getFirst(); time < this.scenarioStart
+			for (double time = this.scenarioStart.getFirst(); time < this.scenarioStart
 					.getLast(); time += period) {
 
-				// Count the scenario starts since ${period} ms to ${time}.
+				// Count the amount of scenarios ${period} ms after ${time}.
 				int count = 0;
 				for (long start : this.scenarioStart)
-					if (start > time - period && start <= time)
+					if (start >= time && start < time + period)
 						count++;
 
-				LOG.debug(" => Period: " + period + ", Time: " + time
-						+ ", Count: " + count);
-				scenarioSpeedSeries.add(time, count);
+				scenarioSpeedSeries.add(time, count / period);
+			}
+
+			try {
+				scenarioSpeedSeries.add((double) this.scenarioStart.getLast(),
+						1d / period);
+			} catch (SeriesException e) {
 			}
 		}
 
