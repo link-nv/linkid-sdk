@@ -9,29 +9,18 @@ package test.spike.net.link.safeonline;
 
 import java.util.Date;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.net.SyslogAppender;
+import net.link.safeonline.audit.TinySyslogger;
+import net.link.safeonline.audit.TinySyslogger.Facility;
 
-import test.spike.net.link.safeonline.TinySyslogAppender.Facility;
+import org.apache.log4j.Logger;
 
 public class SyslogTest {
 
 	public static void main(String[] args) {
 		Logger logger = Logger.getLogger(SyslogTest.class);
 
-		TinySyslogAppender mySyslogAppender = new TinySyslogAppender(
-				Facility.LOG_LOCAL0);
-		logger.addAppender(mySyslogAppender);
+		TinySyslogger mySyslogAppender = new TinySyslogger(Facility.LOCAL0);
 
-		SyslogAppender oldSyslogAppender = new SyslogAppender();
-		oldSyslogAppender.setSyslogHost("127.0.0.1");
-		oldSyslogAppender.setFacility("LOCAL0");
-		oldSyslogAppender.setThreshold(Level.DEBUG);
-		oldSyslogAppender.setLayout(new SimpleLayout());
-		logger.addAppender(oldSyslogAppender);
-
-		logger.debug("hello world: " + new Date());
+		mySyslogAppender.log("hello world: " + new Date());
 	}
 }
