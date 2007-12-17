@@ -90,8 +90,19 @@ public abstract class ProfileDriver<S extends MessageAccessor> {
 
 	protected synchronized void unloadDriver(ProfileData data) {
 
-		this.profileData.removeLast(); // Remove the null placeholder.
-		this.profileData.addLast(data);
+		if (data == null)
+			LOG.warn("Unloading " + getClass() + " (iteration "
+					+ (this.profileData.size() - 1)
+					+ ") with empty profile data!");
+
+		else if (data.getMeasurement(ProfileData.REQUEST_START_TIME) == 0)
+			LOG.warn("No valid profile data in " + getClass() + " (iteration "
+					+ (this.profileData.size() - 1) + ").");
+
+		else {
+			this.profileData.removeLast(); // Remove the null placeholder.
+			this.profileData.addLast(data);
+		}
 	}
 
 	protected synchronized DriverException setDriverError(Exception error) {

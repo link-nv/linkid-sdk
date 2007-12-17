@@ -59,7 +59,6 @@ import org.jfree.ui.RectangleAnchor;
 
 /**
  * @author mbillemo
- * 
  */
 @Stateless
 @RemoteBinding(jndiBinding = "SafeOnline/ScenarioBean")
@@ -93,7 +92,9 @@ public class ScenarioBean implements ScenarioRemote {
 		long until = System.currentTimeMillis() + duration;
 		for (int i = 0; i < workers; ++i)
 			pool.scheduleWithFixedDelay(new Runnable() {
+
 				public void run() {
+
 					try {
 						ScenarioBean.this.scenarioStart.add(System
 								.currentTimeMillis());
@@ -353,11 +354,11 @@ public class ScenarioBean implements ScenarioRemote {
 			scenarioSpeedSet.addSeries(scenarioSpeedSeries);
 			scenarioSpeedSets.add(scenarioSpeedSet);
 
-			for (double time = this.scenarioStart.getFirst(); time < this.scenarioStart
+			for (long time = this.scenarioStart.getFirst(); time < this.scenarioStart
 					.getLast(); time += period) {
 
 				// Count the amount of scenarios ${period} ms after ${time}.
-				int count = 0;
+				double count = 0;
 				for (long start : this.scenarioStart)
 					if (start >= time && start < time + period)
 						count++;

@@ -2,7 +2,7 @@
     <TCP start_port="7800" />
     <TCPPING initial_hosts="sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]"
         port_range="5"
-        timeout="3000"
+        timeout="30000"
         num_initial_members="3" />
     <MERGE2 max_interval="30000"
 	  min_interval="10000"/>
