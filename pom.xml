@@ -556,6 +556,11 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>xml-maven-plugin</artifactId>
+                    <version>${xml-maven-plugin.version}</version>
+                </plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>
@@ -1716,11 +1721,6 @@
 				<groupId>jmimemagic</groupId>
 				<artifactId>jmimemagic</artifactId>
 				<version>${jmimemagic.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>xml-maven-plugin</artifactId>
-				<version>${xml-maven-plugin.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
