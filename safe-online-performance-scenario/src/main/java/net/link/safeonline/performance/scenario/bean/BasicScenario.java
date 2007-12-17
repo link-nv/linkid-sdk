@@ -40,7 +40,7 @@ public class BasicScenario implements Scenario {
 	public void execute() throws Exception {
 
 		// Initialize givens (application, username, password).
-		String applicationName = "performance-application", username = "admin", password = "admin", userId;
+		String applicationName = "performance-application", username = "performance", password = "performance", userId;
 		PrivateKeyEntry applicationKey = PerformanceKeyStoreUtils
 				.getPrivateKeyEntry();
 

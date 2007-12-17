@@ -33,8 +33,8 @@ public class PerformanceDriverTest {
 			.getPrivateKeyEntry();
 	private static final String OLAS_HOSTNAME = "sebeco-dev-10:8443";
 	// private static final String OLAS_HOSTNAME = "localhost:8443";
-	private static final String PASS = "admin";
-	private static final String USER = "admin";
+	private static final String PASS = "performance";
+	private static final String USER = "performance";
 	private AttribDriver attribDriver;
 	private AuthDriver authDriver;
 	private IdMappingDriver idDriver;
