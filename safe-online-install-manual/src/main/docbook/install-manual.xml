@@ -5,6 +5,10 @@
   "../../../../safe-online-sql-ddl/src/main/resources/mysql-create-account.sql">
 <!ENTITY mysql-create-database SYSTEM
  "../../../../safe-online-sql-ddl/src/main/resources/mysql-create-database.sql">
+<!ENTITY postgresql-create-account SYSTEM
+  "../../../../safe-online-sql-ddl/src/main/resources/postgresql-create-account.sql">
+<!ENTITY postgresql-create-database SYSTEM
+  "../../../../safe-online-sql-ddl/src/main/resources/postgresql-create-database.sql">
 ]>
 <book lang="en">
 	<bookinfo>
@@ -162,6 +166,22 @@
 				</para>
 			</section>
 			<section>
+				<title>PostgreSQL</title>
+				<para>
+					OLAS has explicit support for PostgreSQL version
+					8.2. Before being able to use OLAS with a PostgreSQL
+					database one has to create an account on the DBMS.
+					The following PostgreSQL script can be used to
+					create such an account.
+					<programlisting>&postgresql-create-account;</programlisting>
+					After creating a PostgreSQL account one needs to create an OLAS
+					database. This can be done via the following script.
+					<programlisting>&postgresql-create-database;</programlisting>
+					Correct configuration of the PostgreSQL database can
+					be easily verified via the OLAS CLI.
+				</para>
+			</section>
+			<section>
 				<title>Oracle</title>
 				<para>Describe the Oracle setup.</para>
 			</section>
@@ -240,8 +260,11 @@
 				</mediaobject>
 				When choosing to put an Apache web server in front of
 				JBoss AS one needs to configure the HTTPD web server.
-				Per default the JBoss AS will accept incoming AJP
-				connections.
+				The communication between the Apache web server and the
+				JBoss Tomcat servlet container is using the AJP
+				protocol. This requires the presence of the Apache
+				Tomcat Proxy AJP module. Per default the JBoss AS will
+				accept incoming AJP connections.
 			</para>
 			<section>
 				<title>Configuration on Linux</title>
@@ -251,7 +274,9 @@
 					file
 					<code>/etc/httpd/conf.d/proxy_ajp.conf</code>
 					should contain similar entries as the ones below:
-					<programlisting><![CDATA[ProxyPass /olas/ ajp://localhost:8009/olas/
+					<programlisting><![CDATA[LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+
+ProxyPass /olas/ ajp://localhost:8009/olas/
 ProxyPass /olas-oper/ ajp://localhost:8009/olas-oper/
 ProxyPass /olas-owner/ ajp://localhost:8009/olas-owner/
 ProxyPass /olas-helpdesk/ ajp://localhost:8009/olas-helpdesk/
@@ -502,7 +527,7 @@ unitName=SafeOnlineEntityManager
 </para>
 	</chapter>
 	
-	<chapter>
+	<chapter id="post-deployment-configuration">
 		<title>Post-deployment Configuration</title>
 		<para>
 			After the first deployment of OLAS it is recommended to

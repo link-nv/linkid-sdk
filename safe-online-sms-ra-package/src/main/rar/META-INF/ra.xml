@@ -42,6 +42,7 @@
 				</connection-impl-class>
 			</connection-definition>
 			<transaction-support>NoTransaction</transaction-support>
+			<reauthentication-support>false</reauthentication-support>
 		</outbound-resourceadapter>
 		<security-permission>
 			<description>

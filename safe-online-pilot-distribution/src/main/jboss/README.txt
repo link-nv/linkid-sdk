@@ -14,5 +14,7 @@ out install-manual.pdf.
 
 === 3. License
 
-Copyright 2006-2007 Lin.k N.V. All rights reserved.
+OLAS Copyright 2006-2007 Lin.k N.V. All rights reserved.
 Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+
+JBoss application server: see copyright.txt
