@@ -9,10 +9,12 @@ package net.link.safeonline.model.performance;
 
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -31,6 +33,8 @@ public class PerformanceStartableBean extends AbstractInitBean {
 
 	private static final String PERFORMANCE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:test";
 	public static final String PERFORMANCE_APPLICATION_NAME = "performance-application";
+	private static final String LICENSE_AGREEMENT_CONFIRM_TEXT_EN = "This software is for performance testing purposes only.";
+	private static final String LICENSE_AGREEMENT_CONFIRM_TEXT_NL = "Deze software dient enkel voor performance testing gebruikt te worden.";
 
 	public PerformanceStartableBean() {
 
@@ -39,6 +43,9 @@ public class PerformanceStartableBean extends AbstractInitBean {
 		 */
 		this.authorizedUsers.put("performance", new AuthenticationDevice(
 				"performance", null, null));
+		this.subscriptions.add(new Subscription(
+				SubscriptionOwnerType.APPLICATION, "performance",
+				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
 		/*
 		 * Obtain the performance application identity.
@@ -74,7 +81,24 @@ public class PerformanceStartableBean extends AbstractInitBean {
 		 */
 		this.identities.add(new Identity(PERFORMANCE_APPLICATION_NAME,
 				new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-						PERFORMANCE_ATTRIBUTE, true, false) }));
+						PERFORMANCE_ATTRIBUTE, false, false) }));
+
+		/*
+		 * Application usage agreements
+		 */
+		UsageAgreement usageAgreement = new UsageAgreement(
+				PERFORMANCE_APPLICATION_NAME);
+		usageAgreement.addUsageAgreementText(new UsageAgreementText(
+				Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV"
+						+ "\n" + "Software License Agreement for "
+						+ PERFORMANCE_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+		usageAgreement.addUsageAgreementText(new UsageAgreementText("nl",
+				"Nederlands" + "\n\n" + "Lin-k NV" + "\n"
+						+ "Software Gebruikers Overeenkomst voor "
+						+ PERFORMANCE_APPLICATION_NAME + "\n\n"
+						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+		this.usageAgreements.add(usageAgreement);
 	}
 
 	@Override

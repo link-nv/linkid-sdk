@@ -7,9 +7,9 @@
 package net.link.safeonline.performance.console.jgroups;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,11 +30,10 @@ import org.jgroups.View;
  */
 public class AgentDiscoverer implements Receiver, ChannelListener {
 
-	private static final Log LOG = LogFactory.getLog(AgentDiscoverer.class);
+	static final Log LOG = LogFactory.getLog(AgentDiscoverer.class);
 
 	private List<AgentStateListener> agentStateListeners;
-
-	private JChannel channel;
+	JChannel channel;
 
 	/**
 	 * Join the Profiler's JGroup using the package name as group name.
@@ -42,31 +41,16 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 	public AgentDiscoverer() {
 
 		ResourceBundle properties = ResourceBundle.getBundle("console");
-		String group = properties.getString("jgroups.group");
+		final String group = properties.getString("jgroups.group");
 		LOG.debug("jgroups.group: " + group);
 
+		this.agentStateListeners = new ArrayList<AgentStateListener>();
+
 		try {
-			this.agentStateListeners = new ArrayList<AgentStateListener>();
-
-			if (null == this.channel || !this.channel.isOpen())
-				this.channel = new JChannel(getClass().getResource(
-						"/jgroups.xml"));
-
-			if (!this.channel.isConnected())
-				this.channel.connect(group);
-
-			Runtime.getRuntime().addShutdownHook(
-					new Thread("JGroups ShutdownHook") {
-
-						@Override
-						public void run() {
-
-							close();
-						}
-					});
-
-			this.channel.addChannelListener(this);
-			this.channel.setReceiver(this);
+			if (null == AgentDiscoverer.this.channel
+					|| !AgentDiscoverer.this.channel.isOpen())
+				AgentDiscoverer.this.channel = new JChannel(getClass()
+						.getResource("/jgroups.xml"));
 		}
 
 		catch (ChannelException e) {
@@ -74,6 +58,39 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 			LOG.error(msg, e);
 			throw new RuntimeException(msg, e);
 		}
+
+		AgentDiscoverer.this.channel.addChannelListener(AgentDiscoverer.this);
+		AgentDiscoverer.this.channel.setReceiver(AgentDiscoverer.this);
+
+		Runtime.getRuntime().addShutdownHook(
+				new Thread("JGroups ShutdownHook") {
+
+					@Override
+					public void run() {
+
+						close();
+					}
+				});
+
+		Thread thread = new Thread() {
+			@Override
+			public void run() {
+
+				try {
+					if (!AgentDiscoverer.this.channel.isConnected())
+						AgentDiscoverer.this.channel.connect(group);
+				}
+
+				catch (ChannelException e) {
+					String msg = "Couldn't establish the JGroups channel.";
+					LOG.error(msg, e);
+					throw new RuntimeException(msg, e);
+				}
+			}
+		};
+
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	/**
@@ -146,19 +163,35 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 	}
 
 	/**
+	 * @return The members in the current view.
+	 */
+	public List<Address> getMembers() {
+
+		if (this.channel.getView() == null)
+			return null;
+
+		return Collections
+				.unmodifiableList(this.channel.getView().getMembers());
+	}
+
+	/**
+	 * @return <code>true</code> if the current view contains the given
+	 *         member.
+	 */
+	public boolean hasMember(Address member) {
+
+		if (this.channel.getView() == null)
+			return false;
+
+		return this.channel.getView().containsMember(member);
+	}
+
+	/**
 	 * @return the name of the JGroups group of agents.
 	 */
 	public String getGroupName() {
 
 		return this.channel.getClusterName();
-	}
-
-	/**
-	 * Retrieve the members currently part of the group.
-	 */
-	public Vector<Address> getMembers() {
-
-		return this.channel.getView().getMembers();
 	}
 
 	/**

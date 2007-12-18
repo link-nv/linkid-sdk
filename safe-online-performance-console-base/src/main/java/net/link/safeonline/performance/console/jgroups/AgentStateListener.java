@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.performance.console.jgroups;
 
-import java.util.Vector;
+import java.util.List;
 
 import org.jgroups.Address;
 
@@ -24,7 +24,7 @@ public interface AgentStateListener {
 	/**
 	 * The members of the channel changed to the provided list.
 	 */
-	public void membersChanged(Vector<Address> newMembers);
+	public void membersChanged(List<Address> newMembers);
 
 	/**
 	 * The channel was closed.

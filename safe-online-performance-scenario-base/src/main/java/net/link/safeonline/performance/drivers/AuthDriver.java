@@ -234,17 +234,20 @@ public class AuthDriver extends ProfileDriver<MessageAccessor> {
 				postMethod = submitFormMethod(formNode, new NameValuePair[] {
 						new NameValuePair(usernameKey, username),
 						new NameValuePair(passwordKey, password) });
-				executeRequest(postMethod, jsessionId);
+				formNode = executeRequest(postMethod, jsessionId);
 
 				// This redirect sends us either the SAML response
-				// or subscription confirmation request.
+				// or confirmation request (EULA + Attributes Confirmation).
 				GetMethod getMethod = redirectGetMethod(postMethod);
 				formNode = executeRequest(getMethod, jsessionId);
 				if (null == XPathAPI.selectSingleNode(formNode,
 						"//input[@type='hidden' and @name='SAMLResponse']")) {
-					LOG.debug("No SAML response; assuming subscribe request.");
+					LOG.debug("One-time confirmation request.");
 					postMethod = submitFormMethod(formNode);
-					executeRequest(postMethod, jsessionId);
+					formNode = executeRequest(postMethod, jsessionId);
+
+					postMethod = submitFormMethod(formNode);
+					formNode = executeRequest(postMethod, jsessionId);
 
 					getMethod = redirectGetMethod(postMethod);
 					formNode = executeRequest(getMethod, jsessionId);

@@ -6,11 +6,10 @@
  */
 package net.link.safeonline.performance.console.swing.ui;
 
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -47,13 +46,6 @@ public class AgentsList extends JList implements AgentStateListener,
 		this.scenarioChooser = scenarioChooser;
 		ConsoleData.getInstance().getAgentDiscoverer().addAgentStateListener(
 				this);
-
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				membersChanged(ConsoleData.getInstance().getAgentDiscoverer()
-						.getMembers());
-			}
-		});
 	}
 
 	/**
@@ -72,19 +64,19 @@ public class AgentsList extends JList implements AgentStateListener,
 	/**
 	 * {@inheritDoc}
 	 */
-	public void membersChanged(Vector<Address> addresses) {
+	public void membersChanged(List<Address> addresses) {
 
 		// Check whether all agents are in the list and add them if need be.
 		for (Address address : addresses)
 			if (!address.equals(ConsoleData.getInstance().getSelf())) {
 				Agent agent = ConsoleData.getInstance().getAgent(address);
-				if (!this.model.contains(agent)) {
+				if (agent != null && !this.model.contains(agent)) {
 					this.model.addElement(agent);
 					agent.addAgentStatusListener(this);
-				}
 
-				int endIndex = getModel().getSize() - 1;
-				addSelectionInterval(endIndex, endIndex);
+					int endIndex = getModel().getSize() - 1;
+					addSelectionInterval(endIndex, endIndex);
+				}
 			}
 
 		// Remove stale agents from the list.
@@ -107,8 +99,6 @@ public class AgentsList extends JList implements AgentStateListener,
 	 */
 	public void channelClosed() {
 
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -116,16 +106,14 @@ public class AgentsList extends JList implements AgentStateListener,
 	 */
 	public void channelConnected() {
 
-		// TODO Auto-generated method stub
-
+		membersChanged(ConsoleData.getInstance().getAgentDiscoverer()
+				.getMembers());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void channelDisconnected() {
-
-		// TODO Auto-generated method stub
 
 	}
 
@@ -134,16 +122,12 @@ public class AgentsList extends JList implements AgentStateListener,
 	 */
 	public void channelReconnected(Address arg0) {
 
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void channelShunned() {
-
-		// TODO Auto-generated method stub
 
 	}
 

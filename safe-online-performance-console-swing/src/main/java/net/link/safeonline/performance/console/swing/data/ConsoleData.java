@@ -73,8 +73,7 @@ public class ConsoleData {
 	public synchronized Agent getAgent(Address agentAddress) {
 
 		Agent agent = this.agents.get(agentAddress);
-		if (null == agent
-				&& this.agentDiscoverer.getMembers().contains(agentAddress))
+		if (null == agent && this.agentDiscoverer.hasMember(agentAddress))
 			this.agents.put(agentAddress, agent = new Agent(agentAddress));
 
 		return agent;
@@ -89,7 +88,7 @@ public class ConsoleData {
 
 		List<Agent> staleAgents = new ArrayList<Agent>();
 		for (Address agentAddress : getAgents().keySet())
-			if (!this.agentDiscoverer.getMembers().contains(agentAddress))
+			if (!this.agentDiscoverer.hasMember(agentAddress))
 				staleAgents.add(this.agents.remove(agentAddress));
 
 		return staleAgents;
