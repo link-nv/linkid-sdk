@@ -629,8 +629,9 @@ public class ApplicationBean implements Application {
 					tempNewIdentityAttributes);
 			this.applicationService.updateApplicationUrl(applicationId,
 					newApplicationUrl);
-			this.applicationService.updateApplicationLogo(applicationId,
-					newApplicationLogo);
+			if (newApplicationLogo != null)
+				this.applicationService.updateApplicationLogo(applicationId,
+						newApplicationLogo);
 			this.applicationService.updateApplicationColor(applicationId,
 					newApplicationColor);
 			this.applicationService.setIdentifierMappingServiceAccess(

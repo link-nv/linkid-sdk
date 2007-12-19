@@ -26,7 +26,6 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.IdScopeType;
-import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 /**
@@ -53,17 +52,6 @@ public interface ApplicationService {
 	 * @throws ApplicationNotFoundException
 	 */
 	ApplicationEntity getApplication(String applicationName)
-			throws ApplicationNotFoundException;
-
-	/**
-	 * Gives back a stub for an application that contains the application's data
-	 * that's available to the public.
-	 * 
-	 * @param applicationName
-	 * @return
-	 * @throws ApplicationNotFoundException
-	 */
-	public PublicApplication getPublicApplication(String applicationName)
 			throws ApplicationNotFoundException;
 
 	/**

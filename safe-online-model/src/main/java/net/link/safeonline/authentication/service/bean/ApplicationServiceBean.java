@@ -59,7 +59,6 @@ import net.link.safeonline.model.ApplicationIdentityManager;
 import net.link.safeonline.model.ApplicationOwnerManager;
 import net.link.safeonline.model.Applications;
 import net.link.safeonline.model.SubjectManager;
-import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.pkix.PkiUtils;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.service.SubjectService;
@@ -381,14 +380,6 @@ public class ApplicationServiceBean implements ApplicationService,
 	public ApplicationEntity getApplication(String applicationName)
 			throws ApplicationNotFoundException {
 		return this.applicationDAO.getApplication(applicationName);
-	}
-
-	@PermitAll
-	public PublicApplication getPublicApplication(String applicationName)
-			throws ApplicationNotFoundException {
-
-		return new PublicApplication(this.applicationDAO
-				.getApplication(applicationName));
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

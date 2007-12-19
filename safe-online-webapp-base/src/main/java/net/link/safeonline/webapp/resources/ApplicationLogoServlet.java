@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.model.application.PublicApplication;
+import net.link.safeonline.service.PublicApplicationService;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.sf.jmimemagic.Magic;
 import net.sf.jmimemagic.MagicException;
@@ -44,7 +44,7 @@ public class ApplicationLogoServlet extends HttpServlet {
 	private static final Log LOG = LogFactory
 			.getLog(ApplicationLogoServlet.class);
 
-	private ApplicationService applicationService;
+	private PublicApplicationService publicApplicationService;
 
 	/**
 	 * @{inheritDoc}
@@ -58,9 +58,9 @@ public class ApplicationLogoServlet extends HttpServlet {
 	}
 
 	private void loadDependencies() {
-		this.applicationService = EjbUtils.getEJB(
-				"SafeOnline/ApplicationServiceBean/local",
-				ApplicationService.class);
+		this.publicApplicationService = EjbUtils.getEJB(
+				"SafeOnline/PublicApplicationServiceBean/local",
+				PublicApplicationService.class);
 	}
 
 	/**
@@ -71,13 +71,18 @@ public class ApplicationLogoServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		String applicationName = request.getParameter("applicationName");
+		if (null == applicationName)
+			return;
+
 		try {
-			PublicApplication application = this.applicationService
+			PublicApplication application = this.publicApplicationService
 					.getPublicApplication(applicationName);
 
 			byte[] logo = application.getLogo();
-			MagicMatch magic = Magic.getMagicMatch(logo);
+			if (null == logo)
+				return;
 
+			MagicMatch magic = Magic.getMagicMatch(logo);
 			if (!magic.getMimeType().startsWith("image/"))
 				throw new IllegalStateException(
 						"Not allowed to load non-image data out of the application URL field.");

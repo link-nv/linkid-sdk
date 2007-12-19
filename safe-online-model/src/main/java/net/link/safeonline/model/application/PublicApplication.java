@@ -24,7 +24,7 @@ import net.link.safeonline.entity.ApplicationEntity;
  * <i>Dec 7, 2007</i>
  * </p>
  * 
- * @see ApplicationService#getPublicApplication(String)
+ * @see PublicApplicationService#getPublicApplication(String)
  * 
  * @author mbillemo
  */
