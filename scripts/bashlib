@@ -1,0 +1,948 @@
+#! /bin/bash
+# ___________________________________________________________________________ #
+#                                                                             #
+#       BashLIB -- A library for Bash scripting convenience.                  #
+#                                                                             #
+#                                                                             #
+#    Licensed under the Apache License, Version 2.0 (the "License");          #
+#    you may not use this file except in compliance with the License.         #
+#    You may obtain a copy of the License at                                  #
+#                                                                             #
+#        http://www.apache.org/licenses/LICENSE-2.0                           #
+#                                                                             #
+#    Unless required by applicable law or agreed to in writing, software      #
+#    distributed under the License is distributed on an "AS IS" BASIS,        #
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. #
+#    See the License for the specific language governing permissions and      #
+#    limitations under the License.                                           #
+# ___________________________________________________________________________ #
+#                                                                             #
+#                                                                             #
+# Copyright 2007, lhunath                                                     #
+#   * http://lhunath.lyndir.com                                               #
+#   * Maarten Billemont.                                                      #
+#                                                                             #
+
+
+
+#  ______________________________________________________________________ 
+# |                                                                      |
+# |                                         .:: GLOBAL CONFIGURATION ::. |
+# |______________________________________________________________________|
+
+shopt -s extglob
+
+
+
+#  ______________________________________________________________________ 
+# |                                                                      |
+# |                                          .:: GLOBAL DECLARATIONS ::. |
+# |______________________________________________________________________|
+
+# Variables for global internal operation.
+export spinner=(    . o O o         )
+
+
+# Variables for terminal requests.
+export save=$(      tput sc         )
+export load=$(      tput rc         )
+export bold=$(      tput bold       )
+export reset=$(     tput sgr0       )
+#export blink=$(    tput blink      )
+export italic=$(    tput sitm       )
+export red=$(       tput setaf 1    )
+export green=$(     tput setaf 2    )
+export yellow=$(    tput setaf 3    )
+export blue=$(      tput setaf 4    )
+export magenta=$(   tput setaf 5    )
+export cyan=$(      tput setaf 6    )
+export grey=$(      tput setaf 7    )
+export default=$(   tput setaf 9    )
+export eed=$(       tput ed         )
+export eel=$(       tput el         )
+export ebl=$(       tput el1        )
+export ewl=$(       tput el         \
+                    tput el1        )
+export draw=$(      tput enacs      \
+                    tput smacs      \
+                    tput acsc       \
+                    tput rmacs      )
+
+
+
+#  ______________________________________________________________________ 
+# |                                                                      |
+# |                                        .:: FUNCTION DECLARATIONS ::. |
+# |______________________________________________________________________|
+
+
+
+#  ______________________________________________________________________
+# |__ Emit ______________________________________________________________|
+#
+#       emit [options] message... [-- [command args...]]
+#
+# Display a message with contextual coloring.
+#
+# When a command is provided, a spinner will be activated in front of the
+# message for as long as the command runs.  When the command ends, its
+# exit status will result in a message 'done' or 'failed' to be displayed.
+#
+# It is possible to only specify -- as final argument.  This will prepare
+# a spinner for you with the given message but leave it up to you to
+# notify the spinner that it needs to stop.  See the documentation for
+# 'spinner' to learn how to do this.
+#
+#   -n  Do not end the line with a newline.
+#   -b  Activate bright (bold) mode.
+#   -d  Activate half-bright (dim) mode.
+#   -g  Display in green.
+#   -y  Display in yellow.
+#   -r  Display in red.
+#   -w  Display in the default color.
+#
+#   -[code] A proxy-call to 'spinner -[code]'.
+#
+# Non-captialized versions of these options affect the * or the spinner
+# in front of the message.  Capitalized options affect the message text
+# displayed.
+#
+emit() {
+
+   # Check usage.
+    [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
+        emit -y 'Please specify a message as argument.'
+        return 1
+    }
+
+    # Proxy call to spinner.
+    [[ $# -eq 1 && $1 = -+([0-9]) ]] \
+        && { spinner $1; return $?; }
+ 
+    # Initialize the vars.
+    local arg
+    local style=
+    local color=
+    local textstyle=
+    local textcolor=
+    local eol=$'..\n'
+    local cmd=0
+
+    # Parse the options.
+    for arg in $(getArgs dbwgyrDBWGYRn "$@"); do
+        case ${arg%% } in
+            d) style=$dim           ;;
+            b) style=$bold          ;;
+            w) color=$white         ;;
+            g) color=$green         ;;
+            y) color=$yellow        ;;
+            r) color=$red           ;;
+            D) textstyle=$dim       ;;
+            B) textstyle=$bold      ;;
+            W) textcolor=$white     ;;
+            G) textcolor=$green     ;;
+            Y) textcolor=$yellow    ;;
+            R) textcolor=$red       ;;
+            n) eol=                 ;;
+        esac
+    done
+
+    # Defaults.
+    color=${color:-$textcolor}
+    color=${color:-$green}
+    textcolor=${textcolor:-$white}
+    [[ $color = $textcolor && -z $style ]] && style=$bold
+
+    # Trim off the options.
+    while [[ $1 = -* ]]; do shift; done
+
+    # Get the text message.
+    local text=
+    for arg; do [[ $arg = -- ]] && break; text+="$arg "; done
+    text=${text%% }
+    [[ $text = *[^a-zA-Z0-9$'\047'$'\042'] ]] && eol=${eol:+$'\n'}
+    text+=$eol
+    
+    # Trim off everything up to --
+    while [[ $# -gt 1 && $1 != -- ]]; do shift; done
+    [[ $1 = -- ]] && { shift; cmd=1; }
+
+    # Figure out what FD to use for our messages.
+    [[ -t 1 ]]; local fd=$(( $? + 1 ))
+
+    # Display the message or spinner.
+    if (( cmd )); then
+        # Don't let this Bash handle SIGINT.
+        trap : INT
+
+        # Create the spinner in the background.
+        { spinner "$text" -- "$style" "$color" "$textstyle" "$textcolor" & } 2>/dev/null
+        spinPid=$!
+
+        # Execute the command for the spinner if one is given.
+        sleep .01 # Let the spinner initialize itself properly first.
+        if   (( $# == 1 )); then command=$1
+        elif (( $# >  1 )); then command=$(printf '%q ' "$@")
+        else return; fi
+
+        eval "$command" >/dev/null \
+            && spinner -0 \
+            || spinner -1
+    else
+        # Make reset codes restore the initial font.
+        local font=$reset$textstyle$textcolor
+        text=$font${text//$reset/$font}
+        
+        echo -ne "\r $reset$style$color* $text"                      >&$fd
+    fi
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
+# |__ Spinner ___________________________________________________________|
+#
+#       spinner message... [-- style color textstyle textcolor]
+#           or
+#       spinner -[code]
+#
+# Displays a spinner on the screen that waits until a certain time.
+# Best used through its interface provided by 'emit'.
+#
+#   style       A terminal control string that defines the style of the spinner.
+#   color       A terminal control string that defines the color of the spinner.
+#   textstyle   A terminal control string that defines the style of the message.
+#   textcolor   A terminal control string that defines the color of the message.
+#
+#   -[code]     Shut down a previously activated spinner with the given exit
+#               code.  If the exit code is 0, a green message 'done' will be
+#               displayed.  Otherwise a red message 'failed' will appear.
+#               The function will return with this exit code as result.
+#
+# You can manually specify a previously started spinner by putting its PID in
+# the 'spinPid' variable.  If this variable is not defined, the PID of the most
+# recently backgrounded process is used.  The 'spinPid' variable is unset upon
+# each call to 'spinner' and reset to the PID of the spinner if one is created.
+#
+spinner() {
+
+    # Check usage.
+    [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
+        emit -y 'Please specify a message as argument or a status option.'
+        return 1
+    }
+
+    # Initialize the vars.
+    local pid=${spinPid:-$!}
+    local style=$bold
+    local color=$green
+    local textstyle=
+    local textcolor=
+    unset spinPid
+
+    # Any options are the exit status of an existing spinner.
+    if [[ $pid && $1 = -* ]]; then
+        result=${1#-}
+        [[ $result = 0 ]] \
+            && kill -USR1 $pid \
+            || kill -USR2 $pid
+        
+        trap - INT
+        wait $pid 2>/dev/null
+
+        return $result
+    fi
+ 
+    # Read arguments.
+    local text=
+    for arg; do [[ $arg = -- ]] && break; text+="$arg "; done
+    text=${text%% }; text=${text%$'\n'}; text=${text%% }
+    local styles=$*; [[ $styles = *' -- '* ]] || styles=
+    read -a styles <<< "${styles##* -- }"
+    [[ ${styles[0]} ]] && style=${styles[0]}
+    [[ ${styles[1]} ]] && color=${styles[1]}
+    [[ ${styles[2]} ]] && textstyle=${styles[2]}
+    [[ ${styles[3]} ]] && textcolor=${styles[3]}
+
+    # Initialize spinner vars.
+    # Make sure monitor mode is off or we won't be able to trap INT properly.
+    local monitor=$([[ $- != *m* ]]; echo $?); set +m
+    local done="${green}done"
+
+    # Place the trap for interrupt signals.
+    trap 'done="${red}failed"; break' USR2
+    trap 'break' USR1
+
+    # Figure out what FD to use for our messages.
+    [[ -t 1 ]]; local fd=$(( $? + 1 ))
+
+    # Render the spinner.
+    echo -ne "\r$save"                                              >&$fd
+    local i
+    for (( i = 0; 1; i = ( i + 1) % 4 )); do
+        echo -n "$load$eel" \
+                "$reset$style$color${spinner[i]}" \
+                "$reset$textstyle$textcolor$text"                   >&$fd
+        sleep .25 # Four iterations make one second.
+    done
+
+    # Get rid of the spinner traps.
+    trap - USR1 USR2; (( monitor )) && set -m
+
+    # Make reset codes restore the initial font.
+    local font=$reset$textstyle$textcolor
+    text=$font${text//$reset/$font}
+
+    # Spinner final status.
+    echo "$load$eel" \
+         "$reset$style$color* $text $bold$done$font."                 >&$fd
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
+# |__ Ask _______________________________________________________________|
+#
+#       ask [-optionchars] message...
+#
+# Ask a question and read the user's reply to it.
+#
+# By default, a reply is terminated by a newline.
+#
+# You may use the options to switch into key mode.  In key mode, only a
+# single character is read.  The valid characters are specified in the
+# options.  A capital option character makes that option the default.
+#
+# If the reply character in key mode was not amoungst the provided options
+# the default is assumed instead.  If no default was given, an exit code
+# of 2 is returned.
+#
+# You may mark an optionchar as 'valid' by appending a '!' to it.  As a
+# result, an exit code of 0 will only be returned if this valid option
+# is replied.  If not, an exit code of 1 will be returned.
+#
+# If no option is marked as valid, the given reply is echoed and an exit
+# code of 0 is returned.
+#
+ask() {
+   
+   # Check usage.
+    [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
+        emit -y 'Please specify a question as argument.'
+        return 1
+    }
+ 
+    # Initialize the vars.
+    local arg
+    local options=
+    local default=
+    local valid=
+
+    # Parse the options.
+    for arg in $(getArgs "$(echo {a..z} {A..Z} | tr -d ' ')!" "$@"); do
+        [[ $arg = [[:upper:]] ]] \
+            && default=$arg
+        [[ $arg = ! ]] \
+            && { valid=${options: -1}; continue; }
+
+        options+=$arg
+    done
+
+    # Trim off the options.
+    while [[ $1 = -* ]]; do shift; done
+
+    # Figure out what FD to use for our messages.
+    [[ -t 1 ]]; local fd=$(( $? + 1 ))
+
+    # Ask the question.
+    emit -yn "$*${options:+ [$options]} "
+    read ${options:+-n1}; echo                                      >&$fd
+
+    # Evaluate the reply.
+    while true; do
+        if [[ $REPLY && ( -z $options || $options = *$REPLY* ) ]]; then
+            if [[ $valid ]]
+            then [[ $REPLY = $valid ]]
+            else echo "$REPLY"
+            fi
+
+            return $?
+        fi
+
+        [[ -z $default || $REPLY = $default ]] \
+            && return 2
+        
+        REPLY=$default
+    done
+} # _____________________________________________________________________
+
+
+#  ______________________________________________________________________
+# |__ Trim ______________________________________________________________|
+#
+#       trim lines ...
+#
+# Trim the whitespace off of the beginning and end of the given lines.
+# Each argument is considdered one line; is treated and printed out.
+#
+# When no arguments are given, lines will be read from standard input.
+#
+trim() {
+   
+    # Initialize the vars.
+    local lines
+    local line
+
+    # Get the lines.
+    lines=( "$@" )
+    if (( ! ${#lines[@]} )); then
+        oIFS=$IFS; IFS=$'\n'
+        lines=( $(cat) )
+        IFS=$oIFS
+    fi
+
+    # Trim the lines
+    for line in "${lines[@]}"; do
+        line=${line##*([[:space:]])}; line=${line%%*([[:space:]])}
+        echo "$line"
+    done
+} # _____________________________________________________________________
+
+#  ______________________________________________________________________
+# |__ SWait _____________________________________________________________|
+#
+#       swait pid...
+#
+# Wait for the given PID(s).  The PID does not need to be a child of the
+# running shell.  Note that relying on PIDs always introduces race conditions
+# which may be potentially harmful and sometimes even a security issue.
+#
+# This implementation requires the necessary permissions to send signals
+# to the PID(s) provided.
+#
+swait() {
+
+    # Check usage.
+    [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
+        emit -y 'Please provide one or more PIDs to wait for as argument.'
+        return 1
+    }
+
+    # Time to wait.
+    local pid
+    for pid; do
+        while kill -0 $pid 2>/dev/null
+        do sleep .1; done
+    done
+} # _____________________________________________________________________
+
+
+#  ______________________________________________________________________
+# |__ SKill _____________________________________________________________|
+#
+#       skill [-v] pid...
+#
+# Kill the given PID(s) in a smart manner.
+#
+# All attempts will be made to use the least destructive signal to terminate
+# the given process(es).  These signals will be sent in order:
+#
+# SIGPIPE, SIGHUP, SIGINT, SIGTERM, SIGKILL
+#
+#   -v  Be verbose and report how persistant we had to be to kill the process.
+#   -w  If we cannot kill the process with any signal, wait for it to end
+#       before returning.
+#
+skill() {
+
+    # Check usage.
+    [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
+        emit -y 'Please provide the PID to terminate as argument.'
+        return 1
+    }
+
+    # Initialize the defaults.
+    local arg
+    local wait=0
+    local verbose=0
+
+    # Parse the options.
+    for arg in $(getArgs vw "$@"); do
+        case $arg in
+            v) verbose=1    ;;
+            w) wait=1       ;;
+        esac
+    done
+
+    # Trim off the options.
+    while [[ $1 = -* ]]; do shift; done
+
+    # Figure out what FD to use for our messages.
+    [[ -t 1 ]]; local fd=$(( $? + 1 ))
+
+    # On to the killing.
+    {
+        # Does it even exist?
+        kill -0 $1 || { (( verbose )) && emit "$1 is already gone."; return; }
+
+        # Send some safe signals.
+        (( verbose )) && emit -ng "Being nice .."
+        kill -PIPE $1; kill -HUP $1; kill -INT $1
+        sleep .1; kill -0 $1 || { (( verbose )) && echo; return; }  >&$fd
+
+        # Be somewhat rude.
+        (( verbose )) && emit -ny "Being rude .."
+        kill -TERM $1; sleep .1; kill -TERM $1
+        sleep .2; kill -0 $1 || { (( verbose )) && echo; return; }  >&$fd
+
+        # Be vicious.
+        (( verbose )) && emit -nr "Being vicious .."
+        kill -KILL $1; (( wait )) && wait $1
+
+        (( verbose )) && echo                                       >&$fd
+    } 2>/dev/null
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
+# |__ GetArgs ___________________________________________________________|
+#
+#       getArgs [options] optstring [args...]
+#
+# Retrieve all options present in the given arguments.
+#
+# This is a wrapper for getopts(P) which will safely work inside functions.
+# It manages OPTIND for you and returns a list of options found in the
+# provided arguments.
+#
+#   optstring   This is a string of characters in which each character
+#               represents an option to look for in the arguments.
+#               See getopts(P) for a description of the optstring syntax.
+#
+#   args        This is a list of arguments in which to look for options.
+#               Most commonly, you will use "$@" to supply these arguments.
+#
+#   -c  Instead of outputting the arguments, output OPTARGS.
+#   -q  Be quiet.  No arguments are displayed.  Only the exit code is set.
+#   -n  Use newlines as a separator between the options that were found.
+#   -0  Use NULL-bytes as a separator between the options that were found.
+#
+# If any given arguments are found, an exit code of 0 is returned.  If none
+# are found, an exit code of 1 is returned.
+#
+# After the operation, OPTARGS is set the the index of the last argument
+# that has been parsed by getArgs.  Ready for you to use shift $OPTARGS.
+#
+getArgs() {
+
+    # Check usage.
+    [[ $# -lt 1 ]] && {
+        emit -y 'Please provide the arguments to search for in' \
+                'getopts(P) format followed by the positional parameters.'
+        return 1
+    }
+
+    # Initialize the defaults.
+    local arg
+    local found=0
+    local quiet=0
+    local count=0
+    local delimitor=' '
+
+    # Parse the options.
+    while [[ $1 = -* ]]; do
+        case $1 in
+            -q) quiet=1         ;;
+            -c) count=1         ;;
+            -n) delimitor=$'\n' ;;
+            -0) delimitor=$'\0' ;;
+        esac
+        shift
+    done
+
+    # Get the optstring.
+    local optstring=$1; shift
+    local oOPTIND=$OPTIND OPTIND=1
+
+    # Enumerate the arguments.
+    while getopts "$optstring" arg; do
+        [[ $arg != '?' ]] && found=1
+
+        (( quiet + count )) || \
+            echo -n "$arg${OPTARG:+ }$OPTARG$delimitor"
+    done
+    OPTARGS=$(( OPTIND - 1 ))
+    OPTIND=$oOPTIND
+
+    # Any arguments found?
+    (( count )) && echo "$OPTARGS"
+    (( found ))
+} # _____________________________________________________________________
+
+
+
+# |__ ShowHelp __________________________________________________________|
+#
+#       showHelp name description author [option description]...
+#
+# Generate a prettily formatted usage description of the application.
+#
+#   name        Provide the name of the application.
+#
+#   description Provide a detailed description of the application's
+#               purpose and usage.
+#
+#   option      An option the application can take as argument.
+#
+#   description A description of the effect of the preceding option.
+#
+showHelp() {
+
+    # Check usage.
+    [[ $# -lt 3 ]] || getArgs -q :h "$@" && {
+        emit -y 'Please provide the name, description, author and options' \
+                'of the application.'
+        return 1
+    }
+
+    # Parse the options.
+    local appName=$1; shift
+    local appDesc=$1; shift
+    local appAuthor=$1; shift
+
+    # Figure out what FD to use for our messages.
+    [[ -t 1 ]]; local fd=$(( $? + 1 ))
+
+    # Print out the help header.
+    echo $reset$bold                                                >&$fd
+    echo -e "\t\t$appName"                                          >&$fd
+    echo $reset$green                                               >&$fd
+    echo "$appDesc" | fmt -w 70 | sed $'s/^/\t/'                    >&$fd
+    echo -e "\t   $reset$bold~ $reset$yellow$appAuthor"             >&$fd
+    echo $reset                                                     >&$fd
+
+    # Print out the application options and columnize them.
+    while [[ $# -gt 0 ]]; do
+        local optName=$1; shift
+        local optDesc=$1; shift
+        echo -n "    $optName"$'\t'
+        echo "${optDesc//+( )/ }" | fmt -tw 70 | sed $'1!s/^/ \t/'
+        echo
+    done | column -t -s $'\t' \
+         | sed -r "s/^(    [^ ]*)/$bold$green\1$reset/"             >&$fd
+    echo                                                            >&$fd
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
+# |__ InArray ___________________________________________________________|
+#
+#       inArray element array
+#
+# Checks whether a certain element is in the given array.
+#
+#   element The element to search the array for.
+#   array   This is a list of elements to search through.
+#
+inArray() {
+
+    # Check usage.
+    [[ $# -lt 2 ]] || getArgs -q :h "$@" && {
+        emit -y 'Please provide the element to search for and the array' \
+                'to search through.'
+        return 1
+    }
+
+    # Parse the options.
+    local element
+    local search=$1; shift
+
+    # Perform the search.
+    for element
+    do [[ $element = $search ]] && return 0; done
+    return 1
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
+# |__ Map _______________________________________________________________|
+#
+#       map name key [ value ]
+#
+# Retrieve a mapping of a key from the map with the given name or modify
+# the map by assigning a new value for the given key.
+#
+#   name    A string denoting the name of the map that holds the key.
+#   key     A string denoting the key of the mapping.
+#   value   An optional string denoting the new value for the given key.
+#
+# When no value is specified, the current value for the given key is returned.
+#
+# When no value and no key is specified, all known keys for the given map are
+# returned.
+#
+map() {
+    # Parse the options.
+    local quiet=
+    [[ $1 = -q ]] && { quiet=1; shift; }
+
+    # Initialize the defaults.
+    local mapName=$1
+    local mapKey=$2
+    local mapValue=$3
+    local mapIndex
+    local keyIndex
+    local arg
+
+    if (( $# > 2 )); then
+        if ! mapIndex=$(_findMapNameIndex -q "$mapName"); then
+            _mapNames+=( "$mapName" )
+            (( mapIndex = ${#_mapNames[@]} - 1 ))
+        fi
+
+        if ! keyIndex=$(_findMapKeyIndex -q "$mapIndex" "$mapKey"); then
+            _mapKeys+=( "$mapIndex-$mapKey" )
+            (( keyIndex = ${#_mapKeys[@]} - 1 ))
+        fi
+
+        _mapValues[keyIndex]=$mapValue
+    elif (( $# == 2 )); then
+        if
+            mapIndex=$(_findMapNameIndex ${quiet:+-q} "$mapName") && \
+            keyIndex=$(_findMapKeyIndex ${quiet:+-q} "$mapIndex" "$mapKey")
+        then
+            echo "${_mapValues[keyIndex]}"
+        fi
+    elif (( $# == 1 )); then
+        if 
+            mapIndex=$(_findMapNameIndex ${quiet:+-q} "$mapName")
+        then
+            for keyIndex in "${!_mapKeys[@]}"; do
+                if [[ ${_mapKeys[keyIndex]} = $mapIndex-* ]]; then
+                    echo "${_mapKeys[keyIndex]#*-}"
+                fi
+            done
+        fi
+    fi
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
+# |__ Map - Find Index of Map Name _____________________________________|
+#
+#       _findMapNameIndex name
+#
+# Returns the index of the map with the given name.
+# For internal use only.
+#
+_findMapNameIndex() {
+
+    # Parse arguments.
+    local quiet=0
+    [[ $1 = -q ]] && { quiet=1; shift; }
+
+    # Initialize argument names.
+    local mapName=$1
+
+    if  # Find the map name.
+        (( ${#_mapNames[@]} )) &&
+        for mapIndex in "${!_mapNames[@]}"; do
+            [[ ${_mapNames[mapIndex]} = $mapName ]] && break
+        done
+    then
+        echo "$mapIndex"
+    else
+        (( quiet )) || emit -r "There is no map named '$mapName'."
+        return 1
+    fi
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
+# |__ Map - Find Index of Map Key ______________________________________|
+#
+#       _findMapKeyIndex mapIndex key
+#
+# Returns the index of the given key in the map with the given index.
+# For internal use only.
+#
+_findMapKeyIndex() {
+
+    # Parse arguments.
+    local quiet=0
+    [[ $1 = -q ]] && { quiet=1; shift; }
+
+    # Initialize argument names.
+    local mapIndex=$1
+    local mapKey=$2
+
+    if  # Find the map key.
+        (( ${#_mapKeys[@]} )) &&
+        for keyIndex in "${!_mapKeys[@]}"; do
+            [[ ${_mapKeys[keyIndex]} = $mapIndex-$mapKey ]] && break
+        done
+    then
+        echo "$keyIndex"
+    else
+        (( quiet )) || emit -r "The map '$mapName' does not contain a key '$mapKey'."
+        return 1
+    fi
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
+# |__ Map _______________________________________________________________|
+#
+#       map key map [ <<< value ]
+#
+# Retrieve a mapping of a key from the given map or modify the given map by
+# assigning a new value for the given key if stdin is not the terminal.
+#
+#   key     A string denoting the key of the relevant mapping.
+#   value   A string denoting the new value for the given key.
+#   map     This is a list of key and value strings that define the map.
+#
+# When no value is specified, the current value for the given key is returned.
+#
+# When assigning a new value, the whole map is returned with the mapping for
+# the given key modified to map to the new value.  The following options are
+# only relevant for this case:
+#
+#   -n      Use newlines as an output separator between keys and values.
+#   -0      Use NULL-bytes as an output separator between keys and values.
+#
+_depricated_map() {
+
+    # Check usage.
+    [[ $# -lt 2 ]] || getArgs -q :h "$@" && {
+        emit -y 'The key to search for and the map to search through.'
+        return 1
+    }
+
+    # Parse the options.
+    local search=$1; shift
+    local notFound=1
+    local newValue=
+    local map=()
+
+    # Read the new value from stdin if it's not a terminal.
+    [[ -t 0 ]] || newValue=$(cat)
+
+    # Search through the map.
+    while (( $# )); do
+        local key=$1; shift
+        local val=$1; shift
+
+        if [[ $key = $search ]]; then
+            if [[ $newValue ]]; then
+                val=$newValue
+                notFound=0
+            else
+                echo "$val"
+                return 0
+            fi
+        fi
+
+        [[ $newValue ]] \
+            && map+=( "$key" "$val" )
+    done
+
+    # If we were assigning a new value, output the new map.
+    # Otherwise, we couldn't find the search key.
+    [[ $newValue ]] \
+        && { echo "${map[*]}"; return $notFound; } \
+        || return 1
+} # _____________________________________________________________________
+
+
+
+#  ______________________________________________________________________
+# |__ HideDebug _________________________________________________________|
+#
+#       hideDebug [ on | off ]
+#
+# Toggle Bash's debugging mode off temporarily.  To hide Bash's debugging
+# output for a function, you should have a hideDebug on as its first line
+# and hideDebug off as its last.
+#
+hideDebug() {
+
+    if [[ $1 = on ]]; then
+        : -- HIDING DEBUG OUTPUT ..
+        [[ $- != *x* ]]; bashlib_debugWasOn=$?
+        set +x
+    elif [[ $1 = off ]]; then
+        : -- SHOWING DEBUG OUTPUT ..
+        (( bashlib_debugWasOn )) && \
+        set -x
+    fi
+}
+
+#  ______________________________________________________________________
+# |__ StackTrace ________________________________________________________|
+#
+#       stackTrace
+#
+# Retrieve a mapping of a key from the given map or modify the given map by
+# assigning a new value for the given key if stdin is not the terminal.
+#
+stackTrace() {
+
+    # Some general debug information.
+    echo -e "\t$bold$BASH$reset v$bold$BASH_VERSION$reset"
+    #echo "    Was running: $bold$BASH_COMMAND $*$reset"
+    echo
+    echo "    [Shell    : $bold$(printf %15s "$SHLVL")$reset]    [Subshells : $bold$(printf %5s "$BASH_SUBSHELL")$reset]"
+    echo "    [Locale   : $bold$(printf %15s "$LC_ALL")$reset]    [Runtime   : $bold$(printf %5s "${SECONDS}s")$reset]"
+    echo
+
+    # Search through the map.
+    local arg=0
+    for i in ${!FUNCNAME[@]}; do
+        if (( i )); then
+
+            # Print this execution stack's location.
+            echo -n "$reset  $bold-$reset $green"
+            [[ ${BASH_SOURCE[i]} ]] \
+                && echo -n "${BASH_SOURCE[i]}$reset:$green$bold${BASH_LINENO[i]}" \
+                || echo -n "${bold}Interactive Shell"
+            echo -n "$reset :"$'\t'"$bold${FUNCNAME[i]}("
+
+            # Print this execution stack's positional parameters.
+            [[ ${BASH_ARGC[i]} ]] && \
+                for (( j = 0; j < ${BASH_ARGC[i]}; j++ )); do
+                    (( j )) && echo -n ', '
+                    echo -n "${BASH_ARGV[arg]}"
+                    let arg++
+                done
+
+            # Print the end of this execution stack's line.
+            echo ")$reset"
+        fi
+    done
+    echo
+
+} # _____________________________________________________________________
+
+
+#  ______________________________________________________________________ 
+# |                                                                      |
+# |                                                  .:: ENTRY POINT ::. |
+# |______________________________________________________________________|
+
+# Make sure this file is sourced and not executed.
+[[ $0 = */bashlib ]] && {
+    emit -R "You should source this file, not execute it."
+    exit 1
+}
+
+:
+:                                                   .:: END SOURCING ::.  
+:  ______________________________________________________________________ 
+:
