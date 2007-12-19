@@ -45,10 +45,11 @@ public class AuthnResponseFactoryTest {
 		String issuerName = "test-issuer-name";
 		String subjectName = "test-subject-name";
 		int validity = 60 * 10;
+		String applicationName = "test-application-name";
 
 		// operate
 		Response response = AuthnResponseFactory.createAuthResponse(
-				inResponseTo, issuerName, subjectName,
+				inResponseTo, applicationName, issuerName, subjectName,
 				SafeOnlineAuthnContextClass.PASSWORD_PROTECTED_TRANSPORT,
 				validity);
 
@@ -87,5 +88,10 @@ public class AuthnResponseFactoryTest {
 				"/samlp:Response/saml:Issuer", nsElement);
 		assertNotNull(issuerNode);
 		assertEquals(issuerName, issuerNode.getTextContent());
+
+		Node audienceNode = XPathAPI.selectSingleNode(responseElement,
+				"//saml:Audience", nsElement);
+		assertNotNull(audienceNode);
+		assertEquals(applicationName, audienceNode.getTextContent());
 	}
 }

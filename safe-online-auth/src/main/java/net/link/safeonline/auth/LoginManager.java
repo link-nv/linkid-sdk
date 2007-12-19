@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.auth.bean.AbstractLoginBean;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 
 import org.apache.commons.logging.Log;
@@ -158,6 +159,15 @@ public class LoginManager {
 			throw new IllegalStateException(
 					"applicationId session attribute not set");
 		}
-		return null;
+		return application;
+	}
+
+	public static String getTarget(HttpSession session) {
+		String target = (String) session.getAttribute(TARGET_ATTRIBUTE);
+		if (null == target) {
+			throw new IllegalStateException(TARGET_ATTRIBUTE
+					+ " session attribute not present");
+		}
+		return target;
 	}
 }

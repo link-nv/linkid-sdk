@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
-  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <book lang="en">
 	<bookinfo>
 		<title>OLAS SDK Manual</title>
@@ -8,7 +8,7 @@
 			<year>2007</year>
 			<holder>LIN-K N.V.</holder>
 		</copyright>
-		<date>16/10/2007</date>
+		<date>19/12/2007</date>
 		<abstract>
 			<para>
 				This document contains the SDK manual for the OLAS
@@ -52,6 +52,11 @@
 						success the application is informed and can
 						grant access to the user.
 					</para>
+					<para>
+						The implementation is according to the OASIS
+						SAML version 2.0 Web SSO profile with HTTP POST
+						binding.
+					</para>
 				</listitem>
 				<listitem>
 					<para>
@@ -61,6 +66,11 @@
 						if the user has given explicit permission to do
 						so.
 					</para>
+					<para>
+						The implementation is according to the OASIS
+						SAML version 2.0 Attribute Query profile with
+						SOAP binding.
+					</para>
 				</listitem>
 				<listitem>
 					<para>
@@ -68,6 +78,11 @@
 						to the user’s profile. These attributes could
 						then be used by other applications (if allowed
 						by the user and the providing application).
+					</para>
+					<para>
+						The implementation is according to the Liberty
+						Alliance ID-WSF Data Service Template version
+						2.1 specification.
 					</para>
 				</listitem>
 				<listitem>
@@ -79,6 +94,11 @@
 						application after explicit authorization has
 						been given by the operator.
 					</para>
+					<para>
+						The implementation is according to the OASIS
+						SAML version 2.0 Name Identifier Mapping profile
+						with SOAP binding.
+					</para>
 				</listitem>
 				<listitem>
 					<para>
@@ -86,6 +106,10 @@
 						application can validate an authentication token
 						that has been received from the authentication
 						web application.
+					</para>
+					<para>
+						The implementation is according to the OASIS
+						WS-Trust 1.3 specification.
 					</para>
 				</listitem>
 			</orderedlist>
@@ -235,9 +259,7 @@
 				card in Java 5 that matches the application identity as
 				defined within the OLAS service. An example of this is
 				given below.
-				<programlisting>
-<![CDATA[
-@IdentityCard
+				<programlisting><![CDATA[@IdentityCard
 public static class MyIdentityCard {
 	private String name;
 	private MyCompounded[] compoundedAttribute;
@@ -354,9 +376,7 @@ public static class MyCompounded {
 		<para>
 			An example SOAP message with WS-Security header is given in
 			the following example (we removed the namespace declaration attributes for readability).
-			<programlisting>
-<![CDATA[
-<soap:Envelope>
+			<programlisting><![CDATA[<soap:Envelope>
 	<soap:Header>
 		<wsse:Security soap:mustUnderstand="1">
 			<wsse:BinarySecurityToken
@@ -409,8 +429,7 @@ public static class MyCompounded {
 	<soap:Body wsu:Id="the-body">
 		...
 	</soap:Body>
-</soap:Envelope>
-]]>
+</soap:Envelope>]]>
 			</programlisting>
 		</para>
 		<para>
@@ -532,7 +551,7 @@ public static class MyCompounded {
 			authentication protocol that can be used by the applications
 			to initiate a new user authentication process. The most
 			important authentication protocol is the SAML version 2.0
-			Browser POST profile.
+			Web SSO profile with HTTP POST binding.
 		</para>
 		<para>
 			There are different ways of initiating a new user
@@ -603,9 +622,7 @@ public static class MyCompounded {
 				Below you'll find an example of how to configure the
 				OLAS SDK filters to secure a certain section of a web
 				application.
-				<programlisting>
-<![CDATA[
-<filter>
+				<programlisting><![CDATA[<filter>
 	<filter-name>AuthenticationFilter</filter-name>
 	<filter-class>
 		net.link.safeonline.sdk.auth.filter.AuthenticationFilter

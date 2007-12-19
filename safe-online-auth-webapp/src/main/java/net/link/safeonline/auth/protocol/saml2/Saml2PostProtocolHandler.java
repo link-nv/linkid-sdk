@@ -51,14 +51,11 @@ import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
 import org.opensaml.ws.message.encoder.MessageEncodingException;
-import org.opensaml.ws.security.SecurityPolicy;
 import org.opensaml.ws.security.SecurityPolicyException;
-import org.opensaml.ws.security.provider.BasicSecurityPolicy;
-import org.opensaml.ws.security.provider.HTTPRule;
-import org.opensaml.ws.security.provider.MandatoryIssuerRule;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
 import org.opensaml.ws.transport.http.HttpServletResponseAdapter;
 import org.opensaml.xml.ConfigurationException;
+import org.opensaml.xml.security.SecurityException;
 import org.opensaml.xml.security.SecurityHelper;
 import org.opensaml.xml.security.credential.BasicCredential;
 import org.opensaml.xml.security.x509.BasicX509Credential;
@@ -129,10 +126,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 				.setInboundMessageTransport(new HttpServletRequestAdapter(
 						authnRequest));
 
-		SecurityPolicy securityPolicy = new BasicSecurityPolicy();
-		securityPolicy.getPolicyRules().add(new HTTPRule(null, "POST", false));
-		securityPolicy.getPolicyRules().add(new MandatoryIssuerRule());
-		messageContext.setSecurityPolicy(securityPolicy);
+		messageContext
+				.setSecurityPolicyResolver(new SamlRequestSecurityPolicyResolver());
 
 		HTTPPostDecoder decoder = new HTTPPostDecoder();
 		try {
@@ -143,6 +138,9 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		} catch (SecurityPolicyException e) {
 			LOG.debug("security policy error: " + e.getMessage());
 			throw new ProtocolException("security policy error");
+		} catch (SecurityException e) {
+			LOG.debug("security error: " + e.getMessage());
+			throw new ProtocolException("security error");
 		}
 
 		SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
@@ -250,12 +248,12 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 			HttpServletResponse authnResponse) throws ProtocolException {
 		PrivateKey privateKey = this.identityServiceClient.getPrivateKey();
 		PublicKey publicKey = this.identityServiceClient.getPublicKey();
-		String userId = (String) session
-				.getAttribute(LoginManager.USERNAME_ATTRIBUTE);
-		String target = (String) session
-				.getAttribute(LoginManager.TARGET_ATTRIBUTE);
+		String userId = LoginManager.getUsername(session);
+		String target = LoginManager.getTarget(session);
+		String applicationId = LoginManager.getApplication(session);
 		LOG.debug("user Id: " + userId);
 		LOG.debug("target URL: " + target);
+		LOG.debug("application: " + applicationId);
 
 		BasicSAMLMessageContext messageContext = new BasicSAMLMessageContext();
 		messageContext
@@ -271,7 +269,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 					"missing IN_RESPONSE_TO session attribute");
 		}
 		Response responseMessage = AuthnResponseFactory.createAuthResponse(
-				inResponseTo, issuerName, userId, authnContextClass, validity);
+				inResponseTo, applicationId, issuerName, userId,
+				authnContextClass, validity);
 		messageContext.setOutboundSAMLMessage(responseMessage);
 
 		AssertionConsumerService assertionConsumerService = AuthnResponseFactory

@@ -29,6 +29,22 @@
 							<version>1.4</version>
 							<modules>
 								<jarModule>
+									<groupId>org.slf4j</groupId>
+									<artifactId>slf4j-api</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>org.slf4j</groupId>
+									<artifactId>
+										slf4j-log4j12
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
 									<groupId>jmimemagic</groupId>
 									<artifactId>jmimemagic</artifactId>
 									<includeInApplicationXml>
@@ -625,6 +641,22 @@
 							<version>1.4</version>
 							<modules>
 								<jarModule>
+									<groupId>org.slf4j</groupId>
+									<artifactId>slf4j-api</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>org.slf4j</groupId>
+									<artifactId>
+										slf4j-log4j12
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
 									<groupId>jmimemagic</groupId>
 									<artifactId>jmimemagic</artifactId>
 									<includeInApplicationXml>
@@ -1203,6 +1235,22 @@
 						<configuration>
 							<version>1.4</version>
 							<modules>
+								<jarModule>
+									<groupId>org.slf4j</groupId>
+									<artifactId>slf4j-api</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>org.slf4j</groupId>
+									<artifactId>
+										slf4j-log4j12
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
 								<jarModule>
 									<groupId>jmimemagic</groupId>
 									<artifactId>jmimemagic</artifactId>
@@ -2200,6 +2248,14 @@
 				</exclusion>
 			</exclusions>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>

@@ -8,6 +8,7 @@
 package net.link.safeonline.auth.protocol.saml2;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -31,6 +32,8 @@ import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Audience;
+import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.AuthnContext;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnStatement;
@@ -77,13 +80,14 @@ public class AuthnResponseFactory {
 	 * Creates an unsigned authentication response.
 	 * 
 	 * @param inResponseTo
+	 * @param applicationName
 	 * @param issuerName
 	 * @param subjectName
 	 * @param authnContextClass
 	 * @return
 	 */
 	public static Response createAuthResponse(String inResponseTo,
-			String issuerName, String subjectName,
+			String applicationName, String issuerName, String subjectName,
 			SafeOnlineAuthnContextClass authnContextClass, int validity) {
 		Response response = buildXMLObject(Response.class,
 				Response.DEFAULT_ELEMENT_NAME);
@@ -131,6 +135,8 @@ public class AuthnResponseFactory {
 		NameID nameID = buildXMLObject(NameID.class,
 				NameID.DEFAULT_ELEMENT_NAME);
 		nameID.setValue(subjectName);
+		nameID
+				.setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent");
 		subject.setNameID(nameID);
 		assertion.setSubject(subject);
 
@@ -138,6 +144,17 @@ public class AuthnResponseFactory {
 				Conditions.DEFAULT_ELEMENT_NAME);
 		conditions.setNotBefore(now);
 		conditions.setNotOnOrAfter(now.plusSeconds(validity));
+		List<AudienceRestriction> audienceRestrictions = conditions
+				.getAudienceRestrictions();
+		AudienceRestriction audienceRestriction = buildXMLObject(
+				AudienceRestriction.class,
+				AudienceRestriction.DEFAULT_ELEMENT_NAME);
+		audienceRestrictions.add(audienceRestriction);
+		List<Audience> audiences = audienceRestriction.getAudiences();
+		Audience audience = buildXMLObject(Audience.class,
+				Audience.DEFAULT_ELEMENT_NAME);
+		audiences.add(audience);
+		audience.setAudienceURI(applicationName);
 		assertion.setConditions(conditions);
 
 		AuthnStatement authnStatement = buildXMLObject(AuthnStatement.class,

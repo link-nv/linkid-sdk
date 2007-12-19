@@ -1,9 +1,15 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.sdk.auth.saml2;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.common.SAMLObject;
-import org.opensaml.common.binding.SAMLMessageContext;
 import org.opensaml.saml2.core.StatusResponseType;
 import org.opensaml.ws.message.MessageContext;
 import org.opensaml.ws.security.SecurityPolicyException;
@@ -27,20 +33,14 @@ public class InResponseToRule implements SecurityPolicyRule {
 
 	private static Log LOG = LogFactory.getLog(InResponseToRule.class);
 
-	private final String expectedInResponseTo;
-
-	public InResponseToRule(String expectedInResponseTo) {
-		this.expectedInResponseTo = expectedInResponseTo;
-	}
-
 	public void evaluate(MessageContext messageContext)
 			throws SecurityPolicyException {
-		if (!(messageContext instanceof SAMLMessageContext)) {
+		if (!(messageContext instanceof SamlResponseMessageContext)) {
 			LOG
-					.debug("Invalid message context type, this policy rule only support SAMLMessageContext");
+					.debug("Invalid message context type, this policy rule only support SamlResponseMessageContext");
 			return;
 		}
-		SAMLMessageContext<?, ?, ?> samlMsgCtx = (SAMLMessageContext<?, ?, ?>) messageContext;
+		SamlResponseMessageContext samlMsgCtx = (SamlResponseMessageContext) messageContext;
 
 		SAMLObject samlMsg = samlMsgCtx.getInboundSAMLMessage();
 		if (samlMsg == null) {
@@ -51,11 +51,12 @@ public class InResponseToRule implements SecurityPolicyRule {
 		if (samlMsg instanceof StatusResponseType) {
 			StatusResponseType statusResponse = (StatusResponseType) samlMsg;
 			String actualInResponseTo = statusResponse.getInResponseTo();
-			if (!this.expectedInResponseTo.equals(actualInResponseTo)) {
+			if (!samlMsgCtx.getExpectedInResponseTo()
+					.equals(actualInResponseTo)) {
 				throw new SecurityPolicyException(
 						"Response not in response to "
-								+ this.expectedInResponseTo + " but to "
-								+ actualInResponseTo);
+								+ samlMsgCtx.getExpectedInResponseTo()
+								+ " but to " + actualInResponseTo);
 			}
 		}
 	}

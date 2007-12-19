@@ -42,7 +42,6 @@ import org.apache.xml.security.utils.Base64;
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
-import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Conditions;
@@ -50,13 +49,11 @@ import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
-import org.opensaml.ws.security.SecurityPolicy;
 import org.opensaml.ws.security.SecurityPolicyException;
-import org.opensaml.ws.security.provider.BasicSecurityPolicy;
-import org.opensaml.ws.security.provider.HTTPRule;
-import org.opensaml.ws.security.provider.MandatoryIssuerRule;
+import org.opensaml.ws.security.SecurityPolicyResolver;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
 import org.opensaml.xml.ConfigurationException;
+import org.opensaml.xml.security.SecurityException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -263,17 +260,15 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		LOG.debug("SAMLResponse parameter found");
 		LOG.debug("encodedSamlResponse: " + encodedSamlResponse);
 
-		BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject> messageContext = new BasicSAMLMessageContext<SAMLObject, SAMLObject, SAMLObject>();
+		String expectedInResponseTo = this.challenge.getValue();
+		SamlResponseMessageContext messageContext = new SamlResponseMessageContext(
+				expectedInResponseTo, this.applicationName);
 		messageContext
 				.setInboundMessageTransport(new HttpServletRequestAdapter(
 						httpRequest));
 
-		SecurityPolicy securityPolicy = new BasicSecurityPolicy();
-		securityPolicy.getPolicyRules().add(new HTTPRule(null, "POST", false));
-		securityPolicy.getPolicyRules().add(
-				new InResponseToRule(this.challenge.getValue()));
-		securityPolicy.getPolicyRules().add(new MandatoryIssuerRule());
-		messageContext.setSecurityPolicy(securityPolicy);
+		SecurityPolicyResolver securityPolicyResolver = new SamlResponseSecurityPolicyResolver();
+		messageContext.setSecurityPolicyResolver(securityPolicyResolver);
 
 		HTTPPostDecoder decoder = new HTTPPostDecoder();
 		try {
@@ -284,6 +279,9 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		} catch (SecurityPolicyException e) {
 			LOG.debug("security policy error: " + e.getMessage(), e);
 			throw new ServletException("security policy error");
+		} catch (SecurityException e) {
+			LOG.debug("security error: " + e.getMessage(), e);
+			throw new ServletException("security error");
 		}
 
 		SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
