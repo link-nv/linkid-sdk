@@ -60,8 +60,8 @@ public class PerformanceStartableBean extends AbstractInitBean {
 		 */
 		this.trustedCertificates.add(perfCertificate);
 		this.registeredApplications.add(new Application(
-				PERFORMANCE_APPLICATION_NAME, "owner", null, null, null, null,
-				true, false, perfCertificate, true, IdScopeType.USER));
+				PERFORMANCE_APPLICATION_NAME, "owner", null, null, getLogo(),
+				null, true, false, perfCertificate, true, IdScopeType.USER));
 
 		/*
 		 * Subscribe the performance user to the performance application.
@@ -99,6 +99,11 @@ public class PerformanceStartableBean extends AbstractInitBean {
 						+ PERFORMANCE_APPLICATION_NAME + "\n\n"
 						+ LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
 		this.usageAgreements.add(usageAgreement);
+	}
+
+	private byte[] getLogo() {
+
+		return getLogo("/logo.jpg");
 	}
 
 	@Override

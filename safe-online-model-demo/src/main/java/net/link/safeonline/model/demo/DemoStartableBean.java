@@ -67,8 +67,10 @@ public class DemoStartableBean extends AbstractInitBean {
 				.getPrivateKeyEntry();
 		X509Certificate demoCertificate = (X509Certificate) demoPrivateKeyEntry
 				.getCertificate();
+
 		this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME,
-				"owner", demoCertificate, IdScopeType.USER));
+				"owner", null, null, getLogo(), null, true, true,
+				demoCertificate, false, IdScopeType.USER));
 
 		this.trustedCertificates.add(demoCertificate);
 
@@ -83,6 +85,11 @@ public class DemoStartableBean extends AbstractInitBean {
 		configMandateDemo();
 	}
 
+	private byte[] getLogo() {
+
+		return getLogo("/logo.jpg");
+	}
+
 	private void configMandateDemo() {
 		PrivateKeyEntry demoMandatePrivateKeyEntry = DemoMandateKeyStoreUtils
 				.getPrivateKeyEntry();
@@ -94,8 +101,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		 */
 		this.trustedCertificates.add(demoMandateCertificate);
 		this.registeredApplications.add(new Application(
-				DEMO_MANDATE_APPLICATION_NAME, "owner", null, null, null, null,
-				true, true, demoMandateCertificate, true,
+				DEMO_MANDATE_APPLICATION_NAME, "owner", null, null, getLogo(),
+				null, true, true, demoMandateCertificate, false,
 				IdScopeType.SUBSCRIPTION));
 
 		/*
@@ -193,7 +200,8 @@ public class DemoStartableBean extends AbstractInitBean {
 
 		this.trustedCertificates.add(demoTicketCertificate);
 		this.registeredApplications.add(new Application(
-				DEMO_TICKET_APPLICATION_NAME, "owner", demoTicketCertificate,
+				DEMO_TICKET_APPLICATION_NAME, "owner", null, null, getLogo(),
+				null, true, true, demoTicketCertificate, false,
 				IdScopeType.SUBSCRIPTION));
 
 		this.identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME,
@@ -247,8 +255,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.trustedCertificates.add(demoPaymentCertificate);
 
 		this.registeredApplications.add(new Application(
-				DEMO_PAYMENT_APPLICATION_NAME, "owner", null, null, null, null,
-				true, true, demoPaymentCertificate, true,
+				DEMO_PAYMENT_APPLICATION_NAME, "owner", null, null, getLogo(),
+				null, true, true, demoPaymentCertificate, true,
 				IdScopeType.SUBSCRIPTION));
 
 		/*
@@ -346,8 +354,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				.getCertificate();
 		this.trustedCertificates.add(demoPrescriptionCertificate);
 		this.registeredApplications.add(new Application(
-				DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, null, null,
-				null, true, true, demoPrescriptionCertificate, true,
+				DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, null,
+				getLogo(), null, true, true, demoPrescriptionCertificate, true,
 				IdScopeType.SUBSCRIPTION));
 
 		/*
@@ -448,8 +456,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		X509Certificate demoLawyerCertificate = (X509Certificate) demoLawyerPrivateKeyEntry
 				.getCertificate();
 		this.registeredApplications.add(new Application(
-				DEMO_LAWYER_APPLICATION_NAME, "owner", null, null, null, null,
-				true, true, demoLawyerCertificate, true,
+				DEMO_LAWYER_APPLICATION_NAME, "owner", null, null, getLogo(),
+				null, true, true, demoLawyerCertificate, true,
 				IdScopeType.SUBSCRIPTION));
 		this.trustedCertificates.add(demoLawyerCertificate);
 

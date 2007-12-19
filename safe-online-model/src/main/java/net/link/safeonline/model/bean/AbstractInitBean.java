@@ -8,6 +8,8 @@
 package net.link.safeonline.model.bean;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
@@ -260,6 +262,28 @@ public abstract class AbstractInitBean implements Startable {
 		this.attributes = new LinkedList<AttributeEntity>();
 		this.devices = new HashMap<Device, List<AttributeTypeEntity>>();
 		this.allowedDevices = new HashMap<String, List<String>>();
+	}
+
+	protected byte[] getLogo(String logoResource) {
+
+		InputStream logoStream = getClass().getResourceAsStream(logoResource);
+		byte[] logo = new byte[0];
+
+		try {
+			while (true) {
+				byte[] buf = new byte[logoStream.available()];
+				int size = logoStream.read(buf);
+				if (size > 0) {
+					logo = new byte[logo.length + size];
+					System.arraycopy(buf, 0, logo, logo.length - size, size);
+				} else
+					break;
+			}
+		} catch (IOException e) {
+			this.LOG.warn("Couldn't successfully read in logo.", e);
+		}
+
+		return logo;
 	}
 
 	public void postStart() {
