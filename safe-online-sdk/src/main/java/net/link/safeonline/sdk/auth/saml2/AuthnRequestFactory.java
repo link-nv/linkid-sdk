@@ -22,6 +22,7 @@ import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
+import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
@@ -86,6 +87,8 @@ public class AuthnRequestFactory {
 	 *            the optional location of the assertion consumer service. This
 	 *            location can be used by the IdP to send back the SAML response
 	 *            message.
+	 * @param destinationURL
+	 *            the optional location of the destination IdP.
 	 * @param challenge
 	 *            the optional challenge (output variable).
 	 * @param devices
@@ -94,7 +97,8 @@ public class AuthnRequestFactory {
 	 */
 	public static String createAuthnRequest(String applicationName,
 			KeyPair applicationKeyPair, String assertionConsumerServiceURL,
-			Challenge<String> challenge, Set<String> devices) {
+			String destinationURL, Challenge<String> challenge,
+			Set<String> devices) {
 		if (null == applicationKeyPair) {
 			throw new IllegalArgumentException(
 					"application key pair should not be null");
@@ -129,6 +133,11 @@ public class AuthnRequestFactory {
 
 		if (null != assertionConsumerServiceURL) {
 			request.setAssertionConsumerServiceURL(assertionConsumerServiceURL);
+			request.setProtocolBinding(SAMLConstants.SAML2_POST_BINDING_URI);
+		}
+
+		if (null != destinationURL) {
+			request.setDestination(destinationURL);
 		}
 
 		if (null != devices) {

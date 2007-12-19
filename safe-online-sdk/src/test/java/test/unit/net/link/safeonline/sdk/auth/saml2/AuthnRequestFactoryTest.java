@@ -11,6 +11,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.security.KeyPair;
 
 import javax.xml.crypto.dsig.XMLSignature;
@@ -22,6 +24,7 @@ import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
@@ -51,17 +54,23 @@ public class AuthnRequestFactoryTest {
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		String assertionConsumerServiceURL = "http://test.assertion.consumer.service";
 		Challenge<String> challenge = new Challenge<String>();
+		String destinationURL = "https://test.idp.com/entry";
 
 		// operate
 		long begin = System.currentTimeMillis();
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
-				keyPair, assertionConsumerServiceURL, challenge, null);
+				keyPair, assertionConsumerServiceURL, destinationURL,
+				challenge, null);
 		long end = System.currentTimeMillis();
 
 		// verify
 		assertNotNull(result);
 		LOG.debug("duration: " + (end - begin) + " ms");
 		LOG.debug("result message: " + result);
+		File tmpFile = File.createTempFile("saml-authn-request-", ".xml");
+		FileOutputStream tmpOutput = new FileOutputStream(tmpFile);
+		IOUtils.write(result, tmpOutput);
+		IOUtils.closeQuietly(tmpOutput);
 
 		String challengeValue = challenge.getValue();
 		LOG.debug("challenge value: " + challengeValue);
@@ -85,6 +94,18 @@ public class AuthnRequestFactoryTest {
 		assertNotNull(resultAssertionConsumerServiceURLNode);
 		assertEquals(assertionConsumerServiceURL,
 				resultAssertionConsumerServiceURLNode.getTextContent());
+
+		Node protocolBindingNode = XPathAPI.selectSingleNode(resultDocument,
+				"/samlp2:AuthnRequest/@ProtocolBinding", nsElement);
+		assertNotNull(protocolBindingNode);
+		LOG.debug("protocol binding: " + protocolBindingNode.getTextContent());
+		assertEquals("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+				protocolBindingNode.getTextContent());
+
+		Node destinationNode = XPathAPI.selectSingleNode(resultDocument,
+				"/samlp2:AuthnRequest/@Destination", nsElement);
+		assertNotNull(destinationNode);
+		assertEquals(destinationURL, destinationNode.getTextContent());
 
 		// verify signature
 		NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(
@@ -119,7 +140,7 @@ public class AuthnRequestFactoryTest {
 
 		// operate
 		String result = AuthnRequestFactory.createAuthnRequest(applicationName,
-				keyPair, null, null, null);
+				keyPair, null, null, null, null);
 		LOG.debug("result: " + result);
 	}
 

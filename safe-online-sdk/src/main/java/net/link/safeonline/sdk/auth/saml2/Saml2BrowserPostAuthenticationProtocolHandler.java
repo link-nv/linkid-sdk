@@ -191,7 +191,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		Set<String> devices = getDevices(httpRequest);
 		String samlRequestToken = AuthnRequestFactory.createAuthnRequest(
 				this.applicationName, this.applicationKeyPair, targetUrl,
-				this.challenge, devices);
+				this.authnServiceUrl, this.challenge, devices);
 
 		String encodedSamlRequestToken = Base64.encode(samlRequestToken
 				.getBytes());

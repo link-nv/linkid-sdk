@@ -195,14 +195,14 @@ public class AuthDriver extends ProfileDriver<MessageAccessor> {
 			PublicKey publicKey = application.getCertificate().getPublicKey();
 			PrivateKey privateKey = application.getPrivateKey();
 			KeyPair keyPair = new KeyPair(publicKey, privateKey);
+			String uri = String.format("https://%s/olas-auth/entry", this.host);
 			String authnRequest = AuthnRequestFactory.createAuthnRequest(
 					applicationName, keyPair, "http://www.lin-k.net/"
-							+ applicationName, null, null);
+							+ applicationName, uri, null, null);
 			String encodedAuthnRequest = new String(Base64
 					.encodeBase64(authnRequest.getBytes()));
 
 			// Request the JSessionID cookie.
-			String uri = String.format("https://%s/olas-auth/entry", this.host);
 			PostMethod postMethod = new PostMethod(uri);
 			postMethod.setRequestHeader("Cookie", "deflowered=true");
 			postMethod.addParameter(new NameValuePair("SAMLRequest",
