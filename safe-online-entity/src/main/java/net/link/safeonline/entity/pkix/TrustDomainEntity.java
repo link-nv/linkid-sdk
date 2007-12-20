@@ -7,6 +7,9 @@
 
 package net.link.safeonline.entity.pkix;
 
+import static net.link.safeonline.entity.pkix.TrustDomainEntity.QUERY_ALL;
+import static net.link.safeonline.entity.pkix.TrustDomainEntity.QUERY_WHERE_NAME;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -25,10 +28,6 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.hibernate.annotations.Index;
-
-import static net.link.safeonline.entity.pkix.TrustDomainEntity.QUERY_ALL;
-import static net.link.safeonline.entity.pkix.TrustDomainEntity.QUERY_WHERE_NAME;
 
 @Entity
 @Table(name = "trust_domain")
@@ -81,7 +80,6 @@ public class TrustDomainEntity implements Serializable {
 	}
 
 	@Column(unique = true, nullable = false, length = NAME_SIZE)
-	@Index(name = "trust_domain_name_idx")
 	public String getName() {
 		return this.name;
 	}

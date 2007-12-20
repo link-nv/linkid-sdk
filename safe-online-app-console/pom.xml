@@ -66,10 +66,10 @@
 			<groupId>net.sourceforge</groupId>
 			<artifactId>BrowserLauncher2</artifactId>
 		</dependency>
-                <dependency>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>jetty</artifactId>
-                </dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>

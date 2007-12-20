@@ -13,12 +13,14 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
@@ -28,6 +30,7 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 		+ "FROM GlobalUsageAgreementEntity AS usageAgreement "
 		+ "WHERE usageAgreement.usageAgreementVersion = (SELECT MAX(usageAgreement.usageAgreementVersion) "
 		+ "FROM GlobalUsageAgreementEntity as usageAgreement)") })
+@Table(name = "GUsageAg")
 public class GlobalUsageAgreementEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -55,6 +58,7 @@ public class GlobalUsageAgreementEntity implements Serializable {
 		this.usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
 	}
 
+	@Column(name = "texts")
 	@OneToMany(fetch = FetchType.EAGER)
 	public Set<UsageAgreementTextEntity> getUsageAgreementTexts() {
 		return this.usageAgreementTexts;
@@ -65,6 +69,7 @@ public class GlobalUsageAgreementEntity implements Serializable {
 		this.usageAgreementTexts = usageAgreementTexts;
 	}
 
+	@Column(name = "version")
 	@Id
 	public Long getUsageAgreementVersion() {
 		return this.usageAgreementVersion;

@@ -575,7 +575,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.authorizedUsers.put("mario", new AuthenticationDevice("secret",
 				null, null));
 		this.authorizedUsers.put("wvdhaute", new AuthenticationDevice("secret",
-				new String[] { "+32494575697" }, null));
+				new String[] { "95874644" }, null));
 		this.authorizedUsers.put("mbillemo", new AuthenticationDevice("secret",
 				null, null));
 

@@ -45,7 +45,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.hibernate.annotations.Index;
 
 /**
  * Application Entity.
@@ -361,6 +360,7 @@ public class ApplicationEntity implements Serializable {
 	 * 
 	 * @return
 	 */
+	@Column(name = "currentUsageAg")
 	public long getCurrentApplicationUsageAgreement() {
 		return this.currentApplicationUsageAgreement;
 	}
@@ -378,7 +378,6 @@ public class ApplicationEntity implements Serializable {
 	 * @return
 	 */
 	@Column(unique = true)
-	@Index(name = "app_id")
 	public String getCertificateIdentifier() {
 		return this.certificateIdentifier;
 	}

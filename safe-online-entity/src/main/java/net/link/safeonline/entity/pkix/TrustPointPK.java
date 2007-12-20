@@ -40,7 +40,10 @@ public class TrustPointPK implements Serializable {
 			String keyId) {
 		this.domain = trustDomain.getId();
 		this.subjectName = subjectName;
-		this.keyId = keyId;
+		if (null == keyId || keyId.equals(""))
+			this.keyId = subjectName;
+		else
+			this.keyId = keyId;
 	}
 
 	public TrustPointPK(TrustDomainEntity trustDomain,
@@ -50,7 +53,10 @@ public class TrustPointPK implements Serializable {
 
 		this.domain = trustDomain.getId();
 		this.subjectName = newSubjectName;
-		this.keyId = newKeyId;
+		if (null == newKeyId || newKeyId.equals(""))
+			this.keyId = newSubjectName;
+		else
+			this.keyId = newKeyId;
 	}
 
 	private String getSubjectName(X509Certificate certificate) {

@@ -19,7 +19,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 @Entity
-@Table(name = "application_identity_attribute")
+@Table(name = "application_identity_attr")
 public class ApplicationIdentityAttributeEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

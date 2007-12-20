@@ -7,6 +7,8 @@
 
 package net.link.safeonline.entity.pkix;
 
+import static net.link.safeonline.entity.pkix.TrustPointEntity.QUERY_WHERE_DOMAIN;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -36,8 +38,6 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import static net.link.safeonline.entity.pkix.TrustPointEntity.QUERY_WHERE_DOMAIN;
 
 @Entity
 @Table(name = "trust_point")
@@ -81,7 +81,7 @@ public class TrustPointEntity implements Serializable {
 	@AttributeOverrides( {
 			@AttributeOverride(name = "domain", column = @Column(name = "domain")),
 			@AttributeOverride(name = "subjectName", column = @Column(name = "subjectName")),
-			@AttributeOverride(name = "keyId", column = @Column(name = "keyId", nullable = true)) })
+			@AttributeOverride(name = "keyId", column = @Column(name = "keyId")) })
 	public TrustPointPK getPk() {
 		return this.pk;
 	}

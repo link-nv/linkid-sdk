@@ -19,6 +19,7 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
@@ -41,6 +42,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 				+ "FROM UsageAgreementTextEntity AS usageAgreementText "
 				+ "WHERE usageAgreementText.pk.owner = :owner "
 				+ "AND usageAgreementText.pk.usageAgreementVersion = :version") })
+@Table(name = "UsageAgText")
 public class UsageAgreementTextEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

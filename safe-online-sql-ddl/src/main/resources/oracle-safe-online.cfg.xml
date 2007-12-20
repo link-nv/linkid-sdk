@@ -6,7 +6,7 @@
 <hibernate-configuration>
 	<session-factory>
 		<property name="dialect">
-			org.hibernate.dialect.OracleDialect
+			net.link.safeonline.hibernate.dialect.Oracle11Dialect
 		</property>
 		&safe-online-cfg;
 	</session-factory>

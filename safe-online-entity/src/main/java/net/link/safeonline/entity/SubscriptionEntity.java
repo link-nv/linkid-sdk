@@ -38,7 +38,6 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.hibernate.annotations.Index;
 
 @Entity
 @Table(name = "subscription")
@@ -158,6 +157,7 @@ public class SubscriptionEntity implements Serializable {
 		this.confirmedIdentityVersion = confirmedIdentityVersion;
 	}
 
+	@Column(name = "confirmedUAVersion")
 	public Long getConfirmedUsageAgreementVersion() {
 		return this.confirmedUsageAgreementVersion;
 	}
@@ -168,7 +168,6 @@ public class SubscriptionEntity implements Serializable {
 	}
 
 	@Column(unique = true)
-	@Index(name = "subscription_user_id")
 	public String getSubscriptionUserId() {
 		return this.subscriptionUserId;
 	}

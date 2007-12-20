@@ -7,8 +7,8 @@
 
 package net.link.safeonline.entity;
 
-import static net.link.safeonline.entity.UsageAgreementEntity.QUERY_WHERE_APPLICATION;
 import static net.link.safeonline.entity.UsageAgreementEntity.DELETE_WHERE_APPLICATION_AND_VERSION;
+import static net.link.safeonline.entity.UsageAgreementEntity.QUERY_WHERE_APPLICATION;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -26,6 +26,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
@@ -45,6 +46,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 				+ "FROM UsageAgreementEntity AS usageAgreement "
 				+ "WHERE usageAgreement.application = :application "
 				+ "AND usageAgreement.pk.usageAgreementVersion = :usageAgreementVersion") })
+@Table(name = "UsageAg")
 public class UsageAgreementEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -55,7 +57,7 @@ public class UsageAgreementEntity implements Serializable {
 
 	public static final String APPLICATION_COLUMN_NAME = "application";
 
-	public static final String USAGE_AGREEMENT_VERSION_COLUMN_NAME = "usageAgreementVersion";
+	public static final String USAGE_AGREEMENT_VERSION_COLUMN_NAME = "version";
 
 	private UsageAgreementPK pk;
 
@@ -78,7 +80,7 @@ public class UsageAgreementEntity implements Serializable {
 	@EmbeddedId
 	@AttributeOverrides( {
 			@AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
-			@AttributeOverride(name = "usageAgreementVersion", column = @Column(name = USAGE_AGREEMENT_VERSION_COLUMN_NAME)) })
+			@AttributeOverride(name = "version", column = @Column(name = USAGE_AGREEMENT_VERSION_COLUMN_NAME)) })
 	public UsageAgreementPK getPk() {
 		return this.pk;
 	}
@@ -87,6 +89,7 @@ public class UsageAgreementEntity implements Serializable {
 		this.pk = pk;
 	}
 
+	@Column(name = "texts")
 	@OneToMany(fetch = FetchType.EAGER)
 	public Set<UsageAgreementTextEntity> getUsageAgreementTexts() {
 		return this.usageAgreementTexts;

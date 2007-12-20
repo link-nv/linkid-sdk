@@ -8,6 +8,7 @@ package net.link.safeonline.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -44,6 +45,7 @@ public class UsageAgreementTextPK implements Serializable {
 		this.owner = owner;
 	}
 
+	@Column(name = "version")
 	public Long getUsageAgreementVersion() {
 		return this.usageAgreementVersion;
 	}

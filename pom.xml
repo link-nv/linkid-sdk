@@ -287,7 +287,7 @@
 				<safe-online.profiling.group>
 					net.lin-k.safe-online.performance
 				</safe-online.profiling.group>
-                <safe-online.profiling.filter><![CDATA[-->
+				<safe-online.profiling.filter><![CDATA[-->
 					<filter>
 						<filter-name>ProfileFilter</filter-name>
 						<filter-class>
@@ -305,7 +305,7 @@
     				</filter-mapping>
                 <!--]]>
 				</safe-online.profiling.filter>
-                <safe-online.profiling.interceptor><![CDATA[-->
+				<safe-online.profiling.interceptor><![CDATA[-->
 					<interceptors>
 						<interceptor>
 							<interceptor-class>
@@ -429,7 +429,7 @@
 			<activation>
 				<property>
 					<name>env</name>
-					<value>local-pilot-postgres</value>
+					<value>local-pilot-oracle</value>
 				</property>
 			</activation>
 			<properties>
@@ -441,13 +441,15 @@
 					SafeOnlineDS
 				</safe-online.data.source>
 				<safe-online.dialect>
-					org.hibernate.dialect.OracleDialect
+					net.link.safeonline.hibernate.dialect.Oracle11Dialect
 				</safe-online.dialect>
 				<safe-online.hibernate.hbm2ddl.auto>
 					validate
 				</safe-online.hibernate.hbm2ddl.auto>
 				<safe-online.show.sql>false</safe-online.show.sql>
-				<safe-online.host.name>localhost</safe-online.host.name>
+				<safe-online.host.name>
+					buildserver
+				</safe-online.host.name>
 				<safe-online.host.port>80</safe-online.host.port>
 				<safe-online.host.port.ssl>
 					443
@@ -1727,6 +1729,7 @@
 				<artifactId>slf4j-log4j12</artifactId>
 				<version>${slf4j-log4j12.version}</version>
 			</dependency>
+			>>>>>>> .r943
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>

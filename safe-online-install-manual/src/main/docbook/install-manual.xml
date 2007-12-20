@@ -9,6 +9,8 @@
   "../../../../safe-online-sql-ddl/src/main/resources/postgresql-create-account.sql">
 <!ENTITY postgresql-create-database SYSTEM
   "../../../../safe-online-sql-ddl/src/main/resources/postgresql-create-database.sql">
+<!ENTITY oracle-create-account SYSTEM
+  "../../../../safe-online-sql-ddl/src/main/resources/oracle-create-account.sql">
 ]>
 <book lang="en">
 	<bookinfo>
@@ -183,7 +185,17 @@
 			</section>
 			<section>
 				<title>Oracle</title>
-				<para>Describe the Oracle setup.</para>
+				<para>
+				OLAS has explicit support for Oracle Database 11g Release 1 (11.1). 
+				Before being able to use OLAS with an Oracle database one has to 
+				create an account on the DBMS.
+				The following Oracle script can be used to create such an account.
+				<programlisting>&oracle-create-account;</programlisting>
+				After creating an Oracle account one needs to create an OLAS database.
+				This can be done by the Oracle supplied program <![CDATA[dbca]]>.
+				Be sure to take as Oracle System Identifier: <![CDATA[safeonline]]>.
+				Correct configuration of the Oracle database can be easily verified via the OLAS CLI. 
+				</para>
 			</section>
 		</section>
 	</chapter>

@@ -1,5 +1,5 @@
 -- Account initialisation script for Oracle SafeOnline database
--- <![CDATA[Usage: psql -u root < postgresql-create-account.sql ]]>
-DROP USER safeonline;
-CREATE USER safeonline PASSWORD 'safeonline';
-GRANT ALL ON DATABASE safeonline TO safeonline;
+-- <![CDATA[Usage: sqlplus / as sysdba @oracle-create-account.sql ]]>
+DROP USER safeonline CASCADE;
+CREATE USER safeonline IDENTIFIED BY safeonline;
+GRANT ALL PRIVILEGES to safeonline;

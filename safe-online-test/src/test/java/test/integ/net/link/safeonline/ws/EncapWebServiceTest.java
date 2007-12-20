@@ -12,18 +12,19 @@ import org.junit.Test;
 
 public class EncapWebServiceTest {
 
-	private static final String ENCAP_LOCATION = "test.encap.no/pp-encap-r1";
+	private static final String ENCAP_LOCATION = "test.encap.no/mSec2";
 
 	// localhost:8080/safe-online-encap-ws
 
 	@Test
 	public void testActivationWebService() throws MalformedURLException,
 			RemoteException {
-		String mobile = "+32494575697";
+		String mobile = "95874644";
 		String orgId = "encap";
 		EncapActivationClient activationClient = new EncapActivationClientImpl(
 				ENCAP_LOCATION);
 		String activationCode = activationClient.activate(mobile, orgId, "");
 		assertNotNull(activationCode);
 	}
+
 }

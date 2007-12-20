@@ -32,7 +32,6 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.hibernate.annotations.Index;
 
 @Entity
 @Table(name = "cached_ocsp_responses")
@@ -95,7 +94,6 @@ public class CachedOcspResponseEntity implements Serializable {
 	}
 
 	@Column(unique = true, nullable = false, length = KEY_SIZE, name = "kkey")
-	@Index(name = "cached_ocsp_response_key")
 	public String getKey() {
 		return this.key;
 	}
