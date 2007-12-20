@@ -592,7 +592,7 @@ public class EntityTest {
 		String dn = "CN=Test";
 		X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, dn);
-		String keyId = "";
+		String keyId = dn;
 
 		// operate
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -605,8 +605,7 @@ public class EntityTest {
 		// verify
 		entityManager = this.entityTestManager.refreshEntityManager();
 		TrustPointEntity resultTrustPoint = entityManager.find(
-				TrustPointEntity.class,
-				new TrustPointPK(trustDomain, dn, keyId));
+				TrustPointEntity.class, new TrustPointPK(trustDomain, dn, dn));
 		assertNotNull(resultTrustPoint);
 		assertEquals(trustPoint, resultTrustPoint);
 
