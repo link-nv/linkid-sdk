@@ -308,6 +308,7 @@ public final class EJBTestUtils {
 			injectSeamLogger(clazz);
 			manageTransaction(method);
 			try {
+				method.setAccessible(true);
 				Object result = method.invoke(this.object, args);
 				return result;
 			} catch (InvocationTargetException e) {
