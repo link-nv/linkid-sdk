@@ -9,7 +9,6 @@ package net.link.safeonline.model.application;
 import java.awt.Color;
 import java.net.URL;
 
-import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.entity.ApplicationEntity;
 
 /**
