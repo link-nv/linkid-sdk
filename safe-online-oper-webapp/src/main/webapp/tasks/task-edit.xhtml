@@ -13,9 +13,12 @@
 			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.edittask}: #{selectedTask.name}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.edittask}: #{selectedTask.name}</h1>
+
 
 		<h:form>
 			<table>
@@ -36,9 +39,9 @@
 			</table>
 
 			<h:commandButton action="#{scheduling.taskView}" id="back"
-				value="#{msgs.backaction}" immediate="true" styleClass="submit"/>
+				value="#{msgs.backaction}" immediate="true" styleClass="submit" />
 			<h:commandButton action="#{scheduling.saveTask}" id="saveTask"
-				value="#{msgs.saveaction}" styleClass="submit"/>
+				value="#{msgs.saveaction}" styleClass="submit" />
 		</h:form>
 
 	</ui:define>

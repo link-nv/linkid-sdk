@@ -13,11 +13,12 @@
 			<ui:param name="page" value="user" />
 		</ui:include>
 	</ui:define>
-	<ui:define name="content">
-
+	<ui:define name="top_content">
 		<h1>#{msgs.helpdesk} : <h:outputFormat value="#{msgs.userLog}">
 			<f:param value="#{selectedUser}" />
 		</h:outputFormat></h1>
+	</ui:define>
+	<ui:define name="content">
 
 		<h:form>
 			<t:dataTable id="helpdesk-user-log-data" var="item"

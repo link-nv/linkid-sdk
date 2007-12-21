@@ -8,11 +8,14 @@
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="content">
-
+	<ui:define name="top_content">
 		<h1>#{selectedApplication.name}</h1>
 
 		<h2>#{msgs.usageAgreementVersion}:<so:nbsp />#{msgs.draft}</h2>
+	</ui:define>
+	<ui:define name="content">
+
+
 
 		<a4j:form>
 			<rich:panel>
@@ -25,9 +28,11 @@
 			</rich:panel>
 
 			<a4j:commandButton value="#{msgs.saveaction}"
-				action="#{ownerUsageAgreement.saveText}" id="save" styleClass="submit"/>
+				action="#{ownerUsageAgreement.saveText}" id="save"
+				styleClass="submit" />
 			<so:nbsp />
-			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back" styleClass="submit"/>
+			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
+				styleClass="submit" />
 		</a4j:form>
 
 	</ui:define>

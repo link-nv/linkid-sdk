@@ -14,12 +14,14 @@
 			<ui:param name="page" value="attributes" />
 		</ui:include>
 	</ui:define>
-
+	<ui:define name="top_content">
+		<h1>#{msgs.addAttribute}: #{msgs.compounded}:
+		#{msgs.memberAttributes}: #{msgs.accessControl}</h1>
+	</ui:define>
 
 	<ui:define name="content">
 
-		<h1>#{msgs.addAttribute}: #{msgs.compounded}:
-		#{msgs.memberAttributes}: #{msgs.accessControl}</h1>
+
 
 		<h:form>
 

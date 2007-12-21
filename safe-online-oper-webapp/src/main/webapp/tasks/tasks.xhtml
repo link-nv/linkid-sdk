@@ -15,9 +15,12 @@
 			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.tasks}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.tasks}</h1>
+
 
 		<a4j:form id="taskForm" ajaxSubmit="true" reRender="task-data">
 			<rich:dataTable id="task-data" var="item" value="#{taskList}"

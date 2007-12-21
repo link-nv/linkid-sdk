@@ -14,9 +14,12 @@
 			<ui:param name="page" value="configuration" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.operatorEditTrustDomain}: #{selectedTrustDomain.name}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.operatorEditTrustDomain}: #{selectedTrustDomain.name}</h1>
+
 
 		<h:form>
 			<h:panelGrid columns="1">

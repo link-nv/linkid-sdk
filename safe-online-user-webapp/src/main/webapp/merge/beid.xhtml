@@ -11,8 +11,11 @@
 		<ui:include src="/WEB-INF/incl/navigation.xhtml" />
 		<ui:param name="page" value="account" />
 	</ui:define>
-	<ui:define name="content">
+	<ui:define name="top_content">
 		<h1>#{msgs.authenticateBeId}</h1>
+	</ui:define>
+	<ui:define name="content">
+
 
 		<applet name="AuthenticationApplet"
 			code="net.link.safeonline.auth.AuthenticationApplet.class"

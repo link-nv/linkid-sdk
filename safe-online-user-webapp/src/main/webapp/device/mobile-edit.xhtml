@@ -15,8 +15,11 @@
 			<ui:param name="page" value="devices" />
 		</ui:include>
 	</ui:define>
-	<ui:define name="content">
+	<ui:define name="top_content">
 		<h1>#{msgs.mobileWeak}</h1>
+	</ui:define>
+	<ui:define name="content">
+
 
 		<h:dataTable id="mobile-weak-data" var="item"
 			value="#{mobileWeakAttributes}" preserveDataModel="false"

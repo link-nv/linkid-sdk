@@ -13,9 +13,12 @@
 			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.schedulings}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.schedulings}</h1>
+
 
 		<h:form>
 			<t:dataTable id="scheduling-data" var="item"

@@ -8,9 +8,12 @@
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="top_content">
+		<h1>#{selectedApplication.name}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{selectedApplication.name}</h1>
+
 
 		<rich:tabPanel switchType="client">
 
@@ -117,9 +120,10 @@
 
 		<rich:spacer height="10" />
 		<a4j:form>
-			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back" styleClass="submit"/>
+			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
+				styleClass="submit" />
 			<a4j:commandButton value="#{msgs.editaction}"
-				action="#{ownerApplication.edit}" id="edit" styleClass="submit"/>
+				action="#{ownerApplication.edit}" id="edit" styleClass="submit" />
 		</a4j:form>
 
 	</ui:define>

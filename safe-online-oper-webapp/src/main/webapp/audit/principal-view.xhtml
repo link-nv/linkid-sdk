@@ -13,9 +13,12 @@
 			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.operatorAuditPrincipal} : #{principal}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.operatorAuditPrincipal} : #{principal}</h1>
+
 
 		<h:panelGrid columns="2" border="0">
 			<f:verbatim>#{msgs.name}</f:verbatim>

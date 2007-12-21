@@ -13,9 +13,12 @@
 			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.operatorTaskHistory}: #{selectedTask.name}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.operatorTaskHistory}: #{selectedTask.name}</h1>
+
 
 		<h:form>
 			<t:dataTable id="task-history-data" var="item"

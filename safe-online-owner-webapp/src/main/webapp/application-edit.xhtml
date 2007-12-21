@@ -8,9 +8,12 @@
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="top_content">
+		<h1>#{selectedApplication.name}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{selectedApplication.name}</h1>
+
 
 		<a4j:form id="editForm">
 			<rich:tabPanel switchType="client">

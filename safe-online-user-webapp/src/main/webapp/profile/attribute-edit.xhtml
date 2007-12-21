@@ -14,9 +14,12 @@
 			<ui:param name="page" value="profile" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.editAttribute}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h2>#{msgs.editAttribute}</h2>
+
 
 		<h:form>
 			<h:dataTable var="item" value="#{attributeEditContext}"
@@ -42,10 +45,10 @@
 			<t:messages globalOnly="true" styleClass="error" />
 
 			<h:commandButton id="save" action="#{attributeEdit.save}"
-				value="#{msgs.saveaction}" class="submit"/>
+				value="#{msgs.saveaction}" class="submit" />
 			<so:nbsp />
 			<h:commandButton action="cancel" id="cancel"
-				value="#{msgs.cancelaction}" class="submit"/>
+				value="#{msgs.cancelaction}" class="submit" />
 		</h:form>
 
 	</ui:define>

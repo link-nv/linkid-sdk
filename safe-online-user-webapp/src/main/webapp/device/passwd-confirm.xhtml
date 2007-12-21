@@ -11,14 +11,18 @@
 			<ui:param name="page" value="devices" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.usernamePassword}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.usernamePassword}</h1>
+
 
 		<p>#{msgs.passwordUpdateSuccess}</p>
 
 		<h:form>
-			<h:commandButton action="back" id="back" value="#{msgs.backaction}" class="submit"/>
+			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
+				class="submit" />
 		</h:form>
 
 	</ui:define>

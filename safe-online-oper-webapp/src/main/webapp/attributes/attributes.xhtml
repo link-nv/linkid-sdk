@@ -13,9 +13,12 @@
 			<ui:param name="page" value="attributes" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.attributes}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.attributes}</h1>
+
 
 		<a4j:form id="attributeTypeForm" ajaxSubmit="true"
 			reRender="attributes-data">

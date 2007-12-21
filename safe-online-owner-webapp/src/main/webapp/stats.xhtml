@@ -5,9 +5,12 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="top_content">
+		<h1>#{msgs.statistic}: #{selectedApplication.name}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.statistic}: #{selectedApplication.name}</h1>
+
 
 		<h:form>
 			<t:dataTable id="stat-data" var="item" value="#{statList}" rows="10"
@@ -36,7 +39,8 @@
 
 			<h:messages styleClass="error" />
 
-			<h:commandButton value="#{msgs.backaction}" action="back" class="submit"/>
+			<h:commandButton value="#{msgs.backaction}" action="back"
+				class="submit" />
 
 		</h:form>
 

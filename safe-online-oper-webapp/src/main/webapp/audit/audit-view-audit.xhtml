@@ -13,10 +13,13 @@
 			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.operatorAuditAuditRecords}</h1>
+	</ui:define>
 	<ui:define name="content">
 
 		<h:form>
-			<h1>#{msgs.operatorAuditAuditRecords}</h1>
+
 			<t:dataTable id="audit-audit-data" var="item" renderedIfEmpty="false"
 				value="#{auditAuditRecordList}" rows="15" preserveDataModel="false"
 				styleClass="listingTable"

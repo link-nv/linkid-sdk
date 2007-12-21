@@ -16,10 +16,12 @@
 			<ui:param name="page" value="applications" />
 		</ui:include>
 	</ui:define>
-
+	<ui:define name="top_content">
+		<h1>#{msgs.operatorEditApplication}: #{selectedApplication.name}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.operatorEditApplication}: #{selectedApplication.name}</h1>
+
 
 		<h:form enctype="multipart/form-data">
 
@@ -39,7 +41,7 @@
 						<s:decorate>
 							<tr:inputFile id="applicationLogo"
 								value="#{operApplication.applicationLogoFile}" />
-                            <h:message for="applicationLogo" styleClass="error" />
+							<h:message for="applicationLogo" styleClass="error" />
 						</s:decorate>
 
 						<h:outputLabel for="applicationColor"
@@ -48,7 +50,7 @@
 							<h:inputText id="applicationColor"
 								value="#{operApplication.applicationColor}"
 								style="border-color: #{operApplication.applicationColor}" />
-                            <h:message for="applicationColor" styleClass="error" />
+							<h:message for="applicationColor" styleClass="error" />
 						</s:decorate>
 
 						<h:outputLabel for="applicationIdScope"
@@ -58,7 +60,7 @@
 								value="#{operApplication.applicationIdScope}" required="true">
 								<f:selectItems value="#{applicationIdScopes}" />
 							</h:selectOneMenu>
-                            <h:message for="applicationIdScope" styleClass="error" />
+							<h:message for="applicationIdScope" styleClass="error" />
 						</s:decorate>
 					</h:panelGrid>
 				</rich:tab>

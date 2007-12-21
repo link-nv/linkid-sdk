@@ -13,12 +13,15 @@
 			<ui:param name="page" value="maintenance" />
 		</ui:include>
 	</ui:define>
-	<ui:define name="content">
-
+	<ui:define name="top_content">
 		<h1>#{msgs.operatorAuditRecordsSince} : <h:outputLabel
 			value="#{ageLimit}">
 			<f:convertDateTime type="both" timeStyle="medium" dateStyle="short" />
 		</h:outputLabel></h1>
+	</ui:define>
+	<ui:define name="content">
+
+
 
 		<h:form>
 			<h2>#{msgs.operatorAccessAuditRecords}</h2>

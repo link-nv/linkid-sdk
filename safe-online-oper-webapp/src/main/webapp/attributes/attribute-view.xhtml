@@ -14,10 +14,11 @@
 			<ui:param name="page" value="attributes" />
 		</ui:include>
 	</ui:define>
-
+	<ui:define name="top_content">
+		<h1>#{msgs.attribute} #{selectedAttributeType.name}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.attribute} #{selectedAttributeType.name}</h1>
 
 		<f:subview>
 			<rich:tabPanel id="tabs" switchType="client">

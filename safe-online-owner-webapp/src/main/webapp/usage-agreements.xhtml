@@ -8,11 +8,12 @@
 	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="content">
-
+	<ui:define name="top_content">
 		<h1>#{selectedApplication.name}</h1>
 
 		<h2>#{msgs.usageAgreement}</h2>
+	</ui:define>
+	<ui:define name="content">
 
 		<rich:tabPanel id="usagePanel" switchType="client">
 
@@ -107,7 +108,8 @@
 
 					<a4j:commandButton id="edit-agreement" value="#{msgs.editaction}"
 						action="#{ownerUsageAgreement.createUsageAgreement}"
-						rendered="#{empty ownerUsageAgreement.draftUsageAgreement}" styleClass="submit"/>
+						rendered="#{empty ownerUsageAgreement.draftUsageAgreement}"
+						styleClass="submit" />
 				</a4j:form>
 			</rich:tab>
 		</rich:tabPanel>

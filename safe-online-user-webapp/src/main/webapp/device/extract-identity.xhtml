@@ -11,9 +11,12 @@
 			<ui:param name="page" value="devices" />
 		</ui:include>
 	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.extractBeId}</h1>
+	</ui:define>
 	<ui:define name="content">
 
-		<h1>#{msgs.extractBeId}</h1>
+
 
 		<applet name="IdentityApplet"
 			code="net.link.safeonline.identity.IdentityApplet.class"
