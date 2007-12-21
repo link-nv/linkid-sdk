@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceContext;
 
 import net.link.safeonline.ws.util.ri.Injection;
@@ -56,6 +57,12 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 	private static final Log LOG = LogFactory
 			.getLog(SecurityTokenServicePortImpl.class);
 
+	private final static QName TOKEN_TYPE_QNAME = new QName(
+			"http://docs.oasis-open.org/ws-sx/ws-trust/200512/", "TokenType");
+
+	private final static QName REQUEST_TYPE_QNAME = new QName(
+			"http://docs.oasis-open.org/ws-sx/ws-trust/200512/", "RequestType");
+
 	@Resource
 	private WebServiceContext context;
 
@@ -63,6 +70,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 			RequestSecurityTokenType request) {
 		LOG.debug("request security token");
 		String requestType = null;
+		String tokenType = null;
 		ValidateTargetType validateTarget = null;
 		List<Object> content = request.getAny();
 		for (Object contentObject : content) {
@@ -70,7 +78,12 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 				JAXBElement<?> contentElement = (JAXBElement<?>) contentObject;
 				Object value = contentElement.getValue();
 				if (value instanceof String) {
-					requestType = (String) value;
+					QName elementName = contentElement.getName();
+					if (TOKEN_TYPE_QNAME.equals(elementName)) {
+						tokenType = (String) value;
+					} else if (REQUEST_TYPE_QNAME.equals(elementName)) {
+						requestType = (String) value;
+					}
 				} else if (value instanceof ValidateTargetType) {
 					validateTarget = (ValidateTargetType) value;
 				}
@@ -82,6 +95,14 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 		if (false == "http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate"
 				.equals(requestType)) {
 			throw new RuntimeException("only supporting the validation binding");
+		}
+		if (null != tokenType
+				&& false == SecurityTokenServiceConstants.TOKEN_TYPE_STATUS
+						.equals(tokenType)) {
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"optional TokenType should be Status");
+			return response;
 		}
 		if (null == validateTarget) {
 			RequestSecurityTokenResponseType response = createResponse(
@@ -180,19 +201,32 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 		String authnDevice = authnContextClassRef.getAuthnContextClassRef();
 		LOG.debug("authentication device: " + authnDevice);
 
+		if (null == tokenType) {
+			tokenType = SecurityTokenServiceConstants.TOKEN_TYPE_STATUS;
+		}
 		RequestSecurityTokenResponseType response = createResponse(
-				SecurityTokenServiceConstants.STATUS_VALID, null);
+				SecurityTokenServiceConstants.STATUS_VALID, tokenType, null);
 		return response;
 	}
 
 	private RequestSecurityTokenResponseType createResponse(String statusCode,
 			String reason) {
+		RequestSecurityTokenResponseType response = createResponse(statusCode,
+				null, reason);
+		return response;
+	}
+
+	private RequestSecurityTokenResponseType createResponse(String statusCode,
+			String tokenType, String reason) {
 		ObjectFactory objectFactory = new ObjectFactory();
 		RequestSecurityTokenResponseType response = new RequestSecurityTokenResponseType();
 		StatusType status = objectFactory.createStatusType();
 		status.setCode(statusCode);
 		if (null != reason) {
 			status.setReason(reason);
+		}
+		if (null != tokenType) {
+			response.getAny().add(objectFactory.createTokenType(tokenType));
 		}
 		response.getAny().add(objectFactory.createStatus(status));
 		return response;

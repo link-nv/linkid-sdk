@@ -107,6 +107,12 @@ public class AuthnRequestFactoryTest {
 		assertNotNull(destinationNode);
 		assertEquals(destinationURL, destinationNode.getTextContent());
 
+		Node allowCreateNode = XPathAPI.selectSingleNode(resultDocument,
+				"/samlp2:AuthnRequest/samlp2:NameIDPolicy/@AllowCreate",
+				nsElement);
+		assertNotNull(allowCreateNode);
+		assertEquals("true", allowCreateNode.getTextContent());
+
 		// verify signature
 		NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(
 				javax.xml.crypto.dsig.XMLSignature.XMLNS, "Signature");

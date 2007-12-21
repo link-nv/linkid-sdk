@@ -26,6 +26,7 @@ import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.NameIDPolicy;
 import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
@@ -139,6 +140,11 @@ public class AuthnRequestFactory {
 		if (null != destinationURL) {
 			request.setDestination(destinationURL);
 		}
+
+		NameIDPolicy nameIdPolicy = buildXMLObject(NameIDPolicy.class,
+				NameIDPolicy.DEFAULT_ELEMENT_NAME);
+		nameIdPolicy.setAllowCreate(true);
+		request.setNameIDPolicy(nameIdPolicy);
 
 		if (null != devices) {
 			RequestedAuthnContext requestedAuthnContext = buildXMLObject(

@@ -82,6 +82,10 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor
 				.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate");
 		request.getAny().add(requestType);
 
+		JAXBElement<String> tokenType = objectFactory
+				.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
+		request.getAny().add(tokenType);
+
 		ValidateTargetType validateTarget = new ValidateTargetType();
 		validateTarget.setAny(token);
 		request.getAny()

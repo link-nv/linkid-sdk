@@ -24,8 +24,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
 import org.junit.Test;
-import org.opensaml.xml.Configuration;
 import org.opensaml.saml2.core.Response;
+import org.opensaml.xml.Configuration;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.MarshallerFactory;
 import org.opensaml.xml.io.MarshallingException;
@@ -46,12 +46,13 @@ public class AuthnResponseFactoryTest {
 		String subjectName = "test-subject-name";
 		int validity = 60 * 10;
 		String applicationName = "test-application-name";
+		String target = "https://sp.test.com";
 
 		// operate
 		Response response = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, applicationName, issuerName, subjectName,
 				SafeOnlineAuthnContextClass.PASSWORD_PROTECTED_TRANSPORT,
-				validity);
+				validity, target);
 
 		// verify
 		assertNotNull(response);
@@ -93,5 +94,14 @@ public class AuthnResponseFactoryTest {
 				"//saml:Audience", nsElement);
 		assertNotNull(audienceNode);
 		assertEquals(applicationName, audienceNode.getTextContent());
+
+		Node recipientNode = XPathAPI
+				.selectSingleNode(
+						responseElement,
+						"/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@Recipient",
+						nsElement);
+		assertNotNull(recipientNode);
+		LOG.debug("recipient: " + recipientNode.getTextContent());
+		assertEquals(target, recipientNode.getTextContent());
 	}
 }

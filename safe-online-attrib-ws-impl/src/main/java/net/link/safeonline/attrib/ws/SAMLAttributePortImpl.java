@@ -304,6 +304,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			Object attributeValue = attribute.getValue();
 
 			AttributeType statementAttribute = new AttributeType();
+			statementAttribute
+					.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
 			statementAttribute.setName(attributeName);
 			List<Object> attributeValues = statementAttribute
 					.getAttributeValue();
@@ -335,10 +337,14 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
 						AttributeType compoundedAttribute = new AttributeType();
 
+						compoundedAttribute
+								.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
 						compoundedAttribute.setName(attributeName);
 						for (Map.Entry<String, Object> compoundedAttributeValue : compoundedAttributeValues
 								.entrySet()) {
 							AttributeType memberAttribute = new AttributeType();
+							memberAttribute
+									.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
 							memberAttribute.setName(compoundedAttributeValue
 									.getKey());
 							memberAttribute.getAttributeValue().add(

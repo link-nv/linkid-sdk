@@ -482,6 +482,8 @@ public class DataServicePortImpl implements DataServicePort {
 		if (false == attributeList.isEmpty()) {
 			AttributeType attribute = new AttributeType();
 			data.setAttribute(attribute);
+			attribute
+					.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
 			attribute.setName(attributeName);
 
 			/*
@@ -500,6 +502,8 @@ public class DataServicePortImpl implements DataServicePort {
 			for (AttributeEntity attributeEntity : attributeList) {
 				if (attributeEntity.getAttributeType().isCompounded()) {
 					AttributeType compoundAttribute = new AttributeType();
+					compoundAttribute
+							.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
 					compoundAttribute.setName(attributeName);
 					compoundAttribute.getOtherAttributes().put(
 							WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID,
@@ -511,6 +515,8 @@ public class DataServicePortImpl implements DataServicePort {
 						AttributeType memberAttribute = new AttributeType();
 						AttributeTypeEntity memberAttributeType = memberAttributeEntity
 								.getAttributeType();
+						memberAttribute
+								.setNameFormat(WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE);
 						memberAttribute.setName(memberAttributeType.getName());
 						setSamlAttributeValue(memberAttributeEntity,
 								memberAttribute);

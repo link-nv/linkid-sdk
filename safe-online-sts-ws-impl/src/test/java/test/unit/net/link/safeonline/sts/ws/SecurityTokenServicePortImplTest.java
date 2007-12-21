@@ -231,6 +231,9 @@ public class SecurityTokenServicePortImplTest {
 				.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate");
 		RequestSecurityTokenType request = new RequestSecurityTokenType();
 		request.getAny().add(requestType);
+		JAXBElement<String> tokenType = objectFactory
+				.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
+		request.getAny().add(tokenType);
 		ValidateTargetType validateTarget = new ValidateTargetType();
 
 		Element responseToken = createAuthResponse("test-in-response-to",

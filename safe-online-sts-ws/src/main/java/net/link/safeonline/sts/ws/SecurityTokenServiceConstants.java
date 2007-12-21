@@ -16,4 +16,6 @@ public class SecurityTokenServiceConstants {
 	public static final String STATUS_VALID = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid";
 
 	public static final String STATUS_INVALID = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/invalid";
+
+	public static final String TOKEN_TYPE_STATUS = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/RSTR/Status";
 }

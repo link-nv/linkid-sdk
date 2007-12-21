@@ -26,7 +26,6 @@ import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.ExtensionO
 import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.ObjectFactory;
 
 import org.joda.time.DateTime;
-import org.opensaml.xml.Configuration;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;
@@ -44,6 +43,9 @@ import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Status;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
+import org.opensaml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml2.core.SubjectConfirmationData;
+import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObjectBuilder;
 import org.w3c.dom.Document;
@@ -84,15 +86,18 @@ public class AuthnResponseFactory {
 	 * @param issuerName
 	 * @param subjectName
 	 * @param authnContextClass
+	 * @param target
 	 * @return
 	 */
 	public static Response createAuthResponse(String inResponseTo,
 			String applicationName, String issuerName, String subjectName,
-			SafeOnlineAuthnContextClass authnContextClass, int validity) {
+			SafeOnlineAuthnContextClass authnContextClass, int validity,
+			String target) {
 		Response response = buildXMLObject(Response.class,
 				Response.DEFAULT_ELEMENT_NAME);
 
 		DateTime now = new DateTime();
+		DateTime notAfter = now.plusSeconds(validity);
 
 		SecureRandomIdentifierGenerator idGenerator;
 		try {
@@ -140,10 +145,26 @@ public class AuthnResponseFactory {
 		subject.setNameID(nameID);
 		assertion.setSubject(subject);
 
+		List<SubjectConfirmation> subjectConfirmations = subject
+				.getSubjectConfirmations();
+		SubjectConfirmation subjectConfirmation = buildXMLObject(
+				SubjectConfirmation.class,
+				SubjectConfirmation.DEFAULT_ELEMENT_NAME);
+		subjectConfirmation.setMethod("urn:oasis:names:tc:SAML:2.0:cm:bearer");
+		SubjectConfirmationData subjectConfirmationData = buildXMLObject(
+				SubjectConfirmationData.class,
+				SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
+		subjectConfirmationData.setRecipient(target);
+		subjectConfirmationData.setInResponseTo(inResponseTo);
+		subjectConfirmationData.setNotBefore(now);
+		subjectConfirmationData.setNotOnOrAfter(notAfter);
+		subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
+		subjectConfirmations.add(subjectConfirmation);
+
 		Conditions conditions = buildXMLObject(Conditions.class,
 				Conditions.DEFAULT_ELEMENT_NAME);
 		conditions.setNotBefore(now);
-		conditions.setNotOnOrAfter(now.plusSeconds(validity));
+		conditions.setNotOnOrAfter(notAfter);
 		List<AudienceRestriction> audienceRestrictions = conditions
 				.getAudienceRestrictions();
 		AudienceRestriction audienceRestriction = buildXMLObject(

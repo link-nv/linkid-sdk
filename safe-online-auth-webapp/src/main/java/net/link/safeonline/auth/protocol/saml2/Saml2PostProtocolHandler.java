@@ -270,7 +270,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		}
 		Response responseMessage = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, applicationId, issuerName, userId,
-				authnContextClass, validity);
+				authnContextClass, validity, target);
 		messageContext.setOutboundSAMLMessage(responseMessage);
 
 		AssertionConsumerService assertionConsumerService = AuthnResponseFactory
