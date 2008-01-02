@@ -19,7 +19,7 @@
   <!-- A Statemanager that stores state in the database -->
   <mbean code="org.jboss.mq.sm.jdbc.JDBCStateManager"
 	      name="jboss.mq:service=StateManager">
-    <depends optional-attribute-name="ConnectionManager">jboss.jca:service=DataSourceBinding,name=SafeOnlineDS</depends>
+    <depends optional-attribute-name="ConnectionManager">jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
     <attribute name="SqlProperties">
       CREATE_TABLES_ON_STARTUP = TRUE
       CREATE_USER_TABLE = CREATE TABLE JMS_USERS (USERID VARCHAR(32) NOT NULL, PASSWD VARCHAR(32) NOT NULL, \
@@ -38,19 +38,7 @@
       GET_USER_BY_CLIENTID = SELECT USERID, PASSWD, CLIENTID FROM JMS_USERS WHERE CLIENTID=?
       GET_USER = SELECT PASSWD, CLIENTID FROM JMS_USERS WHERE USERID=?
       POPULATE.TABLES.01 = INSERT INTO JMS_USERS (USERID, PASSWD) VALUES ('guest', 'guest')
-      POPULATE.TABLES.02 = INSERT INTO JMS_USERS (USERID, PASSWD) VALUES ('j2ee', 'j2ee')
-      POPULATE.TABLES.03 = INSERT INTO JMS_USERS (USERID, PASSWD, CLIENTID) VALUES ('john', 'needle', 'DurableSubscriberExample')
-      POPULATE.TABLES.04 = INSERT INTO JMS_USERS (USERID, PASSWD) VALUES ('nobody', 'nobody')
-      POPULATE.TABLES.05 = INSERT INTO JMS_USERS (USERID, PASSWD) VALUES ('dynsub', 'dynsub')
-      POPULATE.TABLES.06 = INSERT INTO JMS_ROLES (ROLEID, USERID) VALUES ('guest','guest')
-      POPULATE.TABLES.07 = INSERT INTO JMS_ROLES (ROLEID, USERID) VALUES ('j2ee','guest')
-      POPULATE.TABLES.08 = INSERT INTO JMS_ROLES (ROLEID, USERID) VALUES ('john','guest')
-      POPULATE.TABLES.09 = INSERT INTO JMS_ROLES (ROLEID, USERID) VALUES ('subscriber','john')
-      POPULATE.TABLES.10 = INSERT INTO JMS_ROLES (ROLEID, USERID) VALUES ('publisher','john')
-      POPULATE.TABLES.11 = INSERT INTO JMS_ROLES (ROLEID, USERID) VALUES ('publisher','dynsub')
-      POPULATE.TABLES.12 = INSERT INTO JMS_ROLES (ROLEID, USERID) VALUES ('durpublisher','john')
-      POPULATE.TABLES.13 = INSERT INTO JMS_ROLES (ROLEID, USERID) VALUES ('durpublisher','dynsub')
-      POPULATE.TABLES.14 = INSERT INTO JMS_ROLES (ROLEID, USERID) VALUES ('noacc','nobody')
+      POPULATE.TABLES.02 = INSERT INTO JMS_ROLES (ROLEID, USERID) VALUES ('guest','guest')
     </attribute>
   </mbean>
 

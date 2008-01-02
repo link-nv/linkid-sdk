@@ -46,7 +46,7 @@ $Revision: 43749 $
           <login-module code = "org.jboss.security.auth.spi.DatabaseServerLoginModule"
              flag = "required">
              <module-option name = "unauthenticatedIdentity">guest</module-option>
-             <module-option name = "dsJndiName">java:/SafeOnlineDS</module-option>
+             <module-option name = "dsJndiName">java:/${safe-online.data.source}</module-option>
              <module-option name = "principalsQuery">SELECT PASSWD FROM JMS_USERS WHERE USERID=?</module-option>
              <module-option name = "rolesQuery">SELECT ROLEID, 'Roles' FROM JMS_ROLES WHERE USERID=?</module-option>
           </login-module>
@@ -73,7 +73,7 @@ $Revision: 43749 $
              <module-option name = "principal">sa</module-option>
              <module-option name = "userName">sa</module-option>
              <module-option name = "password"></module-option>
-             <module-option name = "managedConnectionFactoryName">jboss.jca:service=LocalTxCM,name=SafeOnlineDS</module-option>
+             <module-option name = "managedConnectionFactoryName">jboss.jca:service=LocalTxCM,name=${safe-online.data.source}</module-option>
           </login-module>
        </authentication>
     </application-policy>
