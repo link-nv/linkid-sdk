@@ -17,12 +17,11 @@
 
 		<h3>#{msgs.mobile}</h3>
 
-		<table>
-			<tr>
-				<th>#{msgs.login}:</th>
-				<td>#{deviceRegistration.username}</td>
-			</tr>
-		</table>
+		<h:form>
+			<h:outputLabel for="login" value="#{msgs.login}" />
+			<h:inputText id="login" value="#{deviceRegistration.username}"
+				readonly="true" styleClass="label" />
+		</h:form>
 
 		<a4j:form id="mobile-register-form" ajaxSubmit="true"
 			reRender="mobile-register-form,mobile-confirm-form">
@@ -30,27 +29,28 @@
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
-			<h:panelGrid id="register-panel" columns="4">
-				<h:outputLabel for="mobile" value="#{msgs.mobile}" />
-				<s:decorate>
-					<h:inputText id="mobile" value="#{devicesBean.mobile}"
-						required="true"
-						readonly="#{!empty deviceRegistration.mobileActivationCode}">
-						<f:validateLength minimum="10" maximum="10" />
-					</h:inputText>
-				</s:decorate>
-				<h:message for="mobile" styleClass="error" />
-				<h:commandButton action="#{deviceRegistration.mobileRegister}"
-					id="register" value="#{msgs.registerMobile}"
-					rendered="#{empty deviceRegistration.mobileActivationCode}"
-					styleClass="submit" />
-			</h:panelGrid>
+			<h:outputLabel for="mobile" value="#{msgs.mobile}" />
+			<s:decorate>
+				<h:inputText id="mobile" value="#{deviceRegistration.mobile}"
+					required="true"
+					readonly="#{!empty deviceRegistration.mobileActivationCode}"
+					styleClass="label">
+					<f:validateLength minimum="10" maximum="10" />
+				</h:inputText>
+			</s:decorate>
+			<h:message for="mobile" styleClass="error" />
+			<h:outputLabel for="register" value="" />
+			<h:commandButton action="#{deviceRegistration.mobileRegister}"
+				id="register" value="#{msgs.registerMobile}"
+				rendered="#{empty deviceRegistration.mobileActivationCode}"
+				styleClass="submit" />
 		</a4j:form>
 
 		<a4j:form id="mobile-confirm-form" ajaxSubmit="true"
 			reRender="mobile-register-form,mobile-confirm-form">
-			<h:panelGrid id="activation-panel" columns="4"
-				rendered="#{!empty devicesBean.mobileActivationCode}">
+			<f:subview
+				rendered="#{!empty deviceRegistration.mobileActivationCode}">
+
 				<h:outputLabel
 					value="#{msgs.activationCode}: #{deviceRegistration.mobileActivationCode}" />
 				<h:commandButton id="activation-ok"
@@ -59,7 +59,7 @@
 				<h:commandButton id="activation-cancel"
 					action="#{deviceRegistration.mobileActivationCancel}"
 					value="#{msgs.cancelaction}" styleClass="submit" />
-			</h:panelGrid>
+			</f:subview>
 		</a4j:form>
 
 
@@ -68,18 +68,19 @@
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
-			<h:panelGrid id="register-panel" columns="4">
-				<h:outputLabel for="mobile" value="#{msgs.mobile}" />
-				<s:decorate>
-					<h:inputText id="mobile" value="#{deviceRegistration.mobile}"
-						required="true">
-						<f:validateLength minimum="10" maximum="10" />
-					</h:inputText>
-				</s:decorate>
-				<h:message for="mobile" styleClass="error" />
-				<h:commandButton action="#{deviceRegistration.mobileNext}"
-					id="register" value="#{msgs.registerMobile}" styleClass="submit" />
-			</h:panelGrid>
+
+			<h:outputLabel for="mobile" value="#{msgs.mobile}" />
+			<s:decorate>
+				<h:inputText id="mobile" value="#{deviceRegistration.mobile}"
+					required="true">
+					<f:validateLength minimum="10" maximum="10" styleClass="label" />
+				</h:inputText>
+			</s:decorate>
+			<h:message for="mobile" styleClass="error" />
+			<h:outputLabel for="register" value="" />
+			<h:commandButton action="#{deviceRegistration.mobileNext}"
+				id="register" value="#{msgs.registerMobile}" styleClass="submit" />
+
 		</h:form>
 
 	</ui:define>

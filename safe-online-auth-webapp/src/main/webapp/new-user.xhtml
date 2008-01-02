@@ -19,32 +19,28 @@
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
-			<table>
-				<tr>
-					<th><h:outputLabel for="login" value="#{msgs.login}" />:</th>
-					<td><s:decorate>
-						<h:inputText id="login" value="#{accountRegistration.login}"
-							required="true">
-							<f:validateLength minimum="6" />
-						</h:inputText>
-					</s:decorate>*</td>
-					<td><t:message for="login" styleClass="error" /></td>
-				</tr>
-				<tr>
-					<th>#{msgs.captcha}</th>
-					<td><h:graphicImage value="/captcha" /></td>
-					<td></td>
-				</tr>
-				<tr>
-					<th></th>
-					<td><s:decorate>
-						<h:inputText id="captcha" value="#{accountRegistration.captcha}"
-							required="true" />
-					</s:decorate>*</td>
-					<td><t:message for="captcha" styleClass="error" /></td>
-				</tr>
-			</table>
+
+			<h:outputLabel for="login" value="#{msgs.login}" />
+			<s:decorate>
+				<h:inputText id="login" value="#{accountRegistration.login}"
+					required="true" styleClass="label">
+					<f:validateLength minimum="6" />
+				</h:inputText>
+			</s:decorate>*
+					<t:message for="login" styleClass="error" />
+
+
+			<h:outputLabel for="captcha" value="#{msgs.captcha}" />
+			<s:decorate>
+
+				<h:inputText id="captcha" value="#{accountRegistration.captcha}"
+					required="true" styleClass="label" />
+			</s:decorate>*
+					
+					<t:message for="captcha" styleClass="error" />
+			<p align="center"><h:graphicImage value="/captcha" /></p>
 			<t:messages globalOnly="true" styleClass="error" />
+			<h:outputLabel for="register" value="" />
 			<h:commandButton action="#{accountRegistration.loginNext}"
 				id="register" value="#{msgs.register}" styleClass="submit" />
 		</h:form>

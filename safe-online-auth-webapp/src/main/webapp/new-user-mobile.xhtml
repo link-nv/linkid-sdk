@@ -20,32 +20,29 @@
 
 		<h3>#{msgs.mobile}</h3>
 
-		<table>
-			<tr>
-				<th>#{msgs.login}:</th>
-				<td>#{requestedUsername}</td>
-			</tr>
-		</table>
-
 		<a4j:form id="register-form" ajaxSubmit="true"
 			reRender="otp-form,register-form">
 			<t:messages globalOnly="true" styleClass="error" />
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
-			<h:panelGrid id="register-panel" columns="4">
-				<h:outputLabel for="mobile" value="#{msgs.mobile}" />
-				<s:decorate>
-					<h:inputText id="mobile" value="#{accountRegistration.mobile}"
-						required="true">
-						<f:validateLength minimum="10" maximum="10" />
-					</h:inputText>
-				</s:decorate>
-				<h:message for="mobile" styleClass="error" />
-				<h:commandButton action="#{accountRegistration.mobileRegister}"
-					id="register" value="#{msgs.registerMobile}"
-					rendered="#{empty challengeId}" styleClass="submit" />
-			</h:panelGrid>
+			<h:outputLabel for="login" value="#{msgs.login}" />
+			<h:inputText id="login" value="#{requestedUsername}" readonly="true"
+				styleClass="label" />
+
+			<h:outputLabel for="mobile" value="#{msgs.mobile}" />
+			<s:decorate>
+				<h:inputText id="mobile" value="#{accountRegistration.mobile}"
+					required="true" styleClass="label">
+					<f:validateLength minimum="10" maximum="10" />
+				</h:inputText>
+			</s:decorate>
+			<h:message for="mobile" styleClass="error" />
+			<h:outputLabel for="register" value="" />
+			<h:commandButton action="#{accountRegistration.mobileRegister}"
+				id="register" value="#{msgs.registerMobile}"
+				rendered="#{empty challengeId}" styleClass="submit" />
+
 		</a4j:form>
 
 		<a4j:form id="otp-form" ajaxSubmit="true" reRender="otp-form">
@@ -53,19 +50,19 @@
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
-			<h:panelGrid id="otp-grid" columns="4"
-				rendered="#{!empty challengeId}">
+			<f:subview rendered="#{!empty challengeId}">
 				<h:outputLabel for="otp" value="#{msgs.mobileOTP}" />
 				<s:decorate>
 					<h:inputText id="otp" value="#{accountRegistration.mobileOTP}"
-						required="true">
+						required="true" styleClass="label">
 						<f:validateLength minimum="6" maximum="6" />
 					</h:inputText>
 				</s:decorate>
 				<h:message for="otp" styleClass="error" />
+				<h:outputLabel for="submit" value="" />
 				<h:commandButton action="#{accountRegistration.mobileNext}"
 					id="submit" value="#{msgs.submit}" styleClass="submit" />
-			</h:panelGrid>
+			</f:subview>
 		</a4j:form>
 
 	</ui:define>

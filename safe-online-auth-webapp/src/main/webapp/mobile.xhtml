@@ -26,37 +26,33 @@
 		<a4j:form id="auth-form" ajaxSubmit="true"
 			reRender="auth-form,otp-form">
 			<t:messages globalOnly="true" styleClass="error" />
-			<h:panelGrid id="auth-panel-editable" columns="7">
-				<h:outputLabel for="mobile" value="#{msgs.mobile}" />
-				<s:decorate>
-					<h:inputText id="mobile" value="#{mobileLogon.mobile}"
-						required="true" readonly="#{!empty mobileLogon.challengeId}" />
-				</s:decorate>
-				<t:message for="mobile" styleClass="error" />
-				<h:commandButton id="generateOTP" value="#{msgs.mobileRequestOTP}"
-					action="#{mobileLogon.requestOTP}"
-					rendered="#{empty mobileLogon.challengeId}" class="submit" />
-			</h:panelGrid>
+			<h:outputLabel for="mobile" value="#{msgs.mobile}" />
+			<s:decorate>
+				<h:inputText id="mobile" value="#{mobileLogon.mobile}"
+					required="true" readonly="#{!empty mobileLogon.challengeId}"
+					styleClass="label" />
+			</s:decorate>
+			<t:message for="mobile" styleClass="error" />
+			<h:outputLabel for="generateOTP" value="" />
+			<h:commandButton id="generateOTP" value="#{msgs.mobileRequestOTP}"
+				action="#{mobileLogon.requestOTP}"
+				rendered="#{empty mobileLogon.challengeId}" class="submit" />
 		</a4j:form>
 
 		<h:form id="otp-form">
-			<h:panelGrid id="otp-panel" columns="4"
-				rendered="#{!empty mobileLogon.challengeId}">
+			<f:subview rendered="#{!empty mobileLogon.challengeId}">
 				<h:outputLabel for="otp" value="#{msgs.mobileOTP}" />
 				<s:decorate>
 					<h:inputText id="otp" value="#{mobileLogon.mobileOTP}"
-						required="true" />
+						required="true" styleClass="label" />
 				</s:decorate>
 				<t:message for="otp" styleClass="error" />
+				<h:outputLabel for="login" value="" />
 				<h:commandButton action="#{mobileLogon.login}" id="login"
 					value="#{msgs.loginaction}" class="submit" />
-			</h:panelGrid>
+			</f:subview>
 		</h:form>
 
-		<h:form>
-			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
-				immediate="true" styleClass="submit" />
-		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">
 		<h:form>
@@ -65,6 +61,8 @@
 					immediate="true" /></li>
 				<li><h:commandLink action="/all-devices.seam"
 					value="#{msgs.tryAnotherDevice}" /></li>
+				<li><h:commandLink action="back" id="back"
+					value="#{msgs.backaction}" immediate="true" styleClass="submit" /></li>
 			</ul>
 		</h:form>
 		<p>#{msgs.helpMobileAuthentication}</p>
