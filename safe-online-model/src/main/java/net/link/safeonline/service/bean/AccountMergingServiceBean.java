@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.security.DenyAll;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -28,7 +28,6 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
@@ -91,7 +90,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	 * data object.
 	 * 
 	 */
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	@DenyAll
 	public AccountMergingDO getAccountMergingDO(String sourceAccountName)
 			throws SubjectNotFoundException, AttributeTypeNotFoundException,
 			ApplicationNotFoundException, EmptyDevicePolicyException {
@@ -125,7 +124,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	 * @throws SubjectNotFoundException
 	 * @throws PermissionDeniedException
 	 */
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	@DenyAll
 	public void mergeAccount(AccountMergingDO accountMergingDO,
 			Set<AuthenticationDevice> neededDevices)
 			throws AttributeTypeNotFoundException, SubjectNotFoundException,

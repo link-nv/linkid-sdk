@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.security.RolesAllowed;
+import javax.annotation.security.DenyAll;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
@@ -30,7 +30,6 @@ import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.ReAuthenticationService;
-import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.device.StrongMobileDeviceService;
@@ -83,7 +82,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		LOG.debug("PostConstruct");
 	}
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	@DenyAll
 	public Set<AuthenticationDevice> getAuthenticatedDevices() {
 		return this.authenticationDevices;
 	}
@@ -105,7 +104,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	 * @throws SubjectMismatchException
 	 * @throws PermissionDeniedException
 	 */
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	@DenyAll
 	public void setAuthenticatedSubject(SubjectEntity subject)
 			throws SubjectMismatchException, PermissionDeniedException {
 		LOG.debug("set re-auth subject: " + subject.getUserId());
@@ -121,7 +120,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 			throw new SubjectMismatchException();
 	}
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	@DenyAll
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
 	String password) throws SubjectNotFoundException, DeviceNotFoundException,
@@ -144,7 +143,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		return true;
 	}
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	@DenyAll
 	public String authenticate(@NotNull
 	AuthenticationDevice device, @NonEmptyString
 	String mobile, @NonEmptyString
@@ -173,7 +172,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		return this.subjectService.getSubjectLogin(subject.getUserId());
 	}
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	@DenyAll
 	public String requestMobileOTP(@NotNull
 	AuthenticationDevice device, @NonEmptyString
 	String mobile) throws MalformedURLException, MobileException {
@@ -184,7 +183,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		return null;
 	}
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	@DenyAll
 	public boolean authenticate(@NonEmptyString
 	String sessionId, @NotNull
 	byte[] authenticationStatementData) throws ArgumentIntegrityException,
@@ -208,7 +207,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		return true;
 	}
 
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	@DenyAll
 	@Remove
 	public void abort() {
 		LOG.debug("abort");

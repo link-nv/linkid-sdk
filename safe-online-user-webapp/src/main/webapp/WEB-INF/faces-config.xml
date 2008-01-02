@@ -137,10 +137,6 @@
 			<from-outcome>removemobile</from-outcome>
 			<to-view-id>/device/mobile-remove.xhtml</to-view-id>
 		</navigation-case>
-		<navigation-case>
-			<from-outcome>strongmobile</from-outcome>
-			<to-view-id>/device/strongmobile-edit.xhtml</to-view-id>
-		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -205,22 +201,10 @@
 
 
 	<navigation-rule>
-		<from-view-id>/device/strongmobile-edit.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>back</from-outcome>
-			<to-view-id>/device/devices.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
 		<from-view-id>/account.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>remove</from-action>
 			<to-view-id>/remove.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-action>merge</from-action>
-			<to-view-id>/merge/merge.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
@@ -229,86 +213,6 @@
 		<navigation-case>
 			<from-action>cancel</from-action>
 			<to-view-id>/account.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/merge/merge.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>merge-entry</from-action>
-			<to-view-id>/merge/entry</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/merge/merge-login.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>password</from-outcome>
-			<to-view-id>/merge/username-password.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>beid</from-outcome>
-			<to-view-id>/merge/beid.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>mobileWeak</from-outcome>
-			<to-view-id>/merge/mobile.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>mobileStrong</from-outcome>
-			<to-view-id>/merge/mobile.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/merge/username-password.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>success</from-outcome>
-			<to-view-id>/merge/merge-overview.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-action>back</from-action>
-			<to-view-id>/merge/merge-login.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-action>help</from-action>
-			<to-view-id>/help.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/merge/beid.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>success</from-outcome>
-			<to-view-id>/merge/merge-overview.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-action>help</from-action>
-			<to-view-id>/help.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/merge/mobile.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>success</from-outcome>
-			<to-view-id>/merge/merge-overview.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-action>back</from-action>
-			<to-view-id>/merge/merge-login.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-action>help</from-action>
-			<to-view-id>/help.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/merge/merge-overview.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>help</from-action>
-			<to-view-id>/help.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

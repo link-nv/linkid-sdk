@@ -220,16 +220,6 @@
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>Login Filter</filter-name>
-		<servlet-name>ReAuthenticationServlet</servlet-name>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>Login Filter</filter-name>
-		<servlet-name>ReAuthenticationExitServlet</servlet-name>
-	</filter-mapping>
-
-	<filter-mapping>
 		<filter-name>ajax4jsf</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
@@ -239,38 +229,6 @@
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
-	<servlet>
-		<servlet-name>ReAuthenticationServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.user.servlet.ReAuthenticationServlet
-		</servlet-class>
-		<init-param>
-			<param-name>LoginUrl</param-name>
-			<param-value>merge-login.seam</param-value>
-		</init-param>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>ReAuthenticationServlet</servlet-name>
-		<url-pattern>/merge/entry</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>ReAuthenticationExitServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.user.servlet.ReAuthenticationExitServlet
-		</servlet-class>
-		<init-param>
-			<param-name>ExitUrl</param-name>
-			<param-value>../actions.seam</param-value>
-		</init-param>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>ReAuthenticationExitServlet</servlet-name>
-		<url-pattern>/merge/exit</url-pattern>
-	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>IdentityServlet</servlet-name>
@@ -283,13 +241,6 @@
 		<servlet-name>IdentityRemoveServlet</servlet-name>
 		<servlet-class>
 			net.link.safeonline.user.servlet.IdentityRemoveServlet
-		</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>AuthenticationServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.user.servlet.AuthenticationServlet
 		</servlet-class>
 	</servlet>
 
@@ -307,12 +258,6 @@
 		<servlet-name>IdentityRemoveServlet</servlet-name>
 		<url-pattern>/device/identityremove/*</url-pattern>
 	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>AuthenticationServlet</servlet-name>
-		<url-pattern>/merge/authentication</url-pattern>
-	</servlet-mapping>
-
 
 	<session-config>
 		<session-timeout>5</session-timeout>

@@ -168,21 +168,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		this.attributeTypes.add(weakMobileAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				weakMobileAttributeType, Locale.ENGLISH.getLanguage(),
-				"Self provided mobile", null));
+				"Mobile", null));
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				weakMobileAttributeType, "nl", "Zelf verstrekt gsm nummer",
-				null));
-		AttributeTypeEntity strongMobileAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE,
-				DatatypeType.STRING, true, false);
-		weakMobileAttributeType.setMultivalued(true);
-		this.attributeTypes.add(strongMobileAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				strongMobileAttributeType, Locale.ENGLISH.getLanguage(),
-				"Telco provided mobile", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				strongMobileAttributeType, "nl",
-				"Gsm nummer uitgegeven door telco", null));
+				weakMobileAttributeType, "nl", "Gsm nummer", null));
 
 		List<AttributeTypeEntity> passwordDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
 		passwordDeviceAttributeTypeList.add(passwordHashAttributeType);
@@ -197,12 +185,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		this.devices.put(
 				new Device(SafeOnlineConstants.WEAK_MOBILE_AUTH_DEVICE,
 						DeviceType.MOBILE), weakMobileDeviceAttributeTypeList);
-
-		List<AttributeTypeEntity> strongMobileDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
-		strongMobileDeviceAttributeTypeList.add(strongMobileAttributeType);
-		this.devices.put(new Device(
-				SafeOnlineConstants.STRONG_MOBILE_AUTH_DEVICE,
-				DeviceType.MOBILE), strongMobileDeviceAttributeTypeList);
 	}
 
 	@Override

@@ -27,7 +27,6 @@
 		<h:form>
 			<p>#{msgs.removeAccountInfo}<h:commandLink action="remove"
 				id="remove" value="#{msgs.clickHere}" /></p>
-			<p>#{msgs.mergeAccountInfo}<a href="./merge/merge.seam">#{msgs.clickHere}</a></p>
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">
@@ -39,8 +38,6 @@
 					value="#{msgs.usageAgreement}" /></li>
 				<li><h:commandLink action="/remove.seam"
 					value="#{msgs.removeAccount}" /></li>
-				<li><h:commandLink action="/merge/merge.seam"
-					value="#{msgs.mergeAccount}" /></li>
 			</ul>
 		</h:form>
 		<p>#{msgs.helpAccountManagement}</p>
