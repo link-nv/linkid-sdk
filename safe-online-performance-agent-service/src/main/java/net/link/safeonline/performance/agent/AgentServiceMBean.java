@@ -13,12 +13,14 @@ import java.net.MalformedURLException;
 import javax.management.JMException;
 import javax.naming.NamingException;
 
+import net.link.safeonline.performance.console.jgroups.Agent;
+
 /**
  * The MBean interface for {@link AgentService}.
  * 
  * @author mbillemo
  */
-public interface AgentServiceMBean {
+public interface AgentServiceMBean extends Agent {
 
 	/**
 	 * @return the JGroups group to join.
@@ -41,6 +43,15 @@ public interface AgentServiceMBean {
 	 */
 	public void deploy() throws JMException, NamingException,
 			MalformedURLException, IOException;
+
+	/**
+	 * Execute the scenario and collect the charts.
+	 * 
+	 * @throws NamingException
+	 *             The scenario could not be found.
+	 */
+	public void execute(String hostname, Integer workers, Long duration)
+			throws NamingException;
 
 	/**
 	 * Called by JBoss when this service has been fully deployed and

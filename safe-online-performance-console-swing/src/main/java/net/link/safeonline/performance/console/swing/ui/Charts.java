@@ -26,7 +26,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.Scrollable;
 import javax.swing.WindowConstants;
 
-import net.link.safeonline.performance.console.swing.data.Agent;
+import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
 
 import org.jgroups.Address;
@@ -80,12 +80,12 @@ public class Charts extends WindowAdapter {
 		instance = null;
 	}
 
-	public static void display(Collection<Agent> agents) {
+	public static void display(Collection<ConsoleAgent> agents) {
 
 		if (instance == null)
 			instance = new Charts();
 
-		for (Agent agent : agents)
+		for (ConsoleAgent agent : agents)
 			instance.addTab(agent.getAddress(), agent.getCharts());
 	}
 

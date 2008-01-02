@@ -32,7 +32,6 @@ import javax.xml.transform.TransformerException;
 
 import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
-import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.util.jacc.ProfileData;
 import net.link.safeonline.util.jacc.ProfileDataLockedException;
 
@@ -64,7 +63,7 @@ import org.w3c.tidy.Tidy;
 /**
  * @author mbillemo
  */
-public class AuthDriver extends ProfileDriver<MessageAccessor> {
+public class AuthDriver extends ProfileDriver {
 
 	static final Log LOG = LogFactory.getLog(AuthDriver.class);
 
@@ -171,13 +170,13 @@ public class AuthDriver extends ProfileDriver<MessageAccessor> {
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
-	protected synchronized void loadDriver() {
+	protected synchronized void loadDriver(Object key) {
 
 		this.iterationDatas = new ArrayList<ProfileData>();
-		super.loadDriver();
+		super.loadDriver(key);
 	}
 
 	/**
@@ -188,7 +187,7 @@ public class AuthDriver extends ProfileDriver<MessageAccessor> {
 	public String login(PrivateKeyEntry application, String applicationName,
 			String username, String password) throws DriverException {
 
-		loadDriver();
+		loadDriver(Thread.currentThread());
 
 		try {
 			// Prepare authentication request token.
@@ -290,7 +289,7 @@ public class AuthDriver extends ProfileDriver<MessageAccessor> {
 		}
 
 		catch (Exception e) {
-			throw setDriverError(e);
+			throw setDriverError(Thread.currentThread(), e);
 		}
 
 		finally {
@@ -313,7 +312,7 @@ public class AuthDriver extends ProfileDriver<MessageAccessor> {
 					} catch (ProfileDataLockedException e) {
 					}
 
-			unloadDriver(iterationData);
+			unloadDriver(Thread.currentThread(), iterationData);
 		}
 	}
 

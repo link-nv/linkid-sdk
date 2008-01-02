@@ -15,7 +15,6 @@ import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
 import net.link.safeonline.performance.drivers.ProfileDriver;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
-import net.link.safeonline.sdk.ws.MessageAccessor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,10 +67,9 @@ public class BasicScenario implements Scenario {
 	/**
 	 * @{inheritDoc}
 	 */
-	public List<ProfileDriver<? extends MessageAccessor>> prepare(
-			String hostname) {
+	public List<ProfileDriver> prepare(String hostname) {
 
-		List<ProfileDriver<? extends MessageAccessor>> drivers = new ArrayList<ProfileDriver<? extends MessageAccessor>>();
+		List<ProfileDriver> drivers = new ArrayList<ProfileDriver>();
 
 		LOG.debug("building drivers..");
 		drivers.add(this.authDriver = new AuthDriver(hostname));

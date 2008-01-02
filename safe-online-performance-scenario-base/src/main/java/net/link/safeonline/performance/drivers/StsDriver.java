@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
  * 
  * @author mbillemo
  */
-public class StsDriver extends ProfileDriver<SecurityTokenServiceClientImpl> {
+public class StsDriver extends ProfileDriver {
 
 	public StsDriver(String hostname) {
 
@@ -44,20 +44,21 @@ public class StsDriver extends ProfileDriver<SecurityTokenServiceClientImpl> {
 			throw new DriverException(
 					"The certificate in the keystore needs to be of X509 format.");
 
-		loadDriver(new SecurityTokenServiceClientImpl(this.host,
-				(X509Certificate) applicationKey.getCertificate(),
-				applicationKey.getPrivateKey()));
+		SecurityTokenServiceClientImpl service = new SecurityTokenServiceClientImpl(
+				this.host, (X509Certificate) applicationKey.getCertificate(),
+				applicationKey.getPrivateKey());
+		loadDriver(service);
 
 		try {
-			this.service.validate(token);
+			service.validate(token);
 		}
 
 		catch (Exception e) {
-			throw setDriverError(e);
+			throw setDriverError(service, e);
 		}
 
 		finally {
-			unloadDriver();
+			unloadDriver(service);
 		}
 	}
 }

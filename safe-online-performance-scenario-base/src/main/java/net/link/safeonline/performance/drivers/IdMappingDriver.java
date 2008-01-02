@@ -17,8 +17,7 @@ import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
  * 
  * @author mbillemo
  */
-public class IdMappingDriver extends
-		ProfileDriver<NameIdentifierMappingClientImpl> {
+public class IdMappingDriver extends ProfileDriver {
 
 	public IdMappingDriver(String hostname) {
 
@@ -46,20 +45,21 @@ public class IdMappingDriver extends
 			throw new DriverException(
 					"The certificate in the keystore needs to be of X509 format.");
 
-		loadDriver(new NameIdentifierMappingClientImpl(this.host,
-				(X509Certificate) applicationKey.getCertificate(),
-				applicationKey.getPrivateKey()));
+		NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(
+				this.host, (X509Certificate) applicationKey.getCertificate(),
+				applicationKey.getPrivateKey());
+		loadDriver(service);
 
 		try {
-			return this.service.getUserId(username);
+			return service.getUserId(username);
 		}
 
 		catch (Exception e) {
-			throw setDriverError(e);
+			throw setDriverError(service, e);
 		}
 
 		finally {
-			unloadDriver();
+			unloadDriver(service);
 		}
 	}
 }

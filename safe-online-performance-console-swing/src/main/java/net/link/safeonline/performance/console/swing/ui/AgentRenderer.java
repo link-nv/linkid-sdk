@@ -11,7 +11,8 @@ import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-import net.link.safeonline.performance.console.swing.data.Agent;
+import net.link.safeonline.performance.console.jgroups.AgentState;
+import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 
 /**
  * This class is used for generating a {@link Component} that acts as a
@@ -35,8 +36,8 @@ public class AgentRenderer extends DefaultListCellRenderer {
 		super.getListCellRendererComponent(list, value, index, isSelected,
 				cellHasFocus);
 
-		if (value instanceof Agent) {
-			Agent agent = (Agent) value;
+		if (value instanceof ConsoleAgent) {
+			ConsoleAgent agent = (ConsoleAgent) value;
 
 			String color = "green", error = "";
 			if (!agent.isHealthy())
@@ -52,8 +53,9 @@ public class AgentRenderer extends DefaultListCellRenderer {
 				} while (err != null);
 			}
 
-			if (agent.getAction() != null)
-				switch (agent.getAction()) {
+			AgentState action = agent.getTransit();
+			if (action != null)
+				switch (action) {
 				case DEPLOY:
 				case UPLOAD:
 					color = "blue";
@@ -66,8 +68,8 @@ public class AgentRenderer extends DefaultListCellRenderer {
 
 			setText(String
 					.format(
-							"<html><ul><li style='color: %s; font-family: monospace'>%s%s</li></ul></html>",
-							color, agent, error));
+							"<html><ul><li style='color: %s; font-family:monospace'>%s%s</li></ul></html>",
+							color, agent.getAddress(), error));
 		}
 
 		return this;

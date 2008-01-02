@@ -105,7 +105,7 @@ public class SwingConsole {
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout(
 				"p, 5dlu, 0:g, 5dlu, p",
-				"p, 5dlu, t:p:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
+				"p, 5dlu, f:p:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
 		layout.setColumnGroups(new int[][] { { 1, 5 } });
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout, pane);
 
@@ -137,13 +137,13 @@ public class SwingConsole {
 
 		builder.append(olasPrefs.duration);
 		builder.append(scenarioChooser.scenarioField);
-		builder.append(scenarioChooser.sideButton);
+		builder.append(scenarioChooser.browseButton);
 		builder.nextRow();
 
 		builder.appendSeparator("Actions");
 		builder.nextRow();
 
-		builder.append(scenarioChooser.actionButton, 5);
+		builder.append(scenarioChooser.actionButtons, 5);
 
 		// Visualise the lot.
 		frame.pack();

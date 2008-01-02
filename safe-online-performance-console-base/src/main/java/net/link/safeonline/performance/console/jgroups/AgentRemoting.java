@@ -28,9 +28,9 @@ import org.jgroups.View;
  * 
  * @author mbillemo
  */
-public class AgentDiscoverer implements Receiver, ChannelListener {
+public class AgentRemoting implements Receiver, ChannelListener {
 
-	static final Log LOG = LogFactory.getLog(AgentDiscoverer.class);
+	static final Log LOG = LogFactory.getLog(AgentRemoting.class);
 
 	private List<AgentStateListener> agentStateListeners;
 	JChannel channel;
@@ -38,7 +38,7 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 	/**
 	 * Join the Profiler's JGroup using the package name as group name.
 	 */
-	public AgentDiscoverer() {
+	public AgentRemoting() {
 
 		ResourceBundle properties = ResourceBundle.getBundle("console");
 		final String group = properties.getString("jgroups.group");
@@ -47,9 +47,9 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 		this.agentStateListeners = new ArrayList<AgentStateListener>();
 
 		try {
-			if (null == AgentDiscoverer.this.channel
-					|| !AgentDiscoverer.this.channel.isOpen())
-				AgentDiscoverer.this.channel = new JChannel(getClass()
+			if (null == AgentRemoting.this.channel
+					|| !AgentRemoting.this.channel.isOpen())
+				AgentRemoting.this.channel = new JChannel(getClass()
 						.getResource("/jgroups.xml"));
 		}
 
@@ -59,8 +59,8 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 			throw new RuntimeException(msg, e);
 		}
 
-		AgentDiscoverer.this.channel.addChannelListener(AgentDiscoverer.this);
-		AgentDiscoverer.this.channel.setReceiver(AgentDiscoverer.this);
+		AgentRemoting.this.channel.addChannelListener(AgentRemoting.this);
+		AgentRemoting.this.channel.setReceiver(AgentRemoting.this);
 
 		Runtime.getRuntime().addShutdownHook(
 				new Thread("JGroups ShutdownHook") {
@@ -77,8 +77,8 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 			public void run() {
 
 				try {
-					if (!AgentDiscoverer.this.channel.isConnected())
-						AgentDiscoverer.this.channel.connect(group);
+					if (!AgentRemoting.this.channel.isConnected())
+						AgentRemoting.this.channel.connect(group);
 				}
 
 				catch (ChannelException e) {
@@ -212,7 +212,7 @@ public class AgentDiscoverer implements Receiver, ChannelListener {
 	}
 
 	/**
-	 * Check whether the {@link AgentDiscoverer} is still connected to the
+	 * Check whether the {@link AgentRemoting} is still connected to the
 	 * group.
 	 */
 	public boolean isConnected() {

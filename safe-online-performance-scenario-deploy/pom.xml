@@ -22,6 +22,22 @@
 				<configuration>
 					<version>1.4</version>
 					<modules>
+                        <jarModule>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>slf4j-api</artifactId>
+                            <includeInApplicationXml>
+                                true
+                            </includeInApplicationXml>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>
+                                slf4j-log4j12
+                            </artifactId>
+                            <includeInApplicationXml>
+                                true
+                            </includeInApplicationXml>
+                        </jarModule>
 						<jarModule>
 							<groupId>commons-io</groupId>
 							<artifactId>commons-io</artifactId>
@@ -259,6 +275,14 @@
 					<artifactId>servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 	</dependencies>
 	<reporting>

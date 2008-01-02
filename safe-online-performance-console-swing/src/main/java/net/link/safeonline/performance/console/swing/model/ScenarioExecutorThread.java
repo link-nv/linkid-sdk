@@ -8,45 +8,38 @@ package net.link.safeonline.performance.console.swing.model;
 
 import java.util.Map;
 
-import javax.naming.InitialContext;
-
-import net.link.safeonline.performance.console.ScenarioDeployer;
-import net.link.safeonline.performance.console.swing.data.Agent;
+import net.link.safeonline.performance.console.jgroups.AgentState;
+import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
-import net.link.safeonline.performance.console.swing.data.Agent.State;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
-import net.link.safeonline.performance.scenario.ScenarioRemote;
 
 import org.jgroups.Address;
 
 /**
  * This thread executes a scenario on a given agent and manages the
- * {@link Agent} object's execution status.
+ * {@link ConsoleAgent} object's execution status.
  * 
  * @author mbillemo
  */
 public class ScenarioExecutorThread extends ScenarioThread {
 
-	public ScenarioExecutorThread(Map<Address, Agent> map,
+	public ScenarioExecutorThread(Map<Address, ConsoleAgent> map,
 			ScenarioChooser chooser) {
 
-		super(State.EXECUTE, map, chooser);
+		super(AgentState.EXECUTE, map, chooser);
 	}
 
 	/**
 	 * @{inheritDoc}
 	 */
 	@Override
-	void process(Address address, Agent agent) throws Exception {
+	void process(Address address, ConsoleAgent agent) throws Exception {
 
-		InitialContext context = ScenarioDeployer.getInitialContext(address);
-		ScenarioRemote scenario = (ScenarioRemote) context
-				.lookup("SafeOnline/ScenarioBean");
-
-		agent.setCharts(scenario.execute(String.format("%s:%d", ConsoleData
-				.getInstance().getHostname(), ConsoleData.getInstance()
-				.getPort()), ConsoleData.getInstance().getWorkers(),
-				ConsoleData.getInstance().getDuration()));
+		String hostname = String.format("%s:%d", ConsoleData.getInstance()
+				.getHostname(), ConsoleData.getInstance().getPort());
+		this.scenarioDeployer.execute(address, hostname, ConsoleData
+				.getInstance().getWorkers(), ConsoleData.getInstance()
+				.getDuration());
 
 	}
 }

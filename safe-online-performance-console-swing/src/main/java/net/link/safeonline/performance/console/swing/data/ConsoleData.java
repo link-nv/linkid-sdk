@@ -12,7 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.link.safeonline.performance.console.jgroups.AgentDiscoverer;
+import net.link.safeonline.performance.console.ScenarioRemoting;
+import net.link.safeonline.performance.console.jgroups.AgentRemoting;
 
 import org.jgroups.Address;
 
@@ -30,16 +31,18 @@ import org.jgroups.Address;
 public class ConsoleData {
 
 	private static ConsoleData instance;
-	private Map<Address, Agent> agents;
-	private AgentDiscoverer agentDiscoverer;
+	private Map<Address, ConsoleAgent> agents;
+	private AgentRemoting agentDiscoverer;
+	private ScenarioRemoting remoting;
 	private String hostname = "localhost";
 	private int port = 8443, workers = 5;
 	private long duration = 60000;
 
 	private ConsoleData() {
 
-		this.agents = new HashMap<Address, Agent>();
-		this.agentDiscoverer = new AgentDiscoverer();
+		this.agents = new HashMap<Address, ConsoleAgent>();
+		this.agentDiscoverer = new AgentRemoting();
+		this.remoting = new ScenarioRemoting();
 	}
 
 	public static ConsoleData getInstance() {
@@ -59,34 +62,36 @@ public class ConsoleData {
 	 * @return an unmodifiable view of the currently known agents for read-only
 	 *         access.
 	 */
-	public synchronized Map<Address, Agent> getAgents() {
+	public synchronized Map<Address, ConsoleAgent> getAgents() {
 
-		return Collections.unmodifiableMap(new HashMap<Address, Agent>(
+		return Collections.unmodifiableMap(new HashMap<Address, ConsoleAgent>(
 				this.agents));
 	}
 
 	/**
-	 * Retrieve the {@link Agent} object for a given address. If there is no
-	 * such object yet, and the {@link Address} is part of the group; create an
-	 * {@link Agent} object for it.
+	 * Retrieve the {@link ConsoleAgent} object for a given address. If there is
+	 * no such object yet, and the {@link Address} is part of the group; create
+	 * an {@link ConsoleAgent} object for it.
 	 */
-	public synchronized Agent getAgent(Address agentAddress) {
+	public synchronized ConsoleAgent getAgent(Address agentAddress) {
 
-		Agent agent = this.agents.get(agentAddress);
+		ConsoleAgent agent = this.agents.get(agentAddress);
 		if (null == agent && this.agentDiscoverer.hasMember(agentAddress))
-			this.agents.put(agentAddress, agent = new Agent(agentAddress));
+			this.agents.put(agentAddress,
+					agent = new ConsoleAgent(agentAddress));
 
 		return agent;
 	}
 
 	/**
-	 * Remove {@link Agent} objects for agents that disappeared from the group.
+	 * Remove {@link ConsoleAgent} objects for agents that disappeared from the
+	 * group.
 	 * 
 	 * @return All agents that were removed.
 	 */
-	public synchronized List<Agent> removeStaleAgents() {
+	public synchronized List<ConsoleAgent> removeStaleAgents() {
 
-		List<Agent> staleAgents = new ArrayList<Agent>();
+		List<ConsoleAgent> staleAgents = new ArrayList<ConsoleAgent>();
 		for (Address agentAddress : getAgents().keySet())
 			if (!this.agentDiscoverer.hasMember(agentAddress))
 				staleAgents.add(this.agents.remove(agentAddress));
@@ -97,7 +102,7 @@ public class ConsoleData {
 	/**
 	 * @return the agentDiscoverer
 	 */
-	public AgentDiscoverer getAgentDiscoverer() {
+	public AgentRemoting getAgentDiscoverer() {
 
 		return this.agentDiscoverer;
 	}
@@ -170,5 +175,13 @@ public class ConsoleData {
 	public void setDuration(long duration) {
 
 		this.duration = duration;
+	}
+
+	/**
+	 * @return The instance that supplies remoting to the agent service.
+	 */
+	public ScenarioRemoting getRemoting() {
+
+		return this.remoting;
 	}
 }

@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.performance.console.swing.ui;
 
-import net.link.safeonline.performance.console.swing.data.Agent;
+import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 
 /**
  * @author mbillemo
@@ -14,5 +14,5 @@ import net.link.safeonline.performance.console.swing.data.Agent;
  */
 public interface AgentStatusListener {
 
-	public void statusChanged(Agent agent);
+	public void statusChanged(ConsoleAgent agent);
 }

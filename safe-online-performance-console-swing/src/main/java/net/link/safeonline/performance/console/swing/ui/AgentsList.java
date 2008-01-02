@@ -13,10 +13,10 @@ import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.jgroups.AgentStateListener;
-import net.link.safeonline.performance.console.swing.data.Agent;
+import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
-import net.link.safeonline.performance.console.swing.data.Agent.State;
 
 import org.jgroups.Address;
 
@@ -52,7 +52,7 @@ public class AgentsList extends JList implements AgentStateListener,
 	 * @return <code>true</code> if the given agent is selected in this
 	 *         {@link AgentsList} component.
 	 */
-	public boolean isSelected(Agent agent) {
+	public boolean isSelected(ConsoleAgent agent) {
 
 		for (Object o : getSelectedValues())
 			if (o.equals(agent))
@@ -69,7 +69,8 @@ public class AgentsList extends JList implements AgentStateListener,
 		// Check whether all agents are in the list and add them if need be.
 		for (Address address : addresses)
 			if (!address.equals(ConsoleData.getInstance().getSelf())) {
-				Agent agent = ConsoleData.getInstance().getAgent(address);
+				ConsoleAgent agent = ConsoleData.getInstance()
+						.getAgent(address);
 				if (agent != null && !this.model.contains(agent)) {
 					this.model.addElement(agent);
 					agent.addAgentStatusListener(this);
@@ -80,7 +81,7 @@ public class AgentsList extends JList implements AgentStateListener,
 			}
 
 		// Remove stale agents from the list.
-		for (Agent agent : ConsoleData.getInstance().removeStaleAgents())
+		for (ConsoleAgent agent : ConsoleData.getInstance().removeStaleAgents())
 			this.model.removeElement(agent);
 	}
 
@@ -89,7 +90,7 @@ public class AgentsList extends JList implements AgentStateListener,
 	 */
 	public void agentSuspected(Address agentAddress) {
 
-		Agent agent = ConsoleData.getInstance().getAgent(agentAddress);
+		ConsoleAgent agent = ConsoleData.getInstance().getAgent(agentAddress);
 		if (null != agent)
 			agent.setHealthy(false);
 	}
@@ -141,8 +142,8 @@ public class AgentsList extends JList implements AgentStateListener,
 				break;
 
 			Object value = this.model.getElementAt(i);
-			if (value instanceof Agent) {
-				Agent agent = (Agent) value;
+			if (value instanceof ConsoleAgent) {
+				ConsoleAgent agent = (ConsoleAgent) value;
 				agent.setSelected(isSelected(agent));
 			}
 		}
@@ -153,7 +154,7 @@ public class AgentsList extends JList implements AgentStateListener,
 	/**
 	 * @{inheritDoc}
 	 */
-	public void statusChanged(Agent agent) {
+	public void statusChanged(ConsoleAgent agent) {
 
 		repaint();
 
@@ -164,16 +165,16 @@ public class AgentsList extends JList implements AgentStateListener,
 	private void updateButtons() {
 
 		boolean enabled = true;
-		State state = null;
+		AgentState state = null;
 
 		for (Object o : getSelectedValues())
-			if (o instanceof Agent) {
-				Agent agent = (Agent) o;
+			if (o instanceof ConsoleAgent) {
+				ConsoleAgent agent = (ConsoleAgent) o;
 
 				if (state == null)
 					state = agent.getState();
 
-				enabled &= agent.getAction() == null;
+				enabled &= agent.getTransit() == null;
 				enabled &= state.equals(agent.getState());
 			}
 
