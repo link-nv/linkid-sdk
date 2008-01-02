@@ -32,6 +32,8 @@ public interface DeviceRegistration {
 
 	void setMobile(String mobile);
 
+	String getMobileActivationCode();
+
 	/*
 	 * Actions.
 	 */
