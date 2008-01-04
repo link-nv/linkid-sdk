@@ -1,0 +1,39 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"><h:form>
+	<h2>#{msgs.operatorSecurityAuditRecords}</h2>
+	<rich:dataTable id="security-audit-data" var="item"
+		renderedIfEmpty="false" value="#{securityAuditRecordList}" rows="15"
+		preserveDataModel="false" styleClass="listingTable"
+		rowClasses="listingTable_Row1,listingTable_Row2">
+
+		<h:column>
+			<f:facet name="header">#{msgs.time}</f:facet>
+			<h:outputLabel value="#{item.eventDate}">
+				<f:convertDateTime type="both" timeStyle="medium" dateStyle="short" />
+			</h:outputLabel>
+		</h:column>
+
+		<h:column>
+			<f:facet name="header">#{msgs.securityThreat}</f:facet>
+			<h:outputLabel value="#{item.securityThreat}" />
+		</h:column>
+
+		<h:column>
+			<f:facet name="header">#{msgs.message}</f:facet>
+			<h:outputLabel value="#{item.message}" />
+		</h:column>
+
+		<h:column>
+			<f:facet name="header">#{msgs.action}</f:facet>
+			<h:commandLink value="#{msgs.viewPrincipal}"
+				action="#{audit.viewPrincipal}" />
+		</h:column>
+
+		<f:facet name="footer">
+			<rich:datascroller for="security-audit-data" />
+		</f:facet>
+
+	</rich:dataTable>
+</h:form></div>

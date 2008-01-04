@@ -1,0 +1,44 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"><h:form>
+	<h2>#{msgs.operatorResourceAuditRecords}</h2>
+	<rich:dataTable id="resource-audit-data" var="item"
+		renderedIfEmpty="false" value="#{resourceAuditRecordList}" rows="15"
+		preserveDataModel="false" styleClass="listingTable"
+		rowClasses="listingTable_Row1,listingTable_Row2">
+
+		<h:column>
+			<f:facet name="header">#{msgs.time}</f:facet>
+			<h:outputLabel value="#{item.eventDate}">
+				<f:convertDateTime type="both" timeStyle="medium" dateStyle="short" />
+			</h:outputLabel>
+		</h:column>
+
+		<h:column>
+			<f:facet name="header">#{msgs.resource}</f:facet>
+			<h:outputLabel value="#{item.resourceName}" />
+		</h:column>
+
+		<h:column>
+			<f:facet name="header">#{msgs.level}</f:facet>
+			<h:outputLabel value="#{item.resourceLevel}" />
+		</h:column>
+
+		<h:column>
+			<f:facet name="header">#{msgs.source}</f:facet>
+			<h:outputLabel value="#{item.sourceComponent}" />
+		</h:column>
+
+		<h:column>
+			<f:facet name="header">#{msgs.message}</f:facet>
+			<h:outputLabel value="#{item.message}" />
+		</h:column>
+
+
+		<f:facet name="footer">
+			<rich:datascroller for="resource-audit-data" />
+		</f:facet>
+
+	</rich:dataTable>
+</h:form></div>

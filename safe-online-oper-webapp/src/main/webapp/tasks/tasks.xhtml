@@ -44,14 +44,16 @@
 
 			<h:messages styleClass="error" />
 
+		</a4j:form>
+
+		<h:form>
 			<h:commandButton action="#{scheduling.schedulingListView}"
 				id="schedulings" value="#{msgs.viewschedulingsaction}"
 				immediate="true" styleClass="submit" />
 			<h:commandButton action="#{scheduling.clearAllTasksHistory}"
 				id="clearalltaskhistory" value="#{msgs.clearalltaskshistoryaction}"
 				immediate="true" styleClass="submit" />
-
-		</a4j:form>
+		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">

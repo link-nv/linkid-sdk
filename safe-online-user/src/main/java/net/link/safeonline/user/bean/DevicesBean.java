@@ -250,23 +250,6 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	@Factory("mobileStrongAttributes")
-	public List<AttributeDO> mobileStrongAttributesFactory() {
-		Locale locale = getViewLocale();
-		List<AttributeDO> mobileStrongAttributes;
-		try {
-			mobileStrongAttributes = this.identityService.listAttributes(
-					SafeOnlineConstants.STRONG_MOBILE_AUTH_DEVICE, locale);
-		} catch (DeviceNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			LOG.error("device not found");
-			return new LinkedList<AttributeDO>();
-		}
-		return mobileStrongAttributes;
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
 	public boolean isPasswordConfigured() {
 		boolean hasPassword = this.credentialService.isPasswordConfigured();
 		return hasPassword;

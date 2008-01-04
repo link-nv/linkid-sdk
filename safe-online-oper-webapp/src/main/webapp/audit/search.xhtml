@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="maintenance" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.audit}</h1>
+	</ui:define>
+
+
+	<ui:define name="content">
+
+		<h:form>
+			<h:panelGrid columns="4">
+				<f:verbatim>#{msgs.searchAuditId}</f:verbatim>
+				<s:decorate>
+					<h:inputText value="#{audit.searchContextId}" id="searchIdInput"
+						validator="#{audit.validateId}" required="true" />
+				</s:decorate>
+				<h:commandButton action="#{audit.searchId}" id="searchId"
+					value="#{msgs.searchAction}" styleClass="submit" />
+				<t:message for="searchIdInput" styleClass="error" />
+			</h:panelGrid>
+		</h:form>
+
+
+		<h:form>
+			<h:panelGrid columns="4">
+				<f:verbatim>#{msgs.searchAuditUser}</f:verbatim>
+				<s:decorate>
+					<h:inputText value="#{audit.searchAuditUser}" id="searchUserInput"
+						validator="#{audit.validateUser}" required="true" />
+				</s:decorate>
+				<h:commandButton action="#{audit.searchUser}" id="searchUser"
+					value="#{msgs.searchAction}" styleClass="submit" />
+				<t:message for="searchUserInput" styleClass="error" />
+			</h:panelGrid>
+		</h:form>
+
+		<h:form>
+			<h:panelGrid columns="2">
+				<h:outputLabel id="searchAuditTime" value="#{msgs.searchAuditTime}" />
+				<h:commandButton action="#{audit.searchLastTime}"
+					id="searchLastTime" value="#{msgs.searchAction}"
+					styleClass="submit" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="11">
+				<f:verbatim>#{msgs.searchLast}</f:verbatim>
+				<s:decorate>
+					<h:inputText value="#{audit.searchLastTimeDays}"
+						id="searchLastTimeDaysInput" required="true" size="5"
+						style="text-align: right" />
+				</s:decorate>
+				<t:message for="searchLastTimeDaysInput" styleClass="error" />
+				<h:outputLabel value="#{msgs.days}" style="text-align: left" />
+
+				<s:decorate>
+					<h:inputText value="#{audit.searchLastTimeHours}"
+						id="searchLastTimeHoursInput" required="true" size="5"
+						style="text-align: right" />
+				</s:decorate>
+				<t:message for="searchLastTimeHoursInput" styleClass="error" />
+				<h:outputLabel value="#{msgs.hours}" style="text-align: left" />
+
+				<s:decorate>
+					<h:inputText value="#{audit.searchLastTimeMinutes}"
+						id="searchLastTimeMinutesInput" required="true" size="5"
+						style="text-align: right" />
+				</s:decorate>
+				<t:message for="searchLastTimeMinutesInput" styleClass="error" />
+				<h:outputLabel value="#{msgs.minutes}" style="text-align: left" />
+
+
+			</h:panelGrid>
+		</h:form>
+
+	</ui:define>
+
+
+	<ui:define name="sidebar">
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/tasks/tasks.seam"
+					value="#{msgs.operatorTasks}" /></li>
+			</ul>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>
+

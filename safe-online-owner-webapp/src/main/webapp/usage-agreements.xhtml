@@ -83,7 +83,7 @@
 			</rich:tab>
 
 			<rich:tab
-				label="#{msgs.version}: #{selectedApplication.currentApplicationUsageAgreement}"
+				label="#{msgs.version}: #{ownerUsageAgreement.currentUsageAgreement.usageAgreementVersion}"
 				rendered="#{!empty ownerUsageAgreement.currentUsageAgreement}">
 				<a4j:form id="editCurrentForm" reRender="usagePanel"
 					ajaxSubmit="true">
@@ -119,6 +119,8 @@
 				action="#{ownerUsageAgreement.createUsageAgreement}"
 				rendered="#{empty ownerUsageAgreement.currentUsageAgreement and empty owerUsageAgreement.draftUsageAgreement}"
 				class="submit" />
+			<h:commandButton value="#{msgs.backaction}" action="back" id="back"
+				styleClass="submit" />
 		</h:form>
 
 	</ui:define>

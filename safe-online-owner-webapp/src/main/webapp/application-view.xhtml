@@ -104,7 +104,7 @@
 				<h:dataTable value="#{allowedDevices}" var="item">
 					<h:column>
 						<f:facet name="header">#{msgs.name}</f:facet>
-						<h:outputText value="#{item.device.name}" />
+						<h:outputText value="#{item.friendlyName}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">#{msgs.allowed}</f:facet>

@@ -6,7 +6,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.org/rich">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -17,132 +18,17 @@
 	<ui:define name="top_content">
 		<h1>#{msgs.audit}</h1>
 	</ui:define>
+
+
 	<ui:define name="content">
+		<h2>#{msgs.viewaction}</h2>
+		<p>#{msgs.operatorAuditView} <a href="./view.seam">#{msgs.clickHere}</a></p>
 
+		<h2>#{msgs.searchAction}</h2>
+		<p>#{msgs.operatorAuditSearch} <a href="./search.seam">#{msgs.clickHere}</a></p>
 
-		<h:form>
-			<h:panelGrid columns="2" border="0">
-				<h:commandButton action="#{audit.viewSecurityRecords}"
-					id="viewSecurity" value="#{msgs.viewAuditSecurity}"
-					styleClass="submit" />
-				<h:commandButton action="#{audit.viewResourceRecords}"
-					id="viewResource" value="#{msgs.viewAuditResource}"
-					styleClass="submit" />
-				<h:commandButton action="#{audit.viewAuditRecords}" id="viewAudit"
-					value="Audit Audit Records" styleClass="submit" />
-			</h:panelGrid>
-		</h:form>
-
-		<h:form>
-			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
-			</f:facet>
-
-			<h:panelGrid columns="4">
-				<f:verbatim>#{msgs.searchAuditId}</f:verbatim>
-				<s:decorate>
-					<h:inputText value="#{audit.searchContextId}" id="searchIdInput"
-						validator="#{audit.validateId}" required="true" />
-				</s:decorate>
-				<h:commandButton action="#{audit.searchId}" id="searchId"
-					value="#{msgs.searchAction}" styleClass="submit" />
-				<t:message for="searchIdInput" styleClass="error" />
-			</h:panelGrid>
-		</h:form>
-
-		<h:form>
-			<h:panelGrid columns="4">
-				<f:verbatim>#{msgs.searchAuditUser}</f:verbatim>
-				<s:decorate>
-					<h:inputText value="#{audit.searchAuditUser}" id="searchUserInput"
-						validator="#{audit.validateUser}" required="true" />
-				</s:decorate>
-				<h:commandButton action="#{audit.searchUser}" id="searchUser"
-					value="#{msgs.searchAction}" styleClass="submit" />
-				<t:message for="searchUserInput" styleClass="error" />
-			</h:panelGrid>
-		</h:form>
-
-		<h:form>
-			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
-			</f:facet>
-
-			<h:outputLabel value="#{msgs.searchAuditTime}" />
-			<h:panelGrid columns="11">
-				<f:verbatim>#{msgs.searchLast}</f:verbatim>
-				<s:decorate>
-					<h:inputText value="#{audit.searchLastTimeDays}"
-						id="searchLastTimeDaysInput" required="true" size="5"
-						style="text-align: right" />
-				</s:decorate>
-				<t:message for="searchLastTimeDaysInput" styleClass="error" />
-				<h:outputLabel value="#{msgs.days}" />
-
-				<s:decorate>
-					<h:inputText value="#{audit.searchLastTimeHours}"
-						id="searchLastTimeHoursInput" required="true" size="5"
-						style="text-align: right" />
-				</s:decorate>
-				<t:message for="searchLastTimeHoursInput" styleClass="error" />
-				<h:outputLabel value="#{msgs.hours}" />
-
-				<s:decorate>
-					<h:inputText value="#{audit.searchLastTimeMinutes}"
-						id="searchLastTimeMinutesInput" required="true" size="5"
-						style="text-align: right" />
-				</s:decorate>
-				<t:message for="searchLastTimeMinutesInput" styleClass="error" />
-				<h:outputLabel value="#{msgs.minutes}" />
-
-				<h:commandButton action="#{audit.searchLastTime}"
-					id="searchLastTime" value="#{msgs.searchAction}"
-					styleClass="submit" />
-
-			</h:panelGrid>
-		</h:form>
-
-		<h:form>
-			<h3>#{msgs.operatorLastAuditContexts}</h3>
-			<t:dataTable id="audit-context-data" var="item"
-				value="#{auditContextList}" rows="15" preserveDataModel="false"
-				styleClass="listingTable"
-				rowClasses="listingTable_Row1,listingTable_Row2">
-
-				<h:column>
-					<f:facet name="header">#{msgs.operatorAuditID}</f:facet>
-					<h:outputLabel value="#{item.id}" />
-				</h:column>
-
-				<h:column>
-					<f:facet name="header">#{msgs.time}</f:facet>
-					<h:outputLabel value="#{item.creationTime}">
-						<f:convertDateTime type="both" timeStyle="medium"
-							dateStyle="short" />
-					</h:outputLabel>
-				</h:column>
-
-				<h:column>
-					<h:commandLink value="#{msgs.viewaction}" action="#{audit.view}" />
-				</h:column>
-
-				<h:column>
-					<h:commandLink value="#{msgs.removeaction}"
-						action="#{audit.removeContext}" />
-				</h:column>
-			</t:dataTable>
-
-			<t:dataScroller for="audit-context-data" fastStep="15"
-				pageCountVar="pageCount" pageIndexVar="pageIndex"
-				styleClass="scroller" paginator="true" paginatorMaxPages="9">
-				<f:facet name="first">#{msgs.first}</f:facet>
-				<f:facet name="last">#{msgs.last}</f:facet>
-				<f:facet name="previous">#{msgs.previous}</f:facet>
-				<f:facet name="next">#{msgs.next}</f:facet>
-			</t:dataScroller>
-
-		</h:form>
 	</ui:define>
+
 
 	<ui:define name="sidebar">
 		<h:form>

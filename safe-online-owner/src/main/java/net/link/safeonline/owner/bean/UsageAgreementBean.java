@@ -181,9 +181,10 @@ public class UsageAgreementBean implements UsageAgreement {
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	public UsageAgreementEntity getCurrentUsageAgreement() {
 		try {
-			return this.usageAgreementService
+			this.currentUsageAgreement = this.usageAgreementService
 					.getCurrentUsageAgreement(this.selectedApplication
 							.getName());
+			return this.currentUsageAgreement;
 		} catch (ApplicationNotFoundException e) {
 			LOG.debug("application not found.");
 			this.facesMessages.addFromResourceBundle(
@@ -200,8 +201,9 @@ public class UsageAgreementBean implements UsageAgreement {
 	@RolesAllowed(OwnerConstants.OWNER_ROLE)
 	public UsageAgreementEntity getDraftUsageAgreement() {
 		try {
-			return this.usageAgreementService
+			this.draftUsageAgreement = this.usageAgreementService
 					.getDraftUsageAgreement(this.selectedApplication.getName());
+			return this.draftUsageAgreement;
 		} catch (ApplicationNotFoundException e) {
 			LOG.debug("application not found.");
 			this.facesMessages.addFromResourceBundle(
@@ -271,10 +273,16 @@ public class UsageAgreementBean implements UsageAgreement {
 	public String createUsageAgreement() {
 		LOG.debug("create draft usage agreement");
 		try {
-			this.draftUsageAgreement = this.usageAgreementService
-					.createDraftUsageAgreement(this.selectedApplication
-							.getName(), this.selectedApplication
-							.getCurrentApplicationUsageAgreement());
+			if (null != this.currentUsageAgreement)
+				this.draftUsageAgreement = this.usageAgreementService
+						.createDraftUsageAgreement(this.selectedApplication
+								.getName(), this.currentUsageAgreement
+								.getUsageAgreementVersion());
+			else
+				this.draftUsageAgreement = this.usageAgreementService
+						.createDraftUsageAgreement(this.selectedApplication
+								.getName(), this.selectedApplication
+								.getCurrentApplicationUsageAgreement());
 		} catch (ApplicationNotFoundException e) {
 			LOG.debug("application not found.");
 			this.facesMessages.addFromResourceBundle(
@@ -296,8 +304,8 @@ public class UsageAgreementBean implements UsageAgreement {
 		try {
 			UsageAgreementEntity usageAgreement = this.usageAgreementService
 					.createDraftUsageAgreement(this.selectedApplication
-							.getName(), this.selectedApplication
-							.getCurrentApplicationUsageAgreement());
+							.getName(), this.currentUsageAgreement
+							.getUsageAgreementVersion());
 			this.selectedUsageAgreementText = usageAgreement
 					.getUsageAgreementText(this.selectedCurrentUsageAgreementText
 							.getLanguage());
