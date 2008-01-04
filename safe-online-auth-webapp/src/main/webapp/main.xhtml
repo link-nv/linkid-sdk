@@ -17,12 +17,13 @@
 
 
 		<h:form>
-			<h:selectOneRadio value="#{device.selection}" layout="pageDirection">
-				<f:selectItems value="#{applicationDevices}" styleClass="radio" />
+			<h:selectOneRadio value="#{device.selection}" styleClass="radio">
+				<f:selectItems value="#{applicationDevices}" />
 			</h:selectOneRadio>
 
 			<h:messages styleClass="error" />
 
+			<h:outputLabel for="next" value="" />
 			<h:commandButton action="#{device.next}" id="next"
 				value="#{msgs.next}" styleClass="submit" />
 		</h:form>

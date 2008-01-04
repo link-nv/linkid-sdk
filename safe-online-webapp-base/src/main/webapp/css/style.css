@@ -45,7 +45,7 @@ h2 {
 }
 
 h3 {
-	clear: none;
+	clear: left;
 }
 
 p {
@@ -223,7 +223,7 @@ ul.timeline {
 	background-image: url(../images/timeline.gif);
 	float: left;
 	display: block;
-	width: 575px;
+	width: 100%;
 	height: 75px;
 	list-style: none;
 	text-align: center
@@ -331,11 +331,16 @@ hr.float_fix {
 	margin: 0;
   	visibility: hidden;
 }
+
 ul.sidemenu {
 	list-style: none;
 	padding: 0;
-	margin: 0;
+	margin: 14px 0 14px 0;
 	border-top: 1px dotted #333;
+	display: block;
+	clear: both;    
+	float: left;
+	width: 100%;
 }
 
 ul.sidemenu li {
@@ -374,50 +379,42 @@ ul.sidemenu li.active a {
 /* FORMS AND ELEMENTS*/
 label
 {
+	padding: 14px 25px 0px 0;
 	background: url(../images/icons/16-arrow-down.gif) no-repeat;
 	background-position: 5px 6px;
-	width: 250px;
+	width: 125px;
+	float: left;
 	text-align: right;
 	display: block;
 	text-transform: capitalize;
 	height: 21px;
 	clear: left;
-	padding-bottom: 0px;
-	padding-left: 0;
-	float: left;
-}
+ }
 
 input, select, textarea {
 	color: #333;
-	background: #fff;
-	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
-	float: right;
-	margin-bottom: 0;
-	margin-top: 0;
+	margin: 0;
+	padding: 0;
 	margin-right: 5px;
+	background: #fff;
+	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;	
 }
 
-input.label, select.label, textarea.label {
+input.label, select.label, textarea.label, input.radio {
 	color: #333;
-	margin: 13px 0 7px 0;
+	margin: 17px 0 7px 0;
 	background: #fff;
 	width: 300px;
 	border: 0;
+	float: left;
 	border-bottom: 1px dotted #333;
 	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
 }
 
-#header_top select
-{
-	color: #333;
-	border: 1px solid #333;
-	background-color: #81aa00;
-	background: transparent;
-	border: 0;
-	padding: 0;
-	margin: 0;
-		
+input.radio {
+	width: auto;
 }
+
 
 .label:hover {
 	border-bottom: 1px solid #7D8A2E;
@@ -448,60 +445,71 @@ textarea:hover {
 	border-left: 1px solid #81aa00;
 }
 
-table.listingTable {
-	border: 1px dotted #81aa00;
-	margin: 25px 75px 25px 75px ;
-	padding: 5px;
-	width: 450px;
+table {
+	border: none;
+	padding: 0;
+	margin: ;
+	width: 575px;
 	border-collapse: collapse;
+	clear: left;
+	float: none;
+	display: block;
 }
 
-table.listingTable tbody {
+table tbody {
 	padding: 5px;
 }
 
-table.listingTable tbody tr  {
+table tbody tr  {
 	background: #fff;
 	margin: 0;
 	padding: 0;
 }
 
 
-table.listingTable tbody tr:hover  {
+table tfoot tr  {
+	background: #E8E7E7;
+	margin: 0;
+	padding: 0;
+}
+
+
+table tbody tr:hover  {
 	background: #cdde8d;
 }
 
-
-table.listingTable tbody td {
-	border: none;
-	border-top: 1px dotted #81aa00;
+table tbody tr td  {
+	margin: 0;
 	padding: 5px;
-	height: 21px;
+	border: none;
+	border-top: 1px solid #81aa00;
 }
 
-table.listingTable tbody th {
-	border: none;
-	border-top: 1px dotted #81aa00;
+table thead tr th,
+table thead tr td  {
+	margin: 0;
 	padding: 5px;
-	height: 21px;
+	border: none;
+	text-align: left;
+	border-bottom: 1px solid #333;
+	font-weight: bold;
 }
 
+/*
 .listingTable_Row1 {
 	background: #fff;
 }
 
 .listingTable_Row2 {
-	background: #81aa00;
+	background: #f5f5f5;
 }
-
-pre {
-	width: inherit;
-}
-table tbody tr td {
-	padding-top: 0px;
-}
-table tbody tr td input {
-	padding-top: 0px;
-	margin-top: 3px;
-	margin-left: 10px;
+*/
+div.dr-dscr table ,
+div.dr-dscr table tbody tr td ,
+div.dr-dscr table tbody tr:hover  {
+	border: none;
+	background: none;
+	margin: 0;
+	padding: 5px;	
+	text-align: center;
 }

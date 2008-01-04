@@ -16,8 +16,8 @@
 
 		<h:form>
 			<h:selectOneRadio value="#{deviceRegistration.device}"
-				layout="pageDirection" required="true">
-				<f:selectItems value="#{allDevices}" styleClass="radio" />
+				required="true" styleClass="radio">
+				<f:selectItems value="#{allDevices}" />
 			</h:selectOneRadio>
 
 			<h:messages styleClass="error" />

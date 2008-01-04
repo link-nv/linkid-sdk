@@ -16,13 +16,14 @@
 		<p>#{msgs.selectDevice}:</p>
 
 		<h:form>
-			<h:selectOneRadio value="#{device.selection}" layout="pageDirection"
-				required="true">
-				<f:selectItems value="#{allDevices}" styleClass="radio" />
+			<h:selectOneRadio value="#{device.selection}" required="true"
+				styleClass="radio">
+				<f:selectItems value="#{allDevices}" />
 			</h:selectOneRadio>
 
 			<h:messages styleClass="error" />
 
+			<h:outputLabel for="next" value="" />
 			<h:commandButton action="#{device.next}" id="next"
 				value="#{msgs.next}" styleClass="submit" />
 		</h:form>
