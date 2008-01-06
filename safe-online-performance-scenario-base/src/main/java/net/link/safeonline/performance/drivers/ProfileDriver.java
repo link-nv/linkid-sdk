@@ -8,10 +8,8 @@
 package net.link.safeonline.performance.drivers;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.util.jacc.ProfileData;
@@ -32,9 +30,6 @@ import org.apache.commons.logging.LogFactory;
  * The profiling data will be gathered by this class and can later be retrieved
  * by using the getters ({@link #getProfileData()}, {@link #getProfileError()},
  * {@link #getProfileSpeed()}).<br>
- * <br>
- * TODO: Profile Data thread collisions:<br>
- * Thread1 loads, Thread 2 loads, Thread1 unloads, Thread2 unloads.
  * 
  * @author mbillemo
  */
@@ -43,10 +38,10 @@ public abstract class ProfileDriver {
 	private static final Log LOG = LogFactory.getLog(ProfileDriver.class);
 
 	private String title;
-	protected String host;
-	protected Map<Object, Integer> services = new HashMap<Object, Integer>();
-	protected LinkedList<DriverException> profileError = new LinkedList<DriverException>();
-	protected LinkedList<ProfileData> profileData = new LinkedList<ProfileData>();
+	private String host;
+	private ThreadLocal<Integer> currentIndex = new ThreadLocal<Integer>();
+	private LinkedList<DriverException> profileError = new LinkedList<DriverException>();
+	private LinkedList<ProfileData> profileData = new LinkedList<ProfileData>();
 
 	/**
 	 * @param hostname
@@ -90,12 +85,11 @@ public abstract class ProfileDriver {
 
 	protected void unloadDriver(MessageAccessor service) {
 
-		unloadDriver(service, new ProfileData(service.getHeaders()));
+		unloadDriver(new ProfileData(service.getHeaders()));
 	}
 
-	protected synchronized void unloadDriver(Object key, ProfileData data) {
+	protected synchronized void unloadDriver(ProfileData data) {
 
-		Integer index = this.services.remove(key);
 		if (data == null)
 			LOG.warn("Unloading " + getClass() + " (iteration "
 					+ (this.profileData.size() - 1)
@@ -105,18 +99,12 @@ public abstract class ProfileDriver {
 			LOG.warn("No valid profile data in " + getClass() + " (iteration "
 					+ (this.profileData.size() - 1) + ").");
 
-		else if (this.profileData.size() <= index)
-			LOG.warn("Illegal unload index " + index + " while we only have "
-					+ this.profileData.size() + " datas.");
-
 		else
-			this.profileData.set(index, data);
+			this.profileData.set(this.currentIndex.get(), data);
 	}
 
-	protected synchronized DriverException setDriverError(Object key,
-			Exception error) {
+	protected synchronized DriverException setDriverError(Exception error) {
 
-		Integer index = this.services.remove(key);
 		LOG.debug(String.format("Failed driver request: %s", error));
 
 		DriverException driverException;
@@ -125,22 +113,22 @@ public abstract class ProfileDriver {
 		else
 			driverException = new DriverException(error);
 
-		this.profileError.set(index, driverException);
+		this.profileError.set(this.currentIndex.get(), driverException);
 
 		return driverException;
 	}
 
 	/**
-	 * The key you use here should be a thread-specific object. You are advised
-	 * to use the SDK service as a key. If you're not using the SDK in this
-	 * driver implementation, use another object that has a unique
-	 * {@link Object#hashCode()} between different threads (such as
-	 * {@link Thread#currentThread()}).
+	 * Load the driver, stick <code>null</code>s in {@link #profileData} and
+	 * {@link #profileError} as placeholders and mark the spot in these lists
+	 * that the current {@link Thread} owns. This way, when unloading the driver
+	 * at a later point during execution in this {@link Thread} the
+	 * <code>null</code> placeholders can be replaced by actual data.
 	 */
-	protected synchronized void loadDriver(Object key) {
+	protected synchronized void loadDriver() {
 
 		// Null placeholders for this iteration.
-		this.services.put(key, this.profileData.size());
+		this.currentIndex.set(this.profileData.size());
 		this.profileData.add(null);
 		this.profileError.add(null);
 	}

@@ -173,10 +173,10 @@ public class AuthDriver extends ProfileDriver {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected synchronized void loadDriver(Object key) {
+	protected synchronized void loadDriver() {
 
 		this.iterationDatas = new ArrayList<ProfileData>();
-		super.loadDriver(key);
+		super.loadDriver();
 	}
 
 	/**
@@ -187,14 +187,14 @@ public class AuthDriver extends ProfileDriver {
 	public String login(PrivateKeyEntry application, String applicationName,
 			String username, String password) throws DriverException {
 
-		loadDriver(Thread.currentThread());
+		loadDriver();
 
 		try {
 			// Prepare authentication request token.
 			PublicKey publicKey = application.getCertificate().getPublicKey();
 			PrivateKey privateKey = application.getPrivateKey();
 			KeyPair keyPair = new KeyPair(publicKey, privateKey);
-			String uri = String.format("https://%s/olas-auth/entry", this.host);
+			String uri = String.format("https://%s/olas-auth/entry", getHost());
 			String authnRequest = AuthnRequestFactory.createAuthnRequest(
 					applicationName, keyPair, "http://www.lin-k.net/"
 							+ applicationName, uri, null, null);
@@ -289,7 +289,7 @@ public class AuthDriver extends ProfileDriver {
 		}
 
 		catch (Exception e) {
-			throw setDriverError(Thread.currentThread(), e);
+			throw setDriverError(e);
 		}
 
 		finally {
@@ -312,7 +312,7 @@ public class AuthDriver extends ProfileDriver {
 					} catch (ProfileDataLockedException e) {
 					}
 
-			unloadDriver(Thread.currentThread(), iterationData);
+			unloadDriver(iterationData);
 		}
 	}
 
@@ -369,7 +369,7 @@ public class AuthDriver extends ProfileDriver {
 		String uri = formNode.getAttributes().getNamedItem("action")
 				.getNodeValue();
 		if (!uri.startsWith("http"))
-			uri = String.format("https://%s%s", this.host, uri);
+			uri = String.format("https://%s%s", getHost(), uri);
 		PostMethod postMethod = new PostMethod(uri);
 		postMethod.addParameters(additionalInputValues);
 		LOG.debug(" - URI: " + uri);

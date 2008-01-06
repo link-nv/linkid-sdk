@@ -46,19 +46,15 @@ public class IdMappingDriver extends ProfileDriver {
 					"The certificate in the keystore needs to be of X509 format.");
 
 		NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(
-				this.host, (X509Certificate) applicationKey.getCertificate(),
+				getHost(), (X509Certificate) applicationKey.getCertificate(),
 				applicationKey.getPrivateKey());
-		loadDriver(service);
+		loadDriver();
 
 		try {
 			return service.getUserId(username);
-		}
-
-		catch (Exception e) {
-			throw setDriverError(service, e);
-		}
-
-		finally {
+		} catch (Exception e) {
+			throw setDriverError(e);
+		} finally {
 			unloadDriver(service);
 		}
 	}

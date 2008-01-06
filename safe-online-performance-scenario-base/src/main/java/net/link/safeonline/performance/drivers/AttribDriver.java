@@ -46,20 +46,16 @@ public class AttribDriver extends ProfileDriver {
 			throw new DriverException(
 					"The certificate in the keystore needs to be of X509 format.");
 
-		AttributeClientImpl service = new AttributeClientImpl(this.host,
+		AttributeClientImpl service = new AttributeClientImpl(getHost(),
 				(X509Certificate) applicationKey.getCertificate(),
 				applicationKey.getPrivateKey());
-		loadDriver(service);
+		loadDriver();
 
 		try {
 			return service.getAttributeValues(userId);
-		}
-
-		catch (Exception e) {
-			throw setDriverError(service, e);
-		}
-
-		finally {
+		} catch (Exception e) {
+			throw setDriverError(e);
+		} finally {
 			unloadDriver(service);
 		}
 	}

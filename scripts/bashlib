@@ -40,10 +40,19 @@ shopt -s extglob
 # |______________________________________________________________________|
 
 # Variables for global internal operation.
-export spinner=(    . o O o         )
+export bobber=(     '.' 'o' 'O' 'o' )
+export spinner=(    '-' \\  '|' '/' )
+export crosser=(    '+' 'x' '+' 'x' )
+export runner=(     '> >'           \
+                    '>> '           \
+                    '>>>'           \
+                    ' >>'           )
 
 
 # Variables for terminal requests.
+export hide=$(      tput vi         )
+export show=$(      tput vs         )
+export back=$(      tput kbs        )
 export save=$(      tput sc         )
 export load=$(      tput rc         )
 export bold=$(      tput bold       )
@@ -234,24 +243,40 @@ spinner() {
 
     # Initialize the vars.
     local pid=${spinPid:-$!}
+    local graphics=( "${bobber[@]}" )
     local style=$bold
     local color=$green
     local textstyle=
     local textcolor=
     unset spinPid
 
-    # Any options are the exit status of an existing spinner.
-    if [[ $pid && $1 = -* ]]; then
-        result=${1#-}
-        [[ $result = 0 ]] \
-            && kill -USR1 $pid \
-            || kill -USR2 $pid
-        
-        trap - INT
-        wait $pid 2>/dev/null
+    # Any remaining options are the exit status of an existing spinner.
+    while [[ $1 = -* ]]; do
+        arg=${1#-}
+        shift
 
-        return $result
-    fi
+        # Stop parsing when arg is --
+        [[ $arg = - ]] && break
+
+        # Process arg: Either a spinner type or result code.
+        if [[ $arg = *[^0-9]* ]]; then
+            case $arg in
+                b) graphics=( "${bobber[@]}" )  ;;
+                c) graphics=( "${crosser[@]}" ) ;;
+                r) graphics=( "${runner[@]}" )  ;;
+                s) graphics=( "${spinner[@]}" ) ;;
+            esac
+        elif [[ $pid ]]; then
+            [[ $arg = 0 ]] \
+                && kill -USR1 $pid \
+                || kill -USR2 $pid
+            
+            trap - INT
+            wait $pid 2>/dev/null
+
+            return $arg
+        fi
+    done
  
     # Read arguments.
     local text=
@@ -278,11 +303,11 @@ spinner() {
 
     # Render the spinner.
     echo -ne "\r$save"                                              >&$fd
-    local i
-    for (( i = 0; 1; i = ( i + 1) % 4 )); do
+    local i=0
+    while true; do
         echo -n "$load$eel" \
-                "$reset$style$color${spinner[i]}" \
-                "$reset$textstyle$textcolor$text"                   >&$fd
+                "$reset-$style$color${graphics[i++ % 4]}$reset-" \
+                "$textstyle$textcolor$text"                         >&$fd
         sleep .25 # Four iterations make one second.
     done
 
@@ -523,7 +548,7 @@ skill() {
 #   args        This is a list of arguments in which to look for options.
 #               Most commonly, you will use "$@" to supply these arguments.
 #
-#   -c  Instead of outputting the arguments, output OPTARGS.
+#   -c  Instead of output the arguments, output OPTARGS.
 #   -q  Be quiet.  No arguments are displayed.  Only the exit code is set.
 #   -n  Use newlines as a separator between the options that were found.
 #   -0  Use NULL-bytes as a separator between the options that were found.
