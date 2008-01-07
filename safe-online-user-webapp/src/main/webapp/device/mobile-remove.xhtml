@@ -20,7 +20,6 @@
 	</ui:define>
 	<ui:define name="content">
 
-
 		<a4j:form id="mobileRemoveForm" ajaxSubmit="true"
 			reRender="mobile-data">
 			<h:dataTable id="mobile-data" var="item"
@@ -37,6 +36,7 @@
 						action="#{devicesBean.removeMobile}" />
 				</h:column>
 			</h:dataTable>
+			<rich:messages styleClass="error" />
 		</a4j:form>
 
 		<h:form>

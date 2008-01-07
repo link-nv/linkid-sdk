@@ -44,6 +44,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.core.FacesMessages;
+import org.jboss.seam.core.ResourceBundle;
 
 @Stateful
 @Name("audit")
@@ -383,12 +384,16 @@ public class AuditSearchBean implements AuditSearch {
 			this.auditContext = this.auditService.getAuditContext(id);
 		} catch (AuditContextNotFoundException e) {
 			((UIInput) toValidate).setValid(false);
-			FacesMessage message = new FacesMessage("Unknown audit context");
+			String errorMsg = ResourceBundle.instance().getString(
+					"errorNoAuditRecordsFound");
+			FacesMessage message = new FacesMessage(errorMsg);
 			context.addMessage(toValidate.getClientId(context), message);
 		}
 		if (null == this.auditContext) {
 			((UIInput) toValidate).setValid(false);
-			FacesMessage message = new FacesMessage("Unknown audit context");
+			String errorMsg = ResourceBundle.instance().getString(
+					"errorNoAuditRecordsFound");
+			FacesMessage message = new FacesMessage(errorMsg);
 			context.addMessage(toValidate.getClientId(context), message);
 		}
 	}
@@ -400,7 +405,9 @@ public class AuditSearchBean implements AuditSearch {
 		Set<String> users = this.auditService.listUsers();
 		if (!users.contains(userName)) {
 			((UIInput) toValidate).setValid(false);
-			FacesMessage message = new FacesMessage("Unknown user");
+			String errorMsg = ResourceBundle.instance().getString(
+					"errorNoAuditRecordsFound");
+			FacesMessage message = new FacesMessage(errorMsg);
 			context.addMessage(toValidate.getClientId(context), message);
 		}
 	}

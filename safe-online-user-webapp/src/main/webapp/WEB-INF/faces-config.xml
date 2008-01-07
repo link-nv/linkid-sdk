@@ -142,7 +142,7 @@
 	<navigation-rule>
 		<from-view-id>/device/passwd-change.xhtml</from-view-id>
 		<navigation-case>
-			<from-action>success</from-action>
+			<from-outcome>success</from-outcome>
 			<to-view-id>/device/passwd-confirm.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
@@ -166,7 +166,7 @@
 			<to-view-id>/device/devices.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-action>success</from-action>
+			<from-outcome>success</from-outcome>
 			<to-view-id>/device/devices.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>

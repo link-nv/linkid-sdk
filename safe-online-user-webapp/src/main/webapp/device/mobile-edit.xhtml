@@ -47,9 +47,8 @@
 						<f:validateLength minimum="10" maximum="10" />
 					</h:inputText>
 				</s:decorate>
-				<h:message for="mobile" styleClass="error" />
 				<h:commandButton action="#{devicesBean.mobileRegister}"
-					id="register" value="#{msgs.registerMobile}"
+					id="register" value="#{msgs.register}"
 					rendered="#{empty devicesBean.mobileActivationCode}" class="submit" />
 			</h:panelGrid>
 		</a4j:form>
