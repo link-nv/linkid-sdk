@@ -37,14 +37,6 @@ public interface AuditSearch {
 
 	void setSearchLastTimeMinutes(Integer searchLastTimeMinutes);
 
-	boolean getAccessAuditListIsEmpty();
-
-	boolean getAuditAuditListIsEmpty();
-
-	boolean getResourceAuditListIsEmpty();
-
-	boolean getSecurityAuditListIsEmpty();
-
 	/*
 	 * Factories
 	 */
@@ -71,11 +63,7 @@ public interface AuditSearch {
 
 	String removeContext();
 
-	String searchId();
-
-	String searchUser();
-
-	String searchLastTime();
+	String search();
 
 	String viewPrincipal();
 

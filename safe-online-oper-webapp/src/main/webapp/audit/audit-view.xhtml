@@ -18,12 +18,16 @@
 	</ui:define>
 	<ui:define name="content">
 
+		<h2>#{msgs.operatorAccessAuditRecords}</h2>
 		<ui:include src="/audit/audit-access.xhtml" />
 
+		<h2>#{msgs.operatorSecurityAuditRecords}</h2>
 		<ui:include src="/audit/audit-security.xhtml" />
 
+		<h2>#{msgs.operatorResourceAuditRecords}</h2>
 		<ui:include src="/audit/audit-resource.xhtml" />
 
+		<h2>#{msgs.operatorAuditAuditRecords}</h2>
 		<ui:include src="/audit/audit-audit.xhtml" />
 
 		<h:form>

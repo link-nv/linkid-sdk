@@ -14,14 +14,22 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.operatorAuditPrincipal} : #{principal}</h1>
+		<h1>#{msgs.operatorAuditPrincipal}</h1>
 	</ui:define>
 	<ui:define name="content">
 
-		<h:panelGrid columns="2" border="0">
-			<f:verbatim>#{msgs.name}</f:verbatim>
-			<h:outputLabel value="#{audit_principal.name}" />
+		<h:panelGrid columns="2">
+			<h:outputLabel for="login" value="#{msgs.login}" />
+			<h:outputLabel id="login" value="#{audit_principal.name}" />
+
+			<h:outputLabel for="id" value="#{msgs.id}" />
+			<h:outputLabel id="id" value="#{principal}" />
 		</h:panelGrid>
+
+		<h:form>
+			<h:commandButton id="back" value="#{msgs.backaction}" action="back"
+				styleClass="submit" />
+		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">

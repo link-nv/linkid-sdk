@@ -2,10 +2,9 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:rich="http://richfaces.org/rich"><h:form>
-	<h2>#{msgs.operatorResourceAuditRecords}</h2>
 	<rich:dataTable id="resource-audit-data" var="item"
-		renderedIfEmpty="false" value="#{resourceAuditRecordList}" rows="15"
-		preserveDataModel="false" styleClass="listingTable"
+		rendered="#{resourceAuditRecordList.rowCount != 0}"
+		value="#{resourceAuditRecordList}" rows="15" styleClass="listingTable"
 		rowClasses="listingTable_Row1,listingTable_Row2">
 
 		<h:column>

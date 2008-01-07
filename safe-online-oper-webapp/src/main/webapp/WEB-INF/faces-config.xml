@@ -603,7 +603,7 @@
 	<!-- Begin audit navigation rules -->
 
 	<navigation-rule>
-		<from-view-id>/audit/view.xhtml</from-view-id>
+		<from-view-id>/audit/audit.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>view</from-outcome>
 			<to-view-id>/audit/audit-view.xhtml</to-view-id>
@@ -620,17 +620,9 @@
 			<from-outcome>view-audit</from-outcome>
 			<to-view-id>/audit/audit-view-audit.xhtml</to-view-id>
 		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/audit/search.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>search-id</from-outcome>
 			<to-view-id>/audit/audit-view.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>search-time</from-outcome>
-			<to-view-id>/audit/audit-view-time.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>search-user</from-outcome>
@@ -642,7 +634,7 @@
 		<from-view-id>/audit/audit-view.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/audit/view.xhtml</to-view-id>
+			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>view-principal</from-outcome>
@@ -654,7 +646,7 @@
 		<from-view-id>/audit/audit-view-resource.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/audit/view.xhtml</to-view-id>
+			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
@@ -662,7 +654,7 @@
 		<from-view-id>/audit/audit-view-security.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/audit/view.xhtml</to-view-id>
+			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>view-principal</from-outcome>
@@ -674,7 +666,7 @@
 		<from-view-id>/audit/audit-view-time.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/audit/search.xhtml</to-view-id>
+			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>view-principal</from-outcome>
@@ -686,7 +678,7 @@
 		<from-view-id>/audit/audit-view-user.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/audit/search.xhtml</to-view-id>
+			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>view-principal</from-outcome>
@@ -698,10 +690,18 @@
 		<from-view-id>/audit/audit-view-audit.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
-			<to-view-id>/audit/view.xhtml</to-view-id>
+			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
+	<navigation-rule>
+		<from-view-id>/audit/principal-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/audit/audit.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
 	<!-- End audit navigation rules -->
 
 	<!-- Begin usage agreement navigation rules -->

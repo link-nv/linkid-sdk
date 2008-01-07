@@ -12,19 +12,23 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.operatorAuditRecordsSince} : <h:outputLabel
-			value="#{ageLimit}">
+		<h1>#{msgs.operatorAuditRecordsSince}</h1>
+		<h2><h:outputLabel value="#{ageLimit}">
 			<f:convertDateTime type="both" timeStyle="medium" dateStyle="short" />
-		</h:outputLabel></h1>
+		</h:outputLabel></h2>
 	</ui:define>
 	<ui:define name="content">
 
+		<h2>#{msgs.operatorAccessAuditRecords}</h2>
 		<ui:include src="/audit/audit-access.xhtml" />
 
+		<h2>#{msgs.operatorSecurityAuditRecords}</h2>
 		<ui:include src="/audit/audit-security.xhtml" />
 
+		<h2>#{msgs.operatorResourceAuditRecords}</h2>
 		<ui:include src="/audit/audit-resource.xhtml" />
 
+		<h2>#{msgs.operatorAuditAuditRecords}</h2>
 		<ui:include src="/audit/audit-audit.xhtml" />
 
 		<h:form>

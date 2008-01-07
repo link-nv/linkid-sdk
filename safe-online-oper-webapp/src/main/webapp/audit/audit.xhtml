@@ -21,12 +21,63 @@
 
 
 	<ui:define name="content">
-		<h2>#{msgs.viewaction}</h2>
-		<p>#{msgs.operatorAuditView} <a href="./view.seam">#{msgs.clickHere}</a></p>
 
-		<h2>#{msgs.searchAction}</h2>
-		<p>#{msgs.operatorAuditSearch} <a href="./search.seam">#{msgs.clickHere}</a></p>
+		<h2>#{msgs.operatorAuditSearch}</h2>
 
+		<h:form>
+			<h:outputLabel for="auditID" value="#{msgs.operatorAuditID}" />
+			<s:decorate>
+				<h:inputText id="auditID" value="#{audit.searchContextId}"
+					validator="#{audit.validateId}" styleClass="label" />
+			</s:decorate>
+			<t:message for="auditID" styleClass="error" />
+
+			<h:outputLabel for="auditUser" value="#{msgs.user}" />
+			<s:decorate>
+				<h:inputText id="auditUser" value="#{audit.searchAuditUser}"
+					validator="#{audit.validateUser}" styleClass="label" />
+			</s:decorate>
+			<t:message for="auditUser" styleClass="error" />
+
+			<h:outputLabel for="search" value="" />
+			<h:commandButton id="search" value="#{msgs.searchAction}"
+				action="#{audit.search}" styleClass="submit" />
+		</h:form>
+
+		<h2>#{msgs.records}</h2>
+		<h:form>
+			<rich:dataTable id="audit-context-data" var="item"
+				value="#{auditContextList}" rows="10" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+
+				<h:column>
+					<f:facet name="header">#{msgs.operatorAuditID}</f:facet>
+					<h:outputLabel value="#{item.id}" />
+				</h:column>
+
+				<h:column>
+					<f:facet name="header">#{msgs.time}</f:facet>
+					<h:outputLabel value="#{item.creationTime}">
+						<f:convertDateTime type="both" timeStyle="medium"
+							dateStyle="short" />
+					</h:outputLabel>
+				</h:column>
+
+				<h:column>
+					<h:commandLink value="#{msgs.viewaction}" action="#{audit.view}" />
+				</h:column>
+
+				<h:column>
+					<h:commandLink value="#{msgs.removeaction}"
+						action="#{audit.removeContext}" />
+				</h:column>
+
+				<f:facet name="footer">
+					<rich:datascroller for="audit-context-data" />
+				</f:facet>
+
+			</rich:dataTable>
+		</h:form>
 	</ui:define>
 
 
@@ -35,6 +86,12 @@
 			<ul class="sidemenu">
 				<li><h:commandLink action="/tasks/tasks.seam"
 					value="#{msgs.operatorTasks}" /></li>
+				<li><h:commandLink action="#{audit.viewSecurityRecords}"
+					value="#{msgs.operatorSecurityAuditRecords}" id="viewsecurity" /></li>
+				<li><h:commandLink action="#{audit.viewResourceRecords}"
+					value="#{msgs.operatorResourceAuditRecords}" id="viewresource" /></li>
+				<li><h:commandLink action="#{audit.viewAuditRecords}"
+					value="#{msgs.operatorAuditAuditRecords}" id="viewaudit" /></li>
 			</ul>
 		</h:form>
 	</ui:define>

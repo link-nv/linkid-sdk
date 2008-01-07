@@ -182,38 +182,6 @@ public class AuditSearchBean implements AuditSearch {
 		this.searchLastTimeMinutes = searchLastTimeMinutes;
 	}
 
-	public boolean getAccessAuditListIsEmpty() {
-		if (null == this.accessAuditRecordList)
-			return true;
-		if (this.accessAuditRecordList.size() == 0)
-			return true;
-		return false;
-	}
-
-	public boolean getAuditAuditListIsEmpty() {
-		if (null == this.auditAuditRecordList)
-			return true;
-		if (this.auditAuditRecordList.size() == 0)
-			return true;
-		return false;
-	}
-
-	public boolean getResourceAuditListIsEmpty() {
-		if (null == this.resourceAuditRecordList)
-			return true;
-		if (this.resourceAuditRecordList.size() == 0)
-			return true;
-		return false;
-	}
-
-	public boolean getSecurityAuditListIsEmpty() {
-		if (null == this.securityAuditRecordList)
-			return true;
-		if (this.securityAuditRecordList.size() == 0)
-			return true;
-		return false;
-	}
-
 	/*
 	 * 
 	 * Factories
@@ -360,17 +328,22 @@ public class AuditSearchBean implements AuditSearch {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String searchUser() {
-		LOG.debug("Search user " + this.searchAuditUser);
-		setMode(SearchMode.USER);
-		return "search-user";
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String searchId() {
-		LOG.debug("Search context id " + this.searchContextId);
-		setMode(SearchMode.ID);
-		return "search-id";
+	public String search() {
+		LOG.debug("audit search: id=" + this.searchContextId + " user="
+				+ this.searchAuditUser);
+		if (null != this.searchContextId) {
+			LOG.debug("Search context id " + this.searchContextId);
+			setMode(SearchMode.ID);
+			return "search-id";
+		} else if (null != this.searchAuditUser
+				&& this.searchAuditUser.length() > 0) {
+			LOG.debug("Search user " + this.searchAuditUser);
+			setMode(SearchMode.USER);
+			return "search-user";
+		} else {
+			LOG.debug("No search input specified");
+			return null;
+		}
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
