@@ -66,4 +66,9 @@ public interface Agent {
 	 *            <code>true</code> if the action was a success.
 	 */
 	public void actionCompleted(Boolean success);
+
+	/**
+	 * Reset the transition state, abort the action.
+	 */
+	public void resetTransit();
 }

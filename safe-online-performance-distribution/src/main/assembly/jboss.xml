@@ -55,13 +55,5 @@
 			</outputDirectory>
 			<destName>SafeOnline.ear</destName>
 		</file>
-		<file>
-			<source>
-				target/files/safe-online-root-webapp-1.0-SNAPSHOT.war
-			</source>
-			<outputDirectory>
-				jboss/server/default/deploy
-			</outputDirectory>
-		</file>
 	</files>
 </assembly>

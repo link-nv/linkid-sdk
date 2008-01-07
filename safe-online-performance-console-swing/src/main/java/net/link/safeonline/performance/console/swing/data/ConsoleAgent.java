@@ -125,7 +125,6 @@ public class ConsoleAgent implements Agent {
 	 */
 	public void fireAgentStatus() {
 
-		updateState();
 		for (AgentStatusListener listener : this.agentStatusListeners)
 			listener.statusChanged(this);
 	}
@@ -187,6 +186,15 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
+	public void resetTransit() {
+
+		this.scenarioDeployer.resetTransit(this.agentAddress);
+		updateState();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public AgentState getTransit() {
 
 		return this.transit;
@@ -216,7 +224,7 @@ public class ConsoleAgent implements Agent {
 		try {
 			this.scenarioDeployer.actionCompleted(this.agentAddress, success);
 		} finally {
-			fireAgentStatus();
+			updateState();
 		}
 	}
 
@@ -229,14 +237,23 @@ public class ConsoleAgent implements Agent {
 			return this.scenarioDeployer.actionRequest(this.agentAddress,
 					action);
 		} finally {
-			fireAgentStatus();
+			updateState();
 		}
 	}
 
 	public void updateState() {
 
+		AgentState oldTransit = this.transit;
+		AgentState oldState = this.state;
+
 		this.transit = this.scenarioDeployer.getTransit(this.agentAddress);
 		this.state = this.scenarioDeployer.getState(this.agentAddress);
+
+		if (oldTransit != this.transit || oldState != this.state) {
+			LOG.debug(getAddress() + " has NEW state   : State [" + this.state
+					+ "], Transit [" + this.transit + "]");
+			fireAgentStatus();
+		}
 	}
 
 	private class UpdateAgentState extends Thread {

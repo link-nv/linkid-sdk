@@ -140,6 +140,14 @@ public class AgentService implements AgentServiceMBean {
 	/**
 	 * {@inheritDoc}
 	 */
+	public void resetTransit() {
+
+		this.transit = null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public AgentState getTransit() {
 
 		return this.transit;

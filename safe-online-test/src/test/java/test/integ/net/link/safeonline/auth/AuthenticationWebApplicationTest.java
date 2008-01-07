@@ -83,7 +83,8 @@ public class AuthenticationWebApplicationTest {
 		KeyPair keyPair = new KeyPair(publicKey, privateKey);
 		String authnRequest = AuthnRequestFactory.createAuthnRequest(
 				"performance-application", keyPair,
-				"http://localhost:1234/performance-application", null, null);
+				"http://localhost:1234/performance-application", null, null,
+				null);
 		LOG.debug("authentication request: " + authnRequest);
 		String encodedAuthnRequest = new String(Base64
 				.encodeBase64(authnRequest.getBytes()));

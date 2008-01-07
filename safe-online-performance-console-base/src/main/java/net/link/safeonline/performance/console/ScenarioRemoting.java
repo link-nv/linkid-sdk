@@ -217,4 +217,12 @@ public class ScenarioRemoting {
 		invokeFor(agent, "setCharts", new Object[] { charts },
 				new String[] { List.class.getName() });
 	}
+
+	/**
+	 * @see Agent#resetTransit()
+	 */
+	public void resetTransit(Address agent) {
+
+		invokeFor(agent, "resetTransit", new Object[] {}, new String[] {});
+	}
 }
