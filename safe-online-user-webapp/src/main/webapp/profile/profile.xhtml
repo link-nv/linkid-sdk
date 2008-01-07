@@ -19,12 +19,7 @@
 	<ui:define name="content">
 
 
-		<table>
-			<tr>
-				<th>#{msgs.login}:</th>
-				<td>#{identityBean.username}</td>
-			</tr>
-		</table>
+		<p>#{msgs.login}: #{identityBean.username}</p>
 
 		<h:form>
 			<h:dataTable id="data" var="item" value="#{attributeList}"

@@ -25,26 +25,27 @@
 		</f:facet>
 
 		<h:form>
-			<h:panelGrid columns="3">
-				<h:outputLabel for="user" value="#{msgs.user}:" />
-				<h:panelGroup>
-					<s:decorate>
-						<h:inputText id="user" value="#{authorizationManager.user}"
-							required="true" />
-					</s:decorate>
-					<rich:suggestionbox for="user"
-						suggestionAction="#{authorizationManager.autocompleteUser}"
-						var="searchUserNameInput" selfRendered="true">
-						<h:column>
-							<h:outputText value="#{searchUserNameInput}" />
-						</h:column>
-					</rich:suggestionbox>
-				</h:panelGroup>
-				<h:message for="user" styleClass="error" />
-			</h:panelGrid>
+
+			<h:outputLabel for="user" value="#{msgs.user}:" />
+
+			<s:decorate>
+				<h:inputText id="user" value="#{authorizationManager.user}"
+					required="true" styleClass="label" />
+			</s:decorate>
+			<rich:suggestionbox for="user"
+				suggestionAction="#{authorizationManager.autocompleteUser}"
+				var="searchUserNameInput" selfRendered="true">
+				<h:column>
+					<h:outputText value="#{searchUserNameInput}" />
+				</h:column>
+			</rich:suggestionbox>
+
+			<h:message for="user" styleClass="error" />
+
 
 			<h:messages styleClass="error" globalOnly="true" />
 
+			<h:outputLabel for="search" value="" />
 			<h:commandButton value="#{msgs.searchAction}" id="search"
 				action="#{authorizationManager.search}" styleClass="submit" />
 		</h:form>

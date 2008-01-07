@@ -19,11 +19,7 @@
 	<ui:define name="content">
 
 
-
-		<h:panelGrid columns="2">
-			<h:outputText value="#{msgs.user}:" />
-			<h:outputText value="#{authorizationManager.user}" />
-		</h:panelGrid>
+		<p>#{msgs.user}: #{authorizationManager.user}</p>
 
 		<h:form>
 			<h:selectManyCheckbox id="roles" layout="pageDirection"
@@ -33,6 +29,7 @@
 
 			<h:messages styleClass="error" />
 
+			<h:outputLabel for="save" value="" />
 			<h:commandButton value="#{msgs.saveaction}" id="save"
 				action="#{authorizationManager.save}" styleClass="submit" />
 			<h:commandButton action="#{authorizationManager.cancel}" id="cancel"
