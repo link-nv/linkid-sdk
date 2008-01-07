@@ -26,27 +26,24 @@
 		</f:facet>
 
 		<h:form>
-			<rich:dataList id="group-data" var="group" value="#{configGroupList}">
+			<ui:repeat id="group-data" var="group" value="#{configGroupList}">
 				<h3><h:outputText value="#{group.name}" /></h3>
-				<t:dataTable id="config-data" var="item"
-					value="#{group.configItems}" preserveDataModel="false">
-					<h:column>
-						<h:outputText value="#{item.name}:" />
-					</h:column>
-					<h:column>
-						<h:panelGroup>
-							<s:decorate>
-								<h:inputText value="#{item.value}" required="true" id="value" />
-								<h:message for="value" styleClass="error" />
-							</s:decorate>
-						</h:panelGroup>
-					</h:column>
-				</t:dataTable>
-			</rich:dataList>
+				<ui:repeat id="config-data" var="item"
+					value="#{group.configItems}">
+					<h:outputLabel for="value" value="#{item.name}" />
+
+					<s:decorate>
+						<h:inputText value="#{item.value}" required="true" id="value"
+							styleClass="label" />
+						<h:message for="value" styleClass="error" />
+					</s:decorate>
+				</ui:repeat>
+			</ui:repeat>
 
 			<h:messages styleClass="error" globalOnly="true" />
 
 			<rich:spacer height="10" />
+			<h:outputLabel for="save" value="" />
 			<h:commandButton value="#{msgs.saveaction}" id="save"
 				action="#{configuration.save}" styleClass="submit" />
 			<h:commandButton value="#{msgs.cancelaction}" id="cancel"
