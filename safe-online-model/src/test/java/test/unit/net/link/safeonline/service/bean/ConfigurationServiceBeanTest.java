@@ -66,11 +66,12 @@ public class ConfigurationServiceBeanTest extends TestCase {
 		// setup
 		ConfigGroupEntity configGroup = this.configGroupDAO
 				.addConfigGroup("group 1");
-		this.configItemDAO.addConfigItem("item 1", "value 1", configGroup);
+		this.configItemDAO.addConfigItem("item 1", "value 1", "string",
+				configGroup);
 
 		ConfigGroupEntity detachedGroup = new ConfigGroupEntity("group 1");
 		ConfigItemEntity detachedItem = new ConfigItemEntity("item 1",
-				"value 2", detachedGroup);
+				"value 2", "string", detachedGroup);
 		detachedGroup.getConfigItems().add(detachedItem);
 		List<ConfigGroupEntity> groupList = new ArrayList<ConfigGroupEntity>();
 		groupList.add(detachedGroup);

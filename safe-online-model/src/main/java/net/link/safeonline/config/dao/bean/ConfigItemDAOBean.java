@@ -35,9 +35,9 @@ public class ConfigItemDAOBean implements ConfigItemDAO {
 	}
 
 	public ConfigItemEntity addConfigItem(String name, String value,
-			ConfigGroupEntity configGroup) {
+			String valueType, ConfigGroupEntity configGroup) {
 		ConfigItemEntity configItem = new ConfigItemEntity(name, value,
-				configGroup);
+				valueType, configGroup);
 		if (configGroup != null) {
 			configGroup.getConfigItems().add(configItem);
 		}

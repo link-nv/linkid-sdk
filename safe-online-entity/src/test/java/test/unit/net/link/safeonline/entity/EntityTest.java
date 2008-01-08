@@ -961,7 +961,8 @@ public class EntityTest {
 	public void testAddRemoveConfig() {
 		// setup
 		ConfigGroupEntity group = new ConfigGroupEntity("group 1");
-		ConfigItemEntity item = new ConfigItemEntity("name 1", "value 1", group);
+		ConfigItemEntity item = new ConfigItemEntity("name 1", "value 1",
+				"string", group);
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 		entityManager.persist(group);

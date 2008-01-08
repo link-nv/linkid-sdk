@@ -17,7 +17,7 @@ import net.link.safeonline.entity.config.ConfigItemEntity;
 @Local
 public interface ConfigItemDAO {
 
-	ConfigItemEntity addConfigItem(String name, String value,
+	ConfigItemEntity addConfigItem(String name, String value, String valueType,
 			ConfigGroupEntity configGroup);
 
 	void removeConfigItem(ConfigItemEntity configItem);
@@ -27,5 +27,4 @@ public interface ConfigItemDAO {
 	ConfigItemEntity findConfigItem(String name);
 
 	List<ConfigItemEntity> listConfigItems();
-
 }

@@ -38,16 +38,19 @@ public class ConfigItemEntity implements Serializable {
 
 	private String value;
 
+	private String valueType;
+
 	private ConfigGroupEntity configGroup;
 
 	public ConfigItemEntity() {
 		// empty
 	}
 
-	public ConfigItemEntity(String name, String value,
+	public ConfigItemEntity(String name, String value, String valueType,
 			ConfigGroupEntity configGroup) {
 		this.name = name;
 		this.value = value;
+		this.valueType = valueType;
 		this.configGroup = configGroup;
 	}
 
@@ -75,6 +78,14 @@ public class ConfigItemEntity implements Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValueType() {
+		return this.valueType;
+	}
+
+	public void setValueType(String valueType) {
+		this.valueType = valueType;
 	}
 
 	@Override
