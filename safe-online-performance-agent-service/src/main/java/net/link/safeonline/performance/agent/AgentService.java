@@ -192,6 +192,6 @@ public class AgentService implements AgentServiceMBean {
 	public void execute(final String hostname, final Integer workers,
 			final Long duration) throws NamingException {
 
-		new ScenarioExecutor(hostname, workers, duration, this);
+		new ScenarioExecutor(hostname, workers, duration, this).start();
 	}
 }

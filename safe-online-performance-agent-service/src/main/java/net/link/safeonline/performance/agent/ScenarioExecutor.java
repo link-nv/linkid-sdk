@@ -140,6 +140,7 @@ public class ScenarioExecutor extends Thread {
 					public void run() {
 
 						try {
+							LOG.debug("Executing another scenario.");
 							scenarioStart.add(System.currentTimeMillis());
 							scenario.execute();
 						} catch (Exception e) {
