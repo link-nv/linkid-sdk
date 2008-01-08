@@ -1854,10 +1854,10 @@
 		<joda-time.version>1.5.1</joda-time.version>
 		<bouncycastle.version>138</bouncycastle.version>
 		<jetty-servlet-tester.version>
-			6.1.6
+			6.1.7
 		</jetty-servlet-tester.version>
 		<commons-httpclient.version>3.1</commons-httpclient.version>
-		<jetty.version>6.1.6</jetty.version>
+		<jetty.version>6.1.7</jetty.version>
 		<trinidad-api.version>1.2.1</trinidad-api.version>
 		<trinidad-impl.version>1.2.1</trinidad-impl.version>
 		<maven-jaxb-plugin.version>1.1</maven-jaxb-plugin.version>

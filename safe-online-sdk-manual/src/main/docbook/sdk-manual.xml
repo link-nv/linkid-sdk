@@ -306,9 +306,7 @@ public static class MyCompounded {
 	public void setMember1(String member1) {
 		this.member1 = member1;
 	}
-}
-]]>
-				</programlisting>
+}]]></programlisting>
 			</para>
 			<para>
 				Thus a developer can define identity cards as classes in
@@ -557,7 +555,7 @@ public static class MyCompounded {
 			There are different ways of initiating a new user
 			authentication process from within an application, depending
 			on the type of application. We can make a distinction
-			between the following two types of web applications:
+			between the following types of web applications:
 			<orderedlist>
 				<listitem>
 					<para>
@@ -579,9 +577,20 @@ public static class MyCompounded {
 					</para>
 				</listitem>
 			</orderedlist>
-			For both type of web application the OLAS SDK offers utility
-			classes to initiate and of course also finalize a user
-			authentication process.
+			This has been depicted in the following figure.
+			<mediaobject>
+				<imageobject>
+					<imagedata format="SVG"
+						fileref="webapp-integration.svg" scale="50" scalefit="1" />
+				</imageobject>
+				<caption>
+					The different ways of integrating into a web
+					application.
+				</caption>
+			</mediaobject>
+			For these types of web application the OLAS SDK offers
+			utility classes to initiate and of course also finalize a
+			user authentication process.
 		</para>
 		<section>
 			<title>Authentication Filter</title>
@@ -623,6 +632,13 @@ public static class MyCompounded {
 				OLAS SDK filters to secure a certain section of a web
 				application.
 				<programlisting><![CDATA[<filter>
+	<filter-name>LoginFilter</filter-name>
+	<filter-class>
+		net.link.safeonline.sdk.auth.filter.LoginFilter
+	</filter-class>
+</filter>
+				
+<filter>
 	<filter-name>AuthenticationFilter</filter-name>
 	<filter-class>
 		net.link.safeonline.sdk.auth.filter.AuthenticationFilter
@@ -655,13 +671,6 @@ public static class MyCompounded {
 	</init-param>
 </filter>
 
-<filter>
-	<filter-name>LoginFilter</filter-name>
-	<filter-class>
-		net.link.safeonline.sdk.auth.filter.LoginFilter
-	</filter-class>
-</filter>
-
 <filter-mapping>
 	<filter-name>LoginFilter</filter-name>
 	<url-pattern>/secure/*</url-pattern>
@@ -673,6 +682,15 @@ public static class MyCompounded {
 </filter-mapping>
 ]]>
 				</programlisting>
+				It is important to notice here that the
+				<code>LoginFilter</code>
+				should come before the
+				<code>AuthenticationFilter</code>
+				. If the
+				<code>AuthenticationFilter</code>
+				would be first then the user will always be redirected
+				to the authentication web application and never be able
+				to actually login into the web application.
 			</para>
 		</section>
 		<section>

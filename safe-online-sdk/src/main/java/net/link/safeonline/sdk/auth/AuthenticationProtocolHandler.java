@@ -20,7 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Interface for authentication protocol handlers. Protocol handlers are
  * stateful since they must be capable of handling the challenge-response aspect
- * of the authentication protocol.
+ * of the authentication protocol. Since protocol handlers are stored in the
+ * HTTP session they must be serializable.
  * 
  * @author fcorneli
  * 

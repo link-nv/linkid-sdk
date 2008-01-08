@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
-import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 
 import org.jboss.seam.core.FacesMessages;
@@ -165,14 +164,11 @@ public class SafeOnlineLoginUtils {
 		Map<String, String> configParams = externalContext
 				.getInitParameterMap();
 
-		AuthenticationProtocolHandler authenticationProtocolHandler;
 		try {
-			authenticationProtocolHandler = AuthenticationProtocolManager
-					.createAuthenticationProtocolHandler(
-							authenticationProtocol,
-							safeOnlineAuthenticationServiceUrl,
-							applicationName, keyPair, certificate,
-							configParams, httpServletRequest);
+			AuthenticationProtocolManager.createAuthenticationProtocolHandler(
+					authenticationProtocol, safeOnlineAuthenticationServiceUrl,
+					applicationName, keyPair, certificate, configParams,
+					httpServletRequest);
 		} catch (ServletException e) {
 			throw new RuntimeException(
 					"could not init authentication protocol handler: "
@@ -180,7 +176,7 @@ public class SafeOnlineLoginUtils {
 							+ e.getMessage(), e);
 		}
 		try {
-			authenticationProtocolHandler.initiateAuthentication(
+			AuthenticationProtocolManager.initiateAuthentication(
 					httpServletRequest, httpServletResponse, targetUrl);
 		} catch (Exception e) {
 			throw new RuntimeException("could not initiate authentication: "

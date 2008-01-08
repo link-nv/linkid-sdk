@@ -7,6 +7,7 @@
 
 package net.link.safeonline.sdk.auth;
 
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.saml2.Saml2BrowserPostAuthenticationProtocolHandler;
@@ -39,6 +41,12 @@ public class AuthenticationProtocolManager {
 	public static final String PROTOCOL_HANDLER_ATTRIBUTE = AuthenticationProtocolManager.class
 			.getName()
 			+ ".PROTOCOL_HANDLER";
+
+	public static final String TARGET_ATTRIBUTE = AuthenticationProtocolManager.class
+			.getName()
+			+ ".TARGET";
+
+	public static final String LANDING_PAGE_INIT_PARAM = "LandingPage";
 
 	private static final Map<AuthenticationProtocol, Class<? extends AuthenticationProtocolHandler>> handlerClasses = new HashMap<AuthenticationProtocol, Class<? extends AuthenticationProtocolHandler>>();
 
@@ -70,6 +78,75 @@ public class AuthenticationProtocolManager {
 							+ authenticationProtocol);
 		}
 		handlerClasses.put(authenticationProtocol, handlerClass);
+	}
+
+	/**
+	 * Initiates the authentication.
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	public static void initiateAuthentication(HttpServletRequest request,
+			HttpServletResponse response) throws IOException, ServletException {
+		String target = request.getRequestURL().toString();
+		initiateAuthentication(request, response, target);
+	}
+
+	/**
+	 * Initiates the authentication.
+	 * 
+	 * @param request
+	 * @param response
+	 * @param target
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	public static void initiateAuthentication(HttpServletRequest request,
+			HttpServletResponse response, String target) throws IOException,
+			ServletException {
+		AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
+		if (null == protocolHandler) {
+			throw new IllegalStateException("no active protocol handler found");
+		}
+
+		String landingPage = request.getSession().getServletContext()
+				.getInitParameter(LANDING_PAGE_INIT_PARAM);
+		if (null != landingPage) {
+			LOG.debug("using landing page: " + landingPage);
+			protocolHandler.initiateAuthentication(request, response,
+					landingPage);
+			storeTarget(target, request);
+		} else {
+			protocolHandler.initiateAuthentication(request, response, target);
+			clearTarget(request);
+		}
+	}
+
+	private static void storeTarget(String target, HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.setAttribute(TARGET_ATTRIBUTE, target);
+	}
+
+	private static void clearTarget(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.removeAttribute(TARGET_ATTRIBUTE);
+	}
+
+	/**
+	 * Gives back the previously stored target attribute value.
+	 * 
+	 * @param request
+	 * @return
+	 */
+	public static String getTarget(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String target = (String) session.getAttribute(TARGET_ATTRIBUTE);
+		if (null == target) {
+			throw new IllegalStateException("target attribute is null");
+		}
+		return target;
 	}
 
 	/**

@@ -18,6 +18,11 @@ import org.apache.commons.logging.LogFactory;
  * Login manager for servlet container based web applications. The login status
  * is saved on the HTTP session.
  * 
+ * <p>
+ * Notice that we explicitly disconnected the login manager from the
+ * authentication protocol manager. Both store their data into the HTTP session.
+ * </p>
+ * 
  * @author fcorneli
  * 
  */
@@ -79,8 +84,12 @@ public class LoginManager {
 	 */
 	public static String findUsername(HttpServletRequest request,
 			String paramName) {
-		HttpSession httpSession = request.getSession();
+		if (null == paramName) {
+			throw new IllegalArgumentException(
+					"username session attribute name should not be null");
+		}
 
+		HttpSession httpSession = request.getSession();
 		String username = (String) httpSession.getAttribute(paramName);
 		return username;
 	}

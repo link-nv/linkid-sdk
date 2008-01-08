@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
-import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 
 import org.apache.commons.logging.Log;
@@ -221,16 +220,13 @@ public class AuthenticationFilter implements Filter {
 	private void initiateAuthentication(HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) throws IOException,
 			ServletException {
-		AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
-				.createAuthenticationProtocolHandler(
-						this.authenticationProtocol,
-						this.safeOnlineAuthenticationServiceUrl,
-						this.applicationName, this.applicationKeyPair,
-						this.applicationCertificate, this.configParams,
-						httpRequest);
-		String targetUrl = httpRequest.getRequestURL().toString();
-		authenticationProtocolHandler.initiateAuthentication(httpRequest,
-				httpResponse, targetUrl);
+		AuthenticationProtocolManager.createAuthenticationProtocolHandler(
+				this.authenticationProtocol,
+				this.safeOnlineAuthenticationServiceUrl, this.applicationName,
+				this.applicationKeyPair, this.applicationCertificate,
+				this.configParams, httpRequest);
+		AuthenticationProtocolManager.initiateAuthentication(httpRequest,
+				httpResponse);
 	}
 
 	public void destroy() {

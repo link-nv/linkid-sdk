@@ -7,6 +7,7 @@
 
 package net.link.safeonline.test.util;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ import org.apache.commons.logging.LogFactory;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.SessionManager;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.FilterHolder;
@@ -53,6 +53,8 @@ public class ServletTestManager {
 
 	Session session;
 
+	LocalHashSessionManager sessionManager;
+
 	private class LocalHashSessionManager extends HashSessionManager {
 
 		private final Log managerLOG = LogFactory
@@ -62,20 +64,26 @@ public class ServletTestManager {
 
 		public LocalHashSessionManager(
 				Map<String, Object> initialSessionAttributes) {
-			this.initialSessionAttributes = initialSessionAttributes;
+			if (null != initialSessionAttributes) {
+				this.initialSessionAttributes = initialSessionAttributes;
+			} else {
+				this.initialSessionAttributes = new HashMap<String, Object>();
+			}
+		}
+
+		public void setAttribute(String name, Object value) {
+			this.initialSessionAttributes.put(name, value);
 		}
 
 		@Override
 		protected Session newSession(HttpServletRequest request) {
 			this.managerLOG.debug("newSession");
 			Session newSession = (Session) super.newSession(request);
-			if (null != this.initialSessionAttributes) {
-				for (Map.Entry<String, Object> entry : this.initialSessionAttributes
-						.entrySet()) {
-					String key = entry.getKey();
-					Object value = entry.getValue();
-					newSession.setAttribute(key, value);
-				}
+			for (Map.Entry<String, Object> entry : this.initialSessionAttributes
+					.entrySet()) {
+				String key = entry.getKey();
+				Object value = entry.getValue();
+				newSession.setAttribute(key, value);
 			}
 			ServletTestManager.this.session = newSession;
 			return newSession;
@@ -98,13 +106,17 @@ public class ServletTestManager {
 		connector.setPort(0);
 		this.server.addConnector(connector);
 
-		SessionManager sessionManager = new LocalHashSessionManager(
+		this.sessionManager = new LocalHashSessionManager(
 				initialSessionAttributes);
-		SessionHandler sessionHandler = new SessionHandler(sessionManager);
+		SessionHandler sessionHandler = new SessionHandler(this.sessionManager);
 
 		Context context = new Context(null, sessionHandler, null, null, null);
 		context.setContextPath("/");
 		this.server.addHandler(context);
+
+		if (null != servletInitParameters) {
+			context.setInitParams(servletInitParameters);
+		}
 
 		if (null != filterClass) {
 			FilterHolder filterHolder = context.addFilter(filterClass, "/",
@@ -160,8 +172,12 @@ public class ServletTestManager {
 	@SuppressWarnings("unused")
 	public void setSessionAttribute(String name, Object value) {
 		if (null == this.session) {
+			if (null == this.sessionManager) {
+				throw new IllegalStateException("invoke setUp first");
+			}
+			this.sessionManager.setAttribute(name, value);
 			return;
 		}
-
+		this.session.setAttribute(name, value);
 	}
 }
