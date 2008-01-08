@@ -27,21 +27,18 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<h:panelGrid columns="4">
-				<h:outputLabel for="oldpassword" value="#{msgs.oldPassword}" />
-				<s:decorate>
-					<h:inputSecret id="oldpassword" value="#{devicesBean.oldPassword}"
-						required="true" />
-				</s:decorate>
-				<h:message for="oldpassword" styleClass="error" />
-				<h:commandButton value="#{msgs.removeaction}"
-					action="#{devicesBean.removePassword}" class="submit" />
-			</h:panelGrid>
-
+			<h:outputLabel for="oldpassword" value="#{msgs.oldPassword}" />
+			<s:decorate>
+				<h:inputSecret id="oldpassword" value="#{devicesBean.oldPassword}"
+					required="true" styleClass="label" />
+			</s:decorate>
+			<h:message for="oldpassword" styleClass="error" />
+			<h:outputLabel for="remove" value="" />
+			<h:commandButton value="#{msgs.removeaction}"
+				action="#{devicesBean.removePassword}" class="submit" />
 		</h:form>
-
 		<h:form>
-			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
+			<h:commandButton action="back" id="back" value="#{msgs.cancelaction}"
 				class="submit" />
 		</h:form>
 

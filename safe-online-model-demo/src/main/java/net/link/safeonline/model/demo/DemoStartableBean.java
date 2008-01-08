@@ -102,7 +102,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.trustedCertificates.add(demoMandateCertificate);
 		this.registeredApplications.add(new Application(
 				DEMO_MANDATE_APPLICATION_NAME, "owner", null, null, getLogo(),
-				null, true, true, demoMandateCertificate, false,
+				null, true, true, demoMandateCertificate, true,
 				IdScopeType.SUBSCRIPTION));
 
 		/*
