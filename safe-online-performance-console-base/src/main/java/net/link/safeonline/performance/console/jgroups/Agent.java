@@ -59,15 +59,6 @@ public interface Agent {
 	public boolean actionRequest(AgentState action);
 
 	/**
-	 * Signal the current action has stopped with success or not. This will
-	 * transit the agent into the state it was performing if successful.
-	 * 
-	 * @param success
-	 *            <code>true</code> if the action was a success.
-	 */
-	public void actionCompleted(Boolean success);
-
-	/**
 	 * Reset the transition state, abort the action.
 	 */
 	public void resetTransit();

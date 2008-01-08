@@ -4,7 +4,7 @@
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.performance.scenario.bean;
+package net.link.safeonline.performance.scenario;
 
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.ArrayList;
@@ -14,54 +14,51 @@ import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
 import net.link.safeonline.performance.drivers.ProfileDriver;
-import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
  * @author mbillemo
- * 
  */
 public class BasicScenario implements Scenario {
 
-	private static final int ITERATIONS = 100;
 	private static final Log LOG = LogFactory.getLog(BasicScenario.class);
 
+	private static final String applicationName = "performance-application";
+	private static final String username = "performance";
+	private static final String password = "performance";
+
+	private PrivateKeyEntry applicationKey;
 	private AttribDriver attribDriver;
+	private IdMappingDriver idDriver;
 	private AuthDriver authDriver;
 
-	private IdMappingDriver idDriver;
+	/**
+	 * Create a new {@link BasicScenario} instance.
+	 */
+	public BasicScenario(PrivateKeyEntry applicationKey) {
+
+		this.applicationKey = applicationKey;
+	}
 
 	/**
 	 * @{inheritDoc}
 	 */
 	public void execute() throws Exception {
 
-		// Initialize givens (application, username, password).
-		String applicationName = "performance-application", username = "performance", password = "performance", userId;
-		PrivateKeyEntry applicationKey = PerformanceKeyStoreUtils
-				.getPrivateKeyEntry();
-
 		LOG.debug("getting id..");
-		userId = this.authDriver.login(applicationKey, applicationName,
-				username, password);
+		String userId = this.authDriver.login(this.applicationKey,
+				applicationName, username, password);
 
 		LOG.debug("verify id..");
-		if (!userId.equals(this.idDriver.getUserId(applicationKey, username)))
+		if (!userId.equals(this.idDriver.getUserId(this.applicationKey,
+				username)))
 			throw new RuntimeException(
 					"UUID from login is not the same as UUID from idmapping.");
 
 		LOG.debug("getting attribs..");
-		this.attribDriver.getAttributes(applicationKey, userId);
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	public int getIterations() {
-
-		return ITERATIONS;
+		this.attribDriver.getAttributes(this.applicationKey, userId);
 	}
 
 	/**

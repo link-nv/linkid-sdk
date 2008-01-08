@@ -219,18 +219,6 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void actionCompleted(Boolean success) {
-
-		try {
-			this.scenarioDeployer.actionCompleted(this.agentAddress, success);
-		} finally {
-			updateState();
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean actionRequest(AgentState action) {
 
 		try {

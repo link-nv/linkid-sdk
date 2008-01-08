@@ -58,12 +58,10 @@ public abstract class ScenarioThread implements Runnable {
 					try {
 						agent.setError(null);
 						process(agentEntry.getKey(), agent);
-						agent.actionCompleted(true);
 					}
 
 					catch (Exception e) {
 						agent.setError(e);
-						agent.actionCompleted(false);
 					}
 				}
 			}.start();

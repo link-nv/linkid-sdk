@@ -5,38 +5,24 @@
         initial_hosts="sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]"
         port_range="5"
         timeout="3000"
-        num_initial_members="3"
-        up_thread="true"
-        down_thread="true" />
+        num_initial_members="3" />
     <MERGE2
         max_interval="10000"
-        min_interval="5000"/>
+        min_interval="5000" />
     <FD_SOCK />
     <VERIFY_SUSPECT
-        up_thread="false"
-        down_thread="false"
-        timeout="1500"/>
+        timeout="1500" />
     <pbcast.NAKACK
-        up_thread="false"
-        down_thread="false"
-        max_xmit_size="8096"
         gc_lag="50"
-        retransmit_timeout="600,1200,2400,4800"/>
+        retransmit_timeout="600,1200,2400,4800" />
     <UNICAST
         timeout="600,1200,2400,4800" />
     <pbcast.STABLE
-        up_thread="false"
-        down_thread="false"
-        desired_avg_gossip="20000"/>
+        desired_avg_gossip="20000" />
     <FRAG
-        frag_size="8096"
-        down_thread="false"
-        up_thread="false"/>
+        frag_size="8096" />
     <pbcast.GMS
-        up_thread="false"
-        down_thread="false"
         join_timeout="5000"
-        join_retry_timeout="2000"
         shun="false"
-        print_local_addr="true"/>
+        print_local_addr="true" />
 </config>
