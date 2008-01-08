@@ -441,11 +441,9 @@ textarea {
 	border-left: 1px dotted #81aa00;
 }
 
-textarea:hover {
-	border-left: 1px solid #81aa00;
-}
+textarea:hover table.styled
 
-table {
+table.styled {
 	border: none;
 	padding: 0;
 	margin: ;
@@ -456,37 +454,37 @@ table {
 	display: block;
 }
 
-table tbody {
+table.styled tbody {
 	padding: 5px;
 }
 
-table tbody tr  {
+table.styled tbody tr  {
 	background: #fff;
 	margin: 0;
 	padding: 0;
 }
 
 
-table tfoot tr  {
+table.styled tfoot tr  {
 	background: #E8E7E7;
 	margin: 0;
 	padding: 0;
 }
 
 
-table tbody tr:hover  {
+table.styled tbody tr:hover  {
 	background: #cdde8d;
 }
 
-table tbody tr td  {
+table.styled tbody tr td  {
 	margin: 0;
 	padding: 5px;
 	border: none;
 	border-top: 1px solid #81aa00;
 }
 
-table thead tr th,
-table thead tr td  {
+table.styled thead tr th,
+table.styled thead tr td  {
 	margin: 0;
 	padding: 5px;
 	border: none;
