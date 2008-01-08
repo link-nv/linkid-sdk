@@ -35,6 +35,7 @@ import net.link.safeonline.authentication.exception.ExistingApplicationException
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.ApplicationServiceRemote;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
@@ -163,6 +164,9 @@ public class ApplicationServiceBean implements ApplicationService,
 
 		setInitialApplicationIdentity(initialApplicationIdentityAttributes,
 				application);
+
+		applicationOwner.getApplications().add(application);
+
 	}
 
 	private void setInitialApplicationIdentity(
@@ -214,6 +218,10 @@ public class ApplicationServiceBean implements ApplicationService,
 
 		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
 				.listSubscriptions(application);
+
+		ApplicationOwnerEntity applicationOwner = application
+				.getApplicationOwner();
+		applicationOwner.getApplications().remove(application);
 		/*
 		 * We don't rely on hibernate here to cascade remove the subscriptions
 		 * and application identities for the moment. Postpone this until be
@@ -265,13 +273,14 @@ public class ApplicationServiceBean implements ApplicationService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void registerApplicationOwner(String ownerName, String adminId)
+	public void registerApplicationOwner(String ownerName, String adminLogin)
 			throws SubjectNotFoundException, ExistingApplicationOwnerException {
 		LOG.debug("register application owner: " + ownerName + " with account "
-				+ adminId);
+				+ adminLogin);
 		checkExistingOwner(ownerName);
 
-		SubjectEntity adminSubject = this.subjectService.getSubject(adminId);
+		SubjectEntity adminSubject = this.subjectService
+				.getSubjectFromUserName(adminLogin);
 
 		this.applicationOwnerDAO.addApplicationOwner(ownerName, adminSubject);
 
@@ -292,7 +301,7 @@ public class ApplicationServiceBean implements ApplicationService,
 		 * possible that the login cannot logon because JAAS is caching the old
 		 * roles that did not include the 'owner' role yet.
 		 */
-		SecurityManagerUtils.flushCredentialCache(adminId,
+		SecurityManagerUtils.flushCredentialCache(adminLogin,
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
 	}
 
@@ -302,6 +311,47 @@ public class ApplicationServiceBean implements ApplicationService,
 				.findApplicationOwner(name);
 		if (null != existingApplicationOwner)
 			throw new ExistingApplicationOwnerException();
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void removeApplicationOwner(String ownerName, String adminLogin)
+			throws SubscriptionNotFoundException, SubjectNotFoundException,
+			ApplicationOwnerNotFoundException, PermissionDeniedException {
+		LOG.debug("remove application owner: " + ownerName);
+
+		checkOwnerApplications(ownerName);
+
+		SubjectEntity adminSubject = this.subjectService
+				.getSubjectFromUserName(adminLogin);
+
+		this.applicationOwnerDAO.removeApplicationOwner(ownerName);
+
+		ApplicationEntity ownerApplication = this.applicationDAO
+				.findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
+		if (null == ownerApplication)
+			throw new EJBException("SafeOnline owner application not found");
+
+		/*
+		 * Remove the application owner's subscription to the SafeOnline Owner
+		 * web application.
+		 */
+		this.subscriptionDAO.removeSubscription(adminSubject, ownerApplication);
+
+		/*
+		 * Flush the credential cache as the owner role is no longer for this
+		 * login.
+		 */
+		SecurityManagerUtils.flushCredentialCache(adminLogin,
+				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+	}
+
+	private void checkOwnerApplications(String name)
+			throws ApplicationOwnerNotFoundException, PermissionDeniedException {
+		ApplicationOwnerEntity owner = this.applicationOwnerDAO
+				.getApplicationOwner(name);
+		if (!owner.getApplications().isEmpty())
+			throw new PermissionDeniedException("application owner still owns "
+					+ owner.getApplications().size() + " applications");
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

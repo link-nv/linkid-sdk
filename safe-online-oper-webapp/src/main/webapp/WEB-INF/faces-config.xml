@@ -94,6 +94,14 @@
 			<from-outcome>add-owner</from-outcome>
 			<to-view-id>/owners/owner-add.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/owners/owners.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view-owner</from-outcome>
+			<to-view-id>/owners/owner-view.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>
@@ -107,7 +115,14 @@
 			<to-view-id>/owners/owners.seam</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
+	
+	<navigation-rule>
+		<from-view-id>/owners/owner-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/owners/owners.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 	<!-- Begin PKIX navigation rules -->
 
 	<navigation-rule>
@@ -701,7 +716,7 @@
 			<to-view-id>/audit/audit.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-	
+
 	<!-- End audit navigation rules -->
 
 	<!-- Begin usage agreement navigation rules -->

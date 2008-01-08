@@ -29,6 +29,12 @@
 			<ul class="sidemenu">
 				<li><h:commandLink action="/tasks/tasks.seam"
 					value="#{msgs.operatorTasks}" /></li>
+				<li><h:commandLink action="#{audit.viewSecurityRecords}"
+					value="#{msgs.operatorSecurityAuditRecords}" id="viewsecurity" /></li>
+				<li><h:commandLink action="#{audit.viewResourceRecords}"
+					value="#{msgs.operatorResourceAuditRecords}" id="viewresource" /></li>
+				<li><h:commandLink action="#{audit.viewAuditRecords}"
+					value="#{msgs.operatorAuditAuditRecords}" id="viewaudit" /></li>
 			</ul>
 		</h:form>
 	</ui:define>

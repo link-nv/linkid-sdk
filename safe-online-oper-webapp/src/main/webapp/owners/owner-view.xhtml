@@ -13,28 +13,30 @@
 		</ui:include>
 	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.applicationOwners}</h1>
+		<h1>#{msgs.applicationOwner}</h1>
 	</ui:define>
 	<ui:define name="content">
 
+		<h:panelGrid columns="2">
+			<h:outputLabel for="name" value="#{msgs.name}" />
+			<h:outputLabel id="name"
+				value="#{selectedApplicationOwner.entity.name}" />
+			<h:outputLabel for="admin" value="#{msgs.admin}" />
+			<h:outputLabel id="admin"
+				value="#{selectedApplicationOwner.adminName}" />
+		</h:panelGrid>
 
 		<a4j:form id="appOwnerForm" ajaxSubmit="true" reRender="app-data">
-			<rich:dataTable id="app-data" var="item"
-				value="#{applicationOwnerList}" rows="10" styleClass="listingTable"
+			<rich:dataTable id="app-data" var="item" value="#{applicationList}"
+				rows="10" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
-					<f:facet name="header">#{msgs.applicationOwner}</f:facet>
-					<a4j:commandLink id="viewowner" value="#{item.entity.name}"
-						action="#{applicationOwner.view}" />
+					<f:facet name="header">#{msgs.application}</f:facet>
+					<h:outputText value="#{item.name}" />
 				</h:column>
 				<h:column>
-					<f:facet name="header">#{msgs.operatorAdmin}</f:facet>
-					#{item.adminName}
-				</h:column>
-				<h:column>
-					<f:facet name="header">#{msgs.action}</f:facet>
-					<a4j:commandLink id="removeowner" value="#{msgs.removeaction}"
-						action="#{applicationOwner.remove}" />
+					<f:facet name="header">#{msgs.applicationfriendlyname}</f:facet>
+					<h:outputText value="#{item.friendlyName}" />
 				</h:column>
 
 				<f:facet name="footer">
@@ -43,10 +45,12 @@
 			</rich:dataTable>
 
 			<rich:messages styleClass="error" />
-
-			<a4j:commandButton value="#{msgs.addaction}" id="add"
-				action="add-owner" styleClass="submit" />
 		</a4j:form>
+
+		<h:form>
+			<h:commandButton id="back" value="#{msgs.backaction}" action="back"
+				styleClass="submit" />
+		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">

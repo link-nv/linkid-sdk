@@ -121,10 +121,8 @@ public class IdentityServiceBeanTest {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
 		userRegistrationService.registerUser(applicationOwnerLogin, "password");
-		SubjectEntity ownerSubject = subjectService
-				.findSubjectFromUserName(applicationOwnerLogin);
 		applicationService.registerApplicationOwner(
-				"test-application-owner-name", ownerSubject.getUserId());
+				"test-application-owner-name", applicationOwnerLogin);
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
 				AttributeTypeServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
@@ -216,10 +214,8 @@ public class IdentityServiceBeanTest {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
 		userRegistrationService.registerUser(applicationOwnerLogin, "password");
-		SubjectEntity ownerSubject = subjectService
-				.findSubjectFromUserName(applicationOwnerLogin);
 		applicationService.registerApplicationOwner(
-				"test-application-owner-name", ownerSubject.getUserId());
+				"test-application-owner-name", applicationOwnerLogin);
 		AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(
 				AttributeTypeServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager,
@@ -301,10 +297,8 @@ public class IdentityServiceBeanTest {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", "operator");
 		userRegistrationService.registerUser(applicationOwnerLogin, "password");
-		SubjectEntity ownerSubject = subjectService
-				.findSubjectFromUserName(applicationOwnerLogin);
 		applicationService.registerApplicationOwner(
-				"test-application-owner-name", ownerSubject.getUserId());
+				"test-application-owner-name", applicationOwnerLogin);
 		applicationService.addApplication(applicationName, null,
 				"test-application-owner-name", null, false, IdScopeType.USER,
 				null, null, null, null,
@@ -1287,8 +1281,8 @@ public class IdentityServiceBeanTest {
 				SafeOnlineTestContainer.sessionBeans, entityManager,
 				"test-operator", SafeOnlineRoles.OPERATOR_ROLE);
 		String applicationOwnerName = "test-application-owner-name";
-		applicationService.registerApplicationOwner(applicationOwnerName,
-				subject.getUserId());
+		applicationService
+				.registerApplicationOwner(applicationOwnerName, login);
 		String applicationName = "test-application";
 		List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
 		initialApplicationIdentityAttributes.add(new IdentityAttributeTypeDO(

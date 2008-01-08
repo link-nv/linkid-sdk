@@ -79,4 +79,10 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 				.getApplicationOwner(adminSubject);
 		return applicationOwner;
 	}
+
+	public void removeApplicationOwner(String name) {
+		LOG.debug("remove application owner: " + name);
+		ApplicationOwnerEntity applicationOwner = findApplicationOwner(name);
+		this.entityManager.remove(applicationOwner);
+	}
 }

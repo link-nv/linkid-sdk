@@ -22,6 +22,7 @@ import net.link.safeonline.authentication.exception.ExistingApplicationException
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
@@ -120,8 +121,24 @@ public interface ApplicationService {
 	 * @throws SubjectNotFoundException
 	 * @throws ExistingApplicationOwnerException
 	 */
-	void registerApplicationOwner(String ownerName, String adminId)
+	void registerApplicationOwner(String ownerName, String adminLogin)
 			throws SubjectNotFoundException, ExistingApplicationOwnerException;
+
+	/**
+	 * Removes an application owner.
+	 * 
+	 * @param ownerName
+	 *            the name of the application owner.
+	 * @param adminLogin
+	 *            the admin subject login.
+	 * @throws PermissionDeniedException
+	 * @throws ApplicationOwnerNotFoundException
+	 * @throws SubjectNotFoundException
+	 * @throws SubscriptionNotFoundException
+	 */
+	void removeApplicationOwner(String ownerName, String adminLogin)
+			throws SubscriptionNotFoundException, SubjectNotFoundException,
+			ApplicationOwnerNotFoundException, PermissionDeniedException;
 
 	/**
 	 * Gives back a list of all application owners within the system.

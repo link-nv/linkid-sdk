@@ -7,10 +7,15 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.ApplicationOwnerEntity.QUERY_WHERE_ADMIN;
+import static net.link.safeonline.entity.ApplicationOwnerEntity.QUERY_WHERE_ALL;
+
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -25,9 +30,6 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import static net.link.safeonline.entity.ApplicationOwnerEntity.QUERY_WHERE_ALL;
-import static net.link.safeonline.entity.ApplicationOwnerEntity.QUERY_WHERE_ADMIN;
 
 @Entity
 @Table(name = "application_owner")
@@ -57,6 +59,7 @@ public class ApplicationOwnerEntity implements Serializable {
 	public ApplicationOwnerEntity(String name, SubjectEntity admin) {
 		this.name = name;
 		this.admin = admin;
+		this.applications = new LinkedList<ApplicationEntity>();
 	}
 
 	@Id
@@ -77,7 +80,7 @@ public class ApplicationOwnerEntity implements Serializable {
 		this.admin = admin;
 	}
 
-	@OneToMany(mappedBy = "applicationOwner")
+	@OneToMany(mappedBy = "applicationOwner", fetch = FetchType.EAGER)
 	@OrderBy("name")
 	public List<ApplicationEntity> getApplications() {
 		return this.applications;

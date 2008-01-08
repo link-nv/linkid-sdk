@@ -16,9 +16,13 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 
+import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.oper.ApplicationOwner;
 import net.link.safeonline.oper.OperatorConstants;
@@ -28,11 +32,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.core.FacesMessages;
 
 @Stateful
@@ -45,6 +52,10 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 	private static final Log LOG = LogFactory
 			.getLog(ApplicationOwnerBean.class);
 
+	private static final String APPLICATION_OWNER_LIST_NAME = "applicationOwnerList";
+
+	private static final String APPLICATION_LIST_NAME = "applicationList";
+
 	@EJB
 	private ApplicationService applicationService;
 
@@ -52,8 +63,17 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 	protected SubjectService subjectService;
 
 	@SuppressWarnings("unused")
-	@DataModel("applicationOwnerList")
+	@DataModel(APPLICATION_OWNER_LIST_NAME)
 	private List<ApplicationOwnerWrapper> applicationOwnerList;
+
+	@DataModelSelection(APPLICATION_OWNER_LIST_NAME)
+	@Out(value = "selectedApplicationOwner", required = false, scope = ScopeType.SESSION)
+	@In(required = false)
+	private ApplicationOwnerWrapper selectedApplicationOwner;
+
+	@SuppressWarnings("unused")
+	@DataModel(APPLICATION_LIST_NAME)
+	private List<ApplicationEntity> applicationList;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -101,7 +121,46 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 		return "success";
 	}
 
-	@Factory("applicationOwnerList")
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String remove() {
+		LOG.debug("remove");
+		try {
+			this.applicationService.removeApplicationOwner(
+					this.selectedApplicationOwner.getEntity().getName(),
+					this.selectedApplicationOwner.getAdminName());
+		} catch (SubscriptionNotFoundException e) {
+			LOG.debug("owner's subscription to owner webapp not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
+			return null;
+		} catch (SubjectNotFoundException e) {
+			LOG.debug("subject not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			return null;
+		} catch (ApplicationOwnerNotFoundException e) {
+			LOG.debug("application owner not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorApplicationOwnerNotFound");
+			return null;
+		} catch (PermissionDeniedException e) {
+			LOG.debug("permission denied, owner still owns applications");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			return null;
+		}
+		applicationOwnerListFactory();
+		return "success";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String view() {
+		LOG.debug("view");
+		return "view-owner";
+	}
+
+	@Factory(APPLICATION_OWNER_LIST_NAME)
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void applicationOwnerListFactory() {
 		LOG.debug("application owner list factory");
@@ -112,6 +171,16 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 			this.applicationOwnerList.add(new ApplicationOwnerWrapper(
 					applicationOwnerEntity));
 		}
+	}
+
+	@Factory(APPLICATION_LIST_NAME)
+	public void applicationListFactory() {
+		if (null == this.selectedApplicationOwner)
+			return;
+		LOG.debug("application list factory for owner="
+				+ this.selectedApplicationOwner.getEntity().getName());
+		this.applicationList = this.selectedApplicationOwner.getEntity()
+				.getApplications();
 	}
 
 	@Remove

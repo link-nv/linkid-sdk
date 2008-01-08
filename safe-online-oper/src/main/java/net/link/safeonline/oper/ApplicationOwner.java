@@ -17,6 +17,8 @@ public interface ApplicationOwner {
 	 */
 	void applicationOwnerListFactory();
 
+	void applicationListFactory();
+
 	/*
 	 * Accessors.
 	 */
@@ -32,6 +34,10 @@ public interface ApplicationOwner {
 	 * Actions.
 	 */
 	String add();
+
+	String remove();
+
+	String view();
 
 	/*
 	 * Lifecycle.
