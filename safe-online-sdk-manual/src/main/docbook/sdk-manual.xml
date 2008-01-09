@@ -694,7 +694,7 @@ public static class MyCompounded {
 			</para>
 		</section>
 		<section>
-			<title>Direct application-level initiation</title>
+			<title>Explicit Authentication</title>
 			<para>
 				Direct invocation of the authentication protocol handler
 				is also possible. An example of this is given by
@@ -705,6 +705,59 @@ public static class MyCompounded {
 				is still required to be able to process the
 				authentication response as received from the OLAS
 				authentication web application.
+			</para>
+		</section>
+		<section>
+			<title>Landing Page</title>
+			<para>
+				The advantage of using a landing page to go back from
+				the authentication web application to your web
+				application is that in that way you can prevent a
+				browser security warning when your web application in
+				not running over SSL. For example, the warning that
+				Firefox gives looks like:
+				<quote>
+					Although this page is encrypted, the information you
+					have entered is to be sent over an unencrypted
+					connection and could easily be read by a third
+					party. Are you sure you want to continue sending
+					this information?
+				</quote>
+				This can be prevented by using a landing page where the
+				authentication web application can land on with its
+				authentication response token. The idea is to have the
+				local landing page over SSL. That way the browser can do
+				a smooth and secure transfer of the authentication
+				response token from the authentication web application
+				back to your web application. After successful login the
+				landing page will redirect to the original target page,
+				which can run over a non-SSL connection.
+			</para>
+			<para>
+				The OLAS SDK comes with a landing page component
+				implemented as a servlet. This means that it can easily
+				be integrated into your existing JavaEE web application.
+				Below you find a configuration example of
+				<code>web.xml</code>
+				for the landing page component.
+				<programlisting><![CDATA[<context-param>
+	<param-name>LandingPage</param-name>
+	<param-value>
+		https://your.application.domain/your-application-context/login
+	</param-value>
+</context-param>
+	
+<servlet>
+	<servlet-name>LoginServlet</servlet-name>
+	<servlet-class>
+		net.link.safeonline.sdk.auth.servlet.LoginServlet
+	</servlet-class>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>LoginServlet</servlet-name>
+	<url-pattern>/login</url-pattern>
+</servlet-mapping>]]></programlisting>
 			</para>
 		</section>
 	</chapter>
