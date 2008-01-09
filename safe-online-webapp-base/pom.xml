@@ -164,31 +164,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.richfaces.ui</groupId>
-			<artifactId>suggestionbox</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>spacer</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>dataTable</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>datascroller</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>tabPanel</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
 			<artifactId>richfaces-ui</artifactId>
 			<scope>runtime</scope>
 		</dependency>

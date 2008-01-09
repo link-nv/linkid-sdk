@@ -20,8 +20,6 @@ import javax.faces.model.SelectItem;
 import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
-import net.link.safeonline.ctrl.Convertor;
-import net.link.safeonline.ctrl.ConvertorUtil;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.oper.OperatorConstants;
@@ -148,41 +146,38 @@ public class AddAttributeBean implements AddAttribute {
 		this.userEditable = userEditable;
 	}
 
-	private AttributeTypeEntity[] selectedMemberAttributes;
+	@EJB
+	private AttributeTypeService attributeTypeService;
+
+	private List<AttributeTypeEntity> sourceMemberAttributes;
+
+	private List<AttributeTypeEntity> selectedMemberAttributes;
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public AttributeTypeEntity[] getSelectedMemberAttributes() {
+	public List<AttributeTypeEntity> getSourceMemberAttributes() {
+		this.sourceMemberAttributes = this.attributeTypeService
+				.listAvailableMemberAttributeTypes();
+		return this.sourceMemberAttributes;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setSourceMemberAttributes(
+			List<AttributeTypeEntity> sourceMemberAttributes) {
+		this.sourceMemberAttributes = sourceMemberAttributes;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public List<AttributeTypeEntity> getTargetMemberAttributes() {
 		return this.selectedMemberAttributes;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setSelectedMemberAttributes(
-			AttributeTypeEntity[] selectedMemberAttributes) {
-		this.selectedMemberAttributes = selectedMemberAttributes;
+	public void setTargetMemberAttributes(
+			List<AttributeTypeEntity> targetMemberAttributes) {
+		this.selectedMemberAttributes = targetMemberAttributes;
+		for (AttributeTypeEntity targetMemberAttribute : this.selectedMemberAttributes)
+			this.log.debug("set target: " + targetMemberAttribute.getName());
 	}
-
-	@Factory("memberAttributes")
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public List<SelectItem> memberAttributesFactory() {
-		List<AttributeTypeEntity> memberAttributeTypes = this.attributeTypeService
-				.listAvailableMemberAttributeTypes();
-		List<SelectItem> memberAttributes = ConvertorUtil.convert(
-				memberAttributeTypes, new AttributeConvertor());
-		return memberAttributes;
-	}
-
-	static class AttributeConvertor implements
-			Convertor<AttributeTypeEntity, SelectItem> {
-
-		public SelectItem convert(AttributeTypeEntity input) {
-			String attributeName = input.getName();
-			SelectItem output = new SelectItem(input, attributeName);
-			return output;
-		}
-	}
-
-	@EJB
-	private AttributeTypeService attributeTypeService;
 
 	@SuppressWarnings("unused")
 	@DataModel

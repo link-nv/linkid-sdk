@@ -1887,8 +1887,8 @@
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
 		<javassist.version>3.0</javassist.version>
-		<richfaces-api.version>3.1.2.GA</richfaces-api.version>
-		<richfaces-impl.version>3.1.2.GA</richfaces-impl.version>
+		<richfaces-api.version>3.1.3.GA</richfaces-api.version>
+		<richfaces-impl.version>3.1.3.GA</richfaces-impl.version>
 		<richfaces-suggestionbox.version>
 			3.1.0
 		</richfaces-suggestionbox.version>
@@ -1898,7 +1898,7 @@
 			3.1.0
 		</richfaces-datascroller.version>
 		<richfaces-tabPanel.version>3.1.0</richfaces-tabPanel.version>
-		<richfaces-ui.version>3.1.2.GA</richfaces-ui.version>
+		<richfaces-ui.version>3.1.3.GA</richfaces-ui.version>
 		<webui-jsf.version>4.1-b6</webui-jsf.version>
 		<dataprovider.version>4.1-b6</dataprovider.version>
 		<json.version>4.1-b6</json.version>

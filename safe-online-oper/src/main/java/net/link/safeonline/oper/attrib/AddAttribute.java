@@ -45,10 +45,15 @@ public interface AddAttribute {
 
 	void setUserEditable(boolean userEditable);
 
-	void setSelectedMemberAttributes(
-			AttributeTypeEntity[] selectedMemberAttributes);
+	List<AttributeTypeEntity> getSourceMemberAttributes();
 
-	AttributeTypeEntity[] getSelectedMemberAttributes();
+	void setSourceMemberAttributes(
+			List<AttributeTypeEntity> sourceMemberAttributes);
+
+	List<AttributeTypeEntity> getTargetMemberAttributes();
+
+	void setTargetMemberAttributes(
+			List<AttributeTypeEntity> targetMemberAttributes);
 
 	/*
 	 * Actions.
@@ -69,8 +74,6 @@ public interface AddAttribute {
 	 * Factory.
 	 */
 	List<SelectItem> datatypesFactory();
-
-	List<SelectItem> memberAttributesFactory();
 
 	void memberAccessControlAttributesFactory();
 }

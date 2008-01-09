@@ -254,7 +254,7 @@
 	<servlet>
 		<servlet-name>Logo Servlet</servlet-name>
 		<servlet-class>
-            net.link.safeonline.webapp.resources.ApplicationLogoServlet
+			net.link.safeonline.webapp.resources.ApplicationLogoServlet
 		</servlet-class>
 	</servlet>
 
@@ -280,7 +280,7 @@
 
 	<servlet-mapping>
 		<servlet-name>Logo Servlet</servlet-name>
-        <url-pattern>/logo</url-pattern>
+		<url-pattern>/logo</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

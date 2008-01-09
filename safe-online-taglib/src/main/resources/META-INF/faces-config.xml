@@ -42,8 +42,19 @@
 		<renderer>
 			<component-family>javax.faces.SelectOne</component-family>
 			<renderer-type>javax.faces.Radio</renderer-type>
-			<renderer-class>net.link.safeonline.renderer.NoTablesRadioButtonRenderer</renderer-class>
+			<renderer-class>
+				net.link.safeonline.renderer.NoTablesRadioButtonRenderer
+			</renderer-class>
 		</renderer>
 	</render-kit>
+
+	<converter>
+		<converter-id>
+			net.link.safeonline.converter.AttributeTypeConverter
+		</converter-id>
+		<converter-class>
+			net.link.safeonline.converter.AttributeTypeConverter
+		</converter-class>
+	</converter>
 
 </faces-config>

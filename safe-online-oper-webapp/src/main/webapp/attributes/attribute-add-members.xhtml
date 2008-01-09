@@ -24,12 +24,17 @@
 
 
 		<h:form>
-			<tr:selectOrderShuttle id="memberAttributes"
-				value="#{addAttribute.selectedMemberAttributes}"
-				leadingHeader="#{msgs.availableAttributes}:"
-				trailingHeader="#{msgs.memberAttributes}:">
-				<f:selectItems value="#{memberAttributes}" />
-			</tr:selectOrderShuttle>
+			<rich:listShuttle
+				sourceValue="#{addAttribute.sourceMemberAttributes}"
+				targetValue="#{addAttribute.targetMemberAttributes}" var="item"
+				sourceCaptionLabel="#{msgs.availableAttributes}:"
+				targetCaptionLabel="#{msgs.memberAttributes}:"
+				converter="net.link.safeonline.converter.AttributeTypeConverter">
+
+				<rich:column>
+					<h:outputText value="#{item.name}"></h:outputText>
+				</rich:column>
+			</rich:listShuttle>
 
 			<h:messages styleClass="error" globalOnly="true" />
 
