@@ -172,4 +172,11 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 			return true;
 		}
 	}
+
+	@RolesAllowed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE)
+	public void remove(AttributeTypeEntity attributeType) {
+		LOG.debug("remove attribute type: " + attributeType.getName());
+		// TODO Auto-generated method stub
+
+	}
 }

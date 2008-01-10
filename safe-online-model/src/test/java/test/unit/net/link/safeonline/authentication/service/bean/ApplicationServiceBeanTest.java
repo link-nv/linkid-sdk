@@ -26,7 +26,9 @@ import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -193,6 +195,19 @@ public class ApplicationServiceBeanTest extends TestCase {
 		EntityTransaction entityTransaction = entityManager.getTransaction();
 		entityTransaction.commit();
 		entityTransaction.begin();
+
+		/*
+		 * Add the application manually to the application owner, at runtime
+		 * hibernate takes care of this transparantly
+		 */
+		ApplicationEntity application = applicationService
+				.getApplication(testApplicationName);
+		ApplicationOwnerEntity applicationOwner = application
+				.getApplicationOwner();
+		assertNull(applicationOwner.getApplications());
+		List<ApplicationEntity> ownerApplications = new LinkedList<ApplicationEntity>();
+		ownerApplications.add(application);
+		applicationOwner.setApplications(ownerApplications);
 
 		try {
 			applicationService.removeApplicationOwner(testApplicationOwnerName,

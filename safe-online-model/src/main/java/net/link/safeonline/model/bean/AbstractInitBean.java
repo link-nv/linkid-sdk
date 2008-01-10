@@ -543,8 +543,6 @@ public abstract class AbstractInitBean implements Startable {
 
 			this.applicationIdentityDAO.addApplicationIdentity(newApplication,
 					identityVersion);
-
-			applicationOwner.getApplications().add(newApplication);
 		}
 	}
 

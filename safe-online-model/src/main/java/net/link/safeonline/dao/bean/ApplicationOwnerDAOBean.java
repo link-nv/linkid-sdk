@@ -11,12 +11,15 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
@@ -84,5 +87,16 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 		LOG.debug("remove application owner: " + name);
 		ApplicationOwnerEntity applicationOwner = findApplicationOwner(name);
 		this.entityManager.remove(applicationOwner);
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void removeApplication(ApplicationEntity application) {
+		LOG
+				.debug("remove application " + application.getName()
+						+ " from owner: "
+						+ application.getApplicationOwner().getName());
+		ApplicationOwnerEntity applicationOwner = findApplicationOwner(application
+				.getApplicationOwner().getName());
+		applicationOwner.getApplications().remove(application);
 	}
 }

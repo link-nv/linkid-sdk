@@ -89,6 +89,13 @@
 		<param-value>OLAS</param-value>
 	</context-param>
 
+	<context-param>
+		<param-name>LandingPage</param-name>
+		<param-value>
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-helpdesk/login
+		</param-value>
+	</context-param>
+
 	<filter>
 		<display-name>Ajax4jsf Filter</display-name>
 		<filter-name>ajax4jsf</filter-name>
@@ -239,6 +246,13 @@
 		</servlet-class>
 	</servlet>
 
+	<servlet>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.sdk.auth.servlet.LoginServlet
+		</servlet-class>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.seam</url-pattern>
@@ -252,6 +266,11 @@
 	<servlet-mapping>
 		<servlet-name>Seam Resource Servlet</servlet-name>
 		<url-pattern>/seam/resource/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

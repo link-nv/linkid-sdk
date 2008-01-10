@@ -12,6 +12,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
@@ -30,4 +31,6 @@ public interface ApplicationOwnerDAO {
 	List<ApplicationOwnerEntity> listApplicationOwners();
 
 	ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject);
+
+	void removeApplication(ApplicationEntity application);
 }

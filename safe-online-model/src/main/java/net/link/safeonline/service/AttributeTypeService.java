@@ -62,6 +62,14 @@ public interface AttributeTypeService {
 			throws ExistingAttributeTypeException,
 			AttributeTypeNotFoundException, AttributeTypeDefinitionException;
 
+	/**
+	 * Removes an attribute type using the given attribute type prototype. No
+	 * existing application identities should be using this type.
+	 * 
+	 * @param attributeType
+	 */
+	void remove(AttributeTypeEntity attributeType);
+
 	List<AttributeTypeDescriptionEntity> listDescriptions(
 			String attributeTypeName) throws AttributeTypeNotFoundException;
 

@@ -80,6 +80,13 @@
 		<param-value>${debug.mode}</param-value>
 	</context-param>
 
+	<context-param>
+		<param-name>LandingPage</param-name>
+		<param-value>
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/demo-lawyer/authlogin
+		</param-value>
+	</context-param>
+
 	<filter>
 		<filter-name>LoginFilter</filter-name>
 		<filter-class>
@@ -131,7 +138,7 @@
 
 	<filter-mapping>
 		<filter-name>LoginFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/login</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>
@@ -164,6 +171,18 @@
 			<param-value>${safe-online.host.port.ssl}</param-value>
 		</init-param>
 	</servlet>
+
+	<servlet>
+		<servlet-name>AuthLoginServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.sdk.auth.servlet.LoginServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>AuthLoginServlet</servlet-name>
+		<url-pattern>/authlogin</url-pattern>
+	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>

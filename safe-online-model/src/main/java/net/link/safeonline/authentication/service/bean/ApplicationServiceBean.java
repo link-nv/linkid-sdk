@@ -164,9 +164,6 @@ public class ApplicationServiceBean implements ApplicationService,
 
 		setInitialApplicationIdentity(initialApplicationIdentityAttributes,
 				application);
-
-		applicationOwner.getApplications().add(application);
-
 	}
 
 	private void setInitialApplicationIdentity(
@@ -219,9 +216,6 @@ public class ApplicationServiceBean implements ApplicationService,
 		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
 				.listSubscriptions(application);
 
-		ApplicationOwnerEntity applicationOwner = application
-				.getApplicationOwner();
-		applicationOwner.getApplications().remove(application);
 		/*
 		 * We don't rely on hibernate here to cascade remove the subscriptions
 		 * and application identities for the moment. Postpone this until be
@@ -349,6 +343,8 @@ public class ApplicationServiceBean implements ApplicationService,
 			throws ApplicationOwnerNotFoundException, PermissionDeniedException {
 		ApplicationOwnerEntity owner = this.applicationOwnerDAO
 				.getApplicationOwner(name);
+		if (null == owner.getApplications())
+			return;
 		if (!owner.getApplications().isEmpty())
 			throw new PermissionDeniedException("application owner still owns "
 					+ owner.getApplications().size() + " applications");

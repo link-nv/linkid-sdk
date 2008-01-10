@@ -20,8 +20,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Context;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -29,6 +31,9 @@ import org.jboss.seam.log.Log;
 @LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "ActionsBean/local")
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 public class ActionsBean implements Actions {
+
+	@In
+	Context sessionContext;
 
 	@EJB
 	private AccountService accountService;
@@ -45,6 +50,8 @@ public class ActionsBean implements Actions {
 	public String removeAccount() {
 		this.log.debug("remove account");
 		this.accountService.removeAccount();
+		this.sessionContext.set("login-processing", null);
+		this.sessionContext.set("username", null);
 		Seam.invalidateSession();
 		return "logout-success";
 	}

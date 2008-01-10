@@ -11,7 +11,6 @@ import static net.link.safeonline.entity.ApplicationOwnerEntity.QUERY_WHERE_ADMI
 import static net.link.safeonline.entity.ApplicationOwnerEntity.QUERY_WHERE_ALL;
 
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -59,7 +58,6 @@ public class ApplicationOwnerEntity implements Serializable {
 	public ApplicationOwnerEntity(String name, SubjectEntity admin) {
 		this.name = name;
 		this.admin = admin;
-		this.applications = new LinkedList<ApplicationEntity>();
 	}
 
 	@Id

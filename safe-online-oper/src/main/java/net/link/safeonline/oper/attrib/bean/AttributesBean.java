@@ -71,4 +71,12 @@ public class AttributesBean implements Attributes {
 		LOG.debug("view: " + this.selectedAttributeType.getName());
 		return "view";
 	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String remove() {
+		LOG.debug("remove " + this.selectedAttributeType.getName());
+		this.attributeTypeService.remove(this.selectedAttributeType);
+		attributeTypeListFactory();
+		return "success";
+	}
 }

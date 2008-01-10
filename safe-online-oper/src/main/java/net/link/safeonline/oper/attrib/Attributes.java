@@ -22,6 +22,8 @@ public interface Attributes {
 	 */
 	String view();
 
+	String remove();
+
 	/*
 	 * Lifecycle.
 	 */

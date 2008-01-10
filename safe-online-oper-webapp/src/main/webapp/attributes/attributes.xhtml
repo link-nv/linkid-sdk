@@ -29,6 +29,11 @@
 					<f:facet name="header">#{msgs.name}</f:facet>
 					<a4j:commandLink value="#{item.name}" action="#{attributes.view}" />
 				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.action}</f:facet>
+					<a4j:commandLink value="#{item.removeaction}"
+						action="#{attributes.remove}" />
+				</h:column>
 				<f:facet name="footer">
 					<rich:datascroller for="attributes-data" />
 				</f:facet>

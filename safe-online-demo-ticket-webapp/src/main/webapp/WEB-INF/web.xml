@@ -90,6 +90,13 @@
 		<param-value>${debug.mode}</param-value>
 	</context-param>
 
+	<context-param>
+		<param-name>LandingPage</param-name>
+		<param-value>
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/demo-ticket/login
+		</param-value>
+	</context-param>
+
 	<filter>
 		<filter-name>LoginFilter</filter-name>
 		<filter-class>
@@ -141,7 +148,7 @@
 
 	<filter-mapping>
 		<filter-name>LoginFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>
@@ -175,6 +182,18 @@
 	<servlet-mapping>
 		<servlet-name>TicketServlet</servlet-name>
 		<url-pattern>/TicketServlet/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>AuthLoginServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.sdk.auth.servlet.LoginServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>AuthLoginServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 
 	<session-config>
