@@ -147,4 +147,11 @@ public interface AttributeDAO {
 	 */
 	void removeAttributes(SubjectEntity subject);
 
+	/**
+	 * Removes all the attributes of the given attribue type.
+	 * 
+	 * @param attributeType
+	 */
+	void removeAttributes(AttributeTypeEntity attributeType);
+
 }

@@ -31,6 +31,8 @@ public interface AttributeTypeDAO {
 
 	void addAttributeType(AttributeTypeEntity attributeType);
 
+	void removeAttributeType(String name);
+
 	AttributeTypeEntity findAttributeType(String name);
 
 	AttributeTypeEntity getAttributeType(String name)
@@ -86,4 +88,12 @@ public interface AttributeTypeDAO {
 	CompoundedAttributeTypeMemberEntity getMemberEntry(
 			AttributeTypeEntity memberAttributeType)
 			throws AttributeTypeNotFoundException;
+
+	/**
+	 * Removes the compounded member attribute type entities ( not the actual
+	 * member attribute type ) of the given parent.
+	 * 
+	 * @param parentAttributeType
+	 */
+	void removeMemberEntries(AttributeTypeEntity parentAttributeType);
 }

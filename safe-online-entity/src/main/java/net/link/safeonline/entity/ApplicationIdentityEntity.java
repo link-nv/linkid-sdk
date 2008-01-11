@@ -7,6 +7,9 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.ApplicationIdentityEntity.QUERY_LIST_ALL;
+import static net.link.safeonline.entity.ApplicationIdentityEntity.QUERY_WHERE_APPLICATION;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -34,18 +37,21 @@ import net.link.safeonline.jpa.annotation.QueryParam;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import static net.link.safeonline.entity.ApplicationIdentityEntity.QUERY_WHERE_APPLICATION;
-
 @Entity
 @Table(name = "application_identity")
-@NamedQueries( { @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT applicationIdentity "
-		+ "FROM ApplicationIdentityEntity AS applicationIdentity "
-		+ "WHERE applicationIdentity.application = :application") })
+@NamedQueries( {
+		@NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT applicationIdentity "
+				+ "FROM ApplicationIdentityEntity AS applicationIdentity "
+				+ "WHERE applicationIdentity.application = :application"),
+		@NamedQuery(name = QUERY_LIST_ALL, query = "SELECT applicationIdentity "
+				+ "FROM ApplicationIdentityEntity AS applicationIdentity") })
 public class ApplicationIdentityEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_WHERE_APPLICATION = "ai.app";
+
+	public static final String QUERY_LIST_ALL = "ai.all";
 
 	private ApplicationIdentityPK pk;
 
@@ -157,5 +163,8 @@ public class ApplicationIdentityEntity implements Serializable {
 		List<ApplicationIdentityEntity> listApplicationIdentities(
 				@QueryParam("application")
 				ApplicationEntity application);
+
+		@QueryMethod(QUERY_LIST_ALL)
+		List<ApplicationIdentityEntity> listApplicationIdentities();
 	}
 }

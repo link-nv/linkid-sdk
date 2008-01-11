@@ -7,6 +7,10 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity.DELETE_WHERE_PARENT;
+import static net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity.QUERY_PARENT;
+import static net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity.QUERY_WHERE_MEMBER;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,13 +27,11 @@ import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Index;
-
-import static net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity.QUERY_PARENT;
-import static net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity.QUERY_WHERE_MEMBER;
 
 @Entity
 @Table(name = "comp_attribute_member")
@@ -37,7 +39,9 @@ import static net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity.QUE
 		@NamedQuery(name = QUERY_PARENT, query = "SELECT catm.parent FROM CompoundedAttributeTypeMemberEntity AS catm "
 				+ "WHERE catm.member = :member"),
 		@NamedQuery(name = QUERY_WHERE_MEMBER, query = "SELECT catm FROM CompoundedAttributeTypeMemberEntity AS catm "
-				+ "WHERE catm.member = :member") })
+				+ "WHERE catm.member = :member"),
+		@NamedQuery(name = DELETE_WHERE_PARENT, query = "DELETE FROM CompoundedAttributeTypeMemberEntity AS catm "
+				+ "WHERE catm.parent = :parent") })
 public class CompoundedAttributeTypeMemberEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -45,6 +49,8 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
 	public static final String QUERY_PARENT = "cat.parent";
 
 	public static final String QUERY_WHERE_MEMBER = "cat.member";
+
+	public static final String DELETE_WHERE_PARENT = "cat.delete.parent";
 
 	private CompoundedAttributeTypeMemberPK pk;
 
@@ -160,5 +166,9 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
 		List<CompoundedAttributeTypeMemberEntity> listMemberEntries(
 				@QueryParam("member")
 				AttributeTypeEntity memberAttributeType);
+
+		@UpdateMethod(DELETE_WHERE_PARENT)
+		int deleteWhereParent(@QueryParam("parent")
+		AttributeTypeEntity parent);
 	}
 }

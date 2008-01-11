@@ -31,13 +31,15 @@
 				</h:column>
 				<h:column>
 					<f:facet name="header">#{msgs.action}</f:facet>
-					<a4j:commandLink value="#{item.removeaction}"
+					<a4j:commandLink value="#{msgs.removeaction}"
 						action="#{attributes.remove}" />
 				</h:column>
 				<f:facet name="footer">
 					<rich:datascroller for="attributes-data" />
 				</f:facet>
 			</rich:dataTable>
+
+			<rich:messages styleClass="error" />
 
 			<a4j:commandButton value="#{msgs.addaction}" id="add" action="add"
 				rendered="#{isUserInRole['global-operator']}" styleClass="submit" />

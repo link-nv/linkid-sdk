@@ -78,4 +78,9 @@ public class AttributeProviderDAOBean implements AttributeProviderDAO {
 		int count = this.queryObject.removeAttributeProviders(application);
 		LOG.debug("number of removed provider entities: " + count);
 	}
+
+	public void removeAttributeProviders(AttributeTypeEntity attributeType) {
+		int count = this.queryObject.removeAttributeProviders(attributeType);
+		LOG.debug("number of removed provider entities: " + count);
+	}
 }

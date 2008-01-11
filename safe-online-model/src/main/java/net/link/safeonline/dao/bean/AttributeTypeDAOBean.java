@@ -65,6 +65,13 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		this.entityManager.persist(attributeType);
 	}
 
+	public void removeAttributeType(String name) {
+		LOG.debug("remove attribute type: " + name);
+		AttributeTypeEntity attributeType = this.entityManager.find(
+				AttributeTypeEntity.class, name);
+		this.entityManager.remove(attributeType);
+	}
+
 	public AttributeTypeEntity findAttributeType(String name) {
 		LOG.debug("find attribute type: " + name);
 		AttributeTypeEntity attributeType = this.entityManager.find(
@@ -203,5 +210,12 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		}
 		CompoundedAttributeTypeMemberEntity memberEntry = memberEntries.get(0);
 		return memberEntry;
+	}
+
+	public void removeMemberEntries(AttributeTypeEntity parentAttributeType) {
+		int count = this.compoundedQueryObject
+				.deleteWhereParent(parentAttributeType);
+		LOG.debug("number of removed CompoundedAttributeTypeMemberEntity's: "
+				+ count);
 	}
 }

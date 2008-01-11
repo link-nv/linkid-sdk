@@ -219,4 +219,9 @@ public class AttributeDAOBean implements AttributeDAO {
 	public void removeAttributes(SubjectEntity subject) {
 		this.queryObject.deleteAttributes(subject);
 	}
+
+	public void removeAttributes(AttributeTypeEntity attributeType) {
+		int count = this.queryObject.deleteAttributes(attributeType);
+		LOG.debug("number of removed attributes: " + count);
+	}
 }

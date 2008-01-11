@@ -35,4 +35,11 @@ public interface AttributeProviderDAO {
 	 * @param application
 	 */
 	void removeAttributeProviders(ApplicationEntity application);
+
+	/**
+	 * Remove all attribute providers for the given attribute type.
+	 * 
+	 * @param attributeType
+	 */
+	void removeAttributeProviders(AttributeTypeEntity attributeType);
 }

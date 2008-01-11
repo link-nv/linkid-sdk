@@ -7,6 +7,10 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.AttributeProviderEntity.DELETE_WHERE_APPLICATION;
+import static net.link.safeonline.entity.AttributeProviderEntity.DELETE_WHERE_ATTRIBUTE_TYPE;
+import static net.link.safeonline.entity.AttributeProviderEntity.QUERY_WHERE_ATTRIBUTE_TYPE;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -29,9 +33,6 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import static net.link.safeonline.entity.AttributeProviderEntity.QUERY_WHERE_ATTRIBUTE_TYPE;
-import static net.link.safeonline.entity.AttributeProviderEntity.DELETE_WHERE_APPLICATION;
-
 /**
  * Definition of the attribute provider entity. This entity manages the write
  * and unconfirmed read access control of applications towards attributes.
@@ -45,7 +46,9 @@ import static net.link.safeonline.entity.AttributeProviderEntity.DELETE_WHERE_AP
 		@NamedQuery(name = QUERY_WHERE_ATTRIBUTE_TYPE, query = "SELECT attributeProvider FROM AttributeProviderEntity AS attributeProvider "
 				+ "WHERE attributeProvider.attributeType = :attributeType"),
 		@NamedQuery(name = DELETE_WHERE_APPLICATION, query = "DELETE FROM AttributeProviderEntity AS attributeProvider "
-				+ "WHERE attributeProvider.application = :application") })
+				+ "WHERE attributeProvider.application = :application"),
+		@NamedQuery(name = DELETE_WHERE_ATTRIBUTE_TYPE, query = "DELETE FROM AttributeProviderEntity AS attributeProvider "
+				+ "WHERE attributeProvider.attributeType = :attributeType") })
 public class AttributeProviderEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -53,6 +56,8 @@ public class AttributeProviderEntity implements Serializable {
 	public static final String QUERY_WHERE_ATTRIBUTE_TYPE = "ape.at";
 
 	public static final String DELETE_WHERE_APPLICATION = "ape.del.app";
+
+	public static final String DELETE_WHERE_ATTRIBUTE_TYPE = "ape.del.attr";
 
 	private AttributeProviderPK pk;
 
@@ -146,5 +151,9 @@ public class AttributeProviderEntity implements Serializable {
 		@UpdateMethod(DELETE_WHERE_APPLICATION)
 		int removeAttributeProviders(@QueryParam("application")
 		ApplicationEntity application);
+
+		@UpdateMethod(DELETE_WHERE_ATTRIBUTE_TYPE)
+		int removeAttributeProviders(@QueryParam("attributeType")
+		AttributeTypeEntity attributeType);
 	}
 }

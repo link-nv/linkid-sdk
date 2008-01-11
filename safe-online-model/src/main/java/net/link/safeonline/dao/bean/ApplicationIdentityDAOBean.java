@@ -104,4 +104,8 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
 				.remove(applicationIdentityAttribute);
 		this.entityManager.remove(applicationIdentityAttribute);
 	}
+
+	public List<ApplicationIdentityEntity> listApplicationIdentities() {
+		return this.queryObject.listApplicationIdentities();
+	}
 }

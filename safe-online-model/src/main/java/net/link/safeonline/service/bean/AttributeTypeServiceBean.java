@@ -18,8 +18,13 @@ import net.link.safeonline.authentication.exception.AttributeTypeDefinitionExcep
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.ApplicationIdentityDAO;
+import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
@@ -42,6 +47,15 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
+
+	@EJB
+	private AttributeProviderDAO attributeProviderDAO;
+
+	@EJB
+	private ApplicationIdentityDAO applicationIdentityDAO;
+
+	@EJB
+	private AttributeDAO attributeDAO;
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<AttributeTypeEntity> listAttributeTypes() {
@@ -174,9 +188,68 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE)
-	public void remove(AttributeTypeEntity attributeType) {
+	public void remove(AttributeTypeEntity attributeType)
+			throws AttributeTypeDescriptionNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException {
 		LOG.debug("remove attribute type: " + attributeType.getName());
-		// TODO Auto-generated method stub
 
+		// attribute type cannot be in any application identity
+		checkApplicationIdentities(attributeType);
+
+		// attribute type cannot be a compounded member
+		checkCompounded(attributeType);
+
+		// remove attribute provider entities
+		this.attributeProviderDAO.removeAttributeProviders(attributeType);
+
+		// remove all its descriptions
+		List<AttributeTypeDescriptionEntity> descriptions = this.attributeTypeDAO
+				.listDescriptions(attributeType);
+		for (AttributeTypeDescriptionEntity description : descriptions)
+			removeDescription(description);
+
+		// remove attributes of this type
+		this.attributeDAO.removeAttributes(attributeType);
+
+		if (attributeType.isCompounded()) {
+			this.attributeTypeDAO.removeMemberEntries(attributeType);
+			unmarkCompoundMembers(attributeType);
+		}
+
+		this.attributeTypeDAO.removeAttributeType(attributeType.getName());
+	}
+
+	private void checkApplicationIdentities(AttributeTypeEntity attributeType)
+			throws PermissionDeniedException {
+		List<ApplicationIdentityEntity> applicationIdentities = this.applicationIdentityDAO
+				.listApplicationIdentities();
+		for (ApplicationIdentityEntity applicationIdentity : applicationIdentities) {
+			if (applicationIdentity.getAttributeTypes().contains(attributeType))
+				throw new PermissionDeniedException(
+						"Attribute type still exists in application identity: "
+								+ applicationIdentity.getApplication()
+										.getName());
+		}
+	}
+
+	private void checkCompounded(AttributeTypeEntity attributeType)
+			throws PermissionDeniedException {
+		if (attributeType.isCompoundMember())
+			throw new PermissionDeniedException(
+					"Cannot remove a compounded member attribute type");
+	}
+
+	private void unmarkCompoundMembers(AttributeTypeEntity attributeType)
+			throws AttributeTypeNotFoundException {
+		for (CompoundedAttributeTypeMemberEntity member : attributeType
+				.getMembers()) {
+			String memberName = member.getMember().getName();
+			/*
+			 * Make sure to first load an attached member attribute type.
+			 */
+			AttributeTypeEntity memberAttributeType = this.attributeTypeDAO
+					.getAttributeType(memberName);
+			memberAttributeType.setCompoundMember(false);
+		}
 	}
 }

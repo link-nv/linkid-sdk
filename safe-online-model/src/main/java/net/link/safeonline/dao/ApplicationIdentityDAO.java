@@ -45,4 +45,6 @@ public interface ApplicationIdentityDAO {
 
 	void removeApplicationIdentityAttribute(
 			ApplicationIdentityAttributeEntity applicationIdentityAttribute);
+
+	List<ApplicationIdentityEntity> listApplicationIdentities();
 }

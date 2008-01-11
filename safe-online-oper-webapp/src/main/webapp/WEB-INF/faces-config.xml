@@ -372,6 +372,18 @@
 			<to-view-id>/attributes/attribute-view.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
+			<from-outcome>remove</from-outcome>
+			<to-view-id>/attributes/attribute-remove.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/attributes/attribute-remove.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/attributes/attributes.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
 			<from-outcome>success</from-outcome>
 			<to-view-id>/attributes/attributes.xhtml</to-view-id>
 		</navigation-case>

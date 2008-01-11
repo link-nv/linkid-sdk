@@ -24,6 +24,8 @@ public interface Attributes {
 
 	String remove();
 
+	String removeConfirm();
+
 	/*
 	 * Lifecycle.
 	 */

@@ -15,6 +15,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeDefinitionExcep
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
@@ -67,8 +68,13 @@ public interface AttributeTypeService {
 	 * existing application identities should be using this type.
 	 * 
 	 * @param attributeType
+	 * @throws AttributeTypeDescriptionNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws AttributeTypeNotFoundException
 	 */
-	void remove(AttributeTypeEntity attributeType);
+	void remove(AttributeTypeEntity attributeType)
+			throws AttributeTypeDescriptionNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException;
 
 	List<AttributeTypeDescriptionEntity> listDescriptions(
 			String attributeTypeName) throws AttributeTypeNotFoundException;

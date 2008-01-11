@@ -7,12 +7,12 @@
 
 package net.link.safeonline.entity;
 
-import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_ALL;
-import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_STRING;
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_BOOLEAN;
-import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_INTEGER;
-import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_DOUBLE;
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_DATE;
+import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_DOUBLE;
+import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_INTEGER;
+import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_STRING;
+import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_ALL;
 
 import java.io.Serializable;
 import java.util.HashMap;
