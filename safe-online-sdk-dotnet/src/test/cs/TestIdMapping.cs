@@ -27,7 +27,8 @@ namespace safe_online_sdk_dotnet.test.cs
 		{
 			IdMappingClient idMappingClient = 
 				new IdMappingClientImpl("192.168.5.102:8443", "C:\\work\\test.pfx", "secret");
-			idMappingClient.getUsername("admin");
+			String userId = idMappingClient.getUserId("admin");
+			Console.WriteLine("admin userId: " + userId);
 		}
 	}
 }

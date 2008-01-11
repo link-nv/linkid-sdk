@@ -24,6 +24,11 @@ namespace safe_online_sdk_dotnet.test.cs
 			FileStream fs = new FileStream("C:\\work\\test.pfx", FileMode.CreateNew);
 			KeyStoreUtil.WritePkcs12(RSAprivKey, cert, "secret", fs);
 			fs.Close();
+			
+			FileStream certFileStream = new FileStream("C:\\work\\test.crt", FileMode.CreateNew);
+			byte[] encodedCert = cert.GetEncoded();
+			certFileStream.Write(encodedCert, 0, encodedCert.Length);
+			certFileStream.Close();
 		}
 	}
 }

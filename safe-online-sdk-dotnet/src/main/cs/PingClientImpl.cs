@@ -13,10 +13,10 @@ namespace safe_online_sdk_dotnet
 		
 		public PingClientImpl(string location) {
 			traceSource.TraceInformation("ping client constructor");
-			BasicHttpBinding httpBinding = new BasicHttpBinding();
+			BasicHttpBinding binding = new BasicHttpBinding();
 			EndpointAddress address = 
                new EndpointAddress("http://" + location + "/safe-online-ws/ping");
-			this.pingPortClient = new PingPortClient(httpBinding, address);
+			this.pingPortClient = new PingPortClient(binding, address);
 		}
 		
 		public void ping() {

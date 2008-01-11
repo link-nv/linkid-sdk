@@ -13,7 +13,7 @@ namespace safe_online_sdk_dotnet
 {
 	public class IdMappingClientImpl : IdMappingClient
 	{
-		private NameIdentifierMappingPortClient client;
+		private NameIdentifierMappingPort client;
 		
 		public IdMappingClientImpl(string location, string pfxFilename, string password)
 		{
@@ -38,12 +38,11 @@ namespace safe_online_sdk_dotnet
 			SecurityBindingElement securityBinding = bec.Find<SecurityBindingElement>();			
 			CustomBinding binding = new CustomBinding(tsp, encoding, httpsBinding);
 			*/
-			/*
 			CustomBinding binding = new CustomBinding();
 			HttpsTransportBindingElement httpsTransport = new HttpsTransportBindingElement();
 			TextMessageEncodingBindingElement encoding = new TextMessageEncodingBindingElement();
 			encoding.MessageVersion = MessageVersion.Soap11;
-			*/
+			
 			//SecurityBindingElement securityBinding =
 			//	SecurityBindingElement.CreateCertificateOverTransportBindingElement(MessageSecurityVersion.WSSecurity10WSTrustFebruary2005WSSecureConversationFebruary2005WSSecurityPolicy11BasicSecurityProfile10);
 			//SecurityBindingElement securityBinding = SecurityBindingElement.CreateSslNegotiationBindingElement(false);
@@ -56,10 +55,9 @@ namespace safe_online_sdk_dotnet
 			securityBinding.SetKeyDerivation(false);
 			securityBinding.SecurityHeaderLayout = SecurityHeaderLayout.Lax;
 			*/
-			//SslStreamSecurityBindingElement sslStreamSecurity = new SslStreamSecurityBindingElement();
+			SslStreamSecurityBindingElement sslStreamSecurity = new SslStreamSecurityBindingElement();
 			//binding.Elements.Add(securityBinding);
 			
-			/*
 			TransportSecurityBindingElement securityBinding = new TransportSecurityBindingElement();
 			securityBinding.MessageSecurityVersion = MessageSecurityVersion.WSSecurity10WSTrustFebruary2005WSSecureConversationFebruary2005WSSecurityPolicy11BasicSecurityProfile10;
 			securityBinding.DefaultAlgorithmSuite = SecurityAlgorithmSuite.Default;
@@ -77,7 +75,7 @@ namespace safe_online_sdk_dotnet
 			binding.Elements.Add(sslStreamSecurity);
 			
 			binding.Elements.Add(httpsTransport);
-			*/
+			
 			/*
 			WSHttpBinding binding = new WSHttpBinding(SecurityMode.TransportWithMessageCredential);
 			WSHttpSecurity security = binding.Security;
@@ -98,7 +96,7 @@ namespace safe_online_sdk_dotnet
 			string address = "https://" + location + "/safe-online-ws/idmapping";
 			EndpointAddress remoteAddress = new EndpointAddress(address);
 			
-			//Binding safeOnlineBinding = new SafeOnlineBinding();
+			Binding safeOnlineBinding = new SafeOnlineBinding();
 			
 			//this.client = new NameIdentifierMappingPortClient(safeOnlineBinding, remoteAddress);
 			
@@ -120,14 +118,13 @@ namespace safe_online_sdk_dotnet
 			*/
 			//Console.WriteLine("cert: " + this.client.ClientCredentials.ClientCertificate.Certificate);
 			
-			/*
 			ChannelFactory<NameIdentifierMappingPort> channelFactory =
 				new ChannelFactory<NameIdentifierMappingPort>(safeOnlineBinding, remoteAddress);
 			channelFactory.Credentials.ClientCertificate.SetCertificate(StoreLocation.CurrentUser, 
 			                                                               StoreName.My, 
 			                                                               X509FindType.FindBySubjectName, 
 			                                                              "Test");
-			*/
+			
 			//channelFactory.Credentials.ClientCertificate.Certificate =
 			//channelFactory.Endpoint.Behaviors.Add(new SafeOnlineMessageInspectorBehavior());
 			//channelFactory.Endpoint.Contract.Behaviors.Add(new SignBodyBehavior());
@@ -138,51 +135,22 @@ namespace safe_online_sdk_dotnet
 				Console.WriteLine("operation: " + operation.Name);
 			}
 			*/
-			//channelFactory.Endpoint.Contract.ProtectionLevel = ProtectionLevel.Sign;
-			//this.client = channelFactory.CreateChannel();
-			
-			BasicHttpBinding binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
-			BasicHttpSecurity security = binding.Security;
-			
-			BasicHttpMessageSecurity messageSecurity = security.Message;
-			messageSecurity.ClientCredentialType = BasicHttpMessageCredentialType.Certificate;
-			messageSecurity.AlgorithmSuite = SecurityAlgorithmSuite.Default;
-			
-			HttpTransportSecurity transportSecurity = security.Transport;
-			transportSecurity.ClientCredentialType = HttpClientCredentialType.None;
-			transportSecurity.ProxyCredentialType = HttpProxyCredentialType.None;
-			transportSecurity.Realm = "";
-			
-			this.client = new NameIdentifierMappingPortClient(binding, remoteAddress);
-			
-			X509Certificate2 certificate = new X509Certificate2("C:\\work\\test.pfx", "secret");
-			this.client.ClientCredentials.ClientCertificate.Certificate = certificate;
+			channelFactory.Endpoint.Contract.ProtectionLevel = ProtectionLevel.Sign;
+			this.client = channelFactory.CreateChannel();
 		}
 		
-		public string getUserId(String username) {
-			/*
+		public string getUsername(String userId) {
 			NameIdentifierMappingQueryRequest request = new NameIdentifierMappingQueryRequest();
 			NameIDType nameId = new NameIDType();
 			nameId.Value = userId;
 			request.NameIDMappingRequest = new NameIDMappingRequestType();
 			request.NameIDMappingRequest.Item = nameId;
 			this.client.NameIdentifierMappingQuery(request);
-			*/
+			/*
 			NameIDMappingRequestType request = new NameIDMappingRequestType();
-			NameIDPolicyType nameIDPolicy = new NameIDPolicyType();
-			nameIDPolicy.Format = "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent";
-			request.NameIDPolicy = nameIDPolicy;
-			NameIDType nameId = new NameIDType();
-			nameId.Value = username;
-			request.Item = nameId;
-			NameIDMappingResponseType response = this.client.NameIdentifierMappingQuery(request);
-			string statusCode = response.Status.StatusCode.Value;
-			if (!"urn:oasis:names:tc:SAML:2.0:status:Success".Equals(statusCode)) {
-			    return null;	
-			}
-			NameIDType responseNameId = (NameIDType) response.Item;
-			String userId = responseNameId.Value;
-			return userId;
+			this.client.NameIdentifierMappingQuery(request);
+			*/
+			return null;
 		}
 		
 		
