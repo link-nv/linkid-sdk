@@ -66,6 +66,12 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 		LOG.debug("name identifier mapping query");
 
 		NameIDPolicyType nameIdPolicy = request.getNameIDPolicy();
+		if (null == nameIdPolicy) {
+			String msg = "missing NameIDPolicy element";
+			LOG.debug(msg);
+			NameIDMappingResponseType response = createErrorResponse(null, msg);
+			return response;
+		}
 		String nameIdFormat = nameIdPolicy.getFormat();
 		if (null == nameIdFormat
 				|| false == NameIdentifierMappingConstants.NAMEID_FORMAT_PERSISTENT
@@ -76,15 +82,17 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 
 		NameIDType nameId = request.getNameID();
 		if (null == nameId) {
-			LOG.debug("missing NameID element");
-			NameIDMappingResponseType response = createErrorResponse(null);
+			String msg = "missing NameID element";
+			LOG.debug(msg);
+			NameIDMappingResponseType response = createErrorResponse(null, msg);
 			return response;
 		}
 
 		String username = nameId.getValue();
 		if (null == username) {
-			LOG.debug("missing NameID value");
-			NameIDMappingResponseType response = createErrorResponse(null);
+			String msg = "missing NameID value";
+			LOG.debug(msg);
+			NameIDMappingResponseType response = createErrorResponse(null, msg);
 			return response;
 		}
 		LOG.debug("username: " + username);
@@ -136,7 +144,7 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 	}
 
 	private NameIDMappingResponseType createErrorResponse(
-			SamlpSecondLevelErrorCode secondLevelErrorCode) {
+			SamlpSecondLevelErrorCode secondLevelErrorCode, String statusMessage) {
 		NameIDMappingResponseType response = createGenericResponse(SamlpTopLevelErrorCode.RESPONDER);
 		if (null != secondLevelErrorCode) {
 			StatusCodeType secondLevelStatusCode = new StatusCodeType();
@@ -144,6 +152,17 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 			response.getStatus().getStatusCode().setStatusCode(
 					secondLevelStatusCode);
 		}
+		if (null != statusMessage) {
+			StatusType status = response.getStatus();
+			status.setStatusMessage(statusMessage);
+		}
+		return response;
+	}
+
+	private NameIDMappingResponseType createErrorResponse(
+			SamlpSecondLevelErrorCode secondLevelErrorCode) {
+		NameIDMappingResponseType response = createErrorResponse(
+				secondLevelErrorCode, null);
 		return response;
 	}
 
