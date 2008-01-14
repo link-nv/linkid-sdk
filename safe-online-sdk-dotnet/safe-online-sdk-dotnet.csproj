@@ -31,6 +31,8 @@
     </Reference>
     <Reference Include="nunit.framework" />
     <Reference Include="System" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -41,6 +43,7 @@
     <Compile Include="src\main\cs\PingClient.cs" />
     <Compile Include="src\test\cs\KeyStoreUtilTest.cs" />
     <Compile Include="src\test\cs\TestIdMapping.cs" />
+    <Compile Include="src\test\cs\TestSaml.cs" />
     <Compile Include="target\services\SafeOnlinePingWebService.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
