@@ -41,7 +41,6 @@ public class LoginManager {
 	 * web application or not.
 	 * 
 	 * @request
-	 * @return
 	 */
 	public static boolean isAuthenticated(HttpServletRequest request) {
 		return isAuthenticated(request, USERNAME_SESSION_ATTRIBUTE);
@@ -53,7 +52,6 @@ public class LoginManager {
 	 * 
 	 * @param request
 	 * @param paramName
-	 * @return
 	 */
 	public static boolean isAuthenticated(HttpServletRequest request,
 			String paramName) {
@@ -67,7 +65,6 @@ public class LoginManager {
 	 * if the user was not yet authenticated.
 	 * 
 	 * @param request
-	 * @return
 	 */
 	public static String findUsername(HttpServletRequest request) {
 		return findUsername(request, USERNAME_SESSION_ATTRIBUTE);
@@ -80,7 +77,6 @@ public class LoginManager {
 	 * 
 	 * @param request
 	 * @param paramName
-	 * @return
 	 */
 	public static String findUsername(HttpServletRequest request,
 			String paramName) {
@@ -99,7 +95,6 @@ public class LoginManager {
 	 * 
 	 * @param request
 	 *            the servlet request object.
-	 * @return
 	 * @throws ServletException
 	 *             if the user was not yet authenticated via SafeOnline.
 	 */
@@ -116,7 +111,6 @@ public class LoginManager {
 	 *            the servlet request object.
 	 * @param paramName
 	 *            the parameter name that is used to store login info
-	 * @return
 	 * @throws ServletException
 	 *             if the user was not yet authenticated via SafeOnline.
 	 */

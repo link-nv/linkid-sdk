@@ -28,7 +28,6 @@ public class ApplicationFactory {
 	 * 
 	 * @param applicationContext
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 */
 	public static Application getApplication(

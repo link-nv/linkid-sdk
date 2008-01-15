@@ -179,7 +179,6 @@ public class AttributeEntity implements Serializable {
 	 * The attribute index is used for implementing the multi-valued attributes.
 	 * For single-value attributes that attribute index is zero.
 	 * 
-	 * @return
 	 */
 	@Column(name = ATTRIBUTE_INDEX_COLUMN_NAME, insertable = false, updatable = false)
 	public long getAttributeIndex() {
@@ -238,7 +237,6 @@ public class AttributeEntity implements Serializable {
 	 * via the database because the relationship is to complex to express. This
 	 * field is filled in by the DAO layer upon request.
 	 * 
-	 * @return
 	 */
 	@Transient
 	public List<AttributeEntity> getMembers() {
@@ -256,7 +254,6 @@ public class AttributeEntity implements Serializable {
 	 * Generic data mapping can be done via {@link #getValue()} and
 	 * {@link #setValue(Object)}.
 	 * 
-	 * @return
 	 */
 	@Transient
 	public Object getValue() {

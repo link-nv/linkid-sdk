@@ -191,7 +191,6 @@ public class AttributeOutputComponent extends UIOutput {
 	 * a chance for a datarace here, but we don't care.
 	 * 
 	 * @param type
-	 * @return
 	 */
 	private static AttributeValueEncoder getAttributeValueEncoder(
 			DatatypeType type) {

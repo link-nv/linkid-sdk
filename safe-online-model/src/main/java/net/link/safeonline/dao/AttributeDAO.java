@@ -45,7 +45,6 @@ public interface AttributeDAO {
 	 * 
 	 * @param attributeType
 	 * @param subject
-	 * @return
 	 */
 	AttributeEntity addAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject);
@@ -72,7 +71,6 @@ public interface AttributeDAO {
 	 * @param attributeType
 	 * @param subject
 	 * @param index
-	 * @return
 	 */
 	AttributeEntity addAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long index);
@@ -87,7 +85,6 @@ public interface AttributeDAO {
 	 * @param attributeType
 	 * @param subject
 	 * @param index
-	 * @return
 	 * @throws AttributeNotFoundException
 	 */
 	AttributeEntity getAttribute(AttributeTypeEntity attributeType,
@@ -114,7 +111,6 @@ public interface AttributeDAO {
 	 * been sorted out per attribute type.
 	 * 
 	 * @param subject
-	 * @return
 	 */
 	Map<AttributeTypeEntity, List<AttributeEntity>> listAttributes(
 			SubjectEntity subject);
@@ -124,7 +120,6 @@ public interface AttributeDAO {
 	 * have been sorted per attribute type and per attribute index.
 	 * 
 	 * @param subject
-	 * @return
 	 */
 	List<AttributeEntity> listVisibleAttributes(SubjectEntity subject);
 
@@ -135,7 +130,6 @@ public interface AttributeDAO {
 	 * 
 	 * @param subject
 	 * @param attributeType
-	 * @return
 	 */
 	List<AttributeEntity> listAttributes(SubjectEntity subject,
 			AttributeTypeEntity attributeType);

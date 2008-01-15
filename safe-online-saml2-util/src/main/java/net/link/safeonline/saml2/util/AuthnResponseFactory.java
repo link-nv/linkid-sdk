@@ -87,7 +87,6 @@ public class AuthnResponseFactory {
 	 * @param subjectName
 	 * @param authnContextClass
 	 * @param target
-	 * @return
 	 */
 	public static Response createAuthResponse(String inResponseTo,
 			String applicationName, String issuerName, String subjectName,

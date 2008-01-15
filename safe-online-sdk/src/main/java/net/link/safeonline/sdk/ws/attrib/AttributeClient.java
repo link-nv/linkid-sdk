@@ -46,7 +46,6 @@ public interface AttributeClient extends MessageAccessor {
 	 * @param userId
 	 * @param attributeName
 	 * @param valueClass
-	 * @return
 	 * @throws AttributeNotFoundException
 	 * @throws RequestDeniedException
 	 * @throws ConnectException
@@ -77,7 +76,6 @@ public interface AttributeClient extends MessageAccessor {
 	 * application is allowed to read.
 	 * 
 	 * @param userId
-	 * @return
 	 * @throws RequestDeniedException
 	 * @throws ConnectException
 	 * @throws AttributeNotFoundException
@@ -96,7 +94,6 @@ public interface AttributeClient extends MessageAccessor {
 	 * 
 	 * @param <Type>
 	 * @param userId
-	 * @return
 	 * @throws AttributeNotFoundException
 	 * @throws RequestDeniedException
 	 * @throws ConnectException

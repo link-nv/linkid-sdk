@@ -53,7 +53,6 @@ public class IdentityAttributeTypeDO implements Serializable {
 	/**
 	 * Gives back the URN name of the attribute type.
 	 * 
-	 * @return
 	 */
 	public String getName() {
 		return this.name;
@@ -67,7 +66,6 @@ public class IdentityAttributeTypeDO implements Serializable {
 	 * Gives back whether this attribute is a required attribute for the
 	 * identity.
 	 * 
-	 * @return
 	 */
 	public boolean isRequired() {
 		return this.required;
@@ -80,7 +78,6 @@ public class IdentityAttributeTypeDO implements Serializable {
 	/**
 	 * Returns whether this attribute can only be accessed in an anonymous way
 	 * 
-	 * @return
 	 */
 	public boolean isDataMining() {
 		return this.dataMining;

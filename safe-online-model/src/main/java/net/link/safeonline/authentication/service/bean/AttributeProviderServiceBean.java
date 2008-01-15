@@ -134,7 +134,6 @@ public class AttributeProviderServiceBean implements AttributeProviderService,
 	 * </p>
 	 * 
 	 * @param attributeName
-	 * @return
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
 	 */

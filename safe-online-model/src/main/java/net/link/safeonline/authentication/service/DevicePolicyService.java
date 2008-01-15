@@ -32,7 +32,6 @@ public interface DevicePolicyService {
 	 * @param requiredDevicePolicy
 	 *            the optional required device policy as communicated by the
 	 *            application via the authentication protocol.
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws EmptyDevicePolicyException
 	 */
@@ -43,7 +42,6 @@ public interface DevicePolicyService {
 	/**
 	 * Returns all devices
 	 * 
-	 * @return
 	 */
 	Set<AuthenticationDevice> getDevices();
 }

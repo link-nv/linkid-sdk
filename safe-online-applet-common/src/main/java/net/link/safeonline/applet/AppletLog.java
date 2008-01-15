@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -11,9 +11,9 @@ import org.apache.commons.logging.Log;
 
 /**
  * Implementation of Logger using the applet view as output.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AppletLog implements Log {
 
@@ -27,8 +27,7 @@ public class AppletLog implements Log {
 		this.appletView.outputDetailMessage("DEBUG: " + message);
 	}
 
-	public void debug(Object message, @SuppressWarnings("unused")
-	Throwable t) {
+	public void debug(Object message, Throwable t) {
 		this.appletView.outputDetailMessage("DEBUG: " + message);
 	}
 

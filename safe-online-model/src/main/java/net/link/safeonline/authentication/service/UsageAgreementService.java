@@ -54,7 +54,6 @@ public interface UsageAgreementService {
 	 * application.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws PermissionDeniedException
 	 * @throws ApplicationNotFoundException
 	 */
@@ -66,7 +65,6 @@ public interface UsageAgreementService {
 	 * Returns null if no draft is present.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws PermissionDeniedException
 	 */
@@ -77,7 +75,6 @@ public interface UsageAgreementService {
 	 * Get all usage agreements of the specified application.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws PermissionDeniedException
 	 */
@@ -91,7 +88,6 @@ public interface UsageAgreementService {
 	 * @param name
 	 * @param language
 	 * @param text
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws PermissionDeniedException
 	 */
@@ -141,7 +137,6 @@ public interface UsageAgreementService {
 	 * version.
 	 * 
 	 * @param applicationId
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws SubscriptionNotFoundException
 	 */
@@ -176,7 +171,6 @@ public interface UsageAgreementService {
 	 * @param applicationName
 	 * @param language
 	 * @param usageAgreementVersion
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 */
 	String getUsageAgreementText(String applicationName, String language,
@@ -198,7 +192,6 @@ public interface UsageAgreementService {
 	 * 
 	 * @param language
 	 * @param text
-	 * @return
 	 */
 	UsageAgreementTextEntity createDraftGlobalUsageAgreementText(
 			String language, String text);
@@ -222,21 +215,18 @@ public interface UsageAgreementService {
 	 * Create draft usage agreement from the specified version.
 	 * 
 	 * @param currentUsageAgreement
-	 * @return
 	 */
 	GlobalUsageAgreementEntity createDraftGlobalUsageAgreement();
 
 	/**
 	 * Return draft global usage agreement.
 	 * 
-	 * @return
 	 */
 	GlobalUsageAgreementEntity getDraftGlobalUsageAgreement();
 
 	/**
 	 * Return current global usage agreement.
 	 * 
-	 * @return
 	 */
 	GlobalUsageAgreementEntity getCurrentGlobalUsageAgreement();
 
@@ -244,7 +234,6 @@ public interface UsageAgreementService {
 	 * Check whether authenticating subject has accepted the global usage
 	 * agreement.
 	 * 
-	 * @return
 	 */
 	boolean requiresGlobalUsageAgreementAcceptation();
 
@@ -257,7 +246,6 @@ public interface UsageAgreementService {
 	 * Get current global usage agreement text for specified language
 	 * 
 	 * @param language
-	 * @return
 	 */
 	String getGlobalUsageAgreementText(String language);
 
@@ -266,7 +254,6 @@ public interface UsageAgreementService {
 	 * version.
 	 * 
 	 * @param language
-	 * @return
 	 */
 	String getGlobalUsageAgreementText(String language,
 			Long usageAgreementVersion);

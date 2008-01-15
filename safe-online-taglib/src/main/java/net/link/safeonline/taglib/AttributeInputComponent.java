@@ -54,18 +54,16 @@ public class AttributeInputComponent extends UIInput {
 		AttributeDO attribute = (AttributeDO) getValue();
 		DatatypeType type = attribute.getType();
 		Renderer renderer = renderers.get(type);
-		if (null != renderer) {
+		if (null != renderer)
 			renderer.decode(context, this);
-		}
 		super.decode(context);
 	}
 
 	@Override
 	public void encodeBegin(FacesContext context) throws IOException {
 		LOG.debug("encodeBegin");
-		if (false == isRendered()) {
+		if (false == isRendered())
 			return;
-		}
 
 		String clientId = getClientId(context);
 		ResponseWriter responseWriter = context.getResponseWriter();
@@ -86,16 +84,14 @@ public class AttributeInputComponent extends UIInput {
 	@Override
 	public void encodeEnd(FacesContext context) throws IOException {
 		LOG.debug("encodeEnd");
-		if (false == isRendered()) {
+		if (false == isRendered())
 			return;
-		}
 
 		AttributeDO attribute = (AttributeDO) getValue();
 		DatatypeType type = attribute.getType();
 		Renderer renderer = renderers.get(type);
-		if (null != renderer) {
+		if (null != renderer)
 			renderer.encodeEnd(context, this);
-		}
 
 		ResponseWriter responseWriter = context.getResponseWriter();
 		responseWriter.endElement("span");
@@ -142,15 +138,13 @@ public class AttributeInputComponent extends UIInput {
 
 	private static void registerRenderer(Class<? extends Renderer> clazz) {
 		SupportedType supportedType = clazz.getAnnotation(SupportedType.class);
-		if (null == supportedType) {
+		if (null == supportedType)
 			throw new RuntimeException(
 					"renderer requires SupportedType meta-data annotation");
-		}
 		DatatypeType type = supportedType.value();
-		if (renderers.containsKey(type)) {
+		if (renderers.containsKey(type))
 			throw new RuntimeException("duplicate renderer entry for type: "
 					+ type);
-		}
 		try {
 			renderers.put(type, clazz.newInstance());
 		} catch (Exception e) {
@@ -209,7 +203,6 @@ public class AttributeInputComponent extends UIInput {
 			responseWriter.endElement("input");
 		}
 
-		@SuppressWarnings("unchecked")
 		public void decode(FacesContext context, UIInput inputComponent) {
 			String clientId = inputComponent.getClientId(context);
 			ExternalContext externalContext = context.getExternalContext();
@@ -243,18 +236,16 @@ public class AttributeInputComponent extends UIInput {
 			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
 			Integer value = attribute.getIntegerValue();
 			String encodedValue;
-			if (null == value) {
+			if (null == value)
 				encodedValue = "";
-			} else {
+			else
 				encodedValue = value.toString();
-			}
 
 			responseWriter.writeAttribute("name", clientId, null);
 			responseWriter.writeAttribute("value", encodedValue, null);
 
-			if (false == attribute.isEditable()) {
+			if (false == attribute.isEditable())
 				responseWriter.writeAttribute("disabled", "true", null);
-			}
 		}
 
 		public void encodeEnd(FacesContext context, @SuppressWarnings("unused")
@@ -263,7 +254,6 @@ public class AttributeInputComponent extends UIInput {
 			responseWriter.endElement("input");
 		}
 
-		@SuppressWarnings("unchecked")
 		public void decode(FacesContext context, UIInput inputComponent) {
 			String clientId = inputComponent.getClientId(context);
 			ExternalContext externalContext = context.getExternalContext();
@@ -276,11 +266,10 @@ public class AttributeInputComponent extends UIInput {
 
 			try {
 				Integer decodedValue;
-				if (encodedValue.length() == 0) {
+				if (encodedValue.length() == 0)
 					decodedValue = null;
-				} else {
+				else
 					decodedValue = Integer.parseInt(encodedValue);
-				}
 				LOG.debug("decoded value: " + decodedValue);
 				newAttribute.setIntegerValue(decodedValue);
 			} catch (NumberFormatException e) {
@@ -306,18 +295,16 @@ public class AttributeInputComponent extends UIInput {
 			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
 			Double value = attribute.getDoubleValue();
 			String encodedValue;
-			if (null == value) {
+			if (null == value)
 				encodedValue = "";
-			} else {
+			else
 				encodedValue = value.toString();
-			}
 
 			responseWriter.writeAttribute("name", clientId, null);
 			responseWriter.writeAttribute("value", encodedValue, null);
 
-			if (false == attribute.isEditable()) {
+			if (false == attribute.isEditable())
 				responseWriter.writeAttribute("disabled", "true", null);
-			}
 		}
 
 		public void encodeEnd(FacesContext context, @SuppressWarnings("unused")
@@ -326,7 +313,6 @@ public class AttributeInputComponent extends UIInput {
 			responseWriter.endElement("input");
 		}
 
-		@SuppressWarnings("unchecked")
 		public void decode(FacesContext context, UIInput inputComponent) {
 			String clientId = inputComponent.getClientId(context);
 			ExternalContext externalContext = context.getExternalContext();
@@ -339,11 +325,10 @@ public class AttributeInputComponent extends UIInput {
 
 			try {
 				Double decodedValue;
-				if (encodedValue.length() == 0) {
+				if (encodedValue.length() == 0)
 					decodedValue = null;
-				} else {
+				else
 					decodedValue = Double.parseDouble(encodedValue);
-				}
 				newAttribute.setDoubleValue(decodedValue);
 			} catch (NumberFormatException e) {
 				LOG.warn("not a double: " + encodedValue);
@@ -367,9 +352,8 @@ public class AttributeInputComponent extends UIInput {
 			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
 			Date value = attribute.getDateValue();
 			Calendar calendar = Calendar.getInstance();
-			if (null != value) {
+			if (null != value)
 				calendar.setTime(value);
-			}
 
 			// day
 			responseWriter.startElement("select", null);
@@ -380,9 +364,8 @@ public class AttributeInputComponent extends UIInput {
 					responseWriter.startElement("option", null);
 					responseWriter.writeAttribute("value", Integer
 							.toString(dayIdx), null);
-					if (calendar.get(Calendar.DAY_OF_MONTH) == dayIdx) {
+					if (calendar.get(Calendar.DAY_OF_MONTH) == dayIdx)
 						responseWriter.writeAttribute("selected", "true", null);
-					}
 					responseWriter.write(Integer.toString(dayIdx));
 					responseWriter.endElement("option");
 				}
@@ -399,9 +382,8 @@ public class AttributeInputComponent extends UIInput {
 					responseWriter.startElement("option", null);
 					responseWriter.writeAttribute("value", Integer
 							.toString(monthIdx), null);
-					if (month == monthIdx) {
+					if (month == monthIdx)
 						responseWriter.writeAttribute("selected", "true", null);
-					}
 					responseWriter.write(Integer.toString(monthIdx));
 					responseWriter.endElement("option");
 				}
@@ -418,9 +400,8 @@ public class AttributeInputComponent extends UIInput {
 					responseWriter.startElement("option", null);
 					responseWriter.writeAttribute("value", Integer
 							.toString(yearIdx), null);
-					if (year == yearIdx) {
+					if (year == yearIdx)
 						responseWriter.writeAttribute("selected", "true", null);
-					}
 					responseWriter.write(Integer.toString(yearIdx));
 					responseWriter.endElement("option");
 				}
@@ -446,7 +427,6 @@ public class AttributeInputComponent extends UIInput {
 			responseWriter.endElement("span");
 		}
 
-		@SuppressWarnings("unchecked")
 		public void decode(FacesContext context, UIInput inputComponent) {
 			String clientId = inputComponent.getClientId(context);
 			ExternalContext externalContext = context.getExternalContext();
@@ -464,9 +444,8 @@ public class AttributeInputComponent extends UIInput {
 
 			Calendar calendar = Calendar.getInstance();
 			Date oldDate = newAttribute.getDateValue();
-			if (null != oldDate) {
+			if (null != oldDate)
 				calendar.setTime(oldDate);
-			}
 			calendar.set(Calendar.DAY_OF_MONTH, Integer
 					.parseInt(encodedDayValue));
 			calendar.set(Calendar.MONTH,
@@ -513,13 +492,11 @@ public class AttributeInputComponent extends UIInput {
 					responseWriter.writeAttribute("onclick",
 							"threeValuedCheckboxClicked(this.checked, this.form, '"
 									+ falseId + "')", null);
-					if (Boolean.TRUE.equals(value)) {
+					if (Boolean.TRUE.equals(value))
 						responseWriter.writeAttribute("checked", Boolean.TRUE,
 								null);
-					}
-					if (false == attribute.isEditable()) {
+					if (false == attribute.isEditable())
 						responseWriter.writeAttribute("disabled", "true", null);
-					}
 					LOG.debug("message: " + messages.getString("true"));
 				}
 				responseWriter.endElement("input");
@@ -582,17 +559,15 @@ public class AttributeInputComponent extends UIInput {
 			return stringBuffer.toString();
 		}
 
-		@SuppressWarnings("unchecked")
 		private boolean needToAddInlineScript(FacesContext context) {
 			ExternalContext externalContext = context.getExternalContext();
 			Map<String, Object> requestMap = externalContext.getRequestMap();
-			if (true == requestMap.containsKey(INLINE_SCRIPT_ADDED)) {
+			if (true == requestMap.containsKey(INLINE_SCRIPT_ADDED))
 				/*
 				 * The inline script was already added by a previous call to
 				 * render a component instance of this component type.
 				 */
 				return false;
-			}
 			requestMap.put(INLINE_SCRIPT_ADDED, Boolean.TRUE);
 			return true;
 		}
@@ -604,7 +579,6 @@ public class AttributeInputComponent extends UIInput {
 			responseWriter.endElement("input");
 		}
 
-		@SuppressWarnings("unchecked")
 		public void decode(FacesContext context, UIInput inputComponent) {
 			String clientId = inputComponent.getClientId(context);
 			ExternalContext externalContext = context.getExternalContext();
@@ -616,11 +590,10 @@ public class AttributeInputComponent extends UIInput {
 			AttributeDO newAttribute = attribute.clone();
 
 			Boolean value;
-			if (null == decodedValue) {
+			if (null == decodedValue)
 				value = null;
-			} else {
+			else
 				value = Boolean.parseBoolean(decodedValue);
-			}
 			newAttribute.setBooleanValue(value);
 
 			inputComponent.setSubmittedValue(newAttribute);

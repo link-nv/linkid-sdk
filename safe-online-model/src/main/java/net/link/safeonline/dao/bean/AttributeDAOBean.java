@@ -84,7 +84,6 @@ public class AttributeDAOBean implements AttributeDAO {
 		return attribute;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Map<AttributeTypeEntity, List<AttributeEntity>> listAttributes(
 			SubjectEntity subject) {
 		LOG.debug("get attributes for subject " + subject.getUserId());
@@ -106,27 +105,24 @@ public class AttributeDAOBean implements AttributeDAO {
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long index, String stringValue) {
 		AttributeEntity attribute = findAttribute(subject, attributeType, index);
-		if (null == attribute) {
+		if (null == attribute)
 			attribute = addAttribute(attributeType, subject, index);
-		}
 		attribute.setStringValue(stringValue);
 	}
 
 	public void addOrUpdateAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject, long index, Boolean booleanValue) {
 		AttributeEntity attribute = findAttribute(subject, attributeType, index);
-		if (null == attribute) {
+		if (null == attribute)
 			attribute = addAttribute(attributeType, subject, index);
-		}
 		attribute.setBooleanValue(booleanValue);
 	}
 
 	public AttributeEntity getAttribute(String attributeTypeName,
 			SubjectEntity subject) throws AttributeNotFoundException {
 		AttributeEntity attribute = findAttribute(attributeTypeName, subject);
-		if (null == attribute) {
+		if (null == attribute)
 			throw new AttributeNotFoundException();
-		}
 		return attribute;
 	}
 
@@ -141,9 +137,8 @@ public class AttributeDAOBean implements AttributeDAO {
 			SubjectEntity subject) throws AttributeNotFoundException {
 		AttributeEntity attribute = this.entityManager.find(
 				AttributeEntity.class, new AttributePK(attributeType, subject));
-		if (null == attribute) {
+		if (null == attribute)
 			throw new AttributeNotFoundException();
-		}
 		return attribute;
 	}
 
@@ -159,9 +154,8 @@ public class AttributeDAOBean implements AttributeDAO {
 		AttributePK pk = new AttributePK(attributeType, subject, index);
 		AttributeEntity attribute = this.entityManager.find(
 				AttributeEntity.class, pk);
-		if (null == attribute) {
+		if (null == attribute)
 			throw new AttributeNotFoundException();
-		}
 		return attribute;
 	}
 
@@ -181,11 +175,10 @@ public class AttributeDAOBean implements AttributeDAO {
 	public AttributeEntity addAttribute(AttributeTypeEntity attributeType,
 			SubjectEntity subject) {
 		long index;
-		if (false == attributeType.isMultivalued()) {
+		if (false == attributeType.isMultivalued())
 			index = 0;
-		} else {
+		else
 			index = calcIndex(subject, attributeType);
-		}
 
 		AttributeEntity attribute = new AttributeEntity(attributeType, subject,
 				index);
@@ -198,21 +191,19 @@ public class AttributeDAOBean implements AttributeDAO {
 			AttributeTypeEntity attributeType) {
 		List<Long> maxIds = this.queryObject
 				.listMaxIdWhereSubjectAndAttributeType(subject, attributeType);
-		if (maxIds.isEmpty()) {
+		if (maxIds.isEmpty())
 			/*
 			 * This means that no other multi-valued attribute of the given
 			 * attribute type existed before.
 			 */
 			return 0;
-		}
 		Long maxId = maxIds.get(0);
-		if (null == maxId) {
+		if (null == maxId)
 			/*
 			 * This means that no other multi-valued attribute of the given
 			 * attribute type existed before.
 			 */
 			return 0;
-		}
 		return maxId + 1;
 	}
 

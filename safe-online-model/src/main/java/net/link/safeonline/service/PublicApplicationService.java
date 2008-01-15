@@ -26,7 +26,6 @@ public interface PublicApplicationService {
 	 * that's available to the public.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 */
 	public PublicApplication getPublicApplication(String applicationName)

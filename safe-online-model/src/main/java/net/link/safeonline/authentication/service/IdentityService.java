@@ -69,7 +69,6 @@ public interface IdentityService {
 	 * @param locale
 	 *            the optional locale that should be used to i18n the response.
 	 * 
-	 * @return
 	 * @throws AttributeTypeNotFoundException
 	 */
 	List<AttributeDO> listAttributes(Locale locale)
@@ -80,7 +79,6 @@ public interface IdentityService {
 	 * 
 	 * @param deviceId
 	 * @param locale
-	 * @return
 	 * @throws DeviceNotFoundException
 	 */
 	List<AttributeDO> listAttributes(String deviceId, Locale locale)
@@ -91,7 +89,6 @@ public interface IdentityService {
 	 * attributes use by the given application.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws SubscriptionNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
@@ -126,7 +123,6 @@ public interface IdentityService {
 	 * @param applicationName
 	 * @param locale
 	 *            the optional locale.
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws SubscriptionNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
@@ -143,7 +139,6 @@ public interface IdentityService {
 	 * @param applicationName
 	 * @param locale
 	 *            the optional locale to be applied to the result.
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
 	 * @throws SubscriptionNotFoundException
@@ -176,7 +171,6 @@ public interface IdentityService {
 	 * @param applicationName
 	 * @param locale
 	 *            the optional locale for i18n of the result.
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
 	 */
@@ -244,7 +238,6 @@ public interface IdentityService {
 	 * to the attribute type of the given prototype attribute.
 	 * 
 	 * @param prototypeAttribute
-	 * @return
 	 * @throws AttributeTypeNotFoundException
 	 */
 	List<AttributeDO> getAttributeTemplate(AttributeDO prototypeAttribute)

@@ -53,7 +53,6 @@ public interface SubjectDAO {
 	/**
 	 * Gives back a list of all user Ids.
 	 * 
-	 * @return
 	 */
 	List<String> listUsers();
 }

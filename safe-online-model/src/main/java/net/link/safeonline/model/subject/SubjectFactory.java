@@ -25,7 +25,6 @@ public class SubjectFactory {
 	 * Gives back the subject object corresponding with the caller principal.
 	 * 
 	 * @param subjectContext
-	 * @return
 	 */
 	public static Subject getCallerSubject(SubjectContext subjectContext) {
 		SubjectEntity subjectEntity = subjectContext.getSubjectManager()

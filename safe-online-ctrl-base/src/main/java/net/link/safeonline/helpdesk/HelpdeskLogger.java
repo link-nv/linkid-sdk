@@ -82,9 +82,9 @@ public class HelpdeskLogger {
 
 	private static String getPrincipal(HttpSession session) {
 		String principal = (String) session.getAttribute("username");
-		if (null == principal) {
+		if (null == principal)
 			principal = UNKNOWN_USER;
-		} else {
+		else {
 			SubjectService subjectService = EjbUtils
 					.getEJB("SafeOnline/SubjectServiceBean/local",
 							SubjectService.class);
@@ -97,7 +97,6 @@ public class HelpdeskLogger {
 		return principal;
 	}
 
-	@SuppressWarnings("unchecked")
 	private static void add(HttpSession session, String message,
 			String principal, LogLevelType logLevel) {
 		HelpdeskEventEntity helpdeskEvent = new HelpdeskEventEntity(message,
@@ -152,10 +151,9 @@ public class HelpdeskLogger {
 		LOG.debug("persisting volatile context for user " + principal + "...");
 		Long id = helpdeskManager.persist(location, helpdeskContext);
 
-		if (!principal.equals(UNKNOWN_USER)) {
+		if (!principal.equals(UNKNOWN_USER))
 			historyDAO.addHistoryEntry(subjectManager.getCallerSubject(),
 					HistoryEventType.HELPDESK_ID, null, id.toString());
-		}
 		return id;
 	}
 
@@ -171,10 +169,9 @@ public class HelpdeskLogger {
 		Map<?, ?> params = FacesContext.getCurrentInstance()
 				.getExternalContext().getRequestParameterMap();
 		String location = (String) params.get("location");
-		if (null == location) {
+		if (null == location)
 			location = FacesContext.getCurrentInstance().getExternalContext()
 					.getRequestServletPath();
-		}
 		return location;
 	}
 }

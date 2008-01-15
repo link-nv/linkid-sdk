@@ -21,7 +21,6 @@ public interface UserIdMappingService {
 	 * 
 	 * @param applicationName
 	 * @param userId
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws SubscriptionNotFoundException
 	 */
@@ -34,7 +33,6 @@ public interface UserIdMappingService {
 	 * 
 	 * @param applicationName
 	 * @param applicationUserId
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 */
 	String getUserId(String applicationName, String applicationUserId)

@@ -207,7 +207,6 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 	 * before by this handler from the TargetIdentity SOAP header.
 	 * 
 	 * @param context
-	 * @return
 	 * @throws TargetIdentityException
 	 *             in case of a missing TargetIdentity SOAP header.
 	 */

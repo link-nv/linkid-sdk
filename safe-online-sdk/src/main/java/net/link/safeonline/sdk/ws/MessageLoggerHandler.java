@@ -55,7 +55,6 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 	 * Returns <code>true</code> if this handler will capture the inbound and
 	 * outbound SOAP messages during following web service invocations.
 	 * 
-	 * @return
 	 */
 	public boolean isCaptureMessages() {
 		return this.captureMessages;

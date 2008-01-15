@@ -30,7 +30,6 @@ public interface SubscriptionService {
 	/**
 	 * Gives back a list of all application subscriptions of the caller user.
 	 * 
-	 * @return
 	 */
 	List<SubscriptionEntity> listSubscriptions();
 
@@ -62,7 +61,6 @@ public interface SubscriptionService {
 	 * Gives back the number of subscriptions for a given application.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws PermissionDeniedException
 	 */
@@ -74,7 +72,6 @@ public interface SubscriptionService {
 	 * given application.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 */
 	boolean isSubscribed(String applicationName)

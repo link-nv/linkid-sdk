@@ -75,7 +75,6 @@ public class AttributePK implements Serializable {
 	 * The attribute index is used for implementing the multi-valued attributes.
 	 * For single-value attributes that attribute index is zero.
 	 * 
-	 * @return
 	 */
 	public long getAttributeIndex() {
 		return this.attributeIndex;

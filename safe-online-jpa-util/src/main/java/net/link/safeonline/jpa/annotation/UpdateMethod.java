@@ -27,7 +27,6 @@ public @interface UpdateMethod {
 	/**
 	 * The name of the named query to execute.
 	 * 
-	 * @return
 	 */
 	String value();
 }

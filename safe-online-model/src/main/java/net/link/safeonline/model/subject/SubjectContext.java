@@ -26,7 +26,6 @@ public interface SubjectContext {
 	 * Gives back a subject manager. In case of a J2EE application this subject
 	 * manager will map to an EJB3 session bean subject manager.
 	 * 
-	 * @return
 	 */
 	SubjectManager getSubjectManager();
 

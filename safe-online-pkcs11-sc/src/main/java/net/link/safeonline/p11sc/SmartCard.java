@@ -40,7 +40,6 @@ public interface SmartCard {
 	 * Checks whether there is an existing connection towards the smart card
 	 * device.
 	 * 
-	 * @return
 	 */
 	boolean isOpen();
 
@@ -82,7 +81,6 @@ public interface SmartCard {
 	 * Gives back the country code. This is the uppercase ISO 3166 2-letter
 	 * code.
 	 * 
-	 * @return
 	 */
 	String getCountryCode();
 

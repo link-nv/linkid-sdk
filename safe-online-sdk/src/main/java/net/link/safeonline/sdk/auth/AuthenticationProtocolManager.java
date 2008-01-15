@@ -138,7 +138,6 @@ public class AuthenticationProtocolManager {
 	 * Gives back the previously stored target attribute value.
 	 * 
 	 * @param request
-	 * @return
 	 */
 	public static String getTarget(HttpServletRequest request) {
 		HttpSession session = request.getSession();
@@ -164,7 +163,6 @@ public class AuthenticationProtocolManager {
 	 * @param configParams
 	 *            the optional protocol handler configuration parameters.
 	 * @param httpRequest
-	 * @return
 	 * @throws ServletException
 	 */
 	public static AuthenticationProtocolHandler createAuthenticationProtocolHandler(
@@ -228,7 +226,6 @@ public class AuthenticationProtocolManager {
 	 * <code>null</code> will be returned.
 	 * 
 	 * @param httpRequest
-	 * @return
 	 * @throws ServletException
 	 */
 	public static AuthenticationProtocolHandler findAuthenticationProtocolHandler(

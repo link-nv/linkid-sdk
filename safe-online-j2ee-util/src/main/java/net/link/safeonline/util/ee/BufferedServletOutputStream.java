@@ -56,7 +56,6 @@ public class BufferedServletOutputStream extends ServletOutputStream {
 	/**
 	 * Gives back the data that this servlet output stream has been buffering.
 	 * 
-	 * @return
 	 */
 	public byte[] getData() {
 		byte[] data = this.buffer.toByteArray();

@@ -12,12 +12,9 @@ import java.util.Date;
 import net.link.safeonline.audit.TinySyslogger;
 import net.link.safeonline.audit.TinySyslogger.Facility;
 
-import org.apache.log4j.Logger;
-
 public class SyslogTest {
 
 	public static void main(String[] args) {
-		Logger logger = Logger.getLogger(SyslogTest.class);
 
 		TinySyslogger mySyslogAppender = new TinySyslogger(Facility.LOCAL0);
 

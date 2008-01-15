@@ -127,7 +127,6 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
 	 * Marks whether the member is a required part of the compounded attribute
 	 * type.
 	 * 
-	 * @return
 	 */
 	public boolean isRequired() {
 		return this.required;

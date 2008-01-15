@@ -27,7 +27,6 @@ public @interface Compound {
 	/**
 	 * The name of the compounded attribute.
 	 * 
-	 * @return
 	 */
 	String value();
 }

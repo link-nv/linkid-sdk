@@ -118,7 +118,6 @@ public class EntityTestManager {
 	 * 
 	 * @param <Type>
 	 * @param clazz
-	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public <Type> Type newInstance(Class<Type> clazz) {

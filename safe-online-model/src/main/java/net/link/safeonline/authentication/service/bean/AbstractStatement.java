@@ -33,7 +33,6 @@ abstract public class AbstractStatement<T extends AbstractStatementStructure> {
 	/**
 	 * Verifies the integrity of the statement.
 	 * 
-	 * @return
 	 */
 	public X509Certificate verifyIntegrity() {
 		X509Certificate authCert = this.statementStructure.getCertificate();

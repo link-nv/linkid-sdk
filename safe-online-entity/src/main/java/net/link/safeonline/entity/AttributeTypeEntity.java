@@ -210,7 +210,6 @@ public class AttributeTypeEntity implements Serializable {
 	/**
 	 * Marks whether this attribute type allows for multivalued attributes.
 	 * 
-	 * @return
 	 */
 	public boolean isMultivalued() {
 		return this.multivalued;
@@ -226,7 +225,6 @@ public class AttributeTypeEntity implements Serializable {
 	 * restriction that an attribute type can only participate in one compounded
 	 * attribute type.
 	 * 
-	 * @return
 	 */
 	public boolean isCompoundMember() {
 		return this.compoundMember;

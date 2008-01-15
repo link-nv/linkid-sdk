@@ -24,7 +24,6 @@ public interface SubjectManager {
 	 * Gives back the subject entity corresponding with the SafeOnline core
 	 * security domain caller principal.
 	 * 
-	 * @return
 	 */
 	SubjectEntity getCallerSubject();
 
@@ -32,7 +31,6 @@ public interface SubjectManager {
 	 * Gives back the subject login corresponding with the SafeOnline security
 	 * domain caller principal.
 	 * 
-	 * @return
 	 */
 	String getCallerLogin();
 }

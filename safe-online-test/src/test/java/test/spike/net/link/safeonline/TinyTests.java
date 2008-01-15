@@ -25,7 +25,7 @@ import org.junit.Test;
  * <p>
  * <i>Dec 19, 2007</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class TinyTests {
@@ -60,6 +60,7 @@ public class TinyTests {
 		System.out.println();
 	}
 
+	@SuppressWarnings("unused")
 	public void dummy(boolean a, double[] b, byte[] c) {
 
 	}

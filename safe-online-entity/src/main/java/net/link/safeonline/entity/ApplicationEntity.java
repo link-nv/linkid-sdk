@@ -188,7 +188,6 @@ public class ApplicationEntity implements Serializable {
 	 * The unique name of the application. This field is used as primary key on
 	 * the application entity.
 	 * 
-	 * @return
 	 */
 	@Id
 	@Column(name = "name")
@@ -203,7 +202,6 @@ public class ApplicationEntity implements Serializable {
 	/**
 	 * The optional user friendly name of the application
 	 * 
-	 * @return
 	 */
 	@Column(name = "friendlyName")
 	public String getFriendlyName() {
@@ -269,7 +267,6 @@ public class ApplicationEntity implements Serializable {
 	 * application. This field prevents users from subscribing themselves onto
 	 * the operator web application or the application owner web application.
 	 * 
-	 * @return
 	 */
 	public boolean isAllowUserSubscription() {
 		return this.allowUserSubscription;
@@ -286,7 +283,6 @@ public class ApplicationEntity implements Serializable {
 	 * SafeOnline authentication web application and the SafeOnline operator web
 	 * application.
 	 * 
-	 * @return
 	 */
 	public boolean isRemovable() {
 		return this.removable;
@@ -301,7 +297,6 @@ public class ApplicationEntity implements Serializable {
 	 * has an application owner. The application owner is allowed to perform
 	 * certain operations regarding this application.
 	 * 
-	 * @return
 	 */
 	@ManyToOne(optional = false)
 	public ApplicationOwnerEntity getApplicationOwner() {
@@ -317,7 +312,6 @@ public class ApplicationEntity implements Serializable {
 	 * corresponding certificate. This certificate is used for web service
 	 * authentication by the application.
 	 * 
-	 * @return
 	 */
 	@Lob
 	@Column(length = 4 * 1024, nullable = true)
@@ -342,7 +336,6 @@ public class ApplicationEntity implements Serializable {
 	 * identity has a version number. This field marks the currently active
 	 * application identity version.
 	 * 
-	 * @return
 	 */
 	public long getCurrentApplicationIdentity() {
 		return this.currentApplicationIdentity;
@@ -358,7 +351,6 @@ public class ApplicationEntity implements Serializable {
 	 * application usage agreement has a version number. This field marks the
 	 * currently active application usage agreement version.
 	 * 
-	 * @return
 	 */
 	@Column(name = "currentUsageAg")
 	public long getCurrentApplicationUsageAgreement() {
@@ -375,7 +367,6 @@ public class ApplicationEntity implements Serializable {
 	 * phase to associate a given certificate with it's corresponding
 	 * application.
 	 * 
-	 * @return
 	 */
 	@Column(unique = true)
 	public String getCertificateIdentifier() {
@@ -435,7 +426,6 @@ public class ApplicationEntity implements Serializable {
 	 * The identifier mapping allowed field use used for access control over the
 	 * identifier mapping service.
 	 * 
-	 * @return
 	 */
 	public boolean isIdentifierMappingAllowed() {
 		return this.identifierMappingAllowed;
@@ -449,7 +439,6 @@ public class ApplicationEntity implements Serializable {
 	 * The id scope field is used to determine which type of id should be
 	 * returned to the caller application.
 	 * 
-	 * @return
 	 */
 	public IdScopeType getIdScope() {
 		return this.idScope;
@@ -464,7 +453,6 @@ public class ApplicationEntity implements Serializable {
 	 * check whether the SOAP body has been signed. This is required for
 	 * compatability with .NET 3.0 WCF clients.
 	 * 
-	 * @return
 	 */
 	public boolean isSkipMessageIntegrityCheck() {
 		return this.skipMessageIntegrityCheck;
@@ -525,7 +513,6 @@ public class ApplicationEntity implements Serializable {
 	 * certificate.
 	 * 
 	 * @param encodedCertificate
-	 * @return
 	 */
 	public static String toCertificateIdentifier(byte[] encodedCertificate) {
 		String certificateIdentifier = DigestUtils.shaHex(encodedCertificate);

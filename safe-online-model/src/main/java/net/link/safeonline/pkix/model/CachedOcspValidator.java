@@ -22,7 +22,6 @@ public interface CachedOcspValidator {
 	 * 
 	 * @param certificate
 	 * @param issuerCertificate
-	 * @return
 	 */
 	boolean performCachedOcspCheck(TrustDomainEntity trustDomain,
 			X509Certificate certificate, X509Certificate issuerCertificate);

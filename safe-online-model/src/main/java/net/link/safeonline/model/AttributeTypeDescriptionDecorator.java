@@ -33,7 +33,6 @@ public interface AttributeTypeDescriptionDecorator {
 	 * @param identityAttributes
 	 * @param locale
 	 *            the optional locale.
-	 * @return
 	 */
 	List<AttributeDO> addDescriptionFromIdentityAttributes(
 			Collection<ApplicationIdentityAttributeEntity> identityAttributes,
@@ -43,7 +42,6 @@ public interface AttributeTypeDescriptionDecorator {
 	 * @param attributeTypes
 	 * @param locale
 	 *            the optional locale.
-	 * @return
 	 */
 	List<AttributeDO> addDescriptionFromAttributeTypes(
 			List<AttributeTypeEntity> attributeTypes, Locale locale);

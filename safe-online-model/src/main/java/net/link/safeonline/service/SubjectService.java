@@ -48,7 +48,6 @@ public interface SubjectService {
 	 * attribute and SubjectIdentifier
 	 * 
 	 * @param login
-	 * @return
 	 * @throws AttributeTypeNotFoundException
 	 */
 	SubjectEntity addSubject(String login)
@@ -68,7 +67,6 @@ public interface SubjectService {
 	 * Gives back the subject for the given user login name
 	 * 
 	 * @param login
-	 * @return
 	 * @throws SubjectNotFoundException
 	 */
 	SubjectEntity getSubjectFromUserName(String login)
@@ -79,7 +77,6 @@ public interface SubjectService {
 	 * ID. Returns <code>null</code> if not found.
 	 * 
 	 * @param userId
-	 * @return
 	 */
 	String getSubjectLogin(String userId);
 
@@ -88,14 +85,12 @@ public interface SubjectService {
 	 * handling code ( meaning a transaction is created )
 	 * 
 	 * @param userId
-	 * @return
 	 */
 	String getExceptionSubjectLogin(String userId);
 
 	/**
 	 * Returns list of users' login names.
 	 * 
-	 * @return
 	 */
 	List<String> listUsers();
 }

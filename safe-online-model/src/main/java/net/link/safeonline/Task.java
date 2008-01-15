@@ -20,7 +20,6 @@ public interface Task {
 	/**
 	 * Return a name by which the task can be identified
 	 * 
-	 * @return
 	 */
 	String getName();
 

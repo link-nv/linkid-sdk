@@ -27,7 +27,6 @@ public class PingServiceFactory {
 	/**
 	 * Gives back a new instance of a ping service JAX-WS stub.
 	 * 
-	 * @return
 	 */
 	public static PingService newInstance() {
 		ClassLoader classLoader = Thread.currentThread()

@@ -101,7 +101,6 @@ public interface CredentialService {
 	 * Gives back <code>true</code> if the user already has a password
 	 * configured.
 	 * 
-	 * @return
 	 */
 	boolean isPasswordConfigured();
 

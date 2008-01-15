@@ -179,7 +179,6 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 	 * When <code>true</code> the SOAP Body will not get signed by the
 	 * WS-Security signature. This behavior is similar to .NET WCF clients.
 	 * 
-	 * @return
 	 */
 	public boolean isSkipBodySigning() {
 		return this.skipBodySigning;

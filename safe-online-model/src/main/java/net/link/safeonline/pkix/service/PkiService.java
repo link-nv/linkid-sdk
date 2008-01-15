@@ -31,7 +31,6 @@ public interface PkiService {
 	/**
 	 * Gives back a list of all trust domains.
 	 * 
-	 * @return
 	 */
 	List<TrustDomainEntity> listTrustDomains();
 
@@ -88,7 +87,6 @@ public interface PkiService {
 	 * Gives back all trust points within a given domain.
 	 * 
 	 * @param domainName
-	 * @return
 	 * @throws TrustDomainNotFoundException
 	 */
 	List<TrustPointEntity> listTrustPoints(String domainName)
@@ -107,7 +105,6 @@ public interface PkiService {
 	 * Gives back a trust domain for a given trust domain name.
 	 * 
 	 * @param trustDomainName
-	 * @return
 	 * @throws TrustDomainNotFoundException
 	 */
 	TrustDomainEntity getTrustDomain(String trustDomainName)

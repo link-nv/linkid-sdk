@@ -381,7 +381,6 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	 * 
 	 * @param targetAttributes
 	 * @param sourceAttributes
-	 * @return
 	 */
 	private List<AttributeEntity> mergeCompoundedAttribute(
 			SubjectEntity targetSubject, SubjectEntity sourceSubject,
@@ -446,7 +445,6 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	 * 
 	 * @param sourceMembers
 	 * @param targetMembers
-	 * @return
 	 */
 	private boolean compoundEqual(List<AttributeEntity> sourceMembers,
 			List<AttributeEntity> targetMembers) {

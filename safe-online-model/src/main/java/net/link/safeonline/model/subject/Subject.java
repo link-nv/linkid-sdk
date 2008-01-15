@@ -96,7 +96,6 @@ public class Subject {
 	 * Checks whether this subject is subscribed onto the given application.
 	 * 
 	 * @param application
-	 * @return
 	 */
 	public boolean isSubscribed(Application application) {
 		SubscriptionEntity subscription = this.context.getSubscriptionDAO()

@@ -43,7 +43,6 @@ public interface ReAuthenticationService {
 	/**
 	 * Returns the set of devices the user has authenticated successfully with.
 	 * 
-	 * @return
 	 */
 	Set<AuthenticationDevice> getAuthenticatedDevices();
 
@@ -62,7 +61,6 @@ public interface ReAuthenticationService {
 	 * 
 	 * @param login
 	 * @param password
-	 * @return
 	 * @throws SubjectNotFoundException
 	 * @throws DeviceNotFoundException
 	 * @throws SubjectMismatchException
@@ -79,7 +77,6 @@ public interface ReAuthenticationService {
 	 * @param mobile
 	 * @param challengeId
 	 * @param mobileOTP
-	 * @return
 	 * @throws AxisFault
 	 * @throws SubjectNotFoundException
 	 * @throws MalformedURLException
@@ -100,7 +97,6 @@ public interface ReAuthenticationService {
 	 * 
 	 * @param device
 	 * @param mobile
-	 * @return
 	 * @throws MalformedURLException
 	 * @throws MobileException
 	 */
@@ -114,7 +110,6 @@ public interface ReAuthenticationService {
 	 * 
 	 * @param sessionId
 	 * @param authenticationStatementData
-	 * @return
 	 * @throws ArgumentIntegrityException
 	 * @throws TrustDomainNotFoundException
 	 * @throws SubjectNotFoundException

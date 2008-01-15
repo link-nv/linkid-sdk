@@ -44,7 +44,6 @@ public class ProtocolException extends Exception {
 	/**
 	 * Gives back the protocol name.
 	 * 
-	 * @return
 	 */
 	public String getProtocolName() {
 		return this.protocolName;

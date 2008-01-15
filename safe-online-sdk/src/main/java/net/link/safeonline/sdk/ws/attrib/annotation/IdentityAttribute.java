@@ -28,7 +28,6 @@ public @interface IdentityAttribute {
 	/**
 	 * The name of the identity attribute.
 	 * 
-	 * @return
 	 */
 	String value();
 }

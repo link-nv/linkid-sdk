@@ -59,7 +59,6 @@ public interface ProtocolHandler {
 	 * protocol that this protocol handler supports. This name can be used on
 	 * error pages.
 	 * 
-	 * @return
 	 */
 	String getName();
 }

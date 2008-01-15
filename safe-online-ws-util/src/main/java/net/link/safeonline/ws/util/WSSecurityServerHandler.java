@@ -205,7 +205,6 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 	 * handler.
 	 * 
 	 * @param context
-	 * @return
 	 */
 	public static X509Certificate getCertificate(SOAPMessageContext context) {
 		X509Certificate certificate = (X509Certificate) context
@@ -219,7 +218,6 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 	 * 
 	 * @param id
 	 * @param context
-	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static boolean isSignedElement(String id, SOAPMessageContext context) {

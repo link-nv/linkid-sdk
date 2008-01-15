@@ -96,7 +96,6 @@ public interface AuthenticationService {
 	 * 
 	 * @param device
 	 * @param mobile
-	 * @return
 	 * @throws MalformedURLException
 	 * @throws MobileException
 	 */
@@ -151,7 +150,6 @@ public interface AuthenticationService {
 	 * @param sessionId
 	 * @param username
 	 * @param registrationStatementData
-	 * @return
 	 * @throws ArgumentIntegrityException
 	 * @throws TrustDomainNotFoundException
 	 * @throws DecodingException
@@ -171,7 +169,6 @@ public interface AuthenticationService {
 	 * Registers a device for a logged in user via an identity statement.
 	 * 
 	 * @param identityStatementData
-	 * @return
 	 * @throws TrustDomainNotFoundException
 	 * @throws PermissionDeniedException
 	 * @throws ArgumentIntegrityException
@@ -223,7 +220,6 @@ public interface AuthenticationService {
 	 * Calling this method in only valid after a call to
 	 * {@link #authenticate(String, byte[])}.
 	 * 
-	 * @return
 	 */
 	String getUserId();
 
@@ -232,7 +228,6 @@ public interface AuthenticationService {
 	 * Calling this method in only valid after a call to
 	 * {@link #authenticate(String, byte[])}.
 	 * 
-	 * @return
 	 */
 	String getUsername();
 

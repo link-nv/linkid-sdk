@@ -28,7 +28,6 @@ public @interface CompoundMember {
 	/**
 	 * The name of the member attribute.
 	 * 
-	 * @return
 	 */
 	String value();
 }

@@ -24,7 +24,6 @@ public interface AuthorizationManagerService {
 	 * attacks of the SafeOnline core.
 	 * 
 	 * @param login
-	 * @return
 	 * @throws SubjectNotFoundException
 	 */
 	Set<String> getRoles(String login) throws SubjectNotFoundException;
@@ -32,7 +31,6 @@ public interface AuthorizationManagerService {
 	/**
 	 * Gives back all available roles supported by the system.
 	 * 
-	 * @return
 	 */
 	Set<String> getAvailableRoles();
 
@@ -49,7 +47,6 @@ public interface AuthorizationManagerService {
 	/**
 	 * Gives back a list of all available user logins.
 	 * 
-	 * @return
 	 */
 	List<String> getUsers();
 }

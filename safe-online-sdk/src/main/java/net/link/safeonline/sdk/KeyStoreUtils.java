@@ -91,7 +91,6 @@ public class KeyStoreUtils {
 	 * @param keyStoreInputStream
 	 * @param keyStorePassword
 	 * @param keyEntryPassword
-	 * @return
 	 */
 	public static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType,
 			InputStream keyStoreInputStream, String keyStorePassword,

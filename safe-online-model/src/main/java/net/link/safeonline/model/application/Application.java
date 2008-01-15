@@ -44,7 +44,6 @@ public class Application {
 	/**
 	 * Gives back the underlying persistent application entity.
 	 * 
-	 * @return
 	 */
 	public ApplicationEntity getEntity() {
 		return this.entity;

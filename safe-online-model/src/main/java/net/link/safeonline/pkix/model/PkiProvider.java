@@ -34,7 +34,6 @@ public interface PkiProvider {
 	 * up to the PKI validator component.
 	 * 
 	 * @param certificate
-	 * @return
 	 */
 	boolean accept(X509Certificate certificate);
 
@@ -42,14 +41,12 @@ public interface PkiProvider {
 	 * Gives back the trust domain that this PKI provider requires for
 	 * certificate validation.
 	 * 
-	 * @return
 	 */
 	TrustDomainEntity getTrustDomain() throws TrustDomainNotFoundException;
 
 	/**
 	 * Gives back a reference to this EJB session object.
 	 * 
-	 * @return
 	 */
 	PkiProvider getReference();
 
@@ -57,7 +54,6 @@ public interface PkiProvider {
 	 * Maps from an identity statement attribute to a core attribute type.
 	 * 
 	 * @param identityStatementAttributes
-	 * @return
 	 */
 	String mapAttribute(IdentityStatementAttributes identityStatementAttributes);
 
@@ -76,7 +72,6 @@ public interface PkiProvider {
 	/**
 	 * Gives back the identifier domain name.
 	 * 
-	 * @return
 	 */
 	String getIdentifierDomainName();
 
@@ -85,7 +80,6 @@ public interface PkiProvider {
 	 * within the identifier domain.
 	 * 
 	 * @param certificate
-	 * @return
 	 */
 	String getSubjectIdentifier(X509Certificate certificate);
 

@@ -114,7 +114,6 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 	 * current thread has no audit context this method will return
 	 * <code>false</code>.
 	 * 
-	 * @return
 	 */
 	public static synchronized boolean lockAuditContext() {
 		AuditContextInfo auditContextInfo = auditContextInfos.get();

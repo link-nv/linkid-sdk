@@ -49,7 +49,6 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 				this.entityManager, SubscriptionEntity.QueryInterface.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	public SubscriptionEntity findSubscription(SubjectEntity subject,
 			ApplicationEntity application) {
 		LOG.debug("find subscription for: " + subject.getUserId() + " to "
@@ -92,9 +91,8 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	public void removeSubscription(SubjectEntity subject,
 			ApplicationEntity application) throws SubscriptionNotFoundException {
 		SubscriptionEntity subscription = findSubscription(subject, application);
-		if (null == subscription) {
+		if (null == subscription)
 			throw new SubscriptionNotFoundException();
-		}
 		this.entityManager.remove(subscription);
 	}
 
@@ -122,9 +120,8 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 	public SubscriptionEntity getSubscription(SubjectEntity subject,
 			ApplicationEntity application) throws SubscriptionNotFoundException {
 		SubscriptionEntity subscription = findSubscription(subject, application);
-		if (null == subscription) {
+		if (null == subscription)
 			throw new SubscriptionNotFoundException();
-		}
 		return subscription;
 	}
 

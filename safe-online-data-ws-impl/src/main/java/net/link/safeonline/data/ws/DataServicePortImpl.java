@@ -659,7 +659,6 @@ public class DataServicePortImpl implements DataServicePort {
 	 * layer doesn't eat XMLGregorianCalendars.
 	 * 
 	 * @param value
-	 * @return
 	 */
 	private Object convertXMLDatatypeToServiceDatatype(Object value) {
 		if (null == value) {

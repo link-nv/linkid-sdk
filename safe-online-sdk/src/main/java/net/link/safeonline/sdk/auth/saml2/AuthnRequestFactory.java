@@ -94,7 +94,6 @@ public class AuthnRequestFactory {
 	 *            the optional challenge (output variable).
 	 * @param devices
 	 *            the optional list of allowed authentication devices.
-	 * @return
 	 */
 	public static String createAuthnRequest(String applicationName,
 			KeyPair applicationKeyPair, String assertionConsumerServiceURL,

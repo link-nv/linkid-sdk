@@ -39,7 +39,6 @@ public interface ApplicationDAO {
 	 * Gives back the application entity for a given application name.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 *             in case the application was not found.
 	 */
@@ -64,7 +63,6 @@ public interface ApplicationDAO {
 	 * Gives back a list of all application registered within the SafeOnline
 	 * system.
 	 * 
-	 * @return
 	 */
 	List<ApplicationEntity> listApplications();
 
@@ -72,7 +70,6 @@ public interface ApplicationDAO {
 	 * Gives back a list of all applications registered within the SafeOnline
 	 * system and allowed for regular users to view/subscribe to.
 	 * 
-	 * @return
 	 */
 	List<ApplicationEntity> listUserApplications();
 
@@ -80,7 +77,6 @@ public interface ApplicationDAO {
 	 * Gives back the application owned by the given application owner.
 	 * 
 	 * @param applicationOwner
-	 * @return
 	 */
 	List<ApplicationEntity> listApplications(
 			ApplicationOwnerEntity applicationOwner);
@@ -92,7 +88,6 @@ public interface ApplicationDAO {
 	 * 
 	 * @param certificate
 	 *            the application certificate.
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 */
 	ApplicationEntity getApplication(X509Certificate certificate)

@@ -27,7 +27,6 @@ public interface AccountMergingService {
 	 * account.
 	 * 
 	 * @param sourceAccountName
-	 * @return
 	 * @throws SubjectNotFoundException
 	 * @throws AttributeTypeNotFoundException
 	 * @throws EmptyDevicePolicyException

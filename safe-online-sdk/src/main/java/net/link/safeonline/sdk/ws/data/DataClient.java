@@ -55,7 +55,6 @@ public interface DataClient extends MessageAccessor {
 	 * @param attributeName
 	 * @param valueClass
 	 *            the type of the attribute value.
-	 * @return
 	 * @throws ConnectException
 	 *             in case the service could not be contacted. Can happen if the
 	 *             SSL was not setup correctly.

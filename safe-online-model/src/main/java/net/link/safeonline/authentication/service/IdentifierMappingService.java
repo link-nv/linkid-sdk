@@ -28,7 +28,6 @@ public interface IdentifierMappingService {
 	 * settings and provided application id.
 	 * 
 	 * @param username
-	 * @return
 	 * @throws PermissionDeniedException
 	 * @throws ApplicationNotFoundException
 	 * @throws SubscriptionNotFoundException

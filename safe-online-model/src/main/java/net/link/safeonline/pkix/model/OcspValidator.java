@@ -31,7 +31,6 @@ public interface OcspValidator {
 	 * 
 	 * @param certificate
 	 * @param issuerCertificate
-	 * @return
 	 */
 	boolean performOcspCheck(X509Certificate certificate,
 			X509Certificate issuerCertificate);
@@ -40,7 +39,6 @@ public interface OcspValidator {
 	 * Extracts a OCSP URI from a certificate
 	 * 
 	 * @param certificate
-	 * @return
 	 */
 	URI getOcspUri(X509Certificate certificate);
 
@@ -51,7 +49,6 @@ public interface OcspValidator {
 	 * @param ocspUri
 	 * @param certificate
 	 * @param issuerCertificate
-	 * @return
 	 */
 	OcspResult verifyOcspStatus(URI ocspUri, X509Certificate certificate,
 			X509Certificate issuerCertificate);

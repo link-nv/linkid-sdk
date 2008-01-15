@@ -141,7 +141,6 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 	 * Gives back the result of the token signature validation.
 	 * 
 	 * @param context
-	 * @return
 	 */
 	public static boolean getValidity(WebServiceContext context) {
 		MessageContext messageContext = context.getMessageContext();

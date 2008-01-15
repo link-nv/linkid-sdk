@@ -22,7 +22,6 @@ public class SafeOnlineException extends Exception {
 	 * Gives back the error code. The error code is a unique code per exception
 	 * type. It can be used by client-side components for better error handling.
 	 * 
-	 * @return
 	 */
 	public String getErrorCode() {
 		return this.errorCode;

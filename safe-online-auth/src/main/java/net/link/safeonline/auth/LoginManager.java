@@ -137,7 +137,6 @@ public class LoginManager {
 	 * Gives back the set of required devices. The value returned can be null.
 	 * 
 	 * @param session
-	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static Set<AuthenticationDevice> getRequiredDevices(

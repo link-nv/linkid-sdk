@@ -29,7 +29,6 @@ public interface PkiValidator {
 	 * 
 	 * @param trustDomainName
 	 * @param certificate
-	 * @return
 	 */
 	boolean validateCertificate(TrustDomainEntity trustDomain,
 			X509Certificate certificate);

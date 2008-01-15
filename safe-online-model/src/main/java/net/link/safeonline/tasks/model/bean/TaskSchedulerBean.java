@@ -233,7 +233,6 @@ public class TaskSchedulerBean implements TaskScheduler {
 	 * 
 	 * @param fireDate
 	 * @param schedulingName
-	 * @return
 	 */
 	private Timer createTimer(Date fireDate, String schedulingName) {
 		int tries = 10;

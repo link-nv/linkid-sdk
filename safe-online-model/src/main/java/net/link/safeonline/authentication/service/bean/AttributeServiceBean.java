@@ -79,7 +79,6 @@ public class AttributeServiceBean implements AttributeService,
 	@EJB
 	private SubjectService subjectService;
 
-	@SuppressWarnings("unchecked")
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public Object getConfirmedAttributeValue(String subjectLogin,
 			String attributeName) throws AttributeNotFoundException,
@@ -164,7 +163,6 @@ public class AttributeServiceBean implements AttributeService,
 		return attributes;
 	}
 
-	@SuppressWarnings("unchecked")
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public Map<String, Object> getConfirmedAttributeValues(String subjectLogin)
 			throws SubjectNotFoundException, PermissionDeniedException {

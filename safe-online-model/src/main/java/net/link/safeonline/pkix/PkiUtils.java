@@ -33,7 +33,6 @@ public class PkiUtils {
 	 * Decodes a given DER encoded X509 certificate.
 	 * 
 	 * @param encodedCertificate
-	 * @return
 	 * @throws CertificateEncodingException
 	 */
 	public static X509Certificate decodeCertificate(byte[] encodedCertificate)

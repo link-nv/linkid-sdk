@@ -36,7 +36,6 @@ public class Attribute<Type> {
 	/**
 	 * Gives back the name of the attribute.
 	 * 
-	 * @return
 	 */
 	public String getName() {
 		return this.name;
@@ -45,7 +44,6 @@ public class Attribute<Type> {
 	/**
 	 * Gives back the value of the attribute.
 	 * 
-	 * @return
 	 */
 	public Type getValue() {
 		return this.value;

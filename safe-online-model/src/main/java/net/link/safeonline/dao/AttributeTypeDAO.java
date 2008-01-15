@@ -69,7 +69,6 @@ public interface AttributeTypeDAO {
 	 * count of how many times these values occur
 	 * 
 	 * @param attributeType
-	 * @return
 	 */
 	Map<Object, Long> categorize(ApplicationEntity application,
 			AttributeTypeEntity attributeType);
@@ -79,7 +78,6 @@ public interface AttributeTypeDAO {
 	 * attribute type belongs to.
 	 * 
 	 * @param memberAttributeType
-	 * @return
 	 * @throws AttributeTypeNotFoundException
 	 */
 	AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType)

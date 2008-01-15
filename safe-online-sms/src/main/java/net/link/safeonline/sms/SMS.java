@@ -80,7 +80,6 @@ public class SMS {
 	 * strips all non-numbers from the telephone numbers
 	 * 
 	 * @param telnr
-	 * @return
 	 */
 	public static String strip(String telnr) {
 		return telnr.replaceAll("[^0-9]", "");
@@ -91,7 +90,6 @@ public class SMS {
 	 * communication
 	 * 
 	 * @param telnr
-	 * @return
 	 */
 	public static byte[] telToBytes(String telnummer) {
 		String telnr = strip(telnummer);
@@ -118,7 +116,6 @@ public class SMS {
 	 * converts a message to the sms encoding
 	 * 
 	 * @param message
-	 * @return
 	 * @throws Exception
 	 */
 	public static byte[] msgToBytes(String message) throws Exception {

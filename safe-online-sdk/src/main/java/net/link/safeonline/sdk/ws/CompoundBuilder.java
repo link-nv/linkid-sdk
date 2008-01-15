@@ -75,7 +75,6 @@ public class CompoundBuilder {
 	/**
 	 * Gives back the resulting compound object.
 	 * 
-	 * @return
 	 */
 	public Object getCompound() {
 		return this.compoundAttribute;

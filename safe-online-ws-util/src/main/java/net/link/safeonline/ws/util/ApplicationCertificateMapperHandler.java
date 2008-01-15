@@ -114,7 +114,6 @@ public class ApplicationCertificateMapperHandler implements
 	 * message context by a handler instance of this type.
 	 * 
 	 * @param soapMessageContext
-	 * @return
 	 */
 	public static String getApplicationId(SOAPMessageContext soapMessageContext) {
 		String applicationId = (String) soapMessageContext

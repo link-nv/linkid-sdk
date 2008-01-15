@@ -27,7 +27,6 @@ public interface AttributeTypeService {
 	 * attribute types, multi-valued attribute types and compounded attribute
 	 * types.
 	 * 
-	 * @return
 	 */
 	List<AttributeTypeEntity> listAttributeTypes();
 
@@ -42,7 +41,6 @@ public interface AttributeTypeService {
 	 * type.
 	 * </p>
 	 * 
-	 * @return
 	 */
 	List<AttributeTypeEntity> listAvailableMemberAttributeTypes();
 

@@ -48,7 +48,6 @@ public class IntegrationTestUtils {
 	 * Retrieves the JNDI initial context. This assumes that we have a locally
 	 * running JBoss Application Server on port 1099.
 	 * 
-	 * @return
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")

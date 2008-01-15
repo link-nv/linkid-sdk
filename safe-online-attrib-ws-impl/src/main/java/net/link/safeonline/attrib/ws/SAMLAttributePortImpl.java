@@ -214,7 +214,6 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 	/**
 	 * @param attributeName
 	 *            the optional attribute name.
-	 * @return
 	 */
 	private ResponseType createAttributeNotFoundResponse(String attributeName) {
 		String detailMessage;
@@ -247,7 +246,6 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 	 *            the optional second-level status code.
 	 * @param statusMessage
 	 *            the optional status message.
-	 * @return
 	 */
 	private ResponseType createRequesterErrorResponse(
 			SamlpSecondLevelErrorCode secondLevelStatusCode,

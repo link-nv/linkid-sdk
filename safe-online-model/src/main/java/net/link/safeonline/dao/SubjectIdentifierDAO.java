@@ -53,7 +53,6 @@ public interface SubjectIdentifierDAO {
 	 * Returns list of subject identifiers for the given subject.
 	 * 
 	 * @param subject
-	 * @return
 	 */
 	List<SubjectIdentifierEntity> getSubjectIdentifiers(SubjectEntity subject);
 }

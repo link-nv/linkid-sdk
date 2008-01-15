@@ -41,7 +41,6 @@ public interface ApplicationService {
 	/**
 	 * Gives back all available applications.
 	 * 
-	 * @return
 	 */
 	List<ApplicationEntity> listApplications();
 
@@ -49,7 +48,6 @@ public interface ApplicationService {
 	 * Gives back the application entity for a given application name.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 */
 	ApplicationEntity getApplication(String applicationName)
@@ -58,7 +56,6 @@ public interface ApplicationService {
 	/**
 	 * Gives back the applications owned by the caller principal.
 	 * 
-	 * @return
 	 */
 	List<ApplicationEntity> getOwnedApplications();
 
@@ -143,7 +140,6 @@ public interface ApplicationService {
 	/**
 	 * Gives back a list of all application owners within the system.
 	 * 
-	 * @return
 	 */
 	List<ApplicationOwnerEntity> listApplicationOwners();
 
@@ -153,7 +149,6 @@ public interface ApplicationService {
 	 * 
 	 * @param applicationName
 	 *            the name of the application.
-	 * @return
 	 * @throws ApplicationIdentityNotFoundException
 	 * @throws PermissionDeniedException
 	 */

@@ -210,7 +210,6 @@ public class LoginServlet extends HttpServlet {
 	 * @param session
 	 * @param applicationId
 	 * @param device
-	 * @return
 	 * @throws ServletException
 	 */
 	@SuppressWarnings("unchecked")

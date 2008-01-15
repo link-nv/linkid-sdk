@@ -43,7 +43,6 @@ public class AllowedDeviceDAOBean implements AllowedDeviceDAO {
 		return allowedDevice;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AllowedDeviceEntity> listAllowedDevices(
 			ApplicationEntity application) {
 		List<AllowedDeviceEntity> result = this.queryObject

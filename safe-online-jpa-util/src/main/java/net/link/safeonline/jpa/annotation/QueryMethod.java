@@ -27,7 +27,6 @@ public @interface QueryMethod {
 	/**
 	 * The name of the named query to execute.
 	 * 
-	 * @return
 	 */
 	String value();
 
@@ -36,7 +35,6 @@ public @interface QueryMethod {
 	 * {@link NoResultException}. Useful to implement <code>findXXX</code>
 	 * methods.
 	 * 
-	 * @return
 	 */
 	boolean nullable() default false;
 }

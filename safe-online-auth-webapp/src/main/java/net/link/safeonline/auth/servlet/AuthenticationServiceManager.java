@@ -104,7 +104,6 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	 * performed via this authentication service manager class.
 	 * 
 	 * @param session
-	 * @return
 	 */
 	public static AuthenticationService getAuthenticationService(
 			HttpSession session) {

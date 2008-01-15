@@ -26,7 +26,6 @@ public interface HelpdeskService {
 	/**
 	 * Gives back all available helpdesk log contexts.
 	 * 
-	 * @return
 	 */
 	List<HelpdeskContextEntity> listContexts();
 
@@ -34,14 +33,12 @@ public interface HelpdeskService {
 	 * Gives all helpdesk events logs for the specified log id.
 	 * 
 	 * @param logId
-	 * @return
 	 */
 	List<HelpdeskEventEntity> listEvents(Long logId);
 
 	/**
 	 * Gives all users with helpdesk event logs
 	 * 
-	 * @return
 	 */
 	List<String> listUsers();
 
@@ -49,7 +46,6 @@ public interface HelpdeskService {
 	 * Gives all helpdesk logs for a specific user
 	 * 
 	 * @param user
-	 * @return
 	 */
 	List<HelpdeskContextEntity> listUserContexts(String user);
 
@@ -58,7 +54,6 @@ public interface HelpdeskService {
 	 * specified log id.
 	 * 
 	 * @param logId
-	 * @return
 	 */
 	boolean removeLog(Long logId);
 

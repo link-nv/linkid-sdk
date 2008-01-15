@@ -28,7 +28,6 @@ public @interface QueryParam {
 	/**
 	 * Name of the parameter within the query.
 	 * 
-	 * @return
 	 */
 	String value();
 }

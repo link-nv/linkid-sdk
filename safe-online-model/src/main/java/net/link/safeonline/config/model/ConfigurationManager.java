@@ -35,7 +35,6 @@ public interface ConfigurationManager {
 	 * integrity. For example: Microsoft .NET 3.0 WCF clients.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 */
 	boolean skipMessageIntegrityCheck(String applicationName)

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -580,7 +580,6 @@ public class EntityTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testTrustPointWithEmptyKeyId() throws Exception {
 		// setup
 		String trustDomainName = "test-trust-domain-"
@@ -918,11 +917,10 @@ public class EntityTest {
 		for (ApplicationIdentityAttributeEntity resultIdentityAttribute : resultIdentityAttributes) {
 			AttributeTypeEntity resultAttributeType = resultIdentityAttribute
 					.getAttributeType();
-			if (attributeType1.equals(resultAttributeType)) {
+			if (attributeType1.equals(resultAttributeType))
 				hasType1 = true;
-			} else if (attributeType2.equals(resultAttributeType)) {
+			else if (attributeType2.equals(resultAttributeType))
 				hasType2 = true;
-			}
 			assertEquals(application.getName(), resultIdentityAttribute
 					.getApplicationName());
 		}

@@ -156,7 +156,6 @@ public class IdentityServiceBean implements IdentityService,
 	 * the user is allowed to edit attributes of the attribute type.
 	 * 
 	 * @param attributeName
-	 * @return
 	 * @throws PermissionDeniedException
 	 * @throws AttributeTypeNotFoundException
 	 */
@@ -180,7 +179,6 @@ public class IdentityServiceBean implements IdentityService,
 	 * the user is allowed to remove attributes of the attribute type.
 	 * 
 	 * @param attributeName
-	 * @return
 	 * @throws PermissionDeniedException
 	 * @throws AttributeTypeNotFoundException
 	 */
@@ -686,7 +684,6 @@ public class IdentityServiceBean implements IdentityService,
 	 * application. This method will also expand compounded attribute types.
 	 * 
 	 * @param applicationName
-	 * @return
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
 	 */

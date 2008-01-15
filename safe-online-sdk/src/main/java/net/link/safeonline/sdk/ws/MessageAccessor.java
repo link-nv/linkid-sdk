@@ -31,21 +31,18 @@ public interface MessageAccessor {
 	/**
 	 * Gives back the current message capturing setting.
 	 * 
-	 * @return
 	 */
 	boolean isCaptureMessages();
 
 	/**
 	 * Gives back the inbound message, i.e., the response SOAP message.
 	 * 
-	 * @return
 	 */
 	Document getInboundMessage();
 
 	/**
 	 * Gives back the outbound message, i.e., the request SOAP message.
 	 * 
-	 * @return
 	 */
 	Document getOutboundMessage();
 

@@ -27,7 +27,6 @@ public interface AuthorizationService {
 	 * attacks of the SafeOnline core.
 	 * 
 	 * @param login
-	 * @return
 	 */
 	Set<String> getRoles(String login);
 }

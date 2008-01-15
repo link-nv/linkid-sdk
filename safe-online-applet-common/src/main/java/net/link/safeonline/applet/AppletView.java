@@ -32,7 +32,6 @@ public interface AppletView {
 	/**
 	 * Gives back a logger. The logger can manage it's output via the view.
 	 * 
-	 * @return
 	 */
 	Log getLog();
 }

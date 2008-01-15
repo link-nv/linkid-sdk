@@ -21,7 +21,6 @@ public interface SamlAuthorityService {
 	/**
 	 * Gives back the name of the SAML assertion issuer.
 	 * 
-	 * @return
 	 */
 	String getIssuerName();
 
@@ -29,7 +28,6 @@ public interface SamlAuthorityService {
 	 * Gives back the validity of the authentication assertions issued by this
 	 * party.
 	 * 
-	 * @return
 	 */
 	int getAuthnAssertionValidity();
 }

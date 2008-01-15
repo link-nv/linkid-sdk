@@ -47,7 +47,6 @@ public interface AttributeService {
 	 * 
 	 * @param subjectLogin
 	 * @param attributeName
-	 * @return
 	 * @throws AttributeNotFoundException
 	 * @throws PermissionDeniedException
 	 * @throws SubjectNotFoundException
@@ -75,7 +74,6 @@ public interface AttributeService {
 	 * </p>
 	 * 
 	 * @param subjectLogin
-	 * @return
 	 * @throws SubjectNotFoundException
 	 * @throws PermissionDeniedException
 	 */

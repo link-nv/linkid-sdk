@@ -77,7 +77,6 @@ public class CaptchaServlet extends HttpServlet {
 	 * validation we need to store the captcha service within the session.
 	 * 
 	 * @param session
-	 * @return
 	 */
 	private ImageCaptchaService getCaptchaService(HttpSession session) {
 		ImageCaptchaService captchaService = (ImageCaptchaService) session

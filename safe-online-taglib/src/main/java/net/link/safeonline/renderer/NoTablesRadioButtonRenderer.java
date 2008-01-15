@@ -20,39 +20,39 @@ import javax.faces.render.Renderer;
 
 /**
  * This renderer is based on Sun's RI for the radio button renderer
- * 
+ *
  * @author dhouthoo
- * 
+ *
  */
 public class NoTablesRadioButtonRenderer extends Renderer {
 
+	@Override
 	public void decode(FacesContext context, UIComponent component) {
 
 		String clientId = component.getClientId(context);
-		assert (clientId != null);
+		assert clientId != null;
 
 		Map<String, String> requestParameterMap = context.getExternalContext()
 				.getRequestParameterMap();
 		if (requestParameterMap.containsKey(clientId)) {
 			String newValue = requestParameterMap.get(clientId);
 			setSubmittedValue(component, newValue);
-		} else {
+		} else
 			setSubmittedValue(component, "");
-		}
 
 		return;
 
 	}
 
+	@Override
 	public void encodeEnd(FacesContext context, UIComponent component)
 			throws IOException {
 
-		if (false == component.isRendered()) {
+		if (false == component.isRendered())
 			return;
-		}
 
 		ResponseWriter writer = context.getResponseWriter();
-		assert (writer != null);
+		assert writer != null;
 
 		String styleClass = (String) component.getAttributes()
 				.get("styleClass");
@@ -61,7 +61,7 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 		SelectItem curItem = null;
 		int idx = -1;
 		while (items.hasNext()) {
-			curItem = (SelectItem) items.next();
+			curItem = items.next();
 			idx++;
 			renderOption(context, component, curItem, idx, styleClass);
 
@@ -73,18 +73,16 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 			throws IOException {
 
 		ResponseWriter writer = context.getResponseWriter();
-		assert (writer != null);
+		assert writer != null;
 
 		UISelectOne selectOne = (UISelectOne) component;
 		Object curValue = selectOne.getSubmittedValue();
-		if (curValue == null) {
+		if (curValue == null)
 			curValue = selectOne.getValue();
-		}
 
 		Class<?> type = String.class;
-		if (curValue != null) {
+		if (curValue != null)
 			type = curValue.getClass();
-		}
 		Object itemValue = curItem.getValue();
 		// Map<String, Object> requestMap = context.getExternalContext()
 		// .getRequestMap();
@@ -103,26 +101,23 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 		String itemLabel = curItem.getLabel();
 		if (itemLabel != null) {
 			writer.writeText(" ", component, null);
-			if (!curItem.isEscape()) {
+			if (!curItem.isEscape())
 				// It seems the ResponseWriter API should
 				// have a writeText() with a boolean property
 				// to determine if it content written should
 				// be escaped or not.
 				writer.write(itemLabel);
-			} else {
+			else
 				writer.writeText(itemLabel, component, "label");
-			}
 		}
 		writer.endElement("label");
 
 		writer.startElement("input", component);
 		writer.writeAttribute("type", "radio", "type");
-		if (styleClass != null) {
+		if (styleClass != null)
 			writer.writeAttribute("class", styleClass, "class");
-		}
-		if (newValue.equals(curValue)) {
+		if (newValue.equals(curValue))
 			writer.writeAttribute("checked", Boolean.TRUE, null);
-		}
 		writer.writeAttribute("name", component.getClientId(context),
 				"clientId");
 
@@ -134,65 +129,61 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 
 	}
 
-	public static Iterator<SelectItem> getSelectItems(FacesContext context,
-			UIComponent component) {
+	public static Iterator<SelectItem> getSelectItems(
+			@SuppressWarnings("unused")
+			FacesContext context, UIComponent component) {
 
 		ArrayList<SelectItem> list = new ArrayList<SelectItem>();
-		for (UIComponent kid : component.getChildren()) {
+		for (UIComponent kid : component.getChildren())
 			if (kid instanceof UISelectItem) {
 				UISelectItem item = (UISelectItem) kid;
 				Object value = item.getValue();
 
-				if (value == null) {
+				if (value == null)
 					list.add(new SelectItem(item.getItemValue(), item
 							.getItemLabel(), item.getItemDescription(), item
 							.isItemDisabled(), item.isItemEscaped()));
-				} else if (value instanceof SelectItem) {
+				else if (value instanceof SelectItem)
 					list.add((SelectItem) value);
-				} else {
+				else {
 					// empty
 				}
 			} else if (kid instanceof UISelectItems) {
 				Object value = ((UISelectItems) kid).getValue();
-				if (value instanceof SelectItem) {
+				if (value instanceof SelectItem)
 					list.add((SelectItem) value);
-				} else if (value instanceof SelectItem[]) {
+				else if (value instanceof SelectItem[]) {
 					SelectItem[] items = (SelectItem[]) value;
-					for (SelectItem item : items) {
+					for (SelectItem item : items)
 						list.add(item);
-					}
 				} else if (value instanceof Collection) {
-					for (Object element : ((Collection<?>) value)) {
-						if (SelectItem.class.isInstance(element)) {
+					for (Object element : (Collection<?>) value)
+						if (SelectItem.class.isInstance(element))
 							list.add((SelectItem) element);
-						} else {
+						else {
 							// empty
 						}
-					}
 				} else if (value instanceof Map) {
 					Map<?, ?> optionMap = (Map<?, ?>) value;
 					for (Object o : optionMap.entrySet()) {
 						Entry<?, ?> entry = (Entry<?, ?>) o;
 						Object key = entry.getKey();
 						Object val = entry.getValue();
-						if (key == null || val == null) {
+						if (key == null || val == null)
 							continue;
-						}
 						list.add(new SelectItem(val, key.toString()));
 					}
 				} else {
 					// empty
 				}
 			}
-		}
-		return (list.iterator());
+		return list.iterator();
 
 	}
 
 	public void setSubmittedValue(UIComponent component, Object value) {
-		if (component instanceof UIInput) {
+		if (component instanceof UIInput)
 			((UIInput) component).setSubmittedValue(value);
-		}
 
 	}
 

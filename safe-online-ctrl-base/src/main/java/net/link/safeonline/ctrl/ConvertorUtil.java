@@ -29,7 +29,6 @@ public class ConvertorUtil {
 	 * @param <TypeOut>
 	 * @param inputList
 	 * @param convertor
-	 * @return
 	 */
 	public static <TypeIn, TypeOut> List<TypeOut> convert(
 			List<TypeIn> inputList, Convertor<TypeIn, TypeOut> convertor) {

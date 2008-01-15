@@ -51,7 +51,6 @@ public interface UserRegistrationService {
 	 * Checks whether the given login Id is still free to use or not.
 	 * 
 	 * @param login
-	 * @return
 	 */
 	boolean isLoginFree(String login);
 

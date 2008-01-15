@@ -44,7 +44,6 @@ public class EjbUtils {
 	 * @param initialContext
 	 * @param jndiName
 	 * @param type
-	 * @return
 	 */
 	public static <Type> Type getEJB(InitialContext initialContext,
 			String jndiName, Class<Type> type) {

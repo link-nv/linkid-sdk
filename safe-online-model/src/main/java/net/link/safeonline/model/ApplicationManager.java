@@ -24,7 +24,6 @@ public interface ApplicationManager {
 	 * Gives back the caller application. Calling this method only makes sense
 	 * in the context of an application login (via an application web service).
 	 * 
-	 * @return
 	 */
 	ApplicationEntity getCallerApplication();
 }

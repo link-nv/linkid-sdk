@@ -52,7 +52,6 @@ public class IdentityServiceClient {
 	/**
 	 * Gives back the private key of the SafeOnline service entity.
 	 * 
-	 * @return
 	 */
 	public PrivateKey getPrivateKey() {
 		Object[] params = {};
@@ -71,7 +70,6 @@ public class IdentityServiceClient {
 	/**
 	 * Gives back the public key of the SafeOnline service entity.
 	 * 
-	 * @return
 	 */
 	public PublicKey getPublicKey() {
 		Object[] params = {};

@@ -29,7 +29,6 @@ public class CompoundUtil {
 	 * object.
 	 * 
 	 * @param attributeValue
-	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static boolean isCompound(Object attributeValue) {
@@ -46,7 +45,6 @@ public class CompoundUtil {
 	 * Gives back the attribute Id of given the compounded object.
 	 * 
 	 * @param attributeValue
-	 * @return
 	 */
 	public static String getAttributeId(Object attributeValue) {
 		Class<?> clazz = attributeValue.getClass();
@@ -81,7 +79,6 @@ public class CompoundUtil {
 	 * 
 	 * @param clazz
 	 * @param getMethod
-	 * @return
 	 */
 	public static Method getSetMethod(Class<?> clazz, Method getMethod) {
 		String methodName = getMethod.getName();

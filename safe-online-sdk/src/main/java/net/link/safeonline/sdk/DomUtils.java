@@ -46,7 +46,6 @@ public class DomUtils {
 	 * Parses the given string to a DOM object.
 	 * 
 	 * @param documentString
-	 * @return
 	 * @throws Exception
 	 */
 	public static Document parseDocument(String documentString)
@@ -81,7 +80,6 @@ public class DomUtils {
 	 * Loads a DOM document from the given input stream.
 	 * 
 	 * @param documentInputStream
-	 * @return
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
@@ -101,7 +99,6 @@ public class DomUtils {
 	 * Transforms a DOM node (e.g. DOM element or DOM document) to a String.
 	 * 
 	 * @param domNode
-	 * @return
 	 * @throws TransformerException
 	 */
 	public static String domToString(Node domNode) throws TransformerException {

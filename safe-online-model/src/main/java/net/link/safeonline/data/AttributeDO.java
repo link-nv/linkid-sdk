@@ -89,7 +89,6 @@ public class AttributeDO implements Serializable, Cloneable {
 	/**
 	 * Gives back the URN name of the attribute type.
 	 * 
-	 * @return
 	 */
 	public String getName() {
 		return this.name;
@@ -131,7 +130,6 @@ public class AttributeDO implements Serializable, Cloneable {
 	 * readable name. We increase the index by one since human beings tend to
 	 * start counting from 1.
 	 * 
-	 * @return
 	 */
 	public String getHumanReadableName() {
 		String viewName;
@@ -171,7 +169,6 @@ public class AttributeDO implements Serializable, Cloneable {
 	/**
 	 * Gets the boolean value. Can be <code>null</code>.
 	 * 
-	 * @return
 	 */
 	public Boolean getBooleanValue() {
 		return this.booleanValue;
@@ -210,7 +207,6 @@ public class AttributeDO implements Serializable, Cloneable {
 	 * {@link #setValue(AttributeDO)} methods are used by the presentation layer
 	 * to allow for easy Expression Language expressions in the JSF pages.
 	 * 
-	 * @return
 	 */
 	public AttributeDO getValue() {
 		return this;
@@ -267,7 +263,6 @@ public class AttributeDO implements Serializable, Cloneable {
 	 * the event of multi-valued attributes. For single-valued attributes the
 	 * index defaults to zero.
 	 * 
-	 * @return
 	 */
 	public long getIndex() {
 		return this.index;
@@ -281,7 +276,6 @@ public class AttributeDO implements Serializable, Cloneable {
 	 * Marks whether this attribute value is part of a multi-valued attribute or
 	 * not.
 	 * 
-	 * @return
 	 */
 	public boolean isMultivalued() {
 		return this.multivalued;
@@ -295,7 +289,6 @@ public class AttributeDO implements Serializable, Cloneable {
 	 * Marks that this attribute entry is the title entry of a compounded
 	 * attribute record. This flag will be used for visualization.
 	 * 
-	 * @return
 	 */
 	public boolean isCompounded() {
 		return this.compounded;
@@ -309,7 +302,6 @@ public class AttributeDO implements Serializable, Cloneable {
 	 * Marks that this attribute entry is a member entry of a compounded
 	 * attribute record. This flag will be used for visualization.
 	 * 
-	 * @return
 	 */
 	public boolean isMember() {
 		return this.member;
@@ -323,7 +315,6 @@ public class AttributeDO implements Serializable, Cloneable {
 	 * Marks whether this attribute is required or not. For compounded member
 	 * attribute the value could be optional.
 	 * 
-	 * @return
 	 */
 	public boolean isRequired() {
 		return this.required;
@@ -336,7 +327,6 @@ public class AttributeDO implements Serializable, Cloneable {
 	/**
 	 * Marks whether this attribute is user visible or not.
 	 * 
-	 * @return
 	 */
 	public boolean isUserVisible() {
 		return this.userVisible;
