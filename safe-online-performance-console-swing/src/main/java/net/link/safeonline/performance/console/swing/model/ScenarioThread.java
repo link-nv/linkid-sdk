@@ -7,6 +7,7 @@
 package net.link.safeonline.performance.console.swing.model;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.AgentState;
@@ -46,29 +47,44 @@ public abstract class ScenarioThread implements Runnable {
 
 		for (final Map.Entry<Address, ConsoleAgent> agentEntry : this.agents
 				.entrySet())
-
-			new Thread() {
-				@Override
-				public void run() {
-
-					ConsoleAgent agent = agentEntry.getValue();
-					if (!agent.actionRequest(ScenarioThread.this.state))
-						return;
-
-					try {
-						agent.setError(null);
-						process(agentEntry.getKey(), agent);
-					}
-
-					catch (Exception e) {
-						agent.setError(e);
-					}
-				}
-			}.start();
+			new Worker(agentEntry).start();
 	}
 
 	/**
 	 * Perform the action that needs to be performed on each selected agent.
 	 */
 	abstract void process(Address address, ConsoleAgent agent) throws Exception;
+
+	class Worker extends Thread {
+
+		private Entry<Address, ConsoleAgent> agentEntry;
+
+		public Worker(Entry<Address, ConsoleAgent> agentEntry) {
+
+			super("Dispatch Thread");
+			setDaemon(true);
+
+			this.agentEntry = agentEntry;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void run() {
+
+			ConsoleAgent agent = this.agentEntry.getValue();
+			if (!agent.actionRequest(ScenarioThread.this.state))
+				return;
+
+			try {
+				agent.setError(null);
+				process(this.agentEntry.getKey(), agent);
+			}
+
+			catch (Exception e) {
+				agent.setError(e);
+			}
+		}
+	}
 }

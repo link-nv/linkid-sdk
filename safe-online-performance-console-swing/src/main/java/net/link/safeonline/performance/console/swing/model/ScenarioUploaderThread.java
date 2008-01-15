@@ -23,7 +23,7 @@ import org.jgroups.Address;
  */
 public class ScenarioUploaderThread extends ScenarioThread {
 
-	File application;
+	private File application;
 
 	public ScenarioUploaderThread(Map<Address, ConsoleAgent> map,
 			ScenarioChooser chooser, File application) {

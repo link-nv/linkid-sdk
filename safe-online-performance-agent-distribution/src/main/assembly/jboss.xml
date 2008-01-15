@@ -12,7 +12,7 @@
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
-				<exclude>bin/*.sh</exclude>
+                <exclude>bin/*.sh</exclude>
                 <exclude>server/default/lib/jboss-seam-1.2.1.GA-safe-online.jar</exclude>
 			</excludes>
 		</fileSet>

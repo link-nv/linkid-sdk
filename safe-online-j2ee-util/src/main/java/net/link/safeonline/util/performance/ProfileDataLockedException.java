@@ -1,4 +1,4 @@
-package net.link.safeonline.util.jacc;
+package net.link.safeonline.util.performance;
 
 public class ProfileDataLockedException extends Exception {
 

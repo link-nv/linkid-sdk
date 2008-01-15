@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -30,10 +30,12 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.transform.TransformerException;
 
+import net.link.safeonline.performance.DriverException;
+import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
-import net.link.safeonline.util.jacc.ProfileData;
-import net.link.safeonline.util.jacc.ProfileDataLockedException;
+import net.link.safeonline.util.performance.ProfileData;
+import net.link.safeonline.util.performance.ProfileDataLockedException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.ConnectTimeoutException;
@@ -73,9 +75,9 @@ public class AuthDriver extends ProfileDriver {
 
 	private String response;
 
-	public AuthDriver(String hostname) {
+	public AuthDriver(String hostname, ExecutionEntity execution) {
 
-		super(hostname, "Authentication Driver");
+		super(hostname, "Authentication Driver", execution);
 
 		Protocol.registerProtocol("https", new Protocol("https",
 				new MySSLSocketFactory(), 443));
@@ -170,38 +172,36 @@ public class AuthDriver extends ProfileDriver {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected synchronized void loadDriver() {
-
-		this.iterationDatas = new ArrayList<ProfileData>();
-		super.loadDriver();
-	}
-
-	/**
 	 * Authenticate with OLAS's auth-webapp.
-	 * 
+	 *
 	 * @return The user's UUID.
 	 */
 	public String login(PrivateKeyEntry application, String applicationName,
 			String username, String password) throws DriverException {
 
-		loadDriver();
+		LOG.debug("login");
+		this.iterationDatas = new ArrayList<ProfileData>();
 
 		try {
 			// Prepare authentication request token.
+			LOG.debug("prep");
 			PublicKey publicKey = application.getCertificate().getPublicKey();
+			LOG.debug("prep:1");
 			PrivateKey privateKey = application.getPrivateKey();
+			LOG.debug("prep:2");
 			KeyPair keyPair = new KeyPair(publicKey, privateKey);
+			LOG.debug("prep:3");
 			String uri = String.format("https://%s/olas-auth/entry", getHost());
+			LOG.debug("prep:4");
 			String authnRequest = AuthnRequestFactory.createAuthnRequest(
 					applicationName, keyPair, "http://www.lin-k.net/"
 							+ applicationName, uri, null, null);
+			LOG.debug("prep:5");
 			String encodedAuthnRequest = new String(Base64
 					.encodeBase64(authnRequest.getBytes()));
 
 			// Request the JSessionID cookie.
+			LOG.debug("cookie");
 			PostMethod postMethod = new PostMethod(uri);
 			postMethod.setRequestHeader("Cookie", "deflowered=true");
 			postMethod.addParameter(new NameValuePair("SAMLRequest",
@@ -289,7 +289,7 @@ public class AuthDriver extends ProfileDriver {
 		}
 
 		catch (Exception e) {
-			throw setDriverError(e);
+			throw report(e);
 		}
 
 		finally {
@@ -302,17 +302,16 @@ public class AuthDriver extends ProfileDriver {
 						String key = measurement.getKey();
 						Long value = measurement.getValue();
 
-						// Don't sum any request keys other than DELTA_TIME.
+						// Sum non-request times and DELTA_TIME request time.
 						if (!ProfileData.isRequestKey(key)
 								|| ProfileData.REQUEST_DELTA_TIME.equals(key))
 							value += iterationData.getMeasurement(key);
 
-						iterationData.addMeasurement(measurement.getKey(),
-								value);
+						iterationData.addMeasurement(key, value);
 					} catch (ProfileDataLockedException e) {
 					}
 
-			unloadDriver(iterationData);
+			report(iterationData);
 		}
 	}
 

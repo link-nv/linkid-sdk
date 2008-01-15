@@ -14,7 +14,7 @@ import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
 
 import net.link.safeonline.audit.AuditContextPolicyContextHandler;
-import net.link.safeonline.util.jacc.ProfilingPolicyContextHandler;
+import net.link.safeonline.util.performance.ProfilingPolicyContextHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

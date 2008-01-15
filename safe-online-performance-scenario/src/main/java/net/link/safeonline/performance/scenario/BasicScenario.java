@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -8,12 +8,16 @@ package net.link.safeonline.performance.scenario;
 
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
 import net.link.safeonline.performance.drivers.ProfileDriver;
+import net.link.safeonline.performance.entity.DriverProfileEntity;
+import net.link.safeonline.performance.entity.ExecutionEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,17 +34,11 @@ public class BasicScenario implements Scenario {
 	private static final String password = "performance";
 
 	private PrivateKeyEntry applicationKey;
+	private List<ProfileDriver> drivers;
+
 	private AttribDriver attribDriver;
 	private IdMappingDriver idDriver;
 	private AuthDriver authDriver;
-
-	/**
-	 * Create a new {@link BasicScenario} instance.
-	 */
-	public BasicScenario(PrivateKeyEntry applicationKey) {
-
-		this.applicationKey = applicationKey;
-	}
 
 	/**
 	 * @{inheritDoc}
@@ -64,15 +62,29 @@ public class BasicScenario implements Scenario {
 	/**
 	 * @{inheritDoc}
 	 */
-	public List<ProfileDriver> prepare(String hostname) {
+	public void prepare(String hostname, PrivateKeyEntry performanceKey,
+			ExecutionEntity execution, ScenarioLocal bean) {
 
-		List<ProfileDriver> drivers = new ArrayList<ProfileDriver>();
+		this.applicationKey = performanceKey;
 
 		LOG.debug("building drivers..");
-		drivers.add(this.authDriver = new AuthDriver(hostname));
-		drivers.add(this.attribDriver = new AttribDriver(hostname));
-		drivers.add(this.idDriver = new IdMappingDriver(hostname));
+		this.drivers = new ArrayList<ProfileDriver>();
+		this.drivers.add(this.authDriver = new AuthDriver(hostname, execution));
+		this.drivers.add(this.attribDriver = new AttribDriver(hostname,
+				execution));
+		this.drivers.add(this.idDriver = new IdMappingDriver(hostname,
+				execution));
+	}
 
-		return drivers;
+	/**
+	 * {@inheritDoc}
+	 */
+	public Map<String, DriverProfileEntity> getDriverProfiles() {
+
+		Map<String, DriverProfileEntity> profiles = new HashMap<String, DriverProfileEntity>();
+		for (ProfileDriver driver : this.drivers)
+			profiles.put(driver.getTitle(), driver.getProfile());
+
+		return profiles;
 	}
 }

@@ -14,8 +14,8 @@ import static org.junit.Assert.assertTrue;
 import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
+import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -25,6 +25,7 @@ import net.link.safeonline.model.performance.PerformanceService;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
+import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 
 import org.apache.commons.logging.Log;
@@ -34,7 +35,7 @@ import org.junit.Test;
 
 /**
  * @author mbillemo
- * 
+ *
  */
 public class PerformanceDriverTest {
 
@@ -43,8 +44,8 @@ public class PerformanceDriverTest {
 	private static final String OLAS_HOSTNAME = "sebeco-dev-10:8443";
 	// private static final String OLAS_HOSTNAME = "localhost:8443";
 
-	private static final String username = "performance";
-	private static final String password = "performance";
+	private static final String testUser = "performance";
+	private static final String testPass = "performance";
 	private static PrivateKeyEntry applicationKey;
 
 	static {
@@ -61,7 +62,7 @@ public class PerformanceDriverTest {
 					.getPrivateKey(), new Certificate[] { service
 					.getCertificate() });
 		} catch (Exception e) {
-			Log.error("application keys unavailable; will try local keystore.",
+			LOG.error("application keys unavailable; will try local keystore.",
 					e);
 			applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
 		}
@@ -74,9 +75,10 @@ public class PerformanceDriverTest {
 	@Before
 	public void setUp() {
 
-		this.idDriver = new IdMappingDriver(OLAS_HOSTNAME);
-		this.attribDriver = new AttribDriver(OLAS_HOSTNAME);
-		this.authDriver = new AuthDriver(OLAS_HOSTNAME);
+		ExecutionEntity execution = new ExecutionEntity("TestScenario");
+		this.idDriver = new IdMappingDriver(OLAS_HOSTNAME, execution);
+		this.attribDriver = new AttribDriver(OLAS_HOSTNAME, execution);
+		this.authDriver = new AuthDriver(OLAS_HOSTNAME, execution);
 	}
 
 	@Test
@@ -84,7 +86,7 @@ public class PerformanceDriverTest {
 
 		// User needs to authenticate before we can get to the attributes.
 		String uuid = this.authDriver.login(applicationKey,
-				"performance-application", username, password);
+				"performance-application", testUser, testPass);
 
 		getAttributes(applicationKey, uuid);
 	}
@@ -92,13 +94,13 @@ public class PerformanceDriverTest {
 	@Test
 	public void testLogin() throws Exception {
 
-		login(username, password);
+		login(testUser, testPass);
 	}
 
 	@Test
 	public void testMapping() throws Exception {
 
-		getUserId(applicationKey, username);
+		getUserId(applicationKey, testUser);
 	}
 
 	private Map<String, Object> getAttributes(PrivateKeyEntry application,
@@ -111,8 +113,10 @@ public class PerformanceDriverTest {
 		// State assertions.
 		assertNotNull(attributes);
 		assertFalse(attributes.isEmpty());
-		assertFalse(isEmptyOrOnlyNulls(this.attribDriver.getProfileData()));
-		assertTrue(isEmptyOrOnlyNulls(this.attribDriver.getProfileError()));
+		assertFalse(isEmptyOrOnlyNulls(this.attribDriver.getProfile()
+				.getProfileData()));
+		assertTrue(isEmptyOrOnlyNulls(this.attribDriver.getProfile()
+				.getProfileError()));
 		return attributes;
 
 	}
@@ -128,13 +132,15 @@ public class PerformanceDriverTest {
 		// State assertions.
 		assertNotNull(uuid);
 		assertNotSame("", uuid);
-		assertFalse(isEmptyOrOnlyNulls(this.idDriver.getProfileData()));
-		assertTrue(isEmptyOrOnlyNulls(this.idDriver.getProfileError()));
+		assertFalse(isEmptyOrOnlyNulls(this.idDriver.getProfile()
+				.getProfileData()));
+		assertTrue(isEmptyOrOnlyNulls(this.idDriver.getProfile()
+				.getProfileError()));
 
 		return uuid;
 	}
 
-	private boolean isEmptyOrOnlyNulls(List<?> profileData) {
+	private boolean isEmptyOrOnlyNulls(Collection<?> profileData) {
 
 		if (profileData == null || profileData.isEmpty())
 			return true;
@@ -155,8 +161,10 @@ public class PerformanceDriverTest {
 		// State assertions.
 		assertNotNull(uuid);
 		assertNotSame("", uuid);
-		assertFalse(isEmptyOrOnlyNulls(this.authDriver.getProfileData()));
-		assertTrue(isEmptyOrOnlyNulls(this.authDriver.getProfileError()));
+		assertFalse(isEmptyOrOnlyNulls(this.authDriver.getProfile()
+				.getProfileData()));
+		assertTrue(isEmptyOrOnlyNulls(this.authDriver.getProfile()
+				.getProfileError()));
 
 		return uuid;
 

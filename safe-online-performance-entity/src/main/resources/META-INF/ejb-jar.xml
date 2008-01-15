@@ -8,7 +8,6 @@
 
 		<session>
 			<ejb-name>ScenarioBean</ejb-name>
-            <ejb-class>net.link.safeonline.performance.scenario.bean</ejb-class>
 			<env-entry>
 				<env-entry-name>activeScenario</env-entry-name>
 				<env-entry-type>java.lang.String</env-entry-type>

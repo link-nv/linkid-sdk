@@ -33,7 +33,9 @@ public class AgentRemoting implements Receiver, ChannelListener {
 	static final Log LOG = LogFactory.getLog(AgentRemoting.class);
 
 	private List<AgentStateListener> agentStateListeners;
+
 	JChannel channel;
+	String group;
 
 	/**
 	 * Join the Profiler's JGroup using the package name as group name.
@@ -41,16 +43,15 @@ public class AgentRemoting implements Receiver, ChannelListener {
 	public AgentRemoting() {
 
 		ResourceBundle properties = ResourceBundle.getBundle("console");
-		final String group = properties.getString("jgroups.group");
-		LOG.debug("jgroups.group: " + group);
+		this.group = properties.getString("jgroups.group");
+		LOG.debug("jgroups.group: " + this.group);
 
 		this.agentStateListeners = new ArrayList<AgentStateListener>();
 
 		try {
-			if (null == AgentRemoting.this.channel
-					|| !AgentRemoting.this.channel.isOpen())
-				AgentRemoting.this.channel = new JChannel(getClass()
-						.getResource("/jgroups.xml"));
+			if (null == this.channel || !this.channel.isOpen())
+				this.channel = new JChannel(getClass().getResource(
+						"/jgroups.xml"));
 		}
 
 		catch (ChannelException e) {
@@ -59,8 +60,8 @@ public class AgentRemoting implements Receiver, ChannelListener {
 			throw new RuntimeException(msg, e);
 		}
 
-		AgentRemoting.this.channel.addChannelListener(AgentRemoting.this);
-		AgentRemoting.this.channel.setReceiver(AgentRemoting.this);
+		this.channel.addChannelListener(AgentRemoting.this);
+		this.channel.setReceiver(AgentRemoting.this);
 
 		Runtime.getRuntime().addShutdownHook(
 				new Thread("JGroups ShutdownHook") {
@@ -78,7 +79,8 @@ public class AgentRemoting implements Receiver, ChannelListener {
 
 				try {
 					if (!AgentRemoting.this.channel.isConnected())
-						AgentRemoting.this.channel.connect(group);
+						AgentRemoting.this.channel
+								.connect(AgentRemoting.this.group);
 				}
 
 				catch (ChannelException e) {
@@ -191,6 +193,9 @@ public class AgentRemoting implements Receiver, ChannelListener {
 	 */
 	public String getGroupName() {
 
+		if (this.channel.getClusterName() == null)
+			return "[" + this.group + "]";
+
 		return this.channel.getClusterName();
 	}
 
@@ -212,8 +217,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
 	}
 
 	/**
-	 * Check whether the {@link AgentRemoting} is still connected to the
-	 * group.
+	 * Check whether the {@link AgentRemoting} is still connected to the group.
 	 */
 	public boolean isConnected() {
 

@@ -1,4 +1,4 @@
-package net.link.safeonline.util.jacc;
+package net.link.safeonline.util.performance;
 
 import javax.security.jacc.PolicyContextException;
 import javax.security.jacc.PolicyContextHandler;

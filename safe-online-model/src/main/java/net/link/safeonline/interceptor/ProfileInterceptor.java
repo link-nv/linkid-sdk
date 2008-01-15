@@ -10,8 +10,8 @@ package net.link.safeonline.interceptor;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
-import net.link.safeonline.util.jacc.ProfileData;
-import net.link.safeonline.util.jacc.ProfilingPolicyContextHandler;
+import net.link.safeonline.util.performance.ProfileData;
+import net.link.safeonline.util.performance.ProfilingPolicyContextHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

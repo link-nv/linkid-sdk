@@ -1,11 +1,11 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.util.jacc;
+package net.link.safeonline.util.performance;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -20,8 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * 
- * 
+ *
+ *
  * @author mbillemo
  */
 public class ProfileData {
@@ -193,15 +193,15 @@ public class ProfileData {
 		return Collections.unmodifiableMap(headers);
 	}
 
-	public synchronized long getMeasurement(String key) {
-
-		Long measurement = this.measurements.get(key);
-		return measurement == null ? 0 : measurement;
-	}
-
 	public Map<String, Long> getMeasurements() {
 
 		return Collections.unmodifiableMap(this.measurements);
+	}
+
+	public long getMeasurement(String key) {
+
+		Long measurement = this.measurements.get(key);
+		return measurement == null ? 0 : measurement;
 	}
 
 	public boolean isLocked() {

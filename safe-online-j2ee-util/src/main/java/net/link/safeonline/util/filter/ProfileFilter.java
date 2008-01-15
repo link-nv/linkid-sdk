@@ -18,9 +18,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.util.ee.BufferedServletResponseWrapper;
-import net.link.safeonline.util.jacc.ProfileData;
-import net.link.safeonline.util.jacc.ProfileDataLockedException;
-import net.link.safeonline.util.jacc.ProfilingPolicyContextHandler;
+import net.link.safeonline.util.performance.ProfileData;
+import net.link.safeonline.util.performance.ProfileDataLockedException;
+import net.link.safeonline.util.performance.ProfilingPolicyContextHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -9,24 +9,26 @@ package net.link.safeonline.performance.drivers;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
+import net.link.safeonline.performance.DriverException;
+import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author mbillemo
  */
 public class StsDriver extends ProfileDriver {
 
-	public StsDriver(String hostname) {
+	public StsDriver(String hostname, ExecutionEntity execution) {
 
-		super(hostname, "Security Token Service Driver");
+		super(hostname, "Security Token Service Driver", execution);
 	}
 
 	/**
 	 * Validate the given SAML token.
-	 * 
+	 *
 	 * @param applicationKey
 	 *            The certificate of the application making the request. This
 	 *            identifies the application and gives the request the
@@ -47,14 +49,15 @@ public class StsDriver extends ProfileDriver {
 		SecurityTokenServiceClientImpl service = new SecurityTokenServiceClientImpl(
 				getHost(), (X509Certificate) applicationKey.getCertificate(),
 				applicationKey.getPrivateKey());
-		loadDriver();
 
 		try {
 			service.validate(token);
-		} catch (Exception e) {
-			throw setDriverError(e);
+		}
+
+		catch (Exception e) {
+			throw report(e);
 		} finally {
-			unloadDriver(service);
+			report(service);
 		}
 	}
 }

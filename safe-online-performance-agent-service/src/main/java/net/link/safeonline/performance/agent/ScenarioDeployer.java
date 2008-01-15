@@ -34,7 +34,7 @@ public class ScenarioDeployer {
 	private File applicationFile;
 
 	public void upload(byte[] application) throws IOException {
-		LOG.debug("upload");
+
 		// Undeploy any existing scenario first.
 		if (null != this.applicationFile && this.applicationFile.exists())
 			try {
@@ -55,25 +55,26 @@ public class ScenarioDeployer {
 	}
 
 	public void deploy() throws JMException, MalformedURLException, IOException {
-		LOG.debug("deploy");
-		mainDeployerInvoke("deploy", new URL[] { this.applicationFile.toURI()
+
+		invokeDeployer("deploy", new URL[] { this.applicationFile.toURI()
 				.toURL() }, new String[] { URL.class.getName() });
 	}
 
 	public void undeploy() throws JMException, MalformedURLException,
 			IOException {
-		LOG.debug("undeploy");
+
 		try {
-			mainDeployerInvoke("undeploy", new URL[] { this.applicationFile
-					.toURI().toURL() }, new String[] { URL.class.getName() });
+			invokeDeployer("undeploy", new URL[] { this.applicationFile.toURI()
+					.toURL() }, new String[] { URL.class.getName() });
 		} finally {
 			if (null != this.applicationFile && this.applicationFile.exists())
 				this.applicationFile.delete();
 		}
 	}
 
-	private Object mainDeployerInvoke(String methodName, Object[] parameters,
+	private Object invokeDeployer(String methodName, Object[] parameters,
 			String[] signature) throws JMException {
+
 		MBeanServer applicationServer = MBeanServerLocator.locateJBoss();
 		ObjectName mainDeployer = new ObjectName(
 				"jboss.system:service=MainDeployer");

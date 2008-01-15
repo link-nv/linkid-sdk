@@ -140,8 +140,8 @@ public class ConsoleAgent implements Agent {
 			action = this.transit.getTransitioning();
 
 		String health = this.healthy ? "Healthy" : "Unavailable";
-		return String.format("[%s:%s:%s] %s", health, this.state.getState(),
-				action, this.agentAddress);
+		return String.format("%s: [%s]", health, this.state.getState(), action,
+				this.agentAddress);
 	}
 
 	/**

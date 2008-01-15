@@ -1,18 +1,25 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
 package net.link.safeonline.performance.drivers;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.naming.NoInitialContextException;
 
+import net.link.safeonline.performance.DriverException;
+import net.link.safeonline.performance.entity.DriverExceptionEntity;
+import net.link.safeonline.performance.entity.DriverProfileEntity;
+import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.service.DriverExceptionService;
+import net.link.safeonline.performance.service.DriverProfileService;
+import net.link.safeonline.performance.service.ProfileDataService;
 import net.link.safeonline.sdk.ws.MessageAccessor;
-import net.link.safeonline.util.jacc.ProfileData;
+import net.link.safeonline.util.performance.ProfileData;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,35 +29,62 @@ import org.apache.commons.logging.LogFactory;
  * collecting profile data, exceptions and execution speed for iterations.<br>
  * <br>
  * Implementing drivers need to declare methods specific to their functionality
- * in which they should call {@link #startNewIteration()} before performing any
- * driver logic and {@link #unloadDriver()} once they have completed their task;
- * or {@link #setDriverError(Exception)} if an error occurred during the work
- * they were doing. <br>
+ * in which they should call {@link #loadDriver()} before performing any driver
+ * logic and {@link #report(MessageAccessor)} once they have completed their
+ * task; or {@link #report(Exception)} if an error occurred during the work they
+ * were doing. <br>
  * <br>
  * The profiling data will be gathered by this class and can later be retrieved
- * by using the getters ({@link #getProfileData()}, {@link #getProfileError()},
- * {@link #getProfileSpeed()}).<br>
- * 
+ * by using {@link #getProfile()}.<br>
+ *
  * @author mbillemo
  */
 public abstract class ProfileDriver {
 
 	private static final Log LOG = LogFactory.getLog(ProfileDriver.class);
 
-	private String title;
-	private String host;
-	private ThreadLocal<Integer> currentIndex = new ThreadLocal<Integer>();
-	private LinkedList<DriverException> profileError = new LinkedList<DriverException>();
-	private LinkedList<ProfileData> profileData = new LinkedList<ProfileData>();
+	private ThreadLocal<DriverProfileService> driverProfileService = new ThreadLocal<DriverProfileService>() {
+		@Override
+		protected DriverProfileService initialValue() {
 
-	/**
-	 * @param hostname
-	 *            The hostname of the host that's running the service.
-	 */
-	public ProfileDriver(String hostname, String title) {
+			return getService(DriverProfileService.class,
+					DriverProfileService.BINDING);
+		}
+	};
+	private ThreadLocal<ProfileDataService> profileDataService = new ThreadLocal<ProfileDataService>() {
+
+		@Override
+		protected ProfileDataService initialValue() {
+
+			return getService(ProfileDataService.class,
+					ProfileDataService.BINDING);
+		}
+	};
+	private ThreadLocal<DriverExceptionService> driverExceptionService = new ThreadLocal<DriverExceptionService>() {
+
+		@Override
+		protected DriverExceptionService initialValue() {
+
+			return getService(DriverExceptionService.class,
+					DriverExceptionService.BINDING);
+		}
+	};
+
+	private String host;
+	private String title;
+	private ExecutionEntity execution;
+
+	private DriverProfileEntity profile;
+
+	public ProfileDriver(String hostname, String title,
+			ExecutionEntity execution) {
 
 		this.host = hostname;
 		this.title = title;
+		this.execution = execution;
+
+		this.profile = this.driverProfileService.get().addProfile(title,
+				execution);
 	}
 
 	public String getHost() {
@@ -58,54 +92,35 @@ public abstract class ProfileDriver {
 		return this.host;
 	}
 
-	public synchronized List<ProfileData> getProfileData() {
-
-		return Collections.unmodifiableList(this.profileData);
-	}
-
-	public synchronized List<DriverException> getProfileError() {
-
-		return Collections.unmodifiableList(this.profileError);
-	}
-
 	public String getTitle() {
 
 		return this.title;
 	}
 
-	/**
-	 * @{inheritDoc}
-	 */
-	@Override
-	public String toString() {
+	public DriverProfileEntity getProfile() {
 
-		return String.format("%s%n---%n%nHost: %s%n%s", getTitle(), getHost(),
-				getProfileData());
+		try {
+		return this.driverProfileService.get().getProfile(this.title,
+				this.execution);
+		} catch (IllegalStateException e) {
+			return this.profile;
+		}
 	}
 
-	protected void unloadDriver(MessageAccessor service) {
+	protected void report(MessageAccessor service) {
 
-		unloadDriver(new ProfileData(service.getHeaders()));
+		report(new ProfileData(service.getHeaders()));
 	}
 
-	protected synchronized void unloadDriver(ProfileData data) {
+	protected void report(ProfileData profileData) {
 
-		if (data == null)
-			LOG.warn("Unloading " + getClass() + " (iteration "
-					+ (this.profileData.size() - 1)
-					+ ") with empty profile data!");
-
-		else if (data.getMeasurement(ProfileData.REQUEST_START_TIME) == 0)
-			LOG.warn("No valid profile data in " + getClass() + " (iteration "
-					+ (this.profileData.size() - 1) + ").");
-
-		else
-			this.profileData.set(this.currentIndex.get(), data);
+		this.driverProfileService.get().register(getProfile(),
+				this.profileDataService.get().addData(profileData));
 	}
 
-	protected synchronized DriverException setDriverError(Exception error) {
+	protected DriverException report(Exception error) {
 
-		LOG.debug(String.format("Failed driver request: %s", error));
+		LOG.warn(String.format("Failed driver request: %s", error));
 
 		DriverException driverException;
 		if (error instanceof DriverException)
@@ -113,23 +128,44 @@ public abstract class ProfileDriver {
 		else
 			driverException = new DriverException(error);
 
-		this.profileError.set(this.currentIndex.get(), driverException);
+		DriverExceptionEntity exceptionEntity = this.driverExceptionService
+				.get().addException(driverException);
+		this.driverProfileService.get().register(getProfile(), exceptionEntity);
 
 		return driverException;
 	}
 
-	/**
-	 * Load the driver, stick <code>null</code>s in {@link #profileData} and
-	 * {@link #profileError} as placeholders and mark the spot in these lists
-	 * that the current {@link Thread} owns. This way, when unloading the driver
-	 * at a later point during execution in this {@link Thread} the
-	 * <code>null</code> placeholders can be replaced by actual data.
-	 */
-	protected synchronized void loadDriver() {
+	<S> S getService(Class<S> service, String binding) {
 
-		// Null placeholders for this iteration.
-		this.currentIndex.set(this.profileData.size());
-		this.profileData.add(null);
-		this.profileError.add(null);
+		try {
+			InitialContext initialContext = new InitialContext();
+			return service.cast(initialContext.lookup(binding));
+		} catch (NoInitialContextException e) {
+			LOG.warn("Initial context not set up; "
+					+ "assuming we're not running in an "
+					+ "enterprise container");
+
+			try {
+				return service.cast(Class.forName(
+						service.getName().replaceFirst("\\.([^\\.]*)$",
+								".bean.$1Bean")).newInstance());
+			} catch (InstantiationException ee) {
+				LOG.error("Couldn't create service " + service + " at "
+						+ binding, ee);
+				throw new RuntimeException(ee);
+			} catch (IllegalAccessException ee) {
+				LOG.error("Couldn't access service " + service + " at "
+						+ binding, ee);
+				throw new RuntimeException(ee);
+			} catch (ClassNotFoundException ee) {
+				LOG.error("Couldn't find service "
+						+ service.getName().replaceFirst("\\.([^\\.]*)$",
+								".bean.$1Bean") + " at " + binding, ee);
+				throw new RuntimeException(ee);
+			}
+		} catch (NamingException e) {
+			LOG.error("Couldn't find service " + service + " at " + binding, e);
+			throw new RuntimeException(e);
+		}
 	}
 }

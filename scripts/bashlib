@@ -66,7 +66,7 @@ export blue=$(      tput setaf 4    )
 export magenta=$(   tput setaf 5    )
 export cyan=$(      tput setaf 6    )
 export grey=$(      tput setaf 7    )
-export default=$(   tput setaf 9    )
+export default=$(   tput op         )
 export eed=$(       tput ed         )
 export eel=$(       tput el         )
 export ebl=$(       tput el1        )
@@ -305,8 +305,8 @@ spinner() {
     echo -ne "\r$save"                                              >&$fd
     local i=0
     while true; do
-        echo -n "$load$eel" \
-                "$reset-$style$color${graphics[i++ % 4]}$reset-" \
+        echo -n "$load$eel$reset" \
+                "$style$color${graphics[i++ % 4]}$reset" \
                 "$textstyle$textcolor$text"                         >&$fd
         sleep .25 # Four iterations make one second.
     done
@@ -417,6 +417,7 @@ trim() {
     # Initialize the vars.
     local lines
     local line
+    local oIFS
 
     # Get the lines.
     lines=( "$@" )
