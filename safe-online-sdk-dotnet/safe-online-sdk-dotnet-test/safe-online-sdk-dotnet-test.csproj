@@ -1,0 +1,58 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{ACAFCC78-FDEE-4285-8AEE-5662A345D5EB}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>safe_online_sdk_dotnet_test</RootNamespace>
+    <AssemblyName>safe-online-sdk-dotnet-test</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\BouncyCastle.Crypto.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="nunit.framework" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\test\cs\AssemblyInfo.cs" />
+    <Compile Include="src\test\cs\Program.cs" />
+    <Compile Include="src\test\cs\KeyStoreUtilTest.cs" />
+    <Compile Include="src\test\cs\TestIdMapping.cs" />
+    <Compile Include="src\test\cs\TestSaml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src" />
+    <Folder Include="src\test" />
+    <Folder Include="src\test\cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\safe-online-sdk-dotnet.csproj">
+      <Project>{542A3854-44CB-4A14-8600-371E26A6B005}</Project>
+      <Name>safe-online-sdk-dotnet</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

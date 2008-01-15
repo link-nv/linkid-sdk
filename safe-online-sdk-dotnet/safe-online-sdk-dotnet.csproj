@@ -41,9 +41,6 @@
     <Compile Include="src\main\cs\IdMappingClient.cs" />
     <Compile Include="src\main\cs\IdMappingClientImpl.cs" />
     <Compile Include="src\main\cs\PingClient.cs" />
-    <Compile Include="src\test\cs\KeyStoreUtilTest.cs" />
-    <Compile Include="src\test\cs\TestIdMapping.cs" />
-    <Compile Include="src\test\cs\TestSaml.cs" />
     <Compile Include="target\services\SafeOnlinePingWebService.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -54,7 +51,6 @@
     </Compile>
     <Compile Include="src\main\cs\AssemblyInfo.cs" />
     <Compile Include="src\main\cs\PingClientImpl.cs" />
-    <Compile Include="src\test\cs\TestPingClient.cs" />
     <None Include="src\main\resources\xenc-schema.xsd" />
     <None Include="src\main\resources\xmldsig-core-schema.xsd" />
   </ItemGroup>
@@ -63,8 +59,6 @@
     <Folder Include="src\main" />
     <Folder Include="src\main\cs" />
     <Folder Include="src\main\resources" />
-    <Folder Include="src\test" />
-    <Folder Include="src\test\cs" />
   </ItemGroup>
   <Target Name="BeforeBuild">
     <MakeDir Directories="target\services" />
