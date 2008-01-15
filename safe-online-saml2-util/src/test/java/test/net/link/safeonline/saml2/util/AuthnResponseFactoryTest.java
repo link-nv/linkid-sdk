@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.auth.protocol.saml2;
+package test.net.link.safeonline.saml2.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -15,8 +15,8 @@ import java.io.FileOutputStream;
 
 import javax.xml.XMLConstants;
 
-import net.link.safeonline.auth.protocol.saml2.AuthnResponseFactory;
-import net.link.safeonline.auth.protocol.saml2.SafeOnlineAuthnContextClass;
+import net.link.safeonline.saml2.util.AuthnResponseFactory;
+import net.link.safeonline.saml2.util.SafeOnlineAuthnContextClass;
 import net.link.safeonline.test.util.DomTestUtils;
 
 import org.apache.commons.io.IOUtils;

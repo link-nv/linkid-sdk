@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.auth.protocol.saml2;
+package net.link.safeonline.saml2.util;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;

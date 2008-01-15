@@ -194,8 +194,8 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
-				<safe-online.profiling.filter></safe-online.profiling.filter>
-				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
+				<safe-online.profiling.filter />
+				<safe-online.profiling.interceptor />
 			</properties>
 			<modules>
 				<module>safe-online-base-distribution</module>
@@ -239,8 +239,8 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>false</debug.mode>
-				<safe-online.profiling.filter></safe-online.profiling.filter>
-				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
+				<safe-online.profiling.filter />
+				<safe-online.profiling.interceptor />
 			</properties>
 			<modules>
 				<module>safe-online-base-distribution</module>
@@ -365,8 +365,8 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>false</debug.mode>
-				<safe-online.profiling.filter></safe-online.profiling.filter>
-				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
+				<safe-online.profiling.filter />
+				<safe-online.profiling.interceptor />
 			</properties>
 			<modules>
 				<module>safe-online-base-distribution</module>
@@ -412,8 +412,8 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>false</debug.mode>
-				<safe-online.profiling.filter></safe-online.profiling.filter>
-				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
+				<safe-online.profiling.filter />
+				<safe-online.profiling.interceptor />
 			</properties>
 			<modules>
 				<module>safe-online-base-distribution</module>
@@ -461,8 +461,8 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>false</debug.mode>
-				<safe-online.profiling.filter></safe-online.profiling.filter>
-				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
+				<safe-online.profiling.filter />
+				<safe-online.profiling.interceptor />
 			</properties>
 			<modules>
 				<module>safe-online-base-distribution</module>
@@ -507,8 +507,8 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
-				<safe-online.profiling.filter></safe-online.profiling.filter>
-				<safe-online.profiling.interceptor></safe-online.profiling.interceptor>
+				<safe-online.profiling.filter />
+				<safe-online.profiling.interceptor />
 			</properties>
 			<modules>
 				<module>safe-online-sdk-manual</module>
@@ -798,6 +798,7 @@
 		<module>safe-online-encap-ws-runtime</module>
 		<module>safe-online-ping-ws</module>
 		<module>safe-online-ping-ws-impl</module>
+		<module>safe-online-saml2-util</module>
 	</modules>
 	<repositories>
 		<repository>

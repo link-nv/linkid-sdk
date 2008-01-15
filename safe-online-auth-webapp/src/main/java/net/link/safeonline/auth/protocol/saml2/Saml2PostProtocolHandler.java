@@ -30,6 +30,9 @@ import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.saml2.util.AuthnResponseFactory;
+import net.link.safeonline.saml2.util.SafeOnlineAuthnContextClass;
+import net.link.safeonline.saml2.util.SamlRequestSecurityPolicyResolver;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
