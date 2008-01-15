@@ -100,5 +100,31 @@ namespace safe_online_sdk_dotnet.test.cs
         	document.WriteTo(xmltw);
         	xmltw.Close();
 		}
+		
+		[Test]
+		public void TestSamlRequestGenerator() {
+			RSACryptoServiceProvider key = new RSACryptoServiceProvider();
+			
+			SamlRequestGenerator testedInstance = new SamlRequestGenerator(key);
+			
+			string tokenId = "_12345678";
+			string spUrl = "http://service.provider.com";
+			string idpUrl = "http://identity.provider.com";
+			string applicationId = "urn:application:id";
+			string result = testedInstance.generateSamlRequest(tokenId, spUrl, idpUrl, applicationId);
+			
+			Console.WriteLine("result document: " + result);
+			
+			XmlDocument xmlDocument = new XmlDocument();
+			xmlDocument.LoadXml(result);
+			
+			SignedXml signedXml = new SignedXml(xmlDocument);
+			XmlNodeList nodeList = xmlDocument.GetElementsByTagName("Signature");
+			signedXml.LoadXml((XmlElement)nodeList[0]);
+			
+			bool verificationResult = signedXml.CheckSignature(key);
+			Console.WriteLine("verification result: " + verificationResult);
+			Assert.IsTrue(verificationResult);
+		}
 	}
 }

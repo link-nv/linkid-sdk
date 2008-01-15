@@ -41,6 +41,7 @@
     <Compile Include="src\main\cs\IdMappingClient.cs" />
     <Compile Include="src\main\cs\IdMappingClientImpl.cs" />
     <Compile Include="src\main\cs\PingClient.cs" />
+    <Compile Include="src\main\cs\SamlRequestGenerator.cs" />
     <Compile Include="target\services\SafeOnlinePingWebService.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
