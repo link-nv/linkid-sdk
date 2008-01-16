@@ -1,10 +1,8 @@
-
-*:focus {
-outline-color:invert;
-outline-style:none;
-outline-width:0pt;
+* :focus {
+	outline-color: invert;
+	outline-style: none;
+	outline-width: 0pt;
 }
-
 
 html {
 	padding: 0;
@@ -18,7 +16,7 @@ body {
 	padding: 0;
 	text-align: center;
 	background: #333 url(../images/fade.gif) repeat-x top center;
-	font: 14px/21px "Trebuchet MS", Verdana, Arial;
+	font: 14px/ 21px "Trebuchet MS", Verdana, Arial;
 	color: #333;
 }
 
@@ -29,18 +27,19 @@ img.text {
 	clear: left;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,h2,h3,h4,h5,h6 {
 	margin: 0;
 	padding: 0;
 	clear: left;
 }
 
 h1 {
-	font: 28px/42px "Trebuchet MS", Verdana, Arial;
+	font: 28px/ 42px "Trebuchet MS", Verdana, Arial;
 	margin-bottom: 21px;
 }
+
 h2 {
-	font: 21px/28px "Trebuchet MS", Verdana, Arial;
+	font: 21px/ 28px "Trebuchet MS", Verdana, Arial;
 	color: #81aa00;
 }
 
@@ -69,7 +68,6 @@ a:hover {
 	border-bottom: 1px dotted #8EB61D;
 }
 
-
 #header {
 	margin: 0 auto;
 	padding: 0;
@@ -86,7 +84,7 @@ a:hover {
 
 #header_top {
 	margin: 0;
-	padding:  25px 25px 0px 25px;
+	padding: 25px 25px 0px 25px;
 	width: 900px;
 	display: block;
 	height: 90px;
@@ -133,7 +131,6 @@ a:hover {
 	color: #fff;
 }
 
-
 #header ul.menu li.selected a {
 	padding: 10px 7px 4px 7px;
 	color: #333;
@@ -145,8 +142,6 @@ a:hover {
 	color: #333;
 	font-weight: bold;
 }
-
-
 
 ul.submenu {
 	padding-left: 0;
@@ -203,7 +198,6 @@ ul.submenu li a {
 	color: #333;
 }
 
-
 ul.submenu li.selected a {
 	color: #77a511;
 }
@@ -214,7 +208,6 @@ ul.submenu li a:hover {
 	color: #333;
 	font-weight: bold;
 }
-
 
 ul.timeline {
 	padding: 0;
@@ -239,7 +232,7 @@ ul.timeline li {
 	width: 100px;
 	height: 40px;
 	background: url(../images/timeline_other.gif) top right no-repeat;
-	font: 10px/15px "Trebuchet MS", Verdana, Arial;
+	font: 10px/ 15px "Trebuchet MS", Verdana, Arial;
 }
 
 ul.timeline li.active {
@@ -266,7 +259,6 @@ ul.timeline li.end {
 	width: 100%;
 	display: block;
 	clear: both;
-	
 }
 
 #main {
@@ -322,14 +314,13 @@ div.zesde {
 
 div.zesde:hover {
 	background: url(../images/fade.gif) top center repeat-x;
-
 }
 
 hr.float_fix {
-	display: block; 
-	clear: both; 
+	display: block;
+	clear: both;
 	margin: 0;
-  	visibility: hidden;
+	visibility: hidden;
 }
 
 ul.sidemenu {
@@ -338,7 +329,7 @@ ul.sidemenu {
 	margin: 14px 0 14px 0;
 	border-top: 1px dotted #333;
 	display: block;
-	clear: both;    
+	clear: both;
 	float: left;
 	width: 100%;
 }
@@ -365,20 +356,19 @@ ul.sidemenu li a {
 }
 
 ul.sidemenu li a:hover {
-	color: #333;	
+	color: #333;
 	background-color: #81aa00;
 	border: none;
 }
 
 ul.sidemenu li.active a {
-	color: #333;	
+	color: #333;
 	background-color: #81aa00;
 	border: none;
 }
 
 /* FORMS AND ELEMENTS*/
-label
-{
+label {
 	padding: 14px 25px 0px 0;
 	background: url(../images/icons/16-arrow-down.gif) no-repeat;
 	background-position: 5px 6px;
@@ -389,18 +379,19 @@ label
 	text-transform: capitalize;
 	height: 21px;
 	clear: left;
- }
+}
 
-input, select, textarea {
+input,select,textarea {
 	color: #333;
 	margin: 0;
 	padding: 0;
 	margin-right: 5px;
 	background: #fff;
-	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;	
+	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana,
+		sans-serif;
 }
 
-input.label, select.label, textarea.label, input.radio {
+input.label,select.label,textarea.label,input.radio {
 	color: #333;
 	margin: 17px 0 7px 0;
 	background: #fff;
@@ -408,13 +399,13 @@ input.label, select.label, textarea.label, input.radio {
 	border: 0;
 	float: left;
 	border-bottom: 1px dotted #333;
-	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana, sans-serif;
+	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana,
+		sans-serif;
 }
 
 input.radio {
 	width: auto;
 }
-
 
 .label:hover {
 	border-bottom: 1px solid #7D8A2E;
@@ -458,33 +449,30 @@ table.styled tbody {
 	padding: 5px;
 }
 
-table.styled tbody tr  {
+table.styled tbody tr {
 	background: #fff;
 	margin: 0;
 	padding: 0;
 }
 
-
-table.styled tfoot tr  {
+table.styled tfoot tr {
 	background: #E8E7E7;
 	margin: 0;
 	padding: 0;
 }
 
-
-table.styled tbody tr:hover  {
+table.styled tbody tr:hover {
 	background: #cdde8d;
 }
 
-table.styled tbody tr td  {
+table.styled tbody tr td {
 	margin: 0;
 	padding: 5px;
 	border: none;
 	border-top: 1px solid #81aa00;
 }
 
-table.styled thead tr th,
-table.styled thead tr td  {
+table.styled thead tr th,table.styled thead tr td {
 	margin: 0;
 	padding: 5px;
 	border: none;
@@ -502,12 +490,54 @@ table.styled thead tr td  {
 	background: #f5f5f5;
 }
 */
-div.dr-dscr table ,
-div.dr-dscr table tbody tr td ,
-div.dr-dscr table tbody tr:hover  {
+div.dr-dscr table      , div.dr-dscr table tbody tr td      , div.dr-dscr table tbody tr:hover
+	{
 	border: none;
 	background: none;
 	margin: 0;
-	padding: 5px;	
+	padding: 5px;
 	text-align: center;
+}
+
+.rich-table      , .rich-table-caption      , .rich-table-header      ,
+	.rich-table-header-continue	     , .rich-table-subheader      ,
+	.rich-table-footer      , .rich-table-footer-continue      ,
+	.rich-table-subfooter      , .rich-table-headercell      ,
+	.rich-table-subheadercell      , .rich-table-cell      ,
+	.rich-table-row   
+	  , .rich-table-firstrow      , .rich-table-footercell      ,
+	.rich-table-subfootercell {
+	border-style: none;
+	font-family: inherit;
+	font-size: inherit;
+	background-color: inherit;
+	color: inherit;
+}
+
+.rich-datascr     , .rich-dtascroller-table	    , .rich-datascr-button   
+	 , .rich-datascr-ctrls-separator     , .rich-datascr-act     ,
+	.rich-datascr-inact	    , .rich-datascr-button-dsbld {
+	border-style: none;
+	font-family: inherit;
+	font-size: inherit;
+	background-color: inherit;
+	color: inherit;
+}
+
+.rich-panel	  , .rich-tabpanel-content   , .rich-tabpanel   ,
+	.rich-panel-header   , .rich-panel-body {
+	width: 550px;
+}
+
+.usage_agreement {
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+	width: 550px;
+	padding: 10px;
+	height: 200px;
+	overflow: auto;
+	border: 1px solid #9f9f9f;
 }

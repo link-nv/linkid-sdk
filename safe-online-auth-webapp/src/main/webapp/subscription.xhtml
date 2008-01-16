@@ -22,9 +22,9 @@
 
 		<p><t:messages globalOnly="true" styleClass="error" /></p>
 
-		<rich:panel rendered="#{authSubscription.usageAgreement != null}">
-			<pre>#{authSubscription.usageAgreement}</pre>
-		</rich:panel>
+		<f:subview rendered="#{authSubscription.usageAgreement != null}">
+			<div class="usage_agreement">#{authSubscription.usageAgreement}</div>
+		</f:subview>
 		<h:form>
 			<h:commandButton action="#{authSubscription.subscribe}" id="confirm"
 				value="#{msgs.confirm}"

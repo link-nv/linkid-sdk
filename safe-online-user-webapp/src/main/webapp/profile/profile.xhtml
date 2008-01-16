@@ -21,6 +21,10 @@
 
 		<p>#{msgs.login}: #{identityBean.username}</p>
 
+		<f:subview rendered="#{0 == attributeList.rowCount}">
+			<p>#{msgs.profileEmpty}</p>
+		</f:subview>
+
 		<h:form>
 			<h:dataTable id="data" var="item" value="#{attributeList}"
 				preserveDataModel="false" styleClass="listingTable"

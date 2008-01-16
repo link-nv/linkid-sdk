@@ -21,10 +21,10 @@
 
 		<p><t:messages globalOnly="true" styleClass="error" /></p>
 
-		<rich:panel
+		<f:subview
 			rendered="#{!empty globalAgreementConfirmation.usageAgreement}">
-			<pre>#{globalAgreementConfirmation.usageAgreement}</pre>
-		</rich:panel>
+			<div class="usage_agreement">#{globalAgreementConfirmation.usageAgreement}</div>
+		</f:subview>
 		<h:form>
 			<h:commandButton action="#{globalAgreementConfirmation.confirm}"
 				id="confirm" value="#{msgs.confirm}" styleClass="submit" />

@@ -5,7 +5,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html">
 <body>
-<ui:composition template="/WEB-INF/template.xhtml">
+<ui:composition template="/WEB-INF/template-root.xhtml">
 	<ui:define name="topnav">
 		<ui:include src="/WEB-INF/incl/navigation.xhtml">
 			<ui:param name="page" value="home" />
@@ -15,6 +15,8 @@
 		<h1>#{msgs.overview}</h1>
 	</ui:define>
 	<ui:define name="content">
+
+		<p>#{msgs.helpOverview}</p>
 
 		<h2>#{msgs.userYourProfile}</h2>
 		<p>#{msgs.userYourProfileInfo} <a href="./profile/profile.seam">#{msgs.clickHere}</a></p>
@@ -28,9 +30,6 @@
 		<h2>#{msgs.accountManagement}</h2>
 		<p>#{msgs.accountManagementInfo} <a href="./account.seam">#{msgs.clickHere}</a></p>
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<p>#{msgs.helpOverview}</p>
 	</ui:define>
 </ui:composition>
 </body>
