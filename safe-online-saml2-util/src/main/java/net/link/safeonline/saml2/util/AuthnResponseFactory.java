@@ -92,6 +92,14 @@ public class AuthnResponseFactory {
 			String applicationName, String issuerName, String subjectName,
 			SafeOnlineAuthnContextClass authnContextClass, int validity,
 			String target) {
+		String samlName = authnContextClass.getSamlName();
+		return createAuthResponse(inResponseTo, applicationName, issuerName,
+				subjectName, samlName, validity, target);
+	}
+
+	public static Response createAuthResponse(String inResponseTo,
+			String applicationName, String issuerName, String subjectName,
+			String samlName, int validity, String target) {
 		Response response = buildXMLObject(Response.class,
 				Response.DEFAULT_ELEMENT_NAME);
 
@@ -189,8 +197,7 @@ public class AuthnResponseFactory {
 				AuthnContextClassRef.class,
 				AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
 		authnContext.setAuthnContextClassRef(authnContextClassRef);
-		authnContextClassRef.setAuthnContextClassRef(authnContextClass
-				.getSamlName());
+		authnContextClassRef.setAuthnContextClassRef(samlName);
 
 		return response;
 	}
