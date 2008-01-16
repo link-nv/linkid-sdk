@@ -45,7 +45,9 @@ public abstract class ProfilingServiceBean {
 		if (this.em != null)
 			this.em.persist(object);
 
-		LOG.warn("No entity manager available!");
+		else
+			LOG.warn("No entity manager available!");
+
 	}
 
 	Query createNamedQuery(String query) {

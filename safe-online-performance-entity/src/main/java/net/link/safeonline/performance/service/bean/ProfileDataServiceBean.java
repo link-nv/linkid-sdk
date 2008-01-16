@@ -51,9 +51,13 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 
 		Set<MeasurementEntity> measurements = new HashSet<MeasurementEntity>();
 		for (Map.Entry<String, Long> measurement : data.getMeasurements()
-				.entrySet())
-			measurements.add(new MeasurementEntity(measurement.getKey(),
-					measurement.getValue()));
+				.entrySet()) {
+			MeasurementEntity measurementEntity = new MeasurementEntity(
+					measurement.getKey(), measurement.getValue());
+			persist(measurementEntity);
+
+			measurements.add(measurementEntity);
+		}
 
 		ProfileDataEntity dataEntity = new ProfileDataEntity(measurements);
 		persist(dataEntity);

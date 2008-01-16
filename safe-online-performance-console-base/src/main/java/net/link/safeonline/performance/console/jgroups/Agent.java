@@ -25,7 +25,7 @@ import java.util.List;
  * <p>
  * <i>Dec 19, 2007</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public interface Agent {
@@ -46,14 +46,9 @@ public interface Agent {
 	public List<byte[]> getCharts();
 
 	/**
-	 * Save charts created by this {@link Agent}'s scenario.
-	 */
-	public void setCharts(List<byte[]> charts);
-
-	/**
 	 * Request permission to start a certain action. If permission is granted,
 	 * the agent is locked until {@link #actionCompleted(boolean)} is called.
-	 * 
+	 *
 	 * @return <code>true</code> if agent is available for this action.
 	 */
 	public boolean actionRequest(AgentState action);
@@ -62,4 +57,9 @@ public interface Agent {
 	 * Reset the transition state, abort the action.
 	 */
 	public void resetTransit();
+
+	/**
+	 * @return An error that occurred while interacting with this client.
+	 */
+	public Exception getError();
 }

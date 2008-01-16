@@ -109,9 +109,11 @@ public class ScenarioExecutor extends Thread {
 							LOG.debug(">>> Scenario start.");
 							scenarioStart.add(System.currentTimeMillis());
 							scenario.execute();
-							LOG.debug("<<< Scenario end.");
-						} catch (Exception e) {
+							LOG.debug("... Scenario done.");
+						} catch (Throwable e) {
 							LOG.error("!!! Scenario error.", e);
+						} finally {
+							LOG.debug("<<< Scenario end.");
 						}
 					}
 				}, 0, 100, TimeUnit.MILLISECONDS);
@@ -140,8 +142,9 @@ public class ScenarioExecutor extends Thread {
 		}
 
 		catch (Exception e) {
-			LOG.error("Processing Scenario Execution Failed", e);
+			this.agentService.setError(e);
 			this.agentService.actionCompleted(false);
+			LOG.error("Processing Scenario Execution Failed", e);
 		}
 	}
 

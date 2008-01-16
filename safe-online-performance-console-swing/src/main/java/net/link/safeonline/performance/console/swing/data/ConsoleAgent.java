@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -22,9 +22,9 @@ import org.jgroups.Address;
  * This object keeps the status of communication between the console and the
  * agent it represents. It also features locking such that only one operation
  * would be executed upon it at once.
- * 
+ *
  * @author mbillemo
- * 
+ *
  */
 public class ConsoleAgent implements Agent {
 
@@ -34,7 +34,6 @@ public class ConsoleAgent implements Agent {
 	private List<AgentStatusListener> agentStatusListeners;
 	private ScenarioRemoting scenarioDeployer;
 	private Address agentAddress;
-	private Exception error;
 	private boolean healthy;
 	private boolean selected;
 	private AgentState transit = AgentState.RESET;
@@ -52,26 +51,6 @@ public class ConsoleAgent implements Agent {
 		this.healthy = true;
 
 		new UpdateAgentState().start();
-	}
-
-	/**
-	 * @param error
-	 *            An error that occurred while interacting with this client.
-	 */
-	public void setError(Exception error) {
-
-		this.error = error;
-
-		if (null != error)
-			LOG.error("Scenario Failed During Execution", error);
-	}
-
-	/**
-	 * @return An error that occurred while interacting with this client.
-	 */
-	public Exception getError() {
-
-		return this.error;
 	}
 
 	/**
@@ -135,12 +114,15 @@ public class ConsoleAgent implements Agent {
 	@Override
 	public String toString() {
 
-		String action = AgentState.RESET.getTransitioning();
+		String transitStr = AgentState.RESET.getTransitioning();
+		String stateStr = AgentState.RESET.getTransitioning();
 		if (null != this.transit)
-			action = this.transit.getTransitioning();
+			transitStr = this.transit.getTransitioning();
+		if (null != this.state)
+			stateStr = this.state.getState();
 
 		String health = this.healthy ? "Healthy" : "Unavailable";
-		return String.format("%s: [%s]", health, this.state.getState(), action,
+		return String.format("%s: [%s]", health, stateStr, transitStr,
 				this.agentAddress);
 	}
 
@@ -211,9 +193,9 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setCharts(List<byte[]> charts) {
+	public Exception getError() {
 
-		this.scenarioDeployer.setCharts(this.agentAddress, charts);
+		return this.scenarioDeployer.getError(this.agentAddress);
 	}
 
 	/**

@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author mbillemo
- * 
+ *
  */
 public class AgentService implements AgentServiceMBean {
 
@@ -32,6 +32,8 @@ public class AgentService implements AgentServiceMBean {
 	private List<byte[]> charts;
 	private AgentState transit;
 	private AgentState state;
+
+	private Exception error;
 
 	public AgentService() {
 
@@ -113,11 +115,29 @@ public class AgentService implements AgentServiceMBean {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param charts
+	 *            The charts that were generated for the executed scenario.
 	 */
 	public void setCharts(List<byte[]> charts) {
 
 		this.charts = charts;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Exception getError() {
+
+		return this.error;
+	}
+
+	/**
+	 * @param error
+	 *            An error that occurred while interacting with this client.
+	 */
+	public void setError(Exception error) {
+
+		this.error = error;
 	}
 
 	private boolean isLocked() {
@@ -160,11 +180,15 @@ public class AgentService implements AgentServiceMBean {
 	public void upload(byte[] application) throws IOException {
 
 		try {
+			setError(null);
+
 			this.deployer.upload(application);
 			actionCompleted(true);
 		}
 
-		finally {
+		catch (Exception e) {
+			setError(e);
+		} finally {
 			// If transit != null we didn't complete the action successfully.
 			if (this.transit != null)
 				actionCompleted(false);
@@ -178,11 +202,15 @@ public class AgentService implements AgentServiceMBean {
 			MalformedURLException, IOException {
 
 		try {
+			setError(null);
+
 			this.deployer.deploy();
 			actionCompleted(true);
 		}
 
-		finally {
+		catch (Exception e) {
+			setError(e);
+		} finally {
 			// If transit != null we didn't complete the action successfully.
 			if (this.transit != null)
 				actionCompleted(false);
@@ -192,6 +220,15 @@ public class AgentService implements AgentServiceMBean {
 	public void execute(final String hostname, final Integer workers,
 			final Long duration) throws NamingException {
 
-		new ScenarioExecutor(hostname, workers, duration, this).start();
+		try {
+			setError(null);
+
+			new ScenarioExecutor(hostname, workers, duration, this).start();
+		}
+
+		catch (Exception e) {
+			setError(e);
+			actionCompleted(false);
+		}
 	}
 }

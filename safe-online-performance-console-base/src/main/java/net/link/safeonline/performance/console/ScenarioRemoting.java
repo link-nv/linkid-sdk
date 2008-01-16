@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -31,7 +31,7 @@ import org.jgroups.Address;
 /**
  * Utility class that interfaces with JMX on the Agent AS to upload an EAR and
  * deploy it.
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioRemoting {
@@ -84,7 +84,7 @@ public class ScenarioRemoting {
 		}
 
 		catch (IOException e) {
-			LOG.error("Could not reach the MBean Server.", e);
+			LOG.error("Could not talk to the MBean Server.", e);
 			throw new RuntimeException(e);
 		}
 
@@ -94,8 +94,8 @@ public class ScenarioRemoting {
 		}
 
 		catch (NamingException e) {
-			LOG.error("JMX's RMI Adaptor could not be found.", e);
-			throw new RuntimeException(e);
+			LOG.warn("RMI Adaptor not found on " + agent + ".");
+			return null;
 		}
 	}
 
@@ -216,6 +216,24 @@ public class ScenarioRemoting {
 
 		invokeFor(agent, "setCharts", new Object[] { charts },
 				new String[] { List.class.getName() });
+	}
+
+	/**
+	 * @see Agent#getError()
+	 */
+	public Exception getError(Address agent) {
+
+		return (Exception) invokeFor(agent, "getError", new Object[] {},
+				new String[] {});
+	}
+
+	/**
+	 * @see Agent#setError(Exception)
+	 */
+	public void setError(Address agent, Exception error) {
+
+		invokeFor(agent, "setError", new Object[] { error },
+				new String[] { Exception.class.getName() });
 	}
 
 	/**

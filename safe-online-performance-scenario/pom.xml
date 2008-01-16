@@ -28,7 +28,7 @@
               <clientExclude>**/*CMP.class</clientExclude>
               <clientExclude>**/*Session.class</clientExclude>
               <clientExclude>**/package.html</clientExclude>
-              <clientExclude>**/*Scenario.class</clientExclude>
+              <clientExclude>**/?*Scenario.class</clientExclude>
               <clientExclude>META-INF/ejb-jar.xml</clientExclude>
           </clientExcludes>
         </configuration>
