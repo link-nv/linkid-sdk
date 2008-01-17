@@ -21,7 +21,7 @@
 
 
 		<h:form>
-			<table>
+			<table class="name_value">
 				<tr>
 					<th>#{msgs.name}:</th>
 					<td>#{selectedTask.name}</td>
@@ -39,23 +39,23 @@
 
 			<h:commandButton action="#{scheduling.taskListView}" id="back"
 				value="#{msgs.backaction}" immediate="true" styleClass="submit" />
-			<h:commandButton action="#{scheduling.taskHistoryView}"
-				id="taskhistoryview" value="#{msgs.taskhistoryaction}"
-				immediate="true" styleClass="submit" />
-			<h:commandButton action="#{scheduling.performTask}" id="performtask"
-				value="#{msgs.performtaskaction}" immediate="true"
-				styleClass="submit" />
-			<h:commandButton action="#{scheduling.clearTaskHistory}"
-				id="cleartaskhistory" value="#{msgs.cleartaskhistoryaction}"
-				immediate="true" styleClass="submit" />
-			<h:commandButton action="#{scheduling.taskEditView}" id="edittask"
-				value="#{msgs.edittaskaction}" immediate="true" styleClass="submit" />
+
 		</h:form>
 
 	</ui:define>
 	<ui:define name="sidebar">
 		<h:form>
 			<ul class="sidemenu">
+				<li><h:commandLink action="#{scheduling.taskHistoryView}"
+					id="taskhistoryview" value="#{msgs.taskhistoryaction}"
+					immediate="true" /></li>
+				<li><h:commandLink action="#{scheduling.performTask}"
+					id="performtask" value="#{msgs.performtaskaction}" immediate="true" /></li>
+				<li><h:commandLink action="#{scheduling.clearTaskHistory}"
+					id="cleartaskhistory" value="#{msgs.cleartaskhistoryaction}"
+					immediate="true" /></li>
+				<li><h:commandLink action="#{scheduling.taskEditView}"
+					id="edittask" value="#{msgs.edittaskaction}" immediate="true" /></li>
 				<li><h:commandLink action="/audit/audit.seam"
 					value="#{msgs.audit}" /></li>
 			</ul>

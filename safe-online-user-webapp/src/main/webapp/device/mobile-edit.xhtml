@@ -38,26 +38,26 @@
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
-			<h:panelGrid id="register-panel" columns="4">
-				<h:outputLabel for="mobile" value="#{msgs.mobile}" />
-				<s:decorate>
-					<h:inputText id="mobile" value="#{devicesBean.mobile}"
-						required="true"
-						readonly="#{!empty devicesBean.mobileActivationCode}">
-						<f:validateLength minimum="10" maximum="10" />
-					</h:inputText>
-				</s:decorate>
-				<h:commandButton action="#{devicesBean.mobileRegister}"
-					id="register" value="#{msgs.register}"
-					rendered="#{empty devicesBean.mobileActivationCode}" class="submit" />
-			</h:panelGrid>
+			<h:outputLabel for="mobile" value="#{msgs.mobile}" />
+			<s:decorate>
+				<h:inputText id="mobile" value="#{devicesBean.mobile}"
+					required="true"
+					readonly="#{!empty devicesBean.mobileActivationCode}"
+					styleClass="label">
+					<f:validateLength minimum="10" maximum="10" />
+				</h:inputText>
+			</s:decorate>
+			<h:outputLabel for="register" value="" />
+			<h:commandButton action="#{devicesBean.mobileRegister}" id="register"
+				value="#{msgs.register}"
+				rendered="#{empty devicesBean.mobileActivationCode}" class="submit" />
 		</a4j:form>
 
 		<a4j:form id="weak-mobile-confirm-form" ajaxSubmit="true"
 			reRender="weak-mobile-register-form,weak-mobile-confirm-form,mobile-weak-data">
 			<h:panelGrid id="activation-panel" columns="4"
 				rendered="#{!empty devicesBean.mobileActivationCode}">
-				<h:outputLabel
+				<h:outputText
 					value="#{msgs.activationCode}: #{devicesBean.mobileActivationCode}" />
 				<h:commandButton id="activation-ok"
 					action="#{devicesBean.mobileActivationOk}" value="#{msgs.confirm}"
@@ -69,6 +69,7 @@
 		</a4j:form>
 
 		<h:form>
+			<h:outputLabel for="back" value="" />
 			<h:commandButton action="back" id="back" value="#{msgs.backaction}"
 				class="submit" />
 		</h:form>

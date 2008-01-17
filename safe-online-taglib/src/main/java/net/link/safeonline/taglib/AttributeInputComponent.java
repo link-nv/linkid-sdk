@@ -41,6 +41,18 @@ public class AttributeInputComponent extends UIInput {
 
 	static final Log LOG = LogFactory.getLog(AttributeInputComponent.class);
 
+	private String styleClass = "";
+
+	public final static String STYLE_CLASS_DEFAULT = "so-input";
+
+	private String textStyleClass = "";
+
+	public final static String TEXT_STYLE_CLASS_DEFAULT = "so-input-text";
+
+	private String checkboxStyleClass = "";
+
+	public final static String CHECKBOX_STYLE_CLASS_DEFAULT = "so-input-checkbox";
+
 	public AttributeInputComponent() {
 		setRendererType(null);
 		Validator attributeValidator = new AttributeValidator();
@@ -69,6 +81,8 @@ public class AttributeInputComponent extends UIInput {
 		ResponseWriter responseWriter = context.getResponseWriter();
 		responseWriter.startElement("span", this);
 		responseWriter.writeAttribute("id", clientId, "id");
+		responseWriter.writeAttribute("class", STYLE_CLASS_DEFAULT + " "
+				+ this.styleClass, "styleClass");
 
 		AttributeDO attribute = (AttributeDO) getValue();
 		DatatypeType type = attribute.getType();
@@ -184,6 +198,14 @@ public class AttributeInputComponent extends UIInput {
 			responseWriter.writeAttribute("id", clientId, "id");
 			responseWriter.writeAttribute("type", "text", null);
 
+			try {
+				AttributeInputComponent attributeInputComponent = (AttributeInputComponent) inputComponent;
+				responseWriter.writeAttribute("class", attributeInputComponent
+						.getTextStyleClass(), "textStyleClass");
+			} catch (Exception e) {
+				// empty
+			}
+
 			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
 			String value = attribute.getStringValue();
 
@@ -232,6 +254,14 @@ public class AttributeInputComponent extends UIInput {
 			responseWriter.startElement("input", inputComponent);
 			responseWriter.writeAttribute("id", clientId, "id");
 			responseWriter.writeAttribute("type", "text", null);
+
+			try {
+				AttributeInputComponent attributeInputComponent = (AttributeInputComponent) inputComponent;
+				responseWriter.writeAttribute("class", attributeInputComponent
+						.getTextStyleClass(), "textStyleClass");
+			} catch (Exception e) {
+				// empty
+			}
 
 			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
 			Integer value = attribute.getIntegerValue();
@@ -291,6 +321,14 @@ public class AttributeInputComponent extends UIInput {
 			responseWriter.startElement("input", inputComponent);
 			responseWriter.writeAttribute("id", clientId, "id");
 			responseWriter.writeAttribute("type", "text", null);
+
+			try {
+				AttributeInputComponent attributeInputComponent = (AttributeInputComponent) inputComponent;
+				responseWriter.writeAttribute("class", attributeInputComponent
+						.getTextStyleClass(), "textStyleClass");
+			} catch (Exception e) {
+				// empty
+			}
 
 			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
 			Double value = attribute.getDoubleValue();
@@ -478,6 +516,14 @@ public class AttributeInputComponent extends UIInput {
 			AttributeDO attribute = (AttributeDO) inputComponent.getValue();
 			Boolean value = attribute.getBooleanValue();
 
+			String style = null;
+			try {
+				AttributeInputComponent attributeInputComponent = (AttributeInputComponent) inputComponent;
+				style = attributeInputComponent.getCheckboxStyleClass();
+			} catch (Exception e) {
+				// empty
+			}
+
 			/*
 			 * True input checkbox
 			 */
@@ -492,6 +538,9 @@ public class AttributeInputComponent extends UIInput {
 					responseWriter.writeAttribute("onclick",
 							"threeValuedCheckboxClicked(this.checked, this.form, '"
 									+ falseId + "')", null);
+					if (null != style)
+						responseWriter.writeAttribute("class", style,
+								"checkboxStyleClass");
 					if (Boolean.TRUE.equals(value))
 						responseWriter.writeAttribute("checked", Boolean.TRUE,
 								null);
@@ -518,6 +567,9 @@ public class AttributeInputComponent extends UIInput {
 					responseWriter.writeAttribute("onclick",
 							"threeValuedCheckboxClicked(this.checked, this.form, '"
 									+ trueId + "')", null);
+					if (null != style)
+						responseWriter.writeAttribute("class", style,
+								"checkboxStyleClass");
 					if (Boolean.FALSE.equals(value)) {
 						LOG.debug("adding checked attribute");
 						responseWriter.writeAttribute("checked", Boolean.TRUE,
@@ -599,4 +651,29 @@ public class AttributeInputComponent extends UIInput {
 			inputComponent.setSubmittedValue(newAttribute);
 		}
 	}
+
+	public String getStyleClass() {
+		return styleClass;
+	}
+
+	public void setStyleClass(String styleClass) {
+		this.styleClass = styleClass;
+	}
+
+	public String getTextStyleClass() {
+		return TEXT_STYLE_CLASS_DEFAULT + " " + textStyleClass;
+	}
+
+	public void setTextStyleClass(String textStyleClass) {
+		this.textStyleClass = textStyleClass;
+	}
+
+	public String getCheckboxStyleClass() {
+		return CHECKBOX_STYLE_CLASS_DEFAULT + " " + checkboxStyleClass;
+	}
+
+	public void setCheckboxStyleClass(String checkboxStyleClass) {
+		this.checkboxStyleClass = checkboxStyleClass;
+	}
+
 }

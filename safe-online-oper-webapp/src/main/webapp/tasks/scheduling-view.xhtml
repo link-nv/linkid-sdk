@@ -5,7 +5,9 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -20,54 +22,80 @@
 
 
 
-		<table>
+		<table class="name_value">
 			<tr>
-				<th>#{msgs.name}:</th>
+				<th>#{msgs.name}</th>
 				<td>#{selectedScheduling.name}</td>
 			</tr>
 			<tr>
-				<th>#{msgs.cron}:</th>
+				<th>#{msgs.cron}</th>
 				<td>#{selectedScheduling.cronExpression}</td>
 			</tr>
 			<tr>
-				<th>#{msgs.last}:</th>
+				<th>#{msgs.last}</th>
 				<td>#{selectedScheduling.fireDate}</td>
 			</tr>
 		</table>
 
-		<h:form>
-			<t:dataTable id="task-data" var="item" value="#{taskList}" rows="10"
-				preserveDataModel="false" styleClass="listingTable"
+		<a4j:form id="taskForm" ajaxSubmit="true" reRender="task-data">
+			<rich:dataTable id="task-data" var="item" value="#{taskList}"
+				rows="10" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
-					<h:commandLink value="#{item.name}" action="#{scheduling.taskView}" />
+					<a4j:commandLink value="#{item.name}"
+						action="#{scheduling.taskView}" />
 				</h:column>
-			</t:dataTable>
+				<f:facet name="footer">
+					<rich:datascroller for="task-data" pageIndexVar="pageIndex"
+						pagesVar="pages" fastControls="hide">
+						<f:facet name="first">
+							<h:graphicImage value="/images/icons/control_start.png" />
+						</f:facet>
+						<f:facet name="first_disabled">
+							<h:graphicImage value="/images/icons/control_start.png" />
+						</f:facet>
+						<f:facet name="previous">
+							<h:graphicImage value="/images/icons/control_rewind.png" />
+						</f:facet>
+						<f:facet name="previous_disabled">
+							<h:graphicImage value="/images/icons/control_rewind.png" />
+						</f:facet>
+						<f:facet name="pages">
+							<h:outputText value="#{pageIndex} / #{pages}"></h:outputText>
+						</f:facet>
+						<f:facet name="next">
+							<h:graphicImage value="/images/icons/control_fastforward.png" />
+						</f:facet>
+						<f:facet name="next_disabled">
+							<h:graphicImage value="/images/icons/control_fastforward.png" />
+						</f:facet>
+						<f:facet name="last">
+							<h:graphicImage value="/images/icons/control_end.png" />
+						</f:facet>
+						<f:facet name="last_disabled">
+							<h:graphicImage value="/images/icons/control_end.png" />
+						</f:facet>
+					</rich:datascroller>
+				</f:facet>
+			</rich:dataTable>
 
-			<t:dataScroller for="task-data" fastStep="10"
-				pageCountVar="pageCount" pageIndexVar="pageIndex"
-				styleClass="scroller" paginator="true" paginatorMaxPages="9">
-				<f:facet name="first">#{msgs.first}</f:facet>
-				<f:facet name="last">#{msgs.last}</f:facet>
-				<f:facet name="previous">#{msgs.previous}</f:facet>
-				<f:facet name="next">#{msgs.next}</f:facet>
-			</t:dataScroller>
-			<h:commandButton action="#{scheduling.taskListView}" id="back"
+			<a4j:commandButton action="#{scheduling.taskListView}" id="back"
 				value="#{msgs.backaction}" immediate="true" styleClass="submit" />
-			<h:commandButton action="#{scheduling.performScheduling}"
-				id="performscheduling" value="#{msgs.performschedulingaction}"
-				immediate="true" styleClass="submit" />
-			<h:commandButton action="#{scheduling.editSchedulingView}"
-				id="editscheduling" value="#{msgs.editschedulingaction}"
-				immediate="true" styleClass="submit" />
-		</h:form>
 
+
+		</a4j:form>
 	</ui:define>
 	<ui:define name="sidebar">
 		<h:form>
 			<ul class="sidemenu">
+				<li><h:commandLink action="#{scheduling.performScheduling}"
+				id="performscheduling" value="#{msgs.performschedulingaction}"
+				immediate="true" /></li>
+				<li><h:commandLink action="#{scheduling.editSchedulingView}"
+				id="editscheduling" value="#{msgs.editschedulingaction}"
+				immediate="true" /></li>
 				<li><h:commandLink action="/audit/audit.seam"
 					value="#{msgs.audit}" /></li>
 			</ul>

@@ -22,32 +22,23 @@
 
 
 		<h:form>
-			<h:dataTable var="item" value="#{attributeAddContext}"
-				preserveDataModel="false" styleClass="listingTable"
-				rowClasses="listingTable_Row1,listingTable_Row2">
 
-				<h:column>
-					<f:facet name="header">#{msgs.attributeName}</f:facet>
-					<so:outputAttributeName value="#{item}" />:
-				</h:column>
+			<ui:repeat var="item" value="#{attributeAddContext}">
+				<label for="value"><so:outputAttributeName value="#{item}" /></label>
+				<s:decorate>
+					<so:inputAttribute id="value" value="#{item.value}" required="true"
+						textStyleClass="label" checkboxStyleClass="radio" />
+				</s:decorate>
+				<h:message for="value" styleClass="error" />
+			</ui:repeat>
 
-				<h:column>
-					<f:facet name="header">#{msgs.attributeValue}</f:facet>
-					<s:decorate>
-						<so:inputAttribute id="value" value="#{item.value}"
-							required="true" />
-					</s:decorate>
-					<h:message for="value" styleClass="error" />
-				</h:column>
-
-			</h:dataTable>
-
-			<t:messages globalOnly="true" styleClass="error" />
-
+			<label for="add" value="" />
 			<h:commandButton id="add" action="#{attributeAdd.commit}"
 				value="#{msgs.addaction}" class="submit" />
 			<h:commandButton action="cancel" id="cancel"
 				value="#{msgs.cancelaction}" class="submit" immediate="true" />
+
+			<t:messages globalOnly="true" styleClass="error" />
 		</h:form>
 
 	</ui:define>

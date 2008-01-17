@@ -32,7 +32,13 @@
 			</h:column>
 			<h:column>
 				<f:facet name="header">#{msgs.dataMining}</f:facet>
-				<h:outputText value="#{item.dataMining}" />
+
+				<h:graphicImage value="/images/icons/accept.png"
+					rendered="#{item.dataMining}" />
+
+				<h:graphicImage value="/images/icons/cancel.png"
+					rendered="#{!item.dataMining}" />
+
 			</h:column>
 
 		</h:dataTable>

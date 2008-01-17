@@ -25,41 +25,38 @@
 
 			<rich:tab label="#{msgs.information}">
 				<h:panelGrid columns="2" border="0">
-					<h:outputLabel value="#{msgs.name}" />
-					<h:outputLabel
+					<h:outputText value="#{msgs.name}" />
+					<h:outputText
 						value="#{selectedSubscription.application.friendlyName}"
 						rendered="#{!empty selectedSubscription.application.friendlyName}" />
-					<h:outputLabel value="#{selectedSubscription.application.name}"
+					<h:outputText value="#{selectedSubscription.application.name}"
 						rendered="#{empty selectedSubscription.application.friendlyName}" />
 				</h:panelGrid>
 				<h:panelGrid columns="2" border="0">
-					<h:outputLabel value="#{msgs.userOwner}" />
-					<h:outputLabel
+					<h:outputText value="#{msgs.userOwner}" />
+					<h:outputText
 						value="#{selectedSubscription.subscriptionOwnerType}" />
 				</h:panelGrid>
 			</rich:tab>
 
 			<rich:tab label="#{msgs.description}">
-				<pre>#{selectedSubscription.application.description}</pre>
+				<div class="white_space">#{selectedSubscription.application.description}</div>
 			</rich:tab>
 
 			<rich:tab label="#{msgs.confirmedUsageAgreement}">
-				<pre>#{subscriptions.usageAgreement}</pre>
+				<div class="white_space">#{subscriptions.usageAgreement}</div>
 			</rich:tab>
 
 			<rich:tab label="#{msgs.confirmedIdentity}">
-				<rich:dataTable id="data" var="item"
-					value="#{confirmedIdentityAttributes}" preserveDataModel="false"
-					styleClass="listingTable"
-					rowClasses="listingTable_Row1,listingTable_Row2">
-					<h:column>
-						<f:facet name="header">#{msgs.name}</f:facet>
-						<h:outputLabel value="#{item.name}"
+				<ui:repeat id="data" var="item"
+					value="#{confirmedIdentityAttributes}">
+					<h:panelGrid columns="1" border="0">
+						<h:outputText value="#{item.name}"
 							rendered="#{empty item.humanReadableName}" />
-						<h:outputLabel value="#{item.humanReadableName}"
+						<h:outputText value="#{item.humanReadableName}"
 							rendered="#{!empty item.humanReadableName}" />
-					</h:column>
-				</rich:dataTable>
+					</h:panelGrid>
+				</ui:repeat>
 			</rich:tab>
 		</rich:tabPanel>
 		<h:form>

@@ -21,28 +21,20 @@
 
 
 		<h:form>
-			<table>
-				<tr>
-					<th>#{msgs.name}:</th>
-					<td><h:inputText value="#{selectedScheduling.name}"
-						required="true" /></td>
-				</tr>
-				<tr>
-					<th>#{msgs.cron}:</th>
-					<td><h:inputText value="#{selectedScheduling.cronExpression}"
-						required="true" /></td>
-				</tr>
-				<tr>
-					<th>#{msgs.last}:</th>
-					<td>#{selectedScheduling.fireDate}</td>
-				</tr>
-			</table>
 
+			<h:outputLabel for="name" value="#{msgs.name}" />
+			<h:inputText id="name" value="#{selectedScheduling.name}"
+				required="true" styleClass="label" />
 
-			<h:commandButton action="#{scheduling.schedulingView}" id="cancel"
-				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+			<h:outputLabel for="cron" value="#{msgs.cron}" />
+			<h:inputText id="cron" value="#{selectedScheduling.cronExpression}"
+				required="true" styleClass="label" />
+
+			<h:outputLabel for="savescheduling" value="" />
 			<h:commandButton action="#{scheduling.saveScheduling}"
 				id="savescheduling" value="#{msgs.saveaction}" styleClass="submit" />
+			<h:commandButton action="#{scheduling.schedulingView}" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
 		</h:form>
 
 	</ui:define>

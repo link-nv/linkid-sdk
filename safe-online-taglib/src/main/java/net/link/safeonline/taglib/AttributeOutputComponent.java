@@ -30,12 +30,18 @@ public class AttributeOutputComponent extends UIOutput {
 
 	public static final String ATTRIBUTE_OUTPUT_COMPONENT_TYPE = "net.link.component.attributeOutput";
 
+	private String styleClass = "";
+
+	public final static String STYLE_CLASS_DEFAULT = "so-output";
+
 	@Override
 	public void encodeBegin(FacesContext context) throws IOException {
 		ResponseWriter response = context.getResponseWriter();
 		response.startElement("span", this);
 		String clientId = getClientId(context);
 		response.writeAttribute("id", clientId, "id");
+		response.writeAttribute("class", STYLE_CLASS_DEFAULT + " "
+				+ this.styleClass, "styleClass");
 		AttributeDO attribute = (AttributeDO) getValue();
 		DatatypeType type = attribute.getType();
 		AttributeValueEncoder attributeValueEncoder = getAttributeValueEncoder(type);
@@ -212,5 +218,13 @@ public class AttributeOutputComponent extends UIOutput {
 		}
 		instances.put(type, attributeValueEncoder);
 		return attributeValueEncoder;
+	}
+
+	public String getStyleClass() {
+		return styleClass;
+	}
+
+	public void setStyleClass(String styleClass) {
+		this.styleClass = styleClass;
 	}
 }
