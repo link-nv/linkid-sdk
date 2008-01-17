@@ -35,6 +35,7 @@
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -42,7 +43,9 @@
     <Compile Include="src\test\cs\Program.cs" />
     <Compile Include="src\test\cs\KeyStoreUtilTest.cs" />
     <Compile Include="src\test\cs\TestIdMapping.cs" />
+    <Compile Include="src\test\cs\TestPingClient.cs" />
     <Compile Include="src\test\cs\TestSaml.cs" />
+    <Compile Include="src\test\cs\WebServerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src" />

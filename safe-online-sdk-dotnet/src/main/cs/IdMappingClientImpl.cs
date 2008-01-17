@@ -155,7 +155,7 @@ namespace safe_online_sdk_dotnet
 			
 			this.client = new NameIdentifierMappingPortClient(binding, remoteAddress);
 			
-			X509Certificate2 certificate = new X509Certificate2("C:\\work\\test.pfx", "secret");
+			X509Certificate2 certificate = new X509Certificate2(pfxFilename, password);
 			this.client.ClientCredentials.ClientCertificate.Certificate = certificate;
 		}
 		

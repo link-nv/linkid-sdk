@@ -5,6 +5,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.X509;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace safe_online_sdk_dotnet.test.cs
 {
@@ -29,6 +30,13 @@ namespace safe_online_sdk_dotnet.test.cs
 			byte[] encodedCert = cert.GetEncoded();
 			certFileStream.Write(encodedCert, 0, encodedCert.Length);
 			certFileStream.Close();
+		}
+		
+		[Test]
+		public void TestLoadKey()
+		{
+			System.Security.Cryptography.X509Certificates.X509Certificate2 certificate = new System.Security.Cryptography.X509Certificates.X509Certificate2("C:\\work\\test.pfx", "secret");
+			RSACryptoServiceProvider key = (RSACryptoServiceProvider) certificate.PrivateKey;
 		}
 	}
 }
