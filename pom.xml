@@ -823,6 +823,7 @@
 		<module>safe-online-encap-ws-runtime</module>
 		<module>safe-online-ping-ws</module>
 		<module>safe-online-ping-ws-impl</module>
+		<module>safe-online-device-sdk</module>
 		<module>safe-online-saml2-util</module>
 	</modules>
 	<repositories>
