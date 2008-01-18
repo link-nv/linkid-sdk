@@ -25,32 +25,31 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<table>
-				<tr>
-					<th>#{msgs.attributeName}:</th>
-					<td>#{selectedAttributeType.name}</td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="language" value="#{msgs.language}" />:</th>
-					<td>#{editAttributeTypeDescription.language}</td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="name" value="#{msgs.name}" />:</th>
-					<td><s:decorate>
-						<h:inputText id="name"
-							value="#{editAttributeTypeDescription.name}" required="true" />
-					</s:decorate>*<h:message for="name" styleClass="error" /></td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="description"
-						value="#{msgs.description}" />:</th>
-					<td><h:inputText id="description"
-						value="#{editAttributeTypeDescription.description}" /></td>
-				</tr>
-			</table>
+			<h:outputLabel for="typename" value="#{msgs.attributeName}" />
+			<h:inputText id="typename" value="#{selectedAttributeType.name}"
+				styleClass="label" disabled="true" />
+
+
+			<h:outputLabel for="language" value="#{msgs.language}" />
+			<h:inputText id="language"
+				value="#{editAttributeTypeDescription.language}" styleClass="label"
+				disabled="true" />
+
+			<h:outputLabel for="name" value="#{msgs.name}" />
+			<s:decorate>
+				<h:inputText id="name" value="#{editAttributeTypeDescription.name}"
+					required="true" styleClass="label" />
+			</s:decorate>
+			<h:message for="name" styleClass="error" />
+			<h:outputLabel for="description" value="#{msgs.description}" />
+			<h:inputText id="description"
+				value="#{editAttributeTypeDescription.description}"
+				styleClass="label" />
+
 
 			<h:messages styleClass="error" globalOnly="true" />
 
+			<h:outputLabel for="save" value="" />
 			<h:commandButton value="#{msgs.saveaction}" id="save"
 				action="#{attributeDesc.save}" styleClass="submit" />
 			<h:commandButton action="#{attributeDesc.removeDescription}"

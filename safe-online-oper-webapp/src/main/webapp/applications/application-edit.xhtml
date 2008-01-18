@@ -27,50 +27,52 @@
 
 			<rich:tabPanel id="tabs" switchType="client">
 				<rich:tab id="generic-tab" label="#{msgs.generic}">
-					<h:panelGrid columns="2">
-						<h:outputLabel for="applicationUrl"
-							value="#{msgs.applicationUrl}:" />
-						<s:decorate>
-							<h:inputText id="applicationUrl"
-								value="#{operApplication.applicationUrl}" />
-							<h:message for="applicationUrl" styleClass="error" />
-						</s:decorate>
+					<h:outputLabel for="applicationUrl" value="#{msgs.applicationUrl}" />
+					<s:decorate>
+						<h:inputText id="applicationUrl"
+							value="#{operApplication.applicationUrl}" styleClass="label" />
+						<h:message for="applicationUrl" styleClass="error" />
+					</s:decorate>
 
-						<h:outputLabel for="applicationLogo"
-							value="#{msgs.applicationLogo}:" />
-						<s:decorate>
-							<tr:inputFile id="applicationLogo"
-								value="#{operApplication.applicationLogoFile}" />
-							<h:message for="applicationLogo" styleClass="error" />
-						</s:decorate>
+					<h:outputLabel for="applicationLogo"
+						value="#{msgs.applicationLogo}" />
+					<s:decorate>
+						<tr:inputFile id="applicationLogo"
+							value="#{operApplication.applicationLogoFile}" />
+						<h:message for="applicationLogo" styleClass="error" />
+					</s:decorate>
 
-						<h:outputLabel for="applicationColor"
-							value="#{msgs.applicationColor}:" />
-						<s:decorate>
-							<h:inputText id="applicationColor"
-								value="#{operApplication.applicationColor}"
-								style="border-color: #{operApplication.applicationColor}" />
-							<h:message for="applicationColor" styleClass="error" />
-						</s:decorate>
+					<h:outputLabel for="applicationColor"
+						value="#{msgs.applicationColor}" />
+					<s:decorate>
+						<h:inputText id="applicationColor"
+							value="#{operApplication.applicationColor}"
+							style="border-color: #{operApplication.applicationColor}"
+							styleClass="label" />
+						<h:message for="applicationColor" styleClass="error" />
+					</s:decorate>
 
-						<h:outputLabel for="applicationIdScope"
-							value="#{msgs.applicationIdScope}:" />
-						<s:decorate>
-							<h:selectOneMenu id="applicationIdScope"
-								value="#{operApplication.applicationIdScope}" required="true">
-								<f:selectItems value="#{applicationIdScopes}" />
-							</h:selectOneMenu>
-							<h:message for="applicationIdScope" styleClass="error" />
-						</s:decorate>
-					</h:panelGrid>
+					<h:outputLabel for="applicationIdScope"
+						value="#{msgs.applicationIdScope}" />
+					<s:decorate>
+						<h:selectOneMenu id="applicationIdScope"
+							value="#{operApplication.applicationIdScope}" required="true"
+							styleClass="label">
+							<f:selectItems value="#{applicationIdScopes}" />
+						</h:selectOneMenu>
+						<h:message for="applicationIdScope" styleClass="error" />
+					</s:decorate>
 				</rich:tab>
 
 				<rich:tab id="identity-tab" label="#{msgs.applicationIdentity}">
 					<h:dataTable value="#{identityAttributes}" var="item">
 						<h:column>
 							<f:facet name="header">#{msgs.name}</f:facet>
+							<h:outputText value="#{item.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">#{msgs.name}</f:facet>
 							<h:selectBooleanCheckbox value="#{item.included}" id="included" />
-							<h:outputLabel for="included" value="#{item.name}" />
 						</h:column>
 						<h:column>
 							<f:facet name="header">#{msgs.required}</f:facet>
@@ -84,29 +86,24 @@
 				</rich:tab>
 
 				<rich:tab id="cert-tab" label="#{msgs.accessControl}">
-					<h:panelGrid columns="1">
-						<h:panelGroup>
-							<h:selectBooleanCheckbox value="#{operApplication.idmapping}"
-								id="idmapping" />
-							<h:outputLabel for="idmapping"
-								value="#{msgs.accessControlIdmappingService}" />
-						</h:panelGroup>
+					<h:outputLabel for="idmapping"
+						value="#{msgs.accessControlIdmappingService}" />
+					<h:selectBooleanCheckbox value="#{operApplication.idmapping}"
+						id="idmapping" styleClass="radio" />
 
-						<h:panelGroup>
-							<h:selectBooleanCheckbox
-								value="#{operApplication.skipMessageIntegrityCheck}"
-								id="skipMessageIntegrityCheck" />
-							<h:outputLabel for="skipMessageIntegrityCheck"
-								value="#{msgs.skipMessageIntegrityCheck}" />
-						</h:panelGroup>
 
-						<h:panelGroup>
-							<s:decorate>
-								<tr:inputFile id="certificate" label="#{msgs.certificate}:"
-									value="#{operApplication.upFile}" />
-							</s:decorate>
-						</h:panelGroup>
-					</h:panelGrid>
+					<h:outputLabel for="skipMessageIntegrityCheck"
+						value="#{msgs.skipMessageIntegrityCheck}" />
+					<h:selectBooleanCheckbox
+						value="#{operApplication.skipMessageIntegrityCheck}"
+						id="skipMessageIntegrityCheck" styleClass="radio" />
+
+
+					<h:outputLabel for="certificate" value="#{msgs.certificate}" />
+					<s:decorate>
+						<tr:inputFile id="certificate" value="#{operApplication.upFile}" />
+					</s:decorate>
+
 				</rich:tab>
 			</rich:tabPanel>
 

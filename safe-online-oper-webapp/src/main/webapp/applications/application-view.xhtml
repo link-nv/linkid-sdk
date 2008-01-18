@@ -24,44 +24,44 @@
 		<rich:tabPanel switchType="client">
 
 			<rich:tab label="#{msgs.generic}">
-				<table>
+				<table class="name_value">
 					<tr>
-						<th>#{msgs.applicationOwner}:</th>
+						<th>#{msgs.applicationOwner}</th>
 						<td>#{selectedApplication.applicationOwner.name}</td>
 					</tr>
 					<tr>
-						<th>#{msgs.operatorApplicationOwnerAdmin}:</th>
+						<th>#{msgs.operatorApplicationOwnerAdmin}</th>
 						<td>#{ownerAdminName}</td>
 					</tr>
 					<tr>
-						<th>#{msgs.operatorUserAllowedToSubscribe}:</th>
-						<td>#{selectedApplication.allowUserSubscription}</td>
+						<th>#{msgs.operatorUserAllowedToSubscribe}</th>
+						<td><h:selectBooleanCheckbox disabled="true" value="#{selectedApplication.allowUserSubscription}"/></td>
 					</tr>
 					<tr>
-						<th>#{msgs.removable}:</th>
-						<td>#{selectedApplication.removable}</td>
+						<th>#{msgs.removable}</th>
+						<td><h:selectBooleanCheckbox disabled="true" value="#{selectedApplication.removable}"/></td>
 					</tr>
 					<tr>
-						<th>#{msgs.operatorNumberOfSubscriptions}:</th>
+						<th>#{msgs.operatorNumberOfSubscriptions}</th>
 						<td>#{numberOfSubscriptions}</td>
 					</tr>
 					<tr>
-						<th>#{msgs.applicationIdScope}:</th>
+						<th>#{msgs.applicationIdScope}</th>
 						<td>#{selectedApplication.idScope}</td>
 					</tr>
 					<tr>
-						<td colspan="2"><h:graphicImage
+						<th>#{msgs.applicationLogo}</th>
+						<td><h:graphicImage
 							url="../logo?applicationName=${selectedApplication.name}"
 							rendered="#{!empty selectedApplication.applicationLogo}" /></td>
 					</tr>
 					<tr>
-						<th>#{msgs.applicationColor}:</th>
-						<td><h:inputText disabled="true"
-							value="${operApplication.applicationColor}"
+						<th>#{msgs.applicationColor}</th>
+						<td><h:outputText value="${operApplication.applicationColor}"
 							style="background: ${operApplication.applicationColor}" /></td>
 					</tr>
 					<tr>
-						<th>#{msgs.applicationUrl}:</th>
+						<th>#{msgs.applicationUrl}</th>
 						<td><h:outputLink
 							value="#{selectedApplication.applicationUrl}"
 							rendered="#{!empty selectedApplication.applicationUrl}">
@@ -74,33 +74,38 @@
 			</rich:tab>
 
 			<rich:tab label="#{msgs.description}">
-				<p><h:outputText value="#{selectedApplication.description}"
+				<h:outputText value="#{selectedApplication.description}"
 					escape="true" rendered="#{!empty selectedApplication.description}" />
 				<h:outputText value="#{msgs.noDescription}"
-					rendered="#{empty selectedApplication.description}" /></p>
+					rendered="#{empty selectedApplication.description}" />
 				<!-- XSS vulnerability possible: do not set escape="false" -->
 			</rich:tab>
 
 			<rich:tab label="#{msgs.usageAgreement}">
-				<pre width="100">#{operApplication.usageAgreement}</pre>
+				<div class="white_space">#{operApplication.usageAgreement}</div>
 			</rich:tab>
 
 			<rich:tab label="#{msgs.accessControl}">
-				<h:panelGrid columns="2">
-					<h:outputText value="#{msgs.accessControlIdmappingService}:" />
-					<h:outputText
-						value="#{selectedApplication.identifierMappingAllowed}" />
 
-					<h:outputText value="#{msgs.skipMessageIntegrityCheck}:" />
-					<h:outputText
-						value="#{selectedApplication.skipMessageIntegrityCheck}" />
-				</h:panelGrid>
+				<h:outputLabel for="idmap"
+					value="#{msgs.accessControlIdmappingService}" />
+				<h:selectBooleanCheckbox id="idmap" disabled="true"
+					value="#{selectedApplication.identifierMappingAllowed}"
+					styleClass="radio" />
 
-				<p><h:outputText value="#{msgs.certificate}:" /></p>
-				<pre><h:outputText value="#{selectedApplication.certificate}"
-					rendered="#{!empty selectedApplication.certificate}" /></pre>
-				<p><h:outputText value="#{msgs.noCertificate}"
-					rendered="#{empty selectedApplication.certificate}" /></p>
+				<h:outputLabel for="skipcheck"
+					value="#{msgs.skipMessageIntegrityCheck}:" />
+				<h:selectBooleanCheckbox id="skipcheck" disabled="true"
+					value="#{selectedApplication.skipMessageIntegrityCheck}"
+					styleClass="radio" />
+
+
+				<p><h:outputText value="#{msgs.certificate}" /></p>
+				<div class="white_space"><h:outputText
+					value="#{selectedApplication.certificate}"
+					rendered="#{!empty selectedApplication.certificate}" /> <h:outputText
+					value="#{msgs.noCertificate}"
+					rendered="#{empty selectedApplication.certificate}" /></div>
 			</rich:tab>
 
 			<rich:tab label="#{msgs.applicationIdentity}">
@@ -111,17 +116,17 @@
 					</h:column>
 					<h:column>
 						<f:facet name="header">#{msgs.required}</f:facet>
-						<h:outputText value="#{item.required}" />
+						<h:selectBooleanCheckbox disabled="true" value="#{item.required}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">#{msgs.dataMining}</f:facet>
-						<h:outputText value="#{item.dataMining}" />
+						<h:selectBooleanCheckbox disabled="true"
+							value="#{item.dataMining}" />
 					</h:column>
 				</h:dataTable>
 			</rich:tab>
 		</rich:tabPanel>
 
-		<rich:spacer height="10" />
 		<h:form>
 			<h:commandButton value="#{msgs.backaction}" id="back" action="back"
 				styleClass="submit" />

@@ -21,23 +21,20 @@
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
-			<table>
-				<tr>
-					<td><h:outputLabel for="name" value="#{msgs.name}" />:</td>
-					<td><s:decorate>
-						<h:inputText id="name" value="#{applicationOwner.name}"
-							required="true" />
-					</s:decorate>* <h:message for="name" styleClass="error" /></td>
-				</tr>
+			<h:outputLabel for="name" value="#{msgs.name}" />
+			<s:decorate>
+				<h:inputText id="name" value="#{applicationOwner.name}"
+					required="true" styleClass="label" />
+			</s:decorate>
+			<h:message for="name" styleClass="error" />
+			<h:outputLabel for="login" value="#{msgs.admin}" />
+			<s:decorate>
+				<h:inputText id="login" value="#{applicationOwner.login}"
+					required="true" styleClass="label" />
+			</s:decorate>
+			<h:message for="login" styleClass="error" />
 
-				<tr>
-					<td><h:outputLabel for="login" value="#{msgs.admin}" />:</td>
-					<td><s:decorate>
-						<h:inputText id="login" value="#{applicationOwner.login}"
-							required="true" />
-					</s:decorate>* <h:message for="login" styleClass="error" /></td>
-				</tr>
-			</table>
+			<h:outputLabel for="add" value="" />
 			<h:commandButton action="#{applicationOwner.add}" id="add"
 				value="#{msgs.addaction}" styleClass="submit" />
 			<h:commandButton action="cancel" id="cancel"

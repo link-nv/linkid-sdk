@@ -22,18 +22,19 @@
 
 
 		<h:form>
-			<h:panelGrid columns="2">
-				<h:outputText value="#{msgs.name}:" />
-				<h:outputText value="#{addAttribute.name}" />
 
-				<h:outputLabel for="datatype" value="#{msgs.type}:" />
-				<h:selectOneMenu id="datatype" value="#{addAttribute.type}">
-					<f:selectItems value="#{datatypes}" />
-				</h:selectOneMenu>
-			</h:panelGrid>
+			<h:outputLabel for="name" value="#{msgs.name}" />
+			<h:inputText id="name" value="#{addAttribute.name}" styleClass="label" disabled="true" />
+
+			<h:outputLabel for="datatype" value="#{msgs.type}" />
+			<h:selectOneMenu id="datatype" value="#{addAttribute.type}"
+				styleClass="label">
+				<f:selectItems value="#{datatypes}" />
+			</h:selectOneMenu>
+
 
 			<h:messages styleClass="error" globalOnly="true" />
-
+			<h:outputLabel for="previous" value="" />
 			<h:commandButton value="#{msgs.previous}" id="previous"
 				action="previous" immediate="true" styleClass="submit" />
 			<h:commandButton action="#{addAttribute.cancel}" id="cancel"

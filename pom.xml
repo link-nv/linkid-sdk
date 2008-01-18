@@ -205,7 +205,7 @@
 				<safe-online.jboss.host.port.ssl>
 					8443
 				</safe-online.jboss.host.port.ssl>
-				<debug.mode>true</debug.mode>
+				<debug.mode>false</debug.mode>
 				<safe-online.profiling.filter />
 				<safe-online.profiling.interceptor />
 			</properties>

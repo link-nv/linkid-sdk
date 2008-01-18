@@ -25,14 +25,14 @@
 
 		<h:form>
 
-			<h:dataTable value="#{memberAccessControlAttributes}" var="item">
+			<h:dataTable value="#{memberAccessControlAttributes}" var="item" styleClass="listingTable">
 				<h:column>
 					<f:facet name="header">#{msgs.attributeName}</f:facet>
 					<h:outputText value="#{item.name}" />
 				</h:column>
 				<h:column>
 					<f:facet name="header">#{msgs.required}</f:facet>
-					<h:selectBooleanCheckbox value="#{item.required}" />
+					<h:selectBooleanCheckbox value="#{item.required}" styleClass="radio"/>
 				</h:column>
 			</h:dataTable>
 
