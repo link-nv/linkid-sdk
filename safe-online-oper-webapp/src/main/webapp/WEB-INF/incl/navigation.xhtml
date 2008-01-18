@@ -1,16 +1,16 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
-	<ul class="menu">
-	<li id="page_home"><a
-			href="#{facesContext.externalContext.requestContextPath}/overview.seam">#{msgs.home}</a></li>
-		<li id="page_applications"><a
-			href="#{facesContext.externalContext.requestContextPath}/applications-main.seam">#{msgs.applications}</a></li>
-		<li id="page_attributes"><a
-			href="#{facesContext.externalContext.requestContextPath}/attributes/attributes.seam">#{msgs.attributes}</a></li>
-		<li id="page_configuration"><a
-			href="#{facesContext.externalContext.requestContextPath}/configuration-main.seam">#{msgs.configuration}</a></li>
-		<li id="page_maintenance"><a
-			href="#{facesContext.externalContext.requestContextPath}/maintenance.seam">#{msgs.maintenance}</a></li>
-	</ul>
+<ul class="menu">
+	<li id="page_applications"><a
+		href="#{facesContext.externalContext.requestContextPath}/applications-main.seam">#{msgs.applications}</a></li>
+	<li id="page_attributes"><a
+		href="#{facesContext.externalContext.requestContextPath}/attributes/attributes.seam">#{msgs.attributes}</a></li>
+	<li id="page_configuration"><a
+		href="#{facesContext.externalContext.requestContextPath}/configuration-main.seam">#{msgs.configuration}</a></li>
+	<li id="page_devices"><a
+		href="#{facesContext.externalContext.requestContextPath}/devices/devices.seam">#{msgs.devices}</a></li>
+	<li id="page_maintenance"><a
+		href="#{facesContext.externalContext.requestContextPath}/maintenance.seam">#{msgs.maintenance}</a></li>
+</ul>
 
 
 <script language="JavaScript">
@@ -21,5 +21,4 @@
             }
         }
         setClass("page_" + "#{page}", "selected");
-</script>
-</div>
+</script></div>

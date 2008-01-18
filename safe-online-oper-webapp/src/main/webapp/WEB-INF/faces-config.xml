@@ -776,6 +776,201 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<!-- Begin usage agreement navigation rules -->
+	<!-- End usage agreement navigation rules -->
+
+	<!-- Begin device navigation rules -->
+
+	<navigation-rule>
+		<from-view-id>/devices/devices.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>add</from-outcome>
+			<to-view-id>/devices/device-add.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view</from-outcome>
+			<to-view-id>/devices/device-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/device-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/devices/devices.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/devices/devices.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/device-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/devices/devices.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>add-descr</from-action>
+			<to-view-id>/devices/device-desc-add.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>add-prop</from-action>
+			<to-view-id>/devices/device-prop-add.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit-desc</from-outcome>
+			<to-view-id>/devices/device-desc-edit.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit-prop</from-outcome>
+			<to-view-id>/devices/device-prop-edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/devices/device-edit.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/device-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/devices/device-view.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/devices/device-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/device-desc-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>cancel</from-outcome>
+			<to-view-id>/devices/device-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saved</from-outcome>
+			<to-view-id>/devices/device-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>removed</from-outcome>
+			<to-view-id>/devices/device-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/device-desc-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/devices/device-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/devices/device-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/device-prop-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/devices/device-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/devices/device-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/device-prop-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>cancel</from-outcome>
+			<to-view-id>/devices/device-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saved</from-outcome>
+			<to-view-id>/devices/device-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>removed</from-outcome>
+			<to-view-id>/devices/device-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<!-- End device navigation rules -->
+
+	<!-- Begin device class navigation rules -->
+	<navigation-rule>
+		<from-view-id>/devices/classes.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>add</from-outcome>
+			<to-view-id>/devices/class-add.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view</from-outcome>
+			<to-view-id>/devices/class-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/class-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/devices/classes.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/devices/classes.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/class-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/devices/classes.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>add-descr</from-action>
+			<to-view-id>/devices/class-desc-add.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit-desc</from-outcome>
+			<to-view-id>/devices/class-desc-edit.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/class-desc-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>cancel</from-outcome>
+			<to-view-id>/devices/class-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>saved</from-outcome>
+			<to-view-id>/devices/class-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>removed</from-outcome>
+			<to-view-id>/devices/class-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/class-desc-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/devices/class-view.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/devices/class-view.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<!-- End device class navigation rules -->
 
 </faces-config>

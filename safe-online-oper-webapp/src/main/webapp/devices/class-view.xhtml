@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="devices" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{selectedDeviceClass.name}</h1>
+	</ui:define>
+	<ui:define name="content">
+
+
+		<h:form id="classdescform">
+			<h:dataTable id="desc-data" var="item"
+				value="#{deviceClassDescriptions}" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+				<h:column>
+					<f:facet name="header">#{msgs.language}</f:facet>
+					<h:commandLink value="#{item.language}"
+						action="#{deviceClassDesc.edit}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.description}</f:facet>
+					<h:outputText value="#{item.description}" />
+				</h:column>
+			</h:dataTable>
+
+			<table>
+				<tr>
+					<td><h:outputLabel for="add-descr"
+						value="#{msgs.addDeviceClassDescription}" /></td>
+					<td><h:commandButton action="add-descr" id="add-descr"
+						value="#{msgs.addaction}" styleClass="submit" /></td>
+					<td><h:commandButton value="#{msgs.backaction}" id="back"
+						action="back" styleClass="submit" /></td>
+				</tr>
+			</table>
+		</h:form>
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/devices/devices.seam"
+					value="#{msgs.devices}" /></li>
+			</ul>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>

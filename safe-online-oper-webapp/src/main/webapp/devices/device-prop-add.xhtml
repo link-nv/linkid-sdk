@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
+<body>
+<ui:composition template="/WEB-INF/template-root.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="devices" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.addDeviceProperty}</h1>
+	</ui:define>
+	<ui:define name="content">
+
+
+		<h:form>
+			<f:facet name="aroundInvalidField">
+				<s:span styleClass="error" />
+			</f:facet>
+
+			<table>
+				<tr>
+					<th>#{msgs.device}:</th>
+					<td>#{selectedDevice.name}</td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="name" value="#{msgs.name}" /></th>
+					<td><s:decorate>
+						<h:inputText id="name" value="#{deviceProp.name}" required="true"
+							styleClass="label" />
+					</s:decorate>*<h:message for="name" styleClass="error" /></td>
+				</tr>
+				<tr>
+					<th><h:outputLabel for="value" value="#{msgs.value}" /></th>
+					<td><h:inputText id="value" value="#{deviceProp.value}"
+						styleClass="label" /></td>
+				</tr>
+			</table>
+
+			<h:messages styleClass="error" globalOnly="true" />
+
+			<h:commandButton value="#{msgs.addaction}" id="add"
+				action="#{deviceProp.add}" styleClass="submit" />
+			<h:commandButton action="cancel" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true" styleClass="submit" />
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="topnav">
+		<ui:include src="/WEB-INF/incl/navigation.xhtml">
+			<ui:param name="page" value="devices" />
+		</ui:include>
+	</ui:define>
+	<ui:define name="top_content">
+		<h1>#{msgs.deviceClasses}</h1>
+	</ui:define>
+	<ui:define name="content">
+
+
+		<a4j:form id="deviceClassForm" ajaxSubmit="true"
+			reRender="device-class-data">
+			<rich:dataTable id="device-class-data" var="item"
+				value="#{operDeviceClassList}" rows="10" styleClass="listingTable"
+				rowClasses="listingTable_Row1,listingTable_Row2">
+
+				<h:column>
+					<f:facet name="header">#{msgs.deviceClass}</f:facet>
+					<a4j:commandLink value="#{item.name}"
+						action="#{operDeviceClass.view}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.action}</f:facet>
+					<a4j:commandLink value="#{msgs.removeaction}"
+						action="#{operDeviceClass.remove}" />
+				</h:column>
+				<f:facet name="footer">
+					<rich:datascroller for="device-class-data" />
+				</f:facet>
+			</rich:dataTable>
+
+			<rich:messages styleClass="error" />
+
+			<a4j:commandButton value="#{msgs.addaction}" id="add" action="add"
+				styleClass="submit" />
+		</a4j:form>
+
+
+	</ui:define>
+	<ui:define name="sidebar">
+		<h:form>
+			<ul class="sidemenu">
+				<li><h:commandLink action="/devices/devices.seam"
+					value="#{msgs.devices}" /></li>
+			</ul>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</body>
+
+</html>
