@@ -54,13 +54,13 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 				.entrySet()) {
 			MeasurementEntity measurementEntity = new MeasurementEntity(
 					measurement.getKey(), measurement.getValue());
-			persist(measurementEntity);
+			this.em.persist(measurementEntity);
 
 			measurements.add(measurementEntity);
 		}
 
 		ProfileDataEntity dataEntity = new ProfileDataEntity(measurements);
-		persist(dataEntity);
+		this.em.persist(dataEntity);
 
 		return dataEntity;
 	}

@@ -15,8 +15,11 @@
  */
 package net.link.safeonline.performance.service;
 
+import java.util.Set;
+
 import javax.ejb.Local;
 
+import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 
 /**
@@ -38,6 +41,22 @@ public interface ExecutionService {
 	/**
 	 * Add an entry for a new scenario execution to the database.
 	 */
-	public ExecutionEntity addExecution(String scenarioName);
+	public ExecutionEntity addExecution(String scenarioName, String hostname);
+
+	/**
+	 * Retrieve an already created execution by its Id.
+	 */
+	public ExecutionEntity getExecution(int executionId);
+
+	/**
+	 * Retrieve all driver profiles that were created for execution with the
+	 * given Id.
+	 */
+	public Set<DriverProfileEntity> getProfiles(int executionId);
+
+	/**
+	 * Add the time that a recently completed scenario had started.
+	 */
+	public void addStartTime(ExecutionEntity execution, long startTime);
 
 }

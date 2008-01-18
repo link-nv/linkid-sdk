@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.RemoteBinding;
 
 @Stateless
-@RemoteBinding(jndiBinding = PerformanceService.JNDI_BINDING_NAME)
+@RemoteBinding(jndiBinding = PerformanceService.BINDING)
 public class PerformanceServiceBean implements PerformanceService {
 
 	private static final Log LOG = LogFactory

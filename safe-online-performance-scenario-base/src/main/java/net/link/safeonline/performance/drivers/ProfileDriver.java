@@ -70,26 +70,22 @@ public abstract class ProfileDriver {
 		}
 	};
 
-	private String host;
 	private String title;
 	private ExecutionEntity execution;
-
 	private DriverProfileEntity profile;
 
-	public ProfileDriver(String hostname, String title,
-			ExecutionEntity execution) {
+	public ProfileDriver(String title, ExecutionEntity execution) {
 
-		this.host = hostname;
 		this.title = title;
 		this.execution = execution;
 
-		this.profile = this.driverProfileService.get().addProfile(title,
+		this.profile = this.driverProfileService.get().addProfile(this.title,
 				execution);
 	}
 
 	public String getHost() {
 
-		return this.host;
+		return this.execution.getHostname();
 	}
 
 	public String getTitle() {

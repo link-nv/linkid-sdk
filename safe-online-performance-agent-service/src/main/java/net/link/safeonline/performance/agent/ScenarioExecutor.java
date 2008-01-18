@@ -15,23 +15,12 @@
  */
 package net.link.safeonline.performance.agent;
 
-import java.security.KeyStore;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
-import net.link.safeonline.model.performance.PerformanceService;
-import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.ScenarioLocal;
 
 import org.apache.commons.logging.Log;
@@ -70,32 +59,12 @@ public class ScenarioExecutor extends Thread {
 	public void run() {
 
 		try {
-			// Retrieve the performance private key and certificate from OLAS.
-			PrivateKeyEntry applicationKey = null;
-			try {
-				PerformanceService service = (PerformanceService) getInitialContext(
-						this.hostname).lookup(
-						PerformanceService.JNDI_BINDING_NAME);
-				applicationKey = new KeyStore.PrivateKeyEntry(service
-						.getPrivateKey(), new Certificate[] { service
-						.getCertificate() });
-			} catch (NamingException e) {
-				LOG.error("OLAS couldn't provide performance keys.", e);
-			}
-
 			// Find the scenario bean.
-			InitialContext context = getInitialContext("localhost");
-			final ScenarioLocal scenarioBean = (ScenarioLocal) context
+			final ScenarioLocal scenarioBean = (ScenarioLocal) new InitialContext()
 					.lookup(ScenarioLocal.BINDING);
 
 			// Setup the scenario.
-			final List<Long> scenarioStart = Collections
-					.synchronizedList(new ArrayList<Long>());
-			final Scenario scenario = scenarioBean.prepare(this.hostname,
-					applicationKey);
-			if (scenario == null)
-				throw new IllegalStateException(
-						"Scenario is unavailable; aborting.");
+			final int execution = scenarioBean.prepare(this.hostname);
 
 			// Create a pool of threads that execute scenario beans.
 			long until = System.currentTimeMillis() + this.duration;
@@ -107,13 +76,10 @@ public class ScenarioExecutor extends Thread {
 
 						try {
 							LOG.debug(">>> Scenario start.");
-							scenarioStart.add(System.currentTimeMillis());
-							scenario.execute();
-							LOG.debug("... Scenario done.");
+							scenarioBean.execute(execution);
+							LOG.debug("<<< Scenario end.");
 						} catch (Throwable e) {
 							LOG.error("!!! Scenario error.", e);
-						} finally {
-							LOG.debug("<<< Scenario end.");
 						}
 					}
 				}, 0, 100, TimeUnit.MILLISECONDS);
@@ -134,8 +100,7 @@ public class ScenarioExecutor extends Thread {
 			}
 
 			// Generate the resulting statistical information.
-			this.agentService.setCharts(scenarioBean.createGraphs(scenario,
-					scenarioStart));
+			this.agentService.setCharts(scenarioBean.createGraphs(execution));
 
 			// Notify the agent service of the scenario completion.
 			this.agentService.actionCompleted(true);
@@ -146,21 +111,5 @@ public class ScenarioExecutor extends Thread {
 			this.agentService.actionCompleted(false);
 			LOG.error("Processing Scenario Execution Failed", e);
 		}
-	}
-
-	/**
-	 * Retrieve an {@link InitialContext} for the JNDI of the AS on the given
-	 * host.
-	 */
-	static InitialContext getInitialContext(String hostname)
-			throws NamingException {
-
-		Hashtable<String, String> environment = new Hashtable<String, String>();
-
-		environment.put(Context.INITIAL_CONTEXT_FACTORY,
-				"org.jnp.interfaces.NamingContextFactory");
-		environment.put(Context.PROVIDER_URL, "jnp://" + hostname + ":1099");
-
-		return new InitialContext(environment);
 	}
 }

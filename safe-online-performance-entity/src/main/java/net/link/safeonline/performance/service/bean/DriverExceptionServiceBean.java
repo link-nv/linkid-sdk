@@ -69,7 +69,7 @@ public class DriverExceptionServiceBean extends ProfilingServiceBean implements 
 		// Create the exception entity.
 		DriverExceptionEntity exceptionEntity = new DriverExceptionEntity(
 				exception.getOccurredTime(), message);
-		persist(exceptionEntity);
+		this.em.persist(exceptionEntity);
 
 		return exceptionEntity;
 	}

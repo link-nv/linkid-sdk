@@ -39,10 +39,12 @@ import javax.persistence.OneToMany;
  * @author mbillemo
  */
 @Entity
-@NamedQuery(name = "DriverProfileEntity.findByExecution", query = "SELECT p"
+@NamedQuery(name = DriverProfileEntity.findByExecution, query = "SELECT p"
 		+ "    FROM DriverProfileEntity p"
 		+ "    WHERE p.driverName = :driverName AND p.execution = :execution")
 public class DriverProfileEntity {
+
+	public static final String findByExecution = "DriverProfileEntity.findByExecution";
 
 	@Id
 	@SuppressWarnings("unused")

@@ -38,6 +38,7 @@ public class ConsoleAgent implements Agent {
 	private boolean selected;
 	private AgentState transit = AgentState.RESET;
 	private AgentState state = AgentState.RESET;
+	private Exception error;
 
 	/**
 	 * Create a new {@link ConsoleAgent} component based off the agent at the
@@ -185,17 +186,17 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<byte[]> getCharts() {
+	public Exception getError() {
 
-		return this.scenarioDeployer.getCharts(this.agentAddress);
+		return this.error;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Exception getError() {
+	public List<byte[]> getCharts() {
 
-		return this.scenarioDeployer.getError(this.agentAddress);
+		return this.scenarioDeployer.getCharts(this.agentAddress);
 	}
 
 	/**
@@ -215,15 +216,15 @@ public class ConsoleAgent implements Agent {
 
 		AgentState oldTransit = this.transit;
 		AgentState oldState = this.state;
+		Exception oldError = this.error;
 
 		this.transit = this.scenarioDeployer.getTransit(this.agentAddress);
 		this.state = this.scenarioDeployer.getState(this.agentAddress);
+		this.error = this.scenarioDeployer.getError(this.agentAddress);
 
-		if (oldTransit != this.transit || oldState != this.state) {
-			LOG.debug(getAddress() + " has NEW state   : State [" + this.state
-					+ "], Transit [" + this.transit + "]");
+		if (oldTransit != this.transit || oldState != this.state
+				|| oldError != this.error)
 			fireAgentStatus();
-		}
 	}
 
 	private class UpdateAgentState extends Thread {

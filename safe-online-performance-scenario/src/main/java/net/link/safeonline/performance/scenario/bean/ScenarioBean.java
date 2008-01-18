@@ -7,13 +7,14 @@
 package net.link.safeonline.performance.scenario.bean;
 
 import java.io.IOException;
-import java.security.KeyStore.PrivateKeyEntry;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -26,7 +27,7 @@ import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
-import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.performance.entity.StartTimeEntity;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.ScenarioLocal;
 import net.link.safeonline.performance.service.ExecutionService;
@@ -80,24 +81,17 @@ public class ScenarioBean implements ScenarioLocal {
 	@Resource(name = "activeScenario")
 	private String activeScenario;
 
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public void execute(Scenario scenario) throws Exception {
-
-		scenario.execute();
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
-	public Scenario prepare(String hostname, PrivateKeyEntry performanceKey) {
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void execute(int executionId) throws Exception {
 
-		PrivateKeyEntry applicationKey = performanceKey != null ? performanceKey
-				: PerformanceKeyStoreUtils.getPrivateKeyEntry();
-
-		LOG.debug("looking up scenario: " + this.activeScenario);
+		LOG.debug("building scenario: " + this.activeScenario);
 		Scenario scenario = null;
 		try {
-			scenario = (Scenario) Class.forName(this.activeScenario)
+			scenario = (Scenario) Thread.currentThread()
+					.getContextClassLoader().loadClass(this.activeScenario)
 					.newInstance();
 		} catch (Exception e) {
 			LOG.debug("Configured scenario '" + this.activeScenario
@@ -105,18 +99,36 @@ public class ScenarioBean implements ScenarioLocal {
 			throw new RuntimeException(e);
 		}
 
-		LOG.debug("preparing scenario");
+		long startTime = System.currentTimeMillis();
 		ExecutionEntity execution = this.executionService
-				.addExecution(this.activeScenario);
-		scenario.prepare(hostname, applicationKey, execution, this);
+				.getExecution(executionId);
 
-		return scenario;
+		try {
+			startTime = scenario.execute(execution);
+		} catch (Exception e) {
+			LOG.error("Failed to execute scenario", e);
+		} finally {
+			this.executionService.addStartTime(execution, startTime);
+		}
 	}
 
-	public List<byte[]> createGraphs(Scenario scenario, List<Long> scenarioStart) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public int prepare(String hostname) {
 
-		Map<String, DriverProfileEntity> profiles = scenario
-				.getDriverProfiles();
+		ExecutionEntity execution = this.executionService.addExecution(
+				this.activeScenario, hostname);
+
+		return execution.getId();
+	}
+
+	public List<byte[]> createGraphs(int executionId) {
+
+		ExecutionEntity execution = this.executionService
+				.getExecution(executionId);
+		Set<DriverProfileEntity> profiles = execution.getProfiles();
 
 		// Charts.
 		LinkedList<byte[]> charts = new LinkedList<byte[]>();
@@ -132,12 +144,19 @@ public class ScenarioBean implements ScenarioLocal {
 
 		// Collect data from drivers.
 		LOG.debug("BUILDING CHARTS FOR " + profiles.size() + " DRIVERS:");
-		for (Map.Entry<String, DriverProfileEntity> profile : profiles
-				.entrySet()) {
+		for (DriverProfileEntity profile : profiles) {
+
+			// Invalid / empty driver profiles.
+			if (profile.getDriverName() == null
+					|| profile.getProfileData().isEmpty()) {
+				LOG.warn("Invalid/empty driver profile: '"
+						+ profile.getDriverName() + "'!");
+				continue;
+			}
 
 			// Dataset for a Bar Chart of method timings per iteration.
 			Map<String, List<Long>> driverMethods = new HashMap<String, List<Long>>();
-			driversMethods.put(profile.getKey(), driverMethods);
+			driversMethods.put(profile.getDriverName(), driverMethods);
 			Map<String, XYSeries> timingSet = new HashMap<String, XYSeries>();
 			DefaultCategoryDataset errorsSet = new DefaultCategoryDataset();
 			XYSeries requestSet = new XYSeries("Request Time", true, false);
@@ -145,9 +164,9 @@ public class ScenarioBean implements ScenarioLocal {
 			XYSeries beforeMemorySet = new XYSeries("Memory Before", true,
 					false);
 
-			LOG.debug(" + driver: " + profile.getKey());
+			LOG.debug(" + driver: " + profile.getDriverName());
 			LOG.debug("   == DATA ==");
-			for (ProfileDataEntity data : profile.getValue().getProfileData()) {
+			for (ProfileDataEntity data : profile.getProfileData()) {
 
 				if (data.getMeasurements() == null)
 					continue;
@@ -196,8 +215,7 @@ public class ScenarioBean implements ScenarioLocal {
 			}
 
 			LOG.debug("   == ERRORS ==");
-			for (DriverExceptionEntity error : profile.getValue()
-					.getProfileError())
+			for (DriverExceptionEntity error : profile.getProfileError())
 				errorsSet.addValue((Number) 1, error.getMessage(), timeFormat
 						.format(error.getOccurredTime()));
 
@@ -266,7 +284,7 @@ public class ScenarioBean implements ScenarioLocal {
 			}
 
 			JFreeChart statisticsChart = new JFreeChart("Statistics for: "
-					+ profile.getKey(), timingAndMemoryPlot);
+					+ profile.getDriverName(), timingAndMemoryPlot);
 			charts.add(getImage(statisticsChart, 1000, 1000));
 
 			if (errorsSet.getRowCount() > 0) {
@@ -275,7 +293,7 @@ public class ScenarioBean implements ScenarioLocal {
 						new BarRenderer());
 
 				JFreeChart errorsChart = new JFreeChart("Errors for: "
-						+ profile.getKey(), errorsPlot);
+						+ profile.getDriverName(), errorsPlot);
 				charts.add(getImage(errorsChart, 1000, 150));
 			}
 		}
@@ -284,30 +302,36 @@ public class ScenarioBean implements ScenarioLocal {
 		List<DefaultTableXYDataset> scenarioSpeedSets = new ArrayList<DefaultTableXYDataset>();
 
 		// Calculate moving averages from the scenario starts for 3 periods.
-		for (int period : new int[] { 1000, 60000, 3600000 }) {
-			XYSeries scenarioSpeedSeries = new XYSeries("Period Of " + period
-					/ 1000 + "s", false, false);
-			DefaultTableXYDataset scenarioSpeedSet = new DefaultTableXYDataset();
-			scenarioSpeedSet.addSeries(scenarioSpeedSeries);
-			scenarioSpeedSets.add(scenarioSpeedSet);
+		SortedSet<StartTimeEntity> scenarioStart = execution.getStartTimes();
+		if (scenarioStart == null || scenarioStart.isEmpty())
+			LOG.warn("No scenario start times available.");
 
-			Long lastTime = scenarioStart.get(scenarioStart.size() - 1);
-			for (long time = scenarioStart.get(0); time < lastTime; time += period) {
+		else
+			for (int period : new int[] { 1000, 60000, 3600000 }) {
+				XYSeries scenarioSpeedSeries = new XYSeries("Period Of "
+						+ period / 1000 + "s", false, false);
+				DefaultTableXYDataset scenarioSpeedSet = new DefaultTableXYDataset();
+				scenarioSpeedSet.addSeries(scenarioSpeedSeries);
+				scenarioSpeedSets.add(scenarioSpeedSet);
 
-				// Count the amount of scenarios ${period} ms after ${time}.
-				double count = 0;
-				for (Long start : scenarioStart)
-					if (null != start && start >= time && start < time + period)
-						count++;
+				Long lastTime = scenarioStart.last().getTime();
+				for (long time = scenarioStart.first().getTime(); time < lastTime; time += period) {
 
-				scenarioSpeedSeries.add(time, 1000 * count / period);
+					// Count the amount of scenarios ${period} ms after ${time}.
+					double count = 0;
+					for (StartTimeEntity start : scenarioStart)
+						if (null != start && start.getTime() >= time
+								&& start.getTime() < time + period)
+							count++;
+
+					scenarioSpeedSeries.add(time, 1000 * count / period);
+				}
+
+				try {
+					scenarioSpeedSeries.add((double) lastTime, 1d / period);
+				} catch (SeriesException e) {
+				}
 			}
-
-			try {
-				scenarioSpeedSeries.add((double) lastTime, 1d / period);
-			} catch (SeriesException e) {
-			}
-		}
 
 		// Create Box-and-Whisker objects from Method Timing Data.
 		for (String driverTitle : driversMethods.keySet())

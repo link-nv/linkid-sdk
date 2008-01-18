@@ -49,7 +49,7 @@ public class DriverProfileServiceBean extends ProfilingServiceBean implements
 
 		DriverProfileEntity profile = new DriverProfileEntity(driverName,
 				execution);
-		persist(profile);
+		this.em.persist(profile);
 
 		return profile;
 	}
@@ -60,9 +60,9 @@ public class DriverProfileServiceBean extends ProfilingServiceBean implements
 	public DriverProfileEntity getProfile(String driverName,
 			ExecutionEntity execution) {
 
-		return (DriverProfileEntity) createNamedQuery(
-				"DriverProfileEntity.findByExecution").setParameter(
-				"driverName", driverName).setParameter("execution", execution)
+		return (DriverProfileEntity) this.em.createNamedQuery(
+				DriverProfileEntity.findByExecution).setParameter("driverName",
+				driverName).setParameter("execution", execution)
 				.getSingleResult();
 	}
 

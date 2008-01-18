@@ -210,15 +210,6 @@ public class ScenarioRemoting {
 	}
 
 	/**
-	 * @see Agent#setCharts(List)
-	 */
-	public void setCharts(Address agent, List<byte[]> charts) {
-
-		invokeFor(agent, "setCharts", new Object[] { charts },
-				new String[] { List.class.getName() });
-	}
-
-	/**
 	 * @see Agent#getError()
 	 */
 	public Exception getError(Address agent) {
@@ -228,12 +219,12 @@ public class ScenarioRemoting {
 	}
 
 	/**
-	 * @see Agent#setError(Exception)
+	 * @see Agent#setCharts(List)
 	 */
-	public void setError(Address agent, Exception error) {
+	public void setCharts(Address agent, List<byte[]> charts) {
 
-		invokeFor(agent, "setError", new Object[] { error },
-				new String[] { Exception.class.getName() });
+		invokeFor(agent, "setCharts", new Object[] { charts },
+				new String[] { List.class.getName() });
 	}
 
 	/**

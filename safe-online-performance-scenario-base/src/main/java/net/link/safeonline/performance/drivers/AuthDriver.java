@@ -75,9 +75,9 @@ public class AuthDriver extends ProfileDriver {
 
 	private String response;
 
-	public AuthDriver(String hostname, ExecutionEntity execution) {
+	public AuthDriver(ExecutionEntity execution) {
 
-		super(hostname, "Authentication Driver", execution);
+		super("Authentication Driver", execution);
 
 		Protocol.registerProtocol("https", new Protocol("https",
 				new MySSLSocketFactory(), 443));

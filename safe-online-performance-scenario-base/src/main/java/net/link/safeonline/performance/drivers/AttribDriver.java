@@ -21,9 +21,9 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
  */
 public class AttribDriver extends ProfileDriver {
 
-	public AttribDriver(String hostname, ExecutionEntity execution) {
+	public AttribDriver(ExecutionEntity execution) {
 
-		super(hostname, "User Attribute Driver", execution);
+		super("User Attribute Driver", execution);
 	}
 
 	/**

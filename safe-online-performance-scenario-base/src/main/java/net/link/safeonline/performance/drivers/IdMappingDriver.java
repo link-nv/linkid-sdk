@@ -21,9 +21,9 @@ import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
  */
 public class IdMappingDriver extends ProfileDriver {
 
-	public IdMappingDriver(String hostname, ExecutionEntity execution) {
+	public IdMappingDriver(ExecutionEntity execution) {
 
-		super(hostname, "User ID Mapping Driver", execution);
+		super("User ID Mapping Driver", execution);
 	}
 
 	/**

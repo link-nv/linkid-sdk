@@ -6,18 +6,21 @@
  */
 package net.link.safeonline.performance.scenario;
 
+import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.security.cert.Certificate;
+import java.util.Hashtable;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import net.link.safeonline.model.performance.PerformanceService;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
-import net.link.safeonline.performance.drivers.ProfileDriver;
-import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,9 +36,6 @@ public class BasicScenario implements Scenario {
 	private static final String username = "performance";
 	private static final String password = "performance";
 
-	private PrivateKeyEntry applicationKey;
-	private List<ProfileDriver> drivers;
-
 	private AttribDriver attribDriver;
 	private IdMappingDriver idDriver;
 	private AuthDriver authDriver;
@@ -43,48 +43,57 @@ public class BasicScenario implements Scenario {
 	/**
 	 * @{inheritDoc}
 	 */
-	public void execute() throws Exception {
+	public long execute(ExecutionEntity execution) throws Exception {
+
+		LOG.debug("retrieving performance keys..");
+		PrivateKeyEntry applicationKey = null;
+		try {
+			PerformanceService service = (PerformanceService) getInitialContext(
+					execution.getHostname()).lookup(PerformanceService.BINDING);
+			applicationKey = new KeyStore.PrivateKeyEntry(service
+					.getPrivateKey(), new Certificate[] { service
+					.getCertificate() });
+		} catch (NamingException e) {
+			LOG.error("OLAS couldn't provide performance keys.", e);
+		}
+		if (applicationKey == null)
+			applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+
+		LOG.debug("building drivers..");
+		this.authDriver = new AuthDriver(execution);
+		this.attribDriver = new AttribDriver(execution);
+		this.idDriver = new IdMappingDriver(execution);
+
+		long startTime = System.currentTimeMillis();
 
 		LOG.debug("getting id..");
-		String userId = this.authDriver.login(this.applicationKey,
-				applicationName, username, password);
+		String userId = this.authDriver.login(applicationKey, applicationName,
+				username, password);
 
 		LOG.debug("verify id..");
-		if (!userId.equals(this.idDriver.getUserId(this.applicationKey,
-				username)))
+		if (!userId.equals(this.idDriver.getUserId(applicationKey, username)))
 			throw new RuntimeException(
 					"UUID from login is not the same as UUID from idmapping.");
 
 		LOG.debug("getting attribs..");
-		this.attribDriver.getAttributes(this.applicationKey, userId);
+		this.attribDriver.getAttributes(applicationKey, userId);
+
+		return startTime;
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * Retrieve an {@link InitialContext} for the JNDI of the AS on the given
+	 * host.
 	 */
-	public void prepare(String hostname, PrivateKeyEntry performanceKey,
-			ExecutionEntity execution, ScenarioLocal bean) {
+	private static InitialContext getInitialContext(String hostname)
+			throws NamingException {
 
-		this.applicationKey = performanceKey;
+		Hashtable<String, String> environment = new Hashtable<String, String>();
 
-		LOG.debug("building drivers..");
-		this.drivers = new ArrayList<ProfileDriver>();
-		this.drivers.add(this.authDriver = new AuthDriver(hostname, execution));
-		this.drivers.add(this.attribDriver = new AttribDriver(hostname,
-				execution));
-		this.drivers.add(this.idDriver = new IdMappingDriver(hostname,
-				execution));
-	}
+		environment.put(Context.INITIAL_CONTEXT_FACTORY,
+				"org.jnp.interfaces.NamingContextFactory");
+		environment.put(Context.PROVIDER_URL, "jnp://" + hostname + ":1099");
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String, DriverProfileEntity> getDriverProfiles() {
-
-		Map<String, DriverProfileEntity> profiles = new HashMap<String, DriverProfileEntity>();
-		for (ProfileDriver driver : this.drivers)
-			profiles.put(driver.getTitle(), driver.getProfile());
-
-		return profiles;
+		return new InitialContext(environment);
 	}
 }

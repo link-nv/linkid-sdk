@@ -15,9 +15,13 @@
  */
 package net.link.safeonline.performance.service.bean;
 
+import java.util.Set;
+
 import javax.ejb.Stateless;
 
+import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.StartTimeEntity;
 import net.link.safeonline.performance.service.ExecutionService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -35,16 +39,46 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = ExecutionService.BINDING)
-public class ExecutionServiceBean extends ProfilingServiceBean implements ExecutionService {
+public class ExecutionServiceBean extends ProfilingServiceBean implements
+		ExecutionService {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public ExecutionEntity addExecution(String scenarioName) {
+	public ExecutionEntity addExecution(String scenarioName, String hostname) {
 
-		ExecutionEntity execution = new ExecutionEntity(scenarioName);
-		persist(execution);
+		ExecutionEntity execution = new ExecutionEntity(scenarioName, hostname);
+		this.em.persist(execution);
 
 		return execution;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void addStartTime(ExecutionEntity execution, long startTime) {
+
+		StartTimeEntity startTimeEntity = new StartTimeEntity(startTime);
+		this.em.persist(startTimeEntity);
+
+		execution.getStartTimes().add(startTimeEntity);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ExecutionEntity getExecution(int executionId) {
+
+		return (ExecutionEntity) this.em.createNamedQuery(
+				ExecutionEntity.findById).setParameter("executionId",
+				executionId).getSingleResult();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<DriverProfileEntity> getProfiles(int executionId) {
+
+		return getExecution(executionId).getProfiles();
 	}
 }

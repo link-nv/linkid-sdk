@@ -21,9 +21,9 @@ import org.w3c.dom.Element;
  */
 public class StsDriver extends ProfileDriver {
 
-	public StsDriver(String hostname, ExecutionEntity execution) {
+	public StsDriver(ExecutionEntity execution) {
 
-		super(hostname, "Security Token Service Driver", execution);
+		super("Security Token Service Driver", execution);
 	}
 
 	/**

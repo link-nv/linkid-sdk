@@ -14,14 +14,14 @@ import javax.ejb.Remote;
 
 /**
  * Interface for performance service.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 @Remote
 public interface PerformanceService {
 
-	public static final String JNDI_BINDING_NAME = "SafeOnline/PerformanceService";
+	public static final String BINDING = "SafeOnline/PerformanceServiceBean";
 
 	PrivateKey getPrivateKey();
 

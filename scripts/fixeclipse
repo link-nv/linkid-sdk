@@ -4,10 +4,10 @@ source "${0%/*}/bashlib"                                                      #
 cd "$(readlink -f "${0%/*}/..")"
 
 emit "Converting JAR dependencies on safe-online projects to source dependencies"
-sed -i '' '/M2_REPO.*\/safe-online\// { s,M2_REPO/net/lin-k/safe-online/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; }' */.classpath
+sed -i '/M2_REPO.*\/safe-online\// { s,M2_REPO/net/lin-k/safe-online/\([^/]*\)/[^"]*,/\1,; s/kind="var"/kind="src"/; }' */.classpath
 
 emit "Converting EJB2 eclipse projects into EJB3"
 for p in !(scripts)/.settings/org.eclipse.wst.common.component; do
     cp scripts/org.eclipse.wst.common.* "${p%/*}"
-    sed -i '' 's/safe-online-projectname/'"${p%%/*}"'/' "$p"
+    sed -i 's/safe-online-projectname/'"${p%%/*}"'/' "$p"
 done
