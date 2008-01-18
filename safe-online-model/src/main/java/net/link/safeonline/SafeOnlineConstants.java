@@ -63,6 +63,11 @@ public class SafeOnlineConstants {
 	public static final String STRONG_MOBILE_AUTH_DEVICE = "mobileStrong";
 
 	/**
+	 * The PKI trust domain name for the SafeOnline devices.
+	 */
+	public static final String SAFE_ONLINE_DEVICES_TRUST_DOMAIN = "devices";
+
+	/**
 	 * The login attribute name and login service provider domain
 	 */
 	public static final String LOGIN_ATTRIBTUE = "urn:net:lin-k:safe-online:attribute:login";

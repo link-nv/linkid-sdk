@@ -48,9 +48,14 @@ import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.DeviceClassDescriptionEntity;
+import net.link.safeonline.entity.DeviceClassEntity;
+import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
+import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -142,7 +147,9 @@ public class SafeOnlineTestContainer {
 			ApplicationIdentityAttributeEntity.class, TrustPointEntity.class,
 			AttributeTypeDescriptionEntity.class,
 			AttributeProviderEntity.class, DeviceEntity.class,
-			AllowedDeviceEntity.class,
+			AllowedDeviceEntity.class, DeviceClassEntity.class,
+			DeviceDescriptionEntity.class, DeviceClassDescriptionEntity.class,
+			DevicePropertyEntity.class, RegisteredDeviceEntity.class,
 			CompoundedAttributeTypeMemberEntity.class,
 			HelpdeskContextEntity.class, HelpdeskEventEntity.class,
 			HistoryEntity.class, SubjectIdentifierEntity.class,
