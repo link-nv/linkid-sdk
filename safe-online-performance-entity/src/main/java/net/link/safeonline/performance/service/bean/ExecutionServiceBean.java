@@ -17,7 +17,11 @@ package net.link.safeonline.performance.service.bean;
 
 import java.util.Set;
 
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
@@ -42,9 +46,13 @@ import org.jboss.annotation.ejb.LocalBinding;
 public class ExecutionServiceBean extends ProfilingServiceBean implements
 		ExecutionService {
 
+	@Resource
+	SessionContext ctx;
+
 	/**
 	 * {@inheritDoc}
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ExecutionEntity addExecution(String scenarioName, String hostname) {
 
 		ExecutionEntity execution = new ExecutionEntity(scenarioName, hostname);
@@ -56,6 +64,7 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void addStartTime(ExecutionEntity execution, long startTime) {
 
 		StartTimeEntity startTimeEntity = new StartTimeEntity(startTime);
@@ -67,6 +76,7 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ExecutionEntity getExecution(int executionId) {
 
 		return (ExecutionEntity) this.em.createNamedQuery(
@@ -79,6 +89,7 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	 */
 	public Set<DriverProfileEntity> getProfiles(int executionId) {
 
-		return getExecution(executionId).getProfiles();
+		return this.ctx.getBusinessObject(ExecutionService.class).getExecution(
+				executionId).getProfiles();
 	}
 }

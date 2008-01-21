@@ -39,11 +39,10 @@ public class StsDriver extends ProfileDriver {
 	 *             Any exception that occurred during the request will be
 	 *             wrapped into this one.
 	 */
-	public void getAttributes(PrivateKeyEntry applicationKey, Element token)
-			throws DriverException {
+	public void getAttributes(PrivateKeyEntry applicationKey, Element token) {
 
 		if (!(applicationKey.getCertificate() instanceof X509Certificate))
-			throw new DriverException(
+			throw new IllegalArgumentException(
 					"The certificate in the keystore needs to be of X509 format.");
 
 		SecurityTokenServiceClientImpl service = new SecurityTokenServiceClientImpl(
@@ -54,8 +53,8 @@ public class StsDriver extends ProfileDriver {
 			service.validate(token);
 		}
 
-		catch (Exception e) {
-			throw report(e);
+		catch (Exception error) {
+			report(error);
 		} finally {
 			report(service);
 		}

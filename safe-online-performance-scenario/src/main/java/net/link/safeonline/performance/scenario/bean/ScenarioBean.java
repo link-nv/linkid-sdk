@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -30,7 +31,10 @@ import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.StartTimeEntity;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.ScenarioLocal;
+import net.link.safeonline.performance.service.DriverExceptionService;
+import net.link.safeonline.performance.service.DriverProfileService;
 import net.link.safeonline.performance.service.ExecutionService;
+import net.link.safeonline.performance.service.ProfileDataService;
 import net.link.safeonline.util.performance.ProfileData;
 
 import org.apache.commons.logging.Log;
@@ -81,10 +85,18 @@ public class ScenarioBean implements ScenarioLocal {
 	@Resource(name = "activeScenario")
 	private String activeScenario;
 
+	@EJB
+	private DriverProfileService driverProfileService;
+
+	@EJB
+	private ProfileDataService profileDataService;
+
+	@EJB
+	private DriverExceptionService driverExceptionService;
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void execute(int executionId) throws Exception {
 
 		LOG.debug("building scenario: " + this.activeScenario);
@@ -99,17 +111,14 @@ public class ScenarioBean implements ScenarioLocal {
 			throw new RuntimeException(e);
 		}
 
-		long startTime = System.currentTimeMillis();
 		ExecutionEntity execution = this.executionService
 				.getExecution(executionId);
+		scenario.prepare(execution, this.driverProfileService,
+				this.profileDataService, this.driverExceptionService);
+		this.executionService.addStartTime(execution, System
+				.currentTimeMillis());
 
-		try {
-			startTime = scenario.execute(execution);
-		} catch (Exception e) {
-			LOG.error("Failed to execute scenario", e);
-		} finally {
-			this.executionService.addStartTime(execution, startTime);
-		}
+		scenario.run();
 	}
 
 	/**
@@ -302,11 +311,14 @@ public class ScenarioBean implements ScenarioLocal {
 		List<DefaultTableXYDataset> scenarioSpeedSets = new ArrayList<DefaultTableXYDataset>();
 
 		// Calculate moving averages from the scenario starts for 3 periods.
-		SortedSet<StartTimeEntity> scenarioStart = execution.getStartTimes();
-		if (scenarioStart == null || scenarioStart.isEmpty())
+		Set<StartTimeEntity> startTimes = execution.getStartTimes();
+		if (startTimes == null || startTimes.isEmpty())
 			LOG.warn("No scenario start times available.");
 
-		else
+		else {
+			SortedSet<StartTimeEntity> sortedStartTimes = new TreeSet<StartTimeEntity>(
+					startTimes);
+
 			for (int period : new int[] { 1000, 60000, 3600000 }) {
 				XYSeries scenarioSpeedSeries = new XYSeries("Period Of "
 						+ period / 1000 + "s", false, false);
@@ -314,12 +326,12 @@ public class ScenarioBean implements ScenarioLocal {
 				scenarioSpeedSet.addSeries(scenarioSpeedSeries);
 				scenarioSpeedSets.add(scenarioSpeedSet);
 
-				Long lastTime = scenarioStart.last().getTime();
-				for (long time = scenarioStart.first().getTime(); time < lastTime; time += period) {
+				Long lastTime = sortedStartTimes.last().getTime();
+				for (long time = sortedStartTimes.first().getTime(); time < lastTime; time += period) {
 
 					// Count the amount of scenarios ${period} ms after ${time}.
 					double count = 0;
-					for (StartTimeEntity start : scenarioStart)
+					for (StartTimeEntity start : sortedStartTimes)
 						if (null != start && start.getTime() >= time
 								&& start.getTime() < time + period)
 							count++;
@@ -332,6 +344,7 @@ public class ScenarioBean implements ScenarioLocal {
 				} catch (SeriesException e) {
 				}
 			}
+		}
 
 		// Create Box-and-Whisker objects from Method Timing Data.
 		for (String driverTitle : driversMethods.keySet())

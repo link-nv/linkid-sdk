@@ -19,7 +19,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 /**
  * <h2>{@link StartTimeEntity} - [in short] (TODO).</h2>
@@ -40,9 +39,6 @@ public class StartTimeEntity implements Comparable<StartTimeEntity> {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
-	@ManyToOne
-	@SuppressWarnings("unused")
-	private ExecutionEntity execution;
 	private Long time;
 
 	public StartTimeEntity() {

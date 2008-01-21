@@ -29,10 +29,9 @@ import org.apache.commons.logging.LogFactory;
  * collecting profile data, exceptions and execution speed for iterations.<br>
  * <br>
  * Implementing drivers need to declare methods specific to their functionality
- * in which they should call {@link #loadDriver()} before performing any driver
- * logic and {@link #report(MessageAccessor)} once they have completed their
- * task; or {@link #report(Exception)} if an error occurred during the work they
- * were doing. <br>
+ * in which they should call {@link #report(MessageAccessor)} once they have
+ * completed their task; or {@link #report(Exception)} if an error occurred
+ * during the work they were doing. <br>
  * <br>
  * The profiling data will be gathered by this class and can later be retrieved
  * by using {@link #getProfile()}.<br>
@@ -43,32 +42,12 @@ public abstract class ProfileDriver {
 
 	private static final Log LOG = LogFactory.getLog(ProfileDriver.class);
 
-	private ThreadLocal<DriverProfileService> driverProfileService = new ThreadLocal<DriverProfileService>() {
-		@Override
-		protected DriverProfileService initialValue() {
-
-			return getService(DriverProfileService.class,
-					DriverProfileService.BINDING);
-		}
-	};
-	private ThreadLocal<ProfileDataService> profileDataService = new ThreadLocal<ProfileDataService>() {
-
-		@Override
-		protected ProfileDataService initialValue() {
-
-			return getService(ProfileDataService.class,
-					ProfileDataService.BINDING);
-		}
-	};
-	private ThreadLocal<DriverExceptionService> driverExceptionService = new ThreadLocal<DriverExceptionService>() {
-
-		@Override
-		protected DriverExceptionService initialValue() {
-
-			return getService(DriverExceptionService.class,
-					DriverExceptionService.BINDING);
-		}
-	};
+	private DriverProfileService driverProfileService = getService(
+			DriverProfileService.class, DriverProfileService.BINDING);
+	private ProfileDataService profileDataService = getService(
+			ProfileDataService.class, ProfileDataService.BINDING);
+	private DriverExceptionService driverExceptionService = getService(
+			DriverExceptionService.class, DriverExceptionService.BINDING);
 
 	private String title;
 	private ExecutionEntity execution;
@@ -79,8 +58,17 @@ public abstract class ProfileDriver {
 		this.title = title;
 		this.execution = execution;
 
-		this.profile = this.driverProfileService.get().addProfile(this.title,
+		this.profile = this.driverProfileService.getProfile(this.title,
 				execution);
+	}
+
+	public void setServices(DriverProfileService driverProfileService,
+			ProfileDataService profileDataService,
+			DriverExceptionService driverExceptionService) {
+
+		this.driverProfileService = driverProfileService;
+		this.profileDataService = profileDataService;
+		this.driverExceptionService = driverExceptionService;
 	}
 
 	public String getHost() {
@@ -93,16 +81,6 @@ public abstract class ProfileDriver {
 		return this.title;
 	}
 
-	public DriverProfileEntity getProfile() {
-
-		try {
-		return this.driverProfileService.get().getProfile(this.title,
-				this.execution);
-		} catch (IllegalStateException e) {
-			return this.profile;
-		}
-	}
-
 	protected void report(MessageAccessor service) {
 
 		report(new ProfileData(service.getHeaders()));
@@ -110,11 +88,11 @@ public abstract class ProfileDriver {
 
 	protected void report(ProfileData profileData) {
 
-		this.driverProfileService.get().register(getProfile(),
-				this.profileDataService.get().addData(profileData));
+		this.driverProfileService.register(this.profile,
+				this.profileDataService.addData(profileData));
 	}
 
-	protected DriverException report(Exception error) {
+	protected void report(Exception error) {
 
 		LOG.warn(String.format("Failed driver request: %s", error));
 
@@ -125,10 +103,8 @@ public abstract class ProfileDriver {
 			driverException = new DriverException(error);
 
 		DriverExceptionEntity exceptionEntity = this.driverExceptionService
-				.get().addException(driverException);
-		this.driverProfileService.get().register(getProfile(), exceptionEntity);
-
-		return driverException;
+				.addException(driverException);
+		this.driverProfileService.register(this.profile, exceptionEntity);
 	}
 
 	<S> S getService(Class<S> service, String binding) {

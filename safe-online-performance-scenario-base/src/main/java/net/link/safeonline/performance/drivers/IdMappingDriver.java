@@ -40,11 +40,10 @@ public class IdMappingDriver extends ProfileDriver {
 	 *             Any exception that occurred during the request will be
 	 *             wrapped into this one.
 	 */
-	public String getUserId(PrivateKeyEntry applicationKey, String username)
-			throws DriverException {
+	public String getUserId(PrivateKeyEntry applicationKey, String username) {
 
 		if (!(applicationKey.getCertificate() instanceof X509Certificate))
-			throw new DriverException(
+			throw new IllegalArgumentException(
 					"The certificate in the keystore needs to be of X509 format.");
 
 		NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(
@@ -55,10 +54,12 @@ public class IdMappingDriver extends ProfileDriver {
 			return service.getUserId(username);
 		}
 
-		catch (Exception e) {
-			throw report(e);
+		catch (Exception error) {
+			report(error);
 		} finally {
 			report(service);
 		}
+
+		return null;
 	}
 }

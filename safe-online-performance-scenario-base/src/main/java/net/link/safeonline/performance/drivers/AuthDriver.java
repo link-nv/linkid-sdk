@@ -177,31 +177,23 @@ public class AuthDriver extends ProfileDriver {
 	 * @return The user's UUID.
 	 */
 	public String login(PrivateKeyEntry application, String applicationName,
-			String username, String password) throws DriverException {
+			String username, String password) {
 
-		LOG.debug("login");
 		this.iterationDatas = new ArrayList<ProfileData>();
 
 		try {
 			// Prepare authentication request token.
-			LOG.debug("prep");
 			PublicKey publicKey = application.getCertificate().getPublicKey();
-			LOG.debug("prep:1");
 			PrivateKey privateKey = application.getPrivateKey();
-			LOG.debug("prep:2");
 			KeyPair keyPair = new KeyPair(publicKey, privateKey);
-			LOG.debug("prep:3");
 			String uri = String.format("https://%s/olas-auth/entry", getHost());
-			LOG.debug("prep:4");
 			String authnRequest = AuthnRequestFactory.createAuthnRequest(
 					applicationName, keyPair, "http://www.lin-k.net/"
 							+ applicationName, uri, null, null);
-			LOG.debug("prep:5");
 			String encodedAuthnRequest = new String(Base64
 					.encodeBase64(authnRequest.getBytes()));
 
 			// Request the JSessionID cookie.
-			LOG.debug("cookie");
 			PostMethod postMethod = new PostMethod(uri);
 			postMethod.setRequestHeader("Cookie", "deflowered=true");
 			postMethod.addParameter(new NameValuePair("SAMLRequest",
@@ -289,7 +281,7 @@ public class AuthDriver extends ProfileDriver {
 		}
 
 		catch (Exception e) {
-			throw report(e);
+			report(e);
 		}
 
 		finally {
@@ -313,6 +305,8 @@ public class AuthDriver extends ProfileDriver {
 
 			report(iterationData);
 		}
+
+		return null;
 	}
 
 	private GetMethod redirectGetMethod(HttpMethod postMethod)

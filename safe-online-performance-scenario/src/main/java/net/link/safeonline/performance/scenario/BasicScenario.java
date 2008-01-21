@@ -21,6 +21,9 @@ import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.performance.service.DriverExceptionService;
+import net.link.safeonline.performance.service.DriverProfileService;
+import net.link.safeonline.performance.service.ProfileDataService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,49 +39,59 @@ public class BasicScenario implements Scenario {
 	private static final String username = "performance";
 	private static final String password = "performance";
 
+	private PrivateKeyEntry applicationKey;
 	private AttribDriver attribDriver;
 	private IdMappingDriver idDriver;
 	private AuthDriver authDriver;
 
-	/**
-	 * @{inheritDoc}
-	 */
-	public long execute(ExecutionEntity execution) throws Exception {
+	public void prepare(ExecutionEntity execution,
+			DriverProfileService driverProfileService,
+			ProfileDataService profileDataService,
+			DriverExceptionService driverExceptionService) {
 
 		LOG.debug("retrieving performance keys..");
-		PrivateKeyEntry applicationKey = null;
 		try {
 			PerformanceService service = (PerformanceService) getInitialContext(
 					execution.getHostname()).lookup(PerformanceService.BINDING);
-			applicationKey = new KeyStore.PrivateKeyEntry(service
+			this.applicationKey = new KeyStore.PrivateKeyEntry(service
 					.getPrivateKey(), new Certificate[] { service
 					.getCertificate() });
 		} catch (NamingException e) {
 			LOG.error("OLAS couldn't provide performance keys.", e);
 		}
-		if (applicationKey == null)
-			applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+		if (this.applicationKey == null)
+			this.applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
 
 		LOG.debug("building drivers..");
 		this.authDriver = new AuthDriver(execution);
 		this.attribDriver = new AttribDriver(execution);
 		this.idDriver = new IdMappingDriver(execution);
 
-		long startTime = System.currentTimeMillis();
+		this.authDriver.setServices(driverProfileService, profileDataService,
+				driverExceptionService);
+	}
+
+	/**
+	 * @{inheritDoc}
+	 */
+	public void run() {
+
+		if (this.applicationKey == null)
+			throw new IllegalStateException(
+					"Performance keys not set up. Perhaps you didn't call prepare?");
 
 		LOG.debug("getting id..");
-		String userId = this.authDriver.login(applicationKey, applicationName,
-				username, password);
+		String loginUserId = this.authDriver.login(this.applicationKey,
+				applicationName, username, password);
+		String mappedUserId = this.idDriver.getUserId(this.applicationKey,
+				username);
 
 		LOG.debug("verify id..");
-		if (!userId.equals(this.idDriver.getUserId(applicationKey, username)))
-			throw new RuntimeException(
-					"UUID from login is not the same as UUID from idmapping.");
+		if (loginUserId == null || !loginUserId.equals(mappedUserId))
+			LOG.warn("UUID from login is not the same as UUID from idmapping.");
 
 		LOG.debug("getting attribs..");
-		this.attribDriver.getAttributes(applicationKey, userId);
-
-		return startTime;
+		this.attribDriver.getAttributes(this.applicationKey, loginUserId);
 	}
 
 	/**

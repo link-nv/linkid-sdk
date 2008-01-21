@@ -38,7 +38,7 @@ public abstract class ProfilingServiceBean {
 	static final Log LOG = LogFactory.getLog(ProfilingServiceBean.class);
 
 	@PersistenceContext(unitName = "AgentEntityManager")
-	private EntityManager em;
+	EntityManager em;
 
 	void persist(Object object) {
 

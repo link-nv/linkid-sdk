@@ -16,6 +16,8 @@
 package net.link.safeonline.performance.service.bean;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.performance.DriverException;
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
@@ -42,6 +44,7 @@ public class DriverExceptionServiceBean extends ProfilingServiceBean implements 
 	/**
 	 * {@inheritDoc}
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public DriverExceptionEntity addException(DriverException exception) {
 
 		// Dig for the root cause.

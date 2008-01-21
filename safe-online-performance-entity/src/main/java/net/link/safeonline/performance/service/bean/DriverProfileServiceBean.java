@@ -15,7 +15,12 @@
  */
 package net.link.safeonline.performance.service.bean;
 
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.persistence.NoResultException;
 
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
@@ -41,9 +46,13 @@ import org.jboss.annotation.ejb.LocalBinding;
 public class DriverProfileServiceBean extends ProfilingServiceBean implements
 		DriverProfileService {
 
+	@Resource
+	SessionContext ctx;
+
 	/**
 	 * {@inheritDoc}
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public DriverProfileEntity addProfile(String driverName,
 			ExecutionEntity execution) {
 
@@ -57,13 +66,24 @@ public class DriverProfileServiceBean extends ProfilingServiceBean implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public DriverProfileEntity getProfile(String driverName,
 			ExecutionEntity execution) {
 
-		return (DriverProfileEntity) this.em.createNamedQuery(
-				DriverProfileEntity.findByExecution).setParameter("driverName",
-				driverName).setParameter("execution", execution)
-				.getSingleResult();
+		try {
+			LOG.debug("Looking for driver profile for '" + driverName
+					+ "' in '" + execution.getScenarioName() + ":"
+					+ execution.getHostname() + ":" + execution.getId() + "'");
+			return (DriverProfileEntity) this.em.createNamedQuery(
+					DriverProfileEntity.findByExecution).setParameter(
+					"driverName", driverName).setParameter("execution",
+					execution).getSingleResult();
+		} catch (NoResultException e) {
+			LOG.debug(" -> not found; creating.");
+			return this.ctx.getBusinessObject(DriverProfileService.class)
+					.addProfile(driverName, execution);
+		}
+
 	}
 
 	/**

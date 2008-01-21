@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,12 +53,14 @@ public class DriverProfileEntity {
 	private String driverName;
 
 	@ManyToOne
+	@SuppressWarnings("unused")
 	private ExecutionEntity execution;
 
-	@OneToMany(fetch = FetchType.EAGER)
+
+	@OneToMany()
 	private Set<ProfileDataEntity> profileData;
 
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany()
 	private Set<DriverExceptionEntity> profileError;
 
 	public DriverProfileEntity() {
@@ -83,14 +84,6 @@ public class DriverProfileEntity {
 	public String getDriverName() {
 
 		return this.driverName;
-	}
-
-	/**
-	 * @return The execution of the driver that this profile applies to.
-	 */
-	public ExecutionEntity getExecution() {
-
-		return this.execution;
 	}
 
 	/**

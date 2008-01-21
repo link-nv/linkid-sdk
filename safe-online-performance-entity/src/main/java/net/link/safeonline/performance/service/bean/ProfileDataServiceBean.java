@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
@@ -47,6 +49,7 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ProfileDataEntity addData(ProfileData data) {
 
 		Set<MeasurementEntity> measurements = new HashSet<MeasurementEntity>();

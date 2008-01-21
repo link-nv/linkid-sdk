@@ -42,10 +42,10 @@ public class AttribDriver extends ProfileDriver {
 	 *             wrapped into this one.
 	 */
 	public Map<String, Object> getAttributes(PrivateKeyEntry applicationKey,
-			String userId) throws DriverException {
+			String userId) {
 
 		if (!(applicationKey.getCertificate() instanceof X509Certificate))
-			throw new DriverException(
+			throw new IllegalArgumentException(
 					"The certificate in the keystore needs to be of X509 format.");
 
 		AttributeClientImpl service = new AttributeClientImpl(getHost(),
@@ -56,10 +56,12 @@ public class AttribDriver extends ProfileDriver {
 			return service.getAttributeValues(userId);
 		}
 
-		catch (Exception e) {
-			throw report(e);
+		catch (Exception error) {
+			report(error);
 		} finally {
 			report(service);
 		}
+
+		return null;
 	}
 }

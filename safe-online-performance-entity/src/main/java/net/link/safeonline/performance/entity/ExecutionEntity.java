@@ -16,7 +16,6 @@
 package net.link.safeonline.performance.entity;
 
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.Entity;
@@ -54,7 +53,7 @@ public class ExecutionEntity {
 	@OneToMany(mappedBy = "execution")
 	private Set<DriverProfileEntity> profiles;
 
-	@OneToMany(mappedBy = "execution")
+	@OneToMany()
 	private Set<StartTimeEntity> startTimes;
 
 	public ExecutionEntity() {
@@ -107,8 +106,8 @@ public class ExecutionEntity {
 	 * @return A set of times at which scenarios were started for this
 	 *         execution.
 	 */
-	public SortedSet<StartTimeEntity> getStartTimes() {
+	public Set<StartTimeEntity> getStartTimes() {
 
-		return new TreeSet<StartTimeEntity>(this.startTimes);
+		return this.startTimes;
 	}
 }

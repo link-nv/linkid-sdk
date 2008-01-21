@@ -44,7 +44,7 @@ public class ProfileDataEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
-	@OneToMany
+	@OneToMany()
 	private Set<MeasurementEntity> measurements;
 
 	public ProfileDataEntity() {
