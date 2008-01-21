@@ -25,6 +25,7 @@ import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
+import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
@@ -120,19 +121,19 @@ public class SafeOnlineTestContainer {
 			CachedOcspResponseDAOBean.class,
 			AttributeTypeDescriptionDecoratorBean.class,
 			AttributeProviderDAOBean.class, ApplicationsBean.class,
-			DeviceDAOBean.class, AllowedDeviceDAOBean.class,
-			HelpdeskContextDAOBean.class, HelpdeskEventDAOBean.class,
-			CredentialManagerBean.class, PkiProviderManagerBean.class,
-			PkiValidatorBean.class, CachedOcspValidatorBean.class,
-			OcspValidatorBean.class, SubjectIdentifierDAOBean.class,
-			UserRegistrationManagerBean.class, ResourceAuditLoggerBean.class,
-			AuditAuditDAOBean.class, AuditContextDAOBean.class,
-			AccessAuditDAOBean.class, SecurityAuditDAOBean.class,
-			ResourceAuditDAOBean.class, PasswordManagerBean.class,
-			SubjectServiceBean.class, IdGeneratorBean.class,
-			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class,
-			PasswordDeviceServiceBean.class, BeIdDeviceServiceBean.class,
-			WeakMobileDeviceServiceBean.class,
+			DeviceDAOBean.class, DeviceClassDAOBean.class,
+			AllowedDeviceDAOBean.class, HelpdeskContextDAOBean.class,
+			HelpdeskEventDAOBean.class, CredentialManagerBean.class,
+			PkiProviderManagerBean.class, PkiValidatorBean.class,
+			CachedOcspValidatorBean.class, OcspValidatorBean.class,
+			SubjectIdentifierDAOBean.class, UserRegistrationManagerBean.class,
+			ResourceAuditLoggerBean.class, AuditAuditDAOBean.class,
+			AuditContextDAOBean.class, AccessAuditDAOBean.class,
+			SecurityAuditDAOBean.class, ResourceAuditDAOBean.class,
+			PasswordManagerBean.class, SubjectServiceBean.class,
+			IdGeneratorBean.class, UsageAgreementDAOBean.class,
+			UsageAgreementManagerBean.class, PasswordDeviceServiceBean.class,
+			BeIdDeviceServiceBean.class, WeakMobileDeviceServiceBean.class,
 			StrongMobileDeviceServiceBean.class, MobileManagerBean.class,
 			SecurityAuditLoggerBean.class, DevicePolicyServiceBean.class,
 			DevicesBean.class, AccountServiceBean.class };
