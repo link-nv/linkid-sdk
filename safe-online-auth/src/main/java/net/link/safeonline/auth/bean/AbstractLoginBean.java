@@ -28,9 +28,9 @@ import org.jboss.seam.log.Log;
 /**
  * Abstract login bean. Encapsulates the common code for a Seam backing bean to
  * login a given user.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AbstractLoginBean {
 
@@ -59,7 +59,7 @@ public class AbstractLoginBean {
 
 	/**
 	 * Login the given user.
-	 *
+	 * 
 	 * @param username
 	 * @param inputAuthenticationDevice
 	 */
@@ -75,14 +75,14 @@ public class AbstractLoginBean {
 	/**
 	 * Re-login the current user. This will trigger the device restriction check
 	 * again.
-	 *
+	 * 
 	 * @param inputAuthenticationDevice
 	 */
 	protected void relogin(AuthenticationDevice inputAuthenticationDevice) {
 		this.authenticationDevice = inputAuthenticationDevice;
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		String redirectUrl = "./login";
+		String redirectUrl = "../login";
 		this.log.debug("redirecting to: " + redirectUrl);
 		try {
 			externalContext.redirect(redirectUrl);

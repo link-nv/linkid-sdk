@@ -21,6 +21,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.beid.keystore.BeidKeyStoreUtils;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
@@ -80,9 +81,14 @@ public class BeIdStartableBean extends AbstractInitBean {
 				nrnAttributeType, "nl",
 				"Identificatienummer van het Rijksregister", null));
 
+		X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils
+				.getPrivateKeyEntry().getCertificate();
+		this.trustedCertificates.put(certificate,
+				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+
 		this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID,
 				SafeOnlineConstants.PKI_DEVICE_CLASS, "beid.seam",
-				"register-beid.seam", null, null));
+				"register-beid.seam", null, certificate));
 	}
 
 	@Override

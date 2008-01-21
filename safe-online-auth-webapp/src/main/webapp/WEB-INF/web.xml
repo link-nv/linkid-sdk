@@ -155,7 +155,7 @@
 
 	<servlet-mapping>
 		<servlet-name>AuthenticationServlet</servlet-name>
-		<url-pattern>/authentication</url-pattern>
+		<url-pattern>/beid/authentication</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -235,7 +235,7 @@
 
 	<servlet-mapping>
 		<servlet-name>RegistrationServlet</servlet-name>
-		<url-pattern>/registration</url-pattern>
+		<url-pattern>/beid/registration</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -247,7 +247,7 @@
 
 	<servlet-mapping>
 		<servlet-name>IdentityServlet</servlet-name>
-		<url-pattern>/identity</url-pattern>
+		<url-pattern>/beid/identity</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

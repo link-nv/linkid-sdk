@@ -84,10 +84,14 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 						null, null, null, false, false, helpdeskCert, false,
 						IdScopeType.USER));
 
-		this.trustedCertificates.add(userCert);
-		this.trustedCertificates.add(operCert);
-		this.trustedCertificates.add(ownerCert);
-		this.trustedCertificates.add(helpdeskCert);
+		this.trustedCertificates.put(userCert,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+		this.trustedCertificates.put(operCert,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+		this.trustedCertificates.put(ownerCert,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+		this.trustedCertificates.put(helpdeskCert,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "admin",

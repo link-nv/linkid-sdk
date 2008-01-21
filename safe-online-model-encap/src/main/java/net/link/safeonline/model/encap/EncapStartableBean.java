@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.encap;
 
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.encap.keystore.EncapKeyStoreUtils;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
@@ -46,9 +48,15 @@ public class EncapStartableBean extends AbstractInitBean {
 
 		List<AttributeTypeEntity> encapDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
 		encapDeviceAttributeTypeList.add(encapAttributeType);
+
+		X509Certificate certificate = (X509Certificate) EncapKeyStoreUtils
+				.getPrivateKeyEntry().getCertificate();
+
 		this.devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID,
 				SafeOnlineConstants.MOBILE_DEVICE_CLASS, "mobile.seam",
-				"register-mobile.seam", null, null));
+				"register-mobile.seam", null, certificate));
+		this.trustedCertificates.put(certificate,
+				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 	}
 
 	@Override

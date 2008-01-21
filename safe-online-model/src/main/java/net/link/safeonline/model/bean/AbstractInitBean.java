@@ -253,7 +253,7 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected List<UsageAgreement> usageAgreements;
 
-	protected List<X509Certificate> trustedCertificates;
+	protected Map<X509Certificate, String> trustedCertificates;
 
 	protected List<AttributeProviderEntity> attributeProviders;
 
@@ -282,7 +282,7 @@ public abstract class AbstractInitBean implements Startable {
 		this.identities = new LinkedList<Identity>();
 		this.usageAgreements = new LinkedList<UsageAgreement>();
 		this.attributeTypeDescriptions = new LinkedList<AttributeTypeDescriptionEntity>();
-		this.trustedCertificates = new LinkedList<X509Certificate>();
+		this.trustedCertificates = new HashMap<X509Certificate, String>();
 		this.attributeProviders = new LinkedList<AttributeProviderEntity>();
 		this.attributes = new LinkedList<AttributeEntity>();
 		this.deviceClasses = new LinkedList<DeviceClass>();
@@ -383,8 +383,10 @@ public abstract class AbstractInitBean implements Startable {
 	private PasswordManager passwordManager;
 
 	private void initApplicationTrustPoints() {
-		for (X509Certificate certificate : this.trustedCertificates)
-			addCertificateAsTrustPoint(certificate);
+		for (Map.Entry<X509Certificate, String> certificateEntry : this.trustedCertificates
+				.entrySet())
+			addCertificateAsTrustPoint(certificateEntry.getValue(),
+					certificateEntry.getKey());
 	}
 
 	private void initAttributes() {
@@ -444,16 +446,17 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
-	private void addCertificateAsTrustPoint(X509Certificate certificate) {
-		TrustDomainEntity applicationTrustDomain = this.trustDomainDAO
-				.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-		if (null == applicationTrustDomain) {
-			this.LOG.fatal("application trust domain not found");
+	private void addCertificateAsTrustPoint(String trustDomainName,
+			X509Certificate certificate) {
+		TrustDomainEntity trustDomain = this.trustDomainDAO
+				.findTrustDomain(trustDomainName);
+		if (null == trustDomain) {
+			this.LOG.fatal("trust domain not found: " + trustDomainName);
 			return;
 		}
 
 		TrustPointEntity demoTrustPoint = this.trustPointDAO.findTrustPoint(
-				applicationTrustDomain, certificate);
+				trustDomain, certificate);
 		if (null != demoTrustPoint) {
 			try {
 				/*
@@ -466,7 +469,7 @@ public abstract class AbstractInitBean implements Startable {
 			return;
 		}
 
-		this.trustPointDAO.addTrustPoint(applicationTrustDomain, certificate);
+		this.trustPointDAO.addTrustPoint(trustDomain, certificate);
 	}
 
 	private void initTrustDomains() {

@@ -72,7 +72,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				"owner", null, null, getLogo(), null, true, true,
 				demoCertificate, false, IdScopeType.USER));
 
-		this.trustedCertificates.add(demoCertificate);
+		this.trustedCertificates.put(demoCertificate,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 
 		configTicketDemo();
 
@@ -99,7 +100,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		/*
 		 * Register the application and the application certificate.
 		 */
-		this.trustedCertificates.add(demoMandateCertificate);
+		this.trustedCertificates.put(demoMandateCertificate,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 		this.registeredApplications.add(new Application(
 				DEMO_MANDATE_APPLICATION_NAME, "owner", null, null, getLogo(),
 				null, true, true, demoMandateCertificate, true,
@@ -198,7 +200,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		X509Certificate demoTicketCertificate = (X509Certificate) demoTicketPrivateKeyEntry
 				.getCertificate();
 
-		this.trustedCertificates.add(demoTicketCertificate);
+		this.trustedCertificates.put(demoTicketCertificate,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 		this.registeredApplications.add(new Application(
 				DEMO_TICKET_APPLICATION_NAME, "owner", null, null, getLogo(),
 				null, true, true, demoTicketCertificate, false,
@@ -252,7 +255,8 @@ public class DemoStartableBean extends AbstractInitBean {
 		X509Certificate demoPaymentCertificate = (X509Certificate) demoPaymentPrivateKeyEntry
 				.getCertificate();
 
-		this.trustedCertificates.add(demoPaymentCertificate);
+		this.trustedCertificates.put(demoPaymentCertificate,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 
 		this.registeredApplications.add(new Application(
 				DEMO_PAYMENT_APPLICATION_NAME, "owner", null, null, getLogo(),
@@ -352,7 +356,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				.getPrivateKeyEntry();
 		X509Certificate demoPrescriptionCertificate = (X509Certificate) demoPrescriptionPrivateKeyEntry
 				.getCertificate();
-		this.trustedCertificates.add(demoPrescriptionCertificate);
+		this.trustedCertificates.put(demoPrescriptionCertificate,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 		this.registeredApplications.add(new Application(
 				DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, null,
 				getLogo(), null, true, true, demoPrescriptionCertificate, true,
@@ -459,7 +464,8 @@ public class DemoStartableBean extends AbstractInitBean {
 				DEMO_LAWYER_APPLICATION_NAME, "owner", null, null, getLogo(),
 				null, true, true, demoLawyerCertificate, true,
 				IdScopeType.SUBSCRIPTION));
-		this.trustedCertificates.add(demoLawyerCertificate);
+		this.trustedCertificates.put(demoLawyerCertificate,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 
 		this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT,
 				"baradmin", DEMO_LAWYER_APPLICATION_NAME));
