@@ -20,6 +20,7 @@ import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
+import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
@@ -86,10 +87,10 @@ public class DemoStartableBeanTest {
 			SchedulingDAOBean.class, TaskHistoryDAOBean.class,
 			ApplicationIdentityManagerBean.class, TrustPointDAOBean.class,
 			AttributeProviderDAOBean.class, DeviceDAOBean.class,
-			AllowedDeviceDAOBean.class, PasswordManagerBean.class,
-			SubjectServiceBean.class, SubjectIdentifierDAOBean.class,
-			IdGeneratorBean.class, UsageAgreementDAOBean.class,
-			UsageAgreementManagerBean.class };
+			DeviceClassDAOBean.class, AllowedDeviceDAOBean.class,
+			PasswordManagerBean.class, SubjectServiceBean.class,
+			SubjectIdentifierDAOBean.class, IdGeneratorBean.class,
+			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class };
 
 	@Before
 	public void setUp() throws Exception {
