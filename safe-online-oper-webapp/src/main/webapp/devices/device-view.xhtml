@@ -24,23 +24,34 @@
 		<rich:tabPanel id="tabs" switchType="client">
 
 			<rich:tab id="generic-tab" label="#{msgs.generic}">
-				<h:panelGrid columns="2">
-					<h:outputLabel for="name" value="#{msgs.name}" />
-					<h:outputText id="name" value="#{selectedDevice.name}" />
-
-					<h:outputLabel for="class" value="#{msgs.deviceClass}" />
-					<h:outputText id="class" value="#{selectedDevice.deviceClass.name}" />
-
-					<h:outputLabel for="authUrl" value="#{msgs.authenticationUrl}" />
-					<h:outputText id="authUrl"
-						value="#{selectedDevice.authenticationURL}" />
-
-					<h:outputLabel for="regUrl" value="#{msgs.registrationUrl}" />
-					<h:outputText id="regUrl" value="#{selectedDevice.registrationURL}" />
-
-					<h:outputLabel for="removeUrl" value="#{msgs.removalUrl}" />
-					<h:outputText id="removeUrl" value="#{selectedDevice.removalURL}" />
-				</h:panelGrid>
+				<table class="name_value">
+					<tr>
+						<th><h:outputText for="name" value="#{msgs.name}" /></th>
+						<td><h:outputText id="name" value="#{selectedDevice.name}" /></td>
+					</tr>
+					<tr>
+						<th><h:outputText for="class" value="#{msgs.deviceClass}" /></th>
+						<td><h:outputText id="class"
+							value="#{selectedDevice.deviceClass.name}" /></td>
+					</tr>
+					<tr>
+						<th><h:outputText for="authUrl"
+							value="#{msgs.authenticationUrl}" /></th>
+						<td><h:outputText id="authUrl"
+							value="#{selectedDevice.authenticationURL}" /></td>
+					</tr>
+					<tr>
+						<th><h:outputText for="regUrl"
+							value="#{msgs.registrationUrl}" /></th>
+						<td><h:outputText id="regUrl"
+							value="#{selectedDevice.registrationURL}" /></td>
+					</tr>
+					<tr>
+						<th><h:outputText for="removeUrl" value="#{msgs.removalUrl}" /></th>
+						<td><h:outputText id="removeUrl"
+							value="#{selectedDevice.removalURL}" /></td>
+					</tr>
+				</table>
 			</rich:tab>
 
 			<rich:tab id="description-tab" label="#{msgs.description}">

@@ -23,28 +23,20 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<table>
-				<tr>
-					<th>#{msgs.device}:</th>
-					<td>#{selectedDeviceClass.name}</td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="language" value="#{msgs.language}" /></th>
-					<td><s:decorate>
-						<h:inputText id="language" value="#{deviceClassDesc.language}"
-							required="true" styleClass="label" />
-					</s:decorate>*<h:message for="language" styleClass="error" /></td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="description"
-						value="#{msgs.description}" /></th>
-					<td><h:inputText id="description"
-						value="#{deviceClassDesc.description}" styleClass="label" /></td>
-				</tr>
-			</table>
+			<h2>#{msgs.device}: #{selectedDeviceClass.name}</h2>
+			<h:outputLabel for="language" value="#{msgs.language}" />
+			<s:decorate>
+				<h:inputText id="language" value="#{deviceClassDesc.language}"
+					required="true" styleClass="label" />
+			</s:decorate>*<h:message for="language" styleClass="error" />
+			<h:outputLabel for="description" value="#{msgs.description}" />
+			<h:inputText id="description" value="#{deviceClassDesc.description}"
+				styleClass="label" />
+
 
 			<h:messages styleClass="error" globalOnly="true" />
 
+			<h:outputLabel for="add" value="" />
 			<h:commandButton value="#{msgs.addaction}" id="add"
 				action="#{deviceClassDesc.add}" styleClass="submit" />
 			<h:commandButton action="cancel" id="cancel"

@@ -23,27 +23,22 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<table>
-				<tr>
-					<th>#{msgs.device}:</th>
-					<td>#{selectedDevice.name}</td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="name" value="#{msgs.name}" /></th>
-					<td><s:decorate>
-						<h:inputText id="name" value="#{deviceProp.name}" required="true"
-							styleClass="label" />
-					</s:decorate>*<h:message for="name" styleClass="error" /></td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="value" value="#{msgs.value}" /></th>
-					<td><h:inputText id="value" value="#{deviceProp.value}"
-						styleClass="label" /></td>
-				</tr>
-			</table>
+			<h2>#{msgs.device}: #{selectedDevice.name}</h2>
+
+			<h:outputLabel for="name" value="#{msgs.name}" />
+			<s:decorate>
+				<h:inputText id="name" value="#{deviceProp.name}" required="true"
+					styleClass="label" />
+			</s:decorate>*<h:message for="name" styleClass="error" />
+
+			<h:outputLabel for="value" value="#{msgs.value}" />
+			<h:inputText id="value" value="#{deviceProp.value}"
+				styleClass="label" />
+
 
 			<h:messages styleClass="error" globalOnly="true" />
 
+			<h:outputLabel for="add" value="" />
 			<h:commandButton value="#{msgs.addaction}" id="add"
 				action="#{deviceProp.add}" styleClass="submit" />
 			<h:commandButton action="cancel" id="cancel"

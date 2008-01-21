@@ -25,27 +25,18 @@
 				<s:span styleClass="error" />
 			</f:facet>
 
-			<table>
-				<tr>
-					<th>#{msgs.device}</th>
-					<td>#{selectedDevice.name}</td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="language" value="#{msgs.language}" /></th>
-					<td><h:inputText id="language"
-						value="#{selectedDeviceDescription.language}" styleClass="label" /></td>
-				</tr>
-				<tr>
-					<th><h:outputLabel for="description"
-						value="#{msgs.description}" /></th>
-					<td><h:inputText id="description"
-						value="#{selectedDeviceDescription.description}"
-						styleClass="label" /></td>
-				</tr>
-			</table>
+			<h2>#{msgs.device}: #{selectedDevice.name}</h2>
+			<h:outputLabel for="language" value="#{msgs.language}" />
+			<h:inputText id="language"
+				value="#{selectedDeviceDescription.language}" styleClass="label" />
+			<h:outputLabel for="description" value="#{msgs.description}" />
+			<h:inputText id="description"
+				value="#{selectedDeviceDescription.description}" styleClass="label" />
+
 
 			<h:messages styleClass="error" globalOnly="true" />
 
+			<h:outputLabel for="save" value="" />
 			<h:commandButton value="#{msgs.saveaction}" id="save"
 				action="#{deviceDesc.save}" styleClass="submit" />
 			<h:commandButton action="#{deviceDesc.remove}" id="remove"

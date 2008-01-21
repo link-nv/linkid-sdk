@@ -414,7 +414,7 @@ input.radio {
 	border-bottom: 1px solid #7D8A2E;
 }
 
-select.label {
+select.label,select.label:hover {
 	border: none;
 }
 
@@ -491,7 +491,7 @@ table.listingTable thead tr th,table.styled thead tr td {
 	background: #f5f5f5;
 }
 */
-div.dr-dscr table        , div.dr-dscr table tbody tr td        , div.dr-dscr table tbody tr:hover
+div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr table tbody tr:hover
 	{
 	border: none;
 	background: none;
@@ -500,13 +500,13 @@ div.dr-dscr table        , div.dr-dscr table tbody tr td        , div.dr-dscr ta
 	text-align: center;
 }
 
-.rich-table        , .rich-table-caption        , .rich-table-header      
-	 , .rich-table-header-continue	       , .rich-table-subheader        ,
-	.rich-table-footer        , .rich-table-footer-continue        ,
-	.rich-table-subfooter        , .rich-table-headercell        ,
-	.rich-table-subheadercell        , .rich-table-cell        ,
+.rich-table         , .rich-table-caption         , .rich-table-header      
+	  , .rich-table-header-continue	        , .rich-table-subheader        
+	, .rich-table-footer         , .rich-table-footer-continue         ,
+	.rich-table-subfooter         , .rich-table-headercell         ,
+	.rich-table-subheadercell         , .rich-table-cell         ,
 	.rich-table-row   
-	    , .rich-table-firstrow        , .rich-table-footercell        ,
+	     , .rich-table-firstrow         , .rich-table-footercell         ,
 	.rich-table-subfootercell {
 	border-style: none;
 	font-family: inherit;
@@ -516,8 +516,8 @@ div.dr-dscr table        , div.dr-dscr table tbody tr td        , div.dr-dscr ta
 }
 
 .rich-datascr-button   
-	   , .rich-datascr-ctrls-separator       , .rich-datascr-act       ,
-	.rich-datascr-inact	      , .rich-datascr-button-dsbld {
+	    , .rich-datascr-ctrls-separator        , .rich-datascr-act        ,
+	.rich-datascr-inact	       , .rich-datascr-button-dsbld {
 	font-family: inherit;
 	font-size: inherit;
 	background-color: inherit;
@@ -536,8 +536,8 @@ div.dr-dscr table        , div.dr-dscr table tbody tr td        , div.dr-dscr ta
 	width: 100%;
 }
 
-.rich-panel	    , .rich-tabpanel-content     , .rich-tabpanel     ,
-	.rich-panel-header     , .rich-panel-body {
+.rich-panel	     , .rich-tabpanel-content      , .rich-tabpanel      ,
+	.rich-panel-header      , .rich-panel-body {
 	width: 550px;
 	overflow: auto;
 	font-family: inherit;

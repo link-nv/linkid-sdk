@@ -37,16 +37,11 @@
 				</h:column>
 			</h:dataTable>
 
-			<table>
-				<tr>
-					<td><h:outputLabel for="add-descr"
-						value="#{msgs.addDeviceClassDescription}" /></td>
-					<td><h:commandButton action="add-descr" id="add-descr"
-						value="#{msgs.addaction}" styleClass="submit" /></td>
-					<td><h:commandButton value="#{msgs.backaction}" id="back"
-						action="back" styleClass="submit" /></td>
-				</tr>
-			</table>
+			<h:commandButton action="add-descr" id="add-descr"
+				value="#{msgs.addaction}" styleClass="submit" />
+			<h:commandButton value="#{msgs.backaction}" id="back" action="back"
+				styleClass="submit" />
+
 		</h:form>
 
 	</ui:define>

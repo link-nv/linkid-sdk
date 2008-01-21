@@ -30,53 +30,39 @@
 			<rich:tabPanel id="device-tab-panel" switchType="client">
 
 				<rich:tab id="generic-tab" label="#{msgs.generic}">
-					<table>
-						<tr>
-							<td><h:outputLabel for="name" value="#{msgs.name}" /></td>
-							<td><s:decorate>
-								<h:inputText id="name" value="#{operDevice.name}"
-									required="true" styleClass="label" />
-							</s:decorate>* <h:message for="name" styleClass="error" /></td>
-						</tr>
-						<tr>
-							<td><h:outputLabel for="deviceClass"
-								value="#{msgs.deviceClass}" /></td>
-							<td><s:decorate>
-								<h:selectOneMenu id="deviceClass"
-									value="#{operDevice.deviceClass}" required="true">
-									<f:selectItems value="#{deviceClasses}" />
-								</h:selectOneMenu>
-							</s:decorate>* <h:message for="deviceClass" styleClass="error" /></td>
-						</tr>
-						<tr>
-							<td><h:outputLabel for="authUrl"
-								value="#{msgs.authenticationUrl}" /></td>
-							<td><s:decorate>
-								<h:inputText id="authUrl"
-									value="#{operDevice.authenticationURL}" required="true"
-									styleClass="label" />
-							</s:decorate>*<h:message for="authUrl" styleClass="error" /></td>
-						</tr>
-						<tr>
-							<td><h:outputLabel for="regUrl"
-								value="#{msgs.registrationUrl}" /></td>
-							<td><h:inputText id="regUrl"
-								value="#{operDevice.registrationURL}" styleClass="label" /> <h:message
-								for="regUrl" styleClass="error" /></td>
-						</tr>
-						<tr>
-							<td><h:outputLabel for="remUrl" value="#{msgs.removalUrl}" /></td>
-							<td><h:inputText id="remUrl"
-								value="#{operDevice.removalURL}" styleClass="label" /> <h:message
-								for="remUrl" styleClass="error" /></td>
-						</tr>
-					</table>
+					<h:outputLabel for="name" value="#{msgs.name}" />
+					<s:decorate>
+						<h:inputText id="name" value="#{operDevice.name}" required="true"
+							styleClass="label" />
+					</s:decorate>* <h:message for="name" styleClass="error" />
+					<h:outputLabel for="deviceClass" value="#{msgs.deviceClass}" />
+					<s:decorate>
+						<h:selectOneMenu id="deviceClass"
+							value="#{operDevice.deviceClass}" required="true"
+							styleClass="label">
+							<f:selectItems value="#{deviceClasses}" />
+						</h:selectOneMenu>
+					</s:decorate>* <h:message for="deviceClass" styleClass="error" />
+					<h:outputLabel for="authUrl" value="#{msgs.authenticationUrl}" />
+					<s:decorate>
+						<h:inputText id="authUrl" value="#{operDevice.authenticationURL}"
+							required="true" styleClass="label" />
+					</s:decorate>*<h:message for="authUrl" styleClass="error" />
+					<h:outputLabel for="regUrl" value="#{msgs.registrationUrl}" />
+					<h:inputText id="regUrl" value="#{operDevice.registrationURL}"
+						styleClass="label" />
+					<h:message for="regUrl" styleClass="error" />
+					<h:outputLabel for="remUrl" value="#{msgs.removalUrl}" />
+					<h:inputText id="remUrl" value="#{operDevice.removalURL}"
+						styleClass="label" />
+					<h:message for="remUrl" styleClass="error" />
+
 				</rich:tab>
 
 				<rich:tab id="certificate-tab" label="#{msgs.certificate}">
+					<h:outputLabel for="certificate" value="#{msgs.certificate}" />
 					<s:decorate>
-						<tr:inputFile id="certificate" label="#{msgs.certificate}"
-							value="#{operDevice.certificate}" />
+						<tr:inputFile id="certificate" value="#{operDevice.certificate}" />
 					</s:decorate>
 					<h:message for="certificate" styleClass="error" />
 				</rich:tab>
