@@ -21,9 +21,6 @@ import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
-import net.link.safeonline.performance.service.DriverExceptionService;
-import net.link.safeonline.performance.service.DriverProfileService;
-import net.link.safeonline.performance.service.ProfileDataService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,10 +41,7 @@ public class BasicScenario implements Scenario {
 	private IdMappingDriver idDriver;
 	private AuthDriver authDriver;
 
-	public void prepare(ExecutionEntity execution,
-			DriverProfileService driverProfileService,
-			ProfileDataService profileDataService,
-			DriverExceptionService driverExceptionService) {
+	public void prepare(ExecutionEntity execution) {
 
 		LOG.debug("retrieving performance keys..");
 		try {
@@ -66,9 +60,6 @@ public class BasicScenario implements Scenario {
 		this.authDriver = new AuthDriver(execution);
 		this.attribDriver = new AttribDriver(execution);
 		this.idDriver = new IdMappingDriver(execution);
-
-		this.authDriver.setServices(driverProfileService, profileDataService,
-				driverExceptionService);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -19,7 +19,7 @@ import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
  * representational stamp for each agent in the list. It retrieves the agent's
  * status and uses this to generate a contextual representation of the agent
  * that visualises its current status to the user.<br>
- * 
+ *
  * @author mbillemo
  */
 public class AgentRenderer extends DefaultListCellRenderer {
@@ -68,8 +68,10 @@ public class AgentRenderer extends DefaultListCellRenderer {
 
 			setText(String
 					.format(
-							"<html><ul><li style='color: %s; font-family:monospace'>%s%s</li></ul></html>",
-							color, agent.getAddress(), error));
+							"<html><ul><li style='color: %s; font-family:monospace'>%s [%s]%s</li></ul></html>",
+							color, agent.getAddress(), (action == null ? agent
+									.getState().getState() : action
+									.getTransitioning()), error));
 		}
 
 		return this;

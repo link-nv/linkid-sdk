@@ -1764,6 +1764,11 @@
 				<artifactId>jboss-jsfunit-core</artifactId>
 				<version>${jboss-jsfunit-core.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>com.lowagie</groupId>
+                <artifactId>itext</artifactId>
+                <version>${itext.version}</version>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 	<ciManagement>
@@ -1972,5 +1977,6 @@
 		<jboss-jsfunit-core.version>
 			1.0-beta-1
 		</jboss-jsfunit-core.version>
+        <itext.version>1.4.8</itext.version>
 	</properties>
 </project>

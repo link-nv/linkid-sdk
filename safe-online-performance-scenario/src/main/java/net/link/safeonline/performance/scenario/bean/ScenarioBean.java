@@ -31,10 +31,7 @@ import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.StartTimeEntity;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.ScenarioLocal;
-import net.link.safeonline.performance.service.DriverExceptionService;
-import net.link.safeonline.performance.service.DriverProfileService;
 import net.link.safeonline.performance.service.ExecutionService;
-import net.link.safeonline.performance.service.ProfileDataService;
 import net.link.safeonline.util.performance.ProfileData;
 
 import org.apache.commons.logging.Log;
@@ -85,15 +82,6 @@ public class ScenarioBean implements ScenarioLocal {
 	@Resource(name = "activeScenario")
 	private String activeScenario;
 
-	@EJB
-	private DriverProfileService driverProfileService;
-
-	@EJB
-	private ProfileDataService profileDataService;
-
-	@EJB
-	private DriverExceptionService driverExceptionService;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -113,8 +101,7 @@ public class ScenarioBean implements ScenarioLocal {
 
 		ExecutionEntity execution = this.executionService
 				.getExecution(executionId);
-		scenario.prepare(execution, this.driverProfileService,
-				this.profileDataService, this.driverExceptionService);
+		scenario.prepare(execution);
 		this.executionService.addStartTime(execution, System
 				.currentTimeMillis());
 

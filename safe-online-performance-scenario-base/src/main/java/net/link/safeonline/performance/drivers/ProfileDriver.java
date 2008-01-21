@@ -62,15 +62,6 @@ public abstract class ProfileDriver {
 				execution);
 	}
 
-	public void setServices(DriverProfileService driverProfileService,
-			ProfileDataService profileDataService,
-			DriverExceptionService driverExceptionService) {
-
-		this.driverProfileService = driverProfileService;
-		this.profileDataService = profileDataService;
-		this.driverExceptionService = driverExceptionService;
-	}
-
 	public String getHost() {
 
 		return this.execution.getHostname();
