@@ -25,7 +25,6 @@ import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.LastDeviceException;
@@ -36,6 +35,7 @@ import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.model.beid.BeIdConstants;
+import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.user.Devices;
 import net.link.safeonline.user.UserConstants;
 
@@ -239,7 +239,7 @@ public class DevicesBean implements Devices {
 		Locale locale = getViewLocale();
 		try {
 			this.mobileWeakAttributes = this.identityService.listAttributes(
-					SafeOnlineConstants.WEAK_MOBILE_AUTH_DEVICE, locale);
+					EncapConstants.ENCAP_DEVICE_ID, locale);
 		} catch (DeviceNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");

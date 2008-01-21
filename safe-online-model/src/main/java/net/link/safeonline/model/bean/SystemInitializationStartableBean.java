@@ -8,8 +8,6 @@
 package net.link.safeonline.model.bean;
 
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.Local;
@@ -20,7 +18,6 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
-import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStoreUtils;
@@ -48,6 +45,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
 	public SystemInitializationStartableBean() {
 		configureAttributeTypes();
+		configureDevices();
 
 		this.authorizedUsers.put("admin", new AuthenticationDevice("admin",
 				null, null));
@@ -157,34 +155,22 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 				null));
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				loginAttributeType, "nl", "Login naam", null));
+	}
 
-		/*
-		 * Mobile device attribute types
-		 */
-		AttributeTypeEntity weakMobileAttributeType = new AttributeTypeEntity(
-				SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE, DatatypeType.STRING,
-				true, false);
-		weakMobileAttributeType.setMultivalued(true);
-		this.attributeTypes.add(weakMobileAttributeType);
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				weakMobileAttributeType, Locale.ENGLISH.getLanguage(),
-				"Mobile", null));
-		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
-				weakMobileAttributeType, "nl", "Gsm nummer", null));
+	private void configureDevices() {
+		this.deviceClasses.add(new DeviceClass(
+				SafeOnlineConstants.PASSWORD_DEVICE_CLASS));
+		this.deviceClasses.add(new DeviceClass(
+				SafeOnlineConstants.MOBILE_DEVICE_CLASS));
+		this.deviceClasses.add(new DeviceClass(
+				SafeOnlineConstants.PKI_DEVICE_CLASS));
 
-		List<AttributeTypeEntity> passwordDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
-		passwordDeviceAttributeTypeList.add(passwordHashAttributeType);
-		passwordDeviceAttributeTypeList.add(passwordSeedAttributeType);
-		passwordDeviceAttributeTypeList.add(passwordAlgorithmAttributeType);
-		this.devices.put(new Device(
-				SafeOnlineConstants.USERNAME_PASSWORD_AUTH_DEVICE,
-				DeviceType.HASH), passwordDeviceAttributeTypeList);
-
-		List<AttributeTypeEntity> weakMobileDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
-		weakMobileDeviceAttributeTypeList.add(weakMobileAttributeType);
-		this.devices.put(
-				new Device(SafeOnlineConstants.WEAK_MOBILE_AUTH_DEVICE,
-						DeviceType.MOBILE), weakMobileDeviceAttributeTypeList);
+		this.devices
+				.add(new Device(
+						SafeOnlineConstants.USERNAME_PASSWORD_AUTH_DEVICE,
+						SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+						"username-password.seam", "register-password.seam",
+						null, null));
 	}
 
 	@Override

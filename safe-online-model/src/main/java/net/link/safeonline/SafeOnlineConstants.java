@@ -56,16 +56,16 @@ public class SafeOnlineConstants {
 
 	public static final String USERNAME_PASSWORD_AUTH_DEVICE = "password";
 
-	public static final String BEID_AUTH_DEVICE = "beid";
-
-	public static final String WEAK_MOBILE_AUTH_DEVICE = "mobileWeak";
-
-	public static final String STRONG_MOBILE_AUTH_DEVICE = "mobileStrong";
-
 	/**
 	 * The PKI trust domain name for the SafeOnline devices.
 	 */
 	public static final String SAFE_ONLINE_DEVICES_TRUST_DOMAIN = "devices";
+
+	public static final String PASSWORD_DEVICE_CLASS = "Password";
+
+	public static final String MOBILE_DEVICE_CLASS = "Mobile";
+
+	public static final String PKI_DEVICE_CLASS = "PKI";
 
 	/**
 	 * The login attribute name and login service provider domain
@@ -77,13 +77,13 @@ public class SafeOnlineConstants {
 	/**
 	 * Mobile device attributes
 	 */
-	public static final String WEAK_MOBILE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:weak-mobile";
-
-	public static final String STRONG_MOBILE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:strong-mobile";
-
 	public static final String WEAK_MOBILE_IDENTIFIER_DOMAIN = "weak-mobile";
 
 	public static final String STRONG_MOBILE_IDENTIFIER_DOMAIN = "strong-mobile";
+
+	public static final String MOBILE_ENCAP_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:mobile:encap";
+
+	public static final String STRONG_MOBILE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:mobile:strong";
 
 	private SafeOnlineConstants() {
 		// empty

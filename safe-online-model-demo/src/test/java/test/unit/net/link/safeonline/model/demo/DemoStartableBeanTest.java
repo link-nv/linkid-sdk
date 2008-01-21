@@ -36,7 +36,12 @@ import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.DeviceClassDescriptionEntity;
+import net.link.safeonline.entity.DeviceClassEntity;
+import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DevicePropertyEntity;
+import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -100,7 +105,9 @@ public class DemoStartableBeanTest {
 				ApplicationIdentityAttributeEntity.class,
 				AttributeTypeDescriptionEntity.class,
 				AttributeProviderEntity.class, DeviceEntity.class,
-				AllowedDeviceEntity.class,
+				DeviceClassEntity.class, RegisteredDeviceEntity.class,
+				DeviceDescriptionEntity.class, DevicePropertyEntity.class,
+				DeviceClassDescriptionEntity.class, AllowedDeviceEntity.class,
 				CompoundedAttributeTypeMemberEntity.class,
 				SubjectIdentifierEntity.class, UsageAgreementEntity.class,
 				UsageAgreementTextEntity.class);

@@ -118,17 +118,17 @@
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
 				<safe-online.profiling.scenario>
-                    net.link.safeonline.performance.scenario.BasicScenario
-                </safe-online.profiling.scenario>
+					net.link.safeonline.performance.scenario.BasicScenario
+				</safe-online.profiling.scenario>
 				<safe-online.profiling.group>
 					net.lin-k.safe-online.performance
 				</safe-online.profiling.group>
 				<safe-online.profiling.agent.dialect>
 					org.hibernate.dialect.HSQLDialect
 				</safe-online.profiling.agent.dialect>
-                <safe-online.profiling.agent.hibernate.hbm2ddl.auto>
-                    create-drop
-                </safe-online.profiling.agent.hibernate.hbm2ddl.auto>
+				<safe-online.profiling.agent.hibernate.hbm2ddl.auto>
+					create-drop
+				</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
 				<safe-online.profiling.agent.data.source>
 					DefaultDS
 				</safe-online.profiling.agent.data.source>
@@ -297,17 +297,17 @@
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>false</debug.mode>
 				<safe-online.profiling.scenario>
-                    net.link.safeonline.performance.scenario.BasicScenario
-                </safe-online.profiling.scenario>
+					net.link.safeonline.performance.scenario.BasicScenario
+				</safe-online.profiling.scenario>
 				<safe-online.profiling.group>
 					net.lin-k.safe-online.performance
 				</safe-online.profiling.group>
 				<safe-online.profiling.agent.dialect>
 					org.hibernate.dialect.HSQLDialect
 				</safe-online.profiling.agent.dialect>
-                <safe-online.profiling.agent.hibernate.hbm2ddl.auto>
-                    create-drop
-                </safe-online.profiling.agent.hibernate.hbm2ddl.auto>
+				<safe-online.profiling.agent.hibernate.hbm2ddl.auto>
+					create-drop
+				</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
 				<safe-online.profiling.agent.data.source>
 					DefaultDS
 				</safe-online.profiling.agent.data.source>
@@ -350,15 +350,15 @@
 				</safe-online.profiling.interceptor>
 			</properties>
 			<modules>
-                <module>safe-online-performance-keystore</module>
-                <module>safe-online-model-performance</module>
-                <module>safe-online-performance-entity</module>
-                <module>safe-online-performance-agent-service</module>
-                <module>safe-online-performance-scenario-base</module>
-                <module>safe-online-performance-scenario</module>
-                <module>safe-online-performance-scenario-deploy</module>
-                <module>safe-online-performance-console-base</module>
-                <module>safe-online-performance-console-swing</module>
+				<module>safe-online-performance-keystore</module>
+				<module>safe-online-model-performance</module>
+				<module>safe-online-performance-entity</module>
+				<module>safe-online-performance-agent-service</module>
+				<module>safe-online-performance-scenario-base</module>
+				<module>safe-online-performance-scenario</module>
+				<module>safe-online-performance-scenario-deploy</module>
+				<module>safe-online-performance-console-base</module>
+				<module>safe-online-performance-console-swing</module>
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-performance-distribution</module>
 			</modules>
@@ -760,6 +760,7 @@
 		<module>safe-online-identity-applet</module>
 		<module>safe-online-shared</module>
 		<module>safe-online-model-beid</module>
+		<module>safe-online-model-encap</module>
 		<module>safe-online-identity-applet-package</module>
 		<module>safe-online-auth-applet</module>
 		<module>safe-online-auth-applet-package</module>

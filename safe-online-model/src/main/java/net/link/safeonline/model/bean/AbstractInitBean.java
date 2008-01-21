@@ -28,6 +28,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
@@ -41,8 +42,8 @@ import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.DeviceClassDAO;
 import net.link.safeonline.dao.DeviceDAO;
-import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.UsageAgreementDAO;
 import net.link.safeonline.device.backend.PasswordManager;
@@ -54,8 +55,8 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -208,14 +209,36 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
+	protected static class DeviceClass {
+		final String name;
+
+		public DeviceClass(String name) {
+			this.name = name;
+		}
+	}
+
 	protected static class Device {
 		final String deviceName;
 
-		final DeviceType deviceType;
+		final String deviceClassName;
 
-		public Device(String deviceName, DeviceType deviceType) {
+		final X509Certificate certificate;
+
+		final String authenticationURL;
+
+		final String registrationURL;
+
+		final String removalURL;
+
+		public Device(String deviceName, String deviceClassName,
+				String authenticationURL, String registrationURL,
+				String removalURL, X509Certificate certificate) {
 			this.deviceName = deviceName;
-			this.deviceType = deviceType;
+			this.deviceClassName = deviceClassName;
+			this.authenticationURL = authenticationURL;
+			this.registrationURL = registrationURL;
+			this.removalURL = removalURL;
+			this.certificate = certificate;
 		}
 
 	}
@@ -246,7 +269,9 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected List<AttributeEntity> attributes;
 
-	protected Map<Device, List<AttributeTypeEntity>> devices;
+	protected List<DeviceClass> deviceClasses;
+
+	protected List<Device> devices;
 
 	public AbstractInitBean() {
 		this.applicationOwnersAndLogin = new HashMap<String, String>();
@@ -260,7 +285,8 @@ public abstract class AbstractInitBean implements Startable {
 		this.trustedCertificates = new LinkedList<X509Certificate>();
 		this.attributeProviders = new LinkedList<AttributeProviderEntity>();
 		this.attributes = new LinkedList<AttributeEntity>();
-		this.devices = new HashMap<Device, List<AttributeTypeEntity>>();
+		this.deviceClasses = new LinkedList<DeviceClass>();
+		this.devices = new LinkedList<Device>();
 		this.allowedDevices = new HashMap<String, List<String>>();
 	}
 
@@ -301,6 +327,7 @@ public abstract class AbstractInitBean implements Startable {
 			initApplicationTrustPoints();
 			initAttributeProviders();
 			initAttributes();
+			initDeviceClasses();
 			initDevices();
 			initAllowedDevices();
 		} catch (SafeOnlineException e) {
@@ -315,9 +342,6 @@ public abstract class AbstractInitBean implements Startable {
 
 	@EJB
 	private SubjectService subjectService;
-
-	@EJB
-	private SubjectIdentifierDAO subjectIdentifierDAO;
 
 	@EJB
 	private ApplicationDAO applicationDAO;
@@ -351,6 +375,9 @@ public abstract class AbstractInitBean implements Startable {
 
 	@EJB
 	private DeviceDAO deviceDAO;
+
+	@EJB
+	private DeviceClassDAO deviceClassDAO;
 
 	@EJB
 	private PasswordManager passwordManager;
@@ -570,54 +597,7 @@ public abstract class AbstractInitBean implements Startable {
 			} catch (PermissionDeniedException e) {
 				throw new EJBException("could not set password");
 			}
-			if (null != device.weakMobiles)
-				for (String mobile : device.weakMobiles)
-					addWeakMobile(mobile, subject);
-			if (null != device.strongMobiles)
-				for (String mobile : device.strongMobiles)
-					addStrongMobile(mobile, subject);
 		}
-	}
-
-	private void addWeakMobile(String mobile, SubjectEntity subject) {
-		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
-				.findSubject(SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
-						mobile);
-		if (null != existingMappedSubject)
-			throw new EJBException("weak mobile " + mobile
-					+ " already registered");
-		AttributeTypeEntity mobileAttributeType;
-		try {
-			mobileAttributeType = this.attributeTypeDAO
-					.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
-		} catch (AttributeTypeNotFoundException e) {
-			throw new EJBException("weak mobile attribute type not found");
-		}
-		this.attributeDAO.addAttribute(mobileAttributeType, subject, mobile);
-		this.subjectIdentifierDAO.addSubjectIdentifier(
-				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile,
-				subject);
-	}
-
-	private void addStrongMobile(String mobile, SubjectEntity subject) {
-		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
-				.findSubject(
-						SafeOnlineConstants.STRONG_MOBILE_IDENTIFIER_DOMAIN,
-						mobile);
-		if (null != existingMappedSubject)
-			throw new EJBException("strong mobile " + mobile
-					+ " already registered");
-		AttributeTypeEntity mobileAttributeType;
-		try {
-			mobileAttributeType = this.attributeTypeDAO
-					.getAttributeType(SafeOnlineConstants.STRONG_MOBILE_ATTRIBUTE);
-		} catch (AttributeTypeNotFoundException e) {
-			throw new EJBException("strong mobile attribute type not found");
-		}
-		this.attributeDAO.addAttribute(mobileAttributeType, subject, mobile);
-		this.subjectIdentifierDAO.addSubjectIdentifier(
-				SafeOnlineConstants.STRONG_MOBILE_IDENTIFIER_DOMAIN, mobile,
-				subject);
 	}
 
 	private void initIdentities() {
@@ -660,14 +640,28 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
-	private void initDevices() {
-		for (Device device : this.devices.keySet()) {
+	private void initDeviceClasses() {
+		for (DeviceClass deviceClass : this.deviceClasses) {
+			DeviceClassEntity deviceClassEntity = this.deviceClassDAO
+					.findDeviceClass(deviceClass.name);
+			if (null == deviceClassEntity)
+				deviceClassEntity = this.deviceClassDAO
+						.addDeviceClass(deviceClass.name);
+		}
+	}
+
+	private void initDevices() throws DeviceClassNotFoundException {
+		for (Device device : this.devices) {
 			DeviceEntity deviceEntity = this.deviceDAO
 					.findDevice(device.deviceName);
-			if (deviceEntity == null)
+			if (deviceEntity == null) {
+				DeviceClassEntity deviceClassEntity = this.deviceClassDAO
+						.getDeviceClass(device.deviceClassName);
 				deviceEntity = this.deviceDAO.addDevice(device.deviceName,
-						device.deviceType);
-			deviceEntity.setAttributeTypes(this.devices.get(device));
+						deviceClassEntity, device.authenticationURL,
+						device.registrationURL, device.removalURL,
+						device.certificate);
+			}
 		}
 	}
 

@@ -104,7 +104,7 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		AttributeTypeEntity mobileAttributeType;
 		try {
 			mobileAttributeType = this.attributeTypeDAO
-					.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
+					.getAttributeType(SafeOnlineConstants.MOBILE_ENCAP_ATTRIBUTE);
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("weak mobile attribute type not found");
 		}
@@ -120,7 +120,7 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		AttributeTypeEntity mobileAttributeType;
 		try {
 			mobileAttributeType = this.attributeTypeDAO
-					.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
+					.getAttributeType(SafeOnlineConstants.MOBILE_ENCAP_ATTRIBUTE);
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("weak mobile attribute type not found");
 		}
@@ -148,7 +148,7 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		AttributeTypeEntity mobileAttributeType;
 		try {
 			mobileAttributeType = this.attributeTypeDAO
-					.getAttributeType(SafeOnlineConstants.WEAK_MOBILE_ATTRIBUTE);
+					.getAttributeType(SafeOnlineConstants.MOBILE_ENCAP_ATTRIBUTE);
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("weak mobile attribute type not found");
 		}

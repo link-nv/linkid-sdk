@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,11 +19,11 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
-import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
@@ -51,8 +50,6 @@ public class BeIdStartableBean extends AbstractInitBean {
 	private TrustPointDAO trustPointDAO;
 
 	public BeIdStartableBean() {
-		List<AttributeTypeEntity> deviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
-
 		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(
 				BeIdConstants.GIVENNAME_ATTRIBUTE, DatatypeType.STRING, true,
 				false);
@@ -62,8 +59,6 @@ public class BeIdStartableBean extends AbstractInitBean {
 				"Given name (BeID)", null));
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				givenNameAttributeType, "nl", "Naam (BeID)", null));
-
-		deviceAttributeTypeList.add(givenNameAttributeType);
 
 		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(
 				BeIdConstants.SURNAME_ATTRIBUTE, DatatypeType.STRING, true,
@@ -75,8 +70,6 @@ public class BeIdStartableBean extends AbstractInitBean {
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				surnameAttributeType, "nl", "Achternaam (BeID)", null));
 
-		deviceAttributeTypeList.add(surnameAttributeType);
-
 		AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(
 				BeIdConstants.NRN_ATTRIBUTE, DatatypeType.STRING, true, false);
 		this.attributeTypes.add(nrnAttributeType);
@@ -87,11 +80,9 @@ public class BeIdStartableBean extends AbstractInitBean {
 				nrnAttributeType, "nl",
 				"Identificatienummer van het Rijksregister", null));
 
-		deviceAttributeTypeList.add(nrnAttributeType);
-
-		this.devices.put(new Device(BeIdConstants.BEID_DEVICE_ID,
-				DeviceType.SMARTCARD), deviceAttributeTypeList);
-
+		this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID,
+				SafeOnlineConstants.PKI_DEVICE_CLASS, "beid.seam",
+				"register-beid.seam", null, null));
 	}
 
 	@Override
