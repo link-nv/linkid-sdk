@@ -7,6 +7,7 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_ALL;
+import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_WHERE_CLASS;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -38,18 +39,24 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
+import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.annotations.IndexColumn;
 
 @Entity
 @Table(name = "devices")
-@NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM DeviceEntity d") })
+@NamedQueries( {
+		@NamedQuery(name = QUERY_LIST_ALL, query = "FROM DeviceEntity d"),
+		@NamedQuery(name = QUERY_LIST_WHERE_CLASS, query = "SELECT d FROM DeviceEntity d "
+				+ "WHERE d.deviceClass = :deviceClass") })
 public class DeviceEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String QUERY_LIST_ALL = "dev.all";
+
+	public static final String QUERY_LIST_WHERE_CLASS = "dev.class";
 
 	private String name;
 
@@ -310,5 +317,9 @@ public class DeviceEntity implements Serializable {
 	public interface QueryInterface {
 		@QueryMethod(QUERY_LIST_ALL)
 		List<DeviceEntity> listDevices();
+
+		@QueryMethod(QUERY_LIST_WHERE_CLASS)
+		List<DeviceEntity> listDevices(@QueryParam("deviceClass")
+		DeviceClassEntity deviceClass);
 	}
 }

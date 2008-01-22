@@ -52,9 +52,14 @@ public class EncapStartableBean extends AbstractInitBean {
 		X509Certificate certificate = (X509Certificate) EncapKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
 
-		this.devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID,
-				SafeOnlineConstants.MOBILE_DEVICE_CLASS, "mobile.seam",
-				"register-mobile.seam", null, certificate));
+		this.devices.add(new Device(SafeOnlineConstants.ENCAP_DEVICE_ID,
+				SafeOnlineConstants.MOBILE_DEVICE_CLASS, "encap/mobile.seam",
+				"encap/register-mobile.seam", null, certificate));
+		this.deviceDescriptions.add(new DeviceDescription(
+				SafeOnlineConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
+		this.deviceDescriptions.add(new DeviceDescription(
+				SafeOnlineConstants.ENCAP_DEVICE_ID, Locale.ENGLISH
+						.getLanguage(), "Mobile"));
 		this.trustedCertificates.put(certificate,
 				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 	}

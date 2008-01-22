@@ -17,6 +17,7 @@ import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
@@ -118,6 +119,12 @@ public class DevicePropertyBean implements DeviceProperty {
 			LOG.debug("device not found: " + this.selectedDevice.getName());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
+		} catch (ExistingDevicePropertyException e) {
+			LOG.debug("device property already exists");
+			this.facesMessages.addToControlFromResourceBundle("name",
+					FacesMessage.SEVERITY_ERROR,
+					"errorDevicePropertyAlreadyExists");
 			return null;
 		}
 		return "success";

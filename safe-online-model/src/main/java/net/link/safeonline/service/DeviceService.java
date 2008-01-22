@@ -9,8 +9,12 @@ import net.link.safeonline.authentication.exception.DeviceClassNotFoundException
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingDeviceClassDescriptionException;
 import net.link.safeonline.authentication.exception.ExistingDeviceClassException;
+import net.link.safeonline.authentication.exception.ExistingDeviceDescriptionException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
+import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceClassDescriptionEntity;
@@ -43,13 +47,13 @@ public interface DeviceService {
 			throws DeviceNotFoundException;
 
 	void addDeviceDescription(DeviceDescriptionEntity newDeviceDescription)
-			throws DeviceNotFoundException;
+			throws DeviceNotFoundException, ExistingDeviceDescriptionException;
 
 	void removeDeviceDescription(DeviceDescriptionEntity description)
 			throws DeviceDescriptionNotFoundException;
 
 	void addDeviceProperty(DevicePropertyEntity newDeviceProperty)
-			throws DeviceNotFoundException;
+			throws DeviceNotFoundException, ExistingDevicePropertyException;
 
 	void removeDeviceProperty(DevicePropertyEntity property)
 			throws DevicePropertyNotFoundException;
@@ -60,17 +64,22 @@ public interface DeviceService {
 			throws CertificateEncodingException, DeviceClassNotFoundException,
 			ExistingDeviceException;
 
+	void removeDevice(String name);
+
 	List<DeviceClassDescriptionEntity> listDeviceClassDescriptions(
 			String deviceClassName) throws DeviceClassNotFoundException;
 
 	void addDeviceClassDescription(
 			DeviceClassDescriptionEntity newDeviceClassDescription)
-			throws DeviceClassNotFoundException;
+			throws DeviceClassNotFoundException,
+			ExistingDeviceClassDescriptionException;
 
 	void removeDeviceClassDescription(DeviceClassDescriptionEntity description)
 			throws DeviceClassDescriptionNotFoundException;
 
 	void addDeviceClass(String name) throws ExistingDeviceClassException;
+
+	void removeDeviceClass(String name) throws PermissionDeniedException;
 
 	void updateAuthenticationUrl(String deviceName, String authenticationURL)
 			throws DeviceNotFoundException;

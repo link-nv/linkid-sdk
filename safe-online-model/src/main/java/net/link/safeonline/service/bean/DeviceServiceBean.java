@@ -22,8 +22,12 @@ import net.link.safeonline.authentication.exception.DeviceClassNotFoundException
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingDeviceClassDescriptionException;
 import net.link.safeonline.authentication.exception.ExistingDeviceClassException;
+import net.link.safeonline.authentication.exception.ExistingDeviceDescriptionException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
+import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceClassDAO;
@@ -33,10 +37,13 @@ import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.DeviceClassDescriptionEntity;
+import net.link.safeonline.entity.DeviceClassDescriptionPK;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
+import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
+import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.Devices;
@@ -118,18 +125,38 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void addDeviceDescription(
 			DeviceDescriptionEntity newDeviceDescription)
-			throws DeviceNotFoundException {
+			throws DeviceNotFoundException, ExistingDeviceDescriptionException {
+		checkExistingDeviceDescription(newDeviceDescription.getDeviceName(),
+				newDeviceDescription.getPk().getLanguage());
 		DeviceEntity device = this.deviceDAO.getDevice(newDeviceDescription
 				.getDeviceName());
 		this.deviceDAO.addDescription(device, newDeviceDescription);
 	}
 
+	private void checkExistingDeviceDescription(String deviceName,
+			String language) throws ExistingDeviceDescriptionException {
+		DeviceDescriptionEntity description = this.deviceDAO
+				.findDescription(new DeviceDescriptionPK(deviceName, language));
+		if (null != description)
+			throw new ExistingDeviceDescriptionException();
+	}
+
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void addDeviceProperty(DevicePropertyEntity newDeviceProperty)
-			throws DeviceNotFoundException {
+			throws DeviceNotFoundException, ExistingDevicePropertyException {
+		checkExistingDeviceProperty(newDeviceProperty.getDeviceName(),
+				newDeviceProperty.getPk().getName());
 		DeviceEntity device = this.deviceDAO.getDevice(newDeviceProperty
 				.getDeviceName());
 		this.deviceDAO.addProperty(device, newDeviceProperty);
+	}
+
+	private void checkExistingDeviceProperty(String deviceName, String name)
+			throws ExistingDevicePropertyException {
+		DevicePropertyEntity property = this.deviceDAO
+				.findProperty(new DevicePropertyPK(deviceName, name));
+		if (null != property)
+			throw new ExistingDevicePropertyException();
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -159,6 +186,11 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void removeDevice(String name) {
+		this.deviceDAO.removeDevice(name);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<DeviceClassDescriptionEntity> listDeviceClassDescriptions(
 			String deviceClassName) throws DeviceClassNotFoundException {
 		DeviceClassEntity deviceClass = this.deviceClassDAO
@@ -183,13 +215,44 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void removeDeviceClass(String name) throws PermissionDeniedException {
+		checkDeviceClassInUse(name);
+		this.deviceClassDAO.removeDeviceClass(name);
+	}
+
+	private void checkDeviceClassInUse(String deviceClassName)
+			throws PermissionDeniedException {
+		DeviceClassEntity deviceClass = this.deviceClassDAO
+				.findDeviceClass(deviceClassName);
+		List<DeviceEntity> deviceList = this.deviceDAO.listDevices(deviceClass);
+		if (null != deviceList && deviceList.size() > 0)
+			throw new PermissionDeniedException(
+					"Device class in use by existing devices");
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void addDeviceClassDescription(
 			DeviceClassDescriptionEntity newDeviceClassDescription)
-			throws DeviceClassNotFoundException {
+			throws DeviceClassNotFoundException,
+			ExistingDeviceClassDescriptionException {
+		checkExistingDeviceClassDescription(newDeviceClassDescription
+				.getDeviceClassName(), newDeviceClassDescription.getPk()
+				.getLanguage());
 		DeviceClassEntity deviceClass = this.deviceClassDAO
 				.getDeviceClass(newDeviceClassDescription.getDeviceClassName());
 		this.deviceClassDAO.addDescription(deviceClass,
 				newDeviceClassDescription);
+	}
+
+	private void checkExistingDeviceClassDescription(String deviceClassName,
+			String language) throws ExistingDeviceClassDescriptionException {
+		LOG.debug("checkExistingDeviceClassDescription: " + deviceClassName
+				+ ", " + language);
+		DeviceClassDescriptionEntity description = this.deviceClassDAO
+				.findDescription(new DeviceClassDescriptionPK(deviceClassName,
+						language));
+		if (null != description)
+			throw new ExistingDeviceClassDescriptionException();
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -274,4 +337,5 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	public void saveDeviceProperty(DevicePropertyEntity property) {
 		this.deviceDAO.saveProperty(property);
 	}
+
 }

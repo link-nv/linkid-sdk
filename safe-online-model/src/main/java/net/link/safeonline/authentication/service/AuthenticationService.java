@@ -31,6 +31,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 import org.apache.axis.AxisFault;
@@ -85,22 +86,21 @@ public interface AuthenticationService {
 	 * @throws AxisFault
 	 * @throws MobileAuthenticationException
 	 */
-	String authenticate(AuthenticationDevice device, String mobile,
-			String challengeId, String mobileOTP)
-			throws SubjectNotFoundException, MalformedURLException,
-			MobileException, MobileAuthenticationException;
+	String authenticate(DeviceEntity device, String mobile, String challengeId,
+			String mobileOTP) throws SubjectNotFoundException,
+			MalformedURLException, MobileException,
+			MobileAuthenticationException;
 
 	/**
 	 * Request a OTP be generated for the authenticating users. Returns the
 	 * challenge ID for this OTP, used for later verification.
 	 * 
-	 * @param device
 	 * @param mobile
 	 * @throws MalformedURLException
 	 * @throws MobileException
 	 */
-	String requestMobileOTP(AuthenticationDevice device, String mobile)
-			throws MalformedURLException, MobileException;
+	String requestMobileOTP(String mobile) throws MalformedURLException,
+			MobileException;
 
 	/**
 	 * Commits the authentication for the given application.
@@ -230,6 +230,4 @@ public interface AuthenticationService {
 	 * 
 	 */
 	String getUsername();
-
-	AuthenticationDevice getAuthenticationDevice();
 }

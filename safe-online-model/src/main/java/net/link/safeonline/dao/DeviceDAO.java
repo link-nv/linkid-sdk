@@ -34,9 +34,13 @@ public interface DeviceDAO {
 
 	List<DeviceEntity> listDevices();
 
+	List<DeviceEntity> listDevices(DeviceClassEntity deviceClass);
+
 	DeviceEntity findDevice(String name);
 
 	DeviceEntity getDevice(String name) throws DeviceNotFoundException;
+
+	void removeDevice(String name);
 
 	List<DeviceDescriptionEntity> listDescriptions(DeviceEntity device);
 

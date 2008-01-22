@@ -15,6 +15,7 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticNam
 
 import java.net.MalformedURLException;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +24,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
@@ -51,15 +53,16 @@ import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.StrongMobileDeviceService;
 import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
@@ -93,7 +96,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	private SubjectEntity authenticatedSubject;
 
-	private AuthenticationDevice authenticationDevice;
+	private DeviceEntity authenticationDevice;
 
 	private String expectedApplicationId;
 
@@ -126,6 +129,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	private StatisticDAO statisticDAO;
 
 	@EJB
+	private DeviceDAO deviceDAO;
+
+	@EJB
 	private StatisticDataPointDAO statisticDataPointDAO;
 
 	@EJB
@@ -146,9 +152,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private WeakMobileDeviceService weakMobileDeviceService;
 
-	@EJB
-	private StrongMobileDeviceService strongMobileDeviceService;
-
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
 	String password) throws SubjectNotFoundException, DeviceNotFoundException {
@@ -156,13 +159,15 @@ public class AuthenticationServiceBean implements AuthenticationService,
 				password);
 		if (null == subject)
 			return false;
+		DeviceEntity device = this.deviceDAO
+				.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 
 		/*
 		 * Safe the state in this stateful session bean.
 		 */
 		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = subject;
-		this.authenticationDevice = AuthenticationDevice.PASSWORD;
+		this.authenticationDevice = device;
 		this.expectedApplicationId = null;
 
 		/*
@@ -172,20 +177,13 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	}
 
 	public String authenticate(@NotNull
-	AuthenticationDevice device, @NonEmptyString
+	DeviceEntity device, @NonEmptyString
 	String mobile, @NonEmptyString
 	String challengeId, @NonEmptyString
 	String mobileOTP) throws SubjectNotFoundException, MalformedURLException,
 			MobileException, MobileAuthenticationException {
-		SubjectEntity subject;
-		if (device == AuthenticationDevice.WEAK_MOBILE)
-			subject = this.weakMobileDeviceService.authenticate(mobile,
-					challengeId, mobileOTP);
-		else if (device == AuthenticationDevice.STRONG_MOBILE)
-			subject = this.strongMobileDeviceService.authenticate(mobile,
-					challengeId, mobileOTP);
-		else
-			return null;
+		SubjectEntity subject = this.weakMobileDeviceService.authenticate(
+				mobile, challengeId, mobileOTP);
 		/*
 		 * Safe the state in this stateful session bean.
 		 */
@@ -200,14 +198,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return this.subjectService.getSubjectLogin(subject.getUserId());
 	}
 
-	public String requestMobileOTP(@NotNull
-	AuthenticationDevice device, @NonEmptyString
+	public String requestMobileOTP(@NonEmptyString
 	String mobile) throws MalformedURLException, MobileException {
-		if (device == AuthenticationDevice.WEAK_MOBILE)
-			return this.weakMobileDeviceService.requestOTP(mobile);
-		else if (device == AuthenticationDevice.STRONG_MOBILE)
-			return this.strongMobileDeviceService.requestOTP(mobile);
-		return null;
+		return this.weakMobileDeviceService.requestOTP(mobile);
 	}
 
 	private void addHistoryEntry(SubjectEntity subject, HistoryEventType event,
@@ -227,13 +220,15 @@ public class AuthenticationServiceBean implements AuthenticationService,
 				authenticationStatement);
 		if (null == subject)
 			return false;
+		DeviceEntity device = this.deviceDAO
+				.findDevice(SafeOnlineConstants.BEID_DEVICE_ID);
 
 		/*
 		 * Safe the state.
 		 */
 		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = subject;
-		this.authenticationDevice = AuthenticationDevice.BEID;
+		this.authenticationDevice = device;
 		this.expectedApplicationId = authenticationStatement.getApplicationId();
 
 		return true;
@@ -291,13 +286,17 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			throws ApplicationNotFoundException, EmptyDevicePolicyException,
 			DevicePolicyException {
 		LOG.debug("authenticationDevice: " + this.authenticationDevice);
-		Set<AuthenticationDevice> devicePolicy = this.devicePolicyService
+		List<DeviceEntity> devicePolicy = this.devicePolicyService
 				.getDevicePolicy(applicationId, requiredDevicePolicy);
-		for (AuthenticationDevice device : devicePolicy)
-			LOG.debug("devicePolicy: " + device.getDeviceName());
-		boolean devicePolicyCheck = devicePolicy
-				.contains(this.authenticationDevice);
-		if (!devicePolicyCheck)
+		boolean found = false;
+		for (DeviceEntity device : devicePolicy) {
+			LOG.debug("devicePolicy: " + device.getName());
+			if (device.getName().equals(this.authenticationDevice.getName())) {
+				found = true;
+				break;
+			}
+		}
+		if (!found)
 			throw new DevicePolicyException();
 	}
 
@@ -371,7 +370,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 		addHistoryEntry(this.authenticatedSubject,
 				HistoryEventType.LOGIN_SUCCESS, applicationId,
-				this.authenticationDevice.getDeviceName());
+				this.authenticationDevice.getName());
 
 		this.subscriptionDAO.loggedIn(subscription);
 		this.addLoginTick(application);
@@ -396,8 +395,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			PermissionDeniedException, ArgumentIntegrityException,
 			AttributeTypeNotFoundException {
 		this.beIdDeviceService.register(identityStatementData);
-
-		this.authenticationDevice = AuthenticationDevice.BEID;
+		DeviceEntity device = this.deviceDAO
+				.findDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+		this.authenticationDevice = device;
 		return true;
 	}
 
@@ -413,25 +413,22 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 		SubjectEntity subject = this.beIdDeviceService.registerAndAuthenticate(
 				sessionId, username, registrationStatement);
+		DeviceEntity device = this.deviceDAO
+				.findDevice(SafeOnlineConstants.BEID_DEVICE_ID);
 
 		/*
 		 * Safe the state.
 		 */
 		this.authenticationState = USER_AUTHENTICATED;
 		this.authenticatedSubject = subject;
-		this.authenticationDevice = AuthenticationDevice.BEID;
+		this.authenticationDevice = device;
 		this.expectedApplicationId = registrationStatement.getApplicationId();
 
 		addHistoryEntry(this.authenticatedSubject,
 				HistoryEventType.LOGIN_REGISTRATION,
-				this.expectedApplicationId, this.authenticationDevice
-						.getDeviceName());
+				this.expectedApplicationId, this.authenticationDevice.getName());
 
 		return false;
-	}
-
-	public AuthenticationDevice getAuthenticationDevice() {
-		return this.authenticationDevice;
 	}
 
 	public String registerMobile(String mobile) throws MobileException,
@@ -441,8 +438,10 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		String activationCode = this.weakMobileDeviceService.register(subject,
 				mobile);
+		DeviceEntity device = this.deviceDAO
+				.findDevice(SafeOnlineConstants.ENCAP_DEVICE_ID);
 
-		this.authenticationDevice = AuthenticationDevice.WEAK_MOBILE;
+		this.authenticationDevice = device;
 		return activationCode;
 	}
 
@@ -457,8 +456,10 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		LOG.debug("set password");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		this.passwordDeviceService.register(subject, password);
+		DeviceEntity device = this.deviceDAO
+				.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 
-		this.authenticationDevice = AuthenticationDevice.PASSWORD;
+		this.authenticationDevice = device;
 	}
 
 }

@@ -8,9 +8,9 @@
 package net.link.safeonline.data;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
-import net.link.safeonline.authentication.service.AuthenticationDevice;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 
 public class SubscriptionDO implements Serializable {
@@ -19,10 +19,10 @@ public class SubscriptionDO implements Serializable {
 
 	private SubscriptionEntity subscription;
 
-	private Set<AuthenticationDevice> allowedDevices;
+	private List<DeviceEntity> allowedDevices;
 
 	public SubscriptionDO(SubscriptionEntity subscription,
-			Set<AuthenticationDevice> allowedDevices) {
+			List<DeviceEntity> allowedDevices) {
 		this.subscription = subscription;
 		this.allowedDevices = allowedDevices;
 	}
@@ -31,7 +31,7 @@ public class SubscriptionDO implements Serializable {
 		return this.subscription;
 	}
 
-	public Set<AuthenticationDevice> getAllowedDevices() {
+	public List<DeviceEntity> getAllowedDevices() {
 		return this.allowedDevices;
 	}
 
@@ -39,8 +39,8 @@ public class SubscriptionDO implements Serializable {
 		if (!this.subscription.getApplication().isDeviceRestriction())
 			return null;
 		String deviceList = "";
-		for (AuthenticationDevice allowedDevice : this.allowedDevices) {
-			deviceList += allowedDevice.getDeviceName() + " ";
+		for (DeviceEntity allowedDevice : this.allowedDevices) {
+			deviceList += allowedDevice.getName() + " ";
 		}
 		return deviceList;
 	}

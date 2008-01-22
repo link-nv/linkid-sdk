@@ -86,9 +86,15 @@ public class BeIdStartableBean extends AbstractInitBean {
 		this.trustedCertificates.put(certificate,
 				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
-		this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID,
-				SafeOnlineConstants.PKI_DEVICE_CLASS, "beid.seam",
-				"register-beid.seam", null, certificate));
+		this.devices.add(new Device(SafeOnlineConstants.BEID_DEVICE_ID,
+				SafeOnlineConstants.PKI_DEVICE_CLASS, "beid/beid.seam",
+				"beid/register-beid.seam", null, certificate));
+		this.deviceDescriptions.add(new DeviceDescription(
+				SafeOnlineConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
+		this.deviceDescriptions.add(new DeviceDescription(
+				SafeOnlineConstants.BEID_DEVICE_ID, Locale.ENGLISH
+						.getLanguage(), "Belgian eID"));
+
 	}
 
 	@Override

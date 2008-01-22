@@ -8,6 +8,7 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
@@ -27,6 +28,7 @@ import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -218,7 +220,7 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException {
 		Set<AuthenticationDevice> requiredDevicePolicy = LoginManager
 				.getRequiredDevices(session);
-		Set<AuthenticationDevice> devicePolicy;
+		List<DeviceEntity> devicePolicy;
 		try {
 			devicePolicy = this.devicePolicyService.getDevicePolicy(
 					applicationId, requiredDevicePolicy);
@@ -228,8 +230,12 @@ public class LoginServlet extends HttpServlet {
 		} catch (EmptyDevicePolicyException e) {
 			throw new ServletException("empty device policy");
 		}
-		boolean devicePolicyCheck = devicePolicy.contains(device);
-		return devicePolicyCheck;
+		for (DeviceEntity deviceEntity : devicePolicy) {
+			if (deviceEntity.getName().equals(device.getDeviceName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private String getUsername(HttpSession session) throws ServletException {

@@ -9,17 +9,20 @@ package net.link.safeonline.auth.bean;
 import java.net.MalformedURLException;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.MobileLogon;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 
@@ -45,7 +48,10 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 	private AuthenticationService authenticationService;
 
 	@In(required = true)
-	private AuthenticationDevice deviceSelection;
+	private String deviceSelection;
+
+	@EJB
+	private DeviceDAO deviceDAO;
 
 	private String challengeId;
 
@@ -83,9 +89,10 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 		super.clearUsername();
 		String loginname;
 		try {
-			loginname = this.authenticationService.authenticate(
-					this.deviceSelection, this.mobile, this.challengeId,
-					this.mobileOTP);
+			DeviceEntity device = this.deviceDAO
+					.getDevice(this.deviceSelection);
+			loginname = this.authenticationService.authenticate(device,
+					this.mobile, this.challengeId, this.mobileOTP);
 			if (null == loginname) {
 				/*
 				 * The abort will be correctly handled by the authentication
@@ -120,6 +127,10 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
 			return null;
+		} catch (DeviceNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
 		}
 
 		super.login(loginname, this.deviceSelection);
@@ -131,8 +142,8 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 	public String requestOTP() {
 		LOG.debug("request OTP: mobile=" + this.mobile);
 		try {
-			this.challengeId = this.authenticationService.requestMobileOTP(
-					this.deviceSelection, this.mobile);
+			this.challengeId = this.authenticationService
+					.requestMobileOTP(this.mobile);
 			LOG.debug("received challengeId: " + this.challengeId);
 		} catch (MalformedURLException e) {
 			LOG.debug("requestOTP: MalformedURLException thrown: "

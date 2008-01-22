@@ -72,6 +72,10 @@ public class DeviceDAOBean implements DeviceDAO {
 		return result;
 	}
 
+	public List<DeviceEntity> listDevices(DeviceClassEntity deviceClass) {
+		return this.queryObject.listDevices(deviceClass);
+	}
+
 	public DeviceEntity findDevice(String deviceName) {
 		return this.entityManager.find(DeviceEntity.class, deviceName);
 	}
@@ -82,6 +86,11 @@ public class DeviceDAOBean implements DeviceDAO {
 			throw new DeviceNotFoundException();
 		}
 		return device;
+	}
+
+	public void removeDevice(String deviceName) {
+		DeviceEntity device = findDevice(deviceName);
+		this.entityManager.remove(device);
 	}
 
 	public List<DeviceDescriptionEntity> listDescriptions(DeviceEntity device) {

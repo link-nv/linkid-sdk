@@ -17,6 +17,7 @@ import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingDeviceClassDescriptionException;
 import net.link.safeonline.entity.DeviceClassDescriptionEntity;
 import net.link.safeonline.entity.DeviceClassDescriptionPK;
 import net.link.safeonline.entity.DeviceClassEntity;
@@ -123,6 +124,12 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
 							+ this.selectedDeviceClass.getName());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceClassNotFound");
+			return null;
+		} catch (ExistingDeviceClassDescriptionException e) {
+			LOG.debug("device class description already exists");
+			this.facesMessages.addToControlFromResourceBundle("language",
+					FacesMessage.SEVERITY_ERROR,
+					"errorDeviceClassDescriptionAlreadyExists");
 			return null;
 		}
 		return "success";

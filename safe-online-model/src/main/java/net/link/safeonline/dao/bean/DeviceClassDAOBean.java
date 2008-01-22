@@ -47,6 +47,11 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
 		return deviceClass;
 	}
 
+	public void removeDeviceClass(String name) {
+		DeviceClassEntity deviceClass = findDeviceClass(name);
+		this.entityManager.remove(deviceClass);
+	}
+
 	public DeviceClassEntity findDeviceClass(String deviceClassName) {
 		return this.entityManager
 				.find(DeviceClassEntity.class, deviceClassName);

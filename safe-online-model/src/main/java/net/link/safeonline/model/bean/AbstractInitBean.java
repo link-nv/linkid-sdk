@@ -55,8 +55,14 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DeviceClassDescriptionEntity;
+import net.link.safeonline.entity.DeviceClassDescriptionPK;
 import net.link.safeonline.entity.DeviceClassEntity;
+import net.link.safeonline.entity.DeviceDescriptionEntity;
+import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DevicePropertyEntity;
+import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -217,6 +223,21 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
+	protected static class DeviceClassDescription {
+		final String deviceClassName;
+
+		final String language;
+
+		final String description;
+
+		public DeviceClassDescription(String deviceClassName, String language,
+				String description) {
+			this.deviceClassName = deviceClassName;
+			this.language = language;
+			this.description = description;
+		}
+	}
+
 	protected static class Device {
 		final String deviceName;
 
@@ -240,7 +261,35 @@ public abstract class AbstractInitBean implements Startable {
 			this.removalURL = removalURL;
 			this.certificate = certificate;
 		}
+	}
 
+	protected static class DeviceDescription {
+		final String deviceName;
+
+		final String language;
+
+		final String description;
+
+		public DeviceDescription(String deviceName, String language,
+				String description) {
+			this.deviceName = deviceName;
+			this.language = language;
+			this.description = description;
+		}
+	}
+
+	protected static class DeviceProperty {
+		final String deviceName;
+
+		final String name;
+
+		final String value;
+
+		public DeviceProperty(String deviceName, String name, String value) {
+			this.deviceName = deviceName;
+			this.name = name;
+			this.value = value;
+		}
 	}
 
 	protected List<Subscription> subscriptions;
@@ -271,7 +320,13 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected List<DeviceClass> deviceClasses;
 
+	protected List<DeviceClassDescription> deviceClassDescriptions;
+
 	protected List<Device> devices;
+
+	protected List<DeviceDescription> deviceDescriptions;
+
+	protected List<DeviceProperty> deviceProperties;
 
 	public AbstractInitBean() {
 		this.applicationOwnersAndLogin = new HashMap<String, String>();
@@ -286,7 +341,10 @@ public abstract class AbstractInitBean implements Startable {
 		this.attributeProviders = new LinkedList<AttributeProviderEntity>();
 		this.attributes = new LinkedList<AttributeEntity>();
 		this.deviceClasses = new LinkedList<DeviceClass>();
+		this.deviceClassDescriptions = new LinkedList<DeviceClassDescription>();
 		this.devices = new LinkedList<Device>();
+		this.deviceDescriptions = new LinkedList<DeviceDescription>();
+		this.deviceProperties = new LinkedList<DeviceProperty>();
 		this.allowedDevices = new HashMap<String, List<String>>();
 	}
 
@@ -328,7 +386,10 @@ public abstract class AbstractInitBean implements Startable {
 			initAttributeProviders();
 			initAttributes();
 			initDeviceClasses();
+			initDeviceClassDescriptions();
 			initDevices();
+			initDeviceDescriptions();
+			initDeviceProperties();
 			initAllowedDevices();
 		} catch (SafeOnlineException e) {
 			this.LOG.fatal("safeonline exception", e);
@@ -653,6 +714,29 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
+	private void initDeviceClassDescriptions() {
+		for (DeviceClassDescription deviceClassDescription : this.deviceClassDescriptions) {
+			DeviceClassDescriptionEntity existingDescription = this.deviceClassDAO
+					.findDescription(new DeviceClassDescriptionPK(
+							deviceClassDescription.deviceClassName,
+							deviceClassDescription.language));
+			if (null != existingDescription)
+				continue;
+			DeviceClassEntity deviceClass;
+			try {
+				deviceClass = this.deviceClassDAO
+						.getDeviceClass(deviceClassDescription.deviceClassName);
+			} catch (DeviceClassNotFoundException e) {
+				throw new EJBException("device class not found: "
+						+ deviceClassDescription.deviceClassName);
+			}
+			this.deviceClassDAO.addDescription(deviceClass,
+					new DeviceClassDescriptionEntity(deviceClass,
+							deviceClassDescription.language,
+							deviceClassDescription.description));
+		}
+	}
+
 	private void initDevices() throws DeviceClassNotFoundException {
 		for (Device device : this.devices) {
 			DeviceEntity deviceEntity = this.deviceDAO
@@ -665,6 +749,46 @@ public abstract class AbstractInitBean implements Startable {
 						device.registrationURL, device.removalURL,
 						device.certificate);
 			}
+		}
+	}
+
+	private void initDeviceDescriptions() {
+		for (DeviceDescription deviceDescription : this.deviceDescriptions) {
+			DeviceDescriptionEntity existingDescription = this.deviceDAO
+					.findDescription(new DeviceDescriptionPK(
+							deviceDescription.deviceName,
+							deviceDescription.language));
+			if (null != existingDescription)
+				continue;
+			DeviceEntity device;
+			try {
+				device = this.deviceDAO.getDevice(deviceDescription.deviceName);
+			} catch (DeviceNotFoundException e) {
+				throw new EJBException("device not found: "
+						+ deviceDescription.deviceName);
+			}
+			this.deviceDAO.addDescription(device, new DeviceDescriptionEntity(
+					device, deviceDescription.language,
+					deviceDescription.description));
+		}
+	}
+
+	private void initDeviceProperties() {
+		for (DeviceProperty deviceProperty : this.deviceProperties) {
+			DevicePropertyEntity existingProperty = this.deviceDAO
+					.findProperty(new DevicePropertyPK(
+							deviceProperty.deviceName, deviceProperty.name));
+			if (null != existingProperty)
+				continue;
+			DeviceEntity device;
+			try {
+				device = this.deviceDAO.getDevice(deviceProperty.deviceName);
+			} catch (DeviceNotFoundException e) {
+				throw new EJBException("device not found: "
+						+ deviceProperty.deviceName);
+			}
+			this.deviceDAO.addProperty(device, new DevicePropertyEntity(device,
+					deviceProperty.name, deviceProperty.value));
 		}
 	}
 

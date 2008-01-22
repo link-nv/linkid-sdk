@@ -8,13 +8,11 @@
 package net.link.safeonline.data;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-import net.link.safeonline.authentication.service.AuthenticationDevice;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 
@@ -36,7 +34,7 @@ public class AccountMergingDO implements Serializable {
 
 	private SubjectEntity sourceSubject;
 
-	private Set<AuthenticationDevice> neededProvenDevices;
+	private List<DeviceEntity> neededProvenDevices;
 
 	private List<SubscriptionEntity> preservedSubscriptions;
 
@@ -60,13 +58,13 @@ public class AccountMergingDO implements Serializable {
 		return this.sourceSubject;
 	}
 
-	public Set<AuthenticationDevice> getNeededProvenDevices() {
+	public List<DeviceEntity> getNeededProvenDevices() {
 		return this.neededProvenDevices;
 	}
 
-	public void addNeededProvenDevices(Set<AuthenticationDevice> devices) {
+	public void addNeededProvenDevices(List<DeviceEntity> devices) {
 		if (null == this.neededProvenDevices)
-			this.neededProvenDevices = new HashSet<AuthenticationDevice>();
+			this.neededProvenDevices = new LinkedList<DeviceEntity>();
 		this.neededProvenDevices.addAll(devices);
 	}
 
@@ -176,8 +174,8 @@ public class AccountMergingDO implements Serializable {
 		}
 		LOG.debug("Needed proven devices:");
 		if (null != this.neededProvenDevices) {
-			for (AuthenticationDevice device : this.neededProvenDevices) {
-				LOG.debug("  * " + device.getDeviceName());
+			for (DeviceEntity device : this.neededProvenDevices) {
+				LOG.debug("  * " + device.getName());
 			}
 		}
 		LOG.debug("Preserved attributes:");

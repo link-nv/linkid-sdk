@@ -54,7 +54,11 @@ public class SafeOnlineConstants {
 
 	public static final String PASSWORD_ALGORITHM_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:password:algorithm";
 
-	public static final String USERNAME_PASSWORD_AUTH_DEVICE = "password";
+	public static final String USERNAME_PASSWORD_DEVICE_ID = "password";
+
+	public static final String BEID_DEVICE_ID = "beid";
+
+	public static final String ENCAP_DEVICE_ID = "mobileWeak";
 
 	/**
 	 * The PKI trust domain name for the SafeOnline devices.

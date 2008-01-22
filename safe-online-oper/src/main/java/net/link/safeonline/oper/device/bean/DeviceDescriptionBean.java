@@ -17,6 +17,7 @@ import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingDeviceDescriptionException;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
@@ -118,6 +119,12 @@ public class DeviceDescriptionBean implements DeviceDescription {
 			LOG.debug("device not found: " + this.selectedDevice.getName());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
+		} catch (ExistingDeviceDescriptionException e) {
+			LOG.debug("device description already exists");
+			this.facesMessages.addToControlFromResourceBundle("language",
+					FacesMessage.SEVERITY_ERROR,
+					"errorDeviceDescriptionAlreadyExists");
 			return null;
 		}
 		return "success";

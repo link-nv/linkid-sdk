@@ -63,8 +63,7 @@ public class AbstractLoginBean {
 	 * @param username
 	 * @param inputAuthenticationDevice
 	 */
-	protected void login(String inputUsername,
-			AuthenticationDevice inputAuthenticationDevice) {
+	protected void login(String inputUsername, String inputAuthenticationDevice) {
 		this.log.debug("login using: " + inputUsername + " via device: "
 				+ inputAuthenticationDevice);
 		this.username = this.subjectService.findSubjectFromUserName(
@@ -78,8 +77,9 @@ public class AbstractLoginBean {
 	 * 
 	 * @param inputAuthenticationDevice
 	 */
-	protected void relogin(AuthenticationDevice inputAuthenticationDevice) {
-		this.authenticationDevice = inputAuthenticationDevice;
+	protected void relogin(String inputAuthenticationDevice) {
+		this.authenticationDevice = AuthenticationDevice
+				.getAuthenticationDevice(inputAuthenticationDevice);
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		String redirectUrl = "../login";

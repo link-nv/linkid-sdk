@@ -7,12 +7,16 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
+import net.link.safeonline.entity.DeviceEntity;
 
 /**
  * Interface for device policy service bean.
@@ -35,7 +39,7 @@ public interface DevicePolicyService {
 	 * @throws ApplicationNotFoundException
 	 * @throws EmptyDevicePolicyException
 	 */
-	Set<AuthenticationDevice> getDevicePolicy(String applicationId,
+	List<DeviceEntity> getDevicePolicy(String applicationId,
 			Set<AuthenticationDevice> requiredDevicePolicy)
 			throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
@@ -43,5 +47,34 @@ public interface DevicePolicyService {
 	 * Returns all devices
 	 * 
 	 */
-	Set<AuthenticationDevice> getDevices();
+	List<DeviceEntity> getDevices();
+
+	/**
+	 * Gives back device description according to the specified locale.
+	 * 
+	 * @param deviceName
+	 * @param locale
+	 * @return
+	 */
+	String getDeviceDescription(String deviceName, Locale locale);
+
+	/**
+	 * Returns the authentication URL for the specified device.
+	 * 
+	 * @param deviceName
+	 * @return
+	 * @throws DeviceNotFoundException
+	 */
+	String getAuthenticationURL(String deviceName)
+			throws DeviceNotFoundException;
+
+	/**
+	 * Returns the registration URL for the specified device.
+	 * 
+	 * @param deviceName
+	 * @return
+	 * @throws DeviceNotFoundException
+	 */
+	String getRegistrationURL(String deviceName) throws DeviceNotFoundException;
+
 }

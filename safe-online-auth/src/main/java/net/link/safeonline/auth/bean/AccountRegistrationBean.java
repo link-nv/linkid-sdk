@@ -7,11 +7,11 @@
 
 package net.link.safeonline.auth.bean;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.MissingResourceException;
-import java.util.Set;
+import java.util.Locale;
 
 import javax.ejb.EJB;
 import javax.ejb.Remove;
@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AccountRegistration;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
@@ -32,10 +33,11 @@ import net.link.safeonline.authentication.exception.MobileAuthenticationExceptio
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 
@@ -49,7 +51,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.core.ResourceBundle;
 import org.jboss.seam.log.Log;
 
 import com.octo.captcha.service.CaptchaServiceException;
@@ -67,6 +68,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
+
+	@EJB
+	private DeviceDAO deviceDAO;
 
 	@In
 	private AuthenticationService authenticationService;
@@ -179,7 +183,26 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			return null;
 		}
 		this.log.debug("device: " + this.device);
-		return this.device;
+		String registrationURL;
+		try {
+			registrationURL = this.devicePolicyService
+					.getRegistrationURL(this.device);
+		} catch (DeviceNotFoundException e) {
+			this.log.error("device not found: " + this.device);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
+		}
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		try {
+			externalContext.redirect(registrationURL);
+		} catch (IOException e) {
+			this.log.debug("IO error: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
+		}
+		return null;
 	}
 
 	public String getDevice() {
@@ -233,7 +256,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			return null;
 		}
 
-		super.login(this.login, AuthenticationDevice.PASSWORD);
+		super
+				.login(this.login,
+						SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 		return null;
 	}
 
@@ -260,10 +285,9 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	public String mobileNext() {
 		this.log.debug("mobileNext");
 		super.clearUsername();
-
 		try {
-			this.authenticationService.authenticate(
-					AuthenticationDevice.WEAK_MOBILE, this.mobile,
+			DeviceEntity deviceEntity = this.deviceDAO.getDevice(this.device);
+			this.authenticationService.authenticate(deviceEntity, this.mobile,
 					this.challengeId, this.mobileOTP);
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
@@ -287,9 +311,13 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
 			return null;
+		} catch (DeviceNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
 		}
 
-		super.login(this.login, AuthenticationDevice.WEAK_MOBILE);
+		super.login(this.login, SafeOnlineConstants.ENCAP_DEVICE_ID);
 		this.challengeId = null;
 		return null;
 	}
@@ -343,33 +371,20 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	@Factory("allDevices")
 	public List<SelectItem> allDevicesFactory() {
 		this.log.debug("all devices factory");
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
 		List<SelectItem> allDevices = new LinkedList<SelectItem>();
-		Set<AuthenticationDevice> devices = this.devicePolicyService
-				.getDevices();
-		for (AuthenticationDevice authDevice : devices) {
-			String deviceName = authDevice.getDeviceName();
-			SelectItem allDevice = new SelectItem(deviceName);
+
+		List<DeviceEntity> devices = this.devicePolicyService.getDevices();
+
+		for (DeviceEntity deviceEntity : devices) {
+			String deviceName = this.devicePolicyService.getDeviceDescription(
+					deviceEntity.getName(), viewLocale);
+			SelectItem allDevice = new SelectItem(deviceEntity.getName(),
+					deviceName);
 			allDevices.add(allDevice);
 		}
-		deviceNameDecoration(allDevices);
 		return allDevices;
-	}
-
-	private void deviceNameDecoration(List<SelectItem> selectItems) {
-		for (SelectItem selectItem : selectItems) {
-			String deviceId = (String) selectItem.getValue();
-			try {
-				java.util.ResourceBundle bundle = ResourceBundle.instance();
-				String deviceName = bundle.getString(deviceId);
-				if (null == deviceName) {
-					deviceName = deviceId;
-				}
-				selectItem.setLabel(deviceName);
-
-			} catch (MissingResourceException e) {
-				this.log.debug("resource not found: " + deviceId);
-			}
-		}
 	}
 
 	public String getMobileOTP() {

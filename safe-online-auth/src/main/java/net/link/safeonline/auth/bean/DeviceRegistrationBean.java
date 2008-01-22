@@ -7,28 +7,32 @@
 
 package net.link.safeonline.auth.bean;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.MissingResourceException;
-import java.util.Set;
+import java.util.Locale;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.DeviceRegistration;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.entity.DeviceEntity;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -41,7 +45,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
-import org.jboss.seam.core.ResourceBundle;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -84,7 +87,26 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String deviceNext() {
 		this.log.debug("deviceNext: " + this.device);
-		return this.device;
+		String registrationURL;
+		try {
+			registrationURL = this.devicePolicyService
+					.getRegistrationURL(this.device);
+		} catch (DeviceNotFoundException e) {
+			this.log.error("device not found: " + this.device);
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
+		}
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		try {
+			externalContext.redirect(registrationURL);
+		} catch (IOException e) {
+			this.log.debug("IO error: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
+		}
+		return null;
 	}
 
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
@@ -112,7 +134,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
-		super.relogin(AuthenticationDevice.PASSWORD);
+		super.relogin(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 		return null;
 	}
 
@@ -198,32 +220,20 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	@Factory("allDevices")
 	public List<SelectItem> allDevicesFactory() {
 		this.log.debug("all devices factory");
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
 		List<SelectItem> allDevices = new LinkedList<SelectItem>();
-		Set<AuthenticationDevice> devices = this.devicePolicyService
-				.getDevices();
-		for (AuthenticationDevice authDevice : devices) {
-			String deviceName = authDevice.getDeviceName();
-			SelectItem allDevice = new SelectItem(deviceName);
+
+		List<DeviceEntity> devices = this.devicePolicyService.getDevices();
+
+		for (DeviceEntity deviceEntity : devices) {
+			String deviceName = this.devicePolicyService.getDeviceDescription(
+					deviceEntity.getName(), viewLocale);
+			SelectItem allDevice = new SelectItem(deviceEntity.getName(),
+					deviceName);
 			allDevices.add(allDevice);
 		}
-		deviceNameDecoration(allDevices);
 		return allDevices;
 	}
 
-	private void deviceNameDecoration(List<SelectItem> selectItems) {
-		for (SelectItem selectItem : selectItems) {
-			String deviceId = (String) selectItem.getValue();
-			try {
-				java.util.ResourceBundle bundle = ResourceBundle.instance();
-				String deviceName = bundle.getString(deviceId);
-				if (null == deviceName) {
-					deviceName = deviceId;
-				}
-				selectItem.setLabel(deviceName);
-
-			} catch (MissingResourceException e) {
-				this.log.debug("resource not found: " + deviceId);
-			}
-		}
-	}
 }

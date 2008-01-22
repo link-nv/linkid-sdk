@@ -16,6 +16,4 @@ public class EncapConstants {
 	}
 
 	public static final int ENCAP_BOOT_PRIORITY = Startable.PRIORITY_BOOTSTRAP - 1;
-
-	public static final String ENCAP_DEVICE_ID = "mobileWeak";
 }

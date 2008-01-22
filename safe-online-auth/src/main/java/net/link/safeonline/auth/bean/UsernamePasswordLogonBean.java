@@ -12,11 +12,11 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.UsernamePasswordLogon;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
@@ -104,7 +104,8 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements
 			return null;
 		}
 
-		super.login(this.loginname, AuthenticationDevice.PASSWORD);
+		super.login(this.loginname,
+				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 
 		HelpdeskLogger.clear();
 		return null;

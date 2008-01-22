@@ -16,6 +16,7 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.authentication.exception.ExistingDeviceClassException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.device.DeviceClass;
@@ -105,6 +106,16 @@ public class DeviceClassBean implements DeviceClass {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String remove() {
 		LOG.debug("remove device class: " + this.selectedDeviceClass.getName());
+		try {
+			this.deviceService.removeDeviceClass(this.selectedDeviceClass
+					.getName());
+		} catch (PermissionDeniedException e) {
+			LOG.debug("permission denied: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			return null;
+		}
+		deviceClassListFactory();
 		return "success";
 	}
 

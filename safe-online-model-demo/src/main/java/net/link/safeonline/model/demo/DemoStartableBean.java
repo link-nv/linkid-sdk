@@ -219,7 +219,7 @@ public class DemoStartableBean extends AbstractInitBean {
 								false) }));
 
 		List<String> tempAllowedDevices = new LinkedList<String>();
-		tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
+		tempAllowedDevices.add(SafeOnlineConstants.BEID_DEVICE_ID);
 		this.allowedDevices.put(DEMO_TICKET_APPLICATION_NAME,
 				tempAllowedDevices);
 

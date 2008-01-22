@@ -183,6 +183,8 @@ public class DeviceBean implements Device {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String remove() {
 		LOG.debug("remove device: " + this.selectedDevice.getName());
+		this.deviceService.removeDevice(this.selectedDevice.getName());
+		deviceListFactory();
 		return "success";
 	}
 

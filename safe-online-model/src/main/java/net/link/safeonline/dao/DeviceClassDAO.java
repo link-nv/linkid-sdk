@@ -27,6 +27,8 @@ public interface DeviceClassDAO {
 	DeviceClassEntity getDeviceClass(String deviceClassName)
 			throws DeviceClassNotFoundException;
 
+	void removeDeviceClass(String name);
+
 	List<DeviceClassEntity> listDeviceClasses();
 
 	List<DeviceClassDescriptionEntity> listDescriptions(

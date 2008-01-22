@@ -43,6 +43,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -260,7 +261,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
 	private SubscriptionDO getSubscriptionDO(SubscriptionEntity subscription)
 			throws ApplicationNotFoundException, EmptyDevicePolicyException {
-		Set<AuthenticationDevice> allowedDevices = null;
+		List<DeviceEntity> allowedDevices = null;
 		if (subscription.getApplication().isDeviceRestriction())
 			allowedDevices = this.devicePolicyService.getDevicePolicy(
 					subscription.getApplication().getName(), null);
