@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -58,9 +58,8 @@ public class PerformanceStartableBean extends AbstractInitBean {
 		/*
 		 * Register the application and the application certificate.
 		 */
-		this.trustedCertificates.put(
-				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-				perfCertificate);
+		this.trustedCertificates.put(perfCertificate,
+				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 		this.registeredApplications.add(new Application(
 				PERFORMANCE_APPLICATION_NAME, "owner", null, null, getLogo(),
 				null, true, false, perfCertificate, true, IdScopeType.USER));
