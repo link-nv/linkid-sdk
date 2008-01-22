@@ -194,7 +194,6 @@
 					create-drop
 				</safe-online.hibernate.hbm2ddl.auto>
 				<safe-online.show.sql>true</safe-online.show.sql>
-				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>8080</safe-online.host.port>
 				<safe-online.host.port.ssl>
 					8443
