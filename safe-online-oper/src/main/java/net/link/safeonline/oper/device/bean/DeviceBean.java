@@ -77,6 +77,8 @@ public class DeviceBean implements Device {
 
 	private String registrationURL;
 
+	private String newAccountRegistrationURL;
+
 	private String removalURL;
 
 	private UploadedFile certificate;
@@ -159,7 +161,8 @@ public class DeviceBean implements Device {
 		try {
 			this.deviceService.addDevice(this.name, this.deviceClass,
 					this.authenticationURL, this.registrationURL,
-					this.removalURL, encodedCertificate);
+					this.newAccountRegistrationURL, this.removalURL,
+					encodedCertificate);
 		} catch (CertificateEncodingException e) {
 			LOG.debug("X509 certificate encoding error");
 			this.facesMessages.addToControlFromResourceBundle("fileupload",
@@ -194,6 +197,8 @@ public class DeviceBean implements Device {
 
 		this.authenticationURL = this.selectedDevice.getAuthenticationURL();
 		this.registrationURL = this.selectedDevice.getRegistrationURL();
+		this.newAccountRegistrationURL = this.selectedDevice
+				.getNewAccountRegistrationURL();
 		this.removalURL = this.selectedDevice.getRemovalURL();
 
 		return "edit";
@@ -210,6 +215,9 @@ public class DeviceBean implements Device {
 			if (null != this.registrationURL)
 				this.deviceService.updateRegistrationUrl(deviceName,
 						this.registrationURL);
+			if (null != this.newAccountRegistrationURL)
+				this.deviceService.updateNewAccountRegistrationUrl(deviceName,
+						this.newAccountRegistrationURL);
 			if (null != this.removalURL)
 				this.deviceService
 						.updateRemovalUrl(deviceName, this.removalURL);
@@ -296,6 +304,16 @@ public class DeviceBean implements Device {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String getNewAccountRegistrationURL() {
+		return this.newAccountRegistrationURL;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setNewAccountRegistrationURL(String newAccountRegistrationURL) {
+		this.newAccountRegistrationURL = newAccountRegistrationURL;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String getRemovalURL() {
 		return this.removalURL;
 	}
@@ -314,4 +332,5 @@ public class DeviceBean implements Device {
 	public void setCertificate(UploadedFile certificate) {
 		this.certificate = certificate;
 	}
+
 }

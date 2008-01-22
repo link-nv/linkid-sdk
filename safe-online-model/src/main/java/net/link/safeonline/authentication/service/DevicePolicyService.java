@@ -77,4 +77,15 @@ public interface DevicePolicyService {
 	 */
 	String getRegistrationURL(String deviceName) throws DeviceNotFoundException;
 
+	/**
+	 * Returns the registration URL when user also creates his account for the
+	 * specified device.
+	 * 
+	 * @param deviceName
+	 * @return
+	 * @throws DeviceNotFoundException
+	 */
+	String getNewAccountRegistrationURL(String device)
+			throws DeviceNotFoundException;
+
 }

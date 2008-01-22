@@ -54,7 +54,8 @@ public class EncapStartableBean extends AbstractInitBean {
 
 		this.devices.add(new Device(SafeOnlineConstants.ENCAP_DEVICE_ID,
 				SafeOnlineConstants.MOBILE_DEVICE_CLASS, "encap/mobile.seam",
-				"encap/register-mobile.seam", null, certificate));
+				"encap/register-mobile.seam", "encap/new-user-mobile.seam",
+				null, certificate));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
 		this.deviceDescriptions.add(new DeviceDescription(

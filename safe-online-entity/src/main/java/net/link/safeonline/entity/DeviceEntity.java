@@ -66,6 +66,8 @@ public class DeviceEntity implements Serializable {
 
 	private String registrationURL;
 
+	private String newAccountRegistrationURL;
+
 	private String removalURL;
 
 	private byte[] encodedCert;
@@ -93,11 +95,13 @@ public class DeviceEntity implements Serializable {
 
 	public DeviceEntity(String name, DeviceClassEntity deviceClass,
 			String authenticationURL, String registrationURL,
-			String removalURL, X509Certificate certificate) {
+			String newAccountRegistrationURL, String removalURL,
+			X509Certificate certificate) {
 		this.name = name;
 		this.deviceClass = deviceClass;
 		this.authenticationURL = authenticationURL;
 		this.registrationURL = registrationURL;
+		this.newAccountRegistrationURL = newAccountRegistrationURL;
 		this.removalURL = removalURL;
 		this.properties = new HashMap<String, DevicePropertyEntity>();
 		this.descriptions = new HashMap<String, DeviceDescriptionEntity>();
@@ -176,6 +180,19 @@ public class DeviceEntity implements Serializable {
 
 	public void setRegistrationURL(String registrationURL) {
 		this.registrationURL = registrationURL;
+	}
+
+	/**
+	 * Retrieves the URL used when creating a new account with this device as
+	 * initial device.
+	 * 
+	 */
+	public String getNewAccountRegistrationURL() {
+		return this.newAccountRegistrationURL;
+	}
+
+	public void setNewAccountRegistrationURL(String newAccountRegistrationURL) {
+		this.newAccountRegistrationURL = newAccountRegistrationURL;
 	}
 
 	/**
@@ -322,4 +339,5 @@ public class DeviceEntity implements Serializable {
 		List<DeviceEntity> listDevices(@QueryParam("deviceClass")
 		DeviceClassEntity deviceClass);
 	}
+
 }

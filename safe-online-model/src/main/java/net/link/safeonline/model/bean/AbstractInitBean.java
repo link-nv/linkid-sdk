@@ -249,15 +249,19 @@ public abstract class AbstractInitBean implements Startable {
 
 		final String registrationURL;
 
+		final String newAccountRegistrationURL;
+
 		final String removalURL;
 
 		public Device(String deviceName, String deviceClassName,
 				String authenticationURL, String registrationURL,
-				String removalURL, X509Certificate certificate) {
+				String newAccountRegistrationURL, String removalURL,
+				X509Certificate certificate) {
 			this.deviceName = deviceName;
 			this.deviceClassName = deviceClassName;
 			this.authenticationURL = authenticationURL;
 			this.registrationURL = registrationURL;
+			this.newAccountRegistrationURL = newAccountRegistrationURL;
 			this.removalURL = removalURL;
 			this.certificate = certificate;
 		}
@@ -746,7 +750,8 @@ public abstract class AbstractInitBean implements Startable {
 						.getDeviceClass(device.deviceClassName);
 				deviceEntity = this.deviceDAO.addDevice(device.deviceName,
 						deviceClassEntity, device.authenticationURL,
-						device.registrationURL, device.removalURL,
+						device.registrationURL,
+						device.newAccountRegistrationURL, device.removalURL,
 						device.certificate);
 			}
 		}

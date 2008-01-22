@@ -166,4 +166,10 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
 		return device.getRegistrationURL();
 	}
+
+	public String getNewAccountRegistrationURL(String deviceName)
+			throws DeviceNotFoundException {
+		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+		return device.getNewAccountRegistrationURL();
+	}
 }

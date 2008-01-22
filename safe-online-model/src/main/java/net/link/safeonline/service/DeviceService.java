@@ -60,9 +60,9 @@ public interface DeviceService {
 
 	void addDevice(String name, String deviceClassName,
 			String authenticationURL, String registrationURL,
-			String removalURL, byte[] encodedCertificate)
-			throws CertificateEncodingException, DeviceClassNotFoundException,
-			ExistingDeviceException;
+			String newAccountRegistrationURL, String removalURL,
+			byte[] encodedCertificate) throws CertificateEncodingException,
+			DeviceClassNotFoundException, ExistingDeviceException;
 
 	void removeDevice(String name);
 
@@ -98,5 +98,8 @@ public interface DeviceService {
 	void saveDeviceProperty(DevicePropertyEntity property);
 
 	void saveDeviceClassDescription(DeviceClassDescriptionEntity description);
+
+	void updateNewAccountRegistrationUrl(String deviceName,
+			String newAccountRegistrationURL) throws DeviceNotFoundException;
 
 }

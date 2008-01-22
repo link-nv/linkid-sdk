@@ -183,10 +183,10 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			return null;
 		}
 		this.log.debug("device: " + this.device);
-		String registrationURL;
+		String newAccountRegistrationURL;
 		try {
-			registrationURL = this.devicePolicyService
-					.getRegistrationURL(this.device);
+			newAccountRegistrationURL = this.devicePolicyService
+					.getNewAccountRegistrationURL(this.device);
 		} catch (DeviceNotFoundException e) {
 			this.log.error("device not found: " + this.device);
 			this.facesMessages.addFromResourceBundle(
@@ -196,7 +196,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		try {
-			externalContext.redirect(registrationURL);
+			externalContext.redirect(newAccountRegistrationURL);
 		} catch (IOException e) {
 			this.log.debug("IO error: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
@@ -222,7 +222,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	public String passwordNext() {
 		this.log.debug("passwordNext");
-
+		this.login = this.requestedUsername;
 		super.clearUsername();
 
 		try {
@@ -284,6 +284,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	public String mobileNext() {
 		this.log.debug("mobileNext");
+		this.login = this.requestedUsername;
 		super.clearUsername();
 		try {
 			DeviceEntity deviceEntity = this.deviceDAO.getDevice(this.device);

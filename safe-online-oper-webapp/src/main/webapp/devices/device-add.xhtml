@@ -52,6 +52,11 @@
 					<h:inputText id="regUrl" value="#{operDevice.registrationURL}"
 						styleClass="label" />
 					<h:message for="regUrl" styleClass="error" />
+					<h:outputLabel for="newRegUrl"
+						value="#{msgs.newAccountRegistrationUrl}" />
+					<h:inputText id="newRegUrl"
+						value="#{operDevice.newAccountRegistrationURL}" styleClass="label" />
+					<h:message for="newRegUrl" styleClass="error" />
 					<h:outputLabel for="remUrl" value="#{msgs.removalUrl}" />
 					<h:inputText id="remUrl" value="#{operDevice.removalURL}"
 						styleClass="label" />

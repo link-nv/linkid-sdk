@@ -14,8 +14,10 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import junit.framework.TestCase;
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.bean.AuthenticationServiceBean;
 import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
@@ -23,6 +25,8 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.DeviceClassEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -49,6 +53,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 	private StatisticDAO mockStatisticDAO;
 
 	private StatisticDataPointDAO mockStatisticDataPointDAO;
+
+	private DeviceDAO mockDeviceDAO;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -79,12 +85,16 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		EJBTestUtils
 				.inject(this.testedInstance, this.mockStatisticDataPointDAO);
 
+		this.mockDeviceDAO = createMock(DeviceDAO.class);
+		EJBTestUtils.inject(this.testedInstance, this.mockDeviceDAO);
+
 		EJBTestUtils.init(this.testedInstance);
 
 		this.mockObjects = new Object[] { this.mockSubjectService,
 				this.mockPasswordDeviceService, this.mockApplicationDAO,
 				this.mockSubscriptionDAO, this.mockHistoryDAO,
-				this.mockStatisticDAO, this.mockStatisticDataPointDAO };
+				this.mockStatisticDAO, this.mockStatisticDataPointDAO,
+				this.mockDeviceDAO };
 	}
 
 	public void testAuthenticate() throws Exception {
@@ -125,6 +135,16 @@ public class AuthenticationServiceBeanTest extends TestCase {
 				this.mockStatisticDataPointDAO.findOrAddStatisticDataPoint(
 						"Login counter", statistic)).andStubReturn(dataPoint);
 
+		DeviceClassEntity deviceClass = new DeviceClassEntity(
+				SafeOnlineConstants.PASSWORD_DEVICE_CLASS);
+		DeviceEntity device = new DeviceEntity(
+				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass,
+				null, null, null, null, null);
+		expect(
+				this.mockDeviceDAO
+						.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
+				.andReturn(device);
+
 		// prepare
 		replay(this.mockObjects);
 
@@ -135,5 +155,4 @@ public class AuthenticationServiceBeanTest extends TestCase {
 		verify(this.mockObjects);
 		assertTrue(result);
 	}
-
 }
