@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -17,7 +17,7 @@ import net.link.safeonline.performance.console.jgroups.Agent;
 
 /**
  * The MBean interface for {@link AgentService}.
- * 
+ *
  * @author mbillemo
  */
 public interface AgentServiceMBean extends Agent {
@@ -46,12 +46,9 @@ public interface AgentServiceMBean extends Agent {
 
 	/**
 	 * Execute the scenario and collect the charts.
-	 * 
-	 * @throws NamingException
-	 *             The scenario could not be found.
 	 */
-	public void execute(String hostname, Integer workers, Long duration)
-			throws NamingException;
+	public void execute(String hostname, Integer agents, Integer workers,
+			Long duration) throws NamingException;
 
 	/**
 	 * Called by JBoss when this service has been fully deployed and

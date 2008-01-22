@@ -135,13 +135,13 @@ public class ScenarioRemoting {
 	/**
 	 * Deploy the previously uploaded application.
 	 */
-	public void execute(Address agent, String olasHost, Integer workers,
-			Long duration) {
+	public void execute(Address agent, String olasHost, Integer agents,
+			Integer workers, Long duration) {
 
-		invokeFor(agent, "execute",
-				new Object[] { olasHost, workers, duration }, new String[] {
-						String.class.getName(), Integer.class.getName(),
-						Long.class.getName() });
+		invokeFor(agent, "execute", new Object[] { olasHost, agents, workers,
+				duration }, new String[] { String.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				Long.class.getName() });
 	}
 
 	/**
@@ -182,13 +182,12 @@ public class ScenarioRemoting {
 	}
 
 	/**
-	 * @see Agent#getCharts()
+	 * @see Agent#getStats()
 	 */
-	@SuppressWarnings("unchecked")
-	public List<byte[]> getCharts(Address agent) {
+	public ScenarioExecution getStats(Address agent) {
 
-		return (List<byte[]>) invokeFor(agent, "getCharts", new Object[] {},
-				new String[] {});
+		return (ScenarioExecution) invokeFor(agent, "getStats",
+				new Object[] {}, new String[] {});
 	}
 
 	/**

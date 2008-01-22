@@ -66,12 +66,16 @@ public class AgentRenderer extends DefaultListCellRenderer {
 				default:
 				}
 
+			AgentState state = agent.getState();
+			if (state == null)
+				state = AgentState.RESET;
+
 			setText(String
 					.format(
 							"<html><ul><li style='color: %s; font-family:monospace'>%s [%s]%s</li></ul></html>",
-							color, agent.getAddress(), (action == null ? agent
-									.getState().getState() : action
-									.getTransitioning()), error));
+							color, agent.getAddress(), (action == null ? state
+									.getState() : action.getTransitioning()),
+							error));
 		}
 
 		return this;

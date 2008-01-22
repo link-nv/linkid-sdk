@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,24 +88,30 @@ public class ScenarioBean implements ScenarioLocal {
 	public void execute(int executionId) throws Exception {
 
 		LOG.debug("building scenario: " + this.activeScenario);
-		Scenario scenario = null;
+		Scenario scenario = createScenario();
+
+		ExecutionEntity execution = this.executionService
+				.getExecution(executionId);
+		scenario.prepare(execution);
+
+		this.executionService.addStartTime(execution, System
+				.currentTimeMillis());
+		scenario.run();
+	}
+
+	/**
+	 * Create an instance of the scenario configured to run in the ejb-jar.
+	 */
+	private Scenario createScenario() {
+
 		try {
-			scenario = (Scenario) Thread.currentThread()
-					.getContextClassLoader().loadClass(this.activeScenario)
-					.newInstance();
+			return (Scenario) Thread.currentThread().getContextClassLoader()
+					.loadClass(this.activeScenario).newInstance();
 		} catch (Exception e) {
 			LOG.debug("Configured scenario '" + this.activeScenario
 					+ "' cannot be created.", e);
 			throw new RuntimeException(e);
 		}
-
-		ExecutionEntity execution = this.executionService
-				.getExecution(executionId);
-		scenario.prepare(execution);
-		this.executionService.addStartTime(execution, System
-				.currentTimeMillis());
-
-		scenario.run();
 	}
 
 	/**
@@ -116,18 +122,16 @@ public class ScenarioBean implements ScenarioLocal {
 
 		ExecutionEntity execution = this.executionService.addExecution(
 				this.activeScenario, hostname);
+		createScenario().prepare(execution);
 
 		return execution.getId();
 	}
 
-	public List<byte[]> createGraphs(int executionId) {
+	public Map<String, byte[][]> createGraphs(int executionId) {
 
 		ExecutionEntity execution = this.executionService
 				.getExecution(executionId);
 		Set<DriverProfileEntity> profiles = execution.getProfiles();
-
-		// Charts.
-		LinkedList<byte[]> charts = new LinkedList<byte[]>();
 
 		// List of charts generated as a result of this scenario.
 		CategoryAxis catAxis;
@@ -140,6 +144,8 @@ public class ScenarioBean implements ScenarioLocal {
 
 		// Collect data from drivers.
 		LOG.debug("BUILDING CHARTS FOR " + profiles.size() + " DRIVERS:");
+		Map<String, List<byte[]>> driversCharts = new LinkedHashMap<String, List<byte[]>>(
+				profiles.size());
 		for (DriverProfileEntity profile : profiles) {
 
 			// Invalid / empty driver profiles.
@@ -160,13 +166,10 @@ public class ScenarioBean implements ScenarioLocal {
 			XYSeries beforeMemorySet = new XYSeries("Memory Before", true,
 					false);
 
-			LOG.debug(" + driver: " + profile.getDriverName());
-			LOG.debug("   == DATA ==");
 			for (ProfileDataEntity data : profile.getProfileData()) {
 
 				if (data.getMeasurements() == null)
 					continue;
-				LOG.debug(" * time: " + data.getStartTime());
 
 				// Process the statistics.
 				long requestTime = data
@@ -210,13 +213,12 @@ public class ScenarioBean implements ScenarioLocal {
 				}
 			}
 
-			LOG.debug("   == ERRORS ==");
 			for (DriverExceptionEntity error : profile.getProfileError())
 				errorsSet.addValue((Number) 1, error.getMessage(), timeFormat
 						.format(error.getOccurredTime()));
 
 			// Calculate averages.
-			double speedAvg = 0, requestAvg = 0, memoryAvg = 0;
+			double requestAvg = 0, memoryAvg = 0;
 			for (Object item : requestSet.getItems())
 				if (item instanceof XYDataItem)
 					requestAvg += ((XYDataItem) item).getY().doubleValue();
@@ -229,9 +231,6 @@ public class ScenarioBean implements ScenarioLocal {
 			requestAvg /= requestSet.getItemCount();
 			memoryAvg /= beforeMemorySet.getItemCount()
 					+ afterMemorySet.getItemCount();
-			LOG.debug("speed avg: " + speedAvg);
-			LOG.debug("request avg: " + requestAvg);
-			LOG.debug("memory avg: " + memoryAvg);
 
 			// Convert XY data into XY Datasets and discard the temporary data.
 			DefaultTableXYDataset requestData = new DefaultTableXYDataset();
@@ -279,18 +278,21 @@ public class ScenarioBean implements ScenarioLocal {
 				timingAndMemoryPlot.add(timingPlot);
 			}
 
-			JFreeChart statisticsChart = new JFreeChart("Statistics for: "
-					+ profile.getDriverName(), timingAndMemoryPlot);
-			charts.add(getImage(statisticsChart, 1000, 1000));
+			List<byte[]> driverCharts = new ArrayList<byte[]>();
+			driversCharts.put(profile.getDriverName(), driverCharts);
+
+			JFreeChart statisticsChart = new JFreeChart(
+					"Method Call Durations:", timingAndMemoryPlot);
+			driverCharts.add(getImage(statisticsChart, 1000, 1000));
 
 			if (errorsSet.getRowCount() > 0) {
 				CategoryPlot errorsPlot = new CategoryPlot(errorsSet,
 						new CategoryAxis("Occurance"), errorAxis,
 						new BarRenderer());
 
-				JFreeChart errorsChart = new JFreeChart("Errors for: "
-						+ profile.getDriverName(), errorsPlot);
-				charts.add(getImage(errorsChart, 1000, 150));
+				JFreeChart errorsChart = new JFreeChart("Exceptions:",
+						errorsPlot);
+				driverCharts.add(getImage(errorsChart, 1000, 150));
 			}
 		}
 
@@ -307,7 +309,7 @@ public class ScenarioBean implements ScenarioLocal {
 					startTimes);
 
 			for (int period : new int[] { 1000, 60000, 3600000 }) {
-				XYSeries scenarioSpeedSeries = new XYSeries("Period Of "
+				XYSeries scenarioSpeedSeries = new XYSeries("Classes Of "
 						+ period / 1000 + "s", false, false);
 				DefaultTableXYDataset scenarioSpeedSet = new DefaultTableXYDataset();
 				scenarioSpeedSet.addSeries(scenarioSpeedSeries);
@@ -352,33 +354,38 @@ public class ScenarioBean implements ScenarioLocal {
 			}
 
 		// Scenario Charts.
-		DateAxis timeAxis = new DateAxis("Time");
+		DateAxis timeAxis = new DateAxis("Time (ms)");
+		valueAxis = new NumberAxis("Speed (#/s)");
 		CombinedDomainXYPlot speedPlot = new CombinedDomainXYPlot(timeAxis);
 		for (DefaultTableXYDataset scenarioSpeedSet : scenarioSpeedSets)
-			speedPlot
-					.add(new XYPlot(scenarioSpeedSet, timeAxis, new NumberAxis(
-							"Speed (#/s)"), new XYLineAndShapeRenderer()));
-		JFreeChart speedChart = new JFreeChart("Request Timings per Driver",
-				speedPlot);
+			speedPlot.add(new XYPlot(scenarioSpeedSet, timeAxis, valueAxis,
+					new XYLineAndShapeRenderer()));
+		JFreeChart speedChart = new JFreeChart(speedPlot);
 
 		catAxis = new CategoryAxis("Methods");
-		valueAxis = new NumberAxis("Time Elapsed");
+		valueAxis = new NumberAxis("Time Elapsed (ms)");
 		CategoryPlot timingPlot = new CategoryPlot(driversMethodSet, catAxis,
 				valueAxis, new BoxAndWhiskerRenderer());
-		JFreeChart methodChart = new JFreeChart("Method Timings per Driver",
-				timingPlot);
+		JFreeChart methodChart = new JFreeChart(timingPlot);
 
 		catAxis = new CategoryAxis("Methods");
-		valueAxis = new NumberAxis("Time Elapsed");
+		valueAxis = new NumberAxis("Time Elapsed (ms)");
 		CategoryPlot requestPlot = new CategoryPlot(driversRequestSet, catAxis,
 				valueAxis, new BoxAndWhiskerRenderer());
-		JFreeChart requestChart = new JFreeChart("Request Timings per Driver",
-				requestPlot);
+		JFreeChart requestChart = new JFreeChart(requestPlot);
 
-		// Images.
-		charts.addFirst(getImage(methodChart, 1000, 1000));
-		charts.addFirst(getImage(requestChart, 1000, 1000));
-		charts.addFirst(getImage(speedChart, 1000, 1000));
+		// Charts.
+		Map<String, byte[][]> charts = new LinkedHashMap<String, byte[][]>();
+		charts.put("Scenario Execution Speed", new byte[][] { getImage(
+				speedChart, 1000, 1000) });
+		charts.put("Request Duration per Driver", new byte[][] { getImage(
+				requestChart, 1000, 1000) });
+		charts.put("Method Duration per Driver", new byte[][] { getImage(
+				methodChart, 1000, 1000) });
+		for (Map.Entry<String, List<byte[]>> driverCharts : driversCharts
+				.entrySet())
+			charts.put(driverCharts.getKey(), driverCharts.getValue().toArray(
+					new byte[0][0]));
 
 		return charts;
 	}

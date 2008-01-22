@@ -15,7 +15,7 @@
  */
 package net.link.safeonline.performance.console.jgroups;
 
-import java.util.List;
+import net.link.safeonline.performance.console.ScenarioExecution;
 
 /**
  * <h2>{@link Agent} - [in short] (TODO).</h2>
@@ -43,7 +43,7 @@ public interface Agent {
 	/**
 	 * Retrieve charts created by this {@link Agent}'s scenario.
 	 */
-	public List<byte[]> getCharts();
+	public ScenarioExecution getStats();
 
 	/**
 	 * Request permission to start a certain action. If permission is granted,

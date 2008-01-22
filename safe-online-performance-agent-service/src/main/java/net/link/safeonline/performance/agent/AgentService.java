@@ -9,11 +9,11 @@ package net.link.safeonline.performance.agent;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.List;
 
 import javax.management.JMException;
 import javax.naming.NamingException;
 
+import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 
 import org.apache.commons.logging.Log;
@@ -29,10 +29,9 @@ public class AgentService implements AgentServiceMBean {
 
 	private AgentBroadcaster broadcaster;
 	private ScenarioDeployer deployer;
-	private List<byte[]> charts;
+	private ScenarioExecution stats;
 	private AgentState transit;
 	private AgentState state;
-
 	private Exception error;
 
 	public AgentService() {
@@ -109,18 +108,18 @@ public class AgentService implements AgentServiceMBean {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<byte[]> getCharts() {
+	public ScenarioExecution getStats() {
 
-		return this.charts;
+		return this.stats;
 	}
 
 	/**
-	 * @param charts
-	 *            The charts that were generated for the executed scenario.
+	 * @param stats
+	 *            The statistics generated from the executed scenario.
 	 */
-	public void setCharts(List<byte[]> charts) {
+	public void setStats(ScenarioExecution stats) {
 
-		this.charts = charts;
+		this.stats = stats;
 	}
 
 	/**
@@ -217,13 +216,14 @@ public class AgentService implements AgentServiceMBean {
 		}
 	}
 
-	public void execute(final String hostname, final Integer workers,
-			final Long duration) throws NamingException {
+	public void execute(String hostname, Integer agents, Integer workers,
+			Long duration) {
 
 		try {
 			setError(null);
 
-			new ScenarioExecutor(hostname, workers, duration, this).start();
+			new ScenarioExecutor(hostname, agents, workers, duration, this)
+					.start();
 		}
 
 		catch (Exception e) {

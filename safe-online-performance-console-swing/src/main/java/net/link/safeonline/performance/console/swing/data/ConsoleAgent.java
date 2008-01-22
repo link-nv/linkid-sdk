@@ -9,6 +9,7 @@ package net.link.safeonline.performance.console.swing.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.Agent;
 import net.link.safeonline.performance.console.jgroups.AgentState;
@@ -194,9 +195,9 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<byte[]> getCharts() {
+	public ScenarioExecution getStats() {
 
-		return this.scenarioDeployer.getCharts(this.agentAddress);
+		return this.scenarioDeployer.getStats(this.agentAddress);
 	}
 
 	/**

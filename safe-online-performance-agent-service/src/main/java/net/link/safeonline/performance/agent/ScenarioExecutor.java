@@ -1,17 +1,8 @@
 /*
- *   Copyright 2008, Maarten Billemont
+ * SafeOnline project.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 package net.link.safeonline.performance.agent;
 
@@ -21,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 
+import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.scenario.ScenarioLocal;
 
 import org.apache.commons.logging.Log;
@@ -44,13 +36,15 @@ public class ScenarioExecutor extends Thread {
 	private AgentService agentService;
 	private String hostname;
 	private Integer workers;
+	private Integer agents;
 	private Long duration;
 
-	public ScenarioExecutor(String hostname, Integer workers, Long duration,
-			AgentService agentService) {
+	public ScenarioExecutor(String hostname, Integer agents, Integer workers,
+			Long duration, AgentService agentService) {
 
 		this.hostname = hostname;
 		this.workers = workers;
+		this.agents = agents;
 		this.duration = duration;
 		this.agentService = agentService;
 	}
@@ -100,7 +94,10 @@ public class ScenarioExecutor extends Thread {
 			}
 
 			// Generate the resulting statistical information.
-			this.agentService.setCharts(scenarioBean.createGraphs(execution));
+			ScenarioExecution stats = new ScenarioExecution(this.agents,
+					this.workers, this.duration, execution, this.hostname,
+					scenarioBean.createGraphs(execution));
+			this.agentService.setStats(stats);
 
 			// Notify the agent service of the scenario completion.
 			this.agentService.actionCompleted(true);

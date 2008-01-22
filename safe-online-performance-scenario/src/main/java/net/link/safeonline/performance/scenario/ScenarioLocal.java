@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.performance.scenario;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Local;
 
@@ -32,5 +32,5 @@ public interface ScenarioLocal {
 	/**
 	 * Create charts on data collected in this scenario.
 	 */
-	public List<byte[]> createGraphs(int executionId);
+	public Map<String, byte[][]> createGraphs(int executionId);
 }
