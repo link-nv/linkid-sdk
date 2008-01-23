@@ -163,11 +163,14 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
 	private void configureDevices() {
 		this.deviceClasses.add(new DeviceClass(
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS));
+				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS));
 		this.deviceClasses.add(new DeviceClass(
-				SafeOnlineConstants.MOBILE_DEVICE_CLASS));
+				SafeOnlineConstants.MOBILE_DEVICE_CLASS,
+				SafeOnlineConstants.MOBILE_DEVICE_AUTH_CONTEXT_CLASS));
 		this.deviceClasses.add(new DeviceClass(
-				SafeOnlineConstants.PKI_DEVICE_CLASS));
+				SafeOnlineConstants.PKI_DEVICE_CLASS,
+				SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS));
 
 		this.devices.add(new Device(
 				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,

@@ -200,11 +200,12 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void addDeviceClass(String name) throws ExistingDeviceClassException {
+	public void addDeviceClass(String name, String authenticationContextClass)
+			throws ExistingDeviceClassException {
 		checkExistingDeviceClass(name);
 		LOG.debug("add device class: " + name);
 
-		this.deviceClassDAO.addDeviceClass(name);
+		this.deviceClassDAO.addDeviceClass(name, authenticationContextClass);
 	}
 
 	private void checkExistingDeviceClass(String name)
@@ -345,4 +346,24 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 		this.deviceDAO.saveProperty(property);
 	}
 
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void updateAuthenticationContextClass(String deviceClassName,
+			String authenticationContextClass)
+			throws DeviceClassNotFoundException {
+		DeviceClassEntity deviceClass = this.deviceClassDAO
+				.getDeviceClass(deviceClassName);
+		deviceClass.setAuthenticationContextClass(authenticationContextClass);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public DeviceEntity getDevice(String deviceName)
+			throws DeviceNotFoundException {
+		return this.deviceDAO.getDevice(deviceName);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public DeviceClassEntity getDeviceClass(String deviceClassName)
+			throws DeviceClassNotFoundException {
+		return this.deviceClassDAO.getDeviceClass(deviceClassName);
+	}
 }

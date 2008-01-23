@@ -941,6 +941,22 @@
 			<from-outcome>edit-desc</from-outcome>
 			<to-view-id>/devices/class-desc-edit.seam</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/devices/class-edit.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/devices/class-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/devices/class-view.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/devices/class-view.seam</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 
 	<navigation-rule>

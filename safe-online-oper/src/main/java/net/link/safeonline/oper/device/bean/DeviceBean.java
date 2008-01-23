@@ -250,7 +250,17 @@ public class DeviceBean implements Device {
 				return null;
 			}
 		}
-
+		/*
+		 * Refresh the device
+		 */
+		try {
+			this.selectedDevice = this.deviceService.getDevice(deviceName);
+		} catch (DeviceNotFoundException e) {
+			LOG.debug("device not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
+		}
 		return "success";
 	}
 

@@ -20,7 +20,8 @@ import net.link.safeonline.entity.DeviceClassEntity;
 @Local
 public interface DeviceClassDAO {
 
-	DeviceClassEntity addDeviceClass(String name);
+	DeviceClassEntity addDeviceClass(String name,
+			String authenticationContextClass);
 
 	DeviceClassEntity findDeviceClass(String deviceClassName);
 

@@ -41,8 +41,10 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
 				DeviceClassDescriptionEntity.QueryInterface.class);
 	}
 
-	public DeviceClassEntity addDeviceClass(String name) {
-		DeviceClassEntity deviceClass = new DeviceClassEntity(name);
+	public DeviceClassEntity addDeviceClass(String name,
+			String authenticationContextClass) {
+		DeviceClassEntity deviceClass = new DeviceClassEntity(name,
+				authenticationContextClass);
 		this.entityManager.persist(deviceClass);
 		return deviceClass;
 	}

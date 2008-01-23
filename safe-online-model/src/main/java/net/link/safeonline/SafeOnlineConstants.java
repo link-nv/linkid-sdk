@@ -54,6 +54,14 @@ public class SafeOnlineConstants {
 
 	public static final String PASSWORD_ALGORITHM_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:password:algorithm";
 
+	/**
+	 * The PKI trust domain name for the SafeOnline devices.
+	 */
+	public static final String SAFE_ONLINE_DEVICES_TRUST_DOMAIN = "devices";
+
+	/**
+	 * Device ID's
+	 */
 	public static final String USERNAME_PASSWORD_DEVICE_ID = "password";
 
 	public static final String BEID_DEVICE_ID = "beid";
@@ -61,15 +69,19 @@ public class SafeOnlineConstants {
 	public static final String ENCAP_DEVICE_ID = "mobileWeak";
 
 	/**
-	 * The PKI trust domain name for the SafeOnline devices.
+	 * Device classes
 	 */
-	public static final String SAFE_ONLINE_DEVICES_TRUST_DOMAIN = "devices";
-
 	public static final String PASSWORD_DEVICE_CLASS = "Password";
+
+	public static final String PASSWORD_DEVICE_AUTH_CONTEXT_CLASS = "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport";
 
 	public static final String MOBILE_DEVICE_CLASS = "Mobile";
 
+	public static final String MOBILE_DEVICE_AUTH_CONTEXT_CLASS = "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract";
+
 	public static final String PKI_DEVICE_CLASS = "PKI";
+
+	public static final String PKI_DEVICE_AUTH_CONTEXT_CLASS = "urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI";
 
 	/**
 	 * The login attribute name and login service provider domain

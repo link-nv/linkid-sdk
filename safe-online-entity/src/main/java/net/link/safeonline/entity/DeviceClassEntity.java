@@ -34,6 +34,8 @@ public class DeviceClassEntity implements Serializable {
 
 	private String name;
 
+	private String authenticationContextClass;
+
 	private List<DeviceEntity> devices;
 
 	private Map<String, DeviceClassDescriptionEntity> descriptions;
@@ -42,8 +44,9 @@ public class DeviceClassEntity implements Serializable {
 		// empty
 	}
 
-	public DeviceClassEntity(String name) {
+	public DeviceClassEntity(String name, String authenticationContextClass) {
 		this.name = name;
+		this.authenticationContextClass = authenticationContextClass;
 	}
 
 	@Id
@@ -53,6 +56,14 @@ public class DeviceClassEntity implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getAuthenticationContextClass() {
+		return this.authenticationContextClass;
+	}
+
+	public void setAuthenticationContextClass(String authenticationContextClass) {
+		this.authenticationContextClass = authenticationContextClass;
 	}
 
 	/**

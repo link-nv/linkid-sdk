@@ -21,6 +21,14 @@
 	</ui:define>
 	<ui:define name="content">
 
+		<table class="name_value">
+			<tr>
+				<th><h:outputText for="contextclass"
+					value="#{msgs.authenticationContextClass}" /></th>
+				<td><h:outputText id="contextclass"
+					value="#{selectedDeviceClass.authenticationContextClass}" /></td>
+			</tr>
+		</table>
 
 		<h:form id="classdescform">
 			<h:dataTable id="desc-data" var="item"
@@ -39,9 +47,14 @@
 
 			<h:commandButton action="add-descr" id="add-descr"
 				value="#{msgs.addaction}" styleClass="submit" />
+		</h:form>
+
+		<h:form id="actionform">
+			<h:outputLabel for="back" value="" />
 			<h:commandButton value="#{msgs.backaction}" id="back" action="back"
 				styleClass="submit" />
-
+			<h:commandButton action="#{operDeviceClass.edit}" id="edit"
+				value="#{msgs.editaction}" styleClass="submit" />
 		</h:form>
 
 	</ui:define>

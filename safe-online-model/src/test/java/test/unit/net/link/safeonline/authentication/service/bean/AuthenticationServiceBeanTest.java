@@ -136,7 +136,8 @@ public class AuthenticationServiceBeanTest extends TestCase {
 						"Login counter", statistic)).andStubReturn(dataPoint);
 
 		DeviceClassEntity deviceClass = new DeviceClassEntity(
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS);
+				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
 		DeviceEntity device = new DeviceEntity(
 				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass,
 				null, null, null, null, null);

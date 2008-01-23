@@ -218,8 +218,11 @@ public abstract class AbstractInitBean implements Startable {
 	protected static class DeviceClass {
 		final String name;
 
-		public DeviceClass(String name) {
+		final String authenticationContextClass;
+
+		public DeviceClass(String name, String authenticationContextClass) {
 			this.name = name;
+			this.authenticationContextClass = authenticationContextClass;
 		}
 	}
 
@@ -713,8 +716,9 @@ public abstract class AbstractInitBean implements Startable {
 			DeviceClassEntity deviceClassEntity = this.deviceClassDAO
 					.findDeviceClass(deviceClass.name);
 			if (null == deviceClassEntity)
-				deviceClassEntity = this.deviceClassDAO
-						.addDeviceClass(deviceClass.name);
+				deviceClassEntity = this.deviceClassDAO.addDeviceClass(
+						deviceClass.name,
+						deviceClass.authenticationContextClass);
 		}
 	}
 

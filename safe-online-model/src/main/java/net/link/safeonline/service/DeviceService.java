@@ -77,7 +77,8 @@ public interface DeviceService {
 	void removeDeviceClassDescription(DeviceClassDescriptionEntity description)
 			throws DeviceClassDescriptionNotFoundException;
 
-	void addDeviceClass(String name) throws ExistingDeviceClassException;
+	void addDeviceClass(String name, String authenticationContextClass)
+			throws ExistingDeviceClassException;
 
 	void removeDeviceClass(String name) throws PermissionDeniedException;
 
@@ -101,5 +102,14 @@ public interface DeviceService {
 
 	void updateNewAccountRegistrationUrl(String deviceName,
 			String newAccountRegistrationURL) throws DeviceNotFoundException;
+
+	void updateAuthenticationContextClass(String deviceClassName,
+			String authenticationContextClass)
+			throws DeviceClassNotFoundException;
+
+	DeviceEntity getDevice(String deviceName) throws DeviceNotFoundException;
+
+	DeviceClassEntity getDeviceClass(String deviceClassName)
+			throws DeviceClassNotFoundException;
 
 }

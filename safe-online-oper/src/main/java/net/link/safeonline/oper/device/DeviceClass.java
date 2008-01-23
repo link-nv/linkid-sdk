@@ -19,6 +19,10 @@ public interface DeviceClass {
 
 	String add();
 
+	String edit();
+
+	String save();
+
 	String remove();
 
 	/*
@@ -27,6 +31,10 @@ public interface DeviceClass {
 	String getName();
 
 	void setName(String name);
+
+	String getAuthenticationContextClass();
+
+	void setAuthenticationContextClass(String authenticationContextClass);
 
 	/*
 	 * Factories

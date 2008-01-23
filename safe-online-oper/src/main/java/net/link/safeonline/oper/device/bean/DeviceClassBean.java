@@ -15,6 +15,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 
+import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDeviceClassException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.DeviceClassEntity;
@@ -55,6 +56,8 @@ public class DeviceClassBean implements DeviceClass {
 
 	private String name;
 
+	private String authenticationContextClass;
+
 	/*
 	 * Seam Data models
 	 */
@@ -92,7 +95,8 @@ public class DeviceClassBean implements DeviceClass {
 	public String add() {
 		LOG.debug("add device class: " + this.name);
 		try {
-			this.deviceService.addDeviceClass(this.name);
+			this.deviceService.addDeviceClass(this.name,
+					this.authenticationContextClass);
 		} catch (ExistingDeviceClassException e) {
 			LOG.debug("device class already exists: " + this.name);
 			this.facesMessages.addToControlFromResourceBundle("name",
@@ -125,6 +129,32 @@ public class DeviceClassBean implements DeviceClass {
 		return "view";
 	}
 
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String edit() {
+		LOG.debug("edit device class: " + this.selectedDeviceClass.getName());
+		this.authenticationContextClass = this.selectedDeviceClass
+				.getAuthenticationContextClass();
+		return "edit";
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String save() {
+		LOG.debug("save device class: " + this.selectedDeviceClass.getName());
+		String deviceClassName = this.selectedDeviceClass.getName();
+		try {
+			this.deviceService.updateAuthenticationContextClass(
+					deviceClassName, this.authenticationContextClass);
+			this.selectedDeviceClass = this.deviceService
+					.getDeviceClass(deviceClassName);
+		} catch (DeviceClassNotFoundException e) {
+			LOG.debug("device class not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceClassNotFound");
+			return null;
+		}
+		return "success";
+	}
+
 	/*
 	 * Accessors
 	 */
@@ -136,5 +166,15 @@ public class DeviceClassBean implements DeviceClass {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String getAuthenticationContextClass() {
+		return this.authenticationContextClass;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setAuthenticationContextClass(String authenticationContextClass) {
+		this.authenticationContextClass = authenticationContextClass;
 	}
 }
