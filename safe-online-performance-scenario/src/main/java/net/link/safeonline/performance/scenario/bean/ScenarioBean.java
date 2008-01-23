@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.performance.scenario.bean;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -308,7 +309,7 @@ public class ScenarioBean implements ScenarioLocal {
 			SortedSet<StartTimeEntity> sortedStartTimes = new TreeSet<StartTimeEntity>(
 					startTimes);
 
-			for (int period : new int[] { 1000, 60000, 3600000 }) {
+			for (int period : new int[] { 60000, 3600000 }) {
 				XYSeries scenarioSpeedSeries = new XYSeries("Classes Of "
 						+ period / 1000 + "s", false, false);
 				DefaultTableXYDataset scenarioSpeedSet = new DefaultTableXYDataset();
@@ -355,11 +356,11 @@ public class ScenarioBean implements ScenarioLocal {
 
 		// Scenario Charts.
 		DateAxis timeAxis = new DateAxis("Time (ms)");
-		valueAxis = new NumberAxis("Speed (#/s)");
 		CombinedDomainXYPlot speedPlot = new CombinedDomainXYPlot(timeAxis);
 		for (DefaultTableXYDataset scenarioSpeedSet : scenarioSpeedSets)
-			speedPlot.add(new XYPlot(scenarioSpeedSet, timeAxis, valueAxis,
-					new XYLineAndShapeRenderer()));
+			speedPlot
+					.add(new XYPlot(scenarioSpeedSet, timeAxis, new NumberAxis(
+							"Speed (#/s)"), new XYLineAndShapeRenderer()));
 		JFreeChart speedChart = new JFreeChart(speedPlot);
 
 		catAxis = new CategoryAxis("Methods");
@@ -393,6 +394,7 @@ public class ScenarioBean implements ScenarioLocal {
 	private byte[] getImage(JFreeChart chart, int width, int height) {
 
 		try {
+			chart.setBackgroundPaint(Color.white);
 			return encoder.encode(chart.createBufferedImage(width, height));
 		} catch (IOException e) {
 			return null;

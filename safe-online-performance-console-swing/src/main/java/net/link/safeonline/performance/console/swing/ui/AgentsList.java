@@ -1,11 +1,12 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 package net.link.safeonline.performance.console.swing.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -22,7 +23,7 @@ import org.jgroups.Address;
 
 /**
  * A list that visualises agent status.
- * 
+ *
  * @author mbillemo
  */
 public class AgentsList extends JList implements AgentStateListener,
@@ -166,6 +167,7 @@ public class AgentsList extends JList implements AgentStateListener,
 
 		boolean enabled = true;
 		AgentState state = null;
+		List<AgentState> transit = new ArrayList<AgentState>();
 
 		for (Object o : getSelectedValues())
 			if (o instanceof ConsoleAgent) {
@@ -173,14 +175,15 @@ public class AgentsList extends JList implements AgentStateListener,
 
 				if (state == null)
 					state = agent.getState();
+				if (agent.getTransit() != null
+						&& !agent.getTransit().equals(AgentState.RESET))
+					transit.add(agent.getTransit());
 
 				enabled &= agent.getTransit() == null;
 				enabled &= state.equals(agent.getState());
 			}
 
-		if (enabled)
-			this.scenarioChooser.enableButtonsFor(state);
-		else
-			this.scenarioChooser.disableButtons();
+		this.scenarioChooser.enableButtonsFor(enabled ? state : null, transit
+				.toArray(new AgentState[transit.size()]));
 	}
 }

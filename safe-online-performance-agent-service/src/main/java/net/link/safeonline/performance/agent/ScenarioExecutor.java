@@ -39,6 +39,10 @@ public class ScenarioExecutor extends Thread {
 	private Integer agents;
 	private Long duration;
 
+	private ScheduledExecutorService pool;
+
+	private boolean abort;
+
 	public ScenarioExecutor(String hostname, Integer agents, Integer workers,
 			Long duration, AgentService agentService) {
 
@@ -62,10 +66,9 @@ public class ScenarioExecutor extends Thread {
 
 			// Create a pool of threads that execute scenario beans.
 			long until = System.currentTimeMillis() + this.duration;
-			ScheduledExecutorService pool = Executors
-					.newScheduledThreadPool(this.workers);
+			this.pool = Executors.newScheduledThreadPool(this.workers);
 			for (int i = 0; i < this.workers; ++i)
-				pool.scheduleWithFixedDelay(new Runnable() {
+				this.pool.scheduleWithFixedDelay(new Runnable() {
 					public void run() {
 
 						try {
@@ -83,12 +86,18 @@ public class ScenarioExecutor extends Thread {
 				try {
 					Thread.sleep(until - System.currentTimeMillis());
 				} catch (InterruptedException e) {
+					break;
 				}
 
+			if (this.abort) {
+				this.agentService.actionCompleted(false);
+				return;
+			}
+
 			// Shut down and wait for active scenarios to complete.
-			pool.shutdown();
+			this.pool.shutdown();
 			try {
-				while (!pool.awaitTermination(1, TimeUnit.SECONDS))
+				while (!this.pool.awaitTermination(1, TimeUnit.SECONDS))
 					Thread.yield();
 			} catch (InterruptedException e) {
 			}
@@ -108,5 +117,14 @@ public class ScenarioExecutor extends Thread {
 			this.agentService.actionCompleted(false);
 			LOG.error("Processing Scenario Execution Failed", e);
 		}
+	}
+
+	/**
+	 * Make a best-effort attempt at halting the scenario execution.
+	 */
+	public void halt() {
+
+		this.abort = true;
+		this.pool.shutdownNow();
 	}
 }

@@ -29,6 +29,7 @@ public class AgentService implements AgentServiceMBean {
 
 	private AgentBroadcaster broadcaster;
 	private ScenarioDeployer deployer;
+	private ScenarioExecutor executor;
 	private ScenarioExecution stats;
 	private AgentState transit;
 	private AgentState state;
@@ -93,6 +94,9 @@ public class AgentService implements AgentServiceMBean {
 	 * {@inheritDoc}
 	 */
 	public void resetTransit() {
+
+		if (this.executor != null)
+			this.executor.halt();
 
 		this.transit = null;
 	}
@@ -222,8 +226,9 @@ public class AgentService implements AgentServiceMBean {
 		try {
 			setError(null);
 
-			new ScenarioExecutor(hostname, agents, workers, duration, this)
-					.start();
+			this.executor = new ScenarioExecutor(hostname, agents, workers,
+					duration, this);
+			this.executor.start();
 		}
 
 		catch (Exception e) {

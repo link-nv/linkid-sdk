@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.performance.console.swing.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
@@ -13,6 +14,8 @@ import java.awt.event.WindowEvent;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
@@ -102,20 +106,36 @@ public class Charts extends WindowAdapter {
 			FormLayout layout = new FormLayout("p");
 			DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
 			builder.setDefaultDialogBorder();
+			setBackground(Color.WHITE);
 
-			builder.appendTitle(String.format("%s: %d workers x %d agents",
-					scenarioExecution.getHostname(), scenarioExecution
-							.getWorkers(), scenarioExecution.getAgents()));
-			builder.appendTitle(String.format("Duration: %f minutes",
-					scenarioExecution.getDuration() / 60000f));
+			Box header = new Box(BoxLayout.PAGE_AXIS);
+			builder.append(header);
+			JLabel label;
+
+			header.add(label = new JLabel(String.format(
+					"[%s] %d workers x %d agents", scenarioExecution
+							.getHostname(), scenarioExecution.getWorkers(),
+					scenarioExecution.getAgents())));
+			label.setFont(label.getFont().deriveFont(30f));
+
+			header.add(label = new JLabel(String.format("Duration: %f minutes",
+					scenarioExecution.getDuration() / 60000f)));
+			label.setFont(label.getFont().deriveFont(20f));
+
+			builder.appendSeparator();
 			builder.appendUnrelatedComponentsGapRow();
-			builder.nextLine();
+			builder.nextLine(2);
 
 			for (Map.Entry<String, byte[][]> charts : scenarioExecution
 					.getCharts().entrySet()) {
-				builder.appendSeparator(charts.getKey());
+				builder.append(label = new JLabel(charts.getKey()));
+				label.setHorizontalAlignment(SwingConstants.CENTER);
+				label.setFont(label.getFont().deriveFont(20f));
+
 				for (byte[] chart : charts.getValue())
 					builder.append(new JLabel(new ImageIcon(chart)));
+
+				builder.appendSeparator();
 			}
 		}
 

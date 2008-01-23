@@ -6,11 +6,15 @@
  */
 package net.link.safeonline.performance.console.swing.ui;
 
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -188,59 +192,59 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * Disable buttons while working.
+	 * Enable the right buttons. Disable the ones that shouldn't be touched.
 	 */
-	public void disableButtons() {
+	public void enableButtonsFor(AgentState currentState, AgentState... transit) {
+
+		AgentState state = currentState;
+		if (null == state)
+			state = AgentState.RESET;
+
+		boolean isTransitting = transit != null && transit.length > 0;
+		this.resetButton.setEnabled(isTransitting);
 
 		this.uploadButton.setEnabled(false);
 		this.deployButton.setEnabled(false);
 		this.executeButton.setEnabled(false);
 		this.chartsButton.setEnabled(false);
 		this.pdfButton.setEnabled(false);
+
+		if (!isTransitting) {
+			this.uploadButton.setEnabled(null != getScenarioFile());
+
+			switch (state) {
+			case RESET:
+				break;
+
+			case UPLOAD:
+				this.deployButton.setEnabled(true);
+				break;
+
+			case DEPLOY:
+				this.executeButton.setEnabled(true);
+				break;
+
+			case EXECUTE:
+				this.executeButton.setEnabled(true);
+				this.chartsButton.setEnabled(true);
+				this.pdfButton.setEnabled(true);
+				break;
+			}
+		}
+
+		List<AgentState> transits = new ArrayList<AgentState>();
+		if (isTransitting)
+			transits = Arrays.asList(transit);
+
+		highlight(this.uploadButton, transits.contains(AgentState.UPLOAD));
+		highlight(this.deployButton, transits.contains(AgentState.DEPLOY));
+		highlight(this.executeButton, transits.contains(AgentState.EXECUTE));
 	}
 
-	/**
-	 * Enable the right buttons. Disable the ones that shouldn't be touched.
-	 */
-	public void enableButtonsFor(AgentState currentState) {
+	private void highlight(JButton button, boolean highlightOn) {
 
-		AgentState state = currentState;
-		if (null == state)
-			state = AgentState.RESET;
-
-		switch (state) {
-		case RESET:
-			this.uploadButton.setEnabled(null != getScenarioFile());
-			this.deployButton.setEnabled(false);
-			this.executeButton.setEnabled(false);
-			this.chartsButton.setEnabled(false);
-			this.pdfButton.setEnabled(false);
-			break;
-
-		case UPLOAD:
-			this.uploadButton.setEnabled(null != getScenarioFile());
-			this.deployButton.setEnabled(true);
-			this.executeButton.setEnabled(false);
-			this.chartsButton.setEnabled(false);
-			this.pdfButton.setEnabled(false);
-			break;
-
-		case DEPLOY:
-			this.uploadButton.setEnabled(null != getScenarioFile());
-			this.deployButton.setEnabled(false);
-			this.executeButton.setEnabled(true);
-			this.chartsButton.setEnabled(false);
-			this.pdfButton.setEnabled(false);
-			break;
-
-		case EXECUTE:
-			this.uploadButton.setEnabled(null != getScenarioFile());
-			this.deployButton.setEnabled(false);
-			this.executeButton.setEnabled(true);
-			this.chartsButton.setEnabled(true);
-			this.pdfButton.setEnabled(true);
-			break;
-		}
+		int style = highlightOn ? Font.ITALIC | Font.BOLD : 0;
+		button.setFont(button.getFont().deriveFont(style));
 	}
 
 	/**

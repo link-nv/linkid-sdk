@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -29,7 +28,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.lowagie.text.Cell;
 import com.lowagie.text.Chapter;
-import com.lowagie.text.ChapterAutoNumber;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -99,12 +97,12 @@ public class PDF {
 			List<Cell> frontCells = new ArrayList<Cell>();
 			frontCells.add(new Cell(new Phrase(
 					"Safe Online:  Performance Testing", new Font(font, 40f))));
-			frontCells.add(new Cell(new Phrase(30f, "OLAS Host: "
+			frontCells.add(new Cell(new Phrase(150f, "OLAS Host: "
 					+ execution.getHostname(), new Font(font, 20f))));
-			frontCells.add(new Cell(new Phrase(30f, "Duration: "
+			frontCells.add(new Cell(new Phrase(50f, "Duration: "
 					+ execution.getDuration() / 60000f + " minutes", new Font(
 					font, 20f))));
-			frontCells.add(new Cell(new Phrase(30f, String.format(
+			frontCells.add(new Cell(new Phrase(50f, String.format(
 					"Using %d agents with %d workers each.", execution
 							.getAgents(), execution.getWorkers()), new Font(
 					font, 20f))));
@@ -123,29 +121,34 @@ public class PDF {
 
 			// Create chapters from the labels of the first agent's charts.
 			List<Chapter> chapters = new ArrayList<Chapter>();
-			Set<String> labels = agentCharts.values().iterator().next()
-					.getCharts().keySet();
-			for (String label : labels)
-				chapters.add(new ChapterAutoNumber(new Paragraph(label,
-						new Font(font, 20f))));
+			List<String> labels = new ArrayList<String>(agentCharts.values()
+					.iterator().next().getCharts().keySet());
+			for (int chapter = 0; chapter < labels.size(); ++chapter)
+				chapters.add(new Chapter(new Paragraph(labels.get(chapter),
+						new Font(font, 20f)), chapter + 1));
 
 			// Arrange all the data in the chapters.
-			for (int chapter = 0; chapter < chapters.size(); ++chapter)
+			for (int chapter = 0; chapter < chapters.size(); ++chapter) {
+				boolean newPage = false;
+
 				for (Map.Entry<ConsoleAgent, ScenarioExecution> charts : agentCharts
 						.entrySet()) {
 					Section section = chapters.get(chapter).addSection(
 							new Paragraph(charts.getKey().getAddress()
 									.toString(), new Font(font, 15f)));
+
+					section.setTriggerNewPage(newPage);
+					newPage = true;
+
 					for (byte[] chart : new ArrayList<byte[][]>(charts
 							.getValue().getCharts().values()).get(chapter))
 						section.add(Image.getInstance(chart));
 				}
+			}
 
 			// Add the completed chapters to the PDF.
-			for (Chapter chapter : chapters) {
+			for (Chapter chapter : chapters)
 				pdfDocument.add(chapter);
-				pdfDocument.newPage();
-			}
 			pdfDocument.close();
 
 			// Open the PDF document.
