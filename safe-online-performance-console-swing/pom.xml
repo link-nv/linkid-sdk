@@ -66,6 +66,7 @@
 					<artifactId>servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
+            <scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
