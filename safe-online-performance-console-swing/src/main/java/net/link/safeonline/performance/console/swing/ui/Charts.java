@@ -101,7 +101,7 @@ public class Charts extends WindowAdapter {
 		private static final long serialVersionUID = 1L;
 		private static final int INCREMENT = 50;
 
-		public AgentCharts(ScenarioExecution scenarioExecution) {
+		public AgentCharts(ScenarioExecution execution) {
 
 			FormLayout layout = new FormLayout("p");
 			DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
@@ -113,21 +113,22 @@ public class Charts extends WindowAdapter {
 			JLabel label;
 
 			header.add(label = new JLabel(String.format(
-					"[%s] %d workers x %d agents", scenarioExecution
-							.getHostname(), scenarioExecution.getWorkers(),
-					scenarioExecution.getAgents())));
+					"[%s] %d worker%s x %d agent%s", execution.getHostname(),
+					execution.getWorkers(), execution.getWorkers() > 1 ? "s"
+							: "", execution.getAgents(),
+					execution.getAgents() > 1 ? "s" : "")));
 			label.setFont(label.getFont().deriveFont(30f));
 
 			header.add(label = new JLabel(String.format("Duration: %f minutes",
-					scenarioExecution.getDuration() / 60000f)));
+					execution.getDuration() / 60000f)));
 			label.setFont(label.getFont().deriveFont(20f));
 
 			builder.appendSeparator();
 			builder.appendUnrelatedComponentsGapRow();
 			builder.nextLine(2);
 
-			for (Map.Entry<String, byte[][]> charts : scenarioExecution
-					.getCharts().entrySet()) {
+			for (Map.Entry<String, byte[][]> charts : execution.getCharts()
+					.entrySet()) {
 				builder.append(label = new JLabel(charts.getKey()));
 				label.setHorizontalAlignment(SwingConstants.CENTER);
 				label.setFont(label.getFont().deriveFont(20f));

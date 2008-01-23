@@ -103,9 +103,10 @@ public class PDF {
 					+ execution.getDuration() / 60000f + " minutes", new Font(
 					font, 20f))));
 			frontCells.add(new Cell(new Phrase(50f, String.format(
-					"Using %d agents with %d workers each.", execution
-							.getAgents(), execution.getWorkers()), new Font(
-					font, 20f))));
+					"Using %d agent%s with %d worker%s each.", execution
+							.getAgents(), execution.getAgents() > 1 ? "s" : "",
+					execution.getWorkers(), execution.getWorkers() > 1 ? "s"
+							: ""), new Font(font, 20f))));
 
 			// Style front page information and add it to the PDF.
 			Table front = new Table(1);
