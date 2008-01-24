@@ -119,7 +119,7 @@ public interface AuthenticationService {
 	 * @throws UsageAgreementAcceptationRequiredException
 	 */
 	void commitAuthentication(String applicationId,
-			Set<AuthenticationDevice> requiredDevicePolicy)
+			Set<DeviceEntity> requiredDevicePolicy)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,

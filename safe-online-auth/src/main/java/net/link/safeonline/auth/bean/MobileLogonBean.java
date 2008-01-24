@@ -9,7 +9,6 @@ package net.link.safeonline.auth.bean;
 import java.net.MalformedURLException;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
@@ -21,7 +20,6 @@ import net.link.safeonline.authentication.exception.MobileAuthenticationExceptio
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
-import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
@@ -49,9 +47,6 @@ public class MobileLogonBean extends AbstractLoginBean implements MobileLogon {
 
 	@In(required = true)
 	private String deviceSelection;
-
-	@EJB
-	private DeviceDAO deviceDAO;
 
 	private String challengeId;
 

@@ -85,18 +85,9 @@ public class AuthnResponseFactory {
 	 * @param applicationName
 	 * @param issuerName
 	 * @param subjectName
-	 * @param authnContextClass
+	 * @param samlAuthnContextClass
 	 * @param target
 	 */
-	public static Response createAuthResponse(String inResponseTo,
-			String applicationName, String issuerName, String subjectName,
-			SafeOnlineAuthnContextClass authnContextClass, int validity,
-			String target) {
-		String samlName = authnContextClass.getSamlName();
-		return createAuthResponse(inResponseTo, applicationName, issuerName,
-				subjectName, samlName, validity, target);
-	}
-
 	public static Response createAuthResponse(String inResponseTo,
 			String applicationName, String issuerName, String subjectName,
 			String samlName, int validity, String target) {

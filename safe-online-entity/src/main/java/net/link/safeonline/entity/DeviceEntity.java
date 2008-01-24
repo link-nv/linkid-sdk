@@ -8,6 +8,7 @@ package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_ALL;
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_WHERE_CLASS;
+import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_WHERE_CLASS_AUTH_CTX;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -42,6 +43,9 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.IndexColumn;
 
 @Entity
@@ -49,7 +53,9 @@ import org.hibernate.annotations.IndexColumn;
 @NamedQueries( {
 		@NamedQuery(name = QUERY_LIST_ALL, query = "FROM DeviceEntity d"),
 		@NamedQuery(name = QUERY_LIST_WHERE_CLASS, query = "SELECT d FROM DeviceEntity d "
-				+ "WHERE d.deviceClass = :deviceClass") })
+				+ "WHERE d.deviceClass = :deviceClass"),
+		@NamedQuery(name = QUERY_LIST_WHERE_CLASS_AUTH_CTX, query = "SELECT d FROM DeviceEntity d "
+				+ "WHERE d.deviceClass.authenticationContextClass = :authenticationContextClass") })
 public class DeviceEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -57,6 +63,8 @@ public class DeviceEntity implements Serializable {
 	public static final String QUERY_LIST_ALL = "dev.all";
 
 	public static final String QUERY_LIST_WHERE_CLASS = "dev.class";
+
+	public static final String QUERY_LIST_WHERE_CLASS_AUTH_CTX = "dev.cl.actx";
 
 	private String name;
 
@@ -156,6 +164,12 @@ public class DeviceEntity implements Serializable {
 
 	public void setDeviceClass(DeviceClassEntity deviceClass) {
 		this.deviceClass = deviceClass;
+	}
+
+	@Transient
+	public String getAuthenticationContextClass() {
+		return this.deviceClass.getAuthenticationContextClass() + ":"
+				+ this.name;
 	}
 
 	/**
@@ -331,6 +345,31 @@ public class DeviceEntity implements Serializable {
 		this.descriptions = descriptions;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (null == obj) {
+			return false;
+		}
+		if (false == (obj instanceof DeviceEntity)) {
+			return false;
+		}
+		DeviceEntity rhs = (DeviceEntity) obj;
+		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this.name).toHashCode();
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("name", this.name).toString();
+	}
+
 	public interface QueryInterface {
 		@QueryMethod(QUERY_LIST_ALL)
 		List<DeviceEntity> listDevices();
@@ -338,6 +377,11 @@ public class DeviceEntity implements Serializable {
 		@QueryMethod(QUERY_LIST_WHERE_CLASS)
 		List<DeviceEntity> listDevices(@QueryParam("deviceClass")
 		DeviceClassEntity deviceClass);
+
+		@QueryMethod(QUERY_LIST_WHERE_CLASS_AUTH_CTX)
+		List<DeviceEntity> listDevices(
+				@QueryParam("authenticationContextClass")
+				String authenticationContextClass);
 	}
 
 }

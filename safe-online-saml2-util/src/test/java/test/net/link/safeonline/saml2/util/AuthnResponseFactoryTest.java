@@ -16,7 +16,6 @@ import java.io.FileOutputStream;
 import javax.xml.XMLConstants;
 
 import net.link.safeonline.saml2.util.AuthnResponseFactory;
-import net.link.safeonline.saml2.util.SafeOnlineAuthnContextClass;
 import net.link.safeonline.test.util.DomTestUtils;
 
 import org.apache.commons.io.IOUtils;
@@ -49,10 +48,14 @@ public class AuthnResponseFactoryTest {
 		String target = "https://sp.test.com";
 
 		// operate
-		Response response = AuthnResponseFactory.createAuthResponse(
-				inResponseTo, applicationName, issuerName, subjectName,
-				SafeOnlineAuthnContextClass.PASSWORD_PROTECTED_TRANSPORT,
-				validity, target);
+		Response response = AuthnResponseFactory
+				.createAuthResponse(
+						inResponseTo,
+						applicationName,
+						issuerName,
+						subjectName,
+						"urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport",
+						validity, target);
 
 		// verify
 		assertNotNull(response);

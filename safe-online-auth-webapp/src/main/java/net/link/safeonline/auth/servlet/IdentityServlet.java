@@ -15,14 +15,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
 import net.link.safeonline.shared.SharedConstants;
+import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,9 +44,13 @@ public class IdentityServlet extends AbstractStatementServlet {
 
 	private static final Log LOG = LogFactory.getLog(IdentityServlet.class);
 
+	private DeviceDAO deviceDAO;
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
+		this.deviceDAO = EjbUtils.getEJB("SafeOnline/DeviceDAOBean/local",
+				DeviceDAO.class);
 	}
 
 	@Override
@@ -56,7 +64,9 @@ public class IdentityServlet extends AbstractStatementServlet {
 			AuthenticationService authenticationService = AuthenticationServiceManager
 					.getAuthenticationService(session);
 			authenticationService.registerDevice(statementData);
-			LoginManager.relogin(session, AuthenticationDevice.BEID);
+			DeviceEntity beidDevice = this.deviceDAO
+					.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+			LoginManager.relogin(session, beidDevice);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (TrustDomainNotFoundException e) {
 			LOG.error("trust domain not found: " + e.getMessage(), e);
@@ -76,6 +86,12 @@ public class IdentityServlet extends AbstractStatementServlet {
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
 			writer.println("integrity check failed");
+		} catch (DeviceNotFoundException e) {
+			LOG.error("device not found: " + e.getMessage(), e);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+					.getErrorCode());
+			writer.println("device not found");
 		} catch (Exception e) {
 			LOG.error("credential service error: " + e.getMessage(), e);
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

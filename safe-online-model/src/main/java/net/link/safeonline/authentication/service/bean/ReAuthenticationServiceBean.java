@@ -28,12 +28,12 @@ import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.ReAuthenticationService;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.StrongMobileDeviceService;
 import net.link.safeonline.device.WeakMobileDeviceService;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -57,7 +57,10 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
 	private SubjectEntity authenticatedSubject;
 
-	private Set<AuthenticationDevice> authenticationDevices;
+	private Set<DeviceEntity> authenticationDevices;
+
+	@EJB
+	private DeviceDAO deviceDAO;
 
 	@EJB
 	private SubjectService subjectService;
@@ -74,26 +77,20 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	@EJB
 	private WeakMobileDeviceService weakMobileDeviceService;
 
-	@EJB
-	private StrongMobileDeviceService strongMobileDeviceService;
-
 	@PostConstruct
 	public void postConstructCallback() {
 		LOG.debug("PostConstruct");
 	}
 
 	@DenyAll
-	public Set<AuthenticationDevice> getAuthenticatedDevices() {
+	public Set<DeviceEntity> getAuthenticatedDevices() {
 		return this.authenticationDevices;
 	}
 
-	private void addAuthenticationDevice(
-			AuthenticationDevice authenticationDevice) {
-		LOG
-				.debug("set re-auth device: "
-						+ authenticationDevice.getDeviceName());
+	private void addAuthenticationDevice(DeviceEntity authenticationDevice) {
+		LOG.debug("set re-auth device: " + authenticationDevice.getName());
 		if (null == this.authenticationDevices)
-			this.authenticationDevices = new HashSet<AuthenticationDevice>();
+			this.authenticationDevices = new HashSet<DeviceEntity>();
 		this.authenticationDevices.add(authenticationDevice);
 	}
 
@@ -135,7 +132,9 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		 * Safe the state in this stateful session bean.
 		 */
 		setAuthenticatedSubject(subject);
-		addAuthenticationDevice(AuthenticationDevice.PASSWORD);
+		DeviceEntity passwordDevice = this.deviceDAO
+				.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+		addAuthenticationDevice(passwordDevice);
 
 		/*
 		 * Communicate that the authentication process can continue.
@@ -145,21 +144,14 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
 	@DenyAll
 	public String authenticate(@NotNull
-	AuthenticationDevice device, @NonEmptyString
+	DeviceEntity device, @NonEmptyString
 	String mobile, @NonEmptyString
 	String challengeId, @NonEmptyString
 	String mobileOTP) throws SubjectNotFoundException, MalformedURLException,
 			MobileException, MobileAuthenticationException,
 			SubjectMismatchException, PermissionDeniedException {
-		SubjectEntity subject;
-		if (device == AuthenticationDevice.WEAK_MOBILE)
-			subject = this.weakMobileDeviceService.authenticate(mobile,
-					challengeId, mobileOTP);
-		else if (device == AuthenticationDevice.STRONG_MOBILE)
-			subject = this.strongMobileDeviceService.authenticate(mobile,
-					challengeId, mobileOTP);
-		else
-			return null;
+		SubjectEntity subject = this.weakMobileDeviceService.authenticate(
+				mobile, challengeId, mobileOTP);
 		/*
 		 * Safe the state in this stateful session bean.
 		 */
@@ -174,13 +166,9 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
 	@DenyAll
 	public String requestMobileOTP(@NotNull
-	AuthenticationDevice device, @NonEmptyString
+	DeviceEntity device, @NonEmptyString
 	String mobile) throws MalformedURLException, MobileException {
-		if (device == AuthenticationDevice.WEAK_MOBILE)
-			return this.weakMobileDeviceService.requestOTP(mobile);
-		else if (device == AuthenticationDevice.STRONG_MOBILE)
-			return this.strongMobileDeviceService.requestOTP(mobile);
-		return null;
+		return this.weakMobileDeviceService.requestOTP(mobile);
 	}
 
 	@DenyAll
@@ -189,7 +177,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	byte[] authenticationStatementData) throws ArgumentIntegrityException,
 			TrustDomainNotFoundException, SubjectNotFoundException,
 			DecodingException, SubjectMismatchException,
-			PermissionDeniedException {
+			PermissionDeniedException, DeviceNotFoundException {
 		LOG.debug("authenticate session: " + sessionId);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);
@@ -202,7 +190,9 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		 * Safe the state.
 		 */
 		setAuthenticatedSubject(subject);
-		addAuthenticationDevice(AuthenticationDevice.BEID);
+		DeviceEntity beidDevice = this.deviceDAO
+				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+		addAuthenticationDevice(beidDevice);
 
 		return true;
 	}

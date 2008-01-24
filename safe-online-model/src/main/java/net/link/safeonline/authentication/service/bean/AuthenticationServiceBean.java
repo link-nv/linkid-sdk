@@ -45,7 +45,6 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationServiceRemote;
 import net.link.safeonline.authentication.service.AuthenticationState;
@@ -282,7 +281,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	}
 
 	private void checkDevicePolicy(String applicationId,
-			Set<AuthenticationDevice> requiredDevicePolicy)
+			Set<DeviceEntity> requiredDevicePolicy)
 			throws ApplicationNotFoundException, EmptyDevicePolicyException,
 			DevicePolicyException {
 		LOG.debug("authenticationDevice: " + this.authenticationDevice);
@@ -320,7 +319,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	@Remove
 	public void commitAuthentication(@NonEmptyString
-	String applicationId, Set<AuthenticationDevice> requiredDevicePolicy)
+	String applicationId, Set<DeviceEntity> requiredDevicePolicy)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,

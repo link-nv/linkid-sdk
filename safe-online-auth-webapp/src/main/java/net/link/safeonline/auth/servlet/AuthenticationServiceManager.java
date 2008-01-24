@@ -23,8 +23,8 @@ import net.link.safeonline.authentication.exception.IdentityConfirmationRequired
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -137,7 +137,7 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 			EmptyDevicePolicyException, DevicePolicyException,
 			UsageAgreementAcceptationRequiredException {
 
-		Set<AuthenticationDevice> requiredDevices = LoginManager
+		Set<DeviceEntity> requiredDevices = LoginManager
 				.getRequiredDevices(session);
 
 		AuthenticationService authenticationService = getAuthenticationService(session);

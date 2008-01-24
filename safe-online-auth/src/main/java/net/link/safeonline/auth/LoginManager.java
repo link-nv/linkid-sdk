@@ -12,7 +12,7 @@ import java.util.Set;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.bean.AbstractLoginBean;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
+import net.link.safeonline.entity.DeviceEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,7 +44,7 @@ public class LoginManager {
 	}
 
 	public static void login(HttpSession session, String username,
-			AuthenticationDevice device) {
+			DeviceEntity device) {
 		if (null == username) {
 			throw new IllegalArgumentException("username is null");
 		}
@@ -56,15 +56,15 @@ public class LoginManager {
 	}
 
 	private static void setAuthenticationDevice(HttpSession session,
-			AuthenticationDevice device) {
+			DeviceEntity device) {
 		session.setAttribute(AUTHENTICATION_DEVICE_ATTRIBUTE, device);
 	}
 
-	public static void relogin(HttpSession session, AuthenticationDevice device) {
+	public static void relogin(HttpSession session, DeviceEntity device) {
 		String username = getUsername(session);
-		AuthenticationDevice currentDevice = getAuthenticationDevice(session);
-		LOG.debug("relogin for " + username + " from device " + currentDevice
-				+ " to device " + device);
+		DeviceEntity currentDevice = getAuthenticationDevice(session);
+		LOG.debug("relogin for " + username + " from device "
+				+ currentDevice.getName() + " to device " + device.getName());
 		setAuthenticationDevice(session, device);
 	}
 
@@ -77,9 +77,8 @@ public class LoginManager {
 		return username;
 	}
 
-	public static AuthenticationDevice getAuthenticationDevice(
-			HttpSession session) {
-		AuthenticationDevice authenticationDevice = findAuthenticationDevice(session);
+	public static DeviceEntity getAuthenticationDevice(HttpSession session) {
+		DeviceEntity authenticationDevice = findAuthenticationDevice(session);
 		if (null == authenticationDevice) {
 			throw new IllegalStateException(
 					"authenticationDevice session attribute is not present");
@@ -87,9 +86,8 @@ public class LoginManager {
 		return authenticationDevice;
 	}
 
-	public static AuthenticationDevice findAuthenticationDevice(
-			HttpSession session) {
-		AuthenticationDevice authenticationDevice = (AuthenticationDevice) session
+	public static DeviceEntity findAuthenticationDevice(HttpSession session) {
+		DeviceEntity authenticationDevice = (DeviceEntity) session
 				.getAttribute(AUTHENTICATION_DEVICE_ATTRIBUTE);
 		return authenticationDevice;
 	}
@@ -126,7 +124,7 @@ public class LoginManager {
 	 * @param requiredDevices
 	 */
 	public static void setRequiredDevices(HttpSession session,
-			Set<AuthenticationDevice> requiredDevices) {
+			Set<DeviceEntity> requiredDevices) {
 		if (null == requiredDevices) {
 			return;
 		}
@@ -139,9 +137,8 @@ public class LoginManager {
 	 * @param session
 	 */
 	@SuppressWarnings("unchecked")
-	public static Set<AuthenticationDevice> getRequiredDevices(
-			HttpSession session) {
-		Set<AuthenticationDevice> requiredDevices = (Set<AuthenticationDevice>) session
+	public static Set<DeviceEntity> getRequiredDevices(HttpSession session) {
+		Set<DeviceEntity> requiredDevices = (Set<DeviceEntity>) session
 				.getAttribute(REQUIRED_DEVICES_ATTRIBUTE);
 		return requiredDevices;
 	}

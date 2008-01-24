@@ -36,7 +36,6 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
-import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
@@ -68,9 +67,6 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
-
-	@EJB
-	private DeviceDAO deviceDAO;
 
 	@In
 	private AuthenticationService authenticationService;

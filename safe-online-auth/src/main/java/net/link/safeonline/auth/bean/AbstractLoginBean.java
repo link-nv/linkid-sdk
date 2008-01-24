@@ -15,7 +15,9 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.auth.LoginManager;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.service.SubjectService;
 
 import org.jboss.seam.ScopeType;
@@ -40,6 +42,9 @@ public class AbstractLoginBean {
 	@EJB
 	SubjectService subjectService;
 
+	@EJB
+	DeviceDAO deviceDAO;
+
 	@SuppressWarnings("unused")
 	@Out(value = LoginManager.USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	@In(required = false, scope = ScopeType.SESSION)
@@ -48,7 +53,7 @@ public class AbstractLoginBean {
 	@SuppressWarnings("unused")
 	@Out(value = LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	@In(required = false, scope = ScopeType.SESSION)
-	private AuthenticationDevice authenticationDevice;
+	private DeviceEntity authenticationDevice;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -62,6 +67,7 @@ public class AbstractLoginBean {
 	 * 
 	 * @param username
 	 * @param inputAuthenticationDevice
+	 * @throws DeviceNotFoundException
 	 */
 	protected void login(String inputUsername, String inputAuthenticationDevice) {
 		this.log.debug("login using: " + inputUsername + " via device: "
@@ -76,10 +82,11 @@ public class AbstractLoginBean {
 	 * again.
 	 * 
 	 * @param inputAuthenticationDevice
+	 * @throws DeviceNotFoundException
 	 */
 	protected void relogin(String inputAuthenticationDevice) {
-		this.authenticationDevice = AuthenticationDevice
-				.getAuthenticationDevice(inputAuthenticationDevice);
+		this.authenticationDevice = this.deviceDAO
+				.findDevice(inputAuthenticationDevice);
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		String redirectUrl = "../login";

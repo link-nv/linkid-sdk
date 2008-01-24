@@ -23,7 +23,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -87,7 +86,7 @@ public class LoginServlet extends HttpServlet {
 		LOG.debug("doGet");
 		HttpSession session = request.getSession();
 		String applicationId = getApplicationId(session);
-		AuthenticationDevice device = getDevice(session);
+		DeviceEntity device = getDevice(session);
 		String username = getUsername(session);
 
 		boolean globalConfirmationRequired = performGlobalUsageAgreementCheck();
@@ -216,9 +215,8 @@ public class LoginServlet extends HttpServlet {
 	 */
 	@SuppressWarnings("unchecked")
 	private boolean performDevicePolicyCheck(HttpSession session,
-			String applicationId, AuthenticationDevice device)
-			throws ServletException {
-		Set<AuthenticationDevice> requiredDevicePolicy = LoginManager
+			String applicationId, DeviceEntity device) throws ServletException {
+		Set<DeviceEntity> requiredDevicePolicy = LoginManager
 				.getRequiredDevices(session);
 		List<DeviceEntity> devicePolicy;
 		try {
@@ -230,11 +228,8 @@ public class LoginServlet extends HttpServlet {
 		} catch (EmptyDevicePolicyException e) {
 			throw new ServletException("empty device policy");
 		}
-		for (DeviceEntity deviceEntity : devicePolicy) {
-			if (deviceEntity.getName().equals(device.getDeviceName())) {
-				return true;
-			}
-		}
+		if (devicePolicy.contains(device))
+			return true;
 		return false;
 	}
 
@@ -248,11 +243,10 @@ public class LoginServlet extends HttpServlet {
 		return username;
 	}
 
-	private AuthenticationDevice getDevice(HttpSession session) {
-		AuthenticationDevice device = LoginManager
-				.getAuthenticationDevice(session);
-		LOG.debug("authentication device: " + device);
-		HelpdeskLogger.add(session, "authenticated via " + device,
+	private DeviceEntity getDevice(HttpSession session) {
+		DeviceEntity device = LoginManager.getAuthenticationDevice(session);
+		LOG.debug("authentication device: " + device.getName());
+		HelpdeskLogger.add(session, "authenticated via " + device.getName(),
 				LogLevelType.INFO);
 		return device;
 	}

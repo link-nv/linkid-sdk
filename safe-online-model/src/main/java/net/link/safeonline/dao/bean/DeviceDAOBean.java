@@ -194,4 +194,8 @@ public class DeviceDAOBean implements DeviceDAO {
 		return property;
 	}
 
+	public List<DeviceEntity> listDevices(String authenticationContextClass) {
+		return this.queryObject.listDevices(authenticationContextClass);
+	}
+
 }

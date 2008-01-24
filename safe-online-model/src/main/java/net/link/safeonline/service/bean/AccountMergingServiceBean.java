@@ -26,7 +26,6 @@ import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AccountService;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -127,7 +126,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	 */
 	@DenyAll
 	public void mergeAccount(AccountMergingDO accountMergingDO,
-			Set<AuthenticationDevice> neededDevices)
+			Set<DeviceEntity> neededDevices)
 			throws AttributeTypeNotFoundException, SubjectNotFoundException,
 			PermissionDeniedException {
 		LOG.debug("commit merge with account "

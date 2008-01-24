@@ -22,16 +22,19 @@ import java.util.Map;
 
 import javax.xml.XMLConstants;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.ProtocolHandlerManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.ExitServlet;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.entity.DeviceClassEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.DomTestUtils;
@@ -69,7 +72,7 @@ public class ExitServletTest {
 
 	private String target = "http://test.target";
 
-	private AuthenticationDevice device = AuthenticationDevice.BEID;
+	private DeviceEntity device;
 
 	private String inResponseTo = "test-in-response-to";
 
@@ -120,11 +123,13 @@ public class ExitServletTest {
 		HistoryDAO mockHistoryDAO = createMock(HistoryDAO.class);
 		UserIdMappingService mockUserIdMappingServiceBean = createMock(UserIdMappingService.class);
 		expect(
-				mockUserIdMappingServiceBean.getApplicationUserId("test-application-id",
-						"test-user-name")).andStubReturn("0");
+				mockUserIdMappingServiceBean.getApplicationUserId(
+						"test-application-id", "test-user-name"))
+				.andStubReturn("0");
+		DevicePolicyService mockDevicePolicyServiceBean = createMock(DevicePolicyService.class);
 		this.mockObjects = new Object[] { mockSamlAuthorityService,
 				this.mockAuthenticationService, mockSubjectService,
-				mockUserIdMappingServiceBean };
+				mockUserIdMappingServiceBean, mockDevicePolicyServiceBean };
 		this.jndiTestUtils.setUp();
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/SamlAuthorityServiceBean/local",
@@ -138,11 +143,20 @@ public class ExitServletTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/UserIdMappingServiceBean/local",
 				mockUserIdMappingServiceBean);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/DevicePolicyServiceBean/local",
+				mockDevicePolicyServiceBean);
 
 		this.exitServletTestManager = new ServletTestManager();
 		Map<String, String> servletInitParams = new HashMap<String, String>();
 		servletInitParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
 		Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
+
+		DeviceClassEntity deviceClass = new DeviceClassEntity(
+				SafeOnlineConstants.PKI_DEVICE_CLASS,
+				SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS);
+		this.device = new DeviceEntity(SafeOnlineConstants.BEID_DEVICE_ID,
+				deviceClass, null, null, null, null, null);
 
 		initialSessionAttributes.put(
 				ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE,

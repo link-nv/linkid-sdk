@@ -20,8 +20,8 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.UserIdMappingService;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -144,8 +144,7 @@ public class ProtocolHandlerManager {
 					"incorrect authentication state (missing target)");
 		}
 
-		AuthenticationDevice device = LoginManager
-				.findAuthenticationDevice(session);
+		DeviceEntity device = LoginManager.findAuthenticationDevice(session);
 		if (null == device) {
 			throw new ProtocolException("missing device session attribute");
 		}
@@ -196,6 +195,7 @@ public class ProtocolHandlerManager {
 		UserIdMappingService userIdMappingService = EjbUtils.getEJB(
 				"SafeOnline/UserIdMappingServiceBean/local",
 				UserIdMappingService.class);
-		return userIdMappingService.getApplicationUserId(applicationName, username);
+		return userIdMappingService.getApplicationUserId(applicationName,
+				username);
 	}
 }

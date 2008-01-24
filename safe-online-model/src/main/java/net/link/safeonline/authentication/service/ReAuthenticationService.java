@@ -20,6 +20,7 @@ import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
@@ -44,7 +45,7 @@ public interface ReAuthenticationService {
 	 * Returns the set of devices the user has authenticated successfully with.
 	 * 
 	 */
-	Set<AuthenticationDevice> getAuthenticatedDevices();
+	Set<DeviceEntity> getAuthenticatedDevices();
 
 	/**
 	 * Sets the source subject.
@@ -85,11 +86,11 @@ public interface ReAuthenticationService {
 	 * @throws SubjectMismatchException
 	 * @throws PermissionDeniedException
 	 */
-	String authenticate(AuthenticationDevice device, String mobile,
-			String challengeId, String mobileOTP)
-			throws SubjectNotFoundException, MalformedURLException,
-			MobileException, MobileAuthenticationException,
-			SubjectMismatchException, PermissionDeniedException;
+	String authenticate(DeviceEntity device, String mobile, String challengeId,
+			String mobileOTP) throws SubjectNotFoundException,
+			MalformedURLException, MobileException,
+			MobileAuthenticationException, SubjectMismatchException,
+			PermissionDeniedException;
 
 	/**
 	 * Requests an OTP for a mobile device. Returns the challenge ID for this
@@ -100,7 +101,7 @@ public interface ReAuthenticationService {
 	 * @throws MalformedURLException
 	 * @throws MobileException
 	 */
-	String requestMobileOTP(AuthenticationDevice device, String mobile)
+	String requestMobileOTP(DeviceEntity device, String mobile)
 			throws MalformedURLException, MobileException;
 
 	/**
@@ -116,11 +117,13 @@ public interface ReAuthenticationService {
 	 * @throws DecodingException
 	 * @throws SubjectMismatchException
 	 * @throws PermissionDeniedException
+	 * @throws DeviceNotFoundException
 	 */
 	boolean authenticate(String sessionId, byte[] authenticationStatementData)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException, DecodingException,
-			SubjectMismatchException, PermissionDeniedException;
+			SubjectMismatchException, PermissionDeniedException,
+			DeviceNotFoundException;
 
 	/**
 	 * Aborts the current authentication procedure.

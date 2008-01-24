@@ -27,7 +27,6 @@ import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.entity.DeviceEntity;
 
@@ -60,7 +59,7 @@ public class DeviceBean implements Device {
 	private String application;
 
 	@In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
-	private Set<AuthenticationDevice> requiredDevicePolicy;
+	private Set<DeviceEntity> requiredDevicePolicy;
 
 	@Out(required = false, scope = ScopeType.SESSION)
 	private String deviceSelection;

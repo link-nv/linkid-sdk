@@ -68,4 +68,6 @@ public interface DeviceDAO {
 			throws DevicePropertyNotFoundException;
 
 	DevicePropertyEntity findProperty(DevicePropertyPK propertyPK);
+
+	List<DeviceEntity> listDevices(String authenticationContextClass);
 }

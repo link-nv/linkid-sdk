@@ -19,6 +19,8 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,10 +29,11 @@ import net.link.safeonline.auth.protocol.SimpleProtocolHandler;
 import net.link.safeonline.auth.protocol.saml2.Saml2PostProtocolHandler;
 import net.link.safeonline.auth.servlet.EntryServlet;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.entity.DeviceClassEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.model.PkiValidator;
-import net.link.safeonline.saml2.util.SafeOnlineAuthnContextClass;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -70,6 +73,8 @@ public class EntryServletTest {
 
 	private PkiValidator mockPkiValidator;
 
+	private DevicePolicyService mockDevicePolicyService;
+
 	private Object[] mockObjects;
 
 	@Before
@@ -93,6 +98,11 @@ public class EntryServletTest {
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				mockSamlAuthorityService);
 
+		this.mockDevicePolicyService = createMock(DevicePolicyService.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/DevicePolicyServiceBean/local",
+				this.mockDevicePolicyService);
+
 		JmxTestUtils jmxTestUtils = new JmxTestUtils();
 		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
@@ -106,7 +116,8 @@ public class EntryServletTest {
 
 		this.mockObjects = new Object[] {
 				this.mockApplicationAuthenticationService,
-				this.mockPkiValidator, mockSamlAuthorityService };
+				this.mockPkiValidator, mockSamlAuthorityService,
+				this.mockDevicePolicyService };
 	}
 
 	@After
@@ -259,6 +270,9 @@ public class EntryServletTest {
 	@Test
 	public void saml2RequestedAuthnContextSetsRequiredDevices()
 			throws Exception {
+		LOG
+				.debug("----------------------------saml2RequestedAuthnContextSetsRequiredDevices---------------------------");
+
 		// setup
 		HttpClient httpClient = new HttpClient();
 		PostMethod postMethod = new PostMethod(this.entryServletTestManager
@@ -271,8 +285,7 @@ public class EntryServletTest {
 		String applicationName = "test-application-id";
 		String assertionConsumerService = "http://test.assertion.consumer.service";
 		Set<String> devices = new HashSet<String>();
-		devices.add(SafeOnlineAuthnContextClass.PASSWORD_PROTECTED_TRANSPORT
-				.getSamlName());
+		devices.add(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
 				applicationName, applicationKeyPair, assertionConsumerService,
 				null, null, devices);
@@ -294,6 +307,19 @@ public class EntryServletTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								applicationCert)).andReturn(true);
 
+		List<DeviceEntity> authnDevices = new LinkedList<DeviceEntity>();
+		DeviceEntity passwordDevice = new DeviceEntity(
+				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
+				new DeviceClassEntity(
+						SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+						SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
+				null, null, null, null, null);
+		authnDevices.add(passwordDevice);
+		expect(
+				this.mockDevicePolicyService
+						.listDevices(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS))
+				.andReturn(authnDevices);
+
 		// prepare
 		replay(this.mockObjects);
 
@@ -314,11 +340,14 @@ public class EntryServletTest {
 		String target = (String) this.entryServletTestManager
 				.getSessionAttribute("target");
 		assertEquals(assertionConsumerService, target);
-		Set<String> resultRequiredDevices = (Set<String>) this.entryServletTestManager
+		Set<DeviceEntity> resultRequiredDevices = (Set<DeviceEntity>) this.entryServletTestManager
 				.getSessionAttribute("requiredDevices");
 		assertNotNull(resultRequiredDevices);
-		assertTrue(resultRequiredDevices
-				.contains(AuthenticationDevice.PASSWORD));
+		for (DeviceEntity resultRequiredDevice : resultRequiredDevices)
+			LOG
+					.debug("resultRequiredDevice: "
+							+ resultRequiredDevice.getName());
+		assertTrue(resultRequiredDevices.contains(passwordDevice));
 	}
 
 	@Test

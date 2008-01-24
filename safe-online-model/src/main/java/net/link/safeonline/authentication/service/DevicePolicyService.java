@@ -28,9 +28,9 @@ public interface DevicePolicyService {
 
 	/**
 	 * Gives back the device policy for the given application. The device policy
-	 * is a set of device Id's which the application accepts as authentication
-	 * devices. The method signature has been optimized for ease of use in the
-	 * authentication web application.
+	 * is a set of device entities which the application accepts as
+	 * authentication devices. The method signature has been optimized for ease
+	 * of use in the authentication web application.
 	 * 
 	 * @param applicationId
 	 * @param requiredDevicePolicy
@@ -40,7 +40,7 @@ public interface DevicePolicyService {
 	 * @throws EmptyDevicePolicyException
 	 */
 	List<DeviceEntity> getDevicePolicy(String applicationId,
-			Set<AuthenticationDevice> requiredDevicePolicy)
+			Set<DeviceEntity> requiredDevicePolicy)
 			throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
 	/**
@@ -87,5 +87,14 @@ public interface DevicePolicyService {
 	 */
 	String getNewAccountRegistrationURL(String device)
 			throws DeviceNotFoundException;
+
+	/**
+	 * Returns list of devices matching the specified authentication context
+	 * class.
+	 * 
+	 * @param authnContextClassRefValue
+	 * @return
+	 */
+	List<DeviceEntity> listDevices(String authenticationContextClass);
 
 }

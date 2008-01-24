@@ -20,7 +20,6 @@ import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.ApplicationService;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
@@ -40,6 +39,7 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -184,7 +184,7 @@ public class AccountMergingServiceBeanTest {
 
 		// operate
 		accountMergingService.mergeAccount(accountMergingDO,
-				new HashSet<AuthenticationDevice>());
+				new HashSet<DeviceEntity>());
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.commit();

@@ -26,12 +26,12 @@ import net.link.safeonline.auth.protocol.ProtocolException;
 import net.link.safeonline.auth.protocol.ProtocolHandler;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
-import net.link.safeonline.authentication.service.AuthenticationDevice;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.saml2.util.AuthnResponseFactory;
-import net.link.safeonline.saml2.util.SafeOnlineAuthnContextClass;
 import net.link.safeonline.saml2.util.SamlRequestSecurityPolicyResolver;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
@@ -208,35 +208,32 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		HttpSession session = authnRequest.getSession();
 		session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
 
+		DevicePolicyService devicePolicyService = EjbUtils.getEJB(
+				"SafeOnline/DevicePolicyServiceBean/local",
+				DevicePolicyService.class);
+
 		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
 				.getRequestedAuthnContext();
-		Set<AuthenticationDevice> devices;
+		Set<DeviceEntity> devices;
 		if (null != requestedAuthnContext) {
 			List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
 					.getAuthnContextClassRefs();
-			devices = new HashSet<AuthenticationDevice>();
+			devices = new HashSet<DeviceEntity>();
 			for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs) {
 				String authnContextClassRefValue = authnContextClassRef
 						.getAuthnContextClassRef();
 				LOG.debug("authentication context class reference: "
 						+ authnContextClassRefValue);
-				SafeOnlineAuthnContextClass safeOnlineAuthnContextClass = SafeOnlineAuthnContextClass
-						.findAuthnContextClass(authnContextClassRefValue);
-				if (null == safeOnlineAuthnContextClass) {
+				List<DeviceEntity> authnDevices = devicePolicyService
+						.listDevices(authnContextClassRefValue);
+				if (null == authnDevices || authnDevices.size() == 0) {
 					LOG.error("AuthnContextClassRef not supported: "
 							+ authnContextClassRefValue);
 					throw new ProtocolException(
 							"AuthnContextClassRef not supported: "
 									+ authnContextClassRefValue);
 				}
-				AuthenticationDevice device = findAuthenticationDevice(safeOnlineAuthnContextClass);
-				if (null == device) {
-					LOG
-							.error("no mapping from SAML authn context class to authentication device");
-					throw new ProtocolException(
-							"no mapping from SAML authn context class to authentication device");
-				}
-				devices.add(device);
+				devices.addAll(authnDevices);
 			}
 		} else {
 			devices = null;
@@ -262,7 +259,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		messageContext
 				.setOutboundMessageTransport(new HttpServletResponseAdapter(
 						authnResponse));
-		SafeOnlineAuthnContextClass authnContextClass = getAuthnContextClass(session);
+		String authnContextClass = getAuthnContextClass(session);
 		String issuerName = this.samlAuthorityService.getIssuerName();
 		int validity = this.samlAuthorityService.getAuthnAssertionValidity();
 		String inResponseTo = (String) session
@@ -315,33 +312,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		}
 	}
 
-	private SafeOnlineAuthnContextClass getAuthnContextClass(HttpSession session)
-			throws ProtocolException {
-		AuthenticationDevice device = LoginManager
-				.getAuthenticationDevice(session);
-		switch (device) {
-		case PASSWORD:
-			return SafeOnlineAuthnContextClass.PASSWORD_PROTECTED_TRANSPORT;
-		case BEID:
-			return SafeOnlineAuthnContextClass.SMART_CARD_PKI;
-		case WEAK_MOBILE:
-			return SafeOnlineAuthnContextClass.MOBILE;
-		case STRONG_MOBILE:
-			return SafeOnlineAuthnContextClass.MOBILE;
-		default:
-			throw new ProtocolException("unsupported device: " + device);
-		}
-	}
-
-	private AuthenticationDevice findAuthenticationDevice(
-			SafeOnlineAuthnContextClass authnContextClass) {
-		switch (authnContextClass) {
-		case PASSWORD_PROTECTED_TRANSPORT:
-			return AuthenticationDevice.PASSWORD;
-		case SMART_CARD_PKI:
-			return AuthenticationDevice.BEID;
-		default:
-			return null;
-		}
+	private String getAuthnContextClass(HttpSession session) {
+		DeviceEntity device = LoginManager.getAuthenticationDevice(session);
+		return device.getAuthenticationContextClass();
 	}
 }
