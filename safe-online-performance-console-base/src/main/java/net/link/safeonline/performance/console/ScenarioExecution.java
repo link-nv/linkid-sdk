@@ -28,17 +28,23 @@ public class ScenarioExecution implements Serializable {
 	private Map<String, byte[][]> charts;
 	private String hostname;
 	private Integer execution;
+	private Double averageSpeed;
 	private Long duration;
 	private Integer workers;
 	private Integer agents;
 
+	private String scenario;
+
 	public ScenarioExecution(Integer agents, Integer workers, Long duration,
-			Integer execution, String hostname, Map<String, byte[][]> charts) {
+			String hostname, Integer execution, Double averageSpeed,
+			String scenario, Map<String, byte[][]> charts) {
 
 		this.agents = agents;
 		this.workers = workers;
 		this.duration = duration;
 		this.execution = execution;
+		this.averageSpeed = averageSpeed;
+		this.scenario = scenario;
 		this.hostname = hostname;
 		this.charts = charts;
 	}
@@ -58,6 +64,11 @@ public class ScenarioExecution implements Serializable {
 		return this.execution;
 	}
 
+	public Double getAverageSpeed() {
+
+		return this.averageSpeed;
+	}
+
 	public Long getDuration() {
 
 		return this.duration;
@@ -71,6 +82,11 @@ public class ScenarioExecution implements Serializable {
 	public Integer getAgents() {
 
 		return this.agents;
+	}
+
+	public String getScenario() {
+
+		return this.scenario;
 	}
 
 }

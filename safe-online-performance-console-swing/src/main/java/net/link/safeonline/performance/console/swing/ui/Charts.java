@@ -120,7 +120,17 @@ public class Charts extends WindowAdapter {
 					execution.getAgents() > 1 ? "s" : "")));
 			label.setFont(label.getFont().deriveFont(30f));
 
-			header.add(label = new JLabel(String.format("Duration: %f minutes",
+			header.add(label = new JLabel(String.format(
+					"Scenario: %s            ", execution.getScenario())));
+			label.setFont(label.getFont().deriveFont(20f));
+
+			header.add(label = new JLabel(String.format(
+					"Average Speed: %.2f scenarios/s", execution
+							.getAverageSpeed() * 1000f)));
+			label.setFont(label.getFont().deriveFont(20f));
+
+			header.add(label = new JLabel(String.format(
+					"Duration: %.2f minutes  ",
 					execution.getDuration() / 60000f)));
 			label.setFont(label.getFont().deriveFont(20f));
 

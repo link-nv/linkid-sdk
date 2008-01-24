@@ -33,4 +33,14 @@ public interface ScenarioLocal {
 	 * Create charts on data collected in this scenario.
 	 */
 	public Map<String, byte[][]> createGraphs(int executionId);
+
+	/**
+	 * Calculate the average speed for the given execution (#/ms).
+	 */
+	public Double getSpeed(int execution);
+
+	/**
+	 * Retrieve the name of the scenario that was used in the given execution.
+	 */
+	public String getScenario(int execution);
 }

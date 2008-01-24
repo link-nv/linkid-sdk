@@ -42,10 +42,8 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.tools.Executable;
 
 /**
- * <h2>{@link PDF} - [in short] (TODO).</h2>
- * <p>
- * [description / usage].
- * </p>
+ * <h2>{@link PDF} - Renders charts to a PDF file and opens it.</h2>
+ *
  * <p>
  * <i>Jan 21, 2008</i>
  * </p>
@@ -97,16 +95,23 @@ public class PDF {
 			List<Cell> frontCells = new ArrayList<Cell>();
 			frontCells.add(new Cell(new Phrase(
 					"Safe Online:  Performance Testing", new Font(font, 40f))));
-			frontCells.add(new Cell(new Phrase(150f, "OLAS Host: "
-					+ execution.getHostname(), new Font(font, 20f))));
-			frontCells.add(new Cell(new Phrase(50f, "Duration: "
-					+ execution.getDuration() / 60000f + " minutes", new Font(
-					font, 20f))));
 			frontCells.add(new Cell(new Phrase(50f, String.format(
 					"Using %d agent%s with %d worker%s each.", execution
 							.getAgents(), execution.getAgents() > 1 ? "s" : "",
 					execution.getWorkers(), execution.getWorkers() > 1 ? "s"
 							: ""), new Font(font, 20f))));
+			frontCells.add(new Cell(new Phrase(150f, String.format(
+					"Scenario: %s", execution.getScenario()), new Font(font,
+					20f))));
+			frontCells.add(new Cell(new Phrase(150f, String.format(
+					"OLAS Host: %s", execution.getHostname()), new Font(font,
+					20f))));
+			frontCells.add(new Cell(new Phrase(50f, String.format(
+					"Duration: %.2f minutes    ",
+					execution.getDuration() / 60000f), new Font(font, 20f))));
+			frontCells.add(new Cell(new Phrase(100f, String.format(
+					"Average Execution Speed: %.2f scenarios/s.", execution
+							.getAverageSpeed() * 1000f), new Font(font, 20f))));
 
 			// Style front page information and add it to the PDF.
 			Table front = new Table(1);
@@ -148,8 +153,10 @@ public class PDF {
 			}
 
 			// Add the completed chapters to the PDF.
-			for (Chapter chapter : chapters)
+			for (Chapter chapter : chapters) {
 				pdfDocument.add(chapter);
+				pdfDocument.newPage();
+			}
 			pdfDocument.close();
 
 			// Open the PDF document.

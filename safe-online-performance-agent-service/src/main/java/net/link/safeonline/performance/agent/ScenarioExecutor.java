@@ -19,9 +19,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <h2>{@link ScenarioExecutor} - [in short] (TODO).</h2>
+ * <h2>{@link ScenarioExecutor} - Thread in which we execute the scenario.</h2>
  * <p>
- * [description / usage].
+ * We retrieve the EJB for the scenario and use it to prepare a new scenario
+ * execution. We then create a thread pool which size depends on the amount of
+ * workers we were instructed to use and tell the scenario EJB to execute
+ * scenarios in these threads.<br>
+ * <br>
+ * The execution can be aborted by calling {@link #halt()}. A best-effort
+ * attempt will be made to abort the scenario by interrupting all active threads
+ * and shutting down the thread pool. The agent will revert to its previous
+ * state and no statistics will be available.
  * </p>
  * <p>
  * <i>Jan 8, 2008</i>
@@ -104,8 +112,10 @@ public class ScenarioExecutor extends Thread {
 
 			// Generate the resulting statistical information.
 			ScenarioExecution stats = new ScenarioExecution(this.agents,
-					this.workers, this.duration, execution, this.hostname,
-					scenarioBean.createGraphs(execution));
+					this.workers, this.duration, this.hostname, execution,
+					scenarioBean.getSpeed(execution), scenarioBean
+							.getScenario(execution), scenarioBean
+							.createGraphs(execution));
 			this.agentService.setStats(stats);
 
 			// Notify the agent service of the scenario completion.

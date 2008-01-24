@@ -18,14 +18,13 @@ package net.link.safeonline.performance.console.jgroups;
 import net.link.safeonline.performance.console.ScenarioExecution;
 
 /**
- * <h2>{@link Agent} - [in short] (TODO).</h2>
- * <p>
- * [description / usage].
- * </p>
+ * <h2>{@link Agent} - Interface to all actions that can be remotely performed
+ * on an agent.</h2>
+ *
  * <p>
  * <i>Dec 19, 2007</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public interface Agent {

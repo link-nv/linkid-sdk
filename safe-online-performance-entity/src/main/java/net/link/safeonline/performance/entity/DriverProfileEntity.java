@@ -1,17 +1,8 @@
 /*
- *   Copyright 2008, Maarten Billemont
+ * SafeOnline project.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 package net.link.safeonline.performance.entity;
 
@@ -27,10 +18,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
- * <h2>{@link DriverProfileEntity} - [in short] (TODO).</h2>
- * <p>
- * [description / usage].
- * </p>
+ * <h2>{@link DriverProfileEntity} - Links the {@link ProfileDataEntity}s that
+ * belong to a certain driver in a certain execution.</h2>
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
@@ -55,7 +45,6 @@ public class DriverProfileEntity {
 	@ManyToOne
 	@SuppressWarnings("unused")
 	private ExecutionEntity execution;
-
 
 	@OneToMany()
 	private Set<ProfileDataEntity> profileData;

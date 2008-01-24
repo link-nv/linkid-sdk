@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -16,9 +16,12 @@ import net.link.safeonline.model.application.PublicApplication;
 import net.link.safeonline.service.PublicApplicationService;
 
 /**
- * <h2>{@link PublicApplicationServiceBean} - [in short] (TODO).</h2>
+ * <h2>{@link PublicApplicationServiceBean} - Service for
+ * {@link PublicApplication}.</h2>
+ *
  * <p>
- * [description / usage].
+ * Provides access to attributes of the given application that are publicly
+ * available.
  * </p>
  * <p>
  * <i>Dec 18, 2007</i>

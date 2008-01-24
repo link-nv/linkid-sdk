@@ -128,6 +128,35 @@ public class ScenarioBean implements ScenarioLocal {
 		return execution.getId();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public Double getSpeed(int executionId) {
+
+		ExecutionEntity execution = this.executionService
+				.getExecution(executionId);
+		TreeSet<StartTimeEntity> sortedStartTimes = new TreeSet<StartTimeEntity>(
+				execution.getStartTimes());
+
+		return (double) sortedStartTimes.size()
+				/ (sortedStartTimes.last().getTime() - sortedStartTimes.first()
+						.getTime());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getScenario(int executionId) {
+
+		ExecutionEntity execution = this.executionService
+				.getExecution(executionId);
+
+		return execution.getScenarioName();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public Map<String, byte[][]> createGraphs(int executionId) {
 
 		ExecutionEntity execution = this.executionService
@@ -169,7 +198,7 @@ public class ScenarioBean implements ScenarioLocal {
 
 			for (ProfileDataEntity data : profile.getProfileData()) {
 
-				if (data.getMeasurements() == null)
+				if (data.getMeasurements() == null || data.getStartTime() == 0)
 					continue;
 
 				// Process the statistics.

@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,9 +13,15 @@ import java.util.Map;
 import javax.servlet.ServletException;
 
 /**
- * <h2>{@link ProfiledException} - [in short] (TODO).</h2>
+ * <h2>{@link ProfiledException} - A wrapper for exceptions that occurred
+ * during profiling.</h2>
  * <p>
- * [description / usage].
+ * This wrapper serves as an intermediate to make sure profiling data is still
+ * transferred to the agents when exceptions occur in OLAS.<br>
+ * <br>
+ * Since HTTP headers are unavailable when exceptions occur, the profiling data
+ * is serialized as a {@link Map} of {@link String}s. The agent unserializes
+ * this data to retrieve the profiling data.
  * </p>
  * <p>
  * <i>Nov 30, 2007</i>
