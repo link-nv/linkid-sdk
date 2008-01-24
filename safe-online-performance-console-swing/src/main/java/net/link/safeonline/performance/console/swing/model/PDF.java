@@ -64,11 +64,12 @@ public class PDF {
 
 		// Get execution metadata from the first agent.
 		ScenarioExecution execution = agentCharts.values().iterator().next();
+		float duration = execution.getDuration() / 60000f;
 
 		// Choose output.
-		File pdfFile = chooseOutputFile(new File(String.format("%s-%dx%d.pdf",
-				execution.getHostname(), execution.getAgents(), execution
-						.getWorkers())));
+		File pdfFile = chooseOutputFile(new File(String.format(
+				"%s-%dmin-%dx%d.pdf", execution.getHostname(), (int) duration,
+				execution.getAgents(), execution.getWorkers())));
 		if (pdfFile == null)
 			return false;
 
@@ -95,20 +96,19 @@ public class PDF {
 			List<Cell> frontCells = new ArrayList<Cell>();
 			frontCells.add(new Cell(new Phrase(
 					"Safe Online:  Performance Testing", new Font(font, 40f))));
+			frontCells.add(new Cell(new Phrase(50f, execution.getScenario(),
+					new Font(font, 20f))));
+			frontCells.add(new Cell(new Phrase(150f, String.format(
+					"Duration: %.2f minutes    ", duration),
+					new Font(font, 20f))));
+			frontCells.add(new Cell(new Phrase(50f, String.format(
+					"OLAS Host: %s", execution.getHostname()), new Font(font,
+					20f))));
 			frontCells.add(new Cell(new Phrase(50f, String.format(
 					"Using %d agent%s with %d worker%s each.", execution
 							.getAgents(), execution.getAgents() > 1 ? "s" : "",
 					execution.getWorkers(), execution.getWorkers() > 1 ? "s"
 							: ""), new Font(font, 20f))));
-			frontCells.add(new Cell(new Phrase(150f, String.format(
-					"Scenario: %s", execution.getScenario()), new Font(font,
-					20f))));
-			frontCells.add(new Cell(new Phrase(150f, String.format(
-					"OLAS Host: %s", execution.getHostname()), new Font(font,
-					20f))));
-			frontCells.add(new Cell(new Phrase(50f, String.format(
-					"Duration: %.2f minutes    ",
-					execution.getDuration() / 60000f), new Font(font, 20f))));
 			frontCells.add(new Cell(new Phrase(100f, String.format(
 					"Average Execution Speed: %.2f scenarios/s.", execution
 							.getAverageSpeed() * 1000f), new Font(font, 20f))));
