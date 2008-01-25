@@ -57,7 +57,7 @@ public class PerformanceDriverTest {
 				+ ":1099");
 		try {
 			PerformanceService service = (PerformanceService) new InitialContext(
-					environment).lookup(PerformanceService.JNDI_BINDING_NAME);
+					environment).lookup(PerformanceService.BINDING);
 			applicationKey = new KeyStore.PrivateKeyEntry(service
 					.getPrivateKey(), new Certificate[] { service
 					.getCertificate() });
@@ -75,10 +75,11 @@ public class PerformanceDriverTest {
 	@Before
 	public void setUp() {
 
-		ExecutionEntity execution = new ExecutionEntity("TestScenario");
-		this.idDriver = new IdMappingDriver(OLAS_HOSTNAME, execution);
-		this.attribDriver = new AttribDriver(OLAS_HOSTNAME, execution);
-		this.authDriver = new AuthDriver(OLAS_HOSTNAME, execution);
+		ExecutionEntity execution = new ExecutionEntity("TestScenario",
+				OLAS_HOSTNAME);
+		this.idDriver = new IdMappingDriver(execution);
+		this.attribDriver = new AttribDriver(execution);
+		this.authDriver = new AuthDriver(execution);
 	}
 
 	@Test
@@ -140,12 +141,12 @@ public class PerformanceDriverTest {
 		return uuid;
 	}
 
-	private boolean isEmptyOrOnlyNulls(Collection<?> profileData) {
+	private boolean isEmptyOrOnlyNulls(Collection<?> profileDataOrErrors) {
 
-		if (profileData == null || profileData.isEmpty())
+		if (profileDataOrErrors == null || profileDataOrErrors.isEmpty())
 			return true;
 
-		for (Object data : profileData)
+		for (Object data : profileDataOrErrors)
 			if (null != data)
 				return false;
 

@@ -54,6 +54,7 @@ public class ScenarioExecutor extends Thread {
 	public ScenarioExecutor(String hostname, Integer agents, Integer workers,
 			Long duration, AgentService agentService) {
 
+		this.abort = false;
 		this.hostname = hostname;
 		this.workers = workers;
 		this.agents = agents;

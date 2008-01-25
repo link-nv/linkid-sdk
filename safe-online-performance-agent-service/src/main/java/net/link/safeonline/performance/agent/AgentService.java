@@ -7,12 +7,6 @@
 
 package net.link.safeonline.performance.agent;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import javax.management.JMException;
-import javax.naming.NamingException;
-
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 
@@ -169,9 +163,9 @@ public class AgentService implements AgentServiceMBean {
 	public void actionCompleted(Boolean success) {
 
 		if (this.transit == null)
-			throw new IllegalStateException("No ongoing action to stop.");
+			LOG.warn("No ongoing action to stop.", new IllegalStateException());
 
-		if (success)
+		else if (success)
 			this.state = this.transit;
 
 		this.transit = null;
@@ -180,7 +174,7 @@ public class AgentService implements AgentServiceMBean {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void upload(byte[] application) throws IOException {
+	public void upload(byte[] application) {
 
 		try {
 			setError(null);
@@ -201,8 +195,7 @@ public class AgentService implements AgentServiceMBean {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void deploy() throws JMException, NamingException,
-			MalformedURLException, IOException {
+	public void deploy() {
 
 		try {
 			setError(null);

@@ -213,7 +213,6 @@ public class LoginServlet extends HttpServlet {
 	 * @param device
 	 * @throws ServletException
 	 */
-	@SuppressWarnings("unchecked")
 	private boolean performDevicePolicyCheck(HttpSession session,
 			String applicationId, DeviceEntity device) throws ServletException {
 		Set<DeviceEntity> requiredDevicePolicy = LoginManager

@@ -80,7 +80,7 @@ public class ProtocolHandlerManager {
 	/**
 	 * Handles the authentication protocol request. This method return a
 	 * protocol context in case of a successful initiation of the authentication
-	 * procedure. The method returns <code>null</code> is no appropriate
+	 * procedure. The method returns <code>null</code> if no appropriate
 	 * authentication protocol handler has been found.
 	 * 
 	 * @param request

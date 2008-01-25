@@ -72,6 +72,11 @@ public abstract class ProfileDriver {
 		return this.title;
 	}
 
+	public DriverProfileEntity getProfile() {
+
+		return this.profile;
+	}
+
 	protected void report(MessageAccessor service) {
 
 		report(new ProfileData(service.getHeaders()));
