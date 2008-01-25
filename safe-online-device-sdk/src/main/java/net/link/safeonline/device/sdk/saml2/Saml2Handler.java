@@ -95,28 +95,27 @@ public class Saml2Handler {
 		Saml2Handler instance = (Saml2Handler) request.getSession()
 				.getAttribute(SAML2_HANDLER);
 
-		if (null == instance) {
+		if (null == instance)
 			instance = new Saml2Handler(request);
-		}
 
 		return instance;
 	}
 
 	public void init(Map<String, String> configParams,
-			X509Certificate applicationCertificate, KeyPair applicationKeyPair) {
+			X509Certificate newApplicationCertificate,
+			KeyPair newApplicationKeyPair) {
 		this.wsLocation = configParams.get("WsLocation");
-		this.applicationCertificate = applicationCertificate;
-		this.applicationKeyPair = applicationKeyPair;
+		this.applicationCertificate = newApplicationCertificate;
+		this.applicationKeyPair = newApplicationKeyPair;
 	}
 
 	public void initAuthentication(HttpServletRequest request)
 			throws AuthenticationInitializationException {
 
 		String encodedSamlRequest = request.getParameter("SAMLRequest");
-		if (null == encodedSamlRequest) {
+		if (null == encodedSamlRequest)
 			throw new AuthenticationInitializationException(
 					"no SAML request found");
-		}
 
 		byte[] decodedSamlResponse;
 		try {
@@ -164,19 +163,17 @@ public class Saml2Handler {
 		}
 
 		SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-		if (false == samlMessage instanceof AuthnRequest) {
+		if (false == samlMessage instanceof AuthnRequest)
 			throw new AuthenticationInitializationException(
 					"SAML message not an authentication request message");
-		}
 		AuthnRequest samlAuthnRequest = (AuthnRequest) samlMessage;
 
 		String assertionConsumerService = samlAuthnRequest
 				.getAssertionConsumerServiceURL();
 
-		if (null == assertionConsumerService) {
+		if (null == assertionConsumerService)
 			throw new AuthenticationInitializationException(
 					"missing AssertionConsumerServiceURL");
-		}
 
 		String application = null;
 		try {
@@ -201,16 +198,14 @@ public class Saml2Handler {
 			List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
 					.getAuthnContextClassRefs();
 			devices = new HashSet<String>();
-			for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs) {
+			for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs)
 				devices.add(authnContextClassRef.getAuthnContextClassRef());
-			}
-		} else {
+		} else
 			devices = null;
-		}
 
-		HttpSession session = request.getSession();
-		session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
-		session.setAttribute(TARGET_URL, assertionConsumerService);
+		HttpSession localSession = request.getSession();
+		localSession.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
+		localSession.setAttribute(TARGET_URL, assertionConsumerService);
 
 		AuthenticationContext authenticationContext = AuthenticationContext
 				.getLoginManager(request);
@@ -227,8 +222,8 @@ public class Saml2Handler {
 		String usedDevice = authenticationContext.getUsedDevice();
 		String userId = authenticationContext.getUserId();
 		String applicationId = authenticationContext.getApplication();
-		String target = (String) session.getAttribute(TARGET_URL);
-		String inResponseTo = (String) session
+		String target = (String) this.session.getAttribute(TARGET_URL);
+		String inResponseTo = (String) this.session
 				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
 
 		String issuerName = authenticationContext.getIssuer();
@@ -241,10 +236,9 @@ public class Saml2Handler {
 				.setOutboundMessageTransport(new HttpServletResponseAdapter(
 						response));
 
-		if (null == inResponseTo) {
+		if (null == inResponseTo)
 			throw new AuthenticationFinalizationException(
 					"missing IN_RESPONSE_TO session attribute");
-		}
 		Response responseMessage = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, applicationId, issuerName, userId, usedDevice,
 				validity, target);

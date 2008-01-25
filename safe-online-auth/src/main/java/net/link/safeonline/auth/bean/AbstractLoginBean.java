@@ -30,9 +30,9 @@ import org.jboss.seam.log.Log;
 /**
  * Abstract login bean. Encapsulates the common code for a Seam backing bean to
  * login a given user.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class AbstractLoginBean {
 
@@ -45,7 +45,6 @@ public class AbstractLoginBean {
 	@EJB
 	DeviceDAO deviceDAO;
 
-	@SuppressWarnings("unused")
 	@Out(value = LoginManager.USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	@In(required = false, scope = ScopeType.SESSION)
 	protected String username;
@@ -64,7 +63,7 @@ public class AbstractLoginBean {
 
 	/**
 	 * Login the given user.
-	 * 
+	 *
 	 * @param username
 	 * @param inputAuthenticationDevice
 	 * @throws DeviceNotFoundException
@@ -80,7 +79,7 @@ public class AbstractLoginBean {
 	/**
 	 * Re-login the current user. This will trigger the device restriction check
 	 * again.
-	 * 
+	 *
 	 * @param inputAuthenticationDevice
 	 * @throws DeviceNotFoundException
 	 */

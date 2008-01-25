@@ -72,7 +72,7 @@ public class AttributeNameOutputComponent extends UIOutput {
 	}
 
 	public String getCompoundedStyleClass() {
-		return compoundedStyleClass;
+		return this.compoundedStyleClass;
 	}
 
 	public void setCompoundedStyleClass(String compoundedStyleClass) {
@@ -80,7 +80,7 @@ public class AttributeNameOutputComponent extends UIOutput {
 	}
 
 	public String getMemberStyleClass() {
-		return memberStyleClass;
+		return this.memberStyleClass;
 	}
 
 	public void setMemberStyleClass(String memberStyleClass) {
@@ -88,7 +88,7 @@ public class AttributeNameOutputComponent extends UIOutput {
 	}
 
 	public String getStyleClass() {
-		return styleClass;
+		return this.styleClass;
 	}
 
 	public void setStyleClass(String styleClass) {

@@ -54,7 +54,6 @@ public interface DevicePolicyService {
 	 * 
 	 * @param deviceName
 	 * @param locale
-	 * @return
 	 */
 	String getDeviceDescription(String deviceName, Locale locale);
 
@@ -62,7 +61,6 @@ public interface DevicePolicyService {
 	 * Returns the authentication URL for the specified device.
 	 * 
 	 * @param deviceName
-	 * @return
 	 * @throws DeviceNotFoundException
 	 */
 	String getAuthenticationURL(String deviceName)
@@ -72,7 +70,6 @@ public interface DevicePolicyService {
 	 * Returns the registration URL for the specified device.
 	 * 
 	 * @param deviceName
-	 * @return
 	 * @throws DeviceNotFoundException
 	 */
 	String getRegistrationURL(String deviceName) throws DeviceNotFoundException;
@@ -82,7 +79,6 @@ public interface DevicePolicyService {
 	 * specified device.
 	 * 
 	 * @param deviceName
-	 * @return
 	 * @throws DeviceNotFoundException
 	 */
 	String getNewAccountRegistrationURL(String device)
@@ -93,7 +89,6 @@ public interface DevicePolicyService {
 	 * class.
 	 * 
 	 * @param authnContextClassRefValue
-	 * @return
 	 */
 	List<DeviceEntity> listDevices(String authenticationContextClass);
 

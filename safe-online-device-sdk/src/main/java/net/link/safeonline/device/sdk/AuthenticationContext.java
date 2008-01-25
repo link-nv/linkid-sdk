@@ -34,14 +34,13 @@ public class AuthenticationContext {
 			HttpServletRequest request) {
 		AuthenticationContext instance = (AuthenticationContext) request
 				.getSession().getAttribute(LOGIN_MANAGER);
-		if (null == instance) {
+		if (null == instance)
 			instance = new AuthenticationContext(request);
-		}
 		return instance;
 	}
 
 	public Set<String> getWantedDevices() {
-		return wantedDevices;
+		return this.wantedDevices;
 	}
 
 	public void setWantedDevices(Set<String> wantedDevices) {
@@ -49,7 +48,7 @@ public class AuthenticationContext {
 	}
 
 	public String getUsedDevice() {
-		return usedDevice;
+		return this.usedDevice;
 	}
 
 	public void setUsedDevice(String usedDevice) {
@@ -57,7 +56,7 @@ public class AuthenticationContext {
 	}
 
 	public String getUserId() {
-		return userId;
+		return this.userId;
 	}
 
 	public void setUserId(String userId) {
@@ -65,7 +64,7 @@ public class AuthenticationContext {
 	}
 
 	public String getApplication() {
-		return application;
+		return this.application;
 	}
 
 	public void setApplication(String application) {
@@ -73,7 +72,7 @@ public class AuthenticationContext {
 	}
 
 	public String getIssuer() {
-		return issuer;
+		return this.issuer;
 	}
 
 	public void setIssuer(String issuer) {
@@ -81,7 +80,7 @@ public class AuthenticationContext {
 	}
 
 	public int getValidity() {
-		return validity;
+		return this.validity;
 	}
 
 	public void setValidity(int validity) {

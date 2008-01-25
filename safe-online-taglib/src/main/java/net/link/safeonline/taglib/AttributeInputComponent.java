@@ -653,7 +653,7 @@ public class AttributeInputComponent extends UIInput {
 	}
 
 	public String getStyleClass() {
-		return styleClass;
+		return this.styleClass;
 	}
 
 	public void setStyleClass(String styleClass) {
@@ -661,7 +661,7 @@ public class AttributeInputComponent extends UIInput {
 	}
 
 	public String getTextStyleClass() {
-		return TEXT_STYLE_CLASS_DEFAULT + " " + textStyleClass;
+		return TEXT_STYLE_CLASS_DEFAULT + " " + this.textStyleClass;
 	}
 
 	public void setTextStyleClass(String textStyleClass) {
@@ -669,7 +669,7 @@ public class AttributeInputComponent extends UIInput {
 	}
 
 	public String getCheckboxStyleClass() {
-		return CHECKBOX_STYLE_CLASS_DEFAULT + " " + checkboxStyleClass;
+		return CHECKBOX_STYLE_CLASS_DEFAULT + " " + this.checkboxStyleClass;
 	}
 
 	public void setCheckboxStyleClass(String checkboxStyleClass) {

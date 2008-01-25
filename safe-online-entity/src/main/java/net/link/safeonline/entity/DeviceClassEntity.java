@@ -68,8 +68,6 @@ public class DeviceClassEntity implements Serializable {
 
 	/**
 	 * Returns list of devices of this device class.
-	 * 
-	 * @return
 	 */
 	@OneToMany
 	public List<DeviceEntity> getDevices() {
@@ -82,8 +80,6 @@ public class DeviceClassEntity implements Serializable {
 
 	/**
 	 * Returns map of i18n device class descriptions.
-	 * 
-	 * @return
 	 */
 	@OneToMany(mappedBy = "deviceClass")
 	@MapKey(name = "language")
