@@ -12,6 +12,17 @@
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
+				<exclude>
+					server/default/deploy/jms/hsqldb-jdbc2-service.xml
+				</exclude>
+				<exclude>server/default/conf/jboss-minimal.xml</exclude>
+				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
+				<exclude>server/default/lib/hsqldb.jar</exclude>
+				<exclude>server/default/lib/hsqldb-plugin.jar</exclude>
+				<exclude>
+					server/default/deploy/jms/hsqldb-jdbc-state-service.xml
+				</exclude>
+				<exclude>readme.html</exclude>
                 <exclude>bin/*.sh</exclude>
                 <exclude>server/default/lib/jboss-seam-1.2.1.GA-safe-online.jar</exclude>
 			</excludes>
@@ -32,6 +43,10 @@
 		</fileSet>
 	</fileSets>
 	<files>
+		<file>
+			<source>target/files/mysql-connector-java-5.1.5.jar</source>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</file>
 		<file>
 			<source>
 				target/files/safe-online-performance-agent-service-1.0-SNAPSHOT.sar

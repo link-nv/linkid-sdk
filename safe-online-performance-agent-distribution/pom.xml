@@ -80,6 +80,12 @@
 									<version>1.0-SNAPSHOT</version>
 									<type>sar</type>
 								</artifactItem>
+								<artifactItem>
+									<groupId>mysql</groupId>
+									<artifactId>
+										mysql-connector-java
+									</artifactId>
+								</artifactItem>
 							</artifactItems>
 							<outputDirectory>
 								${project.build.directory}/files
@@ -131,6 +137,10 @@
 			</artifactId>
 			<type>sar</type>
 			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 	</dependencies>
 </project>
