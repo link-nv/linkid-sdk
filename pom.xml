@@ -124,7 +124,7 @@
 					net.lin-k.safe-online.performance
 				</safe-online.profiling.group>
 				<safe-online.profiling.agent.dialect>
-					org.hibernate.dialect.HSQLDialect
+					org.hibernate.dialect.MySQLDialect
 				</safe-online.profiling.agent.dialect>
 				<safe-online.profiling.agent.hibernate.hbm2ddl.auto>
 					create-drop

@@ -62,15 +62,18 @@ public class DriverProfileServiceBean extends ProfilingServiceBean implements
 			ExecutionEntity execution) {
 
 		try {
-			LOG.debug("Looking for driver profile for '" + driverName
-					+ "' in '" + execution.getScenarioName() + ":"
-					+ execution.getHostname() + ":" + execution.getId() + "'");
 			return (DriverProfileEntity) this.em.createNamedQuery(
 					DriverProfileEntity.findByExecution).setParameter(
 					"driverName", driverName).setParameter("execution",
 					execution).getSingleResult();
 		} catch (NoResultException e) {
-			LOG.debug(" -> not found; creating.");
+			if (this.ctx == null) {
+				LOG.warn("No EJB3 context found: "
+						+ "assuming we're running outside a container.");
+
+				return addProfile(driverName, execution);
+			}
+
 			return this.ctx.getBusinessObject(DriverProfileService.class)
 					.addProfile(driverName, execution);
 		}

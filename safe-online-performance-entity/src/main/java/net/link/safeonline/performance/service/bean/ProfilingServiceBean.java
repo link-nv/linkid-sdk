@@ -8,7 +8,6 @@ package net.link.safeonline.performance.service.bean;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,26 +27,18 @@ public abstract class ProfilingServiceBean {
 
 	static final Log LOG = LogFactory.getLog(ProfilingServiceBean.class);
 
+	private static EntityManager defaultEntityManager;
+
 	@PersistenceContext(unitName = "AgentEntityManager")
-	EntityManager em;
+	EntityManager em = defaultEntityManager;
 
-	void persist(Object object) {
+	/**
+	 * Install a default entity manager which will be used for any new services.
+	 * This is mostly useful for installing an entity manager in an environment
+	 * where there is no enterprise container that provides one.
+	 */
+	public static void setDefaultEntityManager(EntityManager entityManager) {
 
-		if (this.em != null)
-			this.em.persist(object);
-
-		else
-			LOG.warn("No entity manager available!");
-
-	}
-
-	Query createNamedQuery(String query) {
-
-		if (this.em != null)
-			return this.em.createNamedQuery(query);
-
-		LOG.warn("No entity manager available!");
-		throw new IllegalStateException(
-				"Can't execute query; no entity manager available.");
+		defaultEntityManager = entityManager;
 	}
 }

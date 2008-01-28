@@ -1,10 +1,4 @@
-/*
- * SafeOnline project.
- *
- * Copyright 2006-2007 Lin.k N.V. All rights reserved.
- * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
- */
-package test.integ.net.link.safeonline.perf;
+package net.link.safeonline.performance.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -25,11 +19,20 @@ import net.link.safeonline.model.performance.PerformanceService;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
+import net.link.safeonline.performance.entity.DriverExceptionEntity;
+import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.MeasurementEntity;
+import net.link.safeonline.performance.entity.ProfileDataEntity;
+import net.link.safeonline.performance.entity.StartTimeEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
+import net.link.safeonline.performance.service.bean.ProfilingServiceBean;
+import net.link.safeonline.test.util.EntityTestManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,14 +75,48 @@ public class PerformanceDriverTest {
 	private AuthDriver authDriver;
 	private IdMappingDriver idDriver;
 
+	private EntityTestManager entityTestManager;
+
 	@Before
 	public void setUp() {
 
-		ExecutionEntity execution = new ExecutionEntity("TestScenario",
-				OLAS_HOSTNAME);
-		this.idDriver = new IdMappingDriver(execution);
-		this.attribDriver = new AttribDriver(execution);
-		this.authDriver = new AuthDriver(execution);
+		this.entityTestManager = new EntityTestManager();
+
+		try {
+			this.entityTestManager.setUp(DriverExceptionEntity.class,
+					DriverProfileEntity.class, ExecutionEntity.class,
+					MeasurementEntity.class, ProfileDataEntity.class,
+					StartTimeEntity.class);
+
+			ProfilingServiceBean.setDefaultEntityManager(this.entityTestManager
+					.getEntityManager());
+
+			ExecutionEntity execution = new ExecutionServiceBean()
+					.addExecution(getClass().getName(), OLAS_HOSTNAME);
+
+			this.idDriver = new IdMappingDriver(execution);
+			this.attribDriver = new AttribDriver(execution);
+			this.authDriver = new AuthDriver(execution);
+		}
+
+		catch (Exception e) {
+			LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
+			throw new RuntimeException("JPA annotations incorrect: "
+					+ e.getMessage(), e);
+		}
+	}
+
+	@After
+	public void tearDown() throws Exception {
+
+		this.entityTestManager.tearDown();
+	}
+
+	@Test
+	public void annotationCorrectness() throws Exception {
+
+		assertNotNull("JPA annotations incorrect?", this.entityTestManager
+				.getEntityManager());
 	}
 
 	@Test

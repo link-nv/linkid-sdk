@@ -93,7 +93,8 @@ public class ScenarioExecutor extends Thread {
 			// Sleep this thread until the specified duration has elapsed.
 			while (System.currentTimeMillis() < until)
 				try {
-					Thread.sleep(until - System.currentTimeMillis());
+					Thread.sleep(Math.min(until - System.currentTimeMillis(),
+							50));
 				} catch (InterruptedException e) {
 					break;
 				}
