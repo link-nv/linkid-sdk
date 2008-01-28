@@ -1,4 +1,4 @@
-package net.link.safeonline.performance.test;
+package test.integ.net.link.safeonline.performance;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

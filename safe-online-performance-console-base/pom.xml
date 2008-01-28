@@ -43,13 +43,45 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jnp-client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss</groupId>
-			<artifactId>jbossall-client</artifactId>
+			<artifactId>jboss-ejb3-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-common-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-aop-jdk50-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-aspect-jdk50-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-remoting</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-transaction-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>concurrent</groupId>
+            <artifactId>concurrent</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
