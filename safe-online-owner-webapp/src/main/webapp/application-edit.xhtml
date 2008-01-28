@@ -19,25 +19,25 @@
 			<rich:tabPanel switchType="client">
 
 				<rich:tab label="#{msgs.description}">
-					<p><h:inputTextarea value="#{selectedApplication.description}"
-						escape="false" cols="100" rows="10" /></p>
+					<h:inputTextarea value="#{selectedApplication.description}"
+						escape="false" cols="75" rows="10" />
 				</rich:tab>
 
 				<rich:tab label="#{msgs.devices}">
-					<p>#{msgs.isDeviceRestriction}: <h:selectBooleanCheckbox
-						value="#{selectedApplication.deviceRestriction}" /></p>
+					<h:outputLabel for="restriction" value="#{msgs.isDeviceRestriction}"/> <h:selectBooleanCheckbox
+						id="restriction" value="#{selectedApplication.deviceRestriction}" />
 					<rich:dataTable value="#{allowedDevices}" var="item">
 						<h:column>
 							<f:facet name="header">#{msgs.name}</f:facet>
-							<h:outputLabel value="#{item.friendlyName}" />
+							<h:outputText value="#{item.friendlyName}" />
 						</h:column>
 						<h:column>
 							<f:facet name="header">#{msgs.allowed}</f:facet>
-							<h:selectBooleanCheckbox value="#{item.allowed}" />
+							<h:selectBooleanCheckbox value="#{item.allowed}" styleClass="radio"/>
 						</h:column>
 						<h:column>
 							<f:facet name="header">#{msgs.weight}</f:facet>
-							<h:inputText value="#{item.weight}" />
+							<h:inputText value="#{item.weight}" styleClass="label"/>
 						</h:column>
 					</rich:dataTable>
 

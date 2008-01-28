@@ -20,17 +20,18 @@
 		<a4j:form>
 			<rich:panel>
 				<f:facet name="header">
-					<h:outputLabel
+					<h:outputLabel for="text"
 						value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
 				</f:facet>
-				<p><h:inputTextarea value="#{selectedUsageAgreementText.text}"
-					escape="false" cols="100" rows="10" /></p>
+				<h:inputTextarea id="text"
+					value="#{selectedUsageAgreementText.text}" escape="false" cols="75"
+					rows="10" />
 			</rich:panel>
 
+			<h:outputLabel for="save" value="" />
 			<a4j:commandButton value="#{msgs.saveaction}"
 				action="#{ownerUsageAgreement.saveText}" id="save"
 				styleClass="submit" />
-			<so:nbsp />
 			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
 				styleClass="submit" />
 		</a4j:form>

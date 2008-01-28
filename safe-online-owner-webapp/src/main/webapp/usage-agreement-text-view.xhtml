@@ -18,13 +18,13 @@
 
 
 
-		<rich:panel>
-			<f:facet name="header">
-				<h:outputLabel
-					value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
-			</f:facet>
-			<pre>#{selectedUsageAgreementText.text}</pre>
-		</rich:panel>
+
+
+		<h:outputText
+			value="#{msgs.language}: #{selectedUsageAgreementText.language}" />
+
+		<div class="usage_agreement">#{selectedUsageAgreementText.text}</div>
+
 
 		<a4j:form>
 			<a4j:commandButton value="#{msgs.backaction}" action="back" id="back"
