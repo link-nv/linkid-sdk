@@ -62,9 +62,20 @@ public class PDF {
 		for (ConsoleAgent agent : agents)
 			agentCharts.put(agent, agent.getStats());
 
+		// Calculate total execution speed.
+		double speed = 0;
+		for (ScenarioExecution execution : agentCharts.values())
+			speed += execution.getAverageSpeed() * 1000d;
+
 		// Get execution metadata from the first agent.
 		ScenarioExecution execution = agentCharts.values().iterator().next();
+
+		// Guess the real execution speed if we don't select all agents that
+		// participated in the execution for PDF generation.
+		// (Because we don't have the ScenarioExecution objects for those agents
+		// that aren't selected but did participate).
 		float duration = execution.getDuration() / 60000f;
+		speed *= execution.getAgents() / agentCharts.size();
 
 		// Choose output.
 		File pdfFile = chooseOutputFile(new File(String.format(
@@ -110,8 +121,8 @@ public class PDF {
 					execution.getWorkers(), execution.getWorkers() > 1 ? "s"
 							: ""), new Font(font, 20f))));
 			frontCells.add(new Cell(new Phrase(100f, String.format(
-					"Average Execution Speed: %.2f scenarios/s.", execution
-							.getAverageSpeed() * 1000f), new Font(font, 20f))));
+					"Average Execution Speed: %.2f scenarios/s.", speed),
+					new Font(font, 20f))));
 
 			// Style front page information and add it to the PDF.
 			Table front = new Table(1);
