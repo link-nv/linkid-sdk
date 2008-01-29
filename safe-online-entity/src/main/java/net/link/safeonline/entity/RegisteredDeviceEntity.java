@@ -76,6 +76,7 @@ public class RegisteredDeviceEntity implements Serializable {
 	}
 
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "device", insertable = false, updatable = false)
 	public DeviceEntity getDevice() {
 		return this.device;
 	}
