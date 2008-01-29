@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -9,6 +9,7 @@ package net.link.safeonline.dao.bean;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,6 +20,7 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
+import net.link.safeonline.model.IdGenerator;
 
 @Stateless
 public class RegisteredDeviceDAOBean implements RegisteredDeviceDAO {
@@ -26,26 +28,43 @@ public class RegisteredDeviceDAOBean implements RegisteredDeviceDAO {
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
 
-	private RegisteredDeviceEntity.QueryInterface queryObject;
+	@EJB
+	private IdGenerator idGenerator;
+
+	private RegisteredDeviceEntity.SubjectRegistrationsQuery subjectRegistrationsQuery;
+	private RegisteredDeviceEntity.SubjectDeviceRegistrationsQuery subjectDeviceRegistrationQuery;
 
 	@PostConstruct
 	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						RegisteredDeviceEntity.QueryInterface.class);
+		this.subjectRegistrationsQuery = QueryObjectFactory.createQueryObject(
+				this.entityManager,
+				RegisteredDeviceEntity.SubjectRegistrationsQuery.class);
+		this.subjectDeviceRegistrationQuery = QueryObjectFactory
+				.createQueryObject(
+						this.entityManager,
+						RegisteredDeviceEntity.SubjectDeviceRegistrationsQuery.class);
 	}
 
 	public RegisteredDeviceEntity addRegisteredDevice(SubjectEntity subject,
-			String id, String humanReadableId, DeviceEntity device) {
+			DeviceEntity device) {
+
+		String uuid = this.idGenerator.generateId();
 		RegisteredDeviceEntity registeredDevice = new RegisteredDeviceEntity(
-				subject, id, humanReadableId, device);
+				subject, uuid, device);
 		this.entityManager.persist(registeredDevice);
 		return registeredDevice;
 	}
 
-	public List<RegisteredDeviceEntity> listRegisteredDevices(
-			SubjectEntity subject) {
-		return this.queryObject.listRegisteredDevices(subject);
+	public RegisteredDeviceEntity findRegisteredDevice(SubjectEntity subject,
+			DeviceEntity device) {
+
+		return this.subjectDeviceRegistrationQuery.getRegisteredDevice(subject,
+				device);
 	}
 
+	public List<RegisteredDeviceEntity> listRegisteredDevices(
+			SubjectEntity subject) {
+
+		return this.subjectRegistrationsQuery.listRegisteredDevices(subject);
+	}
 }

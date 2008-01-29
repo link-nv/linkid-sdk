@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -33,6 +33,10 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.RegisteredDeviceEntity;
+import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.service.DeviceService;
+import net.link.safeonline.service.RegisteredDeviceService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
@@ -74,6 +78,12 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	@EJB
 	private DevicePolicyService devicePolicyService;
 
+	@EJB
+	private DeviceService deviceService;
+
+	@EJB
+	private RegisteredDeviceService registeredDeviceService;
+
 	@Remove
 	@Destroy
 	public void destroyCallback() {
@@ -87,8 +97,20 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements
 	@RolesAllowed(AuthenticationConstants.USER_ROLE)
 	public String deviceNext() {
 		this.log.debug("deviceNext: " + this.device);
+
 		String registrationURL;
 		try {
+			/*
+			 * TODO: Send the Id of this registered device to the device issuer
+			 * in a SAML request.
+			 */
+			SubjectEntity subjectEntity = this.subjectService
+					.findSubjectFromUserName(this.username);
+			DeviceEntity deviceEntity = this.deviceService
+					.getDevice(this.device);
+			RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
+					.getDeviceRegistration(subjectEntity, deviceEntity);
+
 			registrationURL = this.devicePolicyService
 					.getRegistrationURL(this.device);
 		} catch (DeviceNotFoundException e) {

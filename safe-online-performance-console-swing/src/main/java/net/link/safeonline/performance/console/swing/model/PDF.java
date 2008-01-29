@@ -192,7 +192,6 @@ public class PDF {
 	private static File chooseOutputFile(File suggestion) {
 
 		JFileChooser pdfChooser = new JFileChooser();
-		pdfChooser.setSelectedFile(suggestion);
 		pdfChooser.addChoosableFileFilter(new FileFilter() {
 			@Override
 			public boolean accept(File f) {
@@ -207,6 +206,22 @@ public class PDF {
 				return "PDF File";
 			}
 		});
+		pdfChooser.setFileFilter(new FileFilter() {
+			@Override
+			public boolean accept(File f) {
+
+				return f.isDirectory() || f.isFile() && f.canWrite()
+						&& f.getName().endsWith(".pdf");
+			}
+
+			@Override
+			public String getDescription() {
+
+				return "PDF File";
+			}
+		});
+		pdfChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		pdfChooser.setSelectedFile(suggestion);
 		if (pdfChooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION)
 			return null;
 

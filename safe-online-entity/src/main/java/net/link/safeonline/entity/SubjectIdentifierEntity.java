@@ -29,7 +29,7 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 /**
  * Subject Identifier entity. This entity allows us to unambiguously map from an
- * identifier within a certains domain to its subject. For example, within the
+ * identifier within a certain domain to its subject. For example, within the
  * domain of Belgian eID, we will map from the SHA-1 of the encoded
  * authentication certificate to a subject.
  * 
