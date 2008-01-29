@@ -6,7 +6,7 @@
 	<local-tx-datasource>
         <jndi-name>${safe-online.profiling.agent.data.source}</jndi-name>
 		<connection-url>
-			jdbc:mysql://localhost:3306/safeonlineagent
+			jdbc:mysql://localhost:3306/safeonline
 		</connection-url>
 		<driver-class>com.mysql.jdbc.Driver</driver-class>
 		<transaction-isolation>

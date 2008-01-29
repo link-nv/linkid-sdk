@@ -91,7 +91,7 @@ public class ScenarioExecutor extends Thread {
 				}, 0, 100, TimeUnit.MILLISECONDS);
 
 			// Sleep this thread until the specified duration has elapsed.
-			while (System.currentTimeMillis() < until)
+			while (!this.abort && System.currentTimeMillis() < until)
 				try {
 					Thread.sleep(Math.min(until - System.currentTimeMillis(),
 							50));
@@ -99,17 +99,18 @@ public class ScenarioExecutor extends Thread {
 					break;
 				}
 
-			if (this.abort) {
-				this.agentService.actionCompleted(false);
-				return;
-			}
-
 			// Shut down and wait for active scenarios to complete.
 			this.pool.shutdown();
 			try {
 				while (!this.pool.awaitTermination(1, TimeUnit.SECONDS))
-					Thread.yield();
+					Thread.sleep(50);
 			} catch (InterruptedException e) {
+			}
+
+			// Don't generate stats if we were aborted.
+			if (this.abort) {
+				this.agentService.actionCompleted(false);
+				return;
 			}
 
 			// Generate the resulting statistical information.
@@ -137,6 +138,11 @@ public class ScenarioExecutor extends Thread {
 	public void halt() {
 
 		this.abort = true;
-		this.pool.shutdownNow();
+
+		if (this.pool != null)
+			this.pool.shutdownNow();
+
+		if (isAlive())
+			interrupt();
 	}
 }
