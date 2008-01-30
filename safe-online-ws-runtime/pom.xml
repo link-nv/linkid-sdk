@@ -144,6 +144,10 @@
 					<groupId>opensaml</groupId>
 					<artifactId>opensaml</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>xalan</groupId>
+					<artifactId>xalan</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -153,8 +157,8 @@
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
-                    <groupId>javax.jws</groupId>
-                    <artifactId>jsr181-api</artifactId>
+					<groupId>javax.jws</groupId>
+					<artifactId>jsr181-api</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
