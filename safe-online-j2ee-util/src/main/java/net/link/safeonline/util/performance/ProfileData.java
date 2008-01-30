@@ -76,14 +76,13 @@ public class ProfileData {
 	}
 
 	/**
-	 * Compress the generic form of the method's signature. Trim off throws
-	 * declarations.<br />
+	 * Compress java type names by replacing package names by their first letter
+	 * followed by a tilde.<br>
 	 * java.lang.method -> j~l~method
 	 */
 	public static String compressSignature(String signature) {
 
-		String compressed = signature.replaceAll("(\\w)\\w{2,}\\.", "$1~");
-		return compressed.replaceFirst(" throws [^\\(\\)]*", "");
+		return signature.replaceAll("(\\w)\\w{2,}\\.", "$1~");
 	}
 
 	public static boolean isRequestKey(String key) {
@@ -155,7 +154,7 @@ public class ProfileData {
 	public void addMeasurement(Method method, Long value)
 			throws ProfileDataLockedException {
 
-		this.addMeasurement(compressSignature(method.toGenericString()), value);
+		this.addMeasurement(compressSignature(method.getName()), value);
 	}
 
 	public synchronized void addMeasurement(String method, Long value)
