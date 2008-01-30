@@ -9,13 +9,13 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="top_content">
 		<h1>#{msgs.authenticatingFor}: #{applicationId}</h1>
+
+	</ui:define>
+	<ui:define name="content">
 		<ui:include src="/WEB-INF/incl/progress-authentication.xhtml">
 			<ui:param name="stage" value="attributes" />
 		</ui:include>
 		<h2>#{msgs.missingAttributes}</h2>
-	</ui:define>
-	<ui:define name="content">
-
 
 		<p>#{msgs.missingAttributesMsg}</p>
 

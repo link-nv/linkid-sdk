@@ -8,13 +8,13 @@
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="top_content">
 		<h1>#{msgs.authenticatingFor}: #{applicationId}</h1>
+
+	</ui:define>
+	<ui:define name="content">
 		<ui:include src="/WEB-INF/incl/progress-registration.xhtml">
 			<ui:param name="stage" value="choose" />
 		</ui:include>
 		<h2>#{msgs.createAccount}</h2>
-	</ui:define>
-	<ui:define name="content">
-
 		<h:form>
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
@@ -27,7 +27,7 @@
 					<f:validateLength minimum="6" />
 				</h:inputText>
 			</s:decorate>
-					<t:message for="login" styleClass="error" />
+			<t:message for="login" styleClass="error" />
 
 
 			<h:outputLabel for="captcha" value="#{msgs.captcha}" />
@@ -36,8 +36,8 @@
 				<h:inputText id="captcha" value="#{accountRegistration.captcha}"
 					required="true" styleClass="label" />
 			</s:decorate>
-					
-					<t:message for="captcha" styleClass="error" />
+
+			<t:message for="captcha" styleClass="error" />
 			<p align="center"><h:graphicImage value="/captcha" /></p>
 			<t:messages globalOnly="true" styleClass="error" />
 			<h:outputLabel for="register" value="" />

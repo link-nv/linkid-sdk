@@ -39,6 +39,7 @@ h1 {
 }
 
 h2 {
+	padding-top: 14px;
 	font: 21px/ 28px "Trebuchet MS", Verdana, Arial;
 	color: #81aa00;
 }
@@ -216,7 +217,7 @@ ul.timeline {
 	background-image: url(../images/timeline.gif);
 	float: left;
 	display: block;
-	width: 100%;
+	width: 575px;
 	height: 75px;
 	list-style: none;
 	text-align: center
@@ -241,12 +242,14 @@ ul.timeline li.active {
 }
 
 ul.timeline li.start {
+	width: 50px;
 	background: url(../images/timeline_fade_in.gif) top right no-repeat;
 }
 
 ul.timeline li.end {
+	width: 50px;
 	float: right;
-	background: url(../images/timeline_fade_out.gif) top right no-repeat;
+	background: url(../images/timeline_fade_out.gif) top left no-repeat;
 }
 
 #footer {
@@ -367,6 +370,25 @@ ul.sidemenu li.active a {
 	border: none;
 }
 
+span.error {
+	clear: left;
+	display: block;
+	background: pink;
+	background-image: url(../images/icons/exclamation.png);
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+	padding: 3px;
+	padding-left: 25px;
+	width: 273px;
+	border: 1px solid red;
+	margin: 0;
+	margin-left: 150px;
+}
+
+span.error input {
+	clear: none;
+}
+
 /* FORMS AND ELEMENTS*/
 label {
 	padding: 14px 25px 0px 0;
@@ -376,9 +398,9 @@ label {
 	float: left;
 	text-align: right;
 	display: block;
-	text-transform: capitalize;
 	height: 21px;
 	clear: left;
+	vertical-align: top;
 }
 
 input,select,textarea {
@@ -414,14 +436,14 @@ input.radio {
 	border-bottom: 1px solid #7D8A2E;
 }
 
-select.label,select.label:hover {
+select.label {
 	border: none;
 }
 
 input.submit {
-	margin: 15px 0 7px 0;
+	margin: 15px 25px 7px 0;
 	padding: 5px;
-	width: 100px;
+	width: 125px;
 	height: 25px;
 	background: url(../images/button.jpg) no-repeat;
 	border: none;
@@ -443,7 +465,6 @@ table.listingTable {
 	border: none;
 	margin: ;
 	width: 575px;
-	border-collapse: collapse;
 	clear: left;
 	float: none;
 	display: block;
@@ -460,6 +481,10 @@ table.listingTable tbody tr {
 	padding: 0;
 }
 
+table.listingTable tbody tr:hover {
+	background: #E8E7E7;
+}
+
 table.listingTable tfoot tr {
 	background: #E8E7E7;
 	padding: 0;
@@ -471,9 +496,12 @@ table.listingTable tbody tr td {
 	margin: 0;
 	padding: 5px;
 	border: none;
+	border-bottom: 1px solid #E8E7E7;
 }
 
-table.listingTable thead tr th,table.styled thead tr td {
+table.listingTable thead tr th,
+table.listingTable thead tr td,
+table.styled thead tr td {
 	margin: 0;
 	padding: 5px;
 	border: none;
@@ -491,7 +519,7 @@ table.listingTable thead tr th,table.styled thead tr td {
 	background: #f5f5f5;
 }
 */
-div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr table tbody tr:hover
+div.dr-dscr table        , div.dr-dscr table tbody tr td        , div.dr-dscr table tbody tr:hover
 	{
 	border: none;
 	background: none;
@@ -500,13 +528,13 @@ div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr 
 	text-align: center;
 }
 
-.rich-table         , .rich-table-caption         , .rich-table-header      
-	  , .rich-table-header-continue	        , .rich-table-subheader        
-	, .rich-table-footer         , .rich-table-footer-continue         ,
-	.rich-table-subfooter         , .rich-table-headercell         ,
-	.rich-table-subheadercell         , .rich-table-cell         ,
+.rich-table        , .rich-table-caption        , .rich-table-header      
+	 , .rich-table-header-continue	       , .rich-table-subheader        ,
+	.rich-table-footer        , .rich-table-footer-continue        ,
+	.rich-table-subfooter        , .rich-table-headercell        ,
+	.rich-table-subheadercell        , .rich-table-cell        ,
 	.rich-table-row   
-	     , .rich-table-firstrow         , .rich-table-footercell         ,
+	    , .rich-table-firstrow        , .rich-table-footercell        ,
 	.rich-table-subfootercell {
 	border-style: none;
 	font-family: inherit;
@@ -516,8 +544,8 @@ div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr 
 }
 
 .rich-datascr-button   
-	    , .rich-datascr-ctrls-separator        , .rich-datascr-act        ,
-	.rich-datascr-inact	       , .rich-datascr-button-dsbld {
+	   , .rich-datascr-ctrls-separator       , .rich-datascr-act       ,
+	.rich-datascr-inact	      , .rich-datascr-button-dsbld {
 	font-family: inherit;
 	font-size: inherit;
 	background-color: inherit;
@@ -536,8 +564,8 @@ div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr 
 	width: 100%;
 }
 
-.rich-panel	     , .rich-tabpanel-content      , .rich-tabpanel      ,
-	.rich-panel-header      , .rich-panel-body {
+.rich-panel	    , .rich-tabpanel-content     , .rich-tabpanel     ,
+	.rich-panel-header     , .rich-panel-body {
 	width: 550px;
 	overflow: auto;
 	font-family: inherit;
