@@ -250,6 +250,18 @@
 		<url-pattern>/beid/identity</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>PkiServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.auth.servlet.PkiServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>PkiServlet</servlet-name>
+		<url-pattern>/pki/cert</url-pattern>
+	</servlet-mapping>
+
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>

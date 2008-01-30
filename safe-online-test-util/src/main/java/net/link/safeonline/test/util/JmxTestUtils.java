@@ -28,6 +28,8 @@ public class JmxTestUtils {
 
 	private ObjectName mbeanName;
 
+	private MBeanServer mbeanServer;
+
 	/**
 	 * Sets up a test JMX MBean with the given MBean name.
 	 * 
@@ -41,17 +43,22 @@ public class JmxTestUtils {
 	public void setUp(String mbeanName) throws MalformedObjectNameException,
 			NullPointerException, InstanceAlreadyExistsException,
 			MBeanRegistrationException, NotCompliantMBeanException {
-		MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer("jboss");
+		this.mbeanServer = getMBeanServer();
 		ObjectName mbeanObjectName = new ObjectName(mbeanName);
 		this.dynamicTestMBean = new DynamicTestMBean();
-		mbeanServer.registerMBean(this.dynamicTestMBean, mbeanObjectName);
+		this.mbeanServer.registerMBean(this.dynamicTestMBean, mbeanObjectName);
 		this.mbeanName = mbeanObjectName;
 	}
 
 	public void tearDown() throws InstanceNotFoundException,
 			MBeanRegistrationException {
-		MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
-		mbeanServer.unregisterMBean(this.mbeanName);
+		this.mbeanServer.unregisterMBean(this.mbeanName);
+	}
+
+	private MBeanServer getMBeanServer() {
+		MBeanServer mbeanServerInstance = MBeanServerFactory
+				.createMBeanServer("jboss");
+		return mbeanServerInstance;
 	}
 
 	/**

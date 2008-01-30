@@ -9,6 +9,7 @@ package net.link.safeonline.util.ee;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
@@ -83,5 +84,23 @@ public class IdentityServiceClient {
 			throw new RuntimeException("invoke error: " + e.getMessage(), e);
 		}
 		return publicKey;
+	}
+
+	/**
+	 * Gives back the X509 certificate of the SafeOnline service entity.
+	 * 
+	 */
+	public X509Certificate getCertificate() {
+		Object[] params = {};
+		String[] signature = {};
+		X509Certificate certificate;
+		try {
+			certificate = (X509Certificate) this.server.invoke(
+					this.identityServiceName, "getCertificate", params,
+					signature);
+		} catch (Exception e) {
+			throw new RuntimeException("invoke error: " + e.getMessage(), e);
+		}
+		return certificate;
 	}
 }

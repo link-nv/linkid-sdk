@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.X509Certificate;
 
 import net.link.safeonline.sdk.KeyStoreUtils;
 
@@ -51,6 +52,8 @@ public class IdentityService implements IdentityServiceMBean {
 	private PrivateKey privateKey;
 
 	private PublicKey publicKey;
+
+	private X509Certificate certificate;
 
 	public void loadKeyPair() {
 		LOG.debug("load private key");
@@ -92,7 +95,8 @@ public class IdentityService implements IdentityServiceMBean {
 			IOUtils.closeQuietly(keyStoreInputStream);
 		}
 		this.privateKey = privateKeyEntry.getPrivateKey();
-		this.publicKey = privateKeyEntry.getCertificate().getPublicKey();
+		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
+		this.publicKey = this.certificate.getPublicKey();
 	}
 
 	public void setKeyStorePassword(String keyStorePassword) {
@@ -141,5 +145,12 @@ public class IdentityService implements IdentityServiceMBean {
 
 	public void setKeyStoreFile(String keyStoreFile) {
 		this.keyStoreFile = keyStoreFile;
+	}
+
+	public X509Certificate getCertificate() {
+		if (null == this.certificate) {
+			loadKeyPair();
+		}
+		return this.certificate;
 	}
 }

@@ -9,6 +9,7 @@ package net.link.safeonline.service;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 
 /**
  * Interface for Identity Service JMX bean.
@@ -26,6 +27,8 @@ public interface IdentityServiceMBean {
 	PublicKey getPublicKey();
 
 	void loadKeyPair();
+
+	X509Certificate getCertificate();
 
 	/*
 	 * Attributes.
