@@ -55,18 +55,6 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void addStartTime(ExecutionEntity execution, long startTime) {
-
-		StartTimeEntity startTimeEntity = new StartTimeEntity(startTime);
-		this.em.persist(startTimeEntity);
-
-		execution.getStartTimes().add(startTimeEntity);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ExecutionEntity getExecution(int executionId) {
 
 		return (ExecutionEntity) this.em.createNamedQuery(
@@ -81,5 +69,18 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 
 		return this.ctx.getBusinessObject(ExecutionService.class).getExecution(
 				executionId).getProfiles();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public StartTimeEntity start(ExecutionEntity execution) {
+
+		StartTimeEntity startTimeEntity = new StartTimeEntity();
+		this.em.persist(startTimeEntity);
+
+		execution.getStartTimes().add(startTimeEntity);
+		return startTimeEntity;
 	}
 }

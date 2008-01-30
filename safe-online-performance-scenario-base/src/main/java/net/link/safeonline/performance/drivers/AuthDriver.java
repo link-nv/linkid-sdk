@@ -20,7 +20,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +68,7 @@ public class AuthDriver extends ProfileDriver {
 
 	static final Log LOG = LogFactory.getLog(AuthDriver.class);
 
-	private Map<Thread, HttpClient> clients;
+	private HttpClient client;
 	private List<ProfileData> iterationDatas;
 	private Tidy tidy;
 
@@ -82,11 +81,11 @@ public class AuthDriver extends ProfileDriver {
 		Protocol.registerProtocol("https", new Protocol("https",
 				new MySSLSocketFactory(), 443));
 
-		this.clients = new HashMap<Thread, HttpClient>();
-
 		this.tidy = new Tidy();
 		this.tidy.setQuiet(true);
 		this.tidy.setShowWarnings(false);
+
+		this.client = new HttpClient();
 	}
 
 	public static class MySSLSocketFactory implements ProtocolSocketFactory {
@@ -332,7 +331,7 @@ public class AuthDriver extends ProfileDriver {
 
 	private String getJSessionId() throws DriverException {
 
-		for (Cookie cookie : getHttpClient().getState().getCookies())
+		for (Cookie cookie : this.client.getState().getCookies())
 			if ("JSESSIONID".equals(cookie.getName()))
 				return cookie.getValue();
 
@@ -398,7 +397,7 @@ public class AuthDriver extends ProfileDriver {
 		// Optionally add JSessionID cookie and execute method.
 		if (null != jsessionId)
 			method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
-		getHttpClient().executeMethod(method);
+		this.client.executeMethod(method);
 
 		// Parse response headers for profile data.
 		Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
@@ -436,18 +435,5 @@ public class AuthDriver extends ProfileDriver {
 
 		// Return the form node, if any.
 		return XPathAPI.selectSingleNode(resultDocument, "//form");
-	}
-
-	private HttpClient getHttpClient() {
-
-		// Prune stale threads.
-		for (Thread t : new HashSet<Thread>(this.clients.keySet()))
-			if (!t.isAlive())
-				this.clients.remove(t);
-
-		if (!this.clients.containsKey(Thread.currentThread()))
-			this.clients.put(Thread.currentThread(), new HttpClient());
-
-		return this.clients.get(Thread.currentThread());
 	}
 }

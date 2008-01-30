@@ -50,8 +50,9 @@ public interface ExecutionService {
 	public Set<DriverProfileEntity> getProfiles(int executionId);
 
 	/**
-	 * Add the time that a recently completed scenario had started.
+	 * Signal a new start of a scenario in the given execution. A
+	 * {@link StartTimeEntity} will be created and returned.
 	 */
-	public void addStartTime(ExecutionEntity execution, long startTime);
+	public StartTimeEntity start(ExecutionEntity execution);
 
 }

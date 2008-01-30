@@ -74,13 +74,14 @@ public class PDF {
 		// participated in the execution for PDF generation.
 		// (Because we don't have the ScenarioExecution objects for those agents
 		// that aren't selected but did participate).
-		float duration = execution.getDuration() / 60000f;
+		long duration = execution.getDuration();
 		speed *= execution.getAgents() / agentCharts.size();
 
 		// Choose output.
-		File pdfFile = chooseOutputFile(new File(String.format(
-				"%s-%dmin-%dx%d.pdf", execution.getHostname(), (int) duration,
-				execution.getAgents(), execution.getWorkers())));
+		File pdfFile = chooseOutputFile(new File(String
+				.format("%s-%dmin-%dx%d.pdf", execution.getHostname(),
+						duration / 60000, execution.getAgents(), execution
+								.getWorkers())));
 		if (pdfFile == null)
 			return false;
 
@@ -110,8 +111,8 @@ public class PDF {
 			frontCells.add(new Cell(new Phrase(50f, execution.getScenario(),
 					new Font(font, 20f))));
 			frontCells.add(new Cell(new Phrase(150f, String.format(
-					"Duration: %.2f minutes    ", duration),
-					new Font(font, 20f))));
+					"Duration: %s", formatDuration(duration)), new Font(font,
+					20f))));
 			frontCells.add(new Cell(new Phrase(50f, String.format(
 					"OLAS Host: %s", execution.getHostname()), new Font(font,
 					20f))));
@@ -184,6 +185,55 @@ public class PDF {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Format a time of duration in a human readable manner.
+	 *
+	 * @param duration
+	 *            A duration in ms.
+	 */
+	private static String formatDuration(long duration) {
+
+		long remainder = duration;
+
+		int weeks = (int) remainder / (7 * 24 * 3600 * 1000);
+		remainder %= 7 * 24 * 3600 * 1000;
+
+		int days = (int) remainder / (24 * 3600 * 1000);
+		remainder %= 24 * 3600 * 1000;
+
+		int hours = (int) remainder / (3600 * 1000);
+		remainder %= 3600 * 1000;
+
+		int minutes = (int) remainder / (60 * 1000);
+		remainder %= 60 * 1000;
+
+		int seconds = (int) remainder / 1000;
+		remainder %= 1000;
+
+		int milliseconds = (int) remainder;
+
+		StringBuffer output = new StringBuffer();
+		if (weeks > 0)
+			output.append(weeks + " weeks, ");
+		if (days > 0)
+			output.append(days + " days, ");
+		if (hours > 0)
+			output.append(hours + " hours, ");
+		if (minutes > 0)
+			output.append(minutes + " minutes, ");
+		if (seconds > 0)
+			output.append(seconds + " seconds, ");
+		if (milliseconds > 0)
+			output.append(milliseconds + " milliseconds, ");
+
+		output.delete(output.length() - 2, output.length());
+		int lastComma = output.lastIndexOf(",");
+		if (lastComma > 0)
+			output.replace(lastComma, lastComma + 1, " and");
+
+		return output.toString();
 	}
 
 	/**

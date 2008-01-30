@@ -30,13 +30,11 @@ public class StartTimeEntity implements Comparable<StartTimeEntity> {
 	private int id;
 
 	private Long time;
+	private Long duration;
 
 	public StartTimeEntity() {
-	}
 
-	public StartTimeEntity(Long startTime) {
-
-		this.time = startTime;
+		this.time = System.currentTimeMillis();
 	}
 
 	/**
@@ -45,6 +43,23 @@ public class StartTimeEntity implements Comparable<StartTimeEntity> {
 	public Long getTime() {
 
 		return this.time;
+	}
+
+	/**
+	 * @return The duration of this {@link StartTimeEntity}.
+	 */
+	public Long getDuration() {
+
+		return this.duration;
+	}
+
+	/**
+	 * Signal that the scenario that started at the time contained in this
+	 * entity has just ended.
+	 */
+	public void stop() {
+
+		this.duration = System.currentTimeMillis() - this.time;
 	}
 
 	/**

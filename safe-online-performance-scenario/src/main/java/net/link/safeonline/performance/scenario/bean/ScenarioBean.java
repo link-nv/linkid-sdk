@@ -15,7 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.annotation.Resource;
@@ -59,6 +58,12 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.SeriesException;
 import org.jfree.data.statistics.BoxAndWhiskerCalculator;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import org.jfree.data.time.FixedMillisecond;
+import org.jfree.data.time.MovingAverage;
+import org.jfree.data.time.RegularTimePeriod;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.TimeSeriesDataItem;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
@@ -95,9 +100,12 @@ public class ScenarioBean implements ScenarioLocal {
 				.getExecution(executionId);
 		scenario.prepare(execution);
 
-		this.executionService.addStartTime(execution, System
-				.currentTimeMillis());
-		scenario.run();
+		StartTimeEntity startTime = this.executionService.start(execution);
+		try {
+			scenario.run();
+		} finally {
+			startTime.stop();
+		}
 	}
 
 	/**
@@ -327,7 +335,7 @@ public class ScenarioBean implements ScenarioLocal {
 		}
 
 		// Create the scenario speed data.
-		List<DefaultTableXYDataset> scenarioSpeedSets = new ArrayList<DefaultTableXYDataset>();
+		List<TimeSeriesCollection> scenarioSpeedSets = new ArrayList<TimeSeriesCollection>();
 
 		// Calculate moving averages from the scenario starts for 3 periods.
 		Set<StartTimeEntity> startTimes = execution.getStartTimes();
@@ -335,34 +343,26 @@ public class ScenarioBean implements ScenarioLocal {
 			LOG.warn("No scenario start times available.");
 
 		else {
-			SortedSet<StartTimeEntity> sortedStartTimes = new TreeSet<StartTimeEntity>(
-					startTimes);
+			TimeSeries timeSeries = new TimeSeries(
+					"Scenario Execution Speed; period: ",
+					FixedMillisecond.class);
+			TimeSeriesCollection startTimeSeries = new TimeSeriesCollection(
+					timeSeries);
 
-			for (int period : new int[] { 60000, 3600000 }) {
-				XYSeries scenarioSpeedSeries = new XYSeries("Classes Of "
-						+ period / 1000 + "s", false, false);
-				DefaultTableXYDataset scenarioSpeedSet = new DefaultTableXYDataset();
-				scenarioSpeedSet.addSeries(scenarioSpeedSeries);
-				scenarioSpeedSets.add(scenarioSpeedSet);
+			for (StartTimeEntity startTime : startTimes) {
+				RegularTimePeriod start = new FixedMillisecond(startTime
+						.getTime());
+				double value = 1000d / startTime.getDuration();
+				TimeSeriesDataItem existing = timeSeries.getDataItem(start);
+				if (existing != null)
+					value += existing.getValue().doubleValue();
 
-				Long lastTime = sortedStartTimes.last().getTime();
-				for (long time = sortedStartTimes.first().getTime(); time < lastTime; time += period) {
-
-					// Count the amount of scenarios ${period} ms after ${time}.
-					double count = 0;
-					for (StartTimeEntity start : sortedStartTimes)
-						if (null != start && start.getTime() >= time
-								&& start.getTime() < time + period)
-							count++;
-
-					scenarioSpeedSeries.add(time, 1000 * count / period);
-				}
-
-				try {
-					scenarioSpeedSeries.add((double) lastTime, 1d / period);
-				} catch (SeriesException e) {
-				}
+				timeSeries.addOrUpdate(start, value);
 			}
+
+			for (int period : new int[] { 1000, 60000, 3600000 })
+				scenarioSpeedSets.add(MovingAverage.createMovingAverage(
+						startTimeSeries, period / 1000 + "s", period, period));
 		}
 
 		// Create Box-and-Whisker objects from Method Timing Data.
@@ -386,10 +386,11 @@ public class ScenarioBean implements ScenarioLocal {
 		// Scenario Charts.
 		DateAxis timeAxis = new DateAxis("Time (ms)");
 		CombinedDomainXYPlot speedPlot = new CombinedDomainXYPlot(timeAxis);
-		for (DefaultTableXYDataset scenarioSpeedSet : scenarioSpeedSets)
-			speedPlot
-					.add(new XYPlot(scenarioSpeedSet, timeAxis, new NumberAxis(
-							"Speed (#/s)"), new XYLineAndShapeRenderer()));
+		for (TimeSeriesCollection scenarioSpeedSet : scenarioSpeedSets)
+			if (scenarioSpeedSet.getItemCount(0) > 0)
+				speedPlot.add(new XYPlot(scenarioSpeedSet, timeAxis,
+						new NumberAxis("Speed (#/s)"),
+						new XYLineAndShapeRenderer()));
 		JFreeChart speedChart = new JFreeChart(speedPlot);
 
 		catAxis = new CategoryAxis("Methods");
