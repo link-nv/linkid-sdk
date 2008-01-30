@@ -7,6 +7,8 @@
 
 package net.link.safeonline.service;
 
+import javax.ejb.Local;
+
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -26,6 +28,7 @@ import net.link.safeonline.entity.SubjectEntity;
  *
  * @author mbillemo
  */
+@Local
 public interface RegisteredDeviceService {
 
 	public RegisteredDeviceEntity getDeviceRegistration(SubjectEntity subject,

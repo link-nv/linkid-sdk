@@ -7,6 +7,7 @@
 package net.link.safeonline.service.bean;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 import net.link.safeonline.dao.RegisteredDeviceDAO;
 import net.link.safeonline.entity.DeviceEntity;
@@ -24,6 +25,7 @@ import net.link.safeonline.service.RegisteredDeviceService;
  *
  * @author mbillemo
  */
+@Stateless
 public class RegisteredDeviceServiceBean implements RegisteredDeviceService {
 
 	@EJB
