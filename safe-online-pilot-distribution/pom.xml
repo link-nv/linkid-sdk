@@ -113,6 +113,27 @@
 					</execution>
 				</executions>
 			</plugin>
+            <plugin>
+                <artifactId>maven-patch-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <id>patch</id>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>apply</goal>
+                    </goals>
+                    <configuration>
+                      <patches>
+                        <patch>make_headless.patch</patch>
+                        <patch>no_jmx_debug_urandom.patch</patch>
+                      </patches>
+                      <targetDirectory>
+                          target/files/safe-online-base-distribution-1.0-SNAPSHOT
+                      </targetDirectory>
+                    </configuration>
+                  </execution>
+                </executions>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>

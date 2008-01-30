@@ -1,0 +1,11 @@
+--- jboss/bin/run.conf	2008-01-30 13:37:50 +0100
++++ jboss/bin/run.conf	2008-01-30 13:38:04 +0100
+@@ -7,6 +7,8 @@
+ 
+ JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=128m"
+ 
++JAVA_OPTS="$JAVA_OPTS -Djava.awt.headless=true"
++
+ JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=7777 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false" 
+ 
+ if [ -c /dev/urandom ]; then
