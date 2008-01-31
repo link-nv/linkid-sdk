@@ -82,7 +82,7 @@ public class BasicScenario implements Scenario {
 			LOG.warn("UUID from login is not the same as UUID from idmapping.");
 
 		LOG.debug("getting attribs..");
-		this.attribDriver.getAttributes(this.applicationKey, loginUserId);
+		this.attribDriver.getAttributes(this.applicationKey, mappedUserId);
 	}
 
 	/**

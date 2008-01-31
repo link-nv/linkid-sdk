@@ -44,12 +44,12 @@ public class ExecutionEntity {
 	private Set<DriverProfileEntity> profiles;
 
 	@OneToMany()
-	private Set<StartTimeEntity> startTimes;
+	private Set<AgentTimeEntity> agentTimes;
 
 	public ExecutionEntity() {
 
 		this.profiles = new TreeSet<DriverProfileEntity>();
-		this.startTimes = new TreeSet<StartTimeEntity>();
+		this.agentTimes = new TreeSet<AgentTimeEntity>();
 	}
 
 	public ExecutionEntity(String scenarioName, String hostname) {
@@ -57,7 +57,7 @@ public class ExecutionEntity {
 		this.scenarioName = scenarioName;
 		this.hostname = hostname;
 
-		this.startTimes = new TreeSet<StartTimeEntity>();
+		this.agentTimes = new TreeSet<AgentTimeEntity>();
 	}
 
 	/**
@@ -96,8 +96,8 @@ public class ExecutionEntity {
 	 * @return A set of times at which scenarios were started for this
 	 *         execution.
 	 */
-	public Set<StartTimeEntity> getStartTimes() {
+	public Set<AgentTimeEntity> getAgentTimes() {
 
-		return this.startTimes;
+		return this.agentTimes;
 	}
 }

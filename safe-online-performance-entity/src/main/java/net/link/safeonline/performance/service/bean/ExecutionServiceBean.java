@@ -16,7 +16,7 @@ import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.StartTimeEntity;
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.service.ExecutionService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -75,12 +75,12 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public StartTimeEntity start(ExecutionEntity execution) {
+	public AgentTimeEntity start(ExecutionEntity execution) {
 
-		StartTimeEntity startTimeEntity = new StartTimeEntity();
+		AgentTimeEntity startTimeEntity = new AgentTimeEntity();
 		this.em.persist(startTimeEntity);
 
-		execution.getStartTimes().add(startTimeEntity);
+		execution.getAgentTimes().add(startTimeEntity);
 		return startTimeEntity;
 	}
 }

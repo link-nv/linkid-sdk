@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.annotation.Resource;
@@ -23,12 +24,12 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
-import net.link.safeonline.performance.entity.StartTimeEntity;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.ScenarioLocal;
 import net.link.safeonline.performance.service.ExecutionService;
@@ -59,11 +60,8 @@ import org.jfree.data.general.SeriesException;
 import org.jfree.data.statistics.BoxAndWhiskerCalculator;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.time.FixedMillisecond;
-import org.jfree.data.time.MovingAverage;
-import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.time.TimeSeriesDataItem;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
@@ -100,11 +98,11 @@ public class ScenarioBean implements ScenarioLocal {
 				.getExecution(executionId);
 		scenario.prepare(execution);
 
-		StartTimeEntity startTime = this.executionService.start(execution);
+		AgentTimeEntity agentTime = this.executionService.start(execution);
 		try {
 			scenario.run();
 		} finally {
-			startTime.stop();
+			agentTime.stop();
 		}
 	}
 
@@ -143,12 +141,12 @@ public class ScenarioBean implements ScenarioLocal {
 
 		ExecutionEntity execution = this.executionService
 				.getExecution(executionId);
-		TreeSet<StartTimeEntity> sortedStartTimes = new TreeSet<StartTimeEntity>(
-				execution.getStartTimes());
+		TreeSet<AgentTimeEntity> sortedStartTimes = new TreeSet<AgentTimeEntity>(
+				execution.getAgentTimes());
 
 		return (double) sortedStartTimes.size()
-				/ (sortedStartTimes.last().getTime() - sortedStartTimes.first()
-						.getTime());
+				/ (sortedStartTimes.last().getStart() - sortedStartTimes
+						.first().getStart());
 	}
 
 	/**
@@ -353,32 +351,34 @@ public class ScenarioBean implements ScenarioLocal {
 		List<TimeSeriesCollection> scenarioSpeedSets = new ArrayList<TimeSeriesCollection>();
 
 		// Calculate moving averages from the scenario starts for 3 periods.
-		Set<StartTimeEntity> startTimes = execution.getStartTimes();
-		if (startTimes == null || startTimes.isEmpty())
+		SortedSet<AgentTimeEntity> agentTimes = new TreeSet<AgentTimeEntity>(
+				execution.getAgentTimes());
+		if (agentTimes.isEmpty())
 			LOG.warn("No scenario start times available.");
 
-		else {
-			TimeSeries timeSeries = new TimeSeries(
-					"Scenario Execution Speed; period: ",
-					FixedMillisecond.class);
-			TimeSeriesCollection startTimeSeries = new TimeSeriesCollection(
-					timeSeries);
+		else
+			for (int period : new int[] { 3600000, 60000 }) {
+				TimeSeries timeSeries = new TimeSeries("Period: " + period
+						/ 1000 + "s", FixedMillisecond.class);
+				scenarioSpeedSets.add(new TimeSeriesCollection(timeSeries));
 
-			for (StartTimeEntity startTime : startTimes) {
-				RegularTimePeriod start = new FixedMillisecond(startTime
-						.getTime());
-				double value = 1000d / startTime.getDuration();
-				TimeSeriesDataItem existing = timeSeries.getDataItem(start);
-				if (existing != null)
-					value += existing.getValue().doubleValue();
+				for (AgentTimeEntity agentTime : agentTimes) {
+					SortedSet<AgentTimeEntity> futureTimes = agentTimes
+							.tailSet(agentTime);
 
-				timeSeries.addOrUpdate(start, value);
+					double count = 0;
+					for (AgentTimeEntity futureTime : futureTimes) {
+						if (futureTime.getStart() > agentTime.getStart()
+								+ period)
+							break;
+
+						count++;
+					}
+
+					timeSeries.addOrUpdate(new FixedMillisecond(agentTime
+							.getStart()), 1000 * count / period);
+				}
 			}
-
-			for (int period : new int[] { 3600000, 60000, 1000 })
-				scenarioSpeedSets.add(MovingAverage.createMovingAverage(
-						startTimeSeries, period / 1000 + "s", period, period));
-		}
 
 		// Create Box-and-Whisker objects from Method Timing Data.
 		for (String driverTitle : driversMethods.keySet())

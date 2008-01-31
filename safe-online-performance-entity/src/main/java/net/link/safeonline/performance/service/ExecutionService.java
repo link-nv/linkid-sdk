@@ -12,14 +12,14 @@ import javax.ejb.Local;
 
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.StartTimeEntity;
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 
 /**
  * <h2>{@link ExecutionServiceBean} - Service bean for {@link ExecutionEntity}.</h2>
  *
  * <p>
- * Create {@link ExecutionEntity}s and manage the {@link StartTimeEntity}s
+ * Create {@link ExecutionEntity}s and manage the {@link AgentTimeEntity}s
  * that they're linked with.
  * </p>
  * <p>
@@ -51,8 +51,8 @@ public interface ExecutionService {
 
 	/**
 	 * Signal a new start of a scenario in the given execution. A
-	 * {@link StartTimeEntity} will be created and returned.
+	 * {@link AgentTimeEntity} will be created and returned.
 	 */
-	public StartTimeEntity start(ExecutionEntity execution);
+	public AgentTimeEntity start(ExecutionEntity execution);
 
 }
