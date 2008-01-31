@@ -60,6 +60,8 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 			return null;
 		}
 		AuditContextInfo auditContextInfo = auditContextInfos.get();
+		if (null == auditContextInfo)
+			return null;
 		return auditContextInfo.getAuditContextId();
 	}
 

@@ -34,8 +34,6 @@ import net.link.safeonline.authentication.exception.UsageAgreementAcceptationReq
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
-import org.apache.axis.AxisFault;
-
 /**
  * Authentication service interface. This service allows the authentication web
  * application to authenticate users. The bean behind this interface is
@@ -49,6 +47,20 @@ import org.apache.axis.AxisFault;
  */
 @Local
 public interface AuthenticationService {
+
+	/**
+	 * Authenticates a user for a certain application. The method is used by the
+	 * device landing servlet. The actual device authentication is done by an
+	 * external device provider in this case.
+	 * 
+	 * @param userId
+	 * @param authenticationDevice
+	 * @return <code>true</code> if the user was authenticated correctly,
+	 *         <code>false</code> otherwise.
+	 * @throws SubjectNotFoundException
+	 */
+	boolean authentication(String userId, DeviceEntity authenticationDevice)
+			throws SubjectNotFoundException;
 
 	/**
 	 * Authenticates a user for a certain application. This method is used by
@@ -83,7 +95,6 @@ public interface AuthenticationService {
 	 * @throws MobileException
 	 * @throws MalformedURLException
 	 * @throws SubjectNotFoundException
-	 * @throws AxisFault
 	 * @throws MobileAuthenticationException
 	 */
 	String authenticate(DeviceEntity device, String mobile, String challengeId,

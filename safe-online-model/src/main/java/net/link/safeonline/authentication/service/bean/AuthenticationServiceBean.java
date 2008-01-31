@@ -151,6 +151,18 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private WeakMobileDeviceService weakMobileDeviceService;
 
+	public boolean authentication(@NonEmptyString
+	String userId, @NotNull
+	DeviceEntity device) throws SubjectNotFoundException {
+		SubjectEntity subject = this.subjectService.getSubject(userId);
+
+		this.authenticationState = USER_AUTHENTICATED;
+		this.authenticatedSubject = subject;
+		this.authenticationDevice = device;
+		this.expectedApplicationId = null;
+		return true;
+	}
+
 	public boolean authenticate(@NonEmptyString
 	String login, @NonEmptyString
 	String password) throws SubjectNotFoundException, DeviceNotFoundException {

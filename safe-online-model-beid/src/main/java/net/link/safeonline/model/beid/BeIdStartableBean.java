@@ -87,7 +87,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
 		this.devices.add(new Device(SafeOnlineConstants.BEID_DEVICE_ID,
-				SafeOnlineConstants.PKI_DEVICE_CLASS, "beid/beid.seam",
+				SafeOnlineConstants.PKI_DEVICE_CLASS,
+				"https://localhost:8443/olas-beid/auth",
 				"beid/register-beid.seam", "beid/new-user-beid.seam", null,
 				certificate));
 		this.deviceDescriptions.add(new DeviceDescription(

@@ -9,6 +9,7 @@ package net.link.safeonline.entity;
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_ALL;
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_WHERE_CLASS;
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_WHERE_CLASS_AUTH_CTX;
+import static net.link.safeonline.entity.DeviceEntity.QUERY_WHERE_CERTID;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -25,6 +26,7 @@ import java.util.Map;
 import javax.ejb.EJBException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -36,6 +38,7 @@ import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -55,7 +58,10 @@ import org.hibernate.annotations.IndexColumn;
 		@NamedQuery(name = QUERY_LIST_WHERE_CLASS, query = "SELECT d FROM DeviceEntity d "
 				+ "WHERE d.deviceClass = :deviceClass"),
 		@NamedQuery(name = QUERY_LIST_WHERE_CLASS_AUTH_CTX, query = "SELECT d FROM DeviceEntity d "
-				+ "WHERE d.deviceClass.authenticationContextClass = :authenticationContextClass") })
+				+ "WHERE d.deviceClass.authenticationContextClass = :authenticationContextClass"),
+		@NamedQuery(name = QUERY_WHERE_CERTID, query = "SELECT device "
+				+ "FROM DeviceEntity AS device "
+				+ "WHERE device.certificateIdentifier = :certificateIdentifier") })
 public class DeviceEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -65,6 +71,8 @@ public class DeviceEntity implements Serializable {
 	public static final String QUERY_LIST_WHERE_CLASS = "dev.class";
 
 	public static final String QUERY_LIST_WHERE_CLASS_AUTH_CTX = "dev.cl.actx";
+
+	public static final String QUERY_WHERE_CERTID = "dev.certid";
 
 	private String name;
 
@@ -382,6 +390,21 @@ public class DeviceEntity implements Serializable {
 		List<DeviceEntity> listDevices(
 				@QueryParam("authenticationContextClass")
 				String authenticationContextClass);
+	}
+
+	public static Query createQueryWhereCertificate(
+			EntityManager entityManager, X509Certificate certificate) {
+		byte[] encodedCertificate;
+		try {
+			encodedCertificate = certificate.getEncoded();
+		} catch (CertificateEncodingException e) {
+			throw new EJBException("Certificate encoding error: "
+					+ e.getMessage(), e);
+		}
+		String certificateIdentifier = toCertificateIdentifier(encodedCertificate);
+		Query query = entityManager.createNamedQuery(QUERY_WHERE_CERTID);
+		query.setParameter("certificateIdentifier", certificateIdentifier);
+		return query;
 	}
 
 }

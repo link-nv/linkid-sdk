@@ -81,7 +81,6 @@ public class AbstractLoginBean {
 	 * again.
 	 *
 	 * @param inputAuthenticationDevice
-	 * @throws DeviceNotFoundException
 	 */
 	protected void relogin(String inputAuthenticationDevice) {
 		this.authenticationDevice = this.deviceDAO

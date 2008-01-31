@@ -70,4 +70,7 @@ public interface DeviceDAO {
 	DevicePropertyEntity findProperty(DevicePropertyPK propertyPK);
 
 	List<DeviceEntity> listDevices(String authenticationContextClass);
+
+	DeviceEntity getDevice(X509Certificate certificate)
+			throws DeviceNotFoundException;
 }

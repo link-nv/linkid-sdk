@@ -29,9 +29,12 @@ import org.oasis_open.docs.ws_sx.ws_trust._200512.StatusType;
 import org.oasis_open.docs.ws_sx.ws_trust._200512.ValidateTargetType;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnContextClassRef;
+import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.AuthnStatement;
 import org.opensaml.saml2.core.Conditions;
+import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
+import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.StatusCode;
 import org.opensaml.saml2.core.Subject;
@@ -139,13 +142,68 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 					"error parsing token");
 			return response;
 		}
-		if (false == tokenXmlObject instanceof Response) {
+
+		if (tokenXmlObject instanceof Response) {
+			RequestSecurityTokenResponseType response = validateSaml2Response((Response) tokenXmlObject);
+			if (null != response)
+				return response;
+		} else if (tokenXmlObject instanceof AuthnRequest) {
+			RequestSecurityTokenResponseType response = validateSaml2AuthnRequest((AuthnRequest) tokenXmlObject);
+			if (null != response)
+				return response;
+		} else {
 			RequestSecurityTokenResponseType response = createResponse(
 					SecurityTokenServiceConstants.STATUS_INVALID,
-					"token not a SAML2 Response");
+					"token not a SAML2 Response or AuthnRequest");
+			return response;
+
+		}
+
+		if (null == tokenType) {
+			tokenType = SecurityTokenServiceConstants.TOKEN_TYPE_STATUS;
+		}
+		RequestSecurityTokenResponseType response = createResponse(
+				SecurityTokenServiceConstants.STATUS_VALID, tokenType, null);
+		return response;
+	}
+
+	private RequestSecurityTokenResponseType validateSaml2AuthnRequest(
+			AuthnRequest samlAuthnRequest) {
+		Issuer issuer = samlAuthnRequest.getIssuer();
+		String issuerName = issuer.getValue();
+		LOG.debug("issuer name: " + issuerName);
+
+		String assertionConsumerURL = samlAuthnRequest
+				.getAssertionConsumerServiceURL();
+		if (null == assertionConsumerURL) {
+			LOG.debug("missing assertion consumer URL");
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"missing assertion consumer URL");
 			return response;
 		}
-		Response samlResponse = (Response) tokenXmlObject;
+		LOG.debug("assertionConsumerURL: " + assertionConsumerURL);
+
+		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
+				.getRequestedAuthnContext();
+		if (null == requestedAuthnContext) {
+			LOG.debug("missing requested authentication context");
+			RequestSecurityTokenResponseType response = createResponse(
+					SecurityTokenServiceConstants.STATUS_INVALID,
+					"missing requested authentication context");
+			return response;
+		}
+		List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext
+				.getAuthnContextClassRefs();
+		for (AuthnContextClassRef authnContextClassRef : authnContextClassRefs)
+			LOG.debug("requested authentication context: "
+					+ authnContextClassRef.getAuthnContextClassRef());
+
+		return null;
+	}
+
+	private RequestSecurityTokenResponseType validateSaml2Response(
+			Response samlResponse) {
 
 		String samlStatusCode = samlResponse.getStatus().getStatusCode()
 				.getValue();
@@ -200,13 +258,8 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 				.getAuthnContext().getAuthnContextClassRef();
 		String authnDevice = authnContextClassRef.getAuthnContextClassRef();
 		LOG.debug("authentication device: " + authnDevice);
+		return null;
 
-		if (null == tokenType) {
-			tokenType = SecurityTokenServiceConstants.TOKEN_TYPE_STATUS;
-		}
-		RequestSecurityTokenResponseType response = createResponse(
-				SecurityTokenServiceConstants.STATUS_VALID, tokenType, null);
-		return response;
 	}
 
 	private RequestSecurityTokenResponseType createResponse(String statusCode,

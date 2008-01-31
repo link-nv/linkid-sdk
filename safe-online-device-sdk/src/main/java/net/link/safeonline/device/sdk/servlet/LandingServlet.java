@@ -26,6 +26,8 @@ public class LandingServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
+	private String authenticationUrl;
+
 	private Map<String, String> configParams;
 
 	private KeyPair applicationKeyPair;
@@ -40,21 +42,26 @@ public class LandingServlet extends HttpServlet {
 
 	public static final String KEYSTORE_TYPE_INIT_PARAM = "KeyStoreType";
 
+	public static final String AUTHENTICATION_URL_INIT_PARAM = "AuthenticationUrl";
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
+		this.authenticationUrl = getInitParameter(config,
+				AUTHENTICATION_URL_INIT_PARAM);
 		this.configParams = new HashMap<String, String>();
-		Enumeration<String> initParamsEnum = config.getInitParameterNames();
+		Enumeration<String> initParamsEnum = config.getServletContext()
+				.getInitParameterNames();
 		while (initParamsEnum.hasMoreElements()) {
 			String paramName = initParamsEnum.nextElement();
-			String paramValue = config.getInitParameter(paramName);
+			String paramValue = getInitParameter(config, paramName);
 			this.configParams.put(paramName, paramValue);
 		}
-		String p12KeyStoreResourceName = config
-				.getInitParameter(KEYSTORE_RESOURCE_INIT_PARAM);
-		String p12KeyStoreFileName = config
-				.getInitParameter(KEYSTORE_FILE_INIT_PARAM);
+		String p12KeyStoreResourceName = getOptionalInitParameter(config,
+				KEYSTORE_RESOURCE_INIT_PARAM);
+		String p12KeyStoreFileName = getOptionalInitParameter(config,
+				KEYSTORE_FILE_INIT_PARAM);
 		InputStream keyStoreInputStream = null;
 		if (null != p12KeyStoreResourceName) {
 			Thread currentThread = Thread.currentThread();
@@ -76,8 +83,8 @@ public class LandingServlet extends HttpServlet {
 			}
 		}
 		if (null != keyStoreInputStream) {
-			String keyStorePassword = config
-					.getInitParameter(KEY_STORE_PASSWORD_INIT_PARAM);
+			String keyStorePassword = getOptionalInitParameter(config,
+					KEY_STORE_PASSWORD_INIT_PARAM);
 			String keyStoreType = getInitParameter(config,
 					KEYSTORE_TYPE_INIT_PARAM, "pkcs12");
 			PrivateKeyEntry privateKeyEntry = KeyStoreUtils
@@ -110,14 +117,31 @@ public class LandingServlet extends HttpServlet {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;
 		}
+		response.sendRedirect(this.authenticationUrl);
 	}
 
 	private String getInitParameter(ServletConfig config, String initParamName,
 			String defaultValue) {
-		String initParamValue = config.getInitParameter(initParamName);
+		String initParamValue = config.getServletContext().getInitParameter(
+				initParamName);
 		if (null == initParamValue) {
 			initParamValue = defaultValue;
 		}
+		return initParamValue;
+	}
+
+	private String getOptionalInitParameter(ServletConfig config,
+			String initParamName) {
+		return config.getServletContext().getInitParameter(initParamName);
+	}
+
+	private String getInitParameter(ServletConfig config, String initParamName)
+			throws UnavailableException {
+		String initParamValue = config.getServletContext().getInitParameter(
+				initParamName);
+		if (null == initParamValue)
+			throw new UnavailableException("missing init parameter: "
+					+ initParamName);
 		return initParamValue;
 	}
 

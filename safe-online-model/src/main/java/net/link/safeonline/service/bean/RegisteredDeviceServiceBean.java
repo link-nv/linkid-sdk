@@ -18,11 +18,11 @@ import net.link.safeonline.service.RegisteredDeviceService;
 /**
  * <h2>{@link RegisteredDeviceServiceBean} - Service bean for device
  * registrations.</h2>
- *
+ * 
  * <p>
  * <i>Jan 29, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Stateless

@@ -311,7 +311,7 @@ public class OcspValidatorBean implements OcspValidator {
 					"OCSP Responder is down");
 			return null;
 		} catch (UnknownHostException e) {
-			LOG.debug("unknown OCSP responder");
+			LOG.debug("unknown OCSP responder: " + ocspUrl.getPath());
 			this.resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP,
 					ResourceLevelType.RESOURCE_UNKNOWN, ocspUrl.getPath(),
 					"unknown OCSP Responder");

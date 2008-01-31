@@ -23,8 +23,11 @@ import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.common.xml.SAMLConstants;
+import org.opensaml.saml2.core.Audience;
+import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameIDPolicy;
 import org.opensaml.saml2.core.RequestedAuthnContext;
@@ -160,6 +163,21 @@ public class AuthnRequestFactory {
 			}
 			request.setRequestedAuthnContext(requestedAuthnContext);
 		}
+
+		Conditions conditions = buildXMLObject(Conditions.class,
+				Conditions.DEFAULT_ELEMENT_NAME);
+		List<AudienceRestriction> audienceRestrictions = conditions
+				.getAudienceRestrictions();
+		AudienceRestriction audienceRestriction = buildXMLObject(
+				AudienceRestriction.class,
+				AudienceRestriction.DEFAULT_ELEMENT_NAME);
+		audienceRestrictions.add(audienceRestriction);
+		List<Audience> audiences = audienceRestriction.getAudiences();
+		Audience audience = buildXMLObject(Audience.class,
+				Audience.DEFAULT_ELEMENT_NAME);
+		audiences.add(audience);
+		audience.setAudienceURI(applicationName);
+		request.setConditions(conditions);
 
 		XMLObjectBuilderFactory builderFactory = Configuration
 				.getBuilderFactory();

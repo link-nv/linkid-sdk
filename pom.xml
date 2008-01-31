@@ -829,6 +829,7 @@
 		<module>safe-online-encap-ws-runtime</module>
 		<module>safe-online-encap-keystore</module>
 		<module>safe-online-beid-keystore</module>
+		<module>safe-online-beid-webapp</module>
 		<module>safe-online-ping-ws</module>
 		<module>safe-online-ping-ws-impl</module>
 		<module>safe-online-device-sdk</module>

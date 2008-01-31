@@ -59,6 +59,11 @@
 		<return-type>java.security.PublicKey</return-type>
 	</operation>
 	<operation>
+		<description>Gives back the Certificate</description>
+		<name>getCertificate</name>
+		<return-type>java.security.cert.X509Certificate</return-type>
+	</operation>
+	<operation>
 		<description>Load the Identity Key Pair</description>
 		<name>loadKeyPair</name>
 	</operation>

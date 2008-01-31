@@ -17,7 +17,9 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -38,10 +40,16 @@ public class ApplicationCertificateMapperHandler implements
 			.getName()
 			+ ".ApplicationId";
 
+	public static final String DEVICE_ID_PROPERTY = ApplicationCertificateMapperHandler.class
+			.getName()
+			+ ".DeviceId";
+
 	private static final Log LOG = LogFactory
 			.getLog(ApplicationCertificateMapperHandler.class);
 
 	private ApplicationAuthenticationService applicationAuthenticationService;
+
+	private DeviceAuthenticationService deviceAuthenticationService;
 
 	@PostConstruct
 	public void postConstructCallback() {
@@ -52,6 +60,9 @@ public class ApplicationCertificateMapperHandler implements
 		this.applicationAuthenticationService = EjbUtils.getEJB(
 				"SafeOnline/ApplicationAuthenticationServiceBean/local",
 				ApplicationAuthenticationService.class);
+		this.deviceAuthenticationService = EjbUtils.getEJB(
+				"SafeOnline/DeviceAuthenticationServiceBean/local",
+				DeviceAuthenticationService.class);
 	}
 
 	public Set<QName> getHeaders() {
@@ -87,16 +98,34 @@ public class ApplicationCertificateMapperHandler implements
 			throw new RuntimeException(
 					"no client certificate found on JAX-WS context");
 		}
-		String applicationId;
-		try {
-			applicationId = this.applicationAuthenticationService
-					.authenticate(certificate);
-		} catch (ApplicationNotFoundException e) {
-			throw WSSecurityUtil.createSOAPFaultException(
-					"unknown application", "FailedAuthentication");
+
+		if (ApplicationCertificateValidatorHandler.isDeviceCertificate(context)) {
+			String deviceName;
+			try {
+				deviceName = this.deviceAuthenticationService
+						.authenticate(certificate);
+			} catch (DeviceNotFoundException e) {
+				throw WSSecurityUtil.createSOAPFaultException("unknown device",
+						"FailedAuthentication");
+			}
+			setDeviceName(deviceName, context);
+			return;
 		}
 
-		setApplicationId(applicationId, context);
+		if (ApplicationCertificateValidatorHandler
+				.isApplicationCertificate(context)) {
+			String applicationId;
+
+			try {
+				applicationId = this.applicationAuthenticationService
+						.authenticate(certificate);
+			} catch (ApplicationNotFoundException e) {
+				throw WSSecurityUtil.createSOAPFaultException(
+						"unknown application", "FailedAuthentication");
+			}
+			setApplicationId(applicationId, context);
+			return;
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -123,5 +152,24 @@ public class ApplicationCertificateMapperHandler implements
 					"no application Id found on JAX-WS context");
 		}
 		return applicationId;
+	}
+
+	private static void setDeviceName(String deviceName,
+			SOAPMessageContext soapMessageContext) {
+		soapMessageContext.put(DEVICE_ID_PROPERTY, deviceName);
+	}
+
+	/**
+	 * Gives back the device name that have been written on the given SOAP
+	 * message context by a handler instance of this type.
+	 * 
+	 * @param soapMessageContext
+	 */
+	public static String getDeviceName(SOAPMessageContext soapMessageContext) {
+		String deviceName = (String) soapMessageContext.get(DEVICE_ID_PROPERTY);
+		if (null == deviceName) {
+			throw new RuntimeException("no device name found on JAX-WS context");
+		}
+		return deviceName;
 	}
 }

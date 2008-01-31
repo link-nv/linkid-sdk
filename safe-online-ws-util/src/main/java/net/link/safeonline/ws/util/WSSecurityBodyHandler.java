@@ -7,6 +7,7 @@
 
 package net.link.safeonline.ws.util;
 
+import java.security.cert.X509Certificate;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -68,16 +69,31 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
 			return true;
 		}
 
-		String applicationId = ApplicationCertificateMapperHandler
-				.getApplicationId(soapMessageContext);
+		X509Certificate certificate = WSSecurityServerHandler
+				.getCertificate(soapMessageContext);
+		if (null == certificate) {
+			throw new RuntimeException("no certificate found on JAX-WS context");
+		}
 
 		boolean skipMessageIntegrityCheck;
-		try {
-			skipMessageIntegrityCheck = this.applicationAuthenticationService
-					.skipMessageIntegrityCheck(applicationId);
-		} catch (ApplicationNotFoundException e) {
-			throw WSSecurityUtil.createSOAPFaultException(
-					"unknown application", "FailedAuthentication");
+
+		if (ApplicationCertificateValidatorHandler
+				.isDeviceCertificate(soapMessageContext))
+			skipMessageIntegrityCheck = false;
+		else if (ApplicationCertificateValidatorHandler
+				.isCoreCertificate(soapMessageContext))
+			skipMessageIntegrityCheck = false;
+		else {
+			try {
+				String applicationId = ApplicationCertificateMapperHandler
+						.getApplicationId(soapMessageContext);
+
+				skipMessageIntegrityCheck = this.applicationAuthenticationService
+						.skipMessageIntegrityCheck(applicationId);
+			} catch (ApplicationNotFoundException e) {
+				throw WSSecurityUtil.createSOAPFaultException(
+						"unknown application", "FailedAuthentication");
+			}
 		}
 
 		if (true == skipMessageIntegrityCheck) {

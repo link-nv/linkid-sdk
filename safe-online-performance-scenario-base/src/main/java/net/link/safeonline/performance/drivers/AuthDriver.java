@@ -172,7 +172,7 @@ public class AuthDriver extends ProfileDriver {
 
 	/**
 	 * Authenticate with OLAS's auth-webapp.
-	 *
+	 * 
 	 * @return The user's UUID.
 	 */
 	public String login(PrivateKeyEntry application, String applicationName,

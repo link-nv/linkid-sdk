@@ -2,7 +2,6 @@ package net.link.safeonline.device.sdk;
 
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public class AuthenticationContext {
@@ -25,17 +24,16 @@ public class AuthenticationContext {
 			.getName()
 			+ ".LOGIN_MANAGER";
 
-	private AuthenticationContext(HttpServletRequest request) {
-		this.session = request.getSession();
+	private AuthenticationContext(HttpSession session) {
+		this.session = session;
 		this.session.setAttribute(LOGIN_MANAGER, this);
 	}
 
-	public static AuthenticationContext getLoginManager(
-			HttpServletRequest request) {
-		AuthenticationContext instance = (AuthenticationContext) request
-				.getSession().getAttribute(LOGIN_MANAGER);
+	public static AuthenticationContext getLoginManager(HttpSession session) {
+		AuthenticationContext instance = (AuthenticationContext) session
+				.getAttribute(LOGIN_MANAGER);
 		if (null == instance)
-			instance = new AuthenticationContext(request);
+			instance = new AuthenticationContext(session);
 		return instance;
 	}
 

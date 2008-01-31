@@ -203,12 +203,11 @@ public class Saml2Handler {
 		} else
 			devices = null;
 
-		HttpSession localSession = request.getSession();
-		localSession.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
-		localSession.setAttribute(TARGET_URL, assertionConsumerService);
+		this.session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
+		this.session.setAttribute(TARGET_URL, assertionConsumerService);
 
 		AuthenticationContext authenticationContext = AuthenticationContext
-				.getLoginManager(request);
+				.getLoginManager(request.getSession());
 		authenticationContext.setWantedDevices(devices);
 		authenticationContext.setApplication(application);
 	}
@@ -218,7 +217,7 @@ public class Saml2Handler {
 			HttpServletResponse response)
 			throws AuthenticationFinalizationException {
 		AuthenticationContext authenticationContext = AuthenticationContext
-				.getLoginManager(request);
+				.getLoginManager(request.getSession());
 		String usedDevice = authenticationContext.getUsedDevice();
 		String userId = authenticationContext.getUserId();
 		String applicationId = authenticationContext.getApplication();

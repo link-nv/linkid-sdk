@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
@@ -196,6 +197,18 @@ public class DeviceDAOBean implements DeviceDAO {
 
 	public List<DeviceEntity> listDevices(String authenticationContextClass) {
 		return this.queryObject.listDevices(authenticationContextClass);
+	}
+
+	@SuppressWarnings("unchecked")
+	public DeviceEntity getDevice(X509Certificate certificate)
+			throws DeviceNotFoundException {
+		Query query = DeviceEntity.createQueryWhereCertificate(
+				this.entityManager, certificate);
+		List<DeviceEntity> devices = query.getResultList();
+		if (devices.isEmpty())
+			throw new DeviceNotFoundException();
+		DeviceEntity device = devices.get(0);
+		return device;
 	}
 
 }

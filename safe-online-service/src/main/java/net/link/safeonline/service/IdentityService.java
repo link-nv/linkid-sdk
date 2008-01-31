@@ -97,6 +97,7 @@ public class IdentityService implements IdentityServiceMBean {
 		this.privateKey = privateKeyEntry.getPrivateKey();
 		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
 		this.publicKey = this.certificate.getPublicKey();
+		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
 	}
 
 	public void setKeyStorePassword(String keyStorePassword) {

@@ -94,6 +94,17 @@
 										net.lin-k.safe-online
 									</groupId>
 									<artifactId>
+										safe-online-device-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
 										safe-online-encap-sdk
 									</artifactId>
 									<includeInApplicationXml>
@@ -223,6 +234,17 @@
 									</groupId>
 									<artifactId>
 										safe-online-owner-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-keystore
 									</artifactId>
 									<includeInApplicationXml>
 										true
@@ -628,6 +650,17 @@
 										safe-online-auth-service
 									</artifactId>
 								</sarModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-beid
+									</contextRoot>
+								</webModule>
 							</modules>
 							<jboss>
 								<version>4</version>
@@ -737,6 +770,17 @@
 									</groupId>
 									<artifactId>
 										safe-online-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-device-sdk
 									</artifactId>
 									<includeInApplicationXml>
 										true
@@ -865,6 +909,17 @@
 									</groupId>
 									<artifactId>
 										safe-online-owner-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-keystore
 									</artifactId>
 									<includeInApplicationXml>
 										true
@@ -1262,6 +1317,17 @@
 										safe-online-auth-service
 									</artifactId>
 								</sarModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-beid
+									</contextRoot>
+								</webModule>
 							</modules>
 							<jboss>
 								<version>4</version>
@@ -1362,6 +1428,17 @@
 									</groupId>
 									<artifactId>
 										safe-online-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-device-sdk
 									</artifactId>
 									<includeInApplicationXml>
 										true
@@ -1479,6 +1556,17 @@
 									</groupId>
 									<artifactId>
 										safe-online-owner-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-keystore
 									</artifactId>
 									<includeInApplicationXml>
 										true
@@ -1797,6 +1885,17 @@
 										safe-online-auth-service
 									</artifactId>
 								</sarModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-beid
+									</contextRoot>
+								</webModule>
 								<jarModule>
 									<groupId>
 										net.lin-k.safe-online
@@ -1977,6 +2076,12 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-owner-keystore</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-auth-keystore</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
@@ -2176,6 +2281,13 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-beid-webapp</artifactId>
+			<type>war</type>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-jpa-util</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
@@ -2219,6 +2331,12 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sdk</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-device-sdk</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>

@@ -20,6 +20,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +35,14 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ApplicationCertificateValidatorHandler implements
 		SOAPHandler<SOAPMessageContext> {
+
+	public static final String CERTIFICATE_DOMAIN_PROPERTY = ApplicationCertificateValidatorHandler.class
+			.getName()
+			+ ".CertificateDomain";
+
+	public enum CertificateDomain {
+		APPLICATION, DEVICE, CORE
+	}
 
 	private static final Log LOG = LogFactory
 			.getLog(ApplicationCertificateValidatorHandler.class);
@@ -88,11 +97,31 @@ public class ApplicationCertificateValidatorHandler implements
 			result = this.pkiValidator.validateCertificate(
 					SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 					certificate);
+			setCertificateDomain(CertificateDomain.APPLICATION, context);
 		} catch (TrustDomainNotFoundException e) {
 			throw WSSecurityUtil.createSOAPFaultException(
 					"application trust domain not found",
 					"FailedAuthentication");
 		}
+		if (false == result)
+			try {
+				result = this.pkiValidator.validateCertificate(
+						SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
+						certificate);
+				setCertificateDomain(CertificateDomain.DEVICE, context);
+			} catch (TrustDomainNotFoundException e) {
+				throw WSSecurityUtil.createSOAPFaultException(
+						"devices trust domain not found",
+						"FailedAuthentication");
+			}
+		if (false == result) {
+			IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+			result = (certificate
+					.equals(identityServiceClient.getCertificate())) ? true
+					: false;
+			setCertificateDomain(CertificateDomain.CORE, context);
+		}
+
 		if (false == result) {
 			throw WSSecurityUtil.createSOAPFaultException(
 					"certificate not trusted", "FailedAuthentication");
@@ -102,5 +131,40 @@ public class ApplicationCertificateValidatorHandler implements
 	@SuppressWarnings("unused")
 	private void logout(SOAPMessageContext context) {
 		LOG.debug("logout");
+	}
+
+	private static void setCertificateDomain(
+			CertificateDomain certificateDomain,
+			SOAPMessageContext soapMessageContext) {
+		soapMessageContext.put(CERTIFICATE_DOMAIN_PROPERTY, certificateDomain);
+	}
+
+	private static CertificateDomain getCertificateDomain(
+			SOAPMessageContext soapMessageContext) {
+		CertificateDomain certificateDomain = (CertificateDomain) soapMessageContext
+				.get(CERTIFICATE_DOMAIN_PROPERTY);
+		if (null == certificateDomain) {
+			throw new RuntimeException(
+					"no certificate domain found on JAX-WS context");
+		}
+		return certificateDomain;
+	}
+
+	public static boolean isDeviceCertificate(
+			SOAPMessageContext soapMessageContext) {
+		return getCertificateDomain(soapMessageContext).equals(
+				CertificateDomain.DEVICE);
+	}
+
+	public static boolean isApplicationCertificate(
+			SOAPMessageContext soapMessageContext) {
+		return getCertificateDomain(soapMessageContext).equals(
+				CertificateDomain.APPLICATION);
+	}
+
+	public static boolean isCoreCertificate(
+			SOAPMessageContext soapMessageContext) {
+		return getCertificateDomain(soapMessageContext).equals(
+				CertificateDomain.CORE);
 	}
 }

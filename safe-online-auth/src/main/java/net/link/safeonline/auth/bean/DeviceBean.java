@@ -8,6 +8,8 @@
 package net.link.safeonline.auth.bean;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -28,18 +30,19 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.device.sdk.seam.SafeOnlineDeviceUtils;
 import net.link.safeonline.entity.DeviceEntity;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.core.FacesMessages;
+import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("device")
@@ -47,10 +50,11 @@ import org.jboss.seam.core.FacesMessages;
 		+ "DeviceBean/local")
 public class DeviceBean implements Device {
 
-	private static final Log LOG = LogFactory.getLog(DeviceBean.class);
-
 	@In(create = true)
 	FacesMessages facesMessages;
+
+	@Logger
+	private Log log;
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
@@ -78,9 +82,9 @@ public class DeviceBean implements Device {
 	}
 
 	public String next() {
-		LOG.debug("next: " + this.deviceSelection);
+		this.log.debug("next: " + this.deviceSelection);
 		if (null == this.deviceSelection) {
-			LOG.debug("Please make a selection.");
+			this.log.debug("Please make a selection.");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorMakeSelection");
 			return null;
@@ -90,26 +94,40 @@ public class DeviceBean implements Device {
 			authenticationURL = this.devicePolicyService
 					.getAuthenticationURL(this.deviceSelection);
 		} catch (DeviceNotFoundException e) {
-			LOG.error("device not found: " + this.deviceSelection);
+			this.log.error("device not found: " + this.deviceSelection);
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
+		}
+		if (remoteURL(authenticationURL)) {
+			return SafeOnlineDeviceUtils.redirect(this.facesMessages, this.log,
+					authenticationURL, this.deviceSelection);
 		}
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		try {
 			externalContext.redirect(authenticationURL);
 		} catch (IOException e) {
-			LOG.debug("IO error: " + e.getMessage());
+			this.log.debug("IO error: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorIO");
 		}
 		return null;
 	}
 
+	private boolean remoteURL(String authenticationURLName) {
+		try {
+			new URL(authenticationURLName);
+		} catch (MalformedURLException e) {
+			this.log.debug("local authentication URL");
+			return false;
+		}
+		return true;
+	}
+
 	@Factory("applicationDevices")
 	public List<SelectItem> applicationDevicesFactory() {
-		LOG.debug("application devices factory");
+		this.log.debug("application devices factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
 		List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
@@ -125,20 +143,20 @@ public class DeviceBean implements Device {
 				applicationDevices.add(applicationDevice);
 			}
 		} catch (ApplicationNotFoundException e) {
-			LOG.error("application not found: " + this.application);
+			this.log.error("application not found: " + this.application);
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
 		} catch (EmptyDevicePolicyException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorEmptyDevicePolicy");
-			LOG.error("empty device policy");
+			this.log.error("empty device policy");
 		}
 		return applicationDevices;
 	}
 
 	@Factory("allDevices")
 	public List<SelectItem> allDevicesFactory() {
-		LOG.debug("all devices factory");
+		this.log.debug("all devices factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
 		List<SelectItem> allDevices = new LinkedList<SelectItem>();

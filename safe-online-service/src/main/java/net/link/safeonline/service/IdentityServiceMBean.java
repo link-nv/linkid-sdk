@@ -26,9 +26,9 @@ public interface IdentityServiceMBean {
 
 	PublicKey getPublicKey();
 
-	void loadKeyPair();
-
 	X509Certificate getCertificate();
+
+	void loadKeyPair();
 
 	/*
 	 * Attributes.
