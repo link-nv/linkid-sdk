@@ -209,6 +209,21 @@ public class ScenarioBean implements ScenarioLocal {
 				if (data.getMeasurements() == null || data.getStartTime() == 0)
 					continue;
 
+				// Increment startTime as long as there are other X values in
+				// requestSet with the same value.
+				long startTime = data.getStartTime();
+				for (boolean search = true; search;) {
+					search = false;
+
+					for (Object item : requestSet.getItems())
+						if (item instanceof XYDataItem)
+							if (((XYDataItem) item).getX().equals(startTime)) {
+								startTime++;
+								search = true;
+								break;
+							}
+				}
+
 				// Process the statistics.
 				long requestTime = data
 						.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
@@ -217,14 +232,14 @@ public class ScenarioBean implements ScenarioLocal {
 				long afterMemory = data
 						.getMeasurement(ProfileData.REQUEST_END_FREE)
 						+ beforeMemory;
-				long endTime = data.getStartTime() + requestTime;
+				long endTime = startTime + requestTime;
 
 				try {
-					beforeMemorySet.add(data.getStartTime(), beforeMemory);
-					afterMemorySet.add(data.getStartTime(), afterMemory);
-					requestSet.add(data.getStartTime(), requestTime);
+					beforeMemorySet.add(startTime, beforeMemory);
+					afterMemorySet.add(startTime, afterMemory);
+					requestSet.add(startTime, requestTime);
 				} catch (SeriesException e) {
-					LOG.warn("Dublicate X at starttime " + data.getStartTime()
+					LOG.warn("Dublicate X at starttime " + startTime
 							+ ", or endtime " + endTime, e);
 					continue; // Duplicate X value; ignore this one.
 				}
@@ -241,7 +256,7 @@ public class ScenarioBean implements ScenarioLocal {
 							timingSet.put(method, new XYSeries(method, true,
 									false));
 
-						timingSet.get(method).add(data.getStartTime(), timing);
+						timingSet.get(method).add(startTime, timing);
 					}
 
 					// Collect Method Timing Chart Data.
@@ -360,7 +375,7 @@ public class ScenarioBean implements ScenarioLocal {
 				timeSeries.addOrUpdate(start, value);
 			}
 
-			for (int period : new int[] { 1000, 60000, 3600000 })
+			for (int period : new int[] { 3600000, 60000, 1000 })
 				scenarioSpeedSets.add(MovingAverage.createMovingAverage(
 						startTimeSeries, period / 1000 + "s", period, period));
 		}
