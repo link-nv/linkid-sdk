@@ -14,9 +14,6 @@
 
 	</ui:define>
 	<ui:define name="content">
-		<ui:include src="/WEB-INF/incl/progress-authentication.xhtml">
-			<ui:param name="stage" value="authenticate" />
-		</ui:include>
 		<h2>#{msgs.mobileAuthentication}</h2>
 
 		<f:facet name="aroundInvalidField">
@@ -59,10 +56,6 @@
 			<ul class="sidemenu">
 				<li><h:commandLink value="#{msgs.helpaction}" action="help"
 					immediate="true" /></li>
-				<li><h:commandLink action="/all-devices.seam"
-					value="#{msgs.tryAnotherDevice}" /></li>
-				<li><h:commandLink action="back" id="back"
-					value="#{msgs.backaction}" immediate="true" styleClass="submit" /></li>
 			</ul>
 		</h:form>
 		<p>#{msgs.helpMobileAuthentication}</p>

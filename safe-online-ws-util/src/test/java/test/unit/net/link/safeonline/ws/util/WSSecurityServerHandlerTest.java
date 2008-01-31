@@ -34,6 +34,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -77,6 +78,8 @@ public class WSSecurityServerHandlerTest {
 
 	private ApplicationAuthenticationService mockApplicationAuthenticationService;
 
+	private DeviceAuthenticationService mockDeviceAuthenticationService;
+
 	private Object[] mockObjects;
 
 	@Before
@@ -95,8 +98,11 @@ public class WSSecurityServerHandlerTest {
 
 		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
 
+		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
+
 		this.mockObjects = new Object[] { this.mockConfigurationManager,
-				this.mockApplicationAuthenticationService };
+				this.mockApplicationAuthenticationService,
+				this.mockDeviceAuthenticationService };
 	}
 
 	@After

@@ -24,6 +24,7 @@ import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.IdentifierMappingService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingConstants;
@@ -57,7 +58,9 @@ public class NameIdentifierMappingPortImplTest {
 
 	private JndiTestUtils jndiTestUtils;
 
-	private ApplicationAuthenticationService mockAuthenticationService;
+	private ApplicationAuthenticationService mockApplicationAuthenticationService;
+
+	private DeviceAuthenticationService mockDeviceAuthenticationService;
 
 	private PkiValidator mockPkiValidator;
 
@@ -77,18 +80,24 @@ public class NameIdentifierMappingPortImplTest {
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
 
-		this.mockAuthenticationService = createMock(ApplicationAuthenticationService.class);
+		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.mockConfigurationManager = createMock(ConfigurationManager.class);
 		this.mockIdentifierMappingService = createMock(IdentifierMappingService.class);
 
-		this.mockObjects = new Object[] { this.mockAuthenticationService,
-				this.mockPkiValidator, this.mockConfigurationManager,
+		this.mockObjects = new Object[] {
+				this.mockApplicationAuthenticationService,
+				this.mockDeviceAuthenticationService, this.mockPkiValidator,
+				this.mockConfigurationManager,
 				this.mockIdentifierMappingService };
 
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ApplicationAuthenticationServiceBean/local",
-				this.mockAuthenticationService);
+				this.mockApplicationAuthenticationService);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/DeviceAuthenticationServiceBean/local",
+				this.mockDeviceAuthenticationService);
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
 		this.jndiTestUtils.bindComponent(
@@ -130,10 +139,12 @@ public class NameIdentifierMappingPortImplTest {
 				this.mockPkiValidator.validateCertificate((String) EasyMock
 						.anyObject(), (X509Certificate) EasyMock.anyObject()))
 				.andStubReturn(true);
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(testApplicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				testApplicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(testApplicationName))
 				.andReturn(false);
 

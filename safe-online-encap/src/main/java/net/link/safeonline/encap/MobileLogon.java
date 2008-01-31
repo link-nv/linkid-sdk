@@ -1,4 +1,4 @@
-package net.link.safeonline.auth;
+package net.link.safeonline.encap;
 
 import javax.ejb.Local;
 

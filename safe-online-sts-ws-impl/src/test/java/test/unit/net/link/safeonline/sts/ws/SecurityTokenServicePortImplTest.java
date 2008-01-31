@@ -27,6 +27,7 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
@@ -94,7 +95,9 @@ public class SecurityTokenServicePortImplTest {
 
 	private JndiTestUtils jndiTestUtils;
 
-	private ApplicationAuthenticationService mockAuthenticationService;
+	private ApplicationAuthenticationService mockApplicationAuthenticationService;
+
+	private DeviceAuthenticationService mockDeviceAuthenticationService;
 
 	private PkiValidator mockPkiValidator;
 
@@ -141,16 +144,22 @@ public class SecurityTokenServicePortImplTest {
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
 
-		this.mockAuthenticationService = createMock(ApplicationAuthenticationService.class);
+		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.mockConfigurationManager = createMock(ConfigurationManager.class);
 
-		this.mockObjects = new Object[] { this.mockAuthenticationService,
-				this.mockPkiValidator, this.mockConfigurationManager };
+		this.mockObjects = new Object[] {
+				this.mockApplicationAuthenticationService,
+				this.mockDeviceAuthenticationService, this.mockPkiValidator,
+				this.mockConfigurationManager };
 
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ApplicationAuthenticationServiceBean/local",
-				this.mockAuthenticationService);
+				this.mockApplicationAuthenticationService);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/DeviceAuthenticationServiceBean/local",
+				this.mockDeviceAuthenticationService);
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
 		this.jndiTestUtils.bindComponent(
@@ -170,10 +179,12 @@ public class SecurityTokenServicePortImplTest {
 		expect(
 				this.mockPkiValidator.validateCertificate("applications",
 						this.certificate)).andStubReturn(true);
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andStubReturn(testApplicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andStubReturn(
+				testApplicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(testApplicationName))
 				.andReturn(false);
 

@@ -35,6 +35,7 @@ import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AttributeService;
+import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.config.model.ConfigurationManager;
@@ -85,7 +86,9 @@ public class SAMLAttributePortImplTest {
 
 	private PkiValidator mockPkiValidator;
 
-	private ApplicationAuthenticationService mockAuthenticationService;
+	private ApplicationAuthenticationService mockApplicationAuthenticationService;
+
+	private DeviceAuthenticationService mockDeviceAuthenticationService;
 
 	private SamlAuthorityService mockSamlAuthorityService;
 
@@ -119,14 +122,16 @@ public class SAMLAttributePortImplTest {
 
 		this.mockAttributeService = createMock(AttributeService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
-		this.mockAuthenticationService = createMock(ApplicationAuthenticationService.class);
+		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
 		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
 		this.mockConfigurationManager = createMock(ConfigurationManager.class);
 		this.mockApplicationManager = createMock(ApplicationManager.class);
 		this.mockUserIdMappingService = createMock(UserIdMappingService.class);
 
 		this.mockObjects = new Object[] { this.mockAttributeService,
-				this.mockPkiValidator, this.mockAuthenticationService,
+				this.mockPkiValidator,
+				this.mockApplicationAuthenticationService,
 				this.mockSamlAuthorityService, this.mockConfigurationManager,
 				this.mockApplicationManager, this.mockUserIdMappingService };
 
@@ -137,7 +142,10 @@ public class SAMLAttributePortImplTest {
 				this.mockPkiValidator);
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ApplicationAuthenticationServiceBean/local",
-				this.mockAuthenticationService);
+				this.mockApplicationAuthenticationService);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/DeviceAuthenticationServiceBean/local",
+				this.mockDeviceAuthenticationService);
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				this.mockSamlAuthorityService);
@@ -237,10 +245,12 @@ public class SAMLAttributePortImplTest {
 				this.mockAttributeService.getConfirmedAttributeValue(
 						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValue);
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn("test-application-name");
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				"test-application-name");
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.testApplicationId))
 				.andReturn(false);
 
@@ -332,10 +342,12 @@ public class SAMLAttributePortImplTest {
 				this.mockAttributeService.getConfirmedAttributeValue(
 						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValues);
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.testApplicationId);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.testApplicationId);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.testApplicationId))
 				.andReturn(false);
 
@@ -440,10 +452,12 @@ public class SAMLAttributePortImplTest {
 				this.mockAttributeService.getConfirmedAttributeValue(
 						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValues);
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.testApplicationId);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.testApplicationId);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.testApplicationId))
 				.andReturn(false);
 
@@ -531,10 +545,12 @@ public class SAMLAttributePortImplTest {
 				this.mockAttributeService.getConfirmedAttributeValue(
 						this.testSubjectId, testAttributeName)).andReturn(
 				testAttributeValue);
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.testApplicationId);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.testApplicationId);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.testApplicationId))
 				.andReturn(false);
 
@@ -607,10 +623,12 @@ public class SAMLAttributePortImplTest {
 				this.mockAttributeService.getConfirmedAttributeValue(
 						this.testSubjectId, testAttributeName)).andThrow(
 				new AttributeNotFoundException());
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.testApplicationId);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.testApplicationId);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.testApplicationId))
 				.andReturn(false);
 

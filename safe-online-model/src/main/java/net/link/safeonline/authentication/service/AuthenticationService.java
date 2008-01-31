@@ -138,24 +138,6 @@ public interface AuthenticationService {
 			UsageAgreementAcceptationRequiredException;
 
 	/**
-	 * Authenticates a user via an authentication statement. The given session
-	 * Id must match the one given in the authentication statement. The session
-	 * Id is managed by the servlet front-end container.
-	 * 
-	 * @param sessionId
-	 * @param authenticationStatementData
-	 * @return <code>true</code> if the authentication process can proceed.
-	 * @throws ArgumentIntegrityException
-	 * @throws TrustDomainNotFoundException
-	 * @throws SubjectNotFoundException
-	 *             in case the certificate was not linked to any subject.
-	 * @throws DecodingException
-	 */
-	boolean authenticate(String sessionId, byte[] authenticationStatementData)
-			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			SubjectNotFoundException, DecodingException;
-
-	/**
 	 * Registers and authenticates a new user via a registration statement.
 	 * 
 	 * @param sessionId

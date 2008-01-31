@@ -53,7 +53,8 @@ public class EncapStartableBean extends AbstractInitBean {
 				.getPrivateKeyEntry().getCertificate();
 
 		this.devices.add(new Device(SafeOnlineConstants.ENCAP_DEVICE_ID,
-				SafeOnlineConstants.MOBILE_DEVICE_CLASS, "encap/mobile.seam",
+				SafeOnlineConstants.MOBILE_DEVICE_CLASS,
+				"https://localhost:8443/olas-encap/auth",
 				"encap/register-mobile.seam", "encap/new-user-mobile.seam",
 				null, certificate));
 		this.deviceDescriptions.add(new DeviceDescription(

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	version="2.4">
+
+	<display-name>Olas Encap Device Web Application</display-name>
+
+	<listener>
+		<listener-class>
+			org.jboss.seam.servlet.SeamListener
+		</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>
+			com.sun.faces.config.ConfigureListener
+		</listener-class>
+	</listener>
+
+	<context-param>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>client</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+		<param-value>.xhtml</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>facelets.DEVELOPMENT</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>CommercialName</param-name>
+		<param-value>OLAS</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>ApplicationName</param-name>
+		<param-value>olas-encap</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStoreResource</param-name>
+		<param-value>safe-online-encap-keystore.jks</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>AuthenticationUrl</param-name>
+		<param-value>mobile.seam</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>WsLocation</param-name>
+		<param-value>
+			${safe-online.host.name}:${safe-online.host.port.ssl}
+		</param-value>
+	</context-param>
+
+	<filter>
+		<filter-name>JAASLoginFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.sdk.auth.filter.JAASLoginFilter
+		</filter-class>
+		<init-param>
+			<param-name>LoginContextName</param-name>
+			<param-value>client-login</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
+		<filter-name>Seam Exception Filter</filter-name>
+		<filter-class>
+			org.jboss.seam.servlet.SeamExceptionFilter
+		</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>Seam Redirect Filter</filter-name>
+		<filter-class>
+			org.jboss.seam.servlet.SeamRedirectFilter
+		</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<filter-class>
+			org.apache.myfaces.webapp.filter.ExtensionsFilter
+		</filter-class>
+	</filter>
+
+	<filter>
+		<display-name>Ajax4jsf Filter</display-name>
+		<filter-name>ajax4jsf</filter-name>
+		<filter-class>org.ajax4jsf.Filter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>JAASLoginFilter</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>Seam Exception Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>Seam Redirect Filter</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>ajax4jsf</filter-name>
+		<url-pattern>*.seam</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.seam</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>LandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.servlet.LandingServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>LandingServlet</servlet-name>
+		<url-pattern>/auth</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.servlet.ExitServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ExitServlet</servlet-name>
+		<url-pattern>/authenticationexit</url-pattern>
+	</servlet-mapping>
+
+	<session-config>
+		<session-timeout>5</session-timeout>
+	</session-config>
+
+</web-app>

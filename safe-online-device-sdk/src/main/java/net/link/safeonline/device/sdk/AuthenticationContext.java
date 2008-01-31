@@ -32,7 +32,7 @@ public class AuthenticationContext {
 	public static AuthenticationContext getLoginManager(HttpSession session) {
 		AuthenticationContext instance = (AuthenticationContext) session
 				.getAttribute(LOGIN_MANAGER);
-		if (null == instance)
+		if (null == session.getAttribute(LOGIN_MANAGER))
 			instance = new AuthenticationContext(session);
 		return instance;
 	}

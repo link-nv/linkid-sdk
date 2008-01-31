@@ -55,6 +55,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AttributeProviderService;
+import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.data.ws.DataServiceConstants;
@@ -103,7 +104,9 @@ public class DataServicePortImplTest {
 
 	private AttributeProviderService mockAttributeProviderService;
 
-	private ApplicationAuthenticationService mockAuthenticationService;
+	private ApplicationAuthenticationService mockApplicationAuthenticationService;
+
+	private DeviceAuthenticationService mockDeviceAuthenticationService;
 
 	private PkiValidator mockPkiValidator;
 
@@ -137,10 +140,15 @@ public class DataServicePortImplTest {
 				"SafeOnline/AttributeProviderServiceBean/local",
 				this.mockAttributeProviderService);
 
-		this.mockAuthenticationService = createMock(ApplicationAuthenticationService.class);
+		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ApplicationAuthenticationServiceBean/local",
-				this.mockAuthenticationService);
+				this.mockApplicationAuthenticationService);
+
+		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/DeviceAuthenticationServiceBean/local",
+				this.mockDeviceAuthenticationService);
 
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
@@ -165,7 +173,8 @@ public class DataServicePortImplTest {
 						this.targetIdentity)).andStubReturn(this.testSubjectId);
 
 		this.mockObjects = new Object[] { this.mockAttributeProviderService,
-				this.mockAuthenticationService, this.mockPkiValidator,
+				this.mockApplicationAuthenticationService,
+				this.mockDeviceAuthenticationService, this.mockPkiValidator,
 				this.mockConfigurationManager, this.mockUserIdMappingService };
 
 		this.webServiceTestUtils = new WebServiceTestUtils();
@@ -238,8 +247,10 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andThrow(new ApplicationNotFoundException());
+		expect(
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andThrow(
+				new ApplicationNotFoundException());
 
 		// prepare
 		replay(this.mockObjects);
@@ -271,10 +282,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -309,10 +322,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -350,10 +365,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -402,10 +419,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -458,10 +477,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -553,10 +574,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -589,10 +612,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -627,10 +652,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -681,10 +708,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -739,10 +768,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -799,10 +830,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -859,10 +892,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -926,10 +961,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -991,10 +1028,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 
@@ -1045,10 +1084,12 @@ public class DataServicePortImplTest {
 								SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
 								this.certificate)).andReturn(true);
 
-		expect(this.mockAuthenticationService.authenticate(this.certificate))
-				.andReturn(this.applicationName);
 		expect(
-				this.mockAuthenticationService
+				this.mockApplicationAuthenticationService
+						.authenticate(this.certificate)).andReturn(
+				this.applicationName);
+		expect(
+				this.mockApplicationAuthenticationService
 						.skipMessageIntegrityCheck(this.applicationName))
 				.andReturn(false);
 

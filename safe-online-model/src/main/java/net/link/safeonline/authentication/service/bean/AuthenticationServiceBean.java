@@ -220,31 +220,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		this.historyDAO.addHistoryEntry(now, subject, event, application, info);
 	}
 
-	public boolean authenticate(@NonEmptyString
-	String sessionId, @NotNull
-	byte[] authenticationStatementData) throws ArgumentIntegrityException,
-			TrustDomainNotFoundException, SubjectNotFoundException,
-			DecodingException {
-		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
-				authenticationStatementData);
-		SubjectEntity subject = this.beIdDeviceService.authenticate(sessionId,
-				authenticationStatement);
-		if (null == subject)
-			return false;
-		DeviceEntity device = this.deviceDAO
-				.findDevice(SafeOnlineConstants.BEID_DEVICE_ID);
-
-		/*
-		 * Safe the state.
-		 */
-		this.authenticationState = USER_AUTHENTICATED;
-		this.authenticatedSubject = subject;
-		this.authenticationDevice = device;
-		this.expectedApplicationId = authenticationStatement.getApplicationId();
-
-		return true;
-	}
-
 	private void addLoginTick(ApplicationEntity application) {
 		StatisticEntity statistic = this.statisticDAO
 				.findOrAddStatisticByNameDomainAndApplication(statisticName,

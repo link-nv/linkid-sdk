@@ -21,38 +21,6 @@
 	</lifecycle>
 
 	<navigation-rule>
-		<from-view-id>/main.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>password</from-outcome>
-			<to-view-id>/password/username-password.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>beid</from-outcome>
-			<to-view-id>/beid/beid.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>mobileWeak</from-outcome>
-			<to-view-id>/encap/mobile.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/all-devices.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>password</from-outcome>
-			<to-view-id>/password/username-password.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>beid</from-outcome>
-			<to-view-id>/beid/beid.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>mobileWeak</from-outcome>
-			<to-view-id>/encap/mobile.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
 		<from-view-id>/first-time.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>new</from-action>
@@ -73,39 +41,6 @@
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/new-user-device.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>beid</from-outcome>
-			<to-view-id>/beid/new-user-beid.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>password</from-outcome>
-			<to-view-id>/password/new-user-password.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>mobileWeak</from-outcome>
-			<to-view-id>/encap/new-user-mobile.xhtml</to-view-id>
-		</navigation-case>
-
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/register-device.xhtml</from-view-id>
-		<navigation-case>
-			<from-outcome>beid</from-outcome>
-			<to-view-id>/beid/register-beid.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>password</from-outcome>
-			<to-view-id>/password/register-password.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>mobileWeak</from-outcome>
-			<to-view-id>/encap/register-mobile.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
 		<from-view-id>/identity-confirmation.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>reject</from-action>
@@ -119,26 +54,6 @@
 
 	<navigation-rule>
 		<from-view-id>/password/username-password.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>back</from-action>
-			<to-view-id>/main.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-action>help</from-action>
-			<to-view-id>/help.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/beid/beid.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>help</from-action>
-			<to-view-id>/help.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/encap/mobile.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>back</from-action>
 			<to-view-id>/main.xhtml</to-view-id>

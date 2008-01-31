@@ -68,6 +68,8 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 			SubjectNotFoundException, MobileAuthenticationException {
 		SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
 				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile);
+		if (null == subject)
+			throw new SubjectNotFoundException();
 
 		boolean result = this.mobileManager.verifyOTP(challengeId, mobileOTP);
 		if (false == result) {
