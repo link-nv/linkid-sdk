@@ -14,8 +14,10 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
@@ -86,9 +88,23 @@ public class BeIdStartableBean extends AbstractInitBean {
 		this.trustedCertificates.put(certificate,
 				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
+		ClassLoader classLoader = Thread.currentThread()
+				.getContextClassLoader();
+
+		Properties props = new Properties();
+		try {
+			props.load(classLoader
+					.getResourceAsStream("properties/beid/beid.properties"));
+		} catch (Exception e) {
+			throw new EJBException("Could not open beid properties");
+		}
+
+		String hostname = props.getProperty("hostname");
+		String port = props.getProperty("port");
+
 		this.devices.add(new Device(SafeOnlineConstants.BEID_DEVICE_ID,
-				SafeOnlineConstants.PKI_DEVICE_CLASS,
-				"https://localhost:8443/olas-beid/auth",
+				SafeOnlineConstants.PKI_DEVICE_CLASS, "https://" + hostname
+						+ ":" + port + "/olas-beid/auth",
 				"beid/register-beid.seam", "beid/new-user-beid.seam", null,
 				certificate));
 		this.deviceDescriptions.add(new DeviceDescription(

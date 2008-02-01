@@ -11,7 +11,9 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
+import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
@@ -52,9 +54,23 @@ public class EncapStartableBean extends AbstractInitBean {
 		X509Certificate certificate = (X509Certificate) EncapKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
 
+		ClassLoader classLoader = Thread.currentThread()
+				.getContextClassLoader();
+
+		Properties props = new Properties();
+		try {
+			props.load(classLoader
+					.getResourceAsStream("properties/encap/encap.properties"));
+		} catch (Exception e) {
+			throw new EJBException("Could not open encap properties");
+		}
+
+		String hostname = props.getProperty("hostname");
+		String port = props.getProperty("port");
+
 		this.devices.add(new Device(SafeOnlineConstants.ENCAP_DEVICE_ID,
-				SafeOnlineConstants.MOBILE_DEVICE_CLASS,
-				"https://localhost:8443/olas-encap/auth",
+				SafeOnlineConstants.MOBILE_DEVICE_CLASS, "https://" + hostname
+						+ ":" + port + "/olas-encap/auth",
 				"encap/register-mobile.seam", "encap/new-user-mobile.seam",
 				null, certificate));
 		this.deviceDescriptions.add(new DeviceDescription(
