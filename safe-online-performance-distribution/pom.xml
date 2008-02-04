@@ -104,6 +104,7 @@
                     <configuration>
                       <patches>
                         <patch>make_headless.patch</patch>
+                        <patch>log4j.patch</patch>
                       </patches>
                       <targetDirectory>
                           target/files/safe-online-base-distribution-1.0-SNAPSHOT

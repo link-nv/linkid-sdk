@@ -2,15 +2,16 @@ package test.integ.net.link.safeonline.performance;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -19,12 +20,12 @@ import net.link.safeonline.model.performance.PerformanceService;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
-import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 import net.link.safeonline.performance.service.bean.ProfilingServiceBean;
@@ -47,9 +48,10 @@ public class PerformanceDriverTest {
 	private static final String OLAS_HOSTNAME = "sebeco-dev-10:8443";
 	// private static final String OLAS_HOSTNAME = "localhost:8443";
 
-	private static final String testUser = "performance";
-	private static final String testPass = "performance";
-	private static PrivateKeyEntry applicationKey;
+	private static final String testApplicationName = "performance-application";
+	private static final String testUsername = "performance";
+	private static final String testPassword = "performance";
+	private static PrivateKeyEntry testApplicationKey;
 
 	static {
 
@@ -61,13 +63,13 @@ public class PerformanceDriverTest {
 		try {
 			PerformanceService service = (PerformanceService) new InitialContext(
 					environment).lookup(PerformanceService.BINDING);
-			applicationKey = new KeyStore.PrivateKeyEntry(service
+			testApplicationKey = new KeyStore.PrivateKeyEntry(service
 					.getPrivateKey(), new Certificate[] { service
 					.getCertificate() });
 		} catch (Exception e) {
 			LOG.error("application keys unavailable; will try local keystore.",
 					e);
-			applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+			testApplicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
 		}
 	}
 
@@ -91,12 +93,14 @@ public class PerformanceDriverTest {
 			ProfilingServiceBean.setDefaultEntityManager(this.entityTestManager
 					.getEntityManager());
 
-			ExecutionEntity execution = new ExecutionServiceBean()
-					.addExecution(getClass().getName(), OLAS_HOSTNAME);
+			ExecutionServiceBean executionService = new ExecutionServiceBean();
+			ExecutionEntity execution = executionService.addExecution(
+					getClass().getName(), OLAS_HOSTNAME);
+			AgentTimeEntity agentTime = executionService.start(execution);
 
-			this.idDriver = new IdMappingDriver(execution);
-			this.attribDriver = new AttribDriver(execution);
-			this.authDriver = new AuthDriver(execution);
+			this.idDriver = new IdMappingDriver(execution, agentTime);
+			this.attribDriver = new AttribDriver(execution, agentTime);
+			this.authDriver = new AuthDriver(execution, agentTime);
 		}
 
 		catch (Exception e) {
@@ -109,7 +113,8 @@ public class PerformanceDriverTest {
 	@After
 	public void tearDown() throws Exception {
 
-		this.entityTestManager.tearDown();
+		if (this.entityTestManager.getEntityManager() != null)
+			this.entityTestManager.tearDown();
 	}
 
 	@Test
@@ -123,22 +128,23 @@ public class PerformanceDriverTest {
 	public void testAttrib() throws Exception {
 
 		// User needs to authenticate before we can get to the attributes.
-		String uuid = this.authDriver.login(applicationKey,
-				"performance-application", testUser, testPass);
+		String uuid = this.authDriver.login(testApplicationKey,
+				testApplicationName, testUsername, testPassword);
 
-		getAttributes(applicationKey, uuid);
+		getAttributes(testApplicationKey, uuid);
 	}
 
 	@Test
 	public void testLogin() throws Exception {
 
-		login(testUser, testPass);
+		login(testApplicationKey, testApplicationName, testUsername,
+				testPassword);
 	}
 
 	@Test
 	public void testMapping() throws Exception {
 
-		getUserId(applicationKey, testUser);
+		getUserId(testApplicationKey, testUsername);
 	}
 
 	private Map<String, Object> getAttributes(PrivateKeyEntry application,
@@ -149,12 +155,9 @@ public class PerformanceDriverTest {
 				application, uuid);
 
 		// State assertions.
-		assertNotNull(attributes);
-		assertFalse(attributes.isEmpty());
-		assertFalse(isEmptyOrOnlyNulls(this.attribDriver.getProfile()
-				.getProfileData()));
-		assertTrue(isEmptyOrOnlyNulls(this.attribDriver.getProfile()
-				.getProfileError()));
+		assertProfile(this.attribDriver.getProfile());
+		assertTrue(attributes != null && attributes.isEmpty());
+
 		return attributes;
 
 	}
@@ -168,17 +171,49 @@ public class PerformanceDriverTest {
 		String uuid = this.idDriver.getUserId(application, username);
 
 		// State assertions.
-		assertNotNull(uuid);
-		assertNotSame("", uuid);
-		assertFalse(isEmptyOrOnlyNulls(this.idDriver.getProfile()
-				.getProfileData()));
-		assertTrue(isEmptyOrOnlyNulls(this.idDriver.getProfile()
-				.getProfileError()));
+		assertProfile(this.idDriver.getProfile());
+		assertTrue("No UUID returned.", uuid != null && uuid.length() > 0);
 
 		return uuid;
 	}
 
-	private boolean isEmptyOrOnlyNulls(Collection<?> profileDataOrErrors) {
+	/**
+	 * Log the given username in using the given password for the given
+	 * application and retrieve the UUID for the user.
+	 *
+	 * @param testPass2
+	 * @param applicationKey2
+	 */
+	private String login(PrivateKeyEntry applicationKey,
+			String applicationName, String username, String password)
+			throws Exception {
+
+		// Authenticate User.
+		String uuid = this.authDriver.login(applicationKey, applicationName,
+				username, password);
+
+		// State assertions.
+		assertProfile(this.authDriver.getProfile());
+		assertTrue("No UUID returned.", uuid != null && uuid.length() > 0);
+
+		return uuid;
+
+	}
+
+	private static void assertProfile(DriverProfileEntity profile) {
+
+		Set<DriverExceptionEntity> errors = profile.getProfileError();
+		for (DriverExceptionEntity error : errors)
+			if (error != null)
+				System.err.format("At %s the following occured:\n\t%s\n",
+						new Date(error.getOccurredTime()), error.getMessage());
+
+		assertTrue("Errors detected.  See stderr.", isEmptyOrOnlyNulls(errors));
+		assertFalse("No profiling data gathered.", isEmptyOrOnlyNulls(profile
+				.getProfileData()));
+	}
+
+	private static boolean isEmptyOrOnlyNulls(Collection<?> profileDataOrErrors) {
 
 		if (profileDataOrErrors == null || profileDataOrErrors.isEmpty())
 			return true;
@@ -188,23 +223,5 @@ public class PerformanceDriverTest {
 				return false;
 
 		return true;
-	}
-
-	private String login(String username, String password) throws Exception {
-
-		// Authenticate User.
-		String uuid = this.authDriver.login(applicationKey,
-				"performance-application", username, password);
-
-		// State assertions.
-		assertNotNull(uuid);
-		assertNotSame("", uuid);
-		assertFalse(isEmptyOrOnlyNulls(this.authDriver.getProfile()
-				.getProfileData()));
-		assertTrue(isEmptyOrOnlyNulls(this.authDriver.getProfile()
-				.getProfileError()));
-
-		return uuid;
-
 	}
 }

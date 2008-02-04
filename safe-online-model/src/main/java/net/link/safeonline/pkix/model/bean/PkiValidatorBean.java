@@ -132,7 +132,7 @@ public class PkiValidatorBean implements PkiValidator {
 				 * PKIX RFC allows this for the root CA certificate.
 				 */
 				LOG
-						.warn("certificate has no authority key indentifier extension");
+						.warn("certificate has no authority key identifier extension");
 				/*
 				 * NULL is not allowed for persistence.
 				 */

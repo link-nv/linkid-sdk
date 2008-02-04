@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.service.ProfileDataService;
@@ -41,7 +42,7 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public ProfileDataEntity addData(ProfileData data) {
+	public ProfileDataEntity addData(ProfileData data, AgentTimeEntity agentTime) {
 
 		Set<MeasurementEntity> measurements = new HashSet<MeasurementEntity>();
 		for (Map.Entry<String, Long> measurement : data.getMeasurements()
@@ -53,7 +54,8 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 			measurements.add(measurementEntity);
 		}
 
-		ProfileDataEntity dataEntity = new ProfileDataEntity(measurements);
+		ProfileDataEntity dataEntity = new ProfileDataEntity(agentTime
+				.getStart(), measurements);
 		this.em.persist(dataEntity);
 
 		return dataEntity;

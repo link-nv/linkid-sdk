@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.performance.scenario;
 
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 
 /**
@@ -17,5 +18,5 @@ public interface Scenario extends Runnable {
 	/**
 	 * Prepare execution drivers and load the keys.
 	 */
-	public void prepare(ExecutionEntity execution);
+	public void prepare(ExecutionEntity execution, AgentTimeEntity agentTime);
 }

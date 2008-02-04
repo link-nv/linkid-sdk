@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,11 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.management.MBeanServerConnection;
+import javax.management.ObjectName;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
@@ -60,10 +66,12 @@ import org.jfree.data.general.SeriesException;
 import org.jfree.data.statistics.BoxAndWhiskerCalculator;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.time.FixedMillisecond;
+import org.jfree.data.time.MovingAverage;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYDataItem;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.ui.RectangleAnchor;
 
@@ -74,11 +82,24 @@ import org.jfree.ui.RectangleAnchor;
 @LocalBinding(jndiBinding = ScenarioLocal.BINDING)
 public class ScenarioBean implements ScenarioLocal {
 
+	private static final int[] MOVING_AVERAGE_PERIODS = new int[] { 3600000,
+			60000 };
+
 	private static final Log LOG = LogFactory.getLog(ScenarioBean.class);
 
+	private static MBeanServerConnection rmi;
 	private static DateFormat timeFormat = DateFormat.getTimeInstance();
 	private static ImageEncoder encoder = ImageEncoderFactory.newInstance(
 			"png", 0.9f, true);
+
+	static {
+		try {
+			rmi = (MBeanServerConnection) getInitialContext().lookup(
+					"jmx/invoker/RMIAdaptor");
+		} catch (NamingException e) {
+			LOG.error("JMX unavailable.", e);
+		}
+	}
 
 	@EJB
 	private ExecutionService executionService;
@@ -91,18 +112,20 @@ public class ScenarioBean implements ScenarioLocal {
 	 */
 	public void execute(int executionId) throws Exception {
 
-		LOG.debug("building scenario: " + this.activeScenario);
-		Scenario scenario = createScenario();
-
 		ExecutionEntity execution = this.executionService
 				.getExecution(executionId);
-		scenario.prepare(execution);
-
 		AgentTimeEntity agentTime = this.executionService.start(execution);
+		agentTime.setStartMemory(getFreeMemory());
+
+		Scenario scenario = createScenario();
+		scenario.prepare(execution, agentTime);
+
 		try {
 			scenario.run();
 		} finally {
 			agentTime.stop();
+
+			agentTime.setEndMemory(getFreeMemory());
 		}
 	}
 
@@ -129,7 +152,7 @@ public class ScenarioBean implements ScenarioLocal {
 
 		ExecutionEntity execution = this.executionService.addExecution(
 				this.activeScenario, hostname);
-		createScenario().prepare(execution);
+		createScenario().prepare(execution, null);
 
 		return execution.getId();
 	}
@@ -143,6 +166,9 @@ public class ScenarioBean implements ScenarioLocal {
 				.getExecution(executionId);
 		TreeSet<AgentTimeEntity> sortedStartTimes = new TreeSet<AgentTimeEntity>(
 				execution.getAgentTimes());
+
+		if (sortedStartTimes.size() < 2)
+			return 0d;
 
 		return (double) sortedStartTimes.size()
 				/ (sortedStartTimes.last().getStart() - sortedStartTimes
@@ -195,7 +221,7 @@ public class ScenarioBean implements ScenarioLocal {
 			// Dataset for a Bar Chart of method timings per iteration.
 			Map<String, List<Long>> driverMethods = new HashMap<String, List<Long>>();
 			driversMethods.put(profile.getDriverName(), driverMethods);
-			Map<String, XYSeries> timingSet = new HashMap<String, XYSeries>();
+			Map<String, XYSeries> timingSet = new LinkedHashMap<String, XYSeries>();
 			DefaultCategoryDataset errorsSet = new DefaultCategoryDataset();
 			XYSeries requestSet = new XYSeries("Request Time", true, false);
 			XYSeries afterMemorySet = new XYSeries("Memory After", true, false);
@@ -228,8 +254,7 @@ public class ScenarioBean implements ScenarioLocal {
 				long beforeMemory = data
 						.getMeasurement(ProfileData.REQUEST_START_FREE);
 				long afterMemory = data
-						.getMeasurement(ProfileData.REQUEST_END_FREE)
-						+ beforeMemory;
+						.getMeasurement(ProfileData.REQUEST_END_FREE);
 				long endTime = startTime + requestTime;
 
 				try {
@@ -288,8 +313,8 @@ public class ScenarioBean implements ScenarioLocal {
 			DefaultTableXYDataset timingData = new DefaultTableXYDataset();
 			DefaultTableXYDataset memoryData = new DefaultTableXYDataset();
 			requestData.addSeries(requestSet);
-			memoryData.addSeries(beforeMemorySet);
 			memoryData.addSeries(afterMemorySet);
+			memoryData.addSeries(beforeMemorySet);
 			for (XYSeries timingSeries : timingSet.values())
 				timingData.addSeries(timingSeries);
 			requestSet = beforeMemorySet = afterMemorySet = null;
@@ -349,15 +374,14 @@ public class ScenarioBean implements ScenarioLocal {
 
 		// Create the scenario speed data.
 		List<TimeSeriesCollection> scenarioSpeedSets = new ArrayList<TimeSeriesCollection>();
-
-		// Calculate moving averages from the scenario starts for 3 periods.
 		SortedSet<AgentTimeEntity> agentTimes = new TreeSet<AgentTimeEntity>(
 				execution.getAgentTimes());
 		if (agentTimes.isEmpty())
 			LOG.warn("No scenario start times available.");
 
 		else
-			for (int period : new int[] { 3600000, 60000 }) {
+			// Calculate moving averages from the scenario starts for 2 periods.
+			for (int period : MOVING_AVERAGE_PERIODS) {
 				TimeSeries timeSeries = new TimeSeries("Period: " + period
 						/ 1000 + "s", FixedMillisecond.class);
 				scenarioSpeedSets.add(new TimeSeriesCollection(timeSeries));
@@ -380,6 +404,60 @@ public class ScenarioBean implements ScenarioLocal {
 				}
 			}
 
+		// Create the agent memory data.
+		TimeSeries startAgentMemory = new TimeSeries("Before");
+		TimeSeries endAgentMemory = new TimeSeries("After");
+		TimeSeriesCollection agentMemorySet = new TimeSeriesCollection();
+		agentMemorySet.addSeries(startAgentMemory);
+		agentMemorySet.addSeries(endAgentMemory);
+		if (!agentTimes.isEmpty())
+			for (AgentTimeEntity agentTime : agentTimes) {
+				startAgentMemory.add(
+						new FixedMillisecond(agentTime.getStart()), agentTime
+								.getStartFreeMem());
+				endAgentMemory.add(new FixedMillisecond(agentTime.getStart()),
+						agentTime.getEndFreeMem());
+			}
+
+		// Create scenario execution time data.
+		XYSeries olasDuration = new XYSeries("OLAS", true, false);
+		XYSeries agentDuration = new XYSeries("Overhead", true, false);
+		DefaultTableXYDataset scenarioDuration = new DefaultTableXYDataset();
+		DefaultTableXYDataset olasScenarioDuration = new DefaultTableXYDataset();
+		if (!agentTimes.isEmpty()) {
+			for (AgentTimeEntity agentTime : agentTimes) {
+				Long time = agentTime.getStart();
+				Long olas = agentTime.getOlasDuration();
+				Long agent = agentTime.getAgentDuration();
+
+				olasDuration.addOrUpdate(time, olas);
+				agentDuration.addOrUpdate(time, agent - olas);
+			}
+
+			for (DriverProfileEntity profile : execution.getProfiles()) {
+				XYSeries profileDuration = new XYSeries(
+						profile.getDriverName(), true, false);
+				scenarioDuration.addSeries(profileDuration);
+
+				for (ProfileDataEntity data : profile.getProfileData()) {
+					long driverDuration = data
+							.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
+
+					profileDuration.addOrUpdate(data.getScenarioStart(),
+							driverDuration);
+				}
+			}
+		}
+		scenarioDuration.addSeries(agentDuration);
+		olasScenarioDuration.addSeries(olasDuration);
+
+		// Create moving averages off the OLAS durations.
+		List<XYDataset> olasAverageDurations = new ArrayList<XYDataset>();
+		for (int period : MOVING_AVERAGE_PERIODS)
+			olasAverageDurations.add(MovingAverage.createMovingAverage(
+					olasScenarioDuration, "; period: " + period / 1000 + "s",
+					period, period));
+
 		// Create Box-and-Whisker objects from Method Timing Data.
 		for (String driverTitle : driversMethods.keySet())
 			for (Map.Entry<String, List<Long>> driverData : driversMethods.get(
@@ -399,14 +477,49 @@ public class ScenarioBean implements ScenarioLocal {
 			}
 
 		// Scenario Charts.
-		DateAxis timeAxis = new DateAxis("Time (ms)");
+		DateAxis timeAxis = new DateAxis("Time");
 		CombinedDomainXYPlot speedPlot = new CombinedDomainXYPlot(timeAxis);
 		for (TimeSeriesCollection scenarioSpeedSet : scenarioSpeedSets)
 			if (scenarioSpeedSet.getItemCount(0) > 0)
 				speedPlot.add(new XYPlot(scenarioSpeedSet, timeAxis,
 						new NumberAxis("Speed (#/s)"),
-						new XYLineAndShapeRenderer()));
+						new XYLineAndShapeRenderer(true, false)));
 		JFreeChart speedChart = new JFreeChart(speedPlot);
+
+		timeAxis = new DateAxis("Time");
+		CombinedDomainXYPlot olasAverageDurationsPlot = new CombinedDomainXYPlot(
+				timeAxis);
+		for (XYDataset olasAverageDuration : olasAverageDurations)
+			if (olasAverageDuration.getItemCount(0) > 0)
+				olasAverageDurationsPlot.add(new XYPlot(olasAverageDuration,
+						timeAxis, new NumberAxis("Duration (ms)"),
+						new XYLineAndShapeRenderer(true, false)));
+		JFreeChart olasAverageDurationsChart = new JFreeChart(
+				olasAverageDurationsPlot);
+
+		timeAxis = new DateAxis("Time");
+		valueAxis = new NumberAxis("Duration (ms)");
+		XYPlot olasPlot = new XYPlot();
+		olasPlot.setDataset(olasScenarioDuration);
+		olasPlot.setDomainAxis(timeAxis);
+		olasPlot.setRangeAxis(valueAxis);
+		olasPlot.setRenderer(new XYLineAndShapeRenderer(true, false));
+		JFreeChart olasChart = new JFreeChart(olasPlot);
+
+		timeAxis = new DateAxis("Time");
+		valueAxis = new NumberAxis("Duration (ms)");
+		XYPlot durationPlot = new XYPlot();
+		durationPlot.setDataset(scenarioDuration);
+		durationPlot.setDomainAxis(timeAxis);
+		durationPlot.setRangeAxis(valueAxis);
+		durationPlot.setRenderer(new StackedXYAreaRenderer2());
+		JFreeChart durationChart = new JFreeChart(durationPlot);
+
+		timeAxis = new DateAxis("Time");
+		valueAxis = new NumberAxis("Available Memory (bytes)");
+		XYPlot agentMemoryPlot = new XYPlot(agentMemorySet, timeAxis,
+				valueAxis, new XYDifferenceRenderer());
+		JFreeChart agentMemoryChart = new JFreeChart(agentMemoryPlot);
 
 		catAxis = new CategoryAxis("Methods");
 		valueAxis = new NumberAxis("Time Elapsed (ms)");
@@ -422,6 +535,16 @@ public class ScenarioBean implements ScenarioLocal {
 
 		// Charts.
 		Map<String, byte[][]> charts = new LinkedHashMap<String, byte[][]>();
+		charts.put("Scenario Duration: OLAS", new byte[][] { getImage(
+				olasChart, 1000, 1000) });
+		charts
+				.put("Scenario Duration: OLAS -- Moving Average",
+						new byte[][] { getImage(olasAverageDurationsChart,
+								1000, 1000) });
+		charts.put("Scenario Duration: AGENT", new byte[][] { getImage(
+				durationChart, 1000, 1000) });
+		charts.put("Scenario Memory: AGENT", new byte[][] { getImage(
+				agentMemoryChart, 1000, 1000) });
 		charts.put("Scenario Execution Speed", new byte[][] { getImage(
 				speedChart, 1000, 1000) });
 		charts.put("Request Duration per Driver", new byte[][] { getImage(
@@ -444,5 +567,28 @@ public class ScenarioBean implements ScenarioLocal {
 		} catch (IOException e) {
 			return null;
 		}
+	}
+
+	private long getFreeMemory() {
+
+		try {
+			return (Long) rmi.getAttribute(new ObjectName(
+					"jboss.system:type=ServerInfo"), "FreeMemory");
+		} catch (Exception e) {
+			LOG.error("Failed to read in free memory through JMX.", e);
+		}
+
+		return -1;
+	}
+
+	private static InitialContext getInitialContext() throws NamingException {
+
+		Hashtable<String, String> environment = new Hashtable<String, String>();
+
+		environment.put(Context.INITIAL_CONTEXT_FACTORY,
+				"org.jnp.interfaces.NamingContextFactory");
+		environment.put(Context.PROVIDER_URL, "localhost:1099");
+
+		return new InitialContext(environment);
 	}
 }

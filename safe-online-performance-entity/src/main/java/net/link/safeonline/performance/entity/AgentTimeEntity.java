@@ -30,7 +30,10 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	private int id;
 
 	private Long time;
+	private Long olasDuration;
 	private Long agentDuration;
+	private Long startFreeMem;
+	private Long endFreeMem;
 
 	public AgentTimeEntity() {
 
@@ -46,9 +49,29 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	}
 
 	/**
+	 * Add a new timing information about a call made to OLAS during the
+	 * scenario that is timed with this entity.
+	 */
+	public void addOlasTime(long newOlasTime) {
+
+		if (this.olasDuration == null)
+			this.olasDuration = newOlasTime;
+		else
+			this.olasDuration += newOlasTime;
+	}
+
+	/**
 	 * @return The duration of this {@link AgentTimeEntity}.
 	 */
-	public Long getDuration() {
+	public Long getOlasDuration() {
+
+		return this.olasDuration;
+	}
+
+	/**
+	 * @return The duration of this {@link AgentTimeEntity}.
+	 */
+	public Long getAgentDuration() {
 
 		return this.agentDuration;
 	}
@@ -68,5 +91,41 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	public int compareTo(AgentTimeEntity o) {
 
 		return this.time.compareTo(o.time);
+	}
+
+	/**
+	 * Remember the amount of memory was available when the execution of the
+	 * scenario timed by this entity started.
+	 */
+	public void setStartMemory(long startFreeMem) {
+
+		this.startFreeMem = startFreeMem;
+	}
+
+	/**
+	 * @return The amount of memory was available when the execution of the
+	 *         scenario timed by this entity started.
+	 */
+	public Long getStartFreeMem() {
+
+		return this.startFreeMem;
+	}
+
+	/**
+	 * Remember the amount of memory was available when the execution of the
+	 * scenario timed by this entity ended.
+	 */
+	public void setEndMemory(long endFreeMem) {
+
+		this.endFreeMem = endFreeMem;
+	}
+
+	/**
+	 * @return The amount of memory was available when the execution of the
+	 *         scenario timed by this entity ended.
+	 */
+	public Long getEndFreeMem() {
+
+		return this.endFreeMem;
 	}
 }

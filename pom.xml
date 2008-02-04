@@ -123,9 +123,9 @@
 				<safe-online.profiling.group>
 					net.lin-k.safe-online.performance
 				</safe-online.profiling.group>
-				<safe-online.profiling.agent.show.sql>
-					true
-				</safe-online.profiling.agent.show.sql>
+                <safe-online.profiling.agent.show.sql>
+                    false
+                </safe-online.profiling.agent.show.sql>
 				<safe-online.profiling.agent.dialect>
 					org.hibernate.dialect.MySQLDialect
 				</safe-online.profiling.agent.dialect>
@@ -304,9 +304,9 @@
 				<safe-online.profiling.group>
 					net.lin-k.safe-online.performance
 				</safe-online.profiling.group>
-				<safe-online.profiling.agent.show.sql>
-					true
-				</safe-online.profiling.agent.show.sql>
+                <safe-online.profiling.agent.show.sql>
+                    false
+                </safe-online.profiling.agent.show.sql>
 				<safe-online.profiling.agent.dialect>
 					org.hibernate.dialect.MySQLDialect
 				</safe-online.profiling.agent.dialect>

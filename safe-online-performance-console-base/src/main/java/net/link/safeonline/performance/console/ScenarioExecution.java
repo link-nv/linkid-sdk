@@ -7,6 +7,7 @@
 package net.link.safeonline.performance.console;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -32,12 +33,12 @@ public class ScenarioExecution implements Serializable {
 	private Long duration;
 	private Integer workers;
 	private Integer agents;
-
 	private String scenario;
+	private Date startTime;
 
-	public ScenarioExecution(Integer agents, Integer workers, Long duration,
-			String hostname, Integer execution, Double averageSpeed,
-			String scenario, Map<String, byte[][]> charts) {
+	public ScenarioExecution(Integer agents, Integer workers, long startTime,
+			Long duration, String hostname, Integer execution,
+			Double averageSpeed, String scenario, Map<String, byte[][]> charts) {
 
 		this.agents = agents;
 		this.workers = workers;
@@ -47,6 +48,7 @@ public class ScenarioExecution implements Serializable {
 		this.scenario = scenario;
 		this.hostname = hostname;
 		this.charts = charts;
+		this.startTime = new Date(startTime);
 	}
 
 	public Map<String, byte[][]> getCharts() {
@@ -87,6 +89,11 @@ public class ScenarioExecution implements Serializable {
 	public String getScenario() {
 
 		return this.scenario;
+	}
+
+	public Date getStart() {
+
+		return this.startTime;
 	}
 
 }

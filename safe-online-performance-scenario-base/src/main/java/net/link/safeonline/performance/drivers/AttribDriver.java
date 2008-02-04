@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 
 import net.link.safeonline.performance.DriverException;
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
@@ -21,9 +22,9 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
  */
 public class AttribDriver extends ProfileDriver {
 
-	public AttribDriver(ExecutionEntity execution) {
+	public AttribDriver(ExecutionEntity execution, AgentTimeEntity agentTime) {
 
-		super("User Attribute Driver", execution);
+		super("User Attribute Driver", execution, agentTime);
 	}
 
 	/**

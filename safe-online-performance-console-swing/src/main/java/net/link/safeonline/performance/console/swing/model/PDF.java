@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,10 +79,12 @@ public class PDF {
 		speed *= execution.getAgents() / agentCharts.size();
 
 		// Choose output.
-		File pdfFile = chooseOutputFile(new File(String
-				.format("%s-%dmin-%dx%d.pdf", execution.getHostname(),
-						duration / 60000, execution.getAgents(), execution
-								.getWorkers())));
+		File pdfFile = chooseOutputFile(new File(String.format(
+				"%s-%s-%dmin-%dx%d.pdf", DateFormat.getDateTimeInstance(
+						DateFormat.SHORT, DateFormat.SHORT).format(
+						execution.getStart()), execution
+						.getHostname().split(":")[0], duration / 60000,
+				execution.getAgents(), execution.getWorkers())));
 		if (pdfFile == null)
 			return false;
 

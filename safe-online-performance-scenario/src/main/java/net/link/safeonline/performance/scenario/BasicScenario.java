@@ -19,6 +19,7 @@ import net.link.safeonline.model.performance.PerformanceService;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 
@@ -41,7 +42,7 @@ public class BasicScenario implements Scenario {
 	private IdMappingDriver idDriver;
 	private AuthDriver authDriver;
 
-	public void prepare(ExecutionEntity execution) {
+	public void prepare(ExecutionEntity execution, AgentTimeEntity agentTime) {
 
 		LOG.debug("retrieving performance keys..");
 		try {
@@ -57,9 +58,9 @@ public class BasicScenario implements Scenario {
 			this.applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
 
 		LOG.debug("building drivers..");
-		this.authDriver = new AuthDriver(execution);
-		this.attribDriver = new AttribDriver(execution);
-		this.idDriver = new IdMappingDriver(execution);
+		this.authDriver = new AuthDriver(execution, agentTime);
+		this.attribDriver = new AttribDriver(execution, agentTime);
+		this.idDriver = new IdMappingDriver(execution, agentTime);
 	}
 
 	/**

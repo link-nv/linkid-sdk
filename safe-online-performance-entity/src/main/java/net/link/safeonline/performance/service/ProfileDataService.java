@@ -8,6 +8,7 @@ package net.link.safeonline.performance.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.service.bean.ProfileDataServiceBean;
 import net.link.safeonline.util.performance.ProfileData;
@@ -33,6 +34,6 @@ public interface ProfileDataService {
 	/**
 	 * Add the given data to the database.
 	 */
-	public ProfileDataEntity addData(ProfileData data);
+	public ProfileDataEntity addData(ProfileData data, AgentTimeEntity agentTime);
 
 }

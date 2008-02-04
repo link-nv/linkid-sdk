@@ -42,13 +42,14 @@ public class ScenarioExecutor extends Thread {
 	static final Log LOG = LogFactory.getLog(ScenarioExecutor.class);
 
 	private AgentService agentService;
+
 	private String hostname;
 	private Integer workers;
 	private Integer agents;
 	private Long duration;
+	private long startTime;
 
 	private ScheduledExecutorService pool;
-
 	private boolean abort;
 
 	public ScenarioExecutor(String hostname, Integer agents, Integer workers,
@@ -74,7 +75,7 @@ public class ScenarioExecutor extends Thread {
 			final int execution = scenarioBean.prepare(this.hostname);
 
 			// Create a pool of threads that execute scenario beans.
-			long until = System.currentTimeMillis() + this.duration;
+			this.startTime = System.currentTimeMillis();
 			this.pool = Executors.newScheduledThreadPool(this.workers);
 			for (int i = 0; i < this.workers; ++i)
 				this.pool.scheduleWithFixedDelay(new Runnable() {
@@ -91,6 +92,7 @@ public class ScenarioExecutor extends Thread {
 				}, 0, 100, TimeUnit.MILLISECONDS);
 
 			// Sleep this thread until the specified duration has elapsed.
+			long until = this.startTime + this.duration;
 			while (!this.abort && System.currentTimeMillis() < until)
 				try {
 					Thread.sleep(Math.min(until - System.currentTimeMillis(),
@@ -115,8 +117,8 @@ public class ScenarioExecutor extends Thread {
 
 			// Generate the resulting statistical information.
 			ScenarioExecution stats = new ScenarioExecution(this.agents,
-					this.workers, this.duration, this.hostname, execution,
-					scenarioBean.getSpeed(execution), scenarioBean
+					this.workers, this.startTime, this.duration, this.hostname,
+					execution, scenarioBean.getSpeed(execution), scenarioBean
 							.getScenario(execution), scenarioBean
 							.createGraphs(execution));
 			this.agentService.setStats(stats);

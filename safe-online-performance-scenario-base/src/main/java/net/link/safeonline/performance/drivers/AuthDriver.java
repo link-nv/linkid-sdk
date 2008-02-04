@@ -30,6 +30,7 @@ import javax.net.ssl.X509TrustManager;
 import javax.xml.transform.TransformerException;
 
 import net.link.safeonline.performance.DriverException;
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
@@ -68,15 +69,22 @@ public class AuthDriver extends ProfileDriver {
 
 	static final Log LOG = LogFactory.getLog(AuthDriver.class);
 
+	private static final String ATTRIB = "j_id37";
+	private static final String EULA = "j_id29";
+	private static final String USER_PASS = "j_id31";
+	private static final String DEVICE = "j_id30";
+
 	private HttpClient client;
 	private List<ProfileData> iterationDatas;
 	private Tidy tidy;
 
 	private String response;
 
-	public AuthDriver(ExecutionEntity execution) {
+	private String jsessionid;
 
-		super("Authentication Driver", execution);
+	public AuthDriver(ExecutionEntity execution, AgentTimeEntity agentTime) {
+
+		super("Authentication Driver", execution, agentTime);
 
 		Protocol.registerProtocol("https", new Protocol("https",
 				new MySSLSocketFactory(), 443));
@@ -198,23 +206,25 @@ public class AuthDriver extends ProfileDriver {
 			postMethod.addParameter(new NameValuePair("SAMLRequest",
 					encodedAuthnRequest));
 
-			LOG.debug("Making initial request for:");
-			LOG.debug(" - Application: " + applicationName);
-			LOG.debug(" - At URI: " + uri);
-			executeRequest(postMethod, null);
-			String jsessionId = getJSessionId();
+			LOG.debug("Making initial request: " + applicationName + " @ "
+					+ uri);
+			executeRequest(postMethod);
 
 			try {
 				// Receive devices list.
 				postMethod = redirectPostMethod(postMethod);
-				Node formNode = executeRequest(postMethod, jsessionId);
+				Node formNode = findForm(DEVICE, executeRequest(postMethod));
 
 				// Submit password device selection.
 				LOG.debug("Select Password Device:");
 				Node passwordInputNode = XPathAPI.selectSingleNode(formNode,
 						"//input[@type='radio' and @value='password']");
 				postMethod = submitFormMethod(formNode, passwordInputNode);
-				formNode = executeRequest(postMethod, jsessionId);
+				executeRequest(postMethod);
+
+				// Redirect to password device.
+				postMethod = redirectPostMethod(postMethod);
+				formNode = findForm(USER_PASS, executeRequest(postMethod));
 
 				// Submit username & password.
 				String usernameKey = XPathAPI.eval(formNode,
@@ -224,27 +234,31 @@ public class AuthDriver extends ProfileDriver {
 				postMethod = submitFormMethod(formNode, new NameValuePair[] {
 						new NameValuePair(usernameKey, username),
 						new NameValuePair(passwordKey, password) });
-				formNode = executeRequest(postMethod, jsessionId);
+				executeRequest(postMethod);
 
 				// This redirect sends us either the SAML response
 				// or confirmation request (EULA + Attributes Confirmation).
 				GetMethod getMethod = redirectGetMethod(postMethod);
-				formNode = executeRequest(getMethod, jsessionId);
-				if (null == XPathAPI.selectSingleNode(formNode,
-						"//input[@type='hidden' and @name='SAMLResponse']")) {
-					LOG.debug("One-time confirmation request.");
-					postMethod = submitFormMethod(formNode);
-					formNode = executeRequest(postMethod, jsessionId);
+				Document webPage = executeRequest(getMethod);
+				while (true)
+					if ((formNode = findForm(EULA, webPage)) != null) {
+						postMethod = submitFormMethod(formNode);
+						webPage = executeRequest(postMethod);
+					} else if ((formNode = findForm(ATTRIB, webPage)) != null) {
+						postMethod = submitFormMethod(formNode);
+						executeRequest(postMethod);
 
-					postMethod = submitFormMethod(formNode);
-					formNode = executeRequest(postMethod, jsessionId);
+						getMethod = redirectGetMethod(postMethod);
+						webPage = executeRequest(getMethod);
+					} else {
+						formNode = findForm(null, webPage);
+						break;
+					}
 
-					getMethod = redirectGetMethod(postMethod);
-					formNode = executeRequest(getMethod, jsessionId);
-				}
-
-				if (null == XPathAPI.selectSingleNode(formNode,
-						"//input[@type='hidden' and @name='SAMLResponse']"))
+				if (null == formNode
+						|| null == XPathAPI
+								.selectSingleNode(formNode,
+										"//input[@type='hidden' and @name='SAMLResponse']"))
 					throw new DriverException("Expected a SAMLResponse!");
 
 				// Retrieve and decode the SAML response.
@@ -329,13 +343,16 @@ public class AuthDriver extends ProfileDriver {
 		return locationHeader.getValue();
 	}
 
-	private String getJSessionId() throws DriverException {
+	private String getJSessionId() {
+
+		if (this.jsessionid != null)
+			return this.jsessionid;
 
 		for (Cookie cookie : this.client.getState().getCookies())
 			if ("JSESSIONID".equals(cookie.getName()))
-				return cookie.getValue();
+				return this.jsessionid = cookie.getValue();
 
-		throw new DriverException("The JSessionID Cookie was not set!");
+		return null;
 	}
 
 	private PostMethod submitFormMethod(Node formNode,
@@ -390,13 +407,12 @@ public class AuthDriver extends ProfileDriver {
 		return postMethod;
 	}
 
-	private Node executeRequest(HttpMethodBase method, String jsessionId)
+	private Document executeRequest(HttpMethodBase method)
 			throws HttpException, IOException, TransformerException,
 			DriverException {
 
 		// Optionally add JSessionID cookie and execute method.
-		if (null != jsessionId)
-			method.addRequestHeader("Cookie", "JSESSIONID=" + jsessionId);
+		method.addRequestHeader("Cookie", "JSESSIONID=" + getJSessionId());
 		this.client.executeMethod(method);
 
 		// Parse response headers for profile data.
@@ -411,7 +427,9 @@ public class AuthDriver extends ProfileDriver {
 
 		// Remember the last non-null response body for debugging purposes.
 		String newResponse = method.getResponseBodyAsString();
-		if (null != newResponse)
+		if (null == newResponse || newResponse.trim().length() == 0)
+			this.response += "\n\nNext response has an empty body!";
+		else
 			this.response = newResponse;
 
 		// Parse response body as DOM and extract form node.
@@ -433,7 +451,16 @@ public class AuthDriver extends ProfileDriver {
 		if (error.length() != 0)
 			throw new DriverException(error);
 
-		// Return the form node, if any.
-		return XPathAPI.selectSingleNode(resultDocument, "//form");
+		return resultDocument;
+	}
+
+	private Node findForm(String formId, Document resultDocument)
+			throws TransformerException {
+
+		if (formId == null)
+			return XPathAPI.selectSingleNode(resultDocument, "//form");
+
+		return XPathAPI.selectSingleNode(resultDocument, "//form[@id='"
+				+ formId + "']");
 	}
 }

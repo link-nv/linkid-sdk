@@ -37,11 +37,15 @@ public class ProfileDataEntity {
 	@OneToMany()
 	private Set<MeasurementEntity> measurements;
 
+	private Long scenarioStart;
+
 	public ProfileDataEntity() {
 	}
 
-	public ProfileDataEntity(Set<MeasurementEntity> measurements) {
+	public ProfileDataEntity(Long scenarioStart,
+			Set<MeasurementEntity> measurements) {
 
+		this.scenarioStart = scenarioStart;
 		this.measurements = measurements;
 	}
 
@@ -72,5 +76,13 @@ public class ProfileDataEntity {
 	public long getStartTime() {
 
 		return getMeasurement(ProfileData.REQUEST_START_TIME);
+	}
+
+	/**
+	 * The time the scenario execution of this profile data was started.
+	 */
+	public Long getScenarioStart() {
+
+		return this.scenarioStart;
 	}
 }
