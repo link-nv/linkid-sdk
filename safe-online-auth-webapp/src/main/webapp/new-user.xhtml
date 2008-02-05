@@ -38,7 +38,8 @@
 			</s:decorate>
 
 			<t:message for="captcha" styleClass="error" />
-			<p align="center"><h:graphicImage value="/captcha" /></p>
+			<h:outputLabel for="image" value="" />
+			<h:graphicImage id="image" styleClass="label" value="/captcha" />
 			<t:messages globalOnly="true" styleClass="error" />
 			<h:outputLabel for="register" value="" />
 			<h:commandButton action="#{accountRegistration.loginNext}"
