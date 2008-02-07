@@ -15,6 +15,10 @@
  */
 package net.link.safeonline.performance.console.jgroups;
 
+import java.util.Set;
+
+import javax.naming.NamingException;
+
 import net.link.safeonline.performance.console.ScenarioExecution;
 
 /**
@@ -24,7 +28,7 @@ import net.link.safeonline.performance.console.ScenarioExecution;
  * <p>
  * <i>Dec 19, 2007</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public interface Agent {
@@ -42,12 +46,22 @@ public interface Agent {
 	/**
 	 * Retrieve charts created by this {@link Agent}'s scenario.
 	 */
-	public ScenarioExecution getStats();
+	public ScenarioExecution getStats(Integer execution);
+
+	/**
+	 * The executionIds for which metadata is available.
+	 */
+	public Set<ScenarioExecution> getExecutions() throws NamingException;
+
+	/**
+	 * Retrieve all scenarios registered for use.
+	 */
+	public Set<String> getScenarios() throws NamingException;
 
 	/**
 	 * Request permission to start a certain action. If permission is granted,
 	 * the agent is locked until {@link #actionCompleted(boolean)} is called.
-	 *
+	 * 
 	 * @return <code>true</code> if agent is available for this action.
 	 */
 	public boolean actionRequest(AgentState action);

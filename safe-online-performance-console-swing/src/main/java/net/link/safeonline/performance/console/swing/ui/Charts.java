@@ -11,7 +11,6 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Collection;
 import java.util.Map;
 
 import javax.swing.Box;
@@ -19,6 +18,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -28,6 +28,7 @@ import javax.swing.WindowConstants;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
+import net.link.safeonline.performance.console.swing.data.ConsoleData;
 
 import org.jgroups.Address;
 
@@ -79,13 +80,22 @@ public class Charts extends WindowAdapter {
 		instance = null;
 	}
 
-	public static void display(Collection<ConsoleAgent> agents) {
+	public static void display() {
+
+		ScenarioExecution execution = ConsoleData.getExecution();
+		if (execution == null) {
+			JOptionPane.showMessageDialog(null,
+					"No (valid) execution selected.",
+					"Couldn't find execution.", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
 
 		if (instance == null)
 			instance = new Charts();
 
-		for (ConsoleAgent agent : agents)
-			instance.addTab(agent.getAddress(), agent.getStats());
+		for (ConsoleAgent agent : ConsoleData.getSelectedAgents())
+			instance.addTab(agent.getAddress(), agent.getStats(execution
+					.getId()));
 
 		instance.show();
 	}
@@ -125,8 +135,8 @@ public class Charts extends WindowAdapter {
 			label.setFont(label.getFont().deriveFont(20f));
 
 			header.add(label = new JLabel(String.format(
-					"Average Speed: %.2f scenarios/s", execution
-							.getAverageSpeed() * 1000f)));
+					"Average Speed: %.2f scenarios/s",
+					execution.getSpeed() * 1000f)));
 			label.setFont(label.getFont().deriveFont(20f));
 
 			header.add(label = new JLabel(String.format(

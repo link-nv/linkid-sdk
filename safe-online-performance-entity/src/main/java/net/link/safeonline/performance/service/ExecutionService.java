@@ -6,13 +6,14 @@
  */
 package net.link.safeonline.performance.service;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 
 /**
@@ -36,7 +37,8 @@ public interface ExecutionService {
 	/**
 	 * Add an entry for a new scenario execution to the database.
 	 */
-	public ExecutionEntity addExecution(String scenarioName, String hostname);
+	public ExecutionEntity addExecution(String scenarioName, Integer agents,
+			Integer workers, Date startTime, Long duration, String hostname);
 
 	/**
 	 * Retrieve an already created execution by its Id.
@@ -54,5 +56,10 @@ public interface ExecutionService {
 	 * {@link AgentTimeEntity} will be created and returned.
 	 */
 	public AgentTimeEntity start(ExecutionEntity execution);
+
+	/**
+	 * Retrieve all available execution IDs.
+	 */
+	public Set<Integer> getExecutions();
 
 }

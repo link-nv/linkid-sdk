@@ -7,8 +7,11 @@
 package net.link.safeonline.performance.scenario;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.Local;
+
+import net.link.safeonline.performance.entity.ExecutionEntity;
 
 /**
  * @author mbillemo
@@ -25,22 +28,38 @@ public interface ScenarioLocal {
 	public void execute(int executionId) throws Exception;
 
 	/**
-	 * This method is called before any iterations are executed.
+	 * This method is called before any iterations are executed.<br>
+	 * <br>
+	 * These accessors need to be non-<code>null</code>:
+	 * {@link ExecutionMetadata#getAgents()},
+	 * {@link ExecutionMetadata#getWorkers()},
+	 * {@link ExecutionMetadata#getDuration()},
+	 * {@link ExecutionMetadata#getHostname()}.
 	 */
-	public int prepare(String hostname);
+	public int prepare(ExecutionMetadata metaData);
+
+	/**
+	 * Retrieve all scenarios registered for use.
+	 */
+	public Set<String> getScenarios();
+
+	/**
+	 * Retrieve all available execution IDs.
+	 */
+	public Set<Integer> getExecutions();
+
+	/**
+	 * Retrieve an object that holds all metadata concerning a given execution.
+	 */
+	public ExecutionMetadata getExecutionMetadata(int execution);
 
 	/**
 	 * Create charts on data collected in this scenario.
 	 */
-	public Map<String, byte[][]> createGraphs(int executionId);
+	public Map<String, byte[][]> createCharts(int executionId);
 
 	/**
-	 * Calculate the average speed for the given execution (#/ms).
+	 * Retrieve and fully load all fields of the given execution.
 	 */
-	public Double getSpeed(int execution);
-
-	/**
-	 * Retrieve the name of the scenario that was used in the given execution.
-	 */
-	public String getScenario(int execution);
+	public ExecutionEntity loadExecution(int executionId);
 }

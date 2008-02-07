@@ -11,11 +11,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -23,6 +25,8 @@ import javax.swing.filechooser.FileFilter;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
+import net.link.safeonline.performance.console.swing.data.ConsoleData;
+import net.link.safeonline.performance.console.swing.ui.ExecutionInfo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,18 +59,21 @@ public class PDF {
 
 	static final Log LOG = LogFactory.getLog(PDF.class);
 
-	public static boolean generate(Collection<ConsoleAgent> agents) {
+	public static boolean generate() {
 
 		// Download all charts.
+		Set<ConsoleAgent> agents = ConsoleData
+				.getSelectedAgents();
 		Map<ConsoleAgent, ScenarioExecution> agentCharts = new HashMap<ConsoleAgent, ScenarioExecution>(
 				agents.size());
 		for (ConsoleAgent agent : agents)
-			agentCharts.put(agent, agent.getStats());
+			agentCharts.put(agent, agent.getStats(ConsoleData
+					.getExecution().getId()));
 
 		// Calculate total execution speed.
 		double speed = 0;
 		for (ScenarioExecution execution : agentCharts.values())
-			speed += execution.getAverageSpeed() * 1000d;
+			speed += execution.getSpeed() * 1000d;
 
 		// Get execution metadata from the first agent.
 		ScenarioExecution execution = agentCharts.values().iterator().next();
@@ -76,13 +83,13 @@ public class PDF {
 		// (Because we don't have the ScenarioExecution objects for those agents
 		// that aren't selected but did participate).
 		long duration = execution.getDuration();
+		Date startTime = execution.getStart();
 		speed *= execution.getAgents() / agentCharts.size();
 
 		// Choose output.
 		File pdfFile = chooseOutputFile(new File(String.format(
-				"%s-%s-%dmin-%dx%d.pdf", DateFormat.getDateTimeInstance(
-						DateFormat.SHORT, DateFormat.SHORT).format(
-						execution.getStart()), execution
+				"%s-%s-%dmin-%dx%d.pdf", new SimpleDateFormat(
+						"dd.MM.yyyy-HH.mm.ss").format(startTime), execution
 						.getHostname().split(":")[0], duration / 60000,
 				execution.getAgents(), execution.getWorkers())));
 		if (pdfFile == null)
@@ -113,19 +120,25 @@ public class PDF {
 					"Safe Online:  Performance Testing", new Font(font, 40f))));
 			frontCells.add(new Cell(new Phrase(50f, execution.getScenario(),
 					new Font(font, 20f))));
-			frontCells.add(new Cell(new Phrase(150f, String.format(
-					"Duration: %s", formatDuration(duration)), new Font(font,
-					20f))));
-			frontCells.add(new Cell(new Phrase(50f, String.format(
-					"OLAS Host: %s", execution.getHostname()), new Font(font,
-					20f))));
+			frontCells.add(new Cell(new Phrase(150f,
+					String.format("Started: %s at %s",
+							DateFormat.getDateInstance(DateFormat.LONG).format(
+									startTime), DateFormat.getTimeInstance(
+									DateFormat.LONG).format(startTime)),
+					new Font(font, 20f))));
 			frontCells.add(new Cell(new Phrase(50f, String.format(
 					"Using %d agent%s with %d worker%s each.", execution
 							.getAgents(), execution.getAgents() > 1 ? "s" : "",
 					execution.getWorkers(), execution.getWorkers() > 1 ? "s"
 							: ""), new Font(font, 20f))));
+			frontCells.add(new Cell(new Phrase(50f, String.format(
+					"OLAS Host: %s", execution.getHostname()), new Font(font,
+					20f))));
+			frontCells.add(new Cell(new Phrase(50f, String.format(
+					"Duration: %s", ExecutionInfo.formatDuration(duration)),
+					new Font(font, 20f))));
 			frontCells.add(new Cell(new Phrase(100f, String.format(
-					"Average Execution Speed: %.2f scenarios/s.", speed),
+					"Average Execution Speed: %.2f scenarios/s", speed),
 					new Font(font, 20f))));
 
 			// Style front page information and add it to the PDF.
@@ -188,55 +201,6 @@ public class PDF {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Format a time of duration in a human readable manner.
-	 *
-	 * @param duration
-	 *            A duration in ms.
-	 */
-	private static String formatDuration(long duration) {
-
-		long remainder = duration;
-
-		int weeks = (int) remainder / (7 * 24 * 3600 * 1000);
-		remainder %= 7 * 24 * 3600 * 1000;
-
-		int days = (int) remainder / (24 * 3600 * 1000);
-		remainder %= 24 * 3600 * 1000;
-
-		int hours = (int) remainder / (3600 * 1000);
-		remainder %= 3600 * 1000;
-
-		int minutes = (int) remainder / (60 * 1000);
-		remainder %= 60 * 1000;
-
-		int seconds = (int) remainder / 1000;
-		remainder %= 1000;
-
-		int milliseconds = (int) remainder;
-
-		StringBuffer output = new StringBuffer();
-		if (weeks > 0)
-			output.append(weeks + " weeks, ");
-		if (days > 0)
-			output.append(days + " days, ");
-		if (hours > 0)
-			output.append(hours + " hours, ");
-		if (minutes > 0)
-			output.append(minutes + " minutes, ");
-		if (seconds > 0)
-			output.append(seconds + " seconds, ");
-		if (milliseconds > 0)
-			output.append(milliseconds + " milliseconds, ");
-
-		output.delete(output.length() - 2, output.length());
-		int lastComma = output.lastIndexOf(",");
-		if (lastComma > 0)
-			output.replace(lastComma, lastComma + 1, " and");
-
-		return output.toString();
 	}
 
 	/**

@@ -6,9 +6,6 @@
  */
 package net.link.safeonline.performance.console.swing.model;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
@@ -17,7 +14,6 @@ import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jgroups.Address;
 
 /**
  * Threads that extend this class are used for delegating actions that should be
@@ -29,17 +25,14 @@ import org.jgroups.Address;
 public abstract class ScenarioThread implements Runnable {
 
 	AgentState state;
-	Map<Address, ConsoleAgent> agents;
 	ScenarioChooser chooser;
 	ScenarioRemoting scenarioDeployer;
 
-	public ScenarioThread(AgentState state, Map<Address, ConsoleAgent> agents,
-			ScenarioChooser chooser) {
+	public ScenarioThread(AgentState state, ScenarioChooser chooser) {
 
 		this.state = state;
-		this.agents = agents;
 		this.chooser = chooser;
-		this.scenarioDeployer = ConsoleData.getInstance().getRemoting();
+		this.scenarioDeployer = ConsoleData.getRemoting();
 	}
 
 	/**
@@ -47,28 +40,27 @@ public abstract class ScenarioThread implements Runnable {
 	 */
 	public void run() {
 
-		for (final Map.Entry<Address, ConsoleAgent> agentEntry : this.agents
-				.entrySet())
-			new Worker(agentEntry).start();
+		for (final ConsoleAgent agent : ConsoleData.getSelectedAgents())
+			new Worker(agent).start();
 	}
 
 	/**
 	 * Perform the action that needs to be performed on each selected agent.
 	 */
-	abstract void process(Address address, ConsoleAgent agent) throws Exception;
+	abstract void process(ConsoleAgent agent) throws Exception;
 
 	class Worker extends Thread {
 
 		final Log LOG = LogFactory.getLog(ScenarioThread.Worker.class);
 
-		private Entry<Address, ConsoleAgent> agentEntry;
+		private ConsoleAgent agent;
 
-		public Worker(Entry<Address, ConsoleAgent> agentEntry) {
+		public Worker(ConsoleAgent agent) {
 
 			super("Dispatch Thread");
 			setDaemon(true);
 
-			this.agentEntry = agentEntry;
+			this.agent = agent;
 		}
 
 		/**
@@ -77,12 +69,11 @@ public abstract class ScenarioThread implements Runnable {
 		@Override
 		public void run() {
 
-			ConsoleAgent agent = this.agentEntry.getValue();
-			if (!agent.actionRequest(ScenarioThread.this.state))
+			if (!this.agent.actionRequest(ScenarioThread.this.state))
 				return;
 
 			try {
-				process(this.agentEntry.getKey(), agent);
+				process(this.agent);
 			}
 
 			catch (Exception e) {

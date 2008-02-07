@@ -10,8 +10,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import javax.management.JMException;
 import javax.management.MBeanServerConnection;
@@ -135,13 +137,14 @@ public class ScenarioRemoting {
 	/**
 	 * Deploy the previously uploaded application.
 	 */
-	public void execute(Address agent, String olasHost, Integer agents,
-			Integer workers, Long duration) {
+	public void execute(Address agent, String scenarioName, Integer agents,
+			Integer workers, Long duration, String olasHost, Date startTime) {
 
-		invokeFor(agent, "execute", new Object[] { olasHost, agents, workers,
-				duration }, new String[] { String.class.getName(),
-				Integer.class.getName(), Integer.class.getName(),
-				Long.class.getName() });
+		invokeFor(agent, "execute", new Object[] { scenarioName, agents,
+				workers, duration, olasHost, startTime }, new String[] {
+				String.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), Long.class.getName(),
+				String.class.getName(), Date.class.getName() });
 	}
 
 	/**
@@ -184,10 +187,11 @@ public class ScenarioRemoting {
 	/**
 	 * @see Agent#getStats()
 	 */
-	public ScenarioExecution getStats(Address agent) {
+	public ScenarioExecution getStats(Address agent, Integer execution) {
 
 		return (ScenarioExecution) invokeFor(agent, "getStats",
-				new Object[] {}, new String[] {});
+				new Object[] { execution }, new String[] { Integer.class
+						.getName() });
 	}
 
 	/**
@@ -214,6 +218,26 @@ public class ScenarioRemoting {
 	public Exception getError(Address agent) {
 
 		return (Exception) invokeFor(agent, "getError", new Object[] {},
+				new String[] {});
+	}
+
+	/**
+	 * @see Agent#getExecutions()
+	 */
+	@SuppressWarnings("unchecked")
+	public Set<ScenarioExecution> getExecutions(Address agent) {
+
+		return (Set<ScenarioExecution>) invokeFor(agent, "getExecutions",
+				new Object[] {}, new String[] {});
+	}
+
+	/**
+	 * @see Agent#getScenarios()
+	 */
+	@SuppressWarnings("unchecked")
+	public Set<String> getScenarios(Address agent) {
+
+		return (Set<String>) invokeFor(agent, "getScenarios", new Object[] {},
 				new String[] {});
 	}
 

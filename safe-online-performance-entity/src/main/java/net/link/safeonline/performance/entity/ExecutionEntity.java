@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.performance.entity;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -13,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
@@ -27,17 +29,26 @@ import javax.persistence.OneToMany;
  * @author mbillemo
  */
 @Entity
-@NamedQuery(name = ExecutionEntity.findById, query = "SELECT e"
-		+ "    FROM ExecutionEntity e WHERE e.id = :executionId")
+@NamedQueries( {
+		@NamedQuery(name = ExecutionEntity.findAll, query = "SELECT e"
+				+ "    FROM ExecutionEntity e"),
+		@NamedQuery(name = ExecutionEntity.findById, query = "SELECT e"
+				+ "    FROM ExecutionEntity e WHERE e.id = :executionId") })
 public class ExecutionEntity {
 
 	public static final String findById = "ExecutionEntity.findById";
+
+	public static final String findAll = "ExecutionEntity.findAll";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
 	private String scenarioName;
+	private Integer agents;
+	private Integer workers;
+	private Date startTime;
+	private Long duration;
 	private String hostname;
 
 	@OneToMany(mappedBy = "execution")
@@ -46,15 +57,21 @@ public class ExecutionEntity {
 	@OneToMany()
 	private Set<AgentTimeEntity> agentTimes;
 
+
 	public ExecutionEntity() {
 
 		this.profiles = new TreeSet<DriverProfileEntity>();
 		this.agentTimes = new TreeSet<AgentTimeEntity>();
 	}
 
-	public ExecutionEntity(String scenarioName, String hostname) {
+	public ExecutionEntity(String scenarioName, Integer agents,
+			Integer workers, Date startTime, Long duration, String hostname) {
 
 		this.scenarioName = scenarioName;
+		this.agents = agents;
+		this.workers = workers;
+		this.startTime = startTime;
+		this.duration = duration;
 		this.hostname = hostname;
 
 		this.agentTimes = new TreeSet<AgentTimeEntity>();
@@ -99,5 +116,37 @@ public class ExecutionEntity {
 	public Set<AgentTimeEntity> getAgentTimes() {
 
 		return this.agentTimes;
+	}
+
+	/**
+	 * @return The amount of agents this scenario execution was initiated on.
+	 */
+	public Integer getAgents() {
+
+		return this.agents;
+	}
+
+	/**
+	 * @return The amount of workers that was used to process this execution.
+	 */
+	public Integer getWorkers() {
+
+		return this.workers;
+	}
+
+	/**
+	 * @return The time at which this execution first started.
+	 */
+	public Date getStartTime() {
+
+		return this.startTime;
+	}
+
+	/**
+	 * @return The amount of time this execution was schedules to run (ms).
+	 */
+	public Long getDuration() {
+
+		return this.duration;
 	}
 }

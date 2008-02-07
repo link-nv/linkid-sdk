@@ -11,11 +11,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -28,12 +24,12 @@ import javax.swing.filechooser.FileFilter;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
+import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
 import net.link.safeonline.performance.console.swing.model.PDF;
+import net.link.safeonline.performance.console.swing.model.ScenarioCharterThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioDeployerThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioExecutorThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioUploaderThread;
-
-import org.jgroups.Address;
 
 /**
  * This class keeps and listens to the UI components that upload, deploy and
@@ -42,7 +38,7 @@ import org.jgroups.Address;
  * @author mbillemo
  */
 public class ScenarioChooser extends JPanel implements ActionListener,
-		CaretListener {
+		CaretListener, AgentSelectionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -113,8 +109,7 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		this.resetButton
 				.setToolTipText("Temporarily reset the selected agents' local status to unlock the buttons.");
 
-		this.uploadButton.setEnabled(null != getScenarioFile());
-		enableButtonsFor(AgentState.RESET);
+		agentsSelected(null);
 	}
 
 	/**
@@ -145,39 +140,27 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		}
 
 		else if (this.uploadButton.equals(e.getSource()))
-			new ScenarioUploaderThread(getSelectedAgents(), this,
-					getScenarioFile()).run();
+			new ScenarioUploaderThread(this, getScenarioFile()).run();
 
 		else if (this.deployButton.equals(e.getSource()))
-			new ScenarioDeployerThread(getSelectedAgents(), this).run();
+			new ScenarioDeployerThread(this).run();
 
 		else if (this.executeButton.equals(e.getSource()))
-			new ScenarioExecutorThread(getSelectedAgents(), this).run();
+			new ScenarioExecutorThread(this).run();
 
 		else if (this.chartsButton.equals(e.getSource()))
-			Charts.display(getSelectedAgents().values());
+			new ScenarioCharterThread(this).run();
 
 		else if (this.pdfButton.equals(e.getSource()))
-			PDF.generate(getSelectedAgents().values());
+			PDF.generate();
 
 		else if (this.refreshButton.equals(e.getSource()))
-			for (ConsoleAgent agent : getSelectedAgents().values())
+			for (ConsoleAgent agent : ConsoleData.getSelectedAgents())
 				agent.updateState();
 
 		else if (this.resetButton.equals(e.getSource()))
-			for (ConsoleAgent agent : getSelectedAgents().values())
+			for (ConsoleAgent agent : ConsoleData.getSelectedAgents())
 				agent.resetTransit();
-	}
-
-	private Map<Address, ConsoleAgent> getSelectedAgents() {
-
-		Map<Address, ConsoleAgent> selectedAgents = new HashMap<Address, ConsoleAgent>();
-		for (Map.Entry<Address, ConsoleAgent> agentEntry : ConsoleData
-				.getInstance().getAgents().entrySet())
-			if (agentEntry.getValue().isSelected())
-				selectedAgents.put(agentEntry.getKey(), agentEntry.getValue());
-
-		return selectedAgents;
 	}
 
 	/**
@@ -186,59 +169,69 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	public void caretUpdate(CaretEvent e) {
 
 		if (e.getSource().equals(this.scenarioField))
-			for (ConsoleAgent agent : ConsoleData.getInstance().getAgents()
-					.values())
+			for (ConsoleAgent agent : ConsoleData.getAgents().values())
 				agent.fireAgentStatus();
 	}
 
 	/**
-	 * Enable the right buttons. Disable the ones that shouldn't be touched.
+	 * {@inheritDoc}
 	 */
-	public void enableButtonsFor(AgentState currentState, AgentState... transit) {
+	public void agentsSelected(Set<ConsoleAgent> agents) {
 
-		AgentState state = currentState;
-		if (null == state)
-			state = AgentState.RESET;
+		buttonToggler(false, this.resetButton);
+		buttonToggler(null != getScenarioFile(), this.uploadButton);
+		buttonToggler(true, this.deployButton, this.executeButton);
+		buttonToggler(null != ConsoleData.getExecution(), this.chartsButton,
+				this.pdfButton);
 
-		boolean isTransitting = transit != null && transit.length > 0;
-		this.resetButton.setEnabled(isTransitting);
+		if (agents == null)
+			return;
 
-		this.uploadButton.setEnabled(false);
-		this.deployButton.setEnabled(false);
-		this.executeButton.setEnabled(false);
-		this.chartsButton.setEnabled(false);
-		this.pdfButton.setEnabled(false);
+		for (ConsoleAgent agent : agents) {
 
-		if (!isTransitting) {
-			this.uploadButton.setEnabled(null != getScenarioFile());
-
-			switch (state) {
-			case RESET:
-				break;
-
-			case UPLOAD:
-				this.deployButton.setEnabled(true);
-				break;
-
-			case DEPLOY:
-				this.executeButton.setEnabled(true);
-				break;
-
-			case EXECUTE:
-				this.executeButton.setEnabled(true);
-				this.chartsButton.setEnabled(true);
-				this.pdfButton.setEnabled(true);
-				break;
+			if (agent.getTransit() != null) {
+				buttonToggler(true, this.resetButton);
+				buttonToggler(false, this.uploadButton, this.deployButton,
+						this.executeButton, this.chartsButton, this.pdfButton);
 			}
+
+			else
+				switch (agent.getState()) {
+				case RESET:
+					buttonToggler(false, this.deployButton, this.executeButton,
+							this.chartsButton, this.pdfButton);
+					break;
+
+				case UPLOAD:
+					buttonToggler(false, this.executeButton, this.chartsButton,
+							this.pdfButton);
+					break;
+
+				case DEPLOY:
+					buttonToggler(false, this.chartsButton, this.pdfButton);
+					break;
+
+				case EXECUTE:
+				case CHART:
+					break;
+				}
+
+			highlight(this.uploadButton, AgentState.UPLOAD.equals(agent
+					.getTransit()));
+			highlight(this.deployButton, AgentState.DEPLOY.equals(agent
+					.getTransit()));
+			highlight(this.executeButton, AgentState.EXECUTE.equals(agent
+					.getTransit()));
+			highlight(this.chartsButton, AgentState.CHART.equals(agent
+					.getTransit()));
 		}
 
-		List<AgentState> transits = new ArrayList<AgentState>();
-		if (isTransitting)
-			transits = Arrays.asList(transit);
+	}
 
-		highlight(this.uploadButton, transits.contains(AgentState.UPLOAD));
-		highlight(this.deployButton, transits.contains(AgentState.DEPLOY));
-		highlight(this.executeButton, transits.contains(AgentState.EXECUTE));
+	private void buttonToggler(boolean enable, JButton... buttons) {
+
+		for (JButton button : buttons)
+			button.setEnabled(enable);
 	}
 
 	private void highlight(JButton button, boolean highlightOn) {

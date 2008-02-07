@@ -7,8 +7,21 @@
 
 package net.link.safeonline.performance.agent;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.jgroups.AgentState;
+import net.link.safeonline.performance.scenario.ExecutionMetadata;
+import net.link.safeonline.performance.scenario.ScenarioLocal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,10 +34,10 @@ public class AgentService implements AgentServiceMBean {
 
 	static final Log LOG = LogFactory.getLog(AgentService.class);
 
+	private Map<Integer, ScenarioExecution> stats;
 	private AgentBroadcaster broadcaster;
 	private ScenarioDeployer deployer;
 	private ScenarioExecutor executor;
-	private ScenarioExecution stats;
 	private AgentState transit;
 	private AgentState state;
 	private Exception error;
@@ -34,6 +47,7 @@ public class AgentService implements AgentServiceMBean {
 		this.broadcaster = new AgentBroadcaster();
 		this.deployer = new ScenarioDeployer();
 		this.state = AgentState.RESET;
+		this.stats = new HashMap<Integer, ScenarioExecution>();
 	}
 
 	/**
@@ -106,18 +120,22 @@ public class AgentService implements AgentServiceMBean {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ScenarioExecution getStats() {
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public ScenarioExecution getStats(Integer execution) {
 
-		return this.stats;
-	}
+		try {
+			if (!this.stats.containsKey(execution))
+				try {
+					this.stats.put(execution, getExecution(execution, true));
+				} catch (NamingException e) {
+					throw new RuntimeException(
+							"Can't query stats without a scenario deployed.", e);
+				}
 
-	/**
-	 * @param stats
-	 *            The statistics generated from the executed scenario.
-	 */
-	public void setStats(ScenarioExecution stats) {
-
-		this.stats = stats;
+			return this.stats.get(execution);
+		} finally {
+			actionCompleted(this.stats.containsKey(execution));
+		}
 	}
 
 	/**
@@ -126,6 +144,34 @@ public class AgentService implements AgentServiceMBean {
 	public Exception getError() {
 
 		return this.error;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<String> getScenarios() {
+
+		try {
+			return getScenarioBean().getScenarios();
+		} catch (NamingException e) {
+			return new HashSet<String>();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<ScenarioExecution> getExecutions() {
+
+		Set<ScenarioExecution> executions = new HashSet<ScenarioExecution>();
+
+		try {
+			for (Integer executionId : getScenarioBean().getExecutions())
+				executions.add(getExecution(executionId, false));
+		} catch (NamingException e) {
+		}
+
+		return executions;
 	}
 
 	/**
@@ -160,7 +206,7 @@ public class AgentService implements AgentServiceMBean {
 	 * (state becomes transit) or failed (state remains). Either way, transit
 	 * becomes <code>null</code> since no more action is happening.
 	 */
-	public void actionCompleted(Boolean success) {
+	public void actionCompleted(boolean success) {
 
 		if (this.transit == null)
 			LOG.warn("No ongoing action to stop.", new IllegalStateException());
@@ -213,20 +259,61 @@ public class AgentService implements AgentServiceMBean {
 		}
 	}
 
-	public void execute(String hostname, Integer agents, Integer workers,
-			Long duration) {
+	public void execute(String scenarioName, Integer agents, Integer workers,
+			Long duration, String hostname, Date startTime) {
 
 		try {
 			setError(null);
 
-			this.executor = new ScenarioExecutor(hostname, agents, workers,
-					duration, this);
-			this.executor.start();
+			ExecutionMetadata request = ExecutionMetadata.createRequest(
+					scenarioName, agents, workers, startTime, duration,
+					hostname);
+
+			(this.executor = new ScenarioExecutor(request, this)).start();
 		}
 
 		catch (Exception e) {
 			setError(e);
 			actionCompleted(false);
 		}
+	}
+
+	/**
+	 * Returns execution metadata for the execution with the given ID. This
+	 * method uses a memory cache to store executions in that have been
+	 * previously retrieved. If no charts are requested, it is guaranteed to
+	 * return an execution object without charts, even if charts have been
+	 * cached already.
+	 */
+	private ScenarioExecution getExecution(Integer executionId, boolean charts)
+			throws NamingException {
+
+		ScenarioExecution execution = this.stats.get(executionId);
+		if (execution == null) {
+			ExecutionMetadata metaData = getScenarioBean()
+					.getExecutionMetadata(executionId);
+
+			execution = new ScenarioExecution(executionId, metaData
+					.getScenarioName(), metaData.getAgents(), metaData
+					.getWorkers(), metaData.getStartTime(), metaData
+					.getDuration(), metaData.getHostname(), metaData.getSpeed());
+		}
+
+		if (charts)
+			synchronized (execution) {
+				if (execution.getCharts() == null)
+					execution.setCharts(charts ? getScenarioBean()
+							.createCharts(executionId) : null);
+			}
+		else if (execution.getCharts() != null)
+			execution = execution.clone();
+
+		return execution;
+	}
+
+	private ScenarioLocal getScenarioBean() throws NamingException {
+
+		return (ScenarioLocal) new InitialContext()
+				.lookup(ScenarioLocal.BINDING);
 	}
 }

@@ -6,6 +6,9 @@
  */
 package net.link.safeonline.performance.service.bean;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -14,9 +17,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.service.ExecutionService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -43,12 +46,30 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public ExecutionEntity addExecution(String scenarioName, String hostname) {
+	public ExecutionEntity addExecution(String scenarioName, Integer agents,
+			Integer workers, Date startTime, Long duration, String hostname) {
 
-		ExecutionEntity execution = new ExecutionEntity(scenarioName, hostname);
+		ExecutionEntity execution = new ExecutionEntity(scenarioName, agents,
+				workers, startTime, duration, hostname);
 		this.em.persist(execution);
 
 		return execution;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public Set<Integer> getExecutions() {
+
+		Set<Integer> executionIds = new HashSet<Integer>();
+		List<ExecutionEntity> executions = this.em.createNamedQuery(
+				ExecutionEntity.findAll).getResultList();
+
+		for (ExecutionEntity execution : executions)
+			executionIds.add(execution.getId());
+
+		return executionIds;
 	}
 
 	/**

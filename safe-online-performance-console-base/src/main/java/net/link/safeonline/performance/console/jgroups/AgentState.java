@@ -26,8 +26,8 @@ package net.link.safeonline.performance.console.jgroups;
  */
 public enum AgentState {
 	RESET("Ready", "Idle"), UPLOAD("Scenario Uploaded", "Receiving"), DEPLOY(
-			"Scenario Deployed", "Deploying"), EXECUTE("Charts Available",
-			"Executing");
+			"Scenario Deployed", "Deploying"), EXECUTE("Completed", "Executing"), CHART(
+			"Charted", "Charting");
 
 	private String state;
 	private String transitioning;

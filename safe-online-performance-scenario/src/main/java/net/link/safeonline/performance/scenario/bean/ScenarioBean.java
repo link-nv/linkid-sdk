@@ -8,9 +8,13 @@ package net.link.safeonline.performance.scenario.bean;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,6 +25,7 @@ import java.util.TreeSet;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -36,14 +41,17 @@ import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
+import net.link.safeonline.performance.scenario.ExecutionMetadata;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.ScenarioLocal;
+import net.link.safeonline.performance.scenario.script.RegisteredScripts;
 import net.link.safeonline.performance.service.ExecutionService;
 import net.link.safeonline.util.performance.ProfileData;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.TransactionTimeout;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.DateAxis;
@@ -104,6 +112,9 @@ public class ScenarioBean implements ScenarioLocal {
 	@EJB
 	private ExecutionService executionService;
 
+	@Resource
+	SessionContext ctx;
+
 	@Resource(name = "activeScenario")
 	private String activeScenario;
 
@@ -117,7 +128,7 @@ public class ScenarioBean implements ScenarioLocal {
 		AgentTimeEntity agentTime = this.executionService.start(execution);
 		agentTime.setStartMemory(getFreeMemory());
 
-		Scenario scenario = createScenario();
+		Scenario scenario = createScenario(execution.getScenarioName());
 		scenario.prepare(execution, agentTime);
 
 		try {
@@ -130,15 +141,15 @@ public class ScenarioBean implements ScenarioLocal {
 	}
 
 	/**
-	 * Create an instance of the scenario configured to run in the ejb-jar.
+	 * Create an instance of the given scenario.
 	 */
-	private Scenario createScenario() {
+	private Scenario createScenario(String scenario) {
 
 		try {
 			return (Scenario) Thread.currentThread().getContextClassLoader()
-					.loadClass(this.activeScenario).newInstance();
+					.loadClass(scenario).newInstance();
 		} catch (Exception e) {
-			LOG.debug("Configured scenario '" + this.activeScenario
+			LOG.debug("Configured scenario '" + scenario
 					+ "' cannot be created.", e);
 			throw new RuntimeException(e);
 		}
@@ -147,12 +158,19 @@ public class ScenarioBean implements ScenarioLocal {
 	/**
 	 * {@inheritDoc}
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public int prepare(String hostname) {
+	public int prepare(ExecutionMetadata metaData) {
 
-		ExecutionEntity execution = this.executionService.addExecution(
-				this.activeScenario, hostname);
-		createScenario().prepare(execution, null);
+		// Start 'activeScenario' by default, unless a specific scenario has
+		// been requested in the request metadata.
+		if (metaData.getScenarioName() == null)
+			metaData.setScenarioName(this.activeScenario);
+
+		// Create the execution and fill it up with metadata.
+		ExecutionEntity execution = this.executionService.addExecution(metaData
+				.getScenarioName(), metaData.getAgents(),
+				metaData.getWorkers(), metaData.getStartTime(), metaData
+						.getDuration(), metaData.getHostname());
+		createScenario(execution.getScenarioName()).prepare(execution, null);
 
 		return execution.getId();
 	}
@@ -160,37 +178,56 @@ public class ScenarioBean implements ScenarioLocal {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Double getSpeed(int executionId) {
+	public Set<String> getScenarios() {
+
+		Set<String> scenarios = new HashSet<String>();
+		for (Class<? extends Scenario> scenario : RegisteredScripts
+				.getRegisteredScenarios())
+			scenarios.add(scenario.getName());
+
+		return scenarios;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<Integer> getExecutions() {
+
+		return this.executionService.getExecutions();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ExecutionMetadata getExecutionMetadata(int executionId) {
 
 		ExecutionEntity execution = this.executionService
 				.getExecution(executionId);
 		TreeSet<AgentTimeEntity> sortedStartTimes = new TreeSet<AgentTimeEntity>(
 				execution.getAgentTimes());
 
-		if (sortedStartTimes.size() < 2)
-			return 0d;
+		double speed = 0;
+		if (sortedStartTimes.size() > 1)
+			speed = (double) sortedStartTimes.size()
+					/ (sortedStartTimes.last().getStart() - sortedStartTimes
+							.first().getStart());
 
-		return (double) sortedStartTimes.size()
-				/ (sortedStartTimes.last().getStart() - sortedStartTimes
-						.first().getStart());
+		return ExecutionMetadata.createResponse(execution.getId(), execution
+				.getScenarioName(), execution.getAgents(), execution
+				.getWorkers(), execution.getStartTime(), execution
+				.getDuration(), execution.getHostname(), speed);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getScenario(int executionId) {
+	@TransactionTimeout(3600)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public Map<String, byte[][]> createCharts(int executionId) {
 
-		ExecutionEntity execution = this.executionService
-				.getExecution(executionId);
-
-		return execution.getScenarioName();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String, byte[][]> createGraphs(int executionId) {
-
+		// ExecutionEntity execution = this.ctx.getBusinessObject(
+		// ScenarioLocal.class).loadExecution(executionId);
+		LOG.debug("START:");
 		ExecutionEntity execution = this.executionService
 				.getExecution(executionId);
 		Set<DriverProfileEntity> profiles = execution.getProfiles();
@@ -405,10 +442,12 @@ public class ScenarioBean implements ScenarioLocal {
 			}
 
 		// Create the agent memory data.
-		TimeSeries startAgentMemory = new TimeSeries("Before");
-		TimeSeries endAgentMemory = new TimeSeries("After");
+		TimeSeries startAgentMemory = new TimeSeries("Before",
+				FixedMillisecond.class);
+		TimeSeries endAgentMemory = new TimeSeries("After",
+				FixedMillisecond.class);
 		TimeSeriesCollection agentMemorySet = new TimeSeriesCollection();
-		agentMemorySet.addSeries(startAgentMemory);
+		// agentMemorySet.addSeries(startAgentMemory);
 		agentMemorySet.addSeries(endAgentMemory);
 		if (!agentTimes.isEmpty())
 			for (AgentTimeEntity agentTime : agentTimes) {
@@ -418,6 +457,11 @@ public class ScenarioBean implements ScenarioLocal {
 				endAgentMemory.add(new FixedMillisecond(agentTime.getStart()),
 						agentTime.getEndFreeMem());
 			}
+
+		// Create moving averages off the agent memory usage.
+		TimeSeriesCollection agentAverageMemory = MovingAverage
+				.createMovingAverage(agentMemorySet, "; period: 60s", 60000,
+						60000);
 
 		// Create scenario execution time data.
 		XYSeries olasDuration = new XYSeries("OLAS", true, false);
@@ -429,6 +473,11 @@ public class ScenarioBean implements ScenarioLocal {
 				Long time = agentTime.getStart();
 				Long olas = agentTime.getOlasDuration();
 				Long agent = agentTime.getAgentDuration();
+
+				if (olas == null)
+					olas = 0l;
+				if (agent == null)
+					agent = 0l;
 
 				olasDuration.addOrUpdate(time, olas);
 				agentDuration.addOrUpdate(time, agent - olas);
@@ -517,8 +566,8 @@ public class ScenarioBean implements ScenarioLocal {
 
 		timeAxis = new DateAxis("Time");
 		valueAxis = new NumberAxis("Available Memory (bytes)");
-		XYPlot agentMemoryPlot = new XYPlot(agentMemorySet, timeAxis,
-				valueAxis, new XYDifferenceRenderer());
+		XYPlot agentMemoryPlot = new XYPlot(agentAverageMemory, timeAxis,
+				valueAxis, new XYLineAndShapeRenderer(true, false));
 		JFreeChart agentMemoryChart = new JFreeChart(agentMemoryPlot);
 
 		catAxis = new CategoryAxis("Methods");
@@ -559,7 +608,60 @@ public class ScenarioBean implements ScenarioLocal {
 		return charts;
 	}
 
-	private byte[] getImage(JFreeChart chart, int width, int height) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public ExecutionEntity loadExecution(int executionId) {
+
+		return loadEntity(this.executionService.getExecution(executionId),
+				new HashSet<Object>());
+	}
+
+	/**
+	 * Retrieve and fully load all fields of the given object.
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	private <E> E loadEntity(E entity, Set<Object> cache) {
+
+		if (entity == null
+				|| !(entity.getClass().getName().startsWith("net.link") || entity instanceof Collection)
+				|| cache.contains(entity))
+			return entity;
+
+		if (entity instanceof Collection)
+			for (Object entry : (Collection<?>) entity)
+				loadMethods(entry, cache);
+		else
+			loadMethods(entity, cache);
+
+		return entity;
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	private void loadMethods(Object entity, Set<Object> cache) {
+
+		for (Method method : entity.getClass().getMethods())
+			try {
+				// Only proceed for getters with no parameters.
+				if (!method.getName().startsWith("get")
+						|| method.getParameterTypes().length > 0)
+					continue;
+
+				method.setAccessible(true);
+				cache.add(loadEntity(method.invoke(entity), cache));
+			}
+
+			catch (IllegalArgumentException e) {
+				LOG.error(e);
+			} catch (IllegalAccessException e) {
+				LOG.error(e);
+			} catch (InvocationTargetException e) {
+				LOG.error(e);
+			}
+	}
+
+	private static byte[] getImage(JFreeChart chart, int width, int height) {
 
 		try {
 			chart.setBackgroundPaint(Color.white);
@@ -569,7 +671,7 @@ public class ScenarioBean implements ScenarioLocal {
 		}
 	}
 
-	private long getFreeMemory() {
+	private static long getFreeMemory() {
 
 		try {
 			return (Long) rmi.getAttribute(new ObjectName(

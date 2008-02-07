@@ -1,13 +1,12 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 package net.link.safeonline.performance.console.swing.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -16,7 +15,9 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -32,7 +33,7 @@ import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
  * of agents in the profiling group.<br>
  * <br>
  * This class takes care of the initialisation of the frame and its lay-out.
- * 
+ *
  * @author mbillemo
  */
 public class SwingConsole {
@@ -86,36 +87,32 @@ public class SwingConsole {
 
 	private void buildUI() {
 
-		// Content pane.
-		JPanel pane = new JPanel(new BorderLayout(5, 10));
-		pane.setBorder(Borders.DLU7_BORDER);
-
-		// Frame.
-		JFrame frame = new JFrame("SafeOnline Performance Testing Console");
-		frame.setPreferredSize(new Dimension(800, 500));
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setContentPane(pane);
-
 		// Objects for each paragraph.
 		// They will handle their components' events.
 		ScenarioChooser scenarioChooser = new ScenarioChooser();
-		AgentsList agentsList = new AgentsList(scenarioChooser);
+		ExecutionInfo executionInfo = new ExecutionInfo();
+		AgentsList agentsList = new AgentsList();
 		OlasPrefs olasPrefs = new OlasPrefs();
+
+		// Make these listen to agent selection events.
+		agentsList.addAgentSelectionListener(scenarioChooser);
+		agentsList.addAgentSelectionListener(executionInfo);
 
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout(
 				"p, 5dlu, 0:g, 5dlu, p",
-				"p, 5dlu, f:p:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
+				"p, 5dlu, f:p:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
 		layout.setColumnGroups(new int[][] { { 1, 5 } });
-		DefaultFormBuilder builder = new DefaultFormBuilder(layout, pane);
+		DefaultFormBuilder builder = new DefaultFormBuilder(layout);
+		builder.setDefaultDialogBorder();
 
-		builder
-				.appendSeparator("Group "
-						+ ConsoleData.getInstance().getAgentDiscoverer()
-								.getGroupName());
+		builder.appendSeparator("Group "
+				+ ConsoleData.getAgentDiscoverer().getGroupName());
 		builder.nextRow();
 
-		builder.append(agentsList, 5);
+		final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				agentsList, executionInfo);
+		builder.append(split, 5);
 		builder.nextRow();
 
 		builder.appendSeparator("Preferences");
@@ -145,10 +142,28 @@ public class SwingConsole {
 
 		builder.append(scenarioChooser.actionButtons, 5);
 
+		// Frame.
+		final JFrame frame = new JFrame(
+				"SafeOnline Performance Testing Console");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setContentPane(builder.getPanel());
+
 		// Visualise the lot.
 		frame.pack();
+		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+
+		// Center the divider.
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+
+				if (frame.isVisible())
+					split.setDividerLocation(0.5);
+				else
+					SwingUtilities.invokeLater(this);
+			}
+		});
 	}
 
 	public static void main(String[] args) {

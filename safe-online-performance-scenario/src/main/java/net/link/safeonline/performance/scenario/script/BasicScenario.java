@@ -4,7 +4,7 @@
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.performance.scenario;
+package net.link.safeonline.performance.scenario.script;
 
 import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -22,6 +22,7 @@ import net.link.safeonline.performance.drivers.IdMappingDriver;
 import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.performance.scenario.Scenario;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

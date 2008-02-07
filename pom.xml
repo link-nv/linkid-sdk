@@ -118,7 +118,7 @@
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>true</debug.mode>
 				<safe-online.profiling.scenario>
-					net.link.safeonline.performance.scenario.BasicScenario
+					net.link.safeonline.performance.scenario.script.BasicScenario
 				</safe-online.profiling.scenario>
 				<safe-online.profiling.group>
 					net.lin-k.safe-online.performance
@@ -130,7 +130,7 @@
 					org.hibernate.dialect.MySQLDialect
 				</safe-online.profiling.agent.dialect>
 				<safe-online.profiling.agent.hibernate.hbm2ddl.auto>
-					create-drop
+					update
 				</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
 				<safe-online.profiling.agent.data.source>
 					DefaultDS
@@ -299,7 +299,7 @@
 				</safe-online.jboss.host.port.ssl>
 				<debug.mode>false</debug.mode>
 				<safe-online.profiling.scenario>
-					net.link.safeonline.performance.scenario.BasicScenario
+					net.link.safeonline.performance.scenario.script.BasicScenario
 				</safe-online.profiling.scenario>
 				<safe-online.profiling.group>
 					net.lin-k.safe-online.performance
@@ -311,7 +311,7 @@
 					org.hibernate.dialect.MySQLDialect
 				</safe-online.profiling.agent.dialect>
 				<safe-online.profiling.agent.hibernate.hbm2ddl.auto>
-					create-drop
+					update
 				</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
 				<safe-online.profiling.agent.data.source>
 					DefaultDS

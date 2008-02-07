@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -24,9 +24,9 @@ import org.w3c.dom.Document;
 /**
  * Abstract base implementation of the message accessor interface. Used by the
  * different web service client components.
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public abstract class AbstractMessageAccessor implements MessageAccessor {
 
@@ -57,7 +57,7 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
 	/**
 	 * Registers the SOAP handler that this instance manages on the given JAX-WS
 	 * port component.
-	 * 
+	 *
 	 * @param port
 	 */
 	protected void registerMessageLoggerHandler(Object port) {

@@ -7,17 +7,19 @@
 package net.link.safeonline.performance.console.swing.ui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.jgroups.AgentStateListener;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
+import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
 
 import org.jgroups.Address;
 
@@ -31,10 +33,10 @@ public class AgentsList extends JList implements AgentStateListener,
 
 	private static final long serialVersionUID = 1L;
 
+	private List<AgentSelectionListener> agentSelectionListeners;
 	private DefaultListModel model;
-	private ScenarioChooser scenarioChooser;
 
-	public AgentsList(ScenarioChooser scenarioChooser) {
+	public AgentsList() {
 
 		addListSelectionListener(this);
 		setModel(this.model = new DefaultListModel());
@@ -42,24 +44,17 @@ public class AgentsList extends JList implements AgentStateListener,
 		setBackground(null);
 		setOpaque(false);
 
-		setToolTipText("The list of discovered agents available for performing test on OLAS.");
-
-		this.scenarioChooser = scenarioChooser;
-		ConsoleData.getInstance().getAgentDiscoverer().addAgentStateListener(
+		this.agentSelectionListeners = new ArrayList<AgentSelectionListener>();
+		ConsoleData.getAgentDiscoverer().addAgentStateListener(
 				this);
 	}
 
 	/**
-	 * @return <code>true</code> if the given agent is selected in this
-	 *         {@link AgentsList} component.
+	 * Make the given object listen to agent selection events.
 	 */
-	public boolean isSelected(ConsoleAgent agent) {
+	public void addAgentSelectionListener(AgentSelectionListener listener) {
 
-		for (Object o : getSelectedValues())
-			if (o.equals(agent))
-				return true;
-
-		return false;
+		this.agentSelectionListeners.add(listener);
 	}
 
 	/**
@@ -69,8 +64,8 @@ public class AgentsList extends JList implements AgentStateListener,
 
 		// Check whether all agents are in the list and add them if need be.
 		for (Address address : addresses)
-			if (!address.equals(ConsoleData.getInstance().getSelf())) {
-				ConsoleAgent agent = ConsoleData.getInstance()
+			if (!address.equals(ConsoleData.getSelf())) {
+				ConsoleAgent agent = ConsoleData
 						.getAgent(address);
 				if (agent != null && !this.model.contains(agent)) {
 					this.model.addElement(agent);
@@ -82,7 +77,7 @@ public class AgentsList extends JList implements AgentStateListener,
 			}
 
 		// Remove stale agents from the list.
-		for (ConsoleAgent agent : ConsoleData.getInstance().removeStaleAgents())
+		for (ConsoleAgent agent : ConsoleData.removeStaleAgents())
 			this.model.removeElement(agent);
 	}
 
@@ -91,7 +86,7 @@ public class AgentsList extends JList implements AgentStateListener,
 	 */
 	public void agentSuspected(Address agentAddress) {
 
-		ConsoleAgent agent = ConsoleData.getInstance().getAgent(agentAddress);
+		ConsoleAgent agent = ConsoleData.getAgent(agentAddress);
 		if (null != agent)
 			agent.setHealthy(false);
 	}
@@ -108,7 +103,7 @@ public class AgentsList extends JList implements AgentStateListener,
 	 */
 	public void channelConnected() {
 
-		membersChanged(ConsoleData.getInstance().getAgentDiscoverer()
+		membersChanged(ConsoleData.getAgentDiscoverer()
 				.getMembers());
 	}
 
@@ -134,56 +129,34 @@ public class AgentsList extends JList implements AgentStateListener,
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
 	public void valueChanged(ListSelectionEvent e) {
 
-		for (int i = e.getFirstIndex(); i <= e.getLastIndex(); ++i) {
-			if (i >= this.model.getSize())
-				break;
+		Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
+		for (Object value : getSelectedValues())
+			if (value instanceof ConsoleAgent)
+				selectedAgents.add((ConsoleAgent) value);
 
-			Object value = this.model.getElementAt(i);
-			if (value instanceof ConsoleAgent) {
-				ConsoleAgent agent = (ConsoleAgent) value;
-				agent.setSelected(isSelected(agent));
-			}
-		}
+		ConsoleData.setSelectedAgents(selectedAgents);
+		notifyAgentSelectionListeners();
+	}
 
-		updateButtons();
+	private void notifyAgentSelectionListeners() {
+
+		Set<ConsoleAgent> selectedAgents = ConsoleData.getSelectedAgents();
+		for (AgentSelectionListener listener : this.agentSelectionListeners)
+			listener.agentsSelected(selectedAgents);
 	}
 
 	/**
-	 * @{inheritDoc}
+	 * {@inheritDoc}
 	 */
 	public void statusChanged(ConsoleAgent agent) {
 
 		repaint();
 
-		if (isSelected(agent))
-			updateButtons();
-	}
-
-	private void updateButtons() {
-
-		boolean enabled = true;
-		AgentState state = null;
-		List<AgentState> transit = new ArrayList<AgentState>();
-
-		for (Object o : getSelectedValues())
-			if (o instanceof ConsoleAgent) {
-				ConsoleAgent agent = (ConsoleAgent) o;
-
-				if (state == null)
-					state = agent.getState();
-				if (agent.getTransit() != null
-						&& !agent.getTransit().equals(AgentState.RESET))
-					transit.add(agent.getTransit());
-
-				enabled &= agent.getTransit() == null;
-				enabled &= state.equals(agent.getState());
-			}
-
-		this.scenarioChooser.enableButtonsFor(enabled ? state : null, transit
-				.toArray(new AgentState[transit.size()]));
+		if (ConsoleData.getSelectedAgents().contains(agent))
+			notifyAgentSelectionListeners();
 	}
 }

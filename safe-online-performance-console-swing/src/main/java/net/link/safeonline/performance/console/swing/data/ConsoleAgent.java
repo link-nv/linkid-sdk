@@ -8,6 +8,9 @@ package net.link.safeonline.performance.console.swing.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.ScenarioRemoting;
@@ -33,13 +36,14 @@ public class ConsoleAgent implements Agent {
 	static final Log LOG = LogFactory.getLog(ConsoleAgent.class);
 
 	private List<AgentStatusListener> agentStatusListeners;
-	private ScenarioRemoting scenarioDeployer;
+	private ScenarioRemoting agentRemoting;
 	private Address agentAddress;
 	private boolean healthy;
-	private boolean selected;
 	private AgentState transit = AgentState.RESET;
 	private AgentState state = AgentState.RESET;
 	private Exception error;
+	private Set<String> scenarios;
+	private Set<ScenarioExecution> executions;
 
 	/**
 	 * Create a new {@link ConsoleAgent} component based off the agent at the
@@ -48,7 +52,7 @@ public class ConsoleAgent implements Agent {
 	public ConsoleAgent(Address agentAddress) {
 
 		this.agentStatusListeners = new ArrayList<AgentStatusListener>();
-		this.scenarioDeployer = ConsoleData.getInstance().getRemoting();
+		this.agentRemoting = ConsoleData.getRemoting();
 		this.agentAddress = agentAddress;
 		this.healthy = true;
 
@@ -73,23 +77,6 @@ public class ConsoleAgent implements Agent {
 	}
 
 	/**
-	 * @return <code>true</code> if this agent is to participate in actions.
-	 */
-	public boolean isSelected() {
-
-		return this.selected;
-	}
-
-	/**
-	 * @param selected
-	 *            <code>true</code> if this agent is selected for actions.
-	 */
-	public void setSelected(boolean selected) {
-
-		this.selected = selected;
-	}
-
-	/**
 	 * Define an object that should be notified when this agent changes. This
 	 * should be an object that can fire the appropriate events in the UI
 	 * required to render the change in this {@link ConsoleAgent}'s status.
@@ -103,6 +90,8 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * Manually fire an agent status event forcing the UI to update itself for
 	 * this agent.
+	 *
+	 * @param descr
 	 */
 	public void fireAgentStatus() {
 
@@ -160,9 +149,14 @@ public class ConsoleAgent implements Agent {
 	}
 
 	/**
+	 * Will never be <code>null</code>.
+	 *
 	 * {@inheritDoc}
 	 */
 	public AgentState getState() {
+
+		if (this.state == null)
+			this.state = AgentState.RESET;
 
 		return this.state;
 	}
@@ -172,7 +166,7 @@ public class ConsoleAgent implements Agent {
 	 */
 	public void resetTransit() {
 
-		this.scenarioDeployer.resetTransit(this.agentAddress);
+		this.agentRemoting.resetTransit(this.agentAddress);
 		updateState();
 	}
 
@@ -195,9 +189,25 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ScenarioExecution getStats() {
+	public ScenarioExecution getStats(Integer execution) {
 
-		return this.scenarioDeployer.getStats(this.agentAddress);
+		return this.agentRemoting.getStats(this.agentAddress, execution);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<ScenarioExecution> getExecutions() {
+
+		return this.executions;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<String> getScenarios() {
+
+		return this.scenarios;
 	}
 
 	/**
@@ -206,8 +216,7 @@ public class ConsoleAgent implements Agent {
 	public boolean actionRequest(AgentState action) {
 
 		try {
-			return this.scenarioDeployer.actionRequest(this.agentAddress,
-					action);
+			return this.agentRemoting.actionRequest(this.agentAddress, action);
 		} finally {
 			updateState();
 		}
@@ -215,16 +224,33 @@ public class ConsoleAgent implements Agent {
 
 	public void updateState() {
 
-		AgentState oldTransit = this.transit;
-		AgentState oldState = this.state;
-		Exception oldError = this.error;
+		notifyOnChange(this.transit, this.transit = this.agentRemoting
+				.getTransit(this.agentAddress));
+		notifyOnChange(this.state, this.state = this.agentRemoting
+				.getState(this.agentAddress));
+		notifyOnChange(this.error, this.error = this.agentRemoting
+				.getError(this.agentAddress));
+		notifyOnChange(this.scenarios, this.scenarios = this.agentRemoting
+				.getScenarios(this.agentAddress));
+		notifyOnChange(this.executions, this.executions = this.agentRemoting
+				.getExecutions(this.agentAddress));
+	}
 
-		this.transit = this.scenarioDeployer.getTransit(this.agentAddress);
-		this.state = this.scenarioDeployer.getState(this.agentAddress);
-		this.error = this.scenarioDeployer.getError(this.agentAddress);
+	@SuppressWarnings("unchecked")
+	private void notifyOnChange(Object o1, Object o2) {
 
-		if (oldTransit != this.transit || oldState != this.state
-				|| oldError != this.error)
+		// Equals is broken for non-sorted sets when the order gets shaken up.
+		if (o1 instanceof Set && !(o1 instanceof SortedSet))
+			o1 = new TreeSet<Object>((Set<? extends Object>) o1);
+		if (o2 instanceof Set && !(o2 instanceof SortedSet))
+			o2 = new TreeSet<Object>((Set<? extends Object>) o2);
+
+		if (o1 != null) {
+			if (o2 == null || !o1.equals(o2))
+				fireAgentStatus();
+		}
+
+		else if (o2 != null)
 			fireAgentStatus();
 	}
 
@@ -247,7 +273,6 @@ public class ConsoleAgent implements Agent {
 				try {
 					updateState();
 				} catch (Exception e) {
-					LOG.error("Error updating state:", e);
 				}
 
 				try {

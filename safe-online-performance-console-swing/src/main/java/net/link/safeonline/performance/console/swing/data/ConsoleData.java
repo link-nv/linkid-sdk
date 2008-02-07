@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -11,7 +11,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.AgentRemoting;
 
@@ -24,48 +26,35 @@ import org.jgroups.Address;
  * {@link #getAgent(Address)} and {@link #removeStaleAgents()} ) whenever agent
  * addresses join or leave the group so that the mappings kept by this object
  * can be kept up-to-date.
- * 
+ *
  * @author mbillemo
- * 
+ *
  */
 public class ConsoleData {
 
-	private static ConsoleData instance;
-	private Map<Address, ConsoleAgent> agents;
-	private AgentRemoting agentDiscoverer;
-	private ScenarioRemoting remoting;
-	private String hostname = "localhost";
-	private int port = 8443, workers = 5;
-	private long duration = 60000;
+	private static Map<Address, ConsoleAgent> agents = new HashMap<Address, ConsoleAgent>();
+	private static AgentRemoting agentDiscoverer = new AgentRemoting();
+	private static ScenarioRemoting remoting = new ScenarioRemoting();
+	private static String hostname = "localhost";
+	private static int port = 8443, workers = 5;
+	private static long duration = 60000;
+	private static Set<ConsoleAgent> selectedAgents;
+	private static ScenarioExecution execution;
+	private static String scenarioName;
 
-	private ConsoleData() {
+	public static Address getSelf() {
 
-		this.agents = new HashMap<Address, ConsoleAgent>();
-		this.agentDiscoverer = new AgentRemoting();
-		this.remoting = new ScenarioRemoting();
-	}
-
-	public static ConsoleData getInstance() {
-
-		if (null == instance)
-			instance = new ConsoleData();
-
-		return instance;
-	}
-
-	public Address getSelf() {
-
-		return this.agentDiscoverer.getSelf();
+		return ConsoleData.agentDiscoverer.getSelf();
 	}
 
 	/**
 	 * @return an unmodifiable view of the currently known agents for read-only
 	 *         access.
 	 */
-	public synchronized Map<Address, ConsoleAgent> getAgents() {
+	public static synchronized Map<Address, ConsoleAgent> getAgents() {
 
 		return Collections.unmodifiableMap(new HashMap<Address, ConsoleAgent>(
-				this.agents));
+				ConsoleData.agents));
 	}
 
 	/**
@@ -73,11 +62,11 @@ public class ConsoleData {
 	 * no such object yet, and the {@link Address} is part of the group; create
 	 * an {@link ConsoleAgent} object for it.
 	 */
-	public synchronized ConsoleAgent getAgent(Address agentAddress) {
+	public static synchronized ConsoleAgent getAgent(Address agentAddress) {
 
-		ConsoleAgent agent = this.agents.get(agentAddress);
-		if (null == agent && this.agentDiscoverer.hasMember(agentAddress))
-			this.agents.put(agentAddress,
+		ConsoleAgent agent = ConsoleData.agents.get(agentAddress);
+		if (null == agent && ConsoleData.agentDiscoverer.hasMember(agentAddress))
+			ConsoleData.agents.put(agentAddress,
 					agent = new ConsoleAgent(agentAddress));
 
 		return agent;
@@ -86,15 +75,15 @@ public class ConsoleData {
 	/**
 	 * Remove {@link ConsoleAgent} objects for agents that disappeared from the
 	 * group.
-	 * 
+	 *
 	 * @return All agents that were removed.
 	 */
-	public synchronized List<ConsoleAgent> removeStaleAgents() {
+	public static synchronized List<ConsoleAgent> removeStaleAgents() {
 
 		List<ConsoleAgent> staleAgents = new ArrayList<ConsoleAgent>();
 		for (Address agentAddress : getAgents().keySet())
-			if (!this.agentDiscoverer.hasMember(agentAddress))
-				staleAgents.add(this.agents.remove(agentAddress));
+			if (!ConsoleData.agentDiscoverer.hasMember(agentAddress))
+				staleAgents.add(ConsoleData.agents.remove(agentAddress));
 
 		return staleAgents;
 	}
@@ -102,69 +91,69 @@ public class ConsoleData {
 	/**
 	 * @return the agentDiscoverer
 	 */
-	public AgentRemoting getAgentDiscoverer() {
+	public static AgentRemoting getAgentDiscoverer() {
 
-		return this.agentDiscoverer;
+		return ConsoleData.agentDiscoverer;
 	}
 
 	/**
 	 * @param hostname
 	 *            the hostname of the OLAS application.
 	 */
-	public synchronized void setHostname(String hostname) {
+	public static synchronized void setHostname(String hostname) {
 
-		this.hostname = hostname;
+		ConsoleData.hostname = hostname;
 	}
 
 	/**
 	 * @return the hostname of the OLAS application.
 	 */
-	public synchronized String getHostname() {
+	public static synchronized String getHostname() {
 
-		return this.hostname;
+		return ConsoleData.hostname;
 	}
 
 	/**
 	 * @param port
 	 *            the port of the OLAS application.
 	 */
-	public synchronized void setPort(int port) {
+	public static synchronized void setPort(int port) {
 
-		this.port = port;
+		ConsoleData.port = port;
 	}
 
 	/**
 	 * @return the port of the OLAS application.
 	 */
-	public synchronized int getPort() {
+	public static synchronized int getPort() {
 
-		return this.port;
+		return ConsoleData.port;
 	}
 
 	/**
 	 * @return the amount of simultaneous threads that execute a scenario.
 	 */
-	public synchronized int getWorkers() {
+	public static synchronized int getWorkers() {
 
-		return this.workers;
+		return ConsoleData.workers;
 	}
 
 	/**
 	 * @param workers
 	 *            The amount of simultaneous threads that execute a scenario.
 	 */
-	public synchronized void setWorkers(int workers) {
+	public static synchronized void setWorkers(int workers) {
 
-		this.workers = workers;
+		ConsoleData.workers = workers;
 	}
 
 	/**
 	 * @return The amount of time to keep the scenario running (in
 	 *         milliseconds).
 	 */
-	public long getDuration() {
+	public static long getDuration() {
 
-		return this.duration;
+		return ConsoleData.duration;
 	}
 
 	/**
@@ -172,16 +161,68 @@ public class ConsoleData {
 	 *            The amount of time to keep the scenario running (in
 	 *            milliseconds).
 	 */
-	public void setDuration(long duration) {
+	public static void setDuration(long duration) {
 
-		this.duration = duration;
+		ConsoleData.duration = duration;
 	}
 
 	/**
 	 * @return The instance that supplies remoting to the agent service.
 	 */
-	public ScenarioRemoting getRemoting() {
+	public static ScenarioRemoting getRemoting() {
 
-		return this.remoting;
+		return ConsoleData.remoting;
+	}
+
+	/**
+	 * Update the set of selected agents.
+	 */
+	public static void setSelectedAgents(Set<ConsoleAgent> selectedAgents) {
+
+		ConsoleData.selectedAgents = selectedAgents;
+	}
+
+	/**
+	 * @return The selectedAgents of this {@link ConsoleData}.
+	 */
+	public static Set<ConsoleAgent> getSelectedAgents() {
+
+		return Collections.unmodifiableSet(ConsoleData.selectedAgents);
+	}
+
+	/**
+	 * @param execution
+	 *            The execution to perform actions upon.
+	 */
+	public static void setExecution(ScenarioExecution execution) {
+
+		ConsoleData.execution = execution;
+	}
+
+	/**
+	 * @return The execution to perform actions upon.
+	 */
+	public static ScenarioExecution getExecution() {
+
+		return ConsoleData.execution;
+	}
+
+	/**
+	 * @param scenarioName
+	 *            The fully classified name of the scenario that needs to be
+	 *            executed.
+	 */
+	public static void setScenarioName(String scenarioName) {
+
+		ConsoleData.scenarioName = scenarioName;
+	}
+
+	/**
+	 * @return The fully classified name of the scenario that needs to be
+	 *         executed.
+	 */
+	public static String getScenarioName() {
+
+		return ConsoleData.scenarioName;
 	}
 }

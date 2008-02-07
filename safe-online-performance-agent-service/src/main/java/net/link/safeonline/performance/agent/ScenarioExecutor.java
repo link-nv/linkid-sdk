@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 
-import net.link.safeonline.performance.console.ScenarioExecution;
+import net.link.safeonline.performance.scenario.ExecutionMetadata;
 import net.link.safeonline.performance.scenario.ScenarioLocal;
 
 import org.apache.commons.logging.Log;
@@ -41,26 +41,16 @@ public class ScenarioExecutor extends Thread {
 
 	static final Log LOG = LogFactory.getLog(ScenarioExecutor.class);
 
+	private ExecutionMetadata request;
 	private AgentService agentService;
-
-	private String hostname;
-	private Integer workers;
-	private Integer agents;
-	private Long duration;
-	private long startTime;
-
 	private ScheduledExecutorService pool;
 	private boolean abort;
 
-	public ScenarioExecutor(String hostname, Integer agents, Integer workers,
-			Long duration, AgentService agentService) {
+	public ScenarioExecutor(ExecutionMetadata request, AgentService agentService) {
 
-		this.abort = false;
-		this.hostname = hostname;
-		this.workers = workers;
-		this.agents = agents;
-		this.duration = duration;
+		this.request = request;
 		this.agentService = agentService;
+		this.abort = false;
 	}
 
 	@Override
@@ -72,12 +62,13 @@ public class ScenarioExecutor extends Thread {
 					.lookup(ScenarioLocal.BINDING);
 
 			// Setup the scenario.
-			final int execution = scenarioBean.prepare(this.hostname);
+			final int execution = scenarioBean.prepare(this.request);
 
 			// Create a pool of threads that execute scenario beans.
-			this.startTime = System.currentTimeMillis();
-			this.pool = Executors.newScheduledThreadPool(this.workers);
-			for (int i = 0; i < this.workers; ++i)
+			long startTime = System.currentTimeMillis();
+			this.pool = Executors.newScheduledThreadPool(this.request
+					.getWorkers());
+			for (int i = 0; i < this.request.getWorkers(); ++i)
 				this.pool.scheduleWithFixedDelay(new Runnable() {
 					public void run() {
 
@@ -92,7 +83,7 @@ public class ScenarioExecutor extends Thread {
 				}, 0, 100, TimeUnit.MILLISECONDS);
 
 			// Sleep this thread until the specified duration has elapsed.
-			long until = this.startTime + this.duration;
+			long until = startTime + this.request.getDuration();
 			while (!this.abort && System.currentTimeMillis() < until)
 				try {
 					Thread.sleep(Math.min(until - System.currentTimeMillis(),
@@ -115,16 +106,11 @@ public class ScenarioExecutor extends Thread {
 				return;
 			}
 
-			// Generate the resulting statistical information.
-			ScenarioExecution stats = new ScenarioExecution(this.agents,
-					this.workers, this.startTime, this.duration, this.hostname,
-					execution, scenarioBean.getSpeed(execution), scenarioBean
-							.getScenario(execution), scenarioBean
-							.createGraphs(execution));
-			this.agentService.setStats(stats);
-
 			// Notify the agent service of the scenario completion.
 			this.agentService.actionCompleted(true);
+
+			// Start fetching metadata and creating charts already.
+			this.agentService.getStats(execution);
 		}
 
 		catch (Exception e) {

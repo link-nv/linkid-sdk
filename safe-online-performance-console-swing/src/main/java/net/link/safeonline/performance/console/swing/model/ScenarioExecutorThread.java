@@ -6,14 +6,12 @@
  */
 package net.link.safeonline.performance.console.swing.model;
 
-import java.util.Map;
+import java.util.Date;
 
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
-
-import org.jgroups.Address;
 
 /**
  * This thread executes a scenario on a given agent and manages the
@@ -23,23 +21,28 @@ import org.jgroups.Address;
  */
 public class ScenarioExecutorThread extends ScenarioThread {
 
-	public ScenarioExecutorThread(Map<Address, ConsoleAgent> map,
-			ScenarioChooser chooser) {
+	private Date startTime;
 
-		super(AgentState.EXECUTE, map, chooser);
+	public ScenarioExecutorThread(ScenarioChooser chooser) {
+
+		super(AgentState.EXECUTE, chooser);
+
+		this.startTime = new Date();
 	}
 
 	/**
 	 * @{inheritDoc}
 	 */
 	@Override
-	void process(Address address, ConsoleAgent agent) throws Exception {
+	void process(ConsoleAgent agent) throws Exception {
 
-		String hostname = String.format("%s:%d", ConsoleData.getInstance()
-				.getHostname(), ConsoleData.getInstance().getPort());
-		this.scenarioDeployer.execute(address, hostname, this.agents.size(),
-				ConsoleData.getInstance().getWorkers(), ConsoleData
-						.getInstance().getDuration());
+		String hostname = String.format("%s:%d", ConsoleData.getHostname(),
+				ConsoleData.getPort());
+
+		this.scenarioDeployer.execute(agent.getAddress(), ConsoleData
+				.getScenarioName(), ConsoleData.getSelectedAgents().size(),
+				ConsoleData.getWorkers(), ConsoleData.getDuration(), hostname,
+				this.startTime);
 
 	}
 }

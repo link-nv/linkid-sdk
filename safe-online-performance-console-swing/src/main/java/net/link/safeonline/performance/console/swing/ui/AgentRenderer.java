@@ -63,7 +63,10 @@ public class AgentRenderer extends DefaultListCellRenderer {
 				case EXECUTE:
 					color = "gray";
 					break;
-				default:
+				case CHART:
+					color = "teal";
+					break;
+				case RESET:
 				}
 
 			AgentState state = agent.getState();

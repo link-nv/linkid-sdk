@@ -9,6 +9,7 @@ package net.link.safeonline.performance.agent;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Date;
 
 import javax.management.JMException;
 import javax.naming.NamingException;
@@ -47,8 +48,8 @@ public interface AgentServiceMBean extends Agent {
 	/**
 	 * Execute the scenario and collect the charts.
 	 */
-	public void execute(String hostname, Integer agents, Integer workers,
-			Long duration) throws NamingException;
+	public void execute(String scenarioName, Integer agents, Integer workers,
+			Long duration, String hostname, Date startTime);
 
 	/**
 	 * Called by JBoss when this service has been fully deployed and

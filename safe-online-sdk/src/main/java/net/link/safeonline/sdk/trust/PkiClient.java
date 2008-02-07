@@ -20,8 +20,6 @@ public interface PkiClient {
 	/**
 	 * Gives back the OLAS signing certificate that is used to sign the SAML
 	 * authentication tokens.
-	 * 
-	 * @return
 	 */
 	X509Certificate getSigningCertificate();
 }
