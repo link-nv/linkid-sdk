@@ -444,7 +444,7 @@ img.label {
 	width: auto;
 }
 
-select.label {
+select.label, select.label:hover {
 	border: none;
 }
 
