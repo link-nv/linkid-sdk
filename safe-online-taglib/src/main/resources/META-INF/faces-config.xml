@@ -53,6 +53,13 @@
 				net.link.safeonline.renderer.SimpleMessagesRenderer
 			</renderer-class>
 		</renderer>
+		<renderer>
+			<component-family>javax.faces.Message</component-family>
+			<renderer-type>javax.faces.Message</renderer-type>
+			<renderer-class>
+				net.link.safeonline.renderer.SimpleMessageRenderer
+			</renderer-class>
+		</renderer>
 	</render-kit>
 
 	<converter>

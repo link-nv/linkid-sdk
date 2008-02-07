@@ -17,7 +17,7 @@
 		<h2>#{msgs.createAccount}</h2>
 		<h:form>
 			<f:facet name="aroundInvalidField">
-				<s:span styleClass="error" />
+				<s:span styleClass="error_field" />
 			</f:facet>
 
 			<h:outputLabel for="login" value="#{msgs.login}" />
@@ -26,21 +26,23 @@
 					required="true" styleClass="label">
 					<f:validateLength minimum="6" />
 				</h:inputText>
+				<h:message for="login" styleClass="error" />
 			</s:decorate>
-			<t:message for="login" styleClass="error" />
+
 
 
 			<h:outputLabel for="captcha" value="#{msgs.captcha}" />
 			<s:decorate>
-
 				<h:inputText id="captcha" value="#{accountRegistration.captcha}"
 					required="true" styleClass="label" />
+				<h:message for="captcha" styleClass="error" />
 			</s:decorate>
 
-			<t:message for="captcha" styleClass="error" />
+
+
 			<h:outputLabel for="image" value="" />
 			<h:graphicImage id="image" styleClass="label" value="/captcha" />
-			<t:messages globalOnly="true" styleClass="error" />
+			<h:messages globalOnly="true" styleClass="error" />
 			<h:outputLabel for="register" value="" />
 			<h:commandButton action="#{accountRegistration.loginNext}"
 				id="register" value="#{msgs.register}" styleClass="submit" />

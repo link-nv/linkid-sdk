@@ -5,6 +5,8 @@ import java.util.Iterator;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIMessage;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
@@ -12,10 +14,10 @@ import javax.faces.render.Renderer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class SimpleMessagesRenderer extends Renderer {
+public class SimpleMessageRenderer extends Renderer {
 
 	private static final Log LOG = LogFactory
-			.getLog(SimpleMessagesRenderer.class);
+			.getLog(SimpleMessageRenderer.class);
 
 	@Override
 	public void encodeEnd(FacesContext context, UIComponent component)
@@ -30,28 +32,41 @@ public class SimpleMessagesRenderer extends Renderer {
 		String styleClass = (String) component.getAttributes()
 				.get("styleClass");
 
-		Boolean globalOnly = (Boolean) component.getAttributes().get(
-				"globalOnly");
+		String clientId = ((UIMessage) component).getFor();
+		if (null == clientId)
+			return;
 
-		Iterator<FacesMessage> iter;
-		if (null != globalOnly && true == globalOnly.booleanValue()) {
-			iter = context.getMessages(null);
-		} else {
-			iter = context.getMessages();
-		}
+		clientId = augmentIdReference(context, clientId, component);
 
-		LOG.debug("rendering messages");
+		LOG.debug("rendering messages for: " + clientId);
+
+		Iterator<FacesMessage> iter = context.getMessages(clientId);
 
 		int count = 0;
 		while (iter.hasNext()) {
-			FacesMessage message = iter.next();
 			writer.startElement("span", component);
 			writer.writeAttribute("class", styleClass, "class");
-			writer.write(message.getSummary());
+			writer.write(iter.next().getSummary());
 			writer.endElement("span");
 			count++;
 		}
 
 		LOG.debug("rendered " + count + " messages");
 	}
+
+	private String augmentIdReference(FacesContext context, String forValue,
+			UIComponent fromComponent) {
+
+		int forSuffix = forValue.lastIndexOf(UIViewRoot.UNIQUE_ID_PREFIX);
+		if (forSuffix <= 0) {
+			String id = fromComponent.getId();
+			int idSuffix = id.lastIndexOf(UIViewRoot.UNIQUE_ID_PREFIX);
+			if (idSuffix > 0) {
+				forValue += id.substring(idSuffix);
+			}
+		}
+		return forValue;
+
+	}
+
 }
