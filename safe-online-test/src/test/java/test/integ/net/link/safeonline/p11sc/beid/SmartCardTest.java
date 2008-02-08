@@ -340,11 +340,14 @@ public class SmartCardTest extends TestCase {
 				tmpConfigFile), true);
 		String name = "TestSmartCard";
 		configWriter.println("name=" + name);
-		configWriter.println("library=/usr/lib/opensc-pkcs11.so");
-		// configWriter.println("library=/usr/local/lib/libbeidpkcs11.so");
+		// configWriter.println("library=/usr/lib/opensc-pkcs11.so");
+		configWriter.println("library=/usr/local/lib/libbeidpkcs11.so");
 		configWriter.println("slotListIndex=0");
 		configWriter.println("showInfo=true");
 		configWriter.close();
+
+		JOptionPane.showMessageDialog(null, "Start APDU signature");
+
 		SunPKCS11 provider = (SunPKCS11) Security.getProvider("SunPKCS11-"
 				+ name);
 		if (null != provider) {
@@ -375,6 +378,8 @@ public class SmartCardTest extends TestCase {
 		byte[] plainData = plain.getBytes();
 		signature.update(plainData);
 		signature.sign();
+
+		JOptionPane.showMessageDialog(null, "End APDU signature");
 
 		Security.removeProvider(providerName);
 

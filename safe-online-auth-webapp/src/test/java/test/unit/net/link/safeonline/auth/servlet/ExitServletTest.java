@@ -16,7 +16,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.security.KeyPair;
+import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,10 +51,12 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
+import org.bouncycastle.openssl.PEMWriter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,12 +90,15 @@ public class ExitServletTest {
 
 	private AuthenticationService mockAuthenticationService;
 
+	private PublicKey publicKey;
+
 	@Before
 	public void setUp() throws Exception {
 		this.jmxTestUtils = new JmxTestUtils();
 		this.jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
 		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		this.publicKey = keyPair.getPublic();
 		this.jmxTestUtils.registerActionHandler("getPrivateKey",
 				new MBeanActionHandler() {
 					public Object invoke(@SuppressWarnings("unused")
@@ -225,6 +232,14 @@ public class ExitServletTest {
 		File tmpFile = File.createTempFile("saml-response-", ".xml");
 		LOG.debug("tmp filename: " + tmpFile.getAbsolutePath());
 		IOUtils.write(samlResponse, new FileOutputStream(tmpFile));
+
+		String xmlFilename = tmpFile.getAbsolutePath();
+		String pubFilename = FilenameUtils.getFullPath(xmlFilename)
+				+ FilenameUtils.getBaseName(xmlFilename) + ".pem";
+		PEMWriter writer = new PEMWriter(new FileWriter(pubFilename));
+		writer.writeObject(this.publicKey);
+		writer.close();
+
 		Document samlResponseDocument = DomTestUtils
 				.parseDocument(samlResponse);
 		Element nsElement = samlResponseDocument.createElement("nsElement");

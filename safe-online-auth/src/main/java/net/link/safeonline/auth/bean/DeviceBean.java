@@ -117,6 +117,10 @@ public class DeviceBean implements Device {
 
 	private boolean remoteURL(String authenticationURLName) {
 		try {
+			/*
+			 * FIXME: depending on exceptions for normal control flow is bad and
+			 * slow.
+			 */
 			new URL(authenticationURLName);
 		} catch (MalformedURLException e) {
 			this.log.debug("local authentication URL");

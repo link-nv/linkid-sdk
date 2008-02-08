@@ -1,10 +1,20 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2008 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.device.sdk;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
-public class AuthenticationContext {
+public class AuthenticationContext implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private HttpSession session;
 
@@ -32,8 +42,9 @@ public class AuthenticationContext {
 	public static AuthenticationContext getLoginManager(HttpSession session) {
 		AuthenticationContext instance = (AuthenticationContext) session
 				.getAttribute(LOGIN_MANAGER);
-		if (null == session.getAttribute(LOGIN_MANAGER))
+		if (null == instance) {
 			instance = new AuthenticationContext(session);
+		}
 		return instance;
 	}
 
@@ -84,5 +95,4 @@ public class AuthenticationContext {
 	public void setValidity(int validity) {
 		this.validity = validity;
 	}
-
 }

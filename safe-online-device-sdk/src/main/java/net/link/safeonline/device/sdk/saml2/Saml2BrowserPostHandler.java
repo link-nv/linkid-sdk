@@ -9,6 +9,7 @@ package net.link.safeonline.device.sdk.saml2;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
@@ -78,7 +79,7 @@ import org.w3c.dom.Element;
  * @author wvdhaute
  * 
  */
-public class Saml2BrowserPostHandler {
+public class Saml2BrowserPostHandler implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

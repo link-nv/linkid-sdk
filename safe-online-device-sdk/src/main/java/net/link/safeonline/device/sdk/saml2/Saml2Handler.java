@@ -1,5 +1,13 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2008 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.device.sdk.saml2;
 
+import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -50,7 +58,9 @@ import org.opensaml.xml.security.credential.BasicCredential;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class Saml2Handler {
+public class Saml2Handler implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private HttpSession session;
 
@@ -95,8 +105,9 @@ public class Saml2Handler {
 		Saml2Handler instance = (Saml2Handler) request.getSession()
 				.getAttribute(SAML2_HANDLER);
 
-		if (null == instance)
+		if (null == instance) {
 			instance = new Saml2Handler(request);
+		}
 
 		return instance;
 	}
