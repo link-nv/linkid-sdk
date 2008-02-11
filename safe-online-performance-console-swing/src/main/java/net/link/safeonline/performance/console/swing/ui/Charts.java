@@ -102,6 +102,7 @@ public class Charts extends WindowAdapter {
 
 	private void show() {
 
+		this.frame.setPreferredSize(new Dimension(1024, 768));
 		this.frame.pack();
 		this.frame.setLocationRelativeTo(null);
 		this.frame.setVisible(true);

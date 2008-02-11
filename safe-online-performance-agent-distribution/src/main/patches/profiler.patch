@@ -1,0 +1,20 @@
+--- jboss/bin/run.conf	2008-02-11 16:10:27 +0100
++++ jboss/bin/run.conf~	2008-02-11 16:08:17 +0100
+@@ -14,3 +14,17 @@
+ if [ -c /dev/urandom ]; then
+     JAVA_OPTS="$JAVA_OPTS -Djava.security.egd=file:/dev/urandom"
+ fi
++
++# Eclipse Profiler
++if [ -e "$HOME/eclipse-profiler/current/lib/libpiAgent.so" ]; then
++    JAVA_OPTS="$JAVA_OPTS -XrunpiAgent:server=enabled"
++    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/eclipse-profiler/current/lib"
++fi
++
++# JBoss Profiler
++if [ -e "$HOME/jboss-profiler/jvmpi/linux/libjbossInspector.so" ]; then
++    JAVA_OPTS="$JAVA_OPTS -XrunjbossInspector:/tmp,include=net.link,ignore=*,start=net.link.safeonline.performance.scenario.script.BasicScenario,socket=localhost:10000"
++    JBOSS_CLASSPATH="$HOME/jboss-profiler/profilerConsole.jar"
++    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/jboss-profiler/jvmpi/linux:$HOME/jboss-profiler/jvmti/linux"
++fi
++

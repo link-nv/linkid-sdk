@@ -105,7 +105,8 @@
                     </goals>
                     <configuration>
                       <patches>
-                        <patch>make_headless.patch</patch>
+                        <patch>headless.patch</patch>
+                        <patch>profiler.patch</patch>
                         <patch>log4j.patch</patch>
                       </patches>
                       <targetDirectory>

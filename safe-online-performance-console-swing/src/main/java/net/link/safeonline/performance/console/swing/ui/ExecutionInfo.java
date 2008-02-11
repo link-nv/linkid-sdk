@@ -187,13 +187,13 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 					".*\\.", ""));
 			this.startTime.setText(DateFormat.getDateTimeInstance().format(
 					execution.getStart()));
-			this.agents.setText(String.format("%s agents", execution
-					.getAgents()));
-			this.workers.setText(String.format("%s workers", execution
-					.getWorkers()));
+			this.agents.setText(String.format("%s agent%s", execution
+					.getAgents(), execution.getAgents() == 1 ? "" : "s"));
+			this.workers.setText(String.format("%s worker%s", execution
+					.getWorkers(), execution.getWorkers() == 1 ? "" : "s"));
 			this.duration.setText(formatDuration(execution.getDuration()));
-			this.speed.setText(String.format("%.2f scenarios/s", execution
-					.getSpeed()));
+			this.speed.setText(String.format("%.2f scenario%s/s", execution
+					.getSpeed(), execution.getSpeed() == 1 ? "" : "s"));
 			this.hostname.setText(execution.getHostname());
 		}
 	}
