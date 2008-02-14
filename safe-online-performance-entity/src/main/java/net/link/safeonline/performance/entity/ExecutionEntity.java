@@ -8,6 +8,7 @@ package net.link.safeonline.performance.entity;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.Entity;
@@ -50,13 +51,15 @@ public class ExecutionEntity {
 	private Date startTime;
 	private Long duration;
 	private String hostname;
+	private Double speed;
 
 	@OneToMany(mappedBy = "execution")
 	private Set<DriverProfileEntity> profiles;
 
-	@OneToMany()
+	@OneToMany
 	private Set<AgentTimeEntity> agentTimes;
 
+	private transient boolean dirtySpeed;
 
 	public ExecutionEntity() {
 
@@ -148,5 +151,37 @@ public class ExecutionEntity {
 	public Long getDuration() {
 
 		return this.duration;
+	}
+
+	/**
+	 * The speed will only be recalculated if it has been set as dirty.
+	 * 
+	 * @return The average scenario execution speed in this execution.
+	 */
+	public Double getSpeed() {
+
+		if (this.dirtySpeed)
+			updateSpeed();
+
+		return this.speed;
+	}
+
+	public void updateSpeed() {
+
+		SortedSet<AgentTimeEntity> sortedTimes = new TreeSet<AgentTimeEntity>();
+
+		this.speed = (sortedTimes.last().getAgentDuration()
+				+ sortedTimes.last().getStart() - sortedTimes.first()
+				.getStart())
+				/ (double) sortedTimes.size();
+	}
+
+	/**
+	 * Signal that the speed value currently contained in this
+	 * {@link ExecutionEntity} is dirty and needs to be recalculated.
+	 */
+	public void dirtySpeed() {
+
+		this.dirtySpeed = true;
 	}
 }

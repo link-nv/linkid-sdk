@@ -21,10 +21,12 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.filechooser.FileFilter;
 
+import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
+import net.link.safeonline.performance.console.swing.model.ExecutionSelectionListener;
 import net.link.safeonline.performance.console.swing.model.PDF;
 import net.link.safeonline.performance.console.swing.model.ScenarioCharterThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioDeployerThread;
@@ -38,7 +40,7 @@ import net.link.safeonline.performance.console.swing.model.ScenarioUploaderThrea
  * @author mbillemo
  */
 public class ScenarioChooser extends JPanel implements ActionListener,
-		CaretListener, AgentSelectionListener {
+		CaretListener, AgentSelectionListener, ExecutionSelectionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -171,6 +173,14 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		if (e.getSource().equals(this.scenarioField))
 			for (ConsoleAgent agent : ConsoleData.getAgents().values())
 				agent.fireAgentStatus();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void executionSelected(ScenarioExecution execution) {
+
+		buttonToggler(null != execution, this.chartsButton, this.pdfButton);
 	}
 
 	/**

@@ -16,6 +16,8 @@ import java.util.Set;
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.AgentRemoting;
+import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
+import net.link.safeonline.performance.console.swing.model.ExecutionSelectionListener;
 
 import org.jgroups.Address;
 
@@ -31,6 +33,9 @@ import org.jgroups.Address;
  *
  */
 public class ConsoleData {
+
+	private static List<ExecutionSelectionListener> executionSelectionListeners = new ArrayList<ExecutionSelectionListener>();
+	private static List<AgentSelectionListener> agentSelectionListeners = new ArrayList<AgentSelectionListener>();
 
 	private static Map<Address, ConsoleAgent> agents = new HashMap<Address, ConsoleAgent>();
 	private static AgentRemoting agentDiscoverer = new AgentRemoting();
@@ -65,9 +70,10 @@ public class ConsoleData {
 	public static synchronized ConsoleAgent getAgent(Address agentAddress) {
 
 		ConsoleAgent agent = ConsoleData.agents.get(agentAddress);
-		if (null == agent && ConsoleData.agentDiscoverer.hasMember(agentAddress))
-			ConsoleData.agents.put(agentAddress,
-					agent = new ConsoleAgent(agentAddress));
+		if (null == agent
+				&& ConsoleData.agentDiscoverer.hasMember(agentAddress))
+			ConsoleData.agents.put(agentAddress, agent = new ConsoleAgent(
+					agentAddress));
 
 		return agent;
 	}
@@ -180,6 +186,7 @@ public class ConsoleData {
 	public static void setSelectedAgents(Set<ConsoleAgent> selectedAgents) {
 
 		ConsoleData.selectedAgents = selectedAgents;
+		fireAgentSelection();
 	}
 
 	/**
@@ -197,6 +204,7 @@ public class ConsoleData {
 	public static void setExecution(ScenarioExecution execution) {
 
 		ConsoleData.execution = execution;
+		fireExecutionSelection();
 	}
 
 	/**
@@ -224,5 +232,34 @@ public class ConsoleData {
 	public static String getScenarioName() {
 
 		return ConsoleData.scenarioName;
+	}
+
+	public static void fireAgentSelection() {
+
+		for (AgentSelectionListener listener : agentSelectionListeners)
+			listener.agentsSelected(selectedAgents);
+	}
+
+	/**
+	 * Make the given object listen to agent selection events.
+	 */
+	public static void addAgentSelectionListener(AgentSelectionListener listener) {
+
+		ConsoleData.agentSelectionListeners.add(listener);
+	}
+
+	public static void fireExecutionSelection() {
+
+		for (ExecutionSelectionListener listener : executionSelectionListeners)
+			listener.executionSelected(execution);
+	}
+
+	/**
+	 * Make the given object listen to execution selection events.
+	 */
+	public static void addExecutionSelectionListener(
+			ExecutionSelectionListener listener) {
+
+		executionSelectionListeners.add(listener);
 	}
 }

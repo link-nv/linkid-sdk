@@ -90,8 +90,17 @@ import org.jfree.ui.RectangleAnchor;
 @LocalBinding(jndiBinding = ScenarioLocal.BINDING)
 public class ScenarioBean implements ScenarioLocal {
 
-	private static final int[] MOVING_AVERAGE_PERIODS = new int[] { 3600000,
-			60000 };
+	/*
+	 * Timeout values for long running methods (in seconds).
+	 */
+	private static final int CHARTING_TIMEOUT = 5 * 60 * 60; // 5h
+	private static final int SCENARIO_EXECUTION_TIMEOUT = 10 * 60; // 10m
+
+	/*
+	 * Periods for the moving average charts (in milliseconds).
+	 */
+	private static final int[] MOVING_AVERAGE_PERIODS = new int[] {
+			60 * 60 * 1000, 60 * 1000 }; // 1h, 1m
 
 	private static final Log LOG = LogFactory.getLog(ScenarioBean.class);
 
@@ -121,6 +130,7 @@ public class ScenarioBean implements ScenarioLocal {
 	/**
 	 * {@inheritDoc}
 	 */
+	@TransactionTimeout(SCENARIO_EXECUTION_TIMEOUT)
 	public void execute(int executionId) throws Exception {
 
 		ExecutionEntity execution = this.executionService
@@ -135,8 +145,9 @@ public class ScenarioBean implements ScenarioLocal {
 			scenario.run();
 		} finally {
 			agentTime.stop();
-
 			agentTime.setEndMemory(getFreeMemory());
+
+			execution.dirtySpeed();
 		}
 	}
 
@@ -203,25 +214,17 @@ public class ScenarioBean implements ScenarioLocal {
 
 		ExecutionEntity execution = this.executionService
 				.getExecution(executionId);
-		TreeSet<AgentTimeEntity> sortedStartTimes = new TreeSet<AgentTimeEntity>(
-				execution.getAgentTimes());
-
-		double speed = 0;
-		if (sortedStartTimes.size() > 1)
-			speed = (double) sortedStartTimes.size()
-					/ (sortedStartTimes.last().getStart() - sortedStartTimes
-							.first().getStart());
 
 		return ExecutionMetadata.createResponse(execution.getId(), execution
 				.getScenarioName(), execution.getAgents(), execution
 				.getWorkers(), execution.getStartTime(), execution
-				.getDuration(), execution.getHostname(), speed);
+				.getDuration(), execution.getHostname(), execution.getSpeed());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@TransactionTimeout(3600)
+	@TransactionTimeout(CHARTING_TIMEOUT)
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public Map<String, byte[][]> createCharts(int executionId) {
 
@@ -292,15 +295,12 @@ public class ScenarioBean implements ScenarioLocal {
 						.getMeasurement(ProfileData.REQUEST_START_FREE);
 				long afterMemory = data
 						.getMeasurement(ProfileData.REQUEST_END_FREE);
-				long endTime = startTime + requestTime;
 
 				try {
 					beforeMemorySet.add(startTime, beforeMemory);
 					afterMemorySet.add(startTime, afterMemory);
 					requestSet.add(startTime, requestTime);
 				} catch (SeriesException e) {
-					LOG.warn("Dublicate X at starttime " + startTime
-							+ ", or endtime " + endTime, e);
 					continue; // Duplicate X value; ignore this one.
 				}
 

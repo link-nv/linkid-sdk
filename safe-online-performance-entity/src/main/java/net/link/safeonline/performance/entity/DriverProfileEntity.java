@@ -46,10 +46,10 @@ public class DriverProfileEntity {
 	@SuppressWarnings("unused")
 	private ExecutionEntity execution;
 
-	@OneToMany()
+	@OneToMany
 	private Set<ProfileDataEntity> profileData;
 
-	@OneToMany()
+	@OneToMany
 	private Set<DriverExceptionEntity> profileError;
 
 	public DriverProfileEntity() {

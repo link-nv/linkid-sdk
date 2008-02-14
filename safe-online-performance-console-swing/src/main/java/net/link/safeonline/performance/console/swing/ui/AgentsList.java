@@ -6,7 +6,6 @@
  */
 package net.link.safeonline.performance.console.swing.ui;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +18,6 @@ import javax.swing.event.ListSelectionListener;
 import net.link.safeonline.performance.console.jgroups.AgentStateListener;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
-import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
 
 import org.jgroups.Address;
 
@@ -33,7 +31,6 @@ public class AgentsList extends JList implements AgentStateListener,
 
 	private static final long serialVersionUID = 1L;
 
-	private List<AgentSelectionListener> agentSelectionListeners;
 	private DefaultListModel model;
 
 	public AgentsList() {
@@ -44,17 +41,8 @@ public class AgentsList extends JList implements AgentStateListener,
 		setBackground(null);
 		setOpaque(false);
 
-		this.agentSelectionListeners = new ArrayList<AgentSelectionListener>();
 		ConsoleData.getAgentDiscoverer().addAgentStateListener(
 				this);
-	}
-
-	/**
-	 * Make the given object listen to agent selection events.
-	 */
-	public void addAgentSelectionListener(AgentSelectionListener listener) {
-
-		this.agentSelectionListeners.add(listener);
 	}
 
 	/**
@@ -139,14 +127,6 @@ public class AgentsList extends JList implements AgentStateListener,
 				selectedAgents.add((ConsoleAgent) value);
 
 		ConsoleData.setSelectedAgents(selectedAgents);
-		notifyAgentSelectionListeners();
-	}
-
-	private void notifyAgentSelectionListeners() {
-
-		Set<ConsoleAgent> selectedAgents = ConsoleData.getSelectedAgents();
-		for (AgentSelectionListener listener : this.agentSelectionListeners)
-			listener.agentsSelected(selectedAgents);
 	}
 
 	/**
@@ -157,6 +137,6 @@ public class AgentsList extends JList implements AgentStateListener,
 		repaint();
 
 		if (ConsoleData.getSelectedAgents().contains(agent))
-			notifyAgentSelectionListeners();
+			ConsoleData.fireAgentSelection();
 	}
 }

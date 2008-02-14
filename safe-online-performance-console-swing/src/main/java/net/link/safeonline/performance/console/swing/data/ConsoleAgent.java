@@ -239,18 +239,20 @@ public class ConsoleAgent implements Agent {
 	@SuppressWarnings("unchecked")
 	private void notifyOnChange(Object o1, Object o2) {
 
+		Object fixed1 = o1, fixed2 = o2;
+
 		// Equals is broken for non-sorted sets when the order gets shaken up.
 		if (o1 instanceof Set && !(o1 instanceof SortedSet))
-			o1 = new TreeSet<Object>((Set<? extends Object>) o1);
+			fixed1 = new TreeSet<Object>((Set<? extends Object>) o1);
 		if (o2 instanceof Set && !(o2 instanceof SortedSet))
-			o2 = new TreeSet<Object>((Set<? extends Object>) o2);
+			fixed2 = new TreeSet<Object>((Set<? extends Object>) o2);
 
-		if (o1 != null) {
-			if (o2 == null || !o1.equals(o2))
+		if (fixed1 != null) {
+			if (fixed2 == null || !fixed1.equals(fixed2))
 				fireAgentStatus();
 		}
 
-		else if (o2 != null)
+		else if (fixed2 != null)
 			fireAgentStatus();
 	}
 

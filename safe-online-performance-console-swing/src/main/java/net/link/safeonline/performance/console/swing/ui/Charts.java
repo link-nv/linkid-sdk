@@ -135,9 +135,9 @@ public class Charts extends WindowAdapter {
 					"Scenario: %s            ", execution.getScenario())));
 			label.setFont(label.getFont().deriveFont(20f));
 
-			header.add(label = new JLabel(String.format(
-					"Average Speed: %.2f scenarios/s",
-					execution.getSpeed() * 1000f)));
+			header.add(label = new JLabel(execution.getSpeed() == null ? "N/A"
+					: String.format("Average Speed: %.2f scenarios/s",
+							execution.getSpeed() * 1000f)));
 			label.setFont(label.getFont().deriveFont(20f));
 
 			header.add(label = new JLabel(String.format(

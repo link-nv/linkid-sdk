@@ -1,6 +1,6 @@
---- jboss/bin/run.conf	2008-02-11 16:10:27 +0100
-+++ jboss/bin/run.conf~	2008-02-11 16:08:17 +0100
-@@ -14,3 +14,17 @@
+--- jboss/bin/run.conf	2008-02-13 14:02:15 +0100
++++ jboss/bin/run.conf	2008-02-13 14:03:13 +0100
+@@ -14,3 +14,27 @@
  if [ -c /dev/urandom ]; then
      JAVA_OPTS="$JAVA_OPTS -Djava.security.egd=file:/dev/urandom"
  fi
@@ -12,9 +12,19 @@
 +fi
 +
 +# JBoss Profiler
-+if [ -e "$HOME/jboss-profiler/jvmpi/linux/libjbossInspector.so" ]; then
-+    JAVA_OPTS="$JAVA_OPTS -XrunjbossInspector:/tmp,include=net.link,ignore=*,start=net.link.safeonline.performance.scenario.script.BasicScenario,socket=localhost:10000"
-+    JBOSS_CLASSPATH="$HOME/jboss-profiler/profilerConsole.jar"
-+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/jboss-profiler/jvmpi/linux:$HOME/jboss-profiler/jvmti/linux"
++if [ -e "$HOME/jboss-profiler/current/jvmti/native/linux/libjbossAgent.so" ]; then
++    JAVA_OPTS="$JAVA_OPTS -agentlib:jbossAgent"
++    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/jboss-profiler/current/jvmti/native/linux"
++fi
++
++# NetBeans Profiler
++if [ -e "$HOME/netbeans-profiler/current/lib/deployed/jdk15/linux/libprofilerinterface.so" ]; then
++    JAVA_OPTS="$JAVA_OPTS -agentpath:$HOME/netbeans-profiler/current/lib/deployed/jdk15/linux/libprofilerinterface.so=$HOME/netbeans-profiler/current/lib,5140"
++fi
++
++# JProfiler Profiler 
++if [ -e "$HOME/jprofiler-profiler/current/bin/linux-x86/libjprofiler.so" ]; then
++    JAVA_OPTS="-agentlib:jprofilerti=port=8849,nowait,id=106,config=$HOME/jprofiler-profiler/config.xml  -Xbootclasspath/a:$HOME/jprofiler-profiler/current/bin/agent.jar $JAVA_OPTS"
++    export LD_LIBRARY_PATH="$HOME/jprofiler-profiler/current/bin/linux-x86:$LD_LIBRARY_PATH"
 +fi
 +

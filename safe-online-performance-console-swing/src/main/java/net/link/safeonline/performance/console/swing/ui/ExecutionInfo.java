@@ -192,7 +192,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			this.workers.setText(String.format("%s worker%s", execution
 					.getWorkers(), execution.getWorkers() == 1 ? "" : "s"));
 			this.duration.setText(formatDuration(execution.getDuration()));
-			this.speed.setText(String.format("%.2f scenario%s/s", execution
+			this.speed.setText(execution.getSpeed() == null ? "N/A" : String
+					.format("%.2f scenario%s/s", execution
 					.getSpeed(), execution.getSpeed() == 1 ? "" : "s"));
 			this.hostname.setText(execution.getHostname());
 		}

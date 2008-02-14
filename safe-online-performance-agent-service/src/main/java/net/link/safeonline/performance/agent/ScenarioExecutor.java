@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ScenarioExecutor}<br>
  * <sub>Thread in which we execute the scenario.</sub></h2>
- * 
+ *
  * <p>
  * We retrieve the EJB for the scenario and use it to prepare a new scenario
  * execution. We then create a thread pool which size depends on the amount of
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * <p>
  * <i>Jan 8, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioExecutor extends Thread {
@@ -50,6 +50,8 @@ public class ScenarioExecutor extends Thread {
 	private boolean abort;
 
 	public ScenarioExecutor(ExecutionMetadata request, AgentService agentService) {
+
+		super("ScenarioExecutor");
 
 		this.request = request;
 		this.agentService = agentService;
@@ -77,6 +79,7 @@ public class ScenarioExecutor extends Thread {
 
 						try {
 							LOG.debug(">>> Scenario start.");
+							// Thread.sleep(1000);
 							scenarioBean.execute(execution);
 							LOG.debug("<<< Scenario end.");
 						} catch (Throwable e) {

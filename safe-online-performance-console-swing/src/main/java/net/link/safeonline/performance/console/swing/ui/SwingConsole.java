@@ -95,8 +95,9 @@ public class SwingConsole {
 		OlasPrefs olasPrefs = new OlasPrefs();
 
 		// Make these listen to agent selection events.
-		agentsList.addAgentSelectionListener(scenarioChooser);
-		agentsList.addAgentSelectionListener(executionInfo);
+		ConsoleData.addAgentSelectionListener(executionInfo);
+		ConsoleData.addAgentSelectionListener(scenarioChooser);
+		ConsoleData.addExecutionSelectionListener(scenarioChooser);
 
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout(

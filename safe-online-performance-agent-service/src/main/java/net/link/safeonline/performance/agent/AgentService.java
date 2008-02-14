@@ -44,10 +44,9 @@ public class AgentService implements AgentServiceMBean {
 
 	public AgentService() {
 
-		this.broadcaster = new AgentBroadcaster();
-		this.deployer = new ScenarioDeployer();
-		this.state = AgentState.RESET;
 		this.stats = new HashMap<Integer, ScenarioExecution>();
+		this.deployer = new ScenarioDeployer();
+		this.broadcaster = new AgentBroadcaster();
 	}
 
 	/**
@@ -95,6 +94,15 @@ public class AgentService implements AgentServiceMBean {
 	 */
 	public AgentState getState() {
 
+		// Check to see if the scenario bean was deployed behind our backs.
+		if (this.state == null || AgentState.RESET.equals(this.state))
+			try {
+				this.state = getScenarioBean() == null ? AgentState.RESET
+						: AgentState.DEPLOY;
+			} catch (NamingException e) {
+				this.state = AgentState.RESET;
+			}
+
 		return this.state;
 	}
 
@@ -105,8 +113,6 @@ public class AgentService implements AgentServiceMBean {
 
 		if (this.executor != null)
 			this.executor.halt();
-
-		this.transit = null;
 	}
 
 	/**
