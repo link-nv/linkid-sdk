@@ -25,7 +25,7 @@
 		<f:subview rendered="#{authSubscription.usageAgreement != null}">
 			<div class="usage_agreement">#{authSubscription.usageAgreement}</div>
 		</f:subview>
-		<h:form>
+		<h:form id="_subscription">
 			<h:commandButton action="#{authSubscription.subscribe}" id="confirm"
 				value="#{msgs.confirm}"
 				rendered="#{!empty authSubscription.usageAgreement}"

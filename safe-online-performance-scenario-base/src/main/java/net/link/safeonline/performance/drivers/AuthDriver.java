@@ -69,10 +69,10 @@ public class AuthDriver extends ProfileDriver {
 
 	static final Log LOG = LogFactory.getLog(AuthDriver.class);
 
-	private static final String ATTRIB = "j_id37";
-	private static final String EULA = "j_id29";
-	private static final String USER_PASS = "j_id31";
-	private static final String DEVICE = "j_id30";
+	private static final String DEVICE = "_main";
+	private static final String USER_PASS = "_username-password";
+	private static final String EULA = "_subscription";
+	private static final String ATTRIB = "_identity-confirmation";
 
 	private HttpClient client;
 	private List<ProfileData> iterationDatas;

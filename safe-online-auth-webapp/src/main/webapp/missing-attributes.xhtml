@@ -19,8 +19,7 @@
 
 		<p>#{msgs.missingAttributesMsg}</p>
 
-		<h:form>
-
+		<h:form id="_missing-attributes">
 			<f:facet name="aroundInvalidField">
 				<s:span styleClass="error" />
 			</f:facet>
@@ -40,8 +39,6 @@
 				value="#{msgs.saveaction}" styleClass="submit" />
 
 			<p><t:messages globalOnly="true" styleClass="error" /></p>
-
-
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">

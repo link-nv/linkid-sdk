@@ -14,7 +14,7 @@
 		<h3>#{msgs.login}: #{deviceRegistration.username}</h3>
 		<p>#{msgs.selectDevice}:</p>
 
-		<h:form>
+		<h:form id="_register-device">
 			<h:selectOneRadio value="#{deviceRegistration.device}"
 				required="true" styleClass="radio">
 				<f:selectItems value="#{allDevices}" />

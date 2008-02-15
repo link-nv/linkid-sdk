@@ -185,7 +185,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		if (execution == null) {
 			this.executionSelection.setToolTipText("N/A");
 			this.scenarioName.setText("N/A");
-			this.description.setText("N/A");
+			this.description.setText("<pre>N/A</pre>");
 			this.startTime.setText("N/A");
 			this.agents.setText("N/A");
 			this.workers.setText("N/A");
@@ -198,9 +198,10 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 					.setText(execution.getScenarioName() == null ? "N/A"
 							: execution.getScenarioName().replaceFirst(".*\\.",
 									""));
-			this.description.setText(execution.getDuration() == null ? "N/A"
-					: execution.getScenarioDescription().replaceAll("\n",
-							"<br>"));
+			this.description
+					.setText(execution.getDuration() == null ? "<pre>N/A</pre>"
+							: execution.getScenarioDescription().replaceAll(
+									"\n", "<br>"));
 			this.startTime.setText(DateFormat.getDateTimeInstance().format(
 					execution.getStart()));
 			this.agents.setText(String.format("%s agent%s", execution
@@ -209,8 +210,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 					.getWorkers(), execution.getWorkers() == 1 ? "" : "s"));
 			this.duration.setText(formatDuration(execution.getDuration()));
 			this.speed.setText(execution.getSpeed() == null ? "N/A" : String
-					.format("%.2f scenario%s/s", execution.getSpeed(),
-							execution.getSpeed() == 1 ? "" : "s"));
+					.format("%.2f scenario%s/s", execution.getSpeed() * 1000d,
+							execution.getSpeed() * 1000d == 1 ? "" : "s"));
 			this.hostname.setText(execution.getHostname());
 		}
 	}

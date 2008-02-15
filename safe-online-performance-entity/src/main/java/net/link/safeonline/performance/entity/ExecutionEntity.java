@@ -161,6 +161,8 @@ public class ExecutionEntity {
 
 	/**
 	 * Force a recalculation of the speed.
+	 *
+	 * TODO: This would all be a lot more efficient in a query.
 	 */
 	public void updateSpeed() {
 
@@ -170,10 +172,14 @@ public class ExecutionEntity {
 			SortedSet<AgentTimeEntity> sortedTimes = executionService
 					.getExecutionTimes(this);
 
-			this.speed = (sortedTimes.last().getAgentDuration()
-					+ sortedTimes.last().getStart() - sortedTimes.first()
-					.getStart())
-					/ (double) sortedTimes.size();
+			try {
+				this.speed = (double) sortedTimes.size()
+						/ (sortedTimes.last().getAgentDuration()
+								+ sortedTimes.last().getStart() - sortedTimes
+								.first().getStart());
+			} catch (NullPointerException e) {
+				this.speed = null;
+			}
 
 			this.dirtySpeed = false;
 		} catch (NamingException e) {

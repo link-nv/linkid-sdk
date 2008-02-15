@@ -51,11 +51,11 @@ public class BasicScenario implements Scenario {
 		return "This scenario implements all standard drivers.\n"
 				+ "It is basically a scenario used to test each part of OLAS available through the SDK.\n\n"
 				+ "The following drivers are loaded; in order of execution:<ul>"
-				+ "<li><h3>Authentication Driver:</h3>"
+				+ "<li><b>Authentication Driver:</b><br>"
 				+ "Logs the <i>'performance'</i> user in for the <i>'performance-application'</i> and accepts any EULA and attribute sharing requests.</li>"
-				+ "<li><h3>User ID Mapping Driver:</h3>"
+				+ "<li><b>User ID Mapping Driver:</b><br>"
 				+ "Maps the <i>'performance'</i> username to a UUID for the <i>'performance-application'</i>.</li>"
-				+ "<li><h3>Attribute Driver:</h3>"
+				+ "<li><b>Attribute Driver:</b><br>"
 				+ "Retrieves all accessible attributes of the <i>'performance'</i> user for the <i>'performance-application'</i>.</li>"
 				+ "</ul>";
 	}

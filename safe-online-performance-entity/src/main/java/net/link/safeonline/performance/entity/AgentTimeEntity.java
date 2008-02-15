@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 /**
- * <h2>{@link AgentTimeEntity} - Holds the time at which a scenario has been
+ * <h2>{@link AgentTimeEntity} - Holds the startTime at which a scenario has been
  * executed.</h2>
  *
  * <p>
@@ -30,7 +30,7 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
-	private Long time;
+	private Long startTime;
 	private Long olasDuration;
 	private Long agentDuration;
 	private Long startFreeMem;
@@ -41,7 +41,7 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 
 	public AgentTimeEntity() {
 
-		this.time = System.currentTimeMillis();
+		this.startTime = System.currentTimeMillis();
 	}
 
 	public AgentTimeEntity(ExecutionEntity execution) {
@@ -52,11 +52,11 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	}
 
 	/**
-	 * @return The time of this {@link AgentTimeEntity}.
+	 * @return The startTime of this {@link AgentTimeEntity}.
 	 */
 	public Long getStart() {
 
-		return this.time;
+		return this.startTime;
 	}
 
 	/**
@@ -88,12 +88,12 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	}
 
 	/**
-	 * Signal that the scenario started at the time contained in this entity has
+	 * Signal that the scenario started at the startTime contained in this entity has
 	 * just ended.
 	 */
 	public void stop() {
 
-		this.agentDuration = System.currentTimeMillis() - this.time;
+		this.agentDuration = System.currentTimeMillis() - this.startTime;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	 */
 	public int compareTo(AgentTimeEntity o) {
 
-		return this.time.compareTo(o.time);
+		return this.startTime.compareTo(o.startTime);
 	}
 
 	/**

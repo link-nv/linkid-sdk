@@ -25,7 +25,7 @@
 			rendered="#{!empty globalAgreementConfirmation.usageAgreement}">
 			<div class="usage_agreement">#{globalAgreementConfirmation.usageAgreement}</div>
 		</f:subview>
-		<h:form>
+		<h:form id="_global-confirmation">
 			<h:commandButton action="#{globalAgreementConfirmation.confirm}"
 				id="confirm" value="#{msgs.confirm}" styleClass="submit" />
 			<h:commandButton action="reject" id="reject" value="#{msgs.reject}"

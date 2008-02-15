@@ -16,7 +16,7 @@
 		<h2>#{msgs.login}: #{accountRegistration.login}</h2>
 		<p>#{msgs.selectDevice}:</p>
 
-		<h:form>
+		<h:form id="_new-user-device">
 			<h:selectOneRadio value="#{accountRegistration.device}"
 				layout="pageDirection" required="true" styleClass="radio">
 				<f:selectItems value="#{allDevices}" />
