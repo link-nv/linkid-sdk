@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  * <h2>{@link AgentTimeEntity} - Holds the time at which a scenario has been
@@ -35,9 +36,19 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	private Long startFreeMem;
 	private Long endFreeMem;
 
+	@ManyToOne
+	private ExecutionEntity execution;
+
 	public AgentTimeEntity() {
 
 		this.time = System.currentTimeMillis();
+	}
+
+	public AgentTimeEntity(ExecutionEntity execution) {
+
+		this();
+
+		this.execution = execution;
 	}
 
 	/**
@@ -127,5 +138,12 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	public Long getEndFreeMem() {
 
 		return this.endFreeMem;
+	}
+
+	/**
+	 * @return The execution of this {@link AgentTimeEntity}.
+	 */
+	public ExecutionEntity getExecution() {
+		return this.execution;
 	}
 }

@@ -33,6 +33,15 @@ public class DummyScenario implements Scenario {
 	private static final Log LOG = LogFactory.getLog(DummyScenario.class);
 	private static final long SLEEP_TIME = 1000;
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getDescription() {
+
+		return "This is a scenario stub which basically does nothing other than sleep for a specified amount of time (normally 1 second).\n\n"
+				+ "No drivers are loaded and some debug-level messages are logged upon preparing and executing the scenario.";
+	}
+
 	public void prepare(ExecutionEntity execution, AgentTimeEntity agentTime) {
 
 		LOG.debug("Prepare called.");

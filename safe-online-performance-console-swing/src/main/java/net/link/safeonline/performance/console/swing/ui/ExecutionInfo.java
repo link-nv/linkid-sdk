@@ -16,7 +16,9 @@
 package net.link.safeonline.performance.console.swing.ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DateFormat;
@@ -33,9 +35,11 @@ import java.util.TreeSet;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
@@ -63,7 +67,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author mbillemo
  */
 public class ExecutionInfo extends JPanel implements ChangeListener,
-		AgentSelectionListener, ItemListener {
+		AgentSelectionListener, ItemListener, Scrollable {
 
 	private static final long serialVersionUID = 1L;
 	private static final SimpleDateFormat labelTimeFormat = new SimpleDateFormat(
@@ -81,6 +85,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	private JLabel speed;
 	private JLabel hostname;
 	private JComboBox scenarioSelection;
+	private JEditorPane description;
 
 	public ExecutionInfo() {
 
@@ -91,7 +96,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		this.scenarioSelection = new JComboBox(
 				new Object[] { DEFAULT_SCENARIO });
 
-		FormLayout layout = new FormLayout("r:p:g, 10dlu, p:g");
+		FormLayout layout = new FormLayout("r:0dlu:g, 10dlu, 0dlu:g");
 		layout.setColumnGroups(new int[][] { { 1, 3 } });
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
 		builder.setDefaultDialogBorder();
@@ -122,6 +127,9 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		builder.append("Average Speed:", this.speed = new JLabel());
 		builder.append("OLAS Server Hostname:", this.hostname = new JLabel());
 
+		builder.appendSeparator("Description:");
+		builder.append(this.description = new JEditorPane("text/html", ""), 3);
+
 		UIManager.put("Label.font", originalDefault);
 
 		setExecution(null);
@@ -135,6 +143,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
 		this.scenarioName.setHorizontalAlignment(SwingConstants.CENTER);
 		this.scenarioName.setFont(this.scenarioName.getFont().deriveFont(36f));
+
+		this.description.setEditable(false);
 	}
 
 	/**
@@ -175,6 +185,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		if (execution == null) {
 			this.executionSelection.setToolTipText("N/A");
 			this.scenarioName.setText("N/A");
+			this.description.setText("N/A");
 			this.startTime.setText("N/A");
 			this.agents.setText("N/A");
 			this.workers.setText("N/A");
@@ -183,8 +194,13 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			this.hostname.setText("N/A");
 		} else {
 			this.executionSelection.setToolTipText(execution.toString());
-			this.scenarioName.setText(execution.getScenario().replaceFirst(
-					".*\\.", ""));
+			this.scenarioName
+					.setText(execution.getScenarioName() == null ? "N/A"
+							: execution.getScenarioName().replaceFirst(".*\\.",
+									""));
+			this.description.setText(execution.getDuration() == null ? "N/A"
+					: execution.getScenarioDescription().replaceAll("\n",
+							"<br>"));
 			this.startTime.setText(DateFormat.getDateTimeInstance().format(
 					execution.getStart()));
 			this.agents.setText(String.format("%s agent%s", execution
@@ -193,8 +209,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 					.getWorkers(), execution.getWorkers() == 1 ? "" : "s"));
 			this.duration.setText(formatDuration(execution.getDuration()));
 			this.speed.setText(execution.getSpeed() == null ? "N/A" : String
-					.format("%.2f scenario%s/s", execution
-					.getSpeed(), execution.getSpeed() == 1 ? "" : "s"));
+					.format("%.2f scenario%s/s", execution.getSpeed(),
+							execution.getSpeed() == 1 ? "" : "s"));
 			this.hostname.setText(execution.getHostname());
 		}
 	}
@@ -281,6 +297,9 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		for (String scenario : commonScenarios)
 			this.scenarioSelection.addItem(scenario);
 		this.scenarioSelection.setSelectedItem(selectedItem);
+
+		// Make sure to update the execution information.
+		setExecution(ConsoleData.getExecution());
 	}
 
 	private boolean containsExecution(Set<ScenarioExecution> set,
@@ -346,5 +365,47 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			output.replace(lastComma, lastComma + 1, " and");
 
 		return output.toString();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Dimension getPreferredScrollableViewportSize() {
+
+		return getPreferredSize();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getScrollableBlockIncrement(Rectangle visibleRect,
+			int orientation, int direction) {
+
+		return 100;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean getScrollableTracksViewportHeight() {
+
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean getScrollableTracksViewportWidth() {
+
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getScrollableUnitIncrement(Rectangle visibleRect,
+			int orientation, int direction) {
+
+		return 10;
 	}
 }

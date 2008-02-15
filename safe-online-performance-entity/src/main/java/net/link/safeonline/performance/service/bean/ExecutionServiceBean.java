@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
@@ -86,6 +88,18 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
+	public SortedSet<AgentTimeEntity> getExecutionTimes(
+			ExecutionEntity execution) {
+
+		return new TreeSet<AgentTimeEntity>(this.em.createNamedQuery(
+				ExecutionEntity.getTimes).setParameter("execution", execution)
+				.getResultList());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public Set<DriverProfileEntity> getProfiles(int executionId) {
 
 		return this.ctx.getBusinessObject(ExecutionService.class).getExecution(
@@ -98,10 +112,9 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public AgentTimeEntity start(ExecutionEntity execution) {
 
-		AgentTimeEntity startTimeEntity = new AgentTimeEntity();
+		AgentTimeEntity startTimeEntity = new AgentTimeEntity(execution);
 		this.em.persist(startTimeEntity);
 
-		execution.getAgentTimes().add(startTimeEntity);
 		return startTimeEntity;
 	}
 }

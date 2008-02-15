@@ -15,6 +15,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -102,7 +103,7 @@ public class SwingConsole {
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout(
 				"p, 5dlu, 0:g, 5dlu, p",
-				"p, 5dlu, f:p:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
+				"p, 5dlu, f:0dlu:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
 		layout.setColumnGroups(new int[][] { { 1, 5 } });
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -111,8 +112,11 @@ public class SwingConsole {
 				+ ConsoleData.getAgentDiscoverer().getGroupName());
 		builder.nextRow();
 
+		JScrollPane executionInfoPane = new JScrollPane(executionInfo);
+		executionInfoPane.getViewport().setBackground(
+				executionInfo.getBackground());
 		final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				agentsList, executionInfo);
+				new JScrollPane(agentsList), executionInfoPane);
 		builder.append(split, 5);
 		builder.nextRow();
 

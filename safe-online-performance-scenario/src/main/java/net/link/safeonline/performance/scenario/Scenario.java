@@ -19,4 +19,10 @@ public interface Scenario extends Runnable {
 	 * Prepare execution drivers and load the keys.
 	 */
 	public void prepare(ExecutionEntity execution, AgentTimeEntity agentTime);
+
+	/**
+	 * Implement this method to provide am HTML formatted description string for
+	 * your scenario: You should explain what it does and how it works.
+	 */
+	public String getDescription();
 }

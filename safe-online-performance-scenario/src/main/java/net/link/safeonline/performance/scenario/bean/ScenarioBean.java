@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -216,9 +215,19 @@ public class ScenarioBean implements ScenarioLocal {
 				.getExecution(executionId);
 
 		return ExecutionMetadata.createResponse(execution.getId(), execution
-				.getScenarioName(), execution.getAgents(), execution
-				.getWorkers(), execution.getStartTime(), execution
-				.getDuration(), execution.getHostname(), execution.getSpeed());
+				.getScenarioName(),
+				getDescription(execution.getScenarioName()), execution
+						.getAgents(), execution.getWorkers(), execution
+						.getStartTime(), execution.getDuration(), execution
+						.getHostname(), execution.getSpeed());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getDescription(String scenario) {
+
+		return createScenario(scenario).getDescription();
 	}
 
 	/**
@@ -411,8 +420,8 @@ public class ScenarioBean implements ScenarioLocal {
 
 		// Create the scenario speed data.
 		List<TimeSeriesCollection> scenarioSpeedSets = new ArrayList<TimeSeriesCollection>();
-		SortedSet<AgentTimeEntity> agentTimes = new TreeSet<AgentTimeEntity>(
-				execution.getAgentTimes());
+		SortedSet<AgentTimeEntity> agentTimes = this.executionService
+				.getExecutionTimes(execution);
 		if (agentTimes.isEmpty())
 			LOG.warn("No scenario start times available.");
 

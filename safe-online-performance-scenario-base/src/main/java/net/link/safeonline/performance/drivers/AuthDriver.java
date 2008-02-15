@@ -180,7 +180,7 @@ public class AuthDriver extends ProfileDriver {
 
 	/**
 	 * Authenticate with OLAS's auth-webapp.
-	 * 
+	 *
 	 * @return The user's UUID.
 	 */
 	public String login(PrivateKeyEntry application, String applicationName,
@@ -258,8 +258,10 @@ public class AuthDriver extends ProfileDriver {
 				if (null == formNode
 						|| null == XPathAPI
 								.selectSingleNode(formNode,
-										"//input[@type='hidden' and @name='SAMLResponse']"))
+										"//input[@type='hidden' and @name='SAMLResponse']")) {
+					LOG.error("Unexpected reply:\n" + this.response);
 					throw new DriverException("Expected a SAMLResponse!");
+				}
 
 				// Retrieve and decode the SAML response.
 				String encodedSamlResponseValue = XPathAPI.eval(formNode,

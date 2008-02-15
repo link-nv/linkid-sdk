@@ -62,18 +62,18 @@ public class PDF {
 	public static boolean generate() {
 
 		// Download all charts.
-		Set<ConsoleAgent> agents = ConsoleData
-				.getSelectedAgents();
+		Set<ConsoleAgent> agents = ConsoleData.getSelectedAgents();
 		Map<ConsoleAgent, ScenarioExecution> agentCharts = new HashMap<ConsoleAgent, ScenarioExecution>(
 				agents.size());
 		for (ConsoleAgent agent : agents)
-			agentCharts.put(agent, agent.getStats(ConsoleData
-					.getExecution().getId()));
+			agentCharts.put(agent, agent.getStats(ConsoleData.getExecution()
+					.getId()));
 
 		// Calculate total execution speed.
 		double speed = 0;
 		for (ScenarioExecution execution : agentCharts.values())
-			speed += execution.getSpeed() * 1000d;
+			if (execution.getSpeed() != null)
+				speed += execution.getSpeed() * 1000d;
 
 		// Get execution metadata from the first agent.
 		ScenarioExecution execution = agentCharts.values().iterator().next();
@@ -118,8 +118,8 @@ public class PDF {
 			List<Cell> frontCells = new ArrayList<Cell>();
 			frontCells.add(new Cell(new Phrase(
 					"Safe Online:  Performance Testing", new Font(font, 40f))));
-			frontCells.add(new Cell(new Phrase(50f, execution.getScenario(),
-					new Font(font, 20f))));
+			frontCells.add(new Cell(new Phrase(50f,
+					execution.getScenarioName(), new Font(font, 20f))));
 			frontCells.add(new Cell(new Phrase(150f,
 					String.format("Started: %s at %s",
 							DateFormat.getDateInstance(DateFormat.LONG).format(

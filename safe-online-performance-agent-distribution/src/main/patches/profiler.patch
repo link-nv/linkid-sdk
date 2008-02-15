@@ -6,25 +6,25 @@
  fi
 +
 +# Eclipse Profiler
-+if [ -e "$HOME/eclipse-profiler/current/lib/libpiAgent.so" ]; then
++if [ -e "$HOME/profilers/active/active/lib/libpiAgent.so" ]; then
 +    JAVA_OPTS="$JAVA_OPTS -XrunpiAgent:server=enabled"
-+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/eclipse-profiler/current/lib"
++    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/profilers/active/active/lib"
 +fi
 +
 +# JBoss Profiler
-+if [ -e "$HOME/jboss-profiler/current/jvmti/native/linux/libjbossAgent.so" ]; then
++if [ -e "$HOME/profilers/active/active/native/linux/libjbossAgent.so" ]; then
 +    JAVA_OPTS="$JAVA_OPTS -agentlib:jbossAgent"
-+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/jboss-profiler/current/jvmti/native/linux"
++    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/profilers/active/active/native/linux"
 +fi
 +
 +# NetBeans Profiler
-+if [ -e "$HOME/netbeans-profiler/current/lib/deployed/jdk15/linux/libprofilerinterface.so" ]; then
-+    JAVA_OPTS="$JAVA_OPTS -agentpath:$HOME/netbeans-profiler/current/lib/deployed/jdk15/linux/libprofilerinterface.so=$HOME/netbeans-profiler/current/lib,5140"
++if [ -e "$HOME/profilers/active/active/lib/deployed/jdk15/linux/libprofilerinterface.so" ]; then
++    JAVA_OPTS="$JAVA_OPTS -agentpath:$HOME/profilers/active/active/lib/deployed/jdk15/linux/libprofilerinterface.so=$HOME/profilers/active/active/lib,5140"
 +fi
 +
 +# JProfiler Profiler 
-+if [ -e "$HOME/jprofiler-profiler/current/bin/linux-x86/libjprofiler.so" ]; then
-+    JAVA_OPTS="-agentlib:jprofilerti=port=8849,nowait,id=106,config=$HOME/jprofiler-profiler/config.xml  -Xbootclasspath/a:$HOME/jprofiler-profiler/current/bin/agent.jar $JAVA_OPTS"
-+    export LD_LIBRARY_PATH="$HOME/jprofiler-profiler/current/bin/linux-x86:$LD_LIBRARY_PATH"
++if [ -e "$HOME/profilers/active/active/bin/linux-x86/libjprofiler.so" ]; then
++    JAVA_OPTS="$JAVA_OPTS -agentlib:jprofilerti=port=8849 -Xbootclasspath/a:$HOME/profilers/active/active/bin/agent.jar"
++    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/profilers/active/active/bin/linux-x86"
 +fi
 +

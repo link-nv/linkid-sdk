@@ -43,6 +43,23 @@ public class BasicScenario implements Scenario {
 	private IdMappingDriver idDriver;
 	private AuthDriver authDriver;
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getDescription() {
+
+		return "This scenario implements all standard drivers.\n"
+				+ "It is basically a scenario used to test each part of OLAS available through the SDK.\n\n"
+				+ "The following drivers are loaded; in order of execution:<ul>"
+				+ "<li><h3>Authentication Driver:</h3>"
+				+ "Logs the <i>'performance'</i> user in for the <i>'performance-application'</i> and accepts any EULA and attribute sharing requests.</li>"
+				+ "<li><h3>User ID Mapping Driver:</h3>"
+				+ "Maps the <i>'performance'</i> username to a UUID for the <i>'performance-application'</i>.</li>"
+				+ "<li><h3>Attribute Driver:</h3>"
+				+ "Retrieves all accessible attributes of the <i>'performance'</i> user for the <i>'performance-application'</i>.</li>"
+				+ "</ul>";
+	}
+
 	public void prepare(ExecutionEntity execution, AgentTimeEntity agentTime) {
 
 		LOG.debug("retrieving performance keys..");

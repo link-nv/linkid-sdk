@@ -8,6 +8,7 @@ package net.link.safeonline.performance.service;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.ejb.Local;
 
@@ -61,5 +62,12 @@ public interface ExecutionService {
 	 * Retrieve all available execution IDs.
 	 */
 	public Set<Integer> getExecutions();
+
+	/**
+	 * Retrieve all {@link AgentTimeEntity}s linked to the given
+	 * {@link ExecutionEntity}.
+	 */
+	public SortedSet<AgentTimeEntity> getExecutionTimes(
+			ExecutionEntity execution);
 
 }

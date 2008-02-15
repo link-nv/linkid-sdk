@@ -132,7 +132,7 @@ public class Charts extends WindowAdapter {
 			label.setFont(label.getFont().deriveFont(30f));
 
 			header.add(label = new JLabel(String.format(
-					"Scenario: %s            ", execution.getScenario())));
+					"Scenario: %s            ", execution.getScenarioName())));
 			label.setFont(label.getFont().deriveFont(20f));
 
 			header.add(label = new JLabel(execution.getSpeed() == null ? "N/A"

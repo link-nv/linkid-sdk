@@ -44,8 +44,8 @@ public class ScenarioExecutor extends Thread {
 
 	static final Log LOG = LogFactory.getLog(ScenarioExecutor.class);
 
+	AgentService agentService;
 	private ExecutionMetadata request;
-	private AgentService agentService;
 	private ScheduledExecutorService pool;
 	private boolean abort;
 
@@ -60,6 +60,8 @@ public class ScenarioExecutor extends Thread {
 
 	@Override
 	public void run() {
+
+		boolean success = true;
 
 		try {
 			// Find the scenario bean.
@@ -107,22 +109,30 @@ public class ScenarioExecutor extends Thread {
 			}
 
 			// Don't generate stats if we were aborted.
-			if (this.abort) {
-				this.agentService.actionCompleted(false);
+			if (this.abort)
 				return;
-			}
-
-			// Notify the agent service of the scenario completion.
-			this.agentService.actionCompleted(true);
 
 			// Start fetching metadata and creating charts already.
-			this.agentService.getStats(execution);
+			Thread charter = new Thread("Charter") {
+				@Override
+				public void run() {
+
+					ScenarioExecutor.this.agentService.getStats(execution);
+				}
+			};
+			charter.setDaemon(true);
+			charter.start();
 		}
 
 		catch (Exception e) {
+			success = false;
+
 			this.agentService.setError(e);
-			this.agentService.actionCompleted(false);
 			LOG.error("Processing Scenario Execution Failed", e);
+		}
+
+		finally {
+			this.agentService.actionCompleted(!this.abort && success);
 		}
 	}
 

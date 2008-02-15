@@ -36,14 +36,16 @@ public class ScenarioExecution implements Serializable,
 	private Integer workers;
 	private Integer agents;
 	private String scenarioName;
+	private String scenarioDescription;
 	private Date startTime;
 
-	public ScenarioExecution(Integer id, String scenarioName, Integer agents,
-			Integer workers, Date startTime, Long duration, String hostname,
-			Double speed) {
+	public ScenarioExecution(Integer id, String scenarioName,
+			String scenarioDescription, Integer agents, Integer workers,
+			Date startTime, Long duration, String hostname, Double speed) {
 
 		this.id = id;
 		this.scenarioName = scenarioName;
+		this.scenarioDescription = scenarioDescription;
 		this.agents = agents;
 		this.workers = workers;
 		this.startTime = startTime;
@@ -92,9 +94,14 @@ public class ScenarioExecution implements Serializable,
 		return this.agents;
 	}
 
-	public String getScenario() {
+	public String getScenarioName() {
 
 		return this.scenarioName;
+	}
+
+	public String getScenarioDescription() {
+
+		return this.scenarioDescription;
 	}
 
 	public Date getStart() {
@@ -131,9 +138,9 @@ public class ScenarioExecution implements Serializable,
 	@Override
 	public ScenarioExecution clone() {
 
-		return new ScenarioExecution(this.id, this.scenarioName, this.agents,
-				this.workers, this.startTime, this.duration, this.hostname,
-				this.speed);
+		return new ScenarioExecution(this.id, this.scenarioName,
+				this.scenarioDescription, this.agents, this.workers,
+				this.startTime, this.duration, this.hostname, this.speed);
 	}
 
 	/**

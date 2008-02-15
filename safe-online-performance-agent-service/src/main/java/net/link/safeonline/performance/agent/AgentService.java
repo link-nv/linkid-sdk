@@ -111,8 +111,11 @@ public class AgentService implements AgentServiceMBean {
 	 */
 	public void resetTransit() {
 
-		if (this.executor != null)
+		if (this.executor != null) {
 			this.executor.halt();
+			this.executor = null;
+		} else
+			this.transit = null;
 	}
 
 	/**
@@ -220,6 +223,7 @@ public class AgentService implements AgentServiceMBean {
 		else if (success)
 			this.state = this.transit;
 
+		this.executor = null;
 		this.transit = null;
 	}
 
@@ -294,13 +298,22 @@ public class AgentService implements AgentServiceMBean {
 	private ScenarioExecution getExecution(Integer executionId, boolean charts)
 			throws NamingException {
 
+		if (executionId == null)
+			return null;
+
+		ScenarioLocal scenarioBean = getScenarioBean();
 		ScenarioExecution execution = this.stats.get(executionId);
+
 		if (execution == null) {
-			ExecutionMetadata metaData = getScenarioBean()
+			if (scenarioBean == null)
+				return null;
+
+			ExecutionMetadata metaData = scenarioBean
 					.getExecutionMetadata(executionId);
 
 			execution = new ScenarioExecution(executionId, metaData
-					.getScenarioName(), metaData.getAgents(), metaData
+					.getScenarioName(), metaData.getScenarioDescription(),
+					metaData.getAgents(), metaData
 					.getWorkers(), metaData.getStartTime(), metaData
 					.getDuration(), metaData.getHostname(), metaData.getSpeed());
 		}
@@ -308,9 +321,10 @@ public class AgentService implements AgentServiceMBean {
 		if (charts)
 			synchronized (execution) {
 				if (execution.getCharts() == null)
-					execution.setCharts(charts ? getScenarioBean()
+					execution.setCharts(charts ? scenarioBean
 							.createCharts(executionId) : null);
 			}
+
 		else if (execution.getCharts() != null)
 			execution = execution.clone();
 

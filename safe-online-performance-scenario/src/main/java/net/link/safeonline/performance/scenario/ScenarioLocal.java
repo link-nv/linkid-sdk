@@ -54,6 +54,12 @@ public interface ScenarioLocal {
 	public ExecutionMetadata getExecutionMetadata(int execution);
 
 	/**
+	 * Retrieve an HTML formatted description string for the given scenario.
+	 */
+	public String getDescription(String scenario);
+
+
+	/**
 	 * Create charts on data collected in this scenario.
 	 */
 	public Map<String, byte[][]> createCharts(int executionId);

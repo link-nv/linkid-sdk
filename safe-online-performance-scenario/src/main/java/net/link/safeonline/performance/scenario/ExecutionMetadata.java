@@ -40,6 +40,7 @@ public class ExecutionMetadata {
 	private String hostname;
 	private Double speed;
 	private String scenarioName;
+	private String scenarioDescription;
 
 	/**
 	 * Use this constructor to create an execution initiation request.
@@ -48,7 +49,7 @@ public class ExecutionMetadata {
 			Integer agents, Integer workers, Date startTime, Long duration,
 			String hostname) {
 
-		return new ExecutionMetadata(null, scenarioName, agents, workers,
+		return new ExecutionMetadata(null, scenarioName, null, agents, workers,
 				startTime, duration, hostname, null);
 	}
 
@@ -56,22 +57,25 @@ public class ExecutionMetadata {
 	 * Use this constructor to create an execution result response.
 	 */
 	public static ExecutionMetadata createResponse(Integer executionId,
-			String scenarioName, Integer agents, Integer workers,
-			Date startTime, Long duration, String hostname, Double speed) {
+			String scenarioName, String scenarioDescription, Integer agents,
+			Integer workers, Date startTime, Long duration, String hostname,
+			Double speed) {
 
-		return new ExecutionMetadata(executionId, scenarioName, agents,
-				workers, startTime, duration, hostname, speed);
+		return new ExecutionMetadata(executionId, scenarioName,
+				scenarioDescription, agents, workers, startTime, duration,
+				hostname, speed);
 	}
 
 	/**
 	 * Complete constructor.
 	 */
-	private ExecutionMetadata(Integer id, String scenarioName, Integer agents,
-			Integer workers, Date startTime, Long duration, String hostname,
-			Double speed) {
+	private ExecutionMetadata(Integer id, String scenarioName,
+			String scenarioDescription, Integer agents, Integer workers,
+			Date startTime, Long duration, String hostname, Double speed) {
 
 		this.id = id;
 		this.scenarioName = scenarioName;
+		this.scenarioDescription = scenarioDescription;
 		this.agents = agents;
 		this.workers = workers;
 		this.startTime = startTime;
@@ -88,6 +92,11 @@ public class ExecutionMetadata {
 	public String getScenarioName() {
 
 		return this.scenarioName;
+	}
+
+	public String getScenarioDescription() {
+
+		return this.scenarioDescription;
 	}
 
 	public void setScenarioName(String scenarioName) {
