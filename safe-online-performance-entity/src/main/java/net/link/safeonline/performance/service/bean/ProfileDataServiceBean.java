@@ -9,12 +9,15 @@ package net.link.safeonline.performance.service.bean;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.performance.entity.AgentTimeEntity;
+import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.service.ProfileDataService;
@@ -42,7 +45,8 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public ProfileDataEntity addData(ProfileData data, AgentTimeEntity agentTime) {
+	public ProfileDataEntity addData(DriverProfileEntity profile,
+			ProfileData data, AgentTimeEntity agentTime) {
 
 		Set<MeasurementEntity> measurements = new HashSet<MeasurementEntity>();
 		for (Map.Entry<String, Long> measurement : data.getMeasurements()
@@ -54,10 +58,22 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 			measurements.add(measurementEntity);
 		}
 
-		ProfileDataEntity dataEntity = new ProfileDataEntity(agentTime
+		ProfileDataEntity dataEntity = new ProfileDataEntity(profile, agentTime
 				.getStart(), measurements);
 		this.em.persist(dataEntity);
 
 		return dataEntity;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public SortedSet<ProfileDataEntity> getProfileData(
+			DriverProfileEntity profile) {
+
+		return new TreeSet<ProfileDataEntity>(this.em.createNamedQuery(
+				ProfileDataEntity.getByProfile)
+				.setParameter("profile", profile).getResultList());
 	}
 }

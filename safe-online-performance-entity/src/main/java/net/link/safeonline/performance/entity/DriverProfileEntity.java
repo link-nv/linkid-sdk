@@ -6,16 +6,12 @@
  */
 package net.link.safeonline.performance.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 
 /**
  * <h2>{@link DriverProfileEntity} - Links the {@link ProfileDataEntity}s that
@@ -46,25 +42,13 @@ public class DriverProfileEntity {
 	@SuppressWarnings("unused")
 	private ExecutionEntity execution;
 
-	@OneToMany
-	private Set<ProfileDataEntity> profileData;
-
-	@OneToMany
-	private Set<DriverExceptionEntity> profileError;
-
 	public DriverProfileEntity() {
-
-		this.profileData = new HashSet<ProfileDataEntity>();
-		this.profileError = new HashSet<DriverExceptionEntity>();
 	}
 
 	public DriverProfileEntity(String driverName, ExecutionEntity execution) {
 
 		this.driverName = driverName;
 		this.execution = execution;
-
-		this.profileData = new HashSet<ProfileDataEntity>();
-		this.profileError = new HashSet<DriverExceptionEntity>();
 	}
 
 	/**
@@ -73,37 +57,5 @@ public class DriverProfileEntity {
 	public String getDriverName() {
 
 		return this.driverName;
-	}
-
-	/**
-	 * @return The data collected in this driver's profile.
-	 */
-	public Set<ProfileDataEntity> getProfileData() {
-
-		return this.profileData;
-	}
-
-	/**
-	 * @return The problems collected in this driver's profile.
-	 */
-	public Set<DriverExceptionEntity> getProfileError() {
-
-		return this.profileError;
-	}
-
-	/**
-	 * Register profiling data of a single driver execution.
-	 */
-	public void register(ProfileDataEntity data) {
-
-		this.profileData.add(data);
-	}
-
-	/**
-	 * Register a problem that occurred during a single driver execution.
-	 */
-	public void register(DriverExceptionEntity error) {
-
-		this.profileError.add(error);
 	}
 }

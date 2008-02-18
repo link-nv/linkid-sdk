@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.naming.NamingException;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -153,14 +154,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	public void stateChanged(ChangeEvent e) {
 
 		if (this.executionSelection.equals(e.getSource()))
-			synchronized (this.executions) {
-				try {
-					setExecution(this.executions.get(this.executionSelection
-							.getValue()));
-				} catch (IndexOutOfBoundsException err) {
-					setExecution(null);
-				}
-			}
+			updateExecutionSelection();
 	}
 
 	/**
@@ -176,6 +170,18 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			else
 				ConsoleData.setScenarioName(this.scenarioSelection
 						.getSelectedItem().toString());
+	}
+
+	private void updateExecutionSelection() {
+
+		synchronized (this.executions) {
+			try {
+				setExecution(this.executions.get(this.executionSelection
+						.getValue()));
+			} catch (IndexOutOfBoundsException err) {
+				setExecution(null);
+			}
+		}
 	}
 
 	private void setExecution(ScenarioExecution execution) {
@@ -236,34 +242,38 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		// and all scenarios with the same name.
 		SortedSet<String> commonScenarios = new TreeSet<String>();
 		SortedSet<ScenarioExecution> commonExecutions = new TreeSet<ScenarioExecution>();
-		for (ConsoleAgent agent : selectedAgents) {
-			Set<ScenarioExecution> agentExecutions = agent.getExecutions();
-			Set<String> agentScenarios = agent.getScenarios();
+		for (ConsoleAgent agent : selectedAgents)
+			try {
+				Set<ScenarioExecution> agentExecutions = agent.getExecutions();
+				Set<String> agentScenarios = agent.getScenarios();
 
-			if (agentExecutions == null)
-				agentExecutions = new HashSet<ScenarioExecution>();
-			if (agentScenarios == null)
-				agentScenarios = new HashSet<String>();
+				if (agentExecutions == null)
+					agentExecutions = new HashSet<ScenarioExecution>();
+				if (agentScenarios == null)
+					agentScenarios = new HashSet<String>();
 
-			if (commonExecutions.isEmpty())
-				commonExecutions.addAll(agentExecutions);
+				if (commonExecutions.isEmpty())
+					commonExecutions.addAll(agentExecutions);
 
-			else {
-				Iterator<ScenarioExecution> it = commonExecutions.iterator();
-				while (it.hasNext())
-					if (!containsExecution(agentExecutions, it.next()))
-						it.remove();
+				else {
+					Iterator<ScenarioExecution> it = commonExecutions
+							.iterator();
+					while (it.hasNext())
+						if (!containsExecution(agentExecutions, it.next()))
+							it.remove();
+				}
+
+				if (commonScenarios.isEmpty())
+					commonScenarios.addAll(agentScenarios);
+				else {
+					Iterator<String> it = commonScenarios.iterator();
+					while (it.hasNext())
+						if (!agentScenarios.contains(it.next()))
+							it.remove();
+				}
+			} catch (NamingException e) {
+				System.err.println(agent + " has no scenario available.");
 			}
-
-			if (commonScenarios.isEmpty())
-				commonScenarios.addAll(agentScenarios);
-			else {
-				Iterator<String> it = commonScenarios.iterator();
-				while (it.hasNext())
-					if (!agentScenarios.contains(it.next()))
-						it.remove();
-			}
-		}
 
 		synchronized (this.executions) {
 			this.executions.clear();
@@ -291,6 +301,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		int maxValue = Math.max(0, commonExecutions.size() - 1);
 		this.executionSelection.getModel().setRangeProperties(maxValue, 0, 0,
 				maxValue, false);
+		updateExecutionSelection();
 
 		Object selectedItem = this.scenarioSelection.getSelectedItem();
 		this.scenarioSelection.removeAllItems();
@@ -298,9 +309,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		for (String scenario : commonScenarios)
 			this.scenarioSelection.addItem(scenario);
 		this.scenarioSelection.setSelectedItem(selectedItem);
-
-		// Make sure to update the execution information.
-		setExecution(ConsoleData.getExecution());
 	}
 
 	private boolean containsExecution(Set<ScenarioExecution> set,

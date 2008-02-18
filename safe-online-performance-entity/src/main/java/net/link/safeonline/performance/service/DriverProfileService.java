@@ -45,17 +45,4 @@ public interface DriverProfileService {
 	 */
 	public DriverProfileEntity getProfile(String driverName,
 			ExecutionEntity execution);
-
-	/**
-	 * Register new profiled data with the given driver profile.
-	 */
-	public void register(DriverProfileEntity driverProfile,
-			ProfileDataEntity data);
-
-	/**
-	 * Register a new problem with the given driver profile.
-	 */
-	public void register(DriverProfileEntity driverProfile,
-			DriverExceptionEntity exception);
-
 }

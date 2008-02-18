@@ -13,7 +13,6 @@ import javax.naming.NoInitialContextException;
 
 import net.link.safeonline.performance.DriverException;
 import net.link.safeonline.performance.entity.AgentTimeEntity;
-import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.service.DriverExceptionService;
@@ -88,8 +87,8 @@ public abstract class ProfileDriver {
 
 	protected void report(ProfileData profileData) {
 
-		this.driverProfileService.register(this.profile,
-				this.profileDataService.addData(profileData, this.agentTime));
+		this.profileDataService.addData(this.profile, profileData,
+				this.agentTime);
 		this.agentTime.addOlasTime(profileData
 				.getMeasurement(ProfileData.REQUEST_DELTA_TIME));
 	}
@@ -104,9 +103,7 @@ public abstract class ProfileDriver {
 		else
 			driverException = new DriverException(error);
 
-		DriverExceptionEntity exceptionEntity = this.driverExceptionService
-				.addException(driverException);
-		this.driverProfileService.register(this.profile, exceptionEntity);
+		this.driverExceptionService.addException(this.profile, driverException);
 	}
 
 	<S> S getService(Class<S> service, String binding) {

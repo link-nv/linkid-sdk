@@ -13,10 +13,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.NoResultException;
 
-import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.service.DriverProfileService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -78,23 +76,5 @@ public class DriverProfileServiceBean extends ProfilingServiceBean implements
 					.addProfile(driverName, execution);
 		}
 
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void register(DriverProfileEntity driverProfile,
-			ProfileDataEntity data) {
-
-		driverProfile.register(data);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void register(DriverProfileEntity driverProfile,
-			DriverExceptionEntity exception) {
-
-		driverProfile.register(exception);
 	}
 }

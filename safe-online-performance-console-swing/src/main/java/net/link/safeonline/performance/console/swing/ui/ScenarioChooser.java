@@ -171,8 +171,7 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	public void caretUpdate(CaretEvent e) {
 
 		if (e.getSource().equals(this.scenarioField))
-			for (ConsoleAgent agent : ConsoleData.getAgents().values())
-				agent.fireAgentStatus();
+			buttonToggler(null != getScenarioFile(), this.uploadButton);
 	}
 
 	/**

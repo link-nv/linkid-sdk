@@ -6,17 +6,16 @@
  */
 package net.link.safeonline.performance.console.swing.data;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import javax.naming.NamingException;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.Agent;
 import net.link.safeonline.performance.console.jgroups.AgentState;
-import net.link.safeonline.performance.console.swing.ui.AgentStatusListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +34,6 @@ public class ConsoleAgent implements Agent {
 	private static final long serialVersionUID = 1L;
 	static final Log LOG = LogFactory.getLog(ConsoleAgent.class);
 
-	private List<AgentStatusListener> agentStatusListeners;
 	private ScenarioRemoting agentRemoting;
 	private Address agentAddress;
 	private boolean healthy;
@@ -51,7 +49,6 @@ public class ConsoleAgent implements Agent {
 	 */
 	public ConsoleAgent(Address agentAddress) {
 
-		this.agentStatusListeners = new ArrayList<AgentStatusListener>();
 		this.agentRemoting = ConsoleData.getRemoting();
 		this.agentAddress = agentAddress;
 		this.healthy = true;
@@ -73,31 +70,9 @@ public class ConsoleAgent implements Agent {
 	public void setHealthy(boolean healthy) {
 
 		this.healthy = healthy;
-		fireAgentStatus();
+		ConsoleData.fireAgentStatus(this);
 	}
 
-	/**
-	 * Define an object that should be notified when this agent changes. This
-	 * should be an object that can fire the appropriate events in the UI
-	 * required to render the change in this {@link ConsoleAgent}'s status.
-	 */
-	public void addAgentStatusListener(AgentStatusListener agentStatusListener) {
-
-		if (!this.agentStatusListeners.contains(agentStatusListener))
-			this.agentStatusListeners.add(agentStatusListener);
-	}
-
-	/**
-	 * Manually fire an agent status event forcing the UI to update itself for
-	 * this agent.
-	 *
-	 * @param descr
-	 */
-	public void fireAgentStatus() {
-
-		for (AgentStatusListener listener : this.agentStatusListeners)
-			listener.statusChanged(this);
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -197,7 +172,7 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ScenarioExecution> getExecutions() {
+	public Set<ScenarioExecution> getExecutions() throws NamingException {
 
 		return this.executions;
 	}
@@ -224,16 +199,22 @@ public class ConsoleAgent implements Agent {
 
 	public void updateState() {
 
-		notifyOnChange(this.transit, this.transit = this.agentRemoting
-				.getTransit(this.agentAddress));
-		notifyOnChange(this.state, this.state = this.agentRemoting
-				.getState(this.agentAddress));
-		notifyOnChange(this.error, this.error = this.agentRemoting
-				.getError(this.agentAddress));
-		notifyOnChange(this.scenarios, this.scenarios = this.agentRemoting
-				.getScenarios(this.agentAddress));
-		notifyOnChange(this.executions, this.executions = this.agentRemoting
-				.getExecutions(this.agentAddress));
+		try {
+			notifyOnChange(this.transit, this.transit = this.agentRemoting
+					.getTransit(this.agentAddress));
+			notifyOnChange(this.state, this.state = this.agentRemoting
+					.getState(this.agentAddress));
+			notifyOnChange(this.error, this.error = this.agentRemoting
+					.getError(this.agentAddress));
+			notifyOnChange(this.scenarios, this.scenarios = this.agentRemoting
+					.getScenarios(this.agentAddress));
+			notifyOnChange(this.executions,
+					this.executions = this.agentRemoting
+							.getExecutions(this.agentAddress));
+		}
+
+		catch (Exception e) {
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -249,11 +230,11 @@ public class ConsoleAgent implements Agent {
 
 		if (fixed1 != null) {
 			if (fixed2 == null || !fixed1.equals(fixed2))
-				fireAgentStatus();
+				ConsoleData.fireAgentStatus(this);
 		}
 
 		else if (fixed2 != null)
-			fireAgentStatus();
+			ConsoleData.fireAgentStatus(this);
 	}
 
 	private class UpdateAgentState extends Thread {
@@ -272,10 +253,7 @@ public class ConsoleAgent implements Agent {
 		public void run() {
 
 			while (true) {
-				try {
-					updateState();
-				} catch (Exception e) {
-				}
+				updateState();
 
 				try {
 					Thread.sleep(INTERVAL);

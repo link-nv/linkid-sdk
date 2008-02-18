@@ -45,7 +45,9 @@ import net.link.safeonline.performance.scenario.ExecutionMetadata;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.ScenarioController;
 import net.link.safeonline.performance.scenario.script.RegisteredScripts;
+import net.link.safeonline.performance.service.DriverExceptionService;
 import net.link.safeonline.performance.service.ExecutionService;
+import net.link.safeonline.performance.service.ProfileDataService;
 import net.link.safeonline.util.performance.ProfileData;
 
 import org.apache.commons.logging.Log;
@@ -121,6 +123,12 @@ public class ScenarioControllerBean implements ScenarioController {
 
 	@EJB
 	private ExecutionService executionService;
+
+	@EJB
+	private ProfileDataService profileDataService;
+
+	@EJB
+	private DriverExceptionService driverExceptionService;
 
 	@Resource
 	SessionContext ctx;
@@ -260,10 +268,12 @@ public class ScenarioControllerBean implements ScenarioController {
 		Map<String, List<byte[]>> driversCharts = new LinkedHashMap<String, List<byte[]>>(
 				profiles.size());
 		for (DriverProfileEntity profile : profiles) {
+			Set<ProfileDataEntity> profileData = this.profileDataService
+					.getProfileData(profile);
 
 			// Invalid / empty driver profiles.
 			if (profile.getDriverName() == null
-					|| profile.getProfileData().isEmpty()) {
+					|| profileData.isEmpty()) {
 				LOG.warn("Invalid/empty driver profile: '"
 						+ profile.getDriverName() + "'!");
 				continue;
@@ -279,7 +289,7 @@ public class ScenarioControllerBean implements ScenarioController {
 			XYSeries beforeMemorySet = new XYSeries("Memory Before", true,
 					false);
 
-			for (ProfileDataEntity data : profile.getProfileData()) {
+			for (ProfileDataEntity data : profileData) {
 
 				if (data.getMeasurements() == null || data.getStartTime() == 0)
 					continue;
@@ -337,7 +347,8 @@ public class ScenarioControllerBean implements ScenarioController {
 				}
 			}
 
-			for (DriverExceptionEntity error : profile.getProfileError())
+			for (DriverExceptionEntity error : this.driverExceptionService
+					.getProfileErrors(profile))
 				errorsSet.addValue((Number) 1, error.getMessage(), timeFormat
 						.format(error.getOccurredTime()));
 
@@ -499,7 +510,8 @@ public class ScenarioControllerBean implements ScenarioController {
 						profile.getDriverName(), true, false);
 				scenarioDuration.addSeries(profileDuration);
 
-				for (ProfileDataEntity data : profile.getProfileData()) {
+				for (ProfileDataEntity data : this.profileDataService
+						.getProfileData(profile)) {
 					long driverDuration = data
 							.getMeasurement(ProfileData.REQUEST_DELTA_TIME);
 

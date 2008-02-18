@@ -11,11 +11,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Set;
 
 import javax.management.JMException;
+import javax.management.MBeanException;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -76,7 +77,7 @@ public class ScenarioRemoting {
 	 * Invoke a method on the agent service deployed at AP of the given agent.
 	 */
 	private Object invokeFor(Address agent, String methodName,
-			Object[] arguments, String[] argumentTypes) {
+			Object[] arguments, String[] argumentTypes) throws MBeanException {
 
 		try {
 			InitialContext context = getInitialContext(agent);
@@ -88,6 +89,10 @@ public class ScenarioRemoting {
 		catch (IOException e) {
 			LOG.error("Could not talk to the MBean Server.", e);
 			throw new RuntimeException(e);
+		}
+
+		catch (MBeanException e) {
+			throw e;
 		}
 
 		catch (JMException e) {
@@ -122,8 +127,12 @@ public class ScenarioRemoting {
 			throw new RuntimeException(e);
 		}
 
-		invokeFor(agent, "upload", new Object[] { applicationData },
-				new String[] { "[B" });
+		try {
+			invokeFor(agent, "upload", new Object[] { applicationData },
+					new String[] { "[B" });
+		} catch (MBeanException e) {
+			LOG.error("Server error during upload!", e);
+		}
 	}
 
 	/**
@@ -131,7 +140,11 @@ public class ScenarioRemoting {
 	 */
 	public void deploy(Address agent) {
 
-		invokeFor(agent, "deploy", new Object[] {}, new String[] {});
+		try {
+			invokeFor(agent, "deploy", new Object[] {}, new String[] {});
+		} catch (MBeanException e) {
+			LOG.error("Server error during deploy!", e);
+		}
 	}
 
 	/**
@@ -140,20 +153,15 @@ public class ScenarioRemoting {
 	public void execute(Address agent, String scenarioName, Integer agents,
 			Integer workers, Long duration, String olasHost, Date startTime) {
 
-		invokeFor(agent, "execute", new Object[] { scenarioName, agents,
-				workers, duration, olasHost, startTime }, new String[] {
-				String.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), Long.class.getName(),
-				String.class.getName(), Date.class.getName() });
-	}
-
-	/**
-	 * @see Agent#actionCompleted(boolean)
-	 */
-	public void actionCompleted(Address agent, Boolean success) {
-
-		invokeFor(agent, "actionCompleted", new Object[] { success },
-				new String[] { Boolean.class.getName() });
+		try {
+			invokeFor(agent, "execute", new Object[] { scenarioName, agents,
+					workers, duration, olasHost, startTime }, new String[] {
+					String.class.getName(), Integer.class.getName(),
+					Integer.class.getName(), Long.class.getName(),
+					String.class.getName(), Date.class.getName() });
+		} catch (MBeanException e) {
+			LOG.error("Server error during execute!", e);
+		}
 	}
 
 	/**
@@ -161,27 +169,15 @@ public class ScenarioRemoting {
 	 */
 	public boolean actionRequest(Address agent, AgentState action) {
 
-		return (Boolean) invokeFor(agent, "actionRequest",
-				new Object[] { action }, new String[] { AgentState.class
-						.getName(), });
-	}
+		try {
+			return (Boolean) invokeFor(agent, "actionRequest",
+					new Object[] { action }, new String[] { AgentState.class
+							.getName(), });
+		} catch (MBeanException e) {
+			LOG.error("Server error during action request!", e);
 
-	/**
-	 * @see Agent#describeState()
-	 */
-	public String describeState(Address agent) {
-
-		return (String) invokeFor(agent, "describeState", new Object[] {},
-				new String[] {});
-	}
-
-	/**
-	 * @see Agent#getAction()
-	 */
-	public AgentState getAction(Address agent) {
-
-		return (AgentState) invokeFor(agent, "getAction", new Object[] {},
-				new String[] {});
+			return false;
+		}
 	}
 
 	/**
@@ -189,9 +185,15 @@ public class ScenarioRemoting {
 	 */
 	public ScenarioExecution getStats(Address agent, Integer execution) {
 
-		return (ScenarioExecution) invokeFor(agent, "getStats",
-				new Object[] { execution }, new String[] { Integer.class
-						.getName() });
+		try {
+			return (ScenarioExecution) invokeFor(agent, "getStats",
+					new Object[] { execution }, new String[] { Integer.class
+							.getName() });
+		} catch (MBeanException e) {
+			LOG.error("Server error during stats retrieval!", e);
+
+			return null;
+		}
 	}
 
 	/**
@@ -199,8 +201,14 @@ public class ScenarioRemoting {
 	 */
 	public AgentState getState(Address agent) {
 
-		return (AgentState) invokeFor(agent, "getState", new Object[] {},
-				new String[] {});
+		try {
+			return (AgentState) invokeFor(agent, "getState", new Object[] {},
+					new String[] {});
+		} catch (MBeanException e) {
+			LOG.error("Server error during state retrieval!", e);
+
+			return AgentState.RESET;
+		}
 	}
 
 	/**
@@ -208,8 +216,14 @@ public class ScenarioRemoting {
 	 */
 	public AgentState getTransit(Address agent) {
 
-		return (AgentState) invokeFor(agent, "getTransit", new Object[] {},
-				new String[] {});
+		try {
+			return (AgentState) invokeFor(agent, "getTransit", new Object[] {},
+					new String[] {});
+		} catch (MBeanException e) {
+			LOG.error("Server error during transit retrieval!", e);
+
+			return null;
+		}
 	}
 
 	/**
@@ -217,18 +231,32 @@ public class ScenarioRemoting {
 	 */
 	public Exception getError(Address agent) {
 
-		return (Exception) invokeFor(agent, "getError", new Object[] {},
-				new String[] {});
+		try {
+			return (Exception) invokeFor(agent, "getError", new Object[] {},
+					new String[] {});
+		} catch (MBeanException e) {
+			return e;
+		}
 	}
 
 	/**
 	 * @see Agent#getExecutions()
 	 */
 	@SuppressWarnings("unchecked")
-	public Set<ScenarioExecution> getExecutions(Address agent) {
+	public Set<ScenarioExecution> getExecutions(Address agent)
+			throws NamingException {
 
-		return (Set<ScenarioExecution>) invokeFor(agent, "getExecutions",
-				new Object[] {}, new String[] {});
+		try {
+			return (Set<ScenarioExecution>) invokeFor(agent, "getExecutions",
+					new Object[] {}, new String[] {});
+		} catch (MBeanException e) {
+			if (e.getCause() instanceof NamingException)
+				throw (NamingException) e.getCause();
+
+			LOG.error("Server error during execution retrieval!", e);
+
+			return new HashSet<ScenarioExecution>();
+		}
 	}
 
 	/**
@@ -237,17 +265,14 @@ public class ScenarioRemoting {
 	@SuppressWarnings("unchecked")
 	public Set<String> getScenarios(Address agent) {
 
-		return (Set<String>) invokeFor(agent, "getScenarios", new Object[] {},
-				new String[] {});
-	}
+		try {
+			return (Set<String>) invokeFor(agent, "getScenarios",
+					new Object[] {}, new String[] {});
+		} catch (MBeanException e) {
+			LOG.error("Server error during scenario retrieval!", e);
 
-	/**
-	 * @see Agent#setCharts(List)
-	 */
-	public void setCharts(Address agent, List<byte[]> charts) {
-
-		invokeFor(agent, "setCharts", new Object[] { charts },
-				new String[] { List.class.getName() });
+			return null;
+		}
 	}
 
 	/**
@@ -255,6 +280,10 @@ public class ScenarioRemoting {
 	 */
 	public void resetTransit(Address agent) {
 
-		invokeFor(agent, "resetTransit", new Object[] {}, new String[] {});
+		try {
+			invokeFor(agent, "resetTransit", new Object[] {}, new String[] {});
+		} catch (MBeanException e) {
+			LOG.error("Server error during reset!", e);
+		}
 	}
 }

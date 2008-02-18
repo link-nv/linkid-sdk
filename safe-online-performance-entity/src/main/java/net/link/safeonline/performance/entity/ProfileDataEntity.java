@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 import net.link.safeonline.util.performance.ProfileData;
@@ -27,14 +29,22 @@ import net.link.safeonline.util.performance.ProfileData;
  * @author mbillemo
  */
 @Entity
+@NamedQuery(name = ProfileDataEntity.getByProfile, query = "SELECT p"
+		+ "    FROM ProfileDataEntity p"
+		+ "    WHERE p.profile = :profile")
 public class ProfileDataEntity {
+
+	public static final String getByProfile = "ProfileDataEntity.getByProfile";
 
 	@Id
 	@SuppressWarnings("unused")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
-	@OneToMany()
+	@ManyToOne
+	private DriverProfileEntity profile;
+
+	@OneToMany
 	private Set<MeasurementEntity> measurements;
 
 	private Long scenarioStart;
@@ -42,9 +52,10 @@ public class ProfileDataEntity {
 	public ProfileDataEntity() {
 	}
 
-	public ProfileDataEntity(Long scenarioStart,
+	public ProfileDataEntity(DriverProfileEntity profile, Long scenarioStart,
 			Set<MeasurementEntity> measurements) {
 
+		this.profile = profile;
 		this.scenarioStart = scenarioStart;
 		this.measurements = measurements;
 	}
@@ -84,5 +95,14 @@ public class ProfileDataEntity {
 	public Long getScenarioStart() {
 
 		return this.scenarioStart;
+	}
+
+	/**
+	 * @return The {@link DriverProfileEntity} that generated this
+	 *         {@link ProfileDataEntity}.
+	 */
+	public DriverProfileEntity getProfile() {
+
+		return this.profile;
 	}
 }

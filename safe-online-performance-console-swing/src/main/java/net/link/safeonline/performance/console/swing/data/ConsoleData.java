@@ -18,6 +18,7 @@ import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.AgentRemoting;
 import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
 import net.link.safeonline.performance.console.swing.model.ExecutionSelectionListener;
+import net.link.safeonline.performance.console.swing.ui.AgentStatusListener;
 
 import org.jgroups.Address;
 
@@ -36,6 +37,7 @@ public class ConsoleData {
 
 	private static List<ExecutionSelectionListener> executionSelectionListeners = new ArrayList<ExecutionSelectionListener>();
 	private static List<AgentSelectionListener> agentSelectionListeners = new ArrayList<AgentSelectionListener>();
+	private static List<AgentStatusListener> agentStatusListeners = new ArrayList<AgentStatusListener>();
 
 	private static Map<Address, ConsoleAgent> agents = new HashMap<Address, ConsoleAgent>();
 	private static AgentRemoting agentDiscoverer = new AgentRemoting();
@@ -234,20 +236,6 @@ public class ConsoleData {
 		return ConsoleData.scenarioName;
 	}
 
-	public static void fireAgentSelection() {
-
-		for (AgentSelectionListener listener : agentSelectionListeners)
-			listener.agentsSelected(selectedAgents);
-	}
-
-	/**
-	 * Make the given object listen to agent selection events.
-	 */
-	public static void addAgentSelectionListener(AgentSelectionListener listener) {
-
-		ConsoleData.agentSelectionListeners.add(listener);
-	}
-
 	public static void fireExecutionSelection() {
 
 		for (ExecutionSelectionListener listener : executionSelectionListeners)
@@ -260,6 +248,45 @@ public class ConsoleData {
 	public static void addExecutionSelectionListener(
 			ExecutionSelectionListener listener) {
 
+		if (!executionSelectionListeners.contains(listener))
 		executionSelectionListeners.add(listener);
+	}
+
+	public static void fireAgentSelection() {
+
+		for (AgentSelectionListener listener : agentSelectionListeners)
+			listener.agentsSelected(selectedAgents);
+	}
+
+	/**
+	 * Make the given object listen to agent selection events.
+	 */
+	public static void addAgentSelectionListener(AgentSelectionListener listener) {
+
+		if (!agentSelectionListeners.contains(listener))
+			agentSelectionListeners.add(listener);
+	}
+
+	/**
+	 * Manually fire an agent status event forcing the UI to update itself for
+	 * this agent.
+	 *
+	 * @param agent
+	 *            The agent whose status changed.
+	 */
+	public static void fireAgentStatus(ConsoleAgent agent) {
+
+		for (AgentStatusListener listener : agentStatusListeners)
+			listener.statusChanged(agent);
+	}
+
+	/**
+	 * Make the given object listen to agent status changes.
+	 */
+	public static void addAgentStatusListener(
+			AgentStatusListener agentStatusListener) {
+
+		if (!agentStatusListeners.contains(agentStatusListener))
+			agentStatusListeners.add(agentStatusListener);
 	}
 }

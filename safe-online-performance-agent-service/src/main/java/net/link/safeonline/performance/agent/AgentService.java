@@ -162,15 +162,11 @@ public class AgentService implements AgentServiceMBean {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ScenarioExecution> getExecutions() {
+	public Set<ScenarioExecution> getExecutions() throws NamingException {
 
 		Set<ScenarioExecution> executions = new HashSet<ScenarioExecution>();
-
-		try {
-			for (Integer executionId : getScenarioController().getExecutions())
-				executions.add(getExecution(executionId, false));
-		} catch (NamingException e) {
-		}
+		for (Integer executionId : getScenarioController().getExecutions())
+			executions.add(getExecution(executionId, false));
 
 		return executions;
 	}
@@ -299,11 +295,12 @@ public class AgentService implements AgentServiceMBean {
 				ExecutionMetadata metaData = getScenarioController()
 						.getExecutionMetadata(executionId);
 
-				execution = new ScenarioExecution(executionId, metaData
-						.getScenarioName(), metaData.getScenarioDescription(),
+				this.stats.put(executionId, execution = new ScenarioExecution(
+						executionId, metaData.getScenarioName(), metaData
+								.getScenarioDescription(),
 						metaData.getAgents(), metaData.getWorkers(), metaData
 								.getStartTime(), metaData.getDuration(),
-						metaData.getHostname(), metaData.getSpeed());
+						metaData.getHostname(), metaData.getSpeed()));
 			}
 
 			if (charts)

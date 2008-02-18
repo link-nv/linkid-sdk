@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -96,9 +97,10 @@ public class SwingConsole {
 		OlasPrefs olasPrefs = new OlasPrefs();
 
 		// Make these listen to agent selection events.
-		ConsoleData.addAgentSelectionListener(executionInfo);
-		ConsoleData.addAgentSelectionListener(scenarioChooser);
 		ConsoleData.addExecutionSelectionListener(scenarioChooser);
+		ConsoleData.addAgentSelectionListener(scenarioChooser);
+		ConsoleData.addAgentSelectionListener(executionInfo);
+		ConsoleData.addAgentStatusListener(agentsList);
 
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout(
@@ -112,7 +114,9 @@ public class SwingConsole {
 				+ ConsoleData.getAgentDiscoverer().getGroupName());
 		builder.nextRow();
 
-		JScrollPane executionInfoPane = new JScrollPane(executionInfo);
+		JScrollPane executionInfoPane = new JScrollPane(executionInfo,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		executionInfoPane.getViewport().setBackground(
 				executionInfo.getBackground());
 		final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,

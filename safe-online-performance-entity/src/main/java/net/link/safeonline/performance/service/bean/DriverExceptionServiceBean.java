@@ -6,12 +6,16 @@
  */
 package net.link.safeonline.performance.service.bean;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import net.link.safeonline.performance.DriverException;
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
+import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.service.DriverExceptionService;
 import net.link.safeonline.util.performance.ProfileData;
 
@@ -37,7 +41,8 @@ public class DriverExceptionServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public DriverExceptionEntity addException(DriverException exception) {
+	public DriverExceptionEntity addException(DriverProfileEntity profile,
+			DriverException exception) {
 
 		// Dig for the root cause.
 		Throwable cause = exception;
@@ -63,9 +68,21 @@ public class DriverExceptionServiceBean extends ProfilingServiceBean implements
 
 		// Create the exception entity.
 		DriverExceptionEntity exceptionEntity = new DriverExceptionEntity(
-				exception.getOccurredTime(), message);
+				profile, exception.getOccurredTime(), message);
 		this.em.persist(exceptionEntity);
 
 		return exceptionEntity;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public SortedSet<DriverExceptionEntity> getProfileErrors(
+			DriverProfileEntity profile) {
+
+		return new TreeSet<DriverExceptionEntity>(this.em.createNamedQuery(
+				DriverExceptionEntity.getByProfile).setParameter("profile",
+				profile).getResultList());
 	}
 }

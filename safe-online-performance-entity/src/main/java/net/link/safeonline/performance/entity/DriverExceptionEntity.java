@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 /**
  * <h2>{@link DriverExceptionEntity} - Holds problems encountered during driver
@@ -22,12 +24,20 @@ import javax.persistence.Id;
  * @author mbillemo
  */
 @Entity
+@NamedQuery(name = DriverExceptionEntity.getByProfile, query = "SELECT e"
+		+ "    FROM DriverExceptionEntity e"
+		+ "    WHERE e.profile = :profile")
 public class DriverExceptionEntity {
+
+	public static final String getByProfile = "DriverExceptionEntity.getByProfile";
 
 	@Id
 	@SuppressWarnings("unused")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+
+	@ManyToOne
+	private DriverProfileEntity profile;
 
 	private long occurredTime;
 	private String message;
@@ -38,10 +48,21 @@ public class DriverExceptionEntity {
 	/**
 	 * Create a new {@link DriverExceptionEntity} instance.
 	 */
-	public DriverExceptionEntity(long occurredTime, String message) {
+	public DriverExceptionEntity(DriverProfileEntity profile,
+			long occurredTime, String message) {
 
+		this.profile = profile;
 		this.occurredTime = occurredTime;
 		this.message = message;
+	}
+
+	/**
+	 * @return The {@link DriverProfileEntity} that generated this
+	 *         {@link DriverExceptionEntity}.
+	 */
+	public DriverProfileEntity getProfile() {
+
+		return this.profile;
 	}
 
 	/**

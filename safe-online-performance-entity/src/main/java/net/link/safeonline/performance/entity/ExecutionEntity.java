@@ -38,9 +38,11 @@ import net.link.safeonline.performance.service.ExecutionService;
 		@NamedQuery(name = ExecutionEntity.findAll, query = "SELECT e"
 				+ "    FROM ExecutionEntity e"),
 		@NamedQuery(name = ExecutionEntity.findById, query = "SELECT e"
-				+ "    FROM ExecutionEntity e WHERE e.id = :executionId"),
+				+ "    FROM ExecutionEntity e"
+				+ "    WHERE e.id = :executionId"),
 		@NamedQuery(name = ExecutionEntity.getTimes, query = "SELECT at"
-				+ "    FROM AgentTimeEntity at WHERE at.execution = :execution") })
+				+ "    FROM AgentTimeEntity at"
+				+ "    WHERE at.execution = :execution") })
 public class ExecutionEntity {
 
 	public static final String findAll = "ExecutionEntity.findAll";

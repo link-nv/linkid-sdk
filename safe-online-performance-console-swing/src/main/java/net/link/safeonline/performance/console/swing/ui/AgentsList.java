@@ -57,7 +57,6 @@ public class AgentsList extends JList implements AgentStateListener,
 						.getAgent(address);
 				if (agent != null && !this.model.contains(agent)) {
 					this.model.addElement(agent);
-					agent.addAgentStatusListener(this);
 
 					int endIndex = getModel().getSize() - 1;
 					addSelectionInterval(endIndex, endIndex);
