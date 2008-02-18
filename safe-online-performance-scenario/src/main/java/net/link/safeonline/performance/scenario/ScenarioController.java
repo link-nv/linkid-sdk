@@ -9,18 +9,15 @@ package net.link.safeonline.performance.scenario;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.Local;
-
 import net.link.safeonline.performance.entity.ExecutionEntity;
 
 /**
  * @author mbillemo
  *
  */
-@Local
-public interface ScenarioLocal {
+public interface ScenarioController {
 
-	public static final String BINDING = "SafeOnline/ScenarioBean";
+	public static final String BINDING = "SafeOnline/ScenarioControllerBean";
 
 	/**
 	 * Execute the scenario.

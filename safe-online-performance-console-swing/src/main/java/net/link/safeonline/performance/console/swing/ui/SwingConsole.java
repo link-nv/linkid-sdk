@@ -66,7 +66,7 @@ public class SwingConsole {
 								"Uncaught exception: " + e.getMessage());
 						JPanel pane = new JPanel(new BorderLayout());
 						pane.setBorder(Borders.DIALOG_BORDER);
-						dialog.setContentPane(pane);
+						dialog.setContentPane(new JScrollPane(pane));
 
 						StringWriter writer = new StringWriter();
 						e.printStackTrace(new PrintWriter(writer));
@@ -79,7 +79,7 @@ public class SwingConsole {
 								BorderLayout.NORTH);
 						pane.add(new JTextArea(stackTrace));
 
-						dialog.pack();
+						dialog.setSize(800, 600);
 						dialog.setLocationRelativeTo(null);
 						dialog.setVisible(true);
 					}

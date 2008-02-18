@@ -19,10 +19,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-2-SNAPSHOT</version>
-				<!-- We need version 2.2-beta-2-SNAPSHOT because of a bug in 2.2-beta-1 where
-					safe-online-scenario EJB JAR is included instead of the 
-					safe-online-scenario client JAR -->
 				<configuration>
 					<descriptors>
 						<descriptor>

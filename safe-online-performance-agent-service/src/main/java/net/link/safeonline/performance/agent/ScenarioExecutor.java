@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.InitialContext;
 
 import net.link.safeonline.performance.scenario.ExecutionMetadata;
-import net.link.safeonline.performance.scenario.ScenarioLocal;
+import net.link.safeonline.performance.scenario.ScenarioController;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,8 +65,8 @@ public class ScenarioExecutor extends Thread {
 
 		try {
 			// Find the scenario bean.
-			final ScenarioLocal scenarioBean = (ScenarioLocal) new InitialContext()
-					.lookup(ScenarioLocal.BINDING);
+			final ScenarioController scenarioBean = (ScenarioController) new InitialContext()
+					.lookup(ScenarioController.BINDING);
 
 			// Setup the scenario.
 			final int execution = scenarioBean.prepare(this.request);

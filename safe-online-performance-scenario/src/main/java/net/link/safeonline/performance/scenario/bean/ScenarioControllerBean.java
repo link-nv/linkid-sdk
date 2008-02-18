@@ -24,6 +24,7 @@ import java.util.SortedSet;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.Local;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -42,7 +43,7 @@ import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.scenario.ExecutionMetadata;
 import net.link.safeonline.performance.scenario.Scenario;
-import net.link.safeonline.performance.scenario.ScenarioLocal;
+import net.link.safeonline.performance.scenario.ScenarioController;
 import net.link.safeonline.performance.scenario.script.RegisteredScripts;
 import net.link.safeonline.performance.service.ExecutionService;
 import net.link.safeonline.util.performance.ProfileData;
@@ -86,8 +87,9 @@ import org.jfree.ui.RectangleAnchor;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = ScenarioLocal.BINDING)
-public class ScenarioBean implements ScenarioLocal {
+@Local(ScenarioController.class)
+@LocalBinding(jndiBinding = ScenarioController.BINDING)
+public class ScenarioControllerBean implements ScenarioController {
 
 	/*
 	 * Timeout values for long running methods (in seconds).
@@ -101,7 +103,7 @@ public class ScenarioBean implements ScenarioLocal {
 	private static final int[] MOVING_AVERAGE_PERIODS = new int[] {
 			60 * 60 * 1000, 60 * 1000 }; // 1h, 1m
 
-	private static final Log LOG = LogFactory.getLog(ScenarioBean.class);
+	private static final Log LOG = LogFactory.getLog(ScenarioControllerBean.class);
 
 	private static MBeanServerConnection rmi;
 	private static DateFormat timeFormat = DateFormat.getTimeInstance();
@@ -238,7 +240,7 @@ public class ScenarioBean implements ScenarioLocal {
 	public Map<String, byte[][]> createCharts(int executionId) {
 
 		// ExecutionEntity execution = this.ctx.getBusinessObject(
-		// ScenarioLocal.class).loadExecution(executionId);
+		// ScenarioController.class).loadExecution(executionId);
 		LOG.debug("START:");
 		ExecutionEntity execution = this.executionService
 				.getExecution(executionId);

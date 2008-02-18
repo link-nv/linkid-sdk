@@ -21,7 +21,7 @@ import javax.naming.NamingException;
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.scenario.ExecutionMetadata;
-import net.link.safeonline.performance.scenario.ScenarioLocal;
+import net.link.safeonline.performance.scenario.ScenarioController;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -97,7 +97,7 @@ public class AgentService implements AgentServiceMBean {
 		// Check to see if the scenario bean was deployed behind our backs.
 		if (this.state == null || AgentState.RESET.equals(this.state))
 			try {
-				this.state = getScenarioBean() == null ? AgentState.RESET
+				this.state = getScenarioController() == null ? AgentState.RESET
 						: AgentState.DEPLOY;
 			} catch (NamingException e) {
 				this.state = AgentState.RESET;
@@ -133,15 +133,7 @@ public class AgentService implements AgentServiceMBean {
 	public ScenarioExecution getStats(Integer execution) {
 
 		try {
-			if (!this.stats.containsKey(execution))
-				try {
-					this.stats.put(execution, getExecution(execution, true));
-				} catch (NamingException e) {
-					throw new RuntimeException(
-							"Can't query stats without a scenario deployed.", e);
-				}
-
-			return this.stats.get(execution);
+			return getExecution(execution, true);
 		} finally {
 			actionCompleted(this.stats.containsKey(execution));
 		}
@@ -161,7 +153,7 @@ public class AgentService implements AgentServiceMBean {
 	public Set<String> getScenarios() {
 
 		try {
-			return getScenarioBean().getScenarios();
+			return getScenarioController().getScenarios();
 		} catch (NamingException e) {
 			return new HashSet<String>();
 		}
@@ -175,7 +167,7 @@ public class AgentService implements AgentServiceMBean {
 		Set<ScenarioExecution> executions = new HashSet<ScenarioExecution>();
 
 		try {
-			for (Integer executionId : getScenarioBean().getExecutions())
+			for (Integer executionId : getScenarioController().getExecutions())
 				executions.add(getExecution(executionId, false));
 		} catch (NamingException e) {
 		}
@@ -295,45 +287,47 @@ public class AgentService implements AgentServiceMBean {
 	 * return an execution object without charts, even if charts have been
 	 * cached already.
 	 */
-	private ScenarioExecution getExecution(Integer executionId, boolean charts)
-			throws NamingException {
+	private ScenarioExecution getExecution(Integer executionId, boolean charts) {
 
 		if (executionId == null)
 			return null;
 
-		ScenarioLocal scenarioBean = getScenarioBean();
-		ScenarioExecution execution = this.stats.get(executionId);
+		try {
+			ScenarioExecution execution = this.stats.get(executionId);
 
-		if (execution == null) {
-			if (scenarioBean == null)
-				return null;
+			if (execution == null) {
+				ExecutionMetadata metaData = getScenarioController()
+						.getExecutionMetadata(executionId);
 
-			ExecutionMetadata metaData = scenarioBean
-					.getExecutionMetadata(executionId);
-
-			execution = new ScenarioExecution(executionId, metaData
-					.getScenarioName(), metaData.getScenarioDescription(),
-					metaData.getAgents(), metaData
-					.getWorkers(), metaData.getStartTime(), metaData
-					.getDuration(), metaData.getHostname(), metaData.getSpeed());
-		}
-
-		if (charts)
-			synchronized (execution) {
-				if (execution.getCharts() == null)
-					execution.setCharts(charts ? scenarioBean
-							.createCharts(executionId) : null);
+				execution = new ScenarioExecution(executionId, metaData
+						.getScenarioName(), metaData.getScenarioDescription(),
+						metaData.getAgents(), metaData.getWorkers(), metaData
+								.getStartTime(), metaData.getDuration(),
+						metaData.getHostname(), metaData.getSpeed());
 			}
 
-		else if (execution.getCharts() != null)
-			execution = execution.clone();
+			if (charts)
+				synchronized (execution) {
+					if (execution.getCharts() == null)
+						execution.setCharts(charts ? getScenarioController()
+								.createCharts(executionId) : null);
+				}
 
-		return execution;
+			else if (execution.getCharts() != null)
+				execution = execution.clone();
+
+			return execution;
+		}
+
+		catch (NamingException e) {
+			throw new RuntimeException(
+					"Can't query stats without a scenario deployed.", e);
+		}
 	}
 
-	private ScenarioLocal getScenarioBean() throws NamingException {
+	private ScenarioController getScenarioController() throws NamingException {
 
-		return (ScenarioLocal) new InitialContext()
-				.lookup(ScenarioLocal.BINDING);
+		return (ScenarioController) new InitialContext()
+				.lookup(ScenarioController.BINDING);
 	}
 }
