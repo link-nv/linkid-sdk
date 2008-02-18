@@ -69,9 +69,6 @@ public abstract class ScenarioThread implements Runnable {
 		@Override
 		public void run() {
 
-			if (!this.agent.actionRequest(ScenarioThread.this.state))
-				return;
-
 			try {
 				process(this.agent);
 			}

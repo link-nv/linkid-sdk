@@ -18,6 +18,7 @@ import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.AgentRemoting;
 import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
 import net.link.safeonline.performance.console.swing.model.ExecutionSelectionListener;
+import net.link.safeonline.performance.console.swing.model.ExecutionSettingsListener;
 import net.link.safeonline.performance.console.swing.ui.AgentStatusListener;
 
 import org.jgroups.Address;
@@ -36,6 +37,7 @@ import org.jgroups.Address;
 public class ConsoleData {
 
 	private static List<ExecutionSelectionListener> executionSelectionListeners = new ArrayList<ExecutionSelectionListener>();
+	private static List<ExecutionSettingsListener> executionSettingsListeners = new ArrayList<ExecutionSettingsListener>();
 	private static List<AgentSelectionListener> agentSelectionListeners = new ArrayList<AgentSelectionListener>();
 	private static List<AgentStatusListener> agentStatusListeners = new ArrayList<AgentStatusListener>();
 
@@ -225,6 +227,7 @@ public class ConsoleData {
 	public static void setScenarioName(String scenarioName) {
 
 		ConsoleData.scenarioName = scenarioName;
+		fireExecutionSettings();
 	}
 
 	/**
@@ -249,7 +252,23 @@ public class ConsoleData {
 			ExecutionSelectionListener listener) {
 
 		if (!executionSelectionListeners.contains(listener))
-		executionSelectionListeners.add(listener);
+			executionSelectionListeners.add(listener);
+	}
+
+	public static void fireExecutionSettings() {
+
+		for (ExecutionSettingsListener listener : executionSettingsListeners)
+			listener.executionSettingsChanged();
+	}
+
+	/**
+	 * Make the given object listen to execution settings changes.
+	 */
+	public static void addExecutionSettingsListener(
+			ExecutionSettingsListener listener) {
+
+		if (!executionSettingsListeners.contains(listener))
+			executionSettingsListeners.add(listener);
 	}
 
 	public static void fireAgentSelection() {

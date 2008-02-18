@@ -165,22 +165,6 @@ public class ScenarioRemoting {
 	}
 
 	/**
-	 * @see Agent#actionRequest(AgentState)
-	 */
-	public boolean actionRequest(Address agent, AgentState action) {
-
-		try {
-			return (Boolean) invokeFor(agent, "actionRequest",
-					new Object[] { action }, new String[] { AgentState.class
-							.getName(), });
-		} catch (MBeanException e) {
-			LOG.error("Server error during action request!", e);
-
-			return false;
-		}
-	}
-
-	/**
 	 * @see Agent#getStats()
 	 */
 	public ScenarioExecution getStats(Address agent, Integer execution) {

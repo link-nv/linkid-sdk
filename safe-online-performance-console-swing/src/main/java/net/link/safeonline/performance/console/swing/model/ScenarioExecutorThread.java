@@ -8,6 +8,8 @@ package net.link.safeonline.performance.console.swing.model;
 
 import java.util.Date;
 
+import javax.swing.JOptionPane;
+
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
@@ -35,6 +37,13 @@ public class ScenarioExecutorThread extends ScenarioThread {
 	 */
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
+
+		if (ConsoleData.getScenarioName() == null) {
+			JOptionPane.showMessageDialog(null,
+					"You didn't select a scenario to execute!",
+					"No scenario selected.", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 
 		String hostname = String.format("%s:%d", ConsoleData.getHostname(),
 				ConsoleData.getPort());

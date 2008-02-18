@@ -133,9 +133,6 @@ public class ScenarioControllerBean implements ScenarioController {
 	@Resource
 	SessionContext ctx;
 
-	@Resource(name = "activeScenario")
-	private String activeScenario;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -179,11 +176,6 @@ public class ScenarioControllerBean implements ScenarioController {
 	 * {@inheritDoc}
 	 */
 	public int prepare(ExecutionMetadata metaData) {
-
-		// Start 'activeScenario' by default, unless a specific scenario has
-		// been requested in the request metadata.
-		if (metaData.getScenarioName() == null)
-			metaData.setScenarioName(this.activeScenario);
 
 		// Create the execution and fill it up with metadata.
 		ExecutionEntity execution = this.executionService.addExecution(metaData

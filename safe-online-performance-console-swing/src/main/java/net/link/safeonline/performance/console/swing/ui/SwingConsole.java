@@ -96,16 +96,10 @@ public class SwingConsole {
 		AgentsList agentsList = new AgentsList();
 		OlasPrefs olasPrefs = new OlasPrefs();
 
-		// Make these listen to agent selection events.
-		ConsoleData.addExecutionSelectionListener(scenarioChooser);
-		ConsoleData.addAgentSelectionListener(scenarioChooser);
-		ConsoleData.addAgentSelectionListener(executionInfo);
-		ConsoleData.addAgentStatusListener(agentsList);
-
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout(
 				"p, 5dlu, 0:g, 5dlu, p",
-				"p, 5dlu, f:0dlu:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
+				"p, 5dlu, f:0dlu:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
 		layout.setColumnGroups(new int[][] { { 1, 5 } });
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 		builder.setDefaultDialogBorder();
@@ -144,6 +138,9 @@ public class SwingConsole {
 		builder.append(olasPrefs.duration);
 		builder.append(scenarioChooser.scenarioField);
 		builder.append(scenarioChooser.browseButton);
+		builder.nextRow();
+
+		builder.append(olasPrefs.scenarioSelection, 5);
 		builder.nextRow();
 
 		builder.appendSeparator("Actions");

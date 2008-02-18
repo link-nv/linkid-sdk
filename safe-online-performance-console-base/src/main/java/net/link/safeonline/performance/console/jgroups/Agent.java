@@ -59,14 +59,6 @@ public interface Agent {
 	public Set<String> getScenarios() throws NamingException;
 
 	/**
-	 * Request permission to start a certain action. If permission is granted,
-	 * the agent is locked until {@link #actionCompleted(boolean)} is called.
-	 * 
-	 * @return <code>true</code> if agent is available for this action.
-	 */
-	public boolean actionRequest(AgentState action);
-
-	/**
 	 * Reset the transition state, abort the action.
 	 */
 	public void resetTransit();

@@ -132,6 +132,9 @@ public class AgentService implements AgentServiceMBean {
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public ScenarioExecution getStats(Integer execution) {
 
+		if (!actionRequest(AgentState.CHART))
+			return null;
+
 		try {
 			return getExecution(execution, true);
 		} finally {
@@ -186,9 +189,12 @@ public class AgentService implements AgentServiceMBean {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Request permission to start a certain action. If permission is granted,
+	 * the agent is locked until {@link #actionCompleted(boolean)} is called.
+	 *
+	 * @return <code>true</code> if agent is available for this action.
 	 */
-	public boolean actionRequest(AgentState action) {
+	private boolean actionRequest(AgentState action) {
 
 		if (isLocked())
 			return false;
@@ -220,6 +226,9 @@ public class AgentService implements AgentServiceMBean {
 	 */
 	public void upload(byte[] application) {
 
+		if (!actionRequest(AgentState.UPLOAD))
+			return;
+
 		try {
 			setError(null);
 
@@ -241,6 +250,9 @@ public class AgentService implements AgentServiceMBean {
 	 */
 	public void deploy() {
 
+		if (!actionRequest(AgentState.DEPLOY))
+			return;
+
 		try {
 			setError(null);
 
@@ -259,6 +271,9 @@ public class AgentService implements AgentServiceMBean {
 
 	public void execute(String scenarioName, Integer agents, Integer workers,
 			Long duration, String hostname, Date startTime) {
+
+		if (!actionRequest(AgentState.EXECUTE))
+			return;
 
 		try {
 			setError(null);

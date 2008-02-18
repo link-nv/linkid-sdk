@@ -27,6 +27,7 @@ import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
 import net.link.safeonline.performance.console.swing.model.ExecutionSelectionListener;
+import net.link.safeonline.performance.console.swing.model.ExecutionSettingsListener;
 import net.link.safeonline.performance.console.swing.model.PDF;
 import net.link.safeonline.performance.console.swing.model.ScenarioCharterThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioDeployerThread;
@@ -40,7 +41,8 @@ import net.link.safeonline.performance.console.swing.model.ScenarioUploaderThrea
  * @author mbillemo
  */
 public class ScenarioChooser extends JPanel implements ActionListener,
-		CaretListener, AgentSelectionListener, ExecutionSelectionListener {
+		CaretListener, AgentSelectionListener, ExecutionSelectionListener,
+		ExecutionSettingsListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -112,6 +114,10 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 				.setToolTipText("Temporarily reset the selected agents' local status to unlock the buttons.");
 
 		agentsSelected(null);
+
+		ConsoleData.addExecutionSelectionListener(this);
+		ConsoleData.addExecutionSettingsListener(this);
+		ConsoleData.addAgentSelectionListener(this);
 	}
 
 	/**
@@ -185,6 +191,14 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	/**
 	 * {@inheritDoc}
 	 */
+	public void executionSettingsChanged() {
+
+		agentsSelected(ConsoleData.getSelectedAgents());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void agentsSelected(Set<ConsoleAgent> agents) {
 
 		buttonToggler(false, this.resetButton);
@@ -224,6 +238,9 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 				case CHART:
 					break;
 				}
+
+			if (ConsoleData.getScenarioName() == null)
+				buttonToggler(false, this.executeButton);
 
 			highlight(this.uploadButton, AgentState.UPLOAD.equals(agent
 					.getTransit()));

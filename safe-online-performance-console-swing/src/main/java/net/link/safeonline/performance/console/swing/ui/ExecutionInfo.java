@@ -19,8 +19,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,8 +31,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.naming.NamingException;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -68,12 +64,11 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author mbillemo
  */
 public class ExecutionInfo extends JPanel implements ChangeListener,
-		AgentSelectionListener, ItemListener, Scrollable {
+		AgentSelectionListener, Scrollable {
 
 	private static final long serialVersionUID = 1L;
 	private static final SimpleDateFormat labelTimeFormat = new SimpleDateFormat(
 			"HH:mm");
-	private static final Object DEFAULT_SCENARIO = " -- Default Scenario -- ";
 
 	private List<ScenarioExecution> executions;
 	private JSlider executionSelection;
@@ -85,7 +80,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	private JLabel duration;
 	private JLabel speed;
 	private JLabel hostname;
-	private JComboBox scenarioSelection;
 	private JEditorPane description;
 
 	public ExecutionInfo() {
@@ -94,8 +88,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
 		this.executionSelection = new JSlider(SwingConstants.HORIZONTAL, 0, 0,
 				0);
-		this.scenarioSelection = new JComboBox(
-				new Object[] { DEFAULT_SCENARIO });
 
 		FormLayout layout = new FormLayout("r:0dlu:g, 10dlu, 0dlu:g");
 		layout.setColumnGroups(new int[][] { { 1, 3 } });
@@ -105,9 +97,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
 		Font originalDefault = UIManager.getFont("Label.font");
 		UIManager.put("Label.font", originalDefault.deriveFont(20f));
-
-		builder.appendSeparator("Scenario to Execute:");
-		builder.append(this.scenarioSelection, 3);
 
 		builder.appendSeparator("Completed Executions:");
 		builder.append(this.executionSelection, 3);
@@ -140,12 +129,12 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		this.executionSelection.setEnabled(false);
 		this.executionSelection.setOpaque(false);
 
-		this.scenarioSelection.addItemListener(this);
-
 		this.scenarioName.setHorizontalAlignment(SwingConstants.CENTER);
 		this.scenarioName.setFont(this.scenarioName.getFont().deriveFont(36f));
 
 		this.description.setEditable(false);
+
+		ConsoleData.addAgentSelectionListener(this);
 	}
 
 	/**
@@ -155,21 +144,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
 		if (this.executionSelection.equals(e.getSource()))
 			updateExecutionSelection();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void itemStateChanged(ItemEvent e) {
-
-		if (this.scenarioSelection.equals(e.getSource()))
-			if (this.scenarioSelection.getSelectedItem() == null
-					|| this.scenarioSelection.getSelectedItem().equals(
-							DEFAULT_SCENARIO))
-				ConsoleData.setScenarioName(null);
-			else
-				ConsoleData.setScenarioName(this.scenarioSelection
-						.getSelectedItem().toString());
 	}
 
 	private void updateExecutionSelection() {
@@ -228,9 +202,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	public void agentsSelected(Set<ConsoleAgent> selectedAgents) {
 
 		if (selectedAgents == null || selectedAgents.isEmpty()) {
-			this.scenarioSelection.removeAllItems();
-			this.scenarioSelection.addItem(DEFAULT_SCENARIO);
-
 			this.executionSelection.setEnabled(false);
 			this.executionSelection.setPaintLabels(false);
 			this.executionSelection.getModel().setRangeProperties(0, 0, 0, 0,
@@ -240,40 +211,23 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
 		// Find the intersection of all executions with the same start time
 		// and all scenarios with the same name.
-		SortedSet<String> commonScenarios = new TreeSet<String>();
 		SortedSet<ScenarioExecution> commonExecutions = new TreeSet<ScenarioExecution>();
-		for (ConsoleAgent agent : selectedAgents)
-			try {
-				Set<ScenarioExecution> agentExecutions = agent.getExecutions();
-				Set<String> agentScenarios = agent.getScenarios();
+		for (ConsoleAgent agent : selectedAgents) {
+			Set<ScenarioExecution> agentExecutions = agent.getExecutions();
 
-				if (agentExecutions == null)
-					agentExecutions = new HashSet<ScenarioExecution>();
-				if (agentScenarios == null)
-					agentScenarios = new HashSet<String>();
+			if (agentExecutions == null)
+				agentExecutions = new HashSet<ScenarioExecution>();
 
-				if (commonExecutions.isEmpty())
-					commonExecutions.addAll(agentExecutions);
+			if (commonExecutions.isEmpty())
+				commonExecutions.addAll(agentExecutions);
 
-				else {
-					Iterator<ScenarioExecution> it = commonExecutions
-							.iterator();
-					while (it.hasNext())
-						if (!containsExecution(agentExecutions, it.next()))
-							it.remove();
-				}
-
-				if (commonScenarios.isEmpty())
-					commonScenarios.addAll(agentScenarios);
-				else {
-					Iterator<String> it = commonScenarios.iterator();
-					while (it.hasNext())
-						if (!agentScenarios.contains(it.next()))
-							it.remove();
-				}
-			} catch (NamingException e) {
-				System.err.println(agent + " has no scenario available.");
+			else {
+				Iterator<ScenarioExecution> it = commonExecutions.iterator();
+				while (it.hasNext())
+					if (!containsExecution(agentExecutions, it.next()))
+						it.remove();
 			}
+		}
 
 		synchronized (this.executions) {
 			this.executions.clear();
@@ -302,13 +256,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		this.executionSelection.getModel().setRangeProperties(maxValue, 0, 0,
 				maxValue, false);
 		updateExecutionSelection();
-
-		Object selectedItem = this.scenarioSelection.getSelectedItem();
-		this.scenarioSelection.removeAllItems();
-		this.scenarioSelection.addItem(DEFAULT_SCENARIO);
-		for (String scenario : commonScenarios)
-			this.scenarioSelection.addItem(scenario);
-		this.scenarioSelection.setSelectedItem(selectedItem);
 	}
 
 	private boolean containsExecution(Set<ScenarioExecution> set,

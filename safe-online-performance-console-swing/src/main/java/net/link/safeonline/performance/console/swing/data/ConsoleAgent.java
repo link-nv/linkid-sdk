@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.naming.NamingException;
-
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.Agent;
@@ -172,7 +170,7 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<ScenarioExecution> getExecutions() throws NamingException {
+	public Set<ScenarioExecution> getExecutions() {
 
 		return this.executions;
 	}
@@ -183,18 +181,6 @@ public class ConsoleAgent implements Agent {
 	public Set<String> getScenarios() {
 
 		return this.scenarios;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean actionRequest(AgentState action) {
-
-		try {
-			return this.agentRemoting.actionRequest(this.agentAddress, action);
-		} finally {
-			updateState();
-		}
 	}
 
 	public void updateState() {
@@ -214,6 +200,7 @@ public class ConsoleAgent implements Agent {
 		}
 
 		catch (Exception e) {
+			LOG.error(e);
 		}
 	}
 

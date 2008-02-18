@@ -41,6 +41,7 @@ public class AgentsList extends JList implements AgentStateListener,
 		setBackground(null);
 		setOpaque(false);
 
+		ConsoleData.addAgentStatusListener(this);
 		ConsoleData.getAgentDiscoverer().addAgentStateListener(
 				this);
 	}
