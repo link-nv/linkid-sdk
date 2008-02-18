@@ -32,7 +32,7 @@ import net.link.safeonline.util.performance.ProfileData;
 @NamedQuery(name = ProfileDataEntity.getByProfile, query = "SELECT p"
 		+ "    FROM ProfileDataEntity p"
 		+ "    WHERE p.profile = :profile")
-public class ProfileDataEntity {
+public class ProfileDataEntity implements Comparable<ProfileDataEntity> {
 
 	public static final String getByProfile = "ProfileDataEntity.getByProfile";
 
@@ -84,7 +84,7 @@ public class ProfileDataEntity {
 	/**
 	 * The time the request was started on the OLAS server.
 	 */
-	public long getStartTime() {
+	public Long getStartTime() {
 
 		return getMeasurement(ProfileData.REQUEST_START_TIME);
 	}
@@ -104,5 +104,18 @@ public class ProfileDataEntity {
 	public DriverProfileEntity getProfile() {
 
 		return this.profile;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int compareTo(ProfileDataEntity o) {
+
+		if (getStartTime() == null)
+			return -1;
+		if (o == null || o.getStartTime() == null)
+			return 1;
+
+		return getStartTime().compareTo(o.getStartTime());
 	}
 }
