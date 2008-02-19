@@ -24,8 +24,17 @@ import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
 
 /**
+ * <h2>{@link OlasPrefs}<br>
+ * <sub>Manage execution preferences.</sub></h2>
+ *
+ * <p>
  * This class keeps and listens to the components that contain the location of
  * the OLAS service.
+ * </p>
+ *
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
  *
  * @author mbillemo
  */

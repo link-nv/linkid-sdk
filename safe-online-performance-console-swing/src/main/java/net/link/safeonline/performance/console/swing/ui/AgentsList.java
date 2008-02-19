@@ -22,8 +22,13 @@ import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import org.jgroups.Address;
 
 /**
- * A list that visualises agent status.
- *
+ * <h2>{@link AgentsList}<br>
+ * <sub>A list that visualises agent status.</sub></h2>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
  */
 public class AgentsList extends JList implements AgentStateListener,

@@ -20,12 +20,22 @@ import org.apache.commons.logging.LogFactory;
 import org.jgroups.Address;
 
 /**
- * This object keeps the status of communication between the console and the
- * agent it represents. It also features locking such that only one operation
- * would be executed upon it at once.
- *
+ * <h2>{@link ConsoleAgent}<br>
+ * <sub>Proxy that maintains the status of the remote agent and provides access
+ * to its functionality.</sub></h2>
+ * 
+ * <p>
+ * This is a proxy for the remote agent and provides access to all functionality
+ * offered and all state made available by the agent. It takes care of keeping
+ * the status information synchronised by a daemon thread that checks the remote
+ * status every two seconds.
+ * </p>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
- *
  */
 public class ConsoleAgent implements Agent {
 

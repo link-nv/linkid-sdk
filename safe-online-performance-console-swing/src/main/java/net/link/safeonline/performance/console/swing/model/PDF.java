@@ -47,12 +47,13 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.tools.Executable;
 
 /**
- * <h2>{@link PDF} - Renders charts to a PDF file and opens it.</h2>
- *
+ * <h2>{@link PDF}<br>
+ * <sub>Renders charts to a PDF file and opens it.</sub></h2>
+ * 
  * <p>
- * <i>Jan 21, 2008</i>
+ * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class PDF {

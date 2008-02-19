@@ -38,8 +38,14 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.looks.Options;
 
 /**
+ * <h2>{@link Charts}<br>
+ * <sub>A window that displays charts.</sub></h2>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
- *
  */
 public class Charts extends WindowAdapter {
 

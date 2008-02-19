@@ -20,16 +20,17 @@ import java.util.Set;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 
 /**
- * <h2>{@link AgentSelectionListener} - [in short] (TODO).</h2>
- *
+ * <h2>{@link AgentSelectionListener}<br>
+ * <sub>A listener that is triggered when an agent is selected in the interface.</sub></h2>
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
- * <i>Feb 5, 2008</i>
+ * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public interface AgentSelectionListener {

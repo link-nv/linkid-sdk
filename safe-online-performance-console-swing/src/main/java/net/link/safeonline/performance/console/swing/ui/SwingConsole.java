@@ -31,11 +31,20 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
 /**
+ * <h2>{@link SwingConsole}<br>
+ * <sub>The swing console's entry point and frame builder.</sub></h2>
+ * 
+ * <p>
  * A Swing UI that provides interaction with and visual reporting of the status
  * of agents in the profiling group.<br>
  * <br>
  * This class takes care of the initialisation of the frame and its lay-out.
- *
+ * </p>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
  */
 public class SwingConsole {

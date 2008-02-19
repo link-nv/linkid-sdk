@@ -51,14 +51,11 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
 /**
- * <h2>{@link ExecutionInfo} - [in short] (TODO).</h2>
+ * <h2>{@link ExecutionInfo}<br>
+ * <sub>Display available executions and information about them.</sub></h2>
  *
  * <p>
- * [description / usage].
- * </p>
- *
- * <p>
- * <i>Feb 6, 2008</i>
+ * <i>Feb 19, 2008</i>
  * </p>
  *
  * @author mbillemo

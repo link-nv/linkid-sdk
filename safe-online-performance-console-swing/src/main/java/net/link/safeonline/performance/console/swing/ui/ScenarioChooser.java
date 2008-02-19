@@ -35,9 +35,18 @@ import net.link.safeonline.performance.console.swing.model.ScenarioExecutorThrea
 import net.link.safeonline.performance.console.swing.model.ScenarioUploaderThread;
 
 /**
+ * <h2>{@link ScenarioChooser}<br>
+ * <sub>[in short] (TODO).</sub></h2>
+ * 
+ * <p>
  * This class keeps and listens to the UI components that upload, deploy and
  * execute scenarios on agents.
- *
+ * </p>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
  */
 public class ScenarioChooser extends JPanel implements ActionListener,

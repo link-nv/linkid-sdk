@@ -24,15 +24,26 @@ import net.link.safeonline.performance.console.swing.ui.AgentStatusListener;
 import org.jgroups.Address;
 
 /**
- * Keeps a list of settings from the UI. This includes the location of OLAS and
- * the known mappings from agent addresses to agent objects. It is the
- * responsibility of the UI to call the appropriate methods (
+ * <h2>{@link ConsoleData}<br>
+ * <sub>A central location for console configuration data.</sub></h2>
+ *
+ * <p>
+ * All configuration settings are kept in this class. The UI needs to make sure
+ * to update this class whenever settings are modified and needs to read the
+ * settings in from this class rather than trying to parse them out of the UI.
+ * <br>
+ * This includes the mappings of known agent addresses to {@link ConsoleAgent}
+ * objects. It is the responsibility of the UI to call the appropriate methods (
  * {@link #getAgent(Address)} and {@link #removeStaleAgents()} ) whenever agent
- * addresses join or leave the group so that the mappings kept by this object
- * can be kept up-to-date.
+ * addresses join or leave the group so that the mappings kept by this class are
+ * up-to-date.
+ * </p>
+ *
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
  *
  * @author mbillemo
- *
  */
 public class ConsoleData {
 

@@ -15,11 +15,20 @@ import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 
 /**
+ * <h2>{@link AgentRenderer}<br>
+ * <sub>A list renderer for agents.</sub></h2>
+ * 
+ * <p>
  * This class is used for generating a {@link Component} that acts as a
  * representational stamp for each agent in the list. It retrieves the agent's
  * status and uses this to generate a contextual representation of the agent
  * that visualises its current status to the user.<br>
- *
+ * </p>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
  */
 public class AgentRenderer extends DefaultListCellRenderer {

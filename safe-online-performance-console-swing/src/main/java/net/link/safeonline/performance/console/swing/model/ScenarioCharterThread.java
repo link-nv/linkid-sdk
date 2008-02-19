@@ -12,9 +12,13 @@ import net.link.safeonline.performance.console.swing.ui.Charts;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
 /**
- * This thread executes a scenario on a given agent and manages the
- * {@link ConsoleAgent} object's execution status.
- *
+ * <h2>{@link ScenarioCharterThread}<br>
+ * <sub>This thread generates charts on a given agent.</sub></h2>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
  */
 public class ScenarioCharterThread extends ScenarioThread {
