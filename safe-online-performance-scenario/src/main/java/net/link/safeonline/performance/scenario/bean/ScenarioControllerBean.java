@@ -86,6 +86,31 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.ui.RectangleAnchor;
 
 /**
+ * <h2>{@link ScenarioControllerBean}<br>
+ * <sub>This bean is the heart of the scenario application.</sub></h2>
+ * 
+ * <p>
+ * We take care of preparing scenario execution and launching a single scenario
+ * run. As these methods are called, entity objects are updated with state that
+ * can later be used to graph out the progress of the scenario execution.<br>
+ * <br>
+ * Charts are also generated in this bean.<br>
+ * Currently, we create charts for:
+ * <ul>
+ * <li>The time spent in the OLAS performance filter.</li>
+ * <li>A component-based overview of where all the time needed to execute a
+ * scenario was spent.</li>
+ * <li>A component-based overview of where all the time needed to execute a
+ * driver request was spent.</li>
+ * <li>Evolution of available memory on the agent.</li>
+ * <li>Evolution of available memory on OLAS.</li>
+ * <li>A box-and-whisker chart comparing driver performance.</li>
+ * </p>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
  */
 @Stateless

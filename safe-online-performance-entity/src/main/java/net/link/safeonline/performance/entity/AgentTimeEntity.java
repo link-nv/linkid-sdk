@@ -13,13 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 /**
- * <h2>{@link AgentTimeEntity} - Holds the startTime at which a scenario has been
- * executed.</h2>
- *
+ * <h2>{@link AgentTimeEntity}<br>
+ * <sub>Holds the startTime at which a scenario has been executed.</sub></h2>
+ * 
  * <p>
  * <i>Jan 17, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity

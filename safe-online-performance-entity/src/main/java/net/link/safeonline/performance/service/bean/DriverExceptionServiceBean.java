@@ -22,13 +22,13 @@ import net.link.safeonline.util.performance.ProfileData;
 import org.jboss.annotation.ejb.LocalBinding;
 
 /**
- * <h2>{@link DriverExceptionServiceBean} - Service bean for
- * {@link DriverExceptionEntity}.</h2>
- *
+ * <h2>{@link DriverExceptionServiceBean}<br>
+ * <sub>Service bean for {@link DriverExceptionEntity}.</sub></h2>
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @see DriverExceptionService
  * @author mbillemo
  */

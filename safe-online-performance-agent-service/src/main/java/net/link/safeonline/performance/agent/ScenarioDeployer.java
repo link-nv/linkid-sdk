@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,7 +23,12 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.mx.util.MBeanServerLocator;
 
 /**
- * Deploys an application that is contained in a byte array.
+ * <h2>{@link ScenarioDeployer}<br>
+ * <sub>Deploys an application (EAR) that is contained in a byte array.</sub></h2>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
  * 
  * @author mbillemo
  */

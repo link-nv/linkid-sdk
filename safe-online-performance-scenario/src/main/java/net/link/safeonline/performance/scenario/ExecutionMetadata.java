@@ -17,15 +17,29 @@ package net.link.safeonline.performance.scenario;
 
 import java.util.Date;
 
+import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
+
 /**
- * <h2>{@link ExecutionMetadata} - [in short] (TODO).</h2>
+ * <h2>{@link ExecutionMetadata}<br>
+ * <sub>Holds execution metadata for communication between the agent and the
+ * scenario.</sub></h2>
  *
  * <p>
- * [description / usage].
+ * This object can be used by the agent for making a scenario execution request
+ * to the {@link ScenarioControllerBean}. In this case, use
+ * {@link #createRequest(String, Integer, Integer, Date, Long, String)} to
+ * obtain the object. Only the fields required for making a request will be
+ * filled in, the others will remain <code>null</code>.<br>
+ * <br>
+ * This object can also be used by the scenario to describe a previously
+ * completed scenario execution on request of the agent. In this case, use
+ * {@link #createResponse(Integer, String, String, Integer, Integer, Date, Long, String, Double)}.
+ * All available fields can be set providing the agent with as much information
+ * about the result of the execution as available.
  * </p>
  *
  * <p>
- * <i>Feb 5, 2008</i>
+ * <i>Feb 19, 2008</i>
  * </p>
  *
  * @author mbillemo

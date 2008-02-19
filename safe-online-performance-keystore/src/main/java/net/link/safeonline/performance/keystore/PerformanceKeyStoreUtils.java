@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -14,8 +14,17 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Enumeration;
 
 /**
+ * <h2>{@link PerformanceKeyStoreUtils}<br>
+ * <sub>Access to performance-application keys from the keystore.</sub></h2>
+ * 
+ * <p>
  * The private key and certificate will be lazily loaded from the default
  * keystore file if not yet available upon the first request for it.
+ * </p>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
  * 
  * @author mbillemo
  */

@@ -28,6 +28,23 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * <h2>{@link BasicScenario}<br>
+ * <sub>A basic scenario that runs all basic drivers to test OLAS on every field
+ * available through the SDK.</sub></h2>
+ *
+ * <p>
+ * We perform the following, in order:
+ * <ul>
+ * <li>{@link AuthDriver#login(PrivateKeyEntry, String, String, String)}</li>
+ * <li>{@link IdMappingDriver#getUserId(PrivateKeyEntry, String)}</li>
+ * <li>{@link AttribDriver#getAttributes(PrivateKeyEntry, String)}</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ *
  * @author mbillemo
  */
 public class BasicScenario implements Scenario {

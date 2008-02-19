@@ -19,13 +19,13 @@ import javax.persistence.OneToMany;
 import net.link.safeonline.util.performance.ProfileData;
 
 /**
- * <h2>{@link ProfileDataEntity} - Holds data gathered by OLAS during a single
- * request.</h2>
- *
+ * <h2>{@link ProfileDataEntity}<br>
+ * <sub>Holds data gathered by OLAS during a single request.</sub></h2>
+ * 
  * <p>
  * <i>Jan 10, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity

@@ -25,8 +25,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * <h2>{@link ProfileDriver}<br>
+ * <sub>Takes care of the internals that all drivers require.</sub></h2>
+ * 
+ * <p>
  * Abstract class of a service driver. This class manages the internals; such as
- * collecting profile data, exceptions and execution speed for iterations.<br>
+ * persisting profile data and exceptions for driver executions.<br>
  * <br>
  * Implementing drivers need to declare methods specific to their functionality
  * in which they should call {@link #report(MessageAccessor)} once they have
@@ -35,7 +39,12 @@ import org.apache.commons.logging.LogFactory;
  * <br>
  * The profiling data will be gathered by this class and can later be retrieved
  * by using {@link #getProfile()}.<br>
- *
+ * </p>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
  */
 public abstract class ProfileDriver {

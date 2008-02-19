@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -13,8 +13,15 @@ import org.jgroups.ChannelException;
 import org.jgroups.JChannel;
 
 /**
- * @author mbillemo
+ * <h2>{@link AgentBroadcaster}<br>
+ * <sub>Takes care of providing visibility of this agent on the network using
+ * JGroups.</sub></h2>
  * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
+ * @author mbillemo
  */
 public class AgentBroadcaster {
 

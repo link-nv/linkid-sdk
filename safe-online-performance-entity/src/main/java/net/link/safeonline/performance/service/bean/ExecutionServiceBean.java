@@ -27,12 +27,13 @@ import net.link.safeonline.performance.service.ExecutionService;
 import org.jboss.annotation.ejb.LocalBinding;
 
 /**
- * <h2>{@link ExecutionServiceBean} - Service bean for {@link ExecutionEntity}.</h2>
- *
+ * <h2>{@link ExecutionServiceBean}<br>
+ * <sub>Service bean for {@link ExecutionEntity}.</sub></h2>
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @see ExecutionService
  * @author mbillemo
  */

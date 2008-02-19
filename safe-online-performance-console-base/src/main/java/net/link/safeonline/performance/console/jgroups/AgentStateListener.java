@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -11,8 +11,14 @@ import java.util.List;
 import org.jgroups.Address;
 
 /**
+ * <h2>{@link AgentStateListener}<br>
+ * <sub>Used for listening to agent availability events (JGroups).</sub></h2>
+ *
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ *
  * @author mbillemo
- * 
  */
 public interface AgentStateListener {
 

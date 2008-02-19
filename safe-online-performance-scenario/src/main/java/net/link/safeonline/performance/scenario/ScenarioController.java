@@ -10,10 +10,17 @@ import java.util.Map;
 import java.util.Set;
 
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
 
 /**
- * @author mbillemo
+ * <h2>{@link ScenarioController}<br>
+ * <sub>The POJO interface to the {@link ScenarioControllerBean}.</sub></h2>
  *
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ *
+ * @author mbillemo
  */
 public interface ScenarioController {
 

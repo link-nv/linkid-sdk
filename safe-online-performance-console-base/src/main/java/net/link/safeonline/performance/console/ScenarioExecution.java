@@ -12,15 +12,13 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * <h2>{@link ScenarioExecution} - A data structure that holds the results of a
- * scenario execution.</h2>
+ * <h2>{@link ScenarioExecution}<br>
+ * <sub>A data structure that holds the results of a scenario execution.</sub></h2>
+ * 
  * <p>
- * [description / usage].
+ * <i>Feb 19, 2008</i>
  * </p>
- * <p>
- * <i>Jan 21, 2008</i>
- * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioExecution implements Serializable,

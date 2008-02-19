@@ -32,8 +32,12 @@ import org.apache.commons.logging.LogFactory;
 import org.jgroups.Address;
 
 /**
- * Utility class that interfaces with JMX on the Agent AS to upload an EAR and
- * deploy it.
+ * <h2>{@link ScenarioRemoting}<br>
+ * <sub>This class takes care of communication with the remote agent via RMI.</sub></h2>
+ *
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
  *
  * @author mbillemo
  */

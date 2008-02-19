@@ -16,12 +16,13 @@
 package net.link.safeonline.performance.console.jgroups;
 
 /**
- * <h2>{@link AgentState} - Describes the different states an agent can be in.</h2>
- *
+ * <h2>{@link AgentState}<br>
+ * <sub>Describes the different states an agent can be in.</sub></h2>
+ * 
  * <p>
- * <i>Dec 19, 2007</i>
+ * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public enum AgentState {

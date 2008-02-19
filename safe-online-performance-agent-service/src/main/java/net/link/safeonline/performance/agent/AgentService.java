@@ -27,8 +27,28 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * <h2>{@link AgentService}<br>
+ * <sub>This class provides all functionality of the agent that is available to
+ * the console.</sub></h2>
+ * 
+ * <p>
+ * This MBean launches the broadcaster service that provides agent visibility in
+ * JGroups and the deployer service that is used for deploying uploaded
+ * scenarios. It also keeps the current state of the agent (see
+ * {@link AgentState}).<br>
+ * <br>
+ * The agent service delegates requests for uploading, deploying, executing and
+ * charting scenarios.<br>
+ * <br>
+ * Metadata on previously performed executions are also cached by this agent as
+ * they are requested by the console.
+ * </p>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
- *
  */
 public class AgentService implements AgentServiceMBean {
 

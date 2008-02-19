@@ -24,13 +24,13 @@ import javax.persistence.OneToMany;
 import net.link.safeonline.performance.service.ExecutionService;
 
 /**
- * <h2>{@link ExecutionEntity} - Holds the global metadata for a scenario
- * execution.</h2>
- *
+ * <h2>{@link ExecutionEntity}<br>
+ * <sub>Holds the global metadata for a scenario execution.</sub></h2>
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity

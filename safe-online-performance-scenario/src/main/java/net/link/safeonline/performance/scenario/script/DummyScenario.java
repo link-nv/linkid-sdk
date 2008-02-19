@@ -14,8 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <h2>{@link DummyScenario} - A scenario that does absolutely nothing
- * whatsoever.</h2>
+ * <h2>{@link DummyScenario}<br>
+ * <sub>A scenario that does absolutely nothing whatsoever.</sub></h2>
  *
  * <p>
  * This scenario does nothing other than logging the prepare and run method

@@ -12,13 +12,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * <h2>{@link MeasurementEntity} - Holds a description and duration for a
- * single measurement.</h2>
- *
+ * <h2>{@link MeasurementEntity}<br>
+ * <sub>Holds a description and duration for a single measurement.</sub></h2>
+ * 
  * <p>
  * <i>Jan 14, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity

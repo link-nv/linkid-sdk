@@ -63,6 +63,13 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.tidy.Tidy;
 
 /**
+ * <h2>{@link AuthDriver}<br>
+ * <sub>Logs a user in on OLAS for a given application.</sub></h2>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
  */
 public class AuthDriver extends ProfileDriver {

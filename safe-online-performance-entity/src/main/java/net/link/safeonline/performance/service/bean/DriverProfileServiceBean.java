@@ -20,13 +20,13 @@ import net.link.safeonline.performance.service.DriverProfileService;
 import org.jboss.annotation.ejb.LocalBinding;
 
 /**
- * <h2>{@link DriverProfileServiceBean} - Service bean for
- * {@link DriverProfileEntity}.</h2>
- *
+ * <h2>{@link DriverProfileServiceBean}<br>
+ * <sub>Service bean for {@link DriverProfileEntity}.</sub></h2>
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @see DriverProfileService
  * @author mbillemo
  */

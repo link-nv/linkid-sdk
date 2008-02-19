@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,8 +23,17 @@ import org.jgroups.Receiver;
 import org.jgroups.View;
 
 /**
+ * <h2>{@link AgentRemoting}<br>
+ * <sub>Takes care of locating and maintaining a list of available agents.</sub></h2>
+ * 
+ * <p>
  * Utility class to locate performance testing agents using JGroups and monitor
  * any changes in their availability.
+ * </p>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
  * 
  * @author mbillemo
  */

@@ -16,8 +16,13 @@ import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
 /**
- *
- *
+ * <h2>{@link IdMappingDriver}<br>
+ * <sub>Provide access to the ID Mapping service.</sub></h2>
+ * 
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
+ * 
  * @author mbillemo
  */
 public class IdMappingDriver extends ProfileDriver {

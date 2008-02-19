@@ -17,6 +17,12 @@ import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 import org.w3c.dom.Element;
 
 /**
+ * <h2>{@link StsDriver}<br>
+ * <sub>Driver for the Security Token validation service.</sub></h2>
+ *
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
  *
  * @author mbillemo
  */

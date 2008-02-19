@@ -17,6 +17,16 @@ import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 /**
+ * <h2>{@link AttribDriver}<br>
+ * <sub>Provides access to the Attribute Request service.</sub></h2>
+ *
+ * <p>
+ * [description / usage].
+ * </p>
+ *
+ * <p>
+ * <i>Feb 19, 2008</i>
+ * </p>
  *
  * @author mbillemo
  */

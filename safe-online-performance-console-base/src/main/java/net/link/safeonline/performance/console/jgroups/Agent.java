@@ -22,13 +22,13 @@ import javax.naming.NamingException;
 import net.link.safeonline.performance.console.ScenarioExecution;
 
 /**
- * <h2>{@link Agent} - Interface to all actions that can be remotely performed
- * on an agent.</h2>
- *
+ * <h2>{@link Agent}<br>
+ * <sub>Interface to all actions that can be remotely performed on an agent.</sub></h2>
+ * 
  * <p>
- * <i>Dec 19, 2007</i>
+ * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public interface Agent {
