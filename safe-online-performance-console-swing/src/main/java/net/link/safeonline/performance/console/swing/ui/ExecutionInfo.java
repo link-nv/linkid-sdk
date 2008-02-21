@@ -22,6 +22,7 @@ import java.awt.Rectangle;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -226,6 +227,12 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			}
 		}
 
+		int maxValue = Math.max(0, commonExecutions.size() - 1);
+		int selectedExecution = maxValue;
+		Date selectedExecutionTime = null;
+		if (ConsoleData.getExecution() != null)
+			selectedExecutionTime = ConsoleData.getExecution().getStartTime();
+
 		synchronized (this.executions) {
 			this.executions.clear();
 			this.executions.addAll(commonExecutions);
@@ -236,6 +243,9 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			else
 				for (int i = 0; i < this.executions.size(); ++i) {
 					ScenarioExecution execution = this.executions.get(i);
+					if (execution.getStartTime().equals(selectedExecutionTime))
+						selectedExecution = i;
+
 					dictionary.put(i, new JLabel(labelTimeFormat
 							.format(execution.getStartTime())));
 				}
@@ -245,9 +255,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			this.executionSelection.setEnabled(!this.executions.isEmpty());
 		}
 
-		int maxValue = Math.max(0, commonExecutions.size() - 1);
-		this.executionSelection.getModel().setRangeProperties(maxValue, 0, 0,
-				maxValue, false);
+		this.executionSelection.getModel().setRangeProperties(
+				selectedExecution, 0, 0, maxValue, false);
 		updateExecutionSelection();
 	}
 

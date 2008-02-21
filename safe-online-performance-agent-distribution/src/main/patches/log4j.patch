@@ -13,7 +13,7 @@
     
     <category name="net.link.safeonline">
 -     <priority value="DEBUG" />
-+     <priority value="INFO" />
++     <priority value="DEBUG" />
       <appender-ref ref="SAFEONLINE" />
     </category>
     
