@@ -75,10 +75,11 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	private JLabel startTime;
 	private JLabel agents;
 	private JLabel workers;
-	private JLabel duration;
+	JLabel duration;
 	private JLabel speed;
 	private JLabel hostname;
 	private JEditorPane description;
+	private JLabel durationLabel;
 
 	public ExecutionInfo() {
 
@@ -111,7 +112,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		builder.append("Initiated:", this.startTime = new JLabel());
 		builder.append("Agents Used:", this.agents = new JLabel());
 		builder.append("Workers Used:", this.workers = new JLabel());
-		builder.append("Duration:", this.duration = new JLabel());
+		builder.append(this.durationLabel = new JLabel(),
+				this.duration = new JLabel());
 		builder.append("Average Speed:", this.speed = new JLabel());
 		builder.append("OLAS Server Hostname:", this.hostname = new JLabel());
 
@@ -132,6 +134,14 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
 		this.description.setEditable(false);
 
+		new HoverActionAdaptor(this.duration) {
+			@Override
+			protected void clicked(JComponent component) {
+
+				updateExecutionSelection();
+			}
+		};
+
 		ConsoleData.addAgentSelectionListener(this);
 	}
 
@@ -144,7 +154,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			updateExecutionSelection();
 	}
 
-	private void updateExecutionSelection() {
+	void updateExecutionSelection() {
 
 		synchronized (this.executions) {
 			try {
@@ -161,6 +171,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		ConsoleData.setExecution(execution);
 
 		if (execution == null) {
+			this.durationLabel.setText("Duration:");
 			this.executionSelection.setToolTipText("N/A");
 			this.scenarioName.setText("N/A");
 			this.description.setText("<pre>N/A</pre>");
@@ -186,11 +197,20 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 					.getAgents(), execution.getAgents() == 1 ? "" : "s"));
 			this.workers.setText(String.format("%s worker%s", execution
 					.getWorkers(), execution.getWorkers() == 1 ? "" : "s"));
-			this.duration.setText(formatDuration(execution.getDuration()));
 			this.speed.setText(execution.getSpeed() == null ? "N/A" : String
 					.format("%.2f scenario%s/s", execution.getSpeed() * 1000d,
 							execution.getSpeed() * 1000d == 1 ? "" : "s"));
 			this.hostname.setText(execution.getHostname());
+
+			long timeLeft = execution.getStartTime().getTime()
+					+ execution.getDuration() - System.currentTimeMillis();
+			if (timeLeft > 0) {
+				this.durationLabel.setText("Time Remaining:");
+				this.duration.setText(formatDuration(timeLeft));
+			} else {
+				this.durationLabel.setText("Duration:");
+				this.duration.setText(formatDuration(execution.getDuration()));
+			}
 		}
 	}
 
@@ -296,8 +316,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		int seconds = (int) remainder / 1000;
 		remainder %= 1000;
 
-		int milliseconds = (int) remainder;
-
 		StringBuffer output = new StringBuffer();
 		if (weeks > 0)
 			output.append(weeks + " week" + (weeks > 1 ? "s" : "") + ", ");
@@ -310,12 +328,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 					.append(minutes + " minute" + (minutes > 1 ? "s" : "")
 							+ ", ");
 		if (seconds > 0)
-			output
-					.append(seconds + " second" + (seconds > 1 ? "s" : "")
-							+ ", ");
-		if (milliseconds > 0)
-			output.append(milliseconds + " millisecond"
-					+ (milliseconds > 1 ? "s" : "") + ", ");
+			output.append(seconds + "s" + ", ");
 
 		output.delete(output.length() - 2, output.length());
 		int lastComma = output.lastIndexOf(",");
