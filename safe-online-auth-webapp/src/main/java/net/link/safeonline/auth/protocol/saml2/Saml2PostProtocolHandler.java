@@ -12,9 +12,9 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -31,36 +31,28 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
-import net.link.safeonline.saml2.util.AuthnResponseFactory;
-import net.link.safeonline.saml2.util.SamlRequestSecurityPolicyResolver;
+import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
+import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
+import net.link.safeonline.sdk.auth.saml2.SamlRequestSecurityPolicyResolver;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.log.Log4JLogChute;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
-import org.opensaml.saml2.binding.encoding.HTTPPostEncoder;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml2.core.Response;
-import org.opensaml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.ws.message.decoder.MessageDecodingException;
-import org.opensaml.ws.message.encoder.MessageEncodingException;
 import org.opensaml.ws.security.SecurityPolicyException;
 import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
-import org.opensaml.ws.transport.http.HttpServletResponseAdapter;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.security.SecurityException;
-import org.opensaml.xml.security.SecurityHelper;
-import org.opensaml.xml.security.credential.BasicCredential;
 import org.opensaml.xml.security.x509.BasicX509Credential;
 import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.validation.ValidationException;
@@ -255,10 +247,6 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		LOG.debug("target URL: " + target);
 		LOG.debug("application: " + applicationId);
 
-		BasicSAMLMessageContext messageContext = new BasicSAMLMessageContext();
-		messageContext
-				.setOutboundMessageTransport(new HttpServletResponseAdapter(
-						authnResponse));
 		String authnContextClass = getAuthnContextClass(session);
 		String issuerName = this.samlAuthorityService.getIssuerName();
 		int validity = this.samlAuthorityService.getAuthnAssertionValidity();
@@ -271,44 +259,11 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
 		Response responseMessage = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, applicationId, issuerName, userId,
 				authnContextClass, validity, target);
-		messageContext.setOutboundSAMLMessage(responseMessage);
-
-		AssertionConsumerService assertionConsumerService = AuthnResponseFactory
-				.buildXMLObject(AssertionConsumerService.class,
-						AssertionConsumerService.DEFAULT_ELEMENT_NAME);
-		assertionConsumerService.setLocation(target);
-		messageContext.setPeerEntityEndpoint(assertionConsumerService);
-
-		BasicCredential signingCredential = SecurityHelper.getSimpleCredential(
-				publicKey, privateKey);
-		messageContext
-				.setOutboundSAMLMessageSigningCredential(signingCredential);
-
-		Properties velocityProperties = new Properties();
-		velocityProperties.put("resource.loader", "class");
-		velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-				Log4JLogChute.class.getName());
-		velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER,
-				Saml2PostProtocolHandler.class.getName());
-		velocityProperties
-				.put("class.resource.loader.class",
-						"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-		VelocityEngine velocityEngine;
 		try {
-			velocityEngine = new VelocityEngine(velocityProperties);
-			velocityEngine.init();
-		} catch (Exception e) {
-			throw new ProtocolException("could not initialize velocity engine");
-		}
-
-		HTTPPostEncoder postEncoder = new HTTPPostEncoder(velocityEngine,
-				"/templates/saml2-post-binding.vm");
-		try {
-			postEncoder.encode(messageContext);
-		} catch (MessageEncodingException e) {
-			LOG.debug("message encoding exception: " + e.getMessage(), e);
-			throw new ProtocolException("message encoding error: "
-					+ e.getMessage());
+			AuthnResponseUtil.sendAuthnResponse(responseMessage, target,
+					publicKey, privateKey, authnResponse);
+		} catch (ServletException e) {
+			throw new ProtocolException(e.getMessage());
 		}
 	}
 

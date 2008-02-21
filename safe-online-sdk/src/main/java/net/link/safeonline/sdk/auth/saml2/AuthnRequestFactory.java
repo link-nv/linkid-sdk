@@ -15,7 +15,6 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
 
-import net.link.safeonline.sdk.DomUtils;
 
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
@@ -85,6 +84,7 @@ public class AuthnRequestFactory {
 	 * Later on we could use the SAML Metadata service or a persistent
 	 * server-side application field to locate this service.
 	 * 
+	 * @param issuerName
 	 * @param applicationName
 	 * @param applicationKeyPair
 	 * @param assertionConsumerServiceURL
@@ -98,15 +98,19 @@ public class AuthnRequestFactory {
 	 * @param devices
 	 *            the optional list of allowed authentication devices.
 	 */
-	public static String createAuthnRequest(String applicationName,
-			KeyPair applicationKeyPair, String assertionConsumerServiceURL,
-			String destinationURL, Challenge<String> challenge,
-			Set<String> devices) {
+	public static String createAuthnRequest(String issuerName,
+			String applicationName, KeyPair applicationKeyPair,
+			String assertionConsumerServiceURL, String destinationURL,
+			Challenge<String> challenge, Set<String> devices) {
 		if (null == applicationKeyPair) {
 			throw new IllegalArgumentException(
 					"application key pair should not be null");
 		}
 		if (null == applicationName) {
+			throw new IllegalArgumentException(
+					"application name should not be null");
+		}
+		if (null == issuerName) {
 			throw new IllegalArgumentException(
 					"application name should not be null");
 		}
@@ -131,7 +135,7 @@ public class AuthnRequestFactory {
 		request.setIssueInstant(new DateTime());
 		Issuer issuer = buildXMLObject(Issuer.class,
 				Issuer.DEFAULT_ELEMENT_NAME);
-		issuer.setValue(applicationName);
+		issuer.setValue(issuerName);
 		request.setIssuer(issuer);
 
 		if (null != assertionConsumerServiceURL) {

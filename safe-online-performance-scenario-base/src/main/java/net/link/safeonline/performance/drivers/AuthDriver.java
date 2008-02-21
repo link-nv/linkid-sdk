@@ -32,8 +32,8 @@ import javax.xml.transform.TransformerException;
 import net.link.safeonline.performance.DriverException;
 import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.sdk.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
+import net.link.safeonline.sdk.auth.saml2.DomUtils;
 import net.link.safeonline.util.performance.ProfileData;
 import net.link.safeonline.util.performance.ProfileDataLockedException;
 
@@ -187,7 +187,7 @@ public class AuthDriver extends ProfileDriver {
 
 	/**
 	 * Authenticate with OLAS's auth-webapp.
-	 *
+	 * 
 	 * @return The user's UUID.
 	 */
 	public String login(PrivateKeyEntry application, String applicationName,
@@ -202,8 +202,8 @@ public class AuthDriver extends ProfileDriver {
 			KeyPair keyPair = new KeyPair(publicKey, privateKey);
 			String uri = String.format("https://%s/olas-auth/entry", getHost());
 			String authnRequest = AuthnRequestFactory.createAuthnRequest(
-					applicationName, keyPair, "http://www.lin-k.net/"
-							+ applicationName, uri, null, null);
+					applicationName, applicationName, keyPair,
+					"http://www.lin-k.net/" + applicationName, uri, null, null);
 			String encodedAuthnRequest = new String(Base64
 					.encodeBase64(authnRequest.getBytes()));
 

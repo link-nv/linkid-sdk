@@ -57,6 +57,13 @@
 						<h:message for="removalUrl" styleClass="error" />
 					</s:decorate>
 
+					<h:outputLabel for="updateUrl" value="#{msgs.updateUrl}" />
+					<s:decorate>
+						<h:inputText id="updateUrl" value="#{operDevice.updateURL}"
+							styleClass="label" />
+						<h:message for="updateUrl" styleClass="error" />
+					</s:decorate>
+
 				</rich:tab>
 
 				<rich:tab id="cert-tab" label="#{msgs.certificate}">

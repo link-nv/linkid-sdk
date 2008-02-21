@@ -224,8 +224,8 @@ public class EntryServletTest {
 		String applicationName = "test-application-id";
 		String assertionConsumerService = "http://test.assertion.consumer.service";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationKeyPair, assertionConsumerService,
-				null, null, null);
+				applicationName, applicationName, applicationKeyPair,
+				assertionConsumerService, null, null, null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 
@@ -270,8 +270,6 @@ public class EntryServletTest {
 	@Test
 	public void saml2RequestedAuthnContextSetsRequiredDevices()
 			throws Exception {
-		LOG
-				.debug("----------------------------saml2RequestedAuthnContextSetsRequiredDevices---------------------------");
 
 		// setup
 		HttpClient httpClient = new HttpClient();
@@ -287,8 +285,8 @@ public class EntryServletTest {
 		Set<String> devices = new HashSet<String>();
 		devices.add(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationKeyPair, assertionConsumerService,
-				null, null, devices);
+				applicationName, applicationName, applicationKeyPair,
+				assertionConsumerService, null, null, devices);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 
@@ -313,7 +311,7 @@ public class EntryServletTest {
 				new DeviceClassEntity(
 						SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
 						SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-				null, null, null, null, null);
+				null, null, null, null, null, null);
 		authnDevices.add(passwordDevice);
 		expect(
 				this.mockDevicePolicyService
@@ -360,7 +358,8 @@ public class EntryServletTest {
 		KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
 		String applicationName = "test-application-id";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationKeyPair, null, null, null, null);
+				applicationName, applicationName, applicationKeyPair, null,
+				null, null, null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 
@@ -424,7 +423,8 @@ public class EntryServletTest {
 						"CN=TestApplication");
 		String applicationName = "test-application-id";
 		String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(
-				applicationName, applicationKeyPair, null, null, null, null);
+				applicationName, applicationName, applicationKeyPair, null,
+				null, null, null);
 		String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest
 				.getBytes());
 

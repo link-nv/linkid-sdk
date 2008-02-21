@@ -55,7 +55,7 @@
 			SafeOnlineDeviceAuthenticationServiceUrl
 		</param-name>
 		<param-value>
-			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/device-landing
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/device/auth
 		</param-value>
 	</context-param>
 
@@ -268,7 +268,31 @@
 
 	<servlet-mapping>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<url-pattern>/device-landing</url-pattern>
+		<url-pattern>/device/auth</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
+		<url-pattern>/device/registration</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>DeviceRegistrationExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.auth.servlet.DeviceRegistrationExitServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>DeviceRegistrationExitServlet</servlet-name>
+		<url-pattern>/device/registrationexit</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

@@ -30,18 +30,18 @@ public class AuthenticationContext implements Serializable {
 
 	private int validity;
 
-	public static final String LOGIN_MANAGER = AuthenticationContext.class
+	public static final String AUTHENTICATION_CONTEXT = AuthenticationContext.class
 			.getName()
-			+ ".LOGIN_MANAGER";
+			+ ".AUTHENTICATION_CONTEXT";
 
 	private AuthenticationContext(HttpSession session) {
 		this.session = session;
-		this.session.setAttribute(LOGIN_MANAGER, this);
+		this.session.setAttribute(AUTHENTICATION_CONTEXT, this);
 	}
 
-	public static AuthenticationContext getLoginManager(HttpSession session) {
+	public static AuthenticationContext getAuthenticationContext(HttpSession session) {
 		AuthenticationContext instance = (AuthenticationContext) session
-				.getAttribute(LOGIN_MANAGER);
+				.getAttribute(AUTHENTICATION_CONTEXT);
 		if (null == instance) {
 			instance = new AuthenticationContext(session);
 		}

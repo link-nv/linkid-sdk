@@ -76,7 +76,8 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 		LOG.debug("register user: " + login);
 		SubjectEntity newSubject = this.userRegistrationManager
 				.registerUser(login);
-		return this.weakMobileDeviceService.register(newSubject, mobile);
+		return this.weakMobileDeviceService.register(newSubject.getUserId(),
+				mobile);
 	}
 
 	public String requestMobileOTP(String mobile) throws MalformedURLException,

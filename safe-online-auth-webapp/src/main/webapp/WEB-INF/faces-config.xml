@@ -73,22 +73,6 @@
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/encap/register-mobile.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>help</from-action>
-			<to-view-id>/help.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<from-view-id>/beid/register-beid.xhtml</from-view-id>
-		<navigation-case>
-			<from-action>help</from-action>
-			<to-view-id>/help.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
 		<from-view-id>/password/new-user-password.xhtml</from-view-id>
 		<navigation-case>
 			<from-action>help</from-action>

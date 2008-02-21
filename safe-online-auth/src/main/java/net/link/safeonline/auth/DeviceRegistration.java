@@ -28,24 +28,12 @@ public interface DeviceRegistration {
 
 	String getUsername();
 
-	String getMobile();
-
-	void setMobile(String mobile);
-
-	String getMobileActivationCode();
-
 	/*
 	 * Actions.
 	 */
 	String deviceNext();
 
 	String passwordNext();
-
-	String mobileRegister();
-
-	String mobileActivationOk();
-
-	String mobileActivationCancel();
 
 	/*
 	 * Factories

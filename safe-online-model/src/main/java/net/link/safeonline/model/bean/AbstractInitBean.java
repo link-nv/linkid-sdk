@@ -256,16 +256,19 @@ public abstract class AbstractInitBean implements Startable {
 
 		final String removalURL;
 
+		final String updateURL;
+
 		public Device(String deviceName, String deviceClassName,
 				String authenticationURL, String registrationURL,
 				String newAccountRegistrationURL, String removalURL,
-				X509Certificate certificate) {
+				String updateURL, X509Certificate certificate) {
 			this.deviceName = deviceName;
 			this.deviceClassName = deviceClassName;
 			this.authenticationURL = authenticationURL;
 			this.registrationURL = registrationURL;
 			this.newAccountRegistrationURL = newAccountRegistrationURL;
 			this.removalURL = removalURL;
+			this.updateURL = updateURL;
 			this.certificate = certificate;
 		}
 	}
@@ -756,7 +759,7 @@ public abstract class AbstractInitBean implements Startable {
 						deviceClassEntity, device.authenticationURL,
 						device.registrationURL,
 						device.newAccountRegistrationURL, device.removalURL,
-						device.certificate);
+						device.updateURL, device.certificate);
 			}
 		}
 	}

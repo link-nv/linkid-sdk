@@ -22,8 +22,14 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.model.IdGenerator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 @Stateless
 public class RegisteredDeviceDAOBean implements RegisteredDeviceDAO {
+
+	private static final Log LOG = LogFactory
+			.getLog(RegisteredDeviceDAOBean.class);
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
@@ -31,24 +37,21 @@ public class RegisteredDeviceDAOBean implements RegisteredDeviceDAO {
 	@EJB
 	private IdGenerator idGenerator;
 
-	private RegisteredDeviceEntity.SubjectRegistrationsQuery subjectRegistrationsQuery;
-	private RegisteredDeviceEntity.SubjectDeviceRegistrationsQuery subjectDeviceRegistrationQuery;
+	private RegisteredDeviceEntity.QueryInterface queryObject;
 
 	@PostConstruct
 	public void postConstructCallback() {
-		this.subjectRegistrationsQuery = QueryObjectFactory.createQueryObject(
-				this.entityManager,
-				RegisteredDeviceEntity.SubjectRegistrationsQuery.class);
-		this.subjectDeviceRegistrationQuery = QueryObjectFactory
-				.createQueryObject(
-						this.entityManager,
-						RegisteredDeviceEntity.SubjectDeviceRegistrationsQuery.class);
+		this.queryObject = QueryObjectFactory
+				.createQueryObject(this.entityManager,
+						RegisteredDeviceEntity.QueryInterface.class);
 	}
 
 	public RegisteredDeviceEntity addRegisteredDevice(SubjectEntity subject,
 			DeviceEntity device) {
 
 		String uuid = this.idGenerator.generateId();
+		LOG.debug("add registered device: subject=" + subject.getUserId()
+				+ " uuid=" + uuid + " device=" + device.getName());
 		RegisteredDeviceEntity registeredDevice = new RegisteredDeviceEntity(
 				subject, uuid, device);
 		this.entityManager.persist(registeredDevice);
@@ -58,13 +61,16 @@ public class RegisteredDeviceDAOBean implements RegisteredDeviceDAO {
 	public RegisteredDeviceEntity findRegisteredDevice(SubjectEntity subject,
 			DeviceEntity device) {
 
-		return this.subjectDeviceRegistrationQuery.getRegisteredDevice(subject,
-				device);
+		return this.queryObject.getRegisteredDevice(subject, device);
 	}
 
 	public List<RegisteredDeviceEntity> listRegisteredDevices(
 			SubjectEntity subject) {
 
-		return this.subjectRegistrationsQuery.listRegisteredDevices(subject);
+		return this.queryObject.listRegisteredDevices(subject);
+	}
+
+	public RegisteredDeviceEntity findRegisteredDevice(String id) {
+		return this.entityManager.find(RegisteredDeviceEntity.class, id);
 	}
 }

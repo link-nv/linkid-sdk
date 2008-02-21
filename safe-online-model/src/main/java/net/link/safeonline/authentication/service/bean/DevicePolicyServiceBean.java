@@ -109,6 +109,18 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 		return device.getNewAccountRegistrationURL();
 	}
 
+	public String getRemovalURL(String deviceName)
+			throws DeviceNotFoundException {
+		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+		return device.getRemovalURL();
+	}
+
+	public String getUpdateURL(String deviceName)
+			throws DeviceNotFoundException {
+		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+		return device.getUpdateURL();
+	}
+
 	public List<DeviceEntity> listDevices(String authenticationContextClass) {
 		List<DeviceEntity> authndevices = new LinkedList<DeviceEntity>();
 		List<DeviceEntity> allDevices = this.deviceDAO.listDevices();
@@ -123,5 +135,10 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 		// if none found return all devices with
 		// deviceClass.authenticationContextClass = authenticationContextClass
 		return this.deviceDAO.listDevices(authenticationContextClass);
+	}
+
+	public DeviceEntity getDevice(String deviceName)
+			throws DeviceNotFoundException {
+		return this.deviceDAO.getDevice(deviceName);
 	}
 }

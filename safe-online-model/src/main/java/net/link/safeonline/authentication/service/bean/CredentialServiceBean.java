@@ -22,6 +22,7 @@ import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.CredentialServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
@@ -135,18 +136,20 @@ public class CredentialServiceBean implements CredentialService,
 			MalformedURLException, MobileRegistrationException,
 			ArgumentIntegrityException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		return this.weakMobileDeviceService.register(subject, mobile);
+		return this.weakMobileDeviceService.register(subject.getUserId(),
+				mobile);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void removeMobile(String mobile) throws MobileException,
-			MalformedURLException, LastDeviceException {
+			MalformedURLException, LastDeviceException,
+			SubjectNotFoundException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 
 		if (lastDevice(subject))
 			throw new LastDeviceException(
 					"At least 1 authentication device needed ...");
-		this.weakMobileDeviceService.remove(subject, mobile);
+		this.weakMobileDeviceService.remove(subject.getUserId(), mobile);
 	}
 
 	private boolean lastDevice(SubjectEntity subject) {

@@ -10,9 +10,11 @@ package test.unit.net.link.safeonline.dao.bean;
 import java.util.List;
 
 import junit.framework.TestCase;
+import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
+import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
@@ -22,6 +24,8 @@ public class DeviceDAOBeanTest extends TestCase {
 	private EntityTestManager entityTestManager;
 
 	private DeviceDAOBean testedInstance;
+
+	private DeviceClassDAOBean deviceClassDAO;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -34,11 +38,15 @@ public class DeviceDAOBeanTest extends TestCase {
 		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
 		this.testedInstance = new DeviceDAOBean();
+		this.deviceClassDAO = new DeviceClassDAOBean();
 
 		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
 				.getEntityManager());
+		EJBTestUtils.inject(this.deviceClassDAO, this.entityTestManager
+				.getEntityManager());
 
 		EJBTestUtils.init(this.testedInstance);
+		EJBTestUtils.init(this.deviceClassDAO);
 	}
 
 	@Override
@@ -48,8 +56,11 @@ public class DeviceDAOBeanTest extends TestCase {
 	}
 
 	public void testDevice() {
-		DeviceEntity device = this.testedInstance.addDevice("testdevice",
-				DeviceType.HASH);
+		DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(
+				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+		DeviceEntity device = this.testedInstance.addDevice("testDevice",
+				deviceClass, null, null, null, null, null, null);
 		List<DeviceEntity> devices = this.testedInstance.listDevices();
 		assertEquals(device, devices.get(0));
 	}

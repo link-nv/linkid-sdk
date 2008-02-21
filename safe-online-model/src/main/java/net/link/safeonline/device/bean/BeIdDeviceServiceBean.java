@@ -23,6 +23,7 @@ import net.link.safeonline.authentication.service.bean.RegistrationStatement;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.device.BeIdDeviceServiceRemote;
+import net.link.safeonline.device.backend.CredentialManager;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -52,6 +53,9 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 	private CredentialService credentialService;
 
 	@EJB
+	private CredentialManager credentialManager;
+
+	@EJB
 	private UserRegistrationManager userRegistrationManager;
 
 	@EJB
@@ -60,7 +64,7 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 	@EJB
 	private SecurityAuditLogger securityAuditLogger;
 
-	public SubjectEntity authenticate(String sessionId,
+	public String authenticate(String sessionId,
 			AuthenticationStatement authenticationStatement)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException {
@@ -93,23 +97,24 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 
 		String identifierDomainName = pkiProvider.getIdentifierDomainName();
 		String identifier = pkiProvider.getSubjectIdentifier(certificate);
-		SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
+		SubjectEntity deviceSubject = this.subjectIdentifierDAO.findSubject(
 				identifierDomainName, identifier);
-		if (null == subject) {
+		if (null == deviceSubject) {
 			String event = "no subject was found for the given user certificate";
 			LOG.warn(event);
 			throw new SubjectNotFoundException();
 		}
-		LOG.debug("subject: " + subject);
+		LOG.debug("subject: " + deviceSubject);
 
-		return subject;
+		return deviceSubject.getUserId();
 	}
 
-	public void register(byte[] identityStatementData)
+	public void register(String deviceUserId, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
 			ArgumentIntegrityException, AttributeTypeNotFoundException {
-		LOG.debug("register");
-		this.credentialService.mergeIdentityStatement(identityStatementData);
+		LOG.debug("register: " + deviceUserId);
+		this.credentialManager.mergeIdentityStatement(deviceUserId,
+				identityStatementData);
 	}
 
 	public SubjectEntity registerAndAuthenticate(String sessionId,

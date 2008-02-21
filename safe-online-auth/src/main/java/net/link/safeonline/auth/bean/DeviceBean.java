@@ -8,8 +8,6 @@
 package net.link.safeonline.auth.bean;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -100,7 +98,7 @@ public class DeviceBean implements Device {
 			return null;
 		}
 		if (remoteURL(authenticationURL)) {
-			return SafeOnlineDeviceUtils.redirect(this.facesMessages, this.log,
+			return SafeOnlineDeviceUtils.authenticate(this.facesMessages, this.log,
 					authenticationURL, this.deviceSelection);
 		}
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -116,17 +114,10 @@ public class DeviceBean implements Device {
 	}
 
 	private boolean remoteURL(String authenticationURLName) {
-		try {
-			/*
-			 * FIXME: depending on exceptions for normal control flow is bad and
-			 * slow.
-			 */
-			new URL(authenticationURLName);
-		} catch (MalformedURLException e) {
-			this.log.debug("local authentication URL");
-			return false;
-		}
-		return true;
+		if (authenticationURLName.startsWith("http://")
+				|| authenticationURLName.startsWith("https://"))
+			return true;
+		return false;
 	}
 
 	@Factory("applicationDevices")

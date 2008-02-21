@@ -46,7 +46,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.xml.transform.TransformerException;
 
-import net.link.safeonline.sdk.DomUtils;
+import net.link.safeonline.sdk.auth.saml2.DomUtils;
 import net.link.safeonline.sdk.ws.MessageAccessor;
 
 import org.apache.commons.io.FileUtils;

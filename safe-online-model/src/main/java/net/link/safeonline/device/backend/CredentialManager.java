@@ -18,6 +18,10 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 @Local
 public interface CredentialManager {
 
+	void mergeIdentityStatement(String userId, byte[] identityStatementData)
+			throws TrustDomainNotFoundException, PermissionDeniedException,
+			ArgumentIntegrityException, AttributeTypeNotFoundException;
+
 	void mergeIdentityStatement(SubjectEntity subject,
 			byte[] identityStatementData) throws TrustDomainNotFoundException,
 			PermissionDeniedException, ArgumentIntegrityException,

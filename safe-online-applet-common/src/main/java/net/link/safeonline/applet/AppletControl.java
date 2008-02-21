@@ -274,6 +274,14 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 	}
 
 	public static URL transformUrl(URL documentBase, String targetPath) {
+		if (targetPath.startsWith("http://")
+				|| targetPath.startsWith("https://"))
+			try {
+				return new URL(targetPath);
+			} catch (MalformedURLException e) {
+				throw new RuntimeException("URL error: " + e.getMessage());
+			}
+
 		String documentBaseStr = documentBase.toString();
 		int idx = documentBaseStr.lastIndexOf("/");
 		String identityUrlStr = documentBaseStr.substring(0, idx + 1)

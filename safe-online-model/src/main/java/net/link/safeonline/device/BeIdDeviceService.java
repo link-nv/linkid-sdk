@@ -22,12 +22,12 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 @Local
 public interface BeIdDeviceService {
 
-	SubjectEntity authenticate(String sessionId,
+	String authenticate(String sessionId,
 			AuthenticationStatement authenticationStatement)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException;
 
-	void register(byte[] identityStatementData)
+	void register(String userId, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
 			ArgumentIntegrityException, AttributeTypeNotFoundException;
 

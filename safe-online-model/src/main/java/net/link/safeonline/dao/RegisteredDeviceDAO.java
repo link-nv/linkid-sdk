@@ -26,4 +26,6 @@ public interface RegisteredDeviceDAO {
 	public RegisteredDeviceEntity findRegisteredDevice(SubjectEntity subject,
 			DeviceEntity device);
 
+	public RegisteredDeviceEntity findRegisteredDevice(String id);
+
 }

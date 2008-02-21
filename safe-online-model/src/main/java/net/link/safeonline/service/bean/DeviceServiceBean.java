@@ -163,8 +163,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	public void addDevice(String name, String deviceClassName,
 			String authenticationURL, String registrationURL,
 			String newAccountRegistrationURL, String removalURL,
-			byte[] encodedCertificate) throws CertificateEncodingException,
-			DeviceClassNotFoundException, ExistingDeviceException {
+			String updateURL, byte[] encodedCertificate)
+			throws CertificateEncodingException, DeviceClassNotFoundException,
+			ExistingDeviceException {
 		checkExistingDevice(name);
 		LOG.debug("add device: " + name);
 
@@ -176,7 +177,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
 		this.deviceDAO.addDevice(name, deviceClass, authenticationURL,
 				registrationURL, newAccountRegistrationURL, removalURL,
-				certificate);
+				updateURL, certificate);
 	}
 
 	private void checkExistingDevice(String name)
@@ -283,6 +284,13 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
 		device.setRemovalURL(removalURL);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public void updateUpdateUrl(String deviceName, String updateURL)
+			throws DeviceNotFoundException {
+		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+		device.setUpdateURL(updateURL);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)

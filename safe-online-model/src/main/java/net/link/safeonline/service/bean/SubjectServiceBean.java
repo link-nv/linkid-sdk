@@ -72,6 +72,11 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
 		return subject;
 	}
 
+	public SubjectEntity addDeviceSubject(String userId) {
+		LOG.debug("add device subject: " + userId);
+		return this.subjectDAO.addSubject(userId);
+	}
+
 	public SubjectEntity findSubject(String userId) {
 		LOG.debug("find subject user ID: " + userId);
 		return this.subjectDAO.findSubject(userId);

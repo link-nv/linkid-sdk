@@ -7,7 +7,7 @@
 
 package net.link.safeonline.user.bean;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -19,6 +19,7 @@ import javax.ejb.EJBException;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
@@ -26,15 +27,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.LastDeviceException;
-import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialService;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.user.DeviceEntry;
 import net.link.safeonline.user.Devices;
 import net.link.safeonline.user.UserConstants;
 
@@ -42,14 +43,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.contexts.Context;
@@ -63,6 +60,8 @@ public class DevicesBean implements Devices {
 
 	private static final Log LOG = LogFactory.getLog(DevicesBean.class);
 
+	private static final String DEVICES_LIST_NAME = "devices";
+
 	private static final String MOBILE_WEAK_ATTRIBUTE_LIST_NAME = "mobileWeakAttributes";
 
 	private String oldPassword;
@@ -71,15 +70,16 @@ public class DevicesBean implements Devices {
 
 	private boolean credentialCacheFlushRequired;
 
-	@Out(required = false, scope = ScopeType.CONVERSATION)
-	@In(required = false)
-	private String mobile;
+	@DataModel(DEVICES_LIST_NAME)
+	List<DeviceEntry> devices;
 
-	private String mobileActivationCode;
+	@DataModelSelection(DEVICES_LIST_NAME)
+	private DeviceEntry selectedDevice;
 
 	@DataModel(MOBILE_WEAK_ATTRIBUTE_LIST_NAME)
 	List<AttributeDO> mobileWeakAttributes;
 
+	@SuppressWarnings("unused")
 	@DataModelSelection(MOBILE_WEAK_ATTRIBUTE_LIST_NAME)
 	private AttributeDO selectedMobile;
 
@@ -93,6 +93,9 @@ public class DevicesBean implements Devices {
 
 	@EJB
 	private IdentityService identityService;
+
+	@EJB
+	private DevicePolicyService devicePolicyService;
 
 	@In
 	Context sessionContext;
@@ -205,8 +208,6 @@ public class DevicesBean implements Devices {
 		this.oldPassword = null;
 		this.newPassword = null;
 		this.credentialCacheFlushRequired = false;
-		this.mobile = null;
-		this.mobileActivationCode = null;
 	}
 
 	private Locale getViewLocale() {
@@ -249,105 +250,106 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
+	@Factory(DEVICES_LIST_NAME)
+	public List<DeviceEntry> devicesFactory() {
+		Locale locale = getViewLocale();
+		this.devices = new LinkedList<DeviceEntry>();
+		List<DeviceEntity> deviceList = this.devicePolicyService.getDevices();
+		for (DeviceEntity device : deviceList) {
+			String deviceDescription = this.devicePolicyService
+					.getDeviceDescription(device.getName(), locale);
+			this.devices.add(new DeviceEntry(device, deviceDescription));
+		}
+		return this.devices;
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String register() {
+		LOG.debug("register device: " + this.selectedDevice.getFriendlyName());
+		String registrationURL;
+		try {
+			registrationURL = this.devicePolicyService
+					.getRegistrationURL(this.selectedDevice.getDevice()
+							.getName());
+		} catch (DeviceNotFoundException e) {
+			LOG.error("device not found: "
+					+ this.selectedDevice.getDevice().getName());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
+		}
+		registrationURL += "?source=user";
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		try {
+			externalContext.redirect(registrationURL);
+		} catch (IOException e) {
+			LOG.debug("IO error: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
+		}
+		return null;
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String remove() {
+		LOG.debug("remove device: " + this.selectedDevice.getFriendlyName());
+		String removalURL;
+		try {
+			removalURL = this.devicePolicyService
+					.getRemovalURL(this.selectedDevice.getDevice().getName());
+		} catch (DeviceNotFoundException e) {
+			LOG.error("device not found: "
+					+ this.selectedDevice.getDevice().getName());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
+		}
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		try {
+			externalContext.redirect(removalURL);
+		} catch (IOException e) {
+			LOG.debug("IO error: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
+		}
+		return null;
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String update() {
+		LOG.debug("update device: " + this.selectedDevice.getFriendlyName());
+		String updateURL;
+		try {
+			updateURL = this.devicePolicyService
+					.getUpdateURL(this.selectedDevice.getDevice().getName());
+		} catch (DeviceNotFoundException e) {
+			LOG.error("device not found: "
+					+ this.selectedDevice.getDevice().getName());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
+		}
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		try {
+			externalContext.redirect(updateURL);
+		} catch (IOException e) {
+			LOG.debug("IO error: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
+		}
+		return null;
+
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
 	public boolean isPasswordConfigured() {
 		boolean hasPassword = this.credentialService.isPasswordConfigured();
 		return hasPassword;
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String getMobile() {
-		return this.mobile;
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String getMobileActivationCode() {
-		return this.mobileActivationCode;
-	}
-
-	@Begin
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String mobileRegister() {
-		LOG.debug("register mobile: " + this.mobile);
-		try {
-			this.mobileActivationCode = this.credentialService
-					.registerMobile(this.mobile);
-		} catch (MobileException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		} catch (MalformedURLException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		} catch (MobileRegistrationException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		} catch (ArgumentIntegrityException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorMobileTaken");
-			return null;
-		}
-		return "";
-	}
-
-	@End
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String mobileActivationOk() {
-		LOG.debug("mobile activation ok: " + this.mobile);
-		this.mobileActivationCode = null;
-		this.mobileWeakAttributesFactory();
-		return "success";
-	}
-
-	@End
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String mobileActivationCancel() {
-		LOG.debug("mobile activation canceled: " + this.mobile);
-		this.mobileActivationCode = null;
-		try {
-			this.credentialService.removeMobile(this.mobile);
-		} catch (MobileException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		} catch (MalformedURLException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		} catch (LastDeviceException e) {
-			LOG.debug(e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorLastDevice");
-			return null;
-		}
-		return "cancel";
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
-	public String removeMobile() {
-		try {
-			this.credentialService.removeMobile(this.selectedMobile
-					.getStringValue());
-		} catch (MobileException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRemovalFailed");
-			return null;
-		} catch (MalformedURLException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRemovalFailed");
-			return null;
-		} catch (LastDeviceException e) {
-			LOG.debug(e.getMessage());
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorLastDevice");
-			return null;
-		}
-		return "success";
 	}
 }

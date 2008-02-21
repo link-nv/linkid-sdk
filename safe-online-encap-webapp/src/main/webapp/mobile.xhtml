@@ -10,8 +10,6 @@
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="top_content">
-		<h1>#{msgs.authenticatingFor}: #{applicationId}</h1>
-
 	</ui:define>
 	<ui:define name="content">
 		<h2>#{msgs.mobileAuthentication}</h2>
@@ -25,27 +23,27 @@
 			<t:messages globalOnly="true" styleClass="error" />
 			<h:outputLabel for="mobile" value="#{msgs.mobile}" />
 			<s:decorate>
-				<h:inputText id="mobile" value="#{mobileLogon.mobile}"
-					required="true" readonly="#{!empty mobileLogon.challengeId}"
+				<h:inputText id="mobile" value="#{authentication.mobile}"
+					required="true" readonly="#{!empty authentication.challengeId}"
 					styleClass="label" />
 			</s:decorate>
 			<t:message for="mobile" styleClass="error" />
 			<h:outputLabel for="generateOTP" value="" />
 			<h:commandButton id="generateOTP" value="#{msgs.mobileRequestOTP}"
-				action="#{mobileLogon.requestOTP}"
-				rendered="#{empty mobileLogon.challengeId}" class="submit" />
+				action="#{authentication.requestOTP}"
+				rendered="#{empty authentication.challengeId}" class="submit" />
 		</a4j:form>
 
 		<h:form id="otp-form">
-			<f:subview rendered="#{!empty mobileLogon.challengeId}">
+			<f:subview rendered="#{!empty authentication.challengeId}">
 				<h:outputLabel for="otp" value="#{msgs.mobileOTP}" />
 				<s:decorate>
-					<h:inputText id="otp" value="#{mobileLogon.mobileOTP}"
+					<h:inputText id="otp" value="#{authentication.mobileOTP}"
 						required="true" styleClass="label" />
 				</s:decorate>
 				<t:message for="otp" styleClass="error" />
 				<h:outputLabel for="login" value="" />
-				<h:commandButton action="#{mobileLogon.login}" id="login"
+				<h:commandButton action="#{authentication.login}" id="login"
 					value="#{msgs.loginaction}" class="submit" />
 			</f:subview>
 		</h:form>

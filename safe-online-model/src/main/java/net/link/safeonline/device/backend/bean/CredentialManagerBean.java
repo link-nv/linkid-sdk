@@ -27,12 +27,15 @@ import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.CredentialManager;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiProvider;
 import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.service.RegisteredDeviceService;
+import net.link.safeonline.service.SubjectService;
 
 @Stateless
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
@@ -48,6 +51,12 @@ public class CredentialManagerBean implements CredentialManager {
 	private SubjectIdentifierDAO subjectIdentifierDAO;
 
 	@EJB
+	private RegisteredDeviceService registeredDeviceService;
+
+	@EJB
+	private SubjectService subjectService;
+
+	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
 
 	@EJB
@@ -57,8 +66,13 @@ public class CredentialManagerBean implements CredentialManager {
 			byte[] identityStatementData) throws TrustDomainNotFoundException,
 			PermissionDeniedException, ArgumentIntegrityException,
 			AttributeTypeNotFoundException {
-		String login = subject.getUserId();
+		mergeIdentityStatement(subject.getUserId(), identityStatementData);
+	}
 
+	public void mergeIdentityStatement(String deviceUserId,
+			byte[] identityStatementData) throws TrustDomainNotFoundException,
+			PermissionDeniedException, ArgumentIntegrityException,
+			AttributeTypeNotFoundException {
 		/*
 		 * First check integrity of the received identity statement.
 		 */
@@ -92,9 +106,31 @@ public class CredentialManagerBean implements CredentialManager {
 		 * user.
 		 */
 		String user = identityStatement.getUser();
-		if (false == login.equals(user)) {
+		if (false == deviceUserId.equals(user)) {
 			throw new PermissionDeniedException("statement user mismatch");
 		}
+
+		/*
+		 * Lookup subject entity from registered device entity for now so we can
+		 * access the attributes
+		 * 
+		 * TODO: keep seperate device id mapping list
+		 */
+		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
+				.getRegisteredDevice(deviceUserId);
+		if (null == registeredDevice)
+			throw new PermissionDeniedException("registered device not found");
+		SubjectEntity subject = registeredDevice.getSubject();
+
+		/*
+		 * Create new device subject
+		 */
+		SubjectEntity deviceSubject = this.subjectService
+				.findSubject(deviceUserId);
+		if (null != deviceSubject)
+			throw new PermissionDeniedException(
+					"device subject already created");
+		deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
 
 		String domain = pkiProvider.getIdentifierDomainName();
 		String identifier = pkiProvider.getSubjectIdentifier(certificate);
@@ -106,8 +142,8 @@ public class CredentialManagerBean implements CredentialManager {
 			 * system.
 			 */
 			this.subjectIdentifierDAO.addSubjectIdentifier(domain, identifier,
-					subject);
-		} else if (false == subject.equals(existingMappedSubject)) {
+					deviceSubject);
+		} else if (false == deviceSubject.equals(existingMappedSubject)) {
 			/*
 			 * The certificate is already linked to another user.
 			 */
@@ -122,7 +158,7 @@ public class CredentialManagerBean implements CredentialManager {
 		 * This is for example the case for BeID identity cards.
 		 */
 		this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(domain,
-				identifier, subject);
+				identifier, deviceSubject);
 
 		/*
 		 * Store some additional attributes retrieved from the identity

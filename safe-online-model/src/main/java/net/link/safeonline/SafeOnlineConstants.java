@@ -66,7 +66,7 @@ public class SafeOnlineConstants {
 
 	public static final String BEID_DEVICE_ID = "beid";
 
-	public static final String ENCAP_DEVICE_ID = "mobileWeak";
+	public static final String ENCAP_DEVICE_ID = "encap";
 
 	/**
 	 * Device classes
@@ -82,6 +82,11 @@ public class SafeOnlineConstants {
 	public static final String PKI_DEVICE_CLASS = "PKI";
 
 	public static final String PKI_DEVICE_AUTH_CONTEXT_CLASS = "urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI";
+
+	/**
+	 * External device identifier domains
+	 */
+	public static final String ENCAP_IDENTIFIER_DOMAIN = "encap";
 
 	/**
 	 * The login attribute name and login service provider domain

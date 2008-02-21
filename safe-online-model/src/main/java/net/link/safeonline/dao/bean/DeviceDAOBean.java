@@ -27,7 +27,6 @@ import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
-import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
 @Stateless
@@ -53,19 +52,13 @@ public class DeviceDAOBean implements DeviceDAO {
 				this.entityManager, DevicePropertyEntity.QueryInterface.class);
 	}
 
-	public DeviceEntity addDevice(String name, DeviceType deviceType) {
-		DeviceEntity device = new DeviceEntity(name, deviceType);
-		this.entityManager.persist(device);
-		return device;
-	}
-
 	public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass,
 			String authenticationURL, String registrationURL,
 			String newAccountRegistrationURL, String removalURL,
-			X509Certificate certificate) {
+			String updateURL, X509Certificate certificate) {
 		DeviceEntity device = new DeviceEntity(name, deviceClass,
 				authenticationURL, registrationURL, newAccountRegistrationURL,
-				removalURL, certificate);
+				removalURL, updateURL, certificate);
 		this.entityManager.persist(device);
 		return device;
 	}

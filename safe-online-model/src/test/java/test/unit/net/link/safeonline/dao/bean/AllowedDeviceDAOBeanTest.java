@@ -10,16 +10,18 @@ package test.unit.net.link.safeonline.dao.bean;
 import java.util.List;
 
 import junit.framework.TestCase;
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
+import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DeviceType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
@@ -34,6 +36,8 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 	private ApplicationDAOBean applicationDAO;
 
 	private DeviceDAOBean deviceDAO;
+
+	private DeviceClassDAOBean deviceClassDAO;
 
 	private ApplicationOwnerDAOBean applicationOwnerDAO;
 
@@ -51,6 +55,7 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 
 		this.testedInstance = new AllowedDeviceDAOBean();
 		this.deviceDAO = new DeviceDAOBean();
+		this.deviceClassDAO = new DeviceClassDAOBean();
 		this.applicationDAO = new ApplicationDAOBean();
 		this.applicationOwnerDAO = new ApplicationOwnerDAOBean();
 		this.subjectDAO = new SubjectDAOBean();
@@ -58,6 +63,8 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 		EJBTestUtils.inject(this.testedInstance, this.entityTestManager
 				.getEntityManager());
 		EJBTestUtils.inject(this.deviceDAO, this.entityTestManager
+				.getEntityManager());
+		EJBTestUtils.inject(this.deviceClassDAO, this.entityTestManager
 				.getEntityManager());
 		EJBTestUtils.inject(this.applicationDAO, this.entityTestManager
 				.getEntityManager());
@@ -67,6 +74,7 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 				.getEntityManager());
 
 		EJBTestUtils.init(this.deviceDAO);
+		EJBTestUtils.init(this.deviceClassDAO);
 		EJBTestUtils.init(this.applicationDAO);
 		EJBTestUtils.init(this.applicationOwnerDAO);
 		EJBTestUtils.init(this.subjectDAO);
@@ -91,8 +99,11 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 				.addApplication("testapp", null, applicationOwner, null, null,
 						null, null, null);
 
-		DeviceEntity device = this.deviceDAO.addDevice("testdevice",
-				DeviceType.HASH);
+		DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(
+				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+		DeviceEntity device = this.deviceDAO.addDevice("testDevice",
+				deviceClass, null, null, null, null, null, null);
 		AllowedDeviceEntity allowedDevice = this.testedInstance
 				.addAllowedDevice(application, device, 0);
 		List<AllowedDeviceEntity> allowedDevices = this.testedInstance
@@ -101,8 +112,11 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 	}
 
 	public void testAllowedDeviceNoApplication() {
-		DeviceEntity device = this.deviceDAO.addDevice("testdevice",
-				DeviceType.HASH);
+		DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(
+				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+		DeviceEntity device = this.deviceDAO.addDevice("testDevice",
+				deviceClass, null, null, null, null, null, null);
 		try {
 			this.testedInstance.addAllowedDevice(null, device, 0);
 			this.entityTestManager.getEntityManager().flush();
@@ -143,8 +157,11 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 				.addApplication("testapp", null, applicationOwner, null, null,
 						null, null, null);
 
-		DeviceEntity device = this.deviceDAO.addDevice("testdevice",
-				DeviceType.HASH);
+		DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(
+				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
+		DeviceEntity device = this.deviceDAO.addDevice("testDevice",
+				deviceClass, null, null, null, null, null, null);
 		this.testedInstance.addAllowedDevice(application, device, 0);
 		this.testedInstance.deleteAllowedDevices(application);
 		List<AllowedDeviceEntity> allowedDevices = this.testedInstance

@@ -2,8 +2,6 @@ package net.link.safeonline.owner;
 
 import net.link.safeonline.entity.DeviceEntity;
 
-import org.jboss.seam.core.ResourceBundle;
-
 public class DeviceEntry {
 
 	private DeviceEntity device;
@@ -14,11 +12,12 @@ public class DeviceEntry {
 
 	private int weight;
 
-	public DeviceEntry(DeviceEntity device, boolean allowed, int weight) {
+	public DeviceEntry(DeviceEntity device, String friendlyName,
+			boolean allowed, int weight) {
 		this.device = device;
+		this.friendlyName = friendlyName;
 		this.allowed = allowed;
 		this.weight = weight;
-		setFriendlyName();
 	}
 
 	public boolean isAllowed() {
@@ -49,12 +48,7 @@ public class DeviceEntry {
 		return this.friendlyName;
 	}
 
-	private void setFriendlyName() {
-		this.friendlyName = ResourceBundle.instance().getString(
-				this.device.getName());
-		if (null == this.friendlyName) {
-			this.friendlyName = this.device.getName();
-		}
+	public void setFriendlyName(String friendlyName) {
+		this.friendlyName = friendlyName;
 	}
-
 }

@@ -81,6 +81,8 @@ public class DeviceBean implements Device {
 
 	private String removalURL;
 
+	private String updateURL;
+
 	private UploadedFile certificate;
 
 	/*
@@ -162,7 +164,7 @@ public class DeviceBean implements Device {
 			this.deviceService.addDevice(this.name, this.deviceClass,
 					this.authenticationURL, this.registrationURL,
 					this.newAccountRegistrationURL, this.removalURL,
-					encodedCertificate);
+					this.updateURL, encodedCertificate);
 		} catch (CertificateEncodingException e) {
 			LOG.debug("X509 certificate encoding error");
 			this.facesMessages.addToControlFromResourceBundle("fileupload",
@@ -221,6 +223,8 @@ public class DeviceBean implements Device {
 			if (null != this.removalURL)
 				this.deviceService
 						.updateRemovalUrl(deviceName, this.removalURL);
+			if (null != this.updateURL)
+				this.deviceService.updateUpdateUrl(deviceName, this.updateURL);
 		} catch (DeviceNotFoundException e) {
 			LOG.debug("device not found");
 			this.facesMessages.addFromResourceBundle(
@@ -331,6 +335,16 @@ public class DeviceBean implements Device {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void setRemovalURL(String removalURL) {
 		this.removalURL = removalURL;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String getUpdateURL() {
+		return this.updateURL;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setUpdateURL(String updateURL) {
+		this.updateURL = updateURL;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

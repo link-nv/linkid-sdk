@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.auth.saml2;
 
 import java.util.List;
 
+
 import org.opensaml.ws.message.MessageContext;
 import org.opensaml.ws.security.SecurityPolicy;
 import org.opensaml.ws.security.SecurityPolicyResolver;

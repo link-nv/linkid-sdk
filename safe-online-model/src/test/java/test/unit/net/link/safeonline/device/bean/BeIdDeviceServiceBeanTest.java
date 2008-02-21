@@ -114,13 +114,13 @@ public class BeIdDeviceServiceBeanTest extends TestCase {
 		replay(mockPkiProvider);
 
 		// operate
-		SubjectEntity resultSubject = this.testedInstance.authenticate(
-				sessionId, authenticationStatement);
+		String resultDeviceUserId = this.testedInstance.authenticate(sessionId,
+				authenticationStatement);
 
 		// verify
 		verify(this.mockObjects);
 		verify(mockPkiProvider);
-		assertNotNull(resultSubject);
+		assertNotNull(resultDeviceUserId);
 	}
 
 	public void testRegisterAndAuthenticate() throws Exception {

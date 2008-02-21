@@ -7,6 +7,7 @@
 
 package net.link.safeonline.device.sdk.seam;
 
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Map;
@@ -15,8 +16,10 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.device.sdk.saml2.Saml2BrowserPostHandler;
+import net.link.safeonline.device.sdk.RegistrationManager;
+import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.jboss.seam.core.FacesMessages;
@@ -34,20 +37,12 @@ public class SafeOnlineDeviceUtils {
 
 	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
 
-	public static final String KEY_STORE_RESOURCE_INIT_PARAM = "KeyStoreResource";
-
-	public static final String KEY_STORE_FILE_INIT_PARAM = "KeyStoreFile";
-
-	public static final String KEY_STORE_TYPE_INIT_PARAM = "KeyStoreType";
-
-	public static final String KEY_STORE_PASSWORD_INIT_PARAM = "KeyStorePassword";
-
 	private SafeOnlineDeviceUtils() {
 		// empty
 	}
 
 	/**
-	 * Redirects to the specified Device IdP
+	 * Redirects to the specified Device IdP authentication page
 	 * 
 	 * <p>
 	 * The method requires the
@@ -62,7 +57,7 @@ public class SafeOnlineDeviceUtils {
 	 *            the landing page of the device IdP
 	 */
 	@SuppressWarnings("unchecked")
-	public static String redirect(@SuppressWarnings("unused")
+	public static String authenticate(@SuppressWarnings("unused")
 	FacesMessages facesMessages, Log log, String landingUrl, String device) {
 		log.debug("redirecting to #0", landingUrl);
 
@@ -126,5 +121,21 @@ public class SafeOnlineDeviceUtils {
 			throw new RuntimeException("missing context-param in web.xml: "
 					+ parameterName);
 		return initParameter;
+	}
+
+	/**
+	 * Redirects from Device IdP to OLAS upon completion of the device
+	 * registration.
+	 * 
+	 * @throws IOException
+	 */
+	public static void registerExit() throws IOException {
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+
+		externalContext
+				.redirect(RegistrationManager
+						.getSafeOnlineRegistrationExitServiceUrl((HttpSession) externalContext
+								.getSession(true)));
 	}
 }

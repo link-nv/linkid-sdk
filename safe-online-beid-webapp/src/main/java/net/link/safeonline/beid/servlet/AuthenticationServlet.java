@@ -23,7 +23,6 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
 import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
-import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
@@ -82,19 +81,17 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 			AuthenticationStatement authenticationStatement;
 
 			authenticationStatement = new AuthenticationStatement(statementData);
-			// this should become the UUID as can be found in the
-			// RegisteredDevice mapping
-			SubjectEntity subject = this.beIdDeviceService.authenticate(
+			String deviceUserId = this.beIdDeviceService.authenticate(
 					sessionId, authenticationStatement);
-			if (null == subject) {
+			if (null == deviceUserId) {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				writer.println("Authentication failed");
 				return;
 			}
 
 			AuthenticationContext authenticationContext = AuthenticationContext
-					.getLoginManager(session);
-			authenticationContext.setUserId(subject.getUserId());
+					.getAuthenticationContext(session);
+			authenticationContext.setUserId(deviceUserId);
 			authenticationContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
 			authenticationContext.setIssuer(SafeOnlineConstants.BEID_DEVICE_ID);

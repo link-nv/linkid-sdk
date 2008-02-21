@@ -44,6 +44,11 @@
 	</context-param>
 
 	<context-param>
+		<param-name>DeviceName</param-name>
+		<param-value>beid</param-value>
+	</context-param>
+
+	<context-param>
 		<param-name>KeyStoreResource</param-name>
 		<param-value>safe-online-beid-keystore.jks</param-value>
 	</context-param>
@@ -64,9 +69,50 @@
 	</context-param>
 
 	<context-param>
+		<param-name>RegistrationUrl</param-name>
+		<param-value>register-beid.seam</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostName</param-name>
+		<param-value>${safe-online.host.name}</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostPort</param-name>
+		<param-value>${safe-online.host.port}</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostPortSsl</param-name>
+		<param-value>${safe-online.host.port.ssl}</param-value>
+	</context-param>
+
+	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value>
 			${safe-online.host.name}:${safe-online.host.port.ssl}
+		</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>RegistrationServiceUrl</param-name>
+		<param-value>
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-beid/regexit
+		</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineRegistrationServiceUrl</param-name>
+		<param-value>
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/device/registration
+		</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineRegistrationExitServiceUrl</param-name>
+		<param-value>
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/device/registrationexit
 		</param-value>
 	</context-param>
 
@@ -150,14 +196,14 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>LandingServlet</servlet-name>
+		<servlet-name>AuthLandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.servlet.LandingServlet
+			net.link.safeonline.device.sdk.auth.servlet.LandingServlet
 		</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>LandingServlet</servlet-name>
+		<servlet-name>AuthLandingServlet</servlet-name>
 		<url-pattern>/auth</url-pattern>
 	</servlet-mapping>
 
@@ -176,13 +222,49 @@
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.servlet.ExitServlet
+			net.link.safeonline.device.sdk.auth.servlet.ExitServlet
 		</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>ExitServlet</servlet-name>
 		<url-pattern>/authenticationexit</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>RegLandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.reg.servlet.LandingServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>RegLandingServlet</servlet-name>
+		<url-pattern>/reg</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>IdentityServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.beid.servlet.IdentityServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>IdentityServlet</servlet-name>
+		<url-pattern>/identity</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>RegExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.reg.servlet.ExitServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>RegExitServlet</servlet-name>
+		<url-pattern>/regexit</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

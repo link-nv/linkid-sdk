@@ -9,6 +9,7 @@ package net.link.safeonline.owner.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
@@ -16,11 +17,13 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
+import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.entity.AllowedDeviceEntity;
@@ -69,6 +72,9 @@ public class ApplicationBean implements Application {
 
 	@EJB
 	private DeviceService deviceService;
+
+	@EJB
+	private DevicePolicyService devicePolicyService;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -138,6 +144,9 @@ public class ApplicationBean implements Application {
 		if (this.selectedApplication == null) {
 			return;
 		}
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		Locale viewLocale = facesContext.getViewRoot().getLocale();
+
 		List<DeviceEntity> deviceList = this.deviceService.listDevices();
 		List<AllowedDeviceEntity> allowedDeviceList = this.deviceService
 				.listAllowedDevices(this.selectedApplication);
@@ -147,8 +156,10 @@ public class ApplicationBean implements Application {
 		boolean defaultValue = false;
 
 		for (DeviceEntity deviceEntity : deviceList) {
-			this.allowedDevices.add(new DeviceEntry(deviceEntity, defaultValue,
-					0));
+			String deviceDescription = this.devicePolicyService
+					.getDeviceDescription(deviceEntity.getName(), viewLocale);
+			this.allowedDevices.add(new DeviceEntry(deviceEntity,
+					deviceDescription, defaultValue, 0));
 		}
 
 		for (AllowedDeviceEntity allowedDevice : allowedDeviceList) {

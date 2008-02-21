@@ -21,8 +21,10 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.dao.DeviceDAO;
-import net.link.safeonline.device.sdk.saml2.Saml2BrowserPostHandler;
+import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.RegisteredDeviceEntity;
+import net.link.safeonline.service.RegisteredDeviceService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -44,6 +46,8 @@ public class DeviceLandingServlet extends HttpServlet {
 
 	private DeviceDAO deviceDAO;
 
+	private RegisteredDeviceService registeredDeviceService;
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -54,6 +58,9 @@ public class DeviceLandingServlet extends HttpServlet {
 	private void loadDependencies() {
 		this.deviceDAO = EjbUtils.getEJB("SafeOnline/DeviceDAOBean/local",
 				DeviceDAO.class);
+		this.registeredDeviceService = EjbUtils.getEJB(
+				"SafeOnline/RegisteredDeviceServiceBean/local",
+				RegisteredDeviceService.class);
 	}
 
 	@Override
@@ -84,9 +91,9 @@ public class DeviceLandingServlet extends HttpServlet {
 			return;
 		}
 
-		String userId = saml2BrowserPostHandler.handleResponse(request,
+		String deviceUserId = saml2BrowserPostHandler.handleResponse(request,
 				response);
-		if (null == userId) {
+		if (null == deviceUserId) {
 			String msg = "protocol handler could not finalize";
 			LOG.error(msg);
 			writeErrorPage(msg, response);
@@ -94,7 +101,6 @@ public class DeviceLandingServlet extends HttpServlet {
 		}
 		String deviceName = saml2BrowserPostHandler.getAuthenticationDevice();
 
-		LOG.debug("subjectId: " + userId);
 		DeviceEntity device;
 		try {
 			device = this.deviceDAO.getDevice(deviceName);
@@ -104,19 +110,37 @@ public class DeviceLandingServlet extends HttpServlet {
 			writeErrorPage(msg, response);
 			return;
 		}
-		LoginManager.login(request.getSession(), userId, device);
+
+		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
+				.getRegisteredDevice(deviceUserId);
+		if (null == registeredDevice) {
+			String msg = "device registration not found";
+			LOG.error(msg + " : " + deviceUserId);
+			writeErrorPage(msg, response);
+			return;
+		}
+
+		/*
+		 * Authenticate
+		 */
+		LOG.debug("login: " + registeredDevice.getSubject().getUserId()
+				+ " device=" + device.getName());
+		LoginManager.login(request.getSession(), registeredDevice.getSubject()
+				.getUserId(), device);
 		AuthenticationService authenticationService = AuthenticationServiceManager
 				.getAuthenticationService(request.getSession());
 		try {
-			authenticationService.authentication(userId, device);
+			authenticationService.authenticate(registeredDevice.getSubject()
+					.getUserId(), device);
 		} catch (SubjectNotFoundException e) {
-			String msg = "authentication failed for subject: " + userId
-					+ ", device: " + device.getName();
+			String msg = "authentication failed for subject: "
+					+ registeredDevice.getSubject().getUserId() + ", device: "
+					+ device.getName();
 			LOG.error(msg);
 			writeErrorPage(msg, response);
 			return;
 		}
-		response.sendRedirect("./login");
+		response.sendRedirect("../login");
 	}
 
 	private void writeErrorPage(String message, HttpServletResponse response)

@@ -18,6 +18,7 @@ import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
@@ -73,9 +74,11 @@ public interface CredentialService {
 	 * @throws MobileException
 	 * @throws MalformedURLException
 	 * @throws LastDeviceException
+	 * @throws SubjectNotFoundException
 	 */
 	void removeMobile(String mobile) throws MobileException,
-			MalformedURLException, LastDeviceException;
+			MalformedURLException, LastDeviceException,
+			SubjectNotFoundException;
 
 	/**
 	 * Merges the identity statement with the current user subject. The identity

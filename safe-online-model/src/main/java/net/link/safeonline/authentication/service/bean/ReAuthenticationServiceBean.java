@@ -150,18 +150,18 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	String mobileOTP) throws SubjectNotFoundException, MalformedURLException,
 			MobileException, MobileAuthenticationException,
 			SubjectMismatchException, PermissionDeniedException {
-		SubjectEntity subject = this.weakMobileDeviceService.authenticate(
-				mobile, challengeId, mobileOTP);
+		String deviceUserId = this.weakMobileDeviceService.authenticate(mobile,
+				challengeId, mobileOTP);
 		/*
 		 * Safe the state in this stateful session bean.
 		 */
-		setAuthenticatedSubject(subject);
+		// setAuthenticatedSubject(subject);
 		addAuthenticationDevice(device);
 
 		/*
 		 * Communicate that the authentication process can continue.
 		 */
-		return this.subjectService.getSubjectLogin(subject.getUserId());
+		return this.subjectService.getSubjectLogin(deviceUserId);
 	}
 
 	@DenyAll
@@ -181,15 +181,15 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		LOG.debug("authenticate session: " + sessionId);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);
-		SubjectEntity subject = this.beIdDeviceService.authenticate(sessionId,
+		String deviceUserId = this.beIdDeviceService.authenticate(sessionId,
 				authenticationStatement);
-		if (null == subject)
+		if (null == deviceUserId)
 			return false;
 
 		/*
 		 * Safe the state.
 		 */
-		setAuthenticatedSubject(subject);
+		// setAuthenticatedSubject(subject);
 		DeviceEntity beidDevice = this.deviceDAO
 				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
 		addAuthenticationDevice(beidDevice);

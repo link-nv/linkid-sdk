@@ -27,8 +27,6 @@ import javax.ejb.EJBException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -86,13 +84,13 @@ public class DeviceEntity implements Serializable {
 
 	private String removalURL;
 
+	private String updateURL;
+
 	private byte[] encodedCert;
 
 	private String certificateIdentifier;
 
 	private transient X509Certificate certificate;
-
-	private DeviceType deviceType;
 
 	private List<AttributeTypeEntity> attributeTypes;
 
@@ -104,21 +102,17 @@ public class DeviceEntity implements Serializable {
 		// empty
 	}
 
-	public DeviceEntity(String name, DeviceType deviceType) {
-		this.name = name;
-		this.deviceType = deviceType;
-	}
-
 	public DeviceEntity(String name, DeviceClassEntity deviceClass,
 			String authenticationURL, String registrationURL,
 			String newAccountRegistrationURL, String removalURL,
-			X509Certificate certificate) {
+			String updateURL, X509Certificate certificate) {
 		this.name = name;
 		this.deviceClass = deviceClass;
 		this.authenticationURL = authenticationURL;
 		this.registrationURL = registrationURL;
 		this.newAccountRegistrationURL = newAccountRegistrationURL;
 		this.removalURL = removalURL;
+		this.updateURL = updateURL;
 		this.properties = new HashMap<String, DevicePropertyEntity>();
 		this.descriptions = new HashMap<String, DeviceDescriptionEntity>();
 		this.attributeTypes = new LinkedList<AttributeTypeEntity>();
@@ -140,15 +134,6 @@ public class DeviceEntity implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@Enumerated(EnumType.STRING)
-	public DeviceType getDeviceType() {
-		return this.deviceType;
-	}
-
-	public void setDeviceType(DeviceType deviceType) {
-		this.deviceType = deviceType;
 	}
 
 	@OneToMany(fetch = FetchType.EAGER)
@@ -227,6 +212,18 @@ public class DeviceEntity implements Serializable {
 
 	public void setRemovalURL(String removalURL) {
 		this.removalURL = removalURL;
+	}
+
+	/**
+	 * Retrieves the URL used when updating this device.
+	 * 
+	 */
+	public String getUpdateURL() {
+		return this.updateURL;
+	}
+
+	public void setUpdateURL(String updateURL) {
+		this.updateURL = updateURL;
 	}
 
 	/**

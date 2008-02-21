@@ -20,14 +20,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 @Entity
-@Table(name = "registeredDevices", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"subject", "device" }))
+@Table(name = "registeredDevices")
 @NamedQueries( {
 		@NamedQuery(name = QUERY_LIST_SUBJECT, query = "SELECT regDevice "
 				+ "FROM RegisteredDeviceEntity AS regDevice "
@@ -49,6 +51,10 @@ public class RegisteredDeviceEntity implements Serializable {
 
 	private String id;
 
+	public RegisteredDeviceEntity() {
+		// empty
+	}
+
 	public RegisteredDeviceEntity(SubjectEntity subject, String id,
 			DeviceEntity device) {
 		this.subject = subject;
@@ -56,8 +62,8 @@ public class RegisteredDeviceEntity implements Serializable {
 		this.device = device;
 	}
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "subject", insertable = false, updatable = false)
+	@ManyToOne
+	@JoinColumn(name = "subject", nullable = false)
 	public SubjectEntity getSubject() {
 		return this.subject;
 	}
@@ -75,8 +81,8 @@ public class RegisteredDeviceEntity implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "device", insertable = false, updatable = false)
+	@ManyToOne
+	@JoinColumn(name = "device", nullable = false)
 	public DeviceEntity getDevice() {
 		return this.device;
 	}
@@ -85,17 +91,34 @@ public class RegisteredDeviceEntity implements Serializable {
 		this.device = device;
 	}
 
-	public interface SubjectRegistrationsQuery {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (false == obj instanceof RegisteredDeviceEntity) {
+			return false;
+		}
+		RegisteredDeviceEntity rhs = (RegisteredDeviceEntity) obj;
+		return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append(
+				"id", this.id).append("subject", this.subject.getUserId())
+				.append("device", this.device.getName()).toString();
+	}
+
+	public interface QueryInterface {
+		@QueryMethod(value = QUERY_SUBJECT_DEVICE, nullable = true)
+		RegisteredDeviceEntity getRegisteredDevice(@QueryParam("subject")
+		SubjectEntity subject, @QueryParam("device")
+		DeviceEntity device);
+
 		@QueryMethod(QUERY_LIST_SUBJECT)
 		List<RegisteredDeviceEntity> listRegisteredDevices(
 				@QueryParam("subject")
 				SubjectEntity subject);
-	}
-
-	public interface SubjectDeviceRegistrationsQuery {
-		@QueryMethod(QUERY_SUBJECT_DEVICE)
-		RegisteredDeviceEntity getRegisteredDevice(@QueryParam("subject")
-		SubjectEntity subject, @QueryParam("device")
-		DeviceEntity device);
 	}
 }

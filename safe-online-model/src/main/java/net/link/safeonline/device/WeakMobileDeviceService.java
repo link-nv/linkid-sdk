@@ -21,19 +21,18 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface WeakMobileDeviceService {
 
-	SubjectEntity authenticate(String mobile, String challengeId,
-			String mobileOTP) throws MalformedURLException,
-			SubjectNotFoundException, MobileAuthenticationException,
-			MobileException;
+	String authenticate(String mobile, String challengeId, String mobileOTP)
+			throws MalformedURLException, SubjectNotFoundException,
+			MobileAuthenticationException, MobileException;
 
-	String register(SubjectEntity subject, String mobile)
-			throws MobileException, MalformedURLException,
-			MobileRegistrationException, ArgumentIntegrityException;
+	String register(String userId, String mobile) throws MobileException,
+			MalformedURLException, MobileRegistrationException,
+			ArgumentIntegrityException;
 
 	void update(SubjectEntity subject, String oldMobile, String newMobile);
 
-	void remove(SubjectEntity subject, String mobile) throws MobileException,
-			MalformedURLException;
+	void remove(String userId, String mobile) throws MobileException,
+			MalformedURLException, SubjectNotFoundException;
 
 	String requestOTP(String mobile) throws MalformedURLException,
 			MobileException;

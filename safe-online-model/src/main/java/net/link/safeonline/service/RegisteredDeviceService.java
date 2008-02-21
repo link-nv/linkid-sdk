@@ -9,9 +9,9 @@ package net.link.safeonline.service;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.RegisteredDeviceEntity;
-import net.link.safeonline.entity.SubjectEntity;
 
 /**
  * <h2>{@link RegisteredDeviceService} - Service for device registration.</h2>
@@ -31,6 +31,9 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface RegisteredDeviceService {
 
-	public RegisteredDeviceEntity getDeviceRegistration(SubjectEntity subject,
-			DeviceEntity device);
+	public RegisteredDeviceEntity registerDevice(String userId,
+			String deviceName) throws SubjectNotFoundException,
+			DeviceNotFoundException;
+
+	public RegisteredDeviceEntity getRegisteredDevice(String id);
 }

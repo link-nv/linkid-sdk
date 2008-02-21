@@ -57,6 +57,10 @@ public interface Device {
 
 	void setRemovalURL(String removalURL);
 
+	String getUpdateURL();
+
+	void setUpdateURL(String updateURL);
+
 	UploadedFile getCertificate();
 
 	void setCertificate(UploadedFile certificate);

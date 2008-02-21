@@ -21,17 +21,14 @@ import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
-import net.link.safeonline.entity.DeviceType;
 
 @Local
 public interface DeviceDAO {
 
-	DeviceEntity addDevice(String name, DeviceType deviceType);
-
 	DeviceEntity addDevice(String name, DeviceClassEntity deviceClass,
 			String authenticationURL, String registrationURL,
 			String newAccountRegistrationURL, String removalURL,
-			X509Certificate certificate);
+			String updateURL, X509Certificate certificate);
 
 	List<DeviceEntity> listDevices();
 

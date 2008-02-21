@@ -29,26 +29,18 @@ public interface Devices {
 
 	boolean isPasswordConfigured();
 
-	String getMobile();
-
-	void setMobile(String mobile);
-
-	String getMobileActivationCode();
-
 	/*
 	 * Actions.
 	 */
+	String register();
+
+	String remove();
+
+	String update();
+
 	String changePassword();
 
 	String removePassword();
-
-	String mobileRegister();
-
-	String mobileActivationOk();
-
-	String mobileActivationCancel();
-
-	String removeMobile();
 
 	/*
 	 * Lifecycle.
@@ -61,4 +53,6 @@ public interface Devices {
 	List<AttributeDO> beidAttributesFactory();
 
 	List<AttributeDO> mobileWeakAttributesFactory();
+
+	List<DeviceEntry> devicesFactory();
 }

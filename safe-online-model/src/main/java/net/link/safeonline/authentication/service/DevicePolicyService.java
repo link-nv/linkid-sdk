@@ -85,11 +85,34 @@ public interface DevicePolicyService {
 			throws DeviceNotFoundException;
 
 	/**
+	 * Returns the removal URL for the specified device.
+	 * 
+	 * @param deviceName
+	 * @throws DeviceNotFoundException
+	 */
+	String getRemovalURL(String deviceName) throws DeviceNotFoundException;
+
+	/**
+	 * Returns the update URL for the specified device.
+	 * 
+	 * @param deviceName
+	 * @throws DeviceNotFoundException
+	 */
+	String getUpdateURL(String deviceName) throws DeviceNotFoundException;
+
+	/**
 	 * Returns list of devices matching the specified authentication context
 	 * class.
 	 * 
 	 * @param authnContextClassRefValue
 	 */
 	List<DeviceEntity> listDevices(String authenticationContextClass);
+
+	/**
+	 * @param deviceName
+	 * @return
+	 * @throws DeviceNotFoundException
+	 */
+	DeviceEntity getDevice(String deviceName) throws DeviceNotFoundException;
 
 }

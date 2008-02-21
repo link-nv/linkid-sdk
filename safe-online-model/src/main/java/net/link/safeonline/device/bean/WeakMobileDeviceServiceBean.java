@@ -34,8 +34,10 @@ import net.link.safeonline.device.backend.MobileManager;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.service.RegisteredDeviceService;
 import net.link.safeonline.service.SubjectService;
 
 @Stateless
@@ -44,6 +46,9 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 
 	@EJB
 	private SubjectService subjectService;
+
+	@EJB
+	private RegisteredDeviceService registeredDeviceService;
 
 	@EJB
 	private SubjectIdentifierDAO subjectIdentifierDAO;
@@ -63,42 +68,64 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 	@EJB
 	private SecurityAuditLogger securityAuditLogger;
 
-	public SubjectEntity authenticate(String mobile, String challengeId,
+	public String authenticate(String mobile, String challengeId,
 			String mobileOTP) throws MalformedURLException, MobileException,
 			SubjectNotFoundException, MobileAuthenticationException {
-		SubjectEntity subject = this.subjectIdentifierDAO.findSubject(
-				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile);
-		if (null == subject)
+		SubjectEntity deviceSubject = this.subjectIdentifierDAO.findSubject(
+				SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
+		if (null == deviceSubject)
 			throw new SubjectNotFoundException();
 
 		boolean result = this.mobileManager.verifyOTP(challengeId, mobileOTP);
 		if (false == result) {
-			this.historyDAO.addHistoryEntry(new Date(), subject,
+			this.historyDAO.addHistoryEntry(new Date(), deviceSubject,
 					HistoryEventType.LOGIN_INCORRECT_MOBILE_TOKEN, null, null);
 			this.securityAuditLogger.addSecurityAudit(
-					SecurityThreatType.DECEPTION, subject.getUserId(),
+					SecurityThreatType.DECEPTION, deviceSubject.getUserId(),
 					"incorrect mobile token");
 			throw new MobileAuthenticationException();
 		}
-		return subject;
+		return deviceSubject.getUserId();
 	}
 
-	public String register(SubjectEntity subject, String mobile)
+	public String register(String deviceUserId, String mobile)
 			throws MobileException, MalformedURLException,
 			MobileRegistrationException, ArgumentIntegrityException {
+		SubjectEntity deviceSubject = this.subjectService
+				.findSubject(deviceUserId);
+		if (null != deviceSubject)
+			throw new MobileException("device subject already created");
+		deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
+
 		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
-				.findSubject(SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN,
+				.findSubject(SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN,
 						mobile);
 		if (null != existingMappedSubject) {
 			throw new ArgumentIntegrityException();
 		}
-		String activationCode = this.mobileManager.activate(mobile, subject);
+
+		/*
+		 * Lookup subject through registered device for now, so we can access
+		 * the device attributes still.
+		 * 
+		 * 
+		 * TODO: seperate user-device mapping
+		 */
+		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
+				.getRegisteredDevice(deviceUserId);
+		if (null == registeredDevice)
+			throw new MobileException("registered device not found");
+		SubjectEntity subject = registeredDevice.getSubject();
+
+		String activationCode = this.mobileManager.activate(mobile,
+				deviceSubject);
 		if (null == activationCode)
 			throw new MobileRegistrationException();
 		setMobile(subject, mobile);
+
 		this.subjectIdentifierDAO.addSubjectIdentifier(
-				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile,
-				subject);
+				SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN, mobile,
+				deviceSubject);
 		return activationCode;
 	}
 
@@ -117,8 +144,10 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		mobileAttribute.setStringValue(mobile);
 	}
 
-	public void remove(SubjectEntity subject, String mobile)
-			throws MobileException, MalformedURLException {
+	public void remove(String userId, String mobile) throws MobileException,
+			MalformedURLException, SubjectNotFoundException {
+		SubjectEntity subject = this.subjectService.getSubject(userId);
+
 		AttributeTypeEntity mobileAttributeType;
 		try {
 			mobileAttributeType = this.attributeTypeDAO

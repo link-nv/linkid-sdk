@@ -28,6 +28,7 @@ import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
+import net.link.safeonline.dao.bean.RegisteredDeviceDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
@@ -90,6 +91,7 @@ import net.link.safeonline.pkix.model.bean.CachedOcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.OcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.PkiProviderManagerBean;
 import net.link.safeonline.pkix.model.bean.PkiValidatorBean;
+import net.link.safeonline.service.bean.RegisteredDeviceServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
@@ -136,7 +138,8 @@ public class SafeOnlineTestContainer {
 			BeIdDeviceServiceBean.class, WeakMobileDeviceServiceBean.class,
 			StrongMobileDeviceServiceBean.class, MobileManagerBean.class,
 			SecurityAuditLoggerBean.class, DevicePolicyServiceBean.class,
-			DevicesBean.class, AccountServiceBean.class };
+			DevicesBean.class, AccountServiceBean.class,
+			RegisteredDeviceServiceBean.class, RegisteredDeviceDAOBean.class };
 
 	public static final Class<?>[] entities = new Class[] {
 			SubjectEntity.class, ApplicationEntity.class,

@@ -26,7 +26,6 @@ import net.link.safeonline.authentication.exception.IdentityConfirmationRequired
 import net.link.safeonline.authentication.exception.MissingAttributeException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -59,7 +58,7 @@ public interface AuthenticationService {
 	 *         <code>false</code> otherwise.
 	 * @throws SubjectNotFoundException
 	 */
-	boolean authentication(String userId, DeviceEntity authenticationDevice)
+	boolean authenticate(String userId, DeviceEntity authenticationDevice)
 			throws SubjectNotFoundException;
 
 	/**
@@ -101,17 +100,6 @@ public interface AuthenticationService {
 			String mobileOTP) throws SubjectNotFoundException,
 			MalformedURLException, MobileException,
 			MobileAuthenticationException;
-
-	/**
-	 * Request a OTP be generated for the authenticating users. Returns the
-	 * challenge ID for this OTP, used for later verification.
-	 * 
-	 * @param mobile
-	 * @throws MalformedURLException
-	 * @throws MobileException
-	 */
-	String requestMobileOTP(String mobile) throws MalformedURLException,
-			MobileException;
 
 	/**
 	 * Commits the authentication for the given application.
@@ -157,42 +145,6 @@ public interface AuthenticationService {
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			DecodingException, ExistingUserException,
 			AttributeTypeNotFoundException;
-
-	/**
-	 * Registers a device for a logged in user via an identity statement.
-	 * 
-	 * @param identityStatementData
-	 * @throws TrustDomainNotFoundException
-	 * @throws PermissionDeniedException
-	 * @throws ArgumentIntegrityException
-	 * @throws AttributeTypeNotFoundException
-	 */
-	boolean registerDevice(byte[] identityStatementData)
-			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException;
-
-	/**
-	 * Registers a mobile for a logged in user. Returns activation code.
-	 * 
-	 * @param mobile
-	 * @throws MobileException
-	 * @throws MalformedURLException
-	 * @throws MobileRegistrationException
-	 * @throws ArgumentIntegrityException
-	 */
-	String registerMobile(String mobile) throws MobileException,
-			MalformedURLException, MobileRegistrationException,
-			ArgumentIntegrityException;
-
-	/**
-	 * User canceled the mobile activation. Remove just registered mobile.
-	 * 
-	 * @param mobile
-	 * @throws MalformedURLException
-	 * @throws MobileException
-	 */
-	void removeMobile(String mobile) throws MobileException,
-			MalformedURLException;
 
 	/**
 	 * Sets the password of a user. This method should be used in case the user

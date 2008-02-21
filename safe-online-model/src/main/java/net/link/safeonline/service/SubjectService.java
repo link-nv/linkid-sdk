@@ -93,4 +93,14 @@ public interface SubjectService {
 	 * 
 	 */
 	List<String> listUsers();
+
+	/**
+	 * Adds a 'device subject'. This is used at the moment by the external
+	 * device webapps for their user-device mapping. Does NOT create a login
+	 * attribute nor add a login-userId identifier mapping.
+	 * 
+	 * @param userId
+	 * @return the subject.
+	 */
+	SubjectEntity addDeviceSubject(String userId);
 }
