@@ -19,10 +19,12 @@
 			value="/images/flags/#{facesContext.viewRoot.locale.language}.gif" />
 		<h:commandLink action="#{language.entry}"
 			value="#{msgs.chooseLanguage}" />
-		<f:subview rendered="#{username != null}">
-			<h:outputText value=" | " />
-			<h:commandLink action="#{login.logout}" value="#{msgs.logout}" />
-		</f:subview>
+		<ui:insert name="logout">
+			<f:subview rendered="#{username != null}">
+				<h:outputText value=" | " />
+				<h:commandLink action="#{login.logout}" value="#{msgs.logout}" />
+			</f:subview>
+		</ui:insert>
 	</h:form></div>
 
 	<f:subview rendered="#{username != null}">
