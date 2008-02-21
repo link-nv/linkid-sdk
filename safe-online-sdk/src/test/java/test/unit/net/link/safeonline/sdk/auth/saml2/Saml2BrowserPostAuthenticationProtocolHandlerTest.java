@@ -109,11 +109,18 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 				HttpServletResponse response) throws ServletException,
 				IOException {
 			srtLOG.debug("doGet");
+			KeyPair keyPair;
+			try {
+				keyPair = PkiTestUtils.generateKeyPair();
+			} catch (Exception e) {
+				throw new ServletException("could not generate RSA key pair");
+			}
+
 			AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
 					.createAuthenticationProtocolHandler(
 							AuthenticationProtocol.SAML2_BROWSER_POST,
 							"http://test.authn.service", "test-application",
-							null, null, null, request);
+							keyPair, null, null, request);
 			Saml2BrowserPostAuthenticationProtocolHandler saml2Handler = (Saml2BrowserPostAuthenticationProtocolHandler) authenticationProtocolHandler;
 			try {
 				Field challengeField = Saml2BrowserPostAuthenticationProtocolHandler.class
