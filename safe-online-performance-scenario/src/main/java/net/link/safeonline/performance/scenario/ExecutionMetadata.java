@@ -46,7 +46,6 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
  */
 public class ExecutionMetadata {
 
-	private Integer id;
 	private Integer agents;
 	private Integer workers;
 	private Date startTime;
@@ -63,31 +62,28 @@ public class ExecutionMetadata {
 			Integer agents, Integer workers, Date startTime, Long duration,
 			String hostname) {
 
-		return new ExecutionMetadata(null, scenarioName, null, agents, workers,
+		return new ExecutionMetadata(scenarioName, null, agents, workers,
 				startTime, duration, hostname, null);
 	}
 
 	/**
 	 * Use this constructor to create an execution result response.
 	 */
-	public static ExecutionMetadata createResponse(Integer executionId,
-			String scenarioName, String scenarioDescription, Integer agents,
-			Integer workers, Date startTime, Long duration, String hostname,
-			Double speed) {
+	public static ExecutionMetadata createResponse(String scenarioName,
+			String scenarioDescription, Integer agents, Integer workers,
+			Date startTime, Long duration, String hostname, Double speed) {
 
-		return new ExecutionMetadata(executionId, scenarioName,
-				scenarioDescription, agents, workers, startTime, duration,
-				hostname, speed);
+		return new ExecutionMetadata(scenarioName, scenarioDescription, agents,
+				workers, startTime, duration, hostname, speed);
 	}
 
 	/**
 	 * Complete constructor.
 	 */
-	private ExecutionMetadata(Integer id, String scenarioName,
+	private ExecutionMetadata(String scenarioName,
 			String scenarioDescription, Integer agents, Integer workers,
 			Date startTime, Long duration, String hostname, Double speed) {
 
-		this.id = id;
 		this.scenarioName = scenarioName;
 		this.scenarioDescription = scenarioDescription;
 		this.agents = agents;
@@ -96,11 +92,6 @@ public class ExecutionMetadata {
 		this.duration = duration;
 		this.hostname = hostname;
 		this.speed = speed;
-	}
-
-	public Integer getId() {
-
-		return this.id;
 	}
 
 	public String getScenarioName() {

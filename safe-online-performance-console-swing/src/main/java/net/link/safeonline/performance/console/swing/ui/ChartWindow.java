@@ -38,22 +38,22 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.looks.Options;
 
 /**
- * <h2>{@link Charts}<br>
+ * <h2>{@link ChartWindow}<br>
  * <sub>A window that displays charts.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
-public class Charts extends WindowAdapter {
+public class ChartWindow extends WindowAdapter {
 
-	private static Charts instance;
+	private static ChartWindow instance;
 	private JTabbedPane agents;
 	private JFrame frame;
 
-	private Charts() {
+	private ChartWindow() {
 
 		// Tabs.
 		this.agents = new JTabbedPane();
@@ -97,11 +97,11 @@ public class Charts extends WindowAdapter {
 		}
 
 		if (instance == null)
-			instance = new Charts();
+			instance = new ChartWindow();
 
 		for (ConsoleAgent agent : ConsoleData.getSelectedAgents())
 			instance.addTab(agent.getAddress(), agent.getStats(execution
-					.getId()));
+					.getStartTime()));
 
 		instance.show();
 	}

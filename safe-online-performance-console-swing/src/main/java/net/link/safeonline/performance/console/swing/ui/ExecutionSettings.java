@@ -24,7 +24,7 @@ import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
 
 /**
- * <h2>{@link OlasPrefs}<br>
+ * <h2>{@link ExecutionSettings}<br>
  * <sub>Manage execution preferences.</sub></h2>
  *
  * <p>
@@ -38,7 +38,7 @@ import net.link.safeonline.performance.console.swing.model.AgentSelectionListene
  *
  * @author mbillemo
  */
-public class OlasPrefs implements FocusListener, ItemListener,
+public class ExecutionSettings implements FocusListener, ItemListener,
 		AgentSelectionListener {
 
 	private static final long serialVersionUID = 1L;
@@ -49,7 +49,7 @@ public class OlasPrefs implements FocusListener, ItemListener,
 	protected JTextField duration;
 	protected JComboBox scenarioSelection;
 
-	public OlasPrefs() {
+	public ExecutionSettings() {
 
 		this.hostname = new JTextField(ConsoleData.getHostname());
 		this.port = new JTextField(String.valueOf(ConsoleData.getPort()));
@@ -80,14 +80,17 @@ public class OlasPrefs implements FocusListener, ItemListener,
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public void itemStateChanged(ItemEvent e) {
 
-		if (this.scenarioSelection.equals(e.getSource()))
-			if (this.scenarioSelection.getSelectedItem() == null)
-				ConsoleData.setScenarioName(null);
-			else
-				ConsoleData.setScenarioName(this.scenarioSelection
-						.getSelectedItem().toString());
+		if (this.scenarioSelection.equals(e.getSource())) {
+			String scenario = null;
+			if (this.scenarioSelection.getSelectedItem() != null)
+				scenario = ((ItemRenderer<String>) this.scenarioSelection
+						.getSelectedItem()).getItem();
+
+			ConsoleData.setScenarioName(scenario);
+		}
 	}
 
 	/**
@@ -107,7 +110,7 @@ public class OlasPrefs implements FocusListener, ItemListener,
 		else if (this.duration.equals(e.getSource()))
 			try {
 				ConsoleData
-						.setDuration(Long.parseLong(this.duration.getText()));
+						.setDuration(Long.parseLong(this.duration.getText()) * 60 * 1000);
 			} catch (NumberFormatException err) {
 			}
 	}
@@ -153,8 +156,17 @@ public class OlasPrefs implements FocusListener, ItemListener,
 		Object selectedItem = this.scenarioSelection.getSelectedItem();
 		this.scenarioSelection.removeAllItems();
 		for (String scenario : commonScenarios)
-			this.scenarioSelection.addItem(scenario);
+			this.scenarioSelection.addItem(new ItemRenderer<String>(scenario) {
+				@Override
+				public String toString() {
+
+					return this.item.replaceFirst(".*\\.", "");
+				}
+			});
 		this.scenarioSelection.setSelectedItem(selectedItem);
+		if (this.scenarioSelection.getSelectedItem() == null
+				&& !commonScenarios.isEmpty())
+			this.scenarioSelection.setSelectedIndex(0);
 		this.scenarioSelection.setEnabled(this.scenarioSelection.getModel()
 				.getSize() > 0);
 	}

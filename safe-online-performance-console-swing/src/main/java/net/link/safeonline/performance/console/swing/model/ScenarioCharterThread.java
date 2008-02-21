@@ -8,24 +8,29 @@ package net.link.safeonline.performance.console.swing.model;
 
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
-import net.link.safeonline.performance.console.swing.ui.Charts;
+import net.link.safeonline.performance.console.swing.data.ConsoleData;
+import net.link.safeonline.performance.console.swing.ui.ChartWindow;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
 /**
  * <h2>{@link ScenarioCharterThread}<br>
  * <sub>This thread generates charts on a given agent.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioCharterThread extends ScenarioThread {
 
-	public ScenarioCharterThread(ScenarioChooser chooser) {
+	boolean createPDF;
+
+	public ScenarioCharterThread(ScenarioChooser chooser, boolean createPDF) {
 
 		super(AgentState.CHART, chooser);
+
+		this.createPDF = createPDF;
 	}
 
 	/**
@@ -36,6 +41,13 @@ public class ScenarioCharterThread extends ScenarioThread {
 
 		super.run();
 
+		for (ConsoleAgent agent : ConsoleData.getSelectedAgents())
+			try {
+				process(agent);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		new Thread("Worker") {
 			{
 				setDaemon(true);
@@ -44,7 +56,10 @@ public class ScenarioCharterThread extends ScenarioThread {
 			@Override
 			public void run() {
 
-				Charts.display();
+				if (ScenarioCharterThread.this.createPDF)
+					PDF.generate();
+				else
+					ChartWindow.display();
 			}
 		}.start();
 	}
@@ -55,5 +70,6 @@ public class ScenarioCharterThread extends ScenarioThread {
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
 
+		agent.setTransit(AgentState.CHART);
 	}
 }

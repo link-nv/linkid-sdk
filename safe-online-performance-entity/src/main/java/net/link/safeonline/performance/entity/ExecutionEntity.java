@@ -14,8 +14,6 @@ import java.util.TreeSet;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -26,11 +24,11 @@ import net.link.safeonline.performance.service.ExecutionService;
 /**
  * <h2>{@link ExecutionEntity}<br>
  * <sub>Holds the global metadata for a scenario execution.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Entity
@@ -39,7 +37,7 @@ import net.link.safeonline.performance.service.ExecutionService;
 				+ "    FROM ExecutionEntity e"),
 		@NamedQuery(name = ExecutionEntity.findById, query = "SELECT e"
 				+ "    FROM ExecutionEntity e"
-				+ "    WHERE e.id = :executionId"),
+				+ "    WHERE e.startTime = :startTime"),
 		@NamedQuery(name = ExecutionEntity.getTimes, query = "SELECT at"
 				+ "    FROM AgentTimeEntity at"
 				+ "    WHERE at.execution = :execution") })
@@ -50,13 +48,11 @@ public class ExecutionEntity {
 	public static final String getTimes = "ExecutionEntity.getTimes";
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	private Date startTime;
 
 	private String scenarioName;
 	private int agents;
 	private int workers;
-	private Date startTime;
 	private long duration;
 	private String hostname;
 	private Double speed;
@@ -71,8 +67,8 @@ public class ExecutionEntity {
 		this.dirtySpeed = false;
 	}
 
-	public ExecutionEntity(String scenarioName, Integer agents,
-			Integer workers, Date startTime, Long duration, String hostname) {
+	public ExecutionEntity(String scenarioName, Integer agents, int workers,
+			Date startTime, long duration, String hostname) {
 
 		this();
 
@@ -90,14 +86,6 @@ public class ExecutionEntity {
 	public String getScenarioName() {
 
 		return this.scenarioName;
-	}
-
-	/**
-	 * @return A number that identifies an execution uniquely.
-	 */
-	public int getId() {
-
-		return this.id;
 	}
 
 	/**
@@ -119,7 +107,7 @@ public class ExecutionEntity {
 	/**
 	 * @return The amount of agents this scenario execution was initiated on.
 	 */
-	public Integer getAgents() {
+	public int getAgents() {
 
 		return this.agents;
 	}
@@ -127,7 +115,7 @@ public class ExecutionEntity {
 	/**
 	 * @return The amount of workers that was used to process this execution.
 	 */
-	public Integer getWorkers() {
+	public int getWorkers() {
 
 		return this.workers;
 	}
@@ -143,7 +131,7 @@ public class ExecutionEntity {
 	/**
 	 * @return The amount of time this execution was schedules to run (ms).
 	 */
-	public Long getDuration() {
+	public long getDuration() {
 
 		return this.duration;
 	}

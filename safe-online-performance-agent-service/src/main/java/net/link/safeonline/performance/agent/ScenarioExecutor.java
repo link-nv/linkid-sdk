@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.performance.agent;
 
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -69,7 +70,7 @@ public class ScenarioExecutor extends Thread {
 					.lookup(ScenarioController.BINDING);
 
 			// Setup the scenario.
-			final int execution = scenarioBean.prepare(this.request);
+			final Date execution = scenarioBean.prepare(this.request);
 
 			// Create a pool of threads that execute scenario beans.
 			long startTime = System.currentTimeMillis();

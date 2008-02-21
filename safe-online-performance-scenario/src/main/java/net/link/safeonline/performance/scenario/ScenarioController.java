@@ -6,10 +6,10 @@
  */
 package net.link.safeonline.performance.scenario;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
 
 /**
@@ -29,7 +29,7 @@ public interface ScenarioController {
 	/**
 	 * Execute the scenario.
 	 */
-	public void execute(int executionId) throws Exception;
+	public void execute(Date startTime) throws Exception;
 
 	/**
 	 * This method is called before any iterations are executed.<br>
@@ -40,7 +40,7 @@ public interface ScenarioController {
 	 * {@link ExecutionMetadata#getDuration()},
 	 * {@link ExecutionMetadata#getHostname()}.
 	 */
-	public int prepare(ExecutionMetadata metaData);
+	public Date prepare(ExecutionMetadata metaData);
 
 	/**
 	 * Retrieve all scenarios registered for use.
@@ -48,14 +48,15 @@ public interface ScenarioController {
 	public Set<String> getScenarios();
 
 	/**
-	 * Retrieve all available execution IDs.
+	 * Retrieve all available execution IDs (which is the time at which they
+	 * were initiated).
 	 */
-	public Set<Integer> getExecutions();
+	public Set<Date> getExecutions();
 
 	/**
 	 * Retrieve an object that holds all metadata concerning a given execution.
 	 */
-	public ExecutionMetadata getExecutionMetadata(int execution);
+	public ExecutionMetadata getExecutionMetadata(Date startTime);
 
 	/**
 	 * Retrieve an HTML formatted description string for the given scenario.
@@ -66,10 +67,5 @@ public interface ScenarioController {
 	/**
 	 * Create charts on data collected in this scenario.
 	 */
-	public Map<String, byte[][]> createCharts(int executionId);
-
-	/**
-	 * Retrieve and fully load all fields of the given execution.
-	 */
-	public ExecutionEntity loadExecution(int executionId);
+	public Map<String, byte[][]> createCharts(Date startTime);
 }

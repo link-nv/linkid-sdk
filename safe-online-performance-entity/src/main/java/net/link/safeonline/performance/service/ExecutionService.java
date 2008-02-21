@@ -20,7 +20,7 @@ import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 /**
  * <h2>{@link ExecutionServiceBean}<br>
  * <sub>Service bean for {@link ExecutionEntity}.</sub></h2>
- * 
+ *
  * <p>
  * Create {@link ExecutionEntity}s and manage the {@link AgentTimeEntity}s
  * that they're linked with.
@@ -29,7 +29,7 @@ import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Local
@@ -46,13 +46,13 @@ public interface ExecutionService {
 	/**
 	 * Retrieve an already created execution by its Id.
 	 */
-	public ExecutionEntity getExecution(int executionId);
+	public ExecutionEntity getExecution(Date startTime);
 
 	/**
 	 * Retrieve all driver profiles that were created for execution with the
 	 * given Id.
 	 */
-	public Set<DriverProfileEntity> getProfiles(int executionId);
+	public Set<DriverProfileEntity> getProfiles(Date startTime);
 
 	/**
 	 * Signal a new start of a scenario in the given execution. A
@@ -61,9 +61,10 @@ public interface ExecutionService {
 	public AgentTimeEntity start(ExecutionEntity execution);
 
 	/**
-	 * Retrieve all available execution IDs.
+	 * Retrieve all available execution IDs (which is the date at which they
+	 * were initiated).
 	 */
-	public Set<Integer> getExecutions();
+	public Set<Date> getExecutions();
 
 	/**
 	 * Retrieve all {@link AgentTimeEntity}s linked to the given

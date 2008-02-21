@@ -13,11 +13,11 @@ import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 /**
  * <h2>{@link ScenarioDeployerThread}<br>
  * <sub>This thread deploys a scenario on a given agent.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioDeployerThread extends ScenarioThread {
@@ -32,6 +32,8 @@ public class ScenarioDeployerThread extends ScenarioThread {
 	 */
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
+
+		agent.setTransit(AgentState.DEPLOY);
 
 		this.scenarioDeployer.deploy(agent.getAddress());
 	}

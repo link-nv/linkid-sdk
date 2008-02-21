@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.performance.console.swing.ui;
 
+import java.awt.Color;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,11 +25,11 @@ import org.jgroups.Address;
 /**
  * <h2>{@link AgentsList}<br>
  * <sub>A list that visualises agent status.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class AgentsList extends JList implements AgentStateListener,
@@ -43,8 +44,8 @@ public class AgentsList extends JList implements AgentStateListener,
 		addListSelectionListener(this);
 		setModel(this.model = new DefaultListModel());
 		setCellRenderer(new AgentRenderer());
-		setBackground(null);
-		setOpaque(false);
+		setBackground(Color.white);
+		setSelectionBackground(Color.decode("#EEEEFF"));
 
 		ConsoleData.addAgentStatusListener(this);
 		ConsoleData.getAgentDiscoverer().addAgentStateListener(

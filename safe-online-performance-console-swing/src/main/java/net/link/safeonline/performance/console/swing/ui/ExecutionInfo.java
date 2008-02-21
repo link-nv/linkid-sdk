@@ -180,7 +180,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 							: execution.getScenarioDescription().replaceAll(
 									"\n", "<br>"));
 			this.startTime.setText(DateFormat.getDateTimeInstance().format(
-					execution.getStart()));
+					execution.getStartTime()));
 			this.agents.setText(String.format("%s agent%s", execution
 					.getAgents(), execution.getAgents() == 1 ? "" : "s"));
 			this.workers.setText(String.format("%s worker%s", execution
@@ -236,12 +236,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			else
 				for (int i = 0; i < this.executions.size(); ++i) {
 					ScenarioExecution execution = this.executions.get(i);
-
-					String label = "(" + execution.getId() + ")";
-					if (execution.getStart() != null)
-						label = labelTimeFormat.format(execution.getStart());
-
-					dictionary.put(i, new JLabel(label));
+					dictionary.put(i, new JLabel(labelTimeFormat
+							.format(execution.getStartTime())));
 				}
 
 			this.executionSelection.setPaintLabels(true);
@@ -259,8 +255,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			ScenarioExecution element) {
 
 		for (ScenarioExecution entry : set)
-			if (entry.getStart() == null && element.getStart() == null
-					|| entry.getStart().equals(element.getStart()))
+			if (entry.getStartTime() == null && element.getStartTime() == null
+					|| entry.getStartTime().equals(element.getStartTime()))
 				return true;
 
 		return false;

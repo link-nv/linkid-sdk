@@ -33,18 +33,18 @@ import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 /**
  * <h2>{@link SwingConsole}<br>
  * <sub>The swing console's entry point and frame builder.</sub></h2>
- * 
+ *
  * <p>
  * A Swing UI that provides interaction with and visual reporting of the status
  * of agents in the profiling group.<br>
  * <br>
  * This class takes care of the initialisation of the frame and its lay-out.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class SwingConsole {
@@ -103,13 +103,13 @@ public class SwingConsole {
 		ScenarioChooser scenarioChooser = new ScenarioChooser();
 		ExecutionInfo executionInfo = new ExecutionInfo();
 		AgentsList agentsList = new AgentsList();
-		OlasPrefs olasPrefs = new OlasPrefs();
+		ExecutionSettings executionSettings = new ExecutionSettings();
 
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout(
-				"p, 5dlu, 0:g, 5dlu, p",
-				"p, 5dlu, f:0dlu:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
-		layout.setColumnGroups(new int[][] { { 1, 5 } });
+				"0dlu:g, 5dlu, p, 5dlu, p, 5dlu, p",
+				"p, 5dlu, f:0dlu:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
+		layout.setColumnGroups(new int[][] { { 3, 5, 7 } });
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 		builder.setDefaultDialogBorder();
 
@@ -124,38 +124,37 @@ public class SwingConsole {
 				executionInfo.getBackground());
 		final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				new JScrollPane(agentsList), executionInfoPane);
-		builder.append(split, 5);
+		builder.append(split, 7);
 		builder.nextRow();
 
-		builder.appendSeparator("Preferences");
+		builder.appendSeparator("Execution Settings");
 		builder.nextRow();
 
-		builder.append("Workers:");
-		builder.append("Hostname:");
-		builder.append("Port:");
+		builder.append("OLAS Hostname:");
+		builder.append("OLAS Port:");
+		builder.append("Agent Workers:");
+		builder.append("Test Duration (min):");
 		builder.nextRow();
-		builder.append(olasPrefs.workers);
-		builder.append(olasPrefs.hostname);
-		builder.append(olasPrefs.port);
-		builder.nextRow();
-
-		builder.append("Duration:");
-		builder.append("EAR Package:");
-		builder.nextColumn();
+		builder.append(executionSettings.hostname);
+		builder.append(executionSettings.port);
+		builder.append(executionSettings.workers);
+		builder.append(executionSettings.duration);
 		builder.nextRow();
 
-		builder.append(olasPrefs.duration);
+		builder.append("Scenario Package:");
+		builder.nextColumn(2);
+		builder.append("Scenario Name:");
+		builder.nextLine(2);
+
 		builder.append(scenarioChooser.scenarioField);
 		builder.append(scenarioChooser.browseButton);
-		builder.nextRow();
-
-		builder.append(olasPrefs.scenarioSelection, 5);
+		builder.append(executionSettings.scenarioSelection, 3);
 		builder.nextRow();
 
 		builder.appendSeparator("Actions");
 		builder.nextRow();
 
-		builder.append(scenarioChooser.actionButtons, 5);
+		builder.append(scenarioChooser.actionButtons, 7);
 
 		// Frame.
 		final JFrame frame = new JFrame(

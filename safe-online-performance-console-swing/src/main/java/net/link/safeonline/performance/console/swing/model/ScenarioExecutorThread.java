@@ -18,11 +18,11 @@ import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 /**
  * <h2>{@link ScenarioExecutorThread}<br>
  * <sub>This thread executes a scenario on a given agent.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioExecutorThread extends ScenarioThread {
@@ -41,6 +41,8 @@ public class ScenarioExecutorThread extends ScenarioThread {
 	 */
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
+
+		agent.setTransit(AgentState.EXECUTE);
 
 		if (ConsoleData.getScenarioName() == null) {
 			JOptionPane.showMessageDialog(null,

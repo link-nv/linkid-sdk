@@ -27,7 +27,12 @@ import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.performance.service.DriverExceptionService;
+import net.link.safeonline.performance.service.ExecutionService;
+import net.link.safeonline.performance.service.ProfileDataService;
+import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
 import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
+import net.link.safeonline.performance.service.bean.ProfileDataServiceBean;
 import net.link.safeonline.performance.service.bean.ProfilingServiceBean;
 import net.link.safeonline.test.util.EntityTestManager;
 
@@ -79,6 +84,10 @@ public class PerformanceDriverTest {
 
 	private EntityTestManager entityTestManager;
 
+	private ExecutionService executionService;
+	private ProfileDataService profileDataService;
+	private DriverExceptionService driverExceptionService;
+
 	@Before
 	public void setUp() {
 
@@ -93,10 +102,13 @@ public class PerformanceDriverTest {
 			ProfilingServiceBean.setDefaultEntityManager(this.entityTestManager
 					.getEntityManager());
 
-			ExecutionServiceBean executionService = new ExecutionServiceBean();
-			ExecutionEntity execution = executionService.addExecution(
-					getClass().getName(), OLAS_HOSTNAME);
-			AgentTimeEntity agentTime = executionService.start(execution);
+			this.executionService = new ExecutionServiceBean();
+			this.profileDataService = new ProfileDataServiceBean();
+			this.driverExceptionService = new DriverExceptionServiceBean();
+
+			ExecutionEntity execution = this.executionService.addExecution(
+					getClass().getName(), 1, 1, new Date(), 1l, OLAS_HOSTNAME);
+			AgentTimeEntity agentTime = this.executionService.start(execution);
 
 			this.idDriver = new IdMappingDriver(execution, agentTime);
 			this.attribDriver = new AttribDriver(execution, agentTime);
@@ -200,17 +212,19 @@ public class PerformanceDriverTest {
 
 	}
 
-	private static void assertProfile(DriverProfileEntity profile) {
+	private void assertProfile(DriverProfileEntity profile) {
 
-		Set<DriverExceptionEntity> errors = profile.getProfileError();
+		Set<DriverExceptionEntity> errors = this.driverExceptionService
+				.getProfileErrors(profile);
 		for (DriverExceptionEntity error : errors)
 			if (error != null)
 				System.err.format("At %s the following occured:\n\t%s\n",
 						new Date(error.getOccurredTime()), error.getMessage());
 
 		assertTrue("Errors detected.  See stderr.", isEmptyOrOnlyNulls(errors));
-		assertFalse("No profiling data gathered.", isEmptyOrOnlyNulls(profile
-				.getProfileData()));
+		assertFalse("No profiling data gathered.",
+				isEmptyOrOnlyNulls(this.profileDataService.getProfileData(
+						profile, 1)));
 	}
 
 	private static boolean isEmptyOrOnlyNulls(Collection<?> profileDataOrErrors) {

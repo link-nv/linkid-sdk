@@ -15,11 +15,11 @@ import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 /**
  * <h2>{@link ScenarioUploaderThread}<br>
  * <sub>This thread uploads a scenario to a given agent.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioUploaderThread extends ScenarioThread {
@@ -37,6 +37,8 @@ public class ScenarioUploaderThread extends ScenarioThread {
 	 */
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
+
+		agent.setTransit(AgentState.UPLOAD);
 
 		this.scenarioDeployer.upload(agent.getAddress(), this.application);
 	}

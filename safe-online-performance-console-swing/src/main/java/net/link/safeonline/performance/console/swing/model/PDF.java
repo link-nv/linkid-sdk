@@ -49,11 +49,11 @@ import com.lowagie.tools.Executable;
 /**
  * <h2>{@link PDF}<br>
  * <sub>Renders charts to a PDF file and opens it.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class PDF {
@@ -68,7 +68,7 @@ public class PDF {
 				agents.size());
 		for (ConsoleAgent agent : agents)
 			agentCharts.put(agent, agent.getStats(ConsoleData.getExecution()
-					.getId()));
+					.getStartTime()));
 
 		// Calculate total execution speed.
 		double speed = 0;
@@ -84,7 +84,7 @@ public class PDF {
 		// (Because we don't have the ScenarioExecution objects for those agents
 		// that aren't selected but did participate).
 		long duration = execution.getDuration();
-		Date startTime = execution.getStart();
+		Date startTime = execution.getStartTime();
 		speed *= execution.getAgents() / agentCharts.size();
 
 		// Choose output.

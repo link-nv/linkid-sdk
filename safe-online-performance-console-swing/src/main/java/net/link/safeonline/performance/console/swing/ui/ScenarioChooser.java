@@ -28,7 +28,6 @@ import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
 import net.link.safeonline.performance.console.swing.model.ExecutionSelectionListener;
 import net.link.safeonline.performance.console.swing.model.ExecutionSettingsListener;
-import net.link.safeonline.performance.console.swing.model.PDF;
 import net.link.safeonline.performance.console.swing.model.ScenarioCharterThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioDeployerThread;
 import net.link.safeonline.performance.console.swing.model.ScenarioExecutorThread;
@@ -37,16 +36,16 @@ import net.link.safeonline.performance.console.swing.model.ScenarioUploaderThrea
 /**
  * <h2>{@link ScenarioChooser}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * This class keeps and listens to the UI components that upload, deploy and
  * execute scenarios on agents.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioChooser extends JPanel implements ActionListener,
@@ -166,10 +165,10 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 			new ScenarioExecutorThread(this).run();
 
 		else if (this.chartsButton.equals(e.getSource()))
-			new ScenarioCharterThread(this).run();
+			new ScenarioCharterThread(this, false).run();
 
 		else if (this.pdfButton.equals(e.getSource()))
-			PDF.generate();
+			new ScenarioCharterThread(this, true).run();
 
 		else if (this.refreshButton.equals(e.getSource()))
 			for (ConsoleAgent agent : ConsoleData.getSelectedAgents())

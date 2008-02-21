@@ -14,11 +14,11 @@ import java.util.Map;
 /**
  * <h2>{@link ScenarioExecution}<br>
  * <sub>A data structure that holds the results of a scenario execution.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioExecution implements Serializable,
@@ -28,7 +28,6 @@ public class ScenarioExecution implements Serializable,
 
 	private Map<String, byte[][]> charts;
 	private String hostname;
-	private Integer id;
 	private Double speed;
 	private Long duration;
 	private Integer workers;
@@ -37,11 +36,10 @@ public class ScenarioExecution implements Serializable,
 	private String scenarioDescription;
 	private Date startTime;
 
-	public ScenarioExecution(Integer id, String scenarioName,
-			String scenarioDescription, Integer agents, Integer workers,
-			Date startTime, Long duration, String hostname, Double speed) {
+	public ScenarioExecution(String scenarioName, String scenarioDescription,
+			Integer agents, Integer workers, Date startTime, Long duration,
+			String hostname, Double speed) {
 
-		this.id = id;
 		this.scenarioName = scenarioName;
 		this.scenarioDescription = scenarioDescription;
 		this.agents = agents;
@@ -65,11 +63,6 @@ public class ScenarioExecution implements Serializable,
 	public String getHostname() {
 
 		return this.hostname;
-	}
-
-	public Integer getId() {
-
-		return this.id;
 	}
 
 	public Double getSpeed() {
@@ -102,7 +95,7 @@ public class ScenarioExecution implements Serializable,
 		return this.scenarioDescription;
 	}
 
-	public Date getStart() {
+	public Date getStartTime() {
 
 		return this.startTime;
 	}
@@ -118,13 +111,12 @@ public class ScenarioExecution implements Serializable,
 			formattedStartTime = new SimpleDateFormat("HH:mm")
 					.format(this.startTime);
 
-		return String.format("[%s (%s)] %sx%s: %s min @ %s #/s",
+		return String.format("[%s] %sx%s: %s min @ %s #/s",
 				formattedStartTime == null ? "N/A" : formattedStartTime,
-				this.id == null ? "N/A" : this.id, this.agents == null ? "N/A"
-						: this.agents, this.workers == null ? "N/A"
-						: this.workers, this.duration == null ? "N/A"
-						: this.duration / 60000, this.speed == null ? "N/A"
-						: String.format("%.2f", this.speed));
+				this.agents == null ? "N/A" : this.agents,
+				this.workers == null ? "N/A" : this.workers,
+				this.duration == null ? "N/A" : this.duration / 60000,
+				this.speed == null ? "N/A" : String.format("%.2f", this.speed));
 	}
 
 	/**
@@ -136,7 +128,7 @@ public class ScenarioExecution implements Serializable,
 	@Override
 	public ScenarioExecution clone() {
 
-		return new ScenarioExecution(this.id, this.scenarioName,
+		return new ScenarioExecution(this.scenarioName,
 				this.scenarioDescription, this.agents, this.workers,
 				this.startTime, this.duration, this.hostname, this.speed);
 	}
@@ -154,31 +146,27 @@ public class ScenarioExecution implements Serializable,
 
 		ScenarioExecution other = (ScenarioExecution) obj;
 
-		return equals(this.startTime, other.startTime, "time")
-				&& equals(this.scenarioName, other.scenarioName, "scenario")
-				&& equals(this.hostname, other.hostname, "host")
-				&& equals(this.duration, other.duration, "duration")
-				&& equals(this.workers, other.workers, "workers")
-				&& equals(this.agents, other.agents, "agents")
-				&& equals(this.speed, other.speed, "speed");
+		return equals(this.startTime, other.startTime)
+				&& equals(this.scenarioName, other.scenarioName)
+				&& equals(this.hostname, other.hostname)
+				&& equals(this.duration, other.duration)
+				&& equals(this.workers, other.workers)
+				&& equals(this.agents, other.agents)
+				&& equals(this.speed, other.speed);
 	}
 
 	/**
-	 * @return <code>true</code> if o1 and o2 are equal (<code>null</code-safe).
+	 * @return <code>true</code> if o1 and o2 are equal (<code>null</code>-safe).
 	 */
-	private boolean equals(Object o1, Object o2, String desc) {
+	private boolean equals(Object o1, Object o2) {
 
 		if (o1 != null) {
-			if (o2 == null || !o1.equals(o2)) {
-				System.err.println(desc + ": " + o1 + " != " + o2);
+			if (o2 == null || !o1.equals(o2))
 				return false;
-			}
 		}
 
-		else if (o2 != null) {
-			System.err.println(desc + ": " + o1 + " != " + o2);
+		else if (o2 != null)
 			return false;
-		}
 
 		return true;
 	}
@@ -187,9 +175,6 @@ public class ScenarioExecution implements Serializable,
 	 * {@inheritDoc}
 	 */
 	public int compareTo(ScenarioExecution o) {
-
-		if (this.startTime == null || o.startTime == null)
-			return this.id.compareTo(o.id);
 
 		return this.startTime.compareTo(o.startTime);
 	}

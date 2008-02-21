@@ -29,11 +29,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link ExecutionServiceBean}<br>
  * <sub>Service bean for {@link ExecutionEntity}.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @see ExecutionService
  * @author mbillemo
  */
@@ -63,14 +63,14 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Set<Integer> getExecutions() {
+	public Set<Date> getExecutions() {
 
-		Set<Integer> executionIds = new HashSet<Integer>();
+		Set<Date> executionIds = new HashSet<Date>();
 		List<ExecutionEntity> executions = this.em.createNamedQuery(
 				ExecutionEntity.findAll).getResultList();
 
 		for (ExecutionEntity execution : executions)
-			executionIds.add(execution.getId());
+			executionIds.add(execution.getStartTime());
 
 		return executionIds;
 	}
@@ -79,11 +79,11 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public ExecutionEntity getExecution(int executionId) {
+	public ExecutionEntity getExecution(Date startTime) {
 
 		return (ExecutionEntity) this.em.createNamedQuery(
-				ExecutionEntity.findById).setParameter("executionId",
-				executionId).getSingleResult();
+				ExecutionEntity.findById).setParameter("startTime", startTime)
+				.getSingleResult();
 	}
 
 	/**
@@ -101,10 +101,10 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set<DriverProfileEntity> getProfiles(int executionId) {
+	public Set<DriverProfileEntity> getProfiles(Date startTime) {
 
 		return this.ctx.getBusinessObject(ExecutionService.class).getExecution(
-				executionId).getProfiles();
+				startTime).getProfiles();
 	}
 
 	/**

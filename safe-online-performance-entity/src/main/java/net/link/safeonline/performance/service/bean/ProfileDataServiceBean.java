@@ -9,8 +9,6 @@ package net.link.safeonline.performance.service.bean;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -28,11 +26,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link ProfileDataServiceBean}<br>
  * <sub>Service bean for {@link ProfileDataEntity}.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @see ProfileDataService
  * @author mbillemo
  */
@@ -69,10 +67,13 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public SortedSet<ProfileDataEntity> getProfileData(
-			DriverProfileEntity profile) {
+	public Set<ProfileDataEntity> getProfileData(DriverProfileEntity profile,
+			int dataPoints) {
 
-		return new TreeSet<ProfileDataEntity>(this.em.createNamedQuery(
+
+
+
+		return new HashSet<ProfileDataEntity>(this.em.createNamedQuery(
 				ProfileDataEntity.getByProfile)
 				.setParameter("profile", profile).getResultList());
 	}

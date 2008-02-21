@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -33,24 +33,53 @@ public class EntityTestManager {
 
 	private EntityManager entityManager;
 
+	private Ejb3Configuration configuration;
+
+	public void configureHSql() {
+
+		this.configuration = new Ejb3Configuration();
+		this.configuration.setProperty("hibernate.dialect",
+				"org.hibernate.dialect.HSQLDialect");
+		this.configuration.setProperty("hibernate.show_sql", "true");
+		this.configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+		this.configuration.setProperty("hibernate.connection.username", "sa");
+		this.configuration.setProperty("hibernate.connection.password", "");
+		this.configuration.setProperty("hibernate.connection.driver_class",
+				"org.hsqldb.jdbcDriver");
+		this.configuration.setProperty("hibernate.connection.url",
+				"jdbc:hsqldb:mem:test");
+	}
+
+	public void configureMySql(String host, int port, String database,
+			String username, String password) {
+
+		this.configuration = new Ejb3Configuration();
+		this.configuration.setProperty("hibernate.dialect",
+				"org.hibernate.dialect.MySQLDialect");
+		this.configuration.setProperty("hibernate.show_sql", "true");
+		this.configuration.setProperty("hibernate.hbm2ddl.auto", "validate");
+		this.configuration.setProperty("hibernate.connection.username",
+				username);
+		this.configuration.setProperty("hibernate.connection.password",
+				password);
+		this.configuration.setProperty("hibernate.connection.driver_class",
+				"com.mysql.jdbc.Driver");
+		this.configuration.setProperty("hibernate.connection.url", String
+				.format("jdbc:mysql://%s:%d/%s", host, port, database));
+	}
+
 	@SuppressWarnings("deprecation")
 	public void setUp(Class<?>... serializableClasses) throws Exception {
-		Ejb3Configuration configuration = new Ejb3Configuration();
-		configuration.setProperty("hibernate.dialect",
-				"org.hibernate.dialect.HSQLDialect");
-		configuration.setProperty("hibernate.show_sql", "true");
-		configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-		configuration.setProperty("hibernate.connection.username", "sa");
-		configuration.setProperty("hibernate.connection.password", "");
-		configuration.setProperty("hibernate.connection.driver_class",
-				"org.hsqldb.jdbcDriver");
-		configuration.setProperty("hibernate.connection.url",
-				"jdbc:hsqldb:mem:test");
+
+		if (this.configuration == null)
+			configureHSql();
+
 		for (Class<?> serializableClass : serializableClasses) {
 			LOG.debug("adding annotated class: " + serializableClass.getName());
-			configuration.addAnnotatedClass(serializableClass);
+			this.configuration.addAnnotatedClass(serializableClass);
 		}
-		this.entityManagerFactory = configuration.createEntityManagerFactory();
+		this.entityManagerFactory = this.configuration
+				.createEntityManagerFactory();
 		/*
 		 * createEntityManagerFactory is deprecated, but
 		 * buildEntityManagerFactory doesn't work because of a bug.
@@ -61,36 +90,33 @@ public class EntityTestManager {
 	}
 
 	public void tearDown() throws Exception {
-		if (null == this.entityManager) {
+
+		if (null == this.entityManager)
 			throw new IllegalStateException("invoke setUp first");
-		}
 
 		if (this.entityManager.isOpen()) {
 			EntityTransaction entityTransaction = this.entityManager
 					.getTransaction();
-			if (entityTransaction.isActive()) {
-				if (entityTransaction.getRollbackOnly()) {
+			if (entityTransaction.isActive())
+				if (entityTransaction.getRollbackOnly())
 					entityTransaction.rollback();
-				} else {
+				else
 					entityTransaction.commit();
-				}
-			}
 			this.entityManager.close();
 		}
 		this.entityManagerFactory.close();
 	}
 
 	public EntityManager refreshEntityManager() {
+
 		if (this.entityManager.isOpen()) {
 			EntityTransaction entityTransaction = this.entityManager
 					.getTransaction();
-			if (entityTransaction.isActive()) {
-				if (entityTransaction.getRollbackOnly()) {
+			if (entityTransaction.isActive())
+				if (entityTransaction.getRollbackOnly())
 					entityTransaction.rollback();
-				} else {
+				else
 					entityTransaction.commit();
-				}
-			}
 			this.entityManager.close();
 		}
 		this.entityManager = this.entityManagerFactory.createEntityManager();
@@ -99,6 +125,7 @@ public class EntityTestManager {
 	}
 
 	public void newTransaction() {
+
 		LOG.debug("new transaction");
 		EntityTransaction transaction = this.entityManager.getTransaction();
 		transaction.commit();
@@ -107,20 +134,22 @@ public class EntityTestManager {
 	}
 
 	public EntityManager getEntityManager() {
+
 		return this.entityManager;
 	}
 
 	/**
 	 * Create a new instance of the given class that has the test transaction
 	 * entity manager handler applied to it. The transaction semantics are:
-	 * 
+	 *
 	 * <code>@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)</code>
-	 * 
+	 *
 	 * @param <Type>
 	 * @param clazz
 	 */
 	@SuppressWarnings("unchecked")
 	public <Type> Type newInstance(Class<Type> clazz) {
+
 		Type instance;
 		try {
 			instance = clazz.newInstance();
@@ -146,14 +175,14 @@ public class EntityTestManager {
 	public static void init(Class<?> clazz, Object bean)
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
+
 		LOG.debug("Initializing: " + bean);
 		Method[] methods = clazz.getDeclaredMethods();
 		for (Method method : methods) {
 			PostConstruct postConstruct = method
 					.getAnnotation(PostConstruct.class);
-			if (null == postConstruct) {
+			if (null == postConstruct)
 				continue;
-			}
 			method.invoke(bean, new Object[] {});
 		}
 	}
@@ -169,24 +198,24 @@ public class EntityTestManager {
 
 		public TransactionMethodInterceptor(Object object,
 				EntityManagerFactory entityManagerFactory) {
+
 			this.object = object;
 			this.entityManagerFactory = entityManagerFactory;
 			this.field = getEntityManagerField(object);
 		}
 
 		private Field getEntityManagerField(Object target) {
+
 			Class<?> clazz = target.getClass();
 			Field[] fields = clazz.getDeclaredFields();
 			for (Field currentField : fields) {
 				PersistenceContext persistenceContextAnnotation = currentField
 						.getAnnotation(PersistenceContext.class);
-				if (null == persistenceContextAnnotation) {
+				if (null == persistenceContextAnnotation)
 					continue;
-				}
 				if (false == EntityManager.class.isAssignableFrom(currentField
-						.getType())) {
+						.getType()))
 					throw new RuntimeException("field type not correct");
-				}
 				currentField.setAccessible(true);
 				return currentField;
 			}
@@ -196,9 +225,10 @@ public class EntityTestManager {
 		private static final Log interceptorLOG = LogFactory
 				.getLog(TransactionMethodInterceptor.class);
 
-		public Object intercept(@SuppressWarnings("unused")
-		Object obj, Method method, Object[] args, @SuppressWarnings("unused")
-		MethodProxy proxy) throws Throwable {
+		public Object intercept(@SuppressWarnings("unused") Object obj,
+				Method method, Object[] args,
+				@SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
+
 			EntityManager entityManager = this.entityManagerFactory
 					.createEntityManager();
 			try {

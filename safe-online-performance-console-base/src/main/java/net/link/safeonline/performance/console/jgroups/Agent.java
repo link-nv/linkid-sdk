@@ -15,6 +15,7 @@
  */
 package net.link.safeonline.performance.console.jgroups;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.naming.NamingException;
@@ -24,11 +25,11 @@ import net.link.safeonline.performance.console.ScenarioExecution;
 /**
  * <h2>{@link Agent}<br>
  * <sub>Interface to all actions that can be remotely performed on an agent.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public interface Agent {
@@ -46,7 +47,7 @@ public interface Agent {
 	/**
 	 * Retrieve charts created by this {@link Agent}'s scenario.
 	 */
-	public ScenarioExecution getStats(Integer execution);
+	public ScenarioExecution getStats(Date startTime);
 
 	/**
 	 * The executionIds for which metadata is available.

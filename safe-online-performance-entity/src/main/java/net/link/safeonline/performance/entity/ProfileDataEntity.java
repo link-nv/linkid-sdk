@@ -16,23 +16,21 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-import net.link.safeonline.util.performance.ProfileData;
-
 /**
  * <h2>{@link ProfileDataEntity}<br>
  * <sub>Holds data gathered by OLAS during a single request.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 10, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Entity
 @NamedQuery(name = ProfileDataEntity.getByProfile, query = "SELECT p"
 		+ "    FROM ProfileDataEntity p"
 		+ "    WHERE p.profile = :profile")
-public class ProfileDataEntity implements Comparable<ProfileDataEntity> {
+public class ProfileDataEntity {
 
 	public static final String getByProfile = "ProfileDataEntity.getByProfile";
 
@@ -69,27 +67,6 @@ public class ProfileDataEntity implements Comparable<ProfileDataEntity> {
 	}
 
 	/**
-	 * Retrieve the duration for a certain measurement.
-	 */
-	public long getMeasurement(String key) {
-
-		for (MeasurementEntity measurement : this.measurements)
-			if (measurement.getMeasurement().equals(key))
-				return measurement.getDuration() == null ? 0 : measurement
-						.getDuration();
-
-		return 0;
-	}
-
-	/**
-	 * The time the request was started on the OLAS server.
-	 */
-	public Long getStartTime() {
-
-		return getMeasurement(ProfileData.REQUEST_START_TIME);
-	}
-
-	/**
 	 * The time the scenario execution of this profile data was started.
 	 */
 	public Long getScenarioStart() {
@@ -104,18 +81,5 @@ public class ProfileDataEntity implements Comparable<ProfileDataEntity> {
 	public DriverProfileEntity getProfile() {
 
 		return this.profile;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int compareTo(ProfileDataEntity o) {
-
-		if (getStartTime() == null)
-			return -1;
-		if (o == null || o.getStartTime() == null)
-			return 1;
-
-		return getStartTime().compareTo(o.getStartTime());
 	}
 }

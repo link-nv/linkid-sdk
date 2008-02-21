@@ -171,11 +171,11 @@ public class ScenarioRemoting {
 	/**
 	 * @see Agent#getStats()
 	 */
-	public ScenarioExecution getStats(Address agent, Integer execution) {
+	public ScenarioExecution getStats(Address agent, Date startTime) {
 
 		try {
 			return (ScenarioExecution) invokeFor(agent, "getStats",
-					new Object[] { execution }, new String[] { Integer.class
+					new Object[] { startTime }, new String[] { Date.class
 							.getName() });
 		} catch (MBeanException e) {
 			LOG.error("Server error during stats retrieval!", e);

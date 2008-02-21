@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
  * <h2>{@link AgentService}<br>
  * <sub>This class provides all functionality of the agent that is available to
  * the console.</sub></h2>
- * 
+ *
  * <p>
  * This MBean launches the broadcaster service that provides agent visibility in
  * JGroups and the deployer service that is used for deploying uploaded
@@ -43,18 +43,18 @@ import org.apache.commons.logging.LogFactory;
  * Metadata on previously performed executions are also cached by this agent as
  * they are requested by the console.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class AgentService implements AgentServiceMBean {
 
 	static final Log LOG = LogFactory.getLog(AgentService.class);
 
-	private Map<Integer, ScenarioExecution> stats;
+	private Map<Date, ScenarioExecution> stats;
 	private AgentBroadcaster broadcaster;
 	private ScenarioDeployer deployer;
 	private ScenarioExecutor executor;
@@ -64,7 +64,7 @@ public class AgentService implements AgentServiceMBean {
 
 	public AgentService() {
 
-		this.stats = new HashMap<Integer, ScenarioExecution>();
+		this.stats = new HashMap<Date, ScenarioExecution>();
 		this.deployer = new ScenarioDeployer();
 		this.broadcaster = new AgentBroadcaster();
 	}
@@ -150,15 +150,14 @@ public class AgentService implements AgentServiceMBean {
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public ScenarioExecution getStats(Integer execution) {
+	public ScenarioExecution getStats(Date startTime) {
 
-		if (!actionRequest(AgentState.CHART))
-			return null;
+		actionRequest(AgentState.CHART);
 
 		try {
-			return getExecution(execution, true);
+			return getExecution(startTime, true);
 		} finally {
-			actionCompleted(this.stats.containsKey(execution));
+			actionCompleted(this.stats.containsKey(startTime));
 		}
 	}
 
@@ -188,8 +187,8 @@ public class AgentService implements AgentServiceMBean {
 	public Set<ScenarioExecution> getExecutions() throws NamingException {
 
 		Set<ScenarioExecution> executions = new HashSet<ScenarioExecution>();
-		for (Integer executionId : getScenarioController().getExecutions())
-			executions.add(getExecution(executionId, false));
+		for (Date startTime : getScenarioController().getExecutions())
+			executions.add(getExecution(startTime, false));
 
 		return executions;
 	}
@@ -203,24 +202,22 @@ public class AgentService implements AgentServiceMBean {
 		this.error = error;
 	}
 
-	private boolean isLocked() {
-
-		return this.transit != null;
-	}
-
 	/**
 	 * Request permission to start a certain action. If permission is granted,
 	 * the agent is locked until {@link #actionCompleted(boolean)} is called.
 	 *
-	 * @return <code>true</code> if agent is available for this action.
+	 * @throws IllegalStateException
+	 *             If the request cannot be granted (agent is locked for another
+	 *             action).
 	 */
-	private boolean actionRequest(AgentState action) {
+	private void actionRequest(AgentState action) throws IllegalStateException {
 
-		if (isLocked())
-			return false;
+		if (this.transit != null)
+			throw new IllegalStateException(action.getTransitioning()
+					+ " request denied: agent is locked for: "
+					+ this.transit.getTransitioning());
 
 		this.transit = action;
-		return true;
 	}
 
 	/**
@@ -246,8 +243,7 @@ public class AgentService implements AgentServiceMBean {
 	 */
 	public void upload(byte[] application) {
 
-		if (!actionRequest(AgentState.UPLOAD))
-			return;
+		actionRequest(AgentState.UPLOAD);
 
 		try {
 			setError(null);
@@ -270,8 +266,7 @@ public class AgentService implements AgentServiceMBean {
 	 */
 	public void deploy() {
 
-		if (!actionRequest(AgentState.DEPLOY))
-			return;
+		actionRequest(AgentState.DEPLOY);
 
 		try {
 			setError(null);
@@ -292,8 +287,7 @@ public class AgentService implements AgentServiceMBean {
 	public void execute(String scenarioName, Integer agents, Integer workers,
 			Long duration, String hostname, Date startTime) {
 
-		if (!actionRequest(AgentState.EXECUTE))
-			return;
+		actionRequest(AgentState.EXECUTE);
 
 		try {
 			setError(null);
@@ -318,20 +312,20 @@ public class AgentService implements AgentServiceMBean {
 	 * return an execution object without charts, even if charts have been
 	 * cached already.
 	 */
-	private ScenarioExecution getExecution(Integer executionId, boolean charts) {
+	private ScenarioExecution getExecution(Date startTime, boolean charts) {
 
-		if (executionId == null)
+		if (startTime == null)
 			return null;
 
 		try {
-			ScenarioExecution execution = this.stats.get(executionId);
+			ScenarioExecution execution = this.stats.get(startTime);
 
 			if (execution == null) {
 				ExecutionMetadata metaData = getScenarioController()
-						.getExecutionMetadata(executionId);
+						.getExecutionMetadata(startTime);
 
-				this.stats.put(executionId, execution = new ScenarioExecution(
-						executionId, metaData.getScenarioName(), metaData
+				this.stats.put(startTime, execution = new ScenarioExecution(
+						metaData.getScenarioName(), metaData
 								.getScenarioDescription(),
 						metaData.getAgents(), metaData.getWorkers(), metaData
 								.getStartTime(), metaData.getDuration(),
@@ -342,7 +336,7 @@ public class AgentService implements AgentServiceMBean {
 				synchronized (execution) {
 					if (execution.getCharts() == null)
 						execution.setCharts(charts ? getScenarioController()
-								.createCharts(executionId) : null);
+								.createCharts(startTime) : null);
 				}
 
 			else if (execution.getCharts() != null)

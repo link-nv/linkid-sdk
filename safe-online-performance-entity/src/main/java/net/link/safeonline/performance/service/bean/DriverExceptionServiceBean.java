@@ -6,8 +6,8 @@
  */
 package net.link.safeonline.performance.service.bean;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -24,11 +24,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link DriverExceptionServiceBean}<br>
  * <sub>Service bean for {@link DriverExceptionEntity}.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @see DriverExceptionService
  * @author mbillemo
  */
@@ -78,10 +78,10 @@ public class DriverExceptionServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public SortedSet<DriverExceptionEntity> getProfileErrors(
+	public Set<DriverExceptionEntity> getProfileErrors(
 			DriverProfileEntity profile) {
 
-		return new TreeSet<DriverExceptionEntity>(this.em.createNamedQuery(
+		return new HashSet<DriverExceptionEntity>(this.em.createNamedQuery(
 				DriverExceptionEntity.getByProfile).setParameter("profile",
 				profile).getResultList());
 	}

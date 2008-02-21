@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.performance.console.swing.data;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -23,18 +24,18 @@ import org.jgroups.Address;
  * <h2>{@link ConsoleAgent}<br>
  * <sub>Proxy that maintains the status of the remote agent and provides access
  * to its functionality.</sub></h2>
- * 
+ *
  * <p>
  * This is a proxy for the remote agent and provides access to all functionality
  * offered and all state made available by the agent. It takes care of keeping
  * the status information synchronised by a daemon thread that checks the remote
  * status every two seconds.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ConsoleAgent implements Agent {
@@ -80,7 +81,6 @@ public class ConsoleAgent implements Agent {
 		this.healthy = healthy;
 		ConsoleData.fireAgentStatus(this);
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -162,6 +162,21 @@ public class ConsoleAgent implements Agent {
 	}
 
 	/**
+	 * <b>Temporarily</b> change the <b>local</b> transition state of the
+	 * agent.<br>
+	 * <br>
+	 * You should only use this to set the transition state just before making a
+	 * request to the remote agent that will result in the same state transition
+	 * if all goes well in order to have the state reflected in the UI sooner.
+	 */
+	public void setTransit(AgentState transit) {
+
+		this.transit = transit;
+
+		ConsoleData.fireAgentStatus(this);
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public Exception getError() {
@@ -172,9 +187,9 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ScenarioExecution getStats(Integer execution) {
+	public ScenarioExecution getStats(Date startTime) {
 
-		return this.agentRemoting.getStats(this.agentAddress, execution);
+		return this.agentRemoting.getStats(this.agentAddress, startTime);
 	}
 
 	/**
@@ -202,11 +217,16 @@ public class ConsoleAgent implements Agent {
 					.getState(this.agentAddress));
 			notifyOnChange(this.error, this.error = this.agentRemoting
 					.getError(this.agentAddress));
-			notifyOnChange(this.scenarios, this.scenarios = this.agentRemoting
-					.getScenarios(this.agentAddress));
-			notifyOnChange(this.executions,
-					this.executions = this.agentRemoting
-							.getExecutions(this.agentAddress));
+
+			// Only sync these if a scenario is deployed.
+			if (AgentState.UPLOAD.compareTo(this.state) < 0) {
+				notifyOnChange(this.scenarios,
+						this.scenarios = this.agentRemoting
+								.getScenarios(this.agentAddress));
+				notifyOnChange(this.executions,
+						this.executions = this.agentRemoting
+								.getExecutions(this.agentAddress));
+			}
 		}
 
 		catch (Exception e) {
