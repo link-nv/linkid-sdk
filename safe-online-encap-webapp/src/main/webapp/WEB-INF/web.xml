@@ -74,13 +74,6 @@
 	</context-param>
 
 	<context-param>
-		<param-name>WsLocation</param-name>
-		<param-value>
-			${safe-online.host.name}:${safe-online.host.port.ssl}
-		</param-value>
-	</context-param>
-
-	<context-param>
 		<param-name>SafeOnlineHostName</param-name>
 		<param-value>${safe-online.host.name}</param-value>
 	</context-param>
@@ -228,7 +221,6 @@
 		<servlet-name>RegExitServlet</servlet-name>
 		<url-pattern>/regexit</url-pattern>
 	</servlet-mapping>
-
 
 	<session-config>
 		<session-timeout>5</session-timeout>

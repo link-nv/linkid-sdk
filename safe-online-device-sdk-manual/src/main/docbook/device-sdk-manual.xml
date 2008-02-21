@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<book lang="en">
+	<bookinfo>
+		<title>OLAS Device SDK Manual</title>
+		<copyright>
+			<year>2008</year>
+			<holder>LIN-K N.V.</holder>
+		</copyright>
+		<date>21/02/2008</date>
+		<abstract>
+			<para>
+				This document contains the Device SDK manual for the
+				OLAS product.
+			</para>
+		</abstract>
+		<releaseinfo>1.0.0</releaseinfo>
+		<productname>OLAS</productname>
+		<productnumber>1.0.0</productnumber>
+		<authorgroup>
+			<author>
+				<firstname>Wim</firstname>
+				<surname>Vandenhaute</surname>
+			</author>
+		</authorgroup>
+	</bookinfo>
+
+	<chapter id="introduction">
+		<title>Introduction</title>
+		<abstract>
+			<para>
+				This chapter will give a brief overview on how to become
+				an OLAS authentication device issuer. Information on the
+				necessary setup will be explained.
+			</para>
+		</abstract>
+		<para>
+			All communication for the services provided by the remote
+			OLAS authentication device issuer will be done according to
+			the OASIS SAML version 2.0 Web SSO profile with HTTP POST
+			binding.
+		</para>
+		<para>
+			Following services can be provided by the device issuer :
+			<itemizedlist>
+				<listitem>Authentication</listitem>
+				<listitem>Registration</listitem>
+				<listitem>Removal</listitem>
+				<listitem>Updating</listitem>
+			</itemizedlist>
+		</para>
+		<para>
+			Below the protocol is shown as is used for authentication of
+			an OLAS device by a remote device issuer.
+		</para>
+		<para>
+			Below the protocol is shown as is used for registration,
+			removal and updating of an OLAS device issued by a remote
+			device issuer.
+			<mediaobject>
+				<imageobject>
+					<imagedata format="PNG" align="center" scale="55"
+						fileref="device-integration.png" />
+				</imageobject>
+				<caption>Remote device interaction</caption>
+			</mediaobject>
+		</para>
+		<para>
+			The OLAS Device SDK contains Java components to ease the
+			setup of an OLAS device issuer by a remote device issuer.
+		</para>
+	</chapter>
+	<chapter id="authentication">
+		<title>Device Authentication</title>
+		<abstract>
+			<para>
+				This chapter will give an overview of the setup needed
+				to integrate an authentication service from the remote
+				device issuer towards OLAS.
+			</para>
+		</abstract>
+		<para>
+			Following 2 servlets are provided by the device SDK to
+			handle the incoming SAML request token and send out a SAML
+			response containing the ID of the authenticated user.
+		</para>
+		<para>
+			<variablelist>
+				<varlistentry>
+					<term>
+						<code>LandingServlet</code>
+					</term>
+					<listitem>
+						<para>
+							This servlet should be used to handle the
+							incoming SAML request.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>
+						<code>ExitServlet</code>
+					</term>
+					<listitem>
+						<para>
+							This servlet should be used to send out a
+							SAML response for this authentication
+							session.
+						</para>
+					</listitem>
+				</varlistentry>
+			</variablelist>
+		</para>
+		<para>
+			The context parameter <code>AuthenticationUrl</code> will be used
+			by the <code>LandingServlet</code> to redirect to after it has
+			handled the SAML authentication	request token. Both of these 
+			servlets and associated context	parameters should be configured via
+			the	<code>web.xml</code>servlet web application deployment
+			descriptor. Below you find an example of such a configuration.
+		</para>
+		<programlisting><![CDATA[<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>KeyStoreFile</param-name> 
+  		<param-value>/etc/pki/demo-app.p12</param-value>
+  	</context-param> 
+
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>AuthenticationUrl</param-name>
+		<param-value>mobile.seam</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>SafeOnlineHostName</param-name>
+		<param-value>OlasHostName</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostPort</param-name>
+		<param-value>8080</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostPortSsl</param-name>
+		<param-value>8443</param-value>
+	</context-param>
+	
+	<servlet>
+		<servlet-name>LandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.auth.servlet.LandingServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>LandingServlet</servlet-name>
+		<url-pattern>/auth</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.auth.servlet.ExitServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ExitServlet</servlet-name>
+		<url-pattern>/authenticationexit</url-pattern>
+	</servlet-mapping>]]></programlisting>
+		<para>
+			Upon successful authentication, an <code>AuthenticationContext
+			</code>	should be filled in containing the authentication 
+			details such as :
+			<itemizedlist>
+				<listitem>User ID</listitem>
+				<listitem>Device Name</listitem>
+				<listitem>SAML Response Token Validity Time</listitem>
+				<listitem>Device Issuer Name</listitem>
+			</itemizedlist>
+			The following class can be used to accomplish this :
+			<code>AuthenticationContext.java</code>
+		</para>
+		<para>
+			After that, simply redirect to the <code>ExitServlet</code>'s 
+			URL to return to OLAS.
+		</para>
+	</chapter>
+	<chapter id="registration">
+		<title>Device Registration</title>
+		<abstract>
+			<para>
+				This chapter will give an overview of the setup needed to
+				integrate a registration service from the remote device issuer
+				towards OLAS.
+			</para>
+		</abstract>
+		<para>
+			Following 2 servlets are provided by the device SDK to send out a
+			registration SAML request from the remote device issuer towards
+			OLAS and receive the registration SAML response from OLAS. This
+			response will contain the ID reserved by OLAS for this particular
+			device registration. This ID should be later on used during an
+			authentication session with this remote device issuer.
+		</para>
+		<para>
+			<variablelist>
+				<varlistentry>
+					<term>
+						<code>RegLandingServlet</code>
+					</term>
+					<listitem>
+						<para>
+							This servlet should be used to send out a
+							registration SAML request token.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>
+						<code>RegExitServlet</code>
+					</term>
+					<listitem>
+						<para>
+							This servlet should be used to receive the
+							registration SAML response token.
+						</para>
+					</listitem>
+				</varlistentry>
+			</variablelist>
+		</para>
+		<para>
+			The context parameter <code>RegistrationUrl</code> will be used by
+			the <code>RegExitServlet</code> to redirect to after it has handled
+			the received registration SAML response token.
+		</para>
+		<para>
+			The context parameter <code>RegistrationServiceUrl</code> will be
+			used by the <code>RegLandingServlet</code> to let OLAS know where
+			to send its registration SAML response token to. This should point
+			to the <code>RegExitServlet</code>'s URL.
+		</para>
+		<para>
+			Both of these servlets and associated context parameters should be
+			configured via the <code>web.xml</code>servlet web application
+			deployment descriptor. Below you find an example of such a
+			configuration.
+		</para>
+		<programlisting><![CDATA[<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>KeyStoreFile</param-name> 
+  		<param-value>/etc/pki/demo-app.p12</param-value>
+  	</context-param> 
+
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>RegistrationUrl</param-name>
+		<param-value>register-mobile.seam</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostName</param-name>
+		<param-value>OlasHostName</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostPort</param-name>
+		<param-value>8080</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostPortSsl</param-name>
+		<param-value>8443</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>RegistrationServiceUrl</param-name>
+		<param-value>
+			https://DeviceHostName:8443/path/regexit
+		</param-value>
+	</context-param>
+	
+	<servlet>
+		<servlet-name>RegLandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.reg.servlet.LandingServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>RegLandingServlet</servlet-name>
+		<url-pattern>/reg</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>RegExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.reg.servlet.ExitServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>RegExitServlet</servlet-name>
+		<url-pattern>/regexit</url-pattern>
+	</servlet-mapping>]]></programlisting>
+		<para>
+			Upon successful registration the remote device issuer should 
+			redirect to OLAS. The URL where to redirect can be retrieved with
+			the <code>RegistrationManager</code> class using method <code>
+			getSafeOnlineRegistrationExitServiceUrl</code>.
+			Or if the web application is using JSF/Seam you can simply use
+			<code>SafeOnlineDeviceUtils.registerExit();</code> to return to
+			OLAS.
+		</para>
+	</chapter>
+</book>

@@ -89,30 +89,9 @@
 	</context-param>
 
 	<context-param>
-		<param-name>WsLocation</param-name>
-		<param-value>
-			${safe-online.host.name}:${safe-online.host.port.ssl}
-		</param-value>
-	</context-param>
-
-	<context-param>
 		<param-name>RegistrationServiceUrl</param-name>
 		<param-value>
 			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-beid/regexit
-		</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>SafeOnlineRegistrationServiceUrl</param-name>
-		<param-value>
-			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/device/registration
-		</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>SafeOnlineRegistrationExitServiceUrl</param-name>
-		<param-value>
-			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/device/registrationexit
 		</param-value>
 	</context-param>
 

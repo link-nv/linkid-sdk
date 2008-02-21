@@ -553,6 +553,49 @@
 				<module>safe-online-sdk-package</module>
 			</modules>
 		</profile>
+                <profile>
+                        <id>env-device-sdk</id>
+                        <activation>
+                                <property>
+                                        <name>env</name>
+                                        <value>device-sdk</value>
+                                </property>
+                        </activation>
+                        <properties>
+                                <isGlobalOperator>true</isGlobalOperator>
+                                <defaultCronExpression>
+                                        0 0/5 * * * ?
+                                </defaultCronExpression>
+                                <safe-online.data.source>
+                                        DefaultDS
+                                </safe-online.data.source>
+                                <safe-online.dialect>
+                                        org.hibernate.dialect.HSQLDialect
+                                </safe-online.dialect>
+                                <safe-online.hibernate.hbm2ddl.auto>
+                                        create-drop
+                                </safe-online.hibernate.hbm2ddl.auto>
+                                <safe-online.host.name>localhost</safe-online.host.name>
+                                <safe-online.host.port>8080</safe-online.host.port>
+                                <safe-online.host.port.ssl>
+                                        8443
+                                </safe-online.host.port.ssl>
+                                <safe-online.jboss.host.port>
+                                        8080
+                                </safe-online.jboss.host.port>
+                                <safe-online.jboss.host.port.ssl>
+                                        8443
+                                </safe-online.jboss.host.port.ssl>
+                                <debug.mode>true</debug.mode>
+                                <safe-online.profiling.filter />
+                                <safe-online.profiling.interceptor />
+                        </properties>
+                        <modules>
+                                <module>safe-online-sdk-manual</module>
+                                <module>safe-online-sdk-package</module>
+				<module>safe-online-device-sdk-manual</module>
+                        </modules>
+		</profile>
 	</profiles>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>

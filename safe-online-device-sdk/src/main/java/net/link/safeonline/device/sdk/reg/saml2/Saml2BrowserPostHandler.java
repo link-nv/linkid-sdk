@@ -137,11 +137,11 @@ public class Saml2BrowserPostHandler implements Serializable {
 		this.applicationCertificate = inApplicationCertificate;
 		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
-		this.wsLocation = inConfigParams.get("WsLocation");
 		String safeOnlineHostName = inConfigParams.get("SafeOnlineHostName");
 		String safeOnlineHostPort = inConfigParams.get("SafeOnlineHostPort");
 		String safeOnlineHostPortSsl = inConfigParams
 				.get("SafeOnlineHostPortSsl");
+		this.wsLocation = safeOnlineHostName + ":" + safeOnlineHostPortSsl;
 		RegistrationManager.setServiceUrls(this.session, source,
 				safeOnlineHostName, safeOnlineHostPort, safeOnlineHostPortSsl);
 	}
