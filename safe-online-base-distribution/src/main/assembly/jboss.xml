@@ -25,7 +25,9 @@
 				<exclude>bin/shutdown.sh</exclude>
 				<exclude>jar-versions.xml</exclude>
 				<exclude>server/default/lib/jboss-jaxws.jar</exclude>
-				<exclude>server/default/deploy/jbossws.sar/jboss-jaxws.jar</exclude>
+				<exclude>
+					server/default/deploy/jbossws.sar/jboss-jaxws.jar
+				</exclude>
 			</excludes>
 		</fileSet>
 		<fileSet>
@@ -52,18 +54,12 @@
 			<directory>target/classes/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
+		<fileSet>
+			<directory>target/dependency</directory>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</fileSet>
 	</fileSets>
 	<files>
-		<file>
-			<source>
-				target/files/jboss-seam-1.2.1.GA-safe-online.jar
-			</source>
-			<outputDirectory>jboss/server/default/lib</outputDirectory>
-		</file>
-		<file>
-			<source>target/files/el-impl-1.0.jar</source>
-			<outputDirectory>jboss/server/default/lib</outputDirectory>
-		</file>
 		<file>
 			<source>target/files/ssl.jks</source>
 			<outputDirectory>jboss/server/default/conf</outputDirectory>
