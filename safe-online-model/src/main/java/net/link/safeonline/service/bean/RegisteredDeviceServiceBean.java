@@ -50,12 +50,18 @@ public class RegisteredDeviceServiceBean implements RegisteredDeviceService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public RegisteredDeviceEntity registerDevice(String userId,
+	public RegisteredDeviceEntity getDeviceRegistration(String userId,
 			String deviceName) throws SubjectNotFoundException,
 			DeviceNotFoundException {
 		SubjectEntity subject = this.subjectService.getSubject(userId);
 		DeviceEntity device = this.devicePolicyService.getDevice(deviceName);
-		return this.registeredDeviceDAO.addRegisteredDevice(subject, device);
+
+		RegisteredDeviceEntity registeredDevice = this.registeredDeviceDAO
+				.findRegisteredDevice(subject, device);
+		if (null == registeredDevice)
+			registeredDevice = this.registeredDeviceDAO.addRegisteredDevice(
+					subject, device);
+		return registeredDevice;
 	}
 
 	/**

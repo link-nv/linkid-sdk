@@ -20,7 +20,6 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
@@ -129,15 +128,6 @@ public class CredentialServiceBean implements CredentialService,
 	public boolean isPasswordConfigured() {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		return this.passwordController.isPasswordConfigured(subject);
-	}
-
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public String registerMobile(String mobile) throws MobileException,
-			MalformedURLException, MobileRegistrationException,
-			ArgumentIntegrityException {
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		return this.weakMobileDeviceService.register(subject.getUserId(),
-				mobile);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)

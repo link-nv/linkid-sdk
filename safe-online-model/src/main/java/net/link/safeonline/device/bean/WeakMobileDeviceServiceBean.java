@@ -93,9 +93,8 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 			MobileRegistrationException, ArgumentIntegrityException {
 		SubjectEntity deviceSubject = this.subjectService
 				.findSubject(deviceUserId);
-		if (null != deviceSubject)
-			throw new MobileException("device subject already created");
-		deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
+		if (null == deviceSubject)
+			deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
 
 		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
 				.findSubject(SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN,

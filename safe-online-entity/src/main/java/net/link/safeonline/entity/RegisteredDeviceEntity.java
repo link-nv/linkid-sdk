@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
@@ -29,7 +30,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 @Entity
-@Table(name = "registeredDevices")
+@Table(name = "registeredDevices", uniqueConstraints = @UniqueConstraint(columnNames = {
+		"subject", "device" }))
 @NamedQueries( {
 		@NamedQuery(name = QUERY_LIST_SUBJECT, query = "SELECT regDevice "
 				+ "FROM RegisteredDeviceEntity AS regDevice "

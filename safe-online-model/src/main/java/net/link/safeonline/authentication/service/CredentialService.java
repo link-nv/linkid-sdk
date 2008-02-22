@@ -16,7 +16,6 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -52,20 +51,6 @@ public interface CredentialService {
 	 */
 	void removePassword(String password) throws DeviceNotFoundException,
 			PermissionDeniedException, LastDeviceException;
-
-	/**
-	 * Registers a mobile for the current user.
-	 * 
-	 * @param mobile
-	 * @return activation code to be used on your mobile
-	 * @throws ArgumentIntegrityException
-	 * @throws MobileRegistrationException
-	 * @throws MalformedURLException
-	 * @throws MobileException
-	 */
-	String registerMobile(String mobile) throws MobileException,
-			MalformedURLException, MobileRegistrationException,
-			ArgumentIntegrityException;
 
 	/**
 	 * Removes a mobile for the current user.

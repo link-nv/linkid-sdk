@@ -129,7 +129,7 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 		try {
 			LOG.debug("register device " + deviceName + " for " + userName);
 			RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
-					.registerDevice(userName, deviceName);
+					.getDeviceRegistration(userName, deviceName);
 			LOG.debug("registered device id: " + registeredDevice.getId());
 			registrationContext.setUserId(registeredDevice.getId());
 			registrationContext.setValidity(this.samlAuthorityService

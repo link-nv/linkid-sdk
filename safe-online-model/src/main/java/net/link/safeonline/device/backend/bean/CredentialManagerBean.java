@@ -127,10 +127,8 @@ public class CredentialManagerBean implements CredentialManager {
 		 */
 		SubjectEntity deviceSubject = this.subjectService
 				.findSubject(deviceUserId);
-		if (null != deviceSubject)
-			throw new PermissionDeniedException(
-					"device subject already created");
-		deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
+		if (null == deviceSubject)
+			deviceSubject = this.subjectService.addDeviceSubject(deviceUserId);
 
 		String domain = pkiProvider.getIdentifierDomainName();
 		String identifier = pkiProvider.getSubjectIdentifier(certificate);

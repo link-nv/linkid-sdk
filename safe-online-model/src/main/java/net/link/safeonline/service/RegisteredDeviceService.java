@@ -31,7 +31,7 @@ import net.link.safeonline.entity.RegisteredDeviceEntity;
 @Local
 public interface RegisteredDeviceService {
 
-	public RegisteredDeviceEntity registerDevice(String userId,
+	public RegisteredDeviceEntity getDeviceRegistration(String userId,
 			String deviceName) throws SubjectNotFoundException,
 			DeviceNotFoundException;
 
