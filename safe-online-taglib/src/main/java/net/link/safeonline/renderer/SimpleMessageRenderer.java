@@ -54,7 +54,7 @@ public class SimpleMessageRenderer extends Renderer {
 		LOG.debug("rendered " + count + " messages");
 	}
 
-	private String augmentIdReference(FacesContext context, String forValue,
+	private String augmentIdReference(@SuppressWarnings("unused") FacesContext context, String forValue,
 			UIComponent fromComponent) {
 
 		int forSuffix = forValue.lastIndexOf(UIViewRoot.UNIQUE_ID_PREFIX);

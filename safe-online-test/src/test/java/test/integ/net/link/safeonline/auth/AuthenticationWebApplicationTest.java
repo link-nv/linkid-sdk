@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -82,7 +82,7 @@ public class AuthenticationWebApplicationTest {
 
 		KeyPair keyPair = new KeyPair(publicKey, privateKey);
 		String authnRequest = AuthnRequestFactory.createAuthnRequest(
-				"performance-application", keyPair,
+				"performance-application", "performance-application", keyPair,
 				"http://localhost:1234/performance-application", null, null,
 				null);
 		LOG.debug("authentication request: " + authnRequest);

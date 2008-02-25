@@ -110,7 +110,6 @@ public class AuthnRequestUtil {
 	 * @param stsWsLocation
 	 * @param applicationCertificate
 	 * @param applicationPrivateKey
-	 * @return
 	 * @throws ServletException
 	 */
 	public static AuthnRequest validateAuthnRequest(HttpServletRequest request,

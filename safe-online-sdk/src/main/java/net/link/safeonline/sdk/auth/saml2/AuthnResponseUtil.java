@@ -138,7 +138,6 @@ public class AuthnResponseUtil {
 	 * @param wsLocation
 	 * @param applicationCertificate
 	 * @param applicationPrivateKey
-	 * @return
 	 * @throws ServletException
 	 */
 	public static Response validateResponse(DateTime now,

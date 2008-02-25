@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -46,7 +46,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.pkix.service.PkiService;
-import net.link.safeonline.sdk.DomUtils;
+import net.link.safeonline.sdk.auth.saml2.DomUtils;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.CompoundBuilder;
@@ -73,13 +73,13 @@ import test.integ.net.link.safeonline.IntegrationTestUtils;
 
 /**
  * Integration tests for the SafeOnline Data Web Service.
- * 
+ *
  * <p>
  * We implemented the integration tests using the JUnit unit test framework.
  * </p>
- * 
+ *
  * @author fcorneli
- * 
+ *
  */
 public class DataWebServiceTest {
 

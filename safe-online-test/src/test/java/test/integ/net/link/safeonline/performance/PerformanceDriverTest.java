@@ -20,7 +20,7 @@ import net.link.safeonline.model.performance.PerformanceService;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
-import net.link.safeonline.performance.entity.AgentTimeEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
@@ -97,7 +97,7 @@ public class PerformanceDriverTest {
 			this.entityTestManager.setUp(DriverExceptionEntity.class,
 					DriverProfileEntity.class, ExecutionEntity.class,
 					MeasurementEntity.class, ProfileDataEntity.class,
-					AgentTimeEntity.class);
+					ScenarioTimingEntity.class);
 
 			ProfilingServiceBean.setDefaultEntityManager(this.entityTestManager
 					.getEntityManager());
@@ -108,7 +108,7 @@ public class PerformanceDriverTest {
 
 			ExecutionEntity execution = this.executionService.addExecution(
 					getClass().getName(), 1, 1, new Date(), 1l, OLAS_HOSTNAME);
-			AgentTimeEntity agentTime = this.executionService.start(execution);
+			ScenarioTimingEntity agentTime = this.executionService.start(execution);
 
 			this.idDriver = new IdMappingDriver(execution, agentTime);
 			this.attribDriver = new AttribDriver(execution, agentTime);

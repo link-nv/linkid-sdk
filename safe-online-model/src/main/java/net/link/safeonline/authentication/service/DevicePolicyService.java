@@ -110,7 +110,6 @@ public interface DevicePolicyService {
 
 	/**
 	 * @param deviceName
-	 * @return
 	 * @throws DeviceNotFoundException
 	 */
 	DeviceEntity getDevice(String deviceName) throws DeviceNotFoundException;
