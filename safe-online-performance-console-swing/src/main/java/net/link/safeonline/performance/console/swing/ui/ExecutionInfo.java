@@ -158,12 +158,12 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	void updateExecutionSelection() {
 
 		synchronized (this.executions) {
-			try {
+			if (this.executionSelection.getValue() < this.executions.size()
+					&& this.executionSelection.getValue() > -1)
 				setExecution(this.executions.get(this.executionSelection
 						.getValue()));
-			} catch (IndexOutOfBoundsException err) {
+			else
 				setExecution(null);
-			}
 		}
 	}
 
@@ -334,6 +334,9 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 							+ ", ");
 		if (seconds > 0)
 			output.append(seconds + "s" + ", ");
+
+		if (output.length() < 2)
+			return duration + "ms";
 
 		output.delete(output.length() - 2, output.length());
 		int lastComma = output.lastIndexOf(",");

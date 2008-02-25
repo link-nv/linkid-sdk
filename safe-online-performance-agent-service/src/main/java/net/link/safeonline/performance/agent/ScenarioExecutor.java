@@ -118,7 +118,7 @@ public class ScenarioExecutor extends Thread {
 				@Override
 				public void run() {
 
-					ScenarioExecutor.this.agentService.getStats(execution);
+					ScenarioExecutor.this.agentService.getCharts(execution);
 				}
 			};
 			charter.setDaemon(true);

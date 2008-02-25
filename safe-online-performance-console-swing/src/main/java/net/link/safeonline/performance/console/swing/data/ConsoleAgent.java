@@ -51,6 +51,7 @@ public class ConsoleAgent implements Agent {
 	private Exception error;
 	private Set<String> scenarios;
 	private Set<ScenarioExecution> executions;
+	public boolean autoUpdate;
 
 	/**
 	 * Create a new {@link ConsoleAgent} component based off the agent at the
@@ -60,9 +61,21 @@ public class ConsoleAgent implements Agent {
 
 		this.agentRemoting = ConsoleData.getRemoting();
 		this.agentAddress = agentAddress;
+		this.autoUpdate = true;
 		this.healthy = true;
 
 		new UpdateAgentState().start();
+	}
+
+	/**
+	 * @param autoUpdate
+	 *            <code>true</code> to sync the stats with the remote agent at
+	 *            a certain interval. <code>false</code> to suspend this
+	 *            updating (until set to <code>true</code> again).
+	 */
+	public void setAutoUpdate(boolean autoUpdate) {
+
+		this.autoUpdate = autoUpdate;
 	}
 
 	/**
@@ -184,9 +197,9 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ScenarioExecution getStats(Date startTime) {
+	public ScenarioExecution getCharts(Date startTime) {
 
-		return this.agentRemoting.getStats(this.agentAddress, startTime);
+		return this.agentRemoting.getCharts(this.agentAddress, startTime);
 	}
 
 	/**
@@ -208,28 +221,24 @@ public class ConsoleAgent implements Agent {
 	public void updateState() {
 
 		try {
-			notifyOnChange(this.transit, this.transit = this.agentRemoting
+			this.transit = notifyOnChange(this.transit, this.agentRemoting
 					.getTransit(this.agentAddress));
-			notifyOnChange(this.state, this.state = this.agentRemoting
+			this.state = notifyOnChange(this.state, this.agentRemoting
 					.getState(this.agentAddress));
-			notifyOnChange(this.error, this.error = this.agentRemoting
+			this.error = notifyOnChange(this.error, this.agentRemoting
 					.getError(this.agentAddress));
 
 			// Only sync these if a scenario is deployed.
 			if (AgentState.UPLOAD.compareTo(this.state) < 0) {
-				notifyOnChange(this.scenarios,
-						this.scenarios = this.agentRemoting
-								.getScenarios(this.agentAddress));
-				notifyOnChange(this.executions,
-						this.executions = this.agentRemoting
-								.getExecutions(this.agentAddress));
+				this.scenarios = notifyOnChange(this.scenarios,
+						this.agentRemoting.getScenarios(this.agentAddress));
+				this.executions = notifyOnChange(this.executions,
+						this.agentRemoting.getExecutions(this.agentAddress));
 			}
 		}
 
 		catch (IllegalStateException e) {
-			notifyOnChange(this.state, this.state = null);
-
-			e.printStackTrace();
+			this.state = notifyOnChange(this.state, null);
 		}
 
 		catch (Exception e) {
@@ -238,15 +247,19 @@ public class ConsoleAgent implements Agent {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void notifyOnChange(Object o1, Object o2) {
+	private <V> V notifyOnChange(V oldValue, V newValue) {
 
-		Object fixed1 = o1, fixed2 = o2;
+		// Don't accept new value when autoUpdate has been disabled.
+		if (Thread.currentThread() instanceof UpdateAgentState
+				&& !this.autoUpdate)
+			return oldValue;
 
 		// Equals is broken for non-sorted sets when the order gets shaken up.
-		if (o1 instanceof Set && !(o1 instanceof SortedSet))
-			fixed1 = new TreeSet<Object>((Set<? extends Object>) o1);
-		if (o2 instanceof Set && !(o2 instanceof SortedSet))
-			fixed2 = new TreeSet<Object>((Set<? extends Object>) o2);
+		Object fixed1 = oldValue, fixed2 = newValue;
+		if (oldValue instanceof Set && !(oldValue instanceof SortedSet))
+			fixed1 = new TreeSet<Object>((Set<? extends Object>) oldValue);
+		if (newValue instanceof Set && !(newValue instanceof SortedSet))
+			fixed2 = new TreeSet<Object>((Set<? extends Object>) newValue);
 
 		if (fixed1 != null) {
 			if (fixed2 == null || !fixed1.equals(fixed2))
@@ -255,6 +268,8 @@ public class ConsoleAgent implements Agent {
 
 		else if (fixed2 != null)
 			ConsoleData.fireAgentStatus(this);
+
+		return newValue;
 	}
 
 	private class UpdateAgentState extends Thread {
@@ -273,7 +288,8 @@ public class ConsoleAgent implements Agent {
 		public void run() {
 
 			while (true) {
-				updateState();
+				if (ConsoleAgent.this.autoUpdate)
+					updateState();
 
 				try {
 					Thread.sleep(INTERVAL);

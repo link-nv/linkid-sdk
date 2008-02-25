@@ -175,10 +175,10 @@ public class ScenarioRemoting {
 	/**
 	 * @see Agent#getStats()
 	 */
-	public ScenarioExecution getStats(Address agent, Date startTime) {
+	public ScenarioExecution getCharts(Address agent, Date startTime) {
 
 		try {
-			return (ScenarioExecution) invokeFor(agent, "getStats",
+			return (ScenarioExecution) invokeFor(agent, "getCharts",
 					new Object[] { startTime }, new String[] { Date.class
 							.getName() });
 		} catch (MBeanException e) {

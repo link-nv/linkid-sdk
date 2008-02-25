@@ -14,10 +14,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -25,7 +23,6 @@ import javax.swing.filechooser.FileFilter;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
-import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.ui.ExecutionInfo;
 
 import org.apache.commons.logging.Log;
@@ -60,15 +57,8 @@ public class PDF {
 
 	static final Log LOG = LogFactory.getLog(PDF.class);
 
-	public static boolean generate() {
-
-		// Download all charts.
-		Set<ConsoleAgent> agents = ConsoleData.getSelectedAgents();
-		Map<ConsoleAgent, ScenarioExecution> agentCharts = new HashMap<ConsoleAgent, ScenarioExecution>(
-				agents.size());
-		for (ConsoleAgent agent : agents)
-			agentCharts.put(agent, agent.getStats(ConsoleData.getExecution()
-					.getStartTime()));
+	public static boolean generate(
+			Map<ConsoleAgent, ScenarioExecution> agentCharts) {
 
 		// Calculate total execution speed.
 		double speed = 0, agentSpeeds = 0;

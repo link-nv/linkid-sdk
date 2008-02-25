@@ -15,6 +15,7 @@
  */
 package net.link.safeonline.performance.scenario;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
@@ -80,9 +81,9 @@ public class ExecutionMetadata {
 	/**
 	 * Complete constructor.
 	 */
-	private ExecutionMetadata(String scenarioName,
-			String scenarioDescription, Integer agents, Integer workers,
-			Date startTime, Long duration, String hostname, Double speed) {
+	private ExecutionMetadata(String scenarioName, String scenarioDescription,
+			Integer agents, Integer workers, Date startTime, Long duration,
+			String hostname, Double speed) {
 
 		this.scenarioName = scenarioName;
 		this.scenarioDescription = scenarioDescription;
@@ -137,5 +138,26 @@ public class ExecutionMetadata {
 	public Double getSpeed() {
 
 		return this.speed;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+
+		String formattedStartTime = null;
+		if (this.startTime != null)
+			formattedStartTime = new SimpleDateFormat("HH:mm")
+					.format(this.startTime);
+
+		return String.format("%s: [%s] %sx%s (%s min): %s #/s",
+				this.scenarioName == null ? "N/A" : this.scenarioName
+						.replaceFirst(".*\\.", ""),
+				formattedStartTime == null ? "N/A" : formattedStartTime,
+				this.agents == null ? "N/A" : this.agents,
+				this.workers == null ? "N/A" : this.workers,
+				this.duration == null ? "N/A" : this.duration / 60000,
+				this.speed == null ? "N/A" : String.format("%.2f", this.speed));
 	}
 }

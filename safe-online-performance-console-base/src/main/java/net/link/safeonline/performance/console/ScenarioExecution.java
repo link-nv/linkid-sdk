@@ -111,7 +111,9 @@ public class ScenarioExecution implements Serializable,
 			formattedStartTime = new SimpleDateFormat("HH:mm")
 					.format(this.startTime);
 
-		return String.format("[%s] %sx%s: %s min @ %s #/s",
+		return String.format("%s: [%s] %sx%s (%s min): %s #/s",
+				this.scenarioName == null ? "N/A" : this.scenarioName
+						.replaceFirst(".*\\.", ""),
 				formattedStartTime == null ? "N/A" : formattedStartTime,
 				this.agents == null ? "N/A" : this.agents,
 				this.workers == null ? "N/A" : this.workers,

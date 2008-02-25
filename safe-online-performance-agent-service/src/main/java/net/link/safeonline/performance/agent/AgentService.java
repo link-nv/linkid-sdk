@@ -150,7 +150,7 @@ public class AgentService implements AgentServiceMBean {
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public ScenarioExecution getStats(Date startTime) {
+	public ScenarioExecution getCharts(Date startTime) {
 
 		actionRequest(AgentState.CHART);
 

@@ -47,7 +47,7 @@ public interface Agent {
 	/**
 	 * Retrieve charts created by this {@link Agent}'s scenario.
 	 */
-	public ScenarioExecution getStats(Date startTime);
+	public ScenarioExecution getCharts(Date startTime);
 
 	/**
 	 * The executionIds for which metadata is available.

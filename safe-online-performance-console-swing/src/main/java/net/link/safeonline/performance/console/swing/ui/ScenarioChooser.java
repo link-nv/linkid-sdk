@@ -156,19 +156,19 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		}
 
 		else if (this.uploadButton.equals(e.getSource()))
-			new ScenarioUploaderThread(this, getScenarioFile()).run();
+			new ScenarioUploaderThread(this, getScenarioFile()).start();
 
 		else if (this.deployButton.equals(e.getSource()))
-			new ScenarioDeployerThread(this).run();
+			new ScenarioDeployerThread(this).start();
 
 		else if (this.executeButton.equals(e.getSource()))
-			new ScenarioExecutorThread(this).run();
+			new ScenarioExecutorThread(this).start();
 
 		else if (this.chartsButton.equals(e.getSource()))
-			new ScenarioCharterThread(this, false).run();
+			new ScenarioCharterThread(this, false).start();
 
 		else if (this.pdfButton.equals(e.getSource()))
-			new ScenarioCharterThread(this, true).run();
+			new ScenarioCharterThread(this, true).start();
 
 		else if (this.refreshButton.equals(e.getSource()))
 			for (ConsoleAgent agent : ConsoleData.getSelectedAgents())

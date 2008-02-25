@@ -37,7 +37,14 @@ public class ScenarioUploaderThread extends ScenarioThread {
 	 */
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
+		try {
+			agent.setAutoUpdate(false);
 
-		this.scenarioDeployer.upload(agent.getAddress(), this.application);
+			this.scenarioDeployer.upload(agent.getAddress(), this.application);
+		}
+
+		finally {
+			agent.setAutoUpdate(true);
+		}
 	}
 }

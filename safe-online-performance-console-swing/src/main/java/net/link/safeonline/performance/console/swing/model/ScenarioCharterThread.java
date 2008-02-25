@@ -6,8 +6,13 @@
  */
 package net.link.safeonline.performance.console.swing.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
+import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.ui.ChartWindow;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
@@ -24,36 +29,26 @@ import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 public class ScenarioCharterThread extends ScenarioThread {
 
 	boolean createPDF;
+	private Map<ConsoleAgent, ScenarioExecution> agentCharts;
 
 	public ScenarioCharterThread(ScenarioChooser chooser, boolean createPDF) {
 
 		super(AgentState.CHART, chooser);
 
 		this.createPDF = createPDF;
+		this.agentCharts = new HashMap<ConsoleAgent, ScenarioExecution>();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void run() {
+	protected void completed() {
 
-		new Thread("Worker") {
-			{
-				setDaemon(true);
-			}
-
-			@Override
-			public void run() {
-
-				if (ScenarioCharterThread.this.createPDF)
-					PDF.generate();
-				else
-					ChartWindow.display();
-			}
-		}.start();
-
-		super.run();
+		if (ScenarioCharterThread.this.createPDF)
+			PDF.generate(this.agentCharts);
+		else
+			ChartWindow.display(this.agentCharts);
 	}
 
 	/**
@@ -62,6 +57,7 @@ public class ScenarioCharterThread extends ScenarioThread {
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
 
-		/* Not used. */
+		this.agentCharts.put(agent, agent.getCharts(ConsoleData.getExecution()
+				.getStartTime()));
 	}
 }

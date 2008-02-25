@@ -30,8 +30,6 @@ import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
 
-import org.jgroups.Address;
-
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.FormLayout;
@@ -50,6 +48,7 @@ import com.jgoodies.looks.Options;
 public class ChartWindow extends WindowAdapter {
 
 	private static ChartWindow instance;
+
 	private JTabbedPane agents;
 	private JFrame frame;
 
@@ -67,11 +66,11 @@ public class ChartWindow extends WindowAdapter {
 		this.frame.addWindowListener(this);
 	}
 
-	private void addTab(Address agent, ScenarioExecution scenarioExecution) {
+	private void addTab(ConsoleAgent agent, ScenarioExecution scenarioExecution) {
 
-		String tabTitle = String.format("%s (%d worker%s)", agent.toString(),
-				scenarioExecution.getWorkers(),
-				scenarioExecution.getWorkers() > 1 ? "s" : "");
+		String tabTitle = String.format("%s (%d worker%s)", agent.getAddress()
+				.toString(), scenarioExecution.getWorkers(), scenarioExecution
+				.getWorkers() > 1 ? "s" : "");
 		AgentCharts agentCharts = new AgentCharts(scenarioExecution);
 		this.agents.addTab(tabTitle, new JScrollPane(agentCharts));
 	}
@@ -86,7 +85,7 @@ public class ChartWindow extends WindowAdapter {
 		instance = null;
 	}
 
-	public static void display() {
+	public static void display(Map<ConsoleAgent, ScenarioExecution> agentCharts) {
 
 		ScenarioExecution execution = ConsoleData.getExecution();
 		if (execution == null) {
@@ -99,9 +98,9 @@ public class ChartWindow extends WindowAdapter {
 		if (instance == null)
 			instance = new ChartWindow();
 
-		for (ConsoleAgent agent : ConsoleData.getSelectedAgents())
-			instance.addTab(agent.getAddress(), agent.getStats(execution
-					.getStartTime()));
+		for (Map.Entry<ConsoleAgent, ScenarioExecution> agentChart : agentCharts
+				.entrySet())
+			instance.addTab(agentChart.getKey(), agentChart.getValue());
 
 		instance.show();
 	}

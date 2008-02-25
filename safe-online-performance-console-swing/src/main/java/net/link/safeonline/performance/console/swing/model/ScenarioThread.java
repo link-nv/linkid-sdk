@@ -6,6 +6,10 @@
  */
 package net.link.safeonline.performance.console.swing.model;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
@@ -31,13 +35,16 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author mbillemo
  */
-public abstract class ScenarioThread implements Runnable {
+public abstract class ScenarioThread extends Thread {
 
 	AgentState state;
 	ScenarioChooser chooser;
 	ScenarioRemoting scenarioDeployer;
 
 	public ScenarioThread(AgentState state, ScenarioChooser chooser) {
+
+		super("Scenario Invoker");
+		setDaemon(true);
 
 		this.state = state;
 		this.chooser = chooser;
@@ -47,12 +54,30 @@ public abstract class ScenarioThread implements Runnable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void run() {
 
+		ExecutorService pool = Executors.newCachedThreadPool();
 		for (final ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
-			new Worker(agent).start();
-			agent.setTransit(this.state);
+			pool.submit(new Worker(agent));
+			agent.setTransit(ScenarioThread.this.state);
 		}
+
+		try {
+			while (!pool.awaitTermination(10, TimeUnit.SECONDS))
+				Thread.yield();
+		} catch (InterruptedException e) {
+		}
+
+		completed();
+	}
+
+	/**
+	 * This method is called after all agents have completed the task.
+	 */
+	protected void completed() {
+
+		/* Feel free to override. */
 	}
 
 	/**
@@ -60,7 +85,7 @@ public abstract class ScenarioThread implements Runnable {
 	 */
 	abstract void process(ConsoleAgent agent) throws Exception;
 
-	class Worker extends Thread {
+	class Worker implements Runnable {
 
 		final Log LOG = LogFactory.getLog(ScenarioThread.Worker.class);
 
@@ -68,16 +93,12 @@ public abstract class ScenarioThread implements Runnable {
 
 		public Worker(ConsoleAgent agent) {
 
-			super("Dispatch Thread");
-			setDaemon(true);
-
 			this.agent = agent;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		@Override
 		public void run() {
 
 			try {
