@@ -219,11 +219,6 @@
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>Login Filter</filter-name>
-		<servlet-name>IdentityServlet</servlet-name>
-	</filter-mapping>
-
-	<filter-mapping>
 		<filter-name>ajax4jsf</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>

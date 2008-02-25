@@ -11,8 +11,6 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.audit.SecurityAuditLogger;
-import net.link.safeonline.auth.AuthenticationStatementFactory;
-import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
 import net.link.safeonline.authentication.service.bean.RegistrationStatement;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.bean.BeIdDeviceServiceBean;
@@ -71,56 +69,6 @@ public class BeIdDeviceServiceBeanTest extends TestCase {
 		this.mockObjects = new Object[] { this.mockSubjectIdentifierDAO,
 				this.mockSecurityAuditLogger, this.mockPkiProviderManager,
 				this.mockPkiValidator, this.mockUserRegistrationManager };
-	}
-
-	public void testAuthenticateViaAuthenticationStatement() throws Exception {
-		// setup
-		String sessionId = UUID.randomUUID().toString();
-		String applicationId = "test-application-id";
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(
-				keyPair, "CN=Test");
-		SmartCard smartCard = new SoftwareSmartCard(keyPair, cert);
-		TrustDomainEntity trustDomain = new TrustDomainEntity(
-				"test-trust-domain", true);
-		PkiProvider mockPkiProvider = createMock(PkiProvider.class);
-		String identifierDomain = "test-identifier-domain";
-		String identifier = "test-identifier";
-		String login = "test-subject-login";
-		SubjectEntity subject = new SubjectEntity(login);
-
-		byte[] authenticationStatementData = AuthenticationStatementFactory
-				.createAuthenticationStatement(sessionId, applicationId,
-						smartCard);
-		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
-				authenticationStatementData);
-
-		// stubs
-		expect(this.mockPkiProviderManager.findPkiProvider(cert))
-				.andStubReturn(mockPkiProvider);
-		expect(mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
-		expect(this.mockPkiValidator.validateCertificate(trustDomain, cert))
-				.andStubReturn(true);
-		expect(mockPkiProvider.getIdentifierDomainName()).andStubReturn(
-				identifierDomain);
-		expect(mockPkiProvider.getSubjectIdentifier(cert)).andStubReturn(
-				identifier);
-		expect(
-				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
-						identifier)).andStubReturn(subject);
-
-		// prepare
-		replay(this.mockObjects);
-		replay(mockPkiProvider);
-
-		// operate
-		String resultDeviceUserId = this.testedInstance.authenticate(sessionId,
-				authenticationStatement);
-
-		// verify
-		verify(this.mockObjects);
-		verify(mockPkiProvider);
-		assertNotNull(resultDeviceUserId);
 	}
 
 	public void testRegisterAndAuthenticate() throws Exception {

@@ -18,8 +18,10 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.auth.AuthenticationStatementFactory;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -120,6 +122,51 @@ public class CredentialManagerBeanTest extends TestCase {
 		this.smartCard = new SoftwareSmartCard(keyPair, this.certificate);
 		expect(this.mockPkiProviderManager.findPkiProvider(this.certificate))
 				.andStubReturn(this.mockPkiProvider);
+	}
+
+	public void testAuthenticateViaAuthenticationStatement() throws Exception {
+		// setup
+		String sessionId = UUID.randomUUID().toString();
+		String applicationId = "test-application-id";
+		TrustDomainEntity trustDomain = new TrustDomainEntity(
+				"test-trust-domain", true);
+		String identifierDomain = "test-identifier-domain";
+		String identifier = "test-identifier";
+		String login = "test-subject-login";
+		SubjectEntity subject = new SubjectEntity(login);
+
+		byte[] authenticationStatementData = AuthenticationStatementFactory
+				.createAuthenticationStatement(sessionId, applicationId,
+						this.smartCard);
+		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
+				authenticationStatementData);
+
+		// stubs
+		expect(this.mockPkiProviderManager.findPkiProvider(this.certificate))
+				.andStubReturn(this.mockPkiProvider);
+		expect(this.mockPkiProvider.getTrustDomain())
+				.andStubReturn(trustDomain);
+		expect(
+				this.mockPkiValidator.validateCertificate(trustDomain,
+						this.certificate)).andStubReturn(true);
+		expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(
+				identifierDomain);
+		expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate))
+				.andStubReturn(identifier);
+		expect(
+				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
+						identifier)).andStubReturn(subject);
+
+		// prepare
+		replay(this.mockObjects);
+
+		// operate
+		String resultDeviceUserId = this.testedInstance.authenticate(sessionId,
+				authenticationStatement);
+
+		// verify
+		verify(this.mockObjects);
+		assertNotNull(resultDeviceUserId);
 	}
 
 	public void testUnparsableIdentityStatement() throws Exception {

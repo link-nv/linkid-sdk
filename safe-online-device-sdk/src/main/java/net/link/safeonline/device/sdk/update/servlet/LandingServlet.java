@@ -1,4 +1,4 @@
-package net.link.safeonline.device.sdk.remove.servlet;
+package net.link.safeonline.device.sdk.update.servlet;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,7 +26,7 @@ public class LandingServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private String removalServiceUrl;
+	private String updateServiceUrl;
 
 	private String applicationName;
 
@@ -46,7 +46,7 @@ public class LandingServlet extends HttpServlet {
 
 	public static final String KEYSTORE_TYPE_INIT_PARAM = "KeyStoreType";
 
-	public static final String REMOVAL_SERVICE_URL_INIT_PARAM = "RemovalServiceUrl";
+	public static final String UPDATE_SERVICE_URL_INIT_PARAM = "UpdateServiceUrl";
 
 	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
 
@@ -56,8 +56,8 @@ public class LandingServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		this.removalServiceUrl = getInitParameter(config,
-				REMOVAL_SERVICE_URL_INIT_PARAM);
+		this.updateServiceUrl = getInitParameter(config,
+				UPDATE_SERVICE_URL_INIT_PARAM);
 		this.applicationName = getInitParameter(config,
 				APPLICATION_NAME_INIT_PARAM);
 		this.deviceName = getInitParameter(config, DEVICE_NAME_INIT_PARAM);
@@ -122,7 +122,7 @@ public class LandingServlet extends HttpServlet {
 
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.getSaml2BrowserPostHandler(request);
-		saml2BrowserPostHandler.init(this.removalServiceUrl,
+		saml2BrowserPostHandler.init(this.updateServiceUrl,
 				this.applicationName, this.applicationKeyPair,
 				this.applicationCertificate, this.configParams);
 		DeviceManager.setServiceUrls(request.getSession(), source,

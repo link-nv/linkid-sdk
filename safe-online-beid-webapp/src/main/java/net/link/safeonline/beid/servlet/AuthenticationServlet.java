@@ -23,7 +23,6 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
 import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
-import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
 import net.link.safeonline.shared.SharedConstants;
@@ -70,11 +69,6 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String sessionId = session.getId();
 		LOG.debug("session Id: " + sessionId);
-
-		/*
-		 * create new helpdesk volatile context
-		 */
-		HelpdeskLogger.clear(session);
 
 		PrintWriter writer = response.getWriter();
 		try {
