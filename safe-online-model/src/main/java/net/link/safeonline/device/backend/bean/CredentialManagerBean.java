@@ -15,10 +15,13 @@ import javax.interceptor.Interceptors;
 
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
 import net.link.safeonline.authentication.service.bean.IdentityStatement;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
@@ -29,6 +32,7 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiProvider;
@@ -62,11 +66,47 @@ public class CredentialManagerBean implements CredentialManager {
 	@EJB
 	private AttributeDAO attributeDAO;
 
-	public void mergeIdentityStatement(SubjectEntity subject,
-			byte[] identityStatementData) throws TrustDomainNotFoundException,
-			PermissionDeniedException, ArgumentIntegrityException,
-			AttributeTypeNotFoundException {
-		mergeIdentityStatement(subject.getUserId(), identityStatementData);
+	@EJB
+	private SecurityAuditLogger securityAuditLogger;
+
+	public String authenticate(String sessionId,
+			AuthenticationStatement authenticationStatement)
+			throws ArgumentIntegrityException, TrustDomainNotFoundException,
+			SubjectNotFoundException {
+		X509Certificate certificate = authenticationStatement.verifyIntegrity();
+		if (null == certificate) {
+			throw new ArgumentIntegrityException();
+		}
+
+		String statementSessionId = authenticationStatement.getSessionId();
+
+		PkiProvider pkiProvider = this.pkiProviderManager
+				.findPkiProvider(certificate);
+		if (null == pkiProvider) {
+			throw new ArgumentIntegrityException();
+		}
+		TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
+		boolean validationResult = this.pkiValidator.validateCertificate(
+				trustDomain, certificate);
+		if (false == validationResult) {
+			throw new ArgumentIntegrityException();
+		}
+
+		if (false == sessionId.equals(statementSessionId)) {
+			this.securityAuditLogger.addSecurityAudit(
+					SecurityThreatType.DECEPTION, "session Id mismatch");
+			throw new ArgumentIntegrityException();
+		}
+
+		String identifierDomainName = pkiProvider.getIdentifierDomainName();
+		String identifier = pkiProvider.getSubjectIdentifier(certificate);
+		SubjectEntity deviceSubject = this.subjectIdentifierDAO.findSubject(
+				identifierDomainName, identifier);
+		if (null == deviceSubject) {
+			throw new SubjectNotFoundException();
+		}
+		return deviceSubject.getUserId();
+
 	}
 
 	public void mergeIdentityStatement(String deviceUserId,
@@ -111,18 +151,6 @@ public class CredentialManagerBean implements CredentialManager {
 		}
 
 		/*
-		 * Lookup subject entity from registered device entity for now so we can
-		 * access the attributes
-		 * 
-		 * TODO: keep seperate device id mapping list
-		 */
-		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
-				.getRegisteredDevice(deviceUserId);
-		if (null == registeredDevice)
-			throw new PermissionDeniedException("registered device not found");
-		SubjectEntity subject = registeredDevice.getSubject();
-
-		/*
 		 * Create new device subject
 		 */
 		SubjectEntity deviceSubject = this.subjectService
@@ -165,6 +193,18 @@ public class CredentialManagerBean implements CredentialManager {
 		String surname = identityStatement.getSurname();
 		String givenName = identityStatement.getGivenName();
 
+		/*
+		 * Lookup subject entity from registered device entity for now so we can
+		 * access the attributes
+		 * 
+		 * TODO: keep seperate device id mapping list
+		 */
+		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
+				.getRegisteredDevice(deviceUserId);
+		if (null == registeredDevice)
+			throw new PermissionDeniedException("registered device not found");
+		SubjectEntity subject = registeredDevice.getSubject();
+
 		setOrUpdateAttribute(IdentityStatementAttributes.SURNAME, subject,
 				surname, pkiProvider);
 		setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME, subject,
@@ -185,11 +225,12 @@ public class CredentialManagerBean implements CredentialManager {
 				.addOrUpdateAttribute(attributeType, subject, 0, value);
 	}
 
-	public void removeIdentity(SubjectEntity subject,
-			byte[] identityStatementData) throws TrustDomainNotFoundException,
-			PermissionDeniedException, ArgumentIntegrityException,
-			AttributeTypeNotFoundException {
-		String login = subject.getUserId();
+	public void removeIdentity(String deviceUserId, byte[] identityStatementData)
+			throws TrustDomainNotFoundException, PermissionDeniedException,
+			ArgumentIntegrityException, AttributeTypeNotFoundException,
+			SubjectNotFoundException {
+		SubjectEntity deviceSubject = this.subjectService
+				.getSubject(deviceUserId);
 
 		/*
 		 * First check integrity of the received identity statement.
@@ -224,7 +265,7 @@ public class CredentialManagerBean implements CredentialManager {
 		 * user.
 		 */
 		String user = identityStatement.getUser();
-		if (false == login.equals(user)) {
+		if (false == deviceUserId.equals(user)) {
 			throw new PermissionDeniedException("statement user mismatch");
 		}
 
@@ -232,10 +273,22 @@ public class CredentialManagerBean implements CredentialManager {
 		String identifier = pkiProvider.getSubjectIdentifier(certificate);
 		SubjectEntity existingMappedSubject = this.subjectIdentifierDAO
 				.findSubject(domain, identifier);
-		if (subject.equals(existingMappedSubject)) {
-			this.subjectIdentifierDAO.removeSubjectIdentifier(subject, domain,
-					identifier);
+		if (deviceSubject.equals(existingMappedSubject)) {
+			this.subjectIdentifierDAO.removeSubjectIdentifier(deviceSubject,
+					domain, identifier);
 		}
+
+		/*
+		 * Lookup subject entity from registered device entity for now so we can
+		 * access the attributes
+		 * 
+		 * TODO: keep seperate device id mapping list
+		 */
+		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
+				.getRegisteredDevice(deviceUserId);
+		if (null == registeredDevice)
+			throw new PermissionDeniedException("registered device not found");
+		SubjectEntity subject = registeredDevice.getSubject();
 
 		removeAttribute(IdentityStatementAttributes.SURNAME, subject,
 				pkiProvider);

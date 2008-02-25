@@ -72,7 +72,9 @@ public class EncapStartableBean extends AbstractInitBean {
 				SafeOnlineConstants.MOBILE_DEVICE_CLASS, "https://" + hostname
 						+ ":" + port + "/olas-encap/auth", "https://"
 						+ hostname + ":" + port + "/olas-encap/reg",
-				"encap/new-user-mobile.seam", null, null, certificate));
+				"encap/new-user-mobile.seam", "https://" + hostname + ":"
+						+ port + "/olas-encap/remove", null, certificate,
+				encapDeviceAttributeTypeList));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
 		this.deviceDescriptions.add(new DeviceDescription(

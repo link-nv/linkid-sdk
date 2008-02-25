@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.device.sdk.RegistrationContext;
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.exception.RegistrationFinalizationException;
 import net.link.safeonline.device.sdk.exception.RegistrationInitializationException;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
@@ -96,7 +96,7 @@ public class Saml2Handler implements Serializable {
 		this.applicationKeyPair = newApplicationKeyPair;
 	}
 
-	public void initRegistration(HttpServletRequest request)
+	public void initialize(HttpServletRequest request)
 			throws RegistrationInitializationException {
 
 		AuthnRequest samlAuthnRequest;
@@ -145,21 +145,21 @@ public class Saml2Handler implements Serializable {
 		this.session.setAttribute(IN_RESPONSE_TO_ATTRIBUTE, samlAuthnRequestId);
 		this.session.setAttribute(TARGET_URL, assertionConsumerService);
 
-		RegistrationContext registrationContext = RegistrationContext
-				.getRegistrationContext(request.getSession());
-		registrationContext.setRegisteredDevice(registeredDevice);
-		registrationContext.setApplication(application);
+		ProtocolContext protocolContext = ProtocolContext
+				.getProtocolContext(request.getSession());
+		protocolContext.setRegisteredDevice(registeredDevice);
+		protocolContext.setApplication(application);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void finalizeRegistration(HttpServletRequest request,
+	public void finalize(HttpServletRequest request,
 			HttpServletResponse response)
 			throws RegistrationFinalizationException {
-		RegistrationContext registrationContext = RegistrationContext
-				.getRegistrationContext(request.getSession());
-		String registeredDevice = registrationContext.getRegisteredDevice();
-		String userId = registrationContext.getUserId();
-		String applicationId = registrationContext.getApplication();
+		ProtocolContext protocolContext = ProtocolContext
+				.getProtocolContext(request.getSession());
+		String registeredDevice = protocolContext.getRegisteredDevice();
+		String userId = protocolContext.getUserId();
+		String applicationId = protocolContext.getApplication();
 		String target = (String) this.session.getAttribute(TARGET_URL);
 		String inResponseTo = (String) this.session
 				.getAttribute(IN_RESPONSE_TO_ATTRIBUTE);
@@ -167,10 +167,10 @@ public class Saml2Handler implements Serializable {
 			throw new RegistrationFinalizationException(
 					"missing IN_RESPONSE_TO session attribute");
 
-		String issuerName = registrationContext.getIssuer();
+		String issuerName = protocolContext.getIssuer();
 		PrivateKey privateKey = this.applicationKeyPair.getPrivate();
 		PublicKey publicKey = this.applicationKeyPair.getPublic();
-		int validity = registrationContext.getValidity();
+		int validity = protocolContext.getValidity();
 
 		Response responseMessage = AuthnResponseFactory.createAuthResponse(
 				inResponseTo, applicationId, issuerName, userId,

@@ -98,8 +98,6 @@ public class SafeOnlineConstants {
 	/**
 	 * Mobile device attributes
 	 */
-	public static final String WEAK_MOBILE_IDENTIFIER_DOMAIN = "weak-mobile";
-
 	public static final String STRONG_MOBILE_IDENTIFIER_DOMAIN = "strong-mobile";
 
 	public static final String MOBILE_ENCAP_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:mobile:encap";

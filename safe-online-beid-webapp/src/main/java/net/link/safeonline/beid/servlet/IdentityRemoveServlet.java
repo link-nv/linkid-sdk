@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.user.servlet;
+package net.link.safeonline.beid.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -60,7 +60,8 @@ public class IdentityRemoveServlet extends AbstractStatementServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter writer = response.getWriter();
 		try {
-			this.beIdDeviceService.remove(statementData);
+			String userId = (String) session.getAttribute("userId");
+			this.beIdDeviceService.remove(userId, statementData);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (TrustDomainNotFoundException e) {
 			LOG.error("trust domain not found: " + e.getMessage(), e);

@@ -74,6 +74,11 @@
 	</context-param>
 
 	<context-param>
+		<param-name>RemovalUrl</param-name>
+		<param-value>remove-mobile.seam</param-value>
+	</context-param>
+
+	<context-param>
 		<param-name>SafeOnlineHostName</param-name>
 		<param-value>${safe-online.host.name}</param-value>
 	</context-param>
@@ -92,6 +97,13 @@
 		<param-name>RegistrationServiceUrl</param-name>
 		<param-value>
 			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-encap/regexit
+		</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>RemovalServiceUrl</param-name>
+		<param-value>
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-encap/removeexit
 		</param-value>
 	</context-param>
 
@@ -220,6 +232,30 @@
 	<servlet-mapping>
 		<servlet-name>RegExitServlet</servlet-name>
 		<url-pattern>/regexit</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>RemoveLandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.remove.servlet.LandingServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>RemoveLandingServlet</servlet-name>
+		<url-pattern>/remove</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>RemoveExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.remove.servlet.ExitServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>RemoveExitServlet</servlet-name>
+		<url-pattern>/removeexit</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

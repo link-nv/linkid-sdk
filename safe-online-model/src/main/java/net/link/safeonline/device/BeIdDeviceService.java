@@ -27,21 +27,18 @@ public interface BeIdDeviceService {
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException;
 
-	void register(String userId, byte[] identityStatementData)
-			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException;
+	void register(String deviceUserId, byte[] identityStatementData)
+			throws PermissionDeniedException, ArgumentIntegrityException,
+			TrustDomainNotFoundException, AttributeTypeNotFoundException;
 
 	SubjectEntity registerAndAuthenticate(String sessionId, String username,
 			RegistrationStatement registrationStatement)
 			throws ArgumentIntegrityException, ExistingUserException,
 			AttributeTypeNotFoundException, TrustDomainNotFoundException;
 
-	void update(byte[] identityStatementData)
+	void remove(String deviceUserId, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException;
-
-	void remove(byte[] identityStatementData)
-			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException;
+			ArgumentIntegrityException, AttributeTypeNotFoundException,
+			SubjectNotFoundException;
 
 }

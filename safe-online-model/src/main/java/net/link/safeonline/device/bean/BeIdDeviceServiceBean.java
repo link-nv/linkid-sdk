@@ -17,7 +17,6 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
 import net.link.safeonline.authentication.service.bean.RegistrationStatement;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
@@ -50,9 +49,6 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 	private PkiValidator pkiValidator;
 
 	@EJB
-	private CredentialService credentialService;
-
-	@EJB
 	private CredentialManager credentialManager;
 
 	@EJB
@@ -68,50 +64,14 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 			AuthenticationStatement authenticationStatement)
 			throws ArgumentIntegrityException, TrustDomainNotFoundException,
 			SubjectNotFoundException {
-		LOG.debug("authenticate session: " + sessionId);
-
-		X509Certificate certificate = authenticationStatement.verifyIntegrity();
-		if (null == certificate) {
-			throw new ArgumentIntegrityException();
-		}
-
-		String statementSessionId = authenticationStatement.getSessionId();
-
-		PkiProvider pkiProvider = this.pkiProviderManager
-				.findPkiProvider(certificate);
-		if (null == pkiProvider) {
-			throw new ArgumentIntegrityException();
-		}
-		TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
-		boolean validationResult = this.pkiValidator.validateCertificate(
-				trustDomain, certificate);
-		if (false == validationResult) {
-			throw new ArgumentIntegrityException();
-		}
-
-		if (false == sessionId.equals(statementSessionId)) {
-			this.securityAuditLogger.addSecurityAudit(
-					SecurityThreatType.DECEPTION, "session Id mismatch");
-			throw new ArgumentIntegrityException();
-		}
-
-		String identifierDomainName = pkiProvider.getIdentifierDomainName();
-		String identifier = pkiProvider.getSubjectIdentifier(certificate);
-		SubjectEntity deviceSubject = this.subjectIdentifierDAO.findSubject(
-				identifierDomainName, identifier);
-		if (null == deviceSubject) {
-			String event = "no subject was found for the given user certificate";
-			LOG.warn(event);
-			throw new SubjectNotFoundException();
-		}
-		LOG.debug("subject: " + deviceSubject);
-
-		return deviceSubject.getUserId();
+		LOG.debug("authenticate: sessionId=" + sessionId);
+		return this.credentialManager.authenticate(sessionId,
+				authenticationStatement);
 	}
 
 	public void register(String deviceUserId, byte[] identityStatementData)
-			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException {
+			throws PermissionDeniedException, ArgumentIntegrityException,
+			AttributeTypeNotFoundException, TrustDomainNotFoundException {
 		LOG.debug("register: " + deviceUserId);
 		this.credentialManager.mergeIdentityStatement(deviceUserId,
 				identityStatementData);
@@ -171,18 +131,12 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 		return subject;
 	}
 
-	public void remove(byte[] identityStatementData)
+	public void remove(String deviceUserId, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException {
+			ArgumentIntegrityException, AttributeTypeNotFoundException,
+			SubjectNotFoundException {
 		LOG.debug("remove");
-		this.credentialService.removeIdentity(identityStatementData);
+		this.credentialManager.removeIdentity(deviceUserId,
+				identityStatementData);
 	}
-
-	public void update(byte[] identityStatementData)
-			throws TrustDomainNotFoundException, PermissionDeniedException,
-			ArgumentIntegrityException, AttributeTypeNotFoundException {
-		LOG.debug("update");
-		this.credentialService.mergeIdentityStatement(identityStatementData);
-	}
-
 }

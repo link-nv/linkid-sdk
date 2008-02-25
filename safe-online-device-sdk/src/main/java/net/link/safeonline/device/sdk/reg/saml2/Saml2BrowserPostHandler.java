@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.device.sdk.RegistrationManager;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestUtil;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseUtil;
@@ -126,10 +125,10 @@ public class Saml2BrowserPostHandler implements Serializable {
 		return instance;
 	}
 
-	public void init(String source, String inRegistrationServiceUrl,
-			String inApplicationName, KeyPair inApplicationKeyPair,
+	public void init(String inRegistrationServiceUrl, String inApplicationName,
+			KeyPair inApplicationKeyPair,
 			X509Certificate inApplicationCertificate,
-			Map<String, String> inConfigParams) throws ServletException {
+			Map<String, String> inConfigParams) {
 		LOG.debug("init");
 		this.registrationServiceUrl = inRegistrationServiceUrl;
 		this.applicationName = inApplicationName;
@@ -138,12 +137,9 @@ public class Saml2BrowserPostHandler implements Serializable {
 		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
 		String safeOnlineHostName = inConfigParams.get("SafeOnlineHostName");
-		String safeOnlineHostPort = inConfigParams.get("SafeOnlineHostPort");
 		String safeOnlineHostPortSsl = inConfigParams
 				.get("SafeOnlineHostPortSsl");
 		this.wsLocation = safeOnlineHostName + ":" + safeOnlineHostPortSsl;
-		RegistrationManager.setServiceUrls(this.session, source,
-				safeOnlineHostName, safeOnlineHostPort, safeOnlineHostPortSsl);
 	}
 
 	public void authnRequest(@SuppressWarnings("unused")

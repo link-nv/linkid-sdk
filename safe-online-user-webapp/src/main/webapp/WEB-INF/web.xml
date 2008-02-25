@@ -224,16 +224,6 @@
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>Login Filter</filter-name>
-		<servlet-name>IdentityRemoveServlet</servlet-name>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>Login Filter</filter-name>
-		<servlet-name>AuthenticationServlet</servlet-name>
-	</filter-mapping>
-
-	<filter-mapping>
 		<filter-name>ajax4jsf</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
@@ -242,20 +232,6 @@
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
-	</servlet>
-
-	<servlet>
-		<servlet-name>IdentityServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.user.servlet.IdentityServlet
-		</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>IdentityRemoveServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.user.servlet.IdentityRemoveServlet
-		</servlet-class>
 	</servlet>
 
 	<servlet>
@@ -271,42 +247,32 @@
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>IdentityServlet</servlet-name>
-		<url-pattern>/device/identity/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>IdentityRemoveServlet</servlet-name>
-		<url-pattern>/device/identityremove/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
+		<servlet-name>DeviceLandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.user.servlet.DeviceRegistrationLandingServlet
+			net.link.safeonline.user.servlet.DeviceLandingServlet
 		</servlet-class>
 	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
-		<url-pattern>/device/registration</url-pattern>
-	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>DeviceRegistrationExitServlet</servlet-name>
+		<servlet-name>DeviceExitServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.user.servlet.DeviceRegistrationExitServlet
+			net.link.safeonline.user.servlet.DeviceExitServlet
 		</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>DeviceRegistrationExitServlet</servlet-name>
-		<url-pattern>/device/registrationexit</url-pattern>
+		<servlet-name>DeviceLandingServlet</servlet-name>
+		<url-pattern>/device/landing</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>DeviceExitServlet</servlet-name>
+		<url-pattern>/device/exit</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

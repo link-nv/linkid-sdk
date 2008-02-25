@@ -20,7 +20,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.dao.DeviceDAO;
-import net.link.safeonline.device.sdk.RegistrationContext;
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.service.RegisteredDeviceService;
@@ -78,21 +78,21 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 
 	private void handleLanding(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		RegistrationContext registrationContext = RegistrationContext
-				.getRegistrationContext(request.getSession());
+		ProtocolContext protocolContext = ProtocolContext
+				.getProtocolContext(request.getSession());
 		DeviceEntity device;
 		try {
-			device = this.deviceDAO.getDevice(registrationContext
+			device = this.deviceDAO.getDevice(protocolContext
 					.getRegisteredDevice());
 		} catch (DeviceNotFoundException e) {
 			String msg = "device not found: "
-					+ registrationContext.getRegisteredDevice();
+					+ protocolContext.getRegisteredDevice();
 			LOG.error(msg);
 			writeErrorPage(msg, response);
 			return;
 		}
 		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
-				.getRegisteredDevice(registrationContext.getUserId());
+				.getRegisteredDevice(protocolContext.getUserId());
 		if (null == registeredDevice) {
 			String msg = "device registration not found";
 			LOG.error(msg);

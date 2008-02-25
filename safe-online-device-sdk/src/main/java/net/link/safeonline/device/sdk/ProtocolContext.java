@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 import javax.servlet.http.HttpSession;
 
-public class RegistrationContext implements Serializable {
+public class ProtocolContext implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -27,20 +27,20 @@ public class RegistrationContext implements Serializable {
 
 	private int validity;
 
-	public static final String REGISTRATION_CONTEXT = RegistrationContext.class
+	public static final String PROTOCOL_CONTEXT = ProtocolContext.class
 			.getName()
 			+ ".LOGIN_MANAGER";
 
-	private RegistrationContext(HttpSession session) {
+	private ProtocolContext(HttpSession session) {
 		this.session = session;
-		this.session.setAttribute(REGISTRATION_CONTEXT, this);
+		this.session.setAttribute(PROTOCOL_CONTEXT, this);
 	}
 
-	public static RegistrationContext getRegistrationContext(HttpSession session) {
-		RegistrationContext instance = (RegistrationContext) session
-				.getAttribute(REGISTRATION_CONTEXT);
+	public static ProtocolContext getProtocolContext(HttpSession session) {
+		ProtocolContext instance = (ProtocolContext) session
+				.getAttribute(PROTOCOL_CONTEXT);
 		if (null == instance) {
-			instance = new RegistrationContext(session);
+			instance = new ProtocolContext(session);
 		}
 		return instance;
 	}

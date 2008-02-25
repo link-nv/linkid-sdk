@@ -23,7 +23,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ErrorPage;
-import net.link.safeonline.device.sdk.RegistrationContext;
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.exception.RegistrationFinalizationException;
 import net.link.safeonline.device.sdk.exception.RegistrationInitializationException;
 import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
@@ -45,12 +45,12 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class DeviceRegistrationLandingServlet extends HttpServlet {
+public class DeviceLandingServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory
-			.getLog(DeviceRegistrationLandingServlet.class);
+			.getLog(DeviceLandingServlet.class);
 
 	private Map<String, String> configParams;
 
@@ -116,23 +116,23 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 
 		try {
 			LOG.debug("initialize registration");
-			handler.initRegistration(request);
+			handler.initialize(request);
 		} catch (RegistrationInitializationException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;
 		}
 
-		RegistrationContext registrationContext = RegistrationContext
-				.getRegistrationContext(request.getSession());
-		String deviceName = registrationContext.getRegisteredDevice();
+		ProtocolContext protocolContext = ProtocolContext
+				.getProtocolContext(request.getSession());
+		String deviceName = protocolContext.getRegisteredDevice();
 		String userId = (String) request.getSession().getAttribute("username");
 		try {
 			LOG.debug("register device " + deviceName + " for " + userId);
 			RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
 					.getDeviceRegistration(userId, deviceName);
 			LOG.debug("registered device id: " + registeredDevice.getId());
-			registrationContext.setUserId(registeredDevice.getId());
-			registrationContext.setValidity(this.samlAuthorityService
+			protocolContext.setUserId(registeredDevice.getId());
+			protocolContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
 		} catch (SubjectNotFoundException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
@@ -143,7 +143,7 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 		}
 
 		try {
-			handler.finalizeRegistration(request, response);
+			handler.finalize(request, response);
 		} catch (RegistrationFinalizationException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;

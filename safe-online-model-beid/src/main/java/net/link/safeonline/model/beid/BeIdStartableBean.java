@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -53,10 +54,12 @@ public class BeIdStartableBean extends AbstractInitBean {
 	private TrustPointDAO trustPointDAO;
 
 	public BeIdStartableBean() {
+		List<AttributeTypeEntity> beidAttributeTypes = new LinkedList<AttributeTypeEntity>();
+
 		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(
 				BeIdConstants.GIVENNAME_ATTRIBUTE, DatatypeType.STRING, true,
 				false);
-		this.attributeTypes.add(givenNameAttributeType);
+		beidAttributeTypes.add(givenNameAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				givenNameAttributeType, Locale.ENGLISH.getLanguage(),
 				"Given name (BeID)", null));
@@ -66,7 +69,7 @@ public class BeIdStartableBean extends AbstractInitBean {
 		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(
 				BeIdConstants.SURNAME_ATTRIBUTE, DatatypeType.STRING, true,
 				false);
-		this.attributeTypes.add(surnameAttributeType);
+		beidAttributeTypes.add(surnameAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				surnameAttributeType, Locale.ENGLISH.getLanguage(),
 				"Surname (BeID)", null));
@@ -75,13 +78,15 @@ public class BeIdStartableBean extends AbstractInitBean {
 
 		AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(
 				BeIdConstants.NRN_ATTRIBUTE, DatatypeType.STRING, true, false);
-		this.attributeTypes.add(nrnAttributeType);
+		beidAttributeTypes.add(nrnAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				nrnAttributeType, Locale.ENGLISH.getLanguage(),
 				"Identification number of the National Register", null));
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				nrnAttributeType, "nl",
 				"Identificatienummer van het Rijksregister", null));
+
+		this.attributeTypes.addAll(beidAttributeTypes);
 
 		X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
@@ -106,7 +111,9 @@ public class BeIdStartableBean extends AbstractInitBean {
 				SafeOnlineConstants.PKI_DEVICE_CLASS, "https://" + hostname
 						+ ":" + port + "/olas-beid/auth", "https://" + hostname
 						+ ":" + port + "/olas-beid/reg",
-				"beid/new-user-beid.seam", null, null, certificate));
+				"beid/new-user-beid.seam", "https://" + hostname + ":" + port
+						+ "/olas-beid/remove", null, certificate,
+				beidAttributeTypes));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
 		this.deviceDescriptions.add(new DeviceDescription(

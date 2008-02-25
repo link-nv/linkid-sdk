@@ -99,7 +99,7 @@ public class RegistrationBean implements Registration {
 		this.log.debug("mobile activation ok: " + this.mobile);
 		this.mobileActivationCode = null;
 		try {
-			SafeOnlineDeviceUtils.registerExit();
+			SafeOnlineDeviceUtils.deviceExit();
 		} catch (IOException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorIO");

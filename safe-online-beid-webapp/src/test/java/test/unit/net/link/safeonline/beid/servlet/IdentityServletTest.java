@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.user.servlet;
+package test.unit.net.link.safeonline.beid.servlet;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
@@ -18,10 +18,10 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.beid.servlet.IdentityServlet;
 import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
-import net.link.safeonline.user.servlet.IdentityServlet;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -108,8 +108,8 @@ public class IdentityServletTest {
 		postMethod.setRequestEntity(requestEntity);
 
 		// expectations
-		this.mockBeIdDeviceServiceBean.update(EasyMock.aryEq("test-message"
-				.getBytes()));
+		this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(),
+				EasyMock.aryEq("test-message".getBytes()));
 
 		// prepare
 		replay(this.mockBeIdDeviceServiceBean);
@@ -142,8 +142,8 @@ public class IdentityServletTest {
 		httpURLConnection.disconnect();
 
 		// expectations
-		this.mockBeIdDeviceServiceBean.update(EasyMock.aryEq("test-message"
-				.getBytes()));
+		this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(),
+				EasyMock.aryEq("test-message".getBytes()));
 
 		// prepare
 		replay(this.mockBeIdDeviceServiceBean);

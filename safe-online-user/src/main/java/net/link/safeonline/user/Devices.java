@@ -52,7 +52,5 @@ public interface Devices {
 	 */
 	List<AttributeDO> beidAttributesFactory();
 
-	List<AttributeDO> mobileWeakAttributesFactory();
-
 	List<DeviceEntry> devicesFactory();
 }

@@ -133,7 +133,7 @@ public class CredentialManagerBeanTest extends TestCase {
 
 		// operate
 		try {
-			this.testedInstance.mergeIdentityStatement(subject,
+			this.testedInstance.mergeIdentityStatement(subject.getUserId(),
 					identityStatement);
 			fail();
 		} catch (ArgumentIntegrityException e) {
@@ -280,17 +280,6 @@ public class CredentialManagerBeanTest extends TestCase {
 				this.mockSubjectIdentifierDAO.findSubject(identifierDomain,
 						identifier)).andStubReturn(anotherSubject);
 
-		DeviceClassEntity deviceClass = new DeviceClassEntity(
-				SafeOnlineConstants.PKI_DEVICE_CLASS,
-				SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS);
-		DeviceEntity device = new DeviceEntity(
-				SafeOnlineConstants.BEID_DEVICE_ID, deviceClass, null, null,
-				null, null, null, null);
-		RegisteredDeviceEntity registeredDevice = new RegisteredDeviceEntity(
-				this.testSubject, deviceId, device);
-		expect(this.mockRegisteredDeviceService.getRegisteredDevice(deviceId))
-				.andReturn(registeredDevice);
-
 		expect(this.mockSubjectService.findSubject(deviceId)).andReturn(null);
 		expect(this.mockSubjectService.addDeviceSubject(deviceId)).andReturn(
 				deviceSubject);
@@ -330,8 +319,8 @@ public class CredentialManagerBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			this.testedInstance.mergeIdentityStatement(this.testSubject,
-					identityStatement);
+			this.testedInstance.mergeIdentityStatement(this.testSubject
+					.getUserId(), identityStatement);
 			fail();
 		} catch (PermissionDeniedException e) {
 			// expected
@@ -369,8 +358,8 @@ public class CredentialManagerBeanTest extends TestCase {
 
 		// operate & verify
 		try {
-			this.testedInstance.mergeIdentityStatement(this.testSubject,
-					identityStatementData);
+			this.testedInstance.mergeIdentityStatement(this.testSubject
+					.getUserId(), identityStatementData);
 			fail();
 		} catch (ArgumentIntegrityException e) {
 			// expected
@@ -399,8 +388,8 @@ public class CredentialManagerBeanTest extends TestCase {
 
 		// operate
 		try {
-			this.testedInstance.mergeIdentityStatement(this.testSubject,
-					identityStatement);
+			this.testedInstance.mergeIdentityStatement(this.testSubject
+					.getUserId(), identityStatement);
 			fail();
 		} catch (ArgumentIntegrityException e) {
 			// expected

@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.device.sdk.RegistrationManager;
+import net.link.safeonline.device.sdk.DeviceManager;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -42,19 +42,20 @@ public class SafeOnlineDeviceUtils {
 	}
 
 	/**
-	 * Redirects to the specified Device IdP authentication page
+	 * Redirects to the specified Device issuer authentication page
 	 * 
 	 * <p>
 	 * The method requires the
 	 * <code>SafeOnlineDeviceAuthenticationServiceUrl</code> context parameter
 	 * defined in web.xml pointing to the location of the SafeOnline
-	 * authentication web application location the Device IdP should return to.
+	 * authentication web application location the Device issuer should return
+	 * to.
 	 * </p>
 	 * 
 	 * @param facesMessages
 	 * @param log
 	 * @param deviceLandingPage
-	 *            the landing page of the device IdP
+	 *            the landing page of the device issuer
 	 */
 	@SuppressWarnings("unchecked")
 	public static String authenticate(@SuppressWarnings("unused")
@@ -124,18 +125,18 @@ public class SafeOnlineDeviceUtils {
 	}
 
 	/**
-	 * Redirects from Device IdP to OLAS upon completion of the device
-	 * registration.
+	 * Redirects from Device issuer to OLAS upon completion of the device
+	 * registration/removal.
 	 * 
 	 * @throws IOException
 	 */
-	public static void registerExit() throws IOException {
+	public static void deviceExit() throws IOException {
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 
 		externalContext
-				.redirect(RegistrationManager
-						.getSafeOnlineRegistrationExitServiceUrl((HttpSession) externalContext
+				.redirect(DeviceManager
+						.getSafeOnlineDeviceExitServiceUrl((HttpSession) externalContext
 								.getSession(true)));
 	}
 }

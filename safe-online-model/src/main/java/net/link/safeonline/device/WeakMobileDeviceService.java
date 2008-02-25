@@ -25,13 +25,13 @@ public interface WeakMobileDeviceService {
 			throws MalformedURLException, SubjectNotFoundException,
 			MobileAuthenticationException, MobileException;
 
-	String register(String userId, String mobile) throws MobileException,
+	String register(String deviceUserId, String mobile) throws MobileException,
 			MalformedURLException, MobileRegistrationException,
 			ArgumentIntegrityException;
 
 	void update(SubjectEntity subject, String oldMobile, String newMobile);
 
-	void remove(String userId, String mobile) throws MobileException,
+	void remove(String deviceUserId, String mobile) throws MobileException,
 			MalformedURLException, SubjectNotFoundException;
 
 	String requestOTP(String mobile) throws MalformedURLException,

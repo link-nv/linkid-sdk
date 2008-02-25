@@ -143,9 +143,24 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		mobileAttribute.setStringValue(mobile);
 	}
 
-	public void remove(String userId, String mobile) throws MobileException,
-			MalformedURLException, SubjectNotFoundException {
-		SubjectEntity subject = this.subjectService.getSubject(userId);
+	public void remove(String deviceUserId, String mobile)
+			throws MobileException, MalformedURLException,
+			SubjectNotFoundException {
+		SubjectEntity deviceSubject = this.subjectService
+				.findSubject(deviceUserId);
+		if (null == deviceSubject)
+			throw new MobileException("device user not found");
+		/*
+		 * Attributes are attachted to OLAS subject still, to be changed later
+		 * on
+		 * 
+		 * TODO: seperate user-device mapping
+		 */
+		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
+				.getRegisteredDevice(deviceUserId);
+		if (null == registeredDevice)
+			throw new MobileException("registered device not found");
+		SubjectEntity subject = registeredDevice.getSubject();
 
 		AttributeTypeEntity mobileAttributeType;
 		try {
@@ -154,8 +169,8 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("weak mobile attribute type not found");
 		}
-		this.subjectIdentifierDAO.removeSubjectIdentifier(subject,
-				SafeOnlineConstants.WEAK_MOBILE_IDENTIFIER_DOMAIN, mobile);
+		this.subjectIdentifierDAO.removeSubjectIdentifier(deviceSubject,
+				SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
 		List<AttributeEntity> mobileAttributes = this.attributeDAO
 				.listAttributes(subject, mobileAttributeType);
 		for (AttributeEntity mobileAttribute : mobileAttributes) {

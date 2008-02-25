@@ -10,21 +10,15 @@
 	xmlns:a4j="http://richfaces.org/a4j">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="devices" />
-		</ui:include>
-	</ui:define>
 	<ui:define name="top_content">
-		<h1>#{msgs.mobileWeak}</h1>
+		<h1>#{msgs.removeaction}</h1>
 	</ui:define>
 	<ui:define name="content">
 
 		<a4j:form id="mobileRemoveForm" ajaxSubmit="true"
 			reRender="mobile-data">
-			<h:dataTable id="mobile-data" var="item"
-				value="#{mobileWeakAttributes}" preserveDataModel="false"
-				styleClass="listingTable"
+			<h:dataTable id="mobile-data" var="item" value="#{mobileAttributes}"
+				preserveDataModel="false" styleClass="listingTable"
 				rowClasses="listingTable_Row1,listingTable_Row2">
 				<h:column>
 					<f:facet name="header">#{msgs.mobile}</f:facet>
@@ -33,7 +27,7 @@
 				<h:column>
 					<f:facet name="header">#{msgs.action}</f:facet>
 					<a4j:commandLink id="mobileremove" value="#{msgs.removeaction}"
-						action="#{devicesBean.removeMobile}" />
+						action="#{removal.mobileRemove}" />
 				</h:column>
 			</h:dataTable>
 			<rich:messages styleClass="error" />

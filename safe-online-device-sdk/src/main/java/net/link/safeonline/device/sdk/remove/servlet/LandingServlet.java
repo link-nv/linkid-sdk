@@ -1,4 +1,4 @@
-package net.link.safeonline.device.sdk.reg.servlet;
+package net.link.safeonline.device.sdk.remove.servlet;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,7 +46,7 @@ public class LandingServlet extends HttpServlet {
 
 	public static final String KEYSTORE_TYPE_INIT_PARAM = "KeyStoreType";
 
-	public static final String REGISTRATION_SERVICE_URL_INIT_PARAM = "RegistrationServiceUrl";
+	public static final String REGISTRATION_SERVICE_URL_INIT_PARAM = "RemovalServiceUrl";
 
 	public static final String APPLICATION_NAME_INIT_PARAM = "ApplicationName";
 

@@ -24,7 +24,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ErrorPage;
-import net.link.safeonline.device.sdk.RegistrationContext;
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.exception.RegistrationFinalizationException;
 import net.link.safeonline.device.sdk.exception.RegistrationInitializationException;
 import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
@@ -116,23 +116,23 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 				keyPair);
 
 		try {
-			handler.initRegistration(request);
+			handler.initialize(request);
 		} catch (RegistrationInitializationException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;
 		}
 
-		RegistrationContext registrationContext = RegistrationContext
-				.getRegistrationContext(request.getSession());
-		String deviceName = registrationContext.getRegisteredDevice();
+		ProtocolContext protocolContext = ProtocolContext
+				.getProtocolContext(request.getSession());
+		String deviceName = protocolContext.getRegisteredDevice();
 		String userName = LoginManager.getUsername(request.getSession());
 		try {
 			LOG.debug("register device " + deviceName + " for " + userName);
 			RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
 					.getDeviceRegistration(userName, deviceName);
 			LOG.debug("registered device id: " + registeredDevice.getId());
-			registrationContext.setUserId(registeredDevice.getId());
-			registrationContext.setValidity(this.samlAuthorityService
+			protocolContext.setUserId(registeredDevice.getId());
+			protocolContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
 		} catch (SubjectNotFoundException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
@@ -143,7 +143,7 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 		}
 
 		try {
-			handler.finalizeRegistration(request, response);
+			handler.finalize(request, response);
 		} catch (RegistrationFinalizationException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;

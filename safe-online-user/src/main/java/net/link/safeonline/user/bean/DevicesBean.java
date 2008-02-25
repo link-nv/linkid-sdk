@@ -62,8 +62,6 @@ public class DevicesBean implements Devices {
 
 	private static final String DEVICES_LIST_NAME = "devices";
 
-	private static final String MOBILE_WEAK_ATTRIBUTE_LIST_NAME = "mobileWeakAttributes";
-
 	private String oldPassword;
 
 	private String newPassword;
@@ -75,13 +73,6 @@ public class DevicesBean implements Devices {
 
 	@DataModelSelection(DEVICES_LIST_NAME)
 	private DeviceEntry selectedDevice;
-
-	@DataModel(MOBILE_WEAK_ATTRIBUTE_LIST_NAME)
-	List<AttributeDO> mobileWeakAttributes;
-
-	@SuppressWarnings("unused")
-	@DataModelSelection(MOBILE_WEAK_ATTRIBUTE_LIST_NAME)
-	private AttributeDO selectedMobile;
 
 	@PostConstruct
 	public void postConstructCallback() {
@@ -234,22 +225,6 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
-	@Factory(MOBILE_WEAK_ATTRIBUTE_LIST_NAME)
-	public List<AttributeDO> mobileWeakAttributesFactory() {
-		Locale locale = getViewLocale();
-		try {
-			this.mobileWeakAttributes = this.identityService.listAttributes(
-					SafeOnlineConstants.ENCAP_DEVICE_ID, locale);
-		} catch (DeviceNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			LOG.error("device not found");
-			return new LinkedList<AttributeDO>();
-		}
-		return this.mobileWeakAttributes;
-	}
-
-	@RolesAllowed(UserConstants.USER_ROLE)
 	@Factory(DEVICES_LIST_NAME)
 	public List<DeviceEntry> devicesFactory() {
 		Locale locale = getViewLocale();
@@ -306,6 +281,7 @@ public class DevicesBean implements Devices {
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
 		}
+		removalURL += "?source=user";
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
