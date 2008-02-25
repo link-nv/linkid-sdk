@@ -39,7 +39,7 @@ import net.link.safeonline.performance.service.ExecutionService;
 				+ "    FROM ExecutionEntity e"
 				+ "    WHERE e.startTime = :startTime"),
 		@NamedQuery(name = ExecutionEntity.getTimes, query = "SELECT at"
-				+ "    FROM AgentTimeEntity at"
+				+ "    FROM ScenarioTimingEntity at"
 				+ "    WHERE at.execution = :execution") })
 public class ExecutionEntity {
 
@@ -159,7 +159,7 @@ public class ExecutionEntity {
 		try {
 			ExecutionService executionService = (ExecutionService) new InitialContext()
 					.lookup(ExecutionService.BINDING);
-			SortedSet<AgentTimeEntity> sortedTimes = executionService
+			SortedSet<ScenarioTimingEntity> sortedTimes = executionService
 					.getExecutionTimes(this);
 
 			try {

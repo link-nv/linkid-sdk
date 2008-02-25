@@ -46,8 +46,8 @@ public class ConsoleAgent implements Agent {
 	private ScenarioRemoting agentRemoting;
 	private Address agentAddress;
 	private boolean healthy;
-	private AgentState transit = AgentState.RESET;
-	private AgentState state = AgentState.RESET;
+	private AgentState transit;
+	private AgentState state;
 	private Exception error;
 	private Set<String> scenarios;
 	private Set<ScenarioExecution> executions;
@@ -138,9 +138,6 @@ public class ConsoleAgent implements Agent {
 	 */
 	public AgentState getState() {
 
-		if (this.state == null)
-			this.state = AgentState.RESET;
-
 		return this.state;
 	}
 
@@ -229,8 +226,14 @@ public class ConsoleAgent implements Agent {
 			}
 		}
 
+		catch (IllegalStateException e) {
+			notifyOnChange(this.state, this.state = null);
+
+			e.printStackTrace();
+		}
+
 		catch (Exception e) {
-			LOG.error(e);
+			e.printStackTrace();
 		}
 	}
 

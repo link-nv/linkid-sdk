@@ -12,7 +12,7 @@ import java.util.SortedSet;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.performance.entity.AgentTimeEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
@@ -22,7 +22,7 @@ import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
  * <sub>Service bean for {@link ExecutionEntity}.</sub></h2>
  *
  * <p>
- * Create {@link ExecutionEntity}s and manage the {@link AgentTimeEntity}s
+ * Create {@link ExecutionEntity}s and manage the {@link ScenarioTimingEntity}s
  * that they're linked with.
  * </p>
  *
@@ -56,9 +56,9 @@ public interface ExecutionService {
 
 	/**
 	 * Signal a new start of a scenario in the given execution. A
-	 * {@link AgentTimeEntity} will be created and returned.
+	 * {@link ScenarioTimingEntity} will be created and returned.
 	 */
-	public AgentTimeEntity start(ExecutionEntity execution);
+	public ScenarioTimingEntity start(ExecutionEntity execution);
 
 	/**
 	 * Retrieve all available execution IDs (which is the date at which they
@@ -67,10 +67,10 @@ public interface ExecutionService {
 	public Set<Date> getExecutions();
 
 	/**
-	 * Retrieve all {@link AgentTimeEntity}s linked to the given
+	 * Retrieve all {@link ScenarioTimingEntity}s linked to the given
 	 * {@link ExecutionEntity}.
 	 */
-	public SortedSet<AgentTimeEntity> getExecutionTimes(
+	public SortedSet<ScenarioTimingEntity> getExecutionTimes(
 			ExecutionEntity execution);
 
 }

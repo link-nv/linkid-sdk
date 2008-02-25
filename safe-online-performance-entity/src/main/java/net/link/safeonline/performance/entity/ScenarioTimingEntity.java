@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 /**
- * <h2>{@link AgentTimeEntity}<br>
+ * <h2>{@link ScenarioTimingEntity}<br>
  * <sub>Holds the startTime at which a scenario has been executed.</sub></h2>
  * 
  * <p>
@@ -23,7 +23,7 @@ import javax.persistence.ManyToOne;
  * @author mbillemo
  */
 @Entity
-public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
+public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 
 	@Id
 	@SuppressWarnings("unused")
@@ -39,12 +39,12 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	@ManyToOne
 	private ExecutionEntity execution;
 
-	public AgentTimeEntity() {
+	public ScenarioTimingEntity() {
 
 		this.startTime = System.currentTimeMillis();
 	}
 
-	public AgentTimeEntity(ExecutionEntity execution) {
+	public ScenarioTimingEntity(ExecutionEntity execution) {
 
 		this();
 
@@ -52,7 +52,7 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	}
 
 	/**
-	 * @return The startTime of this {@link AgentTimeEntity}.
+	 * @return The startTime of this {@link ScenarioTimingEntity}.
 	 */
 	public Long getStart() {
 
@@ -72,7 +72,7 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	}
 
 	/**
-	 * @return The duration of this {@link AgentTimeEntity}.
+	 * @return The duration of this {@link ScenarioTimingEntity}.
 	 */
 	public Long getOlasDuration() {
 
@@ -80,7 +80,7 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	}
 
 	/**
-	 * @return The duration of this {@link AgentTimeEntity}.
+	 * @return The duration of this {@link ScenarioTimingEntity}.
 	 */
 	public Long getAgentDuration() {
 
@@ -99,7 +99,7 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int compareTo(AgentTimeEntity o) {
+	public int compareTo(ScenarioTimingEntity o) {
 
 		return this.startTime.compareTo(o.startTime);
 	}
@@ -141,7 +141,7 @@ public class AgentTimeEntity implements Comparable<AgentTimeEntity> {
 	}
 
 	/**
-	 * @return The execution of this {@link AgentTimeEntity}.
+	 * @return The execution of this {@link ScenarioTimingEntity}.
 	 */
 	public ExecutionEntity getExecution() {
 		return this.execution;

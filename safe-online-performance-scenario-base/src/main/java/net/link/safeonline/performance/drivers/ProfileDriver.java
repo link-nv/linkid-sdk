@@ -12,7 +12,7 @@ import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
 
 import net.link.safeonline.performance.DriverException;
-import net.link.safeonline.performance.entity.AgentTimeEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.service.DriverExceptionService;
@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ProfileDriver}<br>
  * <sub>Takes care of the internals that all drivers require.</sub></h2>
- * 
+ *
  * <p>
  * Abstract class of a service driver. This class manages the internals; such as
  * persisting profile data and exceptions for driver executions.<br>
@@ -40,31 +40,31 @@ import org.apache.commons.logging.LogFactory;
  * The profiling data will be gathered by this class and can later be retrieved
  * by using {@link #getProfile()}.<br>
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public abstract class ProfileDriver {
 
-	private static final Log LOG = LogFactory.getLog(ProfileDriver.class);
+	private final Log LOG = LogFactory.getLog(getClass());
 
-	private DriverProfileService driverProfileService = getService(
+	private final DriverProfileService driverProfileService = getService(
 			DriverProfileService.class, DriverProfileService.BINDING);
-	private ProfileDataService profileDataService = getService(
+	private final ProfileDataService profileDataService = getService(
 			ProfileDataService.class, ProfileDataService.BINDING);
-	private DriverExceptionService driverExceptionService = getService(
+	private final DriverExceptionService driverExceptionService = getService(
 			DriverExceptionService.class, DriverExceptionService.BINDING);
 
 	private String title;
 	private ExecutionEntity execution;
-	private AgentTimeEntity agentTime;
+	private ScenarioTimingEntity agentTime;
 	private DriverProfileEntity profile;
 
 	public ProfileDriver(String title, ExecutionEntity execution,
-			AgentTimeEntity agentTime) {
+			ScenarioTimingEntity agentTime) {
 
 		this.title = title;
 		this.execution = execution;
@@ -102,9 +102,9 @@ public abstract class ProfileDriver {
 				.getMeasurement(ProfileData.REQUEST_DELTA_TIME));
 	}
 
-	protected void report(Exception error) {
+	protected IllegalStateException report(Exception error) {
 
-		LOG.warn(String.format("Failed driver request: %s", error));
+		this.LOG.warn(String.format("Failed driver request: %s", error));
 
 		DriverException driverException;
 		if (error instanceof DriverException)
@@ -113,6 +113,8 @@ public abstract class ProfileDriver {
 			driverException = new DriverException(error);
 
 		this.driverExceptionService.addException(this.profile, driverException);
+
+		return new IllegalStateException(error);
 	}
 
 	<S> S getService(Class<S> service, String binding) {
@@ -121,7 +123,7 @@ public abstract class ProfileDriver {
 			InitialContext initialContext = new InitialContext();
 			return service.cast(initialContext.lookup(binding));
 		} catch (NoInitialContextException e) {
-			LOG.warn("Initial context not set up; "
+			this.LOG.warn("Initial context not set up; "
 					+ "assuming we're not running in an "
 					+ "enterprise container");
 
@@ -130,21 +132,21 @@ public abstract class ProfileDriver {
 						service.getName().replaceFirst("\\.([^\\.]*)$",
 								".bean.$1Bean")).newInstance());
 			} catch (InstantiationException ee) {
-				LOG.error("Couldn't create service " + service + " at "
+				this.LOG.error("Couldn't create service " + service + " at "
 						+ binding, ee);
 				throw new RuntimeException(ee);
 			} catch (IllegalAccessException ee) {
-				LOG.error("Couldn't access service " + service + " at "
+				this.LOG.error("Couldn't access service " + service + " at "
 						+ binding, ee);
 				throw new RuntimeException(ee);
 			} catch (ClassNotFoundException ee) {
-				LOG.error("Couldn't find service "
+				this.LOG.error("Couldn't find service "
 						+ service.getName().replaceFirst("\\.([^\\.]*)$",
 								".bean.$1Bean") + " at " + binding, ee);
 				throw new RuntimeException(ee);
 			}
 		} catch (NamingException e) {
-			LOG.error("Couldn't find service " + service + " at " + binding, e);
+			this.LOG.error("Couldn't find service " + service + " at " + binding, e);
 			throw new RuntimeException(e);
 		}
 	}

@@ -42,8 +42,6 @@ public class ScenarioExecutorThread extends ScenarioThread {
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
 
-		agent.setTransit(AgentState.EXECUTE);
-
 		if (ConsoleData.getScenarioName() == null) {
 			JOptionPane.showMessageDialog(null,
 					"You didn't select a scenario to execute!",

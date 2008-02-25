@@ -80,6 +80,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	private JLabel hostname;
 	private JEditorPane description;
 	private JLabel durationLabel;
+	private HoverActionAdaptor hoverAdaptor;
 
 	public ExecutionInfo() {
 
@@ -122,8 +123,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
 		UIManager.put("Label.font", originalDefault);
 
-		setExecution(null);
-
 		this.executionSelection.addChangeListener(this);
 		this.executionSelection.setSnapToTicks(true);
 		this.executionSelection.setEnabled(false);
@@ -134,7 +133,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
 		this.description.setEditable(false);
 
-		new HoverActionAdaptor(this.duration) {
+		this.hoverAdaptor = new HoverActionAdaptor(this.duration) {
 			@Override
 			protected void clicked(JComponent component) {
 
@@ -143,6 +142,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		};
 
 		ConsoleData.addAgentSelectionListener(this);
+
+		setExecution(null);
 	}
 
 	/**
@@ -171,7 +172,6 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		ConsoleData.setExecution(execution);
 
 		if (execution == null) {
-			this.durationLabel.setText("Duration:");
 			this.executionSelection.setToolTipText("N/A");
 			this.scenarioName.setText("N/A");
 			this.description.setText("<pre>N/A</pre>");
@@ -181,6 +181,9 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			this.duration.setText("N/A");
 			this.speed.setText("N/A");
 			this.hostname.setText("N/A");
+
+			this.hoverAdaptor.enable(false, this.duration);
+			this.durationLabel.setText("Duration:");
 		} else {
 			this.executionSelection.setToolTipText(execution.toString());
 			this.scenarioName
@@ -207,9 +210,11 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			if (timeLeft > 0) {
 				this.durationLabel.setText("Time Remaining:");
 				this.duration.setText(formatDuration(timeLeft));
+				this.hoverAdaptor.enable(true, this.duration);
 			} else {
 				this.durationLabel.setText("Duration:");
 				this.duration.setText(formatDuration(execution.getDuration()));
+				this.hoverAdaptor.enable(false, this.duration);
 			}
 		}
 	}

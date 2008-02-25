@@ -19,7 +19,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import net.link.safeonline.performance.entity.AgentTimeEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.service.ExecutionService;
@@ -90,10 +90,10 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public SortedSet<AgentTimeEntity> getExecutionTimes(
+	public SortedSet<ScenarioTimingEntity> getExecutionTimes(
 			ExecutionEntity execution) {
 
-		return new TreeSet<AgentTimeEntity>(this.em.createNamedQuery(
+		return new TreeSet<ScenarioTimingEntity>(this.em.createNamedQuery(
 				ExecutionEntity.getTimes).setParameter("execution", execution)
 				.getResultList());
 	}
@@ -111,9 +111,9 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public AgentTimeEntity start(ExecutionEntity execution) {
+	public ScenarioTimingEntity start(ExecutionEntity execution) {
 
-		AgentTimeEntity startTimeEntity = new AgentTimeEntity(execution);
+		ScenarioTimingEntity startTimeEntity = new ScenarioTimingEntity(execution);
 		this.em.persist(startTimeEntity);
 
 		return startTimeEntity;

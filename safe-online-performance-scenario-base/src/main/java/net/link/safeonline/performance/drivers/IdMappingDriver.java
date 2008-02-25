@@ -11,23 +11,23 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
 import net.link.safeonline.performance.DriverException;
-import net.link.safeonline.performance.entity.AgentTimeEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
 /**
  * <h2>{@link IdMappingDriver}<br>
  * <sub>Provide access to the ID Mapping service.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class IdMappingDriver extends ProfileDriver {
 
-	public IdMappingDriver(ExecutionEntity execution, AgentTimeEntity agentTime) {
+	public IdMappingDriver(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
 		super("User ID Mapping Driver", execution, agentTime);
 	}
@@ -61,11 +61,9 @@ public class IdMappingDriver extends ProfileDriver {
 		}
 
 		catch (Exception error) {
-			report(error);
+			throw report(error);
 		} finally {
 			report(service);
 		}
-
-		return null;
 	}
 }

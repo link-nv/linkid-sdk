@@ -18,8 +18,8 @@ package net.link.safeonline.performance.console.swing.ui;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -55,20 +55,56 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
 			TOP, LEFT, BOTTOM, RIGHT, Color.lightGray);
 	private static final Border PRESS_BORDER = BorderFactory.createMatteBorder(
 			TOP, LEFT, BOTTOM, RIGHT, Color.black);
-	private Set<JComponent> managedComponents;
+	private Map<JComponent, Boolean> managedComponents;
 
 	/**
 	 * Registers this adaptor with the given components as a mouse listener and
 	 * hides their borders.
 	 */
-	public HoverActionAdaptor(JComponent... managedComponents) {
+	public HoverActionAdaptor(JComponent... components) {
 
-		this.managedComponents = new HashSet<JComponent>();
-		for (JComponent component : managedComponents) {
-			this.managedComponents.add(component);
+		this.managedComponents = new HashMap<JComponent, Boolean>();
+		manage(components);
+	}
+
+	/**
+	 * Manage the given components.
+	 */
+	public void manage(JComponent... components) {
+
+		for (JComponent component : components) {
+			this.managedComponents.put(component, true);
 
 			component.addMouseListener(this);
 			component.setBorder(EMPTY_BORDER);
+		}
+	}
+
+	/**
+	 * Stop managing the given components.
+	 */
+	public void unmanage(JComponent... components) {
+
+		for (JComponent component : components) {
+			this.managedComponents.remove(component);
+
+			component.removeMouseListener(this);
+			component.setBorder(EMPTY_BORDER);
+		}
+	}
+
+	/**
+	 * Change whether given components should have their management enabled or
+	 * disabled.
+	 */
+	public void enable(boolean enabled, JComponent... components) {
+
+		for (JComponent component : components) {
+			if (!this.managedComponents.containsKey(component))
+				throw new IllegalArgumentException(
+						"Given component is not managed!");
+
+			this.managedComponents.put(component, enabled);
 		}
 	}
 
@@ -78,8 +114,9 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 
-		if (this.managedComponents.contains(e.getSource()))
-			((JComponent) e.getSource()).setBorder(HOVER_BORDER);
+		if (this.managedComponents.containsKey(e.getSource())
+				&& this.managedComponents.get(e.getSource()))
+			getComponent(e).setBorder(HOVER_BORDER);
 	}
 
 	/**
@@ -88,8 +125,9 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
 	@Override
 	public void mouseExited(MouseEvent e) {
 
-		if (this.managedComponents.contains(e.getSource()))
-			((JComponent) e.getSource()).setBorder(EMPTY_BORDER);
+		if (this.managedComponents.containsKey(e.getSource())
+				&& this.managedComponents.get(e.getSource()))
+			getComponent(e).setBorder(EMPTY_BORDER);
 	}
 
 	/**
@@ -98,8 +136,9 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
 	@Override
 	public void mousePressed(MouseEvent e) {
 
-		if (this.managedComponents.contains(e.getSource()))
-			((JComponent) e.getSource()).setBorder(PRESS_BORDER);
+		if (this.managedComponents.containsKey(e.getSource())
+				&& this.managedComponents.get(e.getSource()))
+			getComponent(e).setBorder(PRESS_BORDER);
 	}
 
 	/**
@@ -108,8 +147,9 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 
-		if (this.managedComponents.contains(e.getSource()))
-			if (((JComponent) e.getSource()).contains(e.getPoint()))
+		if (this.managedComponents.containsKey(e.getSource())
+				&& this.managedComponents.get(e.getSource()))
+			if (getComponent(e).contains(e.getPoint()))
 				mouseEntered(e);
 			else
 				mouseExited(e);
@@ -121,8 +161,17 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
-		if (this.managedComponents.contains(e.getSource()))
-			clicked((JComponent) e.getSource());
+		if (this.managedComponents.containsKey(e.getSource())
+				&& this.managedComponents.get(e.getSource()))
+			clicked(getComponent(e));
+	}
+
+	private JComponent getComponent(MouseEvent e) {
+
+		if (e.getSource() instanceof JComponent)
+			return (JComponent) e.getSource();
+
+		return null;
 	}
 
 	/**

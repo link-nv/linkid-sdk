@@ -79,9 +79,13 @@ public class ScenarioRemoting {
 
 	/**
 	 * Invoke a method on the agent service deployed at AP of the given agent.
+	 *
+	 * @throws IllegalStateException
+	 *             When the RMI adaptor is not available on the given agent.
 	 */
 	private Object invokeFor(Address agent, String methodName,
-			Object[] arguments, String[] argumentTypes) throws MBeanException {
+			Object[] arguments, String[] argumentTypes) throws MBeanException,
+			IllegalStateException {
 
 		try {
 			InitialContext context = getInitialContext(agent);
@@ -105,8 +109,8 @@ public class ScenarioRemoting {
 		}
 
 		catch (NamingException e) {
-			LOG.warn("RMI Adaptor not found on " + agent + ".");
-			return null;
+			throw new IllegalStateException("RMI Adaptor not found on " + agent
+					+ ".", e);
 		}
 	}
 
@@ -194,9 +198,9 @@ public class ScenarioRemoting {
 					new String[] {});
 		} catch (MBeanException e) {
 			LOG.error("Server error during state retrieval!", e);
-
-			return AgentState.RESET;
 		}
+
+		return null;
 	}
 
 	/**
@@ -209,9 +213,9 @@ public class ScenarioRemoting {
 					new String[] {});
 		} catch (MBeanException e) {
 			LOG.error("Server error during transit retrieval!", e);
-
-			return null;
 		}
+
+		return null;
 	}
 
 	/**

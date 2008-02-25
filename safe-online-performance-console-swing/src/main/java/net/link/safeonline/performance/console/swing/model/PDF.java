@@ -71,10 +71,16 @@ public class PDF {
 					.getStartTime()));
 
 		// Calculate total execution speed.
-		double speed = 0;
-		for (ScenarioExecution execution : agentCharts.values())
-			if (execution.getSpeed() != null)
-				speed += execution.getSpeed() * 1000d;
+		double speed = 0, agentSpeeds = 0;
+		for (Map.Entry<ConsoleAgent, ScenarioExecution> entry : agentCharts
+				.entrySet())
+			if (entry.getValue().getSpeed() != null) {
+				speed += entry.getValue().getSpeed() * 1000d;
+				++agentSpeeds;
+			} else
+				LOG.warn("Agent " + entry.getKey()
+						+ " doesn't know speed for execution "
+						+ entry.getValue().getStartTime() + "!");
 
 		// Get execution metadata from the first agent.
 		ScenarioExecution execution = agentCharts.values().iterator().next();
@@ -85,7 +91,7 @@ public class PDF {
 		// that aren't selected but did participate).
 		long duration = execution.getDuration();
 		Date startTime = execution.getStartTime();
-		speed *= execution.getAgents() / agentCharts.size();
+		speed *= execution.getAgents() / agentSpeeds;
 
 		// Choose output.
 		File pdfFile = chooseOutputFile(new File(String.format(
@@ -139,8 +145,9 @@ public class PDF {
 					"Duration: %s", ExecutionInfo.formatDuration(duration)),
 					new Font(font, 20f))));
 			frontCells.add(new Cell(new Phrase(100f, String.format(
-					"Average Execution Speed: %.2f scenarios/s", speed),
-					new Font(font, 20f))));
+					"Average Execution Speed: %.2f%s scenarios/s", speed,
+					agentSpeeds == execution.getAgents() ? "" : "*"), new Font(
+					font, 20f))));
 
 			// Style front page information and add it to the PDF.
 			Table front = new Table(1);

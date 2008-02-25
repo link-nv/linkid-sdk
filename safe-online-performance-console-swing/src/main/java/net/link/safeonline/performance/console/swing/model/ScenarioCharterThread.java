@@ -8,7 +8,6 @@ package net.link.safeonline.performance.console.swing.model;
 
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
-import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.ui.ChartWindow;
 import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
@@ -39,15 +38,6 @@ public class ScenarioCharterThread extends ScenarioThread {
 	@Override
 	public void run() {
 
-		super.run();
-
-		for (ConsoleAgent agent : ConsoleData.getSelectedAgents())
-			try {
-				process(agent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
 		new Thread("Worker") {
 			{
 				setDaemon(true);
@@ -62,6 +52,8 @@ public class ScenarioCharterThread extends ScenarioThread {
 					ChartWindow.display();
 			}
 		}.start();
+
+		super.run();
 	}
 
 	/**
@@ -70,6 +62,6 @@ public class ScenarioCharterThread extends ScenarioThread {
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
 
-		agent.setTransit(AgentState.CHART);
+		/* Not used. */
 	}
 }

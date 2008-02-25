@@ -33,8 +33,6 @@ public class ScenarioDeployerThread extends ScenarioThread {
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
 
-		agent.setTransit(AgentState.DEPLOY);
-
 		this.scenarioDeployer.deploy(agent.getAddress());
 	}
 }

@@ -9,7 +9,9 @@ package net.link.safeonline.performance.scenario.script;
 import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -19,10 +21,12 @@ import net.link.safeonline.model.performance.PerformanceService;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
-import net.link.safeonline.performance.entity.AgentTimeEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 import net.link.safeonline.performance.scenario.Scenario;
+import net.link.safeonline.performance.scenario.charts.Chart;
+import net.link.safeonline.performance.scenario.charts.OLASTimeChart;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,7 +81,7 @@ public class BasicScenario implements Scenario {
 				+ "</ul>";
 	}
 
-	public void prepare(ExecutionEntity execution, AgentTimeEntity agentTime) {
+	public void prepare(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
 		LOG.debug("retrieving performance keys..");
 		try {
@@ -107,18 +111,31 @@ public class BasicScenario implements Scenario {
 			throw new IllegalStateException(
 					"Performance keys not set up. Perhaps you didn't call prepare?");
 
-		LOG.debug("getting id..");
+		/* Logging in. */
 		String loginUserId = this.authDriver.login(this.applicationKey,
 				applicationName, username, password);
+		if (loginUserId == null)
+			throw new IllegalStateException("Login failed.");
+
+		/* Verifying UUID. */
 		String mappedUserId = this.idDriver.getUserId(this.applicationKey,
 				username);
+		if (!loginUserId.equals(mappedUserId))
+			throw new IllegalStateException("Login ID doesn't match mapped ID.");
 
-		LOG.debug("verify id..");
-		if (loginUserId == null || !loginUserId.equals(mappedUserId))
-			LOG.warn("UUID from login is not the same as UUID from idmapping.");
-
-		LOG.debug("getting attribs..");
+		/* Reading attributes. */
 		this.attribDriver.getAttributes(this.applicationKey, mappedUserId);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Chart> getCharts() {
+
+		List<Chart> charts = new ArrayList<Chart>();
+		charts.add(new OLASTimeChart());
+
+		return charts;
 	}
 
 	/**

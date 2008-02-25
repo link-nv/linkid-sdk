@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
@@ -27,12 +28,40 @@ import javax.persistence.OneToMany;
  * @author mbillemo
  */
 @Entity
-@NamedQuery(name = ProfileDataEntity.getByProfile, query = "SELECT p"
-		+ "    FROM ProfileDataEntity p"
-		+ "    WHERE p.profile = :profile")
+@NamedQueries( {
+		@NamedQuery(name = ProfileDataEntity.getExecutionStart, query = "SELECT MIN(d.scenarioTiming.startTime)"
+				+ "    FROM ProfileDataEntity d            "
+				+ "    WHERE d.profile = :profile          "),
+		@NamedQuery(name = ProfileDataEntity.getExecutionDuration, query = "SELECT MAX(d.scenarioTiming.startTime) - MIN(d.scenarioTiming.startTime)"
+				+ "    FROM ProfileDataEntity d            "
+				+ "    WHERE d.profile = :profile          "),
+		@NamedQuery(name = ProfileDataEntity.createAverage, query = "SELECT NEW net.link.safeonline.performance.entity.MeasurementEntity("
+				+ "        m.measurement, AVG(m.duration)"
+				+ "    )                                 "
+				+ "    FROM ProfileDataEntity d          "
+				+ "        JOIN d.measurements m         "
+				+ "    WHERE d.profile = :profile        "
+				+ "    AND d.scenarioTiming.startTime > :start      "
+				+ "    AND d.scenarioTiming.startTime <= :stop      "
+				+ "    GROUP BY m.measurement            "),
+		@NamedQuery(name = ProfileDataEntity.getByProfile, query = "SELECT d"
+				+ "    FROM ProfileDataEntity d"
+				+ "    WHERE d.profile = :profile"),
+		@NamedQuery(name = ProfileDataEntity.countByProfile, query = "SELECT COUNT(d)"
+				+ "    FROM ProfileDataEntity d"
+				+ "    WHERE d.profile = :profile"
+				+ "    ORDER BY d.scenarioTiming.startTime") })
 public class ProfileDataEntity {
 
 	public static final String getByProfile = "ProfileDataEntity.getByProfile";
+
+	public static final String countByProfile = "ProfileDataEntity.countByProfile";
+
+	public static final String createAverage = "ProfileDataEntity.createAverage";
+
+	public static final String getExecutionStart = "ProfileDataEntity.getExecutionStart";
+
+	public static final String getExecutionDuration = "ProfileDataEntity.getExecutionDuration";
 
 	@Id
 	@SuppressWarnings("unused")
@@ -42,19 +71,20 @@ public class ProfileDataEntity {
 	@ManyToOne
 	private DriverProfileEntity profile;
 
-	@OneToMany
+	@OneToMany(mappedBy = "profileData")
 	private Set<MeasurementEntity> measurements;
 
-	private Long scenarioStart;
+	@ManyToOne
+	private ScenarioTimingEntity scenarioTiming;
 
 	public ProfileDataEntity() {
 	}
 
-	public ProfileDataEntity(DriverProfileEntity profile, Long scenarioStart,
-			Set<MeasurementEntity> measurements) {
+	public ProfileDataEntity(DriverProfileEntity profile,
+			ScenarioTimingEntity scenarioStart, Set<MeasurementEntity> measurements) {
 
 		this.profile = profile;
-		this.scenarioStart = scenarioStart;
+		this.scenarioTiming = scenarioStart;
 		this.measurements = measurements;
 	}
 
@@ -69,9 +99,9 @@ public class ProfileDataEntity {
 	/**
 	 * The time the scenario execution of this profile data was started.
 	 */
-	public Long getScenarioStart() {
+	public ScenarioTimingEntity getScenarioTiming() {
 
-		return this.scenarioStart;
+		return this.scenarioTiming;
 	}
 
 	/**

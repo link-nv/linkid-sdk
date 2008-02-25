@@ -226,6 +226,10 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 						this.executeButton, this.chartsButton, this.pdfButton);
 			}
 
+			else if (agent.getState() == null)
+				buttonToggler(false, this.uploadButton, this.deployButton,
+						this.executeButton, this.chartsButton, this.pdfButton);
+
 			else
 				switch (agent.getState()) {
 				case RESET:

@@ -84,6 +84,10 @@
             <groupId>com.lowagie</groupId>
             <artifactId>itext</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jbossall-client</artifactId>
+        </dependency>
 	</dependencies>
 	<reporting>
 		<plugins>

@@ -54,7 +54,7 @@ public class AgentService implements AgentServiceMBean {
 
 	static final Log LOG = LogFactory.getLog(AgentService.class);
 
-	private Map<Date, ScenarioExecution> stats;
+	private Map<Date, Map<String, byte[][]>> charts;
 	private AgentBroadcaster broadcaster;
 	private ScenarioDeployer deployer;
 	private ScenarioExecutor executor;
@@ -64,7 +64,7 @@ public class AgentService implements AgentServiceMBean {
 
 	public AgentService() {
 
-		this.stats = new HashMap<Date, ScenarioExecution>();
+		this.charts = new HashMap<Date, Map<String, byte[][]>>();
 		this.deployer = new ScenarioDeployer();
 		this.broadcaster = new AgentBroadcaster();
 	}
@@ -157,7 +157,7 @@ public class AgentService implements AgentServiceMBean {
 		try {
 			return getExecution(startTime, true);
 		} finally {
-			actionCompleted(this.stats.containsKey(startTime));
+			actionCompleted(this.charts.containsKey(startTime));
 		}
 	}
 
@@ -306,41 +306,33 @@ public class AgentService implements AgentServiceMBean {
 	}
 
 	/**
-	 * Returns execution metadata for the execution with the given ID. This
-	 * method uses a memory cache to store executions in that have been
-	 * previously retrieved. If no charts are requested, it is guaranteed to
-	 * return an execution object without charts, even if charts have been
-	 * cached already.
+	 * Returns execution metadata for the execution started at the given time.
+	 * Previously generated charts for this execution are cached in a map.
 	 */
-	private ScenarioExecution getExecution(Date startTime, boolean charts) {
+	private ScenarioExecution getExecution(Date startTime, boolean useCharts) {
 
 		if (startTime == null)
 			return null;
 
 		try {
-			ScenarioExecution execution = this.stats.get(startTime);
+			ExecutionMetadata metaData = getScenarioController()
+					.getExecutionMetadata(startTime);
 
-			if (execution == null) {
-				ExecutionMetadata metaData = getScenarioController()
-						.getExecutionMetadata(startTime);
+			ScenarioExecution execution = new ScenarioExecution(metaData
+					.getScenarioName(), metaData.getScenarioDescription(),
+					metaData.getAgents(), metaData.getWorkers(), metaData
+							.getStartTime(), metaData.getDuration(), metaData
+							.getHostname(), metaData.getSpeed());
 
-				this.stats.put(startTime, execution = new ScenarioExecution(
-						metaData.getScenarioName(), metaData
-								.getScenarioDescription(),
-						metaData.getAgents(), metaData.getWorkers(), metaData
-								.getStartTime(), metaData.getDuration(),
-						metaData.getHostname(), metaData.getSpeed()));
+			if (useCharts) {
+				Map<String, byte[][]> chart = this.charts.get(startTime);
+
+				if (chart == null)
+					this.charts.put(startTime, chart = getScenarioController()
+							.createCharts(startTime));
+
+				execution.setCharts(chart);
 			}
-
-			if (charts)
-				synchronized (execution) {
-					if (execution.getCharts() == null)
-						execution.setCharts(charts ? getScenarioController()
-								.createCharts(startTime) : null);
-				}
-
-			else if (execution.getCharts() != null)
-				execution = execution.clone();
 
 			return execution;
 		}

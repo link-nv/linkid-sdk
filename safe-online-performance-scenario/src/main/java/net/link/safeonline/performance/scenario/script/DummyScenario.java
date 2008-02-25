@@ -6,9 +6,14 @@
  */
 package net.link.safeonline.performance.scenario.script;
 
-import net.link.safeonline.performance.entity.AgentTimeEntity;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.scenario.Scenario;
+import net.link.safeonline.performance.scenario.charts.Chart;
+import net.link.safeonline.performance.scenario.charts.OLASTimeChart;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +47,7 @@ public class DummyScenario implements Scenario {
 				+ "No drivers are loaded and some debug-level messages are logged upon preparing and executing the scenario.";
 	}
 
-	public void prepare(ExecutionEntity execution, AgentTimeEntity agentTime) {
+	public void prepare(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
 		LOG.debug("Prepare called.");
 	}
@@ -61,5 +66,16 @@ public class DummyScenario implements Scenario {
 		catch (InterruptedException e) {
 			LOG.debug("Interrupted.");
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Chart> getCharts() {
+
+		List<Chart> charts = new ArrayList<Chart>();
+		charts.add(new OLASTimeChart());
+
+		return charts;
 	}
 }

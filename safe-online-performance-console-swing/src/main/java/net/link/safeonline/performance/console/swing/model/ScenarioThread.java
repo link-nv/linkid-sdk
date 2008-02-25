@@ -18,17 +18,17 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ScenarioThread}<br>
  * <sub>Wrap long-running agent tasks in threads.</sub></h2>
- * 
+ *
  * <p>
  * Threads that extend this class are used for delegating actions that should be
  * performed on {@link ConsoleAgent}s and can take a long time in order to
  * prevent hanging the UI during this operation.
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public abstract class ScenarioThread implements Runnable {
@@ -49,8 +49,10 @@ public abstract class ScenarioThread implements Runnable {
 	 */
 	public void run() {
 
-		for (final ConsoleAgent agent : ConsoleData.getSelectedAgents())
+		for (final ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
 			new Worker(agent).start();
+			agent.setTransit(this.state);
+		}
 	}
 
 	/**

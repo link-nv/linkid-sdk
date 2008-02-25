@@ -17,11 +17,11 @@ import javax.persistence.NamedQuery;
  * <h2>{@link DriverProfileEntity}<br>
  * <sub>Links the {@link ProfileDataEntity}s that belong to a certain driver in
  * a certain execution.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Entity
@@ -40,7 +40,6 @@ public class DriverProfileEntity {
 	private String driverName;
 
 	@ManyToOne
-	@SuppressWarnings("unused")
 	private ExecutionEntity execution;
 
 	public DriverProfileEntity() {
@@ -58,5 +57,13 @@ public class DriverProfileEntity {
 	public String getDriverName() {
 
 		return this.driverName;
+	}
+
+	/**
+	 * @return The execution of this {@link DriverProfileEntity}.
+	 */
+	public ExecutionEntity getExecution() {
+
+		return this.execution;
 	}
 }

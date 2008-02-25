@@ -30,7 +30,7 @@ import javax.net.ssl.X509TrustManager;
 import javax.xml.transform.TransformerException;
 
 import net.link.safeonline.performance.DriverException;
-import net.link.safeonline.performance.entity.AgentTimeEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.DomUtils;
@@ -65,11 +65,11 @@ import org.w3c.tidy.Tidy;
 /**
  * <h2>{@link AuthDriver}<br>
  * <sub>Logs a user in on OLAS for a given application.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class AuthDriver extends ProfileDriver {
@@ -89,7 +89,7 @@ public class AuthDriver extends ProfileDriver {
 
 	private String jsessionid;
 
-	public AuthDriver(ExecutionEntity execution, AgentTimeEntity agentTime) {
+	public AuthDriver(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
 		super("Authentication Driver", execution, agentTime);
 
@@ -303,7 +303,7 @@ public class AuthDriver extends ProfileDriver {
 		}
 
 		catch (Exception e) {
-			report(e);
+			throw report(e);
 		}
 
 		finally {
@@ -327,8 +327,6 @@ public class AuthDriver extends ProfileDriver {
 
 			report(iterationData);
 		}
-
-		return null;
 	}
 
 	private GetMethod redirectGetMethod(HttpMethod postMethod)
