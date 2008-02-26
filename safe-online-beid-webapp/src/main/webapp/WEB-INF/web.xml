@@ -65,7 +65,7 @@
 
 	<context-param>
 		<param-name>AuthenticationUrl</param-name>
-		<param-value>beid.seam</param-value>
+		<param-value>beid.html</param-value>
 	</context-param>
 
 	<context-param>
@@ -256,6 +256,18 @@
 	<servlet-mapping>
 		<servlet-name>RegExitServlet</servlet-name>
 		<url-pattern>/regexit</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>JavaVersionServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.beid.servlet.JavaVersionServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>JavaVersionServlet</servlet-name>
+		<url-pattern>/version</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
