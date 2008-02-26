@@ -113,12 +113,16 @@
 			</variablelist>
 		</para>
 		<para>
-			The context parameter <code>AuthenticationUrl</code> will be used
-			by the <code>LandingServlet</code> to redirect to after it has
-			handled the SAML authentication	request token. Both of these 
-			servlets and associated context	parameters should be configured via
-			the	<code>web.xml</code>servlet web application deployment
-			descriptor. Below you find an example of such a configuration.
+			The context parameter
+			<code>AuthenticationUrl</code>
+			will be used by the
+			<code>LandingServlet</code>
+			to redirect to after it has handled the SAML authentication
+			request token. Both of these servlets and associated context
+			parameters should be configured via the
+			<code>web.xml</code>
+			servlet web application deployment descriptor. Below you
+			find an example of such a configuration.
 		</para>
 		<programlisting><![CDATA[<context-param>
 		<param-name>KeyStoreType</param-name>
@@ -207,33 +211,31 @@
 		</abstract>
 		<para>
 			Following 2 servlets are provided by the device SDK to send out a
-			registration SAML request from the remote device issuer towards
-			OLAS and receive the registration SAML response from OLAS. This
-			response will contain the ID reserved by OLAS for this particular
-			device registration. This ID should be later on used during an
-			authentication session with this remote device issuer.
+			SAML request from the remote device issuer towards OLAS and receive
+			the SAML response from OLAS. This response will contain the ID 
+			reserved by OLAS for the remote device issuer.
 		</para>
 		<para>
 			<variablelist>
 				<varlistentry>
 					<term>
-						<code>RegLandingServlet</code>
+						<code>reg.LandingServlet</code>
 					</term>
 					<listitem>
 						<para>
 							This servlet should be used to send out a
-							registration SAML request token.
+							device SAML request token.
 						</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term>
-						<code>RegExitServlet</code>
+						<code>reg.ExitServlet</code>
 					</term>
 					<listitem>
 						<para>
 							This servlet should be used to receive the
-							registration SAML response token.
+							device SAML response token.
 						</para>
 					</listitem>
 				</varlistentry>
@@ -241,14 +243,14 @@
 		</para>
 		<para>
 			The context parameter <code>RegistrationUrl</code> will be used by
-			the <code>RegExitServlet</code> to redirect to after it has handled
-			the received registration SAML response token.
+			the <code>reg.ExitServlet</code> to redirect to after it has handled
+			the received SAML response token.
 		</para>
 		<para>
 			The context parameter <code>RegistrationServiceUrl</code> will be
-			used by the <code>RegLandingServlet</code> to let OLAS know where
-			to send its registration SAML response token to. This should point
-			to the <code>RegExitServlet</code>'s URL.
+			used by the <code>reg.LandingServlet</code> to let OLAS know where
+			to send its SAML response token to. This should point to the
+			<code>reg.ExitServlet</code>'s URL.
 		</para>
 		<para>
 			Both of these servlets and associated context parameters should be
@@ -273,7 +275,7 @@
 
 	<context-param>
 		<param-name>RegistrationUrl</param-name>
-		<param-value>register-mobile.seam</param-value>
+		<param-value>register-device.xhtml</param-value>
 	</context-param>
 
 	<context-param>
@@ -324,10 +326,276 @@
 		<para>
 			Upon successful registration the remote device issuer should 
 			redirect to OLAS. The URL where to redirect can be retrieved with
-			the <code>RegistrationManager</code> class using method <code>
-			getSafeOnlineRegistrationExitServiceUrl</code>.
+			the <code>DevoceManager</code> class using method <code>
+			getSafeOnlineDeviceExitServiceUrl</code>.
 			Or if the web application is using JSF/Seam you can simply use
-			<code>SafeOnlineDeviceUtils.registerExit();</code> to return to
+			<code>SafeOnlineDeviceUtils.deviceExit();</code> to return to
+			OLAS.
+		</para>
+	</chapter>
+	<chapter id="removal">
+		<title>Device Removal</title>
+		<abstract>
+			<para>
+				This chapter will give an overview of the setup needed to
+				integrate a removal service from the remote device issuer
+				towards OLAS.
+			</para>
+		</abstract>
+		<para>
+			Following 2 servlets are provided by the device SDK to send out a
+			SAML request from the remote device issuer towards OLAS and receive
+			the SAML response from OLAS. This response will contain the ID 
+			reserved by OLAS for the remote device issuer.
+		</para>
+		<para>
+			<variablelist>
+				<varlistentry>
+					<term>
+						<code>remove.LandingServlet</code>
+					</term>
+					<listitem>
+						<para>
+							This servlet should be used to send out a
+							device SAML request token.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>
+						<code>remove.ExitServlet</code>
+					</term>
+					<listitem>
+						<para>
+							This servlet should be used to receive the
+							device SAML response token.
+						</para>
+					</listitem>
+				</varlistentry>
+			</variablelist>
+		</para>
+		<para>
+			The context parameter <code>RemovalUrl</code> will be used by
+			the <code>remove.ExitServlet</code> to redirect to after it has handled
+			the received SAML response token.
+		</para>
+		<para>
+			The context parameter <code>RemovalServiceUrl</code> will be
+			used by the <code>remove.LandingServlet</code> to let OLAS know where
+			to send its SAML response token to. This should point
+			to the <code>remove.ExitServlet</code>'s URL.
+		</para>
+		<para>
+			Both of these servlets and associated context parameters should be
+			configured via the <code>web.xml</code>servlet web application
+			deployment descriptor. Below you find an example of such a
+			configuration.
+		</para>
+		<programlisting><![CDATA[<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>KeyStoreFile</param-name> 
+  		<param-value>/etc/pki/demo-app.p12</param-value>
+  	</context-param> 
+
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>RemovalUrl</param-name>
+		<param-value>remove-device.xhtml</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostName</param-name>
+		<param-value>OlasHostName</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostPort</param-name>
+		<param-value>8080</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostPortSsl</param-name>
+		<param-value>8443</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>RemovalServiceUrl</param-name>
+		<param-value>
+			https://DeviceHostName:8443/path/removeexit
+		</param-value>
+	</context-param>
+	
+	<servlet>
+		<servlet-name>RemoveLandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.remove.servlet.LandingServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>RemoveLandingServlet</servlet-name>
+		<url-pattern>/remove</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>RemoveExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.remove.servlet.ExitServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>RemoveExitServlet</servlet-name>
+		<url-pattern>/removeexit</url-pattern>
+	</servlet-mapping>]]></programlisting>
+		<para>
+			Upon successful removal the remote device issuer should 
+			redirect to OLAS. The URL where to redirect can be retrieved with
+			the <code>DeviceManager</code> class using method <code>
+			getSafeOnlineDeviceExitServiceUrl</code>.
+			Or if the web application is using JSF/Seam you can simply use
+			<code>SafeOnlineDeviceUtils.deviceExit();</code> to return to
+			OLAS.
+		</para>
+	</chapter>
+	<chapter id="update">
+		<title>Device Updating</title>
+		<abstract>
+			<para>
+				This chapter will give an overview of the setup needed to
+				integrate an update service from the remote device issuer
+				towards OLAS.
+			</para>
+		</abstract>
+		<para>
+			Following 2 servlets are provided by the device SDK to send out a
+			SAML request from the remote device issuer towards OLAS and receive
+			the SAML response from OLAS. This response will contain the ID 
+			reserved by OLAS for the remote device issuer.
+		</para>
+		<para>
+			<variablelist>
+				<varlistentry>
+					<term>
+						<code>update.LandingServlet</code>
+					</term>
+					<listitem>
+						<para>
+							This servlet should be used to send out a
+							device SAML request token.
+						</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>
+						<code>update.ExitServlet</code>
+					</term>
+					<listitem>
+						<para>
+							This servlet should be used to receive the
+							device SAML response token.
+						</para>
+					</listitem>
+				</varlistentry>
+			</variablelist>
+		</para>
+		<para>
+			The context parameter <code>UpdateUrl</code> will be used by
+			the <code>update.ExitServlet</code> to redirect to after it has handled
+			the received SAML response token.
+		</para>
+		<para>
+			The context parameter <code>UpdateServiceUrl</code> will be
+			used by the <code>update.LandingServlet</code> to let OLAS know where
+			to send its SAML response token to. This should point
+			to the <code>update.ExitServlet</code>'s URL.
+		</para>
+		<para>
+			Both of these servlets and associated context parameters should be
+			configured via the <code>web.xml</code>servlet web application
+			deployment descriptor. Below you find an example of such a
+			configuration.
+		</para>
+		<programlisting><![CDATA[<context-param>
+		<param-name>KeyStoreType</param-name>
+		<param-value>jks</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>KeyStoreFile</param-name> 
+  		<param-value>/etc/pki/demo-app.p12</param-value>
+  	</context-param> 
+
+	<context-param>
+		<param-name>KeyStorePassword</param-name>
+		<param-value>secret</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>RemovalUrl</param-name>
+		<param-value>remove-device.xhtml</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostName</param-name>
+		<param-value>OlasHostName</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostPort</param-name>
+		<param-value>8080</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>SafeOnlineHostPortSsl</param-name>
+		<param-value>8443</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>UpdateServiceUrl</param-name>
+		<param-value>
+			https://DeviceHostName:8443/path/updateexit
+		</param-value>
+	</context-param>
+	
+	<servlet>
+		<servlet-name>UpdateLandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.update.servlet.LandingServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>UpdateLandingServlet</servlet-name>
+		<url-pattern>/update</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>UpdateExitServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.device.sdk.update.servlet.ExitServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>UpdateExitServlet</servlet-name>
+		<url-pattern>/updateexit</url-pattern>
+	</servlet-mapping>]]></programlisting>
+		<para>
+			Upon successful updating the remote device issuer should 
+			redirect to OLAS. The URL where to redirect can be retrieved with
+			the <code>DeviceManager</code> class using method <code>
+			getSafeOnlineDeviceExitServiceUrl</code>.
+			Or if the web application is using JSF/Seam you can simply use
+			<code>SafeOnlineDeviceUtils.deviceExit();</code> to return to
 			OLAS.
 		</para>
 	</chapter>

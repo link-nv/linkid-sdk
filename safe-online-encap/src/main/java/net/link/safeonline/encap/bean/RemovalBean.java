@@ -96,6 +96,17 @@ public class RemovalBean implements Removal {
 		this.log.debug("destroy");
 	}
 
+	public String mobileExit() {
+		try {
+			SafeOnlineDeviceUtils.deviceExit();
+		} catch (IOException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
+			return null;
+		}
+		return null;
+	}
+
 	private Locale getViewLocale() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		Locale viewLocale = facesContext.getViewRoot().getLocale();
@@ -203,14 +214,7 @@ public class RemovalBean implements Removal {
 					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
 			return null;
 		}
-		try {
-			SafeOnlineDeviceUtils.deviceExit();
-		} catch (IOException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return null;
-		}
-		return "success";
+		return mobileExit();
 	}
 
 }

@@ -68,6 +68,17 @@ public class RegistrationBean implements Registration {
 		this.mobileActivationCode = null;
 	}
 
+	public String mobileExit() {
+		try {
+			SafeOnlineDeviceUtils.deviceExit();
+		} catch (IOException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
+			return null;
+		}
+		return null;
+	}
+
 	@Begin
 	public String mobileRegister() {
 		this.log.debug("register mobile: " + this.mobile);
@@ -98,14 +109,7 @@ public class RegistrationBean implements Registration {
 	public String mobileActivationOk() {
 		this.log.debug("mobile activation ok: " + this.mobile);
 		this.mobileActivationCode = null;
-		try {
-			SafeOnlineDeviceUtils.deviceExit();
-		} catch (IOException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorIO");
-			return null;
-		}
-		return "";
+		return mobileExit();
 	}
 
 	@End
@@ -127,7 +131,7 @@ public class RegistrationBean implements Registration {
 					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
 			return null;
 		}
-		return "";
+		return mobileExit();
 	}
 
 	public String getMobile() {

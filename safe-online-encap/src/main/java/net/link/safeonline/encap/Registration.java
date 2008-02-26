@@ -30,6 +30,8 @@ public interface Registration {
 
 	String mobileActivationCancel();
 
+	String mobileExit();
+
 	/*
 	 * Factories
 	 */

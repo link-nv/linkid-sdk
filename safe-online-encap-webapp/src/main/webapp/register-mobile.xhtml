@@ -36,6 +36,10 @@
 				id="register" value="#{msgs.register}"
 				rendered="#{empty registration.mobileActivationCode}"
 				styleClass="submit" />
+			<h:commandButton action="#{registration.mobileExit}" id="cancel"
+				value="#{msgs.cancelaction}" immediate="true"
+				rendered="#{empty registration.mobileActivationCode}"
+				styleClass="submit" />
 		</a4j:form>
 
 		<a4j:form id="mobile-confirm-form" ajaxSubmit="true"
