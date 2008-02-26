@@ -54,8 +54,8 @@ public class ExecutionSettings implements FocusListener, ItemListener,
 		this.hostname = new JTextField(ConsoleData.getHostname());
 		this.port = new JTextField(String.valueOf(ConsoleData.getPort()));
 		this.workers = new JTextField(String.valueOf(ConsoleData.getWorkers()));
-		this.duration = new JTextField(String
-				.valueOf(ConsoleData.getDuration()));
+		this.duration = new JTextField(String.valueOf(ConsoleData.getDuration()
+				/ (60 * 1000)));
 		this.scenarioSelection = new JComboBox();
 		this.scenarioSelection.setEnabled(false);
 

@@ -57,7 +57,7 @@ public class ConsoleData {
 	private static ScenarioRemoting remoting = new ScenarioRemoting();
 	private static String hostname = "sebeco-dev-10";
 	private static int port = 8443, workers = 5;
-	private static long duration = 10;
+	private static long duration = 600000;
 	private static Set<ConsoleAgent> selectedAgents;
 	private static ScenarioExecution execution;
 	private static String scenarioName;
