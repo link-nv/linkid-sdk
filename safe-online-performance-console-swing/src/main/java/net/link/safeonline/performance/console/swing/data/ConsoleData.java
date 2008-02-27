@@ -9,6 +9,7 @@ package net.link.safeonline.performance.console.swing.data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,7 +59,7 @@ public class ConsoleData {
 	private static String hostname = "sebeco-dev-10";
 	private static int port = 8443, workers = 5;
 	private static long duration = 600000;
-	private static Set<ConsoleAgent> selectedAgents;
+	private static Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
 	private static ScenarioExecution execution;
 	private static String scenarioName;
 

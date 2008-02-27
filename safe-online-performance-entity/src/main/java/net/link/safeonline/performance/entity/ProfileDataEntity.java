@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.performance.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -29,24 +30,32 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @NamedQueries( {
+		@NamedQuery(name = ProfileDataEntity.getByProfile, query = "SELECT d"
+				+ "    FROM ProfileDataEntity d"
+				+ "    WHERE d.profile = :profile"),
 		@NamedQuery(name = ProfileDataEntity.getExecutionStart, query = "SELECT MIN(d.scenarioTiming.startTime)"
 				+ "    FROM ProfileDataEntity d            "
 				+ "    WHERE d.profile = :profile          "),
 		@NamedQuery(name = ProfileDataEntity.getExecutionDuration, query = "SELECT MAX(d.scenarioTiming.startTime) - MIN(d.scenarioTiming.startTime)"
 				+ "    FROM ProfileDataEntity d            "
 				+ "    WHERE d.profile = :profile          "),
+		@NamedQuery(name = ProfileDataEntity.getScenarioTiming, query = "SELECT t"
+				+ "    FROM ProfileDataEntity d"
+				+ "        JOIN d.scenarioTiming t"
+				+ "    WHERE d.profile = :profile        "
+				+ "        AND t.startTime >= :start"
+				+ "        AND t.startTime <= :stop"
+				+ "        AND t.startTime = AVG(t.startTime)"
+				+ "    ORDER BY t"),
 		@NamedQuery(name = ProfileDataEntity.createAverage, query = "SELECT NEW net.link.safeonline.performance.entity.MeasurementEntity("
 				+ "        m.measurement, AVG(m.duration)"
 				+ "    )                                 "
 				+ "    FROM ProfileDataEntity d          "
 				+ "        JOIN d.measurements m         "
 				+ "    WHERE d.profile = :profile        "
-				+ "    AND d.scenarioTiming.startTime > :start      "
-				+ "    AND d.scenarioTiming.startTime <= :stop      "
+				+ "        AND d.scenarioTiming.startTime > :start      "
+				+ "        AND d.scenarioTiming.startTime <= :stop      "
 				+ "    GROUP BY m.measurement            "),
-		@NamedQuery(name = ProfileDataEntity.getByProfile, query = "SELECT d"
-				+ "    FROM ProfileDataEntity d"
-				+ "    WHERE d.profile = :profile"),
 		@NamedQuery(name = ProfileDataEntity.countByProfile, query = "SELECT COUNT(d)"
 				+ "    FROM ProfileDataEntity d"
 				+ "    WHERE d.profile = :profile"
@@ -55,9 +64,11 @@ public class ProfileDataEntity {
 
 	public static final String getByProfile = "ProfileDataEntity.getByProfile";
 
+	public static final String createAverage = "ProfileDataEntity.createAverage";
+
 	public static final String countByProfile = "ProfileDataEntity.countByProfile";
 
-	public static final String createAverage = "ProfileDataEntity.createAverage";
+	public static final String getScenarioTiming = "ProfileDataEntity.getScenarioTiming";
 
 	public static final String getExecutionStart = "ProfileDataEntity.getExecutionStart";
 
@@ -78,14 +89,17 @@ public class ProfileDataEntity {
 	private ScenarioTimingEntity scenarioTiming;
 
 	public ProfileDataEntity() {
+
+		this.measurements = new HashSet<MeasurementEntity>();
 	}
 
 	public ProfileDataEntity(DriverProfileEntity profile,
-			ScenarioTimingEntity scenarioStart, Set<MeasurementEntity> measurements) {
+			ScenarioTimingEntity scenarioStart) {
+
+		this();
 
 		this.profile = profile;
 		this.scenarioTiming = scenarioStart;
-		this.measurements = measurements;
 	}
 
 	/**

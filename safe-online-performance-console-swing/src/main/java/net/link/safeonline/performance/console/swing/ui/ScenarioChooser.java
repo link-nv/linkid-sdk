@@ -50,7 +50,7 @@ import net.link.safeonline.performance.console.swing.model.ScenarioUploaderThrea
  */
 public class ScenarioChooser extends JPanel implements ActionListener,
 		CaretListener, AgentSelectionListener, ExecutionSelectionListener,
-		ExecutionSettingsListener {
+		ExecutionSettingsListener, AgentStatusListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -126,6 +126,7 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		ConsoleData.addExecutionSelectionListener(this);
 		ConsoleData.addExecutionSettingsListener(this);
 		ConsoleData.addAgentSelectionListener(this);
+		ConsoleData.addAgentStatusListener(this);
 	}
 
 	/**
@@ -201,7 +202,7 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	 */
 	public void executionSettingsChanged() {
 
-		agentsSelected(ConsoleData.getSelectedAgents());
+		updateButtons();
 	}
 
 	/**
@@ -209,16 +210,26 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	 */
 	public void agentsSelected(Set<ConsoleAgent> agents) {
 
+		updateButtons();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void statusChanged(ConsoleAgent agent) {
+
+		updateButtons();
+	}
+
+	private void updateButtons() {
+
 		buttonToggler(false, this.resetButton);
 		buttonToggler(null != getScenarioFile(), this.uploadButton);
 		buttonToggler(true, this.deployButton, this.executeButton);
 		buttonToggler(null != ConsoleData.getExecution(), this.chartsButton,
 				this.pdfButton);
 
-		if (agents == null)
-			return;
-
-		for (ConsoleAgent agent : agents) {
+		for (ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
 
 			if (agent.getTransit() != null) {
 				buttonToggler(true, this.resetButton);
@@ -263,7 +274,6 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 			highlight(this.chartsButton, AgentState.CHART.equals(agent
 					.getTransit()));
 		}
-
 	}
 
 	private void buttonToggler(boolean enable, JButton... buttons) {

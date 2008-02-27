@@ -64,6 +64,7 @@ public abstract class ScenarioThread extends Thread {
 		}
 
 		try {
+			pool.shutdown();
 			while (!pool.awaitTermination(10, TimeUnit.SECONDS))
 				Thread.yield();
 		} catch (InterruptedException e) {

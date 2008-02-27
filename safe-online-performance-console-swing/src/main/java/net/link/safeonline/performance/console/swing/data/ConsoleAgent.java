@@ -108,9 +108,8 @@ public class ConsoleAgent implements Agent {
 		if (null != this.state)
 			stateStr = this.state.getState();
 
-		String health = this.healthy ? "Healthy" : "Unavailable";
-		return String.format("%s: [%s]", health, stateStr, transitStr,
-				this.agentAddress);
+		return String.format("%s: [%s:%s]", this.agentAddress, stateStr,
+				transitStr);
 	}
 
 	/**

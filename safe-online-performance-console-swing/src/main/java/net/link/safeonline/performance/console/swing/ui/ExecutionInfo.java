@@ -39,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -62,10 +63,10 @@ import com.jgoodies.forms.layout.FormLayout;
  * @author mbillemo
  */
 public class ExecutionInfo extends JPanel implements ChangeListener,
-		AgentSelectionListener, Scrollable {
+		AgentSelectionListener, Scrollable, AgentStatusListener {
 
 	private static final long serialVersionUID = 1L;
-	private static final SimpleDateFormat labelTimeFormat = new SimpleDateFormat(
+	static final SimpleDateFormat labelTimeFormat = new SimpleDateFormat(
 			"HH:mm");
 
 	private List<ScenarioExecution> executions;
@@ -75,7 +76,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	private JLabel startTime;
 	private JLabel agents;
 	private JLabel workers;
-	JLabel duration;
+	private JLabel duration;
 	private JLabel speed;
 	private JLabel hostname;
 	private JEditorPane description;
@@ -142,6 +143,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		};
 
 		ConsoleData.addAgentSelectionListener(this);
+		ConsoleData.addAgentStatusListener(this);
 
 		setExecution(null);
 	}
@@ -158,7 +160,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	void updateExecutionSelection() {
 
 		synchronized (this.executions) {
-			if (this.executionSelection.getValue() < this.executions.size()
+			if (this.executionSelection.getValue() < this.executions
+					.size()
 					&& this.executionSelection.getValue() > -1)
 				setExecution(this.executions.get(this.executionSelection
 						.getValue()));
@@ -222,13 +225,24 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	/**
 	 * {@inheritDoc}
 	 */
+	public void statusChanged(ConsoleAgent agent) {
+
+		updateExecutions();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void agentsSelected(Set<ConsoleAgent> selectedAgents) {
 
+		updateExecutions();
+	}
+
+	private void updateExecutions() {
+
+		Set<ConsoleAgent> selectedAgents = ConsoleData.getSelectedAgents();
 		if (selectedAgents == null || selectedAgents.isEmpty()) {
-			this.executionSelection.setEnabled(false);
-			this.executionSelection.setPaintLabels(false);
-			this.executionSelection.getModel().setRangeProperties(0, 0, 0, 0,
-					false);
+			setExecutions(new HashSet<ScenarioExecution>());
 			return;
 		}
 
@@ -252,37 +266,53 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			}
 		}
 
-		int maxValue = Math.max(0, commonExecutions.size() - 1);
-		int selectedExecution = maxValue;
-		Date selectedExecutionTime = null;
-		if (ConsoleData.getExecution() != null)
-			selectedExecutionTime = ConsoleData.getExecution().getStartTime();
+		setExecutions(commonExecutions);
+	}
 
-		synchronized (this.executions) {
-			this.executions.clear();
-			this.executions.addAll(commonExecutions);
+	private void setExecutions(final Set<ScenarioExecution> executions) {
 
-			Dictionary<Integer, JComponent> dictionary = new Hashtable<Integer, JComponent>();
-			if (this.executions.isEmpty())
-				dictionary.put(0, new JLabel("N/A"));
-			else
-				for (int i = 0; i < this.executions.size(); ++i) {
-					ScenarioExecution execution = this.executions.get(i);
-					if (execution.getStartTime().equals(selectedExecutionTime))
-						selectedExecution = i;
+		final JSlider slider = this.executionSelection;
+		final List<ScenarioExecution> sliderExecutions = this.executions;
 
-					dictionary.put(i, new JLabel(labelTimeFormat
-							.format(execution.getStartTime())));
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+
+				int maxValue = Math.max(0, executions.size() - 1);
+				int selectedExecution = maxValue;
+				Date selectedExecutionTime = null;
+				if (ConsoleData.getExecution() != null)
+					selectedExecutionTime = ConsoleData.getExecution()
+							.getStartTime();
+
+				synchronized (sliderExecutions) {
+					sliderExecutions.clear();
+					sliderExecutions.addAll(executions);
+
+					Dictionary<Integer, JComponent> dictionary = new Hashtable<Integer, JComponent>();
+					if (sliderExecutions.isEmpty())
+						dictionary.put(0, new JLabel("N/A"));
+					else
+						for (int i = 0; i < sliderExecutions.size(); ++i) {
+							ScenarioExecution execution = sliderExecutions
+									.get(i);
+							if (execution.getStartTime().equals(
+									selectedExecutionTime))
+								selectedExecution = i;
+
+							dictionary.put(i, new JLabel(labelTimeFormat
+									.format(execution.getStartTime())));
+						}
+
+					slider.setLabelTable(dictionary);
+					slider.setEnabled(!sliderExecutions.isEmpty());
+					slider.setPaintLabels(!sliderExecutions.isEmpty());
 				}
 
-			this.executionSelection.setPaintLabels(true);
-			this.executionSelection.setLabelTable(dictionary);
-			this.executionSelection.setEnabled(!this.executions.isEmpty());
-		}
-
-		this.executionSelection.getModel().setRangeProperties(
-				selectedExecution, 0, 0, maxValue, false);
-		updateExecutionSelection();
+				slider.getModel().setRangeProperties(selectedExecution, 0, 0,
+						maxValue, false);
+				updateExecutionSelection();
+			}
+		});
 	}
 
 	private boolean containsExecution(Set<ScenarioExecution> set,

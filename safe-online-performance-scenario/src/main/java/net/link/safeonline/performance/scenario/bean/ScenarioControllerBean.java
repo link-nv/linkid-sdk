@@ -218,15 +218,18 @@ public class ScenarioControllerBean implements ScenarioController {
 		List<Chart> charts = createScenario(execution.getScenarioName())
 				.getCharts();
 
-		for (DriverProfileEntity profile : execution.getProfiles())
-			for (ProfileDataEntity data : this.profileDataService
-					.getProfileData(profile, DATA_POINTS))
+		Set<DriverProfileEntity> profiles = execution.getProfiles();
+		for (DriverProfileEntity profile : profiles) {
+			Set<ProfileDataEntity> profileData = this.profileDataService
+					.getProfileData(profile, DATA_POINTS);
+			for (ProfileDataEntity data : profileData)
 				for (Chart chart : charts)
 					try {
 						chart.process(profile, data);
 					} catch (Exception e) {
 						LOG.error("While charting:", e);
 					}
+		}
 
 		Map<String, byte[][]> images = new LinkedHashMap<String, byte[][]>();
 		for (Chart chart : charts)

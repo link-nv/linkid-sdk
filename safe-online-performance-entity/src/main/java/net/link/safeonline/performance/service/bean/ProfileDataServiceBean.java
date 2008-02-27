@@ -49,19 +49,13 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 	public ProfileDataEntity addData(DriverProfileEntity profile,
 			ProfileData data, ScenarioTimingEntity agentTime) {
 
-		Set<MeasurementEntity> measurements = new HashSet<MeasurementEntity>();
-		for (Map.Entry<String, Long> measurement : data.getMeasurements()
-				.entrySet()) {
-			MeasurementEntity measurementEntity = new MeasurementEntity(
-					measurement.getKey(), measurement.getValue());
-			this.em.persist(measurementEntity);
-
-			measurements.add(measurementEntity);
-		}
-
-		ProfileDataEntity dataEntity = new ProfileDataEntity(profile,
-				agentTime, measurements);
+		ProfileDataEntity dataEntity = new ProfileDataEntity(profile, agentTime);
 		this.em.persist(dataEntity);
+
+		for (Map.Entry<String, Long> measurement : data.getMeasurements()
+				.entrySet())
+			this.em.persist(new MeasurementEntity(dataEntity, measurement
+					.getKey(), measurement.getValue()));
 
 		return dataEntity;
 	}
@@ -120,15 +114,17 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 						counts.put(m.getMeasurement(), 1);
 					}
 
-			Set<MeasurementEntity> measurements = new HashSet<MeasurementEntity>();
-			for (String measurement : durations.keySet())
-				measurements.add(new MeasurementEntity(measurement, durations
-						.get(measurement)
-						/ counts.get(measurement)));
-
-			pointData.add(new ProfileDataEntity(
+			ProfileDataEntity profileDataEntity = new ProfileDataEntity(
 					profileData.get(0).getProfile(), profileData.get(0)
-							.getScenarioTiming(), measurements));
+							.getScenarioTiming());
+			pointData.add(profileDataEntity);
+
+			for (String measurement : durations.keySet())
+				profileDataEntity.getMeasurements().add(
+						new MeasurementEntity(profileDataEntity, measurement,
+								durations.get(measurement)
+										/ counts.get(measurement)));
+
 		}
 
 		return pointData;
@@ -152,18 +148,26 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 		Set<ProfileDataEntity> pointData = new HashSet<ProfileDataEntity>();
 		for (long point = 0; point * period < dataDuration; ++point) {
 
+			ScenarioTimingEntity timing = (ScenarioTimingEntity) this.em
+					.createNamedQuery(ProfileDataEntity.getScenarioTiming)
+					.setParameter("profile", profile).setParameter("start",
+							dataStart + point * period).setParameter("stop",
+							dataStart + (point + 1) * period).getSingleResult();
+
+			ProfileDataEntity profileDataEntity = new ProfileDataEntity(
+					profile, timing);
+			pointData.add(profileDataEntity);
+
 			List<MeasurementEntity> measurements = this.em.createNamedQuery(
 					ProfileDataEntity.createAverage).setParameter("profile",
 					profile).setParameter("start", dataStart + point * period)
 					.setParameter("stop", dataStart + (point + 1) * period)
 					.getResultList();
+			for (MeasurementEntity measurement : measurements) {
+				measurement.setProfileData(profileDataEntity);
+				profileDataEntity.getMeasurements().add(measurement);
+			}
 
-			ScenarioTimingEntity timing = measurements.get(
-					measurements.size() / 2).getProfileData()
-					.getScenarioTiming();
-
-			pointData.add(new ProfileDataEntity(profile, timing,
-					new HashSet<MeasurementEntity>(measurements)));
 		}
 
 		return pointData;

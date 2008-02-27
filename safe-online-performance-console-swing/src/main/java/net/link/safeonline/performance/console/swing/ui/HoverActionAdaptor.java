@@ -105,6 +105,9 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
 						"Given component is not managed!");
 
 			this.managedComponents.put(component, enabled);
+
+			if (!enabled)
+				component.setBorder(EMPTY_BORDER);
 		}
 	}
 

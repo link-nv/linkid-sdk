@@ -13,7 +13,7 @@ import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.Chart;
-import net.link.safeonline.performance.scenario.charts.OLASTimeChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioDurationsChart;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -74,7 +74,7 @@ public class DummyScenario implements Scenario {
 	public List<Chart> getCharts() {
 
 		List<Chart> charts = new ArrayList<Chart>();
-		charts.add(new OLASTimeChart());
+		charts.add(new ScenarioDurationsChart());
 
 		return charts;
 	}

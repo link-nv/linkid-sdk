@@ -18,6 +18,7 @@ import java.util.TreeSet;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
@@ -129,8 +130,7 @@ public class ExecutionSettings implements FocusListener, ItemListener,
 	public void agentsSelected(Set<ConsoleAgent> selectedAgents) {
 
 		if (selectedAgents == null || selectedAgents.isEmpty()) {
-			this.scenarioSelection.removeAllItems();
-			this.scenarioSelection.setEnabled(false);
+			setScenarios(new HashSet<String>());
 			return;
 		}
 
@@ -153,21 +153,36 @@ public class ExecutionSettings implements FocusListener, ItemListener,
 			}
 		}
 
-		Object selectedItem = this.scenarioSelection.getSelectedItem();
-		this.scenarioSelection.removeAllItems();
-		for (String scenario : commonScenarios)
-			this.scenarioSelection.addItem(new ItemRenderer<String>(scenario) {
-				@Override
-				public String toString() {
+		setScenarios(commonScenarios);
+	}
 
-					return this.item.replaceFirst(".*\\.", "");
-				}
-			});
-		this.scenarioSelection.setSelectedItem(selectedItem);
-		if (this.scenarioSelection.getSelectedItem() == null
-				&& !commonScenarios.isEmpty())
-			this.scenarioSelection.setSelectedIndex(0);
-		this.scenarioSelection.setEnabled(this.scenarioSelection.getModel()
-				.getSize() > 0);
+	/**
+	 * Modify the content of the scenario selections box in the swing event
+	 * thread.
+	 */
+	private void setScenarios(final Set<String> scenarios) {
+
+		final JComboBox box = this.scenarioSelection;
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+
+				Object selectedItem = box.getSelectedItem();
+				box.removeAllItems();
+
+				for (String scenario : scenarios)
+					box.addItem(new ItemRenderer<String>(scenario) {
+						@Override
+						public String toString() {
+
+							return this.item.replaceFirst(".*\\.", "");
+						}
+					});
+
+				box.setSelectedItem(selectedItem);
+				if (box.getSelectedItem() == null && !scenarios.isEmpty())
+					box.setSelectedIndex(0);
+				box.setEnabled(box.getModel().getSize() > 0);
+			}
+		});
 	}
 }

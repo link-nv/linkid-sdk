@@ -41,11 +41,13 @@ public class MeasurementEntity {
 
 	public MeasurementEntity(String measurement, Double duration) {
 
-		this(measurement, duration.longValue());
+		this(null, measurement, duration.longValue());
 	}
 
-	public MeasurementEntity(String measurement, Long duration) {
+	public MeasurementEntity(ProfileDataEntity profileData, String measurement,
+			Long duration) {
 
+		this.profileData = profileData;
 		this.measurement = measurement;
 		this.duration = duration;
 	}
@@ -73,5 +75,14 @@ public class MeasurementEntity {
 	public ProfileDataEntity getProfileData() {
 
 		return this.profileData;
+	}
+
+	/**
+	 * Only to be used for when this entity was created using
+	 * {@link #MeasurementEntity(String, Double)}.
+	 */
+	public void setProfileData(ProfileDataEntity profileData) {
+
+		this.profileData = profileData;
 	}
 }
