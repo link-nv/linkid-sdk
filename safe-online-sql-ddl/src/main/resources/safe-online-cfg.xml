@@ -47,3 +47,4 @@
 <mapping class="net.link.safeonline.entity.UsageAgreementEntity" />
 <mapping class="net.link.safeonline.entity.UsageAgreementTextEntity" />
 <mapping class="net.link.safeonline.entity.GlobalUsageAgreementEntity" />
+<mapping class="net.link.safeonline.entity.OlasEntity" />

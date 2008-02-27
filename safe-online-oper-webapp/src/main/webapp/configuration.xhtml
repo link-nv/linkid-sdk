@@ -28,8 +28,7 @@
 		<h:form>
 			<ui:repeat id="group-data" var="group" value="#{configGroupList}">
 				<h3><h:outputText value="#{group.name}" /></h3>
-				<ui:repeat id="config-data" var="item"
-					value="#{group.configItems}">
+				<ui:repeat id="config-data" var="item" value="#{group.configItems}">
 					<h:outputLabel for="value" value="#{item.name}" />
 
 					<s:decorate>
@@ -55,6 +54,8 @@
 	<ui:define name="sidebar">
 		<h:form>
 			<ul class="sidemenu">
+				<li><h:commandLink action="/nodes/nodes.seam"
+					value="#{msgs.operatorOlasNodes}" /></li>
 				<li><h:commandLink action="/pkix/pkix.seam"
 					value="#{msgs.PKIX}" /></li>
 				<li><h:commandLink action="/authorization/main.seam"

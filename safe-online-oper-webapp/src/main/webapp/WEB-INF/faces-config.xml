@@ -989,4 +989,57 @@
 
 	<!-- End device class navigation rules -->
 
+	<!-- Begin Olas nodes navigation rules -->
+
+	<navigation-rule>
+		<from-view-id>/nodes/nodes.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>add-node</from-outcome>
+			<to-view-id>/nodes/node-add.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view</from-outcome>
+			<to-view-id>/nodes/node-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/nodes/node-add.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/nodes/nodes.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/nodes/nodes.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/nodes/node-view.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>back</from-action>
+			<to-view-id>/nodes/nodes.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>edit</from-outcome>
+			<to-view-id>/nodes/node-edit.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/nodes/node-edit.xhtml</from-view-id>
+		<navigation-case>
+			<from-action>cancel</from-action>
+			<to-view-id>/nodes/node-view.seam</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/nodes/node-view.seam</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<!-- End Olas nodes navigation rules -->
+
+
 </faces-config>

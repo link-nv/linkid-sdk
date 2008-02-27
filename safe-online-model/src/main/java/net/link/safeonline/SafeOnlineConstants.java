@@ -60,6 +60,11 @@ public class SafeOnlineConstants {
 	public static final String SAFE_ONLINE_DEVICES_TRUST_DOMAIN = "devices";
 
 	/**
+	 * The PKI trust domain for the Olas Nodes.
+	 */
+	public static final String SAFE_ONLINE_OLAS_TRUST_DOMAIN = "olas";
+
+	/**
 	 * Device ID's
 	 */
 	public static final String USERNAME_PASSWORD_DEVICE_ID = "password";

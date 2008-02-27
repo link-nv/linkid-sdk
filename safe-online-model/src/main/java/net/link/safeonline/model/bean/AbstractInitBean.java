@@ -564,6 +564,13 @@ public abstract class AbstractInitBean implements Startable {
 			return;
 		devicesTrustDomain = this.trustDomainDAO.addTrustDomain(
 				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, true);
+
+		TrustDomainEntity olasTrustDomain = this.trustDomainDAO
+				.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+		if (null != olasTrustDomain)
+			return;
+		olasTrustDomain = this.trustDomainDAO.addTrustDomain(
+				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, true);
 	}
 
 	private void initAttributeTypes() {
