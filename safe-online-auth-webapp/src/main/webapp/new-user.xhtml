@@ -29,16 +29,12 @@
 				<h:message for="login" styleClass="error" />
 			</s:decorate>
 
-
-
 			<h:outputLabel for="captcha" value="#{msgs.captcha}" />
 			<s:decorate>
 				<h:inputText id="captcha" value="#{accountRegistration.captcha}"
 					required="true" styleClass="label" />
 				<h:message for="captcha" styleClass="error" />
 			</s:decorate>
-
-
 
 			<h:outputLabel for="image" value="" />
 			<h:graphicImage id="image" styleClass="label" value="/captcha" />

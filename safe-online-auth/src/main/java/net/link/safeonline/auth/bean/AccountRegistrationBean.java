@@ -86,7 +86,6 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	private String captcha;
 
-	@SuppressWarnings("unused")
 	@In(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	@Out(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
 	private String requestedUsername;
@@ -156,7 +155,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		boolean loginFree = this.userRegistrationService
 				.isLoginFree(this.login);
 		if (false == loginFree) {
-			this.facesMessages.addFromResourceBundle(
+			this.facesMessages.addToControlFromResourceBundle("login",
 					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
 			return null;
 		}

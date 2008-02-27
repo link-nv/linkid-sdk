@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -13,10 +12,8 @@
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>SafeOnline Tag Library</name>
-	<description>
-		Contains the Facelets/JSF Tag Library used in all SafeOnline web
-		applications.
-	</description>
+	<description> Contains the Facelets/JSF Tag Library used in all
+		SafeOnline web applications. </description>
 	<dependencies>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -41,6 +38,10 @@
 		<dependency>
 			<groupId>org.apache.myfaces.tomahawk</groupId>
 			<artifactId>tomahawk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>jsf-impl</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
