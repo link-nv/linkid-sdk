@@ -79,9 +79,9 @@ public class ScenarioDurationsChart extends AbstractChart {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void process(DriverProfileEntity profile, ProfileDataEntity data) {
+	public void process(ProfileDataEntity data) {
 
-		XYSeries driverSet = getDriverSet(profile);
+		XYSeries driverSet = getDriverSet(data.getProfile());
 
 		Long startTime = data.getScenarioTiming().getStart();
 		Long agentTime = data.getScenarioTiming().getAgentDuration();

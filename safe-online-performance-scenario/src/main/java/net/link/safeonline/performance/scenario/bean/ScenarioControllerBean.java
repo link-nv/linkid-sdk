@@ -53,18 +53,7 @@ import org.jboss.annotation.ejb.TransactionTimeout;
  * run. As these methods are called, entity objects are updated with state that
  * can later be used to graph out the progress of the scenario execution.<br>
  * <br>
- * Charts are also generated in this bean.<br>
- * Currently, we create charts for:
- * <ul>
- * <li>The time spent in the OLAS performance filter.</li>
- * <li>A component-based overview of where all the time needed to execute a
- * scenario was spent.</li>
- * <li>A component-based overview of where all the time needed to execute a
- * driver request was spent.</li>
- * <li>Evolution of available memory on the agent.</li>
- * <li>Evolution of available memory on OLAS.</li>
- * <li>A box-and-whisker chart comparing driver performance.</li>
- * </ul>
+ * Charts are also generated in this bean as registered by the scenario.
  * </p>
  *
  * <p>
@@ -225,7 +214,7 @@ public class ScenarioControllerBean implements ScenarioController {
 			for (ProfileDataEntity data : profileData)
 				for (Chart chart : charts)
 					try {
-						chart.process(profile, data);
+						chart.process(data);
 					} catch (Exception e) {
 						LOG.error("While charting:", e);
 					}

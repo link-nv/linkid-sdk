@@ -223,12 +223,23 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 
 	private void updateButtons() {
 
-		buttonToggler(false, this.resetButton);
+		// Don't enable any buttons when no agents are selected.
+		if (ConsoleData.getSelectedAgents().isEmpty()) {
+			buttonToggler(false, this.resetButton, this.uploadButton,
+					this.deployButton, this.executeButton, this.chartsButton,
+					this.pdfButton);
+			return;
+		}
+
+		// Enable all buttons available with the current configuration.
+		buttonToggler(true, this.deployButton);
+		buttonToggler(false, this.resetButton); // Only while agent in transit.
 		buttonToggler(null != getScenarioFile(), this.uploadButton);
-		buttonToggler(true, this.deployButton, this.executeButton);
+		buttonToggler(null != ConsoleData.getScenarioName(), this.executeButton);
 		buttonToggler(null != ConsoleData.getExecution(), this.chartsButton,
 				this.pdfButton);
 
+		// For each agent, disable the buttons that its state does not support.
 		for (ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
 
 			if (agent.getTransit() != null) {
@@ -261,9 +272,6 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 				case CHART:
 					break;
 				}
-
-			if (ConsoleData.getScenarioName() == null)
-				buttonToggler(false, this.executeButton);
 
 			highlight(this.uploadButton, AgentState.UPLOAD.equals(agent
 					.getTransit()));

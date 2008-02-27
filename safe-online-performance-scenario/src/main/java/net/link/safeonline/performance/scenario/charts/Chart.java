@@ -15,7 +15,6 @@
  */
 package net.link.safeonline.performance.scenario.charts;
 
-import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 
 /**
@@ -42,7 +41,7 @@ public interface Chart {
 	/**
 	 * Process one chunk of data as required for the rendering of this chart.
 	 */
-	public void process(DriverProfileEntity profile, ProfileDataEntity data);
+	public void process(ProfileDataEntity data);
 
 	/**
 	 * Render this chart to an image from the previously processed data.
