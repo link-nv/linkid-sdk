@@ -107,6 +107,22 @@
 				</h:form>
 			</rich:tab>
 
+			<rich:tab id="attribute-tab" label="#{msgs.attribute}">
+				<h:outputText id="attribute-name"
+					value="#{selectedDevice.attributeType.name}" />
+
+				<h:dataTable id="compounded-members" var="item"
+					value="#{selectedDevice.attributeType.members}"
+					rendered="#{selectedDevice.attributeType.compounded}"
+					styleClass="listingTable"
+					rowClasses="listingTable_Row1,listingTable_Row2">
+					<h:column>
+						<f:facet name="header">#{msgs.memberAttributes}</f:facet>
+						<h:outputText value="#{item.member.name}" />
+					</h:column>
+				</h:dataTable>
+			</rich:tab>
+
 			<rich:tab id="certificate-tab" label="#{msgs.certificate}">
 				<pre><h:outputText value="#{selectedDevice.certificate}"
 					rendered="#{!empty selectedDevice.certificate}" /></pre>

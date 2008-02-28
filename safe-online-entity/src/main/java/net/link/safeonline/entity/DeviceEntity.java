@@ -19,7 +19,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +26,7 @@ import javax.ejb.EJBException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
@@ -92,7 +89,7 @@ public class DeviceEntity implements Serializable {
 
 	private transient X509Certificate certificate;
 
-	private List<AttributeTypeEntity> attributeTypes;
+	private AttributeTypeEntity attributeType;
 
 	private Map<String, DevicePropertyEntity> properties;
 
@@ -115,7 +112,6 @@ public class DeviceEntity implements Serializable {
 		this.updateURL = updateURL;
 		this.properties = new HashMap<String, DevicePropertyEntity>();
 		this.descriptions = new HashMap<String, DeviceDescriptionEntity>();
-		this.attributeTypes = new LinkedList<AttributeTypeEntity>();
 		if (null != certificate) {
 			try {
 				this.encodedCert = certificate.getEncoded();
@@ -136,14 +132,13 @@ public class DeviceEntity implements Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name = "attribute_type")
-	public List<AttributeTypeEntity> getAttributeTypes() {
-		return this.attributeTypes;
+	@ManyToOne
+	public AttributeTypeEntity getAttributeType() {
+		return this.attributeType;
 	}
 
-	public void setAttributeTypes(List<AttributeTypeEntity> attributeTypes) {
-		this.attributeTypes = attributeTypes;
+	public void setAttributeType(AttributeTypeEntity attributeType) {
+		this.attributeType = attributeType;
 	}
 
 	/**

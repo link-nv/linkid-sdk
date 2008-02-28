@@ -15,6 +15,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceDescriptionPK;
@@ -28,7 +29,8 @@ public interface DeviceDAO {
 	DeviceEntity addDevice(String name, DeviceClassEntity deviceClass,
 			String authenticationURL, String registrationURL,
 			String newAccountRegistrationURL, String removalURL,
-			String updateURL, X509Certificate certificate);
+			String updateURL, X509Certificate certificate,
+			AttributeTypeEntity attributeType);
 
 	List<DeviceEntity> listDevices();
 

@@ -65,12 +65,18 @@ public interface Device {
 
 	void setCertificate(UploadedFile certificate);
 
+	String getAttributeType();
+
+	void setAttributeType(String attributeType);
+
 	/*
 	 * Factories
 	 */
 	void deviceListFactory();
 
 	List<SelectItem> deviceClassesFactory();
+
+	List<SelectItem> attributeTypesFactory();
 
 	/*
 	 * Lifecycle.

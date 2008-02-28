@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundExc
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
 import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceDescriptionPK;
@@ -55,10 +56,12 @@ public class DeviceDAOBean implements DeviceDAO {
 	public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass,
 			String authenticationURL, String registrationURL,
 			String newAccountRegistrationURL, String removalURL,
-			String updateURL, X509Certificate certificate) {
+			String updateURL, X509Certificate certificate,
+			AttributeTypeEntity attributeType) {
 		DeviceEntity device = new DeviceEntity(name, deviceClass,
 				authenticationURL, registrationURL, newAccountRegistrationURL,
 				removalURL, updateURL, certificate);
+		device.setAttributeType(attributeType);
 		this.entityManager.persist(device);
 		return device;
 	}

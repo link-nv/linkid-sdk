@@ -64,6 +64,16 @@
 
 				</rich:tab>
 
+				<rich:tab id="attrib-tab" label="#{msgs.attribute}">
+
+					<h:outputLabel for="attribute-type" value="#{msgs.attribute}" />
+					<h:selectOneMenu id="attribute-type"
+						value="#{operDevice.attributeType}" styleClass="label">
+						<f:selectItems value="#{attributeTypes}" />
+					</h:selectOneMenu>
+
+				</rich:tab>
+
 				<rich:tab id="certificate-tab" label="#{msgs.certificate}">
 					<h:outputLabel for="certificate" value="#{msgs.certificate}" />
 					<s:decorate>

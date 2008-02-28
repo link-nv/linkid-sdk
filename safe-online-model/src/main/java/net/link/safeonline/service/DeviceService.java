@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
@@ -61,9 +62,10 @@ public interface DeviceService {
 	void addDevice(String name, String deviceClassName,
 			String authenticationURL, String registrationURL,
 			String newAccountRegistrationURL, String removalURL,
-			String updateURL, byte[] encodedCertificate)
-			throws CertificateEncodingException, DeviceClassNotFoundException,
-			ExistingDeviceException;
+			String updateURL, byte[] encodedCertificate,
+			String attributeTypeName) throws CertificateEncodingException,
+			DeviceClassNotFoundException, ExistingDeviceException,
+			AttributeTypeNotFoundException;
 
 	void removeDevice(String name);
 
@@ -115,5 +117,8 @@ public interface DeviceService {
 
 	void updateUpdateUrl(String deviceName, String updateURL)
 			throws DeviceNotFoundException;
+
+	void updateAttributeType(String deviceName, String attributeType)
+			throws DeviceNotFoundException, AttributeTypeNotFoundException;
 
 }

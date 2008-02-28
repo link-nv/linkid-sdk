@@ -19,11 +19,13 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
 import net.link.safeonline.ctrl.Convertor;
 import net.link.safeonline.ctrl.ConvertorUtil;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.oper.OperatorConstants;
@@ -60,6 +62,8 @@ public class DeviceBean implements Device {
 
 	public static final String OPER_DEVICE_CLASS_LIST_NAME = "deviceClasses";
 
+	public static final String OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME = "attributeTypes";
+
 	@In(create = true)
 	FacesMessages facesMessages;
 
@@ -84,6 +88,8 @@ public class DeviceBean implements Device {
 	private String updateURL;
 
 	private UploadedFile certificate;
+
+	private String attributeType;
 
 	/*
 	 * Seam Data models
@@ -134,6 +140,26 @@ public class DeviceBean implements Device {
 		}
 	}
 
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	@Factory(OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME)
+	public List<SelectItem> attributeTypesFactory() {
+		List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService
+				.listAttributeTypes();
+		List<SelectItem> attributeTypes = ConvertorUtil.convert(
+				attributeTypesList, new AttributeTypeSelectItemConvertor());
+		return attributeTypes;
+	}
+
+	static class AttributeTypeSelectItemConvertor implements
+			Convertor<AttributeTypeEntity, SelectItem> {
+
+		public SelectItem convert(AttributeTypeEntity input) {
+			SelectItem output = new SelectItem(input.getName());
+			return output;
+		}
+
+	}
+
 	private byte[] getUpFileContent(UploadedFile file) throws IOException {
 		InputStream inputStream = file.getInputStream();
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -164,7 +190,7 @@ public class DeviceBean implements Device {
 			this.deviceService.addDevice(this.name, this.deviceClass,
 					this.authenticationURL, this.registrationURL,
 					this.newAccountRegistrationURL, this.removalURL,
-					this.updateURL, encodedCertificate);
+					this.updateURL, encodedCertificate, this.attributeType);
 		} catch (CertificateEncodingException e) {
 			LOG.debug("X509 certificate encoding error");
 			this.facesMessages.addToControlFromResourceBundle("fileupload",
@@ -180,6 +206,11 @@ public class DeviceBean implements Device {
 			this.facesMessages.addToControlFromResourceBundle("name",
 					FacesMessage.SEVERITY_ERROR, "errorDeviceAlreadyExists",
 					this.name);
+			return null;
+		} catch (AttributeTypeNotFoundException e) {
+			LOG.debug("attribute type " + this.attributeType + " not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		}
 		return "success";
@@ -202,6 +233,7 @@ public class DeviceBean implements Device {
 		this.newAccountRegistrationURL = this.selectedDevice
 				.getNewAccountRegistrationURL();
 		this.removalURL = this.selectedDevice.getRemovalURL();
+		this.attributeType = this.selectedDevice.getAttributeType().getName();
 
 		return "edit";
 	}
@@ -251,6 +283,25 @@ public class DeviceBean implements Device {
 				LOG.debug("IO error: " + e.getMessage());
 				this.facesMessages.addFromResourceBundle(
 						FacesMessage.SEVERITY_ERROR, "errorIO");
+				return null;
+			}
+		}
+
+		if (null != this.attributeType) {
+			LOG.debug("updating attribute type");
+			try {
+				this.deviceService.updateAttributeType(deviceName,
+						this.attributeType);
+			} catch (DeviceNotFoundException e) {
+				LOG.debug("device not found");
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+				return null;
+			} catch (AttributeTypeNotFoundException e) {
+				LOG.debug("attribute type not found");
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR,
+						"errorAttributeTypeNotFound");
 				return null;
 			}
 		}
@@ -355,6 +406,16 @@ public class DeviceBean implements Device {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void setCertificate(UploadedFile certificate) {
 		this.certificate = certificate;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String getAttributeType() {
+		return this.attributeType;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setAttributeType(String attributeType) {
+		this.attributeType = attributeType;
 	}
 
 }

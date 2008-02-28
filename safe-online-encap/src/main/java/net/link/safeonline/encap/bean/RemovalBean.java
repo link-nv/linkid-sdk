@@ -135,8 +135,8 @@ public class RemovalBean implements Removal {
 		 */
 		this.log.debug("list attributes for device: " + deviceId);
 		DeviceEntity device = this.deviceDAO.getDevice(deviceId);
-		List<AttributeTypeEntity> deviceAttributeTypes = device
-				.getAttributeTypes();
+		List<AttributeTypeEntity> deviceAttributeTypes = new LinkedList<AttributeTypeEntity>();
+		deviceAttributeTypes.add(device.getAttributeType());
 		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
 
 		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService

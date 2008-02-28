@@ -258,13 +258,13 @@ public abstract class AbstractInitBean implements Startable {
 
 		final String updateURL;
 
-		final List<AttributeTypeEntity> deviceAttributes;
+		final AttributeTypeEntity deviceAttribute;
 
 		public Device(String deviceName, String deviceClassName,
 				String authenticationURL, String registrationURL,
 				String newAccountRegistrationURL, String removalURL,
 				String updateURL, X509Certificate certificate,
-				List<AttributeTypeEntity> deviceAttributes) {
+				AttributeTypeEntity deviceAttribute) {
 			this.deviceName = deviceName;
 			this.deviceClassName = deviceClassName;
 			this.authenticationURL = authenticationURL;
@@ -273,7 +273,7 @@ public abstract class AbstractInitBean implements Startable {
 			this.removalURL = removalURL;
 			this.updateURL = updateURL;
 			this.certificate = certificate;
-			this.deviceAttributes = deviceAttributes;
+			this.deviceAttribute = deviceAttribute;
 		}
 	}
 
@@ -770,8 +770,8 @@ public abstract class AbstractInitBean implements Startable {
 						deviceClassEntity, device.authenticationURL,
 						device.registrationURL,
 						device.newAccountRegistrationURL, device.removalURL,
-						device.updateURL, device.certificate);
-				deviceEntity.setAttributeTypes(device.deviceAttributes);
+						device.updateURL, device.certificate,
+						device.deviceAttribute);
 			}
 		}
 	}

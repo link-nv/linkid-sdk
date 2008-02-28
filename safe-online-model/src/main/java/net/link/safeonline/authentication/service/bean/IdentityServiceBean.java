@@ -967,8 +967,8 @@ public class IdentityServiceBean implements IdentityService,
 	String deviceId, Locale locale) throws DeviceNotFoundException {
 		LOG.debug("list attributes for device: " + deviceId);
 		DeviceEntity device = this.deviceDAO.getDevice(deviceId);
-		List<AttributeTypeEntity> deviceAttributeTypes = device
-				.getAttributeTypes();
+		List<AttributeTypeEntity> deviceAttributeTypes = new LinkedList<AttributeTypeEntity>();
+		deviceAttributeTypes.add(device.getAttributeType());
 		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
 
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -980,7 +980,6 @@ public class IdentityServiceBean implements IdentityService,
 			language = locale.getLanguage();
 		}
 
-		LOG.debug("# device attributes: " + deviceAttributeTypes.size());
 		for (AttributeTypeEntity attributeType : deviceAttributeTypes) {
 			LOG.debug("attribute type: " + attributeType.getName());
 			if (false == attributeType.isUserVisible()) {

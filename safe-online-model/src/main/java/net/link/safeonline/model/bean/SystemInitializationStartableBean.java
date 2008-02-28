@@ -8,8 +8,6 @@
 package net.link.safeonline.model.bean;
 
 import java.security.cert.X509Certificate;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.Local;
@@ -149,7 +147,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 	}
 
 	private void configurePasswordDevice() {
-		List<AttributeTypeEntity> passwordAttributeTypes = new LinkedList<AttributeTypeEntity>();
 		AttributeTypeEntity passwordHashAttributeType = new AttributeTypeEntity(
 				SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
 				DatatypeType.STRING, false, false);
@@ -159,9 +156,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		AttributeTypeEntity passwordAlgorithmAttributeType = new AttributeTypeEntity(
 				SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
 				DatatypeType.STRING, false, false);
-		passwordAttributeTypes.add(passwordHashAttributeType);
-		passwordAttributeTypes.add(passwordSeedAttributeType);
-		passwordAttributeTypes.add(passwordAlgorithmAttributeType);
+		this.attributeTypes.add(passwordHashAttributeType);
+		this.attributeTypes.add(passwordSeedAttributeType);
+		this.attributeTypes.add(passwordAlgorithmAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				passwordHashAttributeType, Locale.ENGLISH.getLanguage(),
 				"Password hash", null));
@@ -178,18 +175,32 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				passwordAlgorithmAttributeType, "nl",
 				"Wachtwoord hash algoritme", null));
-		this.attributeTypes.addAll(passwordAttributeTypes);
 
-		this.devices
-				.add(new Device(
-						SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
-						SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-						"password/username-password.seam",
-						"password/register-password.seam",
-						"password/new-user-password.seam",
-						"password/remove-password.seam",
-						"password/register-password.seam", null,
-						passwordAttributeTypes));
+		AttributeTypeEntity passwordDeviceAttributeType = new AttributeTypeEntity(
+				SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE,
+				DatatypeType.COMPOUNDED, false, false);
+		passwordDeviceAttributeType.addMember(passwordHashAttributeType, 0,
+				true);
+		passwordDeviceAttributeType.addMember(passwordSeedAttributeType, 1,
+				true);
+		passwordDeviceAttributeType.addMember(passwordAlgorithmAttributeType,
+				2, true);
+		this.attributeTypes.add(passwordDeviceAttributeType);
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				passwordDeviceAttributeType, Locale.ENGLISH.getLanguage(),
+				"Password", null));
+		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
+				passwordDeviceAttributeType, "nl", "Wachtwoord", null));
+
+		this.devices.add(new Device(
+				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
+				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+				"password/username-password.seam",
+				"password/register-password.seam",
+				"password/new-user-password.seam",
+				"password/remove-password.seam",
+				"password/register-password.seam", null,
+				passwordDeviceAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, "nl",
 				"Paswoord"));

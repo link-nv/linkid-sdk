@@ -8,8 +8,6 @@
 package net.link.safeonline.model.encap;
 
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -48,9 +46,6 @@ public class EncapStartableBean extends AbstractInitBean {
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				encapAttributeType, "nl", "Gsm nummer", null));
 
-		List<AttributeTypeEntity> encapDeviceAttributeTypeList = new ArrayList<AttributeTypeEntity>();
-		encapDeviceAttributeTypeList.add(encapAttributeType);
-
 		X509Certificate certificate = (X509Certificate) EncapKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
 
@@ -74,7 +69,7 @@ public class EncapStartableBean extends AbstractInitBean {
 						+ hostname + ":" + port + "/olas-encap/reg",
 				"encap/new-user-mobile.seam", "https://" + hostname + ":"
 						+ port + "/olas-encap/remove", null, certificate,
-				encapDeviceAttributeTypeList));
+				encapAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
 		this.deviceDescriptions.add(new DeviceDescription(
