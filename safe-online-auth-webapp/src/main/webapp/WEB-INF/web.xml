@@ -42,7 +42,12 @@
 
 	<context-param>
 		<param-name>facelets.DEVELOPMENT</param-name>
-		<param-value>true</param-value>
+		<param-value>${debug.mode}</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.jboss.seam.core.init.debug</param-name>
+		<param-value>${debug.mode}</param-value>
 	</context-param>
 
 	<context-param>
