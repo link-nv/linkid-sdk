@@ -34,6 +34,8 @@ shopt -s extglob
 
 
 
+
+
 #  ______________________________________________________________________ 
 # |                                                                      |
 # |                                          .:: GLOBAL DECLARATIONS ::. |
@@ -48,34 +50,42 @@ export runner=(     '> >'           \
                     '>>>'           \
                     ' >>'           )
 
-
 # Variables for terminal requests.
-export hide=$(      tput vi         )
-export show=$(      tput vs         )
-export back=$(      tput kbs        )
-export save=$(      tput sc         )
-export load=$(      tput rc         )
-export bold=$(      tput bold       )
-export reset=$(     tput sgr0       )
-#export blink=$(    tput blink      )
-export italic=$(    tput sitm       )
-export red=$(       tput setaf 1    )
-export green=$(     tput setaf 2    )
-export yellow=$(    tput setaf 3    )
-export blue=$(      tput setaf 4    )
-export magenta=$(   tput setaf 5    )
-export cyan=$(      tput setaf 6    )
-export grey=$(      tput setaf 7    )
-export default=$(   tput op         )
-export eed=$(       tput ed         )
-export eel=$(       tput el         )
-export ebl=$(       tput el1        )
-export ewl=$(       tput el         \
-                    tput el1        )
-export draw=$(      tput enacs      \
-                    tput smacs      \
-                    tput acsc       \
-                    tput rmacs      )
+tput sgr0 2>/dev/null && _TERM_=$TERM || _TERM_=vt100
+export hide=$(      tput -T$_TERM_ vi       )
+export show=$(      tput -T$_TERM_ vs       )
+export back=$(      tput -T$_TERM_ kbs      )
+export save=$(      tput -T$_TERM_ sc       )
+export load=$(      tput -T$_TERM_ rc       )
+export bold=$(      tput -T$_TERM_ bold     )
+export reset=$(     tput -T$_TERM_ sgr0     )
+#export blink=$(    tput -T$_TERM_ blink    )
+export italic=$(    tput -T$_TERM_ sitm     )
+export red=$(       tput -T$_TERM_ setaf 1  )
+export green=$(     tput -T$_TERM_ setaf 2  )
+export yellow=$(    tput -T$_TERM_ setaf 3  )
+export blue=$(      tput -T$_TERM_ setaf 4  )
+export magenta=$(   tput -T$_TERM_ setaf 5  )
+export cyan=$(      tput -T$_TERM_ setaf 6  )
+export grey=$(      tput -T$_TERM_ setaf 7  )
+export default=$(   tput -T$_TERM_ op       )
+export eed=$(       tput -T$_TERM_ ed       )
+export eel=$(       tput -T$_TERM_ el       )
+export ebl=$(       tput -T$_TERM_ el1      )
+export ewl=$(       tput -T$_TERM_ el       \
+                    tput -T$_TERM_ el1      )
+export draw=$(      tput -T$_TERM_ enacs    \
+                    tput -T$_TERM_ smacs    \
+                    tput -T$_TERM_ acsc     \
+                    tput -T$_TERM_ rmacs    )
+
+# Monochrome terminals don't need these.
+[[ $TERM = *-m ]] && {
+    red=; green=; yellow=; blue=; magenta=; cyan=; grey=
+    bold=; italic=; blink=; default=; reset=
+}
+
+
 
 
 
@@ -83,8 +93,6 @@ export draw=$(      tput enacs      \
 # |                                                                      |
 # |                                        .:: FUNCTION DECLARATIONS ::. |
 # |______________________________________________________________________|
-
-
 
 #  ______________________________________________________________________
 # |__ Emit ______________________________________________________________|
@@ -116,7 +124,7 @@ export draw=$(      tput enacs      \
 # in front of the message.  Capitalized options affect the message text
 # displayed.
 #
-emit() {
+function emit {
 
    # Check usage.
     [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
@@ -233,7 +241,7 @@ emit() {
 # recently backgrounded process is used.  The 'spinPid' variable is unset upon
 # each call to 'spinner' and reset to the PID of the spinner if one is created.
 #
-spinner() {
+function spinner {
 
     # Check usage.
     [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
@@ -349,7 +357,7 @@ spinner() {
 # If no option is marked as valid, the given reply is echoed and an exit
 # code of 0 is returned.
 #
-ask() {
+function ask {
    
    # Check usage.
     [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
@@ -412,7 +420,7 @@ ask() {
 #
 # When no arguments are given, lines will be read from standard input.
 #
-trim() {
+function trim {
    
     # Initialize the vars.
     local lines
@@ -446,7 +454,7 @@ trim() {
 # This implementation requires the necessary permissions to send signals
 # to the PID(s) provided.
 #
-swait() {
+function swait {
 
     # Check usage.
     [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
@@ -479,7 +487,7 @@ swait() {
 #   -w  If we cannot kill the process with any signal, wait for it to end
 #       before returning.
 #
-skill() {
+function skill {
 
     # Check usage.
     [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
@@ -511,15 +519,20 @@ skill() {
         # Does it even exist?
         kill -0 $1 || { (( verbose )) && emit "$1 is already gone."; return; }
 
-        # Send some safe signals.
+        # Ask application to quit - make sure it isn't stopped.
         (( verbose )) && emit -ng "Being nice .."
+        kill -QUIT $1; kill -CONT $1
+        sleep .3; kill -0 $1 || { (( verbose )) && echo; return; }  >&$fd
+
+        # Insist.
+        (( verbose )) && emit -ng "Insisting .."
         kill -PIPE $1; kill -HUP $1; kill -INT $1
-        sleep .1; kill -0 $1 || { (( verbose )) && echo; return; }  >&$fd
+        sleep .3; kill -0 $1 || { (( verbose )) && echo; return; }  >&$fd
 
         # Be somewhat rude.
         (( verbose )) && emit -ny "Being rude .."
-        kill -TERM $1; sleep .1; kill -TERM $1
-        sleep .2; kill -0 $1 || { (( verbose )) && echo; return; }  >&$fd
+        kill -TERM $1
+        sleep 2; kill -0 $1 || { (( verbose )) && echo; return; }  >&$fd
 
         # Be vicious.
         (( verbose )) && emit -nr "Being vicious .."
@@ -560,7 +573,7 @@ skill() {
 # After the operation, OPTARGS is set the the index of the last argument
 # that has been parsed by getArgs.  Ready for you to use shift $OPTARGS.
 #
-getArgs() {
+function getArgs {
 
     # Check usage.
     [[ $# -lt 1 ]] && {
@@ -623,7 +636,7 @@ getArgs() {
 #
 #   description A description of the effect of the preceding option.
 #
-showHelp() {
+function showHelp {
 
     # Check usage.
     [[ $# -lt 3 ]] || getArgs -q :h "$@" && {
@@ -672,7 +685,7 @@ showHelp() {
 #   element The element to search the array for.
 #   array   This is a list of elements to search through.
 #
-inArray() {
+function inArray {
 
     # Check usage.
     [[ $# -lt 2 ]] || getArgs -q :h "$@" && {
@@ -710,7 +723,7 @@ inArray() {
 # When no value and no key is specified, all known keys for the given map are
 # returned.
 #
-map() {
+function map {
     # Parse the options.
     local quiet=
     [[ $1 = -q ]] && { quiet=1; shift; }
@@ -765,7 +778,7 @@ map() {
 # Returns the index of the map with the given name.
 # For internal use only.
 #
-_findMapNameIndex() {
+function _findMapNameIndex {
 
     # Parse arguments.
     local quiet=0
@@ -797,7 +810,7 @@ _findMapNameIndex() {
 # Returns the index of the given key in the map with the given index.
 # For internal use only.
 #
-_findMapKeyIndex() {
+function _findMapKeyIndex {
 
     # Parse arguments.
     local quiet=0
@@ -843,7 +856,7 @@ _findMapKeyIndex() {
 #   -n      Use newlines as an output separator between keys and values.
 #   -0      Use NULL-bytes as an output separator between keys and values.
 #
-_depricated_map() {
+function _depricated_map {
 
     # Check usage.
     [[ $# -lt 2 ]] || getArgs -q :h "$@" && {
@@ -897,7 +910,7 @@ _depricated_map() {
 # output for a function, you should have a hideDebug on as its first line
 # and hideDebug off as its last.
 #
-hideDebug() {
+function hideDebug {
 
     if [[ $1 = on ]]; then
         : -- HIDING DEBUG OUTPUT ..
@@ -918,7 +931,7 @@ hideDebug() {
 # Retrieve a mapping of a key from the given map or modify the given map by
 # assigning a new value for the given key if stdin is not the terminal.
 #
-stackTrace() {
+function stackTrace {
 
     # Some general debug information.
     echo -e "\t$bold$BASH$reset v$bold$BASH_VERSION$reset"
@@ -957,13 +970,16 @@ stackTrace() {
 } # _____________________________________________________________________
 
 
+
+
+
 #  ______________________________________________________________________ 
 # |                                                                      |
 # |                                                  .:: ENTRY POINT ::. |
 # |______________________________________________________________________|
 
 # Make sure this file is sourced and not executed.
-[[ $0 = */bashlib ]] && {
+(( ! BASH_LINENO )) && {
     emit -R "You should source this file, not execute it."
     exit 1
 }

@@ -22,7 +22,7 @@
 #   * http://lhunath.lyndir.com                                               #
 #   * Maarten Billemont.                                                      #
 #                                                                             #
-source bashlib                                                                #
+source "${0%/*}/bashlib"                                                      #
 
 
 # A function that recursively extracts all Java Archives it encounters.
