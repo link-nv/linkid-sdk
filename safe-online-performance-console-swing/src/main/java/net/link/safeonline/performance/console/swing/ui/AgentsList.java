@@ -48,8 +48,7 @@ public class AgentsList extends JList implements AgentStateListener,
 		setSelectionBackground(Color.decode("#EEEEFF"));
 
 		ConsoleData.addAgentStatusListener(this);
-		ConsoleData.getAgentDiscoverer().addAgentStateListener(
-				this);
+		ConsoleData.getAgentDiscoverer().addAgentStateListener(this);
 	}
 
 	/**
@@ -60,8 +59,7 @@ public class AgentsList extends JList implements AgentStateListener,
 		// Check whether all agents are in the list and add them if need be.
 		for (Address address : addresses)
 			if (!address.equals(ConsoleData.getSelf())) {
-				ConsoleAgent agent = ConsoleData
-						.getAgent(address);
+				ConsoleAgent agent = ConsoleData.getAgent(address);
 				if (agent != null && !this.model.contains(agent)) {
 					this.model.addElement(agent);
 
@@ -97,8 +95,7 @@ public class AgentsList extends JList implements AgentStateListener,
 	 */
 	public void channelConnected() {
 
-		membersChanged(ConsoleData.getAgentDiscoverer()
-				.getMembers());
+		membersChanged(ConsoleData.getAgentDiscoverer().getMembers());
 	}
 
 	/**

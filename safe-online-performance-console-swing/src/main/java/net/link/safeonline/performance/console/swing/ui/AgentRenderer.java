@@ -89,6 +89,7 @@ public class AgentRenderer extends DefaultListCellRenderer {
 							"<html><ul><li style='color: %s; font-family:monospace'>%s [%s]%s</li></ul></html>",
 							color, agent.getAddress(), (action == null ? state
 									: action.getTransitioning()), error));
+			System.err.println(getText());
 		}
 
 		return this;

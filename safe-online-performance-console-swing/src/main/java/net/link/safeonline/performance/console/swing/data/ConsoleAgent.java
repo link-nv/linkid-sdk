@@ -220,7 +220,7 @@ public class ConsoleAgent implements Agent {
 	public void updateState() {
 
 		try {
-			synchronized (ConsoleData.lock) {
+			//			synchronized (ConsoleData.lock) {
 				this.transit = notifyOnChange(this.transit, this.agentRemoting
 						.getTransit(this.agentAddress));
 				this.state = notifyOnChange(this.state, this.agentRemoting
@@ -235,7 +235,7 @@ public class ConsoleAgent implements Agent {
 					this.executions = notifyOnChange(this.executions,
 							this.agentRemoting.getExecutions(this.agentAddress));
 				}
-			}
+			//			}
 		}
 
 		catch (IllegalStateException e) {

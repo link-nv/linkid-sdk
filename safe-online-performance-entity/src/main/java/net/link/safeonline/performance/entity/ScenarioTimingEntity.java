@@ -15,11 +15,11 @@ import javax.persistence.ManyToOne;
 /**
  * <h2>{@link ScenarioTimingEntity}<br>
  * <sub>Holds the startTime at which a scenario has been executed.</sub></h2>
- * 
+ *
  * <p>
  * <i>Jan 17, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 @Entity
@@ -41,6 +41,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 
 	public ScenarioTimingEntity() {
 
+		this.agentDuration = 0l;
 		this.startTime = System.currentTimeMillis();
 	}
 
@@ -88,8 +89,8 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 	}
 
 	/**
-	 * Signal that the scenario started at the startTime contained in this entity has
-	 * just ended.
+	 * Signal that the scenario started at the startTime contained in this
+	 * entity has just ended.
 	 */
 	public void stop() {
 

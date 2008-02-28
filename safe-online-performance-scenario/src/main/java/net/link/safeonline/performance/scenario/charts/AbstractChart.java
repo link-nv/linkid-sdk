@@ -96,7 +96,7 @@ public abstract class AbstractChart implements Chart {
 	private static ImageEncoder encoder = ImageEncoderFactory.newInstance(
 			"png", 0.9f, true);
 
-	private final Log LOG = LogFactory.getLog(getClass());
+	final Log LOG = LogFactory.getLog(getClass());
 
 	private final ExecutionService executionService = getService(
 			ExecutionService.class, ExecutionService.BINDING);

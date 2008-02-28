@@ -1,0 +1,114 @@
+#! /bin/bash
+# ___________________________________________________________________________ #
+#                                                                             #
+#       JarDiff -- Compare two Java Archives to find relevant differences.    #
+#                                                                             #
+#                                                                             #
+#    Licensed under the Apache License, Version 2.0 (the "License");          #
+#    you may not use this file except in compliance with the License.         #
+#    You may obtain a copy of the License at                                  #
+#                                                                             #
+#        http://www.apache.org/licenses/LICENSE-2.0                           #
+#                                                                             #
+#    Unless required by applicable law or agreed to in writing, software      #
+#    distributed under the License is distributed on an "AS IS" BASIS,        #
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. #
+#    See the License for the specific language governing permissions and      #
+#    limitations under the License.                                           #
+# ___________________________________________________________________________ #
+#                                                                             #
+#                                                                             #
+# Copyright 2007, lhunath                                                     #
+#   * http://lhunath.lyndir.com                                               #
+#   * Maarten Billemont.                                                      #
+#                                                                             #
+source bashlib                                                                #
+
+
+# A function that recursively extracts all Java Archives it encounters.
+#  - Only extract archives that also exist in the other root.
+function extractAll {
+    
+    otherPWD=${PWD#$workdir/}
+    [[ $otherPWD = old* ]] \
+        && otherPWD=$workdir/${otherPWD/old/new} \
+        || otherPWD=$workdir/${otherPWD/new/old}
+
+    while read -d ''; do
+        archive=${REPLY#./}
+
+        mkdir "_${archive//\//_}" || continue
+        cd "_${archive//\//_}"
+
+        [[ -f "$otherPWD/$archive" ]] \
+            && unzip -qq "../$archive"
+        cd ..
+    done < <(find . \( -type d -name '_*' -prune \) -o -name '*.?ar' -print0)
+}
+
+# Configuration.
+workdir=$(mktemp -d)
+trap 'rm -rf "$workdir"' EXIT
+
+
+# Parse command-line arguments.
+old=$1; [[ $old = /* ]] || old=$PWD/$old
+new=$2; [[ $new = /* ]] || new=$PWD/$new
+
+
+# Recursively extract all archives within the old and new archives.
+emit "Extracting archives recursively" --
+    mkdir -p "$workdir/"{old,new}
+
+    cd "$workdir/old" && unzip -qq "$old" || \
+        { emit -$?; exit $?; }
+    cd "$workdir/new" && unzip -qq "$new" || \
+        { emit -$?; exit $?; }
+
+    keepDigging=1
+    for (( i=0; keepDigging; ++i )); do
+        emit "Starting level $i"
+        for d in old new; do
+            cd "$workdir/$d"
+            if (( i )); then
+                keepDigging=0
+                while read -d ''; do
+                    cd "$REPLY"
+
+                    extractAll || \
+                        { emit -$?; exit $?; }
+
+                    keepDigging=1
+                done < <(find "$PWD" -mindepth $i -maxdepth $i -type d -name '_*.?ar' -print0)
+            else
+                extractAll
+            fi
+        done
+    done
+emit -0
+
+
+# Enumerate the files and their file sizes.
+emit "Recording comparison heuristics" --
+    cd "$workdir/old" && find . -type f ! -name '*.?ar' -printf "%s old %p\0" > "$workdir/old.ls" || \
+        { emit -$?; exit $?; }
+    cd "$workdir/new" && find . -type f ! -name '*.?ar' -printf "%s new %p\0" > "$workdir/new.ls" || \
+        { emit -$?; exit $?; }
+emit -0
+
+# Scanning for differences in the heuristics.
+emit "Scanning heuristics for changes"
+    prevFile=; prevType=; prevSize=
+    while read -d '' size type file; do
+        if [[ $prevFile ]]; then
+            if [[ $file != $prevFile ]]; then
+                emit -y "$prevFile only found in $prevType archive."
+            else
+                [[ $size != $prevSize ]] \
+                    && emit -Y "$prevSize\t->\t$size\t: $file"
+                prevFile=; continue
+            fi
+        fi
+
+        prevFile=$file; prevType=$type; prevSize=$size
+    done < <(cat "$workdir/old.ls" "$workdir/new.ls" | sort -z -k 3 -k 2 -k 1 | tee >(tr '\0' '\n' > "$HOME/jardiff"))
