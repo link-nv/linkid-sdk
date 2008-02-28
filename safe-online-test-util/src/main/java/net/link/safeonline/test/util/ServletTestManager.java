@@ -16,8 +16,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Handler;
+import org.mortbay.jetty.LocalConnector;
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
+import org.mortbay.jetty.bio.SocketConnector;
+import org.mortbay.jetty.security.SecurityHandler;
+import org.mortbay.jetty.servlet.AbstractSessionManager;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.FilterHolder;
 import org.mortbay.jetty.servlet.HashSessionManager;
@@ -25,7 +28,6 @@ import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletMapping;
 import org.mortbay.jetty.servlet.SessionHandler;
-import org.mortbay.jetty.servlet.AbstractSessionManager.Session;
 
 /**
  * Servlet Test Manager. This test manager allows one to unit test servlets. It
@@ -36,82 +38,74 @@ import org.mortbay.jetty.servlet.AbstractSessionManager.Session;
  */
 public class ServletTestManager {
 
-	private static final Log LOG = LogFactory.getLog(ServletTestManager.class);
+	static final Log LOG = LogFactory.getLog(ServletTestManager.class);
 
 	private Server server;
 
-	private String servletLocation;
+	public static class TestHashSessionManager extends HashSessionManager {
 
-	public String setUp(Class<?> servletClass) throws Exception {
-		return setUp(servletClass, null, null, null);
-	}
+		final Map<String, Object> initialSessionAttributes;
 
-	public String setUp(Class<?> servletClass,
-			Map<String, String> servletInitParameters) throws Exception {
-		return setUp(servletClass, servletInitParameters, null, null, null);
-	}
-
-	Session session;
-
-	LocalHashSessionManager sessionManager;
-
-	private class LocalHashSessionManager extends HashSessionManager {
-
-		private final Log managerLOG = LogFactory
-				.getLog(LocalHashSessionManager.class);
-
-		private final Map<String, Object> initialSessionAttributes;
-
-		public LocalHashSessionManager(
-				Map<String, Object> initialSessionAttributes) {
-			if (null != initialSessionAttributes) {
-				this.initialSessionAttributes = initialSessionAttributes;
-			} else {
-				this.initialSessionAttributes = new HashMap<String, Object>();
-			}
+		public TestHashSessionManager() {
+			this.initialSessionAttributes = new HashMap<String, Object>();
 		}
 
-		public void setAttribute(String name, Object value) {
+		public void setInitialSessionAttribute(String name, Object value) {
 			this.initialSessionAttributes.put(name, value);
 		}
 
 		@Override
 		protected Session newSession(HttpServletRequest request) {
-			this.managerLOG.debug("newSession");
-			Session newSession = (Session) super.newSession(request);
-			for (Map.Entry<String, Object> entry : this.initialSessionAttributes
+			LOG.debug("new session");
+			Session session = (Session) super.newSession(request);
+			for (Map.Entry<String, Object> mapEntry : this.initialSessionAttributes
 					.entrySet()) {
-				String key = entry.getKey();
-				Object value = entry.getValue();
-				newSession.setAttribute(key, value);
+				LOG.debug("setting attribute: " + mapEntry.getKey());
+				session.setAttribute(mapEntry.getKey(), mapEntry.getValue());
 			}
-			ServletTestManager.this.session = newSession;
-			return newSession;
+			return session;
 		}
 	}
 
-	public String setUp(Class<?> servletClass, Class<?> filterClass,
+	public void setUp(Class<?> servletClass) throws Exception {
+		setUp(servletClass, null, null, null);
+	}
+
+	public void setUp(Class<?> servletClass,
+			Map<String, String> servletInitParameters) throws Exception {
+		setUp(servletClass, servletInitParameters, null, null, null);
+	}
+
+	TestHashSessionManager sessionManager;
+
+	public void setUp(Class<?> servletClass, Class<?> filterClass)
+			throws Exception {
+		setUp(servletClass, null, filterClass, null, null);
+	}
+
+	public void setUp(Class<?> servletClass, Class<?> filterClass,
+			Map<String, String> filterInitParameters) throws Exception {
+		setUp(servletClass, null, filterClass, filterInitParameters, null);
+	}
+
+	public void setUp(Class<?> servletClass, Class<?> filterClass,
 			Map<String, String> filterInitParameters,
 			Map<String, Object> initialSessionAttributes) throws Exception {
-		return setUp(servletClass, null, filterClass, filterInitParameters,
+		setUp(servletClass, null, filterClass, filterInitParameters,
 				initialSessionAttributes);
 	}
 
-	public String setUp(Class<?> servletClass,
+	public void setUp(Class<?> servletClass,
 			Map<String, String> servletInitParameters, Class<?> filterClass,
 			Map<String, String> filterInitParameters,
 			Map<String, Object> initialSessionAttributes) throws Exception {
 		this.server = new Server();
-		Connector connector = new SelectChannelConnector();
-		connector.setPort(0);
-		this.server.addConnector(connector);
-
-		this.sessionManager = new LocalHashSessionManager(
-				initialSessionAttributes);
-		SessionHandler sessionHandler = new SessionHandler(this.sessionManager);
-
-		Context context = new Context(null, sessionHandler, null, null, null);
+		Connector connector = new LocalConnector();
+		this.sessionManager = new TestHashSessionManager();
+		Context context = new Context(null, new SessionHandler(
+				this.sessionManager), new SecurityHandler(), null, null);
 		context.setContextPath("/");
+		this.server.addConnector(connector);
 		this.server.addHandler(context);
 
 		if (null != servletInitParameters) {
@@ -145,39 +139,59 @@ public class ServletTestManager {
 
 		this.server.start();
 
-		int port = connector.getLocalPort();
-		LOG.debug("servlet \"" + servletClass.getSimpleName() + "\" on port "
-				+ port);
-
-		this.servletLocation = "http://localhost:" + port + "/";
-		return this.servletLocation;
+		if (null != initialSessionAttributes) {
+			this.sessionManager.initialSessionAttributes
+					.putAll(initialSessionAttributes);
+		}
 	}
 
-	public String getServletLocation() {
-		return this.servletLocation;
+	public String createSocketConnector() throws Exception {
+		SocketConnector connector = new SocketConnector();
+		connector.setHost("127.0.0.1");
+		this.server.addConnector(connector);
+		if (this.server.isStarted()) {
+			connector.start();
+		} else {
+			connector.open();
+		}
+
+		return "http://127.0.0.1:" + connector.getLocalPort() + "/";
+	}
+
+	public String getServletLocation() throws Exception {
+		return createSocketConnector();
 	}
 
 	public void tearDown() throws Exception {
 		this.server.stop();
 	}
 
+	@SuppressWarnings( { "unchecked" })
 	public Object getSessionAttribute(String name) {
-		if (null == this.session) {
-			return null;
-		}
-		Object attribute = this.session.getAttribute(name);
-		return attribute;
+		Map<String, AbstractSessionManager.Session> sessions = this.sessionManager
+				.getSessionMap();
+		AbstractSessionManager.Session session = sessions.values().iterator()
+				.next();
+		String sessionId = session.getId();
+		LOG.debug("session id: " + sessionId);
+		Object value = session.getAttribute(name);
+		return value;
 	}
 
-	@SuppressWarnings("unused")
+	/**
+	 * We update all existing sessions + we make sure that new session also get
+	 * this session attribute.
+	 * 
+	 * @param name
+	 * @param value
+	 */
+	@SuppressWarnings( { "unchecked" })
 	public void setSessionAttribute(String name, Object value) {
-		if (null == this.session) {
-			if (null == this.sessionManager) {
-				throw new IllegalStateException("invoke setUp first");
-			}
-			this.sessionManager.setAttribute(name, value);
-			return;
+		Map<String, AbstractSessionManager.Session> sessions = this.sessionManager
+				.getSessionMap();
+		for (AbstractSessionManager.Session session : sessions.values()) {
+			session.setAttribute(name, value);
 		}
-		this.session.setAttribute(name, value);
+		this.sessionManager.setInitialSessionAttribute(name, value);
 	}
 }

@@ -14,8 +14,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.RequestParameter;
@@ -27,6 +30,9 @@ import org.jboss.seam.annotations.RequestParameter;
  * 
  */
 public abstract class AbstractInjectionServlet extends HttpServlet {
+
+	private static final Log LOG = LogFactory
+			.getLog(AbstractInjectionServlet.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -44,9 +50,41 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 
 	private void doInvocation(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
 		injectRequestParameters(request);
-		invoke(request, response);
-		outjectSessionAttributes(request);
+		InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(
+				response);
+		invoke(request, responseWrapper);
+		outjectSessionAttributes(request, session);
+		responseWrapper.commit();
+	}
+
+	/**
+	 * Injection response wrapper. We use a response wrapper since we want to be
+	 * able to postpone some actions.
+	 * 
+	 * @author fcorneli
+	 * 
+	 */
+	public static class InjectionResponseWrapper extends
+			HttpServletResponseWrapper {
+
+		private String redirectLocation;
+
+		public InjectionResponseWrapper(HttpServletResponse response) {
+			super(response);
+		}
+
+		@Override
+		public void sendRedirect(String location) throws IOException {
+			this.redirectLocation = location;
+		}
+
+		public void commit() throws IOException {
+			if (null != this.redirectLocation) {
+				super.sendRedirect(this.redirectLocation);
+			}
+		}
 	}
 
 	protected abstract void invoke(HttpServletRequest request,
@@ -79,9 +117,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 		}
 	}
 
-	private void outjectSessionAttributes(HttpServletRequest request)
-			throws ServletException {
-		HttpSession session = request.getSession();
+	private void outjectSessionAttributes(HttpServletRequest request,
+			HttpSession session) throws ServletException {
 		Field[] fields = this.getClass().getDeclaredFields();
 		for (Field field : fields) {
 			Out outAnnotation = field.getAnnotation(Out.class);
@@ -103,6 +140,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 				throw new ServletException("illegal access: " + e.getMessage(),
 						e);
 			}
+			LOG.debug("outjecting to session attribute: " + outName);
 			session.setAttribute(outName, value);
 		}
 	}
