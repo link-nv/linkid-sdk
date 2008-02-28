@@ -220,19 +220,21 @@ public class ConsoleAgent implements Agent {
 	public void updateState() {
 
 		try {
-			this.transit = notifyOnChange(this.transit, this.agentRemoting
-					.getTransit(this.agentAddress));
-			this.state = notifyOnChange(this.state, this.agentRemoting
-					.getState(this.agentAddress));
-			this.error = notifyOnChange(this.error, this.agentRemoting
-					.getError(this.agentAddress));
+			synchronized (ConsoleData.lock) {
+				this.transit = notifyOnChange(this.transit, this.agentRemoting
+						.getTransit(this.agentAddress));
+				this.state = notifyOnChange(this.state, this.agentRemoting
+						.getState(this.agentAddress));
+				this.error = notifyOnChange(this.error, this.agentRemoting
+						.getError(this.agentAddress));
 
-			// Only sync these if a scenario is deployed.
-			if (AgentState.UPLOAD.compareTo(this.state) < 0) {
-				this.scenarios = notifyOnChange(this.scenarios,
-						this.agentRemoting.getScenarios(this.agentAddress));
-				this.executions = notifyOnChange(this.executions,
-						this.agentRemoting.getExecutions(this.agentAddress));
+				// Only sync these if a scenario is deployed.
+				if (AgentState.UPLOAD.compareTo(this.state) < 0) {
+					this.scenarios = notifyOnChange(this.scenarios,
+							this.agentRemoting.getScenarios(this.agentAddress));
+					this.executions = notifyOnChange(this.executions,
+							this.agentRemoting.getExecutions(this.agentAddress));
+				}
 			}
 		}
 
@@ -254,18 +256,18 @@ public class ConsoleAgent implements Agent {
 			return oldValue;
 
 		// Equals is broken for non-sorted sets when the order gets shaken up.
-		Object fixed1 = oldValue, fixed2 = newValue;
+		Object fixedOld = oldValue, fixedNew = newValue;
 		if (oldValue instanceof Set && !(oldValue instanceof SortedSet))
-			fixed1 = new TreeSet<Object>((Set<? extends Object>) oldValue);
+			fixedOld = new TreeSet<Object>((Set<? extends Object>) oldValue);
 		if (newValue instanceof Set && !(newValue instanceof SortedSet))
-			fixed2 = new TreeSet<Object>((Set<? extends Object>) newValue);
+			fixedNew = new TreeSet<Object>((Set<? extends Object>) newValue);
 
-		if (fixed1 != null) {
-			if (fixed2 == null || !fixed1.equals(fixed2))
+		if (fixedOld != null) {
+			if (fixedNew == null || !fixedOld.equals(fixedNew))
 				ConsoleData.fireAgentStatus(this);
 		}
 
-		else if (fixed2 != null)
+		else if (fixedNew != null)
 			ConsoleData.fireAgentStatus(this);
 
 		return newValue;

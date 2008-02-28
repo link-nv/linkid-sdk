@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.AgentRemoting;
@@ -48,19 +50,23 @@ import org.jgroups.Address;
  */
 public class ConsoleData {
 
-	private static List<ExecutionSelectionListener> executionSelectionListeners = new ArrayList<ExecutionSelectionListener>();
-	private static List<ExecutionSettingsListener> executionSettingsListeners = new ArrayList<ExecutionSettingsListener>();
-	private static List<AgentSelectionListener> agentSelectionListeners = new ArrayList<AgentSelectionListener>();
-	private static List<AgentStatusListener> agentStatusListeners = new ArrayList<AgentStatusListener>();
+	public static final Object lock = new Object();
 
-	private static Map<Address, ConsoleAgent> agents = new HashMap<Address, ConsoleAgent>();
-	private static AgentRemoting agentDiscoverer = new AgentRemoting();
-	private static ScenarioRemoting remoting = new ScenarioRemoting();
+	static final List<ExecutionSelectionListener> executionSelectionListeners = new ArrayList<ExecutionSelectionListener>();
+	static final List<ExecutionSettingsListener> executionSettingsListeners = new ArrayList<ExecutionSettingsListener>();
+	static final List<AgentSelectionListener> agentSelectionListeners = new ArrayList<AgentSelectionListener>();
+	static final List<AgentStatusListener> agentStatusListeners = new ArrayList<AgentStatusListener>();
+
+	private static final Map<Address, ConsoleAgent> agents = new HashMap<Address, ConsoleAgent>();
+	private static final AgentRemoting agentDiscoverer = new AgentRemoting();
+	private static final ScenarioRemoting remoting = new ScenarioRemoting();
 	private static String hostname = "sebeco-dev-10";
-	private static int port = 8443, workers = 5;
+	private static int port = 8443;
+
+	static int workers = 5;
 	private static long duration = 600000;
-	private static Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
-	private static ScenarioExecution execution;
+	static Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
+	static ScenarioExecution execution;
 	private static String scenarioName;
 
 	public static Address getSelf() {
@@ -253,8 +259,15 @@ public class ConsoleData {
 
 	public static void fireExecutionSelection() {
 
-		for (ExecutionSelectionListener listener : executionSelectionListeners)
-			listener.executionSelected(execution);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+
+				synchronized (lock) {
+					for (ExecutionSelectionListener listener : executionSelectionListeners)
+						listener.executionSelected(execution);
+				}
+			}
+		});
 	}
 
 	/**
@@ -269,8 +282,15 @@ public class ConsoleData {
 
 	public static void fireExecutionSettings() {
 
-		for (ExecutionSettingsListener listener : executionSettingsListeners)
-			listener.executionSettingsChanged();
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+
+				synchronized (lock) {
+					for (ExecutionSettingsListener listener : executionSettingsListeners)
+						listener.executionSettingsChanged();
+				}
+			}
+		});
 	}
 
 	/**
@@ -285,8 +305,15 @@ public class ConsoleData {
 
 	public static void fireAgentSelection() {
 
-		for (AgentSelectionListener listener : agentSelectionListeners)
-			listener.agentsSelected(selectedAgents);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+
+				synchronized (lock) {
+					for (AgentSelectionListener listener : agentSelectionListeners)
+						listener.agentsSelected(selectedAgents);
+				}
+			}
+		});
 	}
 
 	/**
@@ -305,10 +332,17 @@ public class ConsoleData {
 	 * @param agent
 	 *            The agent whose status changed.
 	 */
-	public static void fireAgentStatus(ConsoleAgent agent) {
+	public static void fireAgentStatus(final ConsoleAgent agent) {
 
-		for (AgentStatusListener listener : agentStatusListeners)
-			listener.statusChanged(agent);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+
+				synchronized (lock) {
+					for (AgentStatusListener listener : agentStatusListeners)
+						listener.statusChanged(agent);
+				}
+			}
+		});
 	}
 
 	/**
