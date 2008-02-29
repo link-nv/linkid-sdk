@@ -7,6 +7,11 @@
 
 package test.unit.net.link.safeonline.owner.webapp;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
@@ -31,11 +36,6 @@ import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.joda.time.DateTime;
-
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.easymock.EasyMock.expect;
 
 public class ChartServletTest extends TestCase {
 
@@ -68,8 +68,8 @@ public class ChartServletTest extends TestCase {
 				this.mockStatisticService);
 
 		this.servletTestManager = new ServletTestManager();
-		this.servletLocation = this.servletTestManager
-				.setUp(ChartServlet.class);
+		this.servletTestManager.setUp(ChartServlet.class);
+		this.servletLocation = this.servletTestManager.createSocketConnector();
 
 		this.mockObjects = new Object[] { this.mockStatisticService };
 	}
