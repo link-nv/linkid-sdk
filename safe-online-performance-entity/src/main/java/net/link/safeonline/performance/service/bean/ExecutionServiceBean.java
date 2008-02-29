@@ -10,8 +10,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
@@ -19,9 +17,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.service.ExecutionService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -89,18 +87,6 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
-	public SortedSet<ScenarioTimingEntity> getExecutionTimes(
-			ExecutionEntity execution) {
-
-		return new TreeSet<ScenarioTimingEntity>(this.em.createNamedQuery(
-				ExecutionEntity.getTimes).setParameter("execution", execution)
-				.getResultList());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public Set<DriverProfileEntity> getProfiles(Date startTime) {
 
 		return this.ctx.getBusinessObject(ExecutionService.class).getExecution(
@@ -117,5 +103,15 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 		this.em.persist(startTimeEntity);
 
 		return startTimeEntity;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void updateSpeed(ExecutionEntity execution) {
+
+		execution.setSpeed((Double) this.em.createNamedQuery(
+				ExecutionEntity.calcSpeed).setParameter("execution", execution)
+				.getSingleResult());
 	}
 }

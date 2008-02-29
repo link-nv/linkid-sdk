@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -106,10 +107,14 @@ public abstract class AbstractChart implements Chart {
 			DriverExceptionService.class, DriverExceptionService.BINDING);
 
 	protected String title;
+	private boolean linked;
+	private List<AbstractChart> links;
 
 	public AbstractChart(String title) {
 
 		this.title = title;
+		this.linked = false;
+		this.links = new ArrayList<AbstractChart>();
 	}
 
 	/**
@@ -120,9 +125,64 @@ public abstract class AbstractChart implements Chart {
 		return this.title;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public byte[][] render(int dataPoints) {
+
+		// Don't render when linked.
+		if (this.linked)
+			return null;
+
+		XYPlot plot = getPlot();
+		if (this.links.isEmpty()) {
+			XYPlot basePlot = plot;
+			CombinedDomainXYPlot combinedPlot;
+
+			plot = combinedPlot = new CombinedDomainXYPlot(basePlot
+					.getDomainAxis());
+			combinedPlot.add(basePlot);
+
+			for (AbstractChart link : this.links)
+				combinedPlot.add(link.getPlot());
+		}
+
+		JFreeChart chart = new JFreeChart(plot);
+		return new byte[][] { getImage(chart, dataPoints) };
+	}
+
+	/**
+	 * Implement this method to generate the plot that depicts the chart your
+	 * module generates.
+	 */
+	protected abstract XYPlot getPlot();
+
+	/**
+	 * Link this plot with the given other plots.<br>
+	 * <br>
+	 * The other plots will all use the domain axis of this plot and will not
+	 * generate a chart of their own. A single chart will be generated for all
+	 * plots linked to this one.<br>
+	 * <br>
+	 * <b>NOTE: Do not chain link plots, links do not work recursively. All
+	 * plots beyond the first level of the chain will no longer be visible in
+	 * the charts.</b>
+	 */
+	public void linkWith(AbstractChart... charts) {
+
+		for (AbstractChart chart : charts) {
+			chart.isLinked();
+			this.links.add(chart);
+		}
+	}
+
+	private void isLinked() {
+
+		this.linked = true;
+	}
+
 	protected Long getMeasurement(Set<MeasurementEntity> measurements,
-			String type)
-			throws NoSuchElementException {
+			String type) throws NoSuchElementException {
 
 		for (MeasurementEntity e : measurements)
 			if (type.equals(e.getMeasurement()))
@@ -374,8 +434,8 @@ public abstract class AbstractChart implements Chart {
 		start = System.currentTimeMillis();
 		this.LOG.debug("Scenario Speed.");
 		List<TimeSeriesCollection> scenarioSpeedSets = new ArrayList<TimeSeriesCollection>();
-		SortedSet<ScenarioTimingEntity> agentTimes = this.executionService
-				.getExecutionTimes(execution);
+		SortedSet<ScenarioTimingEntity> agentTimes = new TreeSet<ScenarioTimingEntity>();
+		// this.executionService .getExecutionTimes(execution);
 		if (agentTimes.isEmpty())
 			this.LOG.debug("No scenario start times available.");
 

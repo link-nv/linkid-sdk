@@ -25,7 +25,6 @@ import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.util.filter.ProfileFilter;
 import net.link.safeonline.util.performance.ProfileData;
 
-import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -95,7 +94,8 @@ public class ScenarioDurationsChart extends AbstractChart {
 	/**
 	 * {@inheritDoc}
 	 */
-	public byte[][] render(int dataPoints) {
+	@Override
+	protected XYPlot getPlot() {
 
 		DateAxis timeAxis = new DateAxis("Time");
 		NumberAxis valueAxis = new NumberAxis("Duration (ms)");
@@ -105,15 +105,8 @@ public class ScenarioDurationsChart extends AbstractChart {
 			scenarioDuration.addSeries(driverSet);
 		scenarioDuration.addSeries(this.overhead);
 
-		XYPlot durationPlot = new XYPlot();
-		durationPlot.setDataset(scenarioDuration);
-		durationPlot.setDomainAxis(timeAxis);
-		durationPlot.setRangeAxis(valueAxis);
-		durationPlot.setRenderer(new StackedXYAreaRenderer2());
-
-		JFreeChart durationChart = new JFreeChart(durationPlot);
-
-		return new byte[][] { getImage(durationChart, dataPoints) };
+		return new XYPlot(scenarioDuration, timeAxis, valueAxis,
+				new StackedXYAreaRenderer2());
 	}
 
 	private XYSeries getDriverSet(DriverProfileEntity profile) {

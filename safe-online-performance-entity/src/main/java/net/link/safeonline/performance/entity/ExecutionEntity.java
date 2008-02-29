@@ -8,11 +8,9 @@ package net.link.safeonline.performance.entity;
 
 import java.util.Date;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ejb.EJB;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -38,14 +36,14 @@ import net.link.safeonline.performance.service.ExecutionService;
 		@NamedQuery(name = ExecutionEntity.findById, query = "SELECT e"
 				+ "    FROM ExecutionEntity e"
 				+ "    WHERE e.startTime = :startTime"),
-		@NamedQuery(name = ExecutionEntity.getTimes, query = "SELECT at"
-				+ "    FROM ScenarioTimingEntity at"
-				+ "    WHERE at.execution = :execution") })
+		@NamedQuery(name = ExecutionEntity.calcSpeed, query = "SELECT 1000 * COUNT(t) / ( MAX(t.startTime) - MIN(t.startTime) )"
+				+ "    FROM ScenarioTimingEntity t"
+				+ "    WHERE t.execution = :execution") })
 public class ExecutionEntity {
 
 	public static final String findAll = "ExecutionEntity.findAll";
 	public static final String findById = "ExecutionEntity.findById";
-	public static final String getTimes = "ExecutionEntity.getTimes";
+	public static final String calcSpeed = "ExecutionEntity.calcSpeed";
 
 	@Id
 	private Date startTime;
@@ -60,6 +58,9 @@ public class ExecutionEntity {
 
 	@OneToMany(mappedBy = "execution")
 	private Set<DriverProfileEntity> profiles;
+
+	@EJB
+	private transient ExecutionService executionService;
 
 	public ExecutionEntity() {
 
@@ -137,43 +138,26 @@ public class ExecutionEntity {
 	}
 
 	/**
-	 * The speed will only be recalculated if it has been set as dirty.
+	 * The speed will only be recalculated if it has been set as dirty (which
+	 * automatically happens each time a scenario has been completed for it).
 	 *
 	 * @return The average scenario execution speed in this execution.
 	 */
 	public Double getSpeed() {
 
 		if (this.dirtySpeed)
-			updateSpeed();
+			this.executionService.updateSpeed(this);
 
 		return this.speed;
 	}
 
 	/**
-	 * Force a recalculation of the speed.
-	 *
-	 * TODO: This would all be a lot more efficient in a query.
+	 * @param speed
+	 *            The average scenario execution speed in this execution.
 	 */
-	public void updateSpeed() {
+	public void setSpeed(Double speed) {
 
-		try {
-			ExecutionService executionService = (ExecutionService) new InitialContext()
-					.lookup(ExecutionService.BINDING);
-			SortedSet<ScenarioTimingEntity> sortedTimes = executionService
-					.getExecutionTimes(this);
-
-			try {
-				this.speed = (double) sortedTimes.size()
-						/ (sortedTimes.last().getAgentDuration()
-								+ sortedTimes.last().getStart() - sortedTimes
-								.first().getStart());
-			} catch (NullPointerException e) {
-				this.speed = null;
-			}
-
-			this.dirtySpeed = false;
-		} catch (NamingException e) {
-		}
+		this.speed = speed;
 	}
 
 	/**

@@ -18,7 +18,6 @@ package net.link.safeonline.performance.scenario.charts;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.util.performance.ProfileData;
 
-import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
@@ -75,7 +74,8 @@ public class ScenarioMemoryChart extends AbstractChart {
 	/**
 	 * {@inheritDoc}
 	 */
-	public byte[][] render(int dataPoints) {
+	@Override
+	protected XYPlot getPlot() {
 
 		DateAxis timeAxis = new DateAxis("Time");
 
@@ -94,7 +94,6 @@ public class ScenarioMemoryChart extends AbstractChart {
 		memoryPlot.add(olasPlot);
 		memoryPlot.add(agentPlot);
 
-		JFreeChart memoryChart = new JFreeChart(memoryPlot);
-		return new byte[][] { getImage(memoryChart, dataPoints) };
+		return memoryPlot;
 	}
 }

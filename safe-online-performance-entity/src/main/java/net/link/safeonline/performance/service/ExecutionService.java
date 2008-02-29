@@ -8,13 +8,12 @@ package net.link.safeonline.performance.service;
 
 import java.util.Date;
 import java.util.Set;
-import java.util.SortedSet;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 
 /**
@@ -67,10 +66,8 @@ public interface ExecutionService {
 	public Set<Date> getExecutions();
 
 	/**
-	 * Retrieve all {@link ScenarioTimingEntity}s linked to the given
-	 * {@link ExecutionEntity}.
+	 * Force a recalculation of the speed in the given {@link ExecutionEntity}.
 	 */
-	public SortedSet<ScenarioTimingEntity> getExecutionTimes(
-			ExecutionEntity execution);
+	public void updateSpeed(ExecutionEntity execution);
 
 }
