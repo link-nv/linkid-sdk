@@ -77,6 +77,9 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 
 		@Override
 		public void sendRedirect(String location) throws IOException {
+			if (null != this.redirectLocation) {
+				throw new IllegalStateException("cannot send redirect twice");
+			}
 			this.redirectLocation = location;
 		}
 

@@ -8,6 +8,7 @@
 package net.link.safeonline.beid.servlet;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,8 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory.getLog(JavaVersionServlet.class);
+
+	public static final String JAVA_VERSION_REG_EXPR = "^1\\.(5|6).*";
 
 	@RequestParameter("appName")
 	private String appName;
@@ -88,14 +91,43 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 		LOG.debug("app version: " + this.appVersion);
 		LOG.debug("app minor version: " + this.appMinorVersion);
 		LOG.debug("app code name: " + this.appCodeName);
-		if (false == checkPlatform(response)) {
+		if (false == checkPlatform()) {
+			response.sendRedirect("./unsupported-platform.seam");
+			return;
+		}
+		if (false == checkJavaEnabled()) {
+			response.sendRedirect("./java-disabled.seam");
+			return;
+		}
+		if (false == checkJavaVersion()) {
+			response.sendRedirect("./java-version.seam");
 			return;
 		}
 		response.sendRedirect("./beid-applet.seam");
 	}
 
-	private boolean checkPlatform(HttpServletResponse response)
-			throws IOException, ServletException {
+	private boolean checkJavaVersion() throws ServletException {
+		if (null == this.javaVersion) {
+			throw new ServletException(
+					"javaVersion request parameter is required");
+		}
+		boolean result = Pattern.matches(JAVA_VERSION_REG_EXPR,
+				this.javaVersion);
+		LOG.debug("java version check result: " + result);
+		return result;
+	}
+
+	private boolean checkJavaEnabled() throws ServletException {
+		if (null == this.javaEnabled) {
+			throw new ServletException("javaEnabled request parameter required");
+		}
+		if (false == Boolean.TRUE.toString().equals(this.javaEnabled)) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean checkPlatform() throws ServletException {
 		if (null == this.platformRequestParameter) {
 			throw new ServletException("platform request parameter required");
 		}
@@ -107,7 +139,6 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 		} else if (platformStr.indexOf("mac") != -1) {
 			this.platform = PLATFORM.MAC;
 		} else {
-			response.sendRedirect("./unsupported-platform.seam");
 			return false;
 		}
 		return true;

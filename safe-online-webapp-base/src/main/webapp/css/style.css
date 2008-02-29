@@ -389,6 +389,21 @@ span.error input {
 	clear: none;
 }
 
+span.error_message {
+	clear: left;
+	display: block;
+	background: pink;
+	background-image: url(../images/icons/exclamation.png);
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+	padding: 3px;
+	padding-left: 25px;
+	width: 80%;
+	border: 1px solid red;
+	margin: 0;
+	margin-left: 150px;
+}
+
 .error_field {
 	color: red !important;
 }

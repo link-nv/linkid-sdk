@@ -9,11 +9,12 @@
 <ui:composition template="/WEB-INF/template-error.xhtml">
 
 	<ui:define name="top_content">
-		<h1>#{msgs.platformUnsupported}</h1>
+		<h1>#{msgs.javaVersion}</h1>
 	</ui:define>
 
 	<ui:define name="content">
-		<p><span class="error_message">#{msgs.platformUnsupportedInfo}</span></p>
+		<p><span class="error_message">#{msgs.javaVersionInfo} <a
+			href="http://www.java.com/getjava/">http://www.java.com/getjava/</a></span></p>
 	</ui:define>
 
 </ui:composition>

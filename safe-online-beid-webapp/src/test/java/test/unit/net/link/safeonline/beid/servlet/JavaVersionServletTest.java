@@ -8,7 +8,11 @@
 package test.unit.net.link.safeonline.beid.servlet;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -50,6 +54,8 @@ public class JavaVersionServletTest {
 		HttpClient httpClient = new HttpClient();
 		PostMethod postMethod = new PostMethod(this.location);
 		postMethod.addParameter("platform", "Linux i686");
+		postMethod.addParameter("javaEnabled", "true");
+		postMethod.addParameter("javaVersion", "1.6.0_04");
 
 		// operate
 		int statusCode = httpClient.executeMethod(postMethod);
@@ -69,6 +75,8 @@ public class JavaVersionServletTest {
 		HttpClient httpClient = new HttpClient();
 		PostMethod postMethod = new PostMethod(this.location);
 		postMethod.addParameter("platform", "Win32");
+		postMethod.addParameter("javaEnabled", "true");
+		postMethod.addParameter("javaVersion", "1.6.0_04");
 
 		// operate
 		int statusCode = httpClient.executeMethod(postMethod);
@@ -88,6 +96,8 @@ public class JavaVersionServletTest {
 		HttpClient httpClient = new HttpClient();
 		PostMethod postMethod = new PostMethod(this.location);
 		postMethod.addParameter("platform", "MacIntel");
+		postMethod.addParameter("javaEnabled", "true");
+		postMethod.addParameter("javaVersion", "1.6.0_04");
 
 		// operate
 		int statusCode = httpClient.executeMethod(postMethod);
@@ -107,6 +117,7 @@ public class JavaVersionServletTest {
 		HttpClient httpClient = new HttpClient();
 		PostMethod postMethod = new PostMethod(this.location);
 		postMethod.addParameter("platform", "GameBoy");
+		postMethod.addParameter("javaEnabled", "true");
 
 		// operate
 		int statusCode = httpClient.executeMethod(postMethod);
@@ -118,5 +129,56 @@ public class JavaVersionServletTest {
 		LOG.debug("result location: " + resultLocation);
 		assertEquals(this.location + "unsupported-platform.seam",
 				resultLocation);
+	}
+
+	@Test
+	public void testWindowsJavaDisabled() throws Exception {
+		// setup
+		HttpClient httpClient = new HttpClient();
+		PostMethod postMethod = new PostMethod(this.location);
+		postMethod.addParameter("platform", "Win32");
+		postMethod.addParameter("javaEnabled", "false");
+
+		// operate
+		int statusCode = httpClient.executeMethod(postMethod);
+		LOG.debug("status code: " + statusCode);
+		assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
+		assertEquals(JavaVersionServlet.PLATFORM.WINDOWS,
+				this.servletTestManager.getSessionAttribute("platform"));
+		String resultLocation = postMethod.getResponseHeader("Location")
+				.getValue();
+		LOG.debug("result location: " + resultLocation);
+		assertEquals(this.location + "java-disabled.seam", resultLocation);
+	}
+
+	@Test
+	public void testWindowsJava1_4() throws Exception {
+		// setup
+		HttpClient httpClient = new HttpClient();
+		PostMethod postMethod = new PostMethod(this.location);
+		postMethod.addParameter("platform", "Win32");
+		postMethod.addParameter("javaEnabled", "true");
+		postMethod.addParameter("javaVersion", "1.4.1");
+
+		// operate
+		int statusCode = httpClient.executeMethod(postMethod);
+		LOG.debug("status code: " + statusCode);
+		assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
+		assertEquals(JavaVersionServlet.PLATFORM.WINDOWS,
+				this.servletTestManager.getSessionAttribute("platform"));
+		String resultLocation = postMethod.getResponseHeader("Location")
+				.getValue();
+		LOG.debug("result location: " + resultLocation);
+		assertEquals(this.location + "java-version.seam", resultLocation);
+	}
+
+	@Test
+	public void testRegExpression() throws Exception {
+		assertTrue(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR,
+				"1.6.0_04"));
+		assertTrue(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR,
+				"1.5.0_12"));
+		assertFalse(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR,
+				"1.4.1"));
 	}
 }
