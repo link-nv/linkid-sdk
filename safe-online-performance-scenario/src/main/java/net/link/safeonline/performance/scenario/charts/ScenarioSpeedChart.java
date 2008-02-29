@@ -56,8 +56,9 @@ public class ScenarioSpeedChart extends AbstractChart {
 		super("Scenario Speed");
 
 		this.period = period;
-		this.speed = new TimeSeries("Period: " + period + "ms");
 		this.speedData = new LinkedList<ProfileDataEntity>();
+		this.speed = new TimeSeries("Period: " + period + "ms",
+				FixedMillisecond.class);
 	}
 
 	/**
@@ -79,8 +80,10 @@ public class ScenarioSpeedChart extends AbstractChart {
 		}
 
 		// Multiply hits by 1000 and divide by period to obtain hits/s.
-		this.speed.addOrUpdate(new FixedMillisecond(baseTime), 1000d
-				* this.speedData.size() / this.period);
+		double speed = 1000d * this.speedData.size() / this.period;
+		this.LOG.debug("1000 * " + this.speedData.size() + " / " + this.period
+				+ " = " + speed);
+		this.speed.addOrUpdate(new FixedMillisecond(baseTime), speed);
 	}
 
 	/**

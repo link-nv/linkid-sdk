@@ -52,6 +52,7 @@ public class ConsoleAgent implements Agent {
 	private Set<String> scenarios;
 	private Set<ScenarioExecution> executions;
 	public boolean autoUpdate;
+	private UpdateAgentState updater;
 
 	/**
 	 * Create a new {@link ConsoleAgent} component based off the agent at the
@@ -64,7 +65,16 @@ public class ConsoleAgent implements Agent {
 		this.autoUpdate = true;
 		this.healthy = true;
 
-		new UpdateAgentState().start();
+		this.updater = new UpdateAgentState();
+		this.updater.start();
+	}
+
+	/**
+	 * Order the agent to prepare for GC by stopping the update cycle.
+	 */
+	public void shutdown() {
+
+		this.updater.shutdown();
 	}
 
 	/**
@@ -220,22 +230,22 @@ public class ConsoleAgent implements Agent {
 	public void updateState() {
 
 		try {
-			//			synchronized (ConsoleData.lock) {
-				this.transit = notifyOnChange(this.transit, this.agentRemoting
-						.getTransit(this.agentAddress));
-				this.state = notifyOnChange(this.state, this.agentRemoting
-						.getState(this.agentAddress));
-				this.error = notifyOnChange(this.error, this.agentRemoting
-						.getError(this.agentAddress));
+			// synchronized (ConsoleData.lock) {
+			this.transit = notifyOnChange(this.transit, this.agentRemoting
+					.getTransit(this.agentAddress));
+			this.state = notifyOnChange(this.state, this.agentRemoting
+					.getState(this.agentAddress));
+			this.error = notifyOnChange(this.error, this.agentRemoting
+					.getError(this.agentAddress));
 
-				// Only sync these if a scenario is deployed.
-				if (AgentState.UPLOAD.compareTo(this.state) < 0) {
-					this.scenarios = notifyOnChange(this.scenarios,
-							this.agentRemoting.getScenarios(this.agentAddress));
-					this.executions = notifyOnChange(this.executions,
-							this.agentRemoting.getExecutions(this.agentAddress));
-				}
-			//			}
+			// Only sync these if a scenario is deployed.
+			if (AgentState.UPLOAD.compareTo(this.state) < 0) {
+				this.scenarios = notifyOnChange(this.scenarios,
+						this.agentRemoting.getScenarios(this.agentAddress));
+				this.executions = notifyOnChange(this.executions,
+						this.agentRemoting.getExecutions(this.agentAddress));
+			}
+			// }
 		}
 
 		catch (IllegalStateException e) {
@@ -276,10 +286,17 @@ public class ConsoleAgent implements Agent {
 	private class UpdateAgentState extends Thread {
 
 		private static final long INTERVAL = 2000;
+		private boolean shutdown;
 
 		public UpdateAgentState() {
 
 			setDaemon(true);
+		}
+
+		protected void shutdown() {
+
+			this.shutdown = true;
+			interrupt();
 		}
 
 		/**
@@ -288,15 +305,14 @@ public class ConsoleAgent implements Agent {
 		@Override
 		public void run() {
 
-			while (true) {
-				if (ConsoleAgent.this.autoUpdate)
-					updateState();
-
+			while (!this.shutdown)
 				try {
+					if (ConsoleAgent.this.autoUpdate)
+						updateState();
+
 					Thread.sleep(INTERVAL);
 				} catch (InterruptedException e) {
 				}
-			}
 		}
 	}
 }

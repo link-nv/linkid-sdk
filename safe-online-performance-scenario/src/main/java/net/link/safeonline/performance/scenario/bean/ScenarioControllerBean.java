@@ -209,7 +209,7 @@ public class ScenarioControllerBean implements ScenarioController {
 
 		Set<DriverProfileEntity> profiles = execution.getProfiles();
 		for (DriverProfileEntity profile : profiles) {
-			Set<ProfileDataEntity> profileData = this.profileDataService
+			List<ProfileDataEntity> profileData = this.profileDataService
 					.getProfileData(profile, DATA_POINTS);
 			for (ProfileDataEntity data : profileData)
 				for (Chart chart : charts)

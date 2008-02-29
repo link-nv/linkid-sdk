@@ -10,8 +10,8 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 
 import net.link.safeonline.performance.DriverException;
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClientImpl;
 
 import org.w3c.dom.Element;
@@ -28,9 +28,11 @@ import org.w3c.dom.Element;
  */
 public class StsDriver extends ProfileDriver {
 
+	public static final String NAME = "Security Token Service Driver";
+
 	public StsDriver(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
-		super("Security Token Service Driver", execution, agentTime);
+		super(NAME, execution, agentTime);
 	}
 
 	/**

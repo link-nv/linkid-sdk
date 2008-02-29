@@ -6,11 +6,10 @@
  */
 package net.link.safeonline.performance.service.bean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -61,17 +60,16 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public Set<ProfileDataEntity> getProfileData_All(
+	public List<ProfileDataEntity> getProfileData_All(
 			DriverProfileEntity profile,
 			@SuppressWarnings("unused") int dataPoints) {
 
-		return new HashSet<ProfileDataEntity>(this.em.createNamedQuery(
-				ProfileDataEntity.getByProfile)
-				.setParameter("profile", profile).getResultList());
+		return this.em.createNamedQuery(ProfileDataEntity.getByProfile)
+				.setParameter("profile", profile).getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
-	public Set<ProfileDataEntity> getProfileData_JavaPager(
+	public List<ProfileDataEntity> getProfileData_JavaPager(
 			DriverProfileEntity profile, int dataPoints) {
 
 		// Calculate how many ProfileDataEntities to use for one averaging.
@@ -87,7 +85,7 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 
 		// Average each page into one new ProfileDataEntity.
 		List<ProfileDataEntity> profileData;
-		Set<ProfileDataEntity> pointData = new HashSet<ProfileDataEntity>();
+		List<ProfileDataEntity> pointData = new ArrayList<ProfileDataEntity>();
 		for (int point = 0; (profileData = profileDataQuery.setFirstResult(
 				point * period).getResultList()) != null; ++point) {
 			if (profileData.isEmpty())
@@ -131,7 +129,7 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public Set<ProfileDataEntity> getProfileData_SQLPager(
+	public List<ProfileDataEntity> getProfileData_SQLPager(
 			DriverProfileEntity profile, int dataPoints) {
 
 		// Find the driver profile's profile data.
@@ -145,7 +143,7 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 		System.err.println("period = dataDuration (" + dataDuration
 				+ ") / dataPoints (" + dataPoints + ") = " + period);
 
-		Set<ProfileDataEntity> pointData = new HashSet<ProfileDataEntity>();
+		List<ProfileDataEntity> pointData = new ArrayList<ProfileDataEntity>();
 		for (long point = 0; point * period < dataDuration; ++point) {
 
 			ScenarioTimingEntity timing = (ScenarioTimingEntity) this.em
@@ -177,7 +175,7 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Set<ProfileDataEntity> getProfileData(DriverProfileEntity profile,
+	public List<ProfileDataEntity> getProfileData(DriverProfileEntity profile,
 			int dataPoints) {
 
 		return getProfileData_All(profile, dataPoints);

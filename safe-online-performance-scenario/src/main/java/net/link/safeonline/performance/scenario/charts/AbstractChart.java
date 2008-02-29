@@ -182,6 +182,10 @@ public abstract class AbstractChart implements Chart {
 		}
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
 	public Map<String, byte[][]> _createCharts(Date executionStartTime,
 			int dataPoints) {
 
@@ -212,7 +216,7 @@ public abstract class AbstractChart implements Chart {
 			this.LOG.debug("Profile: " + ++_profile + " / " + profiles.size()
 					+ ": " + profile.getDriverName());
 
-			Set<ProfileDataEntity> profileData = this.profileDataService
+			List<ProfileDataEntity> profileData = this.profileDataService
 					.getProfileData(profile, dataPoints);
 
 			// Invalid / empty driver profiles.

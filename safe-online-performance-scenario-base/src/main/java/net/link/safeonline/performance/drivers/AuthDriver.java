@@ -30,8 +30,8 @@ import javax.net.ssl.X509TrustManager;
 import javax.xml.transform.TransformerException;
 
 import net.link.safeonline.performance.DriverException;
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.DomUtils;
 import net.link.safeonline.util.performance.ProfileData;
@@ -76,6 +76,7 @@ public class AuthDriver extends ProfileDriver {
 
 	static final Log LOG = LogFactory.getLog(AuthDriver.class);
 
+	public static final String NAME = "Authentication Driver";
 	private static final String DEVICE = "_main";
 	private static final String USER_PASS = "_username-password";
 	private static final String EULA = "_subscription";
@@ -91,7 +92,7 @@ public class AuthDriver extends ProfileDriver {
 
 	public AuthDriver(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
-		super("Authentication Driver", execution, agentTime);
+		super(NAME, execution, agentTime);
 
 		Protocol.registerProtocol("https", new Protocol("https",
 				new MySSLSocketFactory(), 443));
@@ -187,7 +188,7 @@ public class AuthDriver extends ProfileDriver {
 
 	/**
 	 * Authenticate with OLAS's auth-webapp.
-	 * 
+	 *
 	 * @return The user's UUID.
 	 */
 	public String login(PrivateKeyEntry application, String applicationName,

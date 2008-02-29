@@ -23,14 +23,10 @@
             </manifest>
           </archive>
           <generateClient>true</generateClient>
-          <clientExcludes>
-              <clientExclude>**/*Bean.class</clientExclude>
-              <clientExclude>**/*CMP.class</clientExclude>
-              <clientExclude>**/*Session.class</clientExclude>
-              <clientExclude>**/package.html</clientExclude>
-              <clientExclude>**/*Scenario.class</clientExclude>
-              <clientExclude>META-INF/ejb-jar.xml</clientExclude>
-          </clientExcludes>
+          <clientIncludes>
+              <clientInclude>**/ExecutionMetadata.class</clientInclude>
+              <clientInclude>**/ScenarioController.class</clientInclude>
+          </clientIncludes>
         </configuration>
       </plugin>
     </plugins>

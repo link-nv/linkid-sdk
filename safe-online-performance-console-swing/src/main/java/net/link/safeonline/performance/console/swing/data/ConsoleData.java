@@ -110,8 +110,13 @@ public class ConsoleData {
 
 		List<ConsoleAgent> staleAgents = new ArrayList<ConsoleAgent>();
 		for (Address agentAddress : getAgents().keySet())
-			if (!ConsoleData.agentDiscoverer.hasMember(agentAddress))
-				staleAgents.add(ConsoleData.agents.remove(agentAddress));
+			if (!ConsoleData.agentDiscoverer.hasMember(agentAddress)) {
+				ConsoleAgent staleAgent = ConsoleData.agents
+						.remove(agentAddress);
+
+				staleAgents.add(staleAgent);
+				staleAgent.shutdown();
+			}
 
 		return staleAgents;
 	}
