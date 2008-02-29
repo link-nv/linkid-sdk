@@ -124,7 +124,8 @@ public class SecurityTokenServicePortImplTest {
 		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
 				"CN=TestApplication");
 
-		this.jmxTestUtils.registerActionHandler("getPrivateKey",
+		this.jmxTestUtils.registerActionHandler(
+				IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey",
 				new MBeanActionHandler() {
 					public Object invoke(@SuppressWarnings("unused")
 					Object[] arguments) {
@@ -132,7 +133,8 @@ public class SecurityTokenServicePortImplTest {
 						return SecurityTokenServicePortImplTest.this.privateKey;
 					}
 				});
-		this.jmxTestUtils.registerActionHandler("getPublicKey",
+		this.jmxTestUtils.registerActionHandler(
+				IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey",
 				new MBeanActionHandler() {
 					public Object invoke(@SuppressWarnings("unused")
 					Object[] arguments) {

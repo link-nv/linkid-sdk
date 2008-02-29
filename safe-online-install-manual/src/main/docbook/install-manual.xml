@@ -509,6 +509,42 @@ unitName=SafeOnlineEntityManager
 				<code>service=Identity</code>
 			</para>
 		</section>
+		<section>			
+			<title>OLAS Authentication Identity Keystore</title>
+			<para>
+				OLAS also needs an authentication certificate of itself which
+				will be used to authentication against other OLAS nodes.
+				Per default	the OLAS EAR comes bundled with a test keystore
+				under
+				<code>
+					$JBOSS_HOME/server/default/deploy/SafeOnline.ear/safe-online-service.sar/safe-online-node-keystore.jar
+				</code>
+				One can refer to external keystores by editing the file:
+				<code>
+					$JBOSS_HOME/server/default/deploy/SafeOnline.ear/safe-online-service.sar/META-INF/jboss-service.xml
+				</code>
+				as follows:
+				<programlisting><![CDATA[<mbean name="safeonline:service=AuthIdentity"
+    code="net.link.safeonline.service.AuthIdentityService"
+    xmbean-dd="META-INF/auth-identity-xmbean.xml">
+    <attribute name="KeyStoreType">pkcs12</attribute>
+    <attribute name="KeyStoreFile">
+        /location/to/my/keystore.p12
+    </attribute>
+    <attribute name="KeyStorePassword">secret</attribute>
+</mbean>]]></programlisting>
+				This will require a repackaging of
+				<code>safe-online-service.sar</code>
+				and
+				<code>SafeOnline.ear</code>
+				If the JMX Console is available on the hosting JBoss AS
+				one can also reconfigure the used identity keystore at
+				runtime via the JMX interface under
+				<code>safeonline</code>
+				<code>service=AuthIdentity</code>
+			</para>
+		</section>
+
 		<section>
 			<title>Applets</title>
 			<para>
