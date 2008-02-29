@@ -35,6 +35,9 @@ public class EncapStartableBean extends AbstractInitBean {
 	private static final Log LOG = LogFactory.getLog(EncapStartableBean.class);
 
 	public EncapStartableBean() {
+		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME, "",
+				null);
+
 		AttributeTypeEntity encapAttributeType = new AttributeTypeEntity(
 				SafeOnlineConstants.MOBILE_ENCAP_ATTRIBUTE,
 				DatatypeType.STRING, true, false);

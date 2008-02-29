@@ -44,6 +44,7 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -115,7 +116,7 @@ public class EntityTest {
 					CompoundedAttributeTypeMemberEntity.class,
 					AccessAuditEntity.class, UsageAgreementEntity.class,
 					UsageAgreementTextEntity.class,
-					GlobalUsageAgreementEntity.class);
+					GlobalUsageAgreementEntity.class, OlasEntity.class);
 		} catch (Exception e) {
 			LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
 			throw new RuntimeException("JPA annotations incorrect: "

@@ -9,6 +9,7 @@ package net.link.safeonline.model.bean;
 
 import java.security.cert.X509Certificate;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -24,6 +25,7 @@ import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStoreUtils;
 import net.link.safeonline.oper.keystore.OperKeyStoreUtils;
 import net.link.safeonline.owner.keystore.OwnerKeyStoreUtils;
 import net.link.safeonline.user.keystore.UserKeyStoreUtils;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -44,6 +46,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 public class SystemInitializationStartableBean extends AbstractInitBean {
 
 	public SystemInitializationStartableBean() {
+		configureNode();
 		configureAttributeTypes();
 		configureDevices();
 
@@ -109,6 +112,17 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, "owner",
 				SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
+	}
+
+	private void configureNode() {
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String hostname = properties.getString("olas.host.name");
+		String hostportssl = properties.getString("olas.host.port.ssl");
+
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME,
+				hostname + ":" + hostportssl, authIdentityServiceClient
+						.getCertificate());
 	}
 
 	private void configureAttributeTypes() {

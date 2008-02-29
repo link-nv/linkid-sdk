@@ -53,6 +53,9 @@ public class BeIdStartableBean extends AbstractInitBean {
 	private TrustPointDAO trustPointDAO;
 
 	public BeIdStartableBean() {
+		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME, "",
+				null);
+
 		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(
 				BeIdConstants.GIVENNAME_ATTRIBUTE, DatatypeType.STRING, true,
 				false);

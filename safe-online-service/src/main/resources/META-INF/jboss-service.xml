@@ -19,6 +19,16 @@
 		<attribute name="KeyStorePassword">secret</attribute>
 	</mbean>
 
+	<mbean name="safeonline:service=AuthIdentity"
+		code="net.link.safeonline.service.AuthIdentityService"
+		xmbean-dd="META-INF/auth-identity-xmbean.xml">
+		<attribute name="KeyStoreType">jks</attribute>
+		<attribute name="KeyStoreResource">
+			safe-online-node-keystore.jks
+		</attribute>
+		<attribute name="KeyStorePassword">secret</attribute>
+	</mbean>
+
 	<mbean code="org.jboss.security.auth.login.DynamicLoginConfig"
 		name="safeonline:service=DynamicLoginConfig">
 		<attribute name="AuthConfig">

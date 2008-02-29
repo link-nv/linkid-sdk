@@ -28,6 +28,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -134,6 +135,8 @@ public class AttributeTypeEntity implements Serializable {
 	private Map<String, AttributeTypeDescriptionEntity> descriptions;
 
 	private List<CompoundedAttributeTypeMemberEntity> members;
+
+	private OlasEntity location;
 
 	public AttributeTypeEntity() {
 		this(null, null, false, false);
@@ -279,6 +282,15 @@ public class AttributeTypeEntity implements Serializable {
 	public void setDescriptions(
 			Map<String, AttributeTypeDescriptionEntity> descriptions) {
 		this.descriptions = descriptions;
+	}
+
+	@ManyToOne
+	public OlasEntity getLocation() {
+		return this.location;
+	}
+
+	public void setLocation(OlasEntity location) {
+		this.location = location;
 	}
 
 	public interface QueryInterface {

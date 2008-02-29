@@ -25,7 +25,10 @@ import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.pkix.service.bean.PkiServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+import net.link.safeonline.test.util.JmxTestUtils;
+import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class PkiServiceBeanTest extends TestCase {
@@ -39,6 +42,21 @@ public class PkiServiceBeanTest extends TestCase {
 		this.entityTestManager = new EntityTestManager();
 		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		JmxTestUtils jmxTestUtils = new JmxTestUtils();
+		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+
+		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		final X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		jmxTestUtils.registerActionHandler(
+				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
+				"getCertificate", new MBeanActionHandler() {
+					public Object invoke(@SuppressWarnings("unused")
+					Object[] arguments) {
+						return certificate;
+					}
+				});
 
 		Startable systemStartable = EJBTestUtils.newInstance(
 				SystemInitializationStartableBean.class,

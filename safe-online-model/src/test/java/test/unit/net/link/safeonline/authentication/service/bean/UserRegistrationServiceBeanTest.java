@@ -7,10 +7,11 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
+import java.security.KeyPair;
+import java.security.cert.X509Certificate;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-
-import org.hibernate.NonUniqueObjectException;
 
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
@@ -31,6 +32,13 @@ import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+import net.link.safeonline.test.util.JmxTestUtils;
+import net.link.safeonline.test.util.MBeanActionHandler;
+import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
+
+import org.hibernate.NonUniqueObjectException;
+
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class UserRegistrationServiceBeanTest extends TestCase {
@@ -45,6 +53,21 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		JmxTestUtils jmxTestUtils = new JmxTestUtils();
+		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+
+		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		final X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		jmxTestUtils.registerActionHandler(
+				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
+				"getCertificate", new MBeanActionHandler() {
+					public Object invoke(@SuppressWarnings("unused")
+					Object[] arguments) {
+						return certificate;
+					}
+				});
 
 		SystemInitializationStartableBean systemInit = EJBTestUtils
 				.newInstance(SystemInitializationStartableBean.class,

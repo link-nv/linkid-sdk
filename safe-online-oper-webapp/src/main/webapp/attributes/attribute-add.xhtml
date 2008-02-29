@@ -34,8 +34,14 @@
 					styleClass="label" />
 			</s:decorate>
 
-
 			<h:message for="name" styleClass="error" />
+
+			<h:outputLabel for="node" value="#{msgs.location}" />
+
+			<h:selectOneMenu id="node" value="#{addAttribute.node}"
+				styleClass="label">
+				<f:selectItems value="#{nodes}" />
+			</h:selectOneMenu>
 
 			<h:selectOneRadio value="#{addAttribute.category}"
 				layout="pageDirection" required="true" id="category"

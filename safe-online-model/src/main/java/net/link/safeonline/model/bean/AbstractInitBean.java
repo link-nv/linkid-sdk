@@ -30,6 +30,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -44,6 +45,7 @@ import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceClassDAO;
 import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.dao.OlasDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.UsageAgreementDAO;
 import net.link.safeonline.device.backend.PasswordManager;
@@ -64,6 +66,7 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
 import net.link.safeonline.entity.IdScopeType;
+import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
@@ -83,6 +86,20 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractInitBean implements Startable {
 
 	protected final Log LOG = LogFactory.getLog(this.getClass());
+
+	protected static class Node {
+		final String name;
+
+		final String location;
+
+		final X509Certificate certificate;
+
+		public Node(String name, String location, X509Certificate certificate) {
+			this.name = name;
+			this.location = location;
+			this.certificate = certificate;
+		}
+	}
 
 	protected Map<String, AuthenticationDevice> authorizedUsers;
 
@@ -342,6 +359,8 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected List<DeviceProperty> deviceProperties;
 
+	protected Node node;
+
 	public AbstractInitBean() {
 		this.applicationOwnersAndLogin = new HashMap<String, String>();
 		this.attributeTypes = new LinkedList<AttributeTypeEntity>();
@@ -387,6 +406,7 @@ public abstract class AbstractInitBean implements Startable {
 	public void postStart() {
 		try {
 			this.LOG.debug("postStart");
+			initNode();
 			initTrustDomains();
 			initAttributeTypes();
 			initAttributeTypeDescriptions();
@@ -574,10 +594,17 @@ public abstract class AbstractInitBean implements Startable {
 	}
 
 	private void initAttributeTypes() {
+		OlasEntity location;
+		try {
+			location = this.olasDAO.getNode(this.node.name);
+		} catch (NodeNotFoundException e) {
+			throw new EJBException("olas node " + this.node.name + " not found");
+		}
 		for (AttributeTypeEntity attributeType : this.attributeTypes) {
 			if (null != this.attributeTypeDAO.findAttributeType(attributeType
 					.getName()))
 				continue;
+			attributeType.setLocation(location);
 			this.attributeTypeDAO.addAttributeType(attributeType);
 		}
 	}
@@ -835,5 +862,17 @@ public abstract class AbstractInitBean implements Startable {
 							0);
 			}
 		}
+	}
+
+	@EJB
+	private OlasDAO olasDAO;
+
+	private void initNode() {
+		if (null == this.node)
+			throw new EJBException("No Olas node specified");
+		OlasEntity olasNode = this.olasDAO.findNode(this.node.name);
+		if (null == olasNode)
+			this.olasDAO.addNode(this.node.name, this.node.location,
+					this.node.certificate);
 	}
 }

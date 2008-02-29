@@ -7,6 +7,9 @@
 
 package test.unit.net.link.safeonline.model.demo;
 
+import java.security.KeyPair;
+import java.security.cert.X509Certificate;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
@@ -22,6 +25,7 @@ import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
+import net.link.safeonline.dao.bean.OlasDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
@@ -42,6 +46,7 @@ import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
+import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
@@ -69,6 +74,10 @@ import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskHistoryDAOBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
+import net.link.safeonline.test.util.JmxTestUtils;
+import net.link.safeonline.test.util.MBeanActionHandler;
+import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.junit.After;
 import org.junit.Before;
@@ -90,7 +99,8 @@ public class DemoStartableBeanTest {
 			DeviceClassDAOBean.class, AllowedDeviceDAOBean.class,
 			PasswordManagerBean.class, SubjectServiceBean.class,
 			SubjectIdentifierDAOBean.class, IdGeneratorBean.class,
-			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class };
+			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class,
+			OlasDAOBean.class };
 
 	@Before
 	public void setUp() throws Exception {
@@ -111,9 +121,24 @@ public class DemoStartableBeanTest {
 				DeviceClassDescriptionEntity.class, AllowedDeviceEntity.class,
 				CompoundedAttributeTypeMemberEntity.class,
 				SubjectIdentifierEntity.class, UsageAgreementEntity.class,
-				UsageAgreementTextEntity.class);
+				UsageAgreementTextEntity.class, OlasEntity.class);
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		JmxTestUtils jmxTestUtils = new JmxTestUtils();
+		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+
+		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		final X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		jmxTestUtils.registerActionHandler(
+				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
+				"getCertificate", new MBeanActionHandler() {
+					public Object invoke(@SuppressWarnings("unused")
+					Object[] arguments) {
+						return certificate;
+					}
+				});
 
 		Startable systemStartable = EJBTestUtils.newInstance(
 				SystemInitializationStartableBean.class, container,

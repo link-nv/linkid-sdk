@@ -29,6 +29,10 @@ public interface AddAttribute {
 
 	void setName(String name);
 
+	String getNode();
+
+	void setNode(String node);
+
 	String getCategory();
 
 	void setCategory(String category);
@@ -76,4 +80,6 @@ public interface AddAttribute {
 	List<SelectItem> datatypesFactory();
 
 	void memberAccessControlAttributesFactory();
+
+	List<SelectItem> nodeFactory();
 }

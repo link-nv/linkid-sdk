@@ -53,8 +53,9 @@ public class PkiServletTest {
 
 		GetCertificateMBeanActionHandler actionHandler = new GetCertificateMBeanActionHandler(
 				this.certificate);
-		this.jmxTestUtils
-				.registerActionHandler("getCertificate", actionHandler);
+		this.jmxTestUtils.registerActionHandler(
+				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+				actionHandler);
 
 		this.servletTestManager = new ServletTestManager();
 		this.servletTestManager.setUp(PkiServlet.class);

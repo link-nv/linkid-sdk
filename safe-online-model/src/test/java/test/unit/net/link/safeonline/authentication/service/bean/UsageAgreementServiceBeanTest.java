@@ -7,6 +7,8 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
+import java.security.KeyPair;
+import java.security.cert.X509Certificate;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
@@ -26,6 +28,9 @@ import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JmxTestUtils;
+import net.link.safeonline.test.util.MBeanActionHandler;
+import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class UsageAgreementServiceBeanTest extends TestCase {
@@ -42,6 +47,20 @@ public class UsageAgreementServiceBeanTest extends TestCase {
 		this.entityTestManager = new EntityTestManager();
 		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
+
+		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+
+		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		final X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		jmxTestUtils.registerActionHandler(
+				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
+				"getCertificate", new MBeanActionHandler() {
+					public Object invoke(@SuppressWarnings("unused")
+					Object[] arguments) {
+						return certificate;
+					}
+				});
 
 		Startable systemStartable = EJBTestUtils.newInstance(
 				SystemInitializationStartableBean.class,

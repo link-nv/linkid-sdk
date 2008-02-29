@@ -20,8 +20,13 @@ import javax.faces.model.SelectItem;
 import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.service.NodeService;
+import net.link.safeonline.ctrl.Convertor;
+import net.link.safeonline.ctrl.ConvertorUtil;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.attrib.AddAttribute;
 import net.link.safeonline.service.AttributeTypeService;
@@ -56,9 +61,14 @@ public class AddAttributeBean implements AddAttribute {
 	@Logger
 	private Log log;
 
+	@EJB
+	private NodeService nodeService;
+
 	private String category;
 
 	private String name;
+
+	private String node;
 
 	@In(create = true)
 	FacesMessages facesMessages;
@@ -89,6 +99,16 @@ public class AddAttributeBean implements AddAttribute {
 		this.name = name;
 	}
 
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String getNode() {
+		return this.node;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setNode(String node) {
+		this.node = node;
+	}
+
 	@Factory("datatypes")
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public List<SelectItem> datatypesFactory() {
@@ -102,6 +122,24 @@ public class AddAttributeBean implements AddAttribute {
 
 		}
 		return datatypes;
+	}
+
+	@Factory("nodes")
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public List<SelectItem> nodeFactory() {
+		List<OlasEntity> nodeList = this.nodeService.listNodes();
+		List<SelectItem> nodes = ConvertorUtil.convert(nodeList,
+				new OlasEntitySelectItemConvertor());
+		return nodes;
+	}
+
+	static class OlasEntitySelectItemConvertor implements
+			Convertor<OlasEntity, SelectItem> {
+
+		public SelectItem convert(OlasEntity input) {
+			SelectItem output = new SelectItem(input.getName());
+			return output;
+		}
 	}
 
 	private String type;
@@ -201,6 +239,17 @@ public class AddAttributeBean implements AddAttribute {
 		}
 		attributeType.setUserEditable(this.userEditable);
 		attributeType.setUserVisible(this.userVisible);
+
+		try {
+			OlasEntity olasNode = this.nodeService.getNode(this.node);
+			attributeType.setLocation(olasNode);
+		} catch (NodeNotFoundException e) {
+			String msg = "olas node not found";
+			this.log.debug(msg);
+			this.facesMessages.addToControlFromResourceBundle("location",
+					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
+			return null;
+		}
 
 		if (null != this.memberAccessControlAttributes) {
 			int memberSequence = 0;

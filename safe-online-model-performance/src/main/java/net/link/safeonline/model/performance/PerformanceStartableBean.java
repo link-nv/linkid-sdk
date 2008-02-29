@@ -37,6 +37,8 @@ public class PerformanceStartableBean extends AbstractInitBean {
 	private static final String LICENSE_AGREEMENT_CONFIRM_TEXT_NL = "Deze software dient enkel voor performance testing gebruikt te worden.";
 
 	public PerformanceStartableBean() {
+		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME, "",
+				null);
 
 		/*
 		 * Create the performance user.

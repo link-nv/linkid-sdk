@@ -61,6 +61,9 @@ public class DemoStartableBean extends AbstractInitBean {
 	public static final String LICENSE_AGREEMENT_CONFIRM_TEXT_NL = "GELIEVE ZORGVULDIG DEZE OVEREENKOMST VAN DE VERGUNNING VAN SOFTWARE (\"LICENSE \") TE LEZEN ALVORENS DE SOFTWARE TE GEBRUIKEN.";
 
 	public DemoStartableBean() {
+		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME, "",
+				null);
+
 		configDemoUsers();
 
 		PrivateKeyEntry demoPrivateKeyEntry = DemoKeyStoreUtil

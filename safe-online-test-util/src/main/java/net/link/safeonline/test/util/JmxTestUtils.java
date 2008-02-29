@@ -7,6 +7,11 @@
 
 package net.link.safeonline.test.util;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
@@ -24,11 +29,16 @@ import javax.management.ObjectName;
  */
 public class JmxTestUtils {
 
-	private DynamicTestMBean dynamicTestMBean;
+	private Map<String, DynamicTestMBean> dynamicTestMBeans;
 
-	private ObjectName mbeanName;
+	private List<ObjectName> mbeanNames;
 
 	private MBeanServer mbeanServer;
+
+	public JmxTestUtils() {
+		this.dynamicTestMBeans = new HashMap<String, DynamicTestMBean>();
+		this.mbeanNames = new LinkedList<ObjectName>();
+	}
 
 	/**
 	 * Sets up a test JMX MBean with the given MBean name.
@@ -43,18 +53,22 @@ public class JmxTestUtils {
 	public void setUp(String mbeanName) throws MalformedObjectNameException,
 			NullPointerException, InstanceAlreadyExistsException,
 			MBeanRegistrationException, NotCompliantMBeanException {
-		this.mbeanServer = getMBeanServer();
+		if (null == this.mbeanServer)
+			this.mbeanServer = getMBeanServer();
 		ObjectName mbeanObjectName = new ObjectName(mbeanName);
-		this.dynamicTestMBean = new DynamicTestMBean();
-		this.mbeanServer.registerMBean(this.dynamicTestMBean, mbeanObjectName);
-		this.mbeanName = mbeanObjectName;
+		DynamicTestMBean dynamicTestMBean = new DynamicTestMBean();
+		this.mbeanServer.registerMBean(dynamicTestMBean, mbeanObjectName);
+		this.dynamicTestMBeans.put(mbeanName, dynamicTestMBean);
+		this.mbeanNames.add(mbeanObjectName);
 	}
 
 	public void tearDown() throws InstanceNotFoundException,
 			MBeanRegistrationException {
-		this.mbeanServer.unregisterMBean(this.mbeanName);
+		for (ObjectName mbeanName : this.mbeanNames)
+			this.mbeanServer.unregisterMBean(mbeanName);
 	}
 
+	@SuppressWarnings("unchecked")
 	private MBeanServer getMBeanServer() {
 		MBeanServer mbeanServerInstance = MBeanServerFactory
 				.createMBeanServer("jboss");
@@ -67,8 +81,10 @@ public class JmxTestUtils {
 	 * @param actionName
 	 * @param actionHandler
 	 */
-	public void registerActionHandler(String actionName,
+	public void registerActionHandler(String mbeanName, String actionName,
 			MBeanActionHandler actionHandler) {
-		this.dynamicTestMBean.registerActionHandler(actionName, actionHandler);
+		DynamicTestMBean dynamicTestMBean = this.dynamicTestMBeans
+				.get(mbeanName);
+		dynamicTestMBean.registerActionHandler(actionName, actionHandler);
 	}
 }

@@ -12,6 +12,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.KeyPair;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -62,6 +64,9 @@ import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JmxTestUtils;
+import net.link.safeonline.test.util.MBeanActionHandler;
+import net.link.safeonline.test.util.PkiTestUtils;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,13 +88,26 @@ public class IdentityServiceBeanTest {
 		this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 
+		JmxTestUtils jmxTestUtils = new JmxTestUtils();
+		jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
+
+		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		final X509Certificate certificate = PkiTestUtils
+				.generateSelfSignedCertificate(keyPair, "CN=Test");
+		jmxTestUtils.registerActionHandler(
+				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
+				"getCertificate", new MBeanActionHandler() {
+					public Object invoke(@SuppressWarnings("unused")
+					Object[] arguments) {
+						return certificate;
+					}
+				});
+
 		Startable systemStartable = EJBTestUtils.newInstance(
 				SystemInitializationStartableBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager);
 		systemStartable.postStart();
-
-		JmxTestUtils jmxTestUtils = new JmxTestUtils();
-		jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 	}
 
 	@After

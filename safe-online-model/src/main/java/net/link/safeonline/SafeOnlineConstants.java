@@ -66,6 +66,8 @@ public class SafeOnlineConstants {
 	 */
 	public static final String SAFE_ONLINE_OLAS_TRUST_DOMAIN = "olas";
 
+	public static final String SAFE_ONLINE_NODE_NAME = "olas";
+
 	/**
 	 * Device ID's
 	 */

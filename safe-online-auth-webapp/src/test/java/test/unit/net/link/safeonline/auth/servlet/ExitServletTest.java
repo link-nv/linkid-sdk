@@ -99,7 +99,8 @@ public class ExitServletTest {
 
 		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		this.publicKey = keyPair.getPublic();
-		this.jmxTestUtils.registerActionHandler("getPrivateKey",
+		this.jmxTestUtils.registerActionHandler(
+				IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey",
 				new MBeanActionHandler() {
 					public Object invoke(@SuppressWarnings("unused")
 					Object[] arguments) {
@@ -107,7 +108,8 @@ public class ExitServletTest {
 						return keyPair.getPrivate();
 					}
 				});
-		this.jmxTestUtils.registerActionHandler("getPublicKey",
+		this.jmxTestUtils.registerActionHandler(
+				IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey",
 				new MBeanActionHandler() {
 					public Object invoke(@SuppressWarnings("unused")
 					Object[] arguments) {

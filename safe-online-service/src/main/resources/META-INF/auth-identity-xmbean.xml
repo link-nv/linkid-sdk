@@ -3,11 +3,13 @@
           "-//JBoss//DTD JBOSS XMBEAN 1.2//EN"
           "http://www.jboss.org/j2ee/dtd/jboss_xmbean_1_2.dtd">
 <mbean>
-	<description>Identity Management Service</description>
-	<class>net.link.safeonline.service.IdentityService</class>
+	<description>
+		Authentication Identity Management Service
+	</description>
+	<class>net.link.safeonline.service.AuthIdentityService</class>
 	<constructor>
 		<description>The default constructor</description>
-		<name>IdentityService</name>
+		<name>AuthIdentityService</name>
 	</constructor>
 	<attribute getMethod="getKeyStoreType"
 		setMethod="setKeyStoreType">
@@ -21,12 +23,12 @@
 	<attribute getMethod="getKeyStoreResource"
 		setMethod="setKeyStoreResource">
 		<description>
-			The name of the Identity Key Store Resource
+			The name of the Authentication Identity Key Store Resource
 		</description>
 		<name>KeyStoreResource</name>
 		<type>java.lang.String</type>
 		<descriptors>
-			<default>safe-online-keystore.jks</default>
+			<default>safe-online-node-keystore.jks</default>
 		</descriptors>
 	</attribute>
 	<attribute getMethod="getKeyStoreFile"
@@ -49,22 +51,28 @@
 		</descriptors>
 	</attribute>
 	<operation>
-		<description>Gives back the Private Identity Key</description>
+		<description>
+			Gives back the Private Authentication Identity Key
+		</description>
 		<name>getPrivateKey</name>
 		<return-type>java.security.PrivateKey</return-type>
 	</operation>
 	<operation>
-		<description>Gives back the Public Identity Key</description>
+		<description>
+			Gives back the Public Authentication Identity Key
+		</description>
 		<name>getPublicKey</name>
 		<return-type>java.security.PublicKey</return-type>
 	</operation>
 	<operation>
-		<description>Load the Identity Key Pair</description>
+		<description>
+			Load the Authentication Identity Key Pair
+		</description>
 		<name>loadKeyPair</name>
 	</operation>
 	<operation>
 		<description>
-			Gives back the X509 Identity Certificate
+			Gives back the X509 Authentication Identity Certificate
 		</description>
 		<name>getCertificate</name>
 		<return-type>java.security.cert.X509Certificate</return-type>
