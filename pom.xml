@@ -764,6 +764,7 @@
 		<module>safe-online-ping-ws-impl</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet</module>
+		<module>safe-online-node-keystore</module>
 	</modules>
 	<repositories>
 		<repository>
