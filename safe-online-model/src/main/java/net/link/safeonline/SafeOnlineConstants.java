@@ -33,6 +33,12 @@ public class SafeOnlineConstants {
 	public static final String SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN = "safe-online-application";
 
 	/**
+	 * The JBoss AS security domain for the SafeOnline components that need to
+	 * be accessible by other nodes.
+	 */
+	public static final String SAFE_ONLINE_NODE_SECURITY_DOMAIN = "safe-online-node";
+
+	/**
 	 * The PKI trust domain name for the SafeOnline application owner
 	 * applications.
 	 */

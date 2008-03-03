@@ -27,9 +27,9 @@ import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import net.link.safeonline.SafeOnlineApplicationRoles;
-import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
+import net.link.safeonline.SafeOnlineNodeRoles;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.codec.DecoderException;
@@ -40,18 +40,17 @@ import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
 
 /**
- * JAAS login module that performs authentication and authorization for
- * applications. This module is used by the SafeOnline core application security
- * domain. The login module links an X509 certificate with an application
- * principal.
+ * JAAS login module that performs authentication and authorization for Olas
+ * nodes. This module is used by the SafeOnline core application security
+ * domain. The login module links an X509 certificate with a node principal.
  * 
  * @author fcorneli
  * 
  */
-public class SafeOnlineApplicationLoginModule implements LoginModule {
+public class SafeOnlineNodeLoginModule implements LoginModule {
 
 	private static final Log LOG = LogFactory
-			.getLog(SafeOnlineApplicationLoginModule.class);
+			.getLog(SafeOnlineNodeLoginModule.class);
 
 	private Subject subject;
 
@@ -59,7 +58,7 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 
 	public static final String OPTION_AUTHENTICATION_SERVICE_JNDI_NAME = "authenticationServiceJndiName";
 
-	public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = "SafeOnline/ApplicationAuthenticationServiceBean/local";
+	public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = "SafeOnline/NodeAuthenticationServiceBean/local";
 
 	private String authenticationServiceJndiName;
 
@@ -86,8 +85,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 
 		// authorize
 		Group rolesGroup = getGroup("Roles", principals);
-		rolesGroup.addMember(new SimplePrincipal(
-				SafeOnlineApplicationRoles.APPLICATION_ROLE));
+		rolesGroup
+				.addMember(new SimplePrincipal(SafeOnlineNodeRoles.NODE_ROLE));
 
 		LOG.debug("commit: " + this.authenticatedPrincipal.getName());
 
@@ -142,8 +141,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 		LOG.debug("login: " + this);
 		// retrieve the certificate credential
 		PasswordCallback passwordCallback = new PasswordCallback(
-				"X509 application certificate in Hex", false);
-		NameCallback nameCallback = new NameCallback("application name");
+				"X509 node certificate in Hex", false);
+		NameCallback nameCallback = new NameCallback("node name");
 		Callback[] callbacks = new Callback[] { passwordCallback, nameCallback };
 
 		try {
@@ -167,35 +166,34 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 		}
 
 		// authenticate
-		ApplicationAuthenticationService applicationAuthenticationService = getApplicationAuthenticationService();
-		String applicationName;
+		NodeAuthenticationService nodeAuthenticationService = getNodeAuthenticationService();
+		String nodeName;
 		try {
-			applicationName = applicationAuthenticationService
-					.authenticate(certificate);
-		} catch (ApplicationNotFoundException e) {
+			nodeName = nodeAuthenticationService.authenticate(certificate);
+		} catch (NodeNotFoundException e) {
 			throw new FailedLoginException(
-					"certificate is not an application certificate");
+					"certificate is not a node certificate");
 		}
 
-		String expectedApplicationName = nameCallback.getName();
-		if (false == applicationName.equals(expectedApplicationName)) {
-			throw new FailedLoginException("application name not correct");
+		String expectedNodeName = nameCallback.getName();
+		if (false == nodeName.equals(expectedNodeName)) {
+			throw new FailedLoginException("node name not correct");
 		}
 
-		this.authenticatedPrincipal = new SimplePrincipal(applicationName);
-		LOG.debug("login: " + applicationName);
+		this.authenticatedPrincipal = new SimplePrincipal(nodeName);
+		LOG.debug("login: " + nodeName);
 		LOG.debug("login subject: " + this.subject);
 
 		return true;
 	}
 
-	private ApplicationAuthenticationService getApplicationAuthenticationService()
+	private NodeAuthenticationService getNodeAuthenticationService()
 			throws LoginException {
 		try {
-			ApplicationAuthenticationService applicationAuthenticationService = EjbUtils
+			NodeAuthenticationService nodeAuthenticationService = EjbUtils
 					.getEJB(this.authenticationServiceJndiName,
-							ApplicationAuthenticationService.class);
-			return applicationAuthenticationService;
+							NodeAuthenticationService.class);
+			return nodeAuthenticationService;
 		} catch (RuntimeException e) {
 			throw new LoginException("JNDI lookup error: " + e.getMessage());
 		}

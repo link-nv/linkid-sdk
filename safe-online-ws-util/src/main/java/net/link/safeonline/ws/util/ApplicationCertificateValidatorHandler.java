@@ -165,7 +165,7 @@ public class ApplicationCertificateValidatorHandler implements
 				CertificateDomain.APPLICATION);
 	}
 
-	public static boolean isCoreCertificate(
+	public static boolean isOlasCertificate(
 			SOAPMessageContext soapMessageContext) {
 		return getCertificateDomain(soapMessageContext).equals(
 				CertificateDomain.OLAS);

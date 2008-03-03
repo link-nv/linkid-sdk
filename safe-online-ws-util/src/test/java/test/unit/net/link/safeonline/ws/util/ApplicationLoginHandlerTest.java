@@ -57,8 +57,7 @@ public class ApplicationLoginHandlerTest extends TestCase {
 		SOAPMessageContext context = new TestSOAPMessageContext(null, false);
 
 		String testApplicationName = "test-application-name-" + getName();
-		context.put(
-				ApplicationCertificateMapperHandler.APPLICATION_ID_PROPERTY,
+		context.put(ApplicationCertificateMapperHandler.ID_PROPERTY,
 				testApplicationName);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();

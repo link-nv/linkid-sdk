@@ -26,5 +26,8 @@ public interface OlasDAO {
 
 	OlasEntity getNode(String name) throws NodeNotFoundException;
 
+	OlasEntity getNode(X509Certificate certificate)
+			throws NodeNotFoundException;
+
 	void removeNode(OlasEntity node);
 }

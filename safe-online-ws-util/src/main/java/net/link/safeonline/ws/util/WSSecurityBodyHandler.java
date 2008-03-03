@@ -81,12 +81,12 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
 				.isDeviceCertificate(soapMessageContext))
 			skipMessageIntegrityCheck = false;
 		else if (ApplicationCertificateValidatorHandler
-				.isCoreCertificate(soapMessageContext))
+				.isOlasCertificate(soapMessageContext))
 			skipMessageIntegrityCheck = false;
 		else {
 			try {
 				String applicationId = ApplicationCertificateMapperHandler
-						.getApplicationId(soapMessageContext);
+						.getId(soapMessageContext);
 
 				skipMessageIntegrityCheck = this.applicationAuthenticationService
 						.skipMessageIntegrityCheck(applicationId);

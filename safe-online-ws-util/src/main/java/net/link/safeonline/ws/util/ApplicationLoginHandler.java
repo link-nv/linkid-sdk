@@ -71,33 +71,20 @@ public class ApplicationLoginHandler implements SOAPHandler<SOAPMessageContext> 
 			throw new RuntimeException("no certificate found on JAX-WS context");
 		}
 
-		if (ApplicationCertificateValidatorHandler.isDeviceCertificate(context))
-			return;
-
-		if (ApplicationCertificateValidatorHandler.isCoreCertificate(context))
-			return;
-
-		if (ApplicationCertificateValidatorHandler
-				.isApplicationCertificate(context)) {
-			String applicationId = ApplicationCertificateMapperHandler
-					.getApplicationId(context);
-
-			try {
-				char[] password = toPassword(certificate);
-				UsernamePasswordHandler callbackHandler = new UsernamePasswordHandler(
-						applicationId, password);
-				LoginContext loginContext = new LoginContext("client-login",
-						callbackHandler);
-				LOG.debug("performing login for " + applicationId);
-				loginContext.login();
-				context.put(LOGINCONTEXT_PROPERTY, loginContext);
-			} catch (LoginException e) {
-				throw new RuntimeException("JAAS login error: "
-						+ e.getMessage());
-			} catch (CertificateEncodingException e) {
-				throw new RuntimeException("cert encoding error: "
-						+ e.getMessage());
-			}
+		String id = ApplicationCertificateMapperHandler.getId(context);
+		try {
+			char[] password = toPassword(certificate);
+			UsernamePasswordHandler callbackHandler = new UsernamePasswordHandler(
+					id, password);
+			LoginContext loginContext = new LoginContext("client-login",
+					callbackHandler);
+			LOG.debug("performing login for " + id);
+			loginContext.login();
+			context.put(LOGINCONTEXT_PROPERTY, loginContext);
+		} catch (LoginException e) {
+			throw new RuntimeException("JAAS login error: " + e.getMessage());
+		} catch (CertificateEncodingException e) {
+			throw new RuntimeException("cert encoding error: " + e.getMessage());
 		}
 	}
 
@@ -110,26 +97,16 @@ public class ApplicationLoginHandler implements SOAPHandler<SOAPMessageContext> 
 			throw new RuntimeException("no certificate found on JAX-WS context");
 		}
 
-		if (ApplicationCertificateValidatorHandler.isDeviceCertificate(context))
-			return;
-
-		if (ApplicationCertificateValidatorHandler.isCoreCertificate(context))
-			return;
-
-		if (ApplicationCertificateValidatorHandler
-				.isApplicationCertificate(context)) {
-
-			LoginContext loginContext = (LoginContext) context
-					.get(LOGINCONTEXT_PROPERTY);
-			if (null == loginContext) {
-				throw new RuntimeException(
-						"no JAAS login context present on the JAX-WS context");
-			}
-			try {
-				loginContext.logout();
-			} catch (LoginException e) {
-				throw new RuntimeException("JAAS logout error");
-			}
+		LoginContext loginContext = (LoginContext) context
+				.get(LOGINCONTEXT_PROPERTY);
+		if (null == loginContext) {
+			throw new RuntimeException(
+					"no JAAS login context present on the JAX-WS context");
+		}
+		try {
+			loginContext.logout();
+		} catch (LoginException e) {
+			throw new RuntimeException("JAAS logout error");
 		}
 	}
 

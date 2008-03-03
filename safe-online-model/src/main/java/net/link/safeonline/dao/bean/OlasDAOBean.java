@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
@@ -56,6 +57,18 @@ public class OlasDAOBean implements OlasDAO {
 		OlasEntity node = findNode(name);
 		if (null == node)
 			throw new NodeNotFoundException();
+		return node;
+	}
+
+	@SuppressWarnings("unchecked")
+	public OlasEntity getNode(X509Certificate certificate)
+			throws NodeNotFoundException {
+		Query query = OlasEntity.createQueryWhereCertificate(
+				this.entityManager, certificate);
+		List<OlasEntity> nodes = query.getResultList();
+		if (nodes.isEmpty())
+			throw new NodeNotFoundException();
+		OlasEntity node = nodes.get(0);
 		return node;
 	}
 

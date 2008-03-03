@@ -33,6 +33,7 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.test.util.DomTestUtils;
@@ -63,6 +64,8 @@ public class AppAuthWsHandlersTest {
 
 	private DeviceAuthenticationService mockDeviceAuthenticationService;
 
+	private NodeAuthenticationService mockNodeAuthenticationService;
+
 	private PkiValidator mockPkiValidator;
 
 	private ConfigurationManager mockConfigurationManager;
@@ -81,6 +84,11 @@ public class AppAuthWsHandlersTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/DeviceAuthenticationServiceBean/local",
 				this.mockDeviceAuthenticationService);
+
+		this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/NodeAuthenticationServiceBean/local",
+				this.mockNodeAuthenticationService);
 
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
