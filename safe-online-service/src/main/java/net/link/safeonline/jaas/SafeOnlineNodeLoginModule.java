@@ -40,9 +40,9 @@ import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
 
 /**
- * JAAS login module that performs authentication and authorization for Olas
- * nodes. This module is used by the SafeOnline core application security
- * domain. The login module links an X509 certificate with a node principal.
+ * JAAS login module that performs authentication and authorization for nodes.
+ * This module is used by the SafeOnline core node security domain. The login
+ * module links an X509 certificate with a node principal.
  * 
  * @author fcorneli
  * 

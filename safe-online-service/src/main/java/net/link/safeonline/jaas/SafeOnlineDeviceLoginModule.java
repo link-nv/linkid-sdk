@@ -41,8 +41,8 @@ import org.jboss.security.SimplePrincipal;
 
 /**
  * JAAS login module that performs authentication and authorization for devices.
- * This module is used by the SafeOnline core application security domain. The
- * login module links an X509 certificate with a device principal.
+ * This module is used by the SafeOnline core device security domain. The login
+ * module links an X509 certificate with a device principal.
  * 
  * @author wvdhaute
  * 

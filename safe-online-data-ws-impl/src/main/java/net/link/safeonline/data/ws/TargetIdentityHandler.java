@@ -158,7 +158,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 		String login = findSubjectLogin(subject);
 
 		String applicationName = ApplicationCertificateMapperHandler
-				.getApplicationId(soapContext);
+				.getId(soapContext);
 		String userId = null;
 		try {
 			userId = getUserId(applicationName, login);

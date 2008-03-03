@@ -56,6 +56,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AttributeProviderService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.data.ws.DataServiceConstants;
@@ -108,6 +109,8 @@ public class DataServicePortImplTest {
 
 	private DeviceAuthenticationService mockDeviceAuthenticationService;
 
+	private NodeAuthenticationService mockNodeAuthenticationService;
+
 	private PkiValidator mockPkiValidator;
 
 	private ConfigurationManager mockConfigurationManager;
@@ -150,6 +153,11 @@ public class DataServicePortImplTest {
 				"SafeOnline/DeviceAuthenticationServiceBean/local",
 				this.mockDeviceAuthenticationService);
 
+		this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/NodeAuthenticationServiceBean/local",
+				this.mockNodeAuthenticationService);
+
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
@@ -174,7 +182,8 @@ public class DataServicePortImplTest {
 
 		this.mockObjects = new Object[] { this.mockAttributeProviderService,
 				this.mockApplicationAuthenticationService,
-				this.mockDeviceAuthenticationService, this.mockPkiValidator,
+				this.mockDeviceAuthenticationService,
+				this.mockNodeAuthenticationService, this.mockPkiValidator,
 				this.mockConfigurationManager, this.mockUserIdMappingService };
 
 		this.webServiceTestUtils = new WebServiceTestUtils();

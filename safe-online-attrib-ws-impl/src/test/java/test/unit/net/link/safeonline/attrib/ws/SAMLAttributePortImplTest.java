@@ -36,6 +36,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.config.model.ConfigurationManager;
@@ -90,6 +91,8 @@ public class SAMLAttributePortImplTest {
 
 	private DeviceAuthenticationService mockDeviceAuthenticationService;
 
+	private NodeAuthenticationService mockNodeAuthenticationService;
+
 	private SamlAuthorityService mockSamlAuthorityService;
 
 	private ConfigurationManager mockConfigurationManager;
@@ -124,6 +127,7 @@ public class SAMLAttributePortImplTest {
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
 		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
+		this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
 		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
 		this.mockConfigurationManager = createMock(ConfigurationManager.class);
 		this.mockApplicationManager = createMock(ApplicationManager.class);
@@ -146,6 +150,9 @@ public class SAMLAttributePortImplTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/DeviceAuthenticationServiceBean/local",
 				this.mockDeviceAuthenticationService);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/NodeAuthenticationServiceBean/local",
+				this.mockNodeAuthenticationService);
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				this.mockSamlAuthorityService);
