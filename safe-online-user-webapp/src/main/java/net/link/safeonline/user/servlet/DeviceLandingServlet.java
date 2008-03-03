@@ -29,6 +29,7 @@ import net.link.safeonline.device.sdk.exception.RegistrationInitializationExcept
 import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
 import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.service.RegisteredDeviceService;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -110,13 +111,16 @@ public class DeviceLandingServlet extends HttpServlet {
 		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 		KeyPair keyPair = new KeyPair(identityServiceClient.getPublicKey(),
 				identityServiceClient.getPrivateKey());
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		KeyPair authKeyPair = new KeyPair(authIdentityServiceClient
+				.getPublicKey(), authIdentityServiceClient.getPrivateKey());
 
-		handler.init(this.configParams, identityServiceClient.getCertificate(),
-				keyPair);
+		handler.init(this.configParams, keyPair);
 
 		try {
 			LOG.debug("initialize registration");
-			handler.initialize(request);
+			handler.initialize(request, authIdentityServiceClient
+					.getCertificate(), authKeyPair);
 		} catch (RegistrationInitializationException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;

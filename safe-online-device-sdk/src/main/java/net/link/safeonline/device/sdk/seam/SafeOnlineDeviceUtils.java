@@ -94,7 +94,7 @@ public class SafeOnlineDeviceUtils {
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.getSaml2BrowserPostHandler(httpServletRequest);
 		saml2BrowserPostHandler.init(safeOnlineAuthenticationServiceUrl,
-				applicationName, keyPair, certificate, configParams);
+				applicationName, keyPair, configParams);
 
 		try {
 			saml2BrowserPostHandler.authnRequest(httpServletRequest,

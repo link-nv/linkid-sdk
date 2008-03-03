@@ -20,7 +20,6 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.util.ee.EjbUtils;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,7 +40,7 @@ public class ApplicationCertificateValidatorHandler implements
 			+ ".CertificateDomain";
 
 	public enum CertificateDomain {
-		APPLICATION, DEVICE, CORE
+		APPLICATION, DEVICE, OLAS
 	}
 
 	private static final Log LOG = LogFactory
@@ -115,11 +114,15 @@ public class ApplicationCertificateValidatorHandler implements
 						"FailedAuthentication");
 			}
 		if (false == result) {
-			IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-			result = (certificate
-					.equals(identityServiceClient.getCertificate())) ? true
-					: false;
-			setCertificateDomain(CertificateDomain.CORE, context);
+			try {
+				result = this.pkiValidator.validateCertificate(
+						SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
+						certificate);
+				setCertificateDomain(CertificateDomain.OLAS, context);
+			} catch (TrustDomainNotFoundException e) {
+				throw WSSecurityUtil.createSOAPFaultException(
+						"olas trust domain not found", "FailedAuthentication");
+			}
 		}
 
 		if (false == result) {
@@ -165,6 +168,6 @@ public class ApplicationCertificateValidatorHandler implements
 	public static boolean isCoreCertificate(
 			SOAPMessageContext soapMessageContext) {
 		return getCertificateDomain(soapMessageContext).equals(
-				CertificateDomain.CORE);
+				CertificateDomain.OLAS);
 	}
 }

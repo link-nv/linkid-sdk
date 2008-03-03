@@ -123,6 +123,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME,
 				hostname + ":" + hostportssl, authIdentityServiceClient
 						.getCertificate());
+		this.trustedCertificates.put(
+				authIdentityServiceClient.getCertificate(),
+				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
 	}
 
 	private void configureAttributeTypes() {

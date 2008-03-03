@@ -25,6 +25,7 @@ import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.service.RegisteredDeviceService;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -91,8 +92,11 @@ public class DeviceLandingServlet extends HttpServlet {
 			return;
 		}
 
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+
 		String deviceUserId = saml2BrowserPostHandler.handleResponse(request,
-				response);
+				authIdentityServiceClient.getCertificate(),
+				authIdentityServiceClient.getPrivateKey());
 		if (null == deviceUserId) {
 			String msg = "protocol handler could not finalize";
 			LOG.error(msg);

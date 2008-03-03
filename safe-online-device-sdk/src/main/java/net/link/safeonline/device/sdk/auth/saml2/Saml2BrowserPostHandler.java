@@ -10,6 +10,7 @@ package net.link.safeonline.device.sdk.auth.saml2;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.List;
@@ -97,8 +98,6 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 	private KeyPair applicationKeyPair;
 
-	private X509Certificate applicationCertificate;
-
 	private Map<String, String> configParams;
 
 	private Challenge<String> challenge;
@@ -125,14 +124,11 @@ public class Saml2BrowserPostHandler implements Serializable {
 	}
 
 	public void init(String inAuthnServiceUrl, String inApplicationName,
-			KeyPair inApplicationKeyPair,
-			X509Certificate inApplicationCertificate,
-			Map<String, String> inConfigParams) {
+			KeyPair inApplicationKeyPair, Map<String, String> inConfigParams) {
 		LOG.debug("init");
 		this.authnServiceUrl = inAuthnServiceUrl;
 		this.applicationName = inApplicationName;
 		this.applicationKeyPair = inApplicationKeyPair;
-		this.applicationCertificate = inApplicationCertificate;
 		this.configParams = inConfigParams;
 		this.challenge = new Challenge<String>();
 		this.wsLocation = inConfigParams.get("WsLocation");
@@ -167,15 +163,14 @@ public class Saml2BrowserPostHandler implements Serializable {
 	}
 
 	public String handleResponse(HttpServletRequest httpRequest,
-			@SuppressWarnings("unused")
-			HttpServletResponse httpResponse) throws ServletException {
+			X509Certificate certificate, PrivateKey privateKey)
+			throws ServletException {
 
 		DateTime now = new DateTime();
 
 		Response samlResponse = AuthnResponseUtil.validateResponse(now,
 				httpRequest, this.challenge.getValue(), this.applicationName,
-				this.wsLocation, this.applicationCertificate,
-				this.applicationKeyPair.getPrivate());
+				this.wsLocation, certificate, privateKey);
 		if (null == samlResponse)
 			return null;
 
