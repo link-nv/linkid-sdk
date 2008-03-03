@@ -223,6 +223,10 @@ public class DataServicePortImplTest {
 				this.mockPkiValidator.validateCertificate(
 						SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
 						this.certificate)).andReturn(false);
+		expect(
+				this.mockPkiValidator.validateCertificate(
+						SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
+						this.certificate)).andReturn(false);
 
 		// prepare
 		replay(this.mockObjects);
