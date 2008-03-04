@@ -12,7 +12,9 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.MessageContext.Scope;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
@@ -140,6 +142,8 @@ public class ApplicationCertificateValidatorHandler implements
 			CertificateDomain certificateDomain,
 			SOAPMessageContext soapMessageContext) {
 		soapMessageContext.put(CERTIFICATE_DOMAIN_PROPERTY, certificateDomain);
+		soapMessageContext.setScope(CERTIFICATE_DOMAIN_PROPERTY,
+				Scope.APPLICATION);
 	}
 
 	private static CertificateDomain getCertificateDomain(
@@ -150,6 +154,22 @@ public class ApplicationCertificateValidatorHandler implements
 			throw new RuntimeException(
 					"no certificate domain found on JAX-WS context");
 		}
+		return certificateDomain;
+	}
+
+	/**
+	 * Returns the certificate domain from the requester.
+	 * 
+	 * @param context
+	 * @throws CertificateDomainException
+	 */
+	public static CertificateDomain getCertificateDomain(
+			WebServiceContext context) throws CertificateDomainException {
+		MessageContext messageContext = context.getMessageContext();
+		CertificateDomain certificateDomain = (CertificateDomain) messageContext
+				.get(CERTIFICATE_DOMAIN_PROPERTY);
+		if (null == certificateDomain)
+			throw new CertificateDomainException();
 		return certificateDomain;
 	}
 

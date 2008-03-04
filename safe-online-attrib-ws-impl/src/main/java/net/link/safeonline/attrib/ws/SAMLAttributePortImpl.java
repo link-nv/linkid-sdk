@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.jws.HandlerChain;
@@ -24,12 +25,15 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
+import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -38,6 +42,9 @@ import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.ws.common.SamlpSecondLevelErrorCode;
 import net.link.safeonline.ws.common.SamlpTopLevelErrorCode;
 import net.link.safeonline.ws.common.WebServiceConstants;
+import net.link.safeonline.ws.util.ApplicationCertificateValidatorHandler;
+import net.link.safeonline.ws.util.CertificateDomainException;
+import net.link.safeonline.ws.util.ApplicationCertificateValidatorHandler.CertificateDomain;
 import net.link.safeonline.ws.util.ri.Injection;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -87,10 +94,18 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 	@EJB(mappedName = "SafeOnline/AttributeServiceBean/local")
 	private AttributeService attributeService;
 
+	@EJB(mappedName = "SafeOnline/NodeAttributeServiceBean/local")
+	private NodeAttributeService nodeAttributeService;
+
 	@EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
 	private SamlAuthorityService samlAuthorityService;
 
+	@Resource
+	private WebServiceContext context;
+
 	private DatatypeFactory datatypeFactory;
+
+	private CertificateDomain certificateDomain;
 
 	@PostConstruct
 	public void postConstructCallback() {
@@ -116,11 +131,14 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			}
 			NameIDType nameId = (NameIDType) value;
 			String subjectLogin = nameId.getValue();
-			try {
-				return getUserId(subjectLogin);
-			} catch (ApplicationNotFoundException e) {
-				return null;
+			if (this.certificateDomain.equals(CertificateDomain.APPLICATION)) {
+				try {
+					return getUserId(subjectLogin);
+				} catch (ApplicationNotFoundException e) {
+					return null;
+				}
 			}
+			return subjectLogin;
 		}
 		return null;
 	}
@@ -142,6 +160,16 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
 	public ResponseType attributeQuery(AttributeQueryType request) {
 		LOG.debug("attribute query");
+
+		try {
+			this.certificateDomain = ApplicationCertificateValidatorHandler
+					.getCertificateDomain(this.context);
+		} catch (CertificateDomainException e) {
+			ResponseType requestDeniedResponse = createRequestDeniedResponse();
+			return requestDeniedResponse;
+		}
+		LOG.debug("certificate domain: " + this.certificateDomain.toString());
+
 		String subjectLogin = findSubjectLogin(request);
 		if (null == subjectLogin) {
 			LOG.debug("no subject login");
@@ -155,8 +183,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		Map<String, Object> attributeMap = new HashMap<String, Object>();
 		if (0 == attributes.size()) {
 			try {
-				attributeMap = this.attributeService
-						.getConfirmedAttributeValues(subjectLogin);
+				attributeMap = getAttributeValues(subjectLogin);
 			} catch (SubjectNotFoundException e) {
 				ResponseType subjectNotFoundResponse = createUnknownPrincipalResponse(subjectLogin);
 				return subjectNotFoundResponse;
@@ -168,9 +195,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			for (AttributeType attribute : attributes) {
 				String attributeName = attribute.getName();
 				try {
-					Object attributeValue = this.attributeService
-							.getConfirmedAttributeValue(subjectLogin,
-									attributeName);
+					Object attributeValue = getAttributeValue(subjectLogin,
+							attributeName);
 					attributeMap.put(attributeName, attributeValue);
 				} catch (AttributeNotFoundException e) {
 					LOG.error("attribute not found: " + attributeName
@@ -183,6 +209,11 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 				} catch (PermissionDeniedException e) {
 					ResponseType requestDeniedResponse = createRequestDeniedResponse();
 					return requestDeniedResponse;
+				} catch (AttributeTypeNotFoundException e) {
+					LOG.error("attribute not found: " + attributeName
+							+ " for subject " + subjectLogin);
+					ResponseType attributeNotFoundResponse = createAttributeNotFoundResponse(attributeName);
+					return attributeNotFoundResponse;
 				}
 			}
 		}
@@ -194,6 +225,26 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		assertions.add(assertion);
 
 		return response;
+	}
+
+	private Object getAttributeValue(String subjectLogin, String attributeName)
+			throws SubjectNotFoundException, AttributeNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException {
+		if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
+			return this.attributeService.getConfirmedAttributeValue(
+					subjectLogin, attributeName);
+		if (this.certificateDomain.equals(CertificateDomain.OLAS))
+			return this.nodeAttributeService.getAttributeValue(subjectLogin,
+					attributeName);
+		return null;
+	}
+
+	private Map<String, Object> getAttributeValues(String subjectLogin)
+			throws SubjectNotFoundException, PermissionDeniedException {
+		if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
+			return this.attributeService
+					.getConfirmedAttributeValues(subjectLogin);
+		return null;
 	}
 
 	private ResponseType createGenericResponse(SamlpTopLevelErrorCode errorCode) {
