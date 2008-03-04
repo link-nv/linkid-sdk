@@ -38,6 +38,7 @@ import net.link.safeonline.performance.scenario.charts.Chart;
 import net.link.safeonline.performance.scenario.script.RegisteredScripts;
 import net.link.safeonline.performance.service.ExecutionService;
 import net.link.safeonline.performance.service.ProfileDataService;
+import net.link.safeonline.performance.service.ScenarioTimingService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -94,6 +95,9 @@ public class ScenarioControllerBean implements ScenarioController {
 	@EJB
 	private ProfileDataService profileDataService;
 
+	@EJB
+	private ScenarioTimingService scenarioTimingService;
+
 	@Resource
 	SessionContext ctx;
 
@@ -113,7 +117,14 @@ public class ScenarioControllerBean implements ScenarioController {
 
 		try {
 			scenario.run();
-		} finally {
+		}
+
+		// Must catch to prevent rollback.
+		catch (Throwable t) {
+			LOG.error("Scenario execution failed:", t);
+		}
+
+		finally {
 			agentTime.stop();
 			agentTime.setEndMemory(getFreeMemory());
 
@@ -207,6 +218,16 @@ public class ScenarioControllerBean implements ScenarioController {
 		List<Chart> charts = createScenario(execution.getScenarioName())
 				.getCharts();
 
+			List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
+				.getExecutionTimings(execution);
+		for (ScenarioTimingEntity timing : scenarioTimings)
+			for (Chart chart : charts)
+				try {
+					chart.processTiming(timing);
+				} catch (Exception e) {
+					LOG.error("Charting Timing Failed:", e);
+				}
+
 		Set<DriverProfileEntity> profiles = execution.getProfiles();
 		for (DriverProfileEntity profile : profiles) {
 			List<ProfileDataEntity> profileData = this.profileDataService
@@ -214,9 +235,9 @@ public class ScenarioControllerBean implements ScenarioController {
 			for (ProfileDataEntity data : profileData)
 				for (Chart chart : charts)
 					try {
-						chart.process(data);
+						chart.processData(data);
 					} catch (Exception e) {
-						LOG.error("While charting:", e);
+						LOG.error("Charting Data Failed:", e);
 					}
 		}
 

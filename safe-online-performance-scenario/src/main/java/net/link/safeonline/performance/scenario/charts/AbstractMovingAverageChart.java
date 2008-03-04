@@ -16,10 +16,8 @@
 package net.link.safeonline.performance.scenario.charts;
 
 import java.util.LinkedList;
-import java.util.Queue;
 
-import net.link.safeonline.performance.entity.DriverProfileEntity;
-import net.link.safeonline.performance.entity.ProfileDataEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -30,7 +28,7 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
 /**
- * <h2>{@link ScenarioSpeedChart}<br>
+ * <h2>{@link AbstractMovingAverageChart}<br>
  * <sub>A chart that renders the speed at which the agent was able to execute
  * scenarios.</sub></h2>
  *
@@ -40,7 +38,7 @@ import org.jfree.data.time.TimeSeriesCollection;
  * scenarios that were executed in a time frame of one period expressed in
  * <code>scenarios/second</code>.<br>
  * <br>
- * The period is defined in the constructor ({@link #ScenarioSpeedChart(long)}).
+ * The period is defined in the constructor ({@link #AbstractMovingAverageChart(long)}).
  * </p>
  *
  * <p>
@@ -49,53 +47,57 @@ import org.jfree.data.time.TimeSeriesCollection;
  *
  * @author mbillemo
  */
-public class ScenarioSpeedChart extends AbstractChart {
+public abstract class AbstractMovingAverageChart extends AbstractChart {
 
-	private TimeSeries speed;
-	private Queue<ProfileDataEntity> speedData;
-	private long period;
-	private DriverProfileEntity usedProfile;
+	private String rangeAxisName;
+
+	protected LinkedList<ScenarioTimingEntity> averageData;
+	protected TimeSeries averageSeries;
+	protected long period;
 
 	/**
-	 * Create a new {@link ScenarioSpeedChart} instance.
+	 * Create a new {@link AbstractMovingAverageChart} instance.
 	 */
-	public ScenarioSpeedChart(long period) {
+	public AbstractMovingAverageChart(String title, String rangeAxisName,
+			long period) {
 
-		super("Scenario Speed");
+		super(title);
 
 		this.period = period;
-		this.speedData = new LinkedList<ProfileDataEntity>();
-		this.speed = new TimeSeries("Period: " + period + "ms",
+		this.rangeAxisName = rangeAxisName;
+		this.averageData = new LinkedList<ScenarioTimingEntity>();
+		this.averageSeries = new TimeSeries("Period: " + period + "ms",
 				FixedMillisecond.class);
 	}
 
 	/**
+	 * @return The value of the moving average for the current set of
+	 *         {@link ScenarioTimingEntity}s.
+	 */
+	protected abstract Number getMovingAverage();
+
+	/**
 	 * {@inheritDoc}
 	 */
-	public void process(ProfileDataEntity data) {
+	@Override
+	public void processTiming(ScenarioTimingEntity timing) {
 
-		// Only process data from the first profile.
-		if (this.usedProfile == null)
-			this.usedProfile = data.getProfile();
-		else if (!data.getProfile().equals(this.usedProfile))
-			return;
-
-		Long currentTime = data.getScenarioTiming().getStart();
-		this.speedData.offer(data);
+		Long currentTime = timing.getStart();
+		this.averageData.offer(timing);
 
 		// Poll off outdated data (more than a period old).
 		Long baseTime;
 		while (true) {
-			baseTime = this.speedData.peek().getScenarioTiming().getStart();
+			baseTime = this.averageData.peek().getStart();
 			if (currentTime - this.period <= baseTime || baseTime > currentTime)
 				break;
 
-			this.speedData.poll();
+			this.averageData.poll();
 		}
 
 		// Multiply hits by 1000 and divide by period to obtain hits/s.
-		this.speed.addOrUpdate(new FixedMillisecond(baseTime), 1000d
-				* this.speedData.size() / this.period);
+		this.averageSeries.addOrUpdate(new FixedMillisecond(currentTime),
+				getMovingAverage());
 	}
 
 	/**
@@ -107,9 +109,10 @@ public class ScenarioSpeedChart extends AbstractChart {
 		DateAxis timeAxis = new DateAxis("Time");
 
 		TimeSeriesCollection speedSet;
-		speedSet = new TimeSeriesCollection(this.speed);
+		speedSet = new TimeSeriesCollection(this.averageSeries);
 
-		return new XYPlot(speedSet, timeAxis, new NumberAxis("Speed (#/s)"),
+		return new XYPlot(speedSet, timeAxis,
+				new NumberAxis(this.rangeAxisName),
 				new XYLineAndShapeRenderer(true, false));
 	}
 }

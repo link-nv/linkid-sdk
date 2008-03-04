@@ -93,11 +93,11 @@ import org.jfree.ui.RectangleAnchor;
  */
 public abstract class AbstractChart implements Chart {
 
+	final Log LOG = LogFactory.getLog(getClass());
+
 	private static DateFormat timeFormat = DateFormat.getTimeInstance();
 	private static ImageEncoder encoder = ImageEncoderFactory.newInstance(
 			"png", 0.9f, true);
-
-	final Log LOG = LogFactory.getLog(getClass());
 
 	private final ExecutionService executionService = getService(
 			ExecutionService.class, ExecutionService.BINDING);
@@ -135,7 +135,7 @@ public abstract class AbstractChart implements Chart {
 			return null;
 
 		XYPlot plot = getPlot();
-		if (this.links.isEmpty()) {
+		if (!this.links.isEmpty()) {
 			XYPlot basePlot = plot;
 			CombinedDomainXYPlot combinedPlot;
 
@@ -156,6 +156,18 @@ public abstract class AbstractChart implements Chart {
 	 * module generates.
 	 */
 	protected abstract XYPlot getPlot();
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void processData(ProfileDataEntity data) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void processTiming(ScenarioTimingEntity data) {
+	}
 
 	/**
 	 * Link this plot with the given other plots.<br>

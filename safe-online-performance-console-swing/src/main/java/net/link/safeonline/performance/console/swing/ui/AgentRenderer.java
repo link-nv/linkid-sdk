@@ -84,12 +84,37 @@ public class AgentRenderer extends DefaultListCellRenderer {
 			else
 				state = agent.getState().getState();
 
+			// Trim the bit groups shared by all agents off of the address.
+			StringBuffer address = new StringBuffer(agent.getAddress()
+					.toString());
+			address.delete(address.indexOf(":"), address.length());
+			StringBuffer common = new StringBuffer(address);
+			for (int i = 0; i < list.getModel().getSize(); ++i) {
+				Object current = list.getModel().getElementAt(i);
+				if (current == agent || !(current instanceof ConsoleAgent))
+					continue;
+
+				String currentAddress = ((ConsoleAgent) current).getAddress()
+						.toString();
+				for (int j = currentAddress.length() - 1; j > -1; --j)
+					if (common.length() > j)
+						if (common.charAt(j) != currentAddress.charAt(j))
+							common.deleteCharAt(j);
+						else
+							break;
+			}
+			if (common.length() > 0 && !common.equals(address)) {
+				if (common.indexOf(".") >= 0)
+					common.delete(common.lastIndexOf("."), common.length() - 1);
+				address.delete(0, common.length() - 1);
+				address.insert(0, '~');
+			}
+
 			setText(String
 					.format(
 							"<html><ul><li style='color: %s; font-family:monospace'>%s [%s]%s</li></ul></html>",
-							color, agent.getAddress(), (action == null ? state
-									: action.getTransitioning()), error));
-			System.err.println(getText());
+							color, address, (action == null ? state : action
+									.getTransitioning()), error));
 		}
 
 		return this;

@@ -11,6 +11,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * <h2>{@link ScenarioTimingEntity}<br>
@@ -23,7 +28,16 @@ import javax.persistence.ManyToOne;
  * @author mbillemo
  */
 @Entity
+@NamedQueries( { @NamedQuery(name = ScenarioTimingEntity.getTimings, query = "SELECT t"
+		+ "    FROM ScenarioTimingEntity t"
+		+ "    WHERE t.execution = :execution     "
+		+ "    ORDER BY t.startTime") })
 public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
+
+	private static final Log LOG = LogFactory
+			.getLog(ScenarioTimingEntity.class);
+
+	public static final String getTimings = "ScenarioTimingEntity.getTimings";
 
 	@Id
 	@SuppressWarnings("unused")

@@ -59,10 +59,12 @@ public class ScenarioMemoryChart extends AbstractChart {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void process(ProfileDataEntity data) {
+	@Override
+	public void processData(ProfileDataEntity data) {
 
 		FixedMillisecond startTime = new FixedMillisecond(data
 				.getScenarioTiming().getStart());
+
 		Long agentMem = data.getScenarioTiming().getStartFreeMem();
 		Long olasMem = getMeasurement(data.getMeasurements(),
 				ProfileData.REQUEST_START_FREE);

@@ -102,8 +102,7 @@ public class PagingTest {
 		System.err.println();
 
 		for (ProfileDataEntity d : pointData) {
-			System.out
-					.println("ProfileData: "
+			System.out.println("ProfileData: "
 					+ new Date(d.getScenarioTiming().getStart()));
 			for (MeasurementEntity m : d.getMeasurements())
 				System.out.println("  - " + m.getMeasurement() + " -> "
@@ -160,15 +159,15 @@ public class PagingTest {
 						counts.put(m.getMeasurement(), 1);
 					}
 
+			ProfileDataEntity data = new ProfileDataEntity(profileData.get(0)
+					.getProfile(), profileData.get(0).getScenarioTiming());
+			pointData.add(data);
+
 			Set<MeasurementEntity> measurements = new HashSet<MeasurementEntity>();
 			for (String measurement : durations.keySet())
-				measurements.add(new MeasurementEntity(measurement, durations
-						.get(measurement)
-						/ counts.get(measurement)));
+				measurements.add(new MeasurementEntity(data, measurement,
+						durations.get(measurement) / counts.get(measurement)));
 
-			pointData.add(new ProfileDataEntity(
-					profileData.get(0).getProfile(), profileData.get(0)
-							.getScenarioTiming(), measurements));
 		}
 
 		return pointData;
@@ -198,6 +197,10 @@ public class PagingTest {
 		Set<ProfileDataEntity> pointData = new HashSet<ProfileDataEntity>();
 		for (long point = 0; point * period < dataDuration; ++point) {
 
+			ProfileDataEntity data = new ProfileDataEntity(profile,
+					new ScenarioTimingEntity(profile.getExecution()));
+			pointData.add(data);
+
 			List<MeasurementEntity> measurements = em.createQuery(
 					"SELECT NEW net.link.safeonline.performance.entity.MeasurementEntity("
 							+ "        m.measurement, AVG(m.duration)"
@@ -212,9 +215,8 @@ public class PagingTest {
 							dataStart + point * period).setParameter("stop",
 							dataStart + (point + 1) * period).getResultList();
 
-			pointData.add(new ProfileDataEntity(profile,
-					new ScenarioTimingEntity(profile.getExecution()),
-					new HashSet<MeasurementEntity>(measurements)));
+			for (MeasurementEntity m : measurements)
+				m.setProfileData(data);
 		}
 
 		return pointData;

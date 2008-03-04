@@ -140,8 +140,8 @@ public class ExecutionEntity {
 	/**
 	 * The speed will only be recalculated if it has been set as dirty (which
 	 * automatically happens each time a scenario has been completed for it).
-	 *
-	 * @return The average scenario execution speed in this execution.
+	 * 
+	 * @return The average scenario execution speed (#/s) in this execution.
 	 */
 	public Double getSpeed() {
 

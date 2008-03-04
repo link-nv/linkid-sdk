@@ -16,6 +16,7 @@
 package net.link.safeonline.performance.scenario.charts;
 
 import net.link.safeonline.performance.entity.ProfileDataEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 
 /**
  * <h2>{@link Chart}<br>
@@ -39,9 +40,16 @@ public interface Chart {
 	public String getTitle();
 
 	/**
-	 * Process one chunk of data as required for the rendering of this chart.
+	 * Process one chunk of {@link ProfileDataEntity}s as and if required for
+	 * the rendering of this chart.
 	 */
-	public void process(ProfileDataEntity data);
+	public void processData(ProfileDataEntity data);
+
+	/**
+	 * Process one chunk of {@link ScenarioTimingEntity}s as and if required
+	 * for the rendering of this chart.
+	 */
+	public void processTiming(ScenarioTimingEntity data);
 
 	/**
 	 * Render this chart to an image from the previously processed data.

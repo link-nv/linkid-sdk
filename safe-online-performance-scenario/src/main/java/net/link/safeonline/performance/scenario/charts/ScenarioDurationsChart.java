@@ -78,7 +78,8 @@ public class ScenarioDurationsChart extends AbstractChart {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void process(ProfileDataEntity data) {
+	@Override
+	public void processData(ProfileDataEntity data) {
 
 		XYSeries driverSet = getDriverSet(data.getProfile());
 
