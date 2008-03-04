@@ -36,6 +36,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
+import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
@@ -85,6 +86,8 @@ public class SAMLAttributePortImplTest {
 
 	private AttributeService mockAttributeService;
 
+	private NodeAttributeService mockNodeAttributeService;
+
 	private PkiValidator mockPkiValidator;
 
 	private ApplicationAuthenticationService mockApplicationAuthenticationService;
@@ -124,6 +127,7 @@ public class SAMLAttributePortImplTest {
 		this.jndiTestUtils.setUp();
 
 		this.mockAttributeService = createMock(AttributeService.class);
+		this.mockNodeAttributeService = createMock(NodeAttributeService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
 		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
 		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
@@ -134,7 +138,7 @@ public class SAMLAttributePortImplTest {
 		this.mockUserIdMappingService = createMock(UserIdMappingService.class);
 
 		this.mockObjects = new Object[] { this.mockAttributeService,
-				this.mockPkiValidator,
+				this.mockNodeAttributeService, this.mockPkiValidator,
 				this.mockApplicationAuthenticationService,
 				this.mockSamlAuthorityService, this.mockConfigurationManager,
 				this.mockApplicationManager, this.mockUserIdMappingService };
@@ -142,6 +146,9 @@ public class SAMLAttributePortImplTest {
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/AttributeServiceBean/local",
 				this.mockAttributeService);
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/NodeAttributeServiceBean/local",
+				this.mockNodeAttributeService);
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
 		this.jndiTestUtils.bindComponent(
