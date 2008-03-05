@@ -55,6 +55,8 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 	protected TimeSeries averageSeries;
 	protected long period;
 
+	private boolean enoughData = false;
+
 	/**
 	 * Create a new {@link AbstractMovingAverageChart} instance.
 	 */
@@ -92,12 +94,14 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 			if (currentTime - this.period <= baseTime || baseTime > currentTime)
 				break;
 
+			this.enoughData = true;
 			this.averageData.poll();
 		}
 
 		// Multiply hits by 1000 and divide by period to obtain hits/s.
-		this.averageSeries.addOrUpdate(new FixedMillisecond(currentTime),
-				getMovingAverage());
+		if (this.enoughData)
+			this.averageSeries.addOrUpdate(new FixedMillisecond(currentTime),
+					getMovingAverage());
 	}
 
 	/**
@@ -112,7 +116,7 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 		speedSet = new TimeSeriesCollection(this.averageSeries);
 
 		return new XYPlot(speedSet, timeAxis,
-				new NumberAxis(this.rangeAxisName),
-				new XYLineAndShapeRenderer(true, false));
+				new NumberAxis(this.rangeAxisName), new XYLineAndShapeRenderer(
+						true, false));
 	}
 }

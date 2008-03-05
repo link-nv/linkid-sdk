@@ -15,6 +15,8 @@
  */
 package test.integ.net.link.safeonline.performance;
 
+import java.awt.Frame;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,11 +25,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
@@ -35,8 +38,7 @@ import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.Chart;
-
-import org.junit.Test;
+import net.link.safeonline.performance.scenario.charts.ScenarioSpeedCorrelationChart;
 
 /**
  * <h2>{@link ChartsTest}<br>
@@ -55,27 +57,82 @@ import org.junit.Test;
 public class ChartsTest extends AbstractDataTest {
 
 	private static final int DATA_POINTS = 800;
+	private final Integer datalimit = 1000;
 
-	@Test
-	@SuppressWarnings("unchecked")
-	public void chartTest() throws Exception {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void configure() {
 
-		// Get the most recent execution.
+		this.SHOW_SQL = false;
+	}
+
+	/**
+	 * Create a new {@link ChartsTest} instance.
+	 */
+	public ChartsTest() throws Exception {
+
+		// Execution to chart.
+		ExecutionEntity execution = getLatestExecution();
+
+		// Chart modules to render.
+		ArrayList<Chart> charts = new ArrayList<Chart>();
+		charts.add(new ScenarioSpeedCorrelationChart(5 * 60 * 1000));
+
+		// Render and display the charts.
+		// displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
+		displayCharts(getAllCharts(execution));
+	}
+
+	/**
+	 * Get the most recent execution.
+	 */
+	private ExecutionEntity getLatestExecution() {
+
 		Date executionId = new TreeSet<Date>(this.executionService
 				.getExecutions()).last();
-		ExecutionEntity execution = this.executionService
-				.getExecution(executionId);
 
-		// Create the scenario that was used.
+		return this.executionService.getExecution(executionId);
+	}
+
+	/**
+	 * Instantiate a scenario object of the class used in the given execution.
+	 */
+	private Scenario createScenario(ExecutionEntity execution)
+			throws InstantiationException, IllegalAccessException,
+			ClassNotFoundException {
+
 		String scenarioName = execution.getScenarioName();
-		Scenario scenario = (Scenario) Thread.currentThread()
-				.getContextClassLoader().loadClass(scenarioName).newInstance();
+		return (Scenario) Thread.currentThread().getContextClassLoader()
+				.loadClass(scenarioName).newInstance();
+	}
 
-		// Generate charts for this execution.
-		List<Chart> charts = scenario.getCharts();
+	/**
+	 * Render all charts registered with the scenario used in the given
+	 * execution.
+	 */
+	@SuppressWarnings("unused")
+	private Map<String, byte[][]> getAllCharts(ExecutionEntity execution)
+			throws Exception {
+
+		List<Chart> charts = createScenario(execution).getCharts();
+		return getCharts(execution, charts.toArray(new Chart[charts.size()]));
+	}
+
+	/**
+	 * Render given charts with data from the given execution.
+	 */
+	private Map<String, byte[][]> getCharts(ExecutionEntity execution,
+			Chart... charts) throws Exception {
+
+		// Retrieve scenario timings recorded during the execution.
 		List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
 				.getExecutionTimings(execution);
-		int i = 0;
+
+		int i = 0, t = scenarioTimings.size();
+
+		// Let the charts process the timings.
 		for (ScenarioTimingEntity timing : scenarioTimings) {
 			for (Chart chart : charts)
 				try {
@@ -83,38 +140,93 @@ public class ChartsTest extends AbstractDataTest {
 				} catch (Exception e) {
 					this.LOG.error("Charting Timing Failed:", e);
 				}
-			if (++i > 100)
-				return;
+
+			// Show timing completion percentage.
+			if (++i % Math.max(1, t / 100) == 0)
+				this.LOG.debug(100 * i / t + "% ..");
+			if (this.datalimit != null && i > this.datalimit)
+				break;
 		}
 
+		// Retrieve driver profiles created in the execution.
 		Set<DriverProfileEntity> profiles = execution.getProfiles();
+
+		i = 0;
+		t = profiles.size();
+
 		for (DriverProfileEntity profile : profiles) {
-			List<ProfileDataEntity> profileData = this.profileDataService
-					.getProfileData(profile, DATA_POINTS);
-			for (ProfileDataEntity data : profileData)
+
+			// Retrieve data for current profile, paged or not.
+			List<ProfileDataEntity> profileData;
+			if (this.datalimit == null)
+				profileData = this.profileDataService.getProfileData(profile,
+						DATA_POINTS);
+			else
+				profileData = this.profileDataService
+						.getAllProfileData(profile);
+
+			int j = 0, u = profileData.size();
+
+			// Let the charts process the data.
+			for (ProfileDataEntity data : profileData) {
 				for (Chart chart : charts)
 					try {
 						chart.processData(data);
 					} catch (Exception e) {
 						this.LOG.error("Charting Data Failed:", e);
 					}
+
+				// Show data completion percentage.
+				if (++j % Math.max(1, u / 100) == 0)
+					this.LOG.debug(100 * i / t + "%, " + 100 * j / u + "% ..");
+				if (this.datalimit != null && j > this.datalimit)
+					break;
+			}
+
+			// Show profile completion percentage.
+			if (++i % Math.max(1, t / 100) == 0)
+				this.LOG.debug(100 * i / t + "%, 100% ..");
+			if (this.datalimit != null && i > this.datalimit)
+				break;
 		}
 
+		// Render all charts to images.
 		Map<String, byte[][]> images = new LinkedHashMap<String, byte[][]>();
 		for (Chart chart : charts)
 			images.put(chart.getTitle(), chart.render(DATA_POINTS));
 
-		// Display these charts.
-		JDialog dialog = new JDialog();
+		return images;
+	}
+
+	/**
+	 * Display the given charts in a dialog.
+	 */
+	private void displayCharts(Map<String, byte[][]> charts) {
+
+		// Create the dialog.
 		JPanel contentPane = new JPanel();
+		JFrame dialog = new JFrame(getClass().getCanonicalName());
+		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		dialog.setContentPane(new JScrollPane(contentPane));
 
-		for (Map.Entry<String, byte[][]> chart : images.entrySet())
-			contentPane.add(new JLabel(chart.getKey(), new ImageIcon(chart
-					.getValue()[0]), SwingConstants.CENTER));
+		// Add the images.
+		for (Map.Entry<String, byte[][]> chart : charts.entrySet()) {
+			JLabel image = new JLabel(chart.getKey(), new ImageIcon(chart
+					.getValue()[0]), SwingConstants.CENTER);
+			image.setVerticalTextPosition(SwingConstants.TOP);
+			image.setHorizontalTextPosition(SwingConstants.CENTER);
+			contentPane.add(image);
+		}
 
+		// Size & position the dialog.
 		dialog.pack();
+		dialog.setExtendedState(Frame.MAXIMIZED_BOTH);
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
+	}
+
+	public static void main(String[] args) throws Exception {
+
+		new ChartsTest();
 	}
 }

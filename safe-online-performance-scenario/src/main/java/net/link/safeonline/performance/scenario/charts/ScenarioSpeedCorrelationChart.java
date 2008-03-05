@@ -22,14 +22,14 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 /**
  * <h2>{@link ScenarioSpeedCorrelationChart}<br>
  * <sub>TODO</sub></h2>
- * 
+ *
  * <p>
  * </p>
- * 
+ *
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
@@ -48,24 +48,24 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
 	}
 
 	/**
-	 * Scenario Speed: Speed (in scenarios/second) in the period.
-	 * 
+	 * Active Scenarios: Amount of scenarios currently running.
+	 *
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected double getCorrelationX(ScenarioTimingEntity timing) {
 
 		// return timing.getAgentDuration();
-		double x = 1000d * this.activeScenarios.size() / this.period;
-		this.LOG.debug("X:  1000 * " + this.activeScenarios.size() + " / "
-				+ this.period + " = " + x);
+		double x = this.activeScenarios.size();
+		// this.LOG.debug("X: 1000 * " + this.activeScenarios.size() + " / "
+		// + this.period + " = " + x);
 		return x;
 	}
 
 	/**
 	 * Agent Duration: Time (in seconds) of a single scenario execution on the
 	 * agent.
-	 * 
+	 *
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -73,7 +73,7 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
 
 		// return timing.getOlasDuration();
 		double y = timing.getAgentDuration() / 1000d;
-		this.LOG.debug("Y:  " + timing.getAgentDuration() + " / 1000 = " + y);
+		// this.LOG.debug("Y: " + timing.getAgentDuration() + " / 1000 = " + y);
 		return y;
 	}
 
@@ -93,8 +93,8 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
 			this.activeScenarios.poll();
 
 		// Use a static mean for X, not the mean of the current period.
-		if (this.customMeanX == null)
-			this.customMeanX = current.getExecution().getSpeed();
+		 if (this.customMeanX == null)
+			this.customMeanX = (double) current.getExecution().getWorkers();
 
 		return super.getMovingAverage();
 	}

@@ -51,12 +51,13 @@ public class EntityTestManager {
 	}
 
 	public void configureMySql(String host, int port, String database,
-			String username, String password) {
+			String username, String password, boolean showSql) {
 
 		this.configuration = new Ejb3Configuration();
 		this.configuration.setProperty("hibernate.dialect",
 				"org.hibernate.dialect.MySQLDialect");
-		this.configuration.setProperty("hibernate.show_sql", "true");
+		this.configuration.setProperty("hibernate.show_sql", Boolean
+				.toString(showSql));
 		this.configuration.setProperty("hibernate.hbm2ddl.auto", "validate");
 		this.configuration.setProperty("hibernate.connection.username",
 				username);

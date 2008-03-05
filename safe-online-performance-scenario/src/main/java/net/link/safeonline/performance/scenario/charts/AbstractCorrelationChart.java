@@ -75,30 +75,18 @@ public abstract class AbstractCorrelationChart extends
 			if (t == this.averageData.getFirst())
 				continue;
 
-			this.LOG.debug("i: " + i);
 			double sweep = (i - 1d) / i;
 			double delta_x = getCorrelationX(t) - mean_x;
 			double delta_y = getCorrelationY(t) - mean_y;
-
-			this.LOG.debug("sweep: " + sweep);
-			this.LOG.debug("d_x: " + delta_x);
-			this.LOG.debug("d_y: " + delta_y);
 
 			sum_sq_x += delta_x * delta_x * sweep;
 			sum_sq_y += delta_y * delta_y * sweep;
 			sum_coproduct += delta_x * delta_y * sweep;
 
-			this.LOG.debug("s_x: " + sum_sq_x);
-			this.LOG.debug("s_y: " + sum_sq_y);
-			this.LOG.debug("s_c: " + sum_coproduct);
-
 			if (this.customMeanX == null)
 				mean_x += delta_x / i;
 			if (this.customMeanY == null)
 				mean_y += delta_y / i;
-
-			this.LOG.debug("m_x: " + mean_x);
-			this.LOG.debug("m_y: " + mean_y);
 
 			++i;
 		}
@@ -108,12 +96,7 @@ public abstract class AbstractCorrelationChart extends
 		double pop_sd_y = Math.sqrt(sum_sq_y / n);
 		double cov_x_y = sum_coproduct / n;
 
-		this.LOG.debug("p_x: " + pop_sd_x);
-		this.LOG.debug("p_y: " + pop_sd_y);
-		this.LOG.debug("cov: " + cov_x_y);
-
 		double correlation = cov_x_y / (pop_sd_x * pop_sd_y);
-		this.LOG.debug("cor: " + correlation);
 		return correlation;
 	}
 }

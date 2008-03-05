@@ -61,8 +61,7 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 
 	@SuppressWarnings("unchecked")
 	public List<ProfileDataEntity> getProfileData_All(
-			DriverProfileEntity profile,
-			@SuppressWarnings("unused") int dataPoints) {
+			DriverProfileEntity profile) {
 
 		return this.em.createNamedQuery(ProfileDataEntity.getByProfile)
 				.setParameter("profile", profile).getResultList();
@@ -140,20 +139,20 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 				ProfileDataEntity.getExecutionStart).setParameter("profile",
 				profile).getSingleResult();
 		int period = (int) Math.ceil((double) dataDuration / dataPoints);
-		System.err.println("period = dataDuration (" + dataDuration
-				+ ") / dataPoints (" + dataPoints + ") = " + period);
 
 		List<ProfileDataEntity> pointData = new ArrayList<ProfileDataEntity>();
 		for (long point = 0; point * period < dataDuration; ++point) {
 
-			ScenarioTimingEntity timing = (ScenarioTimingEntity) this.em
-					.createNamedQuery(ProfileDataEntity.getScenarioTiming)
-					.setParameter("profile", profile).setParameter("start",
-							dataStart + point * period).setParameter("stop",
-							dataStart + (point + 1) * period).getSingleResult();
+			List<ScenarioTimingEntity> timings = this.em.createNamedQuery(
+					ProfileDataEntity.getScenarioTiming).setParameter("start",
+					dataStart + point * period).setParameter("stop",
+					dataStart + (point + 1) * period).setMaxResults(1)
+					.getResultList();
+			if (timings.isEmpty())
+				continue;
 
 			ProfileDataEntity profileDataEntity = new ProfileDataEntity(
-					profile, timing);
+					profile, timings.get(0));
 			pointData.add(profileDataEntity);
 
 			List<MeasurementEntity> measurements = this.em.createNamedQuery(
@@ -165,10 +164,17 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 				measurement.setProfileData(profileDataEntity);
 				profileDataEntity.getMeasurements().add(measurement);
 			}
-
 		}
 
 		return pointData;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<ProfileDataEntity> getAllProfileData(DriverProfileEntity profile) {
+
+		return getProfileData_All(profile);
 	}
 
 	/**
@@ -178,6 +184,6 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 	public List<ProfileDataEntity> getProfileData(DriverProfileEntity profile,
 			int dataPoints) {
 
-		return getProfileData_All(profile, dataPoints);
+		return getProfileData_SQLPager(profile, dataPoints);
 	}
 }

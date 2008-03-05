@@ -71,8 +71,13 @@ public class ChartWindow extends WindowAdapter {
 		String tabTitle = String.format("%s (%d worker%s)", agent.getAddress()
 				.toString(), scenarioExecution.getWorkers(), scenarioExecution
 				.getWorkers() > 1 ? "s" : "");
+
 		AgentCharts agentCharts = new AgentCharts(scenarioExecution);
-		this.agents.addTab(tabTitle, new JScrollPane(agentCharts));
+		JScrollPane scrollPane = new JScrollPane(agentCharts);
+		scrollPane.setBackground(agentCharts.getBackground());
+		scrollPane.getViewport().setBackground(agentCharts.getBackground());
+
+		this.agents.addTab(tabTitle, scrollPane);
 	}
 
 	/**

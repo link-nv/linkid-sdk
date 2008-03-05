@@ -141,10 +141,27 @@ public abstract class AbstractChart implements Chart {
 
 			plot = combinedPlot = new CombinedDomainXYPlot(basePlot
 					.getDomainAxis());
+
 			combinedPlot.add(basePlot);
 
 			for (AbstractChart link : this.links)
 				combinedPlot.add(link.getPlot());
+		}
+
+		else {
+			XYDataset set = plot.getDataset();
+			if (set != null)
+				for (int i = 0; i < set.getSeriesCount(); ++i) {
+					double sum = 0;
+					for (int j = 0; j < set.getItemCount(i); ++j)
+						sum += set.getYValue(i, j);
+
+					ValueMarker marker = new ValueMarker(sum
+							/ set.getItemCount(i));
+					marker.setLabel("Average " + i + "                ");
+					marker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+					plot.addRangeMarker(marker);
+				}
 		}
 
 		JFreeChart chart = new JFreeChart(plot);

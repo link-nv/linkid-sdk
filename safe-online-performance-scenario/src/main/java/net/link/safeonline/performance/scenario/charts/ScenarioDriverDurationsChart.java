@@ -1,0 +1,142 @@
+/*
+ *   Copyright 2008, Maarten Billemont
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+package net.link.safeonline.performance.scenario.charts;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import net.link.safeonline.performance.entity.MeasurementEntity;
+import net.link.safeonline.performance.entity.ProfileDataEntity;
+import net.link.safeonline.util.performance.ProfileData;
+
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CombinedDomainXYPlot;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
+import org.jfree.data.xy.DefaultTableXYDataset;
+import org.jfree.data.xy.XYSeries;
+
+/**
+ * <h2>{@link ScenarioDriverDurationsChart}<br>
+ * <sub>A chart module that renders a detail of driver activity.</sub></h2>
+ *
+ * <p>
+ * </p>
+ *
+ * <p>
+ * <i>Mar 4, 2008</i>
+ * </p>
+ *
+ * @author mbillemo
+ */
+public class ScenarioDriverDurationsChart extends AbstractChart {
+
+	private Map<String, Map<String, XYSeries>> driverSets;
+
+	/**
+	 * Create a new {@link ScenarioDriverDurationsChart} instance.
+	 */
+	public ScenarioDriverDurationsChart() {
+
+		super("Scenario Driver Duration");
+
+		this.driverSets = new HashMap<String, Map<String, XYSeries>>();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void processData(ProfileDataEntity data) {
+
+		// Process all method (non-request) measurements.
+		long sum_methodTime = 0;
+		for (MeasurementEntity measurement : data.getMeasurements()) {
+			if (ProfileData.isRequestKey(measurement.getMeasurement()))
+				continue;
+
+			XYSeries measurementSet = getMeasurementSet(measurement);
+
+			Long startTime = data.getScenarioTiming().getStart();
+			Long duration = measurement.getDuration();
+			sum_methodTime += duration;
+
+			measurementSet.addOrUpdate(startTime, duration);
+		}
+
+		// Process the request time measurement.
+		// Subtract total time spent in method measurements.
+		for (MeasurementEntity measurement : data.getMeasurements())
+			if (ProfileData.REQUEST_DELTA_TIME.equals(measurement
+					.getMeasurement())) {
+				XYSeries measurementSet = getMeasurementSet(measurement);
+
+				Long startTime = data.getScenarioTiming().getStart();
+				Long duration = measurement.getDuration();
+
+				measurementSet
+						.addOrUpdate(startTime, duration - sum_methodTime);
+
+				break;
+			}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected XYPlot getPlot() {
+
+		DateAxis timeAxis = new DateAxis("Time");
+		CombinedDomainXYPlot plot = new CombinedDomainXYPlot(timeAxis);
+
+		for (Map.Entry<String, Map<String, XYSeries>> driverSet : this.driverSets
+				.entrySet()) {
+			NumberAxis valueAxis = new NumberAxis(driverSet.getKey()
+					+ " (ms)");
+			DefaultTableXYDataset driverMeasurements = new DefaultTableXYDataset();
+
+			for (XYSeries measurements : driverSet.getValue().values())
+				driverMeasurements.addSeries(measurements);
+
+			plot.add(new XYPlot(driverMeasurements, timeAxis, valueAxis,
+					new StackedXYAreaRenderer2()));
+		}
+
+		return plot;
+	}
+
+	private XYSeries getMeasurementSet(MeasurementEntity measurement) {
+
+		String profile = measurement.getProfileData().getProfile()
+				.getDriverName();
+
+		Map<String, XYSeries> driverSet = this.driverSets.get(profile);
+		if (driverSet == null)
+			this.driverSets.put(profile,
+					driverSet = new HashMap<String, XYSeries>());
+
+		XYSeries measurementSet = this.driverSets.get(profile).get(
+				measurement.getMeasurement());
+		if (measurementSet == null)
+			driverSet.put(measurement.getMeasurement(),
+					measurementSet = new XYSeries(measurement.getMeasurement(),
+							true, false));
+
+		return measurementSet;
+	}
+}

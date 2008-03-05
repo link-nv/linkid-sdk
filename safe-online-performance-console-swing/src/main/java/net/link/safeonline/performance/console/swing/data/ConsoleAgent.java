@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.naming.NameNotFoundException;
+
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.Agent;
@@ -230,26 +232,40 @@ public class ConsoleAgent implements Agent {
 	public void updateState() {
 
 		try {
-			// synchronized (ConsoleData.lock) {
-			this.transit = notifyOnChange(this.transit, this.agentRemoting
-					.getTransit(this.agentAddress));
-			this.state = notifyOnChange(this.state, this.agentRemoting
-					.getState(this.agentAddress));
-			this.error = notifyOnChange(this.error, this.agentRemoting
-					.getError(this.agentAddress));
+			boolean isDeployed = this.state != null
+					&& AgentState.UPLOAD.compareTo(this.state) < 0;
 
-			// Only sync these if a scenario is deployed.
-			if (AgentState.UPLOAD.compareTo(this.state) < 0) {
-				this.scenarios = notifyOnChange(this.scenarios,
-						this.agentRemoting.getScenarios(this.agentAddress));
-				this.executions = notifyOnChange(this.executions,
-						this.agentRemoting.getExecutions(this.agentAddress));
+			synchronized (ConsoleData.lock) {
+				this.transit = notifyOnChange(this.transit, this.agentRemoting
+						.getTransit(this.agentAddress));
 			}
-			// }
+			synchronized (ConsoleData.lock) {
+				this.state = notifyOnChange(this.state, this.agentRemoting
+						.getState(this.agentAddress));
+			}
+			synchronized (ConsoleData.lock) {
+				this.error = notifyOnChange(this.error, this.agentRemoting
+						.getError(this.agentAddress));
+			}
+			synchronized (ConsoleData.lock) {
+				this.scenarios = notifyOnChange(this.scenarios,
+						isDeployed ? this.agentRemoting
+								.getScenarios(this.agentAddress) : null);
+			}
+			synchronized (ConsoleData.lock) {
+				this.executions = notifyOnChange(this.executions,
+						isDeployed ? this.agentRemoting
+								.getExecutions(this.agentAddress) : null);
+			}
 		}
 
 		catch (IllegalStateException e) {
 			this.state = notifyOnChange(this.state, null);
+		}
+
+		catch (NameNotFoundException e) {
+			this.scenarios = notifyOnChange(this.scenarios, null);
+			this.executions = notifyOnChange(this.executions, null);
 		}
 
 		catch (Exception e) {

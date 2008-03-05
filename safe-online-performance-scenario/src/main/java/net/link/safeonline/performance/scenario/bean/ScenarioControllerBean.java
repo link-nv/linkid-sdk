@@ -76,7 +76,7 @@ public class ScenarioControllerBean implements ScenarioController {
 
 	private static final Log LOG = LogFactory
 			.getLog(ScenarioControllerBean.class);
-	private static final int DATA_POINTS = 1000;
+	private static final int DATA_POINTS = 800;
 
 	private static MBeanServerConnection rmi;
 

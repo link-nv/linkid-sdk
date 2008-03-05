@@ -89,6 +89,9 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	 */
 	public Set<DriverProfileEntity> getProfiles(Date startTime) {
 
+		if (this.ctx == null)
+			return getExecution(startTime).getProfiles();
+
 		return this.ctx.getBusinessObject(ExecutionService.class).getExecution(
 				startTime).getProfiles();
 	}

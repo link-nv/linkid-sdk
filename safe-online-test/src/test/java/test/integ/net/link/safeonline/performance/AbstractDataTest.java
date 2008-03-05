@@ -22,8 +22,6 @@ import net.link.safeonline.test.util.EntityTestManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
-import org.junit.Before;
 
 /**
  * @author mbillemo
@@ -34,11 +32,12 @@ public abstract class AbstractDataTest {
 
 	protected final Log LOG = LogFactory.getLog(getClass());
 
-	protected final String DB_NAME = "safeonline";
-	protected final String DB_USER = "safeonline";
-	protected final String DB_PASS = "safeonline";
-	protected final String DB_HOST = "sebeco-dev-11";
-	protected final int DB_PORT = 3306;
+	protected String DB_NAME = "safeonline";
+	protected String DB_USER = "safeonline";
+	protected String DB_PASS = "safeonline";
+	protected String DB_HOST = "sebeco-dev-11";
+	protected int DB_PORT = 3306;
+	protected boolean SHOW_SQL = true;
 
 	protected final Class<?>[] entities = new Class[] {
 			ScenarioTimingEntity.class, ExecutionEntity.class,
@@ -52,16 +51,16 @@ public abstract class AbstractDataTest {
 	protected ScenarioTimingService scenarioTimingService;
 
 	protected EntityManager em;
-	private EntityTestManager entityTestManager;
+	protected EntityTestManager entityTestManager;
 
-	@Before
-	public void setUp() {
+	{
+		configure();
 
 		this.entityTestManager = new EntityTestManager();
 
 		try {
 			this.entityTestManager.configureMySql(this.DB_HOST, this.DB_PORT, this.DB_NAME,
-					this.DB_USER, this.DB_PASS);
+					this.DB_USER, this.DB_PASS, this.SHOW_SQL);
 			this.entityTestManager.setUp(this.entities);
 
 			this.em = this.entityTestManager.getEntityManager();
@@ -81,11 +80,16 @@ public abstract class AbstractDataTest {
 		}
 	}
 
-	@After
-	public void tearDown() throws Exception {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void finalize() throws Throwable {
 
 		if (this.entityTestManager.getEntityManager() != null)
 			this.entityTestManager.tearDown();
 	}
 
+	protected void configure() {
+	}
 }

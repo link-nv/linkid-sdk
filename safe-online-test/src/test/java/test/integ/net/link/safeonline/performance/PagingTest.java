@@ -43,7 +43,7 @@ public class PagingTest {
 
 		try {
 			this.entityTestManager.configureMySql("sebeco-dev-11", 3306,
-					"safeonline", "safeonline", "safeonline");
+					"safeonline", "safeonline", "safeonline", true);
 			this.entityTestManager.setUp(ScenarioTimingEntity.class,
 					ExecutionEntity.class, DriverProfileEntity.class,
 					ProfileDataEntity.class, MeasurementEntity.class);

@@ -41,12 +41,9 @@ import javax.persistence.OneToMany;
 				+ "    FROM ProfileDataEntity d            "
 				+ "    WHERE d.profile = :profile          "),
 		@NamedQuery(name = ProfileDataEntity.getScenarioTiming, query = "SELECT t"
-				+ "    FROM ProfileDataEntity d"
-				+ "        JOIN d.scenarioTiming t"
-				+ "    WHERE d.profile = :profile        "
-				+ "        AND t.startTime >= :start"
-				+ "        AND t.startTime <= :stop"
-				+ "        AND t.startTime = AVG(t.startTime)"
+				+ "    FROM ScenarioTimingEntity t"
+				+ "    WHERE t.startTime >= :start"
+				+ "        AND t.startTime < :stop"
 				+ "    ORDER BY t.startTime"),
 		@NamedQuery(name = ProfileDataEntity.createAverage, query = "SELECT NEW net.link.safeonline.performance.entity.MeasurementEntity("
 				+ "        m.measurement, AVG(m.duration)"
@@ -54,8 +51,8 @@ import javax.persistence.OneToMany;
 				+ "    FROM ProfileDataEntity d          "
 				+ "        JOIN d.measurements m         "
 				+ "    WHERE d.profile = :profile        "
-				+ "        AND d.scenarioTiming.startTime > :start      "
-				+ "        AND d.scenarioTiming.startTime <= :stop      "
+				+ "        AND d.scenarioTiming.startTime >= :start      "
+				+ "        AND d.scenarioTiming.startTime < :stop      "
 				+ "    GROUP BY m.measurement            "),
 		@NamedQuery(name = ProfileDataEntity.countByProfile, query = "SELECT COUNT(d)"
 				+ "    FROM ProfileDataEntity d"
