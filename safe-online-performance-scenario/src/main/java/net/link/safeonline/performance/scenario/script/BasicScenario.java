@@ -26,7 +26,6 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.Chart;
-import net.link.safeonline.performance.scenario.charts.ScenarioDriverDurationsChart;
 import net.link.safeonline.performance.scenario.charts.ScenarioDurationsChart;
 import net.link.safeonline.performance.scenario.charts.ScenarioMemoryChart;
 import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
@@ -141,7 +140,6 @@ public class BasicScenario implements Scenario {
 		charts.add(new ScenarioMemoryChart());
 		charts.add(new ScenarioSpeedChart(5 * 60 * 1000));
 		charts.add(new ScenarioSpeedCorrelationChart(5 * 60 * 1000));
-		charts.add(new ScenarioDriverDurationsChart());
 
 		return charts;
 	}

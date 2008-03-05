@@ -61,15 +61,10 @@ import javax.persistence.OneToMany;
 public class ProfileDataEntity {
 
 	public static final String getByProfile = "ProfileDataEntity.getByProfile";
-
 	public static final String createAverage = "ProfileDataEntity.createAverage";
-
 	public static final String countByProfile = "ProfileDataEntity.countByProfile";
-
 	public static final String getScenarioTiming = "ProfileDataEntity.getScenarioTiming";
-
 	public static final String getExecutionStart = "ProfileDataEntity.getExecutionStart";
-
 	public static final String getExecutionDuration = "ProfileDataEntity.getExecutionDuration";
 
 	@Id

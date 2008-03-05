@@ -39,7 +39,6 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -160,8 +159,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	void updateExecutionSelection() {
 
 		synchronized (this.executions) {
-			if (this.executionSelection.getValue() < this.executions
-					.size()
+			if (this.executionSelection.getValue() < this.executions.size()
 					&& this.executionSelection.getValue() > -1)
 				setExecution(this.executions.get(this.executionSelection
 						.getValue()));
@@ -205,7 +203,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 					.getWorkers(), execution.getWorkers() == 1 ? "" : "s"));
 			this.speed.setText(execution.getSpeed() == null ? "N/A" : String
 					.format("%.2f scenario%s/s", execution.getSpeed() * 1000d,
-							execution.getSpeed() * 1000d == 1 ? "" : "s"));
+							execution.getSpeed() == 1 ? "" : "s"));
 			this.hostname.setText(execution.getHostname());
 
 			long timeLeft = execution.getStartTime().getTime()
@@ -274,45 +272,37 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		final JSlider slider = this.executionSelection;
 		final List<ScenarioExecution> sliderExecutions = this.executions;
 
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
+		int maxValue = Math.max(0, executions.size() - 1);
+		int selectedExecution = maxValue;
+		Date selectedExecutionTime = null;
+		if (ConsoleData.getExecution() != null)
+			selectedExecutionTime = ConsoleData.getExecution().getStartTime();
 
-				int maxValue = Math.max(0, executions.size() - 1);
-				int selectedExecution = maxValue;
-				Date selectedExecutionTime = null;
-				if (ConsoleData.getExecution() != null)
-					selectedExecutionTime = ConsoleData.getExecution()
-							.getStartTime();
+		synchronized (sliderExecutions) {
+			sliderExecutions.clear();
+			sliderExecutions.addAll(executions);
 
-				synchronized (sliderExecutions) {
-					sliderExecutions.clear();
-					sliderExecutions.addAll(executions);
+			Dictionary<Integer, JComponent> dictionary = new Hashtable<Integer, JComponent>();
+			if (sliderExecutions.isEmpty())
+				dictionary.put(0, new JLabel("N/A"));
+			else
+				for (int i = 0; i < sliderExecutions.size(); ++i) {
+					ScenarioExecution execution = sliderExecutions.get(i);
+					if (execution.getStartTime().equals(selectedExecutionTime))
+						selectedExecution = i;
 
-					Dictionary<Integer, JComponent> dictionary = new Hashtable<Integer, JComponent>();
-					if (sliderExecutions.isEmpty())
-						dictionary.put(0, new JLabel("N/A"));
-					else
-						for (int i = 0; i < sliderExecutions.size(); ++i) {
-							ScenarioExecution execution = sliderExecutions
-									.get(i);
-							if (execution.getStartTime().equals(
-									selectedExecutionTime))
-								selectedExecution = i;
-
-							dictionary.put(i, new JLabel(labelTimeFormat
-									.format(execution.getStartTime())));
-						}
-
-					slider.setLabelTable(dictionary);
-					slider.setEnabled(!sliderExecutions.isEmpty());
-					slider.setPaintLabels(!sliderExecutions.isEmpty());
+					dictionary.put(i, new JLabel(labelTimeFormat
+							.format(execution.getStartTime())));
 				}
 
-				slider.getModel().setRangeProperties(selectedExecution, 0, 0,
-						maxValue, false);
-				updateExecutionSelection();
-			}
-		});
+			slider.setLabelTable(dictionary);
+			slider.setEnabled(!sliderExecutions.isEmpty());
+			slider.setPaintLabels(!sliderExecutions.isEmpty());
+		}
+
+		slider.getModel().setRangeProperties(selectedExecution, 0, 0, maxValue,
+				false);
+		updateExecutionSelection();
 	}
 
 	private boolean containsExecution(Set<ScenarioExecution> set,

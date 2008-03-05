@@ -183,6 +183,12 @@ public abstract class AbstractChart implements Chart {
 	/**
 	 * {@inheritDoc}
 	 */
+	public void processError(DriverExceptionEntity error) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void processTiming(ScenarioTimingEntity data) {
 	}
 
@@ -371,7 +377,7 @@ public abstract class AbstractChart implements Chart {
 				}
 
 			for (DriverExceptionEntity error : this.driverExceptionService
-					.getProfileErrors(profile))
+					.getAllProfileErrors(profile))
 				errorsSet.addValue((Number) 1, error.getMessage(), timeFormat
 						.format(error.getOccurredTime()));
 

@@ -147,7 +147,7 @@ public class ChartWindow extends WindowAdapter {
 
 			header.add(label = new JLabel(execution.getSpeed() == null ? "N/A"
 					: String.format("Average Speed: %.2f scenarios/s",
-							execution.getSpeed() * 1000f)));
+							execution.getSpeed())));
 			label.setFont(label.getFont().deriveFont(20f));
 
 			header.add(label = new JLabel(String.format(

@@ -59,7 +59,6 @@ public class AgentService implements AgentServiceMBean {
 	private ScenarioDeployer deployer;
 	private ScenarioExecutor executor;
 	private AgentState transit;
-	private AgentState state;
 	private Exception error;
 
 	public AgentService() {
@@ -114,16 +113,25 @@ public class AgentService implements AgentServiceMBean {
 	 */
 	public AgentState getState() {
 
-		// Check to see if the scenario bean was deployed behind our backs.
-		if (this.state == null || AgentState.RESET.equals(this.state))
-			try {
-				this.state = getScenarioController() == null ? AgentState.RESET
-						: AgentState.DEPLOY;
-			} catch (NamingException e) {
-				this.state = AgentState.RESET;
-			}
+		try {
+			if (getScenarioController() == null)
+				throw new NamingException("ScenarioController not available.");
 
-		return this.state;
+			Set<Date> executions = getScenarioController().getExecutions();
+			if (executions == null || executions.isEmpty())
+				return AgentState.DEPLOY;
+
+			else if (this.charts.isEmpty())
+				return AgentState.EXECUTE;
+
+			else
+				return AgentState.CHART;
+		}
+
+		catch (NamingException e) {
+			return this.deployer.isUploaded() ? AgentState.UPLOAD
+					: AgentState.RESET;
+		}
 	}
 
 	/**
@@ -157,7 +165,7 @@ public class AgentService implements AgentServiceMBean {
 		try {
 			return getExecution(startTime, true);
 		} finally {
-			actionCompleted(this.charts.containsKey(startTime));
+			actionCompleted();
 		}
 	}
 
@@ -226,13 +234,10 @@ public class AgentService implements AgentServiceMBean {
 	 * (state becomes transit) or failed (state remains). Either way, transit
 	 * becomes <code>null</code> since no more action is happening.
 	 */
-	public void actionCompleted(boolean success) {
+	public void actionCompleted() {
 
 		if (this.transit == null)
 			LOG.warn("No ongoing action to stop.", new IllegalStateException());
-
-		else if (success)
-			this.state = this.transit;
 
 		this.executor = null;
 		this.transit = null;
@@ -249,7 +254,7 @@ public class AgentService implements AgentServiceMBean {
 			setError(null);
 
 			this.deployer.upload(application);
-			actionCompleted(true);
+			actionCompleted();
 		}
 
 		catch (Exception e) {
@@ -257,7 +262,7 @@ public class AgentService implements AgentServiceMBean {
 		} finally {
 			// If transit != null we didn't complete the action successfully.
 			if (this.transit != null)
-				actionCompleted(false);
+				actionCompleted();
 		}
 	}
 
@@ -272,7 +277,7 @@ public class AgentService implements AgentServiceMBean {
 			setError(null);
 
 			this.deployer.deploy();
-			actionCompleted(true);
+			actionCompleted();
 		}
 
 		catch (Exception e) {
@@ -280,7 +285,7 @@ public class AgentService implements AgentServiceMBean {
 		} finally {
 			// If transit != null we didn't complete the action successfully.
 			if (this.transit != null)
-				actionCompleted(false);
+				actionCompleted();
 		}
 	}
 
@@ -301,7 +306,7 @@ public class AgentService implements AgentServiceMBean {
 
 		catch (Exception e) {
 			setError(e);
-			actionCompleted(false);
+			actionCompleted();
 		}
 	}
 

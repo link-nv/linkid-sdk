@@ -60,6 +60,8 @@ public abstract class ScenarioThread extends Thread {
 		ExecutorService pool = Executors.newCachedThreadPool();
 		for (final ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
 			pool.submit(new Worker(agent));
+
+			agent.setError(null);
 			agent.setTransit(ScenarioThread.this.state);
 		}
 

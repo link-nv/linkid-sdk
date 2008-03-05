@@ -62,8 +62,6 @@ public class ScenarioExecutor extends Thread {
 	@Override
 	public void run() {
 
-		boolean success = true;
-
 		try {
 			// Find the scenario bean.
 			final ScenarioController scenarioBean = (ScenarioController) new InitialContext()
@@ -126,14 +124,12 @@ public class ScenarioExecutor extends Thread {
 		}
 
 		catch (Exception e) {
-			success = false;
-
 			this.agentService.setError(e);
 			LOG.error("Processing Scenario Execution Failed", e);
 		}
 
 		finally {
-			this.agentService.actionCompleted(!this.abort && success);
+			this.agentService.actionCompleted();
 		}
 	}
 

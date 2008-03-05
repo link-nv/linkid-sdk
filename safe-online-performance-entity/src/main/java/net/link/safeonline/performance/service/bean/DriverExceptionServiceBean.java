@@ -6,8 +6,8 @@
  */
 package net.link.safeonline.performance.service.bean;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -78,11 +78,43 @@ public class DriverExceptionServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public Set<DriverExceptionEntity> getProfileErrors(
+	public List<DriverExceptionEntity> getAllProfileErrors(
 			DriverProfileEntity profile) {
 
-		return new HashSet<DriverExceptionEntity>(this.em.createNamedQuery(
-				DriverExceptionEntity.getByProfile).setParameter("profile",
-				profile).getResultList());
+		return this.em.createNamedQuery(DriverExceptionEntity.getByProfile)
+				.setParameter("profile", profile).getResultList();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
+	public List<DriverExceptionEntity> getProfileErrors(
+			DriverProfileEntity profile, int dataPoints) {
+
+		// Find the driver profile's profile data.
+		Long dataDuration = (Long) this.em.createNamedQuery(
+				DriverExceptionEntity.getExecutionDuration).setParameter(
+				"profile", profile).getSingleResult();
+		Long dataStart = (Long) this.em.createNamedQuery(
+				DriverExceptionEntity.getExecutionStart).setParameter(
+				"profile", profile).getSingleResult();
+
+		// Bail out of there are no errors for this profile.
+		if (dataDuration == null || dataStart == null
+				|| dataDuration + dataStart == 0)
+			return new ArrayList<DriverExceptionEntity>();
+
+		int period = (int) Math.ceil((double) dataDuration / dataPoints);
+
+		List<DriverExceptionEntity> pointData = new ArrayList<DriverExceptionEntity>();
+		for (long point = 0; point * period < dataDuration; ++point)
+			pointData.addAll(this.em.createNamedQuery(
+					DriverExceptionEntity.createAverage).setParameter(
+					"profile", profile).setParameter("start",
+					dataStart + point * period).setParameter("stop",
+					dataStart + (point + 1) * period).getResultList());
+
+		return pointData;
 	}
 }

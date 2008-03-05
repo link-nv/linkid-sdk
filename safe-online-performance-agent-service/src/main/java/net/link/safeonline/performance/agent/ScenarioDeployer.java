@@ -25,11 +25,11 @@ import org.jboss.mx.util.MBeanServerLocator;
 /**
  * <h2>{@link ScenarioDeployer}<br>
  * <sub>Deploys an application (EAR) that is contained in a byte array.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ScenarioDeployer {
@@ -75,6 +75,11 @@ public class ScenarioDeployer {
 			if (null != this.applicationFile && this.applicationFile.exists())
 				this.applicationFile.delete();
 		}
+	}
+
+	public boolean isUploaded() {
+
+		return this.applicationFile != null && this.applicationFile.canRead();
 	}
 
 	private Object invokeDeployer(String methodName, Object[] parameters,

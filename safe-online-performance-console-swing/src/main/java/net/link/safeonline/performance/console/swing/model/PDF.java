@@ -65,7 +65,7 @@ public class PDF {
 		for (Map.Entry<ConsoleAgent, ScenarioExecution> entry : agentCharts
 				.entrySet())
 			if (entry.getValue().getSpeed() != null) {
-				speed += entry.getValue().getSpeed() * 1000d;
+				speed += entry.getValue().getSpeed();
 				++agentSpeeds;
 			} else
 				LOG.warn("Agent " + entry.getKey()

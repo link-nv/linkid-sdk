@@ -27,6 +27,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
@@ -36,6 +37,7 @@ import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.ScenarioController;
 import net.link.safeonline.performance.scenario.charts.Chart;
 import net.link.safeonline.performance.scenario.script.RegisteredScripts;
+import net.link.safeonline.performance.service.DriverExceptionService;
 import net.link.safeonline.performance.service.ExecutionService;
 import net.link.safeonline.performance.service.ProfileDataService;
 import net.link.safeonline.performance.service.ScenarioTimingService;
@@ -94,6 +96,9 @@ public class ScenarioControllerBean implements ScenarioController {
 
 	@EJB
 	private ProfileDataService profileDataService;
+
+	@EJB
+	private DriverExceptionService driverExceptionServiceBean;
 
 	@EJB
 	private ScenarioTimingService scenarioTimingService;
@@ -218,7 +223,7 @@ public class ScenarioControllerBean implements ScenarioController {
 		List<Chart> charts = createScenario(execution.getScenarioName())
 				.getCharts();
 
-			List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
+		List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
 				.getExecutionTimings(execution);
 		for (ScenarioTimingEntity timing : scenarioTimings)
 			for (Chart chart : charts)
@@ -238,6 +243,16 @@ public class ScenarioControllerBean implements ScenarioController {
 						chart.processData(data);
 					} catch (Exception e) {
 						LOG.error("Charting Data Failed:", e);
+					}
+
+			List<DriverExceptionEntity> profileErrors = this.driverExceptionServiceBean
+					.getProfileErrors(profile, DATA_POINTS);
+			for (DriverExceptionEntity error : profileErrors)
+				for (Chart chart : charts)
+					try {
+						chart.processError(error);
+					} catch (Exception e) {
+						LOG.error("Charting Error Failed:", e);
 					}
 		}
 

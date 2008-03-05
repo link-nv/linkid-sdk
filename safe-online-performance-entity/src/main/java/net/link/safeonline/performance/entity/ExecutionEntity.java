@@ -10,7 +10,8 @@ import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -36,7 +37,7 @@ import net.link.safeonline.performance.service.ExecutionService;
 		@NamedQuery(name = ExecutionEntity.findById, query = "SELECT e"
 				+ "    FROM ExecutionEntity e"
 				+ "    WHERE e.startTime = :startTime"),
-		@NamedQuery(name = ExecutionEntity.calcSpeed, query = "SELECT 1000 * COUNT(t) / ( MAX(t.startTime) - MIN(t.startTime) )"
+		@NamedQuery(name = ExecutionEntity.calcSpeed, query = "SELECT 1000d * COUNT(t) / ( MAX(t.startTime) - MIN(t.startTime) )"
 				+ "    FROM ScenarioTimingEntity t"
 				+ "    WHERE t.execution = :execution") })
 public class ExecutionEntity {
@@ -58,9 +59,6 @@ public class ExecutionEntity {
 
 	@OneToMany(mappedBy = "execution")
 	private Set<DriverProfileEntity> profiles;
-
-	@EJB
-	private transient ExecutionService executionService;
 
 	public ExecutionEntity() {
 
@@ -140,13 +138,17 @@ public class ExecutionEntity {
 	/**
 	 * The speed will only be recalculated if it has been set as dirty (which
 	 * automatically happens each time a scenario has been completed for it).
-	 * 
+	 *
 	 * @return The average scenario execution speed (#/s) in this execution.
 	 */
 	public Double getSpeed() {
 
 		if (this.dirtySpeed)
-			this.executionService.updateSpeed(this);
+			try {
+				((ExecutionService) new InitialContext()
+						.lookup(ExecutionService.BINDING)).updateSpeed(this);
+			} catch (NamingException e) {
+			}
 
 		return this.speed;
 	}
@@ -158,6 +160,7 @@ public class ExecutionEntity {
 	public void setSpeed(Double speed) {
 
 		this.speed = speed;
+		this.dirtySpeed = false;
 	}
 
 	/**

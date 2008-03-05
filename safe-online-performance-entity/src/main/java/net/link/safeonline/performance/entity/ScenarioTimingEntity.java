@@ -14,9 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * <h2>{@link ScenarioTimingEntity}<br>
  * <sub>Holds the startTime at which a scenario has been executed.</sub></h2>
@@ -33,9 +30,6 @@ import org.apache.commons.logging.LogFactory;
 		+ "    WHERE t.execution = :execution     "
 		+ "    ORDER BY t.startTime") })
 public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
-
-	private static final Log LOG = LogFactory
-			.getLog(ScenarioTimingEntity.class);
 
 	public static final String getTimings = "ScenarioTimingEntity.getTimings";
 

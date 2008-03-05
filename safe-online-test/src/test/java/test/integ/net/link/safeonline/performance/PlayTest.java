@@ -19,11 +19,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
-import javax.persistence.Query;
-
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 
 /**
  * <h2>{@link PlayTest}<br>
@@ -62,6 +62,7 @@ public class PlayTest extends AbstractDataTest {
 		DriverProfileEntity profile = this.executionService.getProfiles(
 				execution.getStartTime()).iterator().next();
 
+		long start = System.currentTimeMillis();
 		long dataDuration = (Long) this.em.createNamedQuery(
 				ProfileDataEntity.getExecutionDuration).setParameter("profile",
 				profile).getSingleResult();
@@ -69,23 +70,30 @@ public class PlayTest extends AbstractDataTest {
 				ProfileDataEntity.getExecutionStart).setParameter("profile",
 				profile).getSingleResult();
 
-		int period = (int) dataDuration / DATA_POINTS;
+		int period = (int) Math.ceil((double) dataDuration / DATA_POINTS);
 
-		Query profileDataQuery = this.em.createNamedQuery(
-				ProfileDataEntity.getByProfile)
-				.setParameter("profile", profile).setMaxResults(period);
+		System.err.println(" - 0: " + (System.currentTimeMillis() - start));
 
-		List<ProfileDataEntity> profileData;
-		for (int point = 0; (profileData = profileDataQuery.setFirstResult(
-				point * period).getResultList()) != null; ++point) {
+		for (long point = 0; point * period < dataDuration; ++point) {
 
-			long start = System.currentTimeMillis();
-			List result = this.em.createNamedQuery(
+			start = System.currentTimeMillis();
+			List<ScenarioTimingEntity> result = this.em.createNamedQuery(
 					ProfileDataEntity.getScenarioTiming).setParameter("start",
-					dataStart).setParameter("stop", dataStart + period)
-					.setMaxResults(1).getResultList();
-			System.out.println(result);
+					dataStart + point * period).setParameter("stop",
+					dataStart + (point + 1) * period).setMaxResults(1)
+					.getResultList();
+
 			System.err.println(" - 1: " + (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
+
+			List<MeasurementEntity> measurements = this.em.createNamedQuery(
+					ProfileDataEntity.createAverage).setParameter("profile",
+					profile).setParameter("start", dataStart + point * period)
+					.setParameter("stop", dataStart + (point + 1) * period)
+					.getResultList();
+
+			System.err.println(" - 2: " + (System.currentTimeMillis() - start));
+			start = System.currentTimeMillis();
 		}
 	}
 

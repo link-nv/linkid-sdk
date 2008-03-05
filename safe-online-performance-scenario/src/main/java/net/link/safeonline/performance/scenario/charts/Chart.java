@@ -15,6 +15,7 @@
  */
 package net.link.safeonline.performance.scenario.charts;
 
+import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 
@@ -44,6 +45,12 @@ public interface Chart {
 	 * the rendering of this chart.
 	 */
 	public void processData(ProfileDataEntity data);
+
+	/**
+	 * Process one chunk of {@link DriverExceptionEntity}s as and if required
+	 * for the rendering of this chart.
+	 */
+	public void processError(DriverExceptionEntity error);
 
 	/**
 	 * Process one chunk of {@link ScenarioTimingEntity}s as and if required

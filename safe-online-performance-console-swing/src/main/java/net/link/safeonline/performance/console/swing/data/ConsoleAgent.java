@@ -198,6 +198,18 @@ public class ConsoleAgent implements Agent {
 	}
 
 	/**
+	 * <b>Temporarily</b> change the <b>local</b> error of the agent.<br>
+	 * <br>
+	 * You should only use this to set the transition state just before making a
+	 * request to the remote agent that will result in the same state transition
+	 * if all goes well in order to have the state reflected in the UI sooner.
+	 */
+	public void setError(Exception error) {
+
+		this.error = error;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public Exception getError() {

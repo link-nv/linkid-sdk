@@ -7,14 +7,12 @@
 package net.link.safeonline.performance.service.bean;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.Query;
 
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
@@ -59,85 +57,38 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 		return dataEntity;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
-	public List<ProfileDataEntity> getProfileData_All(
-			DriverProfileEntity profile) {
+	public List<ProfileDataEntity> getAllProfileData(DriverProfileEntity profile) {
 
 		return this.em.createNamedQuery(ProfileDataEntity.getByProfile)
 				.setParameter("profile", profile).getResultList();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
-	public List<ProfileDataEntity> getProfileData_JavaPager(
-			DriverProfileEntity profile, int dataPoints) {
-
-		// Calculate how many ProfileDataEntities to use for one averaging.
-		double dataCount = (Long) this.em.createNamedQuery(
-				ProfileDataEntity.countByProfile).setParameter("profile",
-				profile).getSingleResult();
-		int period = (int) Math.ceil(dataCount / dataPoints);
-
-		// Fetch the ProfileDataEntities in pages of 'period'.
-		Query profileDataQuery = this.em.createNamedQuery(
-				ProfileDataEntity.getByProfile)
-				.setParameter("profile", profile).setMaxResults(period);
-
-		// Average each page into one new ProfileDataEntity.
-		List<ProfileDataEntity> profileData;
-		List<ProfileDataEntity> pointData = new ArrayList<ProfileDataEntity>();
-		for (int point = 0; (profileData = profileDataQuery.setFirstResult(
-				point * period).getResultList()) != null; ++point) {
-			if (profileData.isEmpty())
-				break;
-
-			Map<String, Long> durations = new HashMap<String, Long>();
-			Map<String, Integer> counts = new HashMap<String, Integer>();
-			for (ProfileDataEntity d : profileData)
-				for (MeasurementEntity m : d.getMeasurements())
-					if (!ProfileData.REQUEST_START_TIME.equals(m
-							.getMeasurement())) {
-						if (!durations.containsKey(m.getMeasurement())) {
-							durations.put(m.getMeasurement(), 0l);
-							counts.put(m.getMeasurement(), 0);
-						}
-
-						durations.put(m.getMeasurement(), durations.get(m
-								.getMeasurement())
-								+ m.getDuration());
-						counts.put(m.getMeasurement(), counts.get(m
-								.getMeasurement()) + 1);
-					} else if (!durations.containsKey(m.getMeasurement())) {
-						durations.put(m.getMeasurement(), m.getDuration());
-						counts.put(m.getMeasurement(), 1);
-					}
-
-			ProfileDataEntity profileDataEntity = new ProfileDataEntity(
-					profileData.get(0).getProfile(), profileData.get(0)
-							.getScenarioTiming());
-			pointData.add(profileDataEntity);
-
-			for (String measurement : durations.keySet())
-				profileDataEntity.getMeasurements().add(
-						new MeasurementEntity(profileDataEntity, measurement,
-								durations.get(measurement)
-										/ counts.get(measurement)));
-
-		}
-
-		return pointData;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<ProfileDataEntity> getProfileData_SQLPager(
-			DriverProfileEntity profile, int dataPoints) {
+	public List<ProfileDataEntity> getProfileData(DriverProfileEntity profile,
+			int dataPoints) {
 
 		// Find the driver profile's profile data.
-		long dataDuration = (Long) this.em.createNamedQuery(
+		Long dataDuration = (Long) this.em.createNamedQuery(
 				ProfileDataEntity.getExecutionDuration).setParameter("profile",
 				profile).getSingleResult();
-		long dataStart = (Long) this.em.createNamedQuery(
+		Long dataStart = (Long) this.em.createNamedQuery(
 				ProfileDataEntity.getExecutionStart).setParameter("profile",
 				profile).getSingleResult();
+
+		// Bail out of there is no data for this profile.
+		if (dataDuration == null || dataStart == null
+				|| dataDuration + dataStart == 0) {
+			LOG.warn("No data for profile: " + profile.getDriverName());
+			return new ArrayList<ProfileDataEntity>();
+		}
+
 		int period = (int) Math.ceil((double) dataDuration / dataPoints);
 
 		List<ProfileDataEntity> pointData = new ArrayList<ProfileDataEntity>();
@@ -167,23 +118,5 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 		}
 
 		return pointData;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<ProfileDataEntity> getAllProfileData(DriverProfileEntity profile) {
-
-		return getProfileData_All(profile);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public List<ProfileDataEntity> getProfileData(DriverProfileEntity profile,
-			int dataPoints) {
-
-		return getProfileData_SQLPager(profile, dataPoints);
 	}
 }
