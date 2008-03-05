@@ -84,6 +84,10 @@
 					<groupId>net.lin-k.safe-online</groupId>
 					<artifactId>safe-online-j2ee-util</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>net.lin-k.safe-online</groupId>
+					<artifactId>safe-online-sdk</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -99,6 +103,10 @@
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
 					<artifactId>safe-online-j2ee-util</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.lin-k.safe-online</groupId>
+					<artifactId>safe-online-sdk</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -116,6 +124,10 @@
 					<groupId>net.lin-k.safe-online</groupId>
 					<artifactId>safe-online-j2ee-util</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>net.lin-k.safe-online</groupId>
+					<artifactId>safe-online-sdk</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -131,6 +143,10 @@
 				<exclusion>
 					<groupId>net.lin-k.safe-online</groupId>
 					<artifactId>safe-online-j2ee-util</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.lin-k.safe-online</groupId>
+					<artifactId>safe-online-sdk</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>opensaml</groupId>
