@@ -24,10 +24,12 @@ import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.AttributeTypeServiceRemote;
 import net.link.safeonline.util.Filter;
@@ -56,6 +58,9 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 
 	@EJB
 	private AttributeDAO attributeDAO;
+
+	@EJB
+	private DeviceDAO deviceDAO;
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<AttributeTypeEntity> listAttributeTypes() {
@@ -199,6 +204,9 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 		// attribute type cannot be a compounded member
 		checkCompounded(attributeType);
 
+		// attribute type cannot be used by a device
+		checkDevices(attributeType);
+
 		// remove attribute provider entities
 		this.attributeProviderDAO.removeAttributeProviders(attributeType);
 
@@ -237,6 +245,16 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 		if (attributeType.isCompoundMember())
 			throw new PermissionDeniedException(
 					"Cannot remove a compounded member attribute type");
+	}
+
+	private void checkDevices(AttributeTypeEntity attributeType)
+			throws PermissionDeniedException {
+		List<DeviceEntity> devices = this.deviceDAO.listDevices();
+		for (DeviceEntity device : devices) {
+			if (device.getAttributeType().equals(attributeType))
+				throw new PermissionDeniedException(
+						"Attribute type exist in device: " + device.getName());
+		}
 	}
 
 	private void unmarkCompoundMembers(AttributeTypeEntity attributeType)

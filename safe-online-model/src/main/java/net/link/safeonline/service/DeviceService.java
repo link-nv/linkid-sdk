@@ -67,7 +67,8 @@ public interface DeviceService {
 			DeviceClassNotFoundException, ExistingDeviceException,
 			AttributeTypeNotFoundException;
 
-	void removeDevice(String name);
+	void removeDevice(String name) throws DeviceNotFoundException,
+			DeviceDescriptionNotFoundException, DevicePropertyNotFoundException;
 
 	List<DeviceClassDescriptionEntity> listDeviceClassDescriptions(
 			String deviceClassName) throws DeviceClassNotFoundException;

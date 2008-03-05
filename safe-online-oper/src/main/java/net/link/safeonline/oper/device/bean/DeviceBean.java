@@ -21,7 +21,9 @@ import javax.faces.model.SelectItem;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
 import net.link.safeonline.ctrl.Convertor;
 import net.link.safeonline.ctrl.ConvertorUtil;
@@ -219,7 +221,25 @@ public class DeviceBean implements Device {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public String remove() {
 		LOG.debug("remove device: " + this.selectedDevice.getName());
-		this.deviceService.removeDevice(this.selectedDevice.getName());
+		try {
+			this.deviceService.removeDevice(this.selectedDevice.getName());
+		} catch (DeviceNotFoundException e) {
+			LOG.debug("device " + this.selectedDevice.getName() + " not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return null;
+		} catch (DeviceDescriptionNotFoundException e) {
+			LOG.debug("device description not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR,
+					"errorDeviceDescriptionNotFound");
+			return null;
+		} catch (DevicePropertyNotFoundException e) {
+			LOG.debug("device property not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDevicePropertyNotFound");
+			return null;
+		}
 		deviceListFactory();
 		return "success";
 	}

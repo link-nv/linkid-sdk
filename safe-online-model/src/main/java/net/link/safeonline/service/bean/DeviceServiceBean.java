@@ -193,7 +193,23 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void removeDevice(String name) {
+	public void removeDevice(String name) throws DeviceNotFoundException,
+			DeviceDescriptionNotFoundException, DevicePropertyNotFoundException {
+		DeviceEntity device = this.deviceDAO.getDevice(name);
+		// TODO: check if users registered this device
+
+		// remove all device descriptions
+		List<DeviceDescriptionEntity> deviceDescriptions = this.deviceDAO
+				.listDescriptions(device);
+		for (DeviceDescriptionEntity deviceDescription : deviceDescriptions)
+			removeDeviceDescription(deviceDescription);
+
+		// remove all device properties
+		List<DevicePropertyEntity> deviceProperties = this.deviceDAO
+				.listProperties(device);
+		for (DevicePropertyEntity deviceProperty : deviceProperties)
+			removeDeviceProperty(deviceProperty);
+
 		this.deviceDAO.removeDevice(name);
 	}
 
