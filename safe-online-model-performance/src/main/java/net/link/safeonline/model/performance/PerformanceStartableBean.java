@@ -10,6 +10,7 @@ package net.link.safeonline.model.performance;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -23,6 +24,7 @@ import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -37,8 +39,7 @@ public class PerformanceStartableBean extends AbstractInitBean {
 	private static final String LICENSE_AGREEMENT_CONFIRM_TEXT_NL = "Deze software dient enkel voor performance testing gebruikt te worden.";
 
 	public PerformanceStartableBean() {
-		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME, "",
-				null);
+		configureNode();
 
 		/*
 		 * Create the performance user.
@@ -107,6 +108,20 @@ public class PerformanceStartableBean extends AbstractInitBean {
 	private byte[] getLogo() {
 
 		return getLogo("/logo.jpg");
+	}
+
+	private void configureNode() {
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String nodeName = properties.getString("olas.node.name");
+		String hostname = properties.getString("olas.host.name");
+		String hostportssl = properties.getString("olas.host.port.ssl");
+
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		this.node = new Node(nodeName, hostname + ":" + hostportssl,
+				authIdentityServiceClient.getCertificate());
+		this.trustedCertificates.put(
+				authIdentityServiceClient.getCertificate(),
+				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
 	}
 
 	@Override

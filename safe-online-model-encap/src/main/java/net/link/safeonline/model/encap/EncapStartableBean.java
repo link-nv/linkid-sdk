@@ -9,9 +9,8 @@ package net.link.safeonline.model.encap;
 
 import java.security.cert.X509Certificate;
 import java.util.Locale;
-import java.util.Properties;
+import java.util.ResourceBundle;
 
-import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
@@ -22,6 +21,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.model.bean.AbstractInitBean;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,8 +35,7 @@ public class EncapStartableBean extends AbstractInitBean {
 	private static final Log LOG = LogFactory.getLog(EncapStartableBean.class);
 
 	public EncapStartableBean() {
-		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME, "",
-				null);
+		configureNode();
 
 		AttributeTypeEntity encapAttributeType = new AttributeTypeEntity(
 				SafeOnlineConstants.MOBILE_ENCAP_ATTRIBUTE,
@@ -52,27 +51,17 @@ public class EncapStartableBean extends AbstractInitBean {
 		X509Certificate certificate = (X509Certificate) EncapKeyStoreUtils
 				.getPrivateKeyEntry().getCertificate();
 
-		ClassLoader classLoader = Thread.currentThread()
-				.getContextClassLoader();
-
-		Properties props = new Properties();
-		try {
-			props.load(classLoader
-					.getResourceAsStream("properties/encap/encap.properties"));
-		} catch (Exception e) {
-			throw new EJBException("Could not open encap properties");
-		}
-
-		String hostname = props.getProperty("hostname");
-		String port = props.getProperty("port");
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String hostname = properties.getString("olas.host.name");
+		String hostportssl = properties.getString("olas.host.port.ssl");
 
 		this.devices.add(new Device(SafeOnlineConstants.ENCAP_DEVICE_ID,
 				SafeOnlineConstants.MOBILE_DEVICE_CLASS, "https://" + hostname
-						+ ":" + port + "/olas-encap/auth", "https://"
-						+ hostname + ":" + port + "/olas-encap/reg",
+						+ ":" + hostportssl + "/olas-encap/auth", "https://"
+						+ hostname + ":" + hostportssl + "/olas-encap/reg",
 				"encap/new-user-mobile.seam", "https://" + hostname + ":"
-						+ port + "/olas-encap/remove", null, certificate,
-				encapAttributeType));
+						+ hostportssl + "/olas-encap/remove", null,
+				certificate, encapAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
 		this.deviceDescriptions.add(new DeviceDescription(
@@ -80,6 +69,20 @@ public class EncapStartableBean extends AbstractInitBean {
 						.getLanguage(), "Mobile"));
 		this.trustedCertificates.put(certificate,
 				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+	}
+
+	private void configureNode() {
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String nodeName = properties.getString("olas.node.name");
+		String hostname = properties.getString("olas.host.name");
+		String hostportssl = properties.getString("olas.host.port.ssl");
+
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		this.node = new Node(nodeName, hostname + ":" + hostportssl,
+				authIdentityServiceClient.getCertificate());
+		this.trustedCertificates.put(
+				authIdentityServiceClient.getCertificate(),
+				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
 	}
 
 	@Override

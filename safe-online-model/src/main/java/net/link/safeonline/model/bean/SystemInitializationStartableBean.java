@@ -116,13 +116,13 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
 	private void configureNode() {
 		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String nodeName = properties.getString("olas.node.name");
 		String hostname = properties.getString("olas.host.name");
 		String hostportssl = properties.getString("olas.host.port.ssl");
 
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME,
-				hostname + ":" + hostportssl, authIdentityServiceClient
-						.getCertificate());
+		this.node = new Node(nodeName, hostname + ":" + hostportssl,
+				authIdentityServiceClient.getCertificate());
 		this.trustedCertificates.put(
 				authIdentityServiceClient.getCertificate(),
 				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);

@@ -14,10 +14,9 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
@@ -31,6 +30,7 @@ import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -53,8 +53,7 @@ public class BeIdStartableBean extends AbstractInitBean {
 	private TrustPointDAO trustPointDAO;
 
 	public BeIdStartableBean() {
-		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME, "",
-				null);
+		configureNode();
 
 		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(
 				BeIdConstants.GIVENNAME_ATTRIBUTE, DatatypeType.STRING, true,
@@ -104,26 +103,16 @@ public class BeIdStartableBean extends AbstractInitBean {
 		this.trustedCertificates.put(certificate,
 				SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
-		ClassLoader classLoader = Thread.currentThread()
-				.getContextClassLoader();
-
-		Properties props = new Properties();
-		try {
-			props.load(classLoader
-					.getResourceAsStream("properties/beid/beid.properties"));
-		} catch (Exception e) {
-			throw new EJBException("Could not open beid properties");
-		}
-
-		String hostname = props.getProperty("hostname");
-		String port = props.getProperty("port");
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String hostname = properties.getString("olas.host.name");
+		String hostportssl = properties.getString("olas.host.port.ssl");
 
 		this.devices.add(new Device(SafeOnlineConstants.BEID_DEVICE_ID,
 				SafeOnlineConstants.PKI_DEVICE_CLASS, "https://" + hostname
-						+ ":" + port + "/olas-beid/auth", "https://" + hostname
-						+ ":" + port + "/olas-beid/reg",
-				"beid/new-user-beid.seam", "https://" + hostname + ":" + port
-						+ "/olas-beid/remove", null, certificate,
+						+ ":" + hostportssl + "/olas-beid/auth", "https://"
+						+ hostname + ":" + hostportssl + "/olas-beid/reg",
+				"beid/new-user-beid.seam", "https://" + hostname + ":"
+						+ hostportssl + "/olas-beid/remove", null, certificate,
 				beidDeviceAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
@@ -186,6 +175,20 @@ public class BeIdStartableBean extends AbstractInitBean {
 				LOG.error("certificate error: " + e.getMessage(), e);
 			}
 		}
+	}
+
+	private void configureNode() {
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String nodeName = properties.getString("olas.node.name");
+		String hostname = properties.getString("olas.host.name");
+		String hostportssl = properties.getString("olas.host.port.ssl");
+
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		this.node = new Node(nodeName, hostname + ":" + hostportssl,
+				authIdentityServiceClient.getCertificate());
+		this.trustedCertificates.put(
+				authIdentityServiceClient.getCertificate(),
+				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
 	}
 
 	@Override

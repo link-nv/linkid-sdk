@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -36,6 +37,7 @@ import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -61,8 +63,7 @@ public class DemoStartableBean extends AbstractInitBean {
 	public static final String LICENSE_AGREEMENT_CONFIRM_TEXT_NL = "GELIEVE ZORGVULDIG DEZE OVEREENKOMST VAN DE VERGUNNING VAN SOFTWARE (\"LICENSE \") TE LEZEN ALVORENS DE SOFTWARE TE GEBRUIKEN.";
 
 	public DemoStartableBean() {
-		this.node = new Node(SafeOnlineConstants.SAFE_ONLINE_NODE_NAME, "",
-				null);
+		configureNode();
 
 		configDemoUsers();
 
@@ -638,6 +639,20 @@ public class DemoStartableBean extends AbstractInitBean {
 				SubscriptionOwnerType.APPLICATION, "mbillemo",
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
+	}
+
+	private void configureNode() {
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String nodeName = properties.getString("olas.node.name");
+		String hostname = properties.getString("olas.host.name");
+		String hostportssl = properties.getString("olas.host.port.ssl");
+
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		this.node = new Node(nodeName, hostname + ":" + hostportssl,
+				authIdentityServiceClient.getCertificate());
+		this.trustedCertificates.put(
+				authIdentityServiceClient.getCertificate(),
+				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
 	}
 
 	@Override
