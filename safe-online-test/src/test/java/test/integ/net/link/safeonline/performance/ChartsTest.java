@@ -82,8 +82,8 @@ public class ChartsTest extends AbstractDataTest {
 		charts.add(new ScenarioExceptionsChart());
 
 		// Render and display the charts.
-		displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
-		// displayCharts(getAllCharts(execution));
+		// displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
+		displayCharts(getAllCharts(execution));
 	}
 
 	/**
@@ -242,8 +242,13 @@ public class ChartsTest extends AbstractDataTest {
 
 		// Render all charts to images.
 		Map<String, byte[][]> images = new LinkedHashMap<String, byte[][]>();
-		for (Chart chart : charts)
-			images.put(chart.getTitle(), chart.render(DATA_POINTS));
+		for (Chart chart : charts) {
+			byte[][] image = chart.render(DATA_POINTS);
+			if (image != null)
+				images.put(chart.getTitle(), image);
+			else
+				this.LOG.warn("Chart " + chart.getTitle() + " had no data.");
+		}
 
 		return images;
 	}

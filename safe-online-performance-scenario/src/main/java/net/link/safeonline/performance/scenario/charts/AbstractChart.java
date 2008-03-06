@@ -269,7 +269,7 @@ public abstract class AbstractChart implements Chart {
 	protected boolean isEmpty(Map<String, ? extends Series> data) {
 
 		for (Series series : data.values())
-			if (series.isEmpty())
+			if (!series.isEmpty())
 				return false;
 
 		return true;
