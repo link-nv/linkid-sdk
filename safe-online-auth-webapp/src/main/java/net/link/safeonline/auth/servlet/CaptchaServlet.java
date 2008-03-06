@@ -24,7 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.octo.captcha.CaptchaException;
-import com.octo.captcha.engine.image.gimpy.SimpleListImageCaptchaEngine;
+import com.octo.captcha.engine.image.gimpy.DefaultGimpyEngine;
 import com.octo.captcha.service.captchastore.FastHashMapCaptchaStore;
 import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
 import com.octo.captcha.service.image.ImageCaptchaService;
@@ -83,8 +83,8 @@ public class CaptchaServlet extends HttpServlet {
 				.getAttribute(CAPTCHA_SERVICE_ATTRIBUTE);
 		if (null == captchaService) {
 			captchaService = new DefaultManageableImageCaptchaService(
-					new FastHashMapCaptchaStore(),
-					new SimpleListImageCaptchaEngine(), 180, 100000, 75000);
+					new FastHashMapCaptchaStore(), new DefaultGimpyEngine(),
+					180, 100000, 75000);
 			session.setAttribute(CAPTCHA_SERVICE_ATTRIBUTE, captchaService);
 		}
 		return captchaService;
