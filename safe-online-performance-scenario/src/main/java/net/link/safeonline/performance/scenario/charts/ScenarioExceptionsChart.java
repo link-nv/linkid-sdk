@@ -85,6 +85,9 @@ public class ScenarioExceptionsChart extends AbstractChart {
 	@Override
 	protected XYPlot getPlot() {
 
+		if (isEmpty())
+			return null;
+
 		DateAxis timeAxis = new DateAxis("Time");
 
 		CombinedDomainXYPlot errorPlot = new CombinedDomainXYPlot(timeAxis);
@@ -101,6 +104,15 @@ public class ScenarioExceptionsChart extends AbstractChart {
 		}
 
 		return errorPlot;
+	}
+
+	private boolean isEmpty() {
+
+		for (Map<String, TimeSeries> data : this.errorMaps.values())
+			if (!isEmpty(data))
+				return false;
+
+		return true;
 	}
 
 	private TimeSeries getErrorSet(DriverExceptionEntity error) {

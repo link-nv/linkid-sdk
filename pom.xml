@@ -1985,7 +1985,7 @@
 		<dom4j.version>1.6.1</dom4j.version>
 		<cglib.version>2.1_3</cglib.version>
 		<maven-ejb-plugin.version>2.1</maven-ejb-plugin.version>
-		<jfreechart.version>1.0.5</jfreechart.version>
+		<jfreechart.version>1.0.9</jfreechart.version>
 		<jcommon.version>1.0.9</jcommon.version>
 		<maven-deploy-plugin.version>2.3</maven-deploy-plugin.version>
 		<taglist-maven-plugin.version>2.0</taglist-maven-plugin.version>

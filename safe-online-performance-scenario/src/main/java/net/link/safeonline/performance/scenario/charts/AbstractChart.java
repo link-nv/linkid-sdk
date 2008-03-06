@@ -63,6 +63,7 @@ import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.Series;
 import org.jfree.data.general.SeriesException;
 import org.jfree.data.statistics.BoxAndWhiskerCalculator;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
@@ -79,7 +80,7 @@ import org.jfree.ui.RectangleAnchor;
 /**
  * <h2>{@link AbstractChart}<br>
  * <sub>The basis of chart generators.</sub></h2>
- * 
+ *
  * <p>
  * This class implements several helper methods that will be very convenient in
  * generating and rendering charts.<br>
@@ -92,11 +93,11 @@ import org.jfree.ui.RectangleAnchor;
  * <li>{@link #isTimingProcessed()}</li>
  * </ul>
  * </p>
- * 
+ *
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public abstract class AbstractChart implements Chart {
@@ -143,6 +144,9 @@ public abstract class AbstractChart implements Chart {
 			return null;
 
 		XYPlot plot = getPlot();
+		if (plot == null)
+			return null;
+
 		if (!this.links.isEmpty()) {
 			XYPlot basePlot = plot;
 			CombinedDomainXYPlot combinedPlot;
@@ -152,8 +156,11 @@ public abstract class AbstractChart implements Chart {
 
 			combinedPlot.add(basePlot);
 
-			for (AbstractChart link : this.links)
-				combinedPlot.add(link.getPlot());
+			for (AbstractChart link : this.links) {
+				XYPlot linkedPlot = link.getPlot();
+				if (linkedPlot != null)
+					combinedPlot.add(linkedPlot);
+			}
 		}
 
 		else {
@@ -257,6 +264,15 @@ public abstract class AbstractChart implements Chart {
 
 		throw new NoSuchElementException("Element " + type
 				+ " could not be found.");
+	}
+
+	protected boolean isEmpty(Map<String, ? extends Series> data) {
+
+		for (Series series : data.values())
+			if (series.isEmpty())
+				return false;
+
+		return true;
 	}
 
 	protected byte[] getImage(JFreeChart chart, int width) {

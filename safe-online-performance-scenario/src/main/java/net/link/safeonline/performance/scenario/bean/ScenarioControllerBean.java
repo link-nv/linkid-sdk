@@ -283,8 +283,11 @@ public class ScenarioControllerBean implements ScenarioController {
 		}
 
 		Map<String, byte[][]> images = new LinkedHashMap<String, byte[][]>();
-		for (Chart chart : charts)
-			images.put(chart.getTitle(), chart.render(DATA_POINTS));
+		for (Chart chart : charts) {
+			byte[][] image = chart.render(DATA_POINTS);
+			if (image != null)
+				images.put(chart.getTitle(), image);
+		}
 
 		return images;
 	}

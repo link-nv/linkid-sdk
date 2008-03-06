@@ -45,7 +45,7 @@ import org.jfree.data.xy.XYSeries;
  */
 public class ScenarioDriverDurationsChart extends AbstractChart {
 
-	private Map<String, Map<String, XYSeries>> driverSets;
+	private Map<String, Map<String, XYSeries>> driverMaps;
 
 	/**
 	 * Create a new {@link ScenarioDriverDurationsChart} instance.
@@ -54,7 +54,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 
 		super("Scenario Driver Duration");
 
-		this.driverSets = new HashMap<String, Map<String, XYSeries>>();
+		this.driverMaps = new HashMap<String, Map<String, XYSeries>>();
 	}
 
 	/**
@@ -110,10 +110,13 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 	@Override
 	protected XYPlot getPlot() {
 
+		if (isEmpty())
+			return null;
+
 		DateAxis timeAxis = new DateAxis("Time");
 		CombinedDomainXYPlot plot = new CombinedDomainXYPlot(timeAxis);
 
-		for (Map.Entry<String, Map<String, XYSeries>> driverSet : this.driverSets
+		for (Map.Entry<String, Map<String, XYSeries>> driverSet : this.driverMaps
 				.entrySet()) {
 			NumberAxis valueAxis = new NumberAxis(driverSet.getKey() + " (ms)");
 			DefaultTableXYDataset driverMeasurements = new DefaultTableXYDataset();
@@ -128,19 +131,28 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 		return plot;
 	}
 
+	private boolean isEmpty() {
+
+		for (Map<String, XYSeries> data : this.driverMaps.values())
+			if (!isEmpty(data))
+				return false;
+
+		return true;
+	}
+
 	private XYSeries getMeasurementSet(MeasurementEntity measurement) {
 
 		String profile = measurement.getProfileData().getProfile()
 				.getDriverName();
 
-		Map<String, XYSeries> driverSet = this.driverSets.get(profile);
-		if (driverSet == null)
-			this.driverSets.put(profile,
-					driverSet = new HashMap<String, XYSeries>());
+		Map<String, XYSeries> driverMap = this.driverMaps.get(profile);
+		if (driverMap == null)
+			this.driverMaps.put(profile,
+					driverMap = new HashMap<String, XYSeries>());
 
-		XYSeries measurementSet = driverSet.get(measurement.getMeasurement());
+		XYSeries measurementSet = driverMap.get(measurement.getMeasurement());
 		if (measurementSet == null)
-			driverSet.put(measurement.getMeasurement(),
+			driverMap.put(measurement.getMeasurement(),
 					measurementSet = new XYSeries(measurement.getMeasurement(),
 							true, false));
 

@@ -88,6 +88,9 @@ public class ScenarioMemoryChart extends AbstractChart {
 	@Override
 	protected XYPlot getPlot() {
 
+		if (this.olasMemory.isEmpty() && this.agentMemory.isEmpty())
+			return null;
+
 		DateAxis timeAxis = new DateAxis("Time");
 
 		TimeSeriesCollection olasSet, agentSet;

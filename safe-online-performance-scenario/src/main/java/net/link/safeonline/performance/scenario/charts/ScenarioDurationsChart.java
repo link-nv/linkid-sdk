@@ -107,6 +107,9 @@ public class ScenarioDurationsChart extends AbstractChart {
 	@Override
 	protected XYPlot getPlot() {
 
+		if (isEmpty(this.driverSets))
+			return null;
+
 		DateAxis timeAxis = new DateAxis("Time");
 		NumberAxis valueAxis = new NumberAxis("Duration (ms)");
 
