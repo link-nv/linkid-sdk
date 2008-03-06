@@ -347,46 +347,6 @@
 			<artifactId>gravel</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>suggestionbox</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>spacer</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>dataTable</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>tabPanel</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-collections</groupId>
-					<artifactId>commons-collections</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jfreechart</artifactId>
 		</dependency>
