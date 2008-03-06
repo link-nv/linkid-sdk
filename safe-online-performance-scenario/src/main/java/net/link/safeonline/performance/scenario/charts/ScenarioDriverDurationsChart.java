@@ -99,6 +99,15 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public boolean isDataProcessed() {
+
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	protected XYPlot getPlot() {
 
 		DateAxis timeAxis = new DateAxis("Time");
@@ -106,8 +115,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 
 		for (Map.Entry<String, Map<String, XYSeries>> driverSet : this.driverSets
 				.entrySet()) {
-			NumberAxis valueAxis = new NumberAxis(driverSet.getKey()
-					+ " (ms)");
+			NumberAxis valueAxis = new NumberAxis(driverSet.getKey() + " (ms)");
 			DefaultTableXYDataset driverMeasurements = new DefaultTableXYDataset();
 
 			for (XYSeries measurements : driverSet.getValue().values())
@@ -130,8 +138,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 			this.driverSets.put(profile,
 					driverSet = new HashMap<String, XYSeries>());
 
-		XYSeries measurementSet = this.driverSets.get(profile).get(
-				measurement.getMeasurement());
+		XYSeries measurementSet = driverSet.get(measurement.getMeasurement());
 		if (measurementSet == null)
 			driverSet.put(measurement.getMeasurement(),
 					measurementSet = new XYSeries(measurement.getMeasurement(),

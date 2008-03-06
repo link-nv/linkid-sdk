@@ -32,13 +32,14 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.Chart;
-import net.link.safeonline.performance.scenario.charts.ScenarioSpeedCorrelationChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioExceptionsChart;
 
 /**
  * <h2>{@link ChartsTest}<br>
@@ -57,7 +58,7 @@ import net.link.safeonline.performance.scenario.charts.ScenarioSpeedCorrelationC
 public class ChartsTest extends AbstractDataTest {
 
 	private static final int DATA_POINTS = 800;
-	private final Integer datalimit = 1000;
+	private final Integer datalimit = null;
 
 	/**
 	 * {@inheritDoc}
@@ -78,11 +79,11 @@ public class ChartsTest extends AbstractDataTest {
 
 		// Chart modules to render.
 		ArrayList<Chart> charts = new ArrayList<Chart>();
-		charts.add(new ScenarioSpeedCorrelationChart(5 * 60 * 1000));
+		charts.add(new ScenarioExceptionsChart());
 
 		// Render and display the charts.
-		// displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
-		displayCharts(getAllCharts(execution));
+		displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
+		// displayCharts(getAllCharts(execution));
 	}
 
 	/**
@@ -126,61 +127,110 @@ public class ChartsTest extends AbstractDataTest {
 	private Map<String, byte[][]> getCharts(ExecutionEntity execution,
 			Chart... charts) throws Exception {
 
+		// Divide the charts over three lists depending on data they chart.
+		List<Chart> dataCharts, errorCharts, timingCharts;
+		dataCharts = new ArrayList<Chart>();
+		errorCharts = new ArrayList<Chart>();
+		timingCharts = new ArrayList<Chart>();
+		for (Chart chart : charts) {
+			if (chart.isDataProcessed())
+				dataCharts.add(chart);
+			if (chart.isErrorProcessed())
+				errorCharts.add(chart);
+			if (chart.isTimingProcessed())
+				timingCharts.add(chart);
+		}
+
 		// Retrieve scenario timings recorded during the execution.
-		List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
-				.getExecutionTimings(execution);
+		if (!timingCharts.isEmpty()) {
+			List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
+					.getExecutionTimings(execution);
 
-		int i = 0, t = scenarioTimings.size();
+			int i = 0, t = scenarioTimings.size();
 
-		// Let the charts process the timings.
-		for (ScenarioTimingEntity timing : scenarioTimings) {
-			for (Chart chart : charts)
-				try {
-					chart.processTiming(timing);
-				} catch (Exception e) {
-					this.LOG.error("Charting Timing Failed:", e);
-				}
+			// Let the charts process the timings.
+			for (ScenarioTimingEntity timing : scenarioTimings) {
+				for (Chart chart : timingCharts)
+					try {
+						chart.processTiming(timing);
+					} catch (Exception e) {
+						this.LOG.error("Charting Timing Failed:", e);
+					}
 
-			// Show timing completion percentage.
-			if (++i % Math.max(1, t / 100) == 0)
-				this.LOG.debug(100 * i / t + "% ..");
-			if (this.datalimit != null && i > this.datalimit)
-				break;
+				// Show timing completion percentage.
+				if (++i % Math.max(1, t / 100) == 0)
+					this.LOG.debug(100 * i / t + "% ..");
+				if (this.datalimit != null && i > this.datalimit)
+					break;
+			}
 		}
 
 		// Retrieve driver profiles created in the execution.
 		Set<DriverProfileEntity> profiles = execution.getProfiles();
 
-		i = 0;
-		t = profiles.size();
+		int i = 0, t = profiles.size();
 
 		for (DriverProfileEntity profile : profiles) {
 
 			// Retrieve data for current profile, paged or not.
-			List<ProfileDataEntity> profileData;
-			if (this.datalimit == null)
-				profileData = this.profileDataService.getProfileData(profile,
-						DATA_POINTS);
-			else
-				profileData = this.profileDataService
-						.getAllProfileData(profile);
+			List<ProfileDataEntity> profileData = null;
+			List<DriverExceptionEntity> profileErrors = null;
+			if (this.datalimit == null) {
+				if (!dataCharts.isEmpty())
+					profileData = this.profileDataService.getProfileData(
+							profile, DATA_POINTS);
+				if (!errorCharts.isEmpty())
+					profileErrors = this.driverExceptionService
+							.getProfileErrors(profile, DATA_POINTS);
+			} else {
+				if (!dataCharts.isEmpty())
+					profileData = this.profileDataService
+							.getAllProfileData(profile);
+				if (!errorCharts.isEmpty())
+					profileErrors = this.driverExceptionService
+							.getAllProfileErrors(profile);
+			}
 
-			int j = 0, u = profileData.size();
+			if (profileData != null) {
+				int j = 0, u = profileData.size();
 
-			// Let the charts process the data.
-			for (ProfileDataEntity data : profileData) {
-				for (Chart chart : charts)
-					try {
-						chart.processData(data);
-					} catch (Exception e) {
-						this.LOG.error("Charting Data Failed:", e);
-					}
+				// Let the charts process the data.
+				for (ProfileDataEntity data : profileData) {
+					for (Chart chart : dataCharts)
+						try {
+							chart.processData(data);
+						} catch (Exception e) {
+							this.LOG.error("Charting Data Failed:", e);
+						}
 
-				// Show data completion percentage.
-				if (++j % Math.max(1, u / 100) == 0)
-					this.LOG.debug(100 * i / t + "%, " + 100 * j / u + "% ..");
-				if (this.datalimit != null && j > this.datalimit)
-					break;
+					// Show data completion percentage.
+					if (++j % Math.max(1, u / 100) == 0)
+						this.LOG.debug(100 * i / t + "%, 0%, " + 100 * j / u
+								+ "% ..");
+					if (this.datalimit != null && j > this.datalimit)
+						break;
+				}
+			}
+
+			if (profileErrors != null) {
+				int j = 0, u = profileErrors.size();
+
+				// Let the charts process the errors.
+				for (DriverExceptionEntity error : profileErrors) {
+					for (Chart chart : errorCharts)
+						try {
+							chart.processError(error);
+						} catch (Exception e) {
+							this.LOG.error("Charting Error Failed:", e);
+						}
+
+					// Show data completion percentage.
+					if (++j % Math.max(1, u / 100) == 0)
+						this.LOG.debug(100 * i / t + "%, 50%, " + 100 * j / u
+								+ "% ..");
+					if (this.datalimit != null && j > this.datalimit)
+						break;
+				}
 			}
 
 			// Show profile completion percentage.

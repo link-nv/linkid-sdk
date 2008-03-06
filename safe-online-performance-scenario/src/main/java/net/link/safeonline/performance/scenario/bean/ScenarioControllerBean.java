@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.performance.scenario.bean;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -98,7 +99,7 @@ public class ScenarioControllerBean implements ScenarioController {
 	private ProfileDataService profileDataService;
 
 	@EJB
-	private DriverExceptionService driverExceptionServiceBean;
+	private DriverExceptionService driverExceptionService;
 
 	@EJB
 	private ScenarioTimingService scenarioTimingService;
@@ -223,37 +224,62 @@ public class ScenarioControllerBean implements ScenarioController {
 		List<Chart> charts = createScenario(execution.getScenarioName())
 				.getCharts();
 
-		List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
-				.getExecutionTimings(execution);
-		for (ScenarioTimingEntity timing : scenarioTimings)
-			for (Chart chart : charts)
-				try {
-					chart.processTiming(timing);
-				} catch (Exception e) {
-					LOG.error("Charting Timing Failed:", e);
-				}
+		// Divide the charts over three lists depending on data they chart.
+		List<Chart> dataCharts, errorCharts, timingCharts;
+		dataCharts = new ArrayList<Chart>();
+		errorCharts = new ArrayList<Chart>();
+		timingCharts = new ArrayList<Chart>();
+		for (Chart chart : charts) {
+			if (chart.isDataProcessed())
+				dataCharts.add(chart);
+			if (chart.isErrorProcessed())
+				errorCharts.add(chart);
+			if (chart.isTimingProcessed())
+				timingCharts.add(chart);
+		}
 
+		// Chart scenario timing data.
+		if (!timingCharts.isEmpty()) {
+			List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
+					.getExecutionTimings(execution);
+			for (ScenarioTimingEntity timing : scenarioTimings)
+				for (Chart chart : charts)
+					try {
+						chart.processTiming(timing);
+					} catch (Exception e) {
+						LOG.error("Charting Timing Failed:", e);
+					}
+		}
+
+		// Chart driver data.
 		Set<DriverProfileEntity> profiles = execution.getProfiles();
 		for (DriverProfileEntity profile : profiles) {
-			List<ProfileDataEntity> profileData = this.profileDataService
-					.getProfileData(profile, DATA_POINTS);
-			for (ProfileDataEntity data : profileData)
-				for (Chart chart : charts)
-					try {
-						chart.processData(data);
-					} catch (Exception e) {
-						LOG.error("Charting Data Failed:", e);
-					}
 
-			List<DriverExceptionEntity> profileErrors = this.driverExceptionServiceBean
-					.getProfileErrors(profile, DATA_POINTS);
-			for (DriverExceptionEntity error : profileErrors)
-				for (Chart chart : charts)
-					try {
-						chart.processError(error);
-					} catch (Exception e) {
-						LOG.error("Charting Error Failed:", e);
-					}
+			// Chart data.
+			if (!dataCharts.isEmpty()) {
+				List<ProfileDataEntity> profileData = this.profileDataService
+						.getProfileData(profile, DATA_POINTS);
+				for (ProfileDataEntity data : profileData)
+					for (Chart chart : charts)
+						try {
+							chart.processData(data);
+						} catch (Exception e) {
+							LOG.error("Charting Data Failed:", e);
+						}
+			}
+
+			// Chart errors.
+			if (!errorCharts.isEmpty()) {
+				List<DriverExceptionEntity> profileErrors = this.driverExceptionService
+						.getProfileErrors(profile, DATA_POINTS);
+				for (DriverExceptionEntity error : profileErrors)
+					for (Chart chart : charts)
+						try {
+							chart.processError(error);
+						} catch (Exception e) {
+							LOG.error("Charting Error Failed:", e);
+						}
+			}
 		}
 
 		Map<String, byte[][]> images = new LinkedHashMap<String, byte[][]>();

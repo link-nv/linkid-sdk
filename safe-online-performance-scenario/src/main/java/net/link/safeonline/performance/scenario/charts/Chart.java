@@ -59,6 +59,24 @@ public interface Chart {
 	public void processTiming(ScenarioTimingEntity data);
 
 	/**
+	 * @return <code>true</code> if this chart module processes
+	 *         {@link ProfileDataEntity}s in #{@link Chart#processData(ProfileDataEntity)}.
+	 */
+	public boolean isDataProcessed();
+
+	/**
+	 * @return <code>true</code> if this chart module processes
+	 *         {@link DriverExceptionEntity}s in #{@link Chart#processError(DriverExceptionEntity)}.
+	 */
+	public boolean isErrorProcessed();
+
+	/**
+	 * @return <code>true</code> if this chart module processes
+	 *         {@link ScenarioTimingEntity}s in #{@link Chart#processTiming(ScenarioTimingEntity)}.
+	 */
+	public boolean isTimingProcessed();
+
+	/**
 	 * Render this chart to an image from the previously processed data.
 	 *
 	 * @param dataPoints

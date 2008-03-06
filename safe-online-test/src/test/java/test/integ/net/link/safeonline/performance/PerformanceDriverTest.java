@@ -10,8 +10,8 @@ import java.security.cert.Certificate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -20,12 +20,12 @@ import net.link.safeonline.model.performance.PerformanceService;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 import net.link.safeonline.performance.service.DriverExceptionService;
 import net.link.safeonline.performance.service.ExecutionService;
@@ -214,8 +214,8 @@ public class PerformanceDriverTest {
 
 	private void assertProfile(DriverProfileEntity profile) {
 
-		Set<DriverExceptionEntity> errors = this.driverExceptionService
-				.getProfileErrors(profile);
+		List<DriverExceptionEntity> errors = this.driverExceptionService
+				.getAllProfileErrors(profile);
 		for (DriverExceptionEntity error : errors)
 			if (error != null)
 				System.err.format("At %s the following occured:\n\t%s\n",

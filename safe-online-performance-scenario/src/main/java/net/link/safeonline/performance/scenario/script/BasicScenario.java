@@ -27,9 +27,9 @@ import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.Chart;
 import net.link.safeonline.performance.scenario.charts.ScenarioDurationsChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioExceptionsChart;
 import net.link.safeonline.performance.scenario.charts.ScenarioMemoryChart;
 import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
-import net.link.safeonline.performance.scenario.charts.ScenarioSpeedCorrelationChart;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -139,7 +139,7 @@ public class BasicScenario implements Scenario {
 		charts.add(new ScenarioDurationsChart());
 		charts.add(new ScenarioMemoryChart());
 		charts.add(new ScenarioSpeedChart(5 * 60 * 1000));
-		charts.add(new ScenarioSpeedCorrelationChart(5 * 60 * 1000));
+		charts.add(new ScenarioExceptionsChart());
 
 		return charts;
 	}

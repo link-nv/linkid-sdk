@@ -96,6 +96,15 @@ public class ScenarioDurationsChart extends AbstractChart {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public boolean isDataProcessed() {
+
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	protected XYPlot getPlot() {
 
 		DateAxis timeAxis = new DateAxis("Time");

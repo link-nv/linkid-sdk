@@ -2,6 +2,7 @@ package test.integ.net.link.safeonline.performance;
 
 import javax.persistence.EntityManager;
 
+import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
@@ -41,8 +42,8 @@ public abstract class AbstractDataTest {
 
 	protected final Class<?>[] entities = new Class[] {
 			ScenarioTimingEntity.class, ExecutionEntity.class,
-			DriverProfileEntity.class, ProfileDataEntity.class,
-			MeasurementEntity.class };
+			DriverProfileEntity.class, DriverExceptionEntity.class,
+			ProfileDataEntity.class, MeasurementEntity.class };
 
 	protected ExecutionService executionService;
 	protected ProfileDataService profileDataService;
@@ -59,8 +60,8 @@ public abstract class AbstractDataTest {
 		this.entityTestManager = new EntityTestManager();
 
 		try {
-			this.entityTestManager.configureMySql(this.DB_HOST, this.DB_PORT, this.DB_NAME,
-					this.DB_USER, this.DB_PASS, this.SHOW_SQL);
+			this.entityTestManager.configureMySql(this.DB_HOST, this.DB_PORT,
+					this.DB_NAME, this.DB_USER, this.DB_PASS, this.SHOW_SQL);
 			this.entityTestManager.setUp(this.entities);
 
 			this.em = this.entityTestManager.getEntityManager();

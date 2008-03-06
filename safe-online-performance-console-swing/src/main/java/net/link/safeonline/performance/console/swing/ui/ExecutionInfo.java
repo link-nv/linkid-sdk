@@ -101,10 +101,9 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		builder.appendSeparator("Completed Executions:");
 		builder.append(this.executionSelection, 3);
 
-		builder.appendUnrelatedComponentsGapRow();
+		builder.appendParagraphGapRow();
 		builder.nextLine(2);
 
-		builder.appendSeparator();
 		builder.append(this.scenarioName = new JLabel(), 3);
 
 		builder.appendUnrelatedComponentsGapRow();

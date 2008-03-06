@@ -79,16 +79,24 @@ import org.jfree.ui.RectangleAnchor;
 /**
  * <h2>{@link AbstractChart}<br>
  * <sub>The basis of chart generators.</sub></h2>
- *
+ * 
  * <p>
  * This class implements several helper methods that will be very convenient in
- * generating and rendering charts.
+ * generating and rendering charts.<br>
+ * <br>
+ * You must override and return <code>true</code> on at least one of the
+ * following methods:
+ * <ul>
+ * <li>{@link #isDataProcessed()}</li>
+ * <li>{@link #isErrorProcessed()}</li>
+ * <li>{@link #isTimingProcessed()}</li>
+ * </ul>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public abstract class AbstractChart implements Chart {
@@ -183,13 +191,37 @@ public abstract class AbstractChart implements Chart {
 	/**
 	 * {@inheritDoc}
 	 */
+	public boolean isDataProcessed() {
+
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void processError(DriverExceptionEntity error) {
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	public boolean isErrorProcessed() {
+
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void processTiming(ScenarioTimingEntity data) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean isTimingProcessed() {
+
+		return false;
 	}
 
 	/**
