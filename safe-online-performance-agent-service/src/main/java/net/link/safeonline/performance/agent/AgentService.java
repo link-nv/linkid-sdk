@@ -164,7 +164,14 @@ public class AgentService implements AgentServiceMBean {
 
 		try {
 			return getExecution(startTime, true);
-		} finally {
+		}
+
+		catch (Exception e) {
+			setError(e);
+			return null;
+		}
+
+		finally {
 			actionCompleted();
 		}
 	}
@@ -208,6 +215,10 @@ public class AgentService implements AgentServiceMBean {
 	public void setError(Exception error) {
 
 		this.error = error;
+
+		if (error != null)
+			LOG.error("The following occurred during "
+					+ this.transit.getTransitioning(), error);
 	}
 
 	/**
@@ -225,6 +236,7 @@ public class AgentService implements AgentServiceMBean {
 					+ " request denied: agent is locked for: "
 					+ this.transit.getTransitioning());
 
+		setError(null);
 		this.transit = action;
 	}
 
@@ -251,18 +263,15 @@ public class AgentService implements AgentServiceMBean {
 		actionRequest(AgentState.UPLOAD);
 
 		try {
-			setError(null);
-
 			this.deployer.upload(application);
-			actionCompleted();
 		}
 
 		catch (Exception e) {
 			setError(e);
-		} finally {
-			// If transit != null we didn't complete the action successfully.
-			if (this.transit != null)
-				actionCompleted();
+		}
+
+		finally {
+			actionCompleted();
 		}
 	}
 
@@ -274,18 +283,16 @@ public class AgentService implements AgentServiceMBean {
 		actionRequest(AgentState.DEPLOY);
 
 		try {
-			setError(null);
-
 			this.deployer.deploy();
-			actionCompleted();
+			this.charts.clear();
 		}
 
 		catch (Exception e) {
 			setError(e);
-		} finally {
-			// If transit != null we didn't complete the action successfully.
-			if (this.transit != null)
-				actionCompleted();
+		}
+
+		finally {
+			actionCompleted();
 		}
 	}
 
@@ -295,8 +302,6 @@ public class AgentService implements AgentServiceMBean {
 		actionRequest(AgentState.EXECUTE);
 
 		try {
-			setError(null);
-
 			ExecutionMetadata request = ExecutionMetadata.createRequest(
 					scenarioName, agents, workers, startTime, duration,
 					hostname);
