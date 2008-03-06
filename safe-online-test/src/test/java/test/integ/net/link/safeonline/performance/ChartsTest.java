@@ -39,7 +39,7 @@ import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.Chart;
-import net.link.safeonline.performance.scenario.charts.ScenarioExceptionsChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 
 /**
  * <h2>{@link ChartsTest}<br>
@@ -79,11 +79,11 @@ public class ChartsTest extends AbstractDataTest {
 
 		// Chart modules to render.
 		ArrayList<Chart> charts = new ArrayList<Chart>();
-		charts.add(new ScenarioExceptionsChart());
+		charts.add(new ScenarioSpeedChart(5 * 60 * 1000));
 
 		// Render and display the charts.
-		// displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
-		displayCharts(getAllCharts(execution));
+		displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
+		// displayCharts(getAllCharts(execution));
 	}
 
 	/**

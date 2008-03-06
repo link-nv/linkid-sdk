@@ -48,13 +48,13 @@ public abstract class AbstractCorrelationChart extends
 	 * @return The value of the first dimension of the correlation for the given
 	 *         {@link ScenarioTimingEntity}.
 	 */
-	protected abstract double getCorrelationX(ScenarioTimingEntity timing);
+	protected abstract double getCorrelationX(Long startTime);
 
 	/**
 	 * @return The value of the second dimension of the correlation for the
 	 *         given {@link ScenarioTimingEntity}.
 	 */
-	protected abstract double getCorrelationY(ScenarioTimingEntity timing);
+	protected abstract double getCorrelationY(Long startTime);
 
 	/**
 	 * Calculate the correlation coefficient for our current period's data.
@@ -66,18 +66,18 @@ public abstract class AbstractCorrelationChart extends
 
 		double sum_sq_x = 0, sum_sq_y = 0, sum_coproduct = 0;
 		double mean_x = this.customMeanX != null ? this.customMeanX
-				: getCorrelationX(this.averageData.getFirst());
+				: getCorrelationX(this.averageTimes.getFirst());
 		double mean_y = this.customMeanY != null ? this.customMeanY
-				: getCorrelationY(this.averageData.getFirst());
+				: getCorrelationY(this.averageTimes.getFirst());
 
 		int i = 1;
-		for (ScenarioTimingEntity t : this.averageData) {
-			if (t == this.averageData.getFirst())
+		for (Long startTime : this.averageTimes) {
+			if (startTime == this.averageTimes.getFirst())
 				continue;
 
 			double sweep = (i - 1d) / i;
-			double delta_x = getCorrelationX(t) - mean_x;
-			double delta_y = getCorrelationY(t) - mean_y;
+			double delta_x = getCorrelationX(startTime) - mean_x;
+			double delta_y = getCorrelationY(startTime) - mean_y;
 
 			sum_sq_x += delta_x * delta_x * sweep;
 			sum_sq_y += delta_y * delta_y * sweep;

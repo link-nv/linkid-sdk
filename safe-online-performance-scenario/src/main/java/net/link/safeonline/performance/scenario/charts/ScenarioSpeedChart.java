@@ -54,6 +54,15 @@ public class ScenarioSpeedChart extends AbstractMovingAverageChart {
 	@Override
 	protected Number getMovingAverage() {
 
-		return 1000d * this.averageData.size() / this.period;
+		return 1000d * this.averageTimes.size() / this.period;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isTimingProcessed() {
+
+		return true;
 	}
 }

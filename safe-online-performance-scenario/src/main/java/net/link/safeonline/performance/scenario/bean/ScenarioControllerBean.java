@@ -243,7 +243,7 @@ public class ScenarioControllerBean implements ScenarioController {
 			List<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
 					.getExecutionTimings(execution);
 			for (ScenarioTimingEntity timing : scenarioTimings)
-				for (Chart chart : charts)
+				for (Chart chart : timingCharts)
 					try {
 						chart.processTiming(timing);
 					} catch (Exception e) {
@@ -260,7 +260,7 @@ public class ScenarioControllerBean implements ScenarioController {
 				List<ProfileDataEntity> profileData = this.profileDataService
 						.getProfileData(profile, DATA_POINTS);
 				for (ProfileDataEntity data : profileData)
-					for (Chart chart : charts)
+					for (Chart chart : dataCharts)
 						try {
 							chart.processData(data);
 						} catch (Exception e) {
@@ -273,7 +273,7 @@ public class ScenarioControllerBean implements ScenarioController {
 				List<DriverExceptionEntity> profileErrors = this.driverExceptionService
 						.getProfileErrors(profile, DATA_POINTS);
 				for (DriverExceptionEntity error : profileErrors)
-					for (Chart chart : charts)
+					for (Chart chart : errorCharts)
 						try {
 							chart.processError(error);
 						} catch (Exception e) {

@@ -15,8 +15,14 @@
  */
 package net.link.safeonline.performance.scenario.charts;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
+import net.link.safeonline.performance.entity.DriverExceptionEntity;
+import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 
 import org.jfree.chart.axis.DateAxis;
@@ -51,9 +57,13 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 
 	private String rangeAxisName;
 
-	protected LinkedList<ScenarioTimingEntity> averageData;
+	protected LinkedList<Long> averageTimes;
 	protected TimeSeries averageSeries;
 	protected long period;
+
+	protected Map<Long, ScenarioTimingEntity> averageTimings;
+	protected Map<Long, ProfileDataEntity> averageData;
+	protected Map<Long, DriverExceptionEntity> averageErrors;
 
 	private boolean enoughData = false;
 
@@ -67,9 +77,13 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 
 		this.period = period;
 		this.rangeAxisName = rangeAxisName;
-		this.averageData = new LinkedList<ScenarioTimingEntity>();
+		this.averageTimes = new LinkedList<Long>();
 		this.averageSeries = new TimeSeries("Period: " + period + "ms",
 				FixedMillisecond.class);
+
+		this.averageTimings = new HashMap<Long, ScenarioTimingEntity>();
+		this.averageData = new HashMap<Long, ProfileDataEntity>();
+		this.averageErrors = new HashMap<Long, DriverExceptionEntity>();
 	}
 
 	/**
@@ -84,24 +98,75 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 	@Override
 	public void processTiming(ScenarioTimingEntity timing) {
 
-		Long currentTime = timing.getStart();
-		this.averageData.offer(timing);
+		long startTime = timing.getStart();
+
+		this.averageTimings.put(startTime, timing);
+		Set<Long> polled = doAverage(startTime);
+
+		for (Long polledTime : polled)
+			this.averageTimings.remove(polledTime);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void processData(ProfileDataEntity data) {
+
+		long startTime = data.getScenarioTiming().getStart();
+
+		this.averageData.put(startTime, data);
+		Set<Long> polled = doAverage(startTime);
+
+		for (Long polledTime : polled)
+			this.averageData.remove(polledTime);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void processError(DriverExceptionEntity error) {
+
+		long startTime = error.getOccurredTime();
+
+		this.averageErrors.put(startTime, error);
+		Set<Long> polled = doAverage(startTime);
+
+		for (Long polledTime : polled)
+			this.averageErrors.remove(polledTime);
+	}
+
+	/**
+	 * Calculate the moving average using {@link #getMovingAverage()} adding
+	 * data at the given time.
+	 *
+	 * @return A set of times that were polled off the averages list. The
+	 *         objects for this time have dropped out of the moving average
+	 *         period and need no longer be remembered.
+	 */
+	protected Set<Long> doAverage(Long currentTime) {
+
+		Set<Long> polled = new HashSet<Long>();
+		this.averageTimes.offer(currentTime);
 
 		// Poll off outdated data (more than a period old).
 		Long baseTime;
 		while (true) {
-			baseTime = this.averageData.peek().getStart();
+			baseTime = this.averageTimes.peek();
 			if (currentTime - this.period <= baseTime || baseTime > currentTime)
 				break;
 
 			this.enoughData = true;
-			this.averageData.poll();
+			polled.add(this.averageTimes.poll());
 		}
 
 		// Multiply hits by 1000 and divide by period to obtain hits/s.
 		if (this.enoughData)
 			this.averageSeries.addOrUpdate(new FixedMillisecond(currentTime),
 					getMovingAverage());
+
+		return polled;
 	}
 
 	/**
@@ -109,6 +174,9 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 	 */
 	@Override
 	protected XYPlot getPlot() {
+
+		if (this.averageSeries.isEmpty())
+			return null;
 
 		DateAxis timeAxis = new DateAxis("Time");
 
