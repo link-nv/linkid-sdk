@@ -40,6 +40,7 @@ public abstract class ScenarioThread extends Thread {
 	AgentState state;
 	ScenarioChooser chooser;
 	ScenarioRemoting scenarioDeployer;
+	private ExecutorService pool;
 
 	public ScenarioThread(AgentState state, ScenarioChooser chooser) {
 
@@ -57,22 +58,34 @@ public abstract class ScenarioThread extends Thread {
 	@Override
 	public void run() {
 
-		ExecutorService pool = Executors.newCachedThreadPool();
+		this.pool = Executors.newCachedThreadPool();
 		for (final ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
-			pool.submit(new Worker(agent));
+			this.pool.submit(new Worker(agent));
 
 			agent.setError(null);
 			agent.setTransit(ScenarioThread.this.state);
 		}
 
 		try {
-			pool.shutdown();
-			while (!pool.awaitTermination(10, TimeUnit.SECONDS))
+			this.pool.shutdown();
+			while (!this.pool.awaitTermination(10, TimeUnit.SECONDS))
 				Thread.yield();
+
+			completed();
 		} catch (InterruptedException e) {
 		}
+	}
 
-		completed();
+	/**
+	 * Attempt to abort the current operation if one is running.
+	 */
+	public void shutdown() {
+
+		if (!isAlive())
+			return;
+
+		interrupt();
+		this.pool.shutdownNow();
 	}
 
 	/**
@@ -104,6 +117,8 @@ public abstract class ScenarioThread extends Thread {
 		 */
 		public void run() {
 
+			this.agent.registerAction(ScenarioThread.this);
+
 			try {
 				process(this.agent);
 			}
@@ -111,6 +126,10 @@ public abstract class ScenarioThread extends Thread {
 			catch (Exception e) {
 				this.LOG.error(
 						"Couldn't perform requested operation on agent.", e);
+			}
+
+			finally {
+				this.agent.unregisterAction(ScenarioThread.this);
 			}
 		}
 	}

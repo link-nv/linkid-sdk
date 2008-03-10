@@ -217,8 +217,7 @@ public class AgentService implements AgentServiceMBean {
 		this.error = error;
 
 		if (error != null)
-			LOG.error("The following occurred during "
-					+ this.transit.getTransitioning(), error);
+			LOG.error("The following occurred during " + this.transit, error);
 	}
 
 	/**

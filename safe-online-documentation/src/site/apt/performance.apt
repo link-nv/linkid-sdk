@@ -1,0 +1,261 @@
+SafeOnline Performance Testing
+
+ The SafeOnline Performance Tools provide feedback toward the reliability
+ and performance supported by OLAS.
+
+ The Performance Tools cannot be used on any arbitrary OLAS build but
+ only on a build that had the maven <<<performance>>> profile activated.
+ When this profile is enabled, the OLAS profiling filter and profiling
+ interceptor, which collect statistical data during the execution of
+ arbitrary OLAS requests, is built and added to the OLAS distribution.
+
+* Compilation
+
+ The Performance Tools currently includes two JBoss distributions and one
+ Swing application.
+
+ To build OLAS for use with the Performance Tools, execute the following
+ command in the <<<safe-online>>> parent directory:
+
++---+
+$ mvn -Denv=performance clean install
+[INFO] Scanning for projects...
+[...]
++---+
+
+ Provided that command did not yield any problems, you should now have
+ a fully built OLAS distribution, Performance Testing Agent distribution
+ and Performance Testing Swing Console.
+
+* Installation
+
+ The Performance Tools relies on you installing the OLAS distribution
+ and the Agent distribution on two (or more) different PCs.  You are
+ strongly discouraged to start both distribtions on one PC seeing as
+ the activity performed by the Agent distribution during testing will
+ strongly distort the results returned by the OLAS distribution.
+
+** Uploading The Distributions
+
+ Find yourself a few PCs and copy over the OLAS distribution to one
+ of them.  In the code below we use <<<rsync>>> with <<<ssh>>> to
+ copy the OLAS distribution to the <<<sebeco-dev-10>>> host using
+ <<<devel>>> as username to log in.  The ZIP file will be placed in
+ <<<devel>>>'s home directory on the remote side:
+
++---+
+$ rsync -P safe-online-performance-distribution/target/safe-online-performance-distribution-1.0-SNAPSHOT.zip devel@sebeco-dev-10:
+safe-online-performance-distribution-1.0-SNAPSHOT.zip
+    79605462 100%  424.55kB/s    0:03:03 (xfer#1, to-check=0/1)
+
+    sent 79615312 bytes  received 42 bytes  431519.53 bytes/sec
+    total size is 79605462  speedup is 1.00
++---+
+
+ Now, copy over the Agent distribution to one (or more) other PCs in much
+ the same manner.  Optionally, you could launch the Agent distribution
+ on your own PC.  This is, however, ill-adviced, seeing as the Agent
+ distribution can take up quite a bit of memory and processing power whilst
+ executing tests or generating charts on them.
+ 
+ <<Be adviced that should the Agent encounter resource starvation the
+ performance results will not be reliable anymore!>>
+
+ The following command can be used to copy the Agent distribution over
+ to the host <<<sebeco-dev-11>>> using the <<<devel>>> user, again:
+
++---+
+$ rsync -P safe-online-performance-agent-distribution/target/safe-online-performance-agent-distribution-1.0-SNAPSHOT.zip devel@sebeco-dev-11:
+safe-online-performance-agent-distribution-1.0-SNAPSHOT.zip
+    74598895 100%  433.03kB/s    0:02:48 (xfer#1, to-check=0/1)
+
+    sent 74608139 bytes  received 42 bytes  440166.26 bytes/sec
+    total size is 74598895  speedup is 1.00
++---+
+
+ If you would like to use more than one Agent during the testing procedure,
+ you should now upload the Agent distribution to all other PCs you selected
+ for this purpose.
+
+** Setting Up The Databases.
+
+ Once the distributions have been uploaded to their respective machines it is
+ time to configure the databases that these distributions will be using.
+
+ Both the OLAS and the Agent distribution use a MySQL database server by
+ default.  Feel free to change this configuration if you have reason to,
+ however.
+
+ You should start by making sure that each of the machines that you uploaded
+ a distribution to have a MySQL DBMS set up and running.  Installation of
+ a MySQL server is entirely OS-dependant and beyond the scope of this
+ document.  We will therefore assume that you have already completed these
+ steps.  If this is not the case, install MySQL now and make sure you
+ set up a password for the <<<root>>> user.  Once you have MySQL running
+ and are certain its configuration is impecable, return to this document.
+
+ With the MySQL DBMS in place we can now create the OLAS database and the
+ necessary tables within.  We will begin this procedure on the PC used for
+ the OLAS distribution first:
+
++---+
+$ ssh devel@sebeco-dev-10 mysql -u root -p < safe-online-deploy/target/SafeOnline/resources/mysql-create-account.sql
+Password:
+$ ssh devel@sebeco-dev-10 mysql -u safeonline -p < safe-online-deploy/target/SafeOnline/resources/mysql-create-database.sql
+Password:
+$ ssh devel@sebeco-dev-10 mysql -u safeonline -p safeonline < safe-online-deploy:SafeOnline/mysql-safe-online-ddl.sql
+Password:
++---+
+
+ In this sequence of commands we create a username and a database in the MySQL
+ DBMS for OLAS.  We then execute the DDL commands that create the database
+ tables needed by OLAS.  The first command requires you to enter the MySQL
+ root password.  The other two commands require the password of the
+ <<<safeonline>>> user which was created by the first command.  This user's
+ password defaults to <<<safeonline>>>.
+
+ The PC(s) selected for an Agent distribution need only have the first two
+ commands executed.  The Agent distribution currently creates its tables
+ automatically if it finds they are not yet available.  For an Agent
+ distribution on <<<sebeco-dev-11>>> we execute the following commands:
+
++---+
+$ ssh devel@sebeco-dev-11 mysql -u root -p < safe-online-deploy/target/SafeOnline/resources/mysql-create-account.sql
+Password:
+$ ssh devel@sebeco-dev-11 mysql -u safeonline -p < safe-online-deploy/target/SafeOnline/resources/mysql-create-database.sql
+Password:
++---+
+
+ The Agent distribution uses the same database name and user as the OLAS
+ distribution.  The commands are therefore exactly the same apart from the
+ hostname.
+
+ Repeat these commands for each PC you uploaded an Agent distribution to if
+ there were multiple.
+
+** Starting The Distributions.
+
+ Once the distributions have been uploaded to their respective machines it is
+ time to start them.  We will first have to unpack the ZIP files and then
+ execute the JBoss Application Server within.  The following code demonstrates
+ how this is done for the OLAS distribution given the host and username we
+ used previously to upload the distribution to the selected PC:
+
++---+
+$ ssh devel@sebeco-dev-10
+Last login: Mon Mar 10 09:51:25 2008 from 192.168.5.107devel
+$ unzip safe-online-performance-distribution-1.0-SNAPSHOT.zip
+[...]
+  inflating: safe-online-performance-distribution-1.0-SNAPSHOT/jboss/server/default/deploy/mysql-safe-online-ds.xml
+$ cd safe-online-performance-distribution-1.0-SNAPSHOT
+$ mkdir -p jboss/server/default/log
+$ jboss/run.sh > jboss/server/default/log/jboss.log 2>&1 </dev/null &
+[1] 15628
+$ disown
+$ logout
++---+
+
+ What happens here is: We log into the PC selected for the OLAS distribution
+ using <<<ssh>>> with the username <<<devel>>>.  We then unzip the distribution
+ package that we uploaded earlier to this PC and <<<cd>>> into the newly created
+ directory.  We then create the directory for log files and start the JBoss
+ Application Server using its <<<run.sh>>> script.  This script generates a lot
+ of debugging output which we currently don't really care about.  It is for this
+ reason that we use the shell's file redirection operators to redirect the output
+ to the log file at <<<jboss/server/default/log/jboss.log>>>.  Initially, this
+ file will not yet exist and be created for us.  The JBoss Application Server
+ will launch and put itself in the background (because we used the & operator
+ at the end of the command) whilst deploying the OLAS application. Finally,
+ we disown the backgrounded JBoss process to prevent it being terminated as we
+ log out of <<<sebeco-dev-10>>> and run the <<<logout>>> command to return to
+ our own PC.
+
+ Now that we've started the OLAS distribution, it's time to do the same for the
+ Agent distributions.  The process is interestingly alike to what we did above.
+ We'll log into the PC(s) selected for the Agent distribution(s) and execute
+ much the same commands:
+
++---+
+$ ssh devel@sebeco-dev-11
+Last login: Mon Mar 10 09:51:27 2008 from 192.168.5.107devel
+$ unzip safe-online-performance-agent-distribution-1.0-SNAPSHOT.zip
+[...]
+  inflating: safe-online-performance-agent-distribution-1.0-SNAPSHOT/jboss/server/default/deploy/mysql-safe-online-ds.xml
+$ cd safe-online-performance-agent-distribution-1.0-SNAPSHOT
+$ mkdir -p jboss/server/default/log
+$ jboss/bin/run.sh > jboss/server/default/log/jboss.log 2>&1 </dev/null &
+[1] 23550
+$ disown
+$ logout
++---+
+
+ Once again, repeat these commands for each PC you uploaded an Agent
+ distribution to if there were multiple.
+
+ Congratulations, you should now have a working OLAS distribution and Agent
+ waiting for instructions.
+
+* The Swing Console
+
+ As soon as the Agent distribution has started, it will make itself available
+ through a JGroups channel by the default name of 
+ <<<net.lin-k.safe-online.performance>>>.  To control and interact with our
+ Agent distributions, we need to launch our Agent Console.
+
+ The Agent Console is a Java Swing utility which will join the same JGroups
+ channel to detect the locations where Agent distributions are available.
+ It will then connect to these Agents and request their current status.
+
+ We start the Swing Console using the Swing Console Package.  The following
+ code will extract the package's ZIP file and start the Swing Console kept
+ within:
+
++---+
+$ cd safe-online-performance-console-package
+$ mvn -Denv=performance clean install
+[INFO] Scanning for projects...
+[...]
+$ cd target
+$ unzip safe-online-performance-console-package-1.0-SNAPSHOT-package.zip
+Archive:  safe-online-performance-console-package-1.0-SNAPSHOT-package.zip
+[...]
+$ cd safe-online-performance-console-package-1.0-SNAPSHOT
+$ ./performance-console.sh
+Starting the Performance Console ...
+[...]
++---+
+
+ Here's a brief overview of the console regions:
+
+ - The left side has the list of available Agents.
+ - The right side shows detailed information on previous performance
+   testing runs that were undertaken using the selected agents.
+ - The first (top-most) bottom panel holds all configuration used to
+   determine exactly how a performance test should be executed.
+ - The second (bottom-most) bottom panel enumerates buttons that
+   represent actions that can be undertaken on the selected agents.
+ 
+ The Agents list will only contain agents that are up and running. Their
+ current status is displayed to you using a color-coded status message in
+ the list.  Should an error occur during the communication with an Agent,
+ the error message will appear next to the Agent's name.
+
+ The detailed execution information contains a slider that you can use to
+ select which execution you want to review information on.  It shows a
+ time legend to make it easier for you to find the execution you are looking
+ for.  Once the slider points at a certain execution, the panel will be filled
+ up with metadata gathered on the execution.  You have now <<selected>> this
+ execution.
+
+ The configuration panel holds all the metadata you wish to include in your
+ execution order.  It is used by the Agent to determine which Scenario it needs
+ to execute and how it needs to configure this execution.  Most fields here are
+ pretty self-explenatory.
+
+ Lastly, the buttons apply to the selected agents and the selected execution.
+ They are used to dispatch an order to the Agent.  You use them to upload a
+ scenario package to the Agent, deploy the package within the Agent's
+ Application Server, initiate executions and retrieve charts on selected
+ executions.  These charts can be viewed in a Swing-based window for quick
+ evaluation or rendered to and saved as a PDF file.
+

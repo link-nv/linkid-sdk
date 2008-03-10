@@ -7,6 +7,7 @@
 package net.link.safeonline.performance.console.swing.data;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -17,6 +18,7 @@ import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.Agent;
 import net.link.safeonline.performance.console.jgroups.AgentState;
+import net.link.safeonline.performance.console.swing.model.ScenarioThread;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,6 +57,7 @@ public class ConsoleAgent implements Agent {
 	private Set<ScenarioExecution> executions;
 	public boolean autoUpdate;
 	private UpdateAgentState updater;
+	private Set<ScenarioThread> scenarioThreads;
 
 	/**
 	 * Create a new {@link ConsoleAgent} component based off the agent at the
@@ -67,8 +70,23 @@ public class ConsoleAgent implements Agent {
 		this.autoUpdate = true;
 		this.healthy = true;
 
+		this.scenarioThreads = new HashSet<ScenarioThread>();
 		this.updater = new UpdateAgentState();
 		this.updater.start();
+	}
+
+	/**
+	 */
+	public void registerAction(ScenarioThread actionThread) {
+
+		this.scenarioThreads.add(actionThread);
+	}
+
+	/**
+	 */
+	public void unregisterAction(ScenarioThread actionThread) {
+
+		this.scenarioThreads.remove(actionThread);
 	}
 
 	/**
@@ -76,6 +94,7 @@ public class ConsoleAgent implements Agent {
 	 */
 	public void shutdown() {
 
+		resetTransit();
 		this.updater.shutdown();
 	}
 
@@ -169,6 +188,9 @@ public class ConsoleAgent implements Agent {
 	 * {@inheritDoc}
 	 */
 	public void resetTransit() {
+
+		for (ScenarioThread actionThread : this.scenarioThreads)
+			actionThread.shutdown();
 
 		this.agentRemoting.resetTransit(this.agentAddress);
 		updateState();
