@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.persistence.NoResultException;
 
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
@@ -93,17 +94,21 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 
 		List<ProfileDataEntity> pointData = new ArrayList<ProfileDataEntity>();
 		for (long point = 0; point * period < dataDuration; ++point) {
+			ScenarioTimingEntity timing;
 
-			List<ScenarioTimingEntity> timings = this.em.createNamedQuery(
-					ProfileDataEntity.getScenarioTiming).setParameter("start",
-					dataStart + point * period).setParameter("stop",
-					dataStart + (point + 1) * period).setMaxResults(1)
-					.getResultList();
-			if (timings.isEmpty())
+			try {
+				timing = (ScenarioTimingEntity) this.em
+						.createNamedQuery(ProfileDataEntity.getScenarioTiming)
+						.setParameter("execution", profile.getExecution())
+						.setParameter("start", dataStart + point * period)
+						.setParameter("stop", dataStart + (point + 1) * period)
+						.getSingleResult();
+			} catch (NoResultException e) {
 				continue;
+			}
 
 			ProfileDataEntity profileDataEntity = new ProfileDataEntity(
-					profile, timings.get(0));
+					profile, timing);
 			pointData.add(profileDataEntity);
 
 			List<MeasurementEntity> measurements = this.em.createNamedQuery(

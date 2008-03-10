@@ -262,6 +262,7 @@ public abstract class AbstractChart implements Chart {
 			if (type.equals(e.getMeasurement()))
 				return e.getDuration();
 
+		this.LOG.debug("for: " + measurements);
 		throw new NoSuchElementException("Element " + type
 				+ " could not be found.");
 	}

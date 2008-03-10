@@ -26,7 +26,7 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
+import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYSeries;
 
@@ -125,7 +125,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 				driverMeasurements.addSeries(measurements);
 
 			plot.add(new XYPlot(driverMeasurements, timeAxis, valueAxis,
-					new StackedXYAreaRenderer2()));
+					new StackedXYBarRenderer()));
 		}
 
 		return plot;

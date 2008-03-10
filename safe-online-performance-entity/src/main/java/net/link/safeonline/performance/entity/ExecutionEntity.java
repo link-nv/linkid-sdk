@@ -143,7 +143,7 @@ public class ExecutionEntity {
 	 */
 	public Double getSpeed() {
 
-		if (this.dirtySpeed)
+		if (this.dirtySpeed || this.speed == null)
 			try {
 				((ExecutionService) new InitialContext()
 						.lookup(ExecutionService.BINDING)).updateSpeed(this);

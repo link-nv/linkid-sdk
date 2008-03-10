@@ -40,11 +40,14 @@ import javax.persistence.OneToMany;
 		@NamedQuery(name = ProfileDataEntity.getExecutionDuration, query = "SELECT MAX(d.scenarioTiming.startTime) - MIN(d.scenarioTiming.startTime)"
 				+ "    FROM ProfileDataEntity d            "
 				+ "    WHERE d.profile = :profile          "),
-		@NamedQuery(name = ProfileDataEntity.getScenarioTiming, query = "SELECT t"
+		@NamedQuery(name = ProfileDataEntity.getScenarioTiming, query = "SELECT NEW net.link.safeonline.performance.entity.ScenarioTimingEntity("
+				+ "        t.execution, MIN(t.startTime), AVG(t.olasDuration), MAX(t.agentDuration), AVG(t.startFreeMem), AVG(t.endFreeMem)"
+				+ "    )"
 				+ "    FROM ScenarioTimingEntity t"
-				+ "    WHERE t.startTime >= :start"
+				+ "    WHERE t.execution = :execution"
+				+ "        AND t.startTime >= :start"
 				+ "        AND t.startTime < :stop"
-				+ "    ORDER BY t.startTime"),
+				+ "    GROUP BY t.execution"),
 		@NamedQuery(name = ProfileDataEntity.createAverage, query = "SELECT NEW net.link.safeonline.performance.entity.MeasurementEntity("
 				+ "        m.measurement, AVG(m.duration)"
 				+ "    )                                 "

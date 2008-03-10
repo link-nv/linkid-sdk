@@ -60,6 +60,18 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 		this.execution = execution;
 	}
 
+	public ScenarioTimingEntity(ExecutionEntity execution, Long startTime,
+			Double olasDuration, Long agentDuration, Double startFreeMem,
+			Double endFreeMem) {
+
+		this.execution = execution;
+		this.startTime = startTime;
+		this.olasDuration = olasDuration.longValue();
+		this.agentDuration = agentDuration.longValue();
+		this.startFreeMem = startFreeMem.longValue();
+		this.endFreeMem = endFreeMem.longValue();
+	}
+
 	/**
 	 * @return The startTime of this {@link ScenarioTimingEntity}.
 	 */

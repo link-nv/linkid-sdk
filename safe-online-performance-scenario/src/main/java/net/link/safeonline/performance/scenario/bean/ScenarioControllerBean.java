@@ -131,10 +131,10 @@ public class ScenarioControllerBean implements ScenarioController {
 		}
 
 		finally {
-			agentTime.stop();
 			agentTime.setEndMemory(getFreeMemory());
-
 			execution.dirtySpeed();
+
+			agentTime.stop();
 		}
 	}
 

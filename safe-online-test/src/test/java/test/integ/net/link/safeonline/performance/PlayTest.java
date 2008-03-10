@@ -16,14 +16,11 @@
 package test.integ.net.link.safeonline.performance;
 
 import java.util.Date;
-import java.util.List;
 import java.util.TreeSet;
 
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 
 /**
  * <h2>{@link PlayTest}<br>
@@ -77,20 +74,18 @@ public class PlayTest extends AbstractDataTest {
 		for (long point = 0; point * period < dataDuration; ++point) {
 
 			start = System.currentTimeMillis();
-			List<ScenarioTimingEntity> result = this.em.createNamedQuery(
-					ProfileDataEntity.getScenarioTiming).setParameter("start",
-					dataStart + point * period).setParameter("stop",
-					dataStart + (point + 1) * period).setMaxResults(1)
-					.getResultList();
+			this.em.createNamedQuery(ProfileDataEntity.getScenarioTiming)
+					.setParameter("start", dataStart + point * period)
+					.setParameter("stop", dataStart + (point + 1) * period)
+					.setMaxResults(1).getResultList();
 
 			System.err.println(" - 1: " + (System.currentTimeMillis() - start));
 			start = System.currentTimeMillis();
 
-			List<MeasurementEntity> measurements = this.em.createNamedQuery(
-					ProfileDataEntity.createAverage).setParameter("profile",
-					profile).setParameter("start", dataStart + point * period)
-					.setParameter("stop", dataStart + (point + 1) * period)
-					.getResultList();
+			this.em.createNamedQuery(ProfileDataEntity.createAverage)
+					.setParameter("profile", profile).setParameter("start",
+							dataStart + point * period).setParameter("stop",
+							dataStart + (point + 1) * period).getResultList();
 
 			System.err.println(" - 2: " + (System.currentTimeMillis() - start));
 			start = System.currentTimeMillis();

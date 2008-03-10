@@ -28,7 +28,7 @@ import net.link.safeonline.util.performance.ProfileData;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
+import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
 import org.jfree.data.xy.DefaultTableXYDataset;
 import org.jfree.data.xy.XYSeries;
 
@@ -81,12 +81,21 @@ public class ScenarioDurationsChart extends AbstractChart {
 	@Override
 	public void processData(ProfileDataEntity data) {
 
+		if (data.getMeasurements().isEmpty())
+			return;
+
 		XYSeries driverSet = getDriverSet(data.getProfile());
 
 		Long startTime = data.getScenarioTiming().getStart();
 		Long agentTime = data.getScenarioTiming().getAgentDuration();
 		Long requestTime = getMeasurement(data.getMeasurements(),
 				ProfileData.REQUEST_DELTA_TIME);
+
+		if (agentTime - requestTime < 0) {
+			this.LOG.debug("Start: " + startTime);
+			this.LOG.debug("Reqst: " + requestTime);
+			this.LOG.debug("Agent: " + agentTime);
+		}
 
 		driverSet.addOrUpdate(startTime, requestTime);
 		this.overhead.addOrUpdate(startTime, agentTime - requestTime);
@@ -119,7 +128,7 @@ public class ScenarioDurationsChart extends AbstractChart {
 		scenarioDuration.addSeries(this.overhead);
 
 		return new XYPlot(scenarioDuration, timeAxis, valueAxis,
-				new StackedXYAreaRenderer2());
+				new StackedXYBarRenderer());
 	}
 
 	private XYSeries getDriverSet(DriverProfileEntity profile) {
