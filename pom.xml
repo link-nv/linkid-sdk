@@ -369,6 +369,7 @@
 				<module>safe-online-performance-scenario-deploy</module>
 				<module>safe-online-performance-console-base</module>
 				<module>safe-online-performance-console-swing</module>
+				<module>safe-online-performance-console-package</module>
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-performance-distribution</module>
 			</modules>
