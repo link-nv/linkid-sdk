@@ -36,9 +36,11 @@ public class OlasDAOBean implements OlasDAO {
 				this.entityManager, OlasEntity.QueryInterface.class);
 	}
 
-	public OlasEntity addNode(String name, String location,
-			X509Certificate certificate) {
-		OlasEntity olas = new OlasEntity(name, location, certificate);
+	public OlasEntity addNode(String name, String hostname, int port,
+			int sslPort, X509Certificate authnCertificate,
+			X509Certificate signingCertificate) {
+		OlasEntity olas = new OlasEntity(name, hostname, port, sslPort,
+				authnCertificate, signingCertificate);
 		this.entityManager.persist(olas);
 		return olas;
 	}
@@ -61,10 +63,22 @@ public class OlasDAOBean implements OlasDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public OlasEntity getNode(X509Certificate certificate)
-			throws NodeNotFoundException {
-		Query query = OlasEntity.createQueryWhereCertificate(
-				this.entityManager, certificate);
+	public OlasEntity getNodeFromAuthnCertificate(
+			X509Certificate authnCertificate) throws NodeNotFoundException {
+		Query query = OlasEntity.createQueryWhereAuthnCertificate(
+				this.entityManager, authnCertificate);
+		List<OlasEntity> nodes = query.getResultList();
+		if (nodes.isEmpty())
+			throw new NodeNotFoundException();
+		OlasEntity node = nodes.get(0);
+		return node;
+	}
+
+	@SuppressWarnings("unchecked")
+	public OlasEntity getNodeFromSigningCertificate(
+			X509Certificate signingCertificate) throws NodeNotFoundException {
+		Query query = OlasEntity.createQueryWhereSigningCertificate(
+				this.entityManager, signingCertificate);
 		List<OlasEntity> nodes = query.getResultList();
 		if (nodes.isEmpty())
 			throw new NodeNotFoundException();

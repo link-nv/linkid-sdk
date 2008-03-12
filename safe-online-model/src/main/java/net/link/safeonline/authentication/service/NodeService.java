@@ -43,11 +43,13 @@ public interface NodeService {
 	/**
 	 * @param name
 	 * @param location
-	 * @param encodedCertificate
+	 * @param encodedAuthnCertificate
+	 * @param encodedSigningCertificate
 	 * @throws ExistingNodeException
 	 * @throws CertificateEncodingException
 	 */
-	void addNode(String name, String location, byte[] encodedCertificate)
+	void addNode(String name, String hostname, int port, int sslPort,
+			byte[] encodedAuthnCertificate, byte[] encodedSigningCertificate)
 			throws ExistingNodeException, CertificateEncodingException;
 
 	/**
@@ -59,23 +61,36 @@ public interface NodeService {
 			PermissionDeniedException;
 
 	/**
-	 * Updates the Olas node's location.
+	 * Updates the Olas node's hostname.
 	 * 
 	 * @param nodeName
-	 * @param location
+	 * @param hostname
+	 * @param port
+	 * @param sslPort
 	 * @throws NodeNotFoundException
 	 */
-	void updateLocation(String nodeName, String location)
+	void updateLocation(String nodeName, String hostname, int port, int sslPort)
 			throws NodeNotFoundException;
 
 	/**
-	 * Updates the OLAS node's certificate.
+	 * Updates the OLAS node's authn certificate.
 	 * 
 	 * @param nodeName
 	 * @param certificateData
 	 * @throws CertificateEncodingException
 	 * @throws NodeNotFoundException
 	 */
-	void updateCertificate(String nodeName, byte[] certificateData)
+	void updateAuthnCertificate(String nodeName, byte[] certificateData)
+			throws CertificateEncodingException, NodeNotFoundException;
+
+	/**
+	 * Updates the OLAS node's signing certificate.
+	 * 
+	 * @param nodeName
+	 * @param certificateData
+	 * @throws CertificateEncodingException
+	 * @throws NodeNotFoundException
+	 */
+	void updateSigningCertificate(String nodeName, byte[] certificateData)
 			throws CertificateEncodingException, NodeNotFoundException;
 }

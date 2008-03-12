@@ -31,6 +31,7 @@ import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
+import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -57,7 +58,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 
 		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(
 				BeIdConstants.GIVENNAME_ATTRIBUTE, DatatypeType.STRING, true,
-				false);
+				false, true);
+		givenNameAttributeType.setMultivalued(true);
 		this.attributeTypes.add(givenNameAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				givenNameAttributeType, Locale.ENGLISH.getLanguage(),
@@ -67,7 +69,8 @@ public class BeIdStartableBean extends AbstractInitBean {
 
 		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(
 				BeIdConstants.SURNAME_ATTRIBUTE, DatatypeType.STRING, true,
-				false);
+				false, true);
+		surnameAttributeType.setMultivalued(true);
 		this.attributeTypes.add(surnameAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				surnameAttributeType, Locale.ENGLISH.getLanguage(),
@@ -76,7 +79,9 @@ public class BeIdStartableBean extends AbstractInitBean {
 				surnameAttributeType, "nl", "Achternaam (BeID)", null));
 
 		AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(
-				BeIdConstants.NRN_ATTRIBUTE, DatatypeType.STRING, true, false);
+				BeIdConstants.NRN_ATTRIBUTE, DatatypeType.STRING, true, false,
+				true);
+		nrnAttributeType.setMultivalued(true);
 		this.attributeTypes.add(nrnAttributeType);
 		this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(
 				nrnAttributeType, Locale.ENGLISH.getLanguage(),
@@ -87,7 +92,7 @@ public class BeIdStartableBean extends AbstractInitBean {
 
 		AttributeTypeEntity beidDeviceAttributeType = new AttributeTypeEntity(
 				BeIdConstants.BEID_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED,
-				false, false);
+				false, false, true);
 		beidDeviceAttributeType.addMember(givenNameAttributeType, 0, true);
 		beidDeviceAttributeType.addMember(surnameAttributeType, 1, true);
 		beidDeviceAttributeType.addMember(nrnAttributeType, 2, true);
@@ -181,11 +186,16 @@ public class BeIdStartableBean extends AbstractInitBean {
 		ResourceBundle properties = ResourceBundle.getBundle("config");
 		String nodeName = properties.getString("olas.node.name");
 		String hostname = properties.getString("olas.host.name");
-		String hostportssl = properties.getString("olas.host.port.ssl");
+		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
+		int hostportssl = Integer.parseInt(properties
+				.getString("olas.host.port.ssl"));
 
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		this.node = new Node(nodeName, hostname + ":" + hostportssl,
-				authIdentityServiceClient.getCertificate());
+		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+
+		this.node = new Node(nodeName, hostname, hostport, hostportssl,
+				authIdentityServiceClient.getCertificate(),
+				identityServiceClient.getCertificate());
 		this.trustedCertificates.put(
 				authIdentityServiceClient.getCertificate(),
 				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);

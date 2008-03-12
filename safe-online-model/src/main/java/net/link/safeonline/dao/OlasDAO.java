@@ -18,7 +18,8 @@ import net.link.safeonline.entity.OlasEntity;
 @Local
 public interface OlasDAO {
 
-	OlasEntity addNode(String name, String location, X509Certificate certificate);
+	OlasEntity addNode(String name, String hostname, int port, int sslPort,
+			X509Certificate authnCertificate, X509Certificate signingCertificate);
 
 	List<OlasEntity> listNodes();
 
@@ -26,7 +27,10 @@ public interface OlasDAO {
 
 	OlasEntity getNode(String name) throws NodeNotFoundException;
 
-	OlasEntity getNode(X509Certificate certificate)
+	OlasEntity getNodeFromAuthnCertificate(X509Certificate authnCertificate)
+			throws NodeNotFoundException;
+
+	OlasEntity getNodeFromSigningCertificate(X509Certificate signingCertificate)
 			throws NodeNotFoundException;
 
 	void removeNode(OlasEntity node);

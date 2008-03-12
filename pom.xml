@@ -375,6 +375,70 @@
 			</modules>
 		</profile>
 		<profile>
+			<id>env-device</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>device</value>
+				</property>
+			</activation>
+			<properties>
+				<isGlobalOperator>true</isGlobalOperator>
+				<defaultCronExpression>
+					0 0/5 * * * ?
+				</defaultCronExpression>
+				<safe-online.data.source>
+					DefaultDS
+				</safe-online.data.source>
+				<safe-online.dialect>
+					org.hibernate.dialect.HSQLDialect
+				</safe-online.dialect>
+				<safe-online.hibernate.hbm2ddl.auto>
+					create-drop
+				</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.show.sql>true</safe-online.show.sql>
+				<safe-online.node.name>
+					olas-buildserver
+				</safe-online.node.name>
+				<safe-online.host.name>
+					buildserver
+				</safe-online.host.name>
+				<safe-online.host.port>8080</safe-online.host.port>
+				<safe-online.host.port.ssl>
+					8443
+				</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>
+					8080
+				</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>
+					8443
+				</safe-online.jboss.host.port.ssl>
+				<debug.mode>true</debug.mode>
+				<safe-online.profiling.scenario>
+					net.link.safeonline.performance.scenario.script.BasicScenario
+				</safe-online.profiling.scenario>
+				<safe-online.profiling.group>
+					net.lin-k.safe-online.performance
+				</safe-online.profiling.group>
+				<safe-online.profiling.agent.show.sql>
+					false
+				</safe-online.profiling.agent.show.sql>
+				<safe-online.profiling.agent.dialect>
+					org.hibernate.dialect.MySQLDialect
+				</safe-online.profiling.agent.dialect>
+				<safe-online.profiling.agent.hibernate.hbm2ddl.auto>
+					update
+				</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
+				<safe-online.profiling.agent.data.source>
+					DefaultDS
+				</safe-online.profiling.agent.data.source>
+				<safe-online.profiling.filter />
+			</properties>
+			<modules>
+				<module>safe-online-base-distribution</module>
+			</modules>
+		</profile>
+		<profile>
 			<id>env-local-pilot-mysql</id>
 			<activation>
 				<property>
@@ -896,6 +960,7 @@
 		<module>safe-online-encap-keystore</module>
 		<module>safe-online-encap-webapp</module>
 		<module>safe-online-encap</module>
+		<module>safe-online-beid</module>
 		<module>safe-online-beid-keystore</module>
 		<module>safe-online-beid-webapp</module>
 		<module>safe-online-ping-ws</module>

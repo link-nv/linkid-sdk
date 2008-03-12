@@ -116,6 +116,9 @@ public interface AuthenticationService {
 	 * @throws EmptyDevicePolicyException
 	 * @throws DevicePolicyException
 	 * @throws UsageAgreementAcceptationRequiredException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
 	 */
 	void commitAuthentication(String applicationId,
 			Set<DeviceEntity> requiredDevicePolicy)
@@ -123,7 +126,9 @@ public interface AuthenticationService {
 			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,
 			EmptyDevicePolicyException, DevicePolicyException,
-			UsageAgreementAcceptationRequiredException;
+			UsageAgreementAcceptationRequiredException,
+			SubjectNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException;
 
 	/**
 	 * Registers and authenticates a new user via a registration statement.

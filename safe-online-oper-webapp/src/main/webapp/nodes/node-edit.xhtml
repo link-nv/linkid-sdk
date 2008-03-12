@@ -27,19 +27,43 @@
 
 			<rich:tabPanel id="tabs" switchType="client">
 				<rich:tab id="generic-tab" label="#{msgs.generic}">
-					<h:outputLabel for="location" value="#{msgs.location}" />
+					<h:outputLabel for="hostname" value="#{msgs.hostname}" />
 					<s:decorate>
-						<h:inputText id="location" value="#{operNode.location}"
+						<h:inputText id="hostname" value="#{operNode.hostname}"
 							styleClass="label" />
-						<h:message for="location" styleClass="error" />
+						<h:message for="hostname" styleClass="error" />
+					</s:decorate>
+
+					<h:outputLabel for="port" value="#{msgs.port}" />
+					<s:decorate>
+						<h:inputText id="port" value="#{operNode.port}" styleClass="label" />
+						<h:message for="port" styleClass="error" />
+					</s:decorate>
+
+					<h:outputLabel for="sslPort" value="#{msgs.sslPort}" />
+					<s:decorate>
+						<h:inputText id="sslPort" value="#{operNode.sslPort}"
+							styleClass="label" />
+						<h:message for="sslPort" styleClass="error" />
 					</s:decorate>
 				</rich:tab>
 
-				<rich:tab id="cert-tab" label="#{msgs.accessControl}">
-					<h:outputLabel for="certificate" value="#{msgs.certificate}" />
+				<rich:tab id="cert-tab" label="#{msgs.certificate}">
+					<h:outputLabel for="authnCertificate"
+						value="#{msgs.authenticationCertificate}" />
 					<s:decorate>
-						<tr:inputFile id="certificate" value="#{operNode.upFile}" />
+						<tr:inputFile id="authnCertificate"
+							value="#{operNode.authnUpFile}" />
 					</s:decorate>
+					<h:message for="authnCertificate" styleClass="error" />
+
+					<h:outputLabel for="signingCertificate"
+						value="#{msgs.signingCertificate}" />
+					<s:decorate>
+						<tr:inputFile id="signingCertificate"
+							value="#{operNode.signingUpFile}" />
+					</s:decorate>
+					<h:message for="signingCertificate" styleClass="error" />
 
 				</rich:tab>
 			</rich:tabPanel>

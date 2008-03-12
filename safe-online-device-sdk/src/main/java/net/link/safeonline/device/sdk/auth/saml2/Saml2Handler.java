@@ -93,10 +93,7 @@ public class Saml2Handler implements Serializable {
 	public void init(Map<String, String> configParams,
 			X509Certificate newApplicationCertificate,
 			KeyPair newApplicationKeyPair) {
-		String safeOnlineHostName = configParams.get("SafeOnlineHostName");
-		String safeOnlineHostPortSsl = configParams
-				.get("SafeOnlineHostPortSsl");
-		this.wsLocation = safeOnlineHostName + ":" + safeOnlineHostPortSsl;
+		this.wsLocation = configParams.get("WsLocation");
 		this.applicationCertificate = newApplicationCertificate;
 		this.applicationKeyPair = newApplicationKeyPair;
 	}

@@ -13,6 +13,7 @@ import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_DO
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_INTEGER;
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_CATEGORIZE_STRING;
 import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_ALL;
+import static net.link.safeonline.entity.AttributeTypeEntity.QUERY_WHERE_NODE;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -49,6 +50,7 @@ import org.hibernate.annotations.IndexColumn;
 @Table(name = "attribute_type")
 @NamedQueries( {
 		@NamedQuery(name = QUERY_WHERE_ALL, query = "FROM AttributeTypeEntity"),
+		@NamedQuery(name = QUERY_WHERE_NODE, query = "FROM AttributeTypeEntity a WHERE a.location = :location"),
 		@NamedQuery(name = QUERY_CATEGORIZE_STRING, query = "SELECT a.stringValue, COUNT(a.stringValue) "
 				+ "FROM AttributeEntity a, SubscriptionEntity s, "
 				+ "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
@@ -108,6 +110,8 @@ public class AttributeTypeEntity implements Serializable {
 
 	public static final String QUERY_WHERE_ALL = "at.all";
 
+	public static final String QUERY_WHERE_NODE = "at.node";
+
 	public static final String QUERY_CATEGORIZE_STRING = "at.cat.string";
 
 	public static final String QUERY_CATEGORIZE_BOOLEAN = "at.cat.boolean";
@@ -132,6 +136,8 @@ public class AttributeTypeEntity implements Serializable {
 
 	private boolean compoundMember;
 
+	private boolean deviceAttribute;
+
 	private Map<String, AttributeTypeDescriptionEntity> descriptions;
 
 	private List<CompoundedAttributeTypeMemberEntity> members;
@@ -139,15 +145,21 @@ public class AttributeTypeEntity implements Serializable {
 	private OlasEntity location;
 
 	public AttributeTypeEntity() {
-		this(null, null, false, false);
+		this(null, null, false, false, false);
 	}
 
 	public AttributeTypeEntity(String name, DatatypeType type,
 			boolean userVisible, boolean userEditable) {
+		this(name, type, userVisible, userEditable, false);
+	}
+
+	public AttributeTypeEntity(String name, DatatypeType type,
+			boolean userVisible, boolean userEditable, boolean deviceAttribute) {
 		this.name = name;
 		this.type = type;
 		this.userVisible = userVisible;
 		this.userEditable = userEditable;
+		this.deviceAttribute = deviceAttribute;
 		this.descriptions = new HashMap<String, AttributeTypeDescriptionEntity>();
 		this.members = new LinkedList<CompoundedAttributeTypeMemberEntity>();
 	}
@@ -208,6 +220,17 @@ public class AttributeTypeEntity implements Serializable {
 
 	public void setUserEditable(boolean userEditable) {
 		this.userEditable = userEditable;
+	}
+
+	/**
+	 * Marks whether this attribute type belongs to a device or a user.
+	 */
+	public boolean isDeviceAttribute() {
+		return this.deviceAttribute;
+	}
+
+	public void setDeviceAttribute(boolean deviceAttribute) {
+		this.deviceAttribute = deviceAttribute;
 	}
 
 	/**
@@ -296,6 +319,10 @@ public class AttributeTypeEntity implements Serializable {
 	public interface QueryInterface {
 		@QueryMethod(QUERY_WHERE_ALL)
 		List<AttributeTypeEntity> listAttributeTypes();
+
+		@QueryMethod(QUERY_WHERE_NODE)
+		List<AttributeTypeEntity> listAttributeTypes(@QueryParam("location")
+		OlasEntity node);
 
 		@QueryMethod(QUERY_CATEGORIZE_STRING)
 		Query createQueryCategorizeString(@QueryParam("application")

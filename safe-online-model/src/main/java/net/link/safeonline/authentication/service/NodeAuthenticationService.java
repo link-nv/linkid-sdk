@@ -26,22 +26,33 @@ public interface NodeAuthenticationService {
 	 * Authenticates an olas node given a node's certificate. At this point the
 	 * node's certificate already passed the PKI validation.
 	 * 
-	 * @param certificate
+	 * @param authnCertificate
 	 *            the trusted X509 node certificate.
 	 * @return the node name.
 	 * @throws NodeNotFoundException
 	 */
-	String authenticate(X509Certificate certificate)
+	String authenticate(X509Certificate authnCertificate)
 			throws NodeNotFoundException;
 
 	/**
-	 * Gives back the node's X509 certificate given the node name.
+	 * Gives back the node's authentication certificate given the node name.
 	 * 
 	 * @param nodeName
 	 *            the node name.
-	 * @return the X509 node certificate.
+	 * @return the authentication X509 node certificate.
 	 * @throws NodeNotFoundException
 	 */
-	X509Certificate getCertificate(String nodeName)
+	X509Certificate getAuthnCertificate(String nodeName)
+			throws NodeNotFoundException;
+
+	/**
+	 * Gives back the node's signing certificate given the node name.
+	 * 
+	 * @param nodeName
+	 *            the node name.
+	 * @return the signing X509 node certificate.
+	 * @throws NodeNotFoundException
+	 */
+	X509Certificate getSigningCertificate(String nodeName)
 			throws NodeNotFoundException;
 }

@@ -3,6 +3,7 @@ package net.link.safeonline.authentication.service.bean;
 import java.net.ConnectException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,17 +11,18 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.RegisteredDeviceDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -43,88 +45,159 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 	@EJB
 	private SubjectService subjectService;
 
+	@EJB
+	private RegisteredDeviceDAO registeredDeviceDAO;
+
 	private static final Log LOG = LogFactory
 			.getLog(ProxyAttributeServiceBean.class);
 
 	public Object getAttributeValue(String userId, String attributeName)
-			throws AttributeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException, AttributeTypeNotFoundException {
+			throws PermissionDeniedException, SubjectNotFoundException,
+			AttributeTypeNotFoundException {
 		LOG.debug("get attribute " + attributeName + " for " + userId);
 
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.getAttributeType(attributeName);
 		SubjectEntity subject = this.subjectService.getSubject(userId);
+		String subjectId = userId;
+		if (attributeType.isDeviceAttribute()) {
+			subjectId = getDeviceId(subject, attributeType);
+		}
 
 		if (isLocalAttribute(attributeType))
-			return getLocalAttribute(subject, attributeType);
+			return getLocalAttribute(subjectId, attributeType);
 
-		return getRemoteAttribute(subject, attributeType);
+		return getRemoteAttribute(subjectId, attributeType);
+	}
+
+	private String getDeviceId(SubjectEntity subject,
+			AttributeTypeEntity attributeType) {
+		List<RegisteredDeviceEntity> registeredDevices = this.registeredDeviceDAO
+				.listRegisteredDevices(subject);
+		for (RegisteredDeviceEntity registeredDevice : registeredDevices) {
+			AttributeTypeEntity deviceAttributeType = registeredDevice
+					.getDevice().getAttributeType();
+			if (deviceAttributeType.getName().equals(attributeType.getName()))
+				return registeredDevice.getId();
+			if (deviceAttributeType.isCompounded()) {
+				List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType
+						.getMembers();
+				for (CompoundedAttributeTypeMemberEntity member : members) {
+					if (member.getMember().getName().equals(
+							attributeType.getName()))
+						return registeredDevice.getId();
+				}
+			}
+		}
+		return subject.getUserId();
 	}
 
 	private boolean isLocalAttribute(AttributeTypeEntity attributeType) {
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		if (null == attributeType.getLocation())
+			return true;
 		if (authIdentityServiceClient.getCertificate().equals(
-				attributeType.getLocation().getCertificate()))
+				attributeType.getLocation().getAuthnCertificate()))
 			return true;
 		return false;
 	}
 
-	private Object getLocalAttribute(SubjectEntity subject,
-			AttributeTypeEntity attributeType)
-			throws AttributeNotFoundException {
+	private Object getLocalAttribute(String subjectId,
+			AttributeTypeEntity attributeType) throws SubjectNotFoundException {
+		LOG.debug("get local attribute " + attributeType.getName() + " for "
+				+ subjectId);
+		SubjectEntity subject = this.subjectService.getSubject(subjectId);
+		LOG.debug("found subject: " + subject.getUserId());
 		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
 				subject, attributeType);
-		return getValue(attributes, attributeType, subject);
+		// filter out the empty attributes
+		List<AttributeEntity> nonEmptyAttributes = new LinkedList<AttributeEntity>();
+		for (AttributeEntity attribute : attributes) {
+			if (attribute.getAttributeType().isCompounded())
+				nonEmptyAttributes.add(attribute);
+			else if (!attribute.isEmpty())
+				nonEmptyAttributes.add(attribute);
+		}
+		LOG.debug("found " + nonEmptyAttributes.size());
+		if (nonEmptyAttributes.isEmpty())
+			return null;
+		return getValue(nonEmptyAttributes, attributeType, subject);
 	}
 
-	private Object getRemoteAttribute(SubjectEntity subject,
-			AttributeTypeEntity attributeType)
-			throws PermissionDeniedException, AttributeNotFoundException {
+	private Object getRemoteAttribute(String subjectId,
+			AttributeTypeEntity attributeType) throws PermissionDeniedException {
+		LOG.debug("get remote attribute " + attributeType.getName() + " for "
+				+ subjectId);
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 		AttributeClient attributeClient = new AttributeClientImpl(attributeType
-				.getLocation().getLocation(), authIdentityServiceClient
+				.getLocation().getSslLocation(), authIdentityServiceClient
 				.getCertificate(), authIdentityServiceClient.getPrivateKey());
 		DatatypeType datatype = attributeType.getType();
 		Class<?> attributeClass;
-		switch (datatype) {
-		case STRING:
-		case LOGIN:
-			attributeClass = String.class;
-			break;
-		case BOOLEAN:
-			attributeClass = Boolean.class;
-			break;
-		case INTEGER:
-			attributeClass = Integer.class;
-			break;
-		case DOUBLE:
-			attributeClass = Double.class;
-			break;
-		case DATE:
-			attributeClass = Date.class;
-			break;
-		case COMPOUNDED:
-			attributeClass = Map.class;
-			break;
-		default:
-			throw new EJBException("datatype not supported: " + datatype);
+		if (attributeType.isMultivalued()) {
+			switch (datatype) {
+			case STRING:
+			case LOGIN:
+				attributeClass = String[].class;
+				break;
+			case BOOLEAN:
+				attributeClass = Boolean[].class;
+				break;
+			case INTEGER:
+				attributeClass = Integer[].class;
+				break;
+			case DOUBLE:
+				attributeClass = Double[].class;
+				break;
+			case DATE:
+				attributeClass = Date[].class;
+				break;
+			case COMPOUNDED:
+				attributeClass = Map[].class;
+				break;
+			default:
+				throw new EJBException("datatype not supported: " + datatype);
+			}
+		} else {
+			switch (datatype) {
+			case STRING:
+			case LOGIN:
+				attributeClass = String.class;
+				break;
+			case BOOLEAN:
+				attributeClass = Boolean.class;
+				break;
+			case INTEGER:
+				attributeClass = Integer.class;
+				break;
+			case DOUBLE:
+				attributeClass = Double.class;
+				break;
+			case DATE:
+				attributeClass = Date.class;
+				break;
+			case COMPOUNDED:
+				attributeClass = Map.class;
+				break;
+			default:
+				throw new EJBException("datatype not supported: " + datatype);
+			}
 		}
 		try {
-			return attributeClient.getAttributeValue(subject.getUserId(),
-					attributeType.getName(), attributeClass);
+			return attributeClient.getAttributeValue(subjectId, attributeType
+					.getName(), attributeClass);
 		} catch (ConnectException e) {
 			throw new PermissionDeniedException(e.getMessage());
-		} catch (net.link.safeonline.sdk.exception.AttributeNotFoundException e) {
-			throw new AttributeNotFoundException();
 		} catch (RequestDeniedException e) {
 			throw new PermissionDeniedException(e.getMessage());
+		} catch (net.link.safeonline.sdk.exception.AttributeNotFoundException e) {
+			return null;
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private Object getValue(List<AttributeEntity> attributes,
-			AttributeTypeEntity attributeType, SubjectEntity subject)
-			throws AttributeNotFoundException {
+			AttributeTypeEntity attributeType, SubjectEntity subject) {
 		DatatypeType datatype = attributeType.getType();
 		if (attributeType.isMultivalued())
 			switch (datatype) {
@@ -192,7 +265,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 		 * Single-valued attribute.
 		 */
 		if (attributes.isEmpty())
-			throw new AttributeNotFoundException();
+			return null;
 		AttributeEntity attribute = attributes.get(0);
 		return attribute.getValue();
 	}

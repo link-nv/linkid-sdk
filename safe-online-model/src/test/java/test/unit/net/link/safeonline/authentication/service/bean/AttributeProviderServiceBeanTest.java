@@ -47,6 +47,7 @@ import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
+import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.junit.After;
 import org.junit.Before;
@@ -69,12 +70,26 @@ public class AttributeProviderServiceBeanTest {
 
 		jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
+		final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+		final X509Certificate authCertificate = PkiTestUtils
+				.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+		jmxTestUtils.registerActionHandler(
+				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
+				"getCertificate", new MBeanActionHandler() {
+					public Object invoke(@SuppressWarnings("unused")
+					Object[] arguments) {
+						return authCertificate;
+					}
+				});
+
+		jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+
 		final KeyPair keyPair = PkiTestUtils.generateKeyPair();
 		final X509Certificate certificate = PkiTestUtils
 				.generateSelfSignedCertificate(keyPair, "CN=Test");
 		jmxTestUtils.registerActionHandler(
-				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
-				"getCertificate", new MBeanActionHandler() {
+				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
+				new MBeanActionHandler() {
 					public Object invoke(@SuppressWarnings("unused")
 					Object[] arguments) {
 						return certificate;

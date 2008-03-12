@@ -49,6 +49,10 @@ public interface AddAttribute {
 
 	void setUserEditable(boolean userEditable);
 
+	boolean isDeviceAttribute();
+
+	void setDeviceAttribute(boolean deviceAttribute);
+
 	List<AttributeTypeEntity> getSourceMemberAttributes();
 
 	void setSourceMemberAttributes(

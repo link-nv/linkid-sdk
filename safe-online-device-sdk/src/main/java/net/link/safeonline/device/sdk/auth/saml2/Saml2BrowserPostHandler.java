@@ -94,6 +94,8 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 	private String authnServiceUrl;
 
+	private String issuerName;
+
 	private String applicationName;
 
 	private KeyPair applicationKeyPair;
@@ -123,10 +125,12 @@ public class Saml2BrowserPostHandler implements Serializable {
 		return instance;
 	}
 
-	public void init(String inAuthnServiceUrl, String inApplicationName,
-			KeyPair inApplicationKeyPair, Map<String, String> inConfigParams) {
+	public void init(String inAuthnServiceUrl, String inIssuerName,
+			String inApplicationName, KeyPair inApplicationKeyPair,
+			Map<String, String> inConfigParams) {
 		LOG.debug("init");
 		this.authnServiceUrl = inAuthnServiceUrl;
+		this.issuerName = inIssuerName;
 		this.applicationName = inApplicationName;
 		this.applicationKeyPair = inApplicationKeyPair;
 		this.configParams = inConfigParams;
@@ -142,9 +146,8 @@ public class Saml2BrowserPostHandler implements Serializable {
 		Set<String> devices = new HashSet<String>();
 		devices.add(device);
 		String samlRequestToken = AuthnRequestFactory.createAuthnRequest(
-				this.applicationName, this.applicationName,
-				this.applicationKeyPair, this.authnServiceUrl, targetUrl,
-				this.challenge, devices);
+				this.issuerName, this.applicationName, this.applicationKeyPair,
+				this.authnServiceUrl, targetUrl, this.challenge, devices);
 
 		String encodedSamlRequestToken = Base64.encode(samlRequestToken
 				.getBytes());

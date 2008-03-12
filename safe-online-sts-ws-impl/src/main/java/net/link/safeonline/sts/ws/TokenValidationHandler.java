@@ -35,7 +35,9 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -121,20 +123,35 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
 			LOG.debug("checking token signature");
 			result = xmlSignature.checkSignatureValue(this.publicKey);
 			if (false == result) {
-				// Can also come from a device provider ...
-				DeviceAuthenticationService deviceAuthenticationService = EjbUtils
+				// Can come from another olas node ...
+				NodeAuthenticationService nodeAuthenticationService = EjbUtils
 						.getEJB(
-								"SafeOnline/DeviceAuthenticationServiceBean/local",
-								DeviceAuthenticationService.class);
+								"SafeOnline/NodeAuthenticationServiceBean/local",
+								NodeAuthenticationService.class);
+				X509Certificate nodeSigningCertificate;
 				try {
-					X509Certificate deviceCertificate = deviceAuthenticationService
-							.getCertificate(issuerName);
+					nodeSigningCertificate = nodeAuthenticationService
+							.getSigningCertificate(issuerName);
 					result = xmlSignature
-							.checkSignatureValue(deviceCertificate);
-				} catch (DeviceNotFoundException e) {
-					LOG.debug("unknown token issuer: " + issuerName);
-					throw createSOAPFaultException("unknown token issuer: "
-							+ issuerName, "InvalidSecurityToken");
+							.checkSignatureValue(nodeSigningCertificate);
+				} catch (NodeNotFoundException e) {
+				}
+				if (false == result) {
+					// Can also come from a device provider ...
+					DeviceAuthenticationService deviceAuthenticationService = EjbUtils
+							.getEJB(
+									"SafeOnline/DeviceAuthenticationServiceBean/local",
+									DeviceAuthenticationService.class);
+					try {
+						X509Certificate deviceCertificate = deviceAuthenticationService
+								.getCertificate(issuerName);
+						result = xmlSignature
+								.checkSignatureValue(deviceCertificate);
+					} catch (DeviceNotFoundException e) {
+						LOG.debug("unknown token issuer: " + issuerName);
+						throw createSOAPFaultException("unknown token issuer: "
+								+ issuerName, "InvalidSecurityToken");
+					}
 				}
 			}
 

@@ -18,6 +18,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.HistoryEntity;
@@ -39,18 +40,6 @@ public interface IdentityService {
 	 * @return a list of history entries.
 	 */
 	List<HistoryEntity> listHistory();
-
-	/**
-	 * Gives back the value of the attribute for the current user.
-	 * 
-	 * @param attributeName
-	 *            the name of the attribute.
-	 * @return the value of the attribute, or <code>null</code> if not found.
-	 * @throws PermissionDeniedException
-	 *             if the user is not allowed to view the attribute.
-	 */
-	String findAttributeValue(String attributeName)
-			throws PermissionDeniedException;
 
 	/**
 	 * Saves an (new) attribute value for the current user.
@@ -156,10 +145,14 @@ public interface IdentityService {
 	 *         <code>false</code> otherwise.
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
 	 */
 	boolean hasMissingAttributes(String applicationName)
 			throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException;
+			ApplicationIdentityNotFoundException, SubjectNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException;
 
 	/**
 	 * Gives back a list of the user's missing attributes for the given
@@ -173,10 +166,14 @@ public interface IdentityService {
 	 *            the optional locale for i18n of the result.
 	 * @throws ApplicationNotFoundException
 	 * @throws ApplicationIdentityNotFoundException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
 	 */
 	List<AttributeDO> listMissingAttributes(String applicationName,
 			Locale locale) throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException;
+			ApplicationIdentityNotFoundException, SubjectNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException;
 
 	/**
 	 * Removes an attribute. A user can only remove editable attributes. In case

@@ -2,7 +2,6 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -17,6 +16,6 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 public interface ProxyAttributeService {
 
 	Object getAttributeValue(String userId, String attributeName)
-			throws AttributeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException, AttributeTypeNotFoundException;
+			throws PermissionDeniedException, SubjectNotFoundException,
+			AttributeTypeNotFoundException;
 }

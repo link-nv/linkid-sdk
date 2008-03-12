@@ -30,19 +30,36 @@
 						<td>#{selectedNode.name}</td>
 					</tr>
 					<tr>
-						<th>#{msgs.location}</th>
-						<td>#{selectedNode.location}</td>
+						<th>#{msgs.hostname}</th>
+						<td>#{selectedNode.hostname}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.port}</th>
+						<td>#{selectedNode.port}</td>
+					</tr>
+					<tr>
+						<th>#{msgs.sslPort}</th>
+						<td>#{selectedNode.sslPort}</td>
 					</tr>
 				</table>
 			</rich:tab>
 
-			<rich:tab label="#{msgs.accessControl}">
+			<rich:tab label="#{msgs.authenticationCertificate}">
 				<p><h:outputText value="#{msgs.certificate}" /></p>
 				<div class="white_space"><h:outputText
-					value="#{selectedNode.certificate}"
-					rendered="#{!empty selectedNode.certificate}" /> <h:outputText
+					value="#{selectedNode.authnCertificate}"
+					rendered="#{!empty selectedNode.authnCertificate}" /> <h:outputText
 					value="#{msgs.noCertificate}"
-					rendered="#{empty selectedNode.certificate}" /></div>
+					rendered="#{empty selectedNode.authnCertificate}" /></div>
+			</rich:tab>
+
+			<rich:tab label="#{msgs.signingCertificate}">
+				<p><h:outputText value="#{msgs.certificate}" /></p>
+				<div class="white_space"><h:outputText
+					value="#{selectedNode.signingCertificate}"
+					rendered="#{!empty selectedNode.signingCertificate}" /> <h:outputText
+					value="#{msgs.noCertificate}"
+					rendered="#{empty selectedNode.signingCertificate}" /></div>
 			</rich:tab>
 
 		</rich:tabPanel>

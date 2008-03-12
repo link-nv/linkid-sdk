@@ -30,7 +30,6 @@ import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.CredentialManager;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -38,7 +37,6 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiProvider;
 import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
-import net.link.safeonline.service.RegisteredDeviceService;
 import net.link.safeonline.service.SubjectService;
 
 @Stateless
@@ -53,9 +51,6 @@ public class CredentialManagerBean implements CredentialManager {
 
 	@EJB
 	private SubjectIdentifierDAO subjectIdentifierDAO;
-
-	@EJB
-	private RegisteredDeviceService registeredDeviceService;
 
 	@EJB
 	private SubjectService subjectService;
@@ -193,24 +188,12 @@ public class CredentialManagerBean implements CredentialManager {
 		String surname = identityStatement.getSurname();
 		String givenName = identityStatement.getGivenName();
 
-		/*
-		 * Lookup subject entity from registered device entity for now so we can
-		 * access the attributes
-		 * 
-		 * TODO: keep seperate device id mapping list
-		 */
-		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
-				.getRegisteredDevice(deviceUserId);
-		if (null == registeredDevice)
-			throw new PermissionDeniedException("registered device not found");
-		SubjectEntity subject = registeredDevice.getSubject();
+		setOrUpdateAttribute(IdentityStatementAttributes.SURNAME,
+				deviceSubject, surname, pkiProvider);
+		setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME,
+				deviceSubject, givenName, pkiProvider);
 
-		setOrUpdateAttribute(IdentityStatementAttributes.SURNAME, subject,
-				surname, pkiProvider);
-		setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME, subject,
-				givenName, pkiProvider);
-
-		pkiProvider.storeAdditionalAttributes(subject, certificate);
+		pkiProvider.storeAdditionalAttributes(deviceSubject, certificate);
 	}
 
 	private void setOrUpdateAttribute(
@@ -278,24 +261,12 @@ public class CredentialManagerBean implements CredentialManager {
 					domain, identifier);
 		}
 
-		/*
-		 * Lookup subject entity from registered device entity for now so we can
-		 * access the attributes
-		 * 
-		 * TODO: keep seperate device id mapping list
-		 */
-		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
-				.getRegisteredDevice(deviceUserId);
-		if (null == registeredDevice)
-			throw new PermissionDeniedException("registered device not found");
-		SubjectEntity subject = registeredDevice.getSubject();
-
-		removeAttribute(IdentityStatementAttributes.SURNAME, subject,
+		removeAttribute(IdentityStatementAttributes.SURNAME, deviceSubject,
 				pkiProvider);
-		removeAttribute(IdentityStatementAttributes.GIVEN_NAME, subject,
+		removeAttribute(IdentityStatementAttributes.GIVEN_NAME, deviceSubject,
 				pkiProvider);
 
-		pkiProvider.removeAdditionalAttributes(subject, certificate);
+		pkiProvider.removeAdditionalAttributes(deviceSubject, certificate);
 	}
 
 	private void removeAttribute(

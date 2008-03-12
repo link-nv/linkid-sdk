@@ -35,19 +35,28 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
 	@EJB
 	private OlasDAO olasDAO;
 
-	public String authenticate(X509Certificate certificate)
+	public String authenticate(X509Certificate authnCertificate)
 			throws NodeNotFoundException {
-		OlasEntity node = this.olasDAO.getNode(certificate);
+		OlasEntity node = this.olasDAO
+				.getNodeFromAuthnCertificate(authnCertificate);
 		String nodeName = node.getName();
 		LOG.debug("authenticated node: " + nodeName);
 		return nodeName;
 	}
 
-	public X509Certificate getCertificate(String nodeName)
+	public X509Certificate getAuthnCertificate(String nodeName)
 			throws NodeNotFoundException {
-		LOG.debug("get certificate for node: " + nodeName);
+		LOG.debug("get authentication certificate for node: " + nodeName);
 		OlasEntity node = this.olasDAO.getNode(nodeName);
-		X509Certificate certificate = node.getCertificate();
-		return certificate;
+		X509Certificate authnCertificate = node.getAuthnCertificate();
+		return authnCertificate;
+	}
+
+	public X509Certificate getSigningCertificate(String nodeName)
+			throws NodeNotFoundException {
+		LOG.debug("get signing certificate for node: " + nodeName);
+		OlasEntity node = this.olasDAO.getNode(nodeName);
+		X509Certificate signingCertificate = node.getSigningCertificate();
+		return signingCertificate;
 	}
 }

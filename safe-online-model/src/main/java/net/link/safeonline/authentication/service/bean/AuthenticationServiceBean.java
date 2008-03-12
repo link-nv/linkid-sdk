@@ -254,7 +254,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	private void checkRequiredMissingAttributes(String applicationId)
 			throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, MissingAttributeException {
+			ApplicationIdentityNotFoundException, MissingAttributeException,
+			SubjectNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
 		boolean hasMissingAttributes = this.identityService
 				.hasMissingAttributes(applicationId);
 		if (true == hasMissingAttributes) {
@@ -307,7 +309,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,
 			EmptyDevicePolicyException, DevicePolicyException,
-			UsageAgreementAcceptationRequiredException {
+			UsageAgreementAcceptationRequiredException,
+			SubjectNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
 		LOG.debug("commitAuthentication for application: " + applicationId);
 
 		checkStateBeforeCommit();

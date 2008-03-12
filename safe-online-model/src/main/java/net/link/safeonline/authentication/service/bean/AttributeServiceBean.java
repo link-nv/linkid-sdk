@@ -8,8 +8,6 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -26,20 +24,18 @@ import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeService;
 import net.link.safeonline.authentication.service.AttributeServiceRemote;
+import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
-import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
-import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
-import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.ApplicationManager;
@@ -65,9 +61,6 @@ public class AttributeServiceBean implements AttributeService,
 			.getLog(AttributeServiceBean.class);
 
 	@EJB
-	private AttributeDAO attributeDAO;
-
-	@EJB
 	private ApplicationManager applicationManager;
 
 	@EJB
@@ -79,10 +72,14 @@ public class AttributeServiceBean implements AttributeService,
 	@EJB
 	private SubjectService subjectService;
 
+	@EJB
+	private ProxyAttributeService proxyAttributeService;
+
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public Object getConfirmedAttributeValue(String subjectLogin,
 			String attributeName) throws AttributeNotFoundException,
-			PermissionDeniedException, SubjectNotFoundException {
+			PermissionDeniedException, SubjectNotFoundException,
+			AttributeTypeNotFoundException {
 		LOG.debug("get attribute " + attributeName + " for login "
 				+ subjectLogin);
 		List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
@@ -90,11 +87,8 @@ public class AttributeServiceBean implements AttributeService,
 		AttributeTypeEntity attributeType = checkAttributeReadPermission(
 				attributeName, confirmedAttributes);
 		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
-		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
-				subject, attributeType);
-
-		Object value = getValue(attributes, attributeType, subject);
-		return value;
+		return this.proxyAttributeService.getAttributeValue(
+				subject.getUserId(), attributeType.getName());
 	}
 
 	private AttributeTypeEntity checkAttributeReadPermission(
@@ -165,104 +159,21 @@ public class AttributeServiceBean implements AttributeService,
 
 	@RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
 	public Map<String, Object> getConfirmedAttributeValues(String subjectLogin)
-			throws SubjectNotFoundException, PermissionDeniedException {
+			throws SubjectNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
 		LOG.debug("get confirmed attributes for subject: " + subjectLogin);
 		List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
 		Map<String, Object> resultAttributes = new TreeMap<String, Object>();
 		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 		for (ApplicationIdentityAttributeEntity confirmedAttribute : confirmedAttributes) {
-			AttributeTypeEntity attributeType = confirmedAttribute
-					.getAttributeType();
-			List<AttributeEntity> attributes = this.attributeDAO
-					.listAttributes(subject, attributeType);
-			if (attributes.isEmpty())
-				continue;
 			String attributeName = confirmedAttribute.getAttributeTypeName();
+			Object value = this.proxyAttributeService.getAttributeValue(subject
+					.getUserId(), attributeName);
+			if (null == value)
+				continue;
 			LOG.debug("confirmed attribute: " + attributeName);
-			Object value;
-			try {
-				value = getValue(attributes, attributeType, subject);
-			} catch (AttributeNotFoundException e) {
-				throw new EJBException("attribute not found");
-			}
 			resultAttributes.put(attributeName, value);
 		}
 		return resultAttributes;
-	}
-
-	@SuppressWarnings("unchecked")
-	private Object getValue(List<AttributeEntity> attributes,
-			AttributeTypeEntity attributeType, SubjectEntity subject)
-			throws AttributeNotFoundException {
-		DatatypeType datatype = attributeType.getType();
-		if (attributeType.isMultivalued())
-			switch (datatype) {
-			case STRING:
-			case LOGIN: {
-				String[] values = new String[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++)
-					values[idx] = attributes.get(idx).getStringValue();
-				return values;
-			}
-			case BOOLEAN: {
-				Boolean[] values = new Boolean[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++)
-					values[idx] = attributes.get(idx).getBooleanValue();
-				return values;
-			}
-			case INTEGER: {
-				Integer[] values = new Integer[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++)
-					values[idx] = attributes.get(idx).getIntegerValue();
-				return values;
-			}
-			case DOUBLE: {
-				Double[] values = new Double[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++)
-					values[idx] = attributes.get(idx).getDoubleValue();
-				return values;
-			}
-			case DATE: {
-				Date[] values = new Date[attributes.size()];
-				for (int idx = 0; idx < values.length; idx++)
-					values[idx] = attributes.get(idx).getDateValue();
-				return values;
-			}
-			case COMPOUNDED: {
-				Map[] values = new Map[attributes.size()];
-				for (CompoundedAttributeTypeMemberEntity member : attributeType
-						.getMembers()) {
-					AttributeTypeEntity memberAttributeType = member
-							.getMember();
-					for (int idx = 0; idx < attributes.size(); idx++) {
-						AttributeEntity attribute = this.attributeDAO
-								.findAttribute(subject, memberAttributeType,
-										idx);
-						Map<String, Object> memberMap = values[idx];
-						if (null == memberMap) {
-							memberMap = new HashMap<String, Object>();
-							values[idx] = memberMap;
-						}
-						Object memberValue;
-						if (null != attribute)
-							memberValue = attribute.getValue();
-						else
-							memberValue = null;
-						memberMap.put(memberAttributeType.getName(),
-								memberValue);
-					}
-				}
-				return values;
-			}
-			default:
-				throw new EJBException("datatype not supported: " + datatype);
-			}
-		/*
-		 * Single-valued attribute.
-		 */
-		if (attributes.isEmpty())
-			throw new AttributeNotFoundException();
-		AttributeEntity attribute = attributes.get(0);
-		return attribute.getValue();
 	}
 }

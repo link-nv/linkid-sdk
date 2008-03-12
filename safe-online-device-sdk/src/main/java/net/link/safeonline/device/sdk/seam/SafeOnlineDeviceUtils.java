@@ -9,7 +9,6 @@ package net.link.safeonline.device.sdk.seam;
 
 import java.io.IOException;
 import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
@@ -18,8 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.device.sdk.DeviceManager;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
+import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.jboss.seam.core.FacesMessages;
@@ -72,9 +75,21 @@ public class SafeOnlineDeviceUtils {
 				APPLICATION_NAME_INIT_PARAM);
 
 		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-		X509Certificate certificate = identityServiceClient.getCertificate();
 		KeyPair keyPair = new KeyPair(identityServiceClient.getPublicKey(),
 				identityServiceClient.getPrivateKey());
+
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB(
+				"SafeOnline/NodeAuthenticationServiceBean/local",
+				NodeAuthenticationService.class);
+		String nodeName;
+		try {
+			nodeName = nodeAuthenticationService
+					.authenticate(authIdentityServiceClient.getCertificate());
+		} catch (NodeNotFoundException e) {
+			throw new RuntimeException("could not initiate authentication: "
+					+ e.getMessage(), e);
+		}
 
 		HttpServletRequest httpServletRequest = (HttpServletRequest) externalContext
 				.getRequest();
@@ -94,7 +109,7 @@ public class SafeOnlineDeviceUtils {
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.getSaml2BrowserPostHandler(httpServletRequest);
 		saml2BrowserPostHandler.init(safeOnlineAuthenticationServiceUrl,
-				applicationName, keyPair, configParams);
+				nodeName, applicationName, keyPair, configParams);
 
 		try {
 			saml2BrowserPostHandler.authnRequest(httpServletRequest,

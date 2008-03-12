@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -28,242 +29,513 @@
 							<version>1.4</version>
 							<modules>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-sdk </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-device-sdk </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-device-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap-sdk </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
 									<groupId>axis</groupId>
 									<artifactId>axis</artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-sts-ws </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-common </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-shared </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-jpa-util </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-cli </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-util </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-ticket-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-payment-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-lawyer-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-prescription-keystore 
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-sts-ws
 									</artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-mandate-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-common
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-shared
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-beid-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-jpa-util
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-cli
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-util
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-ticket-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-payment-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-lawyer-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-prescription-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-mandate-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-entity </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-entity
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model-beid </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model-beid
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model-encap </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model-encap
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model-demo </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model-demo
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-startup </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-startup
+									</artifactId>
 								</webModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-ws-runtime </artifactId>
-									<contextRoot> /safe-online-ws </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-ws-runtime
+									</artifactId>
+									<contextRoot>
+										/safe-online-ws
+									</contextRoot>
 								</webModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user-webapp </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-webapp
+									</artifactId>
 									<contextRoot>/olas</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-service
+									</artifactId>
 								</sarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk-webapp </artifactId>
-									<contextRoot> /olas-helpdesk </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-helpdesk
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-service
+									</artifactId>
 								</sarModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-service
+									</artifactId>
 								</sarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-j2ee-util </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-j2ee-util
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper-webapp </artifactId>
-									<contextRoot> /olas-oper </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-oper
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-service
+									</artifactId>
 								</sarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner-webapp </artifactId>
-									<contextRoot> /olas-owner </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-owner
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-service
+									</artifactId>
 								</sarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-ctrl-base </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-ctrl-base
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-taglib </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-taglib
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth-webapp </artifactId>
-									<contextRoot> /olas-auth </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-auth
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-service
+									</artifactId>
 								</sarModule>
-								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-beid-webapp </artifactId>
-									<contextRoot> /olas-beid </contextRoot>
-								</webModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap-webapp </artifactId>
-									<contextRoot> /olas-encap </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-beid
+									</contextRoot>
+								</webModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap
+									</artifactId>
+								</ejbModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-encap
+									</contextRoot>
 								</webModule>
 							</modules>
 							<jboss>
@@ -283,7 +555,9 @@
 							</jboss>
 							<archive>
 								<manifest>
-									<mainClass> net.link.safeonline.cli.Main </mainClass>
+									<mainClass>
+										net.link.safeonline.cli.Main
+									</mainClass>
 								</manifest>
 							</archive>
 						</configuration>
@@ -317,238 +591,505 @@
 							<version>1.4</version>
 							<modules>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-sdk </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-device-sdk </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-device-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap-sdk </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
 									<groupId>axis</groupId>
 									<artifactId>axis</artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-sts-ws </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-common </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-shared </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-jpa-util </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-cli </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-util </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-ticket-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-payment-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-lawyer-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-prescription-keystore 
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-sts-ws
 									</artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-demo-mandate-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-common
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-shared
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-beid-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-jpa-util
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-cli
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-util
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-ticket-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-payment-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-lawyer-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-prescription-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-demo-mandate-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-entity </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-entity
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model-beid </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model-beid
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model-encap </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model-encap
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-startup </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-startup
+									</artifactId>
 								</webModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-ws-runtime </artifactId>
-									<contextRoot> /safe-online-ws </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-ws-runtime
+									</artifactId>
+									<contextRoot>
+										/safe-online-ws
+									</contextRoot>
 								</webModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user-webapp </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-webapp
+									</artifactId>
 									<contextRoot>/olas</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-service
+									</artifactId>
 								</sarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk-webapp </artifactId>
-									<contextRoot> /olas-helpdesk </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-helpdesk
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-service
+									</artifactId>
 								</sarModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-service
+									</artifactId>
 								</sarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-j2ee-util </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-j2ee-util
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper-webapp </artifactId>
-									<contextRoot> /olas-oper </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-oper
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-service
+									</artifactId>
 								</sarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner-webapp </artifactId>
-									<contextRoot> /olas-owner </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-owner
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-service
+									</artifactId>
 								</sarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-ctrl-base </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-ctrl-base
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-taglib </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-taglib
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth-webapp </artifactId>
-									<contextRoot> /olas-auth </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-auth
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-service
+									</artifactId>
 								</sarModule>
-								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-beid-webapp </artifactId>
-									<contextRoot> /olas-beid </contextRoot>
-								</webModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap-webapp </artifactId>
-									<contextRoot> /olas-encap </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-beid
+									</contextRoot>
+								</webModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap
+									</artifactId>
+								</ejbModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-encap
+									</contextRoot>
 								</webModule>
 							</modules>
 							<jboss>
@@ -568,7 +1109,9 @@
 							</jboss>
 							<archive>
 								<manifest>
-									<mainClass> net.link.safeonline.cli.Main </mainClass>
+									<mainClass>
+										net.link.safeonline.cli.Main
+									</mainClass>
 								</manifest>
 							</archive>
 						</configuration>
@@ -593,211 +1136,447 @@
 							<version>1.4</version>
 							<modules>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-sdk </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-device-sdk </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-device-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap-sdk </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
 									<groupId>axis</groupId>
 									<artifactId>axis</artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-sts-ws </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-sts-ws
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-common </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-common
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-shared </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-shared
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-jpa-util </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-jpa-util
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-cli </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-cli
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-performance-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-performance-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-entity </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-entity
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model-beid </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model-beid
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model-encap </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model-encap
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-startup </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-startup
+									</artifactId>
 								</webModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-ws-runtime </artifactId>
-									<contextRoot> /safe-online-ws </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-ws-runtime
+									</artifactId>
+									<contextRoot>
+										/safe-online-ws
+									</contextRoot>
 								</webModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user-webapp </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-webapp
+									</artifactId>
 									<contextRoot>/olas</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-service
+									</artifactId>
 								</sarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk-webapp </artifactId>
-									<contextRoot> /olas-helpdesk </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-helpdesk
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-helpdesk-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-service
+									</artifactId>
 								</sarModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-service
+									</artifactId>
 								</sarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-j2ee-util </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-j2ee-util
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper-webapp </artifactId>
-									<contextRoot> /olas-oper </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-oper
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-oper-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-service
+									</artifactId>
 								</sarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner
+									</artifactId>
 								</ejbModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-model-performance </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model-performance
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner-webapp </artifactId>
-									<contextRoot> /olas-owner </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-owner
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-owner-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-service
+									</artifactId>
 								</sarModule>
 								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-ctrl-base </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-ctrl-base
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
 								</jarModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth-webapp </artifactId>
-									<contextRoot> /olas-auth </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-auth
+									</contextRoot>
 								</webModule>
 								<sarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-auth-service </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-service
+									</artifactId>
 								</sarModule>
-								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-beid-webapp </artifactId>
-									<contextRoot> /olas-beid </contextRoot>
-								</webModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-user-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-beid-keystore </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
-								<jarModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-taglib </artifactId>
-									<includeInApplicationXml> true </includeInApplicationXml>
-								</jarModule>
 								<ejbModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap </artifactId>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid
+									</artifactId>
 								</ejbModule>
 								<webModule>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-encap-webapp </artifactId>
-									<contextRoot> /olas-encap </contextRoot>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-beid
+									</contextRoot>
+								</webModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-taglib
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap
+									</artifactId>
+								</ejbModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-encap
+									</contextRoot>
 								</webModule>
 							</modules>
 							<jboss>
@@ -817,7 +1596,466 @@
 							</jboss>
 							<archive>
 								<manifest>
-									<mainClass> net.link.safeonline.cli.Main </mainClass>
+									<mainClass>
+										net.link.safeonline.cli.Main
+									</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>env-device</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>device</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-ear-plugin</artifactId>
+						<configuration>
+							<version>1.4</version>
+							<modules>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-device-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-sdk
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>axis</groupId>
+									<artifactId>axis</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-sts-ws
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-common
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-shared
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-jpa-util
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-cli
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-keystore
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-entity
+									</artifactId>
+								</ejbModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model
+									</artifactId>
+								</ejbModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model-beid
+									</artifactId>
+								</ejbModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-model-encap
+									</artifactId>
+								</ejbModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-startup
+									</artifactId>
+								</webModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-ws-runtime
+									</artifactId>
+									<contextRoot>
+										/safe-online-ws
+									</contextRoot>
+								</webModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user
+									</artifactId>
+								</ejbModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth
+									</artifactId>
+								</ejbModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-webapp
+									</artifactId>
+									<contextRoot>/olas</contextRoot>
+								</webModule>
+								<sarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-user-service
+									</artifactId>
+								</sarModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk
+									</artifactId>
+								</ejbModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-helpdesk
+									</contextRoot>
+								</webModule>
+								<sarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-helpdesk-service
+									</artifactId>
+								</sarModule>
+								<sarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-service
+									</artifactId>
+								</sarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-j2ee-util
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper
+									</artifactId>
+								</ejbModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-oper
+									</contextRoot>
+								</webModule>
+								<sarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-oper-service
+									</artifactId>
+								</sarModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner
+									</artifactId>
+								</ejbModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-owner
+									</contextRoot>
+								</webModule>
+								<sarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-owner-service
+									</artifactId>
+								</sarModule>
+								<jarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-ctrl-base
+									</artifactId>
+									<includeInApplicationXml>
+										true
+									</includeInApplicationXml>
+								</jarModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-auth
+									</contextRoot>
+								</webModule>
+								<sarModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-auth-service
+									</artifactId>
+								</sarModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid
+									</artifactId>
+								</ejbModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-beid-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-beid
+									</contextRoot>
+								</webModule>
+								<ejbModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap
+									</artifactId>
+								</ejbModule>
+								<webModule>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-encap-webapp
+									</artifactId>
+									<contextRoot>
+										/olas-encap
+									</contextRoot>
+								</webModule>
+							</modules>
+							<jboss>
+								<version>4</version>
+								<!--
+									Need to apply the patch from:
+									http://jira.codehaus.org/browse/MEAR-50
+									to maven-ear-plugin.
+									
+									<loader-repository>
+									safeonline:loader=SafeOnline.ear
+									</loader-repository>
+									
+									This does not work because of class loading 
+									issues in the web applications.
+								-->
+							</jboss>
+							<archive>
+								<manifest>
+									<mainClass>
+										net.link.safeonline.cli.Main
+									</mainClass>
 								</manifest>
 							</archive>
 						</configuration>
@@ -856,16 +2094,26 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-cli </artifactId>
-									<outputDirectory> ${project.build.directory}/SafeOnline 
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-cli
+									</artifactId>
+									<outputDirectory>
+										${project.build.directory}/SafeOnline
 									</outputDirectory>
 									<includes>**/*.class</includes>
 								</artifactItem>
 								<artifactItem>
-									<groupId> net.lin-k.safe-online </groupId>
-									<artifactId> safe-online-sql-ddl </artifactId>
-									<outputDirectory> ${project.build.directory}/SafeOnline 
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-sql-ddl
+									</artifactId>
+									<outputDirectory>
+										${project.build.directory}/SafeOnline
 									</outputDirectory>
 									<includes>**/*.sql</includes>
 								</artifactItem>
@@ -981,7 +2229,9 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId> safe-online-demo-prescription-keystore </artifactId>
+			<artifactId>
+				safe-online-demo-prescription-keystore
+			</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
@@ -1143,6 +2393,13 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-beid</artifactId>
+			<type>ejb</type>
+			<version>1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-beid-webapp</artifactId>
 			<type>war</type>
 			<version>1.0-SNAPSHOT</version>
@@ -1194,7 +2451,9 @@
 				</exclusion>
 				<exclusion>
 					<groupId>org.hibernate</groupId>
-					<artifactId> hibernate-commons-annotations </artifactId>
+					<artifactId>
+						hibernate-commons-annotations
+					</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>commons-codec</groupId>

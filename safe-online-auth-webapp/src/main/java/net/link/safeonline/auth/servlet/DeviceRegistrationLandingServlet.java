@@ -21,7 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ErrorPage;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -60,6 +62,8 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 
 	private SamlAuthorityService samlAuthorityService;
 
+	private NodeAuthenticationService nodeAuthenticationService;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -82,6 +86,9 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 		this.samlAuthorityService = EjbUtils.getEJB(
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				SamlAuthorityService.class);
+		this.nodeAuthenticationService = EjbUtils.getEJB(
+				"SafeOnline/NodeAuthenticationServiceBean/local",
+				NodeAuthenticationService.class);
 	}
 
 	private String getInitParameter(ServletConfig config, String initParamName)
@@ -115,6 +122,14 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 		KeyPair authKeyPair = new KeyPair(authIdentityServiceClient
 				.getPublicKey(), authIdentityServiceClient.getPrivateKey());
+		String nodeName;
+		try {
+			nodeName = this.nodeAuthenticationService
+					.authenticate(authIdentityServiceClient.getCertificate());
+		} catch (NodeNotFoundException e) {
+			ErrorPage.errorPage(e.getMessage(), response);
+			return;
+		}
 
 		handler.init(this.configParams, keyPair);
 
@@ -138,6 +153,7 @@ public class DeviceRegistrationLandingServlet extends HttpServlet {
 			protocolContext.setUserId(registeredDevice.getId());
 			protocolContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
+			protocolContext.setIssuer(nodeName);
 		} catch (SubjectNotFoundException e) {
 			ErrorPage.errorPage(e.getMessage(), response);
 			return;

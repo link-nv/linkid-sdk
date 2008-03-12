@@ -31,8 +31,16 @@
 					<a4j:commandLink value="#{item.name}" action="#{operNode.view}" />
 				</h:column>
 				<h:column>
-					<f:facet name="header">#{msgs.location}</f:facet>
-					<h:outputText value="#{item.location}" />
+					<f:facet name="header">#{msgs.hostname}</f:facet>
+					<h:outputText value="#{item.hostname}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.port}</f:facet>
+					<h:outputText value="#{item.port}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">#{msgs.sslPort}</f:facet>
+					<h:outputText value="#{item.sslPort}" />
 				</h:column>
 				<h:column>
 					<f:facet name="header">#{msgs.action}</f:facet>

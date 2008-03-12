@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
@@ -50,10 +51,11 @@ public interface AttributeService {
 	 * @throws AttributeNotFoundException
 	 * @throws PermissionDeniedException
 	 * @throws SubjectNotFoundException
+	 * @throws AttributeTypeNotFoundException
 	 */
 	Object getConfirmedAttributeValue(String subjectLogin, String attributeName)
 			throws AttributeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException;
+			SubjectNotFoundException, AttributeTypeNotFoundException;
 
 	/**
 	 * Returns a map of attributes with values of the given subject. Of course
@@ -76,7 +78,9 @@ public interface AttributeService {
 	 * @param subjectLogin
 	 * @throws SubjectNotFoundException
 	 * @throws PermissionDeniedException
+	 * @throws AttributeTypeNotFoundException
 	 */
 	Map<String, Object> getConfirmedAttributeValues(String subjectLogin)
-			throws SubjectNotFoundException, PermissionDeniedException;
+			throws SubjectNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException;
 }

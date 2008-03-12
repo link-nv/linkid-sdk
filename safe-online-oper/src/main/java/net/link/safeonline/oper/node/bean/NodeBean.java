@@ -56,9 +56,15 @@ public class NodeBean implements Node {
 
 	private String name;
 
-	private String location;
+	private String hostname;
 
-	private UploadedFile upFile;
+	private int port;
+
+	private int sslPort;
+
+	private UploadedFile authnUpFile;
+
+	private UploadedFile signingUpFile;
 
 	@EJB
 	private NodeService nodeService;
@@ -79,8 +85,9 @@ public class NodeBean implements Node {
 	@Destroy
 	public void destroyCallback() {
 		this.name = null;
-		this.location = null;
-		this.upFile = null;
+		this.hostname = null;
+		this.authnUpFile = null;
+		this.signingUpFile = null;
 	}
 
 	@Factory(OPER_NODE_LIST_NAME)
@@ -95,13 +102,19 @@ public class NodeBean implements Node {
 		LOG.debug("add olas node: " + this.name);
 
 		try {
-			byte[] encodedCertificate;
-			if (null != this.upFile)
-				encodedCertificate = getUpFileContent(this.upFile);
+			byte[] encodedAuthnCertificate;
+			if (null != this.authnUpFile)
+				encodedAuthnCertificate = getUpFileContent(this.authnUpFile);
 			else
-				encodedCertificate = null;
-			this.nodeService.addNode(this.name, this.location,
-					encodedCertificate);
+				encodedAuthnCertificate = null;
+			byte[] encodedSigningCertificate;
+			if (null != this.signingUpFile)
+				encodedSigningCertificate = getUpFileContent(this.signingUpFile);
+			else
+				encodedSigningCertificate = null;
+			this.nodeService.addNode(this.name, this.hostname, this.port,
+					this.sslPort, encodedAuthnCertificate,
+					encodedSigningCertificate);
 		} catch (ExistingNodeException e) {
 			LOG.debug("node already exists: " + this.name);
 			this.facesMessages.addToControlFromResourceBundle("name",
@@ -124,13 +137,23 @@ public class NodeBean implements Node {
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public UploadedFile getUpFile() {
-		return this.upFile;
+	public UploadedFile getAuthnUpFile() {
+		return this.authnUpFile;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setUpFile(UploadedFile uploadedFile) {
-		this.upFile = uploadedFile;
+	public void setAuthnUpFile(UploadedFile uploadedFile) {
+		this.authnUpFile = uploadedFile;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public UploadedFile getSigningUpFile() {
+		return this.signingUpFile;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setSigningUpFile(UploadedFile uploadedFile) {
+		this.signingUpFile = uploadedFile;
 	}
 
 	public String getName() {
@@ -141,12 +164,28 @@ public class NodeBean implements Node {
 		this.name = name;
 	}
 
-	public String getLocation() {
-		return this.location;
+	public String getHostname() {
+		return this.hostname;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+
+	public int getPort() {
+		return this.port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public int getSslPort() {
+		return this.sslPort;
+	}
+
+	public void setSslPort(int sslPort) {
+		this.sslPort = sslPort;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -182,11 +221,11 @@ public class NodeBean implements Node {
 		String nodeName = this.selectedNode.getName();
 		LOG.debug("save node: " + nodeName);
 
-		if (null != this.upFile) {
-			LOG.debug("updating node certificate");
+		if (null != this.authnUpFile) {
+			LOG.debug("updating node authentication certificate");
 			try {
-				this.nodeService.updateCertificate(nodeName,
-						getUpFileContent(this.upFile));
+				this.nodeService.updateAuthnCertificate(nodeName,
+						getUpFileContent(this.authnUpFile));
 			} catch (CertificateEncodingException e) {
 				LOG.debug("certificate encoding error");
 				this.facesMessages.addFromResourceBundle(
@@ -205,8 +244,31 @@ public class NodeBean implements Node {
 			}
 		}
 
+		if (null != this.signingUpFile) {
+			LOG.debug("updating node signing certificate");
+			try {
+				this.nodeService.updateSigningCertificate(nodeName,
+						getUpFileContent(this.signingUpFile));
+			} catch (CertificateEncodingException e) {
+				LOG.debug("certificate encoding error");
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
+				return null;
+			} catch (NodeNotFoundException e) {
+				LOG.debug("node not found");
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
+				return null;
+			} catch (IOException e) {
+				LOG.debug("IO error: " + e.getMessage());
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorIO");
+				return null;
+			}
+		}
 		try {
-			this.nodeService.updateLocation(nodeName, this.location);
+			this.nodeService.updateLocation(nodeName, this.hostname, this.port,
+					this.sslPort);
 
 			/*
 			 * Refresh the selected application.
@@ -244,7 +306,9 @@ public class NodeBean implements Node {
 		 */
 		LOG.debug("edit application: " + this.selectedNode.getName());
 
-		this.location = this.selectedNode.getLocation();
+		this.hostname = this.selectedNode.getHostname();
+		this.port = this.selectedNode.getPort();
+		this.sslPort = this.selectedNode.getSslPort();
 		return "edit";
 	}
 }

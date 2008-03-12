@@ -119,14 +119,18 @@ public class LandingServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String source = request.getParameter("source");
+		if (null == source)
+			throw new ServletException("Missing source parameter");
+		String node = request.getParameter("node");
+		if (null == node)
+			throw new ServletException("Missing node parameter");
+		DeviceManager.setServiceUrls(request.getSession(), node, source);
 
 		Saml2BrowserPostHandler saml2BrowserPostHandler = Saml2BrowserPostHandler
 				.getSaml2BrowserPostHandler(request);
 		saml2BrowserPostHandler.init(this.updateServiceUrl,
 				this.applicationName, this.applicationKeyPair,
 				this.applicationCertificate, this.configParams);
-		DeviceManager.setServiceUrls(request.getSession(), source,
-				this.configParams);
 		String targetUrl = DeviceManager
 				.getSafeOnlineDeviceLandingServiceUrl(request.getSession());
 

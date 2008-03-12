@@ -184,7 +184,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements
 		try {
 			this.nrn = this.getAttributeClient().getAttributeValue(userId,
 					"urn:net:lin-k:safe-online:attribute:beid:nrn",
-					String.class);
+					String[].class)[0];
 			Boolean juniorValue = this.getAttributeClient().getAttributeValue(
 					userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
 					Boolean.class);

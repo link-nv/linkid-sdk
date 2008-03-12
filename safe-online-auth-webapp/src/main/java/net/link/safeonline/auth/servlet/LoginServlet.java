@@ -21,7 +21,10 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
@@ -158,6 +161,12 @@ public class LoginServlet extends HttpServlet {
 			HelpdeskLogger.add(session, "application identity not found",
 					LogLevelType.ERROR);
 			throw new ServletException("application identity not found");
+		} catch (SubjectNotFoundException e) {
+			throw new ServletException("subject not found");
+		} catch (PermissionDeniedException e) {
+			throw new ServletException("permission denied: " + e.getMessage());
+		} catch (AttributeTypeNotFoundException e) {
+			throw new ServletException("attribute type not found");
 		}
 		return hasMissingAttributes;
 	}

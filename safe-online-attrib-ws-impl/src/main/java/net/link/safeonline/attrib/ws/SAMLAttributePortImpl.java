@@ -190,6 +190,9 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 			} catch (PermissionDeniedException e) {
 				ResponseType requestDeniedResponse = createRequestDeniedResponse();
 				return requestDeniedResponse;
+			} catch (AttributeTypeNotFoundException e) {
+				ResponseType attributeNotFoundResponse = createAttributeNotFoundResponse(null);
+				return attributeNotFoundResponse;
 			}
 		} else {
 			for (AttributeType attribute : attributes) {
@@ -240,7 +243,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 	}
 
 	private Map<String, Object> getAttributeValues(String subjectLogin)
-			throws SubjectNotFoundException, PermissionDeniedException {
+			throws SubjectNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
 		if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
 			return this.attributeService
 					.getConfirmedAttributeValues(subjectLogin);

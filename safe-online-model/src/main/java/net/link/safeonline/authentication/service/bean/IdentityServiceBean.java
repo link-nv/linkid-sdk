@@ -34,9 +34,11 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.IdentityServiceRemote;
+import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
@@ -112,6 +114,9 @@ public class IdentityServiceBean implements IdentityService,
 	@EJB
 	AttributeTypeDescriptionDecorator attributeTypeDescriptionDecorator;
 
+	@EJB
+	ProxyAttributeService proxyAttributeService;
+
 	private AttributeManagerLWBean attributeManager;
 
 	@PostConstruct
@@ -131,24 +136,6 @@ public class IdentityServiceBean implements IdentityService,
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 		List<HistoryEntity> result = this.historyDAO.getHistory(subject);
 		return result;
-	}
-
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public String findAttributeValue(@NonEmptyString
-	String attributeName) throws PermissionDeniedException {
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		LOG.debug("get attribute " + attributeName + " for user with login "
-				+ subject.getUserId());
-		AttributeEntity attribute = this.attributeDAO.findAttribute(
-				attributeName, subject);
-		if (null == attribute) {
-			return null;
-		}
-		if (false == attribute.getAttributeType().isUserVisible()) {
-			throw new PermissionDeniedException("attribute not user visible");
-		}
-		String value = attribute.getStringValue();
-		return value;
 	}
 
 	/**
@@ -567,52 +554,9 @@ public class IdentityServiceBean implements IdentityService,
 		subscription
 				.setConfirmedIdentityVersion(currentApplicationIdentityVersion);
 
-		manageIdentityAttributeVisibility(application, subject, subscription);
-
 		this.historyDAO.addHistoryEntry(subject,
 				HistoryEventType.IDENTITY_CONFIRMATION, applicationName, null);
 
-	}
-
-	/**
-	 * Manages the visibility of the identity attributes towards the subject.
-	 * This is done by creating the non-existing attribute entities for the
-	 * confirmed identity.
-	 * 
-	 * @param application
-	 * @param subject
-	 * @param subscription
-	 * @throws ApplicationIdentityNotFoundException
-	 */
-	private void manageIdentityAttributeVisibility(@NotNull
-	ApplicationEntity application, @NotNull
-	SubjectEntity subject, @NotNull
-	SubscriptionEntity subscription)
-			throws ApplicationIdentityNotFoundException {
-		ApplicationIdentityEntity confirmedApplicationIdentity = this.applicationIdentityDAO
-				.getApplicationIdentity(application, subscription
-						.getConfirmedIdentityVersion());
-		LOG.debug("managing identity attribute visibility for version: "
-				+ confirmedApplicationIdentity.getIdentityVersion());
-		List<AttributeTypeEntity> attributeTypes = confirmedApplicationIdentity
-				.getAttributeTypes();
-		for (AttributeTypeEntity attributeType : attributeTypes) {
-			LOG.debug("checking out attribute existence for "
-					+ attributeType.getName());
-			if (attributeType.isCompounded()) {
-				/*
-				 * Of course we don't create value entries for compounded
-				 * top-level attributes.
-				 */
-				continue;
-			}
-			AttributeEntity existingAttribute = this.attributeDAO
-					.findAttribute(attributeType, subject);
-			if (null != existingAttribute) {
-				continue;
-			}
-			this.attributeDAO.addAttribute(attributeType, subject, null);
-		}
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -672,7 +616,8 @@ public class IdentityServiceBean implements IdentityService,
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public boolean hasMissingAttributes(@NonEmptyString
 	String applicationName) throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException {
+			ApplicationIdentityNotFoundException, SubjectNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException {
 		LOG.debug("hasMissingAttributes for application: " + applicationName);
 		List<AttributeDO> missingAttributes = listMissingAttributes(
 				applicationName, null);
@@ -762,44 +707,55 @@ public class IdentityServiceBean implements IdentityService,
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public List<AttributeDO> listMissingAttributes(@NonEmptyString
 	String applicationName, Locale locale) throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException {
+			ApplicationIdentityNotFoundException, SubjectNotFoundException,
+			PermissionDeniedException, AttributeTypeNotFoundException {
 		LOG.debug("get missing attribute for application: " + applicationName);
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+
 		Set<AttributeTypeEntity> requiredApplicationAttributeTypes = getRequiredDataAttributeTypes(applicationName);
 
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		Map<AttributeTypeEntity, List<AttributeEntity>> userAttributes = this.attributeDAO
-				.listAttributes(subject);
-
-		for (Map.Entry<AttributeTypeEntity, List<AttributeEntity>> userAttributeEntry : userAttributes
-				.entrySet()) {
-			AttributeTypeEntity userAttributeType = userAttributeEntry.getKey();
-			if (true == userAttributeType.isCompounded()) {
-				/*
-				 * We don't need to remove a compounded attribute type since
-				 * such a type is not part of the
-				 * requiredApplicationAttributeTypes list in the first place.
-				 */
-				continue;
-			}
-			/*
-			 * Even in case of a multi-valued attribute we only need to peek at
-			 * the first entry.
-			 */
-			AttributeEntity userAttribute = userAttributeEntry.getValue()
-					.get(0);
-			if (true == userAttribute.isEmpty()) {
-				continue;
-			}
-			requiredApplicationAttributeTypes.remove(userAttributeType);
+		List<AttributeTypeEntity> missingAttributeTypes = new LinkedList<AttributeTypeEntity>();
+		for (AttributeTypeEntity attributeType : requiredApplicationAttributeTypes) {
+			if (null == this.proxyAttributeService.getAttributeValue(subject
+					.getUserId(), attributeType.getName()))
+				missingAttributeTypes.add(attributeType);
 		}
+
+		// Map<AttributeTypeEntity, List<AttributeEntity>> userAttributes =
+		// this.attributeDAO
+		// .listAttributes(subject);
+		//
+		// for (Map.Entry<AttributeTypeEntity, List<AttributeEntity>>
+		// userAttributeEntry : userAttributes
+		// .entrySet()) {
+		// AttributeTypeEntity userAttributeType = userAttributeEntry.getKey();
+		// if (true == userAttributeType.isCompounded()) {
+		// /*
+		// * We don't need to remove a compounded attribute type since
+		// * such a type is not part of the
+		// * requiredApplicationAttributeTypes list in the first place.
+		// */
+		// continue;
+		// }
+		// /*
+		// * Even in case of a multi-valued attribute we only need to peek at
+		// * the first entry.
+		// */
+		// AttributeEntity userAttribute = userAttributeEntry.getValue()
+		// .get(0);
+		// if (true == userAttribute.isEmpty()) {
+		// continue;
+		// }
+		// requiredApplicationAttributeTypes.remove(userAttributeType);
+		// }
 
 		/*
 		 * At this point the set contains the required attribute types for which
 		 * the user has not yet entered a value. Some of these attribute types
-		 * are belong to a compounded attribute type. If this is the case we
-		 * have to return the entire compounded attribute record to the user so
-		 * he can edit the missing fields of the compounded attribute 'in the
-		 * correct context'.
+		 * belong to a compounded attribute type. If this is the case we have to
+		 * return the entire compounded attribute record to the user so he can
+		 * edit the missing fields of the compounded attribute 'in the correct
+		 * context'.
 		 */
 
 		/*
@@ -808,7 +764,7 @@ public class IdentityServiceBean implements IdentityService,
 		 * type.
 		 */
 		List<AttributeDO> missingAttributes = new LinkedList<AttributeDO>();
-		for (AttributeTypeEntity attributeType : requiredApplicationAttributeTypes) {
+		for (AttributeTypeEntity attributeType : missingAttributeTypes) {
 			if (attributeType.isCompoundMember()) {
 				continue;
 			}
@@ -845,7 +801,7 @@ public class IdentityServiceBean implements IdentityService,
 		 * to filter out duplicate entries.
 		 */
 		Set<AttributeTypeEntity> compoundedAttributeTypes = new HashSet<AttributeTypeEntity>();
-		for (AttributeTypeEntity attributeType : requiredApplicationAttributeTypes) {
+		for (AttributeTypeEntity attributeType : missingAttributeTypes) {
 			if (false == attributeType.isCompoundMember()) {
 				continue;
 			}
@@ -920,12 +876,12 @@ public class IdentityServiceBean implements IdentityService,
 				 * possible to make it easier for the user to edit the values in
 				 * context of an existing compounded attribute.
 				 */
-				List<AttributeEntity> attributes = userAttributes
-						.get(attributeType);
-				if (null != attributes) {
-					AttributeEntity attribute = attributes.get(0);
-					missingMemberAttribute.setValue(attribute);
-				}
+				// List<AttributeEntity> attributes = userAttributes
+				// .get(attributeType);
+				// if (null != attributes) {
+				// AttributeEntity attribute = attributes.get(0);
+				// missingMemberAttribute.setValue(attribute);
+				// }
 				LOG.debug("adding missing member attribute: "
 						+ missingMemberAttribute.getName());
 				missingAttributes.add(missingMemberAttribute);

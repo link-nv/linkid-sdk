@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 	<display-name>Olas Beid Device Web Application</display-name>
 	<listener>
-		<listener-class> org.jboss.seam.servlet.SeamListener </listener-class>
+		<listener-class>
+			org.jboss.seam.servlet.SeamListener
+		</listener-class>
 	</listener>
 	<listener>
-		<listener-class> com.sun.faces.config.ConfigureListener 
+		<listener-class>
+			com.sun.faces.config.ConfigureListener
 		</listener-class>
 	</listener>
 	<context-param>
@@ -51,6 +55,12 @@
 		<param-value>secret</param-value>
 	</context-param>
 	<context-param>
+		<param-name>WsLocation</param-name>
+		<param-value>
+			${safe-online.host.name}:${safe-online.host.port.ssl}
+		</param-value>
+	</context-param>
+	<context-param>
 		<param-name>AuthenticationUrl</param-name>
 		<param-value>beid.html</param-value>
 	</context-param>
@@ -63,32 +73,21 @@
 		<param-value>remove-beid.seam</param-value>
 	</context-param>
 	<context-param>
-		<param-name>SafeOnlineHostName</param-name>
-		<param-value>${safe-online.host.name}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>SafeOnlineHostPort</param-name>
-		<param-value>${safe-online.host.port}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>SafeOnlineHostPortSsl</param-name>
-		<param-value>${safe-online.host.port.ssl}</param-value>
-	</context-param>
-	<context-param>
 		<param-name>RegistrationServiceUrl</param-name>
 		<param-value>
-			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-beid/regexit 
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-beid/regexit
 		</param-value>
 	</context-param>
 	<context-param>
 		<param-name>RemovalServiceUrl</param-name>
 		<param-value>
-			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-beid/removeexit 
+			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-beid/removeexit
 		</param-value>
 	</context-param>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
+		<filter-class>
+			net.link.safeonline.sdk.auth.filter.JAASLoginFilter
 		</filter-class>
 		<init-param>
 			<param-name>LoginContextName</param-name>
@@ -97,17 +96,20 @@
 	</filter>
 	<filter>
 		<filter-name>Seam Exception Filter</filter-name>
-		<filter-class> org.jboss.seam.servlet.SeamExceptionFilter 
+		<filter-class>
+			org.jboss.seam.servlet.SeamExceptionFilter
 		</filter-class>
 	</filter>
 	<filter>
 		<filter-name>Seam Redirect Filter</filter-name>
-		<filter-class> org.jboss.seam.servlet.SeamRedirectFilter 
+		<filter-class>
+			org.jboss.seam.servlet.SeamRedirectFilter
 		</filter-class>
 	</filter>
 	<filter>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<filter-class> org.apache.myfaces.webapp.filter.ExtensionsFilter 
+		<filter-class>
+			org.apache.myfaces.webapp.filter.ExtensionsFilter
 		</filter-class>
 	</filter>
 	<filter>
@@ -151,7 +153,7 @@
 	<servlet>
 		<servlet-name>AuthLandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.auth.servlet.LandingServlet 
+			net.link.safeonline.device.sdk.auth.servlet.LandingServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -160,7 +162,8 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthenticationServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.AuthenticationServlet 
+		<servlet-class>
+			net.link.safeonline.beid.servlet.AuthenticationServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -170,7 +173,7 @@
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.auth.servlet.ExitServlet 
+			net.link.safeonline.device.sdk.auth.servlet.ExitServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -180,7 +183,7 @@
 	<servlet>
 		<servlet-name>RegLandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.reg.servlet.LandingServlet 
+			net.link.safeonline.device.sdk.reg.servlet.LandingServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -189,7 +192,8 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentityServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.IdentityServlet 
+		<servlet-class>
+			net.link.safeonline.beid.servlet.IdentityServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -198,7 +202,8 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>RegExitServlet</servlet-name>
-		<servlet-class> net.link.safeonline.device.sdk.reg.servlet.ExitServlet 
+		<servlet-class>
+			net.link.safeonline.device.sdk.reg.servlet.ExitServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -207,7 +212,8 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>JavaVersionServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.JavaVersionServlet 
+		<servlet-class>
+			net.link.safeonline.beid.servlet.JavaVersionServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -217,7 +223,7 @@
 	<servlet>
 		<servlet-name>RemoveLandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.remove.servlet.LandingServlet 
+			net.link.safeonline.device.sdk.remove.servlet.LandingServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -226,7 +232,8 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentityRemoveServlet</servlet-name>
-		<servlet-class> net.link.safeonline.beid.servlet.IdentityRemoveServlet 
+		<servlet-class>
+			net.link.safeonline.beid.servlet.IdentityRemoveServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>
@@ -236,7 +243,7 @@
 	<servlet>
 		<servlet-name>RemoveExitServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.device.sdk.remove.servlet.ExitServlet 
+			net.link.safeonline.device.sdk.remove.servlet.ExitServlet
 		</servlet-class>
 	</servlet>
 	<servlet-mapping>

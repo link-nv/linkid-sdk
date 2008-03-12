@@ -51,6 +51,11 @@
 				<f:selectItem itemLabel="Compounded" itemValue="compounded" />
 			</h:selectOneRadio>
 
+			<h:outputLabel for="deviceAttribute" value="#{msgs.deviceAttribute}" />
+			<h:selectBooleanCheckbox id="deviceAttribute"
+				value="#{addAttribute.deviceAttribute}" styleClass="radio" />
+
+
 			<h:message styleClass="error" for="category" />
 
 			<h:messages styleClass="error" globalOnly="true" />

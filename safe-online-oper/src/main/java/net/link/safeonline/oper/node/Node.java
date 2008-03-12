@@ -31,13 +31,25 @@ public interface Node {
 
 	void setName(String name);
 
-	String getLocation();
+	String getHostname();
 
-	void setLocation(String location);
+	void setHostname(String hostname);
 
-	void setUpFile(UploadedFile uploadedFile);
+	int getPort();
 
-	UploadedFile getUpFile();
+	void setPort(int port);
+
+	int getSslPort();
+
+	void setSslPort(int sslPort);
+
+	void setAuthnUpFile(UploadedFile uploadedFile);
+
+	UploadedFile getAuthnUpFile();
+
+	void setSigningUpFile(UploadedFile uploadedFile);
+
+	UploadedFile getSigningUpFile();
 
 	/*
 	 * Actions.

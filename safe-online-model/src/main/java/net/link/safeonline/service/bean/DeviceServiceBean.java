@@ -30,6 +30,7 @@ import net.link.safeonline.authentication.exception.ExistingDeviceException;
 import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceClassDAO;
 import net.link.safeonline.dao.DeviceDAO;
@@ -79,6 +80,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
+
+	@EJB
+	private ApplicationDAO applicationDAO;
 
 	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.USER_ROLE })
 	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
@@ -194,9 +198,24 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void removeDevice(String name) throws DeviceNotFoundException,
-			DeviceDescriptionNotFoundException, DevicePropertyNotFoundException {
+			DeviceDescriptionNotFoundException,
+			DevicePropertyNotFoundException, PermissionDeniedException {
 		DeviceEntity device = this.deviceDAO.getDevice(name);
 		// TODO: check if users registered this device
+
+		// check if device is in an application's device policy
+		List<ApplicationEntity> applications = this.applicationDAO
+				.listApplications();
+		for (ApplicationEntity application : applications) {
+			List<AllowedDeviceEntity> allowedDevices = this.devices
+					.listAllowedDevices(application);
+			for (AllowedDeviceEntity allowedDevice : allowedDevices) {
+				if (allowedDevice.getDevice().getName().equals(name))
+					throw new PermissionDeniedException(
+							"Device still in device policy of "
+									+ application.getName());
+			}
+		}
 
 		// remove all device descriptions
 		List<DeviceDescriptionEntity> deviceDescriptions = this.deviceDAO

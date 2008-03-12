@@ -148,7 +148,7 @@ public class AuthnResponseUtil {
 		if (false == "POST".equals(httpRequest.getMethod())) {
 			return null;
 		}
-		LOG.debug("POST request");
+		LOG.debug("POST response");
 		String encodedSamlResponse = httpRequest.getParameter("SAMLResponse");
 		if (null == encodedSamlResponse) {
 			LOG.debug("no SAMLResponse parameter found");
@@ -216,6 +216,10 @@ public class AuthnResponseUtil {
 		Conditions conditions = assertion.getConditions();
 		DateTime notBefore = conditions.getNotBefore();
 		DateTime notOnOrAfter = conditions.getNotOnOrAfter();
+
+		LOG.debug("now: " + now.toString());
+		LOG.debug("notBefore: " + notBefore.toString());
+		LOG.debug("notOnOrAfter : " + notOnOrAfter.toString());
 
 		if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
 			throw new ServletException("invalid SAML message timeframe");

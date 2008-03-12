@@ -26,7 +26,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.NodeService;
 import net.link.safeonline.authentication.service.NodeServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.OlasDAO;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.pkix.PkiUtils;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
@@ -51,6 +53,9 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 	@EJB
 	private OlasDAO olasDAO;
 
+	@EJB
+	private AttributeTypeDAO attributeTypeDAO;
+
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public List<OlasEntity> listNodes() {
 		return this.olasDAO.listNodes();
@@ -58,15 +63,19 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void addNode(String name, String location, byte[] encodedCertificate)
+	public void addNode(String name, String hostname, int port, int sslPort,
+			byte[] encodedAuthnCertificate, byte[] encodedSigningCertificate)
 			throws ExistingNodeException, CertificateEncodingException {
 		LOG.debug("add olas node: " + name);
 		checkExistingNode(name);
 
-		X509Certificate certificate = PkiUtils
-				.decodeCertificate(encodedCertificate);
+		X509Certificate authnCertificate = PkiUtils
+				.decodeCertificate(encodedAuthnCertificate);
+		X509Certificate signingCertificate = PkiUtils
+				.decodeCertificate(encodedSigningCertificate);
 
-		this.olasDAO.addNode(name, location, certificate);
+		this.olasDAO.addNode(name, hostname, port, sslPort, authnCertificate,
+				signingCertificate);
 	}
 
 	private void checkExistingNode(String name) throws ExistingNodeException {
@@ -81,6 +90,14 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 			PermissionDeniedException {
 		LOG.debug("remove node: " + name);
 		OlasEntity node = this.olasDAO.getNode(name);
+
+		// check if present in an attribute type
+		List<AttributeTypeEntity> nodeAttributeTypes = this.attributeTypeDAO
+				.listAttributeTypes(node);
+		if (nodeAttributeTypes.size() > 0)
+			throw new PermissionDeniedException(
+					"Still attribute types attached to this node");
+
 		this.olasDAO.removeNode(node);
 	}
 
@@ -90,21 +107,35 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateCertificate(String nodeName, byte[] certificateData)
+	public void updateAuthnCertificate(String nodeName, byte[] certificateData)
+			throws CertificateEncodingException, NodeNotFoundException {
+		LOG.debug("updating olas node authentication certificate for "
+				+ nodeName);
+		X509Certificate certificate = PkiUtils
+				.decodeCertificate(certificateData);
+
+		OlasEntity node = this.olasDAO.getNode(nodeName);
+		node.setAuthnCertificate(certificate);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void updateSigningCertificate(String nodeName, byte[] certificateData)
 			throws CertificateEncodingException, NodeNotFoundException {
 		LOG.debug("updating olas node certificate for " + nodeName);
 		X509Certificate certificate = PkiUtils
 				.decodeCertificate(certificateData);
 
 		OlasEntity node = this.olasDAO.getNode(nodeName);
-		node.setCertificate(certificate);
+		node.setSigningCertificate(certificate);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateLocation(String nodeName, String location)
-			throws NodeNotFoundException {
+	public void updateLocation(String nodeName, String hostname, int port,
+			int sslPort) throws NodeNotFoundException {
 		LOG.debug("update olas node location for " + nodeName);
 		OlasEntity node = this.olasDAO.getNode(nodeName);
-		node.setLocation(location);
+		node.setHostname(hostname);
+		node.setPort(port);
+		node.setSslPort(sslPort);
 	}
 }

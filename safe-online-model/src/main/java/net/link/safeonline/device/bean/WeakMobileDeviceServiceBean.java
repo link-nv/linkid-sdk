@@ -34,10 +34,8 @@ import net.link.safeonline.device.backend.MobileManager;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEventType;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.service.RegisteredDeviceService;
 import net.link.safeonline.service.SubjectService;
 
 @Stateless
@@ -46,9 +44,6 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 
 	@EJB
 	private SubjectService subjectService;
-
-	@EJB
-	private RegisteredDeviceService registeredDeviceService;
 
 	@EJB
 	private SubjectIdentifierDAO subjectIdentifierDAO;
@@ -103,24 +98,11 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 			throw new ArgumentIntegrityException();
 		}
 
-		/*
-		 * Lookup subject through registered device for now, so we can access
-		 * the device attributes still.
-		 * 
-		 * 
-		 * TODO: seperate user-device mapping
-		 */
-		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
-				.getRegisteredDevice(deviceUserId);
-		if (null == registeredDevice)
-			throw new MobileException("registered device not found");
-		SubjectEntity subject = registeredDevice.getSubject();
-
 		String activationCode = this.mobileManager.activate(mobile,
 				deviceSubject);
 		if (null == activationCode)
 			throw new MobileRegistrationException();
-		setMobile(subject, mobile);
+		setMobile(deviceSubject, mobile);
 
 		this.subjectIdentifierDAO.addSubjectIdentifier(
 				SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN, mobile,
@@ -150,17 +132,6 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 				.findSubject(deviceUserId);
 		if (null == deviceSubject)
 			throw new MobileException("device user not found");
-		/*
-		 * Attributes are attachted to OLAS subject still, to be changed later
-		 * on
-		 * 
-		 * TODO: seperate user-device mapping
-		 */
-		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
-				.getRegisteredDevice(deviceUserId);
-		if (null == registeredDevice)
-			throw new MobileException("registered device not found");
-		SubjectEntity subject = registeredDevice.getSubject();
 
 		AttributeTypeEntity mobileAttributeType;
 		try {
@@ -172,7 +143,7 @@ public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
 		this.subjectIdentifierDAO.removeSubjectIdentifier(deviceSubject,
 				SafeOnlineConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
 		List<AttributeEntity> mobileAttributes = this.attributeDAO
-				.listAttributes(subject, mobileAttributeType);
+				.listAttributes(deviceSubject, mobileAttributeType);
 		for (AttributeEntity mobileAttribute : mobileAttributes) {
 			if (mobileAttribute.getStringValue().equals(mobile))
 				this.attributeDAO.removeAttribute(mobileAttribute);

@@ -33,7 +33,8 @@
 						${project.build.directory}/classes/safe-online-keystore.jks
 					</keystore>
 					<dname>
-						cn=SafeOnline Development, ou=Development,
+						cn=SafeOnline Development
+						${safe-online.node.name}, ou=Development,
 						L=SINT-MARTENS-LATEM, ST=VL, o=LIN.K_NV, c=BE
 					</dname>
 					<keypass>secret</keypass>

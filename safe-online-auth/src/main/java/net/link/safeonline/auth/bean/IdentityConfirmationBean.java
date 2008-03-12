@@ -22,6 +22,9 @@ import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.IdentityConfirmation;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.data.AttributeDO;
@@ -78,6 +81,21 @@ public class IdentityConfirmationBean implements IdentityConfirmation {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR,
 					"errorApplicationIdentityNotFound");
+			return null;
+		} catch (SubjectNotFoundException e) {
+			LOG.debug("subject not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			return null;
+		} catch (PermissionDeniedException e) {
+			LOG.debug("permission denied: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			return null;
+		} catch (AttributeTypeNotFoundException e) {
+			LOG.debug("attribute type not found.");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
 			return null;
 		}
 

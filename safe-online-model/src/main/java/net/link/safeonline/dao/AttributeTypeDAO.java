@@ -19,6 +19,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
+import net.link.safeonline.entity.OlasEntity;
 
 /**
  * Interface for attribute type data access object.
@@ -39,6 +40,13 @@ public interface AttributeTypeDAO {
 			throws AttributeTypeNotFoundException;
 
 	List<AttributeTypeEntity> listAttributeTypes();
+
+	/**
+	 * Lists all attribute types on the specified olas node.
+	 * 
+	 * @param node
+	 */
+	List<AttributeTypeEntity> listAttributeTypes(OlasEntity node);
 
 	List<AttributeTypeDescriptionEntity> listDescriptions(
 			AttributeTypeEntity attributeType);

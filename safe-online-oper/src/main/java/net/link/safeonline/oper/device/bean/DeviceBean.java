@@ -25,6 +25,7 @@ import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundExc
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.ctrl.Convertor;
 import net.link.safeonline.ctrl.ConvertorUtil;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -238,6 +239,11 @@ public class DeviceBean implements Device {
 			LOG.debug("device property not found");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDevicePropertyNotFound");
+			return null;
+		} catch (PermissionDeniedException e) {
+			LOG.debug("permission denied: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
 		deviceListFactory();

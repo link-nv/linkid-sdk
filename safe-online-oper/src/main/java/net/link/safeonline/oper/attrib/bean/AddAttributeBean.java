@@ -239,6 +239,7 @@ public class AddAttributeBean implements AddAttribute {
 		}
 		attributeType.setUserEditable(this.userEditable);
 		attributeType.setUserVisible(this.userVisible);
+		attributeType.setDeviceAttribute(this.deviceAttribute);
 
 		try {
 			OlasEntity olasNode = this.nodeService.getNode(this.node);
@@ -356,5 +357,17 @@ public class AddAttributeBean implements AddAttribute {
 	public String membersAccessControlNext() {
 		this.log.debug("members access control next");
 		return "next";
+	}
+
+	private boolean deviceAttribute;
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public boolean isDeviceAttribute() {
+		return this.deviceAttribute;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setDeviceAttribute(boolean deviceAttribute) {
+		this.deviceAttribute = deviceAttribute;
 	}
 }

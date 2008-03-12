@@ -28,6 +28,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
@@ -83,6 +84,13 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 		LOG.debug("get attribute types");
 		List<AttributeTypeEntity> attributeTypes = this.queryObject
 				.listAttributeTypes();
+		return attributeTypes;
+	}
+
+	public List<AttributeTypeEntity> listAttributeTypes(OlasEntity node) {
+		LOG.debug("get attribute types on node " + node.getName());
+		List<AttributeTypeEntity> attributeTypes = this.queryObject
+				.listAttributeTypes(node);
 		return attributeTypes;
 	}
 

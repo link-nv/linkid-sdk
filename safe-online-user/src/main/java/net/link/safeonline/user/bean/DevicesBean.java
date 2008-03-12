@@ -29,15 +29,18 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.LastDeviceException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.user.DeviceEntry;
 import net.link.safeonline.user.Devices;
 import net.link.safeonline.user.UserConstants;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -87,6 +90,9 @@ public class DevicesBean implements Devices {
 
 	@EJB
 	private DevicePolicyService devicePolicyService;
+
+	@EJB
+	private NodeAuthenticationService nodeAuthenticationService;
 
 	@In
 	Context sessionContext;
@@ -253,7 +259,14 @@ public class DevicesBean implements Devices {
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
 		}
-		registrationURL += "?source=user";
+		try {
+			registrationURL += "?source=user&node=" + getNodeName();
+		} catch (NodeNotFoundException e) {
+			LOG.debug("node not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
+			return null;
+		}
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
@@ -281,7 +294,14 @@ public class DevicesBean implements Devices {
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
 		}
-		removalURL += "?source=user";
+		try {
+			removalURL += "?source=user&node=" + getNodeName();
+		} catch (NodeNotFoundException e) {
+			LOG.debug("node not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
+			return null;
+		}
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
@@ -309,6 +329,14 @@ public class DevicesBean implements Devices {
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
 		}
+		try {
+			updateURL += "?source=user&node=" + getNodeName();
+		} catch (NodeNotFoundException e) {
+			LOG.debug("node not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
+			return null;
+		}
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
@@ -321,6 +349,12 @@ public class DevicesBean implements Devices {
 		}
 		return null;
 
+	}
+
+	private String getNodeName() throws NodeNotFoundException {
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		return this.nodeAuthenticationService
+				.authenticate(authIdentityServiceClient.getCertificate());
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)

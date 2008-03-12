@@ -90,14 +90,25 @@ public abstract class AbstractInitBean implements Startable {
 	protected static class Node {
 		final String name;
 
-		final String location;
+		final String hostname;
 
-		final X509Certificate certificate;
+		final int port;
 
-		public Node(String name, String location, X509Certificate certificate) {
+		final int sslPort;
+
+		final X509Certificate authnCertificate;
+
+		final X509Certificate signingCertificate;
+
+		public Node(String name, String hostname, int port, int sslPort,
+				X509Certificate authnCertificate,
+				X509Certificate signingCertificate) {
 			this.name = name;
-			this.location = location;
-			this.certificate = certificate;
+			this.hostname = hostname;
+			this.port = port;
+			this.sslPort = sslPort;
+			this.authnCertificate = authnCertificate;
+			this.signingCertificate = signingCertificate;
 		}
 	}
 
@@ -872,7 +883,8 @@ public abstract class AbstractInitBean implements Startable {
 			throw new EJBException("No Olas node specified");
 		OlasEntity olasNode = this.olasDAO.findNode(this.node.name);
 		if (null == olasNode)
-			this.olasDAO.addNode(this.node.name, this.node.location,
-					this.node.certificate);
+			this.olasDAO.addNode(this.node.name, this.node.hostname,
+					this.node.port, this.node.sslPort,
+					this.node.authnCertificate, this.node.signingCertificate);
 	}
 }

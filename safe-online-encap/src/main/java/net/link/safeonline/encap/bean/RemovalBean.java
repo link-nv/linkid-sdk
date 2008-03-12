@@ -37,9 +37,8 @@ import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.service.RegisteredDeviceService;
+import net.link.safeonline.service.SubjectService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.annotations.Destroy;
@@ -72,7 +71,7 @@ public class RemovalBean implements Removal {
 	private AttributeDAO attributeDAO;
 
 	@EJB
-	private RegisteredDeviceService registeredDeviceService;
+	private SubjectService subjectService;
 
 	@Logger
 	private Log log;
@@ -124,24 +123,25 @@ public class RemovalBean implements Removal {
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			this.log.error("device not found");
 			return new LinkedList<AttributeDO>();
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			this.log.error("subject not found");
+			return new LinkedList<AttributeDO>();
 		}
 		return this.mobileAttributes;
 	}
 
 	private List<AttributeDO> listAttributes(String deviceId, Locale locale)
-			throws DeviceNotFoundException {
-		/**
-		 * TODO: external attributes
-		 */
+			throws DeviceNotFoundException, SubjectNotFoundException {
 		this.log.debug("list attributes for device: " + deviceId);
 		DeviceEntity device = this.deviceDAO.getDevice(deviceId);
 		List<AttributeTypeEntity> deviceAttributeTypes = new LinkedList<AttributeTypeEntity>();
 		deviceAttributeTypes.add(device.getAttributeType());
 		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
 
-		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
-				.getRegisteredDevice(this.userId);
-		SubjectEntity subject = registeredDevice.getSubject();
+		SubjectEntity deviceSubject = this.subjectService
+				.getSubject(this.userId);
 
 		String language;
 		if (null == locale) {
@@ -174,7 +174,7 @@ public class RemovalBean implements Removal {
 				}
 			}
 			List<AttributeEntity> attributeList = this.attributeDAO
-					.listAttributes(subject, attributeType);
+					.listAttributes(deviceSubject, attributeType);
 			for (AttributeEntity attribute : attributeList) {
 				String stringValue;
 				Boolean booleanValue;

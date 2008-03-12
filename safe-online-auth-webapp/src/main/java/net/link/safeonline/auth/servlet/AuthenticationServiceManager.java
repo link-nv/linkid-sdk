@@ -17,10 +17,13 @@ import javax.servlet.http.HttpSessionListener;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.authentication.service.AuthenticationService;
@@ -129,13 +132,18 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 	 * @throws EmptyDevicePolicyException
 	 * @throws DevicePolicyException
 	 * @throws UsageAgreementAcceptationRequiredException
+	 * @throws AttributeTypeNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
 	 */
 	public static void commitAuthentication(HttpSession session,
 			String applicationId) throws SubscriptionNotFoundException,
 			ApplicationNotFoundException, ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,
 			EmptyDevicePolicyException, DevicePolicyException,
-			UsageAgreementAcceptationRequiredException {
+			UsageAgreementAcceptationRequiredException,
+			SubjectNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
 
 		Set<DeviceEntity> requiredDevices = LoginManager
 				.getRequiredDevices(session);
