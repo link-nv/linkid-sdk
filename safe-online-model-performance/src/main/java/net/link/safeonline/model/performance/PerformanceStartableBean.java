@@ -25,6 +25,7 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
+import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -114,11 +115,15 @@ public class PerformanceStartableBean extends AbstractInitBean {
 		ResourceBundle properties = ResourceBundle.getBundle("config");
 		String nodeName = properties.getString("olas.node.name");
 		String hostname = properties.getString("olas.host.name");
-		String hostportssl = properties.getString("olas.host.port.ssl");
+		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
+		int hostportssl = Integer.parseInt(properties
+				.getString("olas.host.port.ssl"));
 
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-		this.node = new Node(nodeName, hostname + ":" + hostportssl,
-				authIdentityServiceClient.getCertificate());
+		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+		this.node = new Node(nodeName, hostname, hostport, hostportssl,
+				authIdentityServiceClient.getCertificate(),
+				identityServiceClient.getCertificate());
 		this.trustedCertificates.put(
 				authIdentityServiceClient.getCertificate(),
 				SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
