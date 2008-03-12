@@ -61,7 +61,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 	}
 
 	public ScenarioTimingEntity(ExecutionEntity execution, Long startTime,
-			Double olasDuration, Long agentDuration, Double startFreeMem,
+			Double olasDuration, Double agentDuration, Double startFreeMem,
 			Double endFreeMem) {
 
 		this.execution = execution;

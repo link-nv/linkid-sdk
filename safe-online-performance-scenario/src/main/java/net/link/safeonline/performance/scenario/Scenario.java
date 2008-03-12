@@ -39,5 +39,5 @@ public interface Scenario extends Runnable {
 	/**
 	 * Specify all charts you'd like to have generated for your scenario.
 	 */
-	public List<Chart> getCharts();
+	public List<? extends Chart> getCharts();
 }

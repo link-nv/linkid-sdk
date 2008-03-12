@@ -118,12 +118,27 @@ public abstract class AbstractChart implements Chart {
 	protected String title;
 	private boolean linked;
 	private List<AbstractChart> links;
+	private ValueAxis sharedAxis;
 
 	public AbstractChart(String title) {
 
 		this.title = title;
 		this.linked = false;
 		this.links = new ArrayList<AbstractChart>();
+	}
+
+
+	protected ValueAxis getAxis() {
+
+		System.err.print(getClass() + ": ");
+
+		if (this.sharedAxis != null) {
+			System.err.println("shared.");
+			return this.sharedAxis;
+		}
+
+		System.err.println("new.");
+		return new DateAxis("Time");
 	}
 
 	/**
@@ -720,5 +735,12 @@ public abstract class AbstractChart implements Chart {
 		this.LOG.debug("All done.");
 
 		return charts;
+	}
+
+	public static void sharedTimeAxis(List<AbstractChart> charts) {
+
+		ValueAxis axis = new DateAxis("Time");
+		for (AbstractChart chart : charts)
+			chart.sharedAxis = axis;
 	}
 }

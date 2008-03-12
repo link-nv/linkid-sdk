@@ -41,7 +41,7 @@ import javax.persistence.OneToMany;
 				+ "    FROM ProfileDataEntity d            "
 				+ "    WHERE d.profile = :profile          "),
 		@NamedQuery(name = ProfileDataEntity.getScenarioTiming, query = "SELECT NEW net.link.safeonline.performance.entity.ScenarioTimingEntity("
-				+ "        t.execution, MIN(t.startTime), AVG(t.olasDuration), MAX(t.agentDuration), AVG(t.startFreeMem), AVG(t.endFreeMem)"
+				+ "        t.execution, MIN(t.startTime), AVG(t.olasDuration), AVG(t.agentDuration), AVG(t.startFreeMem), AVG(t.endFreeMem)"
 				+ "    )"
 				+ "    FROM ScenarioTimingEntity t"
 				+ "    WHERE t.execution = :execution"

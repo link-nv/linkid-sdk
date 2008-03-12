@@ -22,11 +22,12 @@ import javax.servlet.FilterChain;
 
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.util.filter.ProfileFilter;
 import net.link.safeonline.util.performance.ProfileData;
 
-import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StackedXYBarRenderer;
 import org.jfree.data.xy.DefaultTableXYDataset;
@@ -79,6 +80,25 @@ public class ScenarioDurationsChart extends AbstractChart {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void processTiming(ScenarioTimingEntity data) {
+
+		this.overhead.addOrUpdate(data.getStart(), data.getAgentDuration()
+				- data.getOlasDuration());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isTimingProcessed() {
+
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void processData(ProfileDataEntity data) {
 
 		if (data.getMeasurements().isEmpty())
@@ -87,18 +107,10 @@ public class ScenarioDurationsChart extends AbstractChart {
 		XYSeries driverSet = getDriverSet(data.getProfile());
 
 		Long startTime = data.getScenarioTiming().getStart();
-		Long agentTime = data.getScenarioTiming().getAgentDuration();
 		Long requestTime = getMeasurement(data.getMeasurements(),
 				ProfileData.REQUEST_DELTA_TIME);
 
-		if (agentTime - requestTime < 0) {
-			this.LOG.debug("Start: " + startTime);
-			this.LOG.debug("Reqst: " + requestTime);
-			this.LOG.debug("Agent: " + agentTime);
-		}
-
 		driverSet.addOrUpdate(startTime, requestTime);
-		this.overhead.addOrUpdate(startTime, agentTime - requestTime);
 	}
 
 	/**
@@ -119,7 +131,7 @@ public class ScenarioDurationsChart extends AbstractChart {
 		if (isEmpty(this.driverSets))
 			return null;
 
-		DateAxis timeAxis = new DateAxis("Time");
+		ValueAxis domainAxis = getAxis();
 		NumberAxis valueAxis = new NumberAxis("Duration (ms)");
 
 		DefaultTableXYDataset scenarioDuration = new DefaultTableXYDataset();
@@ -127,7 +139,7 @@ public class ScenarioDurationsChart extends AbstractChart {
 			scenarioDuration.addSeries(driverSet);
 		scenarioDuration.addSeries(this.overhead);
 
-		return new XYPlot(scenarioDuration, timeAxis, valueAxis,
+		return new XYPlot(scenarioDuration, domainAxis, valueAxis,
 				new StackedXYBarRenderer());
 	}
 

@@ -39,7 +39,7 @@ import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.Chart;
-import net.link.safeonline.performance.scenario.charts.ScenarioDurationsChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioDriverDurationsChart;
 
 /**
  * <h2>{@link ChartsTest}<br>
@@ -76,15 +76,17 @@ public class ChartsTest extends AbstractDataTest {
 	public ChartsTest() throws Exception {
 
 		// Execution to chart.
-		ExecutionEntity execution = getLatestExecution();
+		// ExecutionEntity execution = getLatestExecution();
+		ExecutionEntity execution = this.executionService
+				.getExecution(new Date(1204796106 * 1000l));
 
 		// Chart modules to render.
 		ArrayList<Chart> charts = new ArrayList<Chart>();
-		charts.add(new ScenarioDurationsChart());
+		charts.add(new ScenarioDriverDurationsChart());
 
 		// Render and display the charts.
-		 displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
-		// displayCharts(getAllCharts(execution));
+		// displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
+		displayCharts(getAllCharts(execution));
 	}
 
 	/**
@@ -118,7 +120,7 @@ public class ChartsTest extends AbstractDataTest {
 	private Map<String, byte[][]> getAllCharts(ExecutionEntity execution)
 			throws Exception {
 
-		List<Chart> charts = createScenario(execution).getCharts();
+		List<? extends Chart> charts = createScenario(execution).getCharts();
 		return getCharts(execution, charts.toArray(new Chart[charts.size()]));
 	}
 

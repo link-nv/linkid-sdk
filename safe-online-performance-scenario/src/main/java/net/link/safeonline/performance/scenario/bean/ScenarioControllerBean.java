@@ -221,8 +221,8 @@ public class ScenarioControllerBean implements ScenarioController {
 		ExecutionEntity execution = this.executionService
 				.getExecution(executionStartTime);
 
-		List<Chart> charts = createScenario(execution.getScenarioName())
-				.getCharts();
+		List<? extends Chart> charts = createScenario(
+				execution.getScenarioName()).getCharts();
 
 		// Divide the charts over three lists depending on data they chart.
 		List<Chart> dataCharts, errorCharts, timingCharts;

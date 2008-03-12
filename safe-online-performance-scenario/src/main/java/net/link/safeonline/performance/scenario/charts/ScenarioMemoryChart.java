@@ -18,8 +18,8 @@ package net.link.safeonline.performance.scenario.charts;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.util.performance.ProfileData;
 
-import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -62,6 +62,9 @@ public class ScenarioMemoryChart extends AbstractChart {
 	@Override
 	public void processData(ProfileDataEntity data) {
 
+		if (data.getMeasurements().isEmpty())
+			return;
+
 		FixedMillisecond startTime = new FixedMillisecond(data
 				.getScenarioTiming().getStart());
 
@@ -91,20 +94,20 @@ public class ScenarioMemoryChart extends AbstractChart {
 		if (this.olasMemory.isEmpty() && this.agentMemory.isEmpty())
 			return null;
 
-		DateAxis timeAxis = new DateAxis("Time");
+		ValueAxis domainAxis = getAxis();
 
 		TimeSeriesCollection olasSet, agentSet;
 		olasSet = new TimeSeriesCollection(this.olasMemory);
 		agentSet = new TimeSeriesCollection(this.agentMemory);
 
-		XYPlot olasPlot = new XYPlot(olasSet, timeAxis, new NumberAxis(
+		XYPlot olasPlot = new XYPlot(olasSet, domainAxis, new NumberAxis(
 				"Available Memory (bytes)"), new XYLineAndShapeRenderer(true,
 				false));
-		XYPlot agentPlot = new XYPlot(agentSet, timeAxis, new NumberAxis(
+		XYPlot agentPlot = new XYPlot(agentSet, domainAxis, new NumberAxis(
 				"Available Memory (bytes)"), new XYLineAndShapeRenderer(true,
 				false));
 
-		CombinedDomainXYPlot memoryPlot = new CombinedDomainXYPlot(timeAxis);
+		CombinedDomainXYPlot memoryPlot = new CombinedDomainXYPlot(domainAxis);
 		memoryPlot.add(olasPlot);
 		memoryPlot.add(agentPlot);
 
