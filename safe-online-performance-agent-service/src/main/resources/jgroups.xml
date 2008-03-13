@@ -2,7 +2,7 @@
     <TCP
         start_port="7800" />
     <TCPPING
-        initial_hosts="sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]"
+        initial_hosts="${safe-online.profiling.initial_hosts}"
         port_range="5"
         timeout="3000"
         num_initial_members="3" />
