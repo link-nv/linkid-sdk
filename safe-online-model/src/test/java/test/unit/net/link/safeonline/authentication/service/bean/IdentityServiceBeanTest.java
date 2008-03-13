@@ -702,8 +702,7 @@ public class IdentityServiceBeanTest {
 
 			assertEquals(this.OPT_ATT_NAME, result.get(2).getName());
 			assertTrue(result.get(2).isMember());
-			// TODO: solve this one !!assertEquals("value",
-			// result.get(2).getStringValue());
+			assertEquals("value", result.get(2).getStringValue());
 			assertFalse(result.get(2).isRequired());
 		}
 	}

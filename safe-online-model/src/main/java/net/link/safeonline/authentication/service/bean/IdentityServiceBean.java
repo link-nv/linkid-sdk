@@ -876,12 +876,10 @@ public class IdentityServiceBean implements IdentityService,
 				 * possible to make it easier for the user to edit the values in
 				 * context of an existing compounded attribute.
 				 */
-				// List<AttributeEntity> attributes = userAttributes
-				// .get(attributeType);
-				// if (null != attributes) {
-				// AttributeEntity attribute = attributes.get(0);
-				// missingMemberAttribute.setValue(attribute);
-				// }
+				Object value = this.proxyAttributeService.getAttributeValue(
+						subject.getUserId(), attributeType.getName());
+				if (null != value)
+					missingMemberAttribute.setValue(value);
 				LOG.debug("adding missing member attribute: "
 						+ missingMemberAttribute.getName());
 				missingAttributes.add(missingMemberAttribute);
