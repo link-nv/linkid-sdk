@@ -976,7 +976,7 @@
 		<module>safe-online-node-keystore</module>
 	</modules>
 	<repositories>
-		<!--repository>
+		<repository>
 			<id>buildserver-snapshots</id>
 			<name>Buildserver Snapshots Repository</name>
 			<url>http://buildserver/maven2-snapshots</url>
@@ -1001,7 +1001,7 @@
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
 			</releases>
-		</repository-->
+		</repository>
 		<repository>
 			<!-- Keep Sun repository second for JAX-WS 2.1 API JAR -->
 			<id>java.net</id>
@@ -1122,14 +1122,14 @@
 		</repository>
 	</repositories>
 	<pluginRepositories>
-		<!--pluginRepository>
+		<pluginRepository>
 			<id>buildserver-plugins</id>
 			<name>Buildserver Plugin Repository</name>
 			<url>http://buildserver/maven2</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</pluginRepository-->
+		</pluginRepository>
 		<pluginRepository>
 			<id>central</id>
 			<name>Maven Plugin Repository</name>
@@ -1186,7 +1186,7 @@
 		<outputDirectory>target/site</outputDirectory>
 	</reporting>
 	<distributionManagement>
-		<!--repository>
+		<repository>
 			<id>buildserver-release-repository</id>
 			<url>scpexe://buildserver/maven2</url>
 		</repository>
@@ -1198,7 +1198,7 @@
 		<site>
 			<id>buildserver-site-repository</id>
 			<url>scpexe://buildserver/site/safe-online</url>
-		</site-->
+		</site>
 	</distributionManagement>
 	<dependencyManagement>
 		<dependencies>
