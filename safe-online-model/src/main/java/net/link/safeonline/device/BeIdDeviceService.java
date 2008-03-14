@@ -10,7 +10,9 @@ package net.link.safeonline.device;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -29,7 +31,8 @@ public interface BeIdDeviceService {
 
 	void register(String deviceUserId, byte[] identityStatementData)
 			throws PermissionDeniedException, ArgumentIntegrityException,
-			TrustDomainNotFoundException, AttributeTypeNotFoundException;
+			TrustDomainNotFoundException, AttributeTypeNotFoundException,
+			DeviceNotFoundException, AttributeNotFoundException;
 
 	SubjectEntity registerAndAuthenticate(String sessionId, String username,
 			RegistrationStatement registrationStatement)

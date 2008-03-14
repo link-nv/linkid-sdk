@@ -9,6 +9,8 @@ package net.link.safeonline.model.beid;
 
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -17,12 +19,17 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.security.auth.x500.X500Principal;
 
+import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
@@ -55,6 +62,9 @@ public class BeIdPkiProvider implements PkiProvider {
 
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
+
+	@EJB
+	private DeviceDAO deviceDAO;
 
 	public boolean accept(X509Certificate certificate) {
 		X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
@@ -176,5 +186,25 @@ public class BeIdPkiProvider implements PkiProvider {
 		AttributeEntity attribute = this.attributeDAO.findAttribute(
 				attributeName, subject);
 		this.attributeDAO.removeAttribute(attribute);
+	}
+
+	public void storeDeviceAttribute(SubjectEntity subject)
+			throws DeviceNotFoundException, AttributeNotFoundException {
+		DeviceEntity device = this.deviceDAO
+				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+		AttributeTypeEntity deviceAttributeType = device.getAttributeType();
+		AttributeEntity deviceAttribute = this.attributeDAO.findAttribute(
+				deviceAttributeType, subject);
+		if (null == deviceAttribute) {
+			deviceAttribute = this.attributeDAO.addAttribute(
+					deviceAttributeType, subject);
+			List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
+			deviceAttributeMembers.add(this.attributeDAO.getAttribute(
+					BeIdConstants.GIVENNAME_ATTRIBUTE, subject));
+			deviceAttributeMembers.add(this.attributeDAO.getAttribute(
+					BeIdConstants.NRN_ATTRIBUTE, subject));
+			deviceAttributeMembers.add(this.attributeDAO.getAttribute(
+					BeIdConstants.SURNAME_ATTRIBUTE, subject));
+		}
 	}
 }

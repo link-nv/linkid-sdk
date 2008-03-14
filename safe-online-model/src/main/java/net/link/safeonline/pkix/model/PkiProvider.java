@@ -11,6 +11,8 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -68,6 +70,16 @@ public interface PkiProvider {
 	 */
 	void storeAdditionalAttributes(SubjectEntity subject,
 			X509Certificate certificate);
+
+	/**
+	 * Store the device attribute related to this PKI device.
+	 * 
+	 * @param subject
+	 * @throws DeviceNotFoundException
+	 * @throws AttributeNotFoundException
+	 */
+	void storeDeviceAttribute(SubjectEntity subject)
+			throws DeviceNotFoundException, AttributeNotFoundException;
 
 	/**
 	 * Gives back the identifier domain name.

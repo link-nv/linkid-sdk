@@ -62,10 +62,22 @@ public class LoginManager {
 
 	public static void relogin(HttpSession session, DeviceEntity device) {
 		String username = getUsername(session);
-		DeviceEntity currentDevice = getAuthenticationDevice(session);
-		LOG.debug("relogin for " + username + " from device "
-				+ currentDevice.getName() + " to device " + device.getName());
+		// can be null, in case the device registration was combined with an
+		// olas user registration
+		DeviceEntity currentDevice = findAuthenticationDevice(session);
+		if (null == currentDevice)
+			LOG.debug("login for " + username + " with device "
+					+ device.getName());
+		else
+			LOG.debug("relogin for " + username + " from device "
+					+ currentDevice.getName() + " to device "
+					+ device.getName());
 		setAuthenticationDevice(session, device);
+	}
+
+	public static void setUsername(HttpSession session, String username) {
+		LOG.debug("set username: " + username);
+		session.setAttribute(USERNAME_ATTRIBUTE, username);
 	}
 
 	public static String getUsername(HttpSession session) {

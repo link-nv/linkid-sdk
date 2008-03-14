@@ -93,6 +93,7 @@ public class BeIdStartableBean extends AbstractInitBean {
 		AttributeTypeEntity beidDeviceAttributeType = new AttributeTypeEntity(
 				BeIdConstants.BEID_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED,
 				false, false, true);
+		beidDeviceAttributeType.setMultivalued(true);
 		beidDeviceAttributeType.addMember(givenNameAttributeType, 0, true);
 		beidDeviceAttributeType.addMember(surnameAttributeType, 1, true);
 		beidDeviceAttributeType.addMember(nrnAttributeType, 2, true);

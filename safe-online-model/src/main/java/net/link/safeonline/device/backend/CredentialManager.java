@@ -10,7 +10,9 @@ package net.link.safeonline.device.backend;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
@@ -27,7 +29,8 @@ public interface CredentialManager {
 	void mergeIdentityStatement(String deviceUserId,
 			byte[] identityStatementData) throws TrustDomainNotFoundException,
 			PermissionDeniedException, ArgumentIntegrityException,
-			AttributeTypeNotFoundException;
+			AttributeTypeNotFoundException, DeviceNotFoundException,
+			AttributeNotFoundException;
 
 	void removeIdentity(String deviceUserId, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,

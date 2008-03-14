@@ -23,7 +23,7 @@ import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
@@ -39,7 +39,7 @@ public interface DeviceService {
 
 	List<DeviceClassEntity> listDeviceClasses();
 
-	List<RegisteredDeviceEntity> listRegisteredDevices(SubjectEntity subject);
+	List<DeviceMappingEntity> listRegisteredDevices(SubjectEntity subject);
 
 	List<DeviceDescriptionEntity> listDeviceDescriptions(String deviceName)
 			throws DeviceNotFoundException;

@@ -11,21 +11,20 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
 @Local
-public interface RegisteredDeviceDAO {
+public interface DeviceMappingDAO {
 
-	public RegisteredDeviceEntity addRegisteredDevice(SubjectEntity subject,
+	public DeviceMappingEntity addDeviceMapping(SubjectEntity subject,
 			DeviceEntity device);
 
-	public List<RegisteredDeviceEntity> listRegisteredDevices(
-			SubjectEntity subject);
+	public List<DeviceMappingEntity> listDeviceMappings(SubjectEntity subject);
 
-	public RegisteredDeviceEntity findRegisteredDevice(SubjectEntity subject,
+	public DeviceMappingEntity findDeviceMapping(SubjectEntity subject,
 			DeviceEntity device);
 
-	public RegisteredDeviceEntity findRegisteredDevice(String id);
+	public DeviceMappingEntity findDeviceMapping(String id);
 
 }

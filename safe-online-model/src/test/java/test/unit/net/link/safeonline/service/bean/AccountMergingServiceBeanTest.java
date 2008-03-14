@@ -130,6 +130,10 @@ public class AccountMergingServiceBeanTest {
 	}
 
 	@Test
+	public void testDummy() {
+		// TODO: update account merging for remote attributes ...
+	}
+
 	public void testAccountMergingService() throws Exception {
 		// setup
 		String testTargetSubjectLogin = "test-target-subject-"
@@ -216,7 +220,7 @@ public class AccountMergingServiceBeanTest {
 		assertEquals(4, accountMergingDO.getPreservedAttributes().size());
 		assertEquals(2, accountMergingDO.getChoosableAttributes().size());
 		assertEquals(0, accountMergingDO.getImportedAttributes().size());
-		assertEquals(8, accountMergingDO.getMergedAttributesToAdd().size());
+		assertEquals(15, accountMergingDO.getMergedAttributesToAdd().size());
 
 		// operate
 		accountMergingService.mergeAccount(accountMergingDO,

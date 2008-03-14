@@ -13,7 +13,9 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -71,7 +73,8 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 
 	public void register(String deviceUserId, byte[] identityStatementData)
 			throws PermissionDeniedException, ArgumentIntegrityException,
-			AttributeTypeNotFoundException, TrustDomainNotFoundException {
+			AttributeTypeNotFoundException, TrustDomainNotFoundException,
+			DeviceNotFoundException, AttributeNotFoundException {
 		LOG.debug("register: " + deviceUserId);
 		this.credentialManager.mergeIdentityStatement(deviceUserId,
 				identityStatementData);

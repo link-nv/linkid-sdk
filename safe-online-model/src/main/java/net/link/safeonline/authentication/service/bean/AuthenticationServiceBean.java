@@ -13,7 +13,6 @@ import static net.link.safeonline.model.bean.UsageStatisticTaskBean.loginCounter
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticDomain;
 import static net.link.safeonline.model.bean.UsageStatisticTaskBean.statisticName;
 
-import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -29,17 +28,12 @@ import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
-import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
-import net.link.safeonline.authentication.exception.MobileAuthenticationException;
-import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -56,9 +50,7 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
-import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEventType;
@@ -67,7 +59,6 @@ import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.SubjectManager;
-import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
@@ -144,12 +135,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private PasswordDeviceService passwordDeviceService;
 
-	@EJB
-	private BeIdDeviceService beIdDeviceService;
-
-	@EJB
-	private WeakMobileDeviceService weakMobileDeviceService;
-
 	public boolean authenticate(@NonEmptyString
 	String userId, @NotNull
 	DeviceEntity device) throws SubjectNotFoundException {
@@ -185,28 +170,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		 * Communicate that the authentication process can continue.
 		 */
 		return true;
-	}
-
-	public String authenticate(@NotNull
-	DeviceEntity device, @NonEmptyString
-	String mobile, @NonEmptyString
-	String challengeId, @NonEmptyString
-	String mobileOTP) throws SubjectNotFoundException, MalformedURLException,
-			MobileException, MobileAuthenticationException {
-		String deviceUserId = this.weakMobileDeviceService.authenticate(mobile,
-				challengeId, mobileOTP);
-		/*
-		 * Safe the state in this stateful session bean.
-		 */
-		this.authenticationState = USER_AUTHENTICATED;
-		// this.authenticatedSubject = subject;
-		this.authenticationDevice = device;
-		this.expectedApplicationId = null;
-
-		/*
-		 * Communicate that the authentication process can continue.
-		 */
-		return this.subjectService.getSubjectLogin(deviceUserId);
 	}
 
 	private void addHistoryEntry(SubjectEntity subject, HistoryEventType event,
@@ -376,36 +339,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return this.subjectService.getSubjectLogin(userId);
 	}
 
-	public boolean registerAndAuthenticate(@NonEmptyString
-	String sessionId, @NonEmptyString
-	String username, @NotNull
-	byte[] registrationStatementData) throws ArgumentIntegrityException,
-			TrustDomainNotFoundException, DecodingException,
-			ExistingUserException, AttributeTypeNotFoundException {
-		LOG.debug("registerAndAuthentication: " + username);
-		RegistrationStatement registrationStatement = new RegistrationStatement(
-				registrationStatementData);
-
-		SubjectEntity subject = this.beIdDeviceService.registerAndAuthenticate(
-				sessionId, username, registrationStatement);
-		DeviceEntity device = this.deviceDAO
-				.findDevice(SafeOnlineConstants.BEID_DEVICE_ID);
-
-		/*
-		 * Safe the state.
-		 */
-		this.authenticationState = USER_AUTHENTICATED;
-		this.authenticatedSubject = subject;
-		this.authenticationDevice = device;
-		this.expectedApplicationId = registrationStatement.getApplicationId();
-
-		addHistoryEntry(this.authenticatedSubject,
-				HistoryEventType.LOGIN_REGISTRATION,
-				this.expectedApplicationId, this.authenticationDevice.getName());
-
-		return false;
-	}
-
 	public void setPassword(String password) throws PermissionDeniedException {
 		LOG.debug("set password");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -415,5 +348,4 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 		this.authenticationDevice = device;
 	}
-
 }

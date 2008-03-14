@@ -23,8 +23,8 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2BrowserPostHandler;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
-import net.link.safeonline.service.RegisteredDeviceService;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
+import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -47,7 +47,7 @@ public class DeviceLandingServlet extends HttpServlet {
 
 	private DeviceDAO deviceDAO;
 
-	private RegisteredDeviceService registeredDeviceService;
+	private DeviceRegistrationService deviceRegistrationService;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -59,9 +59,9 @@ public class DeviceLandingServlet extends HttpServlet {
 	private void loadDependencies() {
 		this.deviceDAO = EjbUtils.getEJB("SafeOnline/DeviceDAOBean/local",
 				DeviceDAO.class);
-		this.registeredDeviceService = EjbUtils.getEJB(
-				"SafeOnline/RegisteredDeviceServiceBean/local",
-				RegisteredDeviceService.class);
+		this.deviceRegistrationService = EjbUtils.getEJB(
+				"SafeOnline/DeviceRegistrationServiceBean/local",
+				DeviceRegistrationService.class);
 	}
 
 	@Override
@@ -115,8 +115,8 @@ public class DeviceLandingServlet extends HttpServlet {
 			return;
 		}
 
-		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
-				.getRegisteredDevice(deviceUserId);
+		DeviceRegistrationEntity registeredDevice = this.deviceRegistrationService
+				.getDeviceRegistration(deviceUserId);
 		if (null == registeredDevice) {
 			String msg = "device registration not found";
 			LOG.error(msg + " : " + deviceUserId);

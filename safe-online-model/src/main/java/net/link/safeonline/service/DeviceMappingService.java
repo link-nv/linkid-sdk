@@ -11,13 +11,13 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 
 /**
- * <h2>{@link RegisteredDeviceService} - Service for device registration.</h2>
+ * <h2>{@link DeviceMappingService} - Service for device mapping registration.</h2>
  * 
  * <p>
- * Creates device registrations for a subject-device pair. These registrations
+ * Creates device mappings for subject-device issuer pair. These mappings
  * contain a UUID that is used by the device provider to map the identity
  * provided by their device to an OLAS identity.
  * </p>
@@ -29,11 +29,10 @@ import net.link.safeonline.entity.RegisteredDeviceEntity;
  * @author mbillemo
  */
 @Local
-public interface RegisteredDeviceService {
+public interface DeviceMappingService {
 
-	public RegisteredDeviceEntity getDeviceRegistration(String userId,
-			String deviceName) throws SubjectNotFoundException,
-			DeviceNotFoundException;
+	public DeviceMappingEntity getDeviceMapping(String userId, String deviceName)
+			throws SubjectNotFoundException, DeviceNotFoundException;
 
-	public RegisteredDeviceEntity getRegisteredDevice(String id);
+	public DeviceMappingEntity getDeviceMapping(String id);
 }

@@ -203,6 +203,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 		AttributeTypeEntity passwordDeviceAttributeType = new AttributeTypeEntity(
 				SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE,
 				DatatypeType.COMPOUNDED, false, false);
+		passwordDeviceAttributeType.setMultivalued(true);
 		passwordDeviceAttributeType.addMember(passwordHashAttributeType, 0,
 				true);
 		passwordDeviceAttributeType.addMember(passwordSeedAttributeType, 1,

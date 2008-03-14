@@ -31,7 +31,8 @@
 <mapping class="net.link.safeonline.entity.DeviceClassEntity" />
 <mapping
 	class="net.link.safeonline.entity.DeviceClassDescriptionEntity" />
-<mapping class="net.link.safeonline.entity.RegisteredDeviceEntity" />
+<mapping class="net.link.safeonline.entity.DeviceMappingEntity" />
+<mapping class="net.link.safeonline.entity.DeviceRegistrationEntity" />
 <mapping class="net.link.safeonline.entity.audit.AuditContextEntity" />
 <mapping class="net.link.safeonline.entity.audit.AuditAuditEntity" />
 <mapping class="net.link.safeonline.entity.audit.AccessAuditEntity" />

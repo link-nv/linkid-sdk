@@ -16,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -72,6 +74,16 @@ public class IdentityServlet extends AbstractStatementServlet {
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
 					.getErrorCode());
 			writer.println("Attribute type not found error");
+		} catch (DeviceNotFoundException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+					.getErrorCode());
+			writer.println("Device not found error");
+		} catch (AttributeNotFoundException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e
+					.getErrorCode());
+			writer.println("Attribute not found error");
 		}
 	}
 }

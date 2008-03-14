@@ -34,7 +34,7 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceClassDAO;
 import net.link.safeonline.dao.DeviceDAO;
-import net.link.safeonline.dao.RegisteredDeviceDAO;
+import net.link.safeonline.dao.DeviceMappingDAO;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
@@ -47,7 +47,7 @@ import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.Devices;
 import net.link.safeonline.pkix.PkiUtils;
@@ -76,7 +76,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	private DeviceClassDAO deviceClassDAO;
 
 	@EJB
-	private RegisteredDeviceDAO registeredDeviceDAO;
+	private DeviceMappingDAO registeredDeviceDAO;
 
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
@@ -109,9 +109,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<RegisteredDeviceEntity> listRegisteredDevices(
+	public List<DeviceMappingEntity> listRegisteredDevices(
 			SubjectEntity subject) {
-		return this.registeredDeviceDAO.listRegisteredDevices(subject);
+		return this.registeredDeviceDAO.listDeviceMappings(subject);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

@@ -16,14 +16,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.LoginManager;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
-import net.link.safeonline.service.RegisteredDeviceService;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
+import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -47,7 +50,9 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 
 	private DeviceDAO deviceDAO;
 
-	private RegisteredDeviceService registeredDeviceService;
+	private DeviceRegistrationService deviceRegistrationService;
+
+	private ProxyAttributeService proxyAttributeService;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -59,9 +64,12 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 	private void loadDependencies() {
 		this.deviceDAO = EjbUtils.getEJB("SafeOnline/DeviceDAOBean/local",
 				DeviceDAO.class);
-		this.registeredDeviceService = EjbUtils.getEJB(
-				"SafeOnline/RegisteredDeviceServiceBean/local",
-				RegisteredDeviceService.class);
+		this.deviceRegistrationService = EjbUtils.getEJB(
+				"SafeOnline/DeviceRegistrationServiceBean/local",
+				DeviceRegistrationService.class);
+		this.proxyAttributeService = EjbUtils.getEJB(
+				"SafeOnline/ProxyAttributeServiceBean/local",
+				ProxyAttributeService.class);
 	}
 
 	@Override
@@ -91,10 +99,39 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 			writeErrorPage(msg, response);
 			return;
 		}
-		RegisteredDeviceEntity registeredDevice = this.registeredDeviceService
-				.getRegisteredDevice(protocolContext.getUserId());
+		DeviceRegistrationEntity registeredDevice = this.deviceRegistrationService
+				.getDeviceRegistration(protocolContext.getUserId());
 		if (null == registeredDevice) {
 			String msg = "device registration not found";
+			LOG.error(msg);
+			writeErrorPage(msg, response);
+			return;
+		}
+
+		// Poll the device issuer if registration actually was successfull.
+		Object deviceAttribute;
+		try {
+			deviceAttribute = this.proxyAttributeService.getAttributeValue(
+					registeredDevice.getSubject().getUserId(), device
+							.getAttributeType().getName());
+		} catch (SubjectNotFoundException e) {
+			String msg = "Subject not found.";
+			LOG.error(msg);
+			writeErrorPage(msg, response);
+			return;
+		} catch (PermissionDeniedException e) {
+			String msg = "Permission denied.";
+			LOG.error(msg);
+			writeErrorPage(msg, response);
+			return;
+		} catch (AttributeTypeNotFoundException e) {
+			String msg = "Attribute type not found.";
+			LOG.error(msg);
+			writeErrorPage(msg, response);
+			return;
+		}
+		if (null == deviceAttribute) {
+			String msg = "device registration did not complete.";
 			LOG.error(msg);
 			writeErrorPage(msg, response);
 			return;

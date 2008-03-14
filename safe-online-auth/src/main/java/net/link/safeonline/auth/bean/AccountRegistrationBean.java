@@ -8,7 +8,6 @@
 package net.link.safeonline.auth.bean;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -22,34 +21,28 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AccountRegistration;
 import net.link.safeonline.auth.AuthenticationConstants;
-import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
-import net.link.safeonline.authentication.exception.MobileAuthenticationException;
-import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.helpdesk.HelpdeskLogger;
-import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.log.Log;
 
 import com.octo.captcha.service.CaptchaServiceException;
@@ -68,8 +61,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 	@EJB
 	private DevicePolicyService devicePolicyService;
 
-	@In
-	private AuthenticationService authenticationService;
+	@EJB
+	private NodeAuthenticationService nodeAuthenticationService;
 
 	@Logger
 	private Log log;
@@ -78,32 +71,12 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 	private String device;
 
-	private String password;
-
-	private String mobile;
-
-	private String mobileOTP;
-
 	private String captcha;
-
-	@In(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
-	@Out(value = AccountRegistration.REQUESTED_USERNAME_ATTRIBUTE, required = false, scope = ScopeType.SESSION)
-	private String requestedUsername;
-
-	@In(required = false, scope = ScopeType.SESSION)
-	@Out(required = false, scope = ScopeType.SESSION)
-	private String challengeId;
 
 	@Remove
 	@Destroy
 	public void destroyCallback() {
 		this.log.debug("destroy");
-	}
-
-	@Create
-	@Begin
-	public void begin() {
-		this.log.debug("begin");
 	}
 
 	public String getLogin() {
@@ -152,52 +125,73 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 			return null;
 		}
 
-		boolean loginFree = this.userRegistrationService
-				.isLoginFree(this.login);
-		if (false == loginFree) {
+		SubjectEntity subject;
+		try {
+			subject = this.userRegistrationService.checkLogin(this.login);
+		} catch (ExistingUserException e) {
 			this.facesMessages.addToControlFromResourceBundle("login",
 					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
 			return null;
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addToControlFromResourceBundle("login",
+					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
+			return null;
+		} catch (AttributeTypeNotFoundException e) {
+			this.facesMessages.addToControlFromResourceBundle("login",
+					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
+			return null;
+		} catch (PermissionDeniedException e) {
+			this.facesMessages.addToControlFromResourceBundle("login",
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			return null;
 		}
+		if (null == subject) {
+			this.facesMessages.addToControlFromResourceBundle("login",
+					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
+			return null;
 
-		/*
-		 * The requestedUsername session attribute can be used during the device
-		 * specific registration process. For example, the registration
-		 * statement is using it.
-		 */
-		this.requestedUsername = this.login;
-
+		}
+		this.username = subject.getUserId();
 		return "next";
 	}
 
 	public String deviceNext() {
-		this.log.debug("deviceNext");
-		if (null == this.device) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceSelection");
-			return null;
-		}
-		this.log.debug("device: " + this.device);
-		String newAccountRegistrationURL;
+		this.log.debug("deviceNext: " + this.device);
+
+		String registrationURL;
 		try {
-			newAccountRegistrationURL = this.devicePolicyService
-					.getNewAccountRegistrationURL(this.device);
+			registrationURL = this.devicePolicyService
+					.getRegistrationURL(this.device);
 		} catch (DeviceNotFoundException e) {
 			this.log.error("device not found: " + this.device);
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
 		}
+		try {
+			registrationURL += "?source=auth&node=" + getNodeName();
+		} catch (NodeNotFoundException e) {
+			this.log.debug("node not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
+		}
+
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		try {
-			externalContext.redirect(newAccountRegistrationURL);
+			externalContext.redirect(registrationURL);
 		} catch (IOException e) {
 			this.log.debug("IO error: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorIO");
 		}
 		return null;
+	}
+
+	private String getNodeName() throws NodeNotFoundException {
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+		return this.nodeAuthenticationService
+				.authenticate(authIdentityServiceClient.getCertificate());
 	}
 
 	public String getDevice() {
@@ -208,58 +202,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		this.device = device;
 	}
 
-	public String getPassword() {
-		return this.password;
-	}
-
 	@In(required = false, value = "CaptchaService", scope = ScopeType.SESSION)
 	ImageCaptchaService captchaService;
-
-	public String passwordNext() {
-		this.log.debug("passwordNext");
-		this.login = this.requestedUsername;
-		super.clearUsername();
-
-		try {
-			this.userRegistrationService
-					.registerUser(this.login, this.password);
-		} catch (ExistingUserException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			return null;
-		}
-
-		try {
-			boolean authenticated = this.authenticationService.authenticate(
-					this.login, this.password);
-			if (false == authenticated) {
-				this.facesMessages.addFromResourceBundle(
-						FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-				return null;
-			}
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addToControlFromResourceBundle("username",
-					FacesMessage.SEVERITY_ERROR, "subjectNotFoundMsg");
-			return null;
-		} catch (DeviceNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPasswordNotFound");
-			return null;
-		}
-
-		super
-				.login(this.login,
-						SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-		return null;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 
 	public String getCaptcha() {
 		return this.captcha;
@@ -269,102 +213,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		this.captcha = captcha;
 	}
 
-	public String getMobile() {
-		return this.mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-
-	public String mobileNext() {
-		this.log.debug("mobileNext");
-		this.login = this.requestedUsername;
-		super.clearUsername();
-		try {
-			DeviceEntity deviceEntity = this.deviceDAO.getDevice(this.device);
-			this.authenticationService.authenticate(deviceEntity, this.mobile,
-					this.challengeId, this.mobileOTP);
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-			HelpdeskLogger.add("login: subject not found for " + this.login,
-					LogLevelType.ERROR);
-			return null;
-		} catch (MalformedURLException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-			HelpdeskLogger.add("login: encap webservice not available",
-					LogLevelType.ERROR);
-			return null;
-		} catch (MobileException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-			HelpdeskLogger.add("login: failed to contact encap webservice for "
-					+ this.login, LogLevelType.ERROR);
-			return null;
-		} catch (MobileAuthenticationException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
-			return null;
-		} catch (DeviceNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			return null;
-		}
-
-		super.login(this.login, SafeOnlineConstants.ENCAP_DEVICE_ID);
-		this.challengeId = null;
-		return null;
-	}
-
-	public String mobileRegister() {
-		this.log.debug("mobile register: " + this.mobile);
-		try {
-			this.userRegistrationService.registerMobile(this.requestedUsername,
-					this.mobile);
-		} catch (ExistingUserException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
-			return null;
-		} catch (MobileException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		} catch (MalformedURLException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		} catch (MobileRegistrationException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		} catch (AttributeTypeNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
-			return null;
-		} catch (ArgumentIntegrityException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorMobileTaken");
-			return null;
-		}
-		try {
-			this.challengeId = this.userRegistrationService
-					.requestMobileOTP(this.mobile);
-			this.log.debug("recevied challengeId: " + this.challengeId);
-		} catch (MalformedURLException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		} catch (MobileException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
-			return null;
-		}
-		return null;
-	}
-
-	@Factory("allDevices")
+	@Factory("allDevicesReg")
 	public List<SelectItem> allDevicesFactory() {
 		this.log.debug("all devices factory");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -382,13 +231,4 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		}
 		return allDevices;
 	}
-
-	public String getMobileOTP() {
-		return this.mobileOTP;
-	}
-
-	public void setMobileOTP(String mobileOTP) {
-		this.mobileOTP = mobileOTP;
-	}
-
 }

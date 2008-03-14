@@ -28,9 +28,10 @@ import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
+import net.link.safeonline.dao.bean.DeviceMappingDAOBean;
+import net.link.safeonline.dao.bean.DeviceRegistrationDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.OlasDAOBean;
-import net.link.safeonline.dao.bean.RegisteredDeviceDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
@@ -56,11 +57,12 @@ import net.link.safeonline.entity.DeviceClassDescriptionEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.OlasEntity;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -94,7 +96,8 @@ import net.link.safeonline.pkix.model.bean.CachedOcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.OcspValidatorBean;
 import net.link.safeonline.pkix.model.bean.PkiProviderManagerBean;
 import net.link.safeonline.pkix.model.bean.PkiValidatorBean;
-import net.link.safeonline.service.bean.RegisteredDeviceServiceBean;
+import net.link.safeonline.service.bean.DeviceMappingServiceBean;
+import net.link.safeonline.service.bean.DeviceRegistrationServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
@@ -142,8 +145,10 @@ public class SafeOnlineTestContainer {
 			StrongMobileDeviceServiceBean.class, MobileManagerBean.class,
 			SecurityAuditLoggerBean.class, DevicePolicyServiceBean.class,
 			DevicesBean.class, AccountServiceBean.class,
-			RegisteredDeviceServiceBean.class, RegisteredDeviceDAOBean.class,
-			OlasDAOBean.class, ProxyAttributeServiceBean.class };
+			DeviceMappingServiceBean.class, DeviceMappingDAOBean.class,
+			DeviceRegistrationServiceBean.class,
+			DeviceRegistrationDAOBean.class, OlasDAOBean.class,
+			ProxyAttributeServiceBean.class };
 
 	public static final Class<?>[] entities = new Class[] {
 			SubjectEntity.class, ApplicationEntity.class,
@@ -157,7 +162,8 @@ public class SafeOnlineTestContainer {
 			AttributeProviderEntity.class, DeviceEntity.class,
 			AllowedDeviceEntity.class, DeviceClassEntity.class,
 			DeviceDescriptionEntity.class, DeviceClassDescriptionEntity.class,
-			DevicePropertyEntity.class, RegisteredDeviceEntity.class,
+			DevicePropertyEntity.class, DeviceMappingEntity.class,
+			DeviceRegistrationEntity.class,
 			CompoundedAttributeTypeMemberEntity.class,
 			HelpdeskContextEntity.class, HelpdeskEventEntity.class,
 			HistoryEntity.class, SubjectIdentifierEntity.class,

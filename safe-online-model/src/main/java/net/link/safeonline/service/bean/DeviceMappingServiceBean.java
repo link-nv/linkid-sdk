@@ -12,19 +12,18 @@ import javax.ejb.Stateless;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
-import net.link.safeonline.dao.RegisteredDeviceDAO;
+import net.link.safeonline.dao.DeviceMappingDAO;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
-import net.link.safeonline.service.RegisteredDeviceService;
+import net.link.safeonline.service.DeviceMappingService;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <h2>{@link RegisteredDeviceServiceBean} - Service bean for device
- * registrations.</h2>
+ * <h2>{@link DeviceMappingServiceBean} - Service bean for device mappings.</h2>
  * 
  * <p>
  * <i>Jan 29, 2008</i>
@@ -33,13 +32,13 @@ import org.apache.commons.logging.LogFactory;
  * @author mbillemo
  */
 @Stateless
-public class RegisteredDeviceServiceBean implements RegisteredDeviceService {
+public class DeviceMappingServiceBean implements DeviceMappingService {
 
 	private final static Log LOG = LogFactory
-			.getLog(RegisteredDeviceServiceBean.class);
+			.getLog(DeviceMappingServiceBean.class);
 
 	@EJB
-	private RegisteredDeviceDAO registeredDeviceDAO;
+	private DeviceMappingDAO deviceMappingDAO;
 
 	@EJB
 	private SubjectService subjectService;
@@ -50,26 +49,25 @@ public class RegisteredDeviceServiceBean implements RegisteredDeviceService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public RegisteredDeviceEntity getDeviceRegistration(String userId,
-			String deviceName) throws SubjectNotFoundException,
-			DeviceNotFoundException {
+	public DeviceMappingEntity getDeviceMapping(String userId, String deviceName)
+			throws SubjectNotFoundException, DeviceNotFoundException {
 		SubjectEntity subject = this.subjectService.getSubject(userId);
 		DeviceEntity device = this.devicePolicyService.getDevice(deviceName);
 
-		RegisteredDeviceEntity registeredDevice = this.registeredDeviceDAO
-				.findRegisteredDevice(subject, device);
+		DeviceMappingEntity registeredDevice = this.deviceMappingDAO
+				.findDeviceMapping(subject, device);
 		if (null == registeredDevice)
-			registeredDevice = this.registeredDeviceDAO.addRegisteredDevice(
-					subject, device);
+			registeredDevice = this.deviceMappingDAO.addDeviceMapping(subject,
+					device);
 		return registeredDevice;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public RegisteredDeviceEntity getRegisteredDevice(String id) {
-		LOG.debug("get registered device: " + id);
-		return this.registeredDeviceDAO.findRegisteredDevice(id);
+	public DeviceMappingEntity getDeviceMapping(String id) {
+		LOG.debug("get device mapping: " + id);
+		return this.deviceMappingDAO.findDeviceMapping(id);
 	}
 
 }

@@ -7,7 +7,6 @@
 
 package net.link.safeonline.authentication.service;
 
-import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 
@@ -15,23 +14,17 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
-import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.IdentityConfirmationRequiredException;
 import net.link.safeonline.authentication.exception.MissingAttributeException;
-import net.link.safeonline.authentication.exception.MobileAuthenticationException;
-import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementAcceptationRequiredException;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
  * Authentication service interface. This service allows the authentication web
@@ -81,27 +74,6 @@ public interface AuthenticationService {
 			throws SubjectNotFoundException, DeviceNotFoundException;
 
 	/**
-	 * Authenticates a user for a certain application. This method is used by
-	 * the authentication web service. If a non-null username is returned the
-	 * authentication process can proceed, else {@link #abort()} should be
-	 * invoked.
-	 * 
-	 * @param device
-	 * @param mobile
-	 * @param challengeId
-	 * @param mobileOTP
-	 * @return username
-	 * @throws MobileException
-	 * @throws MalformedURLException
-	 * @throws SubjectNotFoundException
-	 * @throws MobileAuthenticationException
-	 */
-	String authenticate(DeviceEntity device, String mobile, String challengeId,
-			String mobileOTP) throws SubjectNotFoundException,
-			MalformedURLException, MobileException,
-			MobileAuthenticationException;
-
-	/**
 	 * Commits the authentication for the given application.
 	 * 
 	 * @param applicationId
@@ -128,27 +100,6 @@ public interface AuthenticationService {
 			EmptyDevicePolicyException, DevicePolicyException,
 			UsageAgreementAcceptationRequiredException,
 			SubjectNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException;
-
-	/**
-	 * Registers and authenticates a new user via a registration statement.
-	 * 
-	 * @param sessionId
-	 * @param username
-	 * @param registrationStatementData
-	 * @throws ArgumentIntegrityException
-	 * @throws TrustDomainNotFoundException
-	 * @throws DecodingException
-	 * @throws ExistingUserException
-	 * @throws NoSuchAlgorithmException
-	 * @throws SubjectIdNotUniqueException
-	 * @throws AttributeTypeNotFoundException
-	 * @throws SubjectNotFoundException
-	 */
-	boolean registerAndAuthenticate(String sessionId, String username,
-			byte[] registrationStatementData)
-			throws ArgumentIntegrityException, TrustDomainNotFoundException,
-			DecodingException, ExistingUserException,
 			AttributeTypeNotFoundException;
 
 	/**

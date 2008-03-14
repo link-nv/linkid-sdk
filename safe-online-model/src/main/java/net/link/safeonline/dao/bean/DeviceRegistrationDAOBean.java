@@ -15,9 +15,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.dao.RegisteredDeviceDAO;
+import net.link.safeonline.dao.DeviceRegistrationDAO;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 import net.link.safeonline.model.IdGenerator;
@@ -26,10 +26,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @Stateless
-public class RegisteredDeviceDAOBean implements RegisteredDeviceDAO {
+public class DeviceRegistrationDAOBean implements DeviceRegistrationDAO {
 
 	private static final Log LOG = LogFactory
-			.getLog(RegisteredDeviceDAOBean.class);
+			.getLog(DeviceRegistrationDAOBean.class);
 
 	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
 	private EntityManager entityManager;
@@ -37,40 +37,40 @@ public class RegisteredDeviceDAOBean implements RegisteredDeviceDAO {
 	@EJB
 	private IdGenerator idGenerator;
 
-	private RegisteredDeviceEntity.QueryInterface queryObject;
+	private DeviceRegistrationEntity.QueryInterface queryObject;
 
 	@PostConstruct
 	public void postConstructCallback() {
 		this.queryObject = QueryObjectFactory
 				.createQueryObject(this.entityManager,
-						RegisteredDeviceEntity.QueryInterface.class);
+						DeviceRegistrationEntity.QueryInterface.class);
 	}
 
-	public RegisteredDeviceEntity addRegisteredDevice(SubjectEntity subject,
+	public DeviceRegistrationEntity addRegisteredDevice(SubjectEntity subject,
 			DeviceEntity device) {
 
 		String uuid = this.idGenerator.generateId();
 		LOG.debug("add registered device: subject=" + subject.getUserId()
 				+ " uuid=" + uuid + " device=" + device.getName());
-		RegisteredDeviceEntity registeredDevice = new RegisteredDeviceEntity(
+		DeviceRegistrationEntity registeredDevice = new DeviceRegistrationEntity(
 				subject, uuid, device);
 		this.entityManager.persist(registeredDevice);
 		return registeredDevice;
 	}
 
-	public RegisteredDeviceEntity findRegisteredDevice(SubjectEntity subject,
+	public DeviceRegistrationEntity findRegisteredDevice(SubjectEntity subject,
 			DeviceEntity device) {
 
 		return this.queryObject.getRegisteredDevice(subject, device);
 	}
 
-	public List<RegisteredDeviceEntity> listRegisteredDevices(
+	public List<DeviceRegistrationEntity> listRegisteredDevices(
 			SubjectEntity subject) {
 
 		return this.queryObject.listRegisteredDevices(subject);
 	}
 
-	public RegisteredDeviceEntity findRegisteredDevice(String id) {
-		return this.entityManager.find(RegisteredDeviceEntity.class, id);
+	public DeviceRegistrationEntity findRegisteredDevice(String id) {
+		return this.entityManager.find(DeviceRegistrationEntity.class, id);
 	}
 }

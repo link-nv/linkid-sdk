@@ -9,6 +9,8 @@ package net.link.safeonline.device.backend.bean;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -69,6 +71,7 @@ public class PasswordManagerBean implements PasswordManager {
 		AttributeTypeEntity passwordHashAttributeType;
 		AttributeTypeEntity passwordSeedAttributeType;
 		AttributeTypeEntity passwordAlgorithmAttributeType;
+		AttributeTypeEntity passwordDeviceAttributeType;
 		try {
 			passwordHashAttributeType = this.attributeTypeDAO
 					.getAttributeType(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE);
@@ -76,6 +79,8 @@ public class PasswordManagerBean implements PasswordManager {
 					.getAttributeType(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE);
 			passwordAlgorithmAttributeType = this.attributeTypeDAO
 					.getAttributeType(SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
+			passwordDeviceAttributeType = this.attributeTypeDAO
+					.getAttributeType(SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE);
 		} catch (AttributeTypeNotFoundException e) {
 			throw new EJBException("password attribute types not found");
 		}
@@ -96,12 +101,20 @@ public class PasswordManagerBean implements PasswordManager {
 			passwordAttribute.seed.setStringValue(seed);
 			passwordAttribute.algorithm.setStringValue(defaultHashingAlgorithm);
 		} catch (DeviceNotFoundException e) {
-			this.attributeDAO.addAttribute(passwordHashAttributeType, subject,
-					hashValue);
-			this.attributeDAO.addAttribute(passwordSeedAttributeType, subject,
-					seed);
-			this.attributeDAO.addAttribute(passwordAlgorithmAttributeType,
-					subject, defaultHashingAlgorithm);
+			AttributeEntity hashAttribute = this.attributeDAO.addAttribute(
+					passwordHashAttributeType, subject, hashValue);
+			AttributeEntity seedAttribute = this.attributeDAO.addAttribute(
+					passwordSeedAttributeType, subject, seed);
+			AttributeEntity algorithmAttribute = this.attributeDAO
+					.addAttribute(passwordAlgorithmAttributeType, subject,
+							defaultHashingAlgorithm);
+			List<AttributeEntity> members = new LinkedList<AttributeEntity>();
+			members.add(hashAttribute);
+			members.add(seedAttribute);
+			members.add(algorithmAttribute);
+			AttributeEntity parentAttribute = this.attributeDAO.addAttribute(
+					passwordDeviceAttributeType, subject);
+			parentAttribute.setMembers(members);
 		}
 	}
 
@@ -146,8 +159,12 @@ public class PasswordManagerBean implements PasswordManager {
 				.findAttribute(
 						SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
 						subject);
+		AttributeEntity passwordParentAttribute = this.attributeDAO
+				.findAttribute(SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE,
+						subject);
 		if (null == passwordHashAttribute || null == passwordSeedAttribute
-				|| null == passwordAlgorithmAttribute) {
+				|| null == passwordAlgorithmAttribute
+				|| null == passwordParentAttribute) {
 			throw new DeviceNotFoundException();
 		}
 		String hash = passwordHashAttribute.getStringValue();
@@ -158,7 +175,7 @@ public class PasswordManagerBean implements PasswordManager {
 		}
 
 		return new Password(passwordHashAttribute, passwordSeedAttribute,
-				passwordAlgorithmAttribute);
+				passwordAlgorithmAttribute, passwordParentAttribute);
 	}
 
 	public boolean isPasswordConfigured(SubjectEntity subject) {
@@ -186,12 +203,14 @@ public class PasswordManagerBean implements PasswordManager {
 		public AttributeEntity hash;
 		public AttributeEntity seed;
 		public AttributeEntity algorithm;
+		public AttributeEntity parent;
 
 		public Password(AttributeEntity hash, AttributeEntity seed,
-				AttributeEntity algorithm) {
+				AttributeEntity algorithm, AttributeEntity parent) {
 			this.hash = hash;
 			this.seed = seed;
 			this.algorithm = algorithm;
+			this.parent = parent;
 		}
 	}
 

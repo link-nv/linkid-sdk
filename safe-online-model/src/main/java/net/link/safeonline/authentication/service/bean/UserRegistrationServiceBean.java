@@ -8,6 +8,7 @@
 package net.link.safeonline.authentication.service.bean;
 
 import java.net.MalformedURLException;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,12 +18,17 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.device.WeakMobileDeviceService;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.UserRegistrationManager;
+import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
@@ -50,6 +56,12 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	private UserRegistrationManager userRegistrationManager;
 
 	@EJB
+	private DeviceRegistrationService deviceRegistrationService;
+
+	@EJB
+	private ProxyAttributeService proxyAttributeService;
+
+	@EJB
 	private PasswordDeviceService passwordDeviceService;
 
 	@EJB
@@ -63,10 +75,30 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 		this.passwordDeviceService.register(newSubject, password);
 	}
 
-	public boolean isLoginFree(String login) {
-		SubjectEntity existingSubject;
-		existingSubject = this.subjectService.findSubjectFromUserName(login);
-		return existingSubject == null;
+	public SubjectEntity checkLogin(String login) throws ExistingUserException,
+			AttributeTypeNotFoundException, SubjectNotFoundException,
+			PermissionDeniedException {
+		SubjectEntity subject = this.subjectService
+				.findSubjectFromUserName(login);
+		if (null == subject)
+			return this.userRegistrationManager.registerUser(login);
+
+		// Subject already exists, check for attached registered devices
+		List<DeviceRegistrationEntity> deviceRegistrations = this.deviceRegistrationService
+				.listDeviceRegistrations(subject);
+		if (deviceRegistrations.isEmpty())
+			return subject;
+
+		// For each registered device, poll device issuer if registration
+		// actually completed
+		for (DeviceRegistrationEntity deviceRegistration : deviceRegistrations) {
+			Object deviceAttribute = this.proxyAttributeService
+					.getAttributeValue(subject.getUserId(), deviceRegistration
+							.getDevice().getAttributeType().getName());
+			if (null != deviceAttribute)
+				return null;
+		}
+		return subject;
 	}
 
 	public String registerMobile(String login, String mobile)

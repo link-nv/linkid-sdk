@@ -1,8 +1,8 @@
 package test.unit.net.link.safeonline.authentication.service.bean;
 
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.UUID;
 
@@ -77,6 +77,9 @@ public class PasswordManagerBeanTest {
 		this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(
 				SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
 				DatatypeType.STRING, false, false));
+		this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(
+				SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE,
+				DatatypeType.COMPOUNDED, false, false));
 
 	}
 

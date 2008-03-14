@@ -78,6 +78,7 @@ import net.link.safeonline.model.ApplicationIdentityManager;
 import net.link.safeonline.model.UsageAgreementManager;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
+import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
@@ -421,21 +422,21 @@ public abstract class AbstractInitBean implements Startable {
 			initTrustDomains();
 			initAttributeTypes();
 			initAttributeTypeDescriptions();
+			initDeviceClasses();
+			initDeviceClassDescriptions();
+			initDevices();
+			initDeviceDescriptions();
+			initDeviceProperties();
 			initSubjects();
 			initApplicationOwners();
 			initApplications();
 			initSubscriptions();
 			initIdentities();
 			initUsageAgreements();
+			initAllowedDevices();
 			initApplicationTrustPoints();
 			initAttributeProviders();
 			initAttributes();
-			initDeviceClasses();
-			initDeviceClassDescriptions();
-			initDevices();
-			initDeviceDescriptions();
-			initDeviceProperties();
-			initAllowedDevices();
 		} catch (SafeOnlineException e) {
 			this.LOG.fatal("safeonline exception", e);
 			throw new EJBException(e);
@@ -487,6 +488,9 @@ public abstract class AbstractInitBean implements Startable {
 
 	@EJB
 	private PasswordManager passwordManager;
+
+	@EJB
+	private DeviceRegistrationService deviceRegistrationService;
 
 	private void initApplicationTrustPoints() {
 		for (Map.Entry<X509Certificate, String> certificateEntry : this.trustedCertificates
@@ -703,7 +707,8 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
-	private void initSubjects() throws AttributeTypeNotFoundException {
+	private void initSubjects() throws AttributeTypeNotFoundException,
+			SubjectNotFoundException, DeviceNotFoundException {
 		for (Map.Entry<String, AuthenticationDevice> authorizedUser : this.authorizedUsers
 				.entrySet()) {
 			String login = authorizedUser.getKey();
@@ -720,6 +725,9 @@ public abstract class AbstractInitBean implements Startable {
 			} catch (PermissionDeniedException e) {
 				throw new EJBException("could not set password");
 			}
+			this.deviceRegistrationService.registerDevice(subject.getUserId(),
+					SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+
 		}
 	}
 

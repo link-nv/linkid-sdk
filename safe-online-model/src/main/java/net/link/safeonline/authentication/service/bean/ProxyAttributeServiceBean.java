@@ -17,12 +17,12 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.RegisteredDeviceDAO;
+import net.link.safeonline.dao.DeviceRegistrationDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
-import net.link.safeonline.entity.RegisteredDeviceEntity;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
@@ -46,7 +46,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 	private SubjectService subjectService;
 
 	@EJB
-	private RegisteredDeviceDAO registeredDeviceDAO;
+	private DeviceRegistrationDAO registeredDeviceDAO;
 
 	private static final Log LOG = LogFactory
 			.getLog(ProxyAttributeServiceBean.class);
@@ -58,7 +58,11 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.getAttributeType(attributeName);
-		SubjectEntity subject = this.subjectService.getSubject(userId);
+		SubjectEntity subject = this.subjectService.findSubject(userId);
+		if (null == subject) {
+			LOG.debug("subject " + userId + " not found.");
+			return null;
+		}
 		String subjectId = userId;
 		if (attributeType.isDeviceAttribute()) {
 			subjectId = getDeviceId(subject, attributeType);
@@ -72,9 +76,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 
 	private String getDeviceId(SubjectEntity subject,
 			AttributeTypeEntity attributeType) {
-		List<RegisteredDeviceEntity> registeredDevices = this.registeredDeviceDAO
+		List<DeviceRegistrationEntity> registeredDevices = this.registeredDeviceDAO
 				.listRegisteredDevices(subject);
-		for (RegisteredDeviceEntity registeredDevice : registeredDevices) {
+		for (DeviceRegistrationEntity registeredDevice : registeredDevices) {
 			AttributeTypeEntity deviceAttributeType = registeredDevice
 					.getDevice().getAttributeType();
 			if (deviceAttributeType.getName().equals(attributeType.getName()))
@@ -103,11 +107,14 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 	}
 
 	private Object getLocalAttribute(String subjectId,
-			AttributeTypeEntity attributeType) throws SubjectNotFoundException {
+			AttributeTypeEntity attributeType) {
 		LOG.debug("get local attribute " + attributeType.getName() + " for "
 				+ subjectId);
-		SubjectEntity subject = this.subjectService.getSubject(subjectId);
-		LOG.debug("found subject: " + subject.getUserId());
+		SubjectEntity subject = this.subjectService.findSubject(subjectId);
+		if (null == subject) {
+			LOG.debug("subject " + subjectId + " not found.");
+			return null;
+		}
 		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
 				subject, attributeType);
 		// filter out the empty attributes

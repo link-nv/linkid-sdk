@@ -17,7 +17,9 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.entity.SubjectEntity;
 
 /**
  * User registration service interface.
@@ -48,11 +50,24 @@ public interface UserRegistrationService {
 			throws ExistingUserException, AttributeTypeNotFoundException;
 
 	/**
-	 * Checks whether the given login Id is still free to use or not.
+	 * Checks whether the given login name already exists and has completed
+	 * device registrations. In case there are existing device registrations it
+	 * will poll those device issuers if the registration actually completed. If
+	 * one them has completed, return null.
+	 * 
+	 * If no such login exists, register and return the subject.
+	 * 
+	 * If no completed device registrations were found, return the subject.
 	 * 
 	 * @param login
+	 * @throws AttributeTypeNotFoundException
+	 * @throws ExistingUserException
+	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
 	 */
-	boolean isLoginFree(String login);
+	SubjectEntity checkLogin(String login) throws ExistingUserException,
+			AttributeTypeNotFoundException, SubjectNotFoundException,
+			PermissionDeniedException;
 
 	/**
 	 * Registers a new user within the system

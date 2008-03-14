@@ -22,8 +22,6 @@ public interface AccountRegistration {
 	 */
 	void destroyCallback();
 
-	void begin();
-
 	/*
 	 * Accessors.
 	 */
@@ -35,21 +33,9 @@ public interface AccountRegistration {
 
 	void setDevice(String device);
 
-	String getPassword();
-
-	void setPassword(String password);
-
 	String getCaptcha();
 
 	void setCaptcha(String captcha);
-
-	String getMobile();
-
-	void setMobile(String mobile);
-
-	String getMobileOTP();
-
-	void setMobileOTP(String mobileOTP);
 
 	/*
 	 * Factories
@@ -62,10 +48,4 @@ public interface AccountRegistration {
 	String loginNext();
 
 	String deviceNext();
-
-	String passwordNext();
-
-	String mobileRegister();
-
-	String mobileNext();
 }

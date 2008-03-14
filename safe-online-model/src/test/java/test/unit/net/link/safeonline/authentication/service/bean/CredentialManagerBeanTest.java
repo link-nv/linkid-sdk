@@ -225,6 +225,7 @@ public class CredentialManagerBeanTest extends TestCase {
 						identifier)).andStubReturn(null);
 		this.mockPkiProvider.storeAdditionalAttributes(deviceSubject,
 				this.certificate);
+		this.mockPkiProvider.storeDeviceAttribute(deviceSubject);
 
 		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
 		expect(this.mockAttributeTypeDAO.getAttributeType(surnameAttribute))
@@ -232,18 +233,6 @@ public class CredentialManagerBeanTest extends TestCase {
 		AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity();
 		expect(this.mockAttributeTypeDAO.getAttributeType(givenNameAttribute))
 				.andStubReturn(givenNameAttributeType);
-
-		/*
-		 * DeviceClassEntity deviceClass = new DeviceClassEntity(
-		 * SafeOnlineConstants.PKI_DEVICE_CLASS,
-		 * SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS); DeviceEntity
-		 * device = new DeviceEntity( SafeOnlineConstants.BEID_DEVICE_ID,
-		 * deviceClass, null, null, null, null, null, null);
-		 * RegisteredDeviceEntity registeredDevice = new RegisteredDeviceEntity(
-		 * this.testSubject, deviceId, device);
-		 * expect(this.mockRegisteredDeviceService.getRegisteredDevice(deviceId))
-		 * .andReturn(registeredDevice);
-		 */
 
 		expect(this.mockSubjectService.findSubject(deviceId)).andReturn(null);
 		expect(this.mockSubjectService.addDeviceSubject(deviceId)).andReturn(

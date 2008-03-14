@@ -17,8 +17,10 @@ import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
@@ -107,7 +109,8 @@ public class CredentialManagerBean implements CredentialManager {
 	public void mergeIdentityStatement(String deviceUserId,
 			byte[] identityStatementData) throws TrustDomainNotFoundException,
 			PermissionDeniedException, ArgumentIntegrityException,
-			AttributeTypeNotFoundException {
+			AttributeTypeNotFoundException, DeviceNotFoundException,
+			AttributeNotFoundException {
 		/*
 		 * First check integrity of the received identity statement.
 		 */
@@ -194,6 +197,8 @@ public class CredentialManagerBean implements CredentialManager {
 				deviceSubject, givenName, pkiProvider);
 
 		pkiProvider.storeAdditionalAttributes(deviceSubject, certificate);
+
+		pkiProvider.storeDeviceAttribute(deviceSubject);
 	}
 
 	private void setOrUpdateAttribute(

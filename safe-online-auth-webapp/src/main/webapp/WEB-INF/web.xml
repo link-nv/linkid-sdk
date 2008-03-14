@@ -142,11 +142,6 @@
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>JAASLoginFilter</filter-name>
-		<servlet-name>IdentityServlet</servlet-name>
-	</filter-mapping>
-
-	<filter-mapping>
 		<filter-name>Seam Exception Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
@@ -238,30 +233,6 @@
 	<servlet-mapping>
 		<servlet-name>CaptchaServlet</servlet-name>
 		<url-pattern>/captcha</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>RegistrationServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.auth.servlet.RegistrationServlet
-		</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>RegistrationServlet</servlet-name>
-		<url-pattern>/beid/registration</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>IdentityServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.auth.servlet.IdentityServlet
-		</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>IdentityServlet</servlet-name>
-		<url-pattern>/beid/identity</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
