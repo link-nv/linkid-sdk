@@ -88,8 +88,11 @@ a:hover {
 	padding: 25px 25px 0px 25px;
 	width: 900px;
 	display: block;
-	height: 90px;
+	height: 115px;
 	text-align: right;
+}
+#header_top[id] {
+    height: 90px;
 }
 
 #header ul.menu {
@@ -217,7 +220,6 @@ ul.timeline {
 	background-image: url(../images/timeline.gif);
 	float: left;
 	display: block;
-	width: 575px;
 	height: 75px;
 	list-style: none;
 	text-align: center
@@ -297,13 +299,17 @@ ul.timeline li.end {
 	background: #E8E7E7;
 	text-align: left;
 	display: block;
-	margin-left: 25px;
 }
 
 #box_content {
-	margin: 0;
-	padding: 0 25px 0px 25px;
+    margin: 0 10%;
+    width: 100%;
+	padding: 0;
 	margin-top: -11px;
+}
+
+#box_content[id] {
+    width: 80%;
 }
 
 div.zesde {
@@ -350,7 +356,6 @@ ul.sidemenu li a {
 	background: url(../images/icons/bullet_go.gif) no-repeat;
 	background-position: 10px 12px;
 	text-decoration: none;
-	width: 210px;
 	height: 21px;
 	display: block;
 	padding: 10px;
@@ -409,16 +414,18 @@ span.error_message {
 }
 /* FORMS AND ELEMENTS*/
 label {
-	padding: 14px 25px 0px 0;
+	padding: 0 25px 0 0;
 	background: url(../images/icons/16-arrow-down.gif) no-repeat;
 	background-position: 5px 6px;
 	width: 125px;
-	float: left;
-	text-align: right;
-	display: block;
 	height: 21px;
-	clear: left;
+	text-align: right;
 	vertical-align: top;
+}
+label[for] {
+    display: block;
+    float: left;
+    clear: left;
 }
 
 input,select,textarea {
@@ -434,17 +441,20 @@ input,select,textarea {
 input.label,select.label,textarea.label,input.radio,.af_inputFile,img.label
 	{
 	color: #333;
-	margin: 17px 0 7px 0;
+	margin: 0 0 7px 0;
+    vertical-align: bottom;
 	background: #fff;
 	width: 300px;
 	border: 0;
-	float: left;
 	font: 14px "Thesis Sans", "Myriad Pro", "Lucida sans", Verdana,
 		sans-serif;
 }
 
-input.label,textarea.label,input.radio {
+input.label,textarea.label {
 	border-bottom: 1px dotted #333;
+}
+input[type] {
+    float: left;
 }
 
 input.radio {
@@ -486,8 +496,7 @@ textarea {
 
 table.listingTable {
 	border: none;
-	margin: ;
-	width: 575px;
+	margin: 0;
 	clear: left;
 	float: none;
 	display: block;

@@ -10,9 +10,12 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 
 import javax.management.JMException;
@@ -44,6 +47,9 @@ import org.jgroups.Address;
 public class ScenarioRemoting {
 
 	private static Log LOG = LogFactory.getLog(ScenarioRemoting.class);
+
+	private static Map<Thread, MBeanServerConnection> connections = Collections
+			.synchronizedMap(new HashMap<Thread, MBeanServerConnection>());
 
 	private ObjectName agentService;
 
@@ -77,6 +83,11 @@ public class ScenarioRemoting {
 		return new InitialContext(environment);
 	}
 
+	public static void shutdown(Thread thread) {
+
+		// TODO
+	}
+
 	/**
 	 * Invoke a method on the agent service deployed at AP of the given agent.
 	 *
@@ -89,9 +100,12 @@ public class ScenarioRemoting {
 
 		try {
 			InitialContext context = getInitialContext(agent);
-			return ((MBeanServerConnection) context
-					.lookup("jmx/rmi/RMIAdaptor")).invoke(this.agentService,
-					methodName, arguments, argumentTypes);
+			MBeanServerConnection rmi = (MBeanServerConnection) context
+					.lookup("jmx/rmi/RMIAdaptor");
+
+			connections.put(Thread.currentThread(), rmi);
+			return rmi.invoke(this.agentService, methodName, arguments,
+					argumentTypes);
 		}
 
 		catch (IOException e) {
@@ -111,6 +125,10 @@ public class ScenarioRemoting {
 		catch (NamingException e) {
 			throw new IllegalStateException("RMI Adaptor not found on " + agent
 					+ ".", e);
+		}
+
+		finally {
+			connections.remove(Thread.currentThread());
 		}
 	}
 
