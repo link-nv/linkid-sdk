@@ -23,11 +23,11 @@ import net.link.safeonline.authentication.exception.MobileAuthenticationExceptio
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.encap.Authentication;
 import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.apache.commons.logging.Log;
@@ -52,7 +52,7 @@ public class AuthenticationBean implements Authentication {
 	FacesMessages facesMessages;
 
 	@EJB
-	private WeakMobileDeviceService weakMobileDeviceService;
+	private EncapDeviceService encapDeviceService;
 
 	@EJB
 	private SamlAuthorityService samlAuthorityService;
@@ -92,7 +92,7 @@ public class AuthenticationBean implements Authentication {
 		LOG.debug("login: " + this.mobile);
 		HelpdeskLogger.add("login: " + this.mobile, LogLevelType.INFO);
 		try {
-			String deviceUserId = this.weakMobileDeviceService.authenticate(
+			String deviceUserId = this.encapDeviceService.authenticate(
 					this.mobile, this.challengeId, this.mobileOTP);
 			if (null == deviceUserId) {
 				this.facesMessages.addFromResourceBundle(
@@ -162,7 +162,7 @@ public class AuthenticationBean implements Authentication {
 	public String requestOTP() {
 		LOG.debug("request OTP: mobile=" + this.mobile);
 		try {
-			this.challengeId = this.weakMobileDeviceService
+			this.challengeId = this.encapDeviceService
 					.requestOTP(this.mobile);
 			LOG.debug("received challengeId: " + this.challengeId);
 		} catch (MalformedURLException e) {

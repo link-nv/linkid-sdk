@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.encap;
+package net.link.safeonline.model.encap.bean;
 
 import java.security.cert.X509Certificate;
 import java.util.Locale;
@@ -21,6 +21,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.model.bean.AbstractInitBean;
+import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 

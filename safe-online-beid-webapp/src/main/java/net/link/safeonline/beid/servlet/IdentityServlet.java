@@ -20,7 +20,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.device.BeIdDeviceService;
+import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
 import net.link.safeonline.shared.SharedConstants;

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.beid;
+package net.link.safeonline.model.beid.bean;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +28,8 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.bean.AbstractInitBean;
+import net.link.safeonline.model.beid.BeIdConstants;
+import net.link.safeonline.model.beid.BeIdPkiProvider;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;

@@ -19,10 +19,10 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.device.sdk.seam.SafeOnlineDeviceUtils;
 import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.encap.Registration;
+import net.link.safeonline.model.encap.EncapDeviceService;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.ScopeType;
@@ -58,7 +58,7 @@ public class RegistrationBean implements Registration {
 	private String mobileActivationCode;
 
 	@EJB
-	private WeakMobileDeviceService weakMobileDeviceService;
+	private EncapDeviceService encapDeviceService;
 
 	@Remove
 	@Destroy
@@ -83,7 +83,7 @@ public class RegistrationBean implements Registration {
 	public String mobileRegister() {
 		this.log.debug("register mobile: " + this.mobile);
 		try {
-			this.mobileActivationCode = this.weakMobileDeviceService.register(
+			this.mobileActivationCode = this.encapDeviceService.register(
 					this.userId, this.mobile);
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
@@ -117,7 +117,7 @@ public class RegistrationBean implements Registration {
 		this.log.debug("mobile activation canceled: " + this.mobile);
 		this.mobileActivationCode = null;
 		try {
-			this.weakMobileDeviceService.remove(this.userId, this.mobile);
+			this.encapDeviceService.remove(this.userId, this.mobile);
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");

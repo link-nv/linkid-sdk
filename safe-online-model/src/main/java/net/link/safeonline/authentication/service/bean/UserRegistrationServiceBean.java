@@ -7,24 +7,19 @@
 
 package net.link.safeonline.authentication.service.bean;
 
-import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
-import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
 import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.UserRegistrationManager;
@@ -64,9 +59,6 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	@EJB
 	private PasswordDeviceService passwordDeviceService;
 
-	@EJB
-	private WeakMobileDeviceService weakMobileDeviceService;
-
 	public void registerUser(String login, String password)
 			throws ExistingUserException, AttributeTypeNotFoundException {
 		LOG.debug("register user: " + login);
@@ -99,22 +91,5 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 				return null;
 		}
 		return subject;
-	}
-
-	public String registerMobile(String login, String mobile)
-			throws MobileException, MalformedURLException,
-			MobileRegistrationException, ExistingUserException,
-			AttributeTypeNotFoundException, ArgumentIntegrityException {
-		LOG.debug("register user: " + login);
-		SubjectEntity newSubject = this.userRegistrationManager
-				.registerUser(login);
-		return this.weakMobileDeviceService.register(newSubject.getUserId(),
-				mobile);
-	}
-
-	public String requestMobileOTP(String mobile) throws MalformedURLException,
-			MobileException {
-		LOG.debug("generate mobile otp: " + mobile);
-		return this.weakMobileDeviceService.requestOTP(mobile);
 	}
 }

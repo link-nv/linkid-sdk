@@ -27,7 +27,6 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.device.sdk.seam.SafeOnlineDeviceUtils;
 import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.encap.Removal;
@@ -38,6 +37,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.service.SubjectService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -59,7 +59,7 @@ public class RemovalBean implements Removal {
 	private static final String MOBILE_ATTRIBUTE_LIST_NAME = "mobileAttributes";
 
 	@EJB
-	private WeakMobileDeviceService weakMobileDeviceService;
+	private EncapDeviceService encapDeviceService;
 
 	@EJB
 	private DeviceDAO deviceDAO;
@@ -199,8 +199,8 @@ public class RemovalBean implements Removal {
 
 	public String mobileRemove() {
 		try {
-			this.weakMobileDeviceService.remove(this.userId,
-					this.selectedMobile.getStringValue());
+			this.encapDeviceService.remove(this.userId, this.selectedMobile
+					.getStringValue());
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRemovalFailed");

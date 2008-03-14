@@ -68,7 +68,7 @@ import net.link.safeonline.model.bean.DevicesBean;
 import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.model.bean.UsageAgreementManagerBean;
-import net.link.safeonline.model.beid.BeIdStartableBean;
+import net.link.safeonline.model.beid.bean.BeIdStartableBean;
 import net.link.safeonline.model.demo.DemoStartableBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustPointDAOBean;

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.device.bean;
+package net.link.safeonline.model.encap.bean;
 
 import java.net.MalformedURLException;
 import java.util.Date;
@@ -28,19 +28,19 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
-import net.link.safeonline.device.WeakMobileDeviceService;
-import net.link.safeonline.device.WeakMobileDeviceServiceRemote;
 import net.link.safeonline.device.backend.MobileManager;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.model.encap.EncapDeviceService;
+import net.link.safeonline.model.encap.EncapDeviceServiceRemote;
 import net.link.safeonline.service.SubjectService;
 
 @Stateless
-public class WeakMobileDeviceServiceBean implements WeakMobileDeviceService,
-		WeakMobileDeviceServiceRemote {
+public class EncapDeviceServiceBean implements EncapDeviceService,
+		EncapDeviceServiceRemote {
 
 	@EJB
 	private SubjectService subjectService;

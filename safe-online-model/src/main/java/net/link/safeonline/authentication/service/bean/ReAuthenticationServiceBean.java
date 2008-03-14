@@ -30,9 +30,7 @@ import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ReAuthenticationService;
 import net.link.safeonline.dao.DeviceDAO;
-import net.link.safeonline.device.BeIdDeviceService;
 import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.WeakMobileDeviceService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
@@ -52,6 +50,8 @@ import org.jboss.annotation.security.SecurityDomain;
 		InputValidation.class })
 public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
+	// TODO: update for remote devices
+
 	private final static Log LOG = LogFactory
 			.getLog(ReAuthenticationServiceBean.class);
 
@@ -70,12 +70,6 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
 	@EJB
 	private PasswordDeviceService passwordDeviceService;
-
-	@EJB
-	private BeIdDeviceService beIdDeviceService;
-
-	@EJB
-	private WeakMobileDeviceService weakMobileDeviceService;
 
 	@PostConstruct
 	public void postConstructCallback() {
@@ -150,8 +144,10 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	String mobileOTP) throws SubjectNotFoundException, MalformedURLException,
 			MobileException, MobileAuthenticationException,
 			SubjectMismatchException, PermissionDeniedException {
-		String deviceUserId = this.weakMobileDeviceService.authenticate(mobile,
-				challengeId, mobileOTP);
+		String deviceUserId = null;
+		// String deviceUserId =
+		// this.weakMobileDeviceService.authenticate(mobile,
+		// challengeId, mobileOTP);
 		/*
 		 * Safe the state in this stateful session bean.
 		 */
@@ -168,7 +164,8 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 	public String requestMobileOTP(@NotNull
 	DeviceEntity device, @NonEmptyString
 	String mobile) throws MalformedURLException, MobileException {
-		return this.weakMobileDeviceService.requestOTP(mobile);
+		// return this.weakMobileDeviceService.requestOTP(mobile);
+		return null;
 	}
 
 	@DenyAll
@@ -181,8 +178,9 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		LOG.debug("authenticate session: " + sessionId);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);
-		String deviceUserId = this.beIdDeviceService.authenticate(sessionId,
-				authenticationStatement);
+		String deviceUserId = null;
+		// String deviceUserId = this.beIdDeviceService.authenticate(sessionId,
+		// authenticationStatement);
 		if (null == deviceUserId)
 			return false;
 

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.model.beid;
+package test.unit.net.link.safeonline.model.beid.bean;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -19,7 +19,7 @@ import java.security.cert.X509Certificate;
 import junit.framework.TestCase;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.beid.BeIdPkiProvider;
-import net.link.safeonline.model.beid.BeIdStartableBean;
+import net.link.safeonline.model.beid.bean.BeIdStartableBean;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.test.util.EJBTestUtils;
