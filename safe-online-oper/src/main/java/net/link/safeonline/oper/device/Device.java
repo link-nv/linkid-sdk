@@ -49,10 +49,6 @@ public interface Device {
 
 	void setRegistrationURL(String registrationURL);
 
-	String getNewAccountRegistrationURL();
-
-	void setNewAccountRegistrationURL(String newAccountRegistrationURL);
-
 	String getRemovalURL();
 
 	void setRemovalURL(String removalURL);

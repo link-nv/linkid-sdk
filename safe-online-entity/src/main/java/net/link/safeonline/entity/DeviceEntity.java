@@ -77,8 +77,6 @@ public class DeviceEntity implements Serializable {
 
 	private String registrationURL;
 
-	private String newAccountRegistrationURL;
-
 	private String removalURL;
 
 	private String updateURL;
@@ -101,13 +99,11 @@ public class DeviceEntity implements Serializable {
 
 	public DeviceEntity(String name, DeviceClassEntity deviceClass,
 			String authenticationURL, String registrationURL,
-			String newAccountRegistrationURL, String removalURL,
-			String updateURL, X509Certificate certificate) {
+			String removalURL, String updateURL, X509Certificate certificate) {
 		this.name = name;
 		this.deviceClass = deviceClass;
 		this.authenticationURL = authenticationURL;
 		this.registrationURL = registrationURL;
-		this.newAccountRegistrationURL = newAccountRegistrationURL;
 		this.removalURL = removalURL;
 		this.updateURL = updateURL;
 		this.properties = new HashMap<String, DevicePropertyEntity>();
@@ -182,19 +178,6 @@ public class DeviceEntity implements Serializable {
 
 	public void setRegistrationURL(String registrationURL) {
 		this.registrationURL = registrationURL;
-	}
-
-	/**
-	 * Retrieves the URL used when creating a new account with this device as
-	 * initial device.
-	 * 
-	 */
-	public String getNewAccountRegistrationURL() {
-		return this.newAccountRegistrationURL;
-	}
-
-	public void setNewAccountRegistrationURL(String newAccountRegistrationURL) {
-		this.newAccountRegistrationURL = newAccountRegistrationURL;
 	}
 
 	/**

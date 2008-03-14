@@ -22,8 +22,8 @@ import net.link.safeonline.entity.DeviceClassDescriptionEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
@@ -61,8 +61,7 @@ public interface DeviceService {
 
 	void addDevice(String name, String deviceClassName,
 			String authenticationURL, String registrationURL,
-			String newAccountRegistrationURL, String removalURL,
-			String updateURL, byte[] encodedCertificate,
+			String removalURL, String updateURL, byte[] encodedCertificate,
 			String attributeTypeName) throws CertificateEncodingException,
 			DeviceClassNotFoundException, ExistingDeviceException,
 			AttributeTypeNotFoundException;
@@ -104,9 +103,6 @@ public interface DeviceService {
 	void saveDeviceProperty(DevicePropertyEntity property);
 
 	void saveDeviceClassDescription(DeviceClassDescriptionEntity description);
-
-	void updateNewAccountRegistrationUrl(String deviceName,
-			String newAccountRegistrationURL) throws DeviceNotFoundException;
 
 	void updateAuthenticationContextClass(String deviceClassName,
 			String authenticationContextClass)

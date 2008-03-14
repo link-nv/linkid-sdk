@@ -140,7 +140,7 @@ public class AuthenticationServiceBeanTest extends TestCase {
 				SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
 		DeviceEntity device = new DeviceEntity(
 				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass,
-				null, null, null, null, null, null);
+				null, null, null, null, null);
 		expect(
 				this.mockDeviceDAO
 						.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))

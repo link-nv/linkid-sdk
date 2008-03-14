@@ -113,13 +113,15 @@ public class BeIdStartableBean extends AbstractInitBean {
 		String hostname = properties.getString("olas.host.name");
 		String hostportssl = properties.getString("olas.host.port.ssl");
 
-		this.devices.add(new Device(SafeOnlineConstants.BEID_DEVICE_ID,
-				SafeOnlineConstants.PKI_DEVICE_CLASS, "https://" + hostname
-						+ ":" + hostportssl + "/olas-beid/auth", "https://"
-						+ hostname + ":" + hostportssl + "/olas-beid/reg",
-				"beid/new-user-beid.seam", "https://" + hostname + ":"
-						+ hostportssl + "/olas-beid/remove", null, certificate,
-				beidDeviceAttributeType));
+		this.devices
+				.add(new Device(SafeOnlineConstants.BEID_DEVICE_ID,
+						SafeOnlineConstants.PKI_DEVICE_CLASS, "https://"
+								+ hostname + ":" + hostportssl
+								+ "/olas-beid/auth", "https://" + hostname
+								+ ":" + hostportssl + "/olas-beid/reg",
+						"https://" + hostname + ":" + hostportssl
+								+ "/olas-beid/remove", null, certificate,
+						beidDeviceAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
 		this.deviceDescriptions.add(new DeviceDescription(

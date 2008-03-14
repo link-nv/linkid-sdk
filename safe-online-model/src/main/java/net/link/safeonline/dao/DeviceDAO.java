@@ -28,8 +28,7 @@ public interface DeviceDAO {
 
 	DeviceEntity addDevice(String name, DeviceClassEntity deviceClass,
 			String authenticationURL, String registrationURL,
-			String newAccountRegistrationURL, String removalURL,
-			String updateURL, X509Certificate certificate,
+			String removalURL, String updateURL, X509Certificate certificate,
 			AttributeTypeEntity attributeType);
 
 	List<DeviceEntity> listDevices();

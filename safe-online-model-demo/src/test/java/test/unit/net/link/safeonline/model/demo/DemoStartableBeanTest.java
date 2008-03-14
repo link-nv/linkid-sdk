@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
@@ -25,6 +26,7 @@ import net.link.safeonline.dao.bean.AttributeProviderDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.DeviceClassDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
+import net.link.safeonline.dao.bean.DeviceRegistrationDAOBean;
 import net.link.safeonline.dao.bean.OlasDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
@@ -45,9 +47,10 @@ import net.link.safeonline.entity.DeviceClassDescriptionEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.DevicePropertyEntity;
-import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.entity.DevicePropertyEntity;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
+import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -61,6 +64,7 @@ import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 import net.link.safeonline.model.bean.ApplicationIdentityManagerBean;
+import net.link.safeonline.model.bean.DevicesBean;
 import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.model.bean.UsageAgreementManagerBean;
@@ -68,6 +72,7 @@ import net.link.safeonline.model.beid.BeIdStartableBean;
 import net.link.safeonline.model.demo.DemoStartableBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustPointDAOBean;
+import net.link.safeonline.service.bean.DeviceRegistrationServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.tasks.dao.bean.TaskDAOBean;
@@ -101,7 +106,9 @@ public class DemoStartableBeanTest {
 			PasswordManagerBean.class, SubjectServiceBean.class,
 			SubjectIdentifierDAOBean.class, IdGeneratorBean.class,
 			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class,
-			OlasDAOBean.class };
+			OlasDAOBean.class, DeviceRegistrationServiceBean.class,
+			DeviceRegistrationDAOBean.class, DevicePolicyServiceBean.class,
+			DevicesBean.class };
 
 	@Before
 	public void setUp() throws Exception {
@@ -118,8 +125,9 @@ public class DemoStartableBeanTest {
 				AttributeTypeDescriptionEntity.class,
 				AttributeProviderEntity.class, DeviceEntity.class,
 				DeviceClassEntity.class, DeviceMappingEntity.class,
-				DeviceDescriptionEntity.class, DevicePropertyEntity.class,
-				DeviceClassDescriptionEntity.class, AllowedDeviceEntity.class,
+				DeviceRegistrationEntity.class, DeviceDescriptionEntity.class,
+				DevicePropertyEntity.class, DeviceClassDescriptionEntity.class,
+				AllowedDeviceEntity.class,
 				CompoundedAttributeTypeMemberEntity.class,
 				SubjectIdentifierEntity.class, UsageAgreementEntity.class,
 				UsageAgreementTextEntity.class, OlasEntity.class);

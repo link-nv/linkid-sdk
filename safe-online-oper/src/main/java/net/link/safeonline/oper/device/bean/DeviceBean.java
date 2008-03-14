@@ -84,8 +84,6 @@ public class DeviceBean implements Device {
 
 	private String registrationURL;
 
-	private String newAccountRegistrationURL;
-
 	private String removalURL;
 
 	private String updateURL;
@@ -192,8 +190,8 @@ public class DeviceBean implements Device {
 		try {
 			this.deviceService.addDevice(this.name, this.deviceClass,
 					this.authenticationURL, this.registrationURL,
-					this.newAccountRegistrationURL, this.removalURL,
-					this.updateURL, encodedCertificate, this.attributeType);
+					this.removalURL, this.updateURL, encodedCertificate,
+					this.attributeType);
 		} catch (CertificateEncodingException e) {
 			LOG.debug("X509 certificate encoding error");
 			this.facesMessages.addToControlFromResourceBundle("fileupload",
@@ -256,8 +254,6 @@ public class DeviceBean implements Device {
 
 		this.authenticationURL = this.selectedDevice.getAuthenticationURL();
 		this.registrationURL = this.selectedDevice.getRegistrationURL();
-		this.newAccountRegistrationURL = this.selectedDevice
-				.getNewAccountRegistrationURL();
 		this.removalURL = this.selectedDevice.getRemovalURL();
 		this.attributeType = this.selectedDevice.getAttributeType().getName();
 
@@ -275,9 +271,6 @@ public class DeviceBean implements Device {
 			if (null != this.registrationURL)
 				this.deviceService.updateRegistrationUrl(deviceName,
 						this.registrationURL);
-			if (null != this.newAccountRegistrationURL)
-				this.deviceService.updateNewAccountRegistrationUrl(deviceName,
-						this.newAccountRegistrationURL);
 			if (null != this.removalURL)
 				this.deviceService
 						.updateRemovalUrl(deviceName, this.removalURL);
@@ -392,16 +385,6 @@ public class DeviceBean implements Device {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void setRegistrationURL(String registrationURL) {
 		this.registrationURL = registrationURL;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public String getNewAccountRegistrationURL() {
-		return this.newAccountRegistrationURL;
-	}
-
-	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-	public void setNewAccountRegistrationURL(String newAccountRegistrationURL) {
-		this.newAccountRegistrationURL = newAccountRegistrationURL;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

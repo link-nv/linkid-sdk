@@ -45,9 +45,9 @@ import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
-import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.Devices;
 import net.link.safeonline.pkix.PkiUtils;
@@ -109,8 +109,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<DeviceMappingEntity> listRegisteredDevices(
-			SubjectEntity subject) {
+	public List<DeviceMappingEntity> listRegisteredDevices(SubjectEntity subject) {
 		return this.registeredDeviceDAO.listDeviceMappings(subject);
 	}
 
@@ -168,8 +167,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void addDevice(String name, String deviceClassName,
 			String authenticationURL, String registrationURL,
-			String newAccountRegistrationURL, String removalURL,
-			String updateURL, byte[] encodedCertificate,
+			String removalURL, String updateURL, byte[] encodedCertificate,
 			String attributeTypeName) throws CertificateEncodingException,
 			DeviceClassNotFoundException, ExistingDeviceException,
 			AttributeTypeNotFoundException {
@@ -185,8 +183,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 				.getAttributeType(attributeTypeName);
 
 		this.deviceDAO.addDevice(name, deviceClass, authenticationURL,
-				registrationURL, newAccountRegistrationURL, removalURL,
-				updateURL, certificate, attributeType);
+				registrationURL, removalURL, updateURL, certificate,
+				attributeType);
 	}
 
 	private void checkExistingDevice(String name)
@@ -310,13 +308,6 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 			throws DeviceNotFoundException {
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
 		device.setRegistrationURL(registrationURL);
-	}
-
-	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void updateNewAccountRegistrationUrl(String deviceName,
-			String newAccountRegistrationURL) throws DeviceNotFoundException {
-		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-		device.setNewAccountRegistrationURL(newAccountRegistrationURL);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
