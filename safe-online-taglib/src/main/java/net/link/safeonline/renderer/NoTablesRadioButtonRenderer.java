@@ -127,6 +127,9 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 
 		writer.endElement("input");
 
+		writer.startElement("br", component);
+		writer.endElement("br");
+
 	}
 
 	public static Iterator<SelectItem> getSelectItems(
