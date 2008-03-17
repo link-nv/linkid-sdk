@@ -311,7 +311,7 @@ public class EntryServletTest {
 				new DeviceClassEntity(
 						SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
 						SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-				null, null, null, null, null);
+				null, null, null, null, null, null);
 		authnDevices.add(passwordDevice);
 		expect(
 				this.mockDevicePolicyService

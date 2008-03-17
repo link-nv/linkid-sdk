@@ -73,6 +73,8 @@ public class DeviceEntity implements Serializable {
 
 	private DeviceClassEntity deviceClass;
 
+	private OlasEntity location;
+
 	private String authenticationURL;
 
 	private String registrationURL;
@@ -98,10 +100,12 @@ public class DeviceEntity implements Serializable {
 	}
 
 	public DeviceEntity(String name, DeviceClassEntity deviceClass,
-			String authenticationURL, String registrationURL,
-			String removalURL, String updateURL, X509Certificate certificate) {
+			OlasEntity location, String authenticationURL,
+			String registrationURL, String removalURL, String updateURL,
+			X509Certificate certificate) {
 		this.name = name;
 		this.deviceClass = deviceClass;
+		this.location = location;
 		this.authenticationURL = authenticationURL;
 		this.registrationURL = registrationURL;
 		this.removalURL = removalURL;
@@ -157,7 +161,20 @@ public class DeviceEntity implements Serializable {
 	}
 
 	/**
-	 * Retrieve the URL used when authentication through this device.
+	 * Gives back the location of this device.
+	 * 
+	 */
+	@ManyToOne
+	public OlasEntity getLocation() {
+		return this.location;
+	}
+
+	public void setLocation(OlasEntity location) {
+		this.location = location;
+	}
+
+	/**
+	 * Retrieve the local URL for authentication of this device.
 	 * 
 	 */
 	public String getAuthenticationURL() {
@@ -169,7 +186,17 @@ public class DeviceEntity implements Serializable {
 	}
 
 	/**
-	 * Retrieves the URL used when registering this device.
+	 * Returns the full URL for authentication of this device.
+	 * 
+	 */
+	@Transient
+	public String getAuthenticationPath() {
+		return "https://" + this.location.getSslLocation() + "/"
+				+ this.authenticationURL;
+	}
+
+	/**
+	 * Retrieves the local URL for registration of this device.
 	 * 
 	 */
 	public String getRegistrationURL() {
@@ -181,7 +208,17 @@ public class DeviceEntity implements Serializable {
 	}
 
 	/**
-	 * Retrieves the URL used when removing this device.
+	 * Returns the full URL for registration of this device.
+	 * 
+	 */
+	@Transient
+	public String getRegistrationPath() {
+		return "https://" + this.location.getSslLocation() + "/"
+				+ this.registrationURL;
+	}
+
+	/**
+	 * Retrieves the local URL for removal of this device.
 	 * 
 	 */
 	public String getRemovalURL() {
@@ -193,7 +230,17 @@ public class DeviceEntity implements Serializable {
 	}
 
 	/**
-	 * Retrieves the URL used when updating this device.
+	 * Returns the full URL for removal of this device.
+	 * 
+	 */
+	@Transient
+	public String getRemovalPath() {
+		return "https://" + this.location.getSslLocation() + "/"
+				+ this.removalURL;
+	}
+
+	/**
+	 * Retrieves the URL for updating of this device.
 	 * 
 	 */
 	public String getUpdateURL() {
@@ -202,6 +249,16 @@ public class DeviceEntity implements Serializable {
 
 	public void setUpdateURL(String updateURL) {
 		this.updateURL = updateURL;
+	}
+
+	/**
+	 * Returns the full URL for updating of this device.
+	 * 
+	 */
+	@Transient
+	public String getUpdatePath() {
+		return "https://" + this.location.getSslLocation() + "/"
+				+ this.updateURL;
 	}
 
 	/**

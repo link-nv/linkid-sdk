@@ -165,7 +165,7 @@ public class ExitServletTest {
 				SafeOnlineConstants.PKI_DEVICE_CLASS,
 				SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS);
 		this.device = new DeviceEntity(SafeOnlineConstants.BEID_DEVICE_ID,
-				deviceClass, null, null, null, null, null);
+				deviceClass, null, null, null, null, null, null);
 
 		initialSessionAttributes.put(
 				ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE,

@@ -240,6 +240,10 @@
 		<servlet-class>
 			net.link.safeonline.auth.servlet.DeviceLandingServlet
 		</servlet-class>
+		<init-param>
+			<param-name>DeviceErrorUrl</param-name>
+			<param-value>../device-error.seam</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -264,6 +268,10 @@
 		<servlet-class>
 			net.link.safeonline.auth.servlet.DeviceRegistrationExitServlet
 		</servlet-class>
+		<init-param>
+			<param-name>DeviceErrorUrl</param-name>
+			<param-value>../device-error.seam</param-value>
+		</init-param>
 	</servlet>
 
 	<servlet-mapping>

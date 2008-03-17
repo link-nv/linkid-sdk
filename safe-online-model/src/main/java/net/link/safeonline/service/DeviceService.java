@@ -15,6 +15,7 @@ import net.link.safeonline.authentication.exception.ExistingDeviceClassException
 import net.link.safeonline.authentication.exception.ExistingDeviceDescriptionException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
 import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -59,12 +60,12 @@ public interface DeviceService {
 	void removeDeviceProperty(DevicePropertyEntity property)
 			throws DevicePropertyNotFoundException;
 
-	void addDevice(String name, String deviceClassName,
+	void addDevice(String name, String deviceClassName, String nodeName,
 			String authenticationURL, String registrationURL,
 			String removalURL, String updateURL, byte[] encodedCertificate,
 			String attributeTypeName) throws CertificateEncodingException,
 			DeviceClassNotFoundException, ExistingDeviceException,
-			AttributeTypeNotFoundException;
+			AttributeTypeNotFoundException, NodeNotFoundException;
 
 	void removeDevice(String name) throws DeviceNotFoundException,
 			DeviceDescriptionNotFoundException,

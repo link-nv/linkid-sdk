@@ -275,6 +275,8 @@ public abstract class AbstractInitBean implements Startable {
 
 		final String deviceClassName;
 
+		final String nodeName;
+
 		final X509Certificate certificate;
 
 		final String authenticationURL;
@@ -288,11 +290,12 @@ public abstract class AbstractInitBean implements Startable {
 		final AttributeTypeEntity deviceAttribute;
 
 		public Device(String deviceName, String deviceClassName,
-				String authenticationURL, String registrationURL,
-				String removalURL, String updateURL,
+				String nodeName, String authenticationURL,
+				String registrationURL, String removalURL, String updateURL,
 				X509Certificate certificate, AttributeTypeEntity deviceAttribute) {
 			this.deviceName = deviceName;
 			this.deviceClassName = deviceClassName;
+			this.nodeName = nodeName;
 			this.authenticationURL = authenticationURL;
 			this.registrationURL = registrationURL;
 			this.removalURL = removalURL;
@@ -801,15 +804,17 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
-	private void initDevices() throws DeviceClassNotFoundException {
+	private void initDevices() throws DeviceClassNotFoundException,
+			NodeNotFoundException {
 		for (Device device : this.devices) {
 			DeviceEntity deviceEntity = this.deviceDAO
 					.findDevice(device.deviceName);
 			if (deviceEntity == null) {
 				DeviceClassEntity deviceClassEntity = this.deviceClassDAO
 						.getDeviceClass(device.deviceClassName);
+				OlasEntity olasNode = this.olasDAO.getNode(device.nodeName);
 				deviceEntity = this.deviceDAO.addDevice(device.deviceName,
-						deviceClassEntity, device.authenticationURL,
+						deviceClassEntity, olasNode, device.authenticationURL,
 						device.registrationURL, device.removalURL,
 						device.updateURL, device.certificate,
 						device.deviceAttribute);

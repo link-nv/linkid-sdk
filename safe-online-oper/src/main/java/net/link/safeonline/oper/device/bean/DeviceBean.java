@@ -25,12 +25,15 @@ import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundExc
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.service.NodeService;
 import net.link.safeonline.ctrl.Convertor;
 import net.link.safeonline.ctrl.ConvertorUtil;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.oper.device.Device;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
@@ -71,14 +74,19 @@ public class DeviceBean implements Device {
 	FacesMessages facesMessages;
 
 	@EJB
-	DeviceService deviceService;
+	private DeviceService deviceService;
 
 	@EJB
-	AttributeTypeService attributeTypeService;
+	private AttributeTypeService attributeTypeService;
+
+	@EJB
+	private NodeService nodeService;
 
 	private String name;
 
 	private String deviceClass;
+
+	private String node;
 
 	private String authenticationURL;
 
@@ -158,7 +166,24 @@ public class DeviceBean implements Device {
 			SelectItem output = new SelectItem(input.getName());
 			return output;
 		}
+	}
 
+	@Factory("nodes")
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public List<SelectItem> nodeFactory() {
+		List<OlasEntity> nodeList = this.nodeService.listNodes();
+		List<SelectItem> nodes = ConvertorUtil.convert(nodeList,
+				new OlasEntitySelectItemConvertor());
+		return nodes;
+	}
+
+	static class OlasEntitySelectItemConvertor implements
+			Convertor<OlasEntity, SelectItem> {
+
+		public SelectItem convert(OlasEntity input) {
+			SelectItem output = new SelectItem(input.getName());
+			return output;
+		}
 	}
 
 	private byte[] getUpFileContent(UploadedFile file) throws IOException {
@@ -189,7 +214,7 @@ public class DeviceBean implements Device {
 
 		try {
 			this.deviceService.addDevice(this.name, this.deviceClass,
-					this.authenticationURL, this.registrationURL,
+					this.node, this.authenticationURL, this.registrationURL,
 					this.removalURL, this.updateURL, encodedCertificate,
 					this.attributeType);
 		} catch (CertificateEncodingException e) {
@@ -212,6 +237,11 @@ public class DeviceBean implements Device {
 			LOG.debug("attribute type " + this.attributeType + " not found");
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
+			return null;
+		} catch (NodeNotFoundException e) {
+			LOG.debug("node " + this.node + " not found");
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorNodeNotFound");
 			return null;
 		}
 		return "success";
@@ -365,6 +395,16 @@ public class DeviceBean implements Device {
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
 	public void setDeviceClass(String deviceClass) {
 		this.deviceClass = deviceClass;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String getNode() {
+		return this.node;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setNode(String node) {
+		this.node = node;
 	}
 
 	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)

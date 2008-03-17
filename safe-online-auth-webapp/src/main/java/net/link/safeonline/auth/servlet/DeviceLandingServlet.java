@@ -8,13 +8,16 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
@@ -28,9 +31,6 @@ import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Device landing servlet. Landing page to finalize the authentication process
  * between OLAS and a device provider.
@@ -42,18 +42,33 @@ public class DeviceLandingServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory
-			.getLog(DeviceLandingServlet.class);
+	public static final String RESOURCE_BASE = "messages.webapp";
+
+	public static final String DEVICE_ERROR_URL = "DeviceErrorUrl";
+
+	public static final String DEVICE_ERROR_MESSAGE_ATTRIBUTE = "deviceErrorMessage";
 
 	private DeviceDAO deviceDAO;
 
 	private DeviceRegistrationService deviceRegistrationService;
 
+	private String deviceErrorUrl;
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-
 		loadDependencies();
+		this.deviceErrorUrl = getInitParameter(config, DEVICE_ERROR_URL);
+	}
+
+	public String getInitParameter(ServletConfig config,
+			String initParameterName) throws UnavailableException {
+		String paramValue = config.getInitParameter(initParameterName);
+		if (null == paramValue) {
+			throw new UnavailableException("missing init parameter: "
+					+ initParameterName);
+		}
+		return paramValue;
 	}
 
 	private void loadDependencies() {
@@ -86,9 +101,8 @@ public class DeviceLandingServlet extends HttpServlet {
 			 * authentication process. If no protocol handler is active then
 			 * something must be going wrong here.
 			 */
-			String msg = "no protocol handler active";
-			LOG.error(msg);
-			writeErrorPage(msg, response);
+			redirectToDeviceErrorPage(request, response,
+					"errorNoProtocolHandlerActive");
 			return;
 		}
 
@@ -98,9 +112,8 @@ public class DeviceLandingServlet extends HttpServlet {
 				authIdentityServiceClient.getCertificate(),
 				authIdentityServiceClient.getPrivateKey());
 		if (null == deviceUserId) {
-			String msg = "protocol handler could not finalize";
-			LOG.error(msg);
-			writeErrorPage(msg, response);
+			redirectToDeviceErrorPage(request, response,
+					"errorProtocolHandlerFinalization");
 			return;
 		}
 		String deviceName = saml2BrowserPostHandler.getAuthenticationDevice();
@@ -109,26 +122,21 @@ public class DeviceLandingServlet extends HttpServlet {
 		try {
 			device = this.deviceDAO.getDevice(deviceName);
 		} catch (DeviceNotFoundException e) {
-			String msg = "device not found: " + deviceName;
-			LOG.error(msg);
-			writeErrorPage(msg, response);
+			redirectToDeviceErrorPage(request, response, "errorDeviceNotFound");
 			return;
 		}
 
 		DeviceRegistrationEntity registeredDevice = this.deviceRegistrationService
 				.getDeviceRegistration(deviceUserId);
 		if (null == registeredDevice) {
-			String msg = "device registration not found";
-			LOG.error(msg + " : " + deviceUserId);
-			writeErrorPage(msg, response);
+			redirectToDeviceErrorPage(request, response,
+					"errorDeviceRegistrationNotFound");
 			return;
 		}
 
 		/*
 		 * Authenticate
 		 */
-		LOG.debug("login: " + registeredDevice.getSubject().getUserId()
-				+ " device=" + device.getName());
 		LoginManager.login(request.getSession(), registeredDevice.getSubject()
 				.getUserId(), device);
 		AuthenticationService authenticationService = AuthenticationServiceManager
@@ -137,36 +145,23 @@ public class DeviceLandingServlet extends HttpServlet {
 			authenticationService.authenticate(registeredDevice.getSubject()
 					.getUserId(), device);
 		} catch (SubjectNotFoundException e) {
-			String msg = "authentication failed for subject: "
-					+ registeredDevice.getSubject().getUserId() + ", device: "
-					+ device.getName();
-			LOG.error(msg);
-			writeErrorPage(msg, response);
+			redirectToDeviceErrorPage(request, response, "errorSubjectNotFound");
 			return;
 		}
 		response.sendRedirect("../login");
 	}
 
-	private void writeErrorPage(String message, HttpServletResponse response)
+	private void redirectToDeviceErrorPage(HttpServletRequest request,
+			HttpServletResponse response, String errorMessage)
 			throws IOException {
-		response.setContentType("text/html");
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		PrintWriter out = response.getWriter();
-		out.println("<html>");
-		{
-			out.println("<head><title>Error</title></head>");
-			out.println("<body>");
-			{
-				out.println("<h1>Error</h1>");
-				out.println("<p>");
-				{
-					out.println(message);
-				}
-				out.println("</p>");
-			}
-			out.println("</body>");
-		}
-		out.println("</html>");
-		out.close();
+		HttpSession session = request.getSession();
+		Locale locale = request.getLocale();
+		ResourceBundle resourceBundle = ResourceBundle.getBundle(RESOURCE_BASE,
+				locale);
+		String errorMessageString = resourceBundle.getString(errorMessage);
+		session
+				.setAttribute(DEVICE_ERROR_MESSAGE_ATTRIBUTE,
+						errorMessageString);
+		response.sendRedirect(this.deviceErrorUrl);
 	}
 }

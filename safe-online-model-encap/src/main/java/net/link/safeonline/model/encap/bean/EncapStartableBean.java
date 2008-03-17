@@ -54,16 +54,12 @@ public class EncapStartableBean extends AbstractInitBean {
 				.getPrivateKeyEntry().getCertificate();
 
 		ResourceBundle properties = ResourceBundle.getBundle("config");
-		String hostname = properties.getString("olas.host.name");
-		String hostportssl = properties.getString("olas.host.port.ssl");
+		String nodeName = properties.getString("olas.node.name");
 
 		this.devices.add(new Device(SafeOnlineConstants.ENCAP_DEVICE_ID,
-				SafeOnlineConstants.MOBILE_DEVICE_CLASS, "https://" + hostname
-						+ ":" + hostportssl + "/olas-encap/auth", "https://"
-						+ hostname + ":" + hostportssl + "/olas-encap/reg",
-				"https://" + hostname + ":" + hostportssl
-						+ "/olas-encap/remove", null, certificate,
-				encapAttributeType));
+				SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName,
+				"/olas-encap/auth", "/olas-encap/reg", "olas-encap/remove",
+				null, certificate, encapAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
 		this.deviceDescriptions.add(new DeviceDescription(

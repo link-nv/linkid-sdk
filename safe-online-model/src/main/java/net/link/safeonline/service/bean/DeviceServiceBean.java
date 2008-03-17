@@ -28,6 +28,7 @@ import net.link.safeonline.authentication.exception.ExistingDeviceClassException
 import net.link.safeonline.authentication.exception.ExistingDeviceDescriptionException;
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
 import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationDAO;
@@ -35,6 +36,7 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceClassDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.DeviceMappingDAO;
+import net.link.safeonline.dao.OlasDAO;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
@@ -48,6 +50,7 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceMappingEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
+import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.Devices;
 import net.link.safeonline.pkix.PkiUtils;
@@ -83,6 +86,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
 	@EJB
 	private ApplicationDAO applicationDAO;
+
+	@EJB
+	private OlasDAO olasDAO;
 
 	@RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.USER_ROLE })
 	@Interceptors(ApplicationOwnerAccessControlInterceptor.class)
@@ -165,12 +171,12 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-	public void addDevice(String name, String deviceClassName,
+	public void addDevice(String name, String deviceClassName, String nodeName,
 			String authenticationURL, String registrationURL,
 			String removalURL, String updateURL, byte[] encodedCertificate,
 			String attributeTypeName) throws CertificateEncodingException,
 			DeviceClassNotFoundException, ExistingDeviceException,
-			AttributeTypeNotFoundException {
+			AttributeTypeNotFoundException, NodeNotFoundException {
 		checkExistingDevice(name);
 		LOG.debug("add device: " + name);
 
@@ -181,8 +187,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 				.getDeviceClass(deviceClassName);
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.getAttributeType(attributeTypeName);
+		OlasEntity node = this.olasDAO.getNode(nodeName);
 
-		this.deviceDAO.addDevice(name, deviceClass, authenticationURL,
+		this.deviceDAO.addDevice(name, deviceClass, node, authenticationURL,
 				registrationURL, removalURL, updateURL, certificate,
 				attributeType);
 	}

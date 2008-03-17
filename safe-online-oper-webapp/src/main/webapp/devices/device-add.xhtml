@@ -43,6 +43,15 @@
 							<f:selectItems value="#{deviceClasses}" />
 						</h:selectOneMenu>
 					</s:decorate>* <h:message for="deviceClass" styleClass="error" />
+
+					<h:outputLabel for="node" value="#{msgs.location}" />
+
+					<h:selectOneMenu id="node" value="#{operDevice.node}"
+						styleClass="label">
+						<f:selectItems value="#{nodes}" />
+					</h:selectOneMenu>
+
+
 					<h:outputLabel for="authUrl" value="#{msgs.authenticationUrl}" />
 					<s:decorate>
 						<h:inputText id="authUrl" value="#{operDevice.authenticationURL}"

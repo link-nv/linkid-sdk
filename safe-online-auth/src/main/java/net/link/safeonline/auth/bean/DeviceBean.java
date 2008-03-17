@@ -21,6 +21,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.Device;
 import net.link.safeonline.auth.LoginManager;
@@ -87,37 +88,33 @@ public class DeviceBean implements Device {
 					FacesMessage.SEVERITY_ERROR, "errorMakeSelection");
 			return null;
 		}
-		String authenticationURL;
+		String authenticationPath;
 		try {
-			authenticationURL = this.devicePolicyService
+			authenticationPath = this.devicePolicyService
 					.getAuthenticationURL(this.deviceSelection);
+			this.log.debug("authenticationPath: " + authenticationPath);
 		} catch (DeviceNotFoundException e) {
 			this.log.error("device not found: " + this.deviceSelection);
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
 		}
-		if (remoteURL(authenticationURL)) {
-			return SafeOnlineDeviceUtils.authenticate(this.facesMessages, this.log,
-					authenticationURL, this.deviceSelection);
-		}
+
+		if (!this.deviceSelection
+				.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
+			return SafeOnlineDeviceUtils.authenticate(this.facesMessages,
+					this.log, authenticationPath, this.deviceSelection);
+
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
 		try {
-			externalContext.redirect(authenticationURL);
+			externalContext.redirect(authenticationPath);
 		} catch (IOException e) {
 			this.log.debug("IO error: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorIO");
 		}
 		return null;
-	}
-
-	private boolean remoteURL(String authenticationURLName) {
-		if (authenticationURLName.startsWith("http://")
-				|| authenticationURLName.startsWith("https://"))
-			return true;
-		return false;
 	}
 
 	@Factory("applicationDevices")

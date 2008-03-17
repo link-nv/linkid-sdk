@@ -171,6 +171,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 	}
 
 	private void configurePasswordDevice() {
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String nodeName = properties.getString("olas.node.name");
+
 		AttributeTypeEntity passwordHashAttributeType = new AttributeTypeEntity(
 				SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
 				DatatypeType.STRING, false, false);
@@ -219,11 +222,11 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
 		this.devices.add(new Device(
 				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
-				SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-				"password/username-password.seam",
-				"password/register-password.seam",
-				"password/remove-password.seam",
-				"password/register-password.seam", null,
+				SafeOnlineConstants.PASSWORD_DEVICE_CLASS, nodeName,
+				"olas-auth/password/username-password.seam",
+				"olas-auth/password/register-password.seam",
+				"olas-auth/password/remove-password.seam",
+				"olas-auth/password/register-password.seam", null,
 				passwordDeviceAttributeType));
 		this.deviceDescriptions.add(new DeviceDescription(
 				SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, "nl",
