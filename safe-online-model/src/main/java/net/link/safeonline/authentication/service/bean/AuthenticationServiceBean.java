@@ -58,7 +58,6 @@ import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
-import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
@@ -101,9 +100,6 @@ public class AuthenticationServiceBean implements AuthenticationService,
 
 	@EJB
 	private SubjectService subjectService;
-
-	@EJB
-	private SubjectManager subjectManager;
 
 	@EJB
 	private ApplicationDAO applicationDAO;
@@ -339,10 +335,10 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return this.subjectService.getSubjectLogin(userId);
 	}
 
-	public void setPassword(String password) throws PermissionDeniedException {
+	public void setPassword(String login, String password)
+			throws SubjectNotFoundException, DeviceNotFoundException {
 		LOG.debug("set password");
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		this.passwordDeviceService.register(subject, password);
+		this.passwordDeviceService.register(login, password);
 		DeviceEntity device = this.deviceDAO
 				.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 

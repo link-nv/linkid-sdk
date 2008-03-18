@@ -32,7 +32,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -44,7 +43,6 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.data.AttributeDO;
@@ -57,7 +55,6 @@ import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
-import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
@@ -721,34 +718,6 @@ public class IdentityServiceBean implements IdentityService,
 				missingAttributeTypes.add(attributeType);
 		}
 
-		// Map<AttributeTypeEntity, List<AttributeEntity>> userAttributes =
-		// this.attributeDAO
-		// .listAttributes(subject);
-		//
-		// for (Map.Entry<AttributeTypeEntity, List<AttributeEntity>>
-		// userAttributeEntry : userAttributes
-		// .entrySet()) {
-		// AttributeTypeEntity userAttributeType = userAttributeEntry.getKey();
-		// if (true == userAttributeType.isCompounded()) {
-		// /*
-		// * We don't need to remove a compounded attribute type since
-		// * such a type is not part of the
-		// * requiredApplicationAttributeTypes list in the first place.
-		// */
-		// continue;
-		// }
-		// /*
-		// * Even in case of a multi-valued attribute we only need to peek at
-		// * the first entry.
-		// */
-		// AttributeEntity userAttribute = userAttributeEntry.getValue()
-		// .get(0);
-		// if (true == userAttribute.isEmpty()) {
-		// continue;
-		// }
-		// requiredApplicationAttributeTypes.remove(userAttributeType);
-		// }
-
 		/*
 		 * At this point the set contains the required attribute types for which
 		 * the user has not yet entered a value. Some of these attribute types
@@ -913,20 +882,17 @@ public class IdentityServiceBean implements IdentityService,
 		return confirmedAttributes;
 	}
 
-	@EJB
-	private DeviceDAO deviceDAO;
-
-	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public List<AttributeDO> listAttributes(@NonEmptyString
-	String deviceId, Locale locale) throws DeviceNotFoundException {
-		LOG.debug("list attributes for device: " + deviceId);
-		DeviceEntity device = this.deviceDAO.getDevice(deviceId);
-		List<AttributeTypeEntity> deviceAttributeTypes = new LinkedList<AttributeTypeEntity>();
-		deviceAttributeTypes.add(device.getAttributeType());
-		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
-
-		SubjectEntity subject = this.subjectManager.getCallerSubject();
-
+	/**
+	 * Convert a single valued / non-compounded attribute to an Attribute View
+	 * 
+	 * @param value
+	 * @param index
+	 * @param attributeType
+	 * @param locale
+	 * @return
+	 */
+	private AttributeDO convertSingleAttribute(Object value, int index,
+			AttributeTypeEntity attributeType, Locale locale) {
 		String language;
 		if (null == locale) {
 			language = null;
@@ -934,50 +900,69 @@ public class IdentityServiceBean implements IdentityService,
 			language = locale.getLanguage();
 		}
 
-		for (AttributeTypeEntity attributeType : deviceAttributeTypes) {
-			LOG.debug("attribute type: " + attributeType.getName());
-			if (false == attributeType.isUserVisible()) {
-				continue;
-			}
-
-			boolean multivalued = attributeType.isMultivalued();
-			String name = attributeType.getName();
-			DatatypeType type = attributeType.getType();
-			boolean editable = attributeType.isUserEditable();
-			boolean dataMining = false;
-			String humanReabableName = null;
-			String description = null;
-			if (null != language) {
-				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
-						.findDescription(new AttributeTypeDescriptionPK(name,
-								language));
-				if (null != attributeTypeDescription) {
-					humanReabableName = attributeTypeDescription.getName();
-					description = attributeTypeDescription.getDescription();
-				}
-			}
-			List<AttributeEntity> attributeList = this.attributeDAO
-					.listAttributes(subject, attributeType);
-			for (AttributeEntity attribute : attributeList) {
-				String stringValue;
-				Boolean booleanValue;
-				long index;
-				if (null != attribute) {
-					stringValue = attribute.getStringValue();
-					booleanValue = attribute.getBooleanValue();
-					index = attribute.getAttributeIndex();
-				} else {
-					stringValue = null;
-					booleanValue = null;
-					index = 0;
-				}
-				AttributeDO attributeView = new AttributeDO(name, type,
-						multivalued, index, humanReabableName, description,
-						editable, dataMining, stringValue, booleanValue);
-				attributes.add(attributeView);
+		boolean multivalued = attributeType.isMultivalued();
+		String name = attributeType.getName();
+		DatatypeType type = attributeType.getType();
+		boolean editable = attributeType.isUserEditable();
+		boolean dataMining = false;
+		String humanReabableName = null;
+		String description = null;
+		if (null != language) {
+			AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+					.findDescription(new AttributeTypeDescriptionPK(name,
+							language));
+			if (null != attributeTypeDescription) {
+				humanReabableName = attributeTypeDescription.getName();
+				description = attributeTypeDescription.getDescription();
 			}
 		}
+		AttributeDO attributeView = new AttributeDO(name, type, multivalued,
+				index, humanReabableName, description, editable, dataMining,
+				null, null);
+		attributeView.setValue(value);
+		return attributeView;
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<AttributeDO> convertAttribute(Object value,
+			AttributeTypeEntity attributeType, Locale locale)
+			throws AttributeTypeNotFoundException {
+		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
+		if (attributeType.isCompounded()) {
+			Map<String, Object>[] compoundedAttributesMap = (Map<String, Object>[]) value;
+			for (int idx = 0; idx < compoundedAttributesMap.length; idx++) {
+				for (String memberAttributeTypeName : compoundedAttributesMap[idx]
+						.keySet()) {
+					AttributeTypeEntity memberAttributeType = this.attributeTypeDAO
+							.getAttributeType(memberAttributeTypeName);
+					attributes.add(convertSingleAttribute(
+							compoundedAttributesMap[idx]
+									.get(memberAttributeTypeName), idx,
+							memberAttributeType, locale));
+				}
+			}
+		} else if (attributeType.isMultivalued()) {
+			Object[] attributeValues = (Object[]) value;
+			for (int idx = 0; idx < attributeValues.length; idx++) {
+				attributes.add(convertSingleAttribute(attributeValues[idx],
+						idx, attributeType, locale));
+			}
+		} else
+			attributes.add(convertSingleAttribute(value, 0, attributeType,
+					locale));
 		return attributes;
+	}
+
+	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
+	public List<AttributeDO> listAttributes(@NonEmptyString
+	String deviceId, @NotNull
+	AttributeTypeEntity attributeType, Locale locale)
+			throws SubjectNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
+		LOG.debug("list attributes for device: " + deviceId);
+		Object value = this.proxyAttributeService.getDeviceAttributeValue(
+				deviceId, attributeType.getName());
+		return convertAttribute(value, attributeType, locale);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)

@@ -19,12 +19,18 @@ public interface PasswordDeviceService {
 	SubjectEntity authenticate(String login, String password)
 			throws DeviceNotFoundException, SubjectNotFoundException;
 
-	void register(SubjectEntity subject, String password);
+	void register(String login, String password)
+			throws SubjectNotFoundException, DeviceNotFoundException;
 
 	void update(SubjectEntity subject, String oldPassword, String newPassword)
-			throws PermissionDeniedException, DeviceNotFoundException;
+			throws PermissionDeniedException, DeviceNotFoundException,
+			SubjectNotFoundException;
 
 	void remove(SubjectEntity subject, String password)
-			throws DeviceNotFoundException, PermissionDeniedException;
+			throws DeviceNotFoundException, PermissionDeniedException,
+			SubjectNotFoundException;
+
+	boolean isPasswordConfigured(SubjectEntity subject)
+			throws SubjectNotFoundException, DeviceNotFoundException;
 
 }

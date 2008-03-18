@@ -69,6 +69,10 @@ public interface Device {
 
 	void setAttributeType(String attributeType);
 
+	String getUserAttributeType();
+
+	void setUserAttributeType(String userAttributeType);
+
 	/*
 	 * Factories
 	 */

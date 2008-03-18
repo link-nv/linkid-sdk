@@ -12,6 +12,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 /**
  * Interface of service that manages the credentials of the caller subject.
@@ -29,9 +30,11 @@ public interface CredentialService {
 	 * @param oldPassword
 	 * @param newPassword
 	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
 	 */
 	void changePassword(String oldPassword, String newPassword)
-			throws PermissionDeniedException, DeviceNotFoundException;
+			throws PermissionDeniedException, DeviceNotFoundException,
+			SubjectNotFoundException;
 
 	/**
 	 * Removes the password of the current user. For this to happen the password
@@ -41,14 +44,19 @@ public interface CredentialService {
 	 * @throws DeviceNotFoundException
 	 * @throws PermissionDeniedException
 	 * @throws LastDeviceException
+	 * @throws SubjectNotFoundException
 	 */
 	void removePassword(String password) throws DeviceNotFoundException,
-			PermissionDeniedException, LastDeviceException;
+			PermissionDeniedException, SubjectNotFoundException;
 
 	/**
 	 * Gives back <code>true</code> if the user already has a password
 	 * configured.
 	 * 
+	 * @throws DeviceNotFoundException
+	 * @throws SubjectNotFoundException
+	 * 
 	 */
-	boolean isPasswordConfigured();
+	boolean isPasswordConfigured() throws SubjectNotFoundException,
+			DeviceNotFoundException;
 }

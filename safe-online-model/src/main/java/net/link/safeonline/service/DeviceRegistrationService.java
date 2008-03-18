@@ -13,6 +13,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
@@ -42,4 +43,7 @@ public interface DeviceRegistrationService {
 
 	public List<DeviceRegistrationEntity> listDeviceRegistrations(
 			SubjectEntity subject);
+
+	public List<DeviceRegistrationEntity> listDeviceRegistrations(
+			SubjectEntity subject, DeviceEntity device);
 }

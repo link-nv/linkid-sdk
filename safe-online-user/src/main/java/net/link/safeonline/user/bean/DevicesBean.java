@@ -26,17 +26,22 @@ import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
+import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.user.DeviceEntry;
 import net.link.safeonline.user.Devices;
 import net.link.safeonline.user.UserConstants;
@@ -81,6 +86,12 @@ public class DevicesBean implements Devices {
 	public void postConstructCallback() {
 		this.credentialCacheFlushRequired = false;
 	}
+
+	@EJB
+	private SubjectManager subjectManager;
+
+	@EJB
+	private DeviceRegistrationService deviceRegistrationService;
 
 	@EJB
 	private CredentialService credentialService;
@@ -135,6 +146,10 @@ public class DevicesBean implements Devices {
 			this.facesMessages.addToControlFromResourceBundle("oldpassword",
 					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotFound");
 			return null;
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			return null;
 		}
 
 		this.credentialCacheFlushRequired = true;
@@ -158,10 +173,9 @@ public class DevicesBean implements Devices {
 			this.facesMessages.addToControlFromResourceBundle("oldpassword",
 					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotFound");
 			return null;
-		} catch (LastDeviceException e) {
-			LOG.debug(e.getMessage());
-			this.facesMessages.addToControlFromResourceBundle("oldpassword",
-					FacesMessage.SEVERITY_ERROR, "errorLastDevice");
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
 			return null;
 		}
 
@@ -213,21 +227,46 @@ public class DevicesBean implements Devices {
 		return viewLocale;
 	}
 
-	@RolesAllowed(UserConstants.USER_ROLE)
-	@Factory("beidAttributes")
-	public List<AttributeDO> beidAttributesFactory() {
+	private List<AttributeDO> listRegisteredDeviceAttributes(String deviceId,
+			AttributeTypeEntity attributeType) {
 		Locale locale = getViewLocale();
-		List<AttributeDO> beidAttributes;
+		List<AttributeDO> registeredDeviceAttributes;
 		try {
-			beidAttributes = this.identityService.listAttributes(
-					SafeOnlineConstants.BEID_DEVICE_ID, locale);
-		} catch (DeviceNotFoundException e) {
+			registeredDeviceAttributes = this.identityService.listAttributes(
+					deviceId, attributeType, locale);
+		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
-			LOG.error("device not found");
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			LOG.error("subject not found");
+			return new LinkedList<AttributeDO>();
+		} catch (PermissionDeniedException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			LOG.error("permission denied: " + e.getMessage());
+			return new LinkedList<AttributeDO>();
+		} catch (AttributeTypeNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFound");
+			LOG.error("attribute type not found");
 			return new LinkedList<AttributeDO>();
 		}
-		return beidAttributes;
+		return registeredDeviceAttributes;
+	}
+
+	private List<AttributeDO> listRegisteredDevices(DeviceEntity device) {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		List<AttributeDO> registeredDeviceAttributes = new LinkedList<AttributeDO>();
+
+		List<DeviceRegistrationEntity> registeredDevices = this.deviceRegistrationService
+				.listDeviceRegistrations(subject, device);
+		for (DeviceRegistrationEntity registeredDevice : registeredDevices) {
+			if (null == registeredDevice.getDevice().getUserAttributeType())
+				continue;
+			registeredDeviceAttributes.addAll(listRegisteredDeviceAttributes(
+					registeredDevice.getId(), registeredDevice.getDevice()
+							.getUserAttributeType()));
+		}
+		return registeredDeviceAttributes;
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
@@ -239,7 +278,8 @@ public class DevicesBean implements Devices {
 		for (DeviceEntity device : deviceList) {
 			String deviceDescription = this.devicePolicyService
 					.getDeviceDescription(device.getName(), locale);
-			this.devices.add(new DeviceEntry(device, deviceDescription));
+			this.devices.add(new DeviceEntry(device, deviceDescription,
+					listRegisteredDevices(device)));
 		}
 		return this.devices;
 	}
@@ -359,7 +399,20 @@ public class DevicesBean implements Devices {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public boolean isPasswordConfigured() {
-		boolean hasPassword = this.credentialService.isPasswordConfigured();
+		boolean hasPassword;
+		try {
+			hasPassword = this.credentialService.isPasswordConfigured();
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			return false;
+		} catch (DeviceNotFoundException e) {
+			LOG.error("device not found: "
+					+ this.selectedDevice.getDevice().getName());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+			return false;
+		}
 		return hasPassword;
 	}
 }

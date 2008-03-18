@@ -79,4 +79,10 @@ public class DeviceRegistrationServiceBean implements DeviceRegistrationService 
 		return this.deviceRegistrationDAO.listRegisteredDevices(subject);
 	}
 
+	public List<DeviceRegistrationEntity> listDeviceRegistrations(
+			SubjectEntity subject, DeviceEntity device) {
+		return this.deviceRegistrationDAO
+				.listRegisteredDevices(subject, device);
+	}
+
 }

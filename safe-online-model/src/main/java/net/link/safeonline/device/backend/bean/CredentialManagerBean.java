@@ -199,6 +199,8 @@ public class CredentialManagerBean implements CredentialManager {
 		pkiProvider.storeAdditionalAttributes(deviceSubject, certificate);
 
 		pkiProvider.storeDeviceAttribute(deviceSubject);
+
+		pkiProvider.storeDeviceUserAttribute(deviceSubject);
 	}
 
 	private void setOrUpdateAttribute(

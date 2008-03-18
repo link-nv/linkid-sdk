@@ -91,6 +91,8 @@ public class DeviceEntity implements Serializable {
 
 	private AttributeTypeEntity attributeType;
 
+	private AttributeTypeEntity userAttributeType;
+
 	private Map<String, DevicePropertyEntity> properties;
 
 	private Map<String, DeviceDescriptionEntity> descriptions;
@@ -132,6 +134,10 @@ public class DeviceEntity implements Serializable {
 		this.name = name;
 	}
 
+	/**
+	 * This device attribute holds all information this gives returns to olas.
+	 * 
+	 */
 	@ManyToOne
 	public AttributeTypeEntity getAttributeType() {
 		return this.attributeType;
@@ -139,6 +145,20 @@ public class DeviceEntity implements Serializable {
 
 	public void setAttributeType(AttributeTypeEntity attributeType) {
 		this.attributeType = attributeType;
+	}
+
+	/**
+	 * This device attribute holds the information for a user to recognize his
+	 * device.
+	 * 
+	 */
+	@ManyToOne
+	public AttributeTypeEntity getUserAttributeType() {
+		return this.userAttributeType;
+	}
+
+	public void setUserAttributeType(AttributeTypeEntity userAttributeType) {
+		this.userAttributeType = userAttributeType;
 	}
 
 	/**
@@ -191,6 +211,8 @@ public class DeviceEntity implements Serializable {
 	 */
 	@Transient
 	public String getAuthenticationPath() {
+		if (null == this.location)
+			return this.authenticationURL;
 		return "https://" + this.location.getSslLocation() + "/"
 				+ this.authenticationURL;
 	}
@@ -213,6 +235,8 @@ public class DeviceEntity implements Serializable {
 	 */
 	@Transient
 	public String getRegistrationPath() {
+		if (null == this.location)
+			return this.registrationURL;
 		return "https://" + this.location.getSslLocation() + "/"
 				+ this.registrationURL;
 	}
@@ -235,6 +259,8 @@ public class DeviceEntity implements Serializable {
 	 */
 	@Transient
 	public String getRemovalPath() {
+		if (null == this.location)
+			return this.removalURL;
 		return "https://" + this.location.getSslLocation() + "/"
 				+ this.removalURL;
 	}
@@ -257,6 +283,8 @@ public class DeviceEntity implements Serializable {
 	 */
 	@Transient
 	public String getUpdatePath() {
+		if (null == this.location)
+			return this.updateURL;
 		return "https://" + this.location.getSslLocation() + "/"
 				+ this.updateURL;
 	}

@@ -66,9 +66,16 @@
 
 				<rich:tab id="attrib-tab" label="#{msgs.attribute}">
 
-					<h:outputLabel for="attribute-type" value="#{msgs.attribute}" />
+					<h:outputLabel for="attribute-type" value="#{msgs.deviceAttribute}" />
 					<h:selectOneMenu id="attribute-type"
 						value="#{operDevice.attributeType}" styleClass="label">
+						<f:selectItems value="#{attributeTypes}" />
+					</h:selectOneMenu>
+
+					<h:outputLabel for="user-attribute-type"
+						value="#{msgs.deviceUserAttribute}" />
+					<h:selectOneMenu id="user-attribute-type"
+						value="#{operDevice.userAttributeType}" styleClass="label">
 						<f:selectItems value="#{attributeTypes}" />
 					</h:selectOneMenu>
 

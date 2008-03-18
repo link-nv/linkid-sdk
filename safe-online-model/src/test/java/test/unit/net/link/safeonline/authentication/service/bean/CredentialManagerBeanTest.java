@@ -226,6 +226,7 @@ public class CredentialManagerBeanTest extends TestCase {
 		this.mockPkiProvider.storeAdditionalAttributes(deviceSubject,
 				this.certificate);
 		this.mockPkiProvider.storeDeviceAttribute(deviceSubject);
+		this.mockPkiProvider.storeDeviceUserAttribute(deviceSubject);
 
 		AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
 		expect(this.mockAttributeTypeDAO.getAttributeType(surnameAttribute))

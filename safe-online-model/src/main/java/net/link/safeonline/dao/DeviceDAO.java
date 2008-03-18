@@ -30,7 +30,8 @@ public interface DeviceDAO {
 	DeviceEntity addDevice(String name, DeviceClassEntity deviceClass,
 			OlasEntity node, String authenticationURL, String registrationURL,
 			String removalURL, String updateURL, X509Certificate certificate,
-			AttributeTypeEntity attributeType);
+			AttributeTypeEntity attributeType,
+			AttributeTypeEntity userAttributeType);
 
 	List<DeviceEntity> listDevices();
 

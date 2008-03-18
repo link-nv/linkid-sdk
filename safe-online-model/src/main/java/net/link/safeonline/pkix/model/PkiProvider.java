@@ -82,6 +82,18 @@ public interface PkiProvider {
 			throws DeviceNotFoundException, AttributeNotFoundException;
 
 	/**
+	 * Store the device usere attribute related to this PKI device. This
+	 * attribute will be shown to the user for visualization of his registered
+	 * PKI device.
+	 * 
+	 * @param subject
+	 * @throws DeviceNotFoundException
+	 * @throws AttributeNotFoundException
+	 */
+	void storeDeviceUserAttribute(SubjectEntity subject)
+			throws DeviceNotFoundException, AttributeNotFoundException;
+
+	/**
 	 * Gives back the identifier domain name.
 	 * 
 	 */

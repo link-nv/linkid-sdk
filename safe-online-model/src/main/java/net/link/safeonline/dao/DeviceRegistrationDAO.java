@@ -23,9 +23,9 @@ public interface DeviceRegistrationDAO {
 	public List<DeviceRegistrationEntity> listRegisteredDevices(
 			SubjectEntity subject);
 
-	public DeviceRegistrationEntity findRegisteredDevice(SubjectEntity subject,
-			DeviceEntity device);
-
 	public DeviceRegistrationEntity findRegisteredDevice(String id);
+
+	public List<DeviceRegistrationEntity> listRegisteredDevices(
+			SubjectEntity subject, DeviceEntity device);
 
 }

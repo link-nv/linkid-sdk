@@ -13,6 +13,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -60,11 +61,11 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	private PasswordDeviceService passwordDeviceService;
 
 	public void registerUser(String login, String password)
-			throws ExistingUserException, AttributeTypeNotFoundException {
+			throws ExistingUserException, AttributeTypeNotFoundException,
+			SubjectNotFoundException, DeviceNotFoundException {
 		LOG.debug("register user: " + login);
-		SubjectEntity newSubject = this.userRegistrationManager
-				.registerUser(login);
-		this.passwordDeviceService.register(newSubject, password);
+		this.userRegistrationManager.registerUser(login);
+		this.passwordDeviceService.register(login, password);
 	}
 
 	public SubjectEntity checkLogin(String login) throws ExistingUserException,

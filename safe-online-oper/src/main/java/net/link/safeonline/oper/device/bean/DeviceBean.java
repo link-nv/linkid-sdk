@@ -100,6 +100,8 @@ public class DeviceBean implements Device {
 
 	private String attributeType;
 
+	private String userAttributeType;
+
 	/*
 	 * Seam Data models
 	 */
@@ -216,7 +218,7 @@ public class DeviceBean implements Device {
 			this.deviceService.addDevice(this.name, this.deviceClass,
 					this.node, this.authenticationURL, this.registrationURL,
 					this.removalURL, this.updateURL, encodedCertificate,
-					this.attributeType);
+					this.attributeType, this.userAttributeType);
 		} catch (CertificateEncodingException e) {
 			LOG.debug("X509 certificate encoding error");
 			this.facesMessages.addToControlFromResourceBundle("fileupload",
@@ -286,6 +288,8 @@ public class DeviceBean implements Device {
 		this.registrationURL = this.selectedDevice.getRegistrationURL();
 		this.removalURL = this.selectedDevice.getRemovalURL();
 		this.attributeType = this.selectedDevice.getAttributeType().getName();
+		this.userAttributeType = this.selectedDevice.getUserAttributeType()
+				.getName();
 
 		return "edit";
 	}
@@ -354,6 +358,26 @@ public class DeviceBean implements Device {
 				return null;
 			}
 		}
+
+		if (null != this.userAttributeType) {
+			LOG.debug("updating user attribute type");
+			try {
+				this.deviceService.updateUserAttributeType(deviceName,
+						this.userAttributeType);
+			} catch (DeviceNotFoundException e) {
+				LOG.debug("device not found");
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
+				return null;
+			} catch (AttributeTypeNotFoundException e) {
+				LOG.debug("attribute type not found");
+				this.facesMessages.addFromResourceBundle(
+						FacesMessage.SEVERITY_ERROR,
+						"errorAttributeTypeNotFound");
+				return null;
+			}
+		}
+
 		/*
 		 * Refresh the device
 		 */
@@ -467,4 +491,13 @@ public class DeviceBean implements Device {
 		this.attributeType = attributeType;
 	}
 
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public String getUserAttributeType() {
+		return this.userAttributeType;
+	}
+
+	@RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+	public void setUserAttributeType(String userAttributeType) {
+		this.userAttributeType = userAttributeType;
+	}
 }

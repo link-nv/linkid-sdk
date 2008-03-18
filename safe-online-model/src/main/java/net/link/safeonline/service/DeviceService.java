@@ -63,9 +63,10 @@ public interface DeviceService {
 	void addDevice(String name, String deviceClassName, String nodeName,
 			String authenticationURL, String registrationURL,
 			String removalURL, String updateURL, byte[] encodedCertificate,
-			String attributeTypeName) throws CertificateEncodingException,
-			DeviceClassNotFoundException, ExistingDeviceException,
-			AttributeTypeNotFoundException, NodeNotFoundException;
+			String attributeTypeName, String userAttributeTypeName)
+			throws CertificateEncodingException, DeviceClassNotFoundException,
+			ExistingDeviceException, AttributeTypeNotFoundException,
+			NodeNotFoundException;
 
 	void removeDevice(String name) throws DeviceNotFoundException,
 			DeviceDescriptionNotFoundException,
@@ -120,4 +121,6 @@ public interface DeviceService {
 	void updateAttributeType(String deviceName, String attributeType)
 			throws DeviceNotFoundException, AttributeTypeNotFoundException;
 
+	void updateUserAttributeType(String deviceName, String userAttributeType)
+			throws DeviceNotFoundException, AttributeTypeNotFoundException;
 }

@@ -8,7 +8,7 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.DeviceRegistrationEntity.QUERY_LIST_SUBJECT;
-import static net.link.safeonline.entity.DeviceRegistrationEntity.QUERY_SUBJECT_DEVICE;
+import static net.link.safeonline.entity.DeviceRegistrationEntity.QUERY_LIST_SUBJECT_DEVICE;
 
 import java.io.Serializable;
 import java.util.List;
@@ -34,7 +34,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 		@NamedQuery(name = QUERY_LIST_SUBJECT, query = "SELECT d "
 				+ "FROM DeviceRegistrationEntity AS d "
 				+ "WHERE d.subject = :subject"),
-		@NamedQuery(name = QUERY_SUBJECT_DEVICE, query = "SELECT d "
+		@NamedQuery(name = QUERY_LIST_SUBJECT_DEVICE, query = "SELECT d "
 				+ "FROM DeviceRegistrationEntity AS d "
 				+ "WHERE d.subject = :subject AND d.device = :device") })
 public class DeviceRegistrationEntity implements Serializable {
@@ -43,7 +43,7 @@ public class DeviceRegistrationEntity implements Serializable {
 
 	public static final String QUERY_LIST_SUBJECT = "dev.reg.sub";
 
-	public static final String QUERY_SUBJECT_DEVICE = "dev.reg.subdev";
+	public static final String QUERY_LIST_SUBJECT_DEVICE = "dev.reg.subdev";
 
 	private SubjectEntity subject;
 
@@ -111,10 +111,11 @@ public class DeviceRegistrationEntity implements Serializable {
 	}
 
 	public interface QueryInterface {
-		@QueryMethod(value = QUERY_SUBJECT_DEVICE, nullable = true)
-		DeviceRegistrationEntity getRegisteredDevice(@QueryParam("subject")
-		SubjectEntity subject, @QueryParam("device")
-		DeviceEntity device);
+		@QueryMethod(value = QUERY_LIST_SUBJECT_DEVICE, nullable = true)
+		List<DeviceRegistrationEntity> listRegisteredDevices(
+				@QueryParam("subject")
+				SubjectEntity subject, @QueryParam("device")
+				DeviceEntity device);
 
 		@QueryMethod(QUERY_LIST_SUBJECT)
 		List<DeviceRegistrationEntity> listRegisteredDevices(

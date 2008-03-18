@@ -57,11 +57,13 @@ public class DeviceDAOBean implements DeviceDAO {
 	public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass,
 			OlasEntity node, String authenticationURL, String registrationURL,
 			String removalURL, String updateURL, X509Certificate certificate,
-			AttributeTypeEntity attributeType) {
+			AttributeTypeEntity attributeType,
+			AttributeTypeEntity userAttributeType) {
 		DeviceEntity device = new DeviceEntity(name, deviceClass, node,
 				authenticationURL, registrationURL, removalURL, updateURL,
 				certificate);
 		device.setAttributeType(attributeType);
+		device.setUserAttributeType(userAttributeType);
 		this.entityManager.persist(device);
 		return device;
 	}

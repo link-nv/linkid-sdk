@@ -65,6 +65,7 @@ import net.link.safeonline.entity.DeviceDescriptionPK;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
 import net.link.safeonline.entity.DevicePropertyPK;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.OlasEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -289,10 +290,14 @@ public abstract class AbstractInitBean implements Startable {
 
 		final AttributeTypeEntity deviceAttribute;
 
+		final AttributeTypeEntity deviceUserAttribute;
+
 		public Device(String deviceName, String deviceClassName,
 				String nodeName, String authenticationURL,
 				String registrationURL, String removalURL, String updateURL,
-				X509Certificate certificate, AttributeTypeEntity deviceAttribute) {
+				X509Certificate certificate,
+				AttributeTypeEntity deviceAttribute,
+				AttributeTypeEntity deviceUserAttribute) {
 			this.deviceName = deviceName;
 			this.deviceClassName = deviceClassName;
 			this.nodeName = nodeName;
@@ -302,6 +307,7 @@ public abstract class AbstractInitBean implements Startable {
 			this.updateURL = updateURL;
 			this.certificate = certificate;
 			this.deviceAttribute = deviceAttribute;
+			this.deviceUserAttribute = deviceUserAttribute;
 		}
 	}
 
@@ -717,15 +723,18 @@ public abstract class AbstractInitBean implements Startable {
 				continue;
 			subject = this.subjectService.addSubject(login);
 
+			DeviceRegistrationEntity deviceRegistrationEntity = this.deviceRegistrationService
+					.registerDevice(subject.getUserId(),
+							SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+			SubjectEntity deviceSubject = this.subjectService
+					.addDeviceSubject(deviceRegistrationEntity.getId());
 			AuthenticationDevice device = authorizedUser.getValue();
 			String password = device.password;
 			try {
-				this.passwordManager.setPassword(subject, password);
+				this.passwordManager.setPassword(deviceSubject, password);
 			} catch (PermissionDeniedException e) {
 				throw new EJBException("could not set password");
 			}
-			this.deviceRegistrationService.registerDevice(subject.getUserId(),
-					SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 
 		}
 	}
@@ -812,12 +821,17 @@ public abstract class AbstractInitBean implements Startable {
 			if (deviceEntity == null) {
 				DeviceClassEntity deviceClassEntity = this.deviceClassDAO
 						.getDeviceClass(device.deviceClassName);
-				OlasEntity olasNode = this.olasDAO.getNode(device.nodeName);
+				OlasEntity olasNode = null;
+				/*
+				 * If no node, local device
+				 */
+				if (null != device.nodeName)
+					olasNode = this.olasDAO.getNode(device.nodeName);
 				deviceEntity = this.deviceDAO.addDevice(device.deviceName,
 						deviceClassEntity, olasNode, device.authenticationURL,
 						device.registrationURL, device.removalURL,
 						device.updateURL, device.certificate,
-						device.deviceAttribute);
+						device.deviceAttribute, device.deviceUserAttribute);
 			}
 		}
 	}

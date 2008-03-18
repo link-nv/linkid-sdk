@@ -51,6 +51,21 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 	private static final Log LOG = LogFactory
 			.getLog(ProxyAttributeServiceBean.class);
 
+	public Object getDeviceAttributeValue(String deviceUserId,
+			String attributeName) throws AttributeTypeNotFoundException,
+			PermissionDeniedException {
+		LOG.debug("get device attribute " + attributeName + " for "
+				+ deviceUserId);
+		AttributeTypeEntity attributeType = this.attributeTypeDAO
+				.getAttributeType(attributeName);
+
+		if (isLocalAttribute(attributeType))
+			return getLocalAttribute(deviceUserId, attributeType);
+
+		return getRemoteAttribute(deviceUserId, attributeType);
+
+	}
+
 	public Object getAttributeValue(String userId, String attributeName)
 			throws PermissionDeniedException, SubjectNotFoundException,
 			AttributeTypeNotFoundException {

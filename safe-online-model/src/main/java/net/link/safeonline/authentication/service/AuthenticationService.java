@@ -107,9 +107,11 @@ public interface AuthenticationService {
 	 * did not yet had a password registered as authentication device.
 	 * 
 	 * @param password
+	 * @throws DeviceNotFoundException
 	 * @throws PermissionDeniedException
 	 */
-	void setPassword(String password) throws PermissionDeniedException;
+	void setPassword(String login, String password)
+			throws SubjectNotFoundException, DeviceNotFoundException;
 
 	/**
 	 * Aborts the current authentication procedure.

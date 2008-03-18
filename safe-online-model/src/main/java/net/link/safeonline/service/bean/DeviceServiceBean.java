@@ -174,9 +174,10 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 	public void addDevice(String name, String deviceClassName, String nodeName,
 			String authenticationURL, String registrationURL,
 			String removalURL, String updateURL, byte[] encodedCertificate,
-			String attributeTypeName) throws CertificateEncodingException,
-			DeviceClassNotFoundException, ExistingDeviceException,
-			AttributeTypeNotFoundException, NodeNotFoundException {
+			String attributeTypeName, String userAttributeTypeName)
+			throws CertificateEncodingException, DeviceClassNotFoundException,
+			ExistingDeviceException, AttributeTypeNotFoundException,
+			NodeNotFoundException {
 		checkExistingDevice(name);
 		LOG.debug("add device: " + name);
 
@@ -187,11 +188,13 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 				.getDeviceClass(deviceClassName);
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.getAttributeType(attributeTypeName);
+		AttributeTypeEntity userAttributeType = this.attributeTypeDAO
+				.getAttributeType(userAttributeTypeName);
 		OlasEntity node = this.olasDAO.getNode(nodeName);
 
 		this.deviceDAO.addDevice(name, deviceClass, node, authenticationURL,
 				registrationURL, removalURL, updateURL, certificate,
-				attributeType);
+				attributeType, userAttributeType);
 	}
 
 	private void checkExistingDevice(String name)
@@ -349,6 +352,16 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 				.getAttributeType(attributeTypeName);
 		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
 		device.setAttributeType(attributeType);
+	}
+
+	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+	public void updateUserAttributeType(String deviceName,
+			String userAttributeTypeName) throws DeviceNotFoundException,
+			AttributeTypeNotFoundException {
+		AttributeTypeEntity userAttributeType = this.attributeTypeDAO
+				.getAttributeType(userAttributeTypeName);
+		DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+		device.setUserAttributeType(userAttributeType);
 	}
 
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

@@ -41,9 +41,9 @@ public class DeviceRegistrationDAOBean implements DeviceRegistrationDAO {
 
 	@PostConstruct
 	public void postConstructCallback() {
-		this.queryObject = QueryObjectFactory
-				.createQueryObject(this.entityManager,
-						DeviceRegistrationEntity.QueryInterface.class);
+		this.queryObject = QueryObjectFactory.createQueryObject(
+				this.entityManager,
+				DeviceRegistrationEntity.QueryInterface.class);
 	}
 
 	public DeviceRegistrationEntity addRegisteredDevice(SubjectEntity subject,
@@ -58,16 +58,16 @@ public class DeviceRegistrationDAOBean implements DeviceRegistrationDAO {
 		return registeredDevice;
 	}
 
-	public DeviceRegistrationEntity findRegisteredDevice(SubjectEntity subject,
-			DeviceEntity device) {
-
-		return this.queryObject.getRegisteredDevice(subject, device);
-	}
-
 	public List<DeviceRegistrationEntity> listRegisteredDevices(
 			SubjectEntity subject) {
 
 		return this.queryObject.listRegisteredDevices(subject);
+	}
+
+	public List<DeviceRegistrationEntity> listRegisteredDevices(
+			SubjectEntity subject, DeviceEntity device) {
+
+		return this.queryObject.listRegisteredDevices(subject, device);
 	}
 
 	public DeviceRegistrationEntity findRegisteredDevice(String id) {

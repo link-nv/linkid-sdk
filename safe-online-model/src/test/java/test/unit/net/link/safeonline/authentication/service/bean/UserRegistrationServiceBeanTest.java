@@ -9,6 +9,7 @@ package test.unit.net.link.safeonline.authentication.service.bean;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -20,15 +21,21 @@ import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
+import net.link.safeonline.dao.bean.DeviceDAOBean;
 import net.link.safeonline.device.backend.PasswordManager;
 import net.link.safeonline.device.backend.bean.PasswordManagerBean;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
+import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.service.bean.DeviceRegistrationServiceBean;
 import net.link.safeonline.service.bean.SubjectServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
@@ -130,20 +137,33 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 				entityManager);
 		AttributeEntity loginAttribute = attributeDAO.getAttribute(
 				loginAttributeType, resultSubject);
+		DeviceDAO deviceDAO = EJBTestUtils.newInstance(DeviceDAOBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
+		DeviceEntity device = deviceDAO
+				.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+		DeviceRegistrationService deviceRegistrationService = EJBTestUtils
+				.newInstance(DeviceRegistrationServiceBean.class,
+						SafeOnlineTestContainer.sessionBeans, entityManager);
+		List<DeviceRegistrationEntity> deviceRegistrations = deviceRegistrationService
+				.listDeviceRegistrations(resultSubject, device);
+
+		assertEquals(1, deviceRegistrations.size());
+
+		SubjectEntity deviceSubject = subjectService
+				.getSubject(deviceRegistrations.get(0).getId());
 
 		assertEquals(testLogin, loginAttribute.getValue());
-		// assertEquals(testLogin, resultSubject.getLogin());
 
 		PasswordManager passwordManager = EJBTestUtils.newInstance(
 				PasswordManagerBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager);
 
 		boolean isPasswordConfigured = passwordManager
-				.isPasswordConfigured(resultSubject);
+				.isPasswordConfigured(deviceSubject);
 		assertTrue(isPasswordConfigured);
 
 		boolean isPasswordCorrect = passwordManager.validatePassword(
-				resultSubject, testPassword);
+				deviceSubject, testPassword);
 
 		assertTrue(isPasswordCorrect);
 

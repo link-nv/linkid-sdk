@@ -26,6 +26,17 @@
 					<f:facet name="header">#{msgs.name}</f:facet>
 					<h:outputText value="#{item.friendlyName}" />
 				</h:column>
+
+				<h:column>
+					<h:dataTable id="registeredDevices" var="item2"
+						value="#{item.registeredDevices}" styleClass="listingTable"
+						rowClasses="listingTable_Row1,listingTable_Row2">
+						<h:column>
+							<so:outputAttribute value="#{item2}" />
+						</h:column>
+					</h:dataTable>
+				</h:column>
+
 				<h:column>
 					<f:facet name="header">#{msgs.deviceActions}</f:facet>
 					<h:commandLink action="#{devicesBean.register}" id="register"

@@ -13,13 +13,12 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.LastDeviceException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.CredentialServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.backend.PasswordManager;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.util.ee.SecurityManagerUtils;
@@ -45,14 +44,12 @@ public class CredentialServiceBean implements CredentialService,
 	private SubjectManager subjectManager;
 
 	@EJB
-	private PasswordManager passwordController;
-
-	@EJB
 	private PasswordDeviceService passwordDeviceService;
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void changePassword(String oldPassword, String newPassword)
-			throws PermissionDeniedException, DeviceNotFoundException {
+			throws PermissionDeniedException, DeviceNotFoundException,
+			SubjectNotFoundException {
 		LOG.debug("change password");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 
@@ -64,7 +61,7 @@ public class CredentialServiceBean implements CredentialService,
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void removePassword(String password) throws DeviceNotFoundException,
-			PermissionDeniedException, LastDeviceException {
+			PermissionDeniedException, SubjectNotFoundException {
 		LOG.debug("remove password");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 
@@ -75,8 +72,9 @@ public class CredentialServiceBean implements CredentialService,
 	}
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
-	public boolean isPasswordConfigured() {
+	public boolean isPasswordConfigured() throws SubjectNotFoundException,
+			DeviceNotFoundException {
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		return this.passwordController.isPasswordConfigured(subject);
+		return this.passwordDeviceService.isPasswordConfigured(subject);
 	}
 }

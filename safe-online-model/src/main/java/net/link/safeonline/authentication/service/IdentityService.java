@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEntity;
 
 /**
@@ -68,10 +69,15 @@ public interface IdentityService {
 	 * 
 	 * @param deviceId
 	 * @param locale
+	 * @throws AttributeTypeNotFoundException
+	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
 	 * @throws DeviceNotFoundException
 	 */
-	List<AttributeDO> listAttributes(String deviceId, Locale locale)
-			throws DeviceNotFoundException;
+	List<AttributeDO> listAttributes(String deviceId,
+			AttributeTypeEntity attributeType, Locale locale)
+			throws SubjectNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException;
 
 	/**
 	 * Checks whether confirmation is required over the usage of the identity

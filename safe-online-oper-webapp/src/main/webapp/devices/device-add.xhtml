@@ -65,14 +65,25 @@
 					<h:inputText id="remUrl" value="#{operDevice.removalURL}"
 						styleClass="label" />
 					<h:message for="remUrl" styleClass="error" />
+					<h:outputLabel for="updateUrl" value="#{msgs.updateUrl}" />
+					<h:inputText id="updateUrl" value="#{operDevice.updateURL}"
+						styleClass="label" />
+					<h:message for="updateUrl" styleClass="error" />
 
 				</rich:tab>
 
 				<rich:tab id="attrib-tab" label="#{msgs.attribute}">
 
-					<h:outputLabel for="attribute-type" value="#{msgs.attribute}" />
+					<h:outputLabel for="attribute-type" value="#{msgs.deviceAttribute}" />
 					<h:selectOneMenu id="attribute-type"
 						value="#{operDevice.attributeType}" styleClass="label">
+						<f:selectItems value="#{attributeTypes}" />
+					</h:selectOneMenu>
+
+					<h:outputLabel for="user-attribute-type"
+						value="#{msgs.deviceUserAttribute}" />
+					<h:selectOneMenu id="user-attribute-type"
+						value="#{operDevice.userAttributeType}" styleClass="label">
 						<f:selectItems value="#{attributeTypes}" />
 					</h:selectOneMenu>
 

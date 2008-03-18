@@ -106,13 +106,29 @@
 				</h:form>
 			</rich:tab>
 
-			<rich:tab id="attribute-tab" label="#{msgs.attribute}">
+			<rich:tab id="attribute-tab" label="#{msgs.deviceAttribute}">
 				<h:outputText id="attribute-name"
 					value="#{selectedDevice.attributeType.name}" />
 
 				<h:dataTable id="compounded-members" var="item"
 					value="#{selectedDevice.attributeType.members}"
 					rendered="#{selectedDevice.attributeType.compounded}"
+					styleClass="listingTable"
+					rowClasses="listingTable_Row1,listingTable_Row2">
+					<h:column>
+						<f:facet name="header">#{msgs.memberAttributes}</f:facet>
+						<h:outputText value="#{item.member.name}" />
+					</h:column>
+				</h:dataTable>
+			</rich:tab>
+
+			<rich:tab id="user-attribute-tab" label="#{msgs.deviceUserAttribute}">
+				<h:outputText id="user-attribute-name"
+					value="#{selectedDevice.userAttributeType.name}" />
+
+				<h:dataTable id="user-compounded-members" var="item"
+					value="#{selectedDevice.userAttributeType.members}"
+					rendered="#{selectedDevice.userAttributeType.compounded}"
 					styleClass="listingTable"
 					rowClasses="listingTable_Row1,listingTable_Row2">
 					<h:column>

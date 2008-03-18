@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -40,10 +41,13 @@ public interface UserRegistrationService {
 	 * @throws NoSuchAlgorithmException
 	 * @throws SubjectIdNotUniqueException
 	 * @throws AttributeTypeNotFoundException
+	 * @throws DeviceNotFoundException
+	 * @throws SubjectNotFoundException
 	 * @throws SubjectNotFoundException
 	 */
 	void registerUser(String login, String password)
-			throws ExistingUserException, AttributeTypeNotFoundException;
+			throws ExistingUserException, AttributeTypeNotFoundException,
+			SubjectNotFoundException, DeviceNotFoundException;
 
 	/**
 	 * Checks whether the given login name already exists and has completed

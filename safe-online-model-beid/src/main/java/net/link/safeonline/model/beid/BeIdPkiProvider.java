@@ -205,6 +205,21 @@ public class BeIdPkiProvider implements PkiProvider {
 					BeIdConstants.NRN_ATTRIBUTE, subject));
 			deviceAttributeMembers.add(this.attributeDAO.getAttribute(
 					BeIdConstants.SURNAME_ATTRIBUTE, subject));
+			deviceAttribute.setMembers(deviceAttributeMembers);
+		}
+	}
+
+	public void storeDeviceUserAttribute(SubjectEntity subject)
+			throws DeviceNotFoundException, AttributeNotFoundException {
+		DeviceEntity device = this.deviceDAO
+				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+		AttributeTypeEntity deviceUserAttributeType = device
+				.getUserAttributeType();
+		AttributeEntity deviceUserAttribute = this.attributeDAO.findAttribute(
+				deviceUserAttributeType, subject);
+		if (null == deviceUserAttribute) {
+			deviceUserAttribute = this.attributeDAO.getAttribute(
+					BeIdConstants.NRN_ATTRIBUTE, subject);
 		}
 	}
 }
