@@ -214,9 +214,7 @@ public class ConsoleAgent implements Agent {
 	 */
 	public void setTransit(AgentState transit) {
 
-		this.transit = transit;
-
-		ConsoleData.fireAgentStatus(this);
+		notifyOnChange(this.transit, this.transit = transit);
 	}
 
 	/**
@@ -228,7 +226,7 @@ public class ConsoleAgent implements Agent {
 	 */
 	public void setError(Exception error) {
 
-		this.error = error;
+		notifyOnChange(this.error, this.error = error);
 	}
 
 	/**
@@ -303,7 +301,12 @@ public class ConsoleAgent implements Agent {
 		}
 
 		catch (Exception e) {
-			e.printStackTrace();
+			Exception cause = e;
+			while (cause.getCause() != null
+					&& cause.getCause() instanceof Exception)
+				cause = (Exception) cause.getCause();
+
+			setError(cause);
 		}
 	}
 
