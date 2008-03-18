@@ -202,16 +202,16 @@ public class ScenarioControllerBean implements ScenarioController {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ExecutionMetadata getExecutionMetadata(Date startTime) {
+	public ExecutionMetadata getExecutionMetadata(Date executionId) {
 
 		ExecutionEntity execution = this.executionService
-				.getExecution(startTime);
+				.getExecution(executionId);
 
 		return ExecutionMetadata.createResponse(execution.getScenarioName(),
-				getDescription(execution.getScenarioName()), execution
-						.getAgents(), execution.getWorkers(), execution
-						.getStartTime(), execution.getDuration(), execution
-						.getHostname(), execution.getSpeed());
+				getDescription(executionId), execution.getAgents(), execution
+						.getWorkers(), execution.getStartTime(), execution
+						.getDuration(), execution.getHostname(), execution
+						.getSpeed());
 	}
 
 	/**
