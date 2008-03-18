@@ -24,6 +24,13 @@
 		<h:form enctype="multipart/form-data">
 			<rich:tabPanel id="tabs" switchType="client">
 				<rich:tab id="generic-tab" label="#{msgs.generic}">
+					<h:outputLabel for="node" value="#{msgs.location}" />
+
+					<h:selectOneMenu id="node" value="#{operDevice.node}"
+						styleClass="label">
+						<f:selectItems value="#{nodes}" />
+					</h:selectOneMenu>
+
 
 					<h:outputLabel for="authenticationUrl"
 						value="#{msgs.authenticationUrl}" />

@@ -41,6 +41,10 @@ public interface Device {
 
 	void setDeviceClass(String deviceClass);
 
+	String getNode();
+
+	void setNode(String node);
+
 	String getAuthenticationURL();
 
 	void setAuthenticationURL(String authenticationURL);
@@ -73,6 +77,8 @@ public interface Device {
 	List<SelectItem> deviceClassesFactory();
 
 	List<SelectItem> attributeTypesFactory();
+
+	List<SelectItem> nodeFactory();
 
 	/*
 	 * Lifecycle.
