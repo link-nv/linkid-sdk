@@ -27,7 +27,7 @@ import javax.persistence.NamedQuery;
 @Entity
 @NamedQuery(name = DriverProfileEntity.findByExecution, query = "SELECT p"
 		+ "    FROM DriverProfileEntity p"
-		+ "    WHERE p.driverName = :driverName AND p.execution = :execution")
+		+ "    WHERE p.driverClassName = :driverClassName AND p.execution = :execution")
 public class DriverProfileEntity {
 
 	public static final String findByExecution = "DriverProfileEntity.findByExecution";
