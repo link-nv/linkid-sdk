@@ -84,4 +84,10 @@ public interface Chart {
 	 */
 	public byte[][] render(int dataPoints);
 
+	/**
+	 * Post-process data. This step occurs after all data, errors and timings
+	 * have been processed.
+	 */
+	public void postProcess();
+
 }

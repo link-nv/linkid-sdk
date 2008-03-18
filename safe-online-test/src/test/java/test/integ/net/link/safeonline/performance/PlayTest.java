@@ -17,7 +17,6 @@ package test.integ.net.link.safeonline.performance;
 
 import java.util.Date;
 import java.util.List;
-import java.util.TreeSet;
 
 import javax.persistence.NoResultException;
 
@@ -167,17 +166,6 @@ public class PlayTest extends AbstractDataTest {
 
 		// System.out.println(" done.");
 		// }
-	}
-
-	/**
-	 * Get the most recent execution.
-	 */
-	private ExecutionEntity getLatestExecution() {
-
-		Date executionId = new TreeSet<Date>(this.executionService
-				.getExecutions()).last();
-
-		return this.executionService.getExecution(executionId);
 	}
 
 	public static void main(String[] args) throws Exception {

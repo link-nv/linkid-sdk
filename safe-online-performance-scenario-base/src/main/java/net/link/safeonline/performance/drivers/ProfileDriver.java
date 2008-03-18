@@ -12,9 +12,9 @@ import javax.naming.NamingException;
 import javax.naming.NoInitialContextException;
 
 import net.link.safeonline.performance.DriverException;
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
+import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.service.DriverExceptionService;
 import net.link.safeonline.performance.service.DriverProfileService;
 import net.link.safeonline.performance.service.ProfileDataService;
@@ -123,10 +123,6 @@ public abstract class ProfileDriver {
 			InitialContext initialContext = new InitialContext();
 			return service.cast(initialContext.lookup(binding));
 		} catch (NoInitialContextException e) {
-			this.LOG.warn("Initial context not set up; "
-					+ "assuming we're not running in an "
-					+ "enterprise container");
-
 			try {
 				return service.cast(Class.forName(
 						service.getName().replaceFirst("\\.([^\\.]*)$",

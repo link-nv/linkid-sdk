@@ -26,6 +26,7 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.util.filter.ProfileFilter;
 import net.link.safeonline.util.performance.ProfileData;
 
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -131,7 +132,7 @@ public class ScenarioDurationsChart extends AbstractChart {
 		if (isEmpty(this.driverSets))
 			return null;
 
-		ValueAxis domainAxis = getAxis();
+		ValueAxis domainAxis = new DateAxis("Time");
 		NumberAxis valueAxis = new NumberAxis("Duration (ms)");
 
 		DefaultTableXYDataset scenarioDuration = new DefaultTableXYDataset();

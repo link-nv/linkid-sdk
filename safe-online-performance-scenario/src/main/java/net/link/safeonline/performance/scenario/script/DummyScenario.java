@@ -14,6 +14,9 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.Chart;
 import net.link.safeonline.performance.scenario.charts.ScenarioDurationsChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioExceptionsChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioMemoryChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,6 +78,9 @@ public class DummyScenario implements Scenario {
 
 		List<Chart> charts = new ArrayList<Chart>();
 		charts.add(new ScenarioDurationsChart());
+		charts.add(new ScenarioMemoryChart());
+		charts.add(new ScenarioSpeedChart(5 * 60 * 1000));
+		charts.add(new ScenarioExceptionsChart());
 
 		return charts;
 	}

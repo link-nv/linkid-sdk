@@ -1,5 +1,8 @@
 package test.integ.net.link.safeonline.performance;
 
+import java.util.Date;
+import java.util.TreeSet;
+
 import javax.persistence.EntityManager;
 
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
@@ -79,6 +82,17 @@ public abstract class AbstractDataTest {
 			throw new RuntimeException("JPA annotations incorrect: "
 					+ e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * Get the most recent execution.
+	 */
+	public ExecutionEntity getLatestExecution() {
+
+		Date executionId = new TreeSet<Date>(this.executionService
+				.getExecutions()).last();
+
+		return this.executionService.getExecution(executionId);
 	}
 
 	/**

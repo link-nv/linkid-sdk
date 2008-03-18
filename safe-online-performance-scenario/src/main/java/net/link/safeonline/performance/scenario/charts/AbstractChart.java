@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -62,6 +63,7 @@ import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.renderer.xy.StackedXYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYAreaRenderer2;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.Range;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Series;
 import org.jfree.data.general.SeriesException;
@@ -118,27 +120,15 @@ public abstract class AbstractChart implements Chart {
 	protected String title;
 	private boolean linked;
 	private List<AbstractChart> links;
-	private ValueAxis sharedAxis;
+
+	private XYPlot plot;
+	private static Map<Collection<Chart>, Range> sharedRangesMap = new HashMap<Collection<Chart>, Range>();
 
 	public AbstractChart(String title) {
 
 		this.title = title;
 		this.linked = false;
 		this.links = new ArrayList<AbstractChart>();
-	}
-
-
-	protected ValueAxis getAxis() {
-
-		System.err.print(getClass() + ": ");
-
-		if (this.sharedAxis != null) {
-			System.err.println("shared.");
-			return this.sharedAxis;
-		}
-
-		System.err.println("new.");
-		return new DateAxis("Time");
 	}
 
 	/**
@@ -151,22 +141,56 @@ public abstract class AbstractChart implements Chart {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * Post-processing here calculates ranges for shared axes.<br>
+	 * We also cache the plot for use in {@link #render(int)}.
+	 */
+	public void postProcess() {
+
+		this.plot = getPlot();
+
+		for (Map.Entry<Collection<Chart>, Range> entry : sharedRangesMap
+				.entrySet()) {
+			Collection<Chart> charts = entry.getKey();
+			Range range = entry.getValue();
+
+			if (charts.contains(this)) {
+				Range plotRange = this.plot.getDomainAxis().getRange();
+				sharedRangesMap.put(charts, Range.combine(range, plotRange));
+
+				break;
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public byte[][] render(int dataPoints) {
 
-		// Don't render when linked.
-		if (this.linked)
+		// Don't render when linked or when no plot was prepared.
+		if (this.linked || this.plot == null)
 			return null;
 
-		XYPlot plot = getPlot();
-		if (plot == null)
-			return null;
+		// Apply the shared range if this chart is in the shared ranges map.
+		for (Map.Entry<Collection<Chart>, Range> entry : sharedRangesMap
+				.entrySet()) {
+			Collection<Chart> charts = entry.getKey();
+			Range range = entry.getValue();
 
+			if (charts.contains(this)) {
+				this.plot.getDomainAxis().setRange(range);
+
+				break;
+			}
+		}
+
+		// Shove all linked charts in one plot.
 		if (!this.links.isEmpty()) {
-			XYPlot basePlot = plot;
+			XYPlot basePlot = this.plot;
 			CombinedDomainXYPlot combinedPlot;
 
-			plot = combinedPlot = new CombinedDomainXYPlot(basePlot
+			this.plot = combinedPlot = new CombinedDomainXYPlot(basePlot
 					.getDomainAxis());
 
 			combinedPlot.add(basePlot);
@@ -178,8 +202,9 @@ public abstract class AbstractChart implements Chart {
 			}
 		}
 
+		// Not linked, add average markers.
 		else {
-			XYDataset set = plot.getDataset();
+			XYDataset set = this.plot.getDataset();
 			if (set != null)
 				for (int i = 0; i < set.getSeriesCount(); ++i) {
 					double sum = 0;
@@ -190,11 +215,11 @@ public abstract class AbstractChart implements Chart {
 							/ set.getItemCount(i));
 					marker.setLabel("Average " + i + "                ");
 					marker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
-					plot.addRangeMarker(marker);
+					this.plot.addRangeMarker(marker);
 				}
 		}
 
-		JFreeChart chart = new JFreeChart(plot);
+		JFreeChart chart = new JFreeChart(this.plot);
 		return new byte[][] { getImage(chart, dataPoints) };
 	}
 
@@ -312,10 +337,6 @@ public abstract class AbstractChart implements Chart {
 			InitialContext initialContext = new InitialContext();
 			return service.cast(initialContext.lookup(binding));
 		} catch (NoInitialContextException e) {
-			this.LOG.warn("Initial context not set up; "
-					+ "assuming we're not running in an "
-					+ "enterprise container");
-
 			try {
 				return service.cast(Class.forName(
 						service.getName().replaceFirst("\\.([^\\.]*)$",
@@ -737,10 +758,8 @@ public abstract class AbstractChart implements Chart {
 		return charts;
 	}
 
-	public static void sharedTimeAxis(List<AbstractChart> charts) {
+	public static void sharedTimeAxis(Collection<Chart> charts) {
 
-		ValueAxis axis = new DateAxis("Time");
-		for (AbstractChart chart : charts)
-			chart.sharedAxis = axis;
+		sharedRangesMap.put(charts, null);
 	}
 }

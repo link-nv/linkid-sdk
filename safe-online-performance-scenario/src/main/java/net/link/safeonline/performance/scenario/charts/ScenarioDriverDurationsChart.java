@@ -22,6 +22,7 @@ import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.util.performance.ProfileData;
 
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
@@ -114,7 +115,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 		if (isEmpty())
 			return null;
 
-		ValueAxis domainAxis = getAxis();
+		ValueAxis domainAxis = new DateAxis("Time");
 		CombinedDomainXYPlot plot = new CombinedDomainXYPlot(domainAxis);
 
 		for (Map.Entry<String, Map<String, XYSeries>> driverSet : this.driverMaps
@@ -125,7 +126,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 			for (XYSeries measurements : driverSet.getValue().values())
 				driverMeasurements.addSeries(measurements);
 
-			plot.add(new XYPlot(driverMeasurements, domainAxis, valueAxis,
+			plot.add(new XYPlot(driverMeasurements, null, valueAxis,
 					new StackedXYBarRenderer()));
 		}
 

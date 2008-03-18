@@ -20,6 +20,7 @@ import java.util.Map;
 
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
 
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
@@ -88,7 +89,7 @@ public class ScenarioExceptionsChart extends AbstractChart {
 		if (isEmpty())
 			return null;
 
-		ValueAxis domainAxis = getAxis();
+		ValueAxis domainAxis = new DateAxis("Time");
 		CombinedDomainXYPlot errorPlot = new CombinedDomainXYPlot(domainAxis);
 
 		for (Map.Entry<String, Map<String, TimeSeries>> driver : this.errorMaps
@@ -98,8 +99,7 @@ public class ScenarioExceptionsChart extends AbstractChart {
 			for (TimeSeries errorSet : driver.getValue().values())
 				errorCollection.addSeries(errorSet);
 
-			errorPlot.add(new XYPlot(errorCollection, domainAxis,
-					new NumberAxis(
+			errorPlot.add(new XYPlot(errorCollection, null, new NumberAxis(
 					driver.getKey() + " (errors)"), new XYBarRenderer()));
 		}
 

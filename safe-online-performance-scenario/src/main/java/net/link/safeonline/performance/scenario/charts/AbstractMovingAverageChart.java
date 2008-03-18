@@ -25,6 +25,7 @@ import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -178,13 +179,12 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 		if (this.averageSeries.isEmpty())
 			return null;
 
-		ValueAxis domainAxis = getAxis();
+		ValueAxis domainAxis = new DateAxis("Time");
 
 		TimeSeriesCollection speedSet;
 		speedSet = new TimeSeriesCollection(this.averageSeries);
 
-		return new XYPlot(speedSet, domainAxis,
-				new NumberAxis(this.rangeAxisName), new XYLineAndShapeRenderer(
-						true, false));
+		return new XYPlot(speedSet, domainAxis, new NumberAxis(
+				this.rangeAxisName), new XYLineAndShapeRenderer(true, false));
 	}
 }

@@ -18,11 +18,11 @@ package test.integ.net.link.safeonline.performance;
 import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -38,8 +38,10 @@ import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.scenario.Scenario;
+import net.link.safeonline.performance.scenario.charts.AbstractChart;
 import net.link.safeonline.performance.scenario.charts.Chart;
-import net.link.safeonline.performance.scenario.charts.ScenarioDriverDurationsChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioExceptionsChart;
+import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 
 /**
  * <h2>{@link ChartsTest}<br>
@@ -81,23 +83,14 @@ public class ChartsTest extends AbstractDataTest {
 				.getExecution(new Date(1204796106 * 1000l));
 
 		// Chart modules to render.
-		ArrayList<Chart> charts = new ArrayList<Chart>();
-		charts.add(new ScenarioDriverDurationsChart());
+		Set<Chart> charts = new HashSet<Chart>();
+		charts.add(new ScenarioSpeedChart(60 * 1000));
+		charts.add(new ScenarioExceptionsChart());
+		AbstractChart.sharedTimeAxis(charts);
 
 		// Render and display the charts.
-		// displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
-		displayCharts(getAllCharts(execution));
-	}
-
-	/**
-	 * Get the most recent execution.
-	 */
-	private ExecutionEntity getLatestExecution() {
-
-		Date executionId = new TreeSet<Date>(this.executionService
-				.getExecutions()).last();
-
-		return this.executionService.getExecution(executionId);
+		 displayCharts(getCharts(execution, charts.toArray(new Chart[0])));
+		// displayCharts(getAllCharts(execution));
 	}
 
 	/**
@@ -162,7 +155,7 @@ public class ChartsTest extends AbstractDataTest {
 
 				// Show timing completion percentage.
 				if (++i % Math.max(1, t / 100) == 0)
-					this.LOG.debug(100 * i / t + "% ..");
+					this.LOG.debug("timing: " + 100 * i / t + "% ..");
 				if (this.datalimit != null && i > this.datalimit)
 					break;
 			}
@@ -208,7 +201,8 @@ public class ChartsTest extends AbstractDataTest {
 
 					// Show data completion percentage.
 					if (++j % Math.max(1, u / 100) == 0)
-						this.LOG.debug(100 * i / t + "%, 0%, " + 100 * j / u
+						this.LOG.debug("data  : " + 100 * i / t + "%, 0%, "
+								+ 100 * j / u
 								+ "% ..");
 					if (this.datalimit != null && j > this.datalimit)
 						break;
@@ -229,7 +223,8 @@ public class ChartsTest extends AbstractDataTest {
 
 					// Show data completion percentage.
 					if (++j % Math.max(1, u / 100) == 0)
-						this.LOG.debug(100 * i / t + "%, 50%, " + 100 * j / u
+						this.LOG.debug("errors: " + 100 * i / t + "%, 50%, "
+								+ 100 * j / u
 								+ "% ..");
 					if (this.datalimit != null && j > this.datalimit)
 						break;
@@ -241,6 +236,16 @@ public class ChartsTest extends AbstractDataTest {
 				this.LOG.debug(100 * i / t + "%, 100% ..");
 			if (this.datalimit != null && i > this.datalimit)
 				break;
+		}
+
+		// Post-process all charts.
+		i = 0;
+		t = charts.length;
+		for (Chart chart : charts) {
+			chart.postProcess();
+
+			if (++i % Math.max(1, t / 100) == 0)
+				this.LOG.debug("postp : " + 100 * i / t + "% ..");
 		}
 
 		// Render all charts to images.

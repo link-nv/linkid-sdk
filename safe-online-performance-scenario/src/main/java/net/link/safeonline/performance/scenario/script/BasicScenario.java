@@ -137,7 +137,7 @@ public class BasicScenario implements Scenario {
 	 */
 	public List<? extends Chart> getCharts() {
 
-		List<AbstractChart> charts = new ArrayList<AbstractChart>();
+		List<Chart> charts = new ArrayList<Chart>();
 		charts.add(new ScenarioDurationsChart());
 		charts.add(new ScenarioMemoryChart());
 		charts.add(new ScenarioSpeedChart(5 * 60 * 1000));

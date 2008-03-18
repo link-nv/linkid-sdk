@@ -18,6 +18,7 @@ package net.link.safeonline.performance.scenario.charts;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.util.performance.ProfileData;
 
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
@@ -94,7 +95,7 @@ public class ScenarioMemoryChart extends AbstractChart {
 		if (this.olasMemory.isEmpty() && this.agentMemory.isEmpty())
 			return null;
 
-		ValueAxis domainAxis = getAxis();
+		ValueAxis domainAxis = new DateAxis("Time");
 
 		TimeSeriesCollection olasSet, agentSet;
 		olasSet = new TimeSeriesCollection(this.olasMemory);
