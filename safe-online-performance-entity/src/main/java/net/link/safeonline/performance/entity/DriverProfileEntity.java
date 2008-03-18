@@ -37,7 +37,7 @@ public class DriverProfileEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
-	private String driverName;
+	private String driverClassName;
 
 	@ManyToOne
 	private ExecutionEntity execution;
@@ -45,18 +45,18 @@ public class DriverProfileEntity {
 	public DriverProfileEntity() {
 	}
 
-	public DriverProfileEntity(String driverName, ExecutionEntity execution) {
+	public DriverProfileEntity(String driverClassName, ExecutionEntity execution) {
 
-		this.driverName = driverName;
+		this.driverClassName = driverClassName;
 		this.execution = execution;
 	}
 
 	/**
-	 * @return The name of the driver that this profile applies to.
+	 * @return The name of the driver class that this profile applies to.
 	 */
-	public String getDriverName() {
+	public String getDriverClassName() {
 
-		return this.driverName;
+		return this.driverClassName;
 	}
 
 	/**

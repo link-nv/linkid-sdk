@@ -68,4 +68,14 @@ public class IdMappingDriver extends ProfileDriver {
 			report(service);
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDescription() {
+
+		return "<b>User ID Mapping Driver:</b><br>"
+				+ "Maps the <i>'performance'</i> username to a UUID for the <i>'performance-application'</i>.";
+	}
 }

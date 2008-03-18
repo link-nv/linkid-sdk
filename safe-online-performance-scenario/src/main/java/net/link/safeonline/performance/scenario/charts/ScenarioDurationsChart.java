@@ -146,10 +146,10 @@ public class ScenarioDurationsChart extends AbstractChart {
 
 	private XYSeries getDriverSet(DriverProfileEntity profile) {
 
-		XYSeries driverSet = this.driverSets.get(profile.getDriverName());
+		XYSeries driverSet = this.driverSets.get(profile.getDriverClassName());
 		if (driverSet == null)
-			this.driverSets.put(profile.getDriverName(),
-					driverSet = new XYSeries(profile.getDriverName(), true,
+			this.driverSets.put(profile.getDriverClassName(),
+					driverSet = new XYSeries(profile.getDriverClassName(), true,
 							false));
 
 		return driverSet;

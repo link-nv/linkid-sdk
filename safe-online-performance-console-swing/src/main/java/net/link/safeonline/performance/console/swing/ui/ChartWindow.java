@@ -18,7 +18,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -28,7 +27,6 @@ import javax.swing.WindowConstants;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
-import net.link.safeonline.performance.console.swing.data.ConsoleData;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.factories.Borders;
@@ -91,14 +89,6 @@ public class ChartWindow extends WindowAdapter {
 	}
 
 	public static void display(Map<ConsoleAgent, ScenarioExecution> agentCharts) {
-
-		ScenarioExecution execution = ConsoleData.getExecution();
-		if (execution == null) {
-			JOptionPane.showMessageDialog(null,
-					"No (valid) execution selected.",
-					"Couldn't find execution.", JOptionPane.WARNING_MESSAGE);
-			return;
-		}
 
 		if (instance == null)
 			instance = new ChartWindow();

@@ -117,7 +117,7 @@ public class ScenarioExceptionsChart extends AbstractChart {
 
 	private TimeSeries getErrorSet(DriverExceptionEntity error) {
 
-		String profile = error.getProfile().getDriverName();
+		String profile = error.getProfile().getDriverClassName();
 
 		Map<String, TimeSeries> driverMap = this.errorMaps.get(profile);
 		if (driverMap == null)

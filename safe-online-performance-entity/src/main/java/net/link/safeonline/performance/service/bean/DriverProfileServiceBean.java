@@ -42,10 +42,10 @@ public class DriverProfileServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public DriverProfileEntity addProfile(String driverName,
+	public DriverProfileEntity addProfile(String driverClassName,
 			ExecutionEntity execution) {
 
-		DriverProfileEntity profile = new DriverProfileEntity(driverName,
+		DriverProfileEntity profile = new DriverProfileEntity(driverClassName,
 				execution);
 		this.em.persist(profile);
 
@@ -56,24 +56,24 @@ public class DriverProfileServiceBean extends ProfilingServiceBean implements
 	 * {@inheritDoc}
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public DriverProfileEntity getProfile(String driverName,
+	public DriverProfileEntity getProfile(String driverClassName,
 			ExecutionEntity execution) {
 
 		try {
 			return (DriverProfileEntity) this.em.createNamedQuery(
 					DriverProfileEntity.findByExecution).setParameter(
-					"driverName", driverName).setParameter("execution",
+					"driverName", driverClassName).setParameter("execution",
 					execution).getSingleResult();
 		} catch (NoResultException e) {
 			if (this.ctx == null) {
 				LOG.warn("No EJB3 context found: "
 						+ "assuming we're running outside a container.");
 
-				return addProfile(driverName, execution);
+				return addProfile(driverClassName, execution);
 			}
 
 			return this.ctx.getBusinessObject(DriverProfileService.class)
-					.addProfile(driverName, execution);
+					.addProfile(driverClassName, execution);
 		}
 
 	}

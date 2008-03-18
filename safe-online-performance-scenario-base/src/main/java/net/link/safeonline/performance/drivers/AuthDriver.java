@@ -471,4 +471,14 @@ public class AuthDriver extends ProfileDriver {
 		return XPathAPI.selectSingleNode(resultDocument, "//form[@id='"
 				+ formId + "']");
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDescription() {
+
+		return "<b>Authentication Driver:</b><br>"
+				+ "Logs the <i>'performance'</i> user in for the <i>'performance-application'</i> and accepts any EULA and attribute sharing requests.";
+	}
 }

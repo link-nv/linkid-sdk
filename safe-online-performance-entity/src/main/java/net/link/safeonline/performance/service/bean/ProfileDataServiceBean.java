@@ -86,7 +86,7 @@ public class ProfileDataServiceBean extends ProfilingServiceBean implements
 		// Bail out of there is no data for this profile.
 		if (dataDuration == null || dataStart == null
 				|| dataDuration + dataStart == 0) {
-			LOG.warn("No data for profile: " + profile.getDriverName());
+			LOG.warn("No data for profile: " + profile.getDriverClassName());
 			return new ArrayList<ProfileDataEntity>();
 		}
 

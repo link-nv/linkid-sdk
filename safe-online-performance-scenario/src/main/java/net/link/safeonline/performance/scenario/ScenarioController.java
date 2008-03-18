@@ -63,6 +63,12 @@ public interface ScenarioController {
 	 */
 	public String getDescription(String scenario);
 
+	/**
+	 * Retrieve an HTML formatted description string for the given execution
+	 * (including the scenario and the drivers used by it).
+	 */
+	public String getDescription(Date executionId);
+
 
 	/**
 	 * Create charts on data collected in this scenario.

@@ -80,8 +80,9 @@ public class ConsoleData {
 	 */
 	public static synchronized Map<Address, ConsoleAgent> getAgents() {
 
-		return Collections.unmodifiableMap(new HashMap<Address, ConsoleAgent>(
-				ConsoleData.agents));
+		return Collections.unmodifiableMap(Collections
+				.synchronizedMap(new HashMap<Address, ConsoleAgent>(
+						ConsoleData.agents)));
 	}
 
 	/**
@@ -221,7 +222,8 @@ public class ConsoleData {
 	 */
 	public static Set<ConsoleAgent> getSelectedAgents() {
 
-		return Collections.unmodifiableSet(ConsoleData.selectedAgents);
+		return Collections.unmodifiableSet(Collections
+				.synchronizedSet(ConsoleData.selectedAgents));
 	}
 
 	/**

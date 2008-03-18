@@ -394,25 +394,25 @@ public abstract class AbstractChart implements Chart {
 					/ 1000f + " seconds");
 			start = System.currentTimeMillis();
 			this.LOG.debug("Profile: " + ++_profile + " / " + profiles.size()
-					+ ": " + profile.getDriverName());
+					+ ": " + profile.getDriverClassName());
 
 			List<ProfileDataEntity> profileData = this.profileDataService
 					.getProfileData(profile, dataPoints);
 
 			// Invalid / empty driver profiles.
-			if (profile.getDriverName() == null || profileData.isEmpty()) {
+			if (profile.getDriverClassName() == null || profileData.isEmpty()) {
 				this.LOG.debug("Invalid/empty driver profile: '"
-						+ profile.getDriverName() + "'!");
+						+ profile.getDriverClassName() + "'!");
 				continue;
 			}
 
 			// Dataset for a Bar Chart of method timings per iteration.
 			Map<String, List<Long>> driverMethods = new HashMap<String, List<Long>>();
-			driversMethods.put(profile.getDriverName(), driverMethods);
+			driversMethods.put(profile.getDriverClassName(), driverMethods);
 			Map<String, XYSeries> timingSet = new LinkedHashMap<String, XYSeries>();
 			DefaultCategoryDataset errorsSet = new DefaultCategoryDataset();
 			XYSeries afterMemorySet = new XYSeries("Memory", true, false);
-			XYSeries requestSet = new XYSeries(profile.getDriverName(), true,
+			XYSeries requestSet = new XYSeries(profile.getDriverClassName(), true,
 					false);
 			scenarioDuration.addSeries(requestSet);
 
@@ -528,7 +528,7 @@ public abstract class AbstractChart implements Chart {
 			}
 
 			List<byte[]> driverCharts = new ArrayList<byte[]>();
-			driversCharts.put(profile.getDriverName(), driverCharts);
+			driversCharts.put(profile.getDriverClassName(), driverCharts);
 
 			JFreeChart statisticsChart = new JFreeChart(
 					"Method Call Durations:", timingAndMemoryPlot);

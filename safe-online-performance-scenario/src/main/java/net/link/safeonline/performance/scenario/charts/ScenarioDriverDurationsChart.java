@@ -145,7 +145,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 	private XYSeries getMeasurementSet(MeasurementEntity measurement) {
 
 		String profile = measurement.getProfileData().getProfile()
-				.getDriverName();
+				.getDriverClassName();
 
 		Map<String, XYSeries> driverMap = this.driverMaps.get(profile);
 		if (driverMap == null)

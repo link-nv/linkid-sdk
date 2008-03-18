@@ -28,6 +28,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import net.link.safeonline.performance.drivers.ProfileDriver;
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
@@ -144,12 +145,22 @@ public class ScenarioControllerBean implements ScenarioController {
 	private Scenario createScenario(String scenario) {
 
 		try {
-			return (Scenario) Thread.currentThread().getContextClassLoader()
-					.loadClass(scenario).newInstance();
+			return loadClass(Scenario.class, scenario);
 		} catch (Exception e) {
 			throw new RuntimeException("Configured scenario '" + scenario
 					+ "' cannot be created.", e);
 		}
+	}
+
+	/**
+	 * Load a class with the given class name. TODO: Describe method.
+	 */
+	private <C> C loadClass(Class<C> clazz, String className)
+			throws InstantiationException, IllegalAccessException,
+			ClassNotFoundException {
+
+		return clazz.cast(Thread.currentThread().getContextClassLoader()
+				.loadClass(className).newInstance());
 	}
 
 	/**
@@ -209,6 +220,33 @@ public class ScenarioControllerBean implements ScenarioController {
 	public String getDescription(String scenario) {
 
 		return createScenario(scenario).getDescription();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getDescription(Date executionId) {
+
+		ExecutionEntity execution = this.executionService
+				.getExecution(executionId);
+		StringBuffer description = new StringBuffer();
+
+		for (DriverProfileEntity profile : execution.getProfiles())
+			try {
+				ProfileDriver driver = loadClass(ProfileDriver.class, profile
+						.getDriverClassName());
+				description.append("<li>").append(driver.getDescription())
+						.append("</li>\n");
+			} catch (Exception e) {
+			}
+
+		if (description.length() > 0) {
+			description.insert(0, getDescription(execution.getScenarioName()));
+			description.insert(0, "\n\nThe following drivers were used:<ul>\n");
+			description.append("</ul>");
+		}
+
+		return description.toString();
 	}
 
 	/**

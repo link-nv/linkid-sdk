@@ -34,7 +34,8 @@ public class AttribDriver extends ProfileDriver {
 
 	public static final String NAME = "User Attribute Driver";
 
-	public AttribDriver(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
+	public AttribDriver(ExecutionEntity execution,
+			ScenarioTimingEntity agentTime) {
 
 		super(NAME, execution, agentTime);
 	}
@@ -74,5 +75,15 @@ public class AttribDriver extends ProfileDriver {
 		} finally {
 			report(service);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDescription() {
+
+		return "<b>Attribute Driver:</b><br>"
+				+ "Retrieves all accessible attributes of the <i>'performance'</i> user for the <i>'performance-application'</i>.";
 	}
 }

@@ -70,9 +70,14 @@ public abstract class ProfileDriver {
 		this.execution = execution;
 		this.agentTime = agentTime;
 
-		this.profile = this.driverProfileService.getProfile(this.title,
-				execution);
+		this.profile = this.driverProfileService.getProfile(getClass()
+				.getCanonicalName(), execution);
 	}
+
+	/**
+	 * @return A description of what this driver does.
+	 */
+	public abstract String getDescription();
 
 	public String getHost() {
 
@@ -142,7 +147,8 @@ public abstract class ProfileDriver {
 				throw new RuntimeException(ee);
 			}
 		} catch (NamingException e) {
-			this.LOG.error("Couldn't find service " + service + " at " + binding, e);
+			this.LOG.error("Couldn't find service " + service + " at "
+					+ binding, e);
 			throw new RuntimeException(e);
 		}
 	}

@@ -48,7 +48,7 @@ public class StsDriver extends ProfileDriver {
 	 *             Any exception that occurred during the request will be
 	 *             wrapped into this one.
 	 */
-	public void getAttributes(PrivateKeyEntry applicationKey, Element token) {
+	public void validate(PrivateKeyEntry applicationKey, Element token) {
 
 		if (!(applicationKey.getCertificate() instanceof X509Certificate))
 			throw new IllegalArgumentException(
@@ -67,5 +67,15 @@ public class StsDriver extends ProfileDriver {
 		} finally {
 			report(service);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDescription() {
+
+		return "<b>Security Token Service Driver:</b><br>"
+				+ "Checks the validity of a SAML token and causes an exception if it is not valid.";
 	}
 }
