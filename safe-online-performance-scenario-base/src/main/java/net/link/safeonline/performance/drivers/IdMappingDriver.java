@@ -29,7 +29,8 @@ public class IdMappingDriver extends ProfileDriver {
 
 	public static final String NAME = "User ID Mapping Driver";
 
-	public IdMappingDriver(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
+	public IdMappingDriver(ExecutionEntity execution,
+			ScenarioTimingEntity agentTime) {
 
 		super(NAME, execution, agentTime);
 	}
@@ -54,18 +55,20 @@ public class IdMappingDriver extends ProfileDriver {
 			throw new IllegalArgumentException(
 					"The certificate in the keystore needs to be of X509 format.");
 
-		NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(
-				getHost(), (X509Certificate) applicationKey.getCertificate(),
-				applicationKey.getPrivateKey());
-
 		try {
-			return service.getUserId(username);
+			NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(
+					getHost(), (X509Certificate) applicationKey
+							.getCertificate(), applicationKey.getPrivateKey());
+
+			try {
+				return service.getUserId(username);
+			} finally {
+				report(service);
+			}
 		}
 
 		catch (Exception error) {
 			throw report(error);
-		} finally {
-			report(service);
 		}
 	}
 

@@ -54,18 +54,20 @@ public class StsDriver extends ProfileDriver {
 			throw new IllegalArgumentException(
 					"The certificate in the keystore needs to be of X509 format.");
 
-		SecurityTokenServiceClientImpl service = new SecurityTokenServiceClientImpl(
-				getHost(), (X509Certificate) applicationKey.getCertificate(),
-				applicationKey.getPrivateKey());
-
 		try {
-			service.validate(token);
+			SecurityTokenServiceClientImpl service = new SecurityTokenServiceClientImpl(
+					getHost(), (X509Certificate) applicationKey
+							.getCertificate(), applicationKey.getPrivateKey());
+
+			try {
+				service.validate(token);
+			} finally {
+				report(service);
+			}
 		}
 
 		catch (Exception error) {
 			throw report(error);
-		} finally {
-			report(service);
 		}
 	}
 
