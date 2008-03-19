@@ -33,14 +33,14 @@ import org.jfree.data.time.TimeSeriesCollection;
 /**
  * <h2>{@link ScenarioExceptionsChart}<br>
  * <sub>TODO</sub></h2>
- *
+ * 
  * <p>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioExceptionsChart extends AbstractChart {
@@ -117,7 +117,8 @@ public class ScenarioExceptionsChart extends AbstractChart {
 
 	private TimeSeries getErrorSet(DriverExceptionEntity error) {
 
-		String profile = error.getProfile().getDriverClassName();
+		String profile = error.getProfile().getDriverClassName().replaceFirst(
+				".*\\.", "");
 
 		Map<String, TimeSeries> driverMap = this.errorMaps.get(profile);
 		if (driverMap == null)

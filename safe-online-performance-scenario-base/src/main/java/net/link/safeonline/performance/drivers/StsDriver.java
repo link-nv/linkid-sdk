@@ -19,16 +19,18 @@ import org.w3c.dom.Element;
 /**
  * <h2>{@link StsDriver}<br>
  * <sub>Driver for the Security Token validation service.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class StsDriver extends ProfileDriver {
 
 	public static final String NAME = "Security Token Service Driver";
+	public static final String DESCRIPTION = "<b>Security Token Service Driver:</b><br>"
+			+ "Checks the validity of a SAML token and causes an exception if it is not valid.";
 
 	public StsDriver(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
 
@@ -37,7 +39,7 @@ public class StsDriver extends ProfileDriver {
 
 	/**
 	 * Validate the given SAML token.
-	 *
+	 * 
 	 * @param applicationKey
 	 *            The certificate of the application making the request. This
 	 *            identifies the application and gives the request the
@@ -77,7 +79,6 @@ public class StsDriver extends ProfileDriver {
 	@Override
 	public String getDescription() {
 
-		return "<b>Security Token Service Driver:</b><br>"
-				+ "Checks the validity of a SAML token and causes an exception if it is not valid.";
+		return DESCRIPTION;
 	}
 }

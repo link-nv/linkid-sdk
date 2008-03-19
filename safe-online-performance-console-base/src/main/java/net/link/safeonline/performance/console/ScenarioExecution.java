@@ -14,11 +14,11 @@ import java.util.Map;
 /**
  * <h2>{@link ScenarioExecution}<br>
  * <sub>A data structure that holds the results of a scenario execution.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioExecution implements Serializable,
@@ -124,7 +124,7 @@ public class ScenarioExecution implements Serializable,
 	/**
 	 * <b>NOTE</b>: The clone will <b>NOT</b> contain no charts even if this
 	 * instance does!
-	 *
+	 * 
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -147,39 +147,52 @@ public class ScenarioExecution implements Serializable,
 			return true;
 
 		ScenarioExecution other = (ScenarioExecution) obj;
-		System.err.println("my speed - other speed: " + this.speed + " - "
-				+ other.speed);
 
-		return equals(this.startTime, other.startTime)
-				&& equals(this.scenarioName, other.scenarioName)
-				&& equals(this.hostname, other.hostname)
-				&& equals(this.duration, other.duration)
-				&& equals(this.workers, other.workers)
-				&& equals(this.agents, other.agents)
-				&& equals(this.speed, other.speed);
-	}
-
-	/**
-	 * @return <code>true</code> if o1 and o2 are equal (<code>null</code>-safe).
-	 */
-	private boolean equals(Object o1, Object o2) {
-
-		if (o1 != null) {
-			if (o2 == null || !o1.equals(o2))
-				return false;
-		}
-
-		else if (o2 != null)
-			return false;
-
-		return true;
+		return this.startTime.equals(other.startTime)
+				&& hashCode() == other.hashCode();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public int hashCode() {
+
+		double hashCode = this.startTime.hashCode();
+		if (this.scenarioName != null)
+			hashCode += this.scenarioName.hashCode();
+		if (this.hostname != null)
+			hashCode += this.hostname.hashCode();
+		if (this.duration != null)
+			hashCode += this.duration.hashCode();
+		if (this.workers != null)
+			hashCode += this.workers.hashCode();
+		if (this.agents != null)
+			hashCode += this.agents.hashCode();
+		if (this.speed != null)
+			hashCode += this.speed.hashCode();
+
+		// Our hash is the integer average of all hashes.
+		hashCode /= 7;
+		if ((int) hashCode == 0)
+			hashCode = Math.signum(hashCode);
+
+		return (int) hashCode;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Assure contract with equals; for {@link ScenarioExecution}s with the
+	 * same startTime (execution id) compare hashCode to differentiate other
+	 * possible differences (like speed).
+	 */
 	public int compareTo(ScenarioExecution o) {
 
-		return this.startTime.compareTo(o.startTime);
+		int difference = this.startTime.compareTo(o.startTime);
+		if (difference == 0)
+			difference = hashCode() - o.hashCode();
+
+		return difference;
 	}
 }

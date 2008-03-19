@@ -19,20 +19,22 @@ import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 /**
  * <h2>{@link AttribDriver}<br>
  * <sub>Provides access to the Attribute Request service.</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class AttribDriver extends ProfileDriver {
 
 	public static final String NAME = "User Attribute Driver";
+	public static final String DESCRIPTION = "<b>Attribute Driver:</b><br>"
+			+ "Retrieves all accessible attributes of the <i>'performance'</i> user for the <i>'performance-application'</i>.";
 
 	public AttribDriver(ExecutionEntity execution,
 			ScenarioTimingEntity agentTime) {
@@ -42,7 +44,7 @@ public class AttribDriver extends ProfileDriver {
 
 	/**
 	 * Retrieve the attributes for a given user.
-	 *
+	 * 
 	 * @param applicationKey
 	 *            The certificate of the application making the request. This
 	 *            identifies the application and gives the request the
@@ -87,7 +89,6 @@ public class AttribDriver extends ProfileDriver {
 	@Override
 	public String getDescription() {
 
-		return "<b>Attribute Driver:</b><br>"
-				+ "Retrieves all accessible attributes of the <i>'performance'</i> user for the <i>'performance-application'</i>.";
+		return DESCRIPTION;
 	}
 }

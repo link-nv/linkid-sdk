@@ -28,7 +28,7 @@ import javax.persistence.NamedQuery;
 @NamedQuery(name = DriverProfileEntity.findByExecution, query = "SELECT p"
 		+ "    FROM DriverProfileEntity p"
 		+ "    WHERE p.driverClassName = :driverClassName AND p.execution = :execution")
-public class DriverProfileEntity {
+public class DriverProfileEntity implements Comparable<DriverProfileEntity> {
 
 	public static final String findByExecution = "DriverProfileEntity.findByExecution";
 
@@ -65,5 +65,13 @@ public class DriverProfileEntity {
 	public ExecutionEntity getExecution() {
 
 		return this.execution;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int compareTo(DriverProfileEntity o) {
+
+		return this.driverClassName.compareTo(o.driverClassName);
 	}
 }

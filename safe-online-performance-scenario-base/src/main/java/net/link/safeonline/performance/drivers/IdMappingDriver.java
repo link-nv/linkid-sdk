@@ -18,16 +18,18 @@ import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 /**
  * <h2>{@link IdMappingDriver}<br>
  * <sub>Provide access to the ID Mapping service.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class IdMappingDriver extends ProfileDriver {
 
 	public static final String NAME = "User ID Mapping Driver";
+	public static final String DESCRIPTION = "<b>User ID Mapping Driver:</b><br>"
+			+ "Maps the <i>'performance'</i> username to a UUID for the <i>'performance-application'</i>.";
 
 	public IdMappingDriver(ExecutionEntity execution,
 			ScenarioTimingEntity agentTime) {
@@ -37,7 +39,7 @@ public class IdMappingDriver extends ProfileDriver {
 
 	/**
 	 * Retrieve the ID of the user with the given username.
-	 *
+	 * 
 	 * @param applicationKey
 	 *            The certificate of the application making the request. This
 	 *            identifies the application and gives the request the
@@ -78,7 +80,6 @@ public class IdMappingDriver extends ProfileDriver {
 	@Override
 	public String getDescription() {
 
-		return "<b>User ID Mapping Driver:</b><br>"
-				+ "Maps the <i>'performance'</i> username to a UUID for the <i>'performance-application'</i>.";
+		return DESCRIPTION;
 	}
 }

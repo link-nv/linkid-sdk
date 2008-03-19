@@ -62,7 +62,7 @@ public abstract class ProfileDriver {
 	private ExecutionEntity execution;
 	private ScenarioTimingEntity agentTime;
 	private DriverProfileEntity profile;
-
+	
 	public ProfileDriver(String title, ExecutionEntity execution,
 			ScenarioTimingEntity agentTime) {
 

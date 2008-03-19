@@ -58,7 +58,6 @@ public class ConsoleAgent implements Agent {
 	public boolean autoUpdate;
 	private UpdateAgentState updater;
 	private Set<ScenarioThread> scenarioThreads;
-	private boolean change;
 
 	/**
 	 * Create a new {@link ConsoleAgent} component based off the agent at the
@@ -289,8 +288,6 @@ public class ConsoleAgent implements Agent {
 				this.executions = notifyOnChange(this.executions,
 						isDeployed ? this.agentRemoting
 								.getExecutions(this.agentAddress) : null);
-				if (this.change == true)
-					System.out.println("execution changed!");
 			}
 		}
 
@@ -315,7 +312,6 @@ public class ConsoleAgent implements Agent {
 	@SuppressWarnings("unchecked")
 	private <V> V notifyOnChange(V oldValue, V newValue) {
 
-		this.change = false;
 		// Don't accept new value when autoUpdate has been disabled.
 		if (Thread.currentThread() instanceof UpdateAgentState
 				&& !this.autoUpdate)
@@ -329,16 +325,12 @@ public class ConsoleAgent implements Agent {
 			fixedNew = new TreeSet<Object>((Set<? extends Object>) newValue);
 
 		if (fixedOld != null) {
-			if (fixedNew == null || !fixedOld.equals(fixedNew)) {
-				this.change = true;
+			if (fixedNew == null || !fixedOld.equals(fixedNew))
 				ConsoleData.fireAgentStatus(this);
-			}
 		}
 
-		else if (fixedNew != null) {
-			this.change = true;
+		else if (fixedNew != null)
 			ConsoleData.fireAgentStatus(this);
-		}
 
 		return newValue;
 	}

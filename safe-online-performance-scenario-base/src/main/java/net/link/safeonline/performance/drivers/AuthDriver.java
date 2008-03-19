@@ -77,6 +77,9 @@ public class AuthDriver extends ProfileDriver {
 	static final Log LOG = LogFactory.getLog(AuthDriver.class);
 
 	public static final String NAME = "Authentication Driver";
+	public static final String DESCRIPTION = "<b>Authentication Driver:</b><br>"
+			+ "Logs the <i>'performance'</i> user in for the <i>'performance-application'</i> and accepts any EULA and attribute sharing requests.";
+	
 	private static final String DEVICE = "_main";
 	private static final String USER_PASS = "_username-password";
 	private static final String EULA = "_subscription";
@@ -85,9 +88,7 @@ public class AuthDriver extends ProfileDriver {
 	private HttpClient client;
 	private List<ProfileData> iterationDatas;
 	private Tidy tidy;
-
 	private String response;
-
 	private String jsessionid;
 
 	public AuthDriver(ExecutionEntity execution, ScenarioTimingEntity agentTime) {
@@ -478,7 +479,6 @@ public class AuthDriver extends ProfileDriver {
 	@Override
 	public String getDescription() {
 
-		return "<b>Authentication Driver:</b><br>"
-				+ "Logs the <i>'performance'</i> user in for the <i>'performance-application'</i> and accepts any EULA and attribute sharing requests.";
+		return DESCRIPTION;
 	}
 }

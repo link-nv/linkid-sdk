@@ -82,7 +82,7 @@ import org.jfree.ui.RectangleAnchor;
 /**
  * <h2>{@link AbstractChart}<br>
  * <sub>The basis of chart generators.</sub></h2>
- *
+ * 
  * <p>
  * This class implements several helper methods that will be very convenient in
  * generating and rendering charts.<br>
@@ -95,11 +95,11 @@ import org.jfree.ui.RectangleAnchor;
  * <li>{@link #isTimingProcessed()}</li>
  * </ul>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public abstract class AbstractChart implements Chart {
@@ -141,7 +141,7 @@ public abstract class AbstractChart implements Chart {
 
 	/**
 	 * {@inheritDoc}
-	 *
+	 * 
 	 * Post-processing here calculates ranges for shared axes.<br>
 	 * We also cache the plot for use in {@link #render(int)}.
 	 */
@@ -401,7 +401,8 @@ public abstract class AbstractChart implements Chart {
 					/ 1000f + " seconds");
 			start = System.currentTimeMillis();
 			this.LOG.debug("Profile: " + ++_profile + " / " + profiles.size()
-					+ ": " + profile.getDriverClassName());
+					+ ": "
+					+ profile.getDriverClassName().replaceFirst(".*\\.", ""));
 
 			List<ProfileDataEntity> profileData = this.profileDataService
 					.getProfileData(profile, dataPoints);

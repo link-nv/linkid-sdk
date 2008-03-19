@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -28,7 +29,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import net.link.safeonline.performance.drivers.ProfileDriver;
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
@@ -52,7 +52,7 @@ import org.jboss.annotation.ejb.TransactionTimeout;
 /**
  * <h2>{@link ScenarioControllerBean}<br>
  * <sub>This bean is the heart of the scenario application.</sub></h2>
- *
+ * 
  * <p>
  * We take care of preparing scenario execution and launching a single scenario
  * run. As these methods are called, entity objects are updated with state that
@@ -60,11 +60,11 @@ import org.jboss.annotation.ejb.TransactionTimeout;
  * <br>
  * Charts are also generated in this bean as registered by the scenario.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Stateless
@@ -145,7 +145,7 @@ public class ScenarioControllerBean implements ScenarioController {
 	private Scenario createScenario(String scenario) {
 
 		try {
-			return loadClass(Scenario.class, scenario);
+			return loadClass(Scenario.class, scenario).newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException("Configured scenario '" + scenario
 					+ "' cannot be created.", e);
@@ -155,12 +155,12 @@ public class ScenarioControllerBean implements ScenarioController {
 	/**
 	 * Load a class with the given class name. TODO: Describe method.
 	 */
-	private <C> C loadClass(Class<C> clazz, String className)
-			throws InstantiationException, IllegalAccessException,
-			ClassNotFoundException {
+	@SuppressWarnings("unchecked")
+	private <C> Class<C> loadClass(@SuppressWarnings("unused") Class<C> clazz,
+			String className) throws ClassNotFoundException {
 
-		return clazz.cast(Thread.currentThread().getContextClassLoader()
-				.loadClass(className).newInstance());
+		return (Class<C>) Thread.currentThread().getContextClassLoader()
+				.loadClass(className);
 	}
 
 	/**
@@ -231,22 +231,25 @@ public class ScenarioControllerBean implements ScenarioController {
 				.getExecution(executionId);
 		StringBuffer description = new StringBuffer();
 
-		for (DriverProfileEntity profile : execution.getProfiles())
+		for (DriverProfileEntity profile : new TreeSet<DriverProfileEntity>(
+				execution.getProfiles()))
 			try {
-				ProfileDriver driver = loadClass(ProfileDriver.class, profile
-						.getDriverClassName());
-				description.append("<li>").append(driver.getDescription())
-						.append("</li>\n");
+				String driverDescription = (String) loadClass(null,
+						profile.getDriverClassName()).getField("DESCRIPTION")
+						.get(null);
+
+				description.append("<li>").append(driverDescription).append(
+						"</li>\n");
 			} catch (Exception e) {
 			}
 
 		if (description.length() > 0) {
-			description.insert(0, getDescription(execution.getScenarioName()));
 			description.insert(0, "\n\nThe following drivers were used:<ul>\n");
 			description.append("</ul>");
 		}
 
-		return description.toString();
+		return getDescription(execution.getScenarioName())
+				+ description.toString();
 	}
 
 	/**
