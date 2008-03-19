@@ -21,22 +21,15 @@
 	<ui:define name="content">
 
 		<a4j:form id="devicesform">
-			<rich:dataTable value="#{devices}" var="item">
+			<rich:dataTable id="devicesTable" value="#{devices}" var="item">
 				<h:column>
 					<f:facet name="header">#{msgs.name}</f:facet>
 					<h:outputText value="#{item.friendlyName}" />
+					<ui:repeat id="registeredDevices" var="regdevice"
+						value="#{item.registeredDevices}">
+						<li><so:outputAttribute value="#{regdevice}" /></li>
+					</ui:repeat>
 				</h:column>
-
-				<h:column>
-					<h:dataTable id="registeredDevices" var="item2"
-						value="#{item.registeredDevices}" styleClass="listingTable"
-						rowClasses="listingTable_Row1,listingTable_Row2">
-						<h:column>
-							<so:outputAttribute value="#{item2}" />
-						</h:column>
-					</h:dataTable>
-				</h:column>
-
 				<h:column>
 					<f:facet name="header">#{msgs.deviceActions}</f:facet>
 					<h:commandLink action="#{devicesBean.register}" id="register"
