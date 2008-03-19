@@ -52,12 +52,13 @@ public class ConsoleAgent implements Agent {
 	private boolean healthy;
 	private AgentState transit;
 	private AgentState state;
-	private Exception error;
+	private Throwable error;
 	private Set<String> scenarios;
 	private Set<ScenarioExecution> executions;
 	public boolean autoUpdate;
 	private UpdateAgentState updater;
 	private Set<ScenarioThread> scenarioThreads;
+	private boolean change;
 
 	/**
 	 * Create a new {@link ConsoleAgent} component based off the agent at the
@@ -224,7 +225,7 @@ public class ConsoleAgent implements Agent {
 	 * request to the remote agent that will result in the same state transition
 	 * if all goes well in order to have the state reflected in the UI sooner.
 	 */
-	public void setError(Exception error) {
+	public void setError(Throwable error) {
 
 		notifyOnChange(this.error, this.error = error);
 	}
@@ -232,7 +233,7 @@ public class ConsoleAgent implements Agent {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Exception getError() {
+	public Throwable getError() {
 
 		return this.error;
 	}
@@ -288,6 +289,8 @@ public class ConsoleAgent implements Agent {
 				this.executions = notifyOnChange(this.executions,
 						isDeployed ? this.agentRemoting
 								.getExecutions(this.agentAddress) : null);
+				if (this.change == true)
+					System.out.println("execution changed!");
 			}
 		}
 
@@ -300,11 +303,10 @@ public class ConsoleAgent implements Agent {
 			this.executions = notifyOnChange(this.executions, null);
 		}
 
-		catch (Exception e) {
-			Exception cause = e;
-			while (cause.getCause() != null
-					&& cause.getCause() instanceof Exception)
-				cause = (Exception) cause.getCause();
+		catch (Throwable e) {
+			Throwable cause = e;
+			while (cause.getCause() != null)
+				cause = cause.getCause();
 
 			setError(cause);
 		}
@@ -313,6 +315,7 @@ public class ConsoleAgent implements Agent {
 	@SuppressWarnings("unchecked")
 	private <V> V notifyOnChange(V oldValue, V newValue) {
 
+		this.change = false;
 		// Don't accept new value when autoUpdate has been disabled.
 		if (Thread.currentThread() instanceof UpdateAgentState
 				&& !this.autoUpdate)
@@ -326,12 +329,16 @@ public class ConsoleAgent implements Agent {
 			fixedNew = new TreeSet<Object>((Set<? extends Object>) newValue);
 
 		if (fixedOld != null) {
-			if (fixedNew == null || !fixedOld.equals(fixedNew))
+			if (fixedNew == null || !fixedOld.equals(fixedNew)) {
+				this.change = true;
 				ConsoleData.fireAgentStatus(this);
+			}
 		}
 
-		else if (fixedNew != null)
+		else if (fixedNew != null) {
+			this.change = true;
 			ConsoleData.fireAgentStatus(this);
+		}
 
 		return newValue;
 	}

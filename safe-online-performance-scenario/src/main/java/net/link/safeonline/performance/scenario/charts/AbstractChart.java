@@ -148,6 +148,13 @@ public abstract class AbstractChart implements Chart {
 	public void postProcess() {
 
 		this.plot = getPlot();
+		if (this.plot == null)
+			return;
+		if (this.plot.getDomainAxis() == null) {
+			this.LOG.warn("Plot for " + getClass().getName()
+					+ " has no domain axis!");
+			return;
+		}
 
 		for (Map.Entry<Collection<Chart>, Range> entry : sharedRangesMap
 				.entrySet()) {
@@ -412,8 +419,8 @@ public abstract class AbstractChart implements Chart {
 			Map<String, XYSeries> timingSet = new LinkedHashMap<String, XYSeries>();
 			DefaultCategoryDataset errorsSet = new DefaultCategoryDataset();
 			XYSeries afterMemorySet = new XYSeries("Memory", true, false);
-			XYSeries requestSet = new XYSeries(profile.getDriverClassName(), true,
-					false);
+			XYSeries requestSet = new XYSeries(profile.getDriverClassName(),
+					true, false);
 			scenarioDuration.addSeries(requestSet);
 
 			int _data = 0;

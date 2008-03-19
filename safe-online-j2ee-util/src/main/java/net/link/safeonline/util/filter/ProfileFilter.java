@@ -28,9 +28,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Servlet Filter profiles the request and adds the results as headers of the
  * response.<br>
- * 
+ *
  * @author mbillemo
- * 
+ *
  */
 public class ProfileFilter implements Filter {
 
@@ -101,7 +101,7 @@ public class ProfileFilter implements Filter {
 			}
 		}
 
-		catch (Exception e) {
+		catch (Throwable e) {
 			throw new ProfiledException(e, profileData.getHeaders());
 		}
 

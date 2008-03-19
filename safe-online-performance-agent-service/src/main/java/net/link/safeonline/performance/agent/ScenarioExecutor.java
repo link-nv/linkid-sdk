@@ -123,7 +123,7 @@ public class ScenarioExecutor extends Thread {
 			charter.start();
 		}
 
-		catch (Exception e) {
+		catch (Throwable e) {
 			this.agentService.setError(e);
 			LOG.error("Processing Scenario Execution Failed", e);
 		}

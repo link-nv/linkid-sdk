@@ -59,7 +59,7 @@ public class AgentService implements AgentServiceMBean {
 	private ScenarioDeployer deployer;
 	private ScenarioExecutor executor;
 	private AgentState transit;
-	private Exception error;
+	private Throwable error;
 
 	public AgentService() {
 
@@ -166,7 +166,7 @@ public class AgentService implements AgentServiceMBean {
 			return getExecution(startTime, true);
 		}
 
-		catch (Exception e) {
+		catch (Throwable e) {
 			setError(e);
 			return null;
 		}
@@ -179,7 +179,7 @@ public class AgentService implements AgentServiceMBean {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Exception getError() {
+	public Throwable getError() {
 
 		return this.error;
 	}
@@ -212,7 +212,7 @@ public class AgentService implements AgentServiceMBean {
 	 * @param error
 	 *            An error that occurred while interacting with this client.
 	 */
-	public void setError(Exception error) {
+	public void setError(Throwable error) {
 
 		this.error = error;
 
@@ -265,7 +265,7 @@ public class AgentService implements AgentServiceMBean {
 			this.deployer.upload(application);
 		}
 
-		catch (Exception e) {
+		catch (Throwable e) {
 			setError(e);
 		}
 
@@ -286,7 +286,7 @@ public class AgentService implements AgentServiceMBean {
 			this.charts.clear();
 		}
 
-		catch (Exception e) {
+		catch (Throwable e) {
 			setError(e);
 		}
 
@@ -308,7 +308,7 @@ public class AgentService implements AgentServiceMBean {
 			(this.executor = new ScenarioExecutor(request, this)).start();
 		}
 
-		catch (Exception e) {
+		catch (Throwable e) {
 			setError(e);
 			actionCompleted();
 		}

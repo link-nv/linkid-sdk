@@ -67,5 +67,5 @@ public interface Agent {
 	/**
 	 * @return An error that occurred while interacting with this client.
 	 */
-	public Exception getError();
+	public Throwable getError();
 }

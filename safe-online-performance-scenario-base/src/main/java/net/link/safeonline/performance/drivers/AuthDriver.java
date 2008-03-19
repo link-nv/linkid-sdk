@@ -303,7 +303,7 @@ public class AuthDriver extends ProfileDriver {
 			}
 		}
 
-		catch (Exception e) {
+		catch (Throwable e) {
 			throw report(e);
 		}
 

@@ -239,10 +239,10 @@ public class ScenarioRemoting {
 	/**
 	 * @see Agent#getError()
 	 */
-	public Exception getError(Address agent) {
+	public Throwable getError(Address agent) {
 
 		try {
-			return (Exception) invokeFor(agent, "getError", new Object[] {},
+			return (Throwable) invokeFor(agent, "getError", new Object[] {},
 					new String[] {});
 		} catch (MBeanException e) {
 			return e;

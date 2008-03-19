@@ -67,7 +67,7 @@ public class IdMappingDriver extends ProfileDriver {
 			}
 		}
 
-		catch (Exception error) {
+		catch (Throwable error) {
 			throw report(error);
 		}
 	}

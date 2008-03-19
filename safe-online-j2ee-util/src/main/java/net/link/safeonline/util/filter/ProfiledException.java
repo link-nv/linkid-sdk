@@ -26,7 +26,7 @@ import javax.servlet.ServletException;
  * <p>
  * <i>Nov 30, 2007</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ProfiledException extends ServletException {
@@ -37,7 +37,7 @@ public class ProfiledException extends ServletException {
 	/**
 	 * Create a new {@link ProfiledException} instance.
 	 */
-	public ProfiledException(Exception e, Map<String, String> headers) {
+	public ProfiledException(Throwable e, Map<String, String> headers) {
 
 		super(e);
 

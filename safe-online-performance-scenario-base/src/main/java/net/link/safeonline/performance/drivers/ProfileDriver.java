@@ -107,7 +107,7 @@ public abstract class ProfileDriver {
 				.getMeasurement(ProfileData.REQUEST_DELTA_TIME));
 	}
 
-	protected IllegalStateException report(Exception error) {
+	protected IllegalStateException report(Throwable error) {
 
 		this.LOG.warn(String.format("Failed driver request: %s", error));
 

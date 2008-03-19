@@ -76,7 +76,7 @@ public class AttribDriver extends ProfileDriver {
 			}
 		}
 
-		catch (Exception error) {
+		catch (Throwable error) {
 			throw report(error);
 		}
 	}

@@ -13,11 +13,11 @@ import java.util.Date;
  * <h2>{@link DriverException}<br>
  * <sub>This exception occurs during driver requests and keeps the time at which
  * it occurred.</sub></h2>
- * 
+ *
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class DriverException extends Exception {
@@ -26,7 +26,7 @@ public class DriverException extends Exception {
 
 	private long occurredTime;
 
-	public DriverException(long occurredTime, Exception exception) {
+	public DriverException(long occurredTime, Throwable exception) {
 
 		super(exception);
 		this.occurredTime = occurredTime;
@@ -38,7 +38,7 @@ public class DriverException extends Exception {
 		this.occurredTime = occurredTime;
 	}
 
-	public DriverException(Exception exception) {
+	public DriverException(Throwable exception) {
 
 		this(System.currentTimeMillis(), exception);
 	}

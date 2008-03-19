@@ -147,6 +147,8 @@ public class ScenarioExecution implements Serializable,
 			return true;
 
 		ScenarioExecution other = (ScenarioExecution) obj;
+		System.err.println("my speed - other speed: " + this.speed + " - "
+				+ other.speed);
 
 		return equals(this.startTime, other.startTime)
 				&& equals(this.scenarioName, other.scenarioName)
