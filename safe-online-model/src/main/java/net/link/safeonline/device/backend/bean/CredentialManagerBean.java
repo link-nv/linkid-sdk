@@ -218,7 +218,7 @@ public class CredentialManagerBean implements CredentialManager {
 	public void removeIdentity(String deviceUserId, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
 			ArgumentIntegrityException, AttributeTypeNotFoundException,
-			SubjectNotFoundException {
+			SubjectNotFoundException, DeviceNotFoundException {
 		SubjectEntity deviceSubject = this.subjectService
 				.getSubject(deviceUserId);
 
@@ -274,6 +274,10 @@ public class CredentialManagerBean implements CredentialManager {
 				pkiProvider);
 
 		pkiProvider.removeAdditionalAttributes(deviceSubject, certificate);
+
+		pkiProvider.removeDeviceAttribute(deviceSubject);
+
+		pkiProvider.removeDeviceUserAttribute(deviceSubject);
 	}
 
 	private void removeAttribute(

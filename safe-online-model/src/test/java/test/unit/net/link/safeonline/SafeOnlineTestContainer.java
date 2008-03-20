@@ -40,7 +40,6 @@ import net.link.safeonline.device.backend.bean.CredentialManagerBean;
 import net.link.safeonline.device.backend.bean.MobileManagerBean;
 import net.link.safeonline.device.backend.bean.PasswordManagerBean;
 import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
-import net.link.safeonline.device.bean.StrongMobileDeviceServiceBean;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
@@ -139,11 +138,10 @@ public class SafeOnlineTestContainer {
 			PasswordManagerBean.class, SubjectServiceBean.class,
 			IdGeneratorBean.class, UsageAgreementDAOBean.class,
 			UsageAgreementManagerBean.class, PasswordDeviceServiceBean.class,
-			StrongMobileDeviceServiceBean.class, MobileManagerBean.class,
-			SecurityAuditLoggerBean.class, DevicePolicyServiceBean.class,
-			DevicesBean.class, AccountServiceBean.class,
-			DeviceMappingServiceBean.class, DeviceMappingDAOBean.class,
-			DeviceRegistrationServiceBean.class,
+			MobileManagerBean.class, SecurityAuditLoggerBean.class,
+			DevicePolicyServiceBean.class, DevicesBean.class,
+			AccountServiceBean.class, DeviceMappingServiceBean.class,
+			DeviceMappingDAOBean.class, DeviceRegistrationServiceBean.class,
 			DeviceRegistrationDAOBean.class, OlasDAOBean.class,
 			ProxyAttributeServiceBean.class };
 

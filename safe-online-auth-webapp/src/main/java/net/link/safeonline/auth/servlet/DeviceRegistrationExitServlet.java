@@ -106,14 +106,13 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 				.getProtocolContext(request.getSession());
 		DeviceEntity device;
 		try {
-			device = this.deviceDAO.getDevice(protocolContext
-					.getRegisteredDevice());
+			device = this.deviceDAO.getDevice(protocolContext.getDeviceName());
 		} catch (DeviceNotFoundException e) {
 			redirectToDeviceErrorPage(request, response, "errorDeviceNotFound");
 			return;
 		}
 		DeviceRegistrationEntity registeredDevice = this.deviceRegistrationService
-				.getDeviceRegistration(protocolContext.getUserId());
+				.getDeviceRegistration(protocolContext.getRegistrationId());
 		if (null == registeredDevice) {
 			redirectToDeviceErrorPage(request, response,
 					"errorDeviceRegistrationNotFound");
@@ -123,12 +122,10 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 		// Poll the device issuer if registration actually was successful.
 		Object deviceAttribute;
 		try {
-			deviceAttribute = this.proxyAttributeService.getAttributeValue(
-					registeredDevice.getSubject().getUserId(), device
-							.getAttributeType().getName());
-		} catch (SubjectNotFoundException e) {
-			redirectToDeviceErrorPage(request, response, "errorSubjectNotFound");
-			return;
+			deviceAttribute = this.proxyAttributeService
+					.getDeviceAttributeValue(protocolContext
+							.getRegistrationId(), device.getAttributeType()
+							.getName());
 		} catch (PermissionDeniedException e) {
 			redirectToDeviceErrorPage(request, response,
 					"errorPermissionDenied");

@@ -132,7 +132,8 @@ public class LandingServlet extends HttpServlet {
 				this.applicationName, this.applicationKeyPair,
 				this.applicationCertificate, this.configParams);
 		String targetUrl = DeviceManager
-				.getSafeOnlineDeviceLandingServiceUrl(request.getSession());
+				.getSafeOnlineDeviceRegistrationLandingServiceUrl(request
+						.getSession());
 
 		saml2BrowserPostHandler.authnRequest(request, response, targetUrl,
 				this.deviceName);

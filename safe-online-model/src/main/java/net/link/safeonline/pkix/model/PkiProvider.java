@@ -115,4 +115,22 @@ public interface PkiProvider {
 	 */
 	void removeAdditionalAttributes(SubjectEntity subject,
 			X509Certificate certificate);
+
+	/**
+	 * Remove the device attribute related to this PKI device.
+	 * 
+	 * @param subject
+	 * @throws DeviceNotFoundException
+	 */
+	void removeDeviceAttribute(SubjectEntity subject)
+			throws DeviceNotFoundException;
+
+	/**
+	 * Remove the device user attribute related to this PKI device.
+	 * 
+	 * @param subject
+	 * @throws DeviceNotFoundException
+	 */
+	void removeDeviceUserAttribute(SubjectEntity subject)
+			throws DeviceNotFoundException;
 }

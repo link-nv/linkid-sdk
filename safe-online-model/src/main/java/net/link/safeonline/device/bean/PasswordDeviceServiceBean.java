@@ -98,8 +98,12 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService,
 
 	public void register(String login, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException {
-		SubjectEntity subject = this.subjectService
-				.getSubjectFromUserName(login);
+		SubjectEntity subject = this.subjectService.getSubject(login);
+		register(subject, password);
+	}
+
+	public void register(SubjectEntity subject, String password)
+			throws SubjectNotFoundException, DeviceNotFoundException {
 		DeviceRegistrationEntity deviceRegistrationEntity = this.deviceRegistrationService
 				.registerDevice(subject.getUserId(),
 						SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
@@ -112,6 +116,7 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService,
 		} catch (PermissionDeniedException e) {
 			throw new EJBException("Not allowed to set password");
 		}
+
 	}
 
 	public void remove(SubjectEntity subject, String password)
@@ -126,6 +131,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService,
 			throw new SubjectNotFoundException();
 		SubjectEntity deviceSubject = this.subjectService
 				.getSubject(deviceRegistrations.get(0).getId());
+		this.deviceRegistrationService
+				.removeDeviceRegistration(deviceRegistrations.get(0).getId());
 
 		this.passwordManager.removePassword(deviceSubject, password);
 	}
@@ -134,6 +141,7 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService,
 			String newPassword) throws PermissionDeniedException,
 			DeviceNotFoundException, SubjectNotFoundException {
 		LOG.debug("update \"" + subject.getUserId() + "\"");
+
 		DeviceEntity device = this.deviceDAO
 				.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 		List<DeviceRegistrationEntity> deviceRegistrations = this.deviceRegistrationService

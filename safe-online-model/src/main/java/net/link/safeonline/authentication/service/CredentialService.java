@@ -37,6 +37,16 @@ public interface CredentialService {
 			SubjectNotFoundException;
 
 	/**
+	 * Register password for the current user.
+	 * 
+	 * @param password
+	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
+	 */
+	void registerPassword(String password) throws PermissionDeniedException,
+			DeviceNotFoundException, SubjectNotFoundException;
+
+	/**
 	 * Removes the password of the current user. For this to happen the password
 	 * must match.
 	 * 

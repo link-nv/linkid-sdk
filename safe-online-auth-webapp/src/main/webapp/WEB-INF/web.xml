@@ -260,7 +260,7 @@
 
 	<servlet-mapping>
 		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
-		<url-pattern>/device/landing</url-pattern>
+		<url-pattern>/device/registrationlanding</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

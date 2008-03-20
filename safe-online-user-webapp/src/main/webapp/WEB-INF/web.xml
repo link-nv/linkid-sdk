@@ -247,6 +247,13 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.user.servlet.DeviceRegistrationLandingServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
 		<servlet-class>
 			net.link.safeonline.user.servlet.DeviceLandingServlet
@@ -258,7 +265,16 @@
 		<servlet-class>
 			net.link.safeonline.user.servlet.DeviceExitServlet
 		</servlet-class>
+		<init-param>
+			<param-name>DeviceErrorUrl</param-name>
+			<param-value>device-error.seam</param-value>
+		</init-param>
 	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
+		<url-pattern>/device/registrationlanding</url-pattern>
+	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>DeviceLandingServlet</servlet-name>

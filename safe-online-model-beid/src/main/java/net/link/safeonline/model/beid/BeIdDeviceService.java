@@ -34,6 +34,6 @@ public interface BeIdDeviceService {
 	void remove(String deviceUserId, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
 			ArgumentIntegrityException, AttributeTypeNotFoundException,
-			SubjectNotFoundException;
+			SubjectNotFoundException, DeviceNotFoundException;
 
 }

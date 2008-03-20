@@ -60,8 +60,9 @@ public class IdentityRemoveServlet extends AbstractStatementServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter writer = response.getWriter();
 		try {
-			String userId = (String) session.getAttribute("userId");
-			this.beIdDeviceService.remove(userId, statementData);
+			String registrationId = (String) session
+					.getAttribute("registrationId");
+			this.beIdDeviceService.remove(registrationId, statementData);
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (TrustDomainNotFoundException e) {
 			LOG.error("trust domain not found: " + e.getMessage(), e);

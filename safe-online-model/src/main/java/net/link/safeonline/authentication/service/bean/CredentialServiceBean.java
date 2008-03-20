@@ -59,6 +59,17 @@ public class CredentialServiceBean implements CredentialService,
 				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
 	}
 
+	public void registerPassword(String password)
+			throws SubjectNotFoundException, DeviceNotFoundException {
+		LOG.debug("register password");
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+
+		this.passwordDeviceService.register(subject, password);
+
+		SecurityManagerUtils.flushCredentialCache(subject.getUserId(),
+				SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+	}
+
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public void removePassword(String password) throws DeviceNotFoundException,
 			PermissionDeniedException, SubjectNotFoundException {

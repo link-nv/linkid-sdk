@@ -41,9 +41,15 @@ public interface DeviceRegistrationService {
 
 	public DeviceRegistrationEntity getDeviceRegistration(String id);
 
+	public void removeDeviceRegistration(String id);
+
 	public List<DeviceRegistrationEntity> listDeviceRegistrations(
 			SubjectEntity subject);
 
 	public List<DeviceRegistrationEntity> listDeviceRegistrations(
 			SubjectEntity subject, DeviceEntity device);
+
+	public List<DeviceRegistrationEntity> listDeviceRegistrations(
+			String userId, String deviceName) throws SubjectNotFoundException,
+			DeviceNotFoundException;
 }

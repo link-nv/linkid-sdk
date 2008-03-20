@@ -22,6 +22,9 @@ public interface PasswordDeviceService {
 	void register(String login, String password)
 			throws SubjectNotFoundException, DeviceNotFoundException;
 
+	void register(SubjectEntity subject, String password)
+			throws SubjectNotFoundException, DeviceNotFoundException;
+
 	void update(SubjectEntity subject, String oldPassword, String newPassword)
 			throws PermissionDeniedException, DeviceNotFoundException,
 			SubjectNotFoundException;

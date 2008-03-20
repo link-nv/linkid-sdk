@@ -185,7 +185,8 @@ public class BeIdPkiProvider implements PkiProvider {
 	private void removeAttribute(String attributeName, SubjectEntity subject) {
 		AttributeEntity attribute = this.attributeDAO.findAttribute(
 				attributeName, subject);
-		this.attributeDAO.removeAttribute(attribute);
+		if (null != attribute)
+			this.attributeDAO.removeAttribute(attribute);
 	}
 
 	public void storeDeviceAttribute(SubjectEntity subject)
@@ -221,5 +222,22 @@ public class BeIdPkiProvider implements PkiProvider {
 			deviceUserAttribute = this.attributeDAO.getAttribute(
 					BeIdConstants.NRN_ATTRIBUTE, subject);
 		}
+	}
+
+	public void removeDeviceAttribute(SubjectEntity subject)
+			throws DeviceNotFoundException {
+		DeviceEntity device = this.deviceDAO
+				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+		AttributeTypeEntity deviceAttributeType = device.getAttributeType();
+		removeAttribute(deviceAttributeType.getName(), subject);
+	}
+
+	public void removeDeviceUserAttribute(SubjectEntity subject)
+			throws DeviceNotFoundException {
+		DeviceEntity device = this.deviceDAO
+				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
+		AttributeTypeEntity deviceUserAttributeType = device
+				.getUserAttributeType();
+		removeAttribute(deviceUserAttributeType.getName(), subject);
 	}
 }

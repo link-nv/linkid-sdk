@@ -64,8 +64,9 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 			throws ExistingUserException, AttributeTypeNotFoundException,
 			SubjectNotFoundException, DeviceNotFoundException {
 		LOG.debug("register user: " + login);
-		this.userRegistrationManager.registerUser(login);
-		this.passwordDeviceService.register(login, password);
+		SubjectEntity subject = this.userRegistrationManager
+				.registerUser(login);
+		this.passwordDeviceService.register(subject.getUserId(), password);
 	}
 
 	public SubjectEntity checkLogin(String login) throws ExistingUserException,

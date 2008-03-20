@@ -28,4 +28,6 @@ public interface DeviceRegistrationDAO {
 	public List<DeviceRegistrationEntity> listRegisteredDevices(
 			SubjectEntity subject, DeviceEntity device);
 
+	public void removeRegisteredDevice(String id);
+
 }

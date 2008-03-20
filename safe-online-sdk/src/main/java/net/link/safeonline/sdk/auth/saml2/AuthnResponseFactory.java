@@ -95,7 +95,6 @@ public class AuthnResponseFactory {
 				Response.DEFAULT_ELEMENT_NAME);
 
 		DateTime now = new DateTime();
-		DateTime notAfter = now.plusSeconds(validity);
 
 		SecureRandomIdentifierGenerator idGenerator;
 		try {
@@ -122,6 +121,33 @@ public class AuthnResponseFactory {
 		status.setStatusCode(statusCode);
 		response.setStatus(status);
 
+		addAssertion(response, inResponseTo, applicationName, subjectName,
+				issuerName, samlName, validity, target);
+
+		return response;
+	}
+
+	/**
+	 * Adds an assertion to the unsigned response.
+	 * 
+	 * @param response
+	 * @param subjectName
+	 */
+	public static void addAssertion(Response response, String inResponseTo,
+			String applicationName, String subjectName, String issuerName,
+			String samlName, int validity, String target) {
+
+		DateTime now = new DateTime();
+		DateTime notAfter = now.plusSeconds(validity);
+
+		SecureRandomIdentifierGenerator idGenerator;
+		try {
+			idGenerator = new SecureRandomIdentifierGenerator();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("secure random init error: "
+					+ e.getMessage(), e);
+		}
+
 		Assertion assertion = buildXMLObject(Assertion.class,
 				Assertion.DEFAULT_ELEMENT_NAME);
 		assertion.setID(idGenerator.generateIdentifier());
@@ -143,22 +169,6 @@ public class AuthnResponseFactory {
 		subject.setNameID(nameID);
 		assertion.setSubject(subject);
 
-		List<SubjectConfirmation> subjectConfirmations = subject
-				.getSubjectConfirmations();
-		SubjectConfirmation subjectConfirmation = buildXMLObject(
-				SubjectConfirmation.class,
-				SubjectConfirmation.DEFAULT_ELEMENT_NAME);
-		subjectConfirmation.setMethod("urn:oasis:names:tc:SAML:2.0:cm:bearer");
-		SubjectConfirmationData subjectConfirmationData = buildXMLObject(
-				SubjectConfirmationData.class,
-				SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
-		subjectConfirmationData.setRecipient(target);
-		subjectConfirmationData.setInResponseTo(inResponseTo);
-		subjectConfirmationData.setNotBefore(now);
-		subjectConfirmationData.setNotOnOrAfter(notAfter);
-		subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
-		subjectConfirmations.add(subjectConfirmation);
-
 		Conditions conditions = buildXMLObject(Conditions.class,
 				Conditions.DEFAULT_ELEMENT_NAME);
 		conditions.setNotBefore(now);
@@ -176,6 +186,22 @@ public class AuthnResponseFactory {
 		audience.setAudienceURI(applicationName);
 		assertion.setConditions(conditions);
 
+		List<SubjectConfirmation> subjectConfirmations = subject
+				.getSubjectConfirmations();
+		SubjectConfirmation subjectConfirmation = buildXMLObject(
+				SubjectConfirmation.class,
+				SubjectConfirmation.DEFAULT_ELEMENT_NAME);
+		subjectConfirmation.setMethod("urn:oasis:names:tc:SAML:2.0:cm:bearer");
+		SubjectConfirmationData subjectConfirmationData = buildXMLObject(
+				SubjectConfirmationData.class,
+				SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
+		subjectConfirmationData.setRecipient(target);
+		subjectConfirmationData.setInResponseTo(inResponseTo);
+		subjectConfirmationData.setNotBefore(now);
+		subjectConfirmationData.setNotOnOrAfter(notAfter);
+		subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
+		subjectConfirmations.add(subjectConfirmation);
+
 		AuthnStatement authnStatement = buildXMLObject(AuthnStatement.class,
 				AuthnStatement.DEFAULT_ELEMENT_NAME);
 		assertion.getAuthnStatements().add(authnStatement);
@@ -189,8 +215,6 @@ public class AuthnResponseFactory {
 				AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
 		authnContext.setAuthnContextClassRef(authnContextClassRef);
 		authnContextClassRef.setAuthnContextClassRef(samlName);
-
-		return response;
 	}
 
 	@SuppressWarnings("unused")

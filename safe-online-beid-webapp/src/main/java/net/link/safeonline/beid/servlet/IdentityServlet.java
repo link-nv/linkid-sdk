@@ -52,8 +52,9 @@ public class IdentityServlet extends AbstractStatementServlet {
 			HttpServletResponse response) throws IOException {
 		PrintWriter writer = response.getWriter();
 		try {
-			String userId = (String) session.getAttribute("userId");
-			this.beIdDeviceService.register(userId, statementData);
+			String registrationId = (String) session
+					.getAttribute("registrationId");
+			this.beIdDeviceService.register(registrationId, statementData);
 		} catch (TrustDomainNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e

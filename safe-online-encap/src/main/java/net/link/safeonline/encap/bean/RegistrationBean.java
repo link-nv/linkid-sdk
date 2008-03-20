@@ -53,7 +53,7 @@ public class RegistrationBean implements Registration {
 	private String mobile;
 
 	@In
-	private String userId;
+	private String registrationId;
 
 	private String mobileActivationCode;
 
@@ -84,7 +84,7 @@ public class RegistrationBean implements Registration {
 		this.log.debug("register mobile: " + this.mobile);
 		try {
 			this.mobileActivationCode = this.encapDeviceService.register(
-					this.userId, this.mobile);
+					this.registrationId, this.mobile);
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
@@ -117,7 +117,7 @@ public class RegistrationBean implements Registration {
 		this.log.debug("mobile activation canceled: " + this.mobile);
 		this.mobileActivationCode = null;
 		try {
-			this.encapDeviceService.remove(this.userId, this.mobile);
+			this.encapDeviceService.remove(this.registrationId, this.mobile);
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");

@@ -30,7 +30,9 @@ import net.link.safeonline.device.sdk.exception.RegistrationFinalizationExceptio
 import net.link.safeonline.device.sdk.exception.RegistrationInitializationException;
 import net.link.safeonline.device.sdk.reg.saml2.Saml2Handler;
 import net.link.safeonline.entity.DeviceMappingEntity;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.service.DeviceMappingService;
+import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
@@ -43,19 +45,21 @@ import org.apache.commons.logging.LogFactory;
  * 
  * This landing page handles the SAML requests sent out by an external device
  * provider, and sends back a response containing the UUID for the registering
- * subject. This landing is used for the updating and removal operation.
+ * subject.
  * 
  * @author wvdhaute
  * 
  */
-public class DeviceLandingServlet extends HttpServlet {
+public class DeviceRegistrationLandingServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final Log LOG = LogFactory
-			.getLog(DeviceLandingServlet.class);
+			.getLog(DeviceRegistrationLandingServlet.class);
 
 	private Map<String, String> configParams;
+
+	private DeviceRegistrationService deviceRegistrationService;
 
 	private DeviceMappingService deviceMappingService;
 
@@ -79,6 +83,9 @@ public class DeviceLandingServlet extends HttpServlet {
 	}
 
 	private void loadDependencies() {
+		this.deviceRegistrationService = EjbUtils.getEJB(
+				"SafeOnline/DeviceRegistrationServiceBean/local",
+				DeviceRegistrationService.class);
 		this.deviceMappingService = EjbUtils.getEJB(
 				"SafeOnline/DeviceMappingServiceBean/local",
 				DeviceMappingService.class);
@@ -145,10 +152,6 @@ public class DeviceLandingServlet extends HttpServlet {
 				.getProtocolContext(request.getSession());
 		String deviceName = protocolContext.getDeviceName();
 		String userId = (String) request.getSession().getAttribute("username");
-		String registrationId = null;
-		if (null != request.getSession().getAttribute("registrationId"))
-			registrationId = (String) request.getSession().getAttribute(
-					"registrationId");
 		try {
 			LOG
 					.debug("get device mapping for " + deviceName + " for "
@@ -156,9 +159,13 @@ public class DeviceLandingServlet extends HttpServlet {
 			DeviceMappingEntity deviceMapping = this.deviceMappingService
 					.getDeviceMapping(userId, deviceName);
 			LOG.debug("device mapping id: " + deviceMapping.getId());
+			LOG.debug("register device " + deviceName + " for " + userId);
+			DeviceRegistrationEntity registeredDevice = this.deviceRegistrationService
+					.registerDevice(userId, deviceName);
+			LOG.debug("registered device id: " + registeredDevice.getId());
 
 			protocolContext.setMappingId(deviceMapping.getId());
-			protocolContext.setRegistrationId(registrationId);
+			protocolContext.setRegistrationId(registeredDevice.getId());
 			protocolContext.setValidity(this.samlAuthorityService
 					.getAuthnAssertionValidity());
 			protocolContext.setIssuer(nodeName);

@@ -55,7 +55,7 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService,
 	public void remove(String deviceUserId, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
 			ArgumentIntegrityException, AttributeTypeNotFoundException,
-			SubjectNotFoundException {
+			SubjectNotFoundException, DeviceNotFoundException {
 		LOG.debug("remove");
 		this.credentialManager.removeIdentity(deviceUserId,
 				identityStatementData);

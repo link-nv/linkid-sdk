@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+<ui:composition template="/WEB-INF/template-auth-root.xhtml">
+	<ui:define name="top_content">
+		<h1>#{msgs.deviceError}</h1>
+	</ui:define>
+	<ui:define name="content">
+
+
+		<p>#{msgs.deviceErrorInfo}</p>
+
+		<p><h:outputLabel value="#{deviceErrorMessage}" styleClass="error" /></p>
+
+		<p><h:outputLink
+			value="#{facesContext.externalContext.requestContextPath}/main.seam">#{msgs.helpLinkToMain}</h:outputLink></p>
+
+	</ui:define>
+
+</ui:composition>
+</body>
+</html>

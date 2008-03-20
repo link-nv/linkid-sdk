@@ -80,7 +80,7 @@ public class RemovalBean implements Removal {
 	FacesMessages facesMessages;
 
 	@In
-	private String userId;
+	private String registrationId;
 
 	@DataModel(MOBILE_ATTRIBUTE_LIST_NAME)
 	List<AttributeDO> mobileAttributes;
@@ -141,7 +141,7 @@ public class RemovalBean implements Removal {
 		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
 
 		SubjectEntity deviceSubject = this.subjectService
-				.getSubject(this.userId);
+				.getSubject(this.registrationId);
 
 		String language;
 		if (null == locale) {
@@ -199,8 +199,8 @@ public class RemovalBean implements Removal {
 
 	public String mobileRemove() {
 		try {
-			this.encapDeviceService.remove(this.userId, this.selectedMobile
-					.getStringValue());
+			this.encapDeviceService.remove(this.registrationId,
+					this.selectedMobile.getStringValue());
 		} catch (MobileException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "mobileRemovalFailed");

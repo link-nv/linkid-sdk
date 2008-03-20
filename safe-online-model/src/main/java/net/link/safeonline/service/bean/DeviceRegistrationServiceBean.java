@@ -79,10 +79,33 @@ public class DeviceRegistrationServiceBean implements DeviceRegistrationService 
 		return this.deviceRegistrationDAO.listRegisteredDevices(subject);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<DeviceRegistrationEntity> listDeviceRegistrations(
 			SubjectEntity subject, DeviceEntity device) {
 		return this.deviceRegistrationDAO
 				.listRegisteredDevices(subject, device);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeDeviceRegistration(String id) {
+		LOG.debug("remove device registration: " + id);
+		this.deviceRegistrationDAO.removeRegisteredDevice(id);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 */
+	public List<DeviceRegistrationEntity> listDeviceRegistrations(
+			String userId, String deviceName) throws SubjectNotFoundException,
+			DeviceNotFoundException {
+		SubjectEntity subject = this.subjectService.getSubject(userId);
+		DeviceEntity device = this.devicePolicyService.getDevice(deviceName);
+		return listDeviceRegistrations(subject, device);
 	}
 
 }

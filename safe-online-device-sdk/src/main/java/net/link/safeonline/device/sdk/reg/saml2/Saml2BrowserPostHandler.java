@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -168,9 +169,10 @@ public class Saml2BrowserPostHandler implements Serializable {
 				templateResourceName, httpResponse);
 	}
 
-	public String handleResponse(HttpServletRequest httpRequest,
+	public List<String> handleResponse(HttpServletRequest httpRequest,
 			@SuppressWarnings("unused")
 			HttpServletResponse httpResponse) throws ServletException {
+		List<String> subjectNames = new LinkedList<String>();
 
 		DateTime now = new DateTime();
 
@@ -181,29 +183,32 @@ public class Saml2BrowserPostHandler implements Serializable {
 		if (null == samlResponse)
 			return null;
 
-		Assertion assertion = samlResponse.getAssertions().get(0);
-		List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-		if (authStatements.isEmpty()) {
-			throw new ServletException("missing authentication statement");
+		for (Assertion assertion : samlResponse.getAssertions()) {
+			List<AuthnStatement> authStatements = assertion
+					.getAuthnStatements();
+			if (authStatements.isEmpty()) {
+				throw new ServletException("missing authentication statement");
+			}
+
+			AuthnStatement authStatement = authStatements.get(0);
+			if (null == authStatement.getAuthnContext()) {
+				throw new ServletException(
+						"missing authentication context in authentication statement");
+			}
+
+			AuthnContextClassRef authnContextClassRef = authStatement
+					.getAuthnContext().getAuthnContextClassRef();
+			this.authenticationDevice = authnContextClassRef
+					.getAuthnContextClassRef();
+			LOG.debug("authentication device: " + this.authenticationDevice);
+
+			Subject subject = assertion.getSubject();
+			NameID subjectName = subject.getNameID();
+			String subjectNameValue = subjectName.getValue();
+			LOG.debug("subject name value: " + subjectNameValue);
+			subjectNames.add(subjectNameValue);
 		}
-
-		AuthnStatement authStatement = authStatements.get(0);
-		if (null == authStatement.getAuthnContext()) {
-			throw new ServletException(
-					"missing authentication context in authentication statement");
-		}
-
-		AuthnContextClassRef authnContextClassRef = authStatement
-				.getAuthnContext().getAuthnContextClassRef();
-		this.authenticationDevice = authnContextClassRef
-				.getAuthnContextClassRef();
-		LOG.debug("authentication device: " + this.authenticationDevice);
-
-		Subject subject = assertion.getSubject();
-		NameID subjectName = subject.getNameID();
-		String subjectNameValue = subjectName.getValue();
-		LOG.debug("subject name value: " + subjectNameValue);
-		return subjectNameValue;
+		return subjectNames;
 	}
 
 	public String getAuthenticationDevice() {

@@ -34,9 +34,15 @@ public interface Devices {
 
 	String remove();
 
+	String removeDevice();
+
 	String update();
 
+	String updateDevice();
+
 	String changePassword();
+
+	String registerPassword();
 
 	String removePassword();
 
@@ -49,4 +55,6 @@ public interface Devices {
 	 * Factory.
 	 */
 	List<DeviceEntry> devicesFactory();
+
+	List<DeviceRegistrationEntry> deviceRegistrationsFactory();
 }

@@ -211,25 +211,24 @@ public class AuthnResponseUtil {
 			throw new ServletException("missing Assertion");
 		}
 
-		Assertion assertion = assertions.get(0);
+		for (Assertion assertion : assertions) {
+			Conditions conditions = assertion.getConditions();
+			DateTime notBefore = conditions.getNotBefore();
+			DateTime notOnOrAfter = conditions.getNotOnOrAfter();
 
-		Conditions conditions = assertion.getConditions();
-		DateTime notBefore = conditions.getNotBefore();
-		DateTime notOnOrAfter = conditions.getNotOnOrAfter();
+			LOG.debug("now: " + now.toString());
+			LOG.debug("notBefore: " + notBefore.toString());
+			LOG.debug("notOnOrAfter : " + notOnOrAfter.toString());
 
-		LOG.debug("now: " + now.toString());
-		LOG.debug("notBefore: " + notBefore.toString());
-		LOG.debug("notOnOrAfter : " + notOnOrAfter.toString());
+			if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
+				throw new ServletException("invalid SAML message timeframe");
+			}
 
-		if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
-			throw new ServletException("invalid SAML message timeframe");
+			Subject subject = assertion.getSubject();
+			if (null == subject) {
+				throw new ServletException("missing Assertion Subject");
+			}
 		}
-
-		Subject subject = assertion.getSubject();
-		if (null == subject) {
-			throw new ServletException("missing Assertion Subject");
-		}
-
 		return samlResponse;
 	}
 }

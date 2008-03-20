@@ -36,13 +36,13 @@ import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.user.DeviceEntry;
+import net.link.safeonline.user.DeviceRegistrationEntry;
 import net.link.safeonline.user.Devices;
 import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
@@ -51,10 +51,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.contexts.Context;
@@ -70,6 +72,8 @@ public class DevicesBean implements Devices {
 
 	private static final String DEVICES_LIST_NAME = "devices";
 
+	private static final String DEVICE_REGISTRATIONS_LIST_NAME = "deviceRegistrations";
+
 	private String oldPassword;
 
 	private String newPassword;
@@ -81,6 +85,12 @@ public class DevicesBean implements Devices {
 
 	@DataModelSelection(DEVICES_LIST_NAME)
 	private DeviceEntry selectedDevice;
+
+	@DataModel(DEVICE_REGISTRATIONS_LIST_NAME)
+	List<DeviceRegistrationEntry> deviceRegistrations;
+
+	@DataModelSelection(DEVICE_REGISTRATIONS_LIST_NAME)
+	private DeviceRegistrationEntry selectedDeviceRegistration;
 
 	@PostConstruct
 	public void postConstructCallback() {
@@ -111,6 +121,9 @@ public class DevicesBean implements Devices {
 	@In(create = true)
 	FacesMessages facesMessages;
 
+	@Out(required = false, scope = ScopeType.SESSION)
+	String registrationId;
+
 	public String getNewPassword() {
 		return this.newPassword;
 	}
@@ -127,6 +140,34 @@ public class DevicesBean implements Devices {
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public void setOldPassword(String oldPassword) {
 		this.oldPassword = oldPassword;
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String registerPassword() {
+		try {
+			this.credentialService.registerPassword(this.newPassword);
+		} catch (PermissionDeniedException e) {
+			String msg = "old password not correct";
+			LOG.debug(msg);
+			this.facesMessages.addToControlFromResourceBundle("newpassword",
+					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotCorrect");
+			return null;
+		} catch (DeviceNotFoundException e) {
+			String msg = "there is no old password";
+			LOG.debug(msg);
+			this.facesMessages.addToControlFromResourceBundle("newpassword",
+					FacesMessage.SEVERITY_ERROR, "errorOldPasswordNotFound");
+			return null;
+		} catch (SubjectNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
+			return null;
+		}
+
+		this.credentialCacheFlushRequired = true;
+		LOG.debug("returning success");
+		return "success";
+
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
@@ -227,13 +268,16 @@ public class DevicesBean implements Devices {
 		return viewLocale;
 	}
 
-	private List<AttributeDO> listRegisteredDeviceAttributes(String deviceId,
-			AttributeTypeEntity attributeType) {
+	private List<AttributeDO> listRegisteredDeviceAttributes(
+			DeviceRegistrationEntity registeredDevice) {
 		Locale locale = getViewLocale();
 		List<AttributeDO> registeredDeviceAttributes;
 		try {
+			if (null == registeredDevice.getDevice().getUserAttributeType())
+				return new LinkedList<AttributeDO>();
 			registeredDeviceAttributes = this.identityService.listAttributes(
-					deviceId, attributeType, locale);
+					registeredDevice.getId(), registeredDevice.getDevice()
+							.getUserAttributeType(), locale);
 		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
@@ -253,20 +297,26 @@ public class DevicesBean implements Devices {
 		return registeredDeviceAttributes;
 	}
 
-	private List<AttributeDO> listRegisteredDevices(DeviceEntity device) {
+	@RolesAllowed(UserConstants.USER_ROLE)
+	@Factory(DEVICE_REGISTRATIONS_LIST_NAME)
+	public List<DeviceRegistrationEntry> deviceRegistrationsFactory() {
+		Locale locale = getViewLocale();
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
-		List<AttributeDO> registeredDeviceAttributes = new LinkedList<AttributeDO>();
 
-		List<DeviceRegistrationEntity> registeredDevices = this.deviceRegistrationService
-				.listDeviceRegistrations(subject, device);
-		for (DeviceRegistrationEntity registeredDevice : registeredDevices) {
-			if (null == registeredDevice.getDevice().getUserAttributeType())
-				continue;
-			registeredDeviceAttributes.addAll(listRegisteredDeviceAttributes(
-					registeredDevice.getId(), registeredDevice.getDevice()
-							.getUserAttributeType()));
+		this.deviceRegistrations = new LinkedList<DeviceRegistrationEntry>();
+		List<DeviceEntity> deviceList = this.devicePolicyService.getDevices();
+		for (DeviceEntity device : deviceList) {
+			String deviceDescription = this.devicePolicyService
+					.getDeviceDescription(device.getName(), locale);
+			List<DeviceRegistrationEntity> registeredDevices = this.deviceRegistrationService
+					.listDeviceRegistrations(subject, device);
+			for (DeviceRegistrationEntity registeredDevice : registeredDevices) {
+				this.deviceRegistrations.add(new DeviceRegistrationEntry(
+						registeredDevice, deviceDescription,
+						listRegisteredDeviceAttributes(registeredDevice)));
+			}
 		}
-		return registeredDeviceAttributes;
+		return this.deviceRegistrations;
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
@@ -278,8 +328,7 @@ public class DevicesBean implements Devices {
 		for (DeviceEntity device : deviceList) {
 			String deviceDescription = this.devicePolicyService
 					.getDeviceDescription(device.getName(), locale);
-			this.devices.add(new DeviceEntry(device, deviceDescription,
-					listRegisteredDevices(device)));
+			this.devices.add(new DeviceEntry(device, deviceDescription));
 		}
 		return this.devices;
 	}
@@ -321,15 +370,27 @@ public class DevicesBean implements Devices {
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
+	public String removeDevice() {
+		LOG.debug("remove device: "
+				+ this.selectedDeviceRegistration.getFriendlyName());
+		this.registrationId = this.selectedDeviceRegistration
+				.getDeviceRegistration().getId();
+		return redirectRemove(this.selectedDeviceRegistration
+				.getDeviceRegistration().getDevice().getName());
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
 	public String remove() {
 		LOG.debug("remove device: " + this.selectedDevice.getFriendlyName());
+		return redirectRemove(this.selectedDevice.getDevice().getName());
+	}
+
+	private String redirectRemove(String deviceName) {
 		String removalURL;
 		try {
-			removalURL = this.devicePolicyService
-					.getRemovalURL(this.selectedDevice.getDevice().getName());
+			removalURL = this.devicePolicyService.getRemovalURL(deviceName);
 		} catch (DeviceNotFoundException e) {
-			LOG.error("device not found: "
-					+ this.selectedDevice.getDevice().getName());
+			LOG.error("device not found: " + deviceName);
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;
@@ -353,18 +414,32 @@ public class DevicesBean implements Devices {
 					FacesMessage.SEVERITY_ERROR, "errorIO");
 		}
 		return null;
+
+	}
+
+	@RolesAllowed(UserConstants.USER_ROLE)
+	public String updateDevice() {
+		LOG.debug("update device: "
+				+ this.selectedDeviceRegistration.getFriendlyName());
+		this.registrationId = this.selectedDeviceRegistration
+				.getDeviceRegistration().getId();
+		return redirectUpdate(this.selectedDeviceRegistration
+				.getDeviceRegistration().getDevice().getName());
+
 	}
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String update() {
 		LOG.debug("update device: " + this.selectedDevice.getFriendlyName());
+		return redirectUpdate(this.selectedDevice.getDevice().getName());
+	}
+
+	private String redirectUpdate(String deviceName) {
 		String updateURL;
 		try {
-			updateURL = this.devicePolicyService
-					.getUpdateURL(this.selectedDevice.getDevice().getName());
+			updateURL = this.devicePolicyService.getUpdateURL(deviceName);
 		} catch (DeviceNotFoundException e) {
-			LOG.error("device not found: "
-					+ this.selectedDevice.getDevice().getName());
+			LOG.error("device not found: " + deviceName);
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorDeviceNotFound");
 			return null;

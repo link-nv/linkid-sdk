@@ -143,7 +143,7 @@ public class Saml2Handler implements Serializable {
 
 		ProtocolContext protocolContext = ProtocolContext
 				.getProtocolContext(request.getSession());
-		protocolContext.setRegisteredDevice(registeredDevice);
+		protocolContext.setDeviceName(registeredDevice);
 		protocolContext.setApplication(application);
 	}
 
@@ -153,8 +153,9 @@ public class Saml2Handler implements Serializable {
 			throws RegistrationFinalizationException {
 		ProtocolContext protocolContext = ProtocolContext
 				.getProtocolContext(request.getSession());
-		String registeredDevice = protocolContext.getRegisteredDevice();
-		String userId = protocolContext.getUserId();
+		String registeredDevice = protocolContext.getDeviceName();
+		String mappingId = protocolContext.getMappingId();
+		String registrationId = protocolContext.getRegistrationId();
 		String applicationId = protocolContext.getApplication();
 		String target = (String) this.session.getAttribute(TARGET_URL);
 		String inResponseTo = (String) this.session
@@ -169,8 +170,19 @@ public class Saml2Handler implements Serializable {
 		int validity = protocolContext.getValidity();
 
 		Response responseMessage = AuthnResponseFactory.createAuthResponse(
-				inResponseTo, applicationId, issuerName, userId,
+				inResponseTo, applicationId, issuerName, mappingId,
 				registeredDevice, validity, target);
+
+		/**
+		 * If registration ID is set, this response is part of a device
+		 * registration procedure so an extra assertion containing this
+		 * registration ID is required.
+		 */
+		if (null != protocolContext.getRegistrationId())
+			AuthnResponseFactory.addAssertion(responseMessage, inResponseTo,
+					applicationId, registrationId, issuerName,
+					registeredDevice, validity, target);
+
 		try {
 			AuthnResponseUtil.sendAuthnResponse(responseMessage, target,
 					publicKey, privateKey, response);

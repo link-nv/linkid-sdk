@@ -2,6 +2,7 @@ package net.link.safeonline.device.sdk.update.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -64,15 +65,17 @@ public class ExitServlet extends HttpServlet {
 			writeErrorPage(msg, response);
 			return;
 		}
-		String userId = saml2BrowserPostHandler.handleResponse(request,
+		List<String> ids = saml2BrowserPostHandler.handleResponse(request,
 				response);
-		if (null == userId) {
+		if (ids.size() != 1 && ids.size() != 2) {
 			String msg = "protocol handler could not finalize";
 			LOG.error(msg);
 			writeErrorPage(msg, response);
 			return;
 		}
-		request.getSession().setAttribute("userId", userId);
+		request.getSession().setAttribute("userId", ids.get(0));
+		if (ids.size() == 2)
+			request.getSession().setAttribute("registrationId", ids.get(1));
 
 		response.sendRedirect(this.updateUrl);
 	}

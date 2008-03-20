@@ -35,5 +35,5 @@ public interface CredentialManager {
 	void removeIdentity(String deviceUserId, byte[] identityStatementData)
 			throws TrustDomainNotFoundException, PermissionDeniedException,
 			ArgumentIntegrityException, AttributeTypeNotFoundException,
-			SubjectNotFoundException;
+			SubjectNotFoundException, DeviceNotFoundException;
 }

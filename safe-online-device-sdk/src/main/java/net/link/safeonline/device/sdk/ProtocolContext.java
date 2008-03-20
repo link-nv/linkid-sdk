@@ -17,9 +17,11 @@ public class ProtocolContext implements Serializable {
 
 	private HttpSession session;
 
-	private String registeredDevice;
+	private String deviceName;
 
-	private String userId;
+	private String mappingId;
+
+	private String registrationId;
 
 	private String application;
 
@@ -34,6 +36,7 @@ public class ProtocolContext implements Serializable {
 	private ProtocolContext(HttpSession session) {
 		this.session = session;
 		this.session.setAttribute(PROTOCOL_CONTEXT, this);
+		this.registrationId = null;
 	}
 
 	public static ProtocolContext getProtocolContext(HttpSession session) {
@@ -45,20 +48,28 @@ public class ProtocolContext implements Serializable {
 		return instance;
 	}
 
-	public String getRegisteredDevice() {
-		return this.registeredDevice;
+	public String getDeviceName() {
+		return this.deviceName;
 	}
 
-	public void setRegisteredDevice(String registeredDevice) {
-		this.registeredDevice = registeredDevice;
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
-	public String getUserId() {
-		return this.userId;
+	public String getMappingId() {
+		return this.mappingId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setMappingId(String mappingId) {
+		this.mappingId = mappingId;
+	}
+
+	public String getRegistrationId() {
+		return this.registrationId;
+	}
+
+	public void setRegistrationId(String registrationId) {
+		this.registrationId = registrationId;
 	}
 
 	public String getApplication() {
