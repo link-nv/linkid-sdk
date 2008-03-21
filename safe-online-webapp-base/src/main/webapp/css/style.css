@@ -94,6 +94,13 @@ a:hover {
 #header_top[id] {
     height: 90px;
 }
+#header_top form img {
+    border: 1px solid transparent;
+    margin-right: 5px;
+}
+#header_top form:hover img {
+    border: 1px solid white;
+}
 
 #header ul.menu {
 	margin: 0;
@@ -428,6 +435,8 @@ label {
 	width: 125px;
 	text-align: right;
 	vertical-align: top;
+    /* Prevent labels with no content from collapsing. */
+    border-bottom: 1px solid transparent;
 }
 label[for] {
     display: block;
@@ -448,7 +457,7 @@ input,select,textarea {
 input.label,select.label,textarea.label,input.radio,.af_inputFile,img.label
 	{
 	color: #333;
-	margin: 0 0 7px 0;
+	margin: 3px 0 5px 0;
     vertical-align: bottom;
 	background: #fff;
 	width: 300px;
@@ -468,8 +477,11 @@ input.radio {
 	width: auto;
 }
 
-input.label:hover,.so-input-text:hover {
-	border-bottom: 1px solid #7D8A2E;
+input.label:hover,.so-input-text:hover, input.label:focus {
+	border-bottom-style: solid;
+}
+input.label:active {
+    border-color: #888;
 }
 
 img.label {
@@ -482,7 +494,6 @@ select.label, select.label:hover {
 
 input.submit {
 	margin: 15px 25px 7px 0;
-	padding: 5px;
 	width: 125px;
 	height: 25px;
 	background: url(../images/button.jpg) no-repeat;
@@ -491,7 +502,7 @@ input.submit {
 	font-size: 12px;
 	font-weight: bold;
 	text-align: center;
-	color: #fff;
+    color: #fff;
 	display: inline;
 	float: left;
 }
@@ -501,62 +512,69 @@ textarea {
 	border-left: 1px dotted #81aa00;
 }
 
-table.listingTable {
+table {
 	border: none;
+    border-collapse: collapse;
 	margin: 0;
 	clear: left;
 	float: none;
 	display: block;
 	padding: 0;
+    width: 575px;
+}
+table table {
+    width: auto;
 }
 
-table.listingTable tbody {
+table colgroup {
+    width: inherit;
+}
+table.listingTable td,
+table.scroller td {
+    /* Tables with thead/tbody don't like to get wide */
+    /* Forced column size will act as a maximum size but distribute available width in a balanced manner. */
+    /* width: 575px !important; */
+}
+table.rich-table td {
+    width: auto;
+}
+
+table.listingTable tbody, table.rich-table tbody {
 	padding: 5px;
 }
 
-table.listingTable tbody tr {
+table.listingTable tbody tr, table.rich-table tbody tr {
 	background: #fff;
 	margin: 0;
 	padding: 0;
 }
 
-table.listingTable tbody tr:hover {
-	background: #E8E7E7;
+table.listingTable tbody tr:hover, table.rich-table tbody tr:hover {
+	background: #f9f9f9;
 }
 
-table.listingTable tfoot tr {
+table.listingTable tfoot tr, table.rich-table tfoot tr {
 	background: #E8E7E7;
 	padding: 0;
 	float: none;
 	margin: 0;
 }
 
-table.listingTable tbody tr td {
+table.listingTable tbody tr td, table.rich-table tbody tr td {
 	margin: 0;
 	padding: 5px;
 	border: none;
-	border-bottom: 1px solid #E8E7E7;
 }
 
-table.listingTable thead tr th,table.listingTable thead tr td,table.styled thead tr td
-	{
+table.rich-table thead tr th, table.rich-table thead tr td, table.styled thead tr td,
+table.listingTable thead tr th, table.listingTable thead tr td {
 	margin: 0;
 	padding: 5px;
 	border: none;
 	text-align: left;
-	border-bottom: 1px solid #333;
 	font-weight: bold;
 }
 
-/*
-.listingTable_Row1 {
-	background: #fff;
-}
-
-.listingTable_Row2 {
-	background: #f5f5f5;
-}
-*/
 div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr table tbody tr:hover
 	{
 	border: none;
@@ -566,20 +584,51 @@ div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr 
 	text-align: center;
 }
 
-.rich-table         , .rich-table-caption         , .rich-table-header      
-	  , .rich-table-header-continue	        , .rich-table-subheader        
-	, .rich-table-footer         , .rich-table-footer-continue         ,
-	.rich-table-subfooter         , .rich-table-headercell         ,
-	.rich-table-subheadercell         , .rich-table-cell         ,
-	.rich-table-row   
-	     , .rich-table-firstrow         , .rich-table-footercell         ,
-	.rich-table-subfootercell {
-	border-style: none;
+.listingTable, .listingTable_Row1, .listingTable_Row2,
+.rich-table, .rich-table-caption,
+.rich-table-header, .rich-table-header-continue, .rich-table-subheader,
+.rich-table-headercell, .rich-table-subheadercell, .rich-table-cell,
+.rich-table-footer, .rich-table-footer-continue, .rich-table-subfooter,
+.rich-table-footercell, .rich-table-subfootercell,
+.rich-table-row, .rich-table-firstrow {
+    border: none;
 	font-family: inherit;
 	font-size: inherit;
 	background-color: inherit;
 	color: inherit;
 }
+
+table tr.rich-table-row, table tr.rich-table-firstrow, table tr.rich-table-footer,
+table tr.listingTable_Row1, table tr.listingTable_Row2 {
+    border: 1px solid #E8E7E7 !important;
+    border-style: solid solid none;
+}
+
+table.listingTable, table.rich-table {
+    border-bottom: 1px solid #E8E7E7;
+}
+
+/* Make links in tables easier to click. */
+table.listingTable td a, table.rich-table td a {
+    display:block;
+    padding-bottom: 1px;
+    width: inherit;
+    height: inherit;
+}
+table.listingTable td a:hover, table.rich-table td a:hover {
+    border:none;
+    text-decoration: underline;
+}
+
+/*
+table tbody tr.listingTable_Row1 {
+	background: #fff
+}
+
+table tbody tr.listingTable_Row2 {
+	background: #fcfcfc;
+}
+*/
 
 .rich-datascr-button   
 	    , .rich-datascr-ctrls-separator        , .rich-datascr-act        ,

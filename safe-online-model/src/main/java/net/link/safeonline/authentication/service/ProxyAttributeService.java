@@ -20,7 +20,6 @@ public interface ProxyAttributeService {
 	 * 
 	 * @param deviceUserId
 	 * @param attributeName
-	 * @return
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
 	 */
@@ -33,7 +32,6 @@ public interface ProxyAttributeService {
 	 * 
 	 * @param userId
 	 * @param attributeName
-	 * @return
 	 * @throws PermissionDeniedException
 	 * @throws SubjectNotFoundException
 	 * @throws AttributeTypeNotFoundException
