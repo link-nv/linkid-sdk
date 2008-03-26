@@ -29,6 +29,10 @@
 	</fileSets>
 	<files>
 		<file>
+            <source>target/files/resources/mysql-safe-online-ds.xml</source>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</file>
+		<file>
 			<source>target/files/postgresql-8.2-504.jdbc3.jar</source>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</file>

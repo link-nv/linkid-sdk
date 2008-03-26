@@ -103,16 +103,6 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>
-										net.lin-k.safe-online
-									</groupId>
-									<artifactId>
-										safe-online-sql-ddl
-									</artifactId>
-								</artifactItem>
-                            </artifactItems>
 							<outputDirectory>
 								${project.build.directory}/dependency
 							</outputDirectory>

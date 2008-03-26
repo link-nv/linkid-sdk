@@ -61,10 +61,6 @@
 	</fileSets>
 	<files>
 		<file>
-            <source>target/files/resources/mysql-safe-online-ds.xml</source>
-			<outputDirectory>jboss/server/default/deploy</outputDirectory>
-		</file>
-		<file>
 			<source>target/files/ssl.jks</source>
 			<outputDirectory>jboss/server/default/conf</outputDirectory>
 		</file>
