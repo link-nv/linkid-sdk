@@ -49,7 +49,7 @@
   <!--mbean code="org.jboss.mq.pm.jdbc2.OracleThinPersistenceManager" -->
   <mbean code="org.jboss.mq.pm.jdbc2.PersistenceManager"
 	 name="jboss.mq:service=PersistenceManager">
-    <depends optional-attribute-name="ConnectionManager">jboss.jca:service=DataSourceBinding,name=SafeOnlineDS</depends>
+    <depends optional-attribute-name="ConnectionManager">jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
     <attribute name="SqlProperties">
       INSERT_EMPTY_BLOB = INSERT INTO JMS_MESSAGES (MESSAGEID, DESTINATION, MESSAGEBLOB, TXID, TXOP) VALUES(?,?,EMPTY_BLOB(),?,?)
       LOCK_EMPTY_BLOB = SELECT MESSAGEID, MESSAGEBLOB FROM JMS_MESSAGES WHERE MESSAGEID = ? AND DESTINATION = ? FOR UPDATE

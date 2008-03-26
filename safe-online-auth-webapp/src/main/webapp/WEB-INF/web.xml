@@ -60,14 +60,7 @@
 			SafeOnlineDeviceAuthenticationServiceUrl
 		</param-name>
 		<param-value>
-			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/device/auth
-		</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>WsLocation</param-name>
-		<param-value>
-			${safe-online.host.name}:${safe-online.host.port.ssl}
+            ${safe-online.host.basename}/olas-auth/device/auth
 		</param-value>
 	</context-param>
 

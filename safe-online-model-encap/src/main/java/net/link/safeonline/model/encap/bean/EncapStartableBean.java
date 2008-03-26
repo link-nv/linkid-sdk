@@ -72,6 +72,7 @@ public class EncapStartableBean extends AbstractInitBean {
 	private void configureNode() {
 		ResourceBundle properties = ResourceBundle.getBundle("config");
 		String nodeName = properties.getString("olas.node.name");
+		String protocol = properties.getString("olas.host.protocol");
 		String hostname = properties.getString("olas.host.name");
 		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
 		int hostportssl = Integer.parseInt(properties
@@ -80,7 +81,8 @@ public class EncapStartableBean extends AbstractInitBean {
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 
-		this.node = new Node(nodeName, hostname, hostport, hostportssl,
+		this.node = new Node(nodeName, protocol, hostname, hostport,
+				hostportssl,
 				authIdentityServiceClient.getCertificate(),
 				identityServiceClient.getCertificate());
 		this.trustedCertificates.put(

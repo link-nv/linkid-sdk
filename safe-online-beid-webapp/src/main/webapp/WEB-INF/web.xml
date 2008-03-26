@@ -75,13 +75,13 @@
 	<context-param>
 		<param-name>RegistrationServiceUrl</param-name>
 		<param-value>
-			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-beid/regexit
+            ${safe-online.host.basename}/olas-beid/regexit
 		</param-value>
 	</context-param>
 	<context-param>
 		<param-name>RemovalServiceUrl</param-name>
 		<param-value>
-			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-beid/removeexit
+			${safe-online.host.basename}/olas-beid/removeexit
 		</param-value>
 	</context-param>
 	<filter>

@@ -4,9 +4,9 @@
         "http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd">
 <datasources>
 	<local-tx-datasource>
-		<jndi-name>SafeOnlineDS</jndi-name>
+        <jndi-name>${safe-online.data.source}</jndi-name>
 		<connection-url>
-			jdbc:oracle:thin:@localhost:1521:safeonline
+            ${safe-online.data.source.uri}
 		</connection-url>
 		<driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
 		<transaction-isolation>

@@ -46,42 +46,33 @@ public class DeviceManager {
 			throw new ServletException("Unknown Olas Node");
 		}
 
-		String safeOnlineHostName = node.getHostname();
-		int safeOnlineHostPort = node.getPort();
-		int safeOnlineHostPortSsl = node.getSslPort();
-
-		session.setAttribute(SAFE_ONLINE_DEVICE_WS_LOCATION, safeOnlineHostName
-				+ ":" + safeOnlineHostPortSsl);
+		session.setAttribute(SAFE_ONLINE_DEVICE_WS_LOCATION, node.getLocation()
+				.replaceFirst(".*://", ""));
 
 		if (source.equals("auth")) {
 			session.setAttribute(
-					SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE,
-					"https://" + safeOnlineHostName + ":"
-							+ safeOnlineHostPortSsl
+					SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE, node
+							.getLocation()
 							+ "/olas-auth/device/landing");
 			session
 					.setAttribute(
 							SAFE_ONLINE_DEVICE_REGISTRATION_LANDING_SERVICE_URL_ATTRIBUTE,
-							"https://" + safeOnlineHostName + ":"
-									+ safeOnlineHostPortSsl
+							node.getLocation()
 									+ "/olas-auth/device/registrationlanding");
 			session.setAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE,
-					"https://" + safeOnlineHostName + ":"
-							+ safeOnlineHostPortSsl + "/olas-auth/device/exit");
+					node.getLocation() + "/olas-auth/device/exit");
 		} else if (source.equals("user")) {
 			session.setAttribute(
-					SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE,
-					"https://" + safeOnlineHostName + ":"
-							+ safeOnlineHostPortSsl + "/olas/device/landing");
+					SAFE_ONLINE_DEVICE_LANDING_SERVICE_URL_ATTRIBUTE, node
+							.getLocation()
+							+ "/olas/device/landing");
 			session
 					.setAttribute(
 							SAFE_ONLINE_DEVICE_REGISTRATION_LANDING_SERVICE_URL_ATTRIBUTE,
-							"https://" + safeOnlineHostName + ":"
-									+ safeOnlineHostPortSsl
+							node.getLocation()
 									+ "/olas/device/registrationlanding");
 			session.setAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE,
-					"http://" + safeOnlineHostName + ":" + safeOnlineHostPort
-							+ "/olas/device/exit");
+					node.getHTTPLocation() + "/olas/device/exit");
 		} else
 			throw new ServletException("Unknown source");
 

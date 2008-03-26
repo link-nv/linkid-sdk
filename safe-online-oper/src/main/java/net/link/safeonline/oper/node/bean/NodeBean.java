@@ -56,6 +56,8 @@ public class NodeBean implements Node {
 
 	private String name;
 
+	private String protocol;
+
 	private String hostname;
 
 	private int port;
@@ -85,6 +87,7 @@ public class NodeBean implements Node {
 	@Destroy
 	public void destroyCallback() {
 		this.name = null;
+		this.protocol = null;
 		this.hostname = null;
 		this.authnUpFile = null;
 		this.signingUpFile = null;
@@ -112,8 +115,8 @@ public class NodeBean implements Node {
 				encodedSigningCertificate = getUpFileContent(this.signingUpFile);
 			else
 				encodedSigningCertificate = null;
-			this.nodeService.addNode(this.name, this.hostname, this.port,
-					this.sslPort, encodedAuthnCertificate,
+			this.nodeService.addNode(this.name, this.protocol, this.hostname,
+					this.port, this.sslPort, encodedAuthnCertificate,
 					encodedSigningCertificate);
 		} catch (ExistingNodeException e) {
 			LOG.debug("node already exists: " + this.name);
@@ -162,6 +165,16 @@ public class NodeBean implements Node {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getProtocol() {
+
+		return this.protocol;
+	}
+
+	public void setProtocol(String protocol) {
+
+		this.protocol = protocol;
 	}
 
 	public String getHostname() {
@@ -267,8 +280,8 @@ public class NodeBean implements Node {
 			}
 		}
 		try {
-			this.nodeService.updateLocation(nodeName, this.hostname, this.port,
-					this.sslPort);
+			this.nodeService.updateLocation(nodeName, this.hostname,
+					this.protocol, this.port, this.sslPort);
 
 			/*
 			 * Refresh the selected application.
@@ -306,6 +319,7 @@ public class NodeBean implements Node {
 		 */
 		LOG.debug("edit application: " + this.selectedNode.getName());
 
+		this.protocol = this.selectedNode.getProtocol();
 		this.hostname = this.selectedNode.getHostname();
 		this.port = this.selectedNode.getPort();
 		this.sslPort = this.selectedNode.getSslPort();

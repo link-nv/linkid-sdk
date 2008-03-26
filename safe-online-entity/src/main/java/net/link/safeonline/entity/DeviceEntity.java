@@ -213,8 +213,7 @@ public class DeviceEntity implements Serializable {
 	public String getAuthenticationPath() {
 		if (null == this.location)
 			return this.authenticationURL;
-		return "https://" + this.location.getSslLocation() + "/"
-				+ this.authenticationURL;
+		return this.location.getLocation() + "/" + this.authenticationURL;
 	}
 
 	/**
@@ -237,8 +236,7 @@ public class DeviceEntity implements Serializable {
 	public String getRegistrationPath() {
 		if (null == this.location)
 			return this.registrationURL;
-		return "https://" + this.location.getSslLocation() + "/"
-				+ this.registrationURL;
+		return this.location.getLocation() + "/" + this.registrationURL;
 	}
 
 	/**
@@ -261,8 +259,7 @@ public class DeviceEntity implements Serializable {
 	public String getRemovalPath() {
 		if (null == this.location)
 			return this.removalURL;
-		return "https://" + this.location.getSslLocation() + "/"
-				+ this.removalURL;
+		return this.location.getLocation() + "/" + this.removalURL;
 	}
 
 	/**
@@ -285,8 +282,7 @@ public class DeviceEntity implements Serializable {
 	public String getUpdatePath() {
 		if (null == this.location)
 			return this.updateURL;
-		return "https://" + this.location.getSslLocation() + "/"
-				+ this.updateURL;
+		return this.location.getLocation() + "/" + this.updateURL;
 	}
 
 	/**
@@ -415,15 +411,12 @@ public class DeviceEntity implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (null == obj) {
+		if (null == obj)
 			return false;
-		}
-		if (false == (obj instanceof DeviceEntity)) {
+		if (false == obj instanceof DeviceEntity)
 			return false;
-		}
 		DeviceEntity rhs = (DeviceEntity) obj;
 		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
 	}
@@ -443,13 +436,12 @@ public class DeviceEntity implements Serializable {
 		List<DeviceEntity> listDevices();
 
 		@QueryMethod(QUERY_LIST_WHERE_CLASS)
-		List<DeviceEntity> listDevices(@QueryParam("deviceClass")
-		DeviceClassEntity deviceClass);
+		List<DeviceEntity> listDevices(
+				@QueryParam("deviceClass") DeviceClassEntity deviceClass);
 
 		@QueryMethod(QUERY_LIST_WHERE_CLASS_AUTH_CTX)
 		List<DeviceEntity> listDevices(
-				@QueryParam("authenticationContextClass")
-				String authenticationContextClass);
+				@QueryParam("authenticationContextClass") String authenticationContextClass);
 	}
 
 	public static Query createQueryWhereCertificate(

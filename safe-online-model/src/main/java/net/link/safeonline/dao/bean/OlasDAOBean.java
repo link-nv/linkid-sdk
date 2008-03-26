@@ -36,11 +36,11 @@ public class OlasDAOBean implements OlasDAO {
 				this.entityManager, OlasEntity.QueryInterface.class);
 	}
 
-	public OlasEntity addNode(String name, String hostname, int port,
-			int sslPort, X509Certificate authnCertificate,
+	public OlasEntity addNode(String name, String protocol, String hostname,
+			int port, int sslPort, X509Certificate authnCertificate,
 			X509Certificate signingCertificate) {
-		OlasEntity olas = new OlasEntity(name, hostname, port, sslPort,
-				authnCertificate, signingCertificate);
+		OlasEntity olas = new OlasEntity(name, protocol, hostname, port,
+				sslPort, authnCertificate, signingCertificate);
 		this.entityManager.persist(olas);
 		return olas;
 	}

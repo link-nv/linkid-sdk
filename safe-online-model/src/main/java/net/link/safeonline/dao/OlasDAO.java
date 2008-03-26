@@ -18,8 +18,9 @@ import net.link.safeonline.entity.OlasEntity;
 @Local
 public interface OlasDAO {
 
-	OlasEntity addNode(String name, String hostname, int port, int sslPort,
-			X509Certificate authnCertificate, X509Certificate signingCertificate);
+	OlasEntity addNode(String name, String protocol, String hostname, int port,
+			int sslPort, X509Certificate authnCertificate,
+			X509Certificate signingCertificate);
 
 	List<OlasEntity> listNodes();
 

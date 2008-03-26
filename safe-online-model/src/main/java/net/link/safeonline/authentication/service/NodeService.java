@@ -48,9 +48,10 @@ public interface NodeService {
 	 * @throws ExistingNodeException
 	 * @throws CertificateEncodingException
 	 */
-	void addNode(String name, String hostname, int port, int sslPort,
-			byte[] encodedAuthnCertificate, byte[] encodedSigningCertificate)
-			throws ExistingNodeException, CertificateEncodingException;
+	void addNode(String name, String protocol, String hostname, int port,
+			int sslPort, byte[] encodedAuthnCertificate,
+			byte[] encodedSigningCertificate) throws ExistingNodeException,
+			CertificateEncodingException;
 
 	/**
 	 * Removes an olas node.
@@ -69,8 +70,8 @@ public interface NodeService {
 	 * @param sslPort
 	 * @throws NodeNotFoundException
 	 */
-	void updateLocation(String nodeName, String hostname, int port, int sslPort)
-			throws NodeNotFoundException;
+	void updateLocation(String nodeName, String protocol, String hostname,
+			int port, int sslPort) throws NodeNotFoundException;
 
 	/**
 	 * Updates the OLAS node's authn certificate.

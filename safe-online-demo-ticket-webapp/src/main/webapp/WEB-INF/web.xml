@@ -21,7 +21,7 @@
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
 		<param-value>
-			https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/
+            ${safe-online.host.basename}/olas-auth/
 		</param-value>
 	</context-param>
 
@@ -93,7 +93,7 @@
 	<context-param>
 		<param-name>LandingPage</param-name>
 		<param-value>
-			https://${safe-online.host.name}:${safe-online.host.port.ssl}/demo-ticket/login
+            ${safe-online.host.basename}/demo-ticket/login
 		</param-value>
 	</context-param>
 

@@ -4,9 +4,9 @@
         "http://www.jboss.org/j2ee/dtd/jboss-ds_1_5.dtd">
 <datasources>
 	<local-tx-datasource>
-		<jndi-name>SafeOnlineDS</jndi-name>
+        <jndi-name>${safe-online.data.source}</jndi-name>
 		<connection-url>
-			jdbc:postgresql://localhost:5432/safeonline
+            ${safe-online.data.source.uri}
 		</connection-url>
 		<driver-class>org.postgresql.Driver</driver-class>
 		<transaction-isolation>

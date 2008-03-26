@@ -61,6 +61,8 @@ public class OlasEntity implements Serializable {
 
 	private String name;
 
+	private String protocol;
+
 	private String hostname;
 
 	private int port;
@@ -83,9 +85,11 @@ public class OlasEntity implements Serializable {
 		// empty
 	}
 
-	public OlasEntity(String name, String hostname, int port, int sslPort,
-			X509Certificate authnCertificate, X509Certificate signingCertificate) {
+	public OlasEntity(String name, String protocol, String hostname, int port,
+			int sslPort, X509Certificate authnCertificate,
+			X509Certificate signingCertificate) {
 		this.name = name;
+		this.protocol = protocol;
 		this.hostname = hostname;
 		this.port = port;
 		this.sslPort = sslPort;
@@ -118,6 +122,16 @@ public class OlasEntity implements Serializable {
 		this.name = name;
 	}
 
+	public String getProtocol() {
+
+		return this.protocol;
+	}
+
+	public void setProtocol(String protocol) {
+
+		this.protocol = protocol;
+	}
+
 	public String getHostname() {
 		return this.hostname;
 	}
@@ -127,6 +141,7 @@ public class OlasEntity implements Serializable {
 	}
 
 	public int getPort() {
+
 		return this.port;
 	}
 
@@ -135,6 +150,7 @@ public class OlasEntity implements Serializable {
 	}
 
 	public int getSslPort() {
+
 		return this.sslPort;
 	}
 
@@ -143,19 +159,28 @@ public class OlasEntity implements Serializable {
 	}
 
 	/**
-	 * Gives back the location of this Olas node ( not using SSL )
+	 * Gives back the location of this Olas node ( using default protocol )
 	 */
 	@Transient
 	public String getLocation() {
-		return this.hostname + ":" + this.port;
+		return String.format("%s://%s:%d", this.protocol, this.hostname,
+				this.protocol.equals("http") ? this.port : this.sslPort);
 	}
 
 	/**
-	 * Gives back the SSL location of this Olas node
+	 * Gives back the location of this Olas node ( using HTTP protocol - no SSL )
 	 */
 	@Transient
-	public String getSslLocation() {
-		return this.hostname + ":" + this.sslPort;
+	public String getHTTPLocation() {
+		return String.format("http://%s:%d", this.hostname, this.port);
+	}
+
+	/**
+	 * Gives back the location of this Olas node ( using HTTPS protocol - SSL )
+	 */
+	@Transient
+	public String getHTTPSLocation() {
+		return String.format("https://%s:%d", this.hostname, this.sslPort);
 	}
 
 	/**
@@ -327,15 +352,12 @@ public class OlasEntity implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (null == obj) {
+		if (null == obj)
 			return false;
-		}
-		if (false == (obj instanceof OlasEntity)) {
+		if (false == obj instanceof OlasEntity)
 			return false;
-		}
 		OlasEntity rhs = (OlasEntity) obj;
 		return new EqualsBuilder().append(this.name, rhs.name).isEquals();
 	}

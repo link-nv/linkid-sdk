@@ -19,7 +19,7 @@
 		<init-param>
 			<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
 			<param-value>
-				https://${safe-online.host.name}:${safe-online.host.port.ssl}/olas-auth/
+                ${safe-online.host.basename}/olas-auth/
 			</param-value>
 		</init-param>
 		<init-param>

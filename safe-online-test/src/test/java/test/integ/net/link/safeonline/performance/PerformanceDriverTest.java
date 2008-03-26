@@ -50,12 +50,14 @@ public class PerformanceDriverTest {
 
 	static final Log LOG = LogFactory.getLog(PerformanceDriverTest.class);
 
-	private static final String OLAS_HOSTNAME = "sebeco-dev-10:8443";
-	// private static final String OLAS_HOSTNAME = "localhost:8443";
+	private static final String OLAS_HOSTNAME = "sebeco-dev-10";
+	// private static final String OLAS_HOSTNAME = "localhost";
+	private static final String OLAS_PORT = "8080";
 
 	private static final String testApplicationName = "performance-application";
 	private static final String testUsername = "performance";
 	private static final String testPassword = "performance";
+
 	private static PrivateKeyEntry testApplicationKey;
 
 	static {
@@ -107,7 +109,8 @@ public class PerformanceDriverTest {
 			this.driverExceptionService = new DriverExceptionServiceBean();
 
 			ExecutionEntity execution = this.executionService.addExecution(
-					getClass().getName(), 1, 1, new Date(), 1l, OLAS_HOSTNAME);
+					getClass().getName(), 1, 1, new Date(), 1l, OLAS_HOSTNAME
+							+ ":" + OLAS_PORT);
 			ScenarioTimingEntity agentTime = this.executionService.start(execution);
 
 			this.idDriver = new IdMappingDriver(execution, agentTime);
