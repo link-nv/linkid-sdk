@@ -4,6 +4,109 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 
+	<!-- JSF Unit configuration -->
+
+	<filter>
+		<filter-name>JSFUnitFilter</filter-name>
+		<filter-class>
+			org.jboss.jsfunit.framework.JSFUnitFilter
+		</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>JSFUnitFilter</filter-name>
+		<servlet-name>ServletTestRunner</servlet-name>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>JSFUnitFilter</filter-name>
+		<servlet-name>ServletRedirector</servlet-name>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>ServletRedirector</servlet-name>
+		<servlet-class>
+			org.apache.cactus.server.ServletTestRedirector
+		</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>ServletTestRunner</servlet-name>
+		<servlet-class>
+			org.apache.cactus.server.runner.ServletTestRunner
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ServletRedirector</servlet-name>
+		<url-pattern>/ServletRedirector</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ServletTestRunner</servlet-name>
+		<url-pattern>/ServletTestRunner</url-pattern>
+	</servlet-mapping>
+
+	<!-- End JSF Unit configuration -->
+
+	<!-- SafeOnline JSFUnit Test configuration -->
+
+	<filter>
+		<filter-name>AuthenticationFilter</filter-name>
+		<filter-class>
+			net.link.safeonline.sdk.auth.filter.AuthenticationFilter
+		</filter-class>
+		<init-param>
+			<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
+			<param-value>
+				http://${safe-online.host.name}:${safe-online.host.port}/olas-helpdesk-jsfunit
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ApplicationName</param-name>
+			<param-value>olas-helpdesk</param-value>
+		</init-param>
+		<init-param>
+			<param-name>AuthenticationProtocol</param-name>
+			<param-value>SAML2_BROWSER_POST</param-value>
+		</init-param>
+		<init-param>
+			<param-name>KeyStoreResource</param-name>
+			<param-value>safe-online-helpdesk-keystore.jks</param-value>
+		</init-param>
+		<init-param>
+			<param-name>KeyStoreType</param-name>
+			<param-value>jks</param-value>
+		</init-param>
+		<init-param>
+			<param-name>KeyStorePassword</param-name>
+			<param-value>secret</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<url-pattern>/overview.seam</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>TestEntryServlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.jsfunit.servlet.EntryServlet
+		</servlet-class>
+		<init-param>
+			<param-name>username</param-name>
+			<param-value>admin</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>TestEntryServlet</servlet-name>
+		<url-pattern>/entry</url-pattern>
+	</servlet-mapping>
+
+	<!-- End SafeOnline JSFUnit Test configuration -->
+
 	<display-name>Olas Helpdesk Web Application</display-name>
 
 	<listener>
@@ -21,7 +124,7 @@
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
 		<param-value>
-            ${safe-online.host.basename}/olas-auth/
+			${safe-online.host.basename}/olas-auth/
 		</param-value>
 	</context-param>
 
@@ -78,7 +181,7 @@
 	<context-param>
 		<param-name>LandingPage</param-name>
 		<param-value>
-            ${safe-online.host.basename}/olas-helpdesk/login
+			http://${safe-online.host.name}:${safe-online.host.port}/olas-helpdesk-jsfunit/login
 		</param-value>
 	</context-param>
 
@@ -240,5 +343,6 @@
 	<session-config>
 		<session-timeout>5</session-timeout>
 	</session-config>
+
 
 </web-app>

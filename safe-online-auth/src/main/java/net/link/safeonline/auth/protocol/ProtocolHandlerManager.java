@@ -40,6 +40,10 @@ public class ProtocolHandlerManager {
 			.getName()
 			+ ".ProtocolHandlerName";
 
+	public static final String PROTOCOL_DONT_INVALIDATE_SESSION_ATTRIBUTE = ProtocolHandlerManager.class
+			.getName()
+			+ ".DontInvalidateSession";
+
 	private static final Log LOG = LogFactory
 			.getLog(ProtocolHandlerManager.class);
 
@@ -186,8 +190,13 @@ public class ProtocolHandlerManager {
 		 * resources and we prevent a user to login twice since the
 		 * authentication service instance was already removed from the session
 		 * context.
+		 * 
+		 * The check for the session attribute is there for our JSFUnit tests.
+		 * Those tests authenticate within the same session.
 		 */
-		session.invalidate();
+		if (null == session
+				.getAttribute(PROTOCOL_DONT_INVALIDATE_SESSION_ATTRIBUTE))
+			session.invalidate();
 	}
 
 	private static String getUserId(String applicationName, String username)

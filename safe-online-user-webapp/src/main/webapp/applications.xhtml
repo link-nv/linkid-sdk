@@ -26,10 +26,11 @@
 					<f:facet name="header">
 						#{msgs.applications}
 					</f:facet>
-					<a4j:commandLink value="#{item.application.friendlyName}"
+					<a4j:commandLink id="friendlyName"
+						value="#{item.application.friendlyName}"
 						action="#{subscriptions.viewSubscription}"
 						rendered="#{!empty item.application.friendlyName}" />
-					<a4j:commandLink value="#{item.application.name}"
+					<a4j:commandLink id="name" value="#{item.application.name}"
 						action="#{subscriptions.viewSubscription}"
 						rendered="#{empty item.application.friendlyName}" />
 				</h:column>
@@ -37,7 +38,7 @@
 					<f:facet name="header">
 						#{msgs.action}
 					</f:facet>
-					<a4j:commandLink value="#{msgs.unsubscribe}"
+					<a4j:commandLink id="unsubscribe" value="#{msgs.unsubscribe}"
 						action="#{subscriptions.unsubscribe}" />
 				</h:column>
 				<f:facet name="footer">
@@ -74,7 +75,7 @@
 				</f:facet>
 			</rich:dataTable>
 
-			<rich:messages styleClass="error" />
+			<rich:messages id="error" styleClass="error" />
 		</a4j:form>
 
 	</ui:define>

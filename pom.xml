@@ -140,9 +140,9 @@
 				<safe-online.profiling.agent.data.source>
 					DefaultDS
 				</safe-online.profiling.agent.data.source>
-                <safe-online.profiling.initial_hosts>
-                    sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]
-                </safe-online.profiling.initial_hosts>
+				<safe-online.profiling.initial_hosts>
+					sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]
+				</safe-online.profiling.initial_hosts>
 				<safe-online.profiling.filter><![CDATA[-->
 					<filter>
 						<filter-name>ProfileFilter</filter-name>
@@ -344,9 +344,9 @@
 				<safe-online.profiling.agent.data.source>
 					DefaultDS
 				</safe-online.profiling.agent.data.source>
-                <safe-online.profiling.initial_hosts>
-                    sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]
-                </safe-online.profiling.initial_hosts>
+				<safe-online.profiling.initial_hosts>
+					sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]
+				</safe-online.profiling.initial_hosts>
 				<safe-online.profiling.filter><![CDATA[-->
 					<filter>
 						<filter-name>ProfileFilter</filter-name>
@@ -1964,6 +1964,11 @@
 				<version>${jboss-jsfunit-core.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.jboss.jsfunit</groupId>
+				<artifactId>jboss-jsfunit-richfaces</artifactId>
+				<version>${jboss-jsfunit-richfaces.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>com.lowagie</groupId>
 				<artifactId>itext</artifactId>
 				<version>${itext.version}</version>
@@ -2176,6 +2181,9 @@
 		<jboss-jsfunit-core.version>
 			1.0-beta-1
 		</jboss-jsfunit-core.version>
+		<jboss-jsfunit-richfaces.version>
+			1.0-beta-1
+		</jboss-jsfunit-richfaces.version>
 		<itext.version>1.4.8</itext.version>
 	</properties>
 </project>

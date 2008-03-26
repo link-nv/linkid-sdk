@@ -11,9 +11,7 @@
 			<supported-locale>en</supported-locale>
 			<supported-locale>nl</supported-locale>
 		</locale-config>
-		<default-render-kit-id>
-			org.apache.myfaces.trinidad.core
-		</default-render-kit-id>
+		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
 	</application>
 
 
