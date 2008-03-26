@@ -466,8 +466,17 @@ unitName=SafeOnlineEntityManager
 				Tomcat handle the SSL itself you can configure the used
 				SSL certificate under:
 				<code>$JBOSS_HOME/server/default/conf/ssl.jks</code>
-				This file is using the Java keystore file format. When
-				your keystore is in a different location or in a
+				This file is using the Java keystore file format.
+				Visualize the content of such a keystore via:
+				<prompt>
+					keytool -list -v -keystore ssl.jks -keypass secret
+					-storepass secret
+				</prompt>
+				Make sure that the common name of the SSL subject
+				corresponds with the host name of the OLAS service.
+			</para>
+			<para>
+				When your keystore is in a different location or in a
 				different format you can configure Tomcat via the
 				following file:
 				<code>
@@ -569,7 +578,7 @@ unitName=SafeOnlineEntityManager
 		<para>
 			Deploy the OLAS service via:
 			<programlisting><![CDATA[cd jboss/bin
-./run.sh]]></programlisting>
+./run.sh -b 0.0.0.0]]></programlisting>
 	This will start the JBoss AS and will also deploy the OLAS JavaEE application.
 	Check the JBoss console output during startup for exceptions.
 </para>

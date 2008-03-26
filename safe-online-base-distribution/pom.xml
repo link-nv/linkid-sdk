@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<artifactId>safe-online</artifactId>
@@ -33,9 +34,13 @@
 					</execution>
 				</executions>
 				<configuration>
-					<keystore> ${project.build.directory}/files/ssl.jks </keystore>
-					<dname> cn=SafeOnline Development, ou=Development,
-						L=SINT-MARTENS-LATEM, ST=VL, o=LIN.K_NV, c=BE </dname>
+					<keystore>
+						${project.build.directory}/files/ssl.jks
+					</keystore>
+					<dname>
+						cn=${safe-online.host.name}, ou=Development,
+						L=SINT-MARTENS-LATEM, ST=VL, o=LIN.K_NV, c=BE
+					</dname>
 					<keypass>secret</keypass>
 					<storepass>secret</storepass>
 					<alias>safe-online</alias>
@@ -78,7 +83,8 @@
 									<type>zip</type>
 								</artifactItem>
 							</artifactItems>
-							<outputDirectory> ${project.build.directory}/files 
+							<outputDirectory>
+								${project.build.directory}/files
 							</outputDirectory>
 						</configuration>
 					</execution>
@@ -89,9 +95,12 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory> ${project.build.directory}/dependency 
+							<outputDirectory>
+								${project.build.directory}/dependency
 							</outputDirectory>
-							<excludeArtifactIds> jboss-as,jaxws-ri </excludeArtifactIds>
+							<excludeArtifactIds>
+								jboss-as,jaxws-ri
+							</excludeArtifactIds>
 							<includeScope>compile</includeScope>
 						</configuration>
 					</execution>
@@ -102,7 +111,9 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptors>
-						<descriptor> src/main/assembly/jboss.xml </descriptor>
+						<descriptor>
+							src/main/assembly/jboss.xml
+						</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
