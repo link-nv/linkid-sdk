@@ -221,6 +221,16 @@
 		<url-pattern>/version</url-pattern>
 	</servlet-mapping>
 	<servlet>
+		<servlet-name>NoPkcs11Servlet</servlet-name>
+		<servlet-class>
+			net.link.safeonline.beid.servlet.NoPkcs11Servlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>NoPkcs11Servlet</servlet-name>
+		<url-pattern>/no-pkcs11</url-pattern>
+	</servlet-mapping>
+	<servlet>
 		<servlet-name>RemoveLandingServlet</servlet-name>
 		<servlet-class>
 			net.link.safeonline.device.sdk.remove.servlet.LandingServlet

@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ * 
+ * Copyright 2006-2008 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.beid;
 
 import javax.ejb.Local;
@@ -12,8 +19,7 @@ public interface Main {
 	/*
 	 * Lifecycle callbacks
 	 */
-	void init();
+	void initCallback();
 
 	void destroyCallback();
-
 }

@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.RequestParameter;
 
@@ -52,6 +53,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		injectRequestParameters(request);
+		injectSessionAttributes(request, session);
 		InjectionResponseWrapper responseWrapper = new InjectionResponseWrapper(
 				response);
 		invoke(request, responseWrapper);
@@ -120,6 +122,38 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 		}
 	}
 
+	private void injectSessionAttributes(HttpServletRequest request,
+			HttpSession session) throws ServletException {
+		Field[] fields = this.getClass().getDeclaredFields();
+		for (Field field : fields) {
+			In inAnnotation = field.getAnnotation(In.class);
+			if (null == inAnnotation) {
+				continue;
+			}
+			String inName = inAnnotation.value();
+			if (false == ScopeType.SESSION.equals(inAnnotation.scope())) {
+				throw new ServletException("only supporting SESSION scope");
+			}
+			Object value = session.getAttribute(inName);
+			if (inAnnotation.required()) {
+				if (null == value) {
+					throw new ServletException(
+							"missing required session attribute: " + inName);
+				}
+			}
+			field.setAccessible(true);
+			try {
+				field.set(this, value);
+			} catch (IllegalArgumentException e) {
+				throw new ServletException("illegal argument: "
+						+ e.getMessage(), e);
+			} catch (IllegalAccessException e) {
+				throw new ServletException("illegal access: " + e.getMessage(),
+						e);
+			}
+		}
+	}
+
 	private void outjectSessionAttributes(HttpServletRequest request,
 			HttpSession session) throws ServletException {
 		Field[] fields = this.getClass().getDeclaredFields();
@@ -130,7 +164,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 			}
 			String outName = outAnnotation.value();
 			if (false == ScopeType.SESSION.equals(outAnnotation.scope())) {
-				throw new ServletException("only supportign SESSION scope");
+				throw new ServletException("only supporting SESSION scope");
 			}
 			field.setAccessible(true);
 			Object value;

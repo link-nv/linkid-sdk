@@ -38,6 +38,7 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.TextOutputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
+import net.link.safeonline.p11sc.NoPkcs11LibraryException;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardNotFoundException;
@@ -135,7 +136,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 				+ smartCardAlias);
 	}
 
-	public void open(String smartCardAlias) throws SmartCardNotFoundException {
+	public void open(String smartCardAlias) throws SmartCardNotFoundException,
+			NoPkcs11LibraryException {
 		SmartCardConfig smartCardConfig = getSmartCardConfig(smartCardAlias);
 
 		String osName = System.getProperty("os.name");
@@ -184,7 +186,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 			}
 		}
 		if (null == existingDriverLocation) {
-			throw new RuntimeException("no PKCS#11 driver found");
+			throw new NoPkcs11LibraryException();
 		}
 
 		long slotIdx = getBestEffortSlotIdx(existingDriverLocation);

@@ -62,7 +62,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private JPanel cards;
 
-	private JButton hideButton;
+	private JButton detailsButton;
 
 	JButton helpButton;
 
@@ -125,15 +125,15 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		this.infoLabel.setFont(font);
 		this.infoLabel.setText(this.messages.getString("starting"));
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		this.hideButton = new JButton();
-		this.hideButton.addActionListener(this);
+		this.detailsButton = new JButton();
+		this.detailsButton.addActionListener(this);
 		Font helpFont = font.deriveFont((float) 10);
 		this.helpButton = new JButton(this.messages.getString("helpAction"));
 		this.helpButton.setFont(helpFont);
 		this.helpButton.setForeground(Color.red);
 		this.helpButton.setVisible(false);
 		textPanel.add(this.infoLabel);
-		buttonPanel.add(this.hideButton);
+		buttonPanel.add(this.detailsButton);
 		buttonPanel.add(this.helpButton);
 		infoPanel.add(textPanel);
 		infoPanel.add(this.progressBar);
@@ -157,8 +157,7 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		actionPerformed(null);
 
 		this.helpButton.addActionListener(new ActionListener() {
-			public void actionPerformed(@SuppressWarnings("unused")
-			ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				redirectToHelp();
 			}
 		});
@@ -299,17 +298,16 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		}
 	}
 
-	public void actionPerformed(@SuppressWarnings("unused")
-	ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {
 		CardLayout cl = (CardLayout) (this.cards.getLayout());
 		if (this.state == State.HIDE) {
 			cl.show(this.cards, "details");
 			this.state = State.SHOW;
-			setButtonLabel(this.hideButton);
+			setButtonLabel(this.detailsButton);
 		} else {
 			cl.show(this.cards, "empty");
 			this.state = State.HIDE;
-			setButtonLabel(this.hideButton);
+			setButtonLabel(this.detailsButton);
 		}
 	}
 
@@ -348,5 +346,10 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 			return locale;
 		}
 		return super.getLocale();
+	}
+
+	@Override
+	public String getParameter(String name) {
+		return super.getParameter(name);
 	}
 }

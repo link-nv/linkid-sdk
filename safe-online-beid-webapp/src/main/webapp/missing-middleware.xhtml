@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+<ui:composition template="/WEB-INF/template-error.xhtml">
+
+	<ui:define name="top_content">
+		<h1>#{msgs.missingMiddleware}</h1>
+	</ui:define>
+
+	<ui:define name="content">
+		<p><span class="error_message">#{msgs.missingMiddlewareInfo}
+		<a href="http://www.belgium.be/zip/eid_datacapture_nl.html">http://www.belgium.be/zip/eid_datacapture_nl.html</a></span></p>
+	</ui:define>
+
+</ui:composition>
+</body>
+</html>

@@ -28,8 +28,12 @@ public interface SmartCard {
 	 * 
 	 * @param smartCardAlias
 	 *            the alias of the smart card config that should be used.
+	 * 
+	 * @throws SmartCardNotFoundException
+	 * @throws NoPkcs11LibraryException
 	 */
-	void open(String smartCardAlias) throws SmartCardNotFoundException;
+	void open(String smartCardAlias) throws SmartCardNotFoundException,
+			NoPkcs11LibraryException;
 
 	/**
 	 * Close the connection towards the smart card device.

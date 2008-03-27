@@ -35,6 +35,8 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
 	public static final String JAVA_VERSION_REG_EXPR = "^1\\.(5|6).*";
 
+	public static final String JAVA_1_5_VERSION_REG_EXPR = "^1\\.5.*";
+
 	@RequestParameter("appName")
 	private String appName;
 
@@ -76,6 +78,15 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 		WINDOWS, LINUX, MAC
 	}
 
+	public static enum JAVA_VERSION {
+		JAVA_1_5, JAVA_1_6
+	}
+
+	public static final String JAVA_VERSION_NAME = "javaVersion";
+
+	@Out(value = JAVA_VERSION_NAME, scope = ScopeType.SESSION)
+	private JAVA_VERSION sessionJavaVersion;
+
 	@Override
 	protected void invoke(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -114,6 +125,13 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 		boolean result = Pattern.matches(JAVA_VERSION_REG_EXPR,
 				this.javaVersion);
 		LOG.debug("java version check result: " + result);
+		boolean java15 = Pattern.matches(JAVA_1_5_VERSION_REG_EXPR,
+				this.javaVersion);
+		if (java15) {
+			this.sessionJavaVersion = JAVA_VERSION.JAVA_1_5;
+		} else {
+			this.sessionJavaVersion = JAVA_VERSION.JAVA_1_6;
+		}
 		return result;
 	}
 

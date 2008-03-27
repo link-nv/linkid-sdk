@@ -19,6 +19,13 @@ import java.util.Locale;
  */
 public interface RuntimeContext {
 
+	/**
+	 * Gives back the parameter value, or <code>null</code> if not set.
+	 * 
+	 * @param name
+	 *            the parameter name.
+	 * @return the parameter value, or <code>null</code> if not set.
+	 */
 	String getParameter(String name);
 
 	URL getDocumentBase();

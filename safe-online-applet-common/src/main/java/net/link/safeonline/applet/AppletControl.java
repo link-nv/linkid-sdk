@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import net.link.safeonline.p11sc.NoPkcs11LibraryException;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardConfigFactory;
@@ -64,8 +65,7 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 				"net.link.safeonline.applet.ControlMessages", locale);
 	}
 
-	private void setupLogging(@SuppressWarnings("unused")
-	SmartCard smartCard) {
+	private void setupLogging(SmartCard smartCard) {
 		Log log = this.appletView.getLog();
 		SmartCardImpl.setLog(log);
 	}
@@ -99,6 +99,10 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 
 		try {
 			smartCard.open(smartCardAlias);
+		} catch (NoPkcs11LibraryException e) {
+			this.appletView.outputDetailMessage("no PKCS#11 library found");
+			showDocument("NoPkcs11Path");
+			return;
 		} catch (SmartCardNotFoundException e) {
 			this.appletView.outputDetailMessage("smart card not found");
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
@@ -187,13 +191,21 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 		}
 		this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages
 				.getString("done"));
-
 		this.appletView.outputDetailMessage("Done.");
 
+		showDocument("TargetPath");
+	}
+
+	private void showDocument(String runtimeParameter) {
 		URL documentBase = this.runtimeContext.getDocumentBase();
-		String targetPath = this.runtimeContext.getParameter("TargetPath");
-		URL target = transformUrl(documentBase, targetPath);
-		this.runtimeContext.showDocument(target);
+		String path = this.runtimeContext.getParameter(runtimeParameter);
+		if (null == path) {
+			this.appletView.outputDetailMessage("runtime parameter not set: "
+					+ runtimeParameter);
+			return;
+		}
+		URL url = transformUrl(documentBase, path);
+		this.runtimeContext.showDocument(url);
 	}
 
 	private boolean sendStatement(byte[] statement) throws IOException {
