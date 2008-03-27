@@ -12,7 +12,7 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
-import org.apache.myfaces.trinidad.model.UploadedFile;
+import org.apache.myfaces.custom.fileupload.UploadedFile;
 
 @Local
 public interface Application {

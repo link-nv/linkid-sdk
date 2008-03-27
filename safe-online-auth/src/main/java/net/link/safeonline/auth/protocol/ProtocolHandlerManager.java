@@ -191,12 +191,8 @@ public class ProtocolHandlerManager {
 		 * authentication service instance was already removed from the session
 		 * context.
 		 * 
-		 * The check for the session attribute is there for our JSFUnit tests.
-		 * Those tests authenticate within the same session.
 		 */
-		if (null == session
-				.getAttribute(PROTOCOL_DONT_INVALIDATE_SESSION_ATTRIBUTE))
-			session.invalidate();
+		session.invalidate();
 	}
 
 	private static String getUserId(String applicationName, String username)

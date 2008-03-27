@@ -43,7 +43,7 @@ import net.link.safeonline.service.DeviceService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.trinidad.model.UploadedFile;
+import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
@@ -287,9 +287,12 @@ public class DeviceBean implements Device {
 		this.authenticationURL = this.selectedDevice.getAuthenticationURL();
 		this.registrationURL = this.selectedDevice.getRegistrationURL();
 		this.removalURL = this.selectedDevice.getRemovalURL();
-		this.attributeType = this.selectedDevice.getAttributeType().getName();
-		this.userAttributeType = this.selectedDevice.getUserAttributeType()
-				.getName();
+		if (null != this.selectedDevice.getAttributeType())
+			this.attributeType = this.selectedDevice.getAttributeType()
+					.getName();
+		if (null != this.selectedDevice.getUserAttributeType())
+			this.userAttributeType = this.selectedDevice.getUserAttributeType()
+					.getName();
 
 		return "edit";
 	}

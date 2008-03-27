@@ -6,7 +6,6 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:tr="http://myfaces.apache.org/trinidad"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
 	xmlns:rich="http://richfaces.org/rich">
 <body>
@@ -37,7 +36,7 @@
 					<h:outputLabel for="applicationLogo"
 						value="#{msgs.applicationLogo}" />
 					<s:decorate>
-						<tr:inputFile id="applicationLogo"
+						<t:inputFileUpload id="applicationLogo"
 							value="#{operApplication.applicationLogoFile}" />
 						<h:message for="applicationLogo" styleClass="error" />
 					</s:decorate>
@@ -101,7 +100,8 @@
 
 					<h:outputLabel for="certificate" value="#{msgs.certificate}" />
 					<s:decorate>
-						<tr:inputFile id="certificate" value="#{operApplication.upFile}" />
+						<t:inputFileUpload id="certificate"
+							value="#{operApplication.upFile}" />
 					</s:decorate>
 
 				</rich:tab>

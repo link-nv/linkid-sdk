@@ -9,7 +9,7 @@ package net.link.safeonline.oper.node;
 
 import javax.ejb.Local;
 
-import org.apache.myfaces.trinidad.model.UploadedFile;
+import org.apache.myfaces.custom.fileupload.UploadedFile;
 
 @Local
 public interface Node {

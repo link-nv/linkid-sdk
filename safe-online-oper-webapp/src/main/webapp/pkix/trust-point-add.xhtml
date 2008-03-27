@@ -6,8 +6,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
-	xmlns:tr="http://myfaces.apache.org/trinidad">
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0">
 <body>
 <ui:composition template="/WEB-INF/template.xhtml">
 	<ui:define name="topnav">
@@ -30,7 +29,7 @@
 			<h:panelGrid columns="1">
 				<h:panelGroup>
 					<s:decorate>
-						<tr:inputFile id="fileupload" label="#{msgs.certificate}:"
+						<t:inputFileUpload id="fileupload" label="#{msgs.certificate}:"
 							value="#{trustPoint.upFile}" />
 					</s:decorate>
 					<h:message for="fileupload" styleClass="error" />

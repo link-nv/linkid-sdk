@@ -19,23 +19,9 @@
 	</listener>
 
 	<context-param>
-		<param-name>
-			org.apache.myfaces.trinidad.ALTERNATE_VIEW_HANDLER
-		</param-name>
-		<param-value>com.sun.facelets.FaceletViewHandler</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>
-			org.apache.myfaces.trinidad.USE_APPLICATION_VIEW_CACHE
-		</param-name>
-		<param-value>false</param-value>
-	</context-param>
-
-	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
 		<param-value>
-            ${safe-online.host.basename}/olas-auth/
+			${safe-online.host.basename}/olas-auth/
 		</param-value>
 	</context-param>
 
@@ -92,7 +78,7 @@
 	<context-param>
 		<param-name>LandingPage</param-name>
 		<param-value>
-            ${safe-online.host.basename}/olas-oper/login
+			${safe-online.host.basename}/olas-oper/login
 		</param-value>
 	</context-param>
 
@@ -107,13 +93,6 @@
 		<display-name>Ajax4jsf Filter</display-name>
 		<filter-name>ajax4jsf</filter-name>
 		<filter-class>org.ajax4jsf.Filter</filter-class>
-	</filter>
-
-	<filter>
-		<filter-name>trinidad</filter-name>
-		<filter-class>
-			org.apache.myfaces.trinidad.webapp.TrinidadFilter
-		</filter-class>
 	</filter>
 
 	<filter>
@@ -224,11 +203,6 @@
 	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>trinidad</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-
-	<filter-mapping>
 		<filter-name>Seam Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
@@ -272,13 +246,6 @@
 	</servlet>
 
 	<servlet>
-		<servlet-name>resources</servlet-name>
-		<servlet-class>
-			org.apache.myfaces.trinidad.webapp.ResourceServlet
-		</servlet-class>
-	</servlet>
-
-	<servlet>
 		<servlet-name>Seam Resource Servlet</servlet-name>
 		<servlet-class>
 			org.jboss.seam.servlet.ResourceServlet
@@ -305,11 +272,6 @@
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.seam</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>resources</servlet-name>
-		<url-pattern>/adf/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

@@ -6,7 +6,6 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:t="http://myfaces.apache.org/tomahawk"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:tr="http://myfaces.apache.org/trinidad"
 	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
 	xmlns:rich="http://richfaces.org/rich">
 <body>
@@ -52,7 +51,7 @@
 					<h:outputLabel for="authnCertificate"
 						value="#{msgs.authenticationCertificate}" />
 					<s:decorate>
-						<tr:inputFile id="authnCertificate"
+						<t:inputFileUpload id="authnCertificate"
 							value="#{operNode.authnUpFile}" />
 					</s:decorate>
 					<h:message for="authnCertificate" styleClass="error" />
@@ -60,7 +59,7 @@
 					<h:outputLabel for="signingCertificate"
 						value="#{msgs.signingCertificate}" />
 					<s:decorate>
-						<tr:inputFile id="signingCertificate"
+						<t:inputFileUpload id="signingCertificate"
 							value="#{operNode.signingUpFile}" />
 					</s:decorate>
 					<h:message for="signingCertificate" styleClass="error" />

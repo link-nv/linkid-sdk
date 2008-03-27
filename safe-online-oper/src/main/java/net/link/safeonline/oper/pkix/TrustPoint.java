@@ -9,8 +9,8 @@ package net.link.safeonline.oper.pkix;
 
 import javax.ejb.Local;
 
+import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.apache.myfaces.custom.tree2.TreeModel;
-import org.apache.myfaces.trinidad.model.UploadedFile;
 
 @Local
 public interface TrustPoint {

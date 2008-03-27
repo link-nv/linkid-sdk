@@ -59,7 +59,7 @@ import net.sf.jmimemagic.MagicParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.trinidad.model.UploadedFile;
+import org.apache.myfaces.custom.fileupload.UploadedFile;
 import org.hibernate.exception.GenericJDBCException;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
