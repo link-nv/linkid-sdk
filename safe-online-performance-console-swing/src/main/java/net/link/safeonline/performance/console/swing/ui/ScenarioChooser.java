@@ -194,7 +194,7 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 	 */
 	public void executionSelected(ScenarioExecution execution) {
 
-		buttonToggler(null != execution, this.chartsButton, this.pdfButton);
+		updateButtons();
 	}
 
 	/**
