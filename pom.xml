@@ -340,6 +340,9 @@
 				<safe-online.profiling.group>
 					net.lin-k.safe-online.performance
 				</safe-online.profiling.group>
+                <safe-online.profiling.agent.data.source.uri>
+                    jdbc:mysql://localhost:3306/safeonline
+                </safe-online.profiling.agent.data.source.uri>
 				<safe-online.profiling.agent.show.sql>
 					false
 				</safe-online.profiling.agent.show.sql>

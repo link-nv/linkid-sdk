@@ -44,10 +44,6 @@
 	</fileSets>
 	<files>
 		<file>
-            <source>target/files/resources/mysql-safe-online-ds.xml</source>
-			<outputDirectory>jboss/server/default/deploy</outputDirectory>
-		</file>
-		<file>
 			<source>target/files/mysql-connector-java-5.1.5.jar</source>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</file>

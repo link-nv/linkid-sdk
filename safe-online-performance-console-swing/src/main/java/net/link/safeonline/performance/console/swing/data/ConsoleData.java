@@ -6,6 +6,7 @@
  */
 package net.link.safeonline.performance.console.swing.data;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.SwingUtilities;
 
@@ -29,7 +32,7 @@ import org.jgroups.Address;
 /**
  * <h2>{@link ConsoleData}<br>
  * <sub>A central location for console configuration data.</sub></h2>
- *
+ * 
  * <p>
  * All configuration settings are kept in this class. The UI needs to make sure
  * to update this class whenever settings are modified and needs to read the
@@ -41,16 +44,17 @@ import org.jgroups.Address;
  * addresses join or leave the group so that the mappings kept by this class are
  * up-to-date.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ConsoleData {
 
 	public static final Object lock = new Object();
+	private static final LockHandler lockHandler = new LockHandler();
 
 	static final List<ExecutionSelectionListener> executionSelectionListeners = new ArrayList<ExecutionSelectionListener>();
 	static final List<ExecutionSettingsListener> executionSettingsListeners = new ArrayList<ExecutionSettingsListener>();
@@ -104,7 +108,7 @@ public class ConsoleData {
 	/**
 	 * Remove {@link ConsoleAgent} objects for agents that disappeared from the
 	 * group.
-	 *
+	 * 
 	 * @return All agents that were removed.
 	 */
 	public static synchronized List<ConsoleAgent> removeStaleAgents() {
@@ -266,13 +270,11 @@ public class ConsoleData {
 
 	public static void fireExecutionSelection() {
 
-		SwingUtilities.invokeLater(new Runnable() {
+		lockHandler.queue(new Runnable() {
 			public void run() {
 
-				synchronized (lock) {
-					for (ExecutionSelectionListener listener : executionSelectionListeners)
-						listener.executionSelected(execution);
-				}
+				for (ExecutionSelectionListener listener : executionSelectionListeners)
+					listener.executionSelected(execution);
 			}
 		});
 	}
@@ -289,13 +291,11 @@ public class ConsoleData {
 
 	public static void fireExecutionSettings() {
 
-		SwingUtilities.invokeLater(new Runnable() {
+		lockHandler.queue(new Runnable() {
 			public void run() {
 
-				synchronized (lock) {
-					for (ExecutionSettingsListener listener : executionSettingsListeners)
-						listener.executionSettingsChanged();
-				}
+				for (ExecutionSettingsListener listener : executionSettingsListeners)
+					listener.executionSettingsChanged();
 			}
 		});
 	}
@@ -312,13 +312,11 @@ public class ConsoleData {
 
 	public static void fireAgentSelection() {
 
-		SwingUtilities.invokeLater(new Runnable() {
+		lockHandler.queue(new Runnable() {
 			public void run() {
 
-				synchronized (lock) {
-					for (AgentSelectionListener listener : agentSelectionListeners)
-						listener.agentsSelected(selectedAgents);
-				}
+				for (AgentSelectionListener listener : agentSelectionListeners)
+					listener.agentsSelected(selectedAgents);
 			}
 		});
 	}
@@ -335,19 +333,17 @@ public class ConsoleData {
 	/**
 	 * Manually fire an agent status event forcing the UI to update itself for
 	 * this agent.
-	 *
+	 * 
 	 * @param agent
 	 *            The agent whose status changed.
 	 */
 	public static void fireAgentStatus(final ConsoleAgent agent) {
 
-		SwingUtilities.invokeLater(new Runnable() {
+		lockHandler.queue(new Runnable() {
 			public void run() {
 
-				synchronized (lock) {
-					for (AgentStatusListener listener : agentStatusListeners)
-						listener.statusChanged(agent);
-				}
+				for (AgentStatusListener listener : agentStatusListeners)
+					listener.statusChanged(agent);
 			}
 		});
 	}
@@ -360,5 +356,46 @@ public class ConsoleData {
 
 		if (!agentStatusListeners.contains(agentStatusListener))
 			agentStatusListeners.add(agentStatusListener);
+	}
+
+	private static class LockHandler extends Thread {
+
+		private LinkedBlockingQueue<Runnable> queue;
+
+		public LockHandler() {
+
+			setDaemon(true);
+			this.queue = new LinkedBlockingQueue<Runnable>();
+
+			start();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void run() {
+
+			Runnable task;
+			while (true)
+				try {
+					while ((task = this.queue.poll(Long.MAX_VALUE,
+							TimeUnit.SECONDS)) == null)
+						Thread.yield();
+
+					synchronized (lock) {
+						SwingUtilities.invokeAndWait(task);
+					}
+				}
+
+				catch (InterruptedException e) {
+				} catch (InvocationTargetException e) {
+				}
+		}
+
+		public void queue(Runnable task) {
+
+			this.queue.offer(task);
+		}
 	}
 }
