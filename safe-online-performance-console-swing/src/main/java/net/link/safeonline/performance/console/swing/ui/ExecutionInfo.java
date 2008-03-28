@@ -42,6 +42,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.Caret;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
@@ -170,7 +171,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	private void setExecution(ScenarioExecution execution) {
 
 		ConsoleData.setExecution(execution);
-
+		
 		if (execution == null) {
 			this.executionSelection.setToolTipText("N/A");
 			this.scenarioName.setText("N/A");
@@ -178,7 +179,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			this.startTime.setText("N/A");
 			this.agents.setText("N/A");
 			this.workers.setText("N/A");
-			this.duration.setText("N/A");
+			this.duration
+					.setText("N/A");
 			this.speed.setText("N/A");
 			this.hostname.setText("N/A");
 
@@ -190,10 +192,15 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 					.setText(execution.getScenarioName() == null ? "N/A"
 							: execution.getScenarioName().replaceFirst(".*\\.",
 									""));
+			
+			Caret descriptionCaret = this.description.getCaret();
+			descriptionCaret.deinstall(this.description);
 			this.description
 					.setText(execution.getDuration() == null ? "<pre>N/A</pre>"
 							: execution.getScenarioDescription().replaceAll(
 									"\n", "<br>"));
+			descriptionCaret.install(this.description);
+			
 			this.startTime.setText(DateFormat.getDateTimeInstance().format(
 					execution.getStartTime()));
 			this.agents.setText(String.format("%s agent%s", execution
