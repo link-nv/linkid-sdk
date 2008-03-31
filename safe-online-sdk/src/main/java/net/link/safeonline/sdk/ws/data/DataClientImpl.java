@@ -85,8 +85,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 	 * @param clientCertificate
 	 * @param clientPrivateKey
 	 */
-	public DataClientImpl(String location, X509Certificate clientCertificate,
-			PrivateKey clientPrivateKey) {
+	public DataClientImpl(String location,
+			X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 		DataService dataService = DataServiceFactory.newInstance();
 		AddressingFeature addressingFeature = new AddressingFeature();
 		this.port = dataService.getDataServicePort(addressingFeature);
@@ -121,7 +121,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements
 
 		bindingProvider.getRequestContext().put(
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				"https://" + location + "/safe-online-ws/data");
+				location + "/safe-online-ws/data");
 	}
 
 	public void setAttributeValue(String subjectLogin, String attributeName,

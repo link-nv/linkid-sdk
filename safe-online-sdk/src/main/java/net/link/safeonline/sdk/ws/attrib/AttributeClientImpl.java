@@ -230,7 +230,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements
 
 		bindingProvider.getRequestContext().put(
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				"https://" + location + "/safe-online-ws/attrib");
+				location + "/safe-online-ws/attrib");
 	}
 
 	private AttributeQueryType getAttributeQuery(String subjectLogin,

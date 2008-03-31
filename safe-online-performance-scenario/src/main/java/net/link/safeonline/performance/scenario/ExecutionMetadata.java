@@ -24,7 +24,7 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
  * <h2>{@link ExecutionMetadata}<br>
  * <sub>Holds execution metadata for communication between the agent and the
  * scenario.</sub></h2>
- *
+ * 
  * <p>
  * This object can be used by the agent for making a scenario execution request
  * to the {@link ScenarioControllerBean}. In this case, use
@@ -38,11 +38,11 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
  * All available fields can be set providing the agent with as much information
  * about the result of the execution as available.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ExecutionMetadata {
@@ -52,6 +52,7 @@ public class ExecutionMetadata {
 	private Date startTime;
 	private Long duration;
 	private String hostname;
+	private Boolean ssl;
 	private Double speed;
 	private String scenarioName;
 	private String scenarioDescription;
@@ -61,10 +62,10 @@ public class ExecutionMetadata {
 	 */
 	public static ExecutionMetadata createRequest(String scenarioName,
 			Integer agents, Integer workers, Date startTime, Long duration,
-			String hostname) {
+			String hostname, Boolean useSsl) {
 
 		return new ExecutionMetadata(scenarioName, null, agents, workers,
-				startTime, duration, hostname, null);
+				startTime, duration, hostname, useSsl, null);
 	}
 
 	/**
@@ -72,10 +73,11 @@ public class ExecutionMetadata {
 	 */
 	public static ExecutionMetadata createResponse(String scenarioName,
 			String scenarioDescription, Integer agents, Integer workers,
-			Date startTime, Long duration, String hostname, Double speed) {
+			Date startTime, Long duration, String hostname, Boolean useSsl,
+			Double speed) {
 
 		return new ExecutionMetadata(scenarioName, scenarioDescription, agents,
-				workers, startTime, duration, hostname, speed);
+				workers, startTime, duration, hostname, useSsl, speed);
 	}
 
 	/**
@@ -83,7 +85,7 @@ public class ExecutionMetadata {
 	 */
 	private ExecutionMetadata(String scenarioName, String scenarioDescription,
 			Integer agents, Integer workers, Date startTime, Long duration,
-			String hostname, Double speed) {
+			String hostname, Boolean useSsl, Double speed) {
 
 		this.scenarioName = scenarioName;
 		this.scenarioDescription = scenarioDescription;
@@ -92,6 +94,7 @@ public class ExecutionMetadata {
 		this.startTime = startTime;
 		this.duration = duration;
 		this.hostname = hostname;
+		this.ssl = useSsl;
 		this.speed = speed;
 	}
 
@@ -133,6 +136,11 @@ public class ExecutionMetadata {
 	public String getHostname() {
 
 		return this.hostname;
+	}
+
+	public Boolean isSsl() {
+
+		return this.ssl;
 	}
 
 	public Double getSpeed() {

@@ -54,7 +54,7 @@ public interface AgentServiceMBean extends Agent {
 	 * Execute the scenario and collect the charts.
 	 */
 	public void execute(String scenarioName, Integer agents, Integer workers,
-			Long duration, String hostname, Date startTime);
+			Long duration, String hostname, Boolean useSsl, Date startTime);
 
 	/**
 	 * Called by JBoss when this service has been fully deployed and

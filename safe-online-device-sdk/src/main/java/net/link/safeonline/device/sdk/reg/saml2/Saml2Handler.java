@@ -79,9 +79,8 @@ public class Saml2Handler implements Serializable {
 		Saml2Handler instance = (Saml2Handler) request.getSession()
 				.getAttribute(SAML2_HANDLER);
 
-		if (null == instance) {
+		if (null == instance)
 			instance = new Saml2Handler(request);
-		}
 
 		return instance;
 	}

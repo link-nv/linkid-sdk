@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
  * <h2>{@link AgentService}<br>
  * <sub>This class provides all functionality of the agent that is available to
  * the console.</sub></h2>
- *
+ * 
  * <p>
  * This MBean launches the broadcaster service that provides agent visibility in
  * JGroups and the deployer service that is used for deploying uploaded
@@ -43,11 +43,11 @@ import org.apache.commons.logging.LogFactory;
  * Metadata on previously performed executions are also cached by this agent as
  * they are requested by the console.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class AgentService implements AgentServiceMBean {
@@ -223,7 +223,7 @@ public class AgentService implements AgentServiceMBean {
 	/**
 	 * Request permission to start a certain action. If permission is granted,
 	 * the agent is locked until {@link #actionCompleted(boolean)} is called.
-	 *
+	 * 
 	 * @throws IllegalStateException
 	 *             If the request cannot be granted (agent is locked for another
 	 *             action).
@@ -296,14 +296,14 @@ public class AgentService implements AgentServiceMBean {
 	}
 
 	public void execute(String scenarioName, Integer agents, Integer workers,
-			Long duration, String hostname, Date startTime) {
+			Long duration, String hostname, Boolean useSsl, Date startTime) {
 
 		actionRequest(AgentState.EXECUTE);
 
 		try {
 			ExecutionMetadata request = ExecutionMetadata.createRequest(
 					scenarioName, agents, workers, startTime, duration,
-					hostname);
+					hostname, useSsl);
 
 			(this.executor = new ScenarioExecutor(request, this)).start();
 		}
@@ -331,7 +331,8 @@ public class AgentService implements AgentServiceMBean {
 					.getScenarioName(), metaData.getScenarioDescription(),
 					metaData.getAgents(), metaData.getWorkers(), metaData
 							.getStartTime(), metaData.getDuration(), metaData
-							.getHostname(), metaData.getSpeed());
+							.getHostname(), metaData.isSsl(), metaData
+							.getSpeed());
 
 			if (useCharts) {
 				Map<String, byte[][]> chart = this.charts.get(startTime);

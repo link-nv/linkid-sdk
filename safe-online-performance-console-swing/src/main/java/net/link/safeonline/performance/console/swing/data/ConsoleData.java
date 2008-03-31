@@ -65,6 +65,7 @@ public class ConsoleData {
 	private static final AgentRemoting agentDiscoverer = new AgentRemoting();
 	private static final ScenarioRemoting remoting = new ScenarioRemoting();
 	private static String hostname = "sebeco-dev-10";
+	private static boolean ssl = true;
 	private static int port = 8443;
 
 	static int workers = 5;
@@ -141,6 +142,7 @@ public class ConsoleData {
 	public static synchronized void setHostname(String hostname) {
 
 		ConsoleData.hostname = hostname;
+		fireExecutionSettings();
 	}
 
 	/**
@@ -150,6 +152,24 @@ public class ConsoleData {
 
 		return ConsoleData.hostname;
 	}
+	
+	/**
+	 * @param ssl
+	 *            <code>true</code> if OLAS should be contacted over SSL.
+	 */
+	public static void setSsl(boolean ssl) {
+
+		ConsoleData.ssl = ssl;
+		fireExecutionSettings();
+	}
+
+	/**
+	 * @return <code>true</code> if OLAS should be contacted over SSL.
+	 */
+	public static Boolean isSsl() {
+
+		return ConsoleData.ssl;
+	}
 
 	/**
 	 * @param port
@@ -158,6 +178,7 @@ public class ConsoleData {
 	public static synchronized void setPort(int port) {
 
 		ConsoleData.port = port;
+		fireExecutionSettings();
 	}
 
 	/**
@@ -183,6 +204,7 @@ public class ConsoleData {
 	public static synchronized void setWorkers(int workers) {
 
 		ConsoleData.workers = workers;
+		fireExecutionSettings();
 	}
 
 	/**
@@ -202,6 +224,7 @@ public class ConsoleData {
 	public static void setDuration(long duration) {
 
 		ConsoleData.duration = duration;
+		fireExecutionSettings();
 	}
 
 	/**

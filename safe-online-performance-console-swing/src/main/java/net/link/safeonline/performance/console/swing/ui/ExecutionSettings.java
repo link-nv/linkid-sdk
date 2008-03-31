@@ -18,6 +18,7 @@ import java.util.TreeSet;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
@@ -49,6 +50,7 @@ public class ExecutionSettings implements FocusListener, ItemListener,
 	protected JTextField workers;
 	protected JTextField duration;
 	protected JComboBox scenarioSelection;
+	protected JToggleButton useSsl;
 
 	public ExecutionSettings() {
 
@@ -57,6 +59,7 @@ public class ExecutionSettings implements FocusListener, ItemListener,
 		this.workers = new JTextField(String.valueOf(ConsoleData.getWorkers()));
 		this.duration = new JTextField(String.valueOf(ConsoleData.getDuration()
 				/ (60 * 1000)));
+		this.useSsl = new JToggleButton("Use SSL", ConsoleData.isSsl());
 		this.scenarioSelection = new JComboBox();
 		this.scenarioSelection.setEnabled(false);
 
@@ -64,6 +67,7 @@ public class ExecutionSettings implements FocusListener, ItemListener,
 		this.port.addFocusListener(this);
 		this.workers.addFocusListener(this);
 		this.duration.addFocusListener(this);
+		this.useSsl.addItemListener(this);
 		this.scenarioSelection.addItemListener(this);
 
 		this.hostname
@@ -92,6 +96,9 @@ public class ExecutionSettings implements FocusListener, ItemListener,
 
 			ConsoleData.setScenarioName(scenario);
 		}
+		
+		else if (this.useSsl.equals(e.getSource()))
+			ConsoleData.setSsl(this.useSsl.isSelected());
 	}
 
 	/**

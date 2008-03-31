@@ -71,7 +71,7 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor
 		BindingProvider bindingProvider = (BindingProvider) this.port;
 		bindingProvider.getRequestContext().put(
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				"https://" + location + "/safe-online-ws/sts");
+				location + "/safe-online-ws/sts");
 	}
 
 	public void validate(Element token) {

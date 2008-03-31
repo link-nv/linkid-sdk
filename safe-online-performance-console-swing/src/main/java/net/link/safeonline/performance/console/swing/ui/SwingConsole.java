@@ -107,7 +107,7 @@ public class SwingConsole {
 
 		// JGoodies Forms layout definition.
 		FormLayout layout = new FormLayout(
-				"0dlu:g, 5dlu, p, 5dlu, p, 5dlu, p",
+				"0dlu:g, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p",
 				"p, 5dlu, f:0dlu:g, 10dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 5dlu, p, 10dlu, p, 5dlu, p");
 		layout.setColumnGroups(new int[][] { { 3, 5, 7 } });
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout);
@@ -124,18 +124,20 @@ public class SwingConsole {
 				executionInfo.getBackground());
 		final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				new JScrollPane(agentsList), executionInfoPane);
-		builder.append(split, 7);
+		builder.append(split, 9);
 		builder.nextRow();
 
 		builder.appendSeparator("Execution Settings");
 		builder.nextRow();
 
 		builder.append("OLAS Hostname:");
+		builder.append("Transport:");
 		builder.append("OLAS Port:");
 		builder.append("Agent Workers:");
 		builder.append("Test Duration (min):");
 		builder.nextRow();
 		builder.append(executionSettings.hostname);
+		builder.append(executionSettings.useSsl);
 		builder.append(executionSettings.port);
 		builder.append(executionSettings.workers);
 		builder.append(executionSettings.duration);
@@ -146,7 +148,7 @@ public class SwingConsole {
 		builder.append("Scenario Name:");
 		builder.nextLine(2);
 
-		builder.append(scenarioChooser.scenarioField);
+		builder.append(scenarioChooser.scenarioField, 3);
 		builder.append(scenarioChooser.browseButton);
 		builder.append(executionSettings.scenarioSelection, 3);
 		builder.nextRow();
@@ -154,7 +156,7 @@ public class SwingConsole {
 		builder.appendSeparator("Actions");
 		builder.nextRow();
 
-		builder.append(scenarioChooser.actionButtons, 7);
+		builder.append(scenarioChooser.actionButtons, 9);
 
 		// Frame.
 		final JFrame frame = new JFrame(

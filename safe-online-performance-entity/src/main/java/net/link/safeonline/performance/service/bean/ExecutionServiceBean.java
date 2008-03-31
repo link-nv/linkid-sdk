@@ -27,11 +27,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link ExecutionServiceBean}<br>
  * <sub>Service bean for {@link ExecutionEntity}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @see ExecutionService
  * @author mbillemo
  */
@@ -48,10 +48,11 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ExecutionEntity addExecution(String scenarioName, Integer agents,
-			Integer workers, Date startTime, Long duration, String hostname) {
+			Integer workers, Date startTime, Long duration, String hostname,
+			Boolean useSsl) {
 
 		ExecutionEntity execution = new ExecutionEntity(scenarioName, agents,
-				workers, startTime, duration, hostname);
+				workers, startTime, duration, hostname, useSsl);
 		this.em.persist(execution);
 
 		return execution;
@@ -102,7 +103,8 @@ public class ExecutionServiceBean extends ProfilingServiceBean implements
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ScenarioTimingEntity start(ExecutionEntity execution) {
 
-		ScenarioTimingEntity startTimeEntity = new ScenarioTimingEntity(execution);
+		ScenarioTimingEntity startTimeEntity = new ScenarioTimingEntity(
+				execution);
 		this.em.persist(startTimeEntity);
 
 		return startTimeEntity;

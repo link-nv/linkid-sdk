@@ -203,7 +203,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
 	public String getGroupName() {
 
 		if (this.channel.getClusterName() == null)
-			return "[" + this.group + "]";
+			return this.group;
 
 		return this.channel.getClusterName();
 	}

@@ -55,6 +55,7 @@ public class ExecutionEntity {
 	private long duration;
 	private String hostname;
 	private Double speed;
+	private boolean useSsl;
 	private boolean dirtySpeed;
 
 	@OneToMany(mappedBy = "execution")
@@ -67,7 +68,7 @@ public class ExecutionEntity {
 	}
 
 	public ExecutionEntity(String scenarioName, Integer agents, int workers,
-			Date startTime, long duration, String hostname) {
+			Date startTime, long duration, String hostname, Boolean ssl) {
 
 		this();
 
@@ -77,6 +78,7 @@ public class ExecutionEntity {
 		this.startTime = startTime;
 		this.duration = duration;
 		this.hostname = hostname;
+		this.useSsl = ssl;
 	}
 
 	/**
@@ -93,6 +95,15 @@ public class ExecutionEntity {
 	public String getHostname() {
 
 		return this.hostname;
+	}
+
+	/**
+	 * @return <code>true</code> If we want to use SSL for communication with
+	 *         OLAS.
+	 */
+	public Boolean isSsl() {
+
+		return this.useSsl;
 	}
 
 	/**

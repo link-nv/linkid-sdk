@@ -28,6 +28,7 @@ public class ScenarioExecution implements Serializable,
 
 	private Map<String, byte[][]> charts;
 	private String hostname;
+	private Boolean ssl;
 	private Double speed;
 	private Long duration;
 	private Integer workers;
@@ -38,7 +39,7 @@ public class ScenarioExecution implements Serializable,
 
 	public ScenarioExecution(String scenarioName, String scenarioDescription,
 			Integer agents, Integer workers, Date startTime, Long duration,
-			String hostname, Double speed) {
+			String hostname, Boolean useSsl, Double speed) {
 
 		this.scenarioName = scenarioName;
 		this.scenarioDescription = scenarioDescription;
@@ -47,6 +48,7 @@ public class ScenarioExecution implements Serializable,
 		this.startTime = startTime;
 		this.duration = duration;
 		this.hostname = hostname;
+		this.ssl = useSsl;
 		this.speed = speed;
 	}
 
@@ -63,6 +65,11 @@ public class ScenarioExecution implements Serializable,
 	public String getHostname() {
 
 		return this.hostname;
+	}
+
+	public Boolean isSsl() {
+
+		return this.ssl;
 	}
 
 	public Double getSpeed() {
@@ -132,7 +139,8 @@ public class ScenarioExecution implements Serializable,
 
 		return new ScenarioExecution(this.scenarioName,
 				this.scenarioDescription, this.agents, this.workers,
-				this.startTime, this.duration, this.hostname, this.speed);
+				this.startTime, this.duration, this.hostname, this.ssl,
+				this.speed);
 	}
 
 	/**

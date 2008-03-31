@@ -118,9 +118,8 @@ public class Saml2BrowserPostHandler implements Serializable {
 		Saml2BrowserPostHandler instance = (Saml2BrowserPostHandler) request
 				.getSession().getAttribute(SAML2_BROWSER_POST_HANDLER);
 
-		if (null == instance) {
+		if (null == instance)
 			instance = new Saml2BrowserPostHandler(request);
-		}
 
 		return instance;
 	}
@@ -138,10 +137,10 @@ public class Saml2BrowserPostHandler implements Serializable {
 		this.wsLocation = inConfigParams.get("WsLocation");
 	}
 
-	public void authnRequest(@SuppressWarnings("unused")
-	HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-			String targetUrl, String device) throws IOException,
-			ServletException {
+	public void authnRequest(
+			@SuppressWarnings("unused") HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse, String targetUrl, String device)
+			throws IOException, ServletException {
 		LOG.debug("target url: " + targetUrl);
 		Set<String> devices = new HashSet<String>();
 		devices.add(device);
@@ -154,12 +153,11 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 		String templateResourceName;
 		if (this.configParams
-				.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
+				.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM))
 			templateResourceName = this.configParams
 					.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
-		} else {
+		else
 			templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
-		}
 
 		AuthnRequestUtil.sendAuthnRequest(targetUrl, encodedSamlRequestToken,
 				templateResourceName, httpResponse);
@@ -179,15 +177,13 @@ public class Saml2BrowserPostHandler implements Serializable {
 
 		Assertion assertion = samlResponse.getAssertions().get(0);
 		List<AuthnStatement> authStatements = assertion.getAuthnStatements();
-		if (authStatements.isEmpty()) {
+		if (authStatements.isEmpty())
 			throw new ServletException("missing authentication statement");
-		}
 
 		AuthnStatement authStatement = authStatements.get(0);
-		if (null == authStatement.getAuthnContext()) {
+		if (null == authStatement.getAuthnContext())
 			throw new ServletException(
 					"missing authentication context in authentication statement");
-		}
 
 		AuthnContextClassRef authnContextClassRef = authStatement
 				.getAuthnContext().getAuthnContextClassRef();

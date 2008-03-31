@@ -75,7 +75,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor
 
 		bindingProvider.getRequestContext().put(
 				BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-				"https://" + location + "/safe-online-ws/idmapping");
+				location + "/safe-online-ws/idmapping");
 	}
 
 	public String getUserId(String username) throws SubjectNotFoundException,

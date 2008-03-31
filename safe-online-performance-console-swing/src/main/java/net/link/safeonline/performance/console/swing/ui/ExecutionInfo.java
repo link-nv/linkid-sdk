@@ -55,11 +55,11 @@ import com.jgoodies.forms.layout.FormLayout;
 /**
  * <h2>{@link ExecutionInfo}<br>
  * <sub>Display available executions and information about them.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ExecutionInfo extends JPanel implements ChangeListener,
@@ -79,6 +79,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	private JLabel duration;
 	private JLabel speed;
 	private JLabel hostname;
+	private JLabel transport;
 	private JEditorPane description;
 	private JLabel durationLabel;
 	private HoverActionAdaptor hoverAdaptor;
@@ -117,6 +118,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 				this.duration = new JLabel());
 		builder.append("Average Speed:", this.speed = new JLabel());
 		builder.append("OLAS Server Hostname:", this.hostname = new JLabel());
+		builder.append("Transport:", this.transport = new JLabel());
 
 		builder.appendSeparator("Description:");
 		builder.append(this.description = new JEditorPane("text/html", ""), 3);
@@ -171,7 +173,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 	private void setExecution(ScenarioExecution execution) {
 
 		ConsoleData.setExecution(execution);
-		
+
 		if (execution == null) {
 			this.executionSelection.setToolTipText("N/A");
 			this.scenarioName.setText("N/A");
@@ -179,10 +181,10 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 			this.startTime.setText("N/A");
 			this.agents.setText("N/A");
 			this.workers.setText("N/A");
-			this.duration
-					.setText("N/A");
+			this.duration.setText("N/A");
 			this.speed.setText("N/A");
 			this.hostname.setText("N/A");
+			this.transport.setText("N/A");
 
 			this.hoverAdaptor.enable(false, this.duration);
 			this.durationLabel.setText("Duration:");
@@ -192,7 +194,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 					.setText(execution.getScenarioName() == null ? "N/A"
 							: execution.getScenarioName().replaceFirst(".*\\.",
 									""));
-			
+
 			Caret descriptionCaret = this.description.getCaret();
 			descriptionCaret.deinstall(this.description);
 			this.description
@@ -200,7 +202,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 							: execution.getScenarioDescription().replaceAll(
 									"\n", "<br>"));
 			descriptionCaret.install(this.description);
-			
+
 			this.startTime.setText(DateFormat.getDateTimeInstance().format(
 					execution.getStartTime()));
 			this.agents.setText(String.format("%s agent%s", execution
@@ -211,6 +213,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 					.format("%.2f scenario%s/s", execution.getSpeed(),
 							execution.getSpeed() == 1 ? "" : "s"));
 			this.hostname.setText(execution.getHostname());
+			this.transport.setText(execution.isSsl() == null ? "N/A"
+					: execution.isSsl() ? "HTTPS" : "HTTP");
 
 			long timeLeft = execution.getStartTime().getTime()
 					+ execution.getDuration() - System.currentTimeMillis();
@@ -324,7 +328,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 
 	/**
 	 * Format a time of duration in a human readable manner.
-	 *
+	 * 
 	 * @param duration
 	 *            A duration in ms.
 	 */

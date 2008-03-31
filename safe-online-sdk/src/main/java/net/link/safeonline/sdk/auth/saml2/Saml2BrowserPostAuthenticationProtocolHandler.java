@@ -130,35 +130,30 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 		HttpSession session = httpRequest.getSession();
 		Set<String> runtimeDevices = (Set<String>) session
 				.getAttribute(SAML2_DEVICES_ATTRIBUTE);
-		if (null == staticDeviceList && null == runtimeDevices) {
+		if (null == staticDeviceList && null == runtimeDevices)
 			return null;
-		}
 		Set<String> staticDevices;
-		if (null == staticDeviceList) {
+		if (null == staticDeviceList)
 			staticDevices = null;
-		} else {
+		else {
 			staticDevices = new HashSet<String>();
 			StringTokenizer stringTokenizer = new StringTokenizer(
 					staticDeviceList, ",");
-			while (stringTokenizer.hasMoreTokens()) {
+			while (stringTokenizer.hasMoreTokens())
 				staticDevices.add(stringTokenizer.nextToken());
-			}
 		}
 		if (null != staticDevices && null != runtimeDevices) {
 			Set<String> intersection = new HashSet<String>(staticDevices);
 			intersection.retainAll(runtimeDevices);
-			if (intersection.isEmpty()) {
+			if (intersection.isEmpty())
 				throw new RuntimeException(
 						"intersection of static and runtime device lists is empty");
-			}
 			return intersection;
 		}
-		if (null != staticDevices) {
+		if (null != staticDevices)
 			return staticDevices;
-		}
-		if (null != runtimeDevices) {
+		if (null != runtimeDevices)
 			return runtimeDevices;
-		}
 		throw new RuntimeException("WTF");
 	}
 
@@ -177,12 +172,11 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements
 
 		String templateResourceName;
 		if (this.configParams
-				.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
+				.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM))
 			templateResourceName = this.configParams
 					.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
-		} else {
+		else
 			templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
-		}
 
 		AuthnRequestUtil.sendAuthnRequest(this.authnServiceUrl,
 				encodedSamlRequestToken, templateResourceName, httpResponse);

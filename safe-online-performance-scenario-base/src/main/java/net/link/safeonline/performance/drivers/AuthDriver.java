@@ -65,11 +65,11 @@ import org.w3c.tidy.Tidy;
 /**
  * <h2>{@link AuthDriver}<br>
  * <sub>Logs a user in on OLAS for a given application.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class AuthDriver extends ProfileDriver {
@@ -79,7 +79,7 @@ public class AuthDriver extends ProfileDriver {
 	public static final String NAME = "Authentication Driver";
 	public static final String DESCRIPTION = "<b>Authentication Driver:</b><br>"
 			+ "Logs the <i>'performance'</i> user in for the <i>'performance-application'</i> and accepts any EULA and attribute sharing requests.";
-	
+
 	private static final String DEVICE = "_main";
 	private static final String USER_PASS = "_username-password";
 	private static final String EULA = "_subscription";
@@ -189,7 +189,7 @@ public class AuthDriver extends ProfileDriver {
 
 	/**
 	 * Authenticate with OLAS's auth-webapp.
-	 *
+	 * 
 	 * @return The user's UUID.
 	 */
 	public String login(PrivateKeyEntry application, String applicationName,
@@ -202,7 +202,7 @@ public class AuthDriver extends ProfileDriver {
 			PublicKey publicKey = application.getCertificate().getPublicKey();
 			PrivateKey privateKey = application.getPrivateKey();
 			KeyPair keyPair = new KeyPair(publicKey, privateKey);
-			String uri = String.format("https://%s/olas-auth/entry", getHost());
+			String uri = getHost() + "/olas-auth/entry";
 			String authnRequest = AuthnRequestFactory.createAuthnRequest(
 					applicationName, applicationName, keyPair,
 					"http://www.lin-k.net/" + applicationName, uri, null, null);
@@ -387,7 +387,7 @@ public class AuthDriver extends ProfileDriver {
 		String uri = formNode.getAttributes().getNamedItem("action")
 				.getNodeValue();
 		if (!uri.startsWith("http"))
-			uri = String.format("https://%s%s", getHost(), uri);
+			uri = getHost() + uri;
 		PostMethod postMethod = new PostMethod(uri);
 		postMethod.addParameters(additionalInputValues);
 		LOG.debug(" - URI: " + uri);

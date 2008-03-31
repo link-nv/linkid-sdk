@@ -15,6 +15,6 @@ public class PingClientImplTest {
 
 	@Test
 	public void testInstance() throws Exception {
-		new PingClientImpl("localhost:8080");
+		new PingClientImpl("http://localhost:8080");
 	}
 }

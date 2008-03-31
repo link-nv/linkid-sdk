@@ -78,10 +78,11 @@ public abstract class ProfileDriver {
 	 * @return A description of what this driver does.
 	 */
 	public abstract String getDescription();
-
+	
 	public String getHost() {
 
-		return this.execution.getHostname();
+		return String.format("%s://%s", (this.execution.isSsl() ? "https"
+				: "http"), this.execution.getHostname());
 	}
 
 	public String getTitle() {

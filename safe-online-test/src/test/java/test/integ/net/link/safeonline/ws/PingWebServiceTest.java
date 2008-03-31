@@ -17,7 +17,7 @@ public class PingWebServiceTest {
 	@Test
 	public void testInvocation() throws Exception {
 		// setup
-		PingClient client = new PingClientImpl("localhost:8080");
+		PingClient client = new PingClientImpl("http://localhost:8080");
 
 		// operate
 		client.ping();

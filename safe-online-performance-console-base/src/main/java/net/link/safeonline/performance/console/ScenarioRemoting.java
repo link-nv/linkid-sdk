@@ -37,11 +37,11 @@ import org.jgroups.Address;
 /**
  * <h2>{@link ScenarioRemoting}<br>
  * <sub>This class takes care of communication with the remote agent via RMI.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioRemoting {
@@ -90,7 +90,7 @@ public class ScenarioRemoting {
 
 	/**
 	 * Invoke a method on the agent service deployed at AP of the given agent.
-	 *
+	 * 
 	 * @throws IllegalStateException
 	 *             When the RMI adaptor is not available on the given agent.
 	 */
@@ -177,14 +177,16 @@ public class ScenarioRemoting {
 	 * Deploy the previously uploaded application.
 	 */
 	public void execute(Address agent, String scenarioName, Integer agents,
-			Integer workers, Long duration, String olasHost, Date startTime) {
+			Integer workers, Long duration, String olasHost, Boolean useSsl,
+			Date startTime) {
 
 		try {
 			invokeFor(agent, "execute", new Object[] { scenarioName, agents,
-					workers, duration, olasHost, startTime }, new String[] {
-					String.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), Long.class.getName(),
-					String.class.getName(), Date.class.getName() });
+					workers, duration, olasHost, useSsl, startTime },
+					new String[] { String.class.getName(),
+							Integer.class.getName(), Integer.class.getName(),
+							Long.class.getName(), String.class.getName(),
+							Boolean.class.getName(), Date.class.getName() });
 		} catch (MBeanException e) {
 			LOG.error("Server error during execute!", e);
 		}

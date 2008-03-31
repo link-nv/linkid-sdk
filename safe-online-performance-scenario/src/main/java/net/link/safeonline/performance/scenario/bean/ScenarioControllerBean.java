@@ -172,7 +172,8 @@ public class ScenarioControllerBean implements ScenarioController {
 		ExecutionEntity execution = this.executionService.addExecution(metaData
 				.getScenarioName(), metaData.getAgents(),
 				metaData.getWorkers(), metaData.getStartTime(), metaData
-						.getDuration(), metaData.getHostname());
+						.getDuration(), metaData.getHostname(), metaData
+						.isSsl());
 		createScenario(execution.getScenarioName()).prepare(execution, null);
 
 		return execution.getStartTime();
@@ -211,7 +212,7 @@ public class ScenarioControllerBean implements ScenarioController {
 				getDescription(executionId), execution.getAgents(), execution
 						.getWorkers(), execution.getStartTime(), execution
 						.getDuration(), execution.getHostname(), execution
-						.getSpeed());
+						.isSsl(), execution.getSpeed());
 	}
 
 	/**

@@ -65,7 +65,7 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 				"net.link.safeonline.applet.ControlMessages", locale);
 	}
 
-	private void setupLogging(SmartCard smartCard) {
+	private void setupLogging(@SuppressWarnings("unused") SmartCard smartCard) {
 		Log log = this.appletView.getLog();
 		SmartCardImpl.setLog(log);
 	}
@@ -82,11 +82,10 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 		List<SmartCardConfig> smartCardConfigs = configFactory
 				.getSmartCardConfigs();
 		smartCard.init(smartCardConfigs);
-		for (SmartCardConfig smartCardConfig : smartCardConfigs) {
+		for (SmartCardConfig smartCardConfig : smartCardConfigs)
 			this.appletView
 					.outputDetailMessage("smart card config available for: "
 							+ smartCardConfig.getCardAlias());
-		}
 
 		String smartCardAlias = this.runtimeContext
 				.getParameter("SmartCardConfig");
@@ -116,7 +115,7 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 					+ e.getClass().getName());
 			this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages
 					.getString("smartCardConnectError"));
-			for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+			for (StackTraceElement stackTraceElement : e.getStackTrace())
 				this.appletView.outputDetailMessage(stackTraceElement
 						.getClassName()
 						+ "."
@@ -125,7 +124,6 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 						+ stackTraceElement.getFileName()
 						+ ":"
 						+ stackTraceElement.getLineNumber() + ")");
-			}
 			return;
 		}
 
@@ -171,9 +169,8 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 		}
 
 		try {
-			if (false == sendStatement(statement)) {
+			if (false == sendStatement(statement))
 				return;
-			}
 		} catch (IOException e) {
 			this.appletView
 					.outputDetailMessage("Error occurred while sending the statement");

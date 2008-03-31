@@ -65,6 +65,13 @@
 	</context-param>
 
 	<context-param>
+		<param-name>WsLocation</param-name>
+		<param-value>
+            ${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port.ssl}
+		</param-value>
+	</context-param>
+
+	<context-param>
 		<param-name>ApplicationName</param-name>
 		<param-value>olas-auth</param-value>
 	</context-param>

@@ -53,6 +53,7 @@ public class PerformanceDriverTest {
 	private static final String OLAS_HOSTNAME = "sebeco-dev-10";
 	// private static final String OLAS_HOSTNAME = "localhost";
 	private static final String OLAS_PORT = "8080";
+	private static final boolean OLAS_SSL = false;
 
 	private static final String testApplicationName = "performance-application";
 	private static final String testUsername = "performance";
@@ -110,7 +111,7 @@ public class PerformanceDriverTest {
 
 			ExecutionEntity execution = this.executionService.addExecution(
 					getClass().getName(), 1, 1, new Date(), 1l, OLAS_HOSTNAME
-							+ ":" + OLAS_PORT);
+							+ ":" + OLAS_PORT, OLAS_SSL);
 			ScenarioTimingEntity agentTime = this.executionService.start(execution);
 
 			this.idDriver = new IdMappingDriver(execution, agentTime);

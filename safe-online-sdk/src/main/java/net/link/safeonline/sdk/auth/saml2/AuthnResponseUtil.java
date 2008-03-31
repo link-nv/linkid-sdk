@@ -145,9 +145,8 @@ public class AuthnResponseUtil {
 			String applicationName, String wsLocation,
 			X509Certificate applicationCertificate,
 			PrivateKey applicationPrivateKey) throws ServletException {
-		if (false == "POST".equals(httpRequest.getMethod())) {
+		if (false == "POST".equals(httpRequest.getMethod()))
 			return null;
-		}
 		LOG.debug("POST response");
 		String encodedSamlResponse = httpRequest.getParameter("SAMLResponse");
 		if (null == encodedSamlResponse) {
@@ -181,9 +180,8 @@ public class AuthnResponseUtil {
 		}
 
 		SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-		if (false == samlMessage instanceof Response) {
+		if (false == samlMessage instanceof Response)
 			throw new ServletException("SAML message not an response message");
-		}
 		Response samlResponse = (Response) samlMessage;
 
 		if (null != wsLocation) {
@@ -207,9 +205,8 @@ public class AuthnResponseUtil {
 		}
 
 		List<Assertion> assertions = samlResponse.getAssertions();
-		if (assertions.isEmpty()) {
+		if (assertions.isEmpty())
 			throw new ServletException("missing Assertion");
-		}
 
 		for (Assertion assertion : assertions) {
 			Conditions conditions = assertion.getConditions();
@@ -220,14 +217,12 @@ public class AuthnResponseUtil {
 			LOG.debug("notBefore: " + notBefore.toString());
 			LOG.debug("notOnOrAfter : " + notOnOrAfter.toString());
 
-			if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter)) {
+			if (now.isBefore(notBefore) || now.isAfter(notOnOrAfter))
 				throw new ServletException("invalid SAML message timeframe");
-			}
 
 			Subject subject = assertion.getSubject();
-			if (null == subject) {
+			if (null == subject)
 				throw new ServletException("missing Assertion Subject");
-			}
 		}
 		return samlResponse;
 	}
