@@ -57,7 +57,7 @@
 	<context-param>
 		<param-name>WsLocation</param-name>
 		<param-value>
-            ${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port.ssl}
+            ${safe-online.host.basename}
 		</param-value>
 	</context-param>
 	<context-param>
