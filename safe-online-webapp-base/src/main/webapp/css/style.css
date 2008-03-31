@@ -98,7 +98,7 @@ a:hover {
     border: 1px solid transparent;
     margin-right: 5px;
 }
-#header_top form:hover img {
+#header_top span:hover img {
     border: 1px solid white;
 }
 

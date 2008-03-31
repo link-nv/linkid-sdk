@@ -15,10 +15,10 @@
 	<body>
 	<div id="header">
 	<div id="header_top"><h:form>
-		<h:graphicImage
+		<span> <h:graphicImage
 			value="/images/langs/#{facesContext.viewRoot.locale.language}.gif" />
 		<h:commandLink action="#{language.entry}"
-			value="#{msgs.chooseLanguage}" />
+			value="#{msgs.chooseLanguage}" /></span>
 		<ui:insert name="logout">
 			<f:subview rendered="#{username != null}">
 				<h:outputText value=" | " />
