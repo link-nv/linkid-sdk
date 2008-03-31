@@ -2075,8 +2075,8 @@
 		<el-api.version>1.0</el-api.version>
 		<el-impl.version>1.0</el-impl.version>
 		<jsp-api.version>2.1</jsp-api.version>
-		<jsf-api.version>1.2_04-p02</jsf-api.version>
-		<jsf-impl.version>1.2_04-p02</jsf-impl.version>
+		<jsf-api.version>1.2_08</jsf-api.version>
+		<jsf-impl.version>1.2_08</jsf-impl.version>
 		<myfaces-impl.version>1.1.4</myfaces-impl.version>
 		<el-ri.version>1.0</el-ri.version>
 		<tomahawk.version>1.1.6</tomahawk.version>

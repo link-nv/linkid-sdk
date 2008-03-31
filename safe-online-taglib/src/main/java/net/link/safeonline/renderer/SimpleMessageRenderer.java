@@ -125,7 +125,6 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
 			return;
 		}
 
-		clientId = augmentIdReference(context, clientId, component);
 		messageIter = getMessageIter(context, clientId, component);
 
 		assert (messageIter != null);

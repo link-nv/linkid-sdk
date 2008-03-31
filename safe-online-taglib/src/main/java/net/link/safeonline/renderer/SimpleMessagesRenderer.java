@@ -10,7 +10,6 @@ import javax.faces.component.UIMessages;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import com.sun.faces.renderkit.RenderKitUtils;
 import com.sun.faces.renderkit.html_basic.MessagesRenderer;
 import com.sun.faces.util.MessageUtils;
 
@@ -78,9 +77,6 @@ public class SimpleMessagesRenderer extends MessagesRenderer {
 		boolean showDetail = ((UIMessages) component).isShowDetail();
 		String styleClass = (String) component.getAttributes()
 				.get("styleClass");
-
-		// style is rendered as a passthru attribute
-		RenderKitUtils.renderPassThruAttributes(context, writer, component);
 
 		while (messageIter.hasNext()) {
 			curMessage = (FacesMessage) messageIter.next();
