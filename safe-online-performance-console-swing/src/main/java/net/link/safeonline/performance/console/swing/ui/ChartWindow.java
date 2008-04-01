@@ -36,11 +36,11 @@ import com.jgoodies.looks.Options;
 /**
  * <h2>{@link ChartWindow}<br>
  * <sub>A window that displays charts.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ChartWindow extends WindowAdapter {
@@ -95,7 +95,8 @@ public class ChartWindow extends WindowAdapter {
 
 		for (Map.Entry<ConsoleAgent, ScenarioExecution> agentChart : agentCharts
 				.entrySet())
-			instance.addTab(agentChart.getKey(), agentChart.getValue());
+			if (agentChart.getValue() != null)
+				instance.addTab(agentChart.getKey(), agentChart.getValue());
 
 		instance.show();
 	}

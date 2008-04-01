@@ -17,11 +17,11 @@ import javax.persistence.NamedQuery;
 /**
  * <h2>{@link ScenarioTimingEntity}<br>
  * <sub>Holds the startTime at which a scenario has been executed.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 17, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity
@@ -66,10 +66,11 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 
 		this.execution = execution;
 		this.startTime = startTime;
-		this.olasDuration = olasDuration.longValue();
-		this.agentDuration = agentDuration.longValue();
-		this.startFreeMem = startFreeMem.longValue();
-		this.endFreeMem = endFreeMem.longValue();
+		this.olasDuration = olasDuration == null ? 0 : olasDuration.longValue();
+		this.agentDuration = agentDuration == null ? 0 : agentDuration
+				.longValue();
+		this.startFreeMem = startTime == null ? 0 : startFreeMem.longValue();
+		this.endFreeMem = endFreeMem == null ? 0 : endFreeMem.longValue();
 	}
 
 	/**
