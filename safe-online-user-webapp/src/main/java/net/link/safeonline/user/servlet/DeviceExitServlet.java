@@ -159,7 +159,8 @@ public class DeviceExitServlet extends HttpServlet {
 
 	private Object pollDeviceRegistration(
 			DeviceRegistrationEntity deviceRegistration)
-			throws AttributeTypeNotFoundException, PermissionDeniedException {
+			throws AttributeTypeNotFoundException, PermissionDeniedException,
+			SubjectNotFoundException {
 		return this.proxyAttributeService.findDeviceAttributeValue(
 				deviceRegistration.getId(), deviceRegistration.getDevice()
 						.getAttributeType().getName());
