@@ -16,7 +16,6 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -69,7 +68,6 @@ public class DeviceRegistrationEntity implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "subject", nullable = false)
 	public SubjectEntity getSubject() {
 		return this.subject;
 	}
@@ -88,7 +86,6 @@ public class DeviceRegistrationEntity implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "device", nullable = false)
 	public DeviceEntity getDevice() {
 		return this.device;
 	}

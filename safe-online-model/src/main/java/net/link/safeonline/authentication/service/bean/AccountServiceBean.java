@@ -14,8 +14,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -43,9 +41,6 @@ import org.jboss.annotation.security.SecurityDomain;
 public class AccountServiceBean implements AccountService, AccountServiceRemote {
 
 	private static final Log LOG = LogFactory.getLog(AccountServiceBean.class);
-
-	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-	private EntityManager entityManager;
 
 	@EJB
 	private SubjectManager subjectManager;
@@ -96,21 +91,29 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 		this.historyDAO.clearAllHistory(subject);
 		this.subscriptionDAO.removeAllSubscriptions(subject);
 		this.attributeDAO.removeAttributes(subject);
+		this.subjectIdentifierDAO.removeSubjectIdentifiers(subject);
 		this.deviceMappingDAO.removeDeviceMappings(subject);
 		removeDeviceRegistrationAttributes(subject);
 		this.deviceRegistrationDAO.removeDeviceRegistrations(subject);
-		this.entityManager.flush();
 		this.subjectDAO.removeSubject(subject);
 	}
 
+	/**
+	 * Remove device attributes and possible local device subjects, notify
+	 * remote device issuers to do so accordingly
+	 * 
+	 * @param subject
+	 */
 	private void removeDeviceRegistrationAttributes(SubjectEntity subject) {
 		List<DeviceRegistrationEntity> deviceRegistrations = this.deviceRegistrationDAO
 				.listRegisteredDevices(subject);
 		for (DeviceRegistrationEntity deviceRegistration : deviceRegistrations) {
+			LOG.debug("remove device registration: "
+					+ deviceRegistration.getId());
 			SubjectEntity deviceSubject = this.subjectService
 					.findSubject(deviceRegistration.getId());
 			if (null == deviceSubject) {
-				// TODO: remote device
+				// TODO: notify remote device issuers
 			} else {
 				this.attributeDAO.removeAttributes(deviceSubject);
 				this.subjectDAO.removeSubject(deviceSubject);
