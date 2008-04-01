@@ -123,7 +123,7 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 		Object deviceAttribute;
 		try {
 			deviceAttribute = this.proxyAttributeService
-					.getDeviceAttributeValue(protocolContext
+					.findDeviceAttributeValue(protocolContext
 							.getRegistrationId(), device.getAttributeType()
 							.getName());
 		} catch (PermissionDeniedException e) {
@@ -133,6 +133,9 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 		} catch (AttributeTypeNotFoundException e) {
 			redirectToDeviceErrorPage(request, response,
 					"errorAttributeTypeNotFound");
+			return;
+		} catch (SubjectNotFoundException e) {
+			redirectToDeviceErrorPage(request, response, "errorSubjectNotFound");
 			return;
 		}
 		if (null == deviceAttribute) {

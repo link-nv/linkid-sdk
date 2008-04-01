@@ -52,7 +52,7 @@ public class NodeAttributeServiceBean implements NodeAttributeService,
 			SubjectNotFoundException, AttributeTypeNotFoundException {
 		LOG.debug("get attribute " + attributeName + " for login "
 				+ subjectLogin);
-		return this.proxyAttributeService.getAttributeValue(subjectLogin,
+		return this.proxyAttributeService.findAttributeValue(subjectLogin,
 				attributeName);
 	}
 }

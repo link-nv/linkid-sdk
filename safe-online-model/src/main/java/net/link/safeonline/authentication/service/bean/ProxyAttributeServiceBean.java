@@ -51,9 +51,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 	private static final Log LOG = LogFactory
 			.getLog(ProxyAttributeServiceBean.class);
 
-	public Object getDeviceAttributeValue(String deviceUserId,
+	public Object findDeviceAttributeValue(String deviceUserId,
 			String attributeName) throws AttributeTypeNotFoundException,
-			PermissionDeniedException {
+			PermissionDeniedException, SubjectNotFoundException {
 
 		LOG.debug("get device attribute " + attributeName + " for "
 				+ deviceUserId);
@@ -67,7 +67,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 
 	}
 
-	public Object getAttributeValue(String userId, String attributeName)
+	public Object findAttributeValue(String userId, String attributeName)
 			throws PermissionDeniedException, SubjectNotFoundException,
 			AttributeTypeNotFoundException {
 
@@ -76,11 +76,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.getAttributeType(attributeName);
 
-		SubjectEntity subject = this.subjectService.findSubject(userId);
-		if (null == subject) {
-			LOG.debug("subject " + userId + " not found.");
-			return null;
-		}
+		SubjectEntity subject = this.subjectService.getSubject(userId);
 
 		String subjectId = userId;
 		if (attributeType.isDeviceAttribute())
@@ -133,16 +129,12 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 	}
 
 	private Object getLocalAttribute(String subjectId,
-			AttributeTypeEntity attributeType) {
+			AttributeTypeEntity attributeType) throws SubjectNotFoundException {
 
 		LOG.debug("get local attribute " + attributeType.getName() + " for "
 				+ subjectId);
 
-		SubjectEntity subject = this.subjectService.findSubject(subjectId);
-		if (null == subject) {
-			LOG.debug("subject " + subjectId + " not found.");
-			return null;
-		}
+		SubjectEntity subject = this.subjectService.getSubject(subjectId);
 
 		// filter out the empty attributes
 		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(

@@ -7,6 +7,7 @@
 
 package net.link.safeonline.entity;
 
+import static net.link.safeonline.entity.DeviceMappingEntity.DELETE_ALL_SUBJECT;
 import static net.link.safeonline.entity.DeviceMappingEntity.QUERY_LIST_SUBJECT;
 import static net.link.safeonline.entity.DeviceMappingEntity.QUERY_SUBJECT_DEVICE;
 
@@ -24,6 +25,7 @@ import javax.persistence.UniqueConstraint;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -38,7 +40,9 @@ import org.apache.commons.lang.builder.ToStringStyle;
 				+ "WHERE d.subject = :subject"),
 		@NamedQuery(name = QUERY_SUBJECT_DEVICE, query = "SELECT d "
 				+ "FROM DeviceMappingEntity AS d "
-				+ "WHERE d.subject = :subject AND d.device = :device") })
+				+ "WHERE d.subject = :subject AND d.device = :device"),
+		@NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM DeviceMappingEntity AS d "
+				+ "WHERE d.subject = :subject") })
 public class DeviceMappingEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -46,6 +50,8 @@ public class DeviceMappingEntity implements Serializable {
 	public static final String QUERY_LIST_SUBJECT = "dev.map.sub";
 
 	public static final String QUERY_SUBJECT_DEVICE = "dev.map.subdev";
+
+	public static final String DELETE_ALL_SUBJECT = "dev.map.del.sub";
 
 	private SubjectEntity subject;
 
@@ -120,6 +126,10 @@ public class DeviceMappingEntity implements Serializable {
 
 		@QueryMethod(QUERY_LIST_SUBJECT)
 		List<DeviceMappingEntity> listDeviceMappings(@QueryParam("subject")
+		SubjectEntity subject);
+
+		@UpdateMethod(DELETE_ALL_SUBJECT)
+		void deleteAll(@QueryParam("subject")
 		SubjectEntity subject);
 	}
 }

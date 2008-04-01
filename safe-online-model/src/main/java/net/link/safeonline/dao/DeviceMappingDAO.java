@@ -27,4 +27,6 @@ public interface DeviceMappingDAO {
 
 	public DeviceMappingEntity findDeviceMapping(String id);
 
+	public void removeDeviceMappings(SubjectEntity subject);
+
 }

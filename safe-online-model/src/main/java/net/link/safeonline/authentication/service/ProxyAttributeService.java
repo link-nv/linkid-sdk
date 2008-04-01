@@ -2,6 +2,7 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -22,9 +23,12 @@ public interface ProxyAttributeService {
 	 * @param attributeName
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
+	 * @throws SubjectNotFoundException
+	 * @throws AttributeNotFoundException
 	 */
-	Object getDeviceAttributeValue(String deviceUserId, String attributeName)
-			throws AttributeTypeNotFoundException, PermissionDeniedException;
+	Object findDeviceAttributeValue(String deviceUserId, String attributeName)
+			throws AttributeTypeNotFoundException, PermissionDeniedException,
+			SubjectNotFoundException;
 
 	/**
 	 * Fetches an attribute from the specified subject ID. This can be either a
@@ -36,7 +40,7 @@ public interface ProxyAttributeService {
 	 * @throws SubjectNotFoundException
 	 * @throws AttributeTypeNotFoundException
 	 */
-	Object getAttributeValue(String userId, String attributeName)
+	Object findAttributeValue(String userId, String attributeName)
 			throws PermissionDeniedException, SubjectNotFoundException,
 			AttributeTypeNotFoundException;
 }

@@ -713,7 +713,7 @@ public class IdentityServiceBean implements IdentityService,
 
 		List<AttributeTypeEntity> missingAttributeTypes = new LinkedList<AttributeTypeEntity>();
 		for (AttributeTypeEntity attributeType : requiredApplicationAttributeTypes) {
-			if (null == this.proxyAttributeService.getAttributeValue(subject
+			if (null == this.proxyAttributeService.findAttributeValue(subject
 					.getUserId(), attributeType.getName()))
 				missingAttributeTypes.add(attributeType);
 		}
@@ -845,7 +845,7 @@ public class IdentityServiceBean implements IdentityService,
 				 * possible to make it easier for the user to edit the values in
 				 * context of an existing compounded attribute.
 				 */
-				Object value = this.proxyAttributeService.getAttributeValue(
+				Object value = this.proxyAttributeService.findAttributeValue(
 						subject.getUserId(), attributeType.getName());
 				if (null != value)
 					missingMemberAttribute.setValue(value);
@@ -960,8 +960,10 @@ public class IdentityServiceBean implements IdentityService,
 			throws SubjectNotFoundException, PermissionDeniedException,
 			AttributeTypeNotFoundException {
 		LOG.debug("list attributes for device: " + deviceId);
-		Object value = this.proxyAttributeService.getDeviceAttributeValue(
+		Object value = this.proxyAttributeService.findDeviceAttributeValue(
 				deviceId, attributeType.getName());
+		if (null == value)
+			return new LinkedList<AttributeDO>();
 		return convertAttribute(value, attributeType, locale);
 	}
 

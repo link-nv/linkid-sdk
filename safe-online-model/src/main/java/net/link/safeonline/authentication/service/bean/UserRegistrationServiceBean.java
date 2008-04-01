@@ -87,7 +87,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 		// actually completed
 		for (DeviceRegistrationEntity deviceRegistration : deviceRegistrations) {
 			Object deviceAttribute = this.proxyAttributeService
-					.getAttributeValue(subject.getUserId(), deviceRegistration
+					.findAttributeValue(subject.getUserId(), deviceRegistration
 							.getDevice().getAttributeType().getName());
 			if (null != deviceAttribute)
 				return null;

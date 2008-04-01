@@ -78,4 +78,8 @@ public class DeviceRegistrationDAOBean implements DeviceRegistrationDAO {
 		DeviceRegistrationEntity registeredDevice = findRegisteredDevice(id);
 		this.entityManager.remove(registeredDevice);
 	}
+
+	public void removeDeviceRegistrations(SubjectEntity subject) {
+		this.queryObject.deleteAll(subject);
+	}
 }

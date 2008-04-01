@@ -7,11 +7,15 @@
 
 package net.link.safeonline.authentication.service.bean;
 
+import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -19,10 +23,13 @@ import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.authentication.service.AccountServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.DeviceMappingDAO;
+import net.link.safeonline.dao.DeviceRegistrationDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.service.SubjectService;
@@ -36,6 +43,9 @@ import org.jboss.annotation.security.SecurityDomain;
 public class AccountServiceBean implements AccountService, AccountServiceRemote {
 
 	private static final Log LOG = LogFactory.getLog(AccountServiceBean.class);
+
+	@PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
+	private EntityManager entityManager;
 
 	@EJB
 	private SubjectManager subjectManager;
@@ -56,6 +66,12 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 	private SubjectIdentifierDAO subjectIdentifierDAO;
 
 	@EJB
+	private DeviceMappingDAO deviceMappingDAO;
+
+	@EJB
+	private DeviceRegistrationDAO deviceRegistrationDAO;
+
+	@EJB
 	private SubjectService subjectService;
 
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -66,8 +82,10 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 		this.subscriptionDAO.removeAllSubscriptions(subject);
 		this.attributeDAO.removeAttributes(subject);
 		this.subjectIdentifierDAO.removeSubjectIdentifiers(subject);
+		this.deviceMappingDAO.removeDeviceMappings(subject);
+		removeDeviceRegistrationAttributes(subject);
+		this.deviceRegistrationDAO.removeDeviceRegistrations(subject);
 		this.subjectDAO.removeSubject(subject);
-
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -78,6 +96,26 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 		this.historyDAO.clearAllHistory(subject);
 		this.subscriptionDAO.removeAllSubscriptions(subject);
 		this.attributeDAO.removeAttributes(subject);
+		this.deviceMappingDAO.removeDeviceMappings(subject);
+		removeDeviceRegistrationAttributes(subject);
+		this.deviceRegistrationDAO.removeDeviceRegistrations(subject);
+		this.entityManager.flush();
 		this.subjectDAO.removeSubject(subject);
+	}
+
+	private void removeDeviceRegistrationAttributes(SubjectEntity subject) {
+		List<DeviceRegistrationEntity> deviceRegistrations = this.deviceRegistrationDAO
+				.listRegisteredDevices(subject);
+		for (DeviceRegistrationEntity deviceRegistration : deviceRegistrations) {
+			SubjectEntity deviceSubject = this.subjectService
+					.findSubject(deviceRegistration.getId());
+			if (null == deviceSubject) {
+				// TODO: remote device
+			} else {
+				this.attributeDAO.removeAttributes(deviceSubject);
+				this.subjectDAO.removeSubject(deviceSubject);
+			}
+		}
+
 	}
 }

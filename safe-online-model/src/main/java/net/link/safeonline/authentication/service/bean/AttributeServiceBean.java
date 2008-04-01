@@ -87,7 +87,7 @@ public class AttributeServiceBean implements AttributeService,
 		AttributeTypeEntity attributeType = checkAttributeReadPermission(
 				attributeName, confirmedAttributes);
 		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
-		return this.proxyAttributeService.getAttributeValue(
+		return this.proxyAttributeService.findAttributeValue(
 				subject.getUserId(), attributeType.getName());
 	}
 
@@ -167,7 +167,7 @@ public class AttributeServiceBean implements AttributeService,
 		SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
 		for (ApplicationIdentityAttributeEntity confirmedAttribute : confirmedAttributes) {
 			String attributeName = confirmedAttribute.getAttributeTypeName();
-			Object value = this.proxyAttributeService.getAttributeValue(subject
+			Object value = this.proxyAttributeService.findAttributeValue(subject
 					.getUserId(), attributeName);
 			if (null == value)
 				continue;

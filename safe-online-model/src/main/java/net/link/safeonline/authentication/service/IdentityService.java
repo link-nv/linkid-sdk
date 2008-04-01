@@ -16,7 +16,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -72,7 +71,7 @@ public interface IdentityService {
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
 	 * @throws SubjectNotFoundException
-	 * @throws DeviceNotFoundException
+	 * 
 	 */
 	List<AttributeDO> listAttributes(String deviceId,
 			AttributeTypeEntity attributeType, Locale locale)

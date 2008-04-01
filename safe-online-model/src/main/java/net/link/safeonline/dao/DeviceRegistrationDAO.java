@@ -30,4 +30,6 @@ public interface DeviceRegistrationDAO {
 
 	public void removeRegisteredDevice(String id);
 
+	public void removeDeviceRegistrations(SubjectEntity subject);
+
 }

@@ -35,6 +35,7 @@ import org.openqa.selenium.server.SeleniumServer;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * Acceptance test manager based on the Selenium testing framework.
@@ -56,23 +57,23 @@ public class AcceptanceTestManager {
 
 	public static final String SAFE_ONLINE_ENCAP_WEBAPP_PREFIX = "/olas-encap";
 
-	private static final String SAFE_ONLINE_USER_WEBAPP_PREFIX = "/olas";
+	public static final String SAFE_ONLINE_USER_WEBAPP_PREFIX = "/olas";
 
-	private static final String SAFE_ONLINE_OPER_WEBAPP_PREFIX = "/olas-oper";
+	public static final String SAFE_ONLINE_OPER_WEBAPP_PREFIX = "/olas-oper";
 
-	private static final String SAFE_ONLINE_OWNER_WEBAPP_PREFIX = "/olas-owner";
+	public static final String SAFE_ONLINE_OWNER_WEBAPP_PREFIX = "/olas-owner";
 
-	private static final String SAFE_ONLINE_HELPDESK_WEBAPP_PREFIX = "/olas-helpdesk";
+	public static final String SAFE_ONLINE_HELPDESK_WEBAPP_PREFIX = "/olas-helpdesk";
 
-	private static final String SAFE_ONLINE_DEMO_TICKET_WEBAPP_PREFIX = "/demo-ticket";
+	public static final String SAFE_ONLINE_DEMO_TICKET_WEBAPP_PREFIX = "/demo-ticket";
 
-	private static final String SAFE_ONLINE_DEMO_LAWYER_WEBAPP_PREFIX = "/demo-lawyer";
+	public static final String SAFE_ONLINE_DEMO_LAWYER_WEBAPP_PREFIX = "/demo-lawyer";
 
-	private static final String SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX = "/demo-payment";
+	public static final String SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX = "/demo-payment";
 
-	private static final String SAFE_ONLINE_DEMO_MANDATE_WEBAPP_PREFIX = "/demo-mandate";
+	public static final String SAFE_ONLINE_DEMO_MANDATE_WEBAPP_PREFIX = "/demo-mandate";
 
-	private static final String SAFE_ONLINE_DEMO_PRESCRIPTION_WEBAPP_PREFIX = "/demo-prescription";
+	public static final String SAFE_ONLINE_DEMO_PRESCRIPTION_WEBAPP_PREFIX = "/demo-prescription";
 
 	private static final Log LOG = LogFactory
 			.getLog(AcceptanceTestManager.class);
@@ -84,6 +85,10 @@ public class AcceptanceTestManager {
 	public static final int SELENIUM_SERVER_PORT = 4455;
 
 	private static final String TIMEOUT = "5000";
+
+	private static final int PAUSE = 1500;
+
+	private static final int PAUSE_TIMEOUT = 10;
 
 	String safeOnlineLocation;
 
@@ -216,12 +221,18 @@ public class AcceptanceTestManager {
 						+ value + "')]");
 	}
 
-	public void waitForRedirect(String page) {
+	public boolean checkLinkInRow(String table, String row, String id) {
+		return this.selenium.isVisible("xpath=//table[contains(@Id, '" + table
+				+ "')]//tr[./td[contains(text(), '" + row
+				+ "')]]/td/a[contains(@Id, '" + id + "')]");
+	}
+
+	public void waitForRedirect(String page) throws InterruptedException {
 		int timeout = 0;
-		while (!this.selenium.getLocation().endsWith(page) && timeout != 10) {
+		while (!this.selenium.getLocation().endsWith(page)
+				&& timeout != PAUSE_TIMEOUT) {
 			LOG.debug("page: " + this.selenium.getLocation());
-			LOG.debug("page content: " + this.selenium.getHtmlSource());
-			waitForPageToLoad();
+			Thread.sleep(PAUSE);
 			timeout++;
 		}
 		Assert.assertTrue(this.selenium.getLocation().endsWith(page));
@@ -259,8 +270,9 @@ public class AcceptanceTestManager {
 		logout();
 	}
 
-	public void logon(String login, String password) {
-		clickLink("login");
+	public void logon(String login, String password)
+			throws InterruptedException {
+		clickLinkAndWait("login");
 		waitForRedirect(SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/main.seam");
 
 		// main.xhtml
@@ -280,17 +292,20 @@ public class AcceptanceTestManager {
 		Assert.assertTrue(this.selenium.isTextPresent("Login"));
 	}
 
-	public void userLogon(String login, String password) {
+	public void userLogon(String login, String password)
+			throws InterruptedException {
 		openUserWebApp("/");
 		logon(login, password);
 	}
 
-	public void operLogon(String login, String password) {
+	public void operLogon(String login, String password)
+			throws InterruptedException {
 		openOperWebApp("/");
 		logon(login, password);
 	}
 
-	public void ownerLogon(String login, String password) {
+	public void ownerLogon(String login, String password)
+			throws InterruptedException {
 		openOwnerWebApp("/");
 		logon(login, password);
 	}
@@ -323,8 +338,16 @@ public class AcceptanceTestManager {
 		return null;
 	}
 
+	// It is possible a page already loaded before executing this command so
+	// catch the timeout exception.
 	public void waitForPageToLoad() {
-		this.selenium.waitForPageToLoad(TIMEOUT);
+		try {
+			this.selenium.waitForPageToLoad(TIMEOUT);
+		} catch (SeleniumException e) {
+			LOG.debug("Selenium exception: " + e.getMessage());
+			if (!e.getMessage().startsWith("Timed out after"))
+				throw e;
+		}
 	}
 
 	private class CaptchaFrame extends JFrame {
@@ -352,6 +375,7 @@ public class AcceptanceTestManager {
 
 			this.getContentPane().add(imagePanel, BorderLayout.CENTER);
 			this.getContentPane().add(inputPanel, BorderLayout.SOUTH);
+			this.setTitle("Captcha");
 			this.pack();
 			this.setVisible(true);
 
