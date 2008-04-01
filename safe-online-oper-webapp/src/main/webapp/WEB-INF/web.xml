@@ -84,9 +84,7 @@
 
 	<context-param>
 		<param-name>WsLocation</param-name>
-		<param-value>
-            ${safe-online.host.basename}
-		</param-value>
+		<param-value>${safe-online.host.basename}</param-value>
 	</context-param>
 
 	<filter>

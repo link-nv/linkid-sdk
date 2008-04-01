@@ -54,8 +54,7 @@ public class LoginServlet extends HttpServlet {
 
 		LOG.debug("init");
 
-		String wsHostName = config.getInitParameter("WsHostName");
-		String wsHostPort = config.getInitParameter("WsHostPort");
+		String wsLocation = config.getInitParameter("WsLocation");
 
 		PrivateKeyEntry privateKeyEntry = DemoLawyerKeyStoreUtils
 				.getPrivateKeyEntry();
@@ -64,10 +63,10 @@ public class LoginServlet extends HttpServlet {
 				.getCertificate();
 		PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
 
-		LOG.debug("creating dataclient to: " + wsHostName + ":" + wsHostPort);
+		LOG.debug("creating dataclient to: " + wsLocation);
 
-		this.dataClient = new DataClientImpl(wsHostName + ":" + wsHostPort,
-				clientCertificate, clientPrivateKey);
+		this.dataClient = new DataClientImpl(wsLocation, clientCertificate,
+				clientPrivateKey);
 	}
 
 	@Override

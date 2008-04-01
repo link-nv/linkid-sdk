@@ -22,7 +22,8 @@
 		<ui:insert name="logout">
 			<f:subview rendered="#{username != null}">
 				<h:outputText value=" | " />
-				<h:commandLink action="#{login.logout}" value="#{msgs.logout}" />
+				<h:commandLink id="logout" action="#{login.logout}"
+					value="#{msgs.logout}" />
 			</f:subview>
 		</ui:insert>
 	</h:form></div>

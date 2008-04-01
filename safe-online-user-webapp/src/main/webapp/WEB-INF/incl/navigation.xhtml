@@ -1,16 +1,21 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
-	<ul class="menu">
+<ul class="menu">
 	<li id="page_home"><a
-			href="#{facesContext.externalContext.requestContextPath}/overview.seam">#{msgs.home}</a></li>
-		<li id="page_profile"><a
-			href="#{facesContext.externalContext.requestContextPath}/profile/profile.seam">#{msgs.profile}</a></li>
-		<li id="page_applications"><a
-			href="#{facesContext.externalContext.requestContextPath}/applications.seam">#{msgs.applications}</a></li>
-		<li id="page_devices"><a
-			href="#{facesContext.externalContext.requestContextPath}/device/devices.seam">#{msgs.devices}</a></li>
-		<li id="page_account"><a
-			href="#{facesContext.externalContext.requestContextPath}/account.seam">#{msgs.accountManagement}</a></li>
-	</ul>
+		href="#{facesContext.externalContext.requestContextPath}/overview.seam"
+		id="page_home_link">#{msgs.home}</a></li>
+	<li id="page_profile"><a
+		href="#{facesContext.externalContext.requestContextPath}/profile/profile.seam"
+		id="page_profile_link">#{msgs.profile}</a></li>
+	<li id="page_applications"><a
+		href="#{facesContext.externalContext.requestContextPath}/applications.seam"
+		id="page_applications_link">#{msgs.applications}</a></li>
+	<li id="page_devices"><a
+		href="#{facesContext.externalContext.requestContextPath}/device/devices.seam"
+		id="page_devices_link">#{msgs.devices}</a></li>
+	<li id="page_account"><a
+		href="#{facesContext.externalContext.requestContextPath}/account.seam"
+		id="page_account_link">#{msgs.accountManagement}</a></li>
+</ul>
 
 
 <script language="JavaScript">
@@ -21,5 +26,4 @@
             }
         }
         setClass("page_" + "#{page}", "selected");
-</script>
-</div>
+</script></div>

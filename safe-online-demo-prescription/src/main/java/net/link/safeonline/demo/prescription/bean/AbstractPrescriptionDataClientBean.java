@@ -60,8 +60,7 @@ public abstract class AbstractPrescriptionDataClientBean implements
 
 	private transient NameIdentifierMappingClient mappingClient;
 
-	private String wsHostName;
-	private String wsHostPort;
+	private String wsLocation;
 
 	private X509Certificate certificate;
 
@@ -72,8 +71,7 @@ public abstract class AbstractPrescriptionDataClientBean implements
 		this.log.debug("postConstruct");
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		this.wsHostName = externalContext.getInitParameter("WsHostName");
-		this.wsHostPort = externalContext.getInitParameter("WsHostPort");
+		this.wsLocation = externalContext.getInitParameter("WsLocation");
 		PrivateKeyEntry privateKeyEntry = DemoPrescriptionKeyStoreUtils
 				.getPrivateKeyEntry();
 		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
@@ -84,13 +82,12 @@ public abstract class AbstractPrescriptionDataClientBean implements
 	@PostActivate
 	public void postActivateCallback() {
 		this.log.debug("postActivate");
-		String location = this.wsHostName + ":" + this.wsHostPort;
-		this.dataClient = new DataClientImpl(location, this.certificate,
+		this.dataClient = new DataClientImpl(this.wsLocation, this.certificate,
 				this.privateKey);
-		this.attributeClient = new AttributeClientImpl(location,
+		this.attributeClient = new AttributeClientImpl(this.wsLocation,
 				this.certificate, this.privateKey);
-		this.mappingClient = new NameIdentifierMappingClientImpl(location,
-				this.certificate, this.privateKey);
+		this.mappingClient = new NameIdentifierMappingClientImpl(
+				this.wsLocation, this.certificate, this.privateKey);
 	}
 
 	@PrePassivate
@@ -106,8 +103,7 @@ public abstract class AbstractPrescriptionDataClientBean implements
 		this.log.debug("destroy");
 		this.dataClient = null;
 		this.attributeClient = null;
-		this.wsHostName = null;
-		this.wsHostPort = null;
+		this.wsLocation = null;
 		this.certificate = null;
 		this.privateKey = null;
 	}

@@ -18,25 +18,27 @@
 
 
 		<h2>#{msgs.userYourHistory}</h2>
-		<p>#{msgs.userYourHistoryInfo} <a href="./history.seam">#{msgs.clickHere}</a></p>
+		<p>#{msgs.userYourHistoryInfo} <a href="./history.seam"
+			id="history">#{msgs.clickHere}</a></p>
 
 		<h2>#{msgs.usageAgreement}</h2>
-		<p>#{msgs.usageAgreementInfo} <a href="./usage.seam">#{msgs.clickHere}</a></p>
+		<p>#{msgs.usageAgreementInfo} <a href="./usage.seam" id="usage">
+		#{msgs.clickHere}</a></p>
 
 		<h2>#{msgs.actions}</h2>
 		<h:form>
-			<p>#{msgs.removeAccountInfo}<h:commandLink action="remove"
-				id="remove" value="#{msgs.clickHere}" /></p>
+			<p>#{msgs.removeAccountInfo} <a href="/.remove.seam" id="remove">
+			#{msgs.clickHere}</a></p>
 		</h:form>
 	</ui:define>
 	<ui:define name="sidebar">
 		<h:form>
 			<ul class="sidemenu">
-				<li><h:commandLink action="/history.seam"
+				<li><h:commandLink id="history_side" action="/history.seam"
 					value="#{msgs.history}" /></li>
-				<li><h:commandLink action="/usage.seam"
+				<li><h:commandLink id="usage_side" action="/usage.seam"
 					value="#{msgs.usageAgreement}" /></li>
-				<li><h:commandLink action="/remove.seam"
+				<li><h:commandLink id="remove_side" action="/remove.seam"
 					value="#{msgs.removeAccount}" /></li>
 			</ul>
 		</h:form>

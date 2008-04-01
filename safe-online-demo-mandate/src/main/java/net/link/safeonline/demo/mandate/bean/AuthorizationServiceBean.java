@@ -68,10 +68,9 @@ public class AuthorizationServiceBean implements AuthorizationService {
 	private AttributeClient getAttributeClient() {
 		ResourceBundle config = ResourceBundle
 				.getBundle(this.WEBSERVICE_CONFIG);
-		String wsHostName = config.getString("WsHostName");
-		String wsHostPort = config.getString("WsHostPort");
+		String wsLocation = config.getString("WsLocation");
 
-		LOG.debug("Webservice: " + wsHostName + ":" + wsHostPort);
+		LOG.debug("Webservice: " + wsLocation);
 
 		PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils
 				.getPrivateKeyEntry();
@@ -79,8 +78,8 @@ public class AuthorizationServiceBean implements AuthorizationService {
 				.getCertificate();
 		PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
-		AttributeClient attributeClient = new AttributeClientImpl(wsHostName
-				+ ":" + wsHostPort, certificate, privateKey);
+		AttributeClient attributeClient = new AttributeClientImpl(wsLocation,
+				certificate, privateKey);
 		return attributeClient;
 	}
 

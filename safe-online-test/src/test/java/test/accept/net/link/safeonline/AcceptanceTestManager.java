@@ -7,9 +7,27 @@
 
 package test.accept.net.link.safeonline;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
@@ -32,26 +50,44 @@ import com.thoughtworks.selenium.Selenium;
  */
 public class AcceptanceTestManager {
 
-	private static final String SAFE_ONLINE_USER_WEBAPP_PREFIX = "/safe-online";
+	public static final String SAFE_ONLINE_AUTH_WEBAPP_PREFIX = "/olas-auth";
 
-	private static final String SAFE_ONLINE_DEMO_WEBAPP_PREFIX = "/demo";
+	public static final String SAFE_ONLINE_BEID_WEBAPP_PREFIX = "/olas-beid";
 
-	private static final String SAFE_ONLINE_OPER_WEBAPP_PREFIX = "/safe-online-oper";
+	public static final String SAFE_ONLINE_ENCAP_WEBAPP_PREFIX = "/olas-encap";
 
-	private static final String SAFE_ONLINE_OWNER_WEBAPP_PREFIX = "/safe-online-owner";
+	private static final String SAFE_ONLINE_USER_WEBAPP_PREFIX = "/olas";
+
+	private static final String SAFE_ONLINE_OPER_WEBAPP_PREFIX = "/olas-oper";
+
+	private static final String SAFE_ONLINE_OWNER_WEBAPP_PREFIX = "/olas-owner";
+
+	private static final String SAFE_ONLINE_HELPDESK_WEBAPP_PREFIX = "/olas-helpdesk";
+
+	private static final String SAFE_ONLINE_DEMO_TICKET_WEBAPP_PREFIX = "/demo-ticket";
+
+	private static final String SAFE_ONLINE_DEMO_LAWYER_WEBAPP_PREFIX = "/demo-lawyer";
+
+	private static final String SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX = "/demo-payment";
+
+	private static final String SAFE_ONLINE_DEMO_MANDATE_WEBAPP_PREFIX = "/demo-mandate";
+
+	private static final String SAFE_ONLINE_DEMO_PRESCRIPTION_WEBAPP_PREFIX = "/demo-prescription";
 
 	private static final Log LOG = LogFactory
 			.getLog(AcceptanceTestManager.class);
 
 	private Selenium selenium;
 
-	private SeleniumServer seleniumServer;
+	SeleniumServer seleniumServer;
 
 	public static final int SELENIUM_SERVER_PORT = 4455;
 
 	private static final String TIMEOUT = "5000";
 
-	private String safeOnlineLocation;
+	String safeOnlineLocation;
+
+	String captchaString;
 
 	public void setUp() throws Exception {
 		this.seleniumServer = new SeleniumServer(SELENIUM_SERVER_PORT);
@@ -87,21 +123,56 @@ public class AcceptanceTestManager {
 	public void openUserWebApp(String page) {
 		this.selenium.open(this.safeOnlineLocation
 				+ SAFE_ONLINE_USER_WEBAPP_PREFIX + page);
-	}
+		waitForPageToLoad();
 
-	public void openDemoWebApp(String page) {
-		this.selenium.open(this.safeOnlineLocation
-				+ SAFE_ONLINE_DEMO_WEBAPP_PREFIX + page);
 	}
 
 	public void openOperWebApp(String page) {
 		this.selenium.open(this.safeOnlineLocation
 				+ SAFE_ONLINE_OPER_WEBAPP_PREFIX + page);
+		waitForPageToLoad();
 	}
 
 	public void openOwnerWebApp(String page) {
 		this.selenium.open(this.safeOnlineLocation
 				+ SAFE_ONLINE_OWNER_WEBAPP_PREFIX + page);
+		waitForPageToLoad();
+	}
+
+	public void openHelpdeskWebApp(String page) {
+		this.selenium.open(this.safeOnlineLocation
+				+ SAFE_ONLINE_HELPDESK_WEBAPP_PREFIX + page);
+		waitForPageToLoad();
+	}
+
+	public void openDemoTicketWebApp(String page) {
+		this.selenium.open(this.safeOnlineLocation
+				+ SAFE_ONLINE_DEMO_TICKET_WEBAPP_PREFIX + page);
+		waitForPageToLoad();
+	}
+
+	public void openDemoPaymentWebApp(String page) {
+		this.selenium.open(this.safeOnlineLocation
+				+ SAFE_ONLINE_DEMO_PAYMENT_WEBAPP_PREFIX + page);
+		waitForPageToLoad();
+	}
+
+	public void openDemoLawyerWebApp(String page) {
+		this.selenium.open(this.safeOnlineLocation
+				+ SAFE_ONLINE_DEMO_LAWYER_WEBAPP_PREFIX + page);
+		waitForPageToLoad();
+	}
+
+	public void openDemoPrescriptionWebApp(String page) {
+		this.selenium.open(this.safeOnlineLocation
+				+ SAFE_ONLINE_DEMO_PRESCRIPTION_WEBAPP_PREFIX + page);
+		waitForPageToLoad();
+	}
+
+	public void openDemoMandateWebApp(String page) {
+		this.selenium.open(this.safeOnlineLocation
+				+ SAFE_ONLINE_DEMO_MANDATE_WEBAPP_PREFIX + page);
+		waitForPageToLoad();
 	}
 
 	public void fillInputField(String id, String value) {
@@ -123,46 +194,211 @@ public class AcceptanceTestManager {
 		this.selenium.click("xpath=//a[contains(@id, '" + id + "')]");
 	}
 
-	public void userLogon(String login, String password) {
-		openUserWebApp("/");
-		logon(login, password);
+	public void clickLinkInRow(String table, String row, String id) {
+		this.selenium.click("xpath=//table[contains(@Id, '" + table
+				+ "')]//tr[./td[contains(text(), '" + row
+				+ "')]]/td/a[contains(@Id, '" + id + "')]");
+	}
 
-		Assert.assertTrue(this.selenium.isTextPresent("Welcome"));
-		Assert.assertTrue(this.selenium.isTextPresent(login));
+	public void clickLinkAndWait(String id) {
+		clickLink(id);
+		waitForPageToLoad();
+	}
+
+	public void clickLinkInRowAndWait(String table, String row, String id) {
+		clickLinkInRow(table, row, id);
+		waitForPageToLoad();
+	}
+
+	public void clickRadioButton(String value) {
+		this.selenium
+				.click("xpath=//input[@type = 'radio' and contains(@value, '"
+						+ value + "')]");
+	}
+
+	public void waitForRedirect(String page) {
+		int timeout = 0;
+		while (!this.selenium.getLocation().endsWith(page) && timeout != 10) {
+			LOG.debug("page: " + this.selenium.getLocation());
+			LOG.debug("page content: " + this.selenium.getHtmlSource());
+			waitForPageToLoad();
+			timeout++;
+		}
+		Assert.assertTrue(this.selenium.getLocation().endsWith(page));
+	}
+
+	public void register(String login, String password)
+			throws InterruptedException {
+		openUserWebApp("/");
+
+		clickLink("login");
+		waitForRedirect(SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/first-time.seam");
+
+		// first-time.xhtml
+		clickButtonAndWait("new");
+
+		// main.xhtml
+		clickButtonAndWait("new-user");
+
+		// new-user.xhtml
+		fillInputField("login", login);
+		fillInputField("captcha", getCaptcha());
+		clickButtonAndWait("register");
+
+		// new-user-device.xhtml
+		clickRadioButton("password");
+		clickButtonAndWait("next");
+
+		// password/register-password.xhtml
+		fillInputField("password1", password);
+		fillInputField("password2", password);
+		clickButton("change");
+
+		waitForRedirect("overview.seam");
+
+		logout();
 	}
 
 	public void logon(String login, String password) {
-		fillInputField("username", login);
-		fillInputField("password", password);
-		clickButton("login");
-		this.selenium.waitForPageToLoad(TIMEOUT);
+		clickLink("login");
+		waitForRedirect(SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/main.seam");
+
+		// main.xhtml
+		clickRadioButton("password");
+		clickButtonAndWait("next");
+
+		// password/username-password.xhtml
+		fillInputField(":username", login);
+		fillInputField(":password", password);
+		clickButtonAndWait(":login");
+
+		waitForRedirect("overview.seam");
+	}
+
+	public void logout() {
+		clickLinkAndWait("logout");
+		Assert.assertTrue(this.selenium.isTextPresent("Login"));
+	}
+
+	public void userLogon(String login, String password) {
+		openUserWebApp("/");
+		logon(login, password);
 	}
 
 	public void operLogon(String login, String password) {
 		openOperWebApp("/");
 		logon(login, password);
-
-		Assert.assertTrue(this.selenium.isTextPresent("Welcome"));
-		Assert.assertTrue(this.selenium.isTextPresent(login));
 	}
 
 	public void ownerLogon(String login, String password) {
 		openOwnerWebApp("/");
 		logon(login, password);
+	}
 
-		Assert.assertTrue(this.selenium.isTextPresent("Welcome"));
-		Assert.assertTrue(this.selenium.isTextPresent(login));
+	public String getCaptcha() throws InterruptedException {
+		String jSessionId = getJSessionID();
+		LOG.debug("session id: " + jSessionId);
+		JFrame captchaFrame = new CaptchaFrame(jSessionId);
+		while (captchaFrame.isShowing())
+			Thread.sleep(1000);
+		if (null == this.captchaString)
+			return "";
+		return this.captchaString;
+	}
+
+	public String getJSessionID() {
+		String cookies = this.selenium.getCookie();
+		if (cookies.indexOf("JSESSIONID") == -1)
+			return null;
+		StringTokenizer st = new StringTokenizer(cookies);
+		while (st.hasMoreTokens()) {
+			StringTokenizer st2 = new StringTokenizer(st.nextToken(), "=");
+			while (st2.hasMoreTokens()) {
+				String key = st2.nextToken();
+				String val = st2.nextToken();
+				if (key.equals("JSESSIONID"))
+					return val;
+			}
+		}
+		return null;
 	}
 
 	public void waitForPageToLoad() {
 		this.selenium.waitForPageToLoad(TIMEOUT);
 	}
 
-	public void logout() {
-		this.selenium
-				.click("xpath=//input[@type = 'submit' and contains(@id, 'logout')]");
-		waitForPageToLoad();
+	private class CaptchaFrame extends JFrame {
 
-		Assert.assertTrue(this.selenium.isTextPresent("Login"));
+		private static final long serialVersionUID = 1L;
+
+		private JLabel label = new JLabel();
+		private JTextField captchaText = new JTextField(15);
+		private JButton refresh = new JButton("Refresh");
+		private JButton submit = new JButton("Submit");
+
+		private String jSessionId;
+
+		public CaptchaFrame(String jSessionId) {
+			this.jSessionId = jSessionId;
+			loadCaptcha();
+
+			JPanel imagePanel = new JPanel(new FlowLayout());
+			imagePanel.add(this.label);
+			imagePanel.add(this.refresh);
+
+			JPanel inputPanel = new JPanel(new FlowLayout());
+			inputPanel.add(this.captchaText);
+			inputPanel.add(this.submit);
+
+			this.getContentPane().add(imagePanel, BorderLayout.CENTER);
+			this.getContentPane().add(inputPanel, BorderLayout.SOUTH);
+			this.pack();
+			this.setVisible(true);
+
+			handleEvents();
+		}
+
+		private void handleEvents() {
+			this.submit.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					AcceptanceTestManager.this.captchaString = getCaptchaText();
+					close();
+				}
+			});
+
+			this.refresh.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					loadCaptcha();
+				}
+			});
+		}
+
+		public void loadCaptcha() {
+			try {
+				HttpClient httpClient = new HttpClient();
+				HttpMethod method = new GetMethod(
+						AcceptanceTestManager.this.safeOnlineLocation
+								+ SAFE_ONLINE_AUTH_WEBAPP_PREFIX + "/captcha");
+				method.setRequestHeader("Cookie", "JSESSIONID="
+						+ this.jSessionId);
+
+				httpClient.executeMethod(method);
+				Image captchaImage = ImageIO.read(method
+						.getResponseBodyAsStream());
+				this.label.setIcon(new ImageIcon(captchaImage));
+
+			} catch (IOException e) {
+				return;
+			}
+		}
+
+		public String getCaptchaText() {
+			return this.captchaText.getText();
+		}
+
+		public void close() {
+			this.dispose();
+		}
+
 	}
 }

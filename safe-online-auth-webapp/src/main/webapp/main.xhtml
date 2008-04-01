@@ -32,10 +32,10 @@
 	<ui:define name="sidebar">
 		<h:form>
 			<ul class="sidemenu">
-				<li><h:commandLink action="/new-user.seam"
+				<li><h:commandLink id="new-user" action="/new-user.seam"
 					value="#{msgs.newUser}" /></li>
-				<li><h:commandLink action="/all-devices.seam"
-					value="#{msgs.tryAnotherDevice}" /></li>
+				<li><h:commandLink id="try-other-device"
+					action="/all-devices.seam" value="#{msgs.tryAnotherDevice}" /></li>
 			</ul>
 		</h:form>
 		<p>#{msgs.helpAuthenticationMain}</p>

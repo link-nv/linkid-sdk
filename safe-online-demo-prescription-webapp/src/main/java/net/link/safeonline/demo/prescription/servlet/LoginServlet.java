@@ -25,9 +25,9 @@ import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStoreUt
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
+import net.link.safeonline.sdk.ws.data.Attribute;
 import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.data.DataClientImpl;
-import net.link.safeonline.sdk.ws.data.Attribute;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,8 +57,7 @@ public class LoginServlet extends HttpServlet {
 
 		LOG.debug("init");
 
-		String wsHostName = config.getInitParameter("WsHostName");
-		String wsHostPort = config.getInitParameter("WsHostPort");
+		String wsLocation = config.getInitParameter("WsLocation");
 
 		PrivateKeyEntry privateKeyEntry = DemoPrescriptionKeyStoreUtils
 				.getPrivateKeyEntry();
@@ -67,8 +66,8 @@ public class LoginServlet extends HttpServlet {
 				.getCertificate();
 		PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
 
-		this.dataClient = new DataClientImpl(wsHostName + ":" + wsHostPort,
-				clientCertificate, clientPrivateKey);
+		this.dataClient = new DataClientImpl(wsLocation, clientCertificate,
+				clientPrivateKey);
 	}
 
 	@Override

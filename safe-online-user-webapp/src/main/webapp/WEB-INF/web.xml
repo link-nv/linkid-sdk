@@ -27,7 +27,7 @@
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
 		<param-value>
-            ${safe-online.host.basename}/olas-auth/
+			${safe-online.host.basename}/olas-auth/
 		</param-value>
 	</context-param>
 
@@ -83,15 +83,13 @@
 
 	<context-param>
 		<param-name>WsLocation</param-name>
-		<param-value>
-            ${safe-online.host.basename}
-		</param-value>
+		<param-value>${safe-online.host.basename}</param-value>
 	</context-param>
 
 	<context-param>
 		<param-name>LandingPage</param-name>
 		<param-value>
-            ${safe-online.host.basename}/olas/login
+			${safe-online.host.basename}/olas/login
 		</param-value>
 	</context-param>
 

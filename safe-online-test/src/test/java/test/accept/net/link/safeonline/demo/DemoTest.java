@@ -38,8 +38,8 @@ public class DemoTest extends TestCase {
 	}
 
 	public void testDemoLogonLogout() throws Exception {
-		this.selenium.setContext("Testing the demo logon and logout",
-				SeleniumLogLevels.DEBUG);
+		this.selenium.setContext("Testing the demo logon and logout");
+		this.selenium.setBrowserLogLevel(SeleniumLogLevels.DEBUG);
 
 		this.acceptanceTestManager.openDemoWebApp("/secure/");
 		assertTrue(this.selenium.isTextPresent("Logon"));

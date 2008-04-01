@@ -45,9 +45,9 @@ public class CaptchaServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("doGet");
 		HttpSession session = request.getSession();
 		String captchaId = session.getId();
+		LOG.debug("doGet: catpcha ID: " + captchaId);
 		ImageCaptchaService captchaService = getCaptchaService(session);
 		BufferedImage challengeImage;
 		try {

@@ -74,8 +74,6 @@ public class ApplicationConsoleManager extends Observable {
 	}
 
 	public void setLocation(String location) {
-		if (location.startsWith("http://"))
-			this.location = location.substring(8);
 		this.location = location;
 		this.locationLabel = this.locationLabelPrefix + location;
 		setChanged();

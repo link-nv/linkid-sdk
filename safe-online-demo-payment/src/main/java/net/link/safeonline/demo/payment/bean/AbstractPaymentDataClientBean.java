@@ -63,8 +63,7 @@ public abstract class AbstractPaymentDataClientBean implements
 
 	private transient NameIdentifierMappingClient mappingClient;
 
-	private String wsHostName;
-	private String wsHostPort;
+	private String wsLocation;
 
 	private X509Certificate certificate;
 
@@ -75,8 +74,7 @@ public abstract class AbstractPaymentDataClientBean implements
 		this.log.debug("postConstruct");
 		FacesContext context = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = context.getExternalContext();
-		this.wsHostName = externalContext.getInitParameter("WsHostName");
-		this.wsHostPort = externalContext.getInitParameter("WsHostPort");
+		this.wsLocation = externalContext.getInitParameter("WsLocation");
 		PrivateKeyEntry privateKeyEntry = DemoPaymentKeyStoreUtils
 				.getPrivateKeyEntry();
 		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
@@ -87,13 +85,12 @@ public abstract class AbstractPaymentDataClientBean implements
 	@PostActivate
 	public void postActivateCallback() {
 		this.log.debug("postActivate");
-		this.dataClient = new DataClientImpl(this.wsHostName + ":"
-				+ this.wsHostPort, this.certificate, this.privateKey);
-		this.attributeClient = new AttributeClientImpl(this.wsHostName + ":"
-				+ this.wsHostPort, this.certificate, this.privateKey);
-		this.mappingClient = new NameIdentifierMappingClientImpl(
-				this.wsHostName + ":" + this.wsHostPort, this.certificate,
+		this.dataClient = new DataClientImpl(this.wsLocation, this.certificate,
 				this.privateKey);
+		this.attributeClient = new AttributeClientImpl(this.wsLocation,
+				this.certificate, this.privateKey);
+		this.mappingClient = new NameIdentifierMappingClientImpl(
+				this.wsLocation, this.certificate, this.privateKey);
 	}
 
 	@PrePassivate
@@ -109,8 +106,7 @@ public abstract class AbstractPaymentDataClientBean implements
 		this.log.debug("destroy");
 		this.dataClient = null;
 		this.attributeClient = null;
-		this.wsHostName = null;
-		this.wsHostPort = null;
+		this.wsLocation = null;
 		this.certificate = null;
 		this.privateKey = null;
 	}
