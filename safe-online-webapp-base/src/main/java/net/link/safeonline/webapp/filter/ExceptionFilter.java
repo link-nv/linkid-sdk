@@ -12,11 +12,11 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.UnavailableException;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,9 +49,7 @@ public class ExceptionFilter implements Filter {
 		try {
 			chain.doFilter(request, response);
 		} catch (Throwable e) {
-			RequestDispatcher requestDispatcher = request
-					.getRequestDispatcher(this.errorPage);
-			requestDispatcher.forward(request, response);
+			((HttpServletResponse) response).sendRedirect(this.errorPage);
 		}
 	}
 
