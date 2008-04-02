@@ -13,7 +13,6 @@ import javax.swing.JOptionPane;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
-import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
 /**
  * <h2>{@link ScenarioExecutorThread}<br>
@@ -29,9 +28,9 @@ public class ScenarioExecutorThread extends ScenarioThread {
 
 	private Date startTime;
 
-	public ScenarioExecutorThread(ScenarioChooser chooser) {
+	public ScenarioExecutorThread() {
 
-		super(AgentState.EXECUTE, chooser);
+		super(AgentState.EXECUTE);
 
 		this.startTime = new Date();
 	}

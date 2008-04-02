@@ -285,8 +285,8 @@ public class ExecutionInfo extends JPanel implements ChangeListener,
 		int maxValue = Math.max(0, executions.size() - 1);
 		int selectedExecution = maxValue;
 		Date selectedExecutionTime = null;
-		if (ConsoleData.getExecution() != null)
-			selectedExecutionTime = ConsoleData.getExecution().getStartTime();
+		if (ConsoleData.getSelectedExecution() != null)
+			selectedExecutionTime = ConsoleData.getSelectedExecution().getStartTime();
 
 		synchronized (sliderExecutions) {
 			sliderExecutions.clear();

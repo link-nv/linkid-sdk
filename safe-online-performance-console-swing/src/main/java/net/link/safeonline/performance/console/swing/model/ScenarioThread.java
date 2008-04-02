@@ -14,7 +14,6 @@ import net.link.safeonline.performance.console.ScenarioRemoting;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
-import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,33 +21,31 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ScenarioThread}<br>
  * <sub>Wrap long-running agent tasks in threads.</sub></h2>
- *
+ * 
  * <p>
  * Threads that extend this class are used for delegating actions that should be
  * performed on {@link ConsoleAgent}s and can take a long time in order to
  * prevent hanging the UI during this operation.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public abstract class ScenarioThread extends Thread {
 
 	AgentState state;
-	ScenarioChooser chooser;
 	ScenarioRemoting scenarioDeployer;
 	private ExecutorService pool;
 
-	public ScenarioThread(AgentState state, ScenarioChooser chooser) {
+	public ScenarioThread(AgentState state) {
 
 		super("Scenario Invoker");
 		setDaemon(true);
 
 		this.state = state;
-		this.chooser = chooser;
 		this.scenarioDeployer = ConsoleData.getRemoting();
 	}
 
@@ -63,7 +60,8 @@ public abstract class ScenarioThread extends Thread {
 			this.pool.submit(new Worker(agent));
 
 			agent.setError(null);
-			agent.setTransit(ScenarioThread.this.state);
+			if (this.state != null)
+				agent.setTransit(this.state);
 		}
 
 		try {

@@ -14,7 +14,6 @@ import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
 import net.link.safeonline.performance.console.swing.ui.ChartWindow;
-import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
 /**
  * <h2>{@link ScenarioCharterThread}<br>
@@ -31,9 +30,9 @@ public class ScenarioCharterThread extends ScenarioThread {
 	boolean createPDF;
 	private Map<ConsoleAgent, ScenarioExecution> agentCharts;
 
-	public ScenarioCharterThread(ScenarioChooser chooser, boolean createPDF) {
+	public ScenarioCharterThread(boolean createPDF) {
 
-		super(AgentState.CHART, chooser);
+		super(AgentState.CHART);
 
 		this.createPDF = createPDF;
 		this.agentCharts = new HashMap<ConsoleAgent, ScenarioExecution>();
@@ -57,7 +56,7 @@ public class ScenarioCharterThread extends ScenarioThread {
 	@Override
 	void process(ConsoleAgent agent) throws Exception {
 
-		this.agentCharts.put(agent, agent.getCharts(ConsoleData.getExecution()
+		this.agentCharts.put(agent, agent.getCharts(ConsoleData.getSelectedExecution()
 				.getStartTime()));
 	}
 }

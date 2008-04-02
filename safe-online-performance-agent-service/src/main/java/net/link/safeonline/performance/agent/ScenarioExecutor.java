@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ScenarioExecutor}<br>
  * <sub>Thread in which we execute the scenario.</sub></h2>
- *
+ * 
  * <p>
  * We retrieve the EJB for the scenario and use it to prepare a new scenario
  * execution. We then create a thread pool which size depends on the amount of
@@ -34,11 +34,11 @@ import org.apache.commons.logging.LogFactory;
  * and shutting down the thread pool. The agent will revert to its previous
  * state and no statistics will be available.
  * </p>
- *
+ * 
  * <p>
  * <i>Jan 8, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioExecutor extends Thread {
@@ -116,7 +116,13 @@ public class ScenarioExecutor extends Thread {
 				@Override
 				public void run() {
 
-					ScenarioExecutor.this.agentService.getCharts(execution);
+					try {
+						LOG.debug("charts started.");
+						ScenarioExecutor.this.agentService.getCharts(execution);
+						LOG.debug("charts success.");
+					} catch (Throwable e) {
+						LOG.error(e);
+					}
 				}
 			};
 			charter.setDaemon(true);

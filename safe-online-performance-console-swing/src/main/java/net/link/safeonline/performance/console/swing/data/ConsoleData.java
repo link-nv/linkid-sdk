@@ -266,7 +266,7 @@ public class ConsoleData {
 	/**
 	 * @return The execution to perform actions upon.
 	 */
-	public static ScenarioExecution getExecution() {
+	public static ScenarioExecution getSelectedExecution() {
 
 		return ConsoleData.execution;
 	}
@@ -387,6 +387,8 @@ public class ConsoleData {
 
 		public LockHandler() {
 
+			super("Lock Handler");
+			
 			setDaemon(true);
 			this.queue = new LinkedBlockingQueue<Runnable>();
 

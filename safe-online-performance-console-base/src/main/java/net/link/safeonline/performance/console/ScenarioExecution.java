@@ -147,17 +147,25 @@ public class ScenarioExecution implements Serializable,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object o) {
 
-		if (!(obj instanceof ScenarioExecution))
+		if (!(o instanceof ScenarioExecution))
 			return false;
-		if (obj == this)
+		if (o == this)
 			return true;
 
-		ScenarioExecution other = (ScenarioExecution) obj;
-
+		ScenarioExecution other = (ScenarioExecution) o;
 		return this.startTime.equals(other.startTime)
 				&& hashCode() == other.hashCode();
+	}
+
+	/**
+	 * @return <code>true</code> If this execution and the other execution
+	 *         were executed in the same execution request by the console.
+	 */
+	public boolean equalRequest(ScenarioExecution o) {
+
+		return this.startTime.equals(o.startTime);
 	}
 
 	/**

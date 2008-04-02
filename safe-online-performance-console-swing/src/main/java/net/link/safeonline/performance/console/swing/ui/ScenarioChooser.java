@@ -25,6 +25,7 @@ import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
 import net.link.safeonline.performance.console.swing.data.ConsoleData;
+import net.link.safeonline.performance.console.swing.model.AgentRefreshThread;
 import net.link.safeonline.performance.console.swing.model.AgentSelectionListener;
 import net.link.safeonline.performance.console.swing.model.ExecutionSelectionListener;
 import net.link.safeonline.performance.console.swing.model.ExecutionSettingsListener;
@@ -36,16 +37,16 @@ import net.link.safeonline.performance.console.swing.model.ScenarioUploaderThrea
 /**
  * <h2>{@link ScenarioChooser}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * This class keeps and listens to the UI components that upload, deploy and
  * execute scenarios on agents.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioChooser extends JPanel implements ActionListener,
@@ -157,27 +158,25 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		}
 
 		else if (this.uploadButton.equals(e.getSource()))
-			new ScenarioUploaderThread(this, getScenarioFile()).start();
+			new ScenarioUploaderThread(getScenarioFile()).start();
 
 		else if (this.deployButton.equals(e.getSource()))
-			new ScenarioDeployerThread(this).start();
+			new ScenarioDeployerThread().start();
 
 		else if (this.executeButton.equals(e.getSource()))
-			new ScenarioExecutorThread(this).start();
+			new ScenarioExecutorThread().start();
 
 		else if (this.chartsButton.equals(e.getSource()))
-			new ScenarioCharterThread(this, false).start();
+			new ScenarioCharterThread(false).start();
 
 		else if (this.pdfButton.equals(e.getSource()))
-			new ScenarioCharterThread(this, true).start();
+			new ScenarioCharterThread(true).start();
 
 		else if (this.refreshButton.equals(e.getSource()))
-			for (ConsoleAgent agent : ConsoleData.getSelectedAgents())
-				agent.updateState();
+			new AgentRefreshThread(false).start();
 
 		else if (this.resetButton.equals(e.getSource()))
-			for (ConsoleAgent agent : ConsoleData.getSelectedAgents())
-				agent.resetTransit();
+			new AgentRefreshThread(true).start();
 	}
 
 	/**
@@ -225,9 +224,9 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 
 		// Don't enable any buttons when no agents are selected.
 		if (ConsoleData.getSelectedAgents().isEmpty()) {
-			buttonToggler(false, this.resetButton, this.uploadButton,
-					this.deployButton, this.executeButton, this.chartsButton,
-					this.pdfButton);
+			buttonToggler(false, this.refreshButton, this.resetButton,
+					this.uploadButton, this.deployButton, this.executeButton,
+					this.chartsButton, this.pdfButton);
 			return;
 		}
 
@@ -236,8 +235,8 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 		buttonToggler(false, this.resetButton); // Only while agent in transit.
 		buttonToggler(null != getScenarioFile(), this.uploadButton);
 		buttonToggler(null != ConsoleData.getScenarioName(), this.executeButton);
-		buttonToggler(null != ConsoleData.getExecution(), this.chartsButton,
-				this.pdfButton);
+		buttonToggler(null != ConsoleData.getSelectedExecution(),
+				this.chartsButton, this.pdfButton);
 
 		// For each agent, disable the buttons that its state does not support.
 		for (ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
@@ -298,7 +297,7 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 
 	/**
 	 * Parse the picked or typed file out of the scenario file field.
-	 *
+	 * 
 	 * @return <code>null</code> if the file is non-existing, unreadable, or
 	 *         not a file.
 	 */

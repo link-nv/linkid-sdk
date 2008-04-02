@@ -11,10 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.JPanel;
 
 import net.link.safeonline.performance.console.jgroups.AgentStateListener;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
@@ -22,32 +19,33 @@ import net.link.safeonline.performance.console.swing.data.ConsoleData;
 
 import org.jgroups.Address;
 
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.FormLayout;
+
 /**
  * <h2>{@link AgentsList}<br>
  * <sub>A list that visualises agent status.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
-public class AgentsList extends JList implements AgentStateListener,
-		ListSelectionListener, AgentStatusListener {
+public class AgentsList extends JPanel implements AgentStateListener {
 
 	private static final long serialVersionUID = 1L;
-
-	private DefaultListModel model;
+	private Set<AgentPanel> agentPanels;
+	private DefaultFormBuilder builder;
 
 	public AgentsList() {
 
-		addListSelectionListener(this);
-		setModel(this.model = new DefaultListModel());
-		setCellRenderer(new AgentRenderer());
+		FormLayout formLayout = new FormLayout("f:p:g");
+		this.builder = new DefaultFormBuilder(formLayout, this);
 		setBackground(Color.white);
-		setSelectionBackground(Color.decode("#EEEEFF"));
 
-		ConsoleData.addAgentStatusListener(this);
+		this.agentPanels = new HashSet<AgentPanel>();
+
 		ConsoleData.getAgentDiscoverer().addAgentStateListener(this);
 	}
 
@@ -60,17 +58,49 @@ public class AgentsList extends JList implements AgentStateListener,
 		for (Address address : addresses)
 			if (!address.equals(ConsoleData.getSelf())) {
 				ConsoleAgent agent = ConsoleData.getAgent(address);
-				if (agent != null && !this.model.contains(agent)) {
-					this.model.addElement(agent);
-
-					int endIndex = getModel().getSize() - 1;
-					addSelectionInterval(endIndex, endIndex);
-				}
+				if (agent != null && findPanel(agent) == null)
+					addAgent(agent);
 			}
 
 		// Remove stale agents from the list.
 		for (ConsoleAgent agent : ConsoleData.removeStaleAgents())
-			this.model.removeElement(agent);
+			removeAgent(agent);
+	}
+
+	private void addAgent(ConsoleAgent agent) {
+
+		AgentPanel panel = new AgentPanel(this, agent);
+
+		this.agentPanels.add(panel);
+		this.builder.appendRow("p");
+		this.builder.append(panel);
+		validate();
+	}
+
+	private void removeAgent(ConsoleAgent agent) {
+
+		AgentPanel panel = findPanel(agent);
+
+		System.err.println("Removing " + agent);
+		if (panel == null) {
+			System.err.println(" -> not there.");
+			return;
+		}
+
+		this.agentPanels.remove(panel);
+		remove(panel);
+		validate();
+
+		System.err.println(" -> done.");
+	}
+
+	private AgentPanel findPanel(ConsoleAgent agent) {
+
+		for (AgentPanel panel : this.agentPanels)
+			if (panel.getAgent().equals(agent))
+				return panel;
+
+		return null;
 	}
 
 	/**
@@ -120,26 +150,16 @@ public class AgentsList extends JList implements AgentStateListener,
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Updates the selected agents in {@link ConsoleData}. Fired by
+	 * {@link AgentPanel} when its selection status changes.
 	 */
-	public void valueChanged(ListSelectionEvent e) {
+	public void fireListSelectionChanged() {
 
 		Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
-		for (Object value : getSelectedValues())
-			if (value instanceof ConsoleAgent)
-				selectedAgents.add((ConsoleAgent) value);
+		for (AgentPanel panel : this.agentPanels)
+			if (panel.isSelected())
+				selectedAgents.add(panel.getAgent());
 
 		ConsoleData.setSelectedAgents(selectedAgents);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void statusChanged(ConsoleAgent agent) {
-
-		repaint();
-
-		if (ConsoleData.getSelectedAgents().contains(agent))
-			ConsoleData.fireAgentSelection();
 	}
 }

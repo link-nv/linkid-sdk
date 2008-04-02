@@ -13,6 +13,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.naming.NameNotFoundException;
+import javax.swing.SwingUtilities;
 
 import net.link.safeonline.performance.console.ScenarioExecution;
 import net.link.safeonline.performance.console.ScenarioRemoting;
@@ -262,6 +263,9 @@ public class ConsoleAgent implements Agent {
 	}
 
 	public void updateState() {
+		
+		if (SwingUtilities.isEventDispatchThread())
+			LOG.warn("We're in the event queue!  Deadlock may occur.");
 
 		try {
 			boolean isDeployed = this.state != null

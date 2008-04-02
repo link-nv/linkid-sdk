@@ -335,11 +335,17 @@ public class AgentService implements AgentServiceMBean {
 							.getSpeed());
 
 			if (useCharts) {
+				LOG.debug("Looking for charts on id: " + startTime);
+				LOG.debug(" - Chart keys are: " + this.charts.keySet());
 				Map<String, byte[][]> chart = this.charts.get(startTime);
 
-				if (chart == null)
+				if (chart == null) {
 					this.charts.put(startTime, chart = getScenarioController()
 							.createCharts(startTime));
+					LOG.debug("Put chart on cache for id: " + startTime
+							+ ", chart == null? " + chart == null);
+					LOG.debug(" - Chart keys are: " + this.charts.keySet());
+				}
 
 				execution.setCharts(chart);
 			}

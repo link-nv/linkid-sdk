@@ -10,7 +10,6 @@ import java.io.File;
 
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
-import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
 /**
  * <h2>{@link ScenarioUploaderThread}<br>
@@ -26,9 +25,9 @@ public class ScenarioUploaderThread extends ScenarioThread {
 
 	private File application;
 
-	public ScenarioUploaderThread(ScenarioChooser chooser, File application) {
+	public ScenarioUploaderThread(File application) {
 
-		super(AgentState.UPLOAD, chooser);
+		super(AgentState.UPLOAD);
 		this.application = application;
 	}
 

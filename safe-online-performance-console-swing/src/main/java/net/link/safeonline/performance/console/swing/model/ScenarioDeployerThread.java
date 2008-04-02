@@ -8,7 +8,6 @@ package net.link.safeonline.performance.console.swing.model;
 
 import net.link.safeonline.performance.console.jgroups.AgentState;
 import net.link.safeonline.performance.console.swing.data.ConsoleAgent;
-import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
 
 /**
  * <h2>{@link ScenarioDeployerThread}<br>
@@ -22,9 +21,9 @@ import net.link.safeonline.performance.console.swing.ui.ScenarioChooser;
  */
 public class ScenarioDeployerThread extends ScenarioThread {
 
-	public ScenarioDeployerThread(ScenarioChooser chooser) {
+	public ScenarioDeployerThread() {
 
-		super(AgentState.DEPLOY, chooser);
+		super(AgentState.DEPLOY);
 	}
 
 	/**

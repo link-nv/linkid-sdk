@@ -117,13 +117,15 @@ public class SwingConsole {
 				+ ConsoleData.getAgentDiscoverer().getGroupName());
 		builder.nextRow();
 
+		JScrollPane agentsListPane = new JScrollPane(agentsList);
 		JScrollPane executionInfoPane = new JScrollPane(executionInfo,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		executionInfoPane.getViewport().setBackground(
 				executionInfo.getBackground());
+		agentsListPane.getViewport().setBackground(agentsList.getBackground());
 		final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				new JScrollPane(agentsList), executionInfoPane);
+				agentsListPane, executionInfoPane);
 		builder.append(split, 9);
 		builder.nextRow();
 

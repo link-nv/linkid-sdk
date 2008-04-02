@@ -15,26 +15,37 @@
  */
 package net.link.safeonline.performance.console.jgroups;
 
+import java.awt.Color;
+
 /**
  * <h2>{@link AgentState}<br>
  * <sub>Describes the different states an agent can be in.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public enum AgentState {
-	RESET("Ready", "Idle"), UPLOAD("Scenario Uploaded", "Receiving"), DEPLOY(
-			"Scenario Deployed", "Deploying"), EXECUTE("Completed", "Executing"), CHART(
-			"Charted", "Charting");
 
+	RESET(Color.gray, "Ready", "Idle"),
+
+	UPLOAD(Color.blue, "Uploaded", "Receiving"),
+
+	DEPLOY(Color.blue.darker(), "Deployed", "Deploying"),
+
+	EXECUTE(Color.green.darker(), "Completed", "Executing"),
+
+	CHART(Color.yellow.darker(), "Charted", "Charting");
+
+	private Color color;
 	private String state;
 	private String transitioning;
 
-	private AgentState(String state, String transitioning) {
+	private AgentState(Color color, String state, String transitioning) {
 
+		this.color = color;
 		this.state = state;
 		this.transitioning = transitioning;
 	}
@@ -47,5 +58,10 @@ public enum AgentState {
 	public String getTransitioning() {
 
 		return this.transitioning;
+	}
+
+	public Color getColor() {
+
+		return this.color;
 	}
 }
