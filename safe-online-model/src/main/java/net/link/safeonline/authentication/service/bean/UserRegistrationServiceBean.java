@@ -13,22 +13,17 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
-import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.UserRegistrationManager;
 import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.service.SubjectService;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of user registration service interface. This component does
@@ -42,9 +37,6 @@ import org.apache.commons.logging.LogFactory;
 public class UserRegistrationServiceBean implements UserRegistrationService,
 		UserRegistrationServiceRemote {
 
-	private static final Log LOG = LogFactory
-			.getLog(UserRegistrationServiceBean.class);
-
 	@EJB
 	private SubjectService subjectService;
 
@@ -57,21 +49,9 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 	@EJB
 	private ProxyAttributeService proxyAttributeService;
 
-	@EJB
-	private PasswordDeviceService passwordDeviceService;
-
-	public void registerUser(String login, String password)
+	public SubjectEntity registerUser(String login)
 			throws ExistingUserException, AttributeTypeNotFoundException,
-			SubjectNotFoundException, DeviceNotFoundException {
-		LOG.debug("register user: " + login);
-		SubjectEntity subject = this.userRegistrationManager
-				.registerUser(login);
-		this.passwordDeviceService.register(subject.getUserId(), password);
-	}
-
-	public SubjectEntity checkLogin(String login) throws ExistingUserException,
-			AttributeTypeNotFoundException, SubjectNotFoundException,
-			PermissionDeniedException {
+			SubjectNotFoundException, PermissionDeniedException {
 		SubjectEntity subject = this.subjectService
 				.findSubjectFromUserName(login);
 		if (null == subject)
@@ -90,7 +70,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 					.findAttributeValue(subject.getUserId(), deviceRegistration
 							.getDevice().getAttributeType().getName());
 			if (null != deviceAttribute)
-				return null;
+				throw new ExistingUserException();
 		}
 		return subject;
 	}

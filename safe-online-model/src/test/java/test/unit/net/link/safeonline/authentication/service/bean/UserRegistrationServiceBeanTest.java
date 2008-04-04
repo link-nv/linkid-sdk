@@ -25,8 +25,10 @@ import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.DeviceDAOBean;
+import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.device.backend.PasswordManager;
 import net.link.safeonline.device.backend.bean.PasswordManagerBean;
+import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
@@ -44,9 +46,6 @@ import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
-
-import org.hibernate.NonUniqueObjectException;
-
 import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class UserRegistrationServiceBeanTest extends TestCase {
@@ -117,9 +116,14 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
+		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
+				PasswordDeviceServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
 
 		// operate
-		userRegistrationService.registerUser(testLogin, testPassword);
+		SubjectEntity testSubject = userRegistrationService
+				.registerUser(testLogin);
+		passwordDeviceService.register(testSubject, testPassword);
 
 		// verify
 		SubjectService subjectService = EJBTestUtils.newInstance(
@@ -178,16 +182,19 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
+		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
+				PasswordDeviceServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
 
 		// operate
-		userRegistrationService.registerUser(testLogin, testPassword);
+		SubjectEntity testSubject = userRegistrationService
+				.registerUser(testLogin);
+		passwordDeviceService.register(testSubject, testPassword);
 
 		// operate & verify
 		try {
-			userRegistrationService.registerUser(testLogin, testPassword);
+			userRegistrationService.registerUser(testLogin);
 			fail();
-		} catch (NonUniqueObjectException e) {
-			// expected
 		} catch (ExistingUserException e) {
 			// expected
 		}

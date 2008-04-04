@@ -15,6 +15,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeProviderException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.AttributeProviderEntity;
 
 @Local
@@ -28,5 +29,6 @@ public interface AttributeProviderManagerService {
 
 	void addAttributeProvider(String applicationName, String attributeName)
 			throws ApplicationNotFoundException,
-			AttributeTypeNotFoundException, ExistingAttributeProviderException;
+			AttributeTypeNotFoundException, ExistingAttributeProviderException,
+			PermissionDeniedException;
 }

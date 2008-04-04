@@ -129,7 +129,8 @@
 						</h:dataTable>
 						<rich:spacer height="10" />
 						<h:commandButton action="add-provider" id="add-provider"
-							value="#{msgs.addaction}" styleClass="submit" />
+							value="#{msgs.addaction}"
+							rendered="#{selectedAttributeType.local}" styleClass="submit" />
 
 						<h:messages styleClass="error" globalOnly="true" />
 					</h:form>

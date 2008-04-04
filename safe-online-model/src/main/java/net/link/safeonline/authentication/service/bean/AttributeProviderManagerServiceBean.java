@@ -13,15 +13,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.security.SecurityDomain;
-
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeProviderException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.AttributeProviderManagerService;
 import net.link.safeonline.authentication.service.AttributeProviderManagerServiceRemote;
 import net.link.safeonline.common.SafeOnlineRoles;
@@ -31,6 +28,10 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -76,11 +77,15 @@ public class AttributeProviderManagerServiceBean implements
 	@RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
 	public void addAttributeProvider(String applicationName,
 			String attributeName) throws ApplicationNotFoundException,
-			AttributeTypeNotFoundException, ExistingAttributeProviderException {
+			AttributeTypeNotFoundException, ExistingAttributeProviderException,
+			PermissionDeniedException {
 		ApplicationEntity application = this.applicationDAO
 				.getApplication(applicationName);
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.getAttributeType(attributeName);
+		if (!attributeType.isLocal())
+			throw new PermissionDeniedException(
+					"Cannot set attribute provider on remote attribute");
 		AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO
 				.findAttributeProvider(application, attributeType);
 		if (null != existingAttributeProvider) {

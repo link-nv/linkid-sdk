@@ -127,7 +127,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 
 		SubjectEntity subject;
 		try {
-			subject = this.userRegistrationService.checkLogin(this.login);
+			subject = this.userRegistrationService.registerUser(this.login);
 		} catch (ExistingUserException e) {
 			this.facesMessages.addToControlFromResourceBundle("login",
 					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
@@ -145,12 +145,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
-		if (null == subject) {
-			this.facesMessages.addToControlFromResourceBundle("login",
-					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
-			return null;
 
-		}
 		this.username = subject.getUserId();
 		return "next";
 	}

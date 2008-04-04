@@ -28,10 +28,13 @@ import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.device.PasswordDeviceService;
+import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.IdScopeType;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
@@ -175,8 +178,13 @@ public class ApplicationServiceBeanTest extends TestCase {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
+		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
+				PasswordDeviceServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
 
-		userRegistrationService.registerUser(testAdminLogin, "secret");
+		SubjectEntity testAdminSubject = userRegistrationService
+				.registerUser(testAdminLogin);
+		passwordDeviceService.register(testAdminSubject, "secret");
 		applicationService.registerApplicationOwner(testApplicationOwnerName,
 				testAdminLogin);
 
@@ -213,8 +221,13 @@ public class ApplicationServiceBeanTest extends TestCase {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
+		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
+				PasswordDeviceServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
 
-		userRegistrationService.registerUser(testAdminLogin, "secret");
+		SubjectEntity testAdminSubject = userRegistrationService
+				.registerUser(testAdminLogin);
+		passwordDeviceService.register(testAdminSubject, "secret");
 		applicationService.registerApplicationOwner(testApplicationOwnerName,
 				testAdminLogin);
 
@@ -268,8 +281,13 @@ public class ApplicationServiceBeanTest extends TestCase {
 		UserRegistrationService userRegistrationService = EJBTestUtils
 				.newInstance(UserRegistrationServiceBean.class,
 						SafeOnlineTestContainer.sessionBeans, entityManager);
+		PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(
+				PasswordDeviceServiceBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
 
-		userRegistrationService.registerUser(testAdminLogin, "secret");
+		SubjectEntity testAdminSubject = userRegistrationService
+				.registerUser(testAdminLogin);
+		passwordDeviceService.register(testAdminSubject, "secret");
 		applicationService.registerApplicationOwner(testApplicationOwnerName,
 				testAdminLogin);
 

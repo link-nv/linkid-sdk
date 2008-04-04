@@ -37,6 +37,8 @@ import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.data.AccountMergingDO;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.device.PasswordDeviceService;
+import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
@@ -283,7 +285,11 @@ public class AccountMergingServiceBeanTest {
 					.newInstance(UserRegistrationServiceBean.class,
 							SafeOnlineTestContainer.sessionBeans,
 							this.entityManager);
-			userRegistrationService.registerUser(subjectLogin, "password");
+			PasswordDeviceService passwordDeviceService = EJBTestUtils
+					.newInstance(PasswordDeviceServiceBean.class,
+							SafeOnlineTestContainer.sessionBeans, entityManager);
+			this.subject = userRegistrationService.registerUser(subjectLogin);
+			passwordDeviceService.register(this.subject, "secret");
 			SubjectService subjectService = EJBTestUtils.newInstance(
 					SubjectServiceBean.class,
 					SafeOnlineTestContainer.sessionBeans, this.entityManager);

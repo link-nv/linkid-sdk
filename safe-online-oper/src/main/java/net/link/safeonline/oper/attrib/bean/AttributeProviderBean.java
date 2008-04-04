@@ -14,6 +14,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeProviderException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.AttributeProviderManagerService;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -122,6 +123,10 @@ public class AttributeProviderBean implements AttributeProvider {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR,
 					"errorAttributeProviderAlreadyExists");
+			return null;
+		} catch (PermissionDeniedException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
 			return null;
 		}
 		return "success";

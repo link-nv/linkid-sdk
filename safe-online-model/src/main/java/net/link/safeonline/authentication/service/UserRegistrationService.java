@@ -7,12 +7,9 @@
 
 package net.link.safeonline.authentication.service;
 
-import java.security.NoSuchAlgorithmException;
-
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -32,24 +29,6 @@ import net.link.safeonline.entity.SubjectEntity;
 public interface UserRegistrationService {
 
 	/**
-	 * Registers a new user within the system.
-	 * 
-	 * @param login
-	 * @param password
-	 * @param name
-	 * @throws ExistingUserException
-	 * @throws NoSuchAlgorithmException
-	 * @throws SubjectIdNotUniqueException
-	 * @throws AttributeTypeNotFoundException
-	 * @throws DeviceNotFoundException
-	 * @throws SubjectNotFoundException
-	 * @throws SubjectNotFoundException
-	 */
-	void registerUser(String login, String password)
-			throws ExistingUserException, AttributeTypeNotFoundException,
-			SubjectNotFoundException, DeviceNotFoundException;
-
-	/**
 	 * Checks whether the given login name already exists and has completed
 	 * device registrations. In case there are existing device registrations it
 	 * will poll those device issuers if the registration actually completed. If
@@ -65,7 +44,7 @@ public interface UserRegistrationService {
 	 * @throws PermissionDeniedException
 	 * @throws SubjectNotFoundException
 	 */
-	SubjectEntity checkLogin(String login) throws ExistingUserException,
+	SubjectEntity registerUser(String login) throws ExistingUserException,
 			AttributeTypeNotFoundException, SubjectNotFoundException,
 			PermissionDeniedException;
 }

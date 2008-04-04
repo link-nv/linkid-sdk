@@ -40,6 +40,7 @@ import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -314,6 +315,20 @@ public class AttributeTypeEntity implements Serializable {
 
 	public void setLocation(OlasEntity location) {
 		this.location = location;
+	}
+
+	@Transient
+	public boolean isLocal() {
+		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+
+		if (null == getLocation())
+			return true;
+
+		if (authIdentityServiceClient.getCertificate().equals(
+				getLocation().getAuthnCertificate()))
+			return true;
+
+		return false;
 	}
 
 	public interface QueryInterface {

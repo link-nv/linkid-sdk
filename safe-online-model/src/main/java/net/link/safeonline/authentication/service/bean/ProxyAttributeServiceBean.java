@@ -82,7 +82,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 		if (attributeType.isDeviceAttribute())
 			subjectId = getDeviceId(subject, attributeType);
 
-		if (isLocalAttribute(attributeType))
+		if (attributeType.isLocal())
 			return getLocalAttribute(subjectId, attributeType);
 
 		return getRemoteAttribute(subjectId, attributeType);
