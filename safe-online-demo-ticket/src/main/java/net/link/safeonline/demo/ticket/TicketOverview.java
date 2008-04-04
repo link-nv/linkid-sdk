@@ -13,4 +13,6 @@ import javax.ejb.Local;
 public interface TicketOverview extends AbstractTicketDataClient {
 
 	void ticketListFactory();
+
+	String remove();
 }

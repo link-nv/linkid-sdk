@@ -8,7 +8,10 @@
 package test.accept.net.link.safeonline.owner;
 
 import junit.framework.TestCase;
-import test.accept.net.link.safeonline.AcceptanceTestManager;
+import net.link.safeonline.webapp.AcceptanceTestManager;
+import net.link.safeonline.webapp.PageUtils;
+import net.link.safeonline.webapp.WebappConstants;
+import net.link.safeonline.webapp.owner.OwnerOverview;
 
 public class OwnerTest extends TestCase {
 
@@ -28,8 +31,12 @@ public class OwnerTest extends TestCase {
 	}
 
 	public void testOwnerLogonLogout() throws Exception {
-		this.acceptanceTestManager.ownerLogon("owner", "secret");
-		this.acceptanceTestManager.openOwnerWebApp("/applications.seam");
-		this.acceptanceTestManager.logout();
+		this.acceptanceTestManager
+				.setContext("Testing owner webapp admin login logout");
+
+		OwnerOverview ownerOverview = PageUtils.loginOwnerWithPassword(
+				this.acceptanceTestManager, WebappConstants.OWNER_ADMIN,
+				"secret");
+		ownerOverview.logout();
 	}
 }

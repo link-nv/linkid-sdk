@@ -116,6 +116,8 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 				// TODO: notify remote device issuers
 			} else {
 				this.attributeDAO.removeAttributes(deviceSubject);
+				this.subjectIdentifierDAO
+						.removeSubjectIdentifiers(deviceSubject);
 				this.subjectDAO.removeSubject(deviceSubject);
 			}
 		}

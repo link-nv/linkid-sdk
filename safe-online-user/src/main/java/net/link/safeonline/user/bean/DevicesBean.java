@@ -371,6 +371,16 @@ public class DevicesBean implements Devices {
 
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String removeDevice() {
+		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		try {
+			this.deviceRegistrationService
+					.checkDeviceRegistrationRemovalAllowed(subject);
+		} catch (PermissionDeniedException e) {
+			LOG.error("permission denied: " + e.getMessage());
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+			return null;
+		}
 		LOG.debug("remove device: "
 				+ this.selectedDeviceRegistration.getFriendlyName());
 		this.registrationId = this.selectedDeviceRegistration

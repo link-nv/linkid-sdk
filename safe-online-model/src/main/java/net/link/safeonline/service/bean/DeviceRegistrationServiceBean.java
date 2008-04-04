@@ -12,6 +12,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.dao.DeviceRegistrationDAO;
@@ -94,6 +95,15 @@ public class DeviceRegistrationServiceBean implements DeviceRegistrationService 
 	public void removeDeviceRegistration(String id) {
 		LOG.debug("remove device registration: " + id);
 		this.deviceRegistrationDAO.removeRegisteredDevice(id);
+	}
+
+	public void checkDeviceRegistrationRemovalAllowed(SubjectEntity subject)
+			throws PermissionDeniedException {
+		LOG.debug("check device registration removal allowed");
+		List<DeviceRegistrationEntity> deviceRegistrations = listDeviceRegistrations(subject);
+		if (1 == deviceRegistrations.size())
+			throw new PermissionDeniedException(
+					"Not allowed to remove last registered device");
 	}
 
 	/**

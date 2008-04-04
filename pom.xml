@@ -332,6 +332,10 @@
 				<safe-online.profiling.filter />
 				<safe-online.profiling.interceptor />
 			</properties>
+			<modules>
+				<module>safe-online-test-webapp</module>
+				<module>safe-online-test</module>
+			</modules>
 		</profile>
 		<profile>
 			<id>env-performance</id>
@@ -386,9 +390,9 @@
 				<safe-online.profiling.group>
 					net.lin-k.safe-online.performance
 				</safe-online.profiling.group>
-                <safe-online.profiling.agent.data.source.uri>
-                    jdbc:mysql://localhost:3306/safeonline
-                </safe-online.profiling.agent.data.source.uri>
+				<safe-online.profiling.agent.data.source.uri>
+					jdbc:mysql://localhost:3306/safeonline
+				</safe-online.profiling.agent.data.source.uri>
 				<safe-online.profiling.agent.show.sql>
 					false
 				</safe-online.profiling.agent.show.sql>
@@ -1128,8 +1132,10 @@
 			<!-- Keep Sun repository second for JAX-WS 2.1 API JAR -->
 			<id>java.net</id>
 			<name>java.net Maven Repository</name>
-            <url>https://maven-repository.dev.java.net/nonav/repository</url>
-            <layout>legacy</layout>
+			<url>
+				https://maven-repository.dev.java.net/nonav/repository
+			</url>
+			<layout>legacy</layout>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -1188,7 +1194,9 @@
 		<repository>
 			<id>apache-repo</id>
 			<name>apache-repo</name>
-			<url>http://myfaces.zones.apache.org/dist/maven-repository</url>
+			<url>
+				http://myfaces.zones.apache.org/dist/maven-repository
+			</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
@@ -1206,7 +1214,9 @@
 		<repository>
 			<id>apache-maven-snapshots</id>
 			<name>Apache Snapshot Repository</name>
-			<url>http://people.apache.org/repo/m2-snapshot-repository</url>
+			<url>
+				http://people.apache.org/repo/m2-snapshot-repository
+			</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>

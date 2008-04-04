@@ -7,25 +7,21 @@
 
 package test.accept.net.link.safeonline.oper;
 
-import java.util.UUID;
-
 import junit.framework.TestCase;
-import test.accept.net.link.safeonline.AcceptanceTestManager;
-
-import com.thoughtworks.selenium.Selenium;
+import net.link.safeonline.webapp.AcceptanceTestManager;
+import net.link.safeonline.webapp.PageUtils;
+import net.link.safeonline.webapp.WebappConstants;
+import net.link.safeonline.webapp.oper.OperOverview;
 
 public class OperTest extends TestCase {
 
 	private AcceptanceTestManager acceptanceTestManager;
-
-	private Selenium selenium;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		this.acceptanceTestManager = new AcceptanceTestManager();
 		this.acceptanceTestManager.setUp();
-		this.selenium = this.acceptanceTestManager.getSelenium();
 	}
 
 	@Override
@@ -35,22 +31,22 @@ public class OperTest extends TestCase {
 	}
 
 	public void testAdminLogonLogout() throws Exception {
-		this.acceptanceTestManager.operLogon("admin", "admin");
-		this.acceptanceTestManager.openOperWebApp("/applications.seam");
-		this.acceptanceTestManager.logout();
+		this.acceptanceTestManager
+				.setContext("Testing operator webapp admin login logout.");
+
+		OperOverview operOverview = PageUtils
+				.loginOperWithPassword(this.acceptanceTestManager,
+						WebappConstants.OPER_ADMIN, "admin");
+		operOverview.logout();
 	}
 
 	public void testAddApplication() throws Exception {
-		this.acceptanceTestManager.operLogon("admin", "admin");
-		this.acceptanceTestManager.openOperWebApp("/applications.seam");
-		this.acceptanceTestManager.clickButtonAndWait("add");
+		this.acceptanceTestManager
+				.setContext("Testing operator webapp add application.");
 
-		String applicationName = "application-" + UUID.randomUUID().toString();
-		this.acceptanceTestManager.fillInputField("name", applicationName);
-		this.acceptanceTestManager.fillInputField("owner", "owner");
-		this.acceptanceTestManager.clickButtonAndWait("add");
-		assertTrue(this.selenium.isTextPresent(applicationName));
-
-		this.acceptanceTestManager.logout();
+		OperOverview operOverview = PageUtils
+				.loginOperWithPassword(this.acceptanceTestManager,
+						WebappConstants.OPER_ADMIN, "admin");
+		operOverview.logout();
 	}
 }

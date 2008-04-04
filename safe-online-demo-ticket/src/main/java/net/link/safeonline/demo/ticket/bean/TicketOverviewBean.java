@@ -23,10 +23,13 @@ import net.link.safeonline.demo.ticket.entity.User;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
+import org.jboss.seam.Seam;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.contexts.Context;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -42,6 +45,9 @@ public class TicketOverviewBean extends AbstractTicketDataClientBean implements
 	@Resource
 	private SessionContext sessionContext;
 
+	@In(value = "sessionContext")
+	Context seamSessionContext;
+
 	@PersistenceContext(unitName = "DemoTicketEntityManager")
 	private EntityManager entityManager;
 
@@ -54,7 +60,7 @@ public class TicketOverviewBean extends AbstractTicketDataClientBean implements
 	@SuppressWarnings("unchecked")
 	public void ticketListFactory() {
 		User user = this.entityManager.find(User.class, this.getUsername());
-		if (user == null) {
+		if (null == user) {
 			user = new User(this.getUsername());
 			this.entityManager.persist(user);
 		}
@@ -68,5 +74,21 @@ public class TicketOverviewBean extends AbstractTicketDataClientBean implements
 		String username = getUsername(userId);
 		this.log.debug("username #0", username);
 		return username;
+	}
+
+	@RolesAllowed("user")
+	public String remove() {
+		String username = this.getUsername();
+		this.log.debug("remove user: ", username);
+		User user = this.entityManager.find(User.class, this.getUsername());
+		if (null != user) {
+			List<Ticket> tickets = user.getTickets();
+			for (Ticket ticket : tickets)
+				this.entityManager.remove(ticket);
+			this.entityManager.remove(user);
+		}
+		this.seamSessionContext.set("username", null);
+		Seam.invalidateSession();
+		return "logout-success";
 	}
 }

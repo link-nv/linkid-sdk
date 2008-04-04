@@ -12,6 +12,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DeviceRegistrationEntity;
@@ -42,6 +43,9 @@ public interface DeviceRegistrationService {
 	public DeviceRegistrationEntity getDeviceRegistration(String id);
 
 	public void removeDeviceRegistration(String id);
+
+	public void checkDeviceRegistrationRemovalAllowed(SubjectEntity subject)
+			throws PermissionDeniedException;
 
 	public List<DeviceRegistrationEntity> listDeviceRegistrations(
 			SubjectEntity subject);
