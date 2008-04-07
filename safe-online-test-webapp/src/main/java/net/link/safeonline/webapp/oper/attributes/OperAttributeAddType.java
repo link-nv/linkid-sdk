@@ -16,4 +16,19 @@ public class OperAttributeAddType extends OperTemplate {
 	public OperAttributeAddType() {
 		super(PAGE_NAME);
 	}
+
+	public OperAttributeAdd previous() {
+		clickButtonAndWait("previous");
+		return new OperAttributeAdd();
+	}
+
+	public OperAttributes cancel() {
+		clickButtonAndWait("cancel");
+		return new OperAttributes();
+	}
+
+	public OperAttributeAddAc next() {
+		clickButtonAndWait("next");
+		return new OperAttributeAddAc();
+	}
 }

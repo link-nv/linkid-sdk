@@ -16,4 +16,13 @@ public class OperApplications extends OperTemplate {
 	public OperApplications() {
 		super(PAGE_NAME);
 	}
+
+	public OperApplicationView viewApplication(String application) {
+		clickLinkInRowLinkAndWait("app-data", application, "view");
+		return new OperApplicationView();
+	}
+
+	public void removeApplication(String application) {
+		clickLinkInRowLinkAndWait("app-data", application, "remove");
+	}
 }

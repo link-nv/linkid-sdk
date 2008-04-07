@@ -16,4 +16,14 @@ public class OperApplicationView extends OperTemplate {
 	public OperApplicationView() {
 		super(PAGE_NAME);
 	}
+
+	public OperApplications back() {
+		clickButtonAndWait("back");
+		return new OperApplications();
+	}
+
+	public OperApplicationEdit edit() {
+		clickButtonAndWait("edit");
+		return new OperApplicationEdit();
+	}
 }

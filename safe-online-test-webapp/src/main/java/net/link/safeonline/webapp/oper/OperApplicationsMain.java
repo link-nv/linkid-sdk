@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.webapp.oper;
 
+import net.link.safeonline.webapp.oper.applications.OperApplications;
+import net.link.safeonline.webapp.oper.owners.OperOwners;
 
 public class OperApplicationsMain extends OperTemplate {
 
@@ -14,5 +16,15 @@ public class OperApplicationsMain extends OperTemplate {
 
 	public OperApplicationsMain() {
 		super(PAGE_NAME);
+	}
+
+	public OperApplications gotoApplications() {
+		clickLinkAndWait("goto_applications");
+		return new OperApplications();
+	}
+
+	public OperOwners gotoOwners() {
+		clickLinkAndWait("owners");
+		return new OperOwners();
 	}
 }

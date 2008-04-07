@@ -8,6 +8,7 @@
 package net.link.safeonline.webapp;
 
 import junit.framework.Assert;
+import net.link.safeonline.webapp.auth.AuthFirstTime;
 import net.link.safeonline.webapp.auth.AuthMain;
 
 import org.apache.commons.logging.Log;
@@ -87,6 +88,17 @@ public abstract class Page {
 		return new AuthMain();
 	}
 
+	public AuthFirstTime loginFirstTime() {
+		if (selenium.isElementPresent("xpath=//a[contains(@id, 'login')]")) {
+			clickLinkAndWait("login");
+		} else {
+			clickButtonAndWait("login");
+		}
+		waitForRedirect(AuthFirstTime.PAGE_NAME);
+		return new AuthFirstTime();
+
+	}
+
 	public void logout() {
 		if (selenium.isElementPresent("xpath=//a[contains(@id, 'logout')]")) {
 			clickLinkAndWait("logout");
@@ -109,6 +121,11 @@ public abstract class Page {
 				+ "')]]//following::input[contains(@id, '" + id + "')]", value);
 	}
 
+	protected void clickTab(String id) {
+		selenium.click("xpath=//input[@type = 'hidden' and contains(@value, '"
+				+ id + "']");
+	}
+
 	protected void clickButton(String id) {
 		selenium.click("xpath=//input[@type = 'submit' and contains(@id, '"
 				+ id + "')]");
@@ -129,6 +146,17 @@ public abstract class Page {
 				+ "')]]/td/a[contains(@Id, '" + id + "')]");
 	}
 
+	protected void clickLinkInRowLink(String table, String row, String id) {
+		selenium.click("xpath=//table[contains(@Id, '" + table
+				+ "')]//tr[./td/a[contains(text(), '" + row
+				+ "')]]/td/a[contains(@Id, '" + id + "')]");
+	}
+
+	protected void clickRowLink(String table, String row) {
+		selenium.click("xpath=//table[contains(@id, '" + table
+				+ "')]//tr[./td/a[contains(text(), '" + row + "')]]");
+	}
+
 	protected void clickLinkAndWait(String id) {
 		clickLink(id);
 		waitForPageToLoad();
@@ -136,6 +164,16 @@ public abstract class Page {
 
 	protected void clickLinkInRowAndWait(String table, String row, String id) {
 		clickLinkInRow(table, row, id);
+		waitForPageToLoad();
+	}
+
+	protected void clickLinkInRowLinkAndWait(String table, String row, String id) {
+		clickLinkInRowLink(table, row, id);
+		waitForPageToLoad();
+	}
+
+	protected void clickRowLinkAndWait(String table, String row) {
+		clickRowLink(table, row);
 		waitForPageToLoad();
 	}
 
@@ -167,10 +205,28 @@ public abstract class Page {
 			clickCheckbox(id);
 	}
 
+	protected void setTableRowCheckbox(String table, String row, String id,
+			boolean check) {
+		String locator = "xpath=//table[contains(@id, '" + table
+				+ "')]//tr[./td[contains(text(), '" + row
+				+ "')]]/td/input[@type = 'checkbox' and contains(@id, '" + id
+				+ "')]";
+		boolean isChecked = selenium.isChecked(locator);
+		if ((isChecked && !check) || (!isChecked && check)) {
+			selenium.click(locator);
+		}
+	}
+
 	protected boolean checkLinkInRow(String table, String row, String id) {
 		return selenium.isVisible("xpath=//table[contains(@Id, '" + table
 				+ "')]//tr[./td[contains(text(), '" + row
 				+ "')]]/td/a[contains(@Id, '" + id + "')]");
+	}
+
+	protected boolean checkRowLink(String table, String row) {
+		return selenium.isVisible("xpath=//table[contains(@id, '" + table
+				+ "')]//tr[./td/a[contains(text(), '" + row + "')]]");
+
 	}
 
 	protected String getSafeOnlineAttributeValue(String attribute) {

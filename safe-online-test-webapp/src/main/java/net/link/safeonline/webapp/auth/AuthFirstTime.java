@@ -23,4 +23,9 @@ public class AuthFirstTime extends Page {
 		return new AuthMain();
 	}
 
+	public AuthMain existingUser() {
+		clickButtonAndWait("existing");
+		return new AuthMain();
+	}
+
 }

@@ -16,4 +16,27 @@ public class OperAttributeAddAc extends OperTemplate {
 	public OperAttributeAddAc() {
 		super(PAGE_NAME);
 	}
+
+	public void setUserVisible(boolean value) {
+		setCheckBox("userVisible", value);
+	}
+
+	public void setUserEditable(boolean value) {
+		setCheckBox("userEditable", value);
+	}
+
+	public OperAttributes add() {
+		clickButtonAndWait("add");
+		return new OperAttributes();
+	}
+
+	public OperAttributeAddType previous() {
+		clickButtonAndWait("previous");
+		return new OperAttributeAddType();
+	}
+
+	public OperAttributes cancel() {
+		clickButtonAndWait("cancel");
+		return new OperAttributes();
+	}
 }

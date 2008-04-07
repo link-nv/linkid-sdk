@@ -16,4 +16,14 @@ public class OperAttributeRemove extends OperTemplate {
 	public OperAttributeRemove() {
 		super(PAGE_NAME);
 	}
+
+	public OperAttributes remove() {
+		clickButtonAndWait("remove");
+		return new OperAttributes();
+	}
+
+	public OperAttributes cancel() {
+		clickButtonAndWait("cancel");
+		return new OperAttributes();
+	}
 }

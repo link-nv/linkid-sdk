@@ -16,4 +16,19 @@ public class OperAttributes extends OperTemplate {
 	public OperAttributes() {
 		super(PAGE_NAME);
 	}
+
+	public OperAttributeAdd add() {
+		clickButtonAndWait("add");
+		return new OperAttributeAdd();
+	}
+
+	public boolean isAttributePresent(String name) {
+		return checkRowLink("attributes-data", name);
+
+	}
+
+	public OperAttributeRemove removeAttribute(String name) {
+		clickLinkInRowLinkAndWait("attributes-data", name, "remove");
+		return new OperAttributeRemove();
+	}
 }

@@ -16,4 +16,34 @@ public class OperAttributeAdd extends OperTemplate {
 	public OperAttributeAdd() {
 		super(PAGE_NAME);
 	}
+
+	public void setName(String name) {
+		fillInputField("name", name);
+	}
+
+	public void setSingleValued() {
+		clickRadioButton("singleValued");
+	}
+
+	public void setMultiValued() {
+		clickRadioButton("multiValued");
+	}
+
+	public void setCompounded() {
+		clickRadioButton("compounded");
+	}
+
+	public void setDeviceAttribute(boolean value) {
+		setCheckBox("deviceAttribute", value);
+	}
+
+	public OperAttributes cancel() {
+		clickButtonAndWait("cancel");
+		return new OperAttributes();
+	}
+
+	public void next() {
+		clickButtonAndWait("next");
+	}
+
 }

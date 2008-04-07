@@ -11,7 +11,7 @@ import net.link.safeonline.webapp.oper.OperTemplate;
 public class OperMain extends OperTemplate {
 
 	public static final String PAGE_NAME = SAFE_ONLINE_OPER_WEBAPP_PREFIX
-			+ "/authorization/main.seam";
+			+ "/main.seam";
 
 	public OperMain() {
 		super(PAGE_NAME);

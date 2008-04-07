@@ -46,7 +46,7 @@ public class PageUtils {
 
 	private static final int PAUSE = 1000;
 
-	private static final int PAUSE_TIMEOUT = 30;
+	private static final int PAUSE_TIMEOUT = 20;
 
 	public static void registerUserWithPassword(
 			AcceptanceTestManager acceptanceTestManager, String login,
@@ -94,6 +94,19 @@ public class PageUtils {
 		return new UserOverview();
 	}
 
+	public static UserOverview loginFirstTimeUserWithPassword(
+			AcceptanceTestManager acceptanceTestManager, String login,
+			String password) {
+		UserMain userMain = new UserMain();
+		userMain.open();
+		userMain.loginFirstTime();
+
+		loginFirstTimeWithPassword(login, password);
+
+		waitForRedirect(acceptanceTestManager, UserOverview.PAGE_NAME);
+		return new UserOverview();
+	}
+
 	public static OperOverview loginOperWithPassword(
 			AcceptanceTestManager acceptanceTestManager, String login,
 			String password) {
@@ -102,6 +115,19 @@ public class PageUtils {
 		operMain.login();
 
 		loginWithPassword(login, password);
+
+		waitForRedirect(acceptanceTestManager, OperOverview.PAGE_NAME);
+		return new OperOverview();
+	}
+
+	public static OperOverview loginFirstTimeOperWithPassword(
+			AcceptanceTestManager acceptanceTestManager, String login,
+			String password) {
+		OperMain operMain = new OperMain();
+		operMain.open();
+		operMain.loginFirstTime();
+
+		loginFirstTimeWithPassword(login, password);
 
 		waitForRedirect(acceptanceTestManager, OperOverview.PAGE_NAME);
 		return new OperOverview();
@@ -131,6 +157,13 @@ public class PageUtils {
 
 		waitForRedirect(acceptanceTestManager, HelpdeskOverview.PAGE_NAME);
 		return new HelpdeskOverview();
+	}
+
+	private static void loginFirstTimeWithPassword(String login, String password) {
+		AuthFirstTime authFirstTime = new AuthFirstTime();
+		authFirstTime.existingUser();
+
+		loginWithPassword(login, password);
 	}
 
 	private static void loginWithPassword(String login, String password) {

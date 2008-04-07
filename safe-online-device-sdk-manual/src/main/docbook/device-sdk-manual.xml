@@ -145,20 +145,10 @@
 	</context-param>
 	
 	<context-param>
-		<param-name>SafeOnlineHostName</param-name>
-		<param-value>OlasHostName</param-value>
+		<param-name>WsLocation</param-name>
+		<param-value>https://olas.host.name:8443</param-value
 	</context-param>
 
-	<context-param>
-		<param-name>SafeOnlineHostPort</param-name>
-		<param-value>8080</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>SafeOnlineHostPortSsl</param-name>
-		<param-value>8443</param-value>
-	</context-param>
-	
 	<servlet>
 		<servlet-name>LandingServlet</servlet-name>
 		<servlet-class>
@@ -194,10 +184,14 @@
 			</itemizedlist>
 			The following class can be used to accomplish this :
 			<code>AuthenticationContext.java</code>
-		</para>
-		<para>
 			After that, simply redirect to the <code>ExitServlet</code>'s 
 			URL to return to OLAS.
+		</para>
+		<para>
+			To return to OLAS in case of failure or to provide the user an
+			option to cancel, that return URL is set automatically on the
+			session as attribute <code>SafeOnlineDeviceExitServiceUrl</code>.
+			Or you can use <code>SafeOnlineDeviceUtils.deviceExit()</code>.
 		</para>
 	</chapter>
 	<chapter id="registration">
@@ -279,24 +273,14 @@
 	</context-param>
 
 	<context-param>
-		<param-name>SafeOnlineHostName</param-name>
-		<param-value>OlasHostName</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>SafeOnlineHostPort</param-name>
-		<param-value>8080</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>SafeOnlineHostPortSsl</param-name>
-		<param-value>8443</param-value>
+		<param-name>WsLocation</param-name>
+		<param-value>https://olas.host.name:8443</param-value
 	</context-param>
 	
 	<context-param>
 		<param-name>RegistrationServiceUrl</param-name>
 		<param-value>
-			https://DeviceHostName:8443/path/regexit
+			https://olas.host.name:8443/path/regexit
 		</param-value>
 	</context-param>
 	
@@ -326,7 +310,7 @@
 		<para>
 			Upon successful registration the remote device issuer should 
 			redirect to OLAS. The URL where to redirect can be retrieved with
-			the <code>DevoceManager</code> class using method <code>
+			the <code>DeviceManager</code> class using method <code>
 			getSafeOnlineDeviceExitServiceUrl</code>.
 			Or if the web application is using JSF/Seam you can simply use
 			<code>SafeOnlineDeviceUtils.deviceExit();</code> to return to
@@ -412,24 +396,14 @@
 	</context-param>
 
 	<context-param>
-		<param-name>SafeOnlineHostName</param-name>
-		<param-value>OlasHostName</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>SafeOnlineHostPort</param-name>
-		<param-value>8080</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>SafeOnlineHostPortSsl</param-name>
-		<param-value>8443</param-value>
+		<param-name>WsLocation</param-name>
+		<param-value>https://olas.host.name:8443</param-value
 	</context-param>
 	
 	<context-param>
 		<param-name>RemovalServiceUrl</param-name>
 		<param-value>
-			https://DeviceHostName:8443/path/removeexit
+			https://olas.host.name:8443/path/removeexit
 		</param-value>
 	</context-param>
 	
@@ -540,29 +514,19 @@
 	</context-param>
 
 	<context-param>
-		<param-name>RemovalUrl</param-name>
-		<param-value>remove-device.xhtml</param-value>
+		<param-name>UpdateUrl</param-name>
+		<param-value>update-device.xhtml</param-value>
 	</context-param>
 
 	<context-param>
-		<param-name>SafeOnlineHostName</param-name>
-		<param-value>OlasHostName</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>SafeOnlineHostPort</param-name>
-		<param-value>8080</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>SafeOnlineHostPortSsl</param-name>
-		<param-value>8443</param-value>
+		<param-name>WsLocation</param-name>
+		<param-value>https://olas.host.name:8443</param-value
 	</context-param>
 	
 	<context-param>
 		<param-name>UpdateServiceUrl</param-name>
 		<param-value>
-			https://DeviceHostName:8443/path/updateexit
+			https://olas.host.name:8443/path/updateexit
 		</param-value>
 	</context-param>
 	
