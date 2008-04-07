@@ -27,6 +27,8 @@ public interface Authentication {
 
 	String requestOTP();
 
+	String cancel();
+
 	/*
 	 * Lifecycle.
 	 */

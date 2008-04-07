@@ -24,6 +24,7 @@ import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
+import net.link.safeonline.device.sdk.seam.SafeOnlineDeviceUtils;
 import net.link.safeonline.encap.Authentication;
 import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -162,14 +163,13 @@ public class AuthenticationBean implements Authentication {
 	public String requestOTP() {
 		LOG.debug("request OTP: mobile=" + this.mobile);
 		try {
-			this.challengeId = this.encapDeviceService
-					.requestOTP(this.mobile);
+			this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
 			LOG.debug("received challengeId: " + this.challengeId);
 		} catch (MalformedURLException e) {
 			LOG.debug("requestOTP: MalformedURLException thrown: "
 					+ e.getMessage());
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "mobileRegistrationFailed");
+					FacesMessage.SEVERITY_ERROR, "mobileAuthenticationFailed");
 			return null;
 		} catch (MobileException e) {
 			LOG.debug("requestOTP: MobileException thrown: " + e.getMessage());
@@ -178,6 +178,17 @@ public class AuthenticationBean implements Authentication {
 			return null;
 		}
 		return "success";
+	}
+
+	public String cancel() {
+		try {
+			SafeOnlineDeviceUtils.deviceExit();
+		} catch (IOException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorIO");
+			return null;
+		}
+		return null;
 	}
 
 	@PostConstruct

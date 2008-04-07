@@ -48,6 +48,11 @@
 			</f:subview>
 		</h:form>
 
+		<h:form id="cancel-form">
+			<h:commandButton action="#{authentication.cancel}" id="cancel"
+				value="#{msgs.cancelaction}" class="submit" />
+		</h:form>
+
 	</ui:define>
 	<ui:define name="sidebar">
 		<p>#{msgs.helpMobileAuthentication}</p>

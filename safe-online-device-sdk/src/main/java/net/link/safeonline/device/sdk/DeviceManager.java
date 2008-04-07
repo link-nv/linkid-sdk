@@ -35,6 +35,20 @@ public class DeviceManager {
 		// empty
 	}
 
+	public static void setAuthServiceUrls(HttpSession session, String nodeName)
+			throws ServletException {
+		OlasDAO olasDAO = EjbUtils.getEJB("SafeOnline/OlasDAOBean/local",
+				OlasDAO.class);
+		OlasEntity node;
+		try {
+			node = olasDAO.getNode(nodeName);
+		} catch (NodeNotFoundException e) {
+			throw new ServletException("Unknown Olas Node");
+		}
+		session.setAttribute(SAFE_ONLINE_DEVICE_EXIT_SERVICE_URL_ATTRIBUTE,
+				node.getLocation() + "/olas-auth/main.seam");
+	}
+
 	public static void setServiceUrls(HttpSession session, String nodeName,
 			String source) throws ServletException {
 		OlasDAO olasDAO = EjbUtils.getEJB("SafeOnline/OlasDAOBean/local",

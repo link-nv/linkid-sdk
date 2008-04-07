@@ -43,7 +43,7 @@ public class Saml2Handler implements Serializable {
 	private HttpSession session;
 
 	private String wsLocation;
-	
+
 	private KeyPair applicationKeyPair;
 
 	private X509Certificate applicationCertificate;
@@ -129,6 +129,8 @@ public class Saml2Handler implements Serializable {
 			throw new AuthenticationInitializationException(
 					"No target application was specified");
 
+		String nodeName = samlAuthnRequest.getIssuer().getValue();
+
 		String samlAuthnRequestId = samlAuthnRequest.getID();
 
 		RequestedAuthnContext requestedAuthnContext = samlAuthnRequest
@@ -151,6 +153,7 @@ public class Saml2Handler implements Serializable {
 				.getAuthenticationContext(request.getSession());
 		authenticationContext.setWantedDevices(devices);
 		authenticationContext.setApplication(application);
+		authenticationContext.setNodeName(nodeName);
 	}
 
 	@SuppressWarnings("unchecked")

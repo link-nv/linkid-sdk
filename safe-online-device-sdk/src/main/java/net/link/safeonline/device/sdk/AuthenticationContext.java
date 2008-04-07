@@ -24,6 +24,8 @@ public class AuthenticationContext implements Serializable {
 
 	private String userId;
 
+	private String nodeName;
+
 	private String application;
 
 	private String issuer;
@@ -39,7 +41,8 @@ public class AuthenticationContext implements Serializable {
 		this.session.setAttribute(AUTHENTICATION_CONTEXT, this);
 	}
 
-	public static AuthenticationContext getAuthenticationContext(HttpSession session) {
+	public static AuthenticationContext getAuthenticationContext(
+			HttpSession session) {
 		AuthenticationContext instance = (AuthenticationContext) session
 				.getAttribute(AUTHENTICATION_CONTEXT);
 		if (null == instance) {
@@ -70,6 +73,14 @@ public class AuthenticationContext implements Serializable {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getNodeName() {
+		return this.nodeName;
+	}
+
+	public void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
 	}
 
 	public String getApplication() {
