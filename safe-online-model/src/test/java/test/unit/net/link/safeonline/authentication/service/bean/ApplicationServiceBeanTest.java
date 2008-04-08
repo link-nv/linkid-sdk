@@ -28,6 +28,8 @@ import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.ApplicationServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.ApplicationOwnerDAO;
+import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
 import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -196,6 +198,17 @@ public class ApplicationServiceBeanTest extends TestCase {
 				testApplicationFriendlyName, testApplicationOwnerName, null,
 				false, IdScopeType.USER, null, null, null, null,
 				initialIdentity, false);
+		ApplicationEntity application = applicationService
+				.getApplication(testApplicationName);
+
+		ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(
+				ApplicationOwnerDAOBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
+		ApplicationOwnerEntity applicationOwner = applicationOwnerDAO
+				.getApplicationOwner(testApplicationOwnerName);
+		List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
+		applications.add(application);
+		applicationOwner.setApplications(applications);
 
 		EntityTransaction entityTransaction = entityManager.getTransaction();
 		entityTransaction.commit();
@@ -298,6 +311,17 @@ public class ApplicationServiceBeanTest extends TestCase {
 		applicationService.addApplication(testApplicationName, null,
 				testApplicationOwnerName, null, false, IdScopeType.USER, null,
 				null, null, null, initialIdentity, false);
+		ApplicationEntity application = applicationService
+				.getApplication(testApplicationName);
+
+		ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(
+				ApplicationOwnerDAOBean.class,
+				SafeOnlineTestContainer.sessionBeans, entityManager);
+		ApplicationOwnerEntity applicationOwner = applicationOwnerDAO
+				.getApplicationOwner(testApplicationOwnerName);
+		List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
+		applications.add(application);
+		applicationOwner.setApplications(applications);
 
 		EntityTransaction entityTransaction = entityManager.getTransaction();
 		entityTransaction.commit();

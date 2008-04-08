@@ -142,9 +142,9 @@ public class EntityTestManager {
 	/**
 	 * Create a new instance of the given class that has the test transaction
 	 * entity manager handler applied to it. The transaction semantics are:
-	 *
+	 * 
 	 * <code>@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)</code>
-	 *
+	 * 
 	 * @param <Type>
 	 * @param clazz
 	 */
@@ -226,9 +226,9 @@ public class EntityTestManager {
 		private static final Log interceptorLOG = LogFactory
 				.getLog(TransactionMethodInterceptor.class);
 
-		public Object intercept(@SuppressWarnings("unused") Object obj,
-				Method method, Object[] args,
-				@SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
+		public Object intercept(@SuppressWarnings("unused")
+		Object obj, Method method, Object[] args, @SuppressWarnings("unused")
+		MethodProxy proxy) throws Throwable {
 
 			EntityManager entityManager = this.entityManagerFactory
 					.createEntityManager();

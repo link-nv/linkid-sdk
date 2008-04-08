@@ -32,6 +32,8 @@ import net.link.safeonline.dao.bean.DeviceMappingDAOBean;
 import net.link.safeonline.dao.bean.DeviceRegistrationDAOBean;
 import net.link.safeonline.dao.bean.HistoryDAOBean;
 import net.link.safeonline.dao.bean.OlasDAOBean;
+import net.link.safeonline.dao.bean.StatisticDAOBean;
+import net.link.safeonline.dao.bean.StatisticDataPointDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
@@ -60,6 +62,8 @@ import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.OlasEntity;
+import net.link.safeonline.entity.StatisticDataPointEntity;
+import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
@@ -143,7 +147,8 @@ public class SafeOnlineTestContainer {
 			AccountServiceBean.class, DeviceMappingServiceBean.class,
 			DeviceMappingDAOBean.class, DeviceRegistrationServiceBean.class,
 			DeviceRegistrationDAOBean.class, OlasDAOBean.class,
-			ProxyAttributeServiceBean.class };
+			ProxyAttributeServiceBean.class, StatisticDAOBean.class,
+			StatisticDataPointDAOBean.class };
 
 	public static final Class<?>[] entities = new Class[] {
 			SubjectEntity.class, ApplicationEntity.class,
@@ -163,5 +168,6 @@ public class SafeOnlineTestContainer {
 			HelpdeskContextEntity.class, HelpdeskEventEntity.class,
 			HistoryEntity.class, SubjectIdentifierEntity.class,
 			UsageAgreementEntity.class, UsageAgreementTextEntity.class,
-			GlobalUsageAgreementEntity.class, OlasEntity.class };
+			GlobalUsageAgreementEntity.class, OlasEntity.class,
+			StatisticEntity.class, StatisticDataPointEntity.class };
 }
