@@ -103,7 +103,8 @@ public class AttributesBean implements Attributes {
 		} catch (PermissionDeniedException e) {
 			LOG.debug("Permission denied: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+					FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
+							.getResourceArgs());
 			return null;
 		} catch (AttributeTypeNotFoundException e) {
 			LOG.debug("attribute type not found");

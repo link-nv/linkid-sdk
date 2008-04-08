@@ -273,7 +273,8 @@ public class DeviceBean implements Device {
 		} catch (PermissionDeniedException e) {
 			LOG.debug("permission denied: " + e.getMessage());
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+					FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
+							.getResourceArgs());
 			return null;
 		}
 		deviceListFactory();

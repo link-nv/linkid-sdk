@@ -30,6 +30,8 @@ public interface StatisticDAO {
 
 	List<StatisticEntity> listStatistics(ApplicationEntity application);
 
+	void removeStatistics(ApplicationEntity application);
+
 	void cleanDomain(String domain);
 
 }

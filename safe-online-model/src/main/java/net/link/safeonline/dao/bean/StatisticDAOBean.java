@@ -84,6 +84,14 @@ public class StatisticDAOBean implements StatisticDAO {
 		return this.queryObject.listStatistics(application);
 	}
 
+	public void removeStatistics(ApplicationEntity application) {
+		List<StatisticEntity> statistics = listStatistics(application);
+		for (StatisticEntity statistic : statistics) {
+			this.statisticDataPointDAO.cleanStatisticDataPoints(statistic);
+			this.entityManager.remove(statistic);
+		}
+	}
+
 	public void cleanDomain(String domain) {
 		List<StatisticEntity> statistics = this.queryObject
 				.listStatistics(domain);

@@ -16,7 +16,26 @@ public class PermissionDeniedException extends SafeOnlineException {
 
 	private static final long serialVersionUID = 1L;
 
+	private String resourceMessage;
+
+	private Object[] resourceArgs;
+
 	public PermissionDeniedException(String message) {
 		super(message, SharedConstants.PERMISSION_DENIED_ERROR);
+	}
+
+	public PermissionDeniedException(String message, String resourceMessage,
+			Object... resourceArgs) {
+		super(message, SharedConstants.PERMISSION_DENIED_ERROR);
+		this.resourceMessage = resourceMessage;
+		this.resourceArgs = resourceArgs;
+	}
+
+	public String getResourceMessage() {
+		return this.resourceMessage;
+	}
+
+	public Object[] getResourceArgs() {
+		return this.resourceArgs;
 	}
 }

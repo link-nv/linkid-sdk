@@ -65,6 +65,11 @@ public class DeviceRegistrationDAOBean implements DeviceRegistrationDAO {
 	}
 
 	public List<DeviceRegistrationEntity> listRegisteredDevices(
+			DeviceEntity device) {
+		return this.queryObject.listRegisteredDevices(device);
+	}
+
+	public List<DeviceRegistrationEntity> listRegisteredDevices(
 			SubjectEntity subject, DeviceEntity device) {
 
 		return this.queryObject.listRegisteredDevices(subject, device);

@@ -215,7 +215,8 @@ public class NodeBean implements Node {
 		} catch (PermissionDeniedException e) {
 			LOG.debug("permission denied to remove: " + nodeName);
 			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+					FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
+							.getResourceArgs());
 			return null;
 		}
 		nodeListFactory();

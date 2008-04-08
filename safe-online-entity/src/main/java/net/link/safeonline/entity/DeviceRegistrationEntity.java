@@ -8,6 +8,7 @@
 package net.link.safeonline.entity;
 
 import static net.link.safeonline.entity.DeviceRegistrationEntity.DELETE_ALL_SUBJECT;
+import static net.link.safeonline.entity.DeviceRegistrationEntity.QUERY_LIST_DEVICE;
 import static net.link.safeonline.entity.DeviceRegistrationEntity.QUERY_LIST_SUBJECT;
 import static net.link.safeonline.entity.DeviceRegistrationEntity.QUERY_LIST_SUBJECT_DEVICE;
 
@@ -38,6 +39,9 @@ import org.apache.commons.lang.builder.ToStringStyle;
 		@NamedQuery(name = QUERY_LIST_SUBJECT_DEVICE, query = "SELECT d "
 				+ "FROM DeviceRegistrationEntity AS d "
 				+ "WHERE d.subject = :subject AND d.device = :device"),
+		@NamedQuery(name = QUERY_LIST_DEVICE, query = "SELECT d "
+				+ "FROM DeviceRegistrationEntity AS d "
+				+ "WHERE d.device = :device"),
 		@NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM DeviceRegistrationEntity AS d "
 				+ "WHERE d.subject = :subject") })
 public class DeviceRegistrationEntity implements Serializable {
@@ -47,6 +51,8 @@ public class DeviceRegistrationEntity implements Serializable {
 	public static final String QUERY_LIST_SUBJECT = "dev.reg.sub";
 
 	public static final String QUERY_LIST_SUBJECT_DEVICE = "dev.reg.subdev";
+
+	public static final String QUERY_LIST_DEVICE = "dev.reg.dev";
 
 	public static final String DELETE_ALL_SUBJECT = "dev.reg.del.sub";
 
@@ -128,5 +134,10 @@ public class DeviceRegistrationEntity implements Serializable {
 		@UpdateMethod(DELETE_ALL_SUBJECT)
 		void deleteAll(@QueryParam("subject")
 		SubjectEntity subject);
+
+		@QueryMethod(QUERY_LIST_DEVICE)
+		List<DeviceRegistrationEntity> listRegisteredDevices(
+				@QueryParam("device")
+				DeviceEntity device);
 	}
 }

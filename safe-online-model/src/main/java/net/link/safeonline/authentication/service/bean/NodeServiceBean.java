@@ -100,7 +100,8 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 				.listAttributeTypes(node);
 		if (nodeAttributeTypes.size() > 0)
 			throw new PermissionDeniedException(
-					"Still attribute types attached to this node");
+					"Still attribute types attached to this node",
+					"errorPermissionNodeHasAttributes");
 
 		this.olasDAO.removeNode(node);
 	}

@@ -236,7 +236,9 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 				throw new PermissionDeniedException(
 						"Attribute type still exists in application identity: "
 								+ applicationIdentity.getApplication()
-										.getName());
+										.getName(),
+						"errorPermissionAttributeInIdentity",
+						applicationIdentity.getApplication().getName());
 		}
 	}
 
@@ -244,7 +246,8 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 			throws PermissionDeniedException {
 		if (attributeType.isCompoundMember())
 			throw new PermissionDeniedException(
-					"Cannot remove a compounded member attribute type");
+					"Cannot remove a compound member attribute type",
+					"errorPermissionCompoundMember");
 	}
 
 	private void checkDevices(AttributeTypeEntity attributeType)
@@ -253,7 +256,8 @@ public class AttributeTypeServiceBean implements AttributeTypeService,
 		for (DeviceEntity device : devices) {
 			if (device.getAttributeType().equals(attributeType))
 				throw new PermissionDeniedException(
-						"Attribute type exist in device: " + device.getName());
+						"Attribute type exist in device: " + device.getName(),
+						"errorPermissionAttributeInDevice", device.getName());
 		}
 	}
 

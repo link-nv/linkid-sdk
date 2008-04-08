@@ -31,6 +31,8 @@ public interface UsageAgreementDAO {
 
 	List<UsageAgreementEntity> listUsageAgreements(ApplicationEntity application);
 
+	void removeUsageAgreements(ApplicationEntity application);
+
 	/**
 	 * Removes a usage agreement. This will also remove the usage agreement
 	 * texts related.

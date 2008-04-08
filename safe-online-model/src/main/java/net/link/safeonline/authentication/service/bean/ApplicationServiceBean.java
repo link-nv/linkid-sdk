@@ -40,12 +40,15 @@ import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.ApplicationServiceRemote;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.common.SafeOnlineRoles;
+import net.link.safeonline.dao.AllowedDeviceDAO;
 import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
+import net.link.safeonline.dao.UsageAgreementDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationIdentityEntity;
@@ -107,6 +110,15 @@ public class ApplicationServiceBean implements ApplicationService,
 
 	@EJB
 	private AttributeProviderDAO attributeProviderDAO;
+
+	@EJB
+	private StatisticDAO statisticDAO;
+
+	@EJB
+	private UsageAgreementDAO usageAgreementDAO;
+
+	@EJB
+	private AllowedDeviceDAO allowedDeviceDAO;
 
 	@EJB
 	private ApplicationIdentityManager applicationIdentityService;
@@ -211,7 +223,8 @@ public class ApplicationServiceBean implements ApplicationService,
 				.getApplication(name);
 
 		if (false == application.isRemovable())
-			throw new PermissionDeniedException("application not removable");
+			throw new PermissionDeniedException("application not removable",
+					"errorPermissionApplicationNotRemovable");
 
 		List<SubscriptionEntity> subscriptions = this.subscriptionDAO
 				.listSubscriptions(application);
@@ -231,6 +244,14 @@ public class ApplicationServiceBean implements ApplicationService,
 					.removeApplicationIdentity(applicationIdentity);
 
 		this.attributeProviderDAO.removeAttributeProviders(application);
+
+		this.statisticDAO.removeStatistics(application);
+
+		this.usageAgreementDAO.removeUsageAgreements(application);
+
+		this.allowedDeviceDAO.deleteAllowedDevices(application);
+
+		this.applicationOwnerDAO.removeApplication(application);
 
 		this.applicationDAO.removeApplication(application);
 	}

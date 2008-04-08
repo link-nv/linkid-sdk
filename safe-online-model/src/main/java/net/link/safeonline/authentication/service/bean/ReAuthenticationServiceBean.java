@@ -6,7 +6,6 @@
  */
 package net.link.safeonline.authentication.service.bean;
 
-import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,11 +19,7 @@ import javax.interceptor.Interceptors;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
-import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
-import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.MobileAuthenticationException;
-import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -34,11 +29,8 @@ import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
-import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
-import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
-import net.link.safeonline.validation.annotation.NotNull;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,9 +53,6 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
 	@EJB
 	private DeviceDAO deviceDAO;
-
-	@EJB
-	private SubjectService subjectService;
 
 	@EJB
 	private SubjectManager subjectManager;
@@ -133,65 +122,6 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 		/*
 		 * Communicate that the authentication process can continue.
 		 */
-		return true;
-	}
-
-	@DenyAll
-	public String authenticate(@NotNull
-	DeviceEntity device, @NonEmptyString
-	String mobile, @NonEmptyString
-	String challengeId, @NonEmptyString
-	String mobileOTP) throws SubjectNotFoundException, MalformedURLException,
-			MobileException, MobileAuthenticationException,
-			SubjectMismatchException, PermissionDeniedException {
-		String deviceUserId = null;
-		// String deviceUserId =
-		// this.weakMobileDeviceService.authenticate(mobile,
-		// challengeId, mobileOTP);
-		/*
-		 * Safe the state in this stateful session bean.
-		 */
-		// setAuthenticatedSubject(subject);
-		addAuthenticationDevice(device);
-
-		/*
-		 * Communicate that the authentication process can continue.
-		 */
-		return this.subjectService.getSubjectLogin(deviceUserId);
-	}
-
-	@DenyAll
-	public String requestMobileOTP(@NotNull
-	DeviceEntity device, @NonEmptyString
-	String mobile) throws MalformedURLException, MobileException {
-		// return this.weakMobileDeviceService.requestOTP(mobile);
-		return null;
-	}
-
-	@DenyAll
-	public boolean authenticate(@NonEmptyString
-	String sessionId, @NotNull
-	byte[] authenticationStatementData) throws ArgumentIntegrityException,
-			TrustDomainNotFoundException, SubjectNotFoundException,
-			DecodingException, SubjectMismatchException,
-			PermissionDeniedException, DeviceNotFoundException {
-		LOG.debug("authenticate session: " + sessionId);
-		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
-				authenticationStatementData);
-		String deviceUserId = null;
-		// String deviceUserId = this.beIdDeviceService.authenticate(sessionId,
-		// authenticationStatement);
-		if (null == deviceUserId)
-			return false;
-
-		/*
-		 * Safe the state.
-		 */
-		// setAuthenticatedSubject(subject);
-		DeviceEntity beidDevice = this.deviceDAO
-				.getDevice(SafeOnlineConstants.BEID_DEVICE_ID);
-		addAuthenticationDevice(beidDevice);
-
 		return true;
 	}
 

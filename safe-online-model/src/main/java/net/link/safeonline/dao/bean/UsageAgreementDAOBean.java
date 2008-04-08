@@ -99,6 +99,16 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
 		return this.queryObject.listUsageAgreements(application);
 	}
 
+	public void removeUsageAgreements(ApplicationEntity application) {
+		LOG.debug("remove usage agreements for application: "
+				+ application.getName());
+		List<UsageAgreementEntity> usageAgreements = listUsageAgreements(application);
+		for (UsageAgreementEntity usageAgreement : usageAgreements) {
+			this.entityManager.remove(usageAgreement);
+		}
+
+	}
+
 	public void removeUsageAgreement(ApplicationEntity application,
 			Long usageAgreementVersion) {
 		LOG.debug("remove usage agreement for application: "
