@@ -4,7 +4,6 @@
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-
 package test.unit.net.link.safeonline.authentication.service.bean;
 
 import static org.junit.Assert.assertEquals;
@@ -14,8 +13,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -82,7 +81,6 @@ import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 public class IdentityServiceBeanTest {
 
 	static final Log LOG = LogFactory.getLog(IdentityServiceBeanTest.class);
-
 	EntityTestManager entityTestManager;
 
 	@Before
@@ -102,8 +100,8 @@ public class IdentityServiceBeanTest {
 		jmxTestUtils.registerActionHandler(
 				AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE,
 				"getCertificate", new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+
+					public Object invoke(Object[] arguments) {
 						return authCertificate;
 					}
 				});
@@ -116,8 +114,8 @@ public class IdentityServiceBeanTest {
 		jmxTestUtils.registerActionHandler(
 				IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
 				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+
+					public Object invoke(Object[] arguments) {
 						return signingCertificate;
 					}
 				});
@@ -169,11 +167,18 @@ public class IdentityServiceBeanTest {
 				DatatypeType.STRING, false, false));
 		attributeTypeService.add(new AttributeTypeEntity(
 				"test-attribute-type-2", DatatypeType.STRING, false, false));
+		attributeTypeService.add(new AttributeTypeEntity(
+				"test-attribute-type-3", DatatypeType.STRING, false, false));
+		attributeTypeService.add(new AttributeTypeEntity(
+				"test-attribute-type-4", DatatypeType.STRING, false, false));
+		List<IdentityAttributeTypeDO> identity = new LinkedList<IdentityAttributeTypeDO>();
+		identity.add(new IdentityAttributeTypeDO("test-attribute-type", true,
+				false));
+		identity.add(new IdentityAttributeTypeDO("test-attribute-type-2", true,
+				true));
 		applicationService.addApplication(applicationName, null,
 				"test-application-owner-name", null, false, IdScopeType.USER,
-				null, null, null, null, Collections
-						.singletonList(new IdentityAttributeTypeDO(
-								"test-attribute-type", true, false)), false);
+				null, null, null, null, identity, false);
 		SubscriptionService subscriptionService = EJBTestUtils.newInstance(
 				SubscriptionServiceBean.class,
 				SafeOnlineTestContainer.sessionBeans, entityManager, subject
@@ -195,8 +200,12 @@ public class IdentityServiceBeanTest {
 		List<AttributeDO> attribsToConfirm = identityService
 				.listIdentityAttributesToConfirm(applicationName, Locale
 						.getDefault());
-		assertEquals(1, attribsToConfirm.size());
+		assertEquals(2, attribsToConfirm.size());
 		assertEquals("test-attribute-type", attribsToConfirm.get(0).getName());
+		assertFalse(attribsToConfirm.get(0).isDataMining());
+		assertEquals("test-attribute-type-2", attribsToConfirm.get(1).getName());
+		assertTrue(attribsToConfirm.get(1).isDataMining());
+
 		identityService.confirmIdentity(applicationName);
 		this.entityTestManager.getEntityManager().flush();
 		assertFalse(identityService.isConfirmationRequired(applicationName));
@@ -207,23 +216,31 @@ public class IdentityServiceBeanTest {
 
 		Set<ApplicationIdentityAttributeEntity> currentIdentity = applicationService
 				.getCurrentApplicationIdentity(applicationName);
-		assertEquals(1, currentIdentity.size());
-		assertEquals("test-attribute-type", currentIdentity.iterator().next()
-				.getAttributeTypeName());
+		assertEquals(2, currentIdentity.size());
+		Iterator iter = currentIdentity.iterator();
+		assertEquals("test-attribute-type",
+				((ApplicationIdentityAttributeEntity) iter.next())
+						.getAttributeTypeName());
+		assertEquals("test-attribute-type-2",
+				((ApplicationIdentityAttributeEntity) iter.next())
+						.getAttributeTypeName());
 
-		applicationService
-				.updateApplicationIdentity(applicationName, Arrays
-						.asList(new IdentityAttributeTypeDO[] {
-								new IdentityAttributeTypeDO(
-										"test-attribute-type"),
-								new IdentityAttributeTypeDO(
-										"test-attribute-type-2") }));
+		identity.add(new IdentityAttributeTypeDO("test-attribute-type-3", true,
+				false));
+		identity.add(new IdentityAttributeTypeDO("test-attribute-type-4", true,
+				true));
+
+		applicationService.updateApplicationIdentity(applicationName, identity);
 		assertTrue(identityService.isConfirmationRequired(applicationName));
 
 		attribsToConfirm = identityService.listIdentityAttributesToConfirm(
 				applicationName, Locale.getDefault());
-		assertEquals(1, attribsToConfirm.size());
-		assertEquals("test-attribute-type-2", attribsToConfirm.get(0).getName());
+		assertEquals(2, attribsToConfirm.size());
+		assertEquals("test-attribute-type-4", attribsToConfirm.get(0).getName());
+		assertTrue(attribsToConfirm.get(0).isDataMining());
+		assertEquals("test-attribute-type-3", attribsToConfirm.get(1).getName());
+		assertFalse(attribsToConfirm.get(1).isDataMining());
+
 		identityService.confirmIdentity(applicationName);
 		assertFalse(identityService.isConfirmationRequired(applicationName));
 	}
@@ -662,9 +679,7 @@ public class IdentityServiceBeanTest {
 			MissingAttributesScenario {
 
 		private final String COMP_ATT_NAME = "test-compounded-attribute-type";
-
 		private final String REQ_ATT_NAME = "test-required-attribute-type";
-
 		private final String OPT_ATT_NAME = "test-optional-attribute-type";
 
 		public void init(AttributeTypeDAO attributeTypeDAO,
@@ -718,9 +733,7 @@ public class IdentityServiceBeanTest {
 			MissingAttributesScenario {
 
 		private final String COMP_ATT_NAME = "test-compounded-attribute-type";
-
 		private final String REQ_ATT_NAME = "test-required-attribute-type";
-
 		private final String OPT_ATT_NAME = "test-optional-attribute-type";
 
 		public void init(AttributeTypeDAO attributeTypeDAO,
@@ -779,6 +792,7 @@ public class IdentityServiceBeanTest {
 	}
 
 	interface MissingAttributesScenario {
+
 		void init(AttributeTypeDAO attributeTypeDAO,
 				ApplicationIdentityDAO applicationIdentityDAO,
 				ApplicationIdentityEntity applicationIdentity,
@@ -795,9 +809,7 @@ public class IdentityServiceBeanTest {
 		public void init(AttributeTypeDAO attributeTypeDAO,
 				ApplicationIdentityDAO applicationIdentityDAO,
 				ApplicationIdentityEntity applicationIdentity,
-				@SuppressWarnings("unused")
-				AttributeDAO attributeDAO, @SuppressWarnings("unused")
-				SubjectEntity subject) {
+				AttributeDAO attributeDAO, SubjectEntity subject) {
 			this.attributeType = new AttributeTypeEntity("attribute-type-"
 					+ UUID.randomUUID().toString(), DatatypeType.STRING, true,
 					true);
@@ -858,9 +870,7 @@ public class IdentityServiceBeanTest {
 		public void init(AttributeTypeDAO attributeTypeDAO,
 				ApplicationIdentityDAO applicationIdentityDAO,
 				ApplicationIdentityEntity applicationIdentity,
-				@SuppressWarnings("unused")
-				AttributeDAO attributeDAO, @SuppressWarnings("unused")
-				SubjectEntity subject) {
+				AttributeDAO attributeDAO, SubjectEntity subject) {
 			this.attributeType = new AttributeTypeEntity("attribute-type-"
 					+ UUID.randomUUID().toString(), DatatypeType.STRING, true,
 					true);
@@ -884,6 +894,7 @@ public class IdentityServiceBeanTest {
 	}
 
 	class MissingAttributesScenarioRunner {
+
 		public void run(MissingAttributesScenario scenario) throws Exception {
 			// setup
 			EntityManager entityManager = IdentityServiceBeanTest.this.entityTestManager

@@ -31,36 +31,6 @@ public class AttributeTypeDescriptionDecoratorBean implements
 	@EJB
 	private AttributeTypeDAO attributeTypeDAO;
 
-	public List<AttributeDO> addDescriptionFromAttributeTypes(
-			List<AttributeTypeEntity> attributeTypes, Locale locale) {
-		List<AttributeDO> attributes = new LinkedList<AttributeDO>();
-		String language = null;
-		if (null != locale) {
-			language = locale.getLanguage();
-		}
-		for (AttributeTypeEntity attributeType : attributeTypes) {
-			String name = attributeType.getName();
-			DatatypeType datatype = attributeType.getType();
-			String humanReadableName = null;
-			String description = null;
-			boolean multivalued = attributeType.isMultivalued();
-			if (null != language) {
-				AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
-						.findDescription(new AttributeTypeDescriptionPK(name,
-								language));
-				if (null != attributeTypeDescription) {
-					humanReadableName = attributeTypeDescription.getName();
-					description = attributeTypeDescription.getDescription();
-				}
-			}
-			AttributeDO attribute = new AttributeDO(name, datatype,
-					multivalued, 0, humanReadableName, description,
-					attributeType.isUserEditable(), true, null, null);
-			attributes.add(attribute);
-		}
-		return attributes;
-	}
-
 	public List<AttributeDO> addDescriptionFromIdentityAttributes(
 			Collection<ApplicationIdentityAttributeEntity> identityAttributes,
 			Locale locale) {

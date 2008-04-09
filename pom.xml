@@ -2048,26 +2048,8 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<ciManagement>
-		<system>continuum</system>
-		<url>http://buildserver:7080/continuum</url>
-		<notifiers>
-			<notifier>
-				<type>mail</type>
-				<configuration>
-					<address>frank@lin-k.net</address>
-				</configuration>
-			</notifier>
-			<notifier>
-				<type>mail</type>
-				<configuration>
-					<address>dieter@lin-k.net</address>
-				</configuration>
-			</notifier>
-		</notifiers>
-	</ciManagement>
 	<prerequisites>
-		<maven>2.0.5</maven>
+		<maven>2.0.8</maven>
 	</prerequisites>
 	<properties>
 		<jboss-packaging-maven-plugin.version>

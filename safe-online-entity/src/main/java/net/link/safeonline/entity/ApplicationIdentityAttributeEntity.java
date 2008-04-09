@@ -132,6 +132,22 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
 		return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
 	}
 
+        public boolean equivalent(ApplicationIdentityAttributeEntity attr) {
+            if (! this.getApplicationName().equals(attr.getApplicationName())) {
+                return false;
+            }
+            if (! this.getAttributeTypeName().equals(attr.getAttributeTypeName())) {
+                return false;
+            }
+            if (this.isDataMining() != attr.isDataMining()) {
+                return false;
+            }
+            if (this.isRequired() != attr.isRequired()) {
+                return false;
+            }
+            return true;
+        }
+        
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.pk).toHashCode();

@@ -15,7 +15,6 @@ import javax.ejb.Local;
 
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
 
 /**
  * Interface for attribute type description decorator. The component
@@ -37,12 +36,4 @@ public interface AttributeTypeDescriptionDecorator {
 	List<AttributeDO> addDescriptionFromIdentityAttributes(
 			Collection<ApplicationIdentityAttributeEntity> identityAttributes,
 			Locale locale);
-
-	/**
-	 * @param attributeTypes
-	 * @param locale
-	 *            the optional locale.
-	 */
-	List<AttributeDO> addDescriptionFromAttributeTypes(
-			List<AttributeTypeEntity> attributeTypes, Locale locale);
 }
