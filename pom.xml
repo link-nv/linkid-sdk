@@ -368,7 +368,7 @@
 					sebeco-dev-10
 				</safe-online.host.name>
 				<safe-online.host.protocol>
-					https
+					http
 				</safe-online.host.protocol>
 				<safe-online.host.port>8080</safe-online.host.port>
 				<safe-online.host.port.ssl>
@@ -381,7 +381,7 @@
 					8443
 				</safe-online.jboss.host.port.ssl>
 				<safe-online.host.basename>
-					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port.ssl}
+					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port}
 				</safe-online.host.basename>
 				<debug.mode>false</debug.mode>
 				<safe-online.profiling.scenario>
@@ -1997,6 +1997,18 @@
 				<version>${jboss.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-messaging</artifactId>
+				<type>zip</type>
+				<version>${jboss-messaging.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss</groupId>
+				<artifactId>jboss-messaging-sar</artifactId>
+				<type>zip</type>
+				<version>${jboss-messaging.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>axis</groupId>
 				<artifactId>axis</artifactId>
 				<version>${axis.version}</version>
@@ -2068,6 +2080,7 @@
 		<jaxws-api.version>2.1-safeonline</jaxws-api.version>
 		<commons-logging-api.version>1.1</commons-logging-api.version>
 		<jboss.version>4.2.2.GA</jboss.version>
+		<jboss-messaging.version>1.4.0.SP3</jboss-messaging.version>
 		<sjsxp.version>1.0</sjsxp.version>
 		<commons-logging.version>1.1</commons-logging.version>
 		<log4j.version>1.2.14</log4j.version>
