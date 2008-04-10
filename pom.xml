@@ -512,7 +512,7 @@
         </safe-online.host.basename>
         
         <!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
-        </safe-online.profiling.interceptor>
+        <safe-online.profiling.interceptor/>
 
         <jboss-packaging-maven-plugin.version>
             2.0-SNAPSHOT
