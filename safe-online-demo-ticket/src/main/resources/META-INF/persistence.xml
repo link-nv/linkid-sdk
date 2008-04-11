@@ -5,7 +5,7 @@
 	version="1.0">
 	<persistence-unit name="DemoTicketEntityManager">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<jta-data-source>java:/DefaultDS</jta-data-source>
+        <jta-data-source>java:/${safe-online.data.source}</jta-data-source>
 		<class>net.link.safeonline.demo.ticket.entity.Ticket</class>
 		<class>net.link.safeonline.demo.ticket.entity.User</class>
 		<properties>

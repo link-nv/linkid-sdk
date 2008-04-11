@@ -5,7 +5,7 @@
 	version="1.0">
 	<persistence-unit name="DemoLawyerEntityManager">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<jta-data-source>java:/DefaultDS</jta-data-source>
+        <jta-data-source>java:/${safe-online.data.source}</jta-data-source>
 		<properties>
 			<property name="hibernate.dialect"
 				value="org.hibernate.dialect.HSQLDialect" />
