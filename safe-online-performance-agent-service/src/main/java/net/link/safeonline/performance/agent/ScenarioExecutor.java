@@ -106,36 +106,11 @@ public class ScenarioExecutor extends Thread {
 					Thread.sleep(50);
 			} catch (InterruptedException e) {
 			}
-
-			// Don't generate stats if we were aborted.
-			if (this.abort)
-				return;
-
-			// Start fetching metadata and creating charts already.
-			Thread charter = new Thread("Charter") {
-				@Override
-				public void run() {
-
-					try {
-						LOG.debug("charts started.");
-						ScenarioExecutor.this.agentService.getCharts(execution);
-						LOG.debug("charts success.");
-					} catch (Throwable e) {
-						LOG.error(e);
-					}
-				}
-			};
-			charter.setDaemon(true);
-			charter.start();
 		}
 
 		catch (Throwable e) {
 			this.agentService.setError(e);
 			LOG.error("Processing Scenario Execution Failed", e);
-		}
-
-		finally {
-			this.agentService.actionCompleted();
 		}
 	}
 

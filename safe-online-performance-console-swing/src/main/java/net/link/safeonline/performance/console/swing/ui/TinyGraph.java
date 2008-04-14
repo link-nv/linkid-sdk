@@ -16,7 +16,10 @@
 package net.link.safeonline.performance.console.swing.ui;
 
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -53,7 +56,7 @@ public class TinyGraph extends JPanel {
 		this.queue = new TreeMap<Long, Double>();
 		this.times = new TreeSet<Long>();
 
-		setBorder(BorderFactory.createLineBorder(Color.darkGray));
+		setBorder(BorderFactory.createLineBorder(Color.gray));
 		setBackground(Color.white);
 		setForeground(Color.red);
 	}
@@ -64,17 +67,19 @@ public class TinyGraph extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 
+		Graphics2D g2 = (Graphics2D) g;
 		if (isOpaque() && getBackground() != null) {
-			g.setColor(getBackground());
-			g.fillRect(0, 0, getWidth(), getHeight());
+			g2.setColor(getBackground());
+			g2.fillRect(0, 0, getWidth(), getHeight());
 		}
-		g.setColor(getForeground());
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 
 		if (this.times.isEmpty())
 			return;
 
 		Long startTime = this.times.first();
-		Long endTime = this.times.first();
+		Long endTime = this.times.last();
 
 		Double minValue = Double.MAX_VALUE;
 		Double maxValue = 0d;
@@ -86,10 +91,10 @@ public class TinyGraph extends JPanel {
 		if (startTime.equals(endTime) || minValue.equals(maxValue))
 			return;
 
-		int timeToPx = (int) (getWidth() / (endTime - startTime));
-		int valueToPx = (int) (getHeight() * (maxValue - minValue));
+		double timeToPx = getWidth() / (double) (endTime - startTime);
+		double valueToPx = getHeight() / (maxValue - minValue);
 
-		Long lastTime = this.times.first();
+		Long lastTime = startTime;
 		Double lastValue = this.queue.get(lastTime);
 		for (Long time : this.times) {
 			Double value = this.queue.get(time);
@@ -101,7 +106,14 @@ public class TinyGraph extends JPanel {
 			lastTime = time;
 			lastValue = value;
 
-			g.drawLine(lastX, lastY, currX, currY);
+			g2.setPaint(new GradientPaint(0, 0, Color.decode("#FFF5F5"), 0,
+					getHeight(), Color.decode("#F5FFF5")));
+			g2.fillPolygon(new int[] { lastX, lastX, currX, currX }, new int[] {
+					getHeight(), getHeight() - lastY, getHeight() - currY,
+					getHeight() }, 4);
+			
+			g2.setPaint(getForeground());
+			g2.drawLine(lastX, getHeight() - lastY, currX, getHeight() - currY);
 		}
 	}
 
@@ -109,6 +121,9 @@ public class TinyGraph extends JPanel {
 	 * Update this graph with a new value.
 	 */
 	public void update(Double value) {
+
+		if (value == null)
+			return;
 
 		long time = System.currentTimeMillis();
 		this.queue.put(time, value);
@@ -121,5 +136,16 @@ public class TinyGraph extends JPanel {
 			this.queue.remove(purgeTime);
 			this.times.remove(purgeTime);
 		}
+
+		repaint();
+	}
+
+	/**
+	 * Remove all graph values.
+	 */
+	public void reset() {
+
+		this.queue.clear();
+		this.times.clear();
 	}
 }

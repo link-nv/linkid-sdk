@@ -69,7 +69,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 		this.olasDuration = olasDuration == null ? 0 : olasDuration.longValue();
 		this.agentDuration = agentDuration == null ? 0 : agentDuration
 				.longValue();
-		this.startFreeMem = startTime == null ? 0 : startFreeMem.longValue();
+		this.startFreeMem = startFreeMem == null ? 0 : startFreeMem.longValue();
 		this.endFreeMem = endFreeMem == null ? 0 : endFreeMem.longValue();
 	}
 

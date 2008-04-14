@@ -222,13 +222,22 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 
 	private void updateButtons() {
 
+		// System.err.println("----");
 		// Don't enable any buttons when no agents are selected.
 		if (ConsoleData.getSelectedAgents().isEmpty()) {
+			//			System.err.println("No agents selected.");
 			buttonToggler(false, this.refreshButton, this.resetButton,
 					this.uploadButton, this.deployButton, this.executeButton,
 					this.chartsButton, this.pdfButton);
 			return;
 		}
+
+		// System.err
+		// .println("scenario file is null? " + getScenarioFile() == null);
+		// System.err.println("scenario name is null? "
+		// + ConsoleData.getScenarioName() == null);
+		// System.err.println("execution selected ? "
+		// + ConsoleData.getSelectedExecution() != null);
 
 		// Enable all buttons available with the current configuration.
 		buttonToggler(true, this.deployButton);
@@ -240,35 +249,53 @@ public class ScenarioChooser extends JPanel implements ActionListener,
 
 		// For each agent, disable the buttons that its state does not support.
 		for (ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
+			// System.err.println("agent: " + agent);
 
-			if (agent.getTransit() != null) {
+			if (agent.isTransitting()) {
+				// System.err.println("transitting: reset on, actions off");
 				buttonToggler(true, this.resetButton);
 				buttonToggler(false, this.uploadButton, this.deployButton,
 						this.executeButton, this.chartsButton, this.pdfButton);
 			}
 
 			else if (agent.getState() == null)
+				//				System.err.println("no state: actions off");
 				buttonToggler(false, this.uploadButton, this.deployButton,
 						this.executeButton, this.chartsButton, this.pdfButton);
-
 			else
 				switch (agent.getState()) {
 				case RESET:
+					// System.err
+					// .println("reset state; actions off except upload: "
+					// + this.uploadButton.isEnabled());
 					buttonToggler(false, this.deployButton, this.executeButton,
 							this.chartsButton, this.pdfButton);
 					break;
 
 				case UPLOAD:
+					// System.err
+					// .println("uploaded state; actions off except upload, deploy: "
+					// + this.uploadButton.isEnabled()
+					// + ", "
+					// + this.deployButton.isEnabled());
 					buttonToggler(false, this.executeButton, this.chartsButton,
 							this.pdfButton);
 					break;
 
 				case DEPLOY:
+					// System.err
+					// .println("deployed state; actions off except upload, deploy, execute: "
+					// + this.uploadButton.isEnabled()
+					// + ", "
+					// + this.deployButton.isEnabled()
+					// + ", "
+					// + this.executeButton.isEnabled());
 					buttonToggler(false, this.chartsButton, this.pdfButton);
 					break;
 
 				case EXECUTE:
 				case CHART:
+					// System.err.println("charted state; do nothing");
 					break;
 				}
 

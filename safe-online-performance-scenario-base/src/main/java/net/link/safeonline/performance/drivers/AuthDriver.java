@@ -86,8 +86,9 @@ public class AuthDriver extends ProfileDriver {
 	private static final String ATTRIB = "_identity-confirmation";
 
 	private HttpClient client;
-	private List<ProfileData> iterationDatas;
 	private Tidy tidy;
+
+	private List<ProfileData> iterationDatas;
 	private String response;
 	private String jsessionid;
 
@@ -95,13 +96,15 @@ public class AuthDriver extends ProfileDriver {
 
 		super(NAME, execution, agentTime);
 
-		Protocol.registerProtocol("https", new Protocol("https",
-				new MySSLSocketFactory(), 443));
-
 		this.tidy = new Tidy();
 		this.tidy.setQuiet(true);
 		this.tidy.setShowWarnings(false);
+		
+		Protocol.registerProtocol("https", new Protocol("https",
+				new MySSLSocketFactory(), 443));
+		
 
+		//		MultiThreadedHttpConnectionManager manager = new MultiThreadedHttpConnectionManager();
 		this.client = new HttpClient();
 	}
 
@@ -354,14 +357,12 @@ public class AuthDriver extends ProfileDriver {
 
 	private String getJSessionId() {
 
-		if (this.jsessionid != null)
-			return this.jsessionid;
+		if (this.jsessionid == null)
+			for (Cookie cookie : this.client.getState().getCookies())
+				if ("JSESSIONID".equals(cookie.getName()))
+					this.jsessionid = cookie.getValue();
 
-		for (Cookie cookie : this.client.getState().getCookies())
-			if ("JSESSIONID".equals(cookie.getName()))
-				return this.jsessionid = cookie.getValue();
-
-		return null;
+		return this.jsessionid;
 	}
 
 	private PostMethod submitFormMethod(Node formNode,
@@ -420,47 +421,54 @@ public class AuthDriver extends ProfileDriver {
 			throws HttpException, IOException, TransformerException,
 			DriverException {
 
-		// Optionally add JSessionID cookie and execute method.
-		method.addRequestHeader("Cookie", "JSESSIONID=" + getJSessionId());
-		this.client.executeMethod(method);
+		try {
+			// Optionally add JSessionID cookie and execute method.
+			method.addRequestHeader("Cookie", "JSESSIONID=" + getJSessionId());
+			this.client.executeMethod(method);
 
-		// Parse response headers for profile data.
-		Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
-		for (Header header : method.getResponseHeaders()) {
-			List<String> headerValues = new ArrayList<String>();
-			headerValues.add(header.getValue());
+			// Parse response headers for profile data.
+			Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
+			for (Header header : method.getResponseHeaders()) {
+				List<String> headerValues = new ArrayList<String>();
+				headerValues.add(header.getValue());
 
-			requestHeaders.put(header.getName(), headerValues);
+				requestHeaders.put(header.getName(), headerValues);
+			}
+			this.iterationDatas.add(new ProfileData(requestHeaders));
+
+			// Remember the last non-null response body for debugging purposes.
+			String newResponse = method.getResponseBodyAsString();
+			if (null == newResponse || newResponse.trim().length() == 0)
+				this.response += "\n\nNext response has an empty body!";
+			else
+				this.response = newResponse;
+
+			// Parse response body as DOM and extract form node.
+			Document resultDocument = this.tidy.parseDOM(method
+					.getResponseBodyAsStream(), null);
+			if (null == resultDocument)
+				return null;
+
+			// Parse out HTTP/AS errors and throw them as exceptions.
+			String error = XPathAPI.eval(resultDocument, "//*[@class='error']")
+					.str();
+			if (error.length() == 0) {
+				error = XPathAPI.eval(resultDocument,
+						"//title[contains(text(),'Error')]/text()").str();
+				String errorReport = XPathAPI.eval(resultDocument, "//h1")
+						.str();
+				if (error.endsWith("Error report") && errorReport.length() > 0)
+					error = errorReport;
+			}
+			if (error.length() != 0)
+				throw new DriverException(error);
+
+			return resultDocument;
 		}
-		this.iterationDatas.add(new ProfileData(requestHeaders));
 
-		// Remember the last non-null response body for debugging purposes.
-		String newResponse = method.getResponseBodyAsString();
-		if (null == newResponse || newResponse.trim().length() == 0)
-			this.response += "\n\nNext response has an empty body!";
-		else
-			this.response = newResponse;
-
-		// Parse response body as DOM and extract form node.
-		Document resultDocument = this.tidy.parseDOM(method
-				.getResponseBodyAsStream(), null);
-		if (null == resultDocument)
-			return null;
-
-		// Parse out HTTP/AS errors and throw them as exceptions.
-		String error = XPathAPI.eval(resultDocument, "//*[@class='error']")
-				.str();
-		if (error.length() == 0) {
-			error = XPathAPI.eval(resultDocument,
-					"//title[contains(text(),'Error')]/text()").str();
-			String errorReport = XPathAPI.eval(resultDocument, "//h1").str();
-			if (error.endsWith("Error report") && errorReport.length() > 0)
-				error = errorReport;
+		finally {
+			method.releaseConnection();
 		}
-		if (error.length() != 0)
-			throw new DriverException(error);
-
-		return resultDocument;
 	}
 
 	private Node findForm(String formId, Document resultDocument)

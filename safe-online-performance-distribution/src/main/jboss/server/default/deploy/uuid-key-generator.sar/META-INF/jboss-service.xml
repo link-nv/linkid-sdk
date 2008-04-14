@@ -22,7 +22,7 @@
      <!-- Attributes common to HiLo factory instances -->
 
      <!-- DataSource JNDI name -->
-     <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+     <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
 
      <!-- table name -->
      <attribute name="TableName">HILOSEQUENCES</attribute>

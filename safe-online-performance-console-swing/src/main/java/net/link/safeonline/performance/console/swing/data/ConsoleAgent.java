@@ -206,6 +206,14 @@ public class ConsoleAgent implements Agent {
 	}
 
 	/**
+	 * @return <code>true</code> if this agent is undertaking an action.
+	 */
+	public boolean isTransitting() {
+
+		return this.transit != null && !AgentState.RESET.equals(this.transit);
+	}
+
+	/**
 	 * <b>Temporarily</b> change the <b>local</b> transition state of the
 	 * agent.<br>
 	 * <br>
@@ -297,6 +305,10 @@ public class ConsoleAgent implements Agent {
 
 		catch (IllegalStateException e) {
 			this.state = notifyOnChange(this.state, null);
+			this.transit = notifyOnChange(this.transit, null);
+			this.error = notifyOnChange(this.error, null);
+			this.scenarios = notifyOnChange(this.scenarios, null);
+			this.executions = notifyOnChange(this.executions, null);
 		}
 
 		catch (NameNotFoundException e) {

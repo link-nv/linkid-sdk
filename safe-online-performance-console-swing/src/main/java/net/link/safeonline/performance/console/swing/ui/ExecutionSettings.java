@@ -41,7 +41,7 @@ import net.link.safeonline.performance.console.swing.model.AgentSelectionListene
  * @author mbillemo
  */
 public class ExecutionSettings implements FocusListener, ItemListener,
-		AgentSelectionListener {
+		AgentSelectionListener, AgentStatusListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -79,6 +79,7 @@ public class ExecutionSettings implements FocusListener, ItemListener,
 		this.duration
 				.setToolTipText("The amount of time to run the tests for (in milliseconds).");
 
+		ConsoleData.addAgentStatusListener(this);
 		ConsoleData.addAgentSelectionListener(this);
 	}
 
@@ -134,8 +135,22 @@ public class ExecutionSettings implements FocusListener, ItemListener,
 	/**
 	 * {@inheritDoc}
 	 */
+	public void statusChanged(ConsoleAgent agent) {
+
+		update();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void agentsSelected(Set<ConsoleAgent> selectedAgents) {
 
+		update();
+	}
+
+	private void update() {
+
+		Set<ConsoleAgent> selectedAgents = ConsoleData.getSelectedAgents();
 		if (selectedAgents == null || selectedAgents.isEmpty()) {
 			setScenarios(new HashSet<String>());
 			return;

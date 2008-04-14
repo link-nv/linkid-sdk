@@ -58,8 +58,9 @@ public class AgentService implements AgentServiceMBean {
 	private AgentBroadcaster broadcaster;
 	private ScenarioDeployer deployer;
 	private ScenarioExecutor executor;
-	private AgentState transit;
 	private Throwable error;
+
+	private boolean charting;
 
 	public AgentService() {
 
@@ -137,21 +138,32 @@ public class AgentService implements AgentServiceMBean {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void resetTransit() {
+	public AgentState getTransit() {
 
-		if (this.executor != null) {
-			this.executor.halt();
-			this.executor = null;
-		} else
-			this.transit = null;
+		if (this.deployer.isUploading())
+			return AgentState.UPLOAD;
+
+		if (this.deployer.isDeploying())
+			return AgentState.DEPLOY;
+
+		if (this.executor != null && this.executor.isAlive())
+			return AgentState.EXECUTE;
+
+		if (this.charting)
+			return AgentState.CHART;
+
+		return AgentState.RESET;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public AgentState getTransit() {
+	public void resetTransit() {
 
-		return this.transit;
+		if (this.executor != null) {
+			this.executor.halt();
+			this.executor = null;
+		}
 	}
 
 	/**
@@ -160,8 +172,6 @@ public class AgentService implements AgentServiceMBean {
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public ScenarioExecution getCharts(Date startTime) {
 
-		actionRequest(AgentState.CHART);
-
 		try {
 			return getExecution(startTime, true);
 		}
@@ -169,10 +179,6 @@ public class AgentService implements AgentServiceMBean {
 		catch (Throwable e) {
 			setError(e);
 			return null;
-		}
-
-		finally {
-			actionCompleted();
 		}
 	}
 
@@ -217,49 +223,13 @@ public class AgentService implements AgentServiceMBean {
 		this.error = error;
 
 		if (error != null)
-			LOG.error("The following occurred during " + this.transit, error);
-	}
-
-	/**
-	 * Request permission to start a certain action. If permission is granted,
-	 * the agent is locked until {@link #actionCompleted(boolean)} is called.
-	 * 
-	 * @throws IllegalStateException
-	 *             If the request cannot be granted (agent is locked for another
-	 *             action).
-	 */
-	private void actionRequest(AgentState action) throws IllegalStateException {
-
-		if (this.transit != null)
-			throw new IllegalStateException(action.getTransitioning()
-					+ " request denied: agent is locked for: "
-					+ this.transit.getTransitioning());
-
-		setError(null);
-		this.transit = action;
-	}
-
-	/**
-	 * Call this to notify the agent that its current action was completed. It
-	 * will receive a new status depending on whether the action was successful
-	 * (state becomes transit) or failed (state remains). Either way, transit
-	 * becomes <code>null</code> since no more action is happening.
-	 */
-	public void actionCompleted() {
-
-		if (this.transit == null)
-			LOG.warn("No ongoing action to stop.", new IllegalStateException());
-
-		this.executor = null;
-		this.transit = null;
+			LOG.error("The following occurred during " + getTransit(), error);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void upload(byte[] application) {
-
-		actionRequest(AgentState.UPLOAD);
 
 		try {
 			this.deployer.upload(application);
@@ -268,18 +238,12 @@ public class AgentService implements AgentServiceMBean {
 		catch (Throwable e) {
 			setError(e);
 		}
-
-		finally {
-			actionCompleted();
-		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void deploy() {
-
-		actionRequest(AgentState.DEPLOY);
 
 		try {
 			this.deployer.deploy();
@@ -289,16 +253,10 @@ public class AgentService implements AgentServiceMBean {
 		catch (Throwable e) {
 			setError(e);
 		}
-
-		finally {
-			actionCompleted();
-		}
 	}
 
 	public void execute(String scenarioName, Integer agents, Integer workers,
 			Long duration, String hostname, Boolean useSsl, Date startTime) {
-
-		actionRequest(AgentState.EXECUTE);
 
 		try {
 			ExecutionMetadata request = ExecutionMetadata.createRequest(
@@ -310,7 +268,6 @@ public class AgentService implements AgentServiceMBean {
 
 		catch (Throwable e) {
 			setError(e);
-			actionCompleted();
 		}
 	}
 
@@ -324,6 +281,7 @@ public class AgentService implements AgentServiceMBean {
 			return null;
 
 		try {
+			this.charting = useCharts;
 			ExecutionMetadata metaData = getScenarioController()
 					.getExecutionMetadata(startTime);
 
@@ -356,6 +314,10 @@ public class AgentService implements AgentServiceMBean {
 		catch (NamingException e) {
 			throw new RuntimeException(
 					"Can't query stats without a scenario deployed.", e);
+		}
+
+		finally {
+			this.charting = false;
 		}
 	}
 

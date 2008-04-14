@@ -187,7 +187,7 @@ public class AgentPanel extends JPanel implements MouseListener,
 			this.state.setForeground(AgentState.RESET.getColor());
 		}
 
-		if (this.agent.getTransit() != null) {
+		if (this.agent.isTransitting()) {
 			this.transit.setText(this.agent.getTransit().getTransitioning());
 			this.transit.setForeground(this.agent.getTransit().getColor());
 		} else {
@@ -196,8 +196,7 @@ public class AgentPanel extends JPanel implements MouseListener,
 		}
 
 		/* Update the progress bar. */
-		if (this.agent.getTransit() == null
-				|| AgentState.RESET.equals(this.agent.getTransit())) {
+		if (!this.agent.isTransitting()) {
 			this.progress.setIndeterminate(false);
 			this.progress.setValue(0);
 		} else {
@@ -227,7 +226,8 @@ public class AgentPanel extends JPanel implements MouseListener,
 					this.progress.setIndeterminate(false);
 					this.progress.setValue(completion);
 				}
-			}
+			} else
+				this.speedGraph.reset();
 		}
 	}
 

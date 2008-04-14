@@ -83,8 +83,9 @@ public class ScenarioDurationsChart extends AbstractChart {
 	@Override
 	public void processTiming(ScenarioTimingEntity data) {
 
-		this.overhead.addOrUpdate(data.getStart(), data.getAgentDuration()
-				- data.getOlasDuration());
+		if (data.getAgentDuration() != null && data.getOlasDuration() != null)
+			this.overhead.addOrUpdate(data.getStart(), data.getAgentDuration()
+					- data.getOlasDuration());
 	}
 
 	/**

@@ -25,11 +25,11 @@ import org.jboss.mx.util.MBeanServerLocator;
 /**
  * <h2>{@link ScenarioDeployer}<br>
  * <sub>Deploys an application (EAR) that is contained in a byte array.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioDeployer {
@@ -38,8 +38,14 @@ public class ScenarioDeployer {
 
 	private File applicationFile;
 
+	private boolean uploading;
+	private boolean deploying;
+
 	public void upload(byte[] application) throws IOException {
 
+		try {
+			this.uploading = true;
+			
 		// Undeploy any existing scenario first.
 		if (null != this.applicationFile && this.applicationFile.exists())
 			try {
@@ -57,6 +63,11 @@ public class ScenarioDeployer {
 				new FileOutputStream(this.applicationFile));
 		out.write(application);
 		out.close();
+		}
+
+		finally {
+			this.uploading = false;
+		}
 	}
 
 	public void deploy() throws JMException, MalformedURLException, IOException {
@@ -82,13 +93,31 @@ public class ScenarioDeployer {
 		return this.applicationFile != null && this.applicationFile.canRead();
 	}
 
+	public boolean isUploading() {
+
+		return this.uploading;
+	}
+
+	public boolean isDeploying() {
+
+		return this.deploying;
+	}
+
 	private Object invokeDeployer(String methodName, Object[] parameters,
 			String[] signature) throws JMException {
 
-		MBeanServer applicationServer = MBeanServerLocator.locateJBoss();
-		ObjectName mainDeployer = new ObjectName(
-				"jboss.system:service=MainDeployer");
-		return applicationServer.invoke(mainDeployer, methodName, parameters,
-				signature);
+		try {
+			this.deploying = true;
+
+			MBeanServer applicationServer = MBeanServerLocator.locateJBoss();
+			ObjectName mainDeployer = new ObjectName(
+					"jboss.system:service=MainDeployer");
+			return applicationServer.invoke(mainDeployer, methodName,
+					parameters, signature);
+		}
+
+		finally {
+			this.deploying = false;
+		}
 	}
 }
