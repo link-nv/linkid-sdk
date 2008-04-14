@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+     Hypersonic persistence deployment descriptor.
+     
+     DO NOT USE HYPERSONIC IN PRODUCTION or in a clustered environment- Hypersonic does not have transaction isolation
+
+     $Id: hsqldb-persistence-service.xml 3339 2007-11-16 20:48:08Z clebert.suconic@jboss.com $
+ -->
+
+<server>
+
+   <!-- Persistence Manager MBean configuration
+       ======================================= -->
+   
+   <mbean code="org.jboss.messaging.core.jmx.JDBCPersistenceManagerService"
+      name="jboss.messaging:service=PersistenceManager"
+      xmbean-dd="xmdesc/JDBCPersistenceManager-xmbean.xml">
+      
+      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
+      
+      <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+            
+      <!-- The datasource to use for the persistence manager -->
+                                
+      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
+      
+      <!-- If true will attempt to create tables and indexes on every start-up -->
+                  
+      <attribute name="CreateTablesOnStartup">true</attribute>
+      
+      <!-- If true then will use JDBC batch updates -->
+                 
+      <attribute name="UsingBatchUpdates">false</attribute>
+      
+      <!-- The maximum number of parameters to include in a prepared statement -->            
+      
+      <attribute name="MaxParams">500</attribute>
+   </mbean>
+
+   <!-- Messaging Post Office MBean configuration
+        ========================================= -->
+   
+   <mbean code="org.jboss.messaging.core.jmx.MessagingPostOfficeService"
+      name="jboss.messaging:service=PostOffice"      
+      xmbean-dd="xmdesc/MessagingPostOffice-xmbean.xml">
+            
+      <depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+      
+      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
+      
+      <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+      
+      <!-- The name of the post office -->      
+                 
+      <attribute name="PostOfficeName">JMS post office</attribute>
+      
+      <!-- The datasource used by the post office to access it's binding information -->                       
+      
+      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
+      
+      <!-- If true will attempt to create tables and indexes on every start-up -->
+                        
+      <attribute name="CreateTablesOnStartup">true</attribute>
+      
+      <!-- This post office is NON CLUSTERED - do not use clustering with Hypersonic!! -->
+      
+      <attribute name="Clustered">false</attribute>
+   </mbean>
+
+   <!-- Messaging JMS User Manager MBean config
+        ======================================= -->
+   
+   <mbean code="org.jboss.jms.server.plugin.JDBCJMSUserManagerService"
+      name="jboss.messaging:service=JMSUserManager"
+      xmbean-dd="xmdesc/JMSUserManager-xmbean.xml">
+      
+      <depends>jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
+      
+      <depends optional-attribute-name="TransactionManager">jboss:service=TransactionManager</depends>
+      
+      <attribute name="DataSource">java:/${safe-online.data.source}</attribute>
+      
+      <attribute name="CreateTablesOnStartup">true</attribute>
+      
+      <attribute name="SqlProperties"><![CDATA[
+        POPULATE.TABLES.1 = INSERT INTO JBM_USER (USER_ID, PASSWD) VALUES  ('guest', 'guest')
+        POPULATE.TABLES.2 = INSERT INTO JBM_ROLE (ROLE_ID, USER_ID) VALUES ('guest', 'guest')
+      ]]></attribute>
+   </mbean>
+
+</server>

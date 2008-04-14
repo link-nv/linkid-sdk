@@ -651,6 +651,10 @@ table tbody tr.listingTable_Row2 {
 	width: 100%;
 }
 
+.rich-dtascroller-table td {
+    width: 20% !important;
+}
+
 .rich-panel	     , .rich-tabpanel-content      , .rich-tabpanel      ,
 	.rich-panel-header      , .rich-panel-body {
 	width: 550px;

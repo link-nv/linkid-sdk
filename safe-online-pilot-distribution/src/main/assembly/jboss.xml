@@ -57,6 +57,7 @@
 					server/default/deploy/client-deployer-service.xml
 				</exclude>
 				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
+				<exclude>server/default/deploy/hsql-safe-online-ds.xml</exclude>
 				<exclude>server/default/lib/hsqldb.jar</exclude>
 				<exclude>server/default/lib/hsqldb-plugin.jar</exclude>
 				<exclude>
