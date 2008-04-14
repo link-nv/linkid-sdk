@@ -78,6 +78,16 @@
 									<type>zip</type>
 								</artifactItem>
 								<artifactItem>
+									<groupId>org.jboss</groupId>
+									<artifactId>jboss-messaging</artifactId>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.jboss</groupId>
+									<artifactId>jboss-messaging-sar</artifactId>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
 									<groupId>net.java.dev</groupId>
 									<artifactId>jaxws-ri</artifactId>
 									<type>zip</type>
@@ -99,7 +109,7 @@
 								${project.build.directory}/dependency
 							</outputDirectory>
 							<excludeArtifactIds>
-								jboss-as,jaxws-ri
+								jboss-as,jboss-messaging,jboss-messaging-sar,jaxws-ri
 							</excludeArtifactIds>
 							<includeScope>compile</includeScope>
 						</configuration>
@@ -132,6 +142,16 @@
 		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-as</artifactId>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-messaging</artifactId>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-messaging-sar</artifactId>
 			<type>zip</type>
 		</dependency>
 		<dependency>
@@ -360,6 +380,10 @@
 		<dependency>
 			<groupId>jfree</groupId>
 			<artifactId>jcommon</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jgroups</groupId>
+			<artifactId>jgroups</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.myfaces.trinidad</groupId>

@@ -15,7 +15,7 @@
 		<user-name>safeonline</user-name>
 		<password>safeonline</password>
 		<min-pool-size>5</min-pool-size>
-		<max-pool-size>20</max-pool-size>
+		<max-pool-size>200</max-pool-size>
 		<metadata>
 			<type-mapping>Oracle9i</type-mapping>
 		</metadata>

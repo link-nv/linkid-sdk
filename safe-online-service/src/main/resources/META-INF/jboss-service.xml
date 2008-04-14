@@ -6,6 +6,11 @@
 
 	<classpath codebase="." archives="lib/*.jar" />
 
+
+    <loader-repository>jboss.messaging:loader=ScopedLoaderRepository
+        <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
+    </loader-repository>
+
 	<mbean code="net.link.safeonline.service.RuntimeService"
 		name="safeonline:service=Runtime" />
 
@@ -81,20 +86,20 @@
 		</depends>
 	</mbean>
 
-	<mbean code="org.jboss.mq.server.jmx.Queue"
-		name="safeonline:service=Queue,name=outgoing-email">
+	<mbean code="org.jboss.jms.server.destination.QueueService"
+        name="safeonline:service=Queue,name=outgoing-email"
+        xmbean-dd = "xmdesc/Queue-xmbean.xml">
 		<attribute name="JNDIName">queue/outgoing-email</attribute>
-		<depends optional-attribute-name="DestinationManager">
-			jboss.mq:service=DestinationManager
-		</depends>
+        <depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+        <depends>jboss.messaging:service=PostOffice</depends>
 	</mbean>
 
-	<mbean code="org.jboss.mq.server.jmx.Queue"
-		name="safeonline:service=Queue,name=auditBackend">
+	<mbean code="org.jboss.jms.server.destination.QueueService"
+		name="safeonline:service=Queue,name=auditBackend"
+        xmbean-dd = "xmdesc/Queue-xmbean.xml">
 		<attribute name="JNDIName">queue/auditBackend</attribute>
-		<depends optional-attribute-name="DestinationManager">
-			jboss.mq:service=DestinationManager
-		</depends>
+        <depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+        <depends>jboss.messaging:service=PostOffice</depends>
 	</mbean>
 
 </server>

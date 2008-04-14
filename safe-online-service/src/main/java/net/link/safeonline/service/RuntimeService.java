@@ -71,7 +71,7 @@ public class RuntimeService extends ServiceMBeanSupport implements
 			throws PolicyContextException {
 		Set<String> handlerKeys = PolicyContext.getHandlerKeys();
 		if (false == handlerKeys
-				.contains(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY)) {
+				.contains(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY)) { 
 			LOG.debug("Registering audit context policy context handler...");
 			AuditContextPolicyContextHandler auditContextPolicyContextHandler = new AuditContextPolicyContextHandler();
 			PolicyContext.registerHandler(

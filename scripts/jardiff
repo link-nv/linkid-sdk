@@ -57,36 +57,7 @@ new=$2; [[ $new = /* ]] || new=$PWD/$new
 
 
 # Recursively extract all archives within the old and new archives.
-emit "Extracting archives recursively" --
-    mkdir -p "$workdir/"{old,new}
-
-    cd "$workdir/old" && unzip -qq "$old" || \
-        { emit -$?; exit $?; }
-    cd "$workdir/new" && unzip -qq "$new" || \
-        { emit -$?; exit $?; }
-
-    keepDigging=1
-    for (( i=0; keepDigging; ++i )); do
-        emit "Starting level $i"
-        for d in old new; do
-            cd "$workdir/$d"
-            if (( i )); then
-                keepDigging=0
-                while read -d ''; do
-                    cd "$REPLY"
-
-                    extractAll || \
-                        { emit -$?; exit $?; }
-
-                    keepDigging=1
-                done < <(find "$PWD" -mindepth $i -maxdepth $i -type d -name '_*.?ar' -print0)
-            else
-                extractAll
-            fi
-        done
-    done
-emit -0
-
+"${0%/*}"/jarextract
 
 # Enumerate the files and their file sizes.
 emit "Recording comparison heuristics" --

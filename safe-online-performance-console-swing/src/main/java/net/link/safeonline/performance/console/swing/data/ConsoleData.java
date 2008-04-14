@@ -65,11 +65,11 @@ public class ConsoleData {
 	private static final AgentRemoting agentDiscoverer = new AgentRemoting();
 	private static final ScenarioRemoting remoting = new ScenarioRemoting();
 	private static String hostname = "sebeco-dev-10";
-	private static boolean ssl = true;
-	private static int port = 8443;
+	private static boolean                          ssl                         = false;
+    private static int                              port                        = 8080;
 
-	static int workers = 5;
-	private static long duration = 600000;
+	static int workers = 10;
+	private static long                             duration                    = 60 * 60 * 1000;
 	static Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
 	static ScenarioExecution execution;
 	private static String scenarioName;
@@ -99,9 +99,10 @@ public class ConsoleData {
 
 		ConsoleAgent agent = ConsoleData.agents.get(agentAddress);
 		if (null == agent
-				&& ConsoleData.agentDiscoverer.hasMember(agentAddress))
-			ConsoleData.agents.put(agentAddress, agent = new ConsoleAgent(
+				&& ConsoleData.agentDiscoverer.hasMember(agentAddress)) {
+            ConsoleData.agents.put(agentAddress, agent = new ConsoleAgent(
 					agentAddress));
+        }
 
 		return agent;
 	}
@@ -296,8 +297,9 @@ public class ConsoleData {
 		lockHandler.queue(new Runnable() {
 			public void run() {
 
-				for (ExecutionSelectionListener listener : executionSelectionListeners)
-					listener.executionSelected(execution);
+				for (ExecutionSelectionListener listener : executionSelectionListeners) {
+                    listener.executionSelected(execution);
+                }
 			}
 		});
 	}
@@ -308,8 +310,9 @@ public class ConsoleData {
 	public static void addExecutionSelectionListener(
 			ExecutionSelectionListener listener) {
 
-		if (!executionSelectionListeners.contains(listener))
-			executionSelectionListeners.add(listener);
+		if (!executionSelectionListeners.contains(listener)) {
+            executionSelectionListeners.add(listener);
+        }
 	}
 
 	public static void fireExecutionSettings() {
@@ -317,8 +320,9 @@ public class ConsoleData {
 		lockHandler.queue(new Runnable() {
 			public void run() {
 
-				for (ExecutionSettingsListener listener : executionSettingsListeners)
-					listener.executionSettingsChanged();
+				for (ExecutionSettingsListener listener : executionSettingsListeners) {
+                    listener.executionSettingsChanged();
+                }
 			}
 		});
 	}
@@ -329,8 +333,9 @@ public class ConsoleData {
 	public static void addExecutionSettingsListener(
 			ExecutionSettingsListener listener) {
 
-		if (!executionSettingsListeners.contains(listener))
-			executionSettingsListeners.add(listener);
+		if (!executionSettingsListeners.contains(listener)) {
+            executionSettingsListeners.add(listener);
+        }
 	}
 
 	public static void fireAgentSelection() {
@@ -338,8 +343,9 @@ public class ConsoleData {
 		lockHandler.queue(new Runnable() {
 			public void run() {
 
-				for (AgentSelectionListener listener : agentSelectionListeners)
-					listener.agentsSelected(selectedAgents);
+				for (AgentSelectionListener listener : agentSelectionListeners) {
+                    listener.agentsSelected(selectedAgents);
+                }
 			}
 		});
 	}
@@ -349,8 +355,9 @@ public class ConsoleData {
 	 */
 	public static void addAgentSelectionListener(AgentSelectionListener listener) {
 
-		if (!agentSelectionListeners.contains(listener))
-			agentSelectionListeners.add(listener);
+		if (!agentSelectionListeners.contains(listener)) {
+            agentSelectionListeners.add(listener);
+        }
 	}
 
 	/**
@@ -365,8 +372,9 @@ public class ConsoleData {
 		lockHandler.queue(new Runnable() {
 			public void run() {
 
-				for (AgentStatusListener listener : agentStatusListeners)
-					listener.statusChanged(agent);
+				for (AgentStatusListener listener : agentStatusListeners) {
+                    listener.statusChanged(agent);
+                }
 			}
 		});
 	}
@@ -377,8 +385,9 @@ public class ConsoleData {
 	public static void addAgentStatusListener(
 			AgentStatusListener agentStatusListener) {
 
-		if (!agentStatusListeners.contains(agentStatusListener))
-			agentStatusListeners.add(agentStatusListener);
+		if (!agentStatusListeners.contains(agentStatusListener)) {
+            agentStatusListeners.add(agentStatusListener);
+        }
 	}
 
 	private static class LockHandler extends Thread {
@@ -402,11 +411,12 @@ public class ConsoleData {
 		public void run() {
 
 			Runnable task;
-			while (true)
-				try {
+			while (true) {
+                try {
 					while ((task = this.queue.poll(Long.MAX_VALUE,
-							TimeUnit.SECONDS)) == null)
-						Thread.yield();
+							TimeUnit.SECONDS)) == null) {
+                        Thread.yield();
+                    }
 
 					synchronized (lock) {
 						SwingUtilities.invokeAndWait(task);
@@ -416,6 +426,7 @@ public class ConsoleData {
 				catch (InterruptedException e) {
 				} catch (InvocationTargetException e) {
 				}
+            }
 		}
 
 		public void queue(Runnable task) {
