@@ -140,10 +140,38 @@
                     buildserver
                 </safe-online.host.name>
             </properties>
-            <modules>
-                <module>safe-online-base-distribution</module>
-                <module>safe-online-demo-distribution</module>
-            </modules>
+			<modules>
+                <module>safe-online-model-demo</module>
+                <module>safe-online-demo-webapp</module>
+                <module>safe-online-demo-service</module>
+                <module>safe-online-demo-remote-service</module>
+                <module>safe-online-demo-deploy</module>
+                <module>safe-online-demo-applet</module>
+                <module>safe-online-demo-keystore</module>
+                <module>safe-online-demo-ticket-webapp</module>
+                <module>safe-online-demo-ticket</module>
+                <module>safe-online-demo-ticket-keystore</module>
+                <module>safe-online-demo-payment-keystore</module>
+                <module>safe-online-demo-payment</module>
+                <module>safe-online-demo-payment-service</module>
+                <module>safe-online-demo-payment-webapp</module>
+                <module>safe-online-demo-lawyer-keystore</module>
+                <module>safe-online-demo-lawyer</module>
+                <module>safe-online-demo-lawyer-webapp</module>
+                <module>safe-online-demo-lawyer-service</module>
+                <module>safe-online-demo-prescription-keystore</module>
+                <module>safe-online-demo-util</module>
+                <module>safe-online-demo-prescription</module>
+                <module>safe-online-demo-prescription-webapp</module>
+                <module>safe-online-demo-prescription-service</module>
+                <module>safe-online-demo-mandate-keystore</module>
+                <module>safe-online-demo-mandate</module>
+                <module>safe-online-demo-mandate-webapp</module>
+                <module>safe-online-demo-mandate-service</module>
+
+				<module>safe-online-base-distribution</module>
+				<module>safe-online-demo-distribution</module>
+			</modules>
         </profile>
         
         <!-- PROFILE FOR WEBAPP TESTING -->
@@ -169,7 +197,38 @@
             <modules>
                 <module>safe-online-test-webapp</module>
                 <module>safe-online-test</module>
-            </modules>
+
+                <module>safe-online-model-demo</module>
+                <module>safe-online-demo-webapp</module>
+                <module>safe-online-demo-service</module>
+                <module>safe-online-demo-remote-service</module>
+                <module>safe-online-demo-deploy</module>
+                <module>safe-online-demo-applet</module>
+                <module>safe-online-demo-keystore</module>
+                <module>safe-online-demo-ticket-webapp</module>
+                <module>safe-online-demo-ticket</module>
+                <module>safe-online-demo-ticket-keystore</module>
+                <module>safe-online-demo-payment-keystore</module>
+                <module>safe-online-demo-payment</module>
+                <module>safe-online-demo-payment-service</module>
+                <module>safe-online-demo-payment-webapp</module>
+                <module>safe-online-demo-lawyer-keystore</module>
+                <module>safe-online-demo-lawyer</module>
+                <module>safe-online-demo-lawyer-webapp</module>
+                <module>safe-online-demo-lawyer-service</module>
+                <module>safe-online-demo-prescription-keystore</module>
+                <module>safe-online-demo-util</module>
+                <module>safe-online-demo-prescription</module>
+                <module>safe-online-demo-prescription-webapp</module>
+                <module>safe-online-demo-prescription-service</module>
+                <module>safe-online-demo-mandate-keystore</module>
+                <module>safe-online-demo-mandate</module>
+                <module>safe-online-demo-mandate-webapp</module>
+                <module>safe-online-demo-mandate-service</module>
+
+				<module>safe-online-base-distribution</module>
+				<module>safe-online-demo-distribution</module>
+			</modules>
         </profile>
         
         <!--  PROFILE FOR BUILDING THE DEMOS -->
@@ -187,6 +246,34 @@
 				</defaultCronExpression>
 			</properties>
 			<modules>
+                <module>safe-online-model-demo</module>
+                <module>safe-online-demo-webapp</module>
+                <module>safe-online-demo-service</module>
+                <module>safe-online-demo-remote-service</module>
+                <module>safe-online-demo-deploy</module>
+                <module>safe-online-demo-applet</module>
+                <module>safe-online-demo-keystore</module>
+                <module>safe-online-demo-ticket-webapp</module>
+                <module>safe-online-demo-ticket</module>
+                <module>safe-online-demo-ticket-keystore</module>
+                <module>safe-online-demo-payment-keystore</module>
+                <module>safe-online-demo-payment</module>
+                <module>safe-online-demo-payment-service</module>
+                <module>safe-online-demo-payment-webapp</module>
+                <module>safe-online-demo-lawyer-keystore</module>
+                <module>safe-online-demo-lawyer</module>
+                <module>safe-online-demo-lawyer-webapp</module>
+                <module>safe-online-demo-lawyer-service</module>
+                <module>safe-online-demo-prescription-keystore</module>
+                <module>safe-online-demo-util</module>
+                <module>safe-online-demo-prescription</module>
+                <module>safe-online-demo-prescription-webapp</module>
+                <module>safe-online-demo-prescription-service</module>
+                <module>safe-online-demo-mandate-keystore</module>
+                <module>safe-online-demo-mandate</module>
+                <module>safe-online-demo-mandate-webapp</module>
+                <module>safe-online-demo-mandate-service</module>
+
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-demo-distribution</module>
 			</modules>
@@ -286,10 +373,11 @@
 				<safe-online.host.port.ssl>443</safe-online.host.port.ssl>
 			</properties>
 			<modules>
-				<module>safe-online-base-distribution</module>
 				<module>safe-online-root-webapp</module>
 				<module>safe-online-install-manual</module>
 				<module>safe-online-maintenance-manual</module>
+
+				<module>safe-online-base-distribution</module>
 				<module>safe-online-pilot-distribution</module>
 				<module>safe-online-pilot-mysql-distribution</module>
 			</modules>
@@ -323,10 +411,11 @@
 				<safe-online.host.port.ssl>443</safe-online.host.port.ssl>
 			</properties>
 			<modules>
-				<module>safe-online-base-distribution</module>
 				<module>safe-online-root-webapp</module>
 				<module>safe-online-install-manual</module>
 				<module>safe-online-maintenance-manual</module>
+
+				<module>safe-online-base-distribution</module>
 				<module>safe-online-pilot-distribution</module>
 				<module>safe-online-pilot-postgres-distribution</module>
 			</modules>
@@ -360,10 +449,11 @@
 				<safe-online.host.port.ssl>443</safe-online.host.port.ssl>
 			</properties>
 			<modules>
-				<module>safe-online-base-distribution</module>
 				<module>safe-online-root-webapp</module>
 				<module>safe-online-install-manual</module>
 				<module>safe-online-maintenance-manual</module>
+
+				<module>safe-online-base-distribution</module>
 				<module>safe-online-pilot-distribution</module>
 				<module>safe-online-pilot-oracle-distribution</module>
 			</modules>
@@ -454,8 +544,8 @@
                 </safe-online.profiling.interceptor>
             </properties>
             <modules>
-                <module>safe-online-performance-keystore</module>
                 <module>safe-online-model-performance</module>
+                <module>safe-online-performance-keystore</module>
                 <module>safe-online-performance-entity</module>
                 <module>safe-online-performance-agent-service</module>
                 <module>safe-online-performance-scenario-base</module>
@@ -464,6 +554,7 @@
                 <module>safe-online-performance-console-base</module>
                 <module>safe-online-performance-console-swing</module>
                 <module>safe-online-performance-console-package</module>
+
                 <module>safe-online-base-distribution</module>
                 <module>safe-online-performance-distribution</module>
             </modules>
@@ -697,10 +788,7 @@
     <!-- ALL MODULES ENABLED BY DEFAULT -->
     <modules>
         <module>safe-online-container</module>
-        <module>safe-online-demo-webapp</module>
-        <module>safe-online-demo-service</module>
         <module>safe-online-sdk</module>
-        <module>safe-online-demo-remote-service</module>
         <module>safe-online-ws-runtime</module>
         <module>safe-online-entity</module>
         <module>safe-online-deploy</module>
@@ -712,7 +800,6 @@
         <module>safe-online-user</module>
         <module>safe-online-user-service</module>
         <module>safe-online-taglib</module>
-        <module>safe-online-demo-deploy</module>
         <module>safe-online-service</module>
         <module>safe-online-j2ee-util</module>
         <module>safe-online-webapp-base</module>
@@ -726,7 +813,6 @@
         <module>safe-online-sql-ddl</module>
         <module>safe-online-auth-webapp</module>
         <module>safe-online-common</module>
-        <module>safe-online-demo-applet</module>
         <module>safe-online-pkcs11-sc</module>
         <module>safe-online-pkcs11-sc-beid</module>
         <module>safe-online-identity-applet</module>
@@ -740,35 +826,13 @@
         <module>safe-online-applet-common</module>
         <module>safe-online-attrib-ws</module>
         <module>safe-online-attrib-ws-impl</module>
-        <module>safe-online-demo-keystore</module>
-        <module>safe-online-model-demo</module>
         <module>safe-online-auth</module>
-        <module>safe-online-demo-ticket-webapp</module>
-        <module>safe-online-demo-ticket</module>
-        <module>safe-online-demo-ticket-keystore</module>
-        <module>safe-online-demo-payment-keystore</module>
-        <module>safe-online-demo-payment</module>
-        <module>safe-online-demo-payment-service</module>
-        <module>safe-online-demo-payment-webapp</module>
         <module>safe-online-data-ws</module>
         <module>safe-online-data-ws-impl</module>
         <module>safe-online-ws-util</module>
-        <module>safe-online-demo-lawyer-keystore</module>
-        <module>safe-online-demo-lawyer</module>
-        <module>safe-online-demo-lawyer-webapp</module>
-        <module>safe-online-demo-lawyer-service</module>
-        <module>safe-online-demo-prescription-keystore</module>
-        <module>safe-online-demo-util</module>
-        <module>safe-online-demo-prescription</module>
-        <module>safe-online-demo-prescription-webapp</module>
-        <module>safe-online-demo-prescription-service</module>
         <module>safe-online-auth-service</module>
         <module>safe-online-app-console</module>
         <module>safe-online-ws-common</module>
-        <module>safe-online-demo-mandate-keystore</module>
-        <module>safe-online-demo-mandate</module>
-        <module>safe-online-demo-mandate-webapp</module>
-        <module>safe-online-demo-mandate-service</module>
         <module>safe-online-sms</module>
         <module>safe-online-sms-ra</module>
         <module>safe-online-sms-ra-package</module>

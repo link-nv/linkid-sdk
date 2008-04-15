@@ -26,6 +26,7 @@
 				<exclude>jar-versions.xml</exclude>
 				<exclude>server/default/lib/jboss-jaxws.jar</exclude>
 				<exclude>server/default/lib/jbossmq.jar</exclude>
+				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
                 <exclude>server/default/deploy/jms/**</exclude>
 				<exclude>
 					server/default/deploy/jbossws.sar/jboss-jaxws.jar
