@@ -34,6 +34,13 @@
 			</excludes>
 		</fileSet>
 		<fileSet>
+            <directory>target/files/jboss-4.2.2.GA/server/default/deploy/jms</directory>
+            <outputDirectory>jboss/server/default/deploy</outputDirectory>
+			<includes>
+                <include>jms-ra.rar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>target/files/jboss-4.2.2.GA</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
