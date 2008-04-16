@@ -12,87 +12,34 @@
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
-				<exclude>
-					server/default/deploy/jms/hsqldb-jdbc2-service.xml
-				</exclude>
-				<exclude>
-					server/default/deploy/jmx-console.war/**
-				</exclude>
+				<exclude>server/default/deploy/jmx-console.war/**</exclude>
 				<exclude>server/default/deploy/management/**</exclude>
-				<exclude>
-					server/default/deploy/http-invoker.sar/**
-				</exclude>
+				<exclude>server/default/deploy/http-invoker.sar/**</exclude>
 				<exclude>server/default/conf/jboss-minimal.xml</exclude>
-				<exclude>
-					server/default/deploy/jmx-invoker-service.xml
-				</exclude>
-				<exclude>
-					server/default/deploy/monitoring-service.xml
-				</exclude>
-				<exclude>
-					server/default/lib/jboss-monitoring.jar
-				</exclude>
-				<exclude>
-					server/default/deploy/jbossws.sar/jbossws-context.war
-				</exclude>
-				<exclude>
-					server/default/deploy/jms/jbossmq-destinations-service.xml
-				</exclude>
-				<exclude>
-					server/default/deploy/jms/jbossmq-httpil.sar/**
-				</exclude>
-				<exclude>
-					server/default/deploy/jboss-web.deployer/ROOT.war/**
-				</exclude>
-				<exclude>
-					server/default/deploy/bsh-deployer.xml
-				</exclude>
-				<exclude>
-					server/default/deploy/mail-service.xml
-				</exclude>
-				<exclude>
-					server/default/deploy/cache-invalidation-service.xml
-				</exclude>
-				<exclude>
-					server/default/deploy/client-deployer-service.xml
-				</exclude>
-				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
+				<exclude>server/default/deploy/jmx-invoker-service.xml</exclude>
+				<exclude>server/default/deploy/monitoring-service.xml</exclude>
+				<exclude>server/default/lib/jboss-monitoring.jar</exclude>
+				<exclude>server/default/deploy/jbossws.sar/jbossws-context.war</exclude>
+				<exclude>server/default/deploy/jboss-web.deployer/ROOT.war/**</exclude>
+				<exclude>server/default/deploy/bsh-deployer.xml</exclude>
+				<exclude>server/default/deploy/mail-service.xml</exclude>
+				<exclude>server/default/deploy/cache-invalidation-service.xml</exclude>
+				<exclude>server/default/deploy/client-deployer-service.xml</exclude>
+                <exclude>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
 				<exclude>server/default/deploy/hsql-safe-online-ds.xml</exclude>
+				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
 				<exclude>server/default/lib/hsqldb.jar</exclude>
 				<exclude>server/default/lib/hsqldb-plugin.jar</exclude>
-				<exclude>
-					server/default/deploy/jms/hsqldb-jdbc-state-service.xml
-				</exclude>
-				<exclude>
-					server/default/deploy/properties-service.xml
-				</exclude>
-				<exclude>
-					server/default/lib/properties-plugin.jar
-				</exclude>
-				<exclude>
-					server/default/deploy/scheduler-service.xml
-				</exclude>
-				<exclude>
-					server/default/deploy/schedule-manager-service.xml
-				</exclude>
-				<exclude>
-					server/default/lib/scheduler-plugin.jar
-				</exclude>
-				<exclude>
-					server/default/lib/scheduler-plugin-example.jar
-				</exclude>
-				<exclude>
-					server/default/deploy/uuid-key-generator.sar/**
-				</exclude>
-				<exclude>
-					server/default/lib/autonumber-plugin.jar
-				</exclude>
-				<exclude>
-					server/default/conf/xmdesc/JNDIView-xmbean.xml
-				</exclude>
-				<exclude>
-					server/default/conf/props/*.properties
-				</exclude>
+				<exclude>server/default/deploy/properties-service.xml</exclude>
+				<exclude>server/default/lib/properties-plugin.jar</exclude>
+				<exclude>server/default/deploy/scheduler-service.xml</exclude>
+				<exclude>server/default/deploy/schedule-manager-service.xml</exclude>
+				<exclude>server/default/lib/scheduler-plugin.jar</exclude>
+				<exclude>server/default/lib/scheduler-plugin-example.jar</exclude>
+				<exclude>server/default/deploy/uuid-key-generator.sar/**</exclude>
+				<exclude>server/default/lib/autonumber-plugin.jar</exclude>
+				<exclude>server/default/conf/xmdesc/JNDIView-xmbean.xml</exclude>
+				<exclude>server/default/conf/props/*.properties</exclude>
 				<exclude>readme.html</exclude>
 				<exclude>bin/*.sh</exclude>
 			</excludes>
