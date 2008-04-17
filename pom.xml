@@ -114,6 +114,7 @@
 	
 	<!-- COMPILATION PROFILES -->
 	<profiles>
+		<!--  PROFILE USED DURING DEVELOPMENT -->
 		<profile>
 			<id>env-dev</id>
 			<activation>
@@ -126,9 +127,12 @@
 			<properties>
 				<safe-online.host.name>localhost</safe-online.host.name>
 			</properties>
+			<modules>
+				<module>safe-online-model-demo</module>
+			</modules>
 		</profile>
 	
-	   <!-- PROFILE THAT THE BUILDSERVER BUILDS NIGHTLIES WITH. -->
+	   <!-- PROFILE TO USE ON BUILDSERVER DEPLOYMENT -->
 		<profile>
 			<id>env-buildserver</id>
 			<activation>
