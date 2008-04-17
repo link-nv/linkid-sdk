@@ -38,34 +38,22 @@ import org.apache.commons.logging.Log;
 import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 /**
- * Applet control component.
+ * Applet control component for PKCS#11 smart cards.
  * 
  * @author fcorneli
  * 
  */
-public class AppletControl implements Runnable, SmartCardPinCallback {
+public class AppletControl implements AppletController, SmartCardPinCallback {
 
-	private final AppletView appletView;
+	private AppletView appletView;
 
-	private final RuntimeContext runtimeContext;
+	private RuntimeContext runtimeContext;
 
-	private final StatementProvider statementProvider;
+	private StatementProvider statementProvider;
 
-	private final ResourceBundle messages;
+	private ResourceBundle messages;
 
-	public AppletControl(final AppletView appletView,
-			final RuntimeContext runtimeContext,
-			final StatementProvider statementProvider) {
-		this.appletView = appletView;
-		this.runtimeContext = runtimeContext;
-		this.statementProvider = statementProvider;
-
-		Locale locale = this.runtimeContext.getLocale();
-		this.messages = ResourceBundle.getBundle(
-				"net.link.safeonline.applet.ControlMessages", locale);
-	}
-
-	private void setupLogging(@SuppressWarnings("unused") SmartCard smartCard) {
+	private void setupLogging(SmartCard smartCard) {
 		Log log = this.appletView.getLog();
 		SmartCardImpl.setLog(log);
 	}
@@ -129,7 +117,11 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 
 		byte[] statement;
 		try {
-			statement = this.statementProvider.createStatement(smartCard);
+			Pkcs11Signer pkcs11Signer = new Pkcs11Signer(smartCard);
+			BeIdIdentityProvider identityProvider = new BeIdIdentityProvider(
+					smartCard);
+			statement = this.statementProvider.createStatement(pkcs11Signer,
+					identityProvider);
 		} catch (ProviderException e) {
 			Throwable cause = e.getCause();
 			if (cause instanceof PKCS11Exception) {
@@ -137,8 +129,11 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 				smartCard.resetPKCS11Driver();
 				try {
 					smartCard.open(smartCardAlias);
-					statement = this.statementProvider
-							.createStatement(smartCard);
+					Pkcs11Signer pkcs11Signer = new Pkcs11Signer(smartCard);
+					BeIdIdentityProvider identityProvider = new BeIdIdentityProvider(
+							smartCard);
+					statement = this.statementProvider.createStatement(
+							pkcs11Signer, identityProvider);
 				} catch (Exception e2) {
 					this.appletView.outputInfoMessage(InfoLevel.ERROR,
 							this.messages.getString("signErrorMsg"));
@@ -300,5 +295,15 @@ public class AppletControl implements Runnable, SmartCardPinCallback {
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("URL error: " + e.getMessage());
 		}
+	}
+
+	public void init(AppletView appletView, RuntimeContext runtimeContext,
+			StatementProvider statementProvider) {
+		this.appletView = appletView;
+		this.runtimeContext = runtimeContext;
+		this.statementProvider = statementProvider;
+		Locale locale = this.runtimeContext.getLocale();
+		this.messages = ResourceBundle.getBundle(
+				"net.link.safeonline.applet.ControlMessages", locale);
 	}
 }

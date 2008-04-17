@@ -7,10 +7,7 @@
 
 package net.link.safeonline.auth;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
-
-import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.statement.AuthenticationStatement;
 
 public class AuthenticationStatementFactory {
@@ -20,11 +17,9 @@ public class AuthenticationStatementFactory {
 	}
 
 	public static byte[] createAuthenticationStatement(String sessionId,
-			String applicationId, SmartCard smartCard) {
-		X509Certificate authCert = smartCard.getAuthenticationCertificate();
-		PrivateKey authPrivateKey = smartCard.getAuthenticationPrivateKey();
+			String applicationId, Signer signer) {
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
-				sessionId, applicationId, authCert, authPrivateKey);
+				sessionId, applicationId, signer);
 		byte[] authenticationStatementData = authenticationStatement
 				.generateStatement();
 		return authenticationStatementData;

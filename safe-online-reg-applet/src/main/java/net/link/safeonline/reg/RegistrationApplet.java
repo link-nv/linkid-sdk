@@ -12,14 +12,16 @@ import java.util.ResourceBundle;
 
 import net.link.safeonline.applet.AppletBase;
 import net.link.safeonline.applet.InfoLevel;
-import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.shared.Signer;
+import net.link.safeonline.shared.statement.IdentityProvider;
 
 public class RegistrationApplet extends AppletBase {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public byte[] createStatement(SmartCard smartCard) {
+	public byte[] createStatement(Signer signer,
+			IdentityProvider identityProvider) {
 		String sessionId = getParameter("SessionId");
 		String applicationId = getParameter("ApplicationId");
 		String user = getParameter("User");
@@ -34,7 +36,7 @@ public class RegistrationApplet extends AppletBase {
 		outputDetailMessage("User: " + user);
 		byte[] registrationStatement = RegistrationStatementFactory
 				.createRegistrationStatement(user, sessionId, applicationId,
-						smartCard);
+						signer);
 		return registrationStatement;
 	}
 }

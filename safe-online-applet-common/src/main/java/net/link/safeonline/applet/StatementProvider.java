@@ -7,7 +7,8 @@
 
 package net.link.safeonline.applet;
 
-import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.shared.Signer;
+import net.link.safeonline.shared.statement.IdentityProvider;
 
 /**
  * Interface for statement provider.
@@ -17,5 +18,5 @@ import net.link.safeonline.p11sc.SmartCard;
  */
 public interface StatementProvider {
 
-	byte[] createStatement(SmartCard smartCard);
+	byte[] createStatement(Signer signer, IdentityProvider identityProvider);
 }

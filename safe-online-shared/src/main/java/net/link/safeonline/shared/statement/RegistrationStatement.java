@@ -7,9 +7,7 @@
 
 package net.link.safeonline.shared.statement;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
-
+import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.asn1.statement.DERRegistrationStatement;
 
 /**
@@ -23,9 +21,8 @@ import net.link.safeonline.shared.asn1.statement.DERRegistrationStatement;
 public class RegistrationStatement extends AbstractStatement {
 
 	public RegistrationStatement(String user, String sessionId,
-			String applicationId, X509Certificate authenticationCertificate,
-			PrivateKey privateKey) {
-		super(privateKey, new DERRegistrationStatement(user, sessionId,
-				applicationId, authenticationCertificate));
+			String applicationId, Signer signer) {
+		super(signer, new DERRegistrationStatement(user, sessionId,
+				applicationId, signer.getCertificate()));
 	}
 }

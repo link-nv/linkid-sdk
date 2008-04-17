@@ -792,6 +792,8 @@
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet</module>
 		<module>safe-online-node-keystore</module>
+		<module>safe-online-auth-pcsc-applet</module>
+		<module>safe-online-auth-pcsc-applet-package</module>
 	</modules>
 	
 	<!-- DEFAULT BUILD CONFIGURATION -->

@@ -11,6 +11,9 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 
 import junit.framework.TestCase;
+import net.link.safeonline.shared.JceSigner;
+import net.link.safeonline.shared.Signer;
+import net.link.safeonline.shared.statement.IdentityProvider;
 import net.link.safeonline.shared.statement.IdentityStatement;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -31,12 +34,22 @@ public class IdentityStatementTest extends TestCase {
 				.generateSelfSignedCertificate(keyPair,
 						"CN=AuthenticationCertificate");
 		String user = "user";
-		String givenName = "givenName";
-		String surname = "surname";
+
+		Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
+
+		IdentityProvider identityProvider = new IdentityProvider() {
+			public String getGivenName() {
+				return "givenName";
+			}
+
+			public String getSurname() {
+				return "surname";
+			}
+		};
 
 		// operate
-		IdentityStatement identityStatement = new IdentityStatement(
-				certificate, user, givenName, surname, keyPair.getPrivate());
+		IdentityStatement identityStatement = new IdentityStatement(user,
+				identityProvider, signer);
 		byte[] resultIdentityStatement = identityStatement.generateStatement();
 
 		// verify

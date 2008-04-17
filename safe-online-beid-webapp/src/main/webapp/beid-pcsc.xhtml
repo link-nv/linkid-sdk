@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:so="urn:net:lin-k:safe-online:taglib:1.0"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<body>
+<ui:composition template="/WEB-INF/template.xhtml">
+	<ui:define name="top_content">
+		<h2>#{msgs.authenticateBeId}</h2>
+	</ui:define>
+	<ui:define name="content">
+
+		<applet name="AuthenticationApplet"
+			code="net.link.safeonline.auth.pcsc.AuthenticationApplet.class"
+			archive="safe-online-auth-pcsc-applet-package.jar" width="450"
+			height="200">
+			<param name="ServletPath" value="authentication" />
+			<param name="TargetPath" value="authenticationexit" />
+			<param name="HelpPath" value="./help.seam?location=beid-applet.seam" />
+			<param name="SessionId"
+				value="#{facesContext.externalContext.request.session.id}" />
+			<param name="ApplicationId" value="${applicationId}" />
+			<param name="Language" value="#{localeSelector.language}" />
+		</applet>
+	</ui:define>
+	<ui:define name="sidebar">
+		<p>#{msgs.helpBeid}</p>
+	</ui:define>
+</ui:composition>
+</body>
+</html>

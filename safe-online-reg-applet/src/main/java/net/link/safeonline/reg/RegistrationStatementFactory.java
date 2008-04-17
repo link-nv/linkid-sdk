@@ -7,10 +7,7 @@
 
 package net.link.safeonline.reg;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
-
-import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.statement.RegistrationStatement;
 
 public class RegistrationStatementFactory {
@@ -20,12 +17,9 @@ public class RegistrationStatementFactory {
 	}
 
 	public static byte[] createRegistrationStatement(String user,
-			String sessionId, String applicationId, SmartCard smartCard) {
-
-		X509Certificate authCert = smartCard.getAuthenticationCertificate();
-		PrivateKey authPrivateKey = smartCard.getAuthenticationPrivateKey();
+			String sessionId, String applicationId, Signer signer) {
 		RegistrationStatement registrationStatement = new RegistrationStatement(
-				user, sessionId, applicationId, authCert, authPrivateKey);
+				user, sessionId, applicationId, signer);
 		byte[] registrationStatementData = registrationStatement
 				.generateStatement();
 		return registrationStatementData;

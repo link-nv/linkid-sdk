@@ -7,10 +7,8 @@
 
 package net.link.safeonline.identity;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
-
-import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.shared.Signer;
+import net.link.safeonline.shared.statement.IdentityProvider;
 import net.link.safeonline.shared.statement.IdentityStatement;
 
 /**
@@ -31,18 +29,14 @@ public class IdentityStatementFactory {
 	 * 
 	 * @param user
 	 *            the Id of the user.
-	 * @param smartCard
-	 *            the smart card component.
+	 * @param signer
+	 * @param identityProvider
 	 * @return the ASN.1 DER encoded identity statement.
 	 */
-	public static byte[] createIdentityStatement(String user,
-			SmartCard smartCard) {
-		X509Certificate authCert = smartCard.getAuthenticationCertificate();
-		String givenName = smartCard.getGivenName();
-		String surname = smartCard.getSurname();
-		PrivateKey authPrivateKey = smartCard.getAuthenticationPrivateKey();
-		IdentityStatement identityStatement = new IdentityStatement(authCert,
-				user, givenName, surname, authPrivateKey);
+	public static byte[] createIdentityStatement(String user, Signer signer,
+			IdentityProvider identityProvider) {
+		IdentityStatement identityStatement = new IdentityStatement(user,
+				identityProvider, signer);
 		byte[] identityStatementData = identityStatement.generateStatement();
 		return identityStatementData;
 	}

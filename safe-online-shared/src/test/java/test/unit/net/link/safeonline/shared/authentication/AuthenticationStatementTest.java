@@ -12,6 +12,8 @@ import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import junit.framework.TestCase;
+import net.link.safeonline.shared.JceSigner;
+import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.statement.AuthenticationStatement;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -34,9 +36,11 @@ public class AuthenticationStatementTest extends TestCase {
 		String sessionId = UUID.randomUUID().toString();
 		String applicationId = UUID.randomUUID().toString();
 
+		Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
+
 		// operate
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
-				sessionId, applicationId, certificate, keyPair.getPrivate());
+				sessionId, applicationId, signer);
 		byte[] resultAuthenticationStatement = authenticationStatement
 				.generateStatement();
 

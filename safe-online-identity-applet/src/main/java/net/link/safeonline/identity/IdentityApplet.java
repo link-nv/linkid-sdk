@@ -12,7 +12,8 @@ import java.util.ResourceBundle;
 
 import net.link.safeonline.applet.AppletBase;
 import net.link.safeonline.applet.InfoLevel;
-import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.shared.Signer;
+import net.link.safeonline.shared.statement.IdentityProvider;
 
 /**
  * The identity applet creates an identity statement at the client-side within
@@ -26,7 +27,8 @@ public class IdentityApplet extends AppletBase {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public byte[] createStatement(SmartCard smartCard) {
+	public byte[] createStatement(Signer signer,
+			IdentityProvider identityProvider) {
 
 		Locale locale = getLocale();
 		ResourceBundle messages = ResourceBundle.getBundle(
@@ -37,7 +39,7 @@ public class IdentityApplet extends AppletBase {
 		String user = getParameter("User");
 		super.outputDetailMessage("User: " + user);
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(user, smartCard);
+				.createIdentityStatement(user, signer, identityProvider);
 		return identityStatement;
 	}
 }

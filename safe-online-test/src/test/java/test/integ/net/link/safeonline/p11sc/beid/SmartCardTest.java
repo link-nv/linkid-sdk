@@ -7,6 +7,10 @@
 
 package test.integ.net.link.safeonline.p11sc.beid;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -34,7 +38,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
-import junit.framework.TestCase;
+import net.link.safeonline.applet.BeIdIdentityProvider;
+import net.link.safeonline.applet.Pkcs11Signer;
 import net.link.safeonline.identity.IdentityStatementFactory;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
@@ -46,6 +51,7 @@ import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
 
 import sun.security.pkcs11.SunPKCS11;
 import sun.security.pkcs11.wrapper.CK_INFO;
@@ -59,10 +65,11 @@ import be.belgium.eid.BEID_Long;
 import be.belgium.eid.BEID_Status;
 import be.belgium.eid.eidlib;
 
-public class SmartCardTest extends TestCase {
+public class SmartCardTest {
 
 	private static final Log LOG = LogFactory.getLog(SmartCardTest.class);
 
+	@Test
 	public void testGetCertificatePath() throws Exception {
 		// setup
 		SmartCard smartCard = SmartCardFactory.newInstance();
@@ -93,6 +100,7 @@ public class SmartCardTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetCertificatesAndPrivateKeys() throws Exception {
 		// setup
 		SmartCard smartCard = SmartCardFactory.newInstance();
@@ -142,6 +150,7 @@ public class SmartCardTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testAvailabilityOfBeIDConfiguration() throws Exception {
 		URL url = SmartCardTest.class
 				.getResource("/META-INF/safe-online-pkcs11-sc-config.properties");
@@ -158,6 +167,7 @@ public class SmartCardTest extends TestCase {
 		assertTrue(enumerationResult.hasMoreElements());
 	}
 
+	@Test
 	public void testIteratePKCS11Slots() throws Exception {
 		// setup
 		SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
@@ -199,6 +209,7 @@ public class SmartCardTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testIdentityStatement() throws Exception {
 		SmartCard smartCard = SmartCardFactory.newInstance();
 
@@ -215,13 +226,16 @@ public class SmartCardTest extends TestCase {
 
 		LOG.debug("Creating identity statement...");
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement("beid", smartCard);
+				.createIdentityStatement("fcorneli",
+						new Pkcs11Signer(smartCard), new BeIdIdentityProvider(
+								smartCard));
 
 		LOG.debug("Disconnecting from smart card...");
 		smartCard.close();
 		assertNotNull(identityStatement);
 	}
 
+	@Test
 	public void testCardRemoval() throws Exception {
 		SmartCard smartCard = SmartCardFactory.newInstance();
 
@@ -248,7 +262,9 @@ public class SmartCardTest extends TestCase {
 
 		LOG.debug("Creating identity statement...");
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement("beid", smartCard);
+				.createIdentityStatement("fcorneli",
+						new Pkcs11Signer(smartCard), new BeIdIdentityProvider(
+								smartCard));
 
 		LOG.debug("Disconnecting from smart card...");
 		smartCard.close();
@@ -265,7 +281,8 @@ public class SmartCardTest extends TestCase {
 		LOG.debug("private key type: " + privateKey.getClass().getName());
 		try {
 			identityStatement = IdentityStatementFactory
-					.createIdentityStatement("beid", smartCard);
+					.createIdentityStatement("fcorneli", new Pkcs11Signer(
+							smartCard), new BeIdIdentityProvider(smartCard));
 		} catch (ProviderException e) {
 			Throwable t = e.getCause();
 			if (t instanceof PKCS11Exception) {
@@ -274,12 +291,14 @@ public class SmartCardTest extends TestCase {
 				smartCard.open("beid");
 				privateKey = smartCard.getAuthenticationPrivateKey();
 				identityStatement = IdentityStatementFactory
-						.createIdentityStatement("beid", smartCard);
+						.createIdentityStatement("fcorneli", new Pkcs11Signer(
+								smartCard), new BeIdIdentityProvider(smartCard));
 			}
 		}
 		smartCard.close();
 	}
 
+	@Test
 	public void testSmartCardConfigForWindowsXP() throws Exception {
 		SmartCardConfigFactory smartCardConfigFactory = new SmartCardConfigFactoryImpl();
 		List<SmartCardConfig> smartCardConfigs = smartCardConfigFactory
@@ -301,6 +320,7 @@ public class SmartCardTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testJniBeIdLib() throws Exception {
 		Runtime runtime = Runtime.getRuntime();
 		runtime.load("/usr/local/lib/libbeidlibjni.so");
@@ -333,6 +353,7 @@ public class SmartCardTest extends TestCase {
 		oStatus = eidlib.BEID_Exit();
 	}
 
+	@Test
 	public void testOpenscPkcs11Driver() throws Exception {
 		File tmpConfigFile = File.createTempFile("pkcs11", "conf");
 		tmpConfigFile.deleteOnExit();

@@ -11,15 +11,26 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import net.link.safeonline.applet.AppletBase;
+import net.link.safeonline.applet.AppletController;
 import net.link.safeonline.applet.InfoLevel;
-import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.shared.Signer;
+import net.link.safeonline.shared.statement.IdentityProvider;
 
 public class AuthenticationApplet extends AppletBase {
 
 	private static final long serialVersionUID = 1L;
 
+	public AuthenticationApplet() {
+		super();
+	}
+
+	protected AuthenticationApplet(AppletController appletController) {
+		super(appletController);
+	}
+
 	@Override
-	public byte[] createStatement(SmartCard smartCard) {
+	public byte[] createStatement(Signer signer,
+			IdentityProvider identityProvider) {
 		String sessionId = getParameter("SessionId");
 		String applicationId = getParameter("ApplicationId");
 
@@ -31,8 +42,7 @@ public class AuthenticationApplet extends AppletBase {
 		outputDetailMessage("Session: " + sessionId);
 		outputDetailMessage("Application: " + applicationId);
 		byte[] authenticationStatement = AuthenticationStatementFactory
-				.createAuthenticationStatement(sessionId, applicationId,
-						smartCard);
+				.createAuthenticationStatement(sessionId, applicationId, signer);
 		return authenticationStatement;
 	}
 }

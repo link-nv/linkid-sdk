@@ -13,6 +13,8 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
+import net.link.safeonline.shared.JceSigner;
+import net.link.safeonline.shared.Signer;
 import net.link.safeonline.test.util.PkiTestUtils;
 
 public class AuthenticationStatementTest extends TestCase {
@@ -25,8 +27,10 @@ public class AuthenticationStatementTest extends TestCase {
 		String sessionId = UUID.randomUUID().toString();
 		String applicationId = "test-application-id";
 
+		Signer signer = new JceSigner(keyPair.getPrivate(), certificate);
+
 		net.link.safeonline.shared.statement.AuthenticationStatement testAuthenticationStatement = new net.link.safeonline.shared.statement.AuthenticationStatement(
-				sessionId, applicationId, certificate, keyPair.getPrivate());
+				sessionId, applicationId, signer);
 
 		byte[] encodedAuthenticationStatement = testAuthenticationStatement
 				.generateStatement();

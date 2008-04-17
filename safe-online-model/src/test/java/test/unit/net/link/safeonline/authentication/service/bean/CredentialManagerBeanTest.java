@@ -13,6 +13,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 
@@ -30,11 +31,13 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.identity.IdentityStatementFactory;
-import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.pkix.model.PkiProvider;
 import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.shared.JceSigner;
+import net.link.safeonline.shared.Signer;
+import net.link.safeonline.shared.statement.IdentityProvider;
 import net.link.safeonline.shared.statement.IdentityStatement;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
@@ -57,7 +60,9 @@ public class CredentialManagerBeanTest extends TestCase {
 
 	private X509Certificate certificate;
 
-	private SmartCard smartCard;
+	private Signer signer;
+
+	private PrivateKey privateKey;
 
 	private SubjectEntity testSubject;
 
@@ -66,6 +71,8 @@ public class CredentialManagerBeanTest extends TestCase {
 	private AttributeTypeDAO mockAttributeTypeDAO;
 
 	private SubjectService mockSubjectService;
+
+	private IdentityProvider identityProvider;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -105,11 +112,22 @@ public class CredentialManagerBeanTest extends TestCase {
 		this.testSubject = new SubjectEntity(this.testCallerLogin);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
+		this.privateKey = keyPair.getPrivate();
 		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
 				"CN=Test");
-		this.smartCard = new SoftwareSmartCard(keyPair, this.certificate);
+		this.signer = new JceSigner(this.privateKey, this.certificate);
 		expect(this.mockPkiProviderManager.findPkiProvider(this.certificate))
 				.andStubReturn(this.mockPkiProvider);
+
+		this.identityProvider = new IdentityProvider() {
+			public String getGivenName() {
+				return "test-given-name";
+			}
+
+			public String getSurname() {
+				return "test-surname";
+			}
+		};
 	}
 
 	public void testAuthenticateViaAuthenticationStatement() throws Exception {
@@ -125,7 +143,7 @@ public class CredentialManagerBeanTest extends TestCase {
 
 		byte[] authenticationStatementData = AuthenticationStatementFactory
 				.createAuthenticationStatement(sessionId, applicationId,
-						this.smartCard);
+						this.signer);
 		AuthenticationStatement authenticationStatement = new AuthenticationStatement(
 				authenticationStatementData);
 
@@ -185,7 +203,8 @@ public class CredentialManagerBeanTest extends TestCase {
 		SubjectEntity deviceSubject = new SubjectEntity(deviceId);
 
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(deviceId, this.smartCard);
+				.createIdentityStatement(deviceId, this.signer,
+						this.identityProvider);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 		String surnameAttribute = "test-surname-attribute";
@@ -241,9 +260,9 @@ public class CredentialManagerBeanTest extends TestCase {
 
 		// expectations
 		this.mockAttributeDAO.addOrUpdateAttribute(surnameAttributeType,
-				deviceSubject, 0, this.smartCard.getSurname());
+				deviceSubject, 0, this.identityProvider.getSurname());
 		this.mockAttributeDAO.addOrUpdateAttribute(givenNameAttributeType,
-				deviceSubject, 0, this.smartCard.getGivenName());
+				deviceSubject, 0, this.identityProvider.getGivenName());
 		this.mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain,
 				identifier, deviceSubject);
 		this.mockSubjectIdentifierDAO.removeOtherSubjectIdentifiers(
@@ -266,7 +285,8 @@ public class CredentialManagerBeanTest extends TestCase {
 		SubjectEntity deviceSubject = new SubjectEntity(deviceId);
 
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(deviceId, this.smartCard);
+				.createIdentityStatement(deviceId, this.signer,
+						this.identityProvider);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 		String surnameAttribute = "test-surname-attribute";
@@ -329,7 +349,8 @@ public class CredentialManagerBeanTest extends TestCase {
 		// setup
 		String user = "foobar-test-user";
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(user, this.smartCard);
+				.createIdentityStatement(user, this.signer,
+						this.identityProvider);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 
@@ -359,16 +380,13 @@ public class CredentialManagerBeanTest extends TestCase {
 			throws Exception {
 		// setup
 		String user = "test-user";
-		X509Certificate authCert = this.smartCard
-				.getAuthenticationCertificate();
 
 		KeyPair otherKeyPair = PkiTestUtils.generateKeyPair();
+		Signer otherSigner = new JceSigner(otherKeyPair.getPrivate(),
+				this.certificate);
 
-		String givenName = this.smartCard.getGivenName();
-		String surname = this.smartCard.getSurname();
-
-		IdentityStatement identityStatement = new IdentityStatement(authCert,
-				user, givenName, surname, otherKeyPair.getPrivate());
+		IdentityStatement identityStatement = new IdentityStatement(user,
+				this.identityProvider, otherSigner);
 		byte[] identityStatementData = identityStatement.generateStatement();
 
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
@@ -398,7 +416,8 @@ public class CredentialManagerBeanTest extends TestCase {
 		// setup
 		String user = "test-user";
 		byte[] identityStatement = IdentityStatementFactory
-				.createIdentityStatement(user, this.smartCard);
+				.createIdentityStatement(user, this.signer,
+						this.identityProvider);
 		TrustDomainEntity trustDomain = new TrustDomainEntity(
 				"test-trust-domain", true);
 

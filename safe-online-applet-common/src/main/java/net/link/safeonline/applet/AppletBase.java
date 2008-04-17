@@ -36,9 +36,10 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.shared.Signer;
 import net.link.safeonline.shared.helpdesk.HelpdeskCodes;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.shared.statement.IdentityProvider;
 
 import org.apache.commons.logging.Log;
 
@@ -74,9 +75,18 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	private ResourceBundle messages;
 
+	private AppletController appletController;
+
+	protected AppletBase() {
+		this.appletController = new AppletControl();
+	}
+
+	protected AppletBase(AppletController appletController) {
+		this.appletController = appletController;
+	}
+
 	@Override
 	public void init() {
-
 		Locale locale = getLocale();
 		this.messages = ResourceBundle.getBundle(
 				"net.link.safeonline.applet.AppletMessages", locale);
@@ -94,8 +104,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 	}
 
 	private void initAppletController() {
-		AppletControl appletControl = new AppletControl(this, this, this);
-		Thread thread = new Thread(appletControl);
+		this.appletController.init(this, this, this);
+		Thread thread = new Thread(this.appletController);
 		thread.start();
 	}
 
@@ -108,7 +118,6 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 	}
 
 	void setupScreen() {
-
 		setLayout(new BorderLayout());
 		Container container = getContentPane();
 
@@ -188,7 +197,6 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 
 	public void outputInfoMessage(final InfoLevel messageInfoLevel,
 			final String message) {
-
 		try {
 			switch (messageInfoLevel) {
 			case NORMAL:
@@ -288,7 +296,8 @@ public abstract class AppletBase extends JApplet implements ActionListener,
 		return false;
 	}
 
-	public abstract byte[] createStatement(SmartCard smartCard);
+	public abstract byte[] createStatement(Signer signer,
+			IdentityProvider identityProvider);
 
 	private void setButtonLabel(JButton button) {
 		if (this.state == State.HIDE) {

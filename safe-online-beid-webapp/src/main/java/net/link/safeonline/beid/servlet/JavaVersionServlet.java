@@ -84,6 +84,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
 	public static final String JAVA_VERSION_NAME = "javaVersion";
 
+	@SuppressWarnings("unused")
 	@Out(value = JAVA_VERSION_NAME, scope = ScopeType.SESSION)
 	private JAVA_VERSION sessionJavaVersion;
 

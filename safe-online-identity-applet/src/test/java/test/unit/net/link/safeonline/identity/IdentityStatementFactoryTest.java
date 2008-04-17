@@ -12,7 +12,9 @@ import java.security.cert.X509Certificate;
 
 import junit.framework.TestCase;
 import net.link.safeonline.identity.IdentityStatementFactory;
-import net.link.safeonline.p11sc.SmartCard;
+import net.link.safeonline.shared.JceSigner;
+import net.link.safeonline.shared.Signer;
+import net.link.safeonline.shared.statement.IdentityProvider;
 import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.apache.commons.logging.Log;
@@ -29,21 +31,25 @@ public class IdentityStatementFactoryTest extends TestCase {
 	public void testCreateIdentityStatement() throws Exception {
 		// setup
 		String testUser = "test-user";
-		String testGivenName = "test-given-name";
-		String testSurname = "test-surname";
-		String testStreet = "test-street";
-		String testPostalCode = "test-postal-code";
-		String testCity = "test-city";
 		KeyPair testKeyPair = PkiTestUtils.generateKeyPair();
 		X509Certificate testCertificate = PkiTestUtils
 				.generateSelfSignedCertificate(testKeyPair, "CN=Test");
-		SmartCard testSmartCard = new SoftwareSmartCard(testGivenName,
-				testSurname, testStreet, testPostalCode, testCity, testKeyPair
-						.getPrivate(), testCertificate);
+
+		Signer signer = new JceSigner(testKeyPair.getPrivate(), testCertificate);
+		IdentityProvider identityProvider = new IdentityProvider() {
+
+			public String getGivenName() {
+				return "test-given-name";
+			}
+
+			public String getSurname() {
+				return "test-surname";
+			}
+		};
 
 		// operate
 		byte[] result = IdentityStatementFactory.createIdentityStatement(
-				testUser, testSmartCard);
+				testUser, signer, identityProvider);
 
 		// verify
 		assertNotNull(result);
