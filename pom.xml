@@ -114,6 +114,19 @@
 	
 	<!-- COMPILATION PROFILES -->
 	<profiles>
+		<profile>
+			<id>env-dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
+			<properties>
+				<safe-online.host.name>localhost</safe-online.host.name>
+			</properties>
+		</profile>
 	
 	   <!-- PROFILE THAT THE BUILDSERVER BUILDS NIGHTLIES WITH. -->
 		<profile>
@@ -125,7 +138,6 @@
 				</property>
 			</activation>
 			<properties>
-				<safe-online.host.name>localhost</safe-online.host.name>
 				<defaultCronExpression> 0 0 3 * * ? </defaultCronExpression>
 				<safe-online.node.name> olas-buildserver </safe-online.node.name>
 				<safe-online.host.name> buildserver </safe-online.host.name>
