@@ -1,0 +1,72 @@
+#!/bin/bash
+source "${0%/*}"/bashlib
+
+[[ $1 = -R ]] && { reverse=1; shift; }
+
+base="${2:-${0%/*}/..}"
+distribution="${1:-$base/safe-online-base-distribution}"
+base="$base/work"
+
+[[ -x $(type -P readlink 2>/dev/null) ]] && {
+    base=$(readlink -m "$base")
+    distribution=$(readlink -m "$distribution")
+}
+
+[[ $base = /* ]] || base="$PWD/$base"
+
+function extractCss {
+    css=( *'/css/style.css' )
+
+    [[ -e $css ]] && \
+    mkdir -p "$base/css"                        || return
+    (( reverse )) || \
+        { mv "$css" "$base/css/"                || return; }
+
+    for file in "${css[@]}"; do
+        ln -f "$base/css/style.css" "$file"     || return
+        touch "$file"                           || return
+    done
+}
+
+function extractHtml {
+    while read file; do
+        mkdir -p "$base/${file%/*}"             || return
+        (( reverse )) || {
+            mv "$file" "$base/$file" && \
+            cp "$base/$file"{,~}                || return
+        }
+
+        [[ -e "$base/$file" ]] && \
+            { ln -f "$base/$file" "$file"       || return; }
+        touch "$file"                           || return
+    done < <(find . -name '*.xhtml')
+}
+
+function extractStuff {
+
+        extractCss && \
+        extractHtml
+}
+
+if (( ! reverse )); then
+    [[ -e $base ]] && {
+        emit -Y "You already have work files at '${base#$PWD/}'.  Perhaps you meant to use -R?"
+        emit -Y "Continuing will delete all these files and replace them by the current server's files."
+        echo; ask -!yN "Continue?" || exit
+    }
+
+    emit "Cleaning up '$base'" --
+        rm -rf "$base"
+    emit -$?
+fi
+
+if (( reverse )); then
+    emit "Linking CSS and XHTML files from '${base#$PWD/}' to '${distribution#$PWD/}'" --
+else
+    emit "Linking CSS and XHTML files from '${distribution#$PWD/}' to '${base#$PWD/}'" --
+fi
+
+    cd "$distribution/target/"*"/jboss/server/default/tmp/deploy/"*"SafeOnline.ear-contents/" && \
+        extractStuff
+
+emit -$?

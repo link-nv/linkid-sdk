@@ -43,7 +43,7 @@ shopt -s extglob
 
 # Variables for global internal operation.
 export bobber=(     '.' 'o' 'O' 'o' )
-export spinner=(    '-' \\  '|' '/' )
+export spinner=(    '-' '\'  '|' '/' )
 export crosser=(    '+' 'x' '+' 'x' )
 export runner=(     '> >'           \
                     '>> '           \
@@ -51,7 +51,7 @@ export runner=(     '> >'           \
                     ' >>'           )
 
 # Variables for terminal requests.
-tput sgr0 2>/dev/null && _TERM_=$TERM || _TERM_=vt100
+tput sgr0 vs 2>/dev/null && _TERM_=$TERM || _TERM_=vt100
 export hide=$(      tput -T$_TERM_ vi       )
 export show=$(      tput -T$_TERM_ vs       )
 export back=$(      tput -T$_TERM_ kbs      )
@@ -127,14 +127,14 @@ export draw=$(      tput -T$_TERM_ enacs    \
 function emit {
 
    # Check usage.
-    [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
+    (( ! $# )) || getArgs -q :h "$@" && {
         emit -y 'Please specify a message as argument.'
         return 1
     }
 
     # Proxy call to spinner.
     [[ $# -eq 1 && $1 = -+([0-9]) ]] \
-        && { spinner $1; return $?; }
+        && { spinner $1; return; }
  
     # Initialize the vars.
     local arg
@@ -163,15 +163,18 @@ function emit {
             n) eol=                 ;;
         esac
     done
+    shift $(getArgs -c dbwgyrDBWGYRn "$@")
+    spinArgs=()
+    while [[ $1 = +* ]]; do
+        spinArgs+=("-${1#+}")
+        shift
+    done
 
     # Defaults.
     color=${color:-$textcolor}
     color=${color:-$green}
     textcolor=${textcolor:-$white}
     [[ $color = $textcolor && -z $style ]] && style=$bold
-
-    # Trim off the options.
-    while [[ $1 = -* ]]; do shift; done
 
     # Get the text message.
     local text=
@@ -193,7 +196,7 @@ function emit {
         trap : INT
 
         # Create the spinner in the background.
-        { spinner "$text" -- "$style" "$color" "$textstyle" "$textcolor" & } 2>/dev/null
+        { spinner "${spinArgs[@]}" "$text" -- "$style" "$color" "$textstyle" "$textcolor" & } 2>/dev/null
         spinPid=$!
 
         # Execute the command for the spinner if one is given.
@@ -244,7 +247,7 @@ function emit {
 function spinner {
 
     # Check usage.
-    [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
+    (( ! $# )) || getArgs -q :h "$@" && {
         emit -y 'Please specify a message as argument or a status option.'
         return 1
     }
@@ -328,7 +331,7 @@ function spinner {
 
     # Spinner final status.
     echo "$load$eel" \
-         "$reset$style$color* $text $bold$done$font."                 >&$fd
+         "$reset$style$color* $text $bold$done$font."               >&$fd
 } # _____________________________________________________________________
 
 
@@ -360,26 +363,34 @@ function spinner {
 function ask {
    
    # Check usage.
-    [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
+    (( ! $# )) || getArgs -q :h "$@" && {
         emit -y 'Please specify a question as argument.'
         return 1
     }
  
     # Initialize the vars.
     local arg
+    local option=
     local options=
     local default=
     local valid=
 
     # Parse the options.
-    for arg in $(getArgs "$(echo {a..z} {A..Z} | tr -d ' ')!" "$@"); do
-        [[ $arg = [[:upper:]] ]] \
-            && default=$arg
-        [[ $arg = ! ]] \
-            && { valid=${options: -1}; continue; }
+    if [[ $1 = +* ]]; then
+        option=${1#+}
+        default=$option
 
-        options+=$arg
-    done
+        shift
+    else
+        for arg in $(getArgs "$(echo {a..z} {A..Z} | tr -d ' ')!" "$@"); do
+            [[ $arg = [[:upper:]] ]] \
+                && default=$arg
+            [[ $arg = ! ]] \
+                && { valid=${options: -1}; continue; }
+
+            options+=$arg
+        done
+    fi
 
     # Trim off the options.
     while [[ $1 = -* ]]; do shift; done
@@ -388,18 +399,19 @@ function ask {
     [[ -t 1 ]]; local fd=$(( $? + 1 ))
 
     # Ask the question.
-    emit -yn "$*${options:+ [$options]} "
-    read ${options:+-n1}; echo                                      >&$fd
+    emit -yn "$*${option:+ [$option]}${options:+ [$options]} "
+    read ${options:+-n1}
+    [[ $options && $REPLY ]] && echo                                >&$fd
 
     # Evaluate the reply.
     while true; do
-        if [[ $REPLY && ( -z $options || $options = *$REPLY* ) ]]; then
+        if [[ $REPLY && ( ! $options || $options = *$REPLY* ) ]]; then
             if [[ $valid ]]
             then [[ $REPLY = $valid ]]
             else echo "$REPLY"
             fi
 
-            return $?
+            return
         fi
 
         [[ -z $default || $REPLY = $default ]] \
@@ -457,7 +469,7 @@ function trim {
 function swait {
 
     # Check usage.
-    [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
+    (( ! $# )) || getArgs -q :h "$@" && {
         emit -y 'Please provide one or more PIDs to wait for as argument.'
         return 1
     }
@@ -490,7 +502,7 @@ function swait {
 function skill {
 
     # Check usage.
-    [[ $# -lt 1 ]] || getArgs -q :h "$@" && {
+    (( ! $# )) || getArgs -q :h "$@" && {
         emit -y 'Please provide the PID to terminate as argument.'
         return 1
     }
@@ -576,7 +588,7 @@ function skill {
 function getArgs {
 
     # Check usage.
-    [[ $# -lt 1 ]] && {
+    (( ! $# )) && {
         emit -y 'Please provide the arguments to search for in' \
                 'getopts(P) format followed by the positional parameters.'
         return 1
@@ -639,7 +651,7 @@ function getArgs {
 function showHelp {
 
     # Check usage.
-    [[ $# -lt 3 ]] || getArgs -q :h "$@" && {
+    (( $# < 3 )) || getArgs -q :h "$@" && {
         emit -y 'Please provide the name, description, author and options' \
                 'of the application.'
         return 1
@@ -662,7 +674,7 @@ function showHelp {
     echo $reset                                                     >&$fd
 
     # Print out the application options and columnize them.
-    while [[ $# -gt 0 ]]; do
+    while (( $# )); do
         local optName=$1; shift
         local optDesc=$1; shift
         echo -n "    $optName"$'\t'
@@ -688,7 +700,7 @@ function showHelp {
 function inArray {
 
     # Check usage.
-    [[ $# -lt 2 ]] || getArgs -q :h "$@" && {
+    (( $# < 2 )) || getArgs -q :h "$@" && {
         emit -y 'Please provide the element to search for and the array' \
                 'to search through.'
         return 1
@@ -859,7 +871,7 @@ function _findMapKeyIndex {
 function _depricated_map {
 
     # Check usage.
-    [[ $# -lt 2 ]] || getArgs -q :h "$@" && {
+    (( $# < 2 )) || getArgs -q :h "$@" && {
         emit -y 'The key to search for and the map to search through.'
         return 1
     }
