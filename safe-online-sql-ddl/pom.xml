@@ -70,6 +70,17 @@
 									</classpath>
 									<!-- jpaconfiguration can directly use the PAR -->
 									<annotationconfiguration
+										configurationfile="${project.build.directory}/classes/resources/hsql-safe-online.cfg.xml" />
+									<hbm2ddl export="false"
+										format="true" outputfilename="hsql-safe-online-ddl.sql" />
+								</hibernatetool>
+								<hibernatetool
+									destdir="${project.build.directory}/classes">
+									<classpath>
+										<path refid="jpatoolslib" />
+									</classpath>
+									<!-- jpaconfiguration can directly use the PAR -->
+									<annotationconfiguration
 										configurationfile="${project.build.directory}/classes/resources/mysql-safe-online.cfg.xml" />
 									<hbm2ddl export="false"
 										format="true" outputfilename="mysql-safe-online-ddl.sql" />
