@@ -39,7 +39,7 @@ h1 {
 }
 
 h2 {
-    margin: 14px 0;
+	padding-top: 14px;
 	font: 21px/ 28px "Trebuchet MS", Verdana, Arial;
 	color: #81aa00;
 }
@@ -512,9 +512,6 @@ textarea {
 	border-left: 1px dotted #81aa00;
 }
 
-table, .fullwidth {
-    width: 575px;
-}
 table {
 	border: none;
     border-collapse: collapse;
@@ -523,33 +520,15 @@ table {
 	float: none;
 	display: block;
 	padding: 0;
+    width: 575px;
 }
 table table {
-    auto;
+    width: auto;
 }
 
 table colgroup {
     width: inherit;
 }
-
-.noborders, .noborders * {
-    border: none !important;
-}
-.right {
-    text-align: right;
-}
-.inner {
-    width: 500px;
-    margin: auto;
-}
-table tbody, table tfoot {
-    border: 0 solid #E8E7E7 !important;
-    border-width: 0 2px 2px 0 !important;
-}
-.noborder, .noborder tbody {
-    border:none !important;
-}
-
 table.listingTable td,
 table.scroller td {
     /* Tables with thead/tbody don't like to get wide */
@@ -620,7 +599,7 @@ div.dr-dscr table         , div.dr-dscr table tbody tr td         , div.dr-dscr 
 }
 
 table tr.rich-table-row, table tr.rich-table-firstrow, table tr.rich-table-footer,
-table.listingTable tbody tr {
+table tr.listingTable_Row1, table tr.listingTable_Row2 {
     border: 1px solid #E8E7E7 !important;
     border-style: solid solid none;
 }
@@ -630,18 +609,13 @@ table.listingTable, table.rich-table {
 }
 
 /* Make links in tables easier to click. */
-table.listingTable td a, table.listingTable th a, table.rich-table td a {
+table.listingTable td a, table.rich-table td a {
     display:block;
     padding-bottom: 1px;
     width: inherit;
     height: inherit;
 }
-a.noblock {
-    display: inline;
-    width: auto;
-    height: auto;
-}
-table.listingTable td a:hover, table.listingTable th a:hover, table.rich-table td a:hover {
+table.listingTable td a:hover, table.rich-table td a:hover {
     border:none;
     text-decoration: underline;
 }
@@ -681,14 +655,12 @@ table tbody tr.listingTable_Row2 {
     width: 20% !important;
 }
 
-.rich-tabpanel-content, .rich-tabpanel, .rich-panel-header, .rich-panel-body {
-    width: auto;
+.rich-panel	     , .rich-tabpanel-content      , .rich-tabpanel      ,
+	.rich-panel-header      , .rich-panel-body {
+	width: 550px;
 	overflow: auto;
 	font-family: inherit;
 	font-size: inherit;
-}
-.rich-panel {
-    width: 575px;
 }
 
 .rich-tabpanel-content {
@@ -702,7 +674,6 @@ table tbody tr.listingTable_Row2 {
 	white-space: -o-pre-wrap; /* Opera 7 */
 	word-wrap: break-word;
 	height: inherit;
-    font-family: fixed;
 }
 
 .usage_agreement {
