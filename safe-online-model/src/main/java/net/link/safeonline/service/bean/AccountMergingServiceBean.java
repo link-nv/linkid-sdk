@@ -25,6 +25,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.dao.AttributeDAO;
@@ -47,6 +48,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.service.AccountMergingService;
 import net.link.safeonline.service.SubjectService;
 
@@ -123,12 +125,15 @@ public class AccountMergingServiceBean implements AccountMergingService {
 	 * 
 	 * @throws SubjectNotFoundException
 	 * @throws PermissionDeniedException
+	 * @throws SubscriptionNotFoundException
+	 * @throws MessageHandlerNotFoundException
 	 */
 	@DenyAll
 	public void mergeAccount(AccountMergingDO accountMergingDO,
 			Set<DeviceEntity> neededDevices)
 			throws AttributeTypeNotFoundException, SubjectNotFoundException,
-			PermissionDeniedException {
+			PermissionDeniedException, SubscriptionNotFoundException,
+			MessageHandlerNotFoundException {
 		LOG.debug("commit merge with account "
 				+ accountMergingDO.getSourceSubject().getUserId());
 		if (null != neededDevices && neededDevices.size() != 0)

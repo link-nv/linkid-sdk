@@ -124,6 +124,27 @@ public class BeIdStartableBean extends AbstractInitBean {
 				SafeOnlineConstants.BEID_DEVICE_ID, Locale.ENGLISH
 						.getLanguage(), "Belgian eID"));
 
+		/*
+		 * WS-Notification subscriptions
+		 */
+		configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER, certificate);
+	}
+
+	private void configSubscription(String topic, X509Certificate certificate) {
+		ResourceBundle properties = ResourceBundle.getBundle("config");
+		String protocol = properties.getString("olas.host.protocol");
+		String hostname = properties.getString("olas.host.name");
+		int hostport = Integer.parseInt(properties.getString("olas.host.port"));
+		int hostportssl = Integer.parseInt(properties
+				.getString("olas.host.port.ssl"));
+		String address = protocol + "://" + hostname + ":";
+		if (protocol.equals("http"))
+			address += hostport;
+		else
+			address += hostportssl;
+		address += "/safe-online-ws/consumer";
+		this.notificationSubcriptions.add(new NotificationSubscription(topic,
+				address, certificate));
 	}
 
 	@Override

@@ -217,13 +217,11 @@ public class IdentityServiceBeanTest {
 		Set<ApplicationIdentityAttributeEntity> currentIdentity = applicationService
 				.getCurrentApplicationIdentity(applicationName);
 		assertEquals(2, currentIdentity.size());
-		Iterator iter = currentIdentity.iterator();
-		assertEquals("test-attribute-type",
-				((ApplicationIdentityAttributeEntity) iter.next())
-						.getAttributeTypeName());
-		assertEquals("test-attribute-type-2",
-				((ApplicationIdentityAttributeEntity) iter.next())
-						.getAttributeTypeName());
+		Iterator<ApplicationIdentityAttributeEntity> iter = currentIdentity
+				.iterator();
+		assertEquals("test-attribute-type", iter.next().getAttributeTypeName());
+		assertEquals("test-attribute-type-2", iter.next()
+				.getAttributeTypeName());
 
 		identity.add(new IdentityAttributeTypeDO("test-attribute-type-3", true,
 				false));

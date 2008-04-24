@@ -48,6 +48,8 @@ public class EntityTestManager {
 				"org.hsqldb.jdbcDriver");
 		this.configuration.setProperty("hibernate.connection.url",
 				"jdbc:hsqldb:mem:test");
+		// turn off batch processing, gives more informative errors that way
+		this.configuration.setProperty("hibernate.jdbc.batch_size", "0");
 	}
 
 	public void configureMySql(String host, int port, String database,
@@ -67,6 +69,8 @@ public class EntityTestManager {
 				"com.mysql.jdbc.Driver");
 		this.configuration.setProperty("hibernate.connection.url", String
 				.format("jdbc:mysql://%s:%d/%s", host, port, database));
+		// turn off batch processing, gives more informative errors that way
+		this.configuration.setProperty("hibernate.jdbc.batch_size", "0");
 	}
 
 	@SuppressWarnings("deprecation")

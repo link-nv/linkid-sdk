@@ -49,3 +49,7 @@
 <mapping class="net.link.safeonline.entity.UsageAgreementTextEntity" />
 <mapping class="net.link.safeonline.entity.GlobalUsageAgreementEntity" />
 <mapping class="net.link.safeonline.entity.OlasEntity" />
+<mapping
+	class="net.link.safeonline.entity.notification.EndpointReferenceEntity" />
+<mapping
+	class="net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity" />

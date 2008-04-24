@@ -24,10 +24,13 @@ import net.link.safeonline.sdk.ws.encap.authentication.EncapAuthenticationClient
 public class MobileManagerBean implements MobileManager {
 
 	@Configurable(name = "Encap Server", group = "Encap")
-	private String encapServerLocation = "localhost:8080/safe-online-encap-ws";
+	// private String encapServerLocation =
+	// "localhost:8080/safe-online-encap-ws";
+	private String encapServerLocation = "81.246.63.169:9090/mSec2";
 
 	@Configurable(name = "Encap Organisation ID", group = "Encap")
-	private String encapOrganisationId = "encap";
+	// private String encapOrganisationId = "encap";
+	private String encapOrganisationId = "test1";
 
 	/*
 	 * RemoteException are transformed to a MobileException, else they get

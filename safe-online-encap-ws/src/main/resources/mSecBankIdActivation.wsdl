@@ -1,166 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions targetNamespace="urn:http://msec.bankId/activation"
-	xmlns:apachesoap="http://xml.apache.org/xml-soap"
-	xmlns:impl="urn:http://msec.bankId/activation"
-	xmlns:intf="urn:http://msec.bankId/activation"
-	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-	xmlns:tns1="http://bus.server.msec.encap"
-	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-	xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-	<!--WSDL created by Apache Axis version: 1.4
-		Built on Apr 22, 2006 (06:55:48 PDT)-->
+	xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:http://msec.bankId/activation"
+	xmlns:intf="urn:http://msec.bankId/activation" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:tns1="http://bus.server.msec.encap" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
 	<wsdl:types>
-		<schema targetNamespace="http://bus.server.msec.encap"
-			xmlns="http://www.w3.org/2001/XMLSchema">
-			<import
-				namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+		<schema targetNamespace="http://bus.server.msec.encap" xmlns="http://www.w3.org/2001/XMLSchema">
+			<import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
 			<complexType name="MSecResponse">
 				<sequence>
-					<element name="additionalInfo" nillable="true"
-						type="xsd:string" />
-					<element name="appId" nillable="true"
-						type="xsd:string" />
-					<element name="clientId" nillable="true"
-						type="xsd:string" />
-					<element name="secureObject" nillable="true"
-						type="xsd:string" />
-					<element name="serviceProviderId" nillable="true"
-						type="xsd:string" />
-					<element name="sessionId" nillable="true"
-						type="xsd:string" />
-					<element name="sessionInfo" nillable="true"
-						type="xsd:anyType" />
+					<element name="additionalInfo" nillable="true" type="xsd:string" />
+					<element name="appId" nillable="true" type="xsd:string" />
+					<element name="clientId" nillable="true" type="xsd:string" />
+					<element name="secureObject" nillable="true" type="xsd:string" />
+					<element name="serviceProviderId" nillable="true" type="xsd:string" />
+					<element name="sessionId" nillable="true" type="xsd:string" />
+					<element name="sessionInfo" nillable="true" type="xsd:anyType" />
 					<element name="status" type="xsd:int" />
 				</sequence>
 			</complexType>
 			<complexType name="ActivationInitResponse">
 				<complexContent>
 					<extension base="tns1:MSecResponse">
-						<sequence />
+						<sequence>
+							<element name="activationCode" nillable="true" type="xsd:string" />
+						</sequence>
 					</extension>
 				</complexContent>
 			</complexType>
 		</schema>
 	</wsdl:types>
-
 	<wsdl:message name="cancelSessionRequest">
-
 		<wsdl:part name="sessionId" type="xsd:string" />
-
 	</wsdl:message>
-
 	<wsdl:message name="cancelSessionResponse">
-
 		<wsdl:part name="cancelSessionReturn" type="tns1:MSecResponse" />
-
 	</wsdl:message>
-
 	<wsdl:message name="activateResponse">
-
-		<wsdl:part name="activateReturn"
-			type="tns1:ActivationInitResponse" />
-
+		<wsdl:part name="activateReturn" type="tns1:ActivationInitResponse" />
 	</wsdl:message>
-
 	<wsdl:message name="activateRequest">
-
 		<wsdl:part name="msisdn" type="xsd:string" />
-
 		<wsdl:part name="orgId" type="xsd:string" />
-
 		<wsdl:part name="sessionInfo" type="xsd:anyType" />
-
 	</wsdl:message>
-
 	<wsdl:portType name="BankIdActivation">
-
-		<wsdl:operation name="activate"
-			parameterOrder="msisdn orgId sessionInfo">
-
-			<wsdl:input message="impl:activateRequest"
-				name="activateRequest" />
-
-			<wsdl:output message="impl:activateResponse"
-				name="activateResponse" />
-
+		<wsdl:operation name="activate" parameterOrder="msisdn orgId sessionInfo">
+			<wsdl:input message="impl:activateRequest" name="activateRequest" />
+			<wsdl:output message="impl:activateResponse" name="activateResponse" />
 		</wsdl:operation>
-
-		<wsdl:operation name="cancelSession"
-			parameterOrder="sessionId">
-
-			<wsdl:input message="impl:cancelSessionRequest"
-				name="cancelSessionRequest" />
-
-			<wsdl:output message="impl:cancelSessionResponse"
-				name="cancelSessionResponse" />
-
+		<wsdl:operation name="cancelSession" parameterOrder="sessionId">
+			<wsdl:input message="impl:cancelSessionRequest" name="cancelSessionRequest" />
+			<wsdl:output message="impl:cancelSessionResponse" name="cancelSessionResponse" />
 		</wsdl:operation>
-
 	</wsdl:portType>
-
-	<wsdl:binding name="mSecBankIdActivationSoapBinding"
-		type="impl:BankIdActivation">
-
+	<wsdl:binding name="mSecBankIdActivationSoapBinding" type="impl:BankIdActivation">
 		<wsdlsoap:binding style="rpc"
 			transport="http://schemas.xmlsoap.org/soap/http" />
-
 		<wsdl:operation name="activate">
-
 			<wsdlsoap:operation soapAction="" />
-
 			<wsdl:input name="activateRequest">
-
-				<wsdlsoap:body
-					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+				<wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
 					namespace="urn:http://msec.bankId/activation" use="encoded" />
-
 			</wsdl:input>
-
 			<wsdl:output name="activateResponse">
-
-				<wsdlsoap:body
-					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+				<wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
 					namespace="urn:http://msec.bankId/activation" use="encoded" />
-
 			</wsdl:output>
-
 		</wsdl:operation>
-
 		<wsdl:operation name="cancelSession">
-
 			<wsdlsoap:operation soapAction="" />
-
 			<wsdl:input name="cancelSessionRequest">
-
-				<wsdlsoap:body
-					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+				<wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
 					namespace="urn:http://msec.bankId/activation" use="encoded" />
-
 			</wsdl:input>
-
 			<wsdl:output name="cancelSessionResponse">
-
-				<wsdlsoap:body
-					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+				<wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
 					namespace="urn:http://msec.bankId/activation" use="encoded" />
-
 			</wsdl:output>
-
 		</wsdl:operation>
-
 	</wsdl:binding>
-
 	<wsdl:service name="BankIdActivationService">
-
 		<wsdl:port binding="impl:mSecBankIdActivationSoapBinding"
 			name="mSecBankIdActivation">
-
 			<wsdlsoap:address
-				location="http://server2.encap.no:8081/pp-encap-r1/services/mSecBankIdActivation" />
-
+				location="http://81.246.63.169:9090/mSec2/services/mSecBankIdActivation" />
 		</wsdl:port>
-
 	</wsdl:service>
-
 </wsdl:definitions>

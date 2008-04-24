@@ -97,6 +97,9 @@ public class DeviceRegistrationServiceBean implements DeviceRegistrationService 
 		this.deviceRegistrationDAO.removeRegisteredDevice(id);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void checkDeviceRegistrationRemovalAllowed(SubjectEntity subject)
 			throws PermissionDeniedException {
 		LOG.debug("check device registration removal allowed");

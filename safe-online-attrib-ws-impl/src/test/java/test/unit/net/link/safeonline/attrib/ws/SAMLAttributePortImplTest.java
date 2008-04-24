@@ -40,12 +40,12 @@ import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
-import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.model.ApplicationManager;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -84,6 +84,8 @@ public class SAMLAttributePortImplTest {
 
 	private JndiTestUtils jndiTestUtils;
 
+	private WSSecurityConfigurationService mockWSSecurityConfigurationService;
+
 	private AttributeService mockAttributeService;
 
 	private NodeAttributeService mockNodeAttributeService;
@@ -97,8 +99,6 @@ public class SAMLAttributePortImplTest {
 	private NodeAuthenticationService mockNodeAuthenticationService;
 
 	private SamlAuthorityService mockSamlAuthorityService;
-
-	private ConfigurationManager mockConfigurationManager;
 
 	private ApplicationManager mockApplicationManager;
 
@@ -125,7 +125,11 @@ public class SAMLAttributePortImplTest {
 
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
+		this.jndiTestUtils.bindComponent(
+				"java:comp/env/wsSecurityConfigurationServiceJndiName",
+				"SafeOnline/WSSecurityConfigurationBean/local");
 
+		this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
 		this.mockAttributeService = createMock(AttributeService.class);
 		this.mockNodeAttributeService = createMock(NodeAttributeService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
@@ -133,16 +137,20 @@ public class SAMLAttributePortImplTest {
 		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
 		this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
 		this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-		this.mockConfigurationManager = createMock(ConfigurationManager.class);
 		this.mockApplicationManager = createMock(ApplicationManager.class);
 		this.mockUserIdMappingService = createMock(UserIdMappingService.class);
 
-		this.mockObjects = new Object[] { this.mockAttributeService,
-				this.mockNodeAttributeService, this.mockPkiValidator,
+		this.mockObjects = new Object[] {
+				this.mockWSSecurityConfigurationService,
+				this.mockAttributeService, this.mockNodeAttributeService,
+				this.mockPkiValidator,
 				this.mockApplicationAuthenticationService,
-				this.mockSamlAuthorityService, this.mockConfigurationManager,
-				this.mockApplicationManager, this.mockUserIdMappingService };
+				this.mockSamlAuthorityService, this.mockApplicationManager,
+				this.mockUserIdMappingService };
 
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/WSSecurityConfigurationBean/local",
+				this.mockWSSecurityConfigurationService);
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/AttributeServiceBean/local",
 				this.mockAttributeService);
@@ -164,9 +172,6 @@ public class SAMLAttributePortImplTest {
 				"SafeOnline/SamlAuthorityServiceBean/local",
 				this.mockSamlAuthorityService);
 		this.jndiTestUtils.bindComponent(
-				"SafeOnline/ConfigurationManagerBean/local",
-				this.mockConfigurationManager);
-		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ApplicationManagerBean/local",
 				this.mockApplicationManager);
 		this.jndiTestUtils.bindComponent(
@@ -179,7 +184,7 @@ public class SAMLAttributePortImplTest {
 				.andStubReturn(true);
 
 		expect(
-				this.mockConfigurationManager
+				this.mockWSSecurityConfigurationService
 						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
 				Long.MAX_VALUE);
 
@@ -264,8 +269,8 @@ public class SAMLAttributePortImplTest {
 						.authenticate(this.certificate)).andReturn(
 				"test-application-name");
 		expect(
-				this.mockApplicationAuthenticationService
-						.skipMessageIntegrityCheck(this.testApplicationId))
+				this.mockWSSecurityConfigurationService
+						.skipMessageIntegrityCheck(this.certificate))
 				.andReturn(false);
 
 		// prepare
@@ -361,8 +366,8 @@ public class SAMLAttributePortImplTest {
 						.authenticate(this.certificate)).andReturn(
 				this.testApplicationId);
 		expect(
-				this.mockApplicationAuthenticationService
-						.skipMessageIntegrityCheck(this.testApplicationId))
+				this.mockWSSecurityConfigurationService
+						.skipMessageIntegrityCheck(this.certificate))
 				.andReturn(false);
 
 		// prepare
@@ -471,8 +476,8 @@ public class SAMLAttributePortImplTest {
 						.authenticate(this.certificate)).andReturn(
 				this.testApplicationId);
 		expect(
-				this.mockApplicationAuthenticationService
-						.skipMessageIntegrityCheck(this.testApplicationId))
+				this.mockWSSecurityConfigurationService
+						.skipMessageIntegrityCheck(this.certificate))
 				.andReturn(false);
 
 		// prepare
@@ -564,8 +569,8 @@ public class SAMLAttributePortImplTest {
 						.authenticate(this.certificate)).andReturn(
 				this.testApplicationId);
 		expect(
-				this.mockApplicationAuthenticationService
-						.skipMessageIntegrityCheck(this.testApplicationId))
+				this.mockWSSecurityConfigurationService
+						.skipMessageIntegrityCheck(this.certificate))
 				.andReturn(false);
 
 		// prepare
@@ -642,8 +647,8 @@ public class SAMLAttributePortImplTest {
 						.authenticate(this.certificate)).andReturn(
 				this.testApplicationId);
 		expect(
-				this.mockApplicationAuthenticationService
-						.skipMessageIntegrityCheck(this.testApplicationId))
+				this.mockWSSecurityConfigurationService
+						.skipMessageIntegrityCheck(this.certificate))
 				.andReturn(false);
 
 		// prepare

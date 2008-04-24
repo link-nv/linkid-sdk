@@ -125,8 +125,8 @@
 				</property>
 			</activation>
 			<properties>
-                <debug.mode>true</debug.mode>
-                <safe-online.show.sql>true</safe-online.show.sql>
+				<debug.mode>true</debug.mode>
+				<safe-online.show.sql>true</safe-online.show.sql>
 				<safe-online.host.name>localhost</safe-online.host.name>
 			</properties>
 			<modules>
@@ -176,6 +176,9 @@
 				<module>safe-online-demo-mandate</module>
 				<module>safe-online-demo-mandate-webapp</module>
 				<module>safe-online-demo-mandate-service</module>
+				<module>safe-online-demo-notification-consumer-ws-impl</module>
+				<module>safe-online-demo-ws-runtime</module>
+				<module>safe-online-demo-ws-model</module>
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-demo-distribution</module>
 			</modules>
@@ -230,6 +233,9 @@
 				<module>safe-online-demo-mandate-service</module>
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-demo-distribution</module>
+				<module>safe-online-demo-notification-consumer-ws-impl</module>
+				<module>safe-online-demo-ws-runtime</module>
+				<module>safe-online-demo-ws-model</module>
 			</modules>
 		</profile>
         
@@ -273,6 +279,9 @@
 				<module>safe-online-demo-mandate</module>
 				<module>safe-online-demo-mandate-webapp</module>
 				<module>safe-online-demo-mandate-service</module>
+				<module>safe-online-demo-notification-consumer-ws-impl</module>
+				<module>safe-online-demo-ws-runtime</module>
+				<module>safe-online-demo-ws-model</module>
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-demo-distribution</module>
 			</modules>
@@ -536,11 +545,9 @@
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
-        <safe-online.dialect>
-            org.hibernate.dialect.HSQLDialect 
+		<safe-online.dialect> org.hibernate.dialect.HSQLDialect 
 		</safe-online.dialect>
-        <safe-online.hibernate.hbm2ddl.auto>
-            create-drop 
+		<safe-online.hibernate.hbm2ddl.auto> create-drop 
 		</safe-online.hibernate.hbm2ddl.auto>
 		<safe-online.show.sql>false</safe-online.show.sql>
 		<debug.mode>false</debug.mode>
@@ -549,8 +556,7 @@
 		<safe-online.host.port>8080</safe-online.host.port>
 		<safe-online.host.port.ssl>8443</safe-online.host.port.ssl>
 		<safe-online.jboss.host.port>8080</safe-online.jboss.host.port>
-        <safe-online.jboss.host.port.ssl>
-            8443 
+		<safe-online.jboss.host.port.ssl> 8443 
 		</safe-online.jboss.host.port.ssl>
 		<safe-online.host.basename>
 			${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port.ssl} 
@@ -567,7 +573,7 @@
 		<jaxb-api.version>2.1</jaxb-api.version>
 		<saaj-api.version>1.3</saaj-api.version>
 		<saaj-impl.version>1.3</saaj-impl.version>
-		<jaxws-tools.version>2.1.2</jaxws-tools.version>
+		<jaxws-tools.version>2.1.3</jaxws-tools.version>
 		<jaxws-rt.version>2.1.3</jaxws-rt.version>
 		<jaxws-api.version>2.1-safeonline</jaxws-api.version>
 		<commons-logging-api.version>1.1</commons-logging-api.version>
@@ -584,7 +590,7 @@
 		<commons-io.version>1.3.1</commons-io.version>
 		<hibernate-entitymanager.version> 3.3.1.ga 
 		</hibernate-entitymanager.version>
-		<hibernate-annotations.version> 3.3.0.ga 
+		<hibernate-annotations.version> 3.3.1.ga 
 		</hibernate-annotations.version>
 		<hibernate.version>3.2.4.sp1</hibernate.version>
 		<hibernate-tools.version>3.2.0.beta9a</hibernate-tools.version>
@@ -799,6 +805,13 @@
 		<module>safe-online-node-keystore</module>
 		<module>safe-online-auth-pcsc-applet</module>
 		<module>safe-online-auth-pcsc-applet-package</module>
+		<module>safe-online-notification-consumer-ws</module>
+		<module>safe-online-notification-consumer-ws-abstract-impl</module>
+		<module>safe-online-notification-consumer-ws-impl</module>
+		<module>safe-online-notification-producer-ws</module>
+		<module>safe-online-notification-producer-ws-impl</module>
+		<module>safe-online-notification-subscription-manager-ws</module>
+		<module>safe-online-notification-subscription-manager-ws-impl</module>
 	</modules>
 	
 	<!-- DEFAULT BUILD CONFIGURATION -->

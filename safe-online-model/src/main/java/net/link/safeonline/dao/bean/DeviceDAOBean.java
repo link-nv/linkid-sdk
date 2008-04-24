@@ -209,4 +209,15 @@ public class DeviceDAOBean implements DeviceDAO {
 		return device;
 	}
 
+	@SuppressWarnings("unchecked")
+	public DeviceEntity findDevice(X509Certificate certificate) {
+		Query query = DeviceEntity.createQueryWhereCertificate(
+				this.entityManager, certificate);
+		List<DeviceEntity> devices = query.getResultList();
+		if (devices.isEmpty())
+			return null;
+		DeviceEntity device = devices.get(0);
+		return device;
+	}
+
 }

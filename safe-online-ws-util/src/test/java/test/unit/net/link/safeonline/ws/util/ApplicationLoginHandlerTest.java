@@ -24,13 +24,13 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import junit.framework.TestCase;
+import net.link.safeonline.sdk.ws.WSSecurityServerHandler;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.TestSOAPMessageContext;
-import net.link.safeonline.ws.util.ApplicationCertificateMapperHandler;
-import net.link.safeonline.ws.util.ApplicationCertificateValidatorHandler;
-import net.link.safeonline.ws.util.ApplicationLoginHandler;
-import net.link.safeonline.ws.util.WSSecurityServerHandler;
+import net.link.safeonline.ws.util.CertificateMapperHandler;
+import net.link.safeonline.ws.util.CertificateValidatorHandler;
+import net.link.safeonline.ws.util.LoginHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,13 +38,13 @@ import org.jboss.security.SimplePrincipal;
 
 public class ApplicationLoginHandlerTest extends TestCase {
 
-	private ApplicationLoginHandler testedInstance;
+	private LoginHandler testedInstance;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		this.testedInstance = new ApplicationLoginHandler();
+		this.testedInstance = new LoginHandler();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ApplicationLoginHandlerTest extends TestCase {
 		SOAPMessageContext context = new TestSOAPMessageContext(null, false);
 
 		String testApplicationName = "test-application-name-" + getName();
-		context.put(ApplicationCertificateMapperHandler.ID_PROPERTY,
+		context.put(CertificateMapperHandler.ID_PROPERTY,
 				testApplicationName);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -66,8 +66,8 @@ public class ApplicationLoginHandlerTest extends TestCase {
 		context.put(WSSecurityServerHandler.CERTIFICATE_PROPERTY, certificate);
 		context
 				.put(
-						ApplicationCertificateValidatorHandler.CERTIFICATE_DOMAIN_PROPERTY,
-						ApplicationCertificateValidatorHandler.CertificateDomain.APPLICATION);
+						CertificateValidatorHandler.CERTIFICATE_DOMAIN_PROPERTY,
+						CertificateValidatorHandler.CertificateDomain.APPLICATION);
 
 		JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
 

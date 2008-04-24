@@ -77,6 +77,7 @@ import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.model.ApplicationIdentityManager;
 import net.link.safeonline.model.UsageAgreementManager;
+import net.link.safeonline.notification.service.NotificationProducerService;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.service.DeviceRegistrationService;
@@ -343,6 +344,21 @@ public abstract class AbstractInitBean implements Startable {
 		}
 	}
 
+	protected static class NotificationSubscription {
+		final String topic;
+
+		final String address;
+
+		final X509Certificate certificate;
+
+		public NotificationSubscription(String topic, String address,
+				X509Certificate certificate) {
+			this.topic = topic;
+			this.address = address;
+			this.certificate = certificate;
+		}
+	}
+
 	protected List<Subscription> subscriptions;
 
 	protected List<AttributeTypeEntity> attributeTypes;
@@ -379,6 +395,8 @@ public abstract class AbstractInitBean implements Startable {
 
 	protected List<DeviceProperty> deviceProperties;
 
+	protected List<NotificationSubscription> notificationSubcriptions;
+
 	protected Node node;
 
 	public AbstractInitBean() {
@@ -399,6 +417,7 @@ public abstract class AbstractInitBean implements Startable {
 		this.deviceDescriptions = new LinkedList<DeviceDescription>();
 		this.deviceProperties = new LinkedList<DeviceProperty>();
 		this.allowedDevices = new HashMap<String, List<String>>();
+		this.notificationSubcriptions = new LinkedList<NotificationSubscription>();
 	}
 
 	protected byte[] getLogo(String logoResource) {
@@ -445,6 +464,7 @@ public abstract class AbstractInitBean implements Startable {
 			initApplicationTrustPoints();
 			initAttributeProviders();
 			initAttributes();
+			initNotifications();
 		} catch (SafeOnlineException e) {
 			this.LOG.fatal("safeonline exception", e);
 			throw new EJBException(e);
@@ -897,6 +917,16 @@ public abstract class AbstractInitBean implements Startable {
 					this.allowedDeviceDAO.addAllowedDevice(application, device,
 							0);
 			}
+		}
+	}
+
+	@EJB
+	private NotificationProducerService notificationProducerService;
+
+	private void initNotifications() throws PermissionDeniedException {
+		for (NotificationSubscription subscription : this.notificationSubcriptions) {
+			this.notificationProducerService.subscribe(subscription.topic,
+					subscription.address, subscription.certificate);
 		}
 	}
 

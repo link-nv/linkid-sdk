@@ -42,9 +42,9 @@ import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.ws.common.SamlpSecondLevelErrorCode;
 import net.link.safeonline.ws.common.SamlpTopLevelErrorCode;
 import net.link.safeonline.ws.common.WebServiceConstants;
-import net.link.safeonline.ws.util.ApplicationCertificateValidatorHandler;
+import net.link.safeonline.ws.util.CertificateValidatorHandler;
 import net.link.safeonline.ws.util.CertificateDomainException;
-import net.link.safeonline.ws.util.ApplicationCertificateValidatorHandler.CertificateDomain;
+import net.link.safeonline.ws.util.CertificateValidatorHandler.CertificateDomain;
 import net.link.safeonline.ws.util.ri.Injection;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -84,7 +84,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @WebService(endpointInterface = "oasis.names.tc.saml._2_0.protocol.SAMLAttributePort")
-@HandlerChain(file = "app-auth-ws-handlers.xml")
+@HandlerChain(file = "auth-ws-handlers.xml")
 @Injection
 public class SAMLAttributePortImpl implements SAMLAttributePort {
 
@@ -162,7 +162,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 		LOG.debug("attribute query");
 
 		try {
-			this.certificateDomain = ApplicationCertificateValidatorHandler
+			this.certificateDomain = CertificateValidatorHandler
 					.getCertificateDomain(this.context);
 		} catch (CertificateDomainException e) {
 			ResponseType requestDeniedResponse = createRequestDeniedResponse();

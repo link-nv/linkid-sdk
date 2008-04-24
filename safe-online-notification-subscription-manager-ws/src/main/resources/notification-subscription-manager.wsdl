@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+	targetNamespace="urn:net:lin-k:safe-online:notification:subscription:manager"
+	xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:net:lin-k:safe-online:notification:subscription:manager"
+	xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2" xmlns:wsntw="http://docs.oasis-open.org/wsn/bw-2"
+	xmlns:wsrf-rw="http://docs.oasis-open.org/wsrf/rw-2" xmlns:wsa="http://www.w3.org/2005/08/addressing"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="SafeOnlineNotificationSubscriptionManagerWebService">
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+			targetNamespace="urn:net:lin-k:safe-online:notification:subscription:manager">
+			<import namespace="http://docs.oasis-open.org/wsn/b-2"
+				schemaLocation="b-2.xsd" />
+			<import namespace="http://www.w3.org/2005/08/addressing" />
+			<xsd:complexType name="TopicType">
+				<xsd:sequence>
+					<xsd:element ref="wsnt:Topic" minOccurs="0" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="StatusType">
+				<xsd:sequence>
+					<xsd:element ref="tns:StatusCode" />
+					<xsd:element ref="tns:StatusMessage" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="StatusCode" type="tns:StatusCodeType" />
+			<xsd:complexType name="StatusCodeType">
+				<xsd:sequence>
+					<xsd:element ref="tns:StatusCode" minOccurs="0" />
+				</xsd:sequence>
+				<xsd:attribute name="Value" type="anyURI" use="required" />
+			</xsd:complexType>
+			<xsd:element name="StatusMessage" type="string" />
+			<xsd:element name="UnsubscribeRequest">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="ConsumerReference" type="wsa:EndpointReferenceType"
+							minOccurs="1" maxOccurs="1" />
+						<xsd:element name="Topic" type="tns:TopicType"
+							minOccurs="0" maxOccurs="1" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="UnsubscribeResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Status" type="tns:StatusType" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</schema>
+	</types>
+	<message name="RenewRequestMessage">
+		<part name="request" element="wsnt:Renew" />
+	</message>
+	<message name="RenewResponseMessage">
+		<part name="response" element="wsnt:RenewResponse" />
+	</message>
+	<message name="UnsubscribeRequestMessage">
+		<part name="request" element="tns:UnsubscribeRequest" />
+	</message>
+	<message name="UnsubscribeResponseMessage">
+		<part name="response" element="tns:UnsubscribeResponse" />
+	</message>
+	<portType name="NotificationSubscriptionManagerPort">
+		<operation name="Renew">
+			<soap:operation soapAction="Subscribe" />
+			<input name="RenewRequest" message="tns:RenewRequestMessage" />
+			<output name="RenewResponse" message="tns:RenewResponseMessage" />
+			<fault name="ResourceUnknownFault" message="wsrf-rw:ResourceUnknownFault" />
+			<fault name="UnacceptableTerminationTimeFault" message="wsntw:UnacceptableTerminationTimeFault" />
+		</operation>
+		<operation name="Unsubscribe">
+			<soap:operation soapAction="Subscribe" />
+			<input name="UnsubscribeRequest" message="tns:UnsubscribeRequestMessage" />
+			<output name="UnsubscribeResponse" message="tns:UnsubscribeResponseMessage" />
+			<fault name="ResourceUnknownFault" message="wsrf-rw:ResourceUnknownFault" />
+			<fault name="UnableToDestroySubscriptionFault" message="wsntw:UnableToDestroySubscriptionFault" />
+		</operation>
+	</portType>
+	<binding name="NotificationSubscriptionManagerSoapBinding"
+		type="tns:NotificationSubscriptionManagerPort">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="Renew">
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="Unsubscribe">
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="NotificationSubscriptionManagerService">
+		<port name="NotificationSubscriptionManagerPort" binding="tns:NotificationSubscriptionManagerSoapBinding">
+			<soap:address location="http://localhost:8080/safe-online-ws/subscription/" />
+		</port>
+	</service>
+</definitions>

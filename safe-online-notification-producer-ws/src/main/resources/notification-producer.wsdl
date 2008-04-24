@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="urn:net:lin-k:safe-online:notification:producer"
+	xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:net:lin-k:safe-online:notification:producer"
+	xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2" xmlns:wsntw="http://docs.oasis-open.org/wsn/bw-2"
+	xmlns:wsrf-rw="http://docs.oasis-open.org/wsrf/rw-2" xmlns:wsa="http://www.w3.org/2005/08/addressing"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="SafeOnlineNotificationProducerWebService">
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+			targetNamespace="urn:net:lin-k:safe-online:notification:producer">
+			<import namespace="http://docs.oasis-open.org/wsn/b-2"
+				schemaLocation="b-2.xsd" />
+			<import namespace="http://www.w3.org/2005/08/addressing" />
+			<xsd:complexType name="FilterType">
+				<xsd:sequence>
+					<xsd:element ref="wsnt:Topic" minOccurs="0" maxOccurs="1" />
+					<xsd:any namespace="##other" processContents="lax"
+						minOccurs="0" maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="SubscribeRequest">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="ConsumerReference" type="wsa:EndpointReferenceType"
+							minOccurs="1" maxOccurs="1" />
+						<xsd:element name="Filter" type="tns:FilterType"
+							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="InitialTerminationTime" type="wsnt:AbsoluteOrRelativeTimeType"
+							nillable="true" minOccurs="0" maxOccurs="1" />
+						<xsd:element name="SubscriptionPolicy" minOccurs="0"
+							maxOccurs="1">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:any namespace="##any" processContents="lax"
+										minOccurs="0" maxOccurs="unbounded" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:any namespace="##other" processContents="lax"
+							minOccurs="0" maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</schema>
+	</types>
+	<message name="SubscribeRequestMessage">
+		<part name="request" element="tns:SubscribeRequest" />
+	</message>
+	<message name="SubscribeResponseMessage">
+		<part name="response" element="wsnt:SubscribeResponse" />
+	</message>
+	<message name="GetCurrentMessageRequestMessage">
+		<part name="request" element="wsnt:GetCurrentMessage" />
+	</message>
+	<message name="GetCurrentMessageResponseMessage">
+		<part name="response" element="wsnt:GetCurrentMessageResponse" />
+	</message>
+	<portType name="NotificationProducerPort">
+		<operation name="Subscribe">
+			<soap:operation soapAction="Subscribe" />
+			<input message="tns:SubscribeRequestMessage" />
+			<output message="tns:SubscribeResponseMessage" />
+			<fault name="ResourceUnknownFault" message="wsrf-rw:ResourceUnknownFault" />
+			<fault name="InvalidFilterFault" message="wsntw:InvalidFilterFault" />
+			<fault name="TopicExpressionDialectUnknownFault" message="wsntw:TopicExpressionDialectUnknownFault" />
+			<fault name="InvalidTopicExpressionFault" message="wsntw:InvalidTopicExpressionFault" />
+			<fault name="TopicNotSupportedFault" message="wsntw:TopicNotSupportedFault" />
+			<fault name="InvalidProducerPropertiesExpressionFault" message="wsntw:InvalidProducerPropertiesExpressionFault" />
+			<fault name="InvalidMessageContentExpressionFault" message="wsntw:InvalidMessageContentExpressionFault" />
+			<fault name="UnacceptableInitialTerminationTimeFault" message="wsntw:UnacceptableInitialTerminationTimeFault" />
+			<fault name="UnrecognizedPolicyRequestFault" message="wsntw:UnrecognizedPolicyRequestFault" />
+			<fault name="UnsupportedPolicyRequestFault" message="wsntw:UnsupportedPolicyRequestFault" />
+			<fault name="NotifyMessageNotSupportedFault" message="wsntw:NotifyMessageNotSupportedFault" />
+			<fault name="SubscribeCreationFailedFault" message="wsntw:SubscribeCreationFailedFault" />
+		</operation>
+		<operation name="GetCurrentMessage">
+			<soap:operation soapAction="Subscribe" />
+			<input message="tns:GetCurrentMessageRequestMessage" />
+			<output message="tns:GetCurrentMessageResponseMessage" />
+			<fault name="ResourceUnknownFault" message="wsrf-rw:ResourceUnknownFault" />
+			<fault name="TopicExpressionDialectUnknownFault" message="wsntw:TopicExpressionDialectUnknownFault" />
+			<fault name="InvalidTopicExpressionFault" message="wsntw:InvalidTopicExpressionFault" />
+			<fault name="TopicNotSupportedFault" message="wsntw:TopicNotSupportedFault" />
+			<fault name="NoCurrentMessageOnTopicFault" message="wsntw:NoCurrentMessageOnTopicFault" />
+			<fault name="MultipleTopicsSpecifiedFault" message="wsntw:MultipleTopicsSpecifiedFault" />
+		</operation>
+	</portType>
+	<binding name="NotificationProducerSoapBinding" type="tns:NotificationProducerPort">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="Subscribe">
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="GetCurrentMessage">
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="NotificationProducerService">
+		<port name="NotificationProducerPort" binding="tns:NotificationProducerSoapBinding">
+			<soap:address location="http://localhost:8080/safe-online-ws/producer/" />
+		</port>
+	</service>
+</definitions>

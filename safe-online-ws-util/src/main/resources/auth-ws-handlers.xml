@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jws:handler-chains xmlns:jws="http://java.sun.com/xml/ns/javaee">
+	<jws:handler-chain>
+		<jws:handler>
+			<jws:handler-class>
+				net.link.safeonline.ws.util.LoginHandler
+			</jws:handler-class>
+		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>
+				net.link.safeonline.sdk.ws.WSSecurityBodyHandler
+			</jws:handler-class>
+		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>
+				net.link.safeonline.ws.util.CertificateMapperHandler
+			</jws:handler-class>
+		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>
+				net.link.safeonline.ws.util.CertificateValidatorHandler
+			</jws:handler-class>
+		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>
+				net.link.safeonline.sdk.ws.WSSecurityServerHandler
+			</jws:handler-class>
+		</jws:handler>
+	</jws:handler-chain>
+</jws:handler-chains>

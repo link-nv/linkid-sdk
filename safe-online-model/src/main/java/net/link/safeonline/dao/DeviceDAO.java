@@ -73,4 +73,6 @@ public interface DeviceDAO {
 
 	DeviceEntity getDevice(X509Certificate certificate)
 			throws DeviceNotFoundException;
+
+	DeviceEntity findDevice(X509Certificate certificate);
 }

@@ -11,8 +11,11 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.AccountService;
+import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.user.Actions;
 import net.link.safeonline.user.UserConstants;
 
@@ -24,6 +27,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Context;
+import org.jboss.seam.core.FacesMessages;
 import org.jboss.seam.log.Log;
 
 @Stateful
@@ -34,6 +38,9 @@ public class ActionsBean implements Actions {
 
 	@In
 	Context sessionContext;
+
+	@In(create = true)
+	FacesMessages facesMessages;
 
 	@EJB
 	private AccountService accountService;
@@ -49,7 +56,17 @@ public class ActionsBean implements Actions {
 	@RolesAllowed(UserConstants.USER_ROLE)
 	public String removeAccount() {
 		this.log.debug("remove account");
-		this.accountService.removeAccount();
+		try {
+			this.accountService.removeAccount();
+		} catch (SubscriptionNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorSubscriptionNotFound");
+			return null;
+		} catch (MessageHandlerNotFoundException e) {
+			this.facesMessages.addFromResourceBundle(
+					FacesMessage.SEVERITY_ERROR, "errorMessage");
+			return null;
+		}
 		this.sessionContext.set("login-processing", null);
 		this.sessionContext.set("username", null);
 		Seam.invalidateSession();

@@ -10,17 +10,22 @@ package net.link.safeonline.authentication.service;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 
 @Local
 public interface AccountService {
 
-	void removeAccount();
+	void removeAccount() throws SubscriptionNotFoundException,
+			MessageHandlerNotFoundException;
 
 	/**
 	 * Removes the specified account, not removing the subject identifers.
 	 * 
 	 * @param userId
 	 * @throws SubjectNotFoundException
+	 * @throws MessageHandlerNotFoundException
 	 */
-	void removeAccount(String userId) throws SubjectNotFoundException;
+	void removeAccount(String userId) throws SubjectNotFoundException,
+			SubscriptionNotFoundException, MessageHandlerNotFoundException;
 }

@@ -83,13 +83,17 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 		Boolean outboundProperty = (Boolean) soapMessageContext
 				.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
-		SOAPMessage soapMessage = soapMessageContext.getMessage();
-		SOAPPart soapPart = soapMessage.getSOAPPart();
+		try {
+			SOAPMessage soapMessage = soapMessageContext.getMessage();
+			SOAPPart soapPart = soapMessage.getSOAPPart();
 
-		if (outboundProperty) {
-			this.outboundMessage = soapPart;
-		} else {
-			this.inboundMessage = soapPart;
+			if (outboundProperty) {
+				this.outboundMessage = soapPart;
+			} else {
+				this.inboundMessage = soapPart;
+			}
+		} catch (Exception e) {
+			LOG.debug("exception caught: " + e.getMessage(), e);
 		}
 
 		return true;

@@ -58,6 +58,8 @@ import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementTextEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.notification.EndpointReferenceEntity;
+import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
@@ -70,6 +72,9 @@ import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.model.bean.UsageAgreementManagerBean;
 import net.link.safeonline.model.beid.bean.BeIdStartableBean;
 import net.link.safeonline.model.demo.DemoStartableBean;
+import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
+import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
+import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustPointDAOBean;
 import net.link.safeonline.service.bean.DeviceRegistrationServiceBean;
@@ -108,7 +113,8 @@ public class DemoStartableBeanTest {
 			UsageAgreementDAOBean.class, UsageAgreementManagerBean.class,
 			OlasDAOBean.class, DeviceRegistrationServiceBean.class,
 			DeviceRegistrationDAOBean.class, DevicePolicyServiceBean.class,
-			DevicesBean.class };
+			DevicesBean.class, NotificationProducerServiceBean.class,
+			NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class };
 
 	@Before
 	public void setUp() throws Exception {
@@ -130,7 +136,9 @@ public class DemoStartableBeanTest {
 				AllowedDeviceEntity.class,
 				CompoundedAttributeTypeMemberEntity.class,
 				SubjectIdentifierEntity.class, UsageAgreementEntity.class,
-				UsageAgreementTextEntity.class, OlasEntity.class);
+				UsageAgreementTextEntity.class, OlasEntity.class,
+				EndpointReferenceEntity.class,
+				NotificationProducerSubscriptionEntity.class);
 
 		EntityManager entityManager = this.entityTestManager.getEntityManager();
 

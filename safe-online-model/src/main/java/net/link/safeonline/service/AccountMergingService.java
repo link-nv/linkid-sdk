@@ -16,8 +16,10 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.data.AccountMergingDO;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 
 @Local
 public interface AccountMergingService {
@@ -44,10 +46,13 @@ public interface AccountMergingService {
 	 * @throws AttributeTypeNotFoundException
 	 * @throws SubjectNotFoundException
 	 * @throws PermissionDeniedException
+	 * @throws SubscriptionNotFoundException
+	 * @throws MessageHandlerNotFoundException
 	 */
 	void mergeAccount(AccountMergingDO accountMergingDO,
 			Set<DeviceEntity> neededDevices)
 			throws AttributeTypeNotFoundException, SubjectNotFoundException,
-			PermissionDeniedException;
+			PermissionDeniedException, SubscriptionNotFoundException,
+			MessageHandlerNotFoundException;
 
 }

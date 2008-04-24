@@ -27,12 +27,13 @@ import net.link.safeonline.authentication.service.ApplicationAuthenticationServi
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.IdentifierMappingService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingConstants;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingPortImpl;
 import net.link.safeonline.idmapping.ws.NameIdentifierMappingServiceFactory;
+import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -59,6 +60,8 @@ public class NameIdentifierMappingPortImplTest {
 
 	private JndiTestUtils jndiTestUtils;
 
+	private WSSecurityConfigurationService mockWSSecurityConfigurationService;
+
 	private ApplicationAuthenticationService mockApplicationAuthenticationService;
 
 	private DeviceAuthenticationService mockDeviceAuthenticationService;
@@ -66,8 +69,6 @@ public class NameIdentifierMappingPortImplTest {
 	private NodeAuthenticationService mockNodeAuthenticationService;
 
 	private PkiValidator mockPkiValidator;
-
-	private ConfigurationManager mockConfigurationManager;
 
 	private IdentifierMappingService mockIdentifierMappingService;
 
@@ -82,20 +83,26 @@ public class NameIdentifierMappingPortImplTest {
 	public void setUp() throws Exception {
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
+		this.jndiTestUtils.bindComponent(
+				"java:comp/env/wsSecurityConfigurationServiceJndiName",
+				"SafeOnline/WSSecurityConfigurationBean/local");
 
+		this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
 		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
 		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
 		this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
-		this.mockConfigurationManager = createMock(ConfigurationManager.class);
 		this.mockIdentifierMappingService = createMock(IdentifierMappingService.class);
 
 		this.mockObjects = new Object[] {
+				this.mockWSSecurityConfigurationService,
 				this.mockApplicationAuthenticationService,
 				this.mockDeviceAuthenticationService, this.mockPkiValidator,
-				this.mockConfigurationManager,
 				this.mockIdentifierMappingService };
 
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/WSSecurityConfigurationBean/local",
+				this.mockWSSecurityConfigurationService);
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ApplicationAuthenticationServiceBean/local",
 				this.mockApplicationAuthenticationService);
@@ -107,9 +114,6 @@ public class NameIdentifierMappingPortImplTest {
 				this.mockNodeAuthenticationService);
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/ConfigurationManagerBean/local",
-				this.mockConfigurationManager);
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/IdentifierMappingServiceBean/local",
 				this.mockIdentifierMappingService);
@@ -139,7 +143,7 @@ public class NameIdentifierMappingPortImplTest {
 
 		String testApplicationName = "test-application-name";
 		expect(
-				this.mockConfigurationManager
+				this.mockWSSecurityConfigurationService
 						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
 				Long.MAX_VALUE);
 		expect(
@@ -151,8 +155,8 @@ public class NameIdentifierMappingPortImplTest {
 						.authenticate(this.certificate)).andReturn(
 				testApplicationName);
 		expect(
-				this.mockApplicationAuthenticationService
-						.skipMessageIntegrityCheck(testApplicationName))
+				this.mockWSSecurityConfigurationService
+						.skipMessageIntegrityCheck(this.certificate))
 				.andReturn(false);
 
 		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);

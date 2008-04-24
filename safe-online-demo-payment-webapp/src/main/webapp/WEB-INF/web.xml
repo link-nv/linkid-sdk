@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 	<display-name>SafeOnline Demo Payment Web Application</display-name>
+
 	<listener>
 		<listener-class>
 			org.jboss.seam.servlet.SeamListener
@@ -19,6 +20,12 @@
 			net.link.safeonline.demo.payment.listener.PaymentSessionListener
 		</listener-class>
 	</listener>
+	<listener>
+		<listener-class>
+			net.link.safeonline.demo.payment.listener.StartupServletContextListener
+		</listener-class>
+	</listener>
+
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
 		<param-value>

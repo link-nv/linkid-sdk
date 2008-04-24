@@ -92,4 +92,13 @@ public interface ApplicationDAO {
 	 */
 	ApplicationEntity getApplication(X509Certificate certificate)
 			throws ApplicationNotFoundException;
+
+	/**
+	 * Gives back an application entity.
+	 * 
+	 * @param certificate
+	 *            the application certificate.
+	 * @return the application or <code>null</code> if not found.
+	 */
+	ApplicationEntity findApplication(X509Certificate certificate);
 }

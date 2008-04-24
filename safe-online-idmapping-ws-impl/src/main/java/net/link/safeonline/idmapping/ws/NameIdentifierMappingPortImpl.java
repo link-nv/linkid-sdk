@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @WebService(endpointInterface = "oasis.names.tc.saml._2_0.protocol.NameIdentifierMappingPort")
-@HandlerChain(file = "app-auth-ws-handlers.xml")
+@HandlerChain(file = "auth-ws-handlers.xml")
 @Injection
 public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort {
 

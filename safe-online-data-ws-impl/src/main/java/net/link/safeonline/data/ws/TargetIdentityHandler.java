@@ -29,9 +29,9 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.UserIdMappingService;
+import net.link.safeonline.sdk.ws.WSSecurityServerHandler;
 import net.link.safeonline.util.ee.EjbUtils;
-import net.link.safeonline.ws.util.ApplicationCertificateMapperHandler;
-import net.link.safeonline.ws.util.WSSecurityServerHandler;
+import net.link.safeonline.ws.util.CertificateMapperHandler;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.assertion.SubjectType;
 import oasis.names.tc.saml._2_0.protocol.ObjectFactory;
@@ -157,7 +157,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 		SubjectType subject = (SubjectType) element;
 		String login = findSubjectLogin(subject);
 
-		String applicationName = ApplicationCertificateMapperHandler
+		String applicationName = CertificateMapperHandler
 				.getId(soapContext);
 		String userId = null;
 		try {

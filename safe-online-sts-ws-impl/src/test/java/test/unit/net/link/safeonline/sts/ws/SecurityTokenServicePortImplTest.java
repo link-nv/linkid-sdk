@@ -29,9 +29,10 @@ import javax.xml.ws.handler.Handler;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
-import net.link.safeonline.config.model.ConfigurationManager;
+import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
+import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.sts.ws.SecurityTokenServiceFactory;
 import net.link.safeonline.sts.ws.SecurityTokenServicePortImpl;
@@ -96,6 +97,8 @@ public class SecurityTokenServicePortImplTest {
 
 	private JndiTestUtils jndiTestUtils;
 
+	private WSSecurityConfigurationService mockWSSecurityConfigurationService;
+
 	private ApplicationAuthenticationService mockApplicationAuthenticationService;
 
 	private DeviceAuthenticationService mockDeviceAuthenticationService;
@@ -103,8 +106,6 @@ public class SecurityTokenServicePortImplTest {
 	private NodeAuthenticationService mockNodeAuthenticationService;
 
 	private PkiValidator mockPkiValidator;
-
-	private ConfigurationManager mockConfigurationManager;
 
 	private Object[] mockObjects;
 
@@ -130,8 +131,8 @@ public class SecurityTokenServicePortImplTest {
 		this.jmxTestUtils.registerActionHandler(
 				IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey",
 				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						LOG.debug("returning private key");
 						return SecurityTokenServicePortImplTest.this.privateKey;
 					}
@@ -139,8 +140,8 @@ public class SecurityTokenServicePortImplTest {
 		this.jmxTestUtils.registerActionHandler(
 				IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey",
 				new MBeanActionHandler() {
-					public Object invoke(@SuppressWarnings("unused")
-					Object[] arguments) {
+					public Object invoke(
+							@SuppressWarnings("unused") Object[] arguments) {
 						LOG.debug("returning public key");
 						return SecurityTokenServicePortImplTest.this.publicKey;
 					}
@@ -148,18 +149,24 @@ public class SecurityTokenServicePortImplTest {
 
 		this.jndiTestUtils = new JndiTestUtils();
 		this.jndiTestUtils.setUp();
+		this.jndiTestUtils.bindComponent(
+				"java:comp/env/wsSecurityConfigurationServiceJndiName",
+				"SafeOnline/WSSecurityConfigurationBean/local");
 
+		this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
 		this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
 		this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
 		this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
 		this.mockPkiValidator = createMock(PkiValidator.class);
-		this.mockConfigurationManager = createMock(ConfigurationManager.class);
 
 		this.mockObjects = new Object[] {
+				this.mockWSSecurityConfigurationService,
 				this.mockApplicationAuthenticationService,
-				this.mockDeviceAuthenticationService, this.mockPkiValidator,
-				this.mockConfigurationManager };
+				this.mockDeviceAuthenticationService, this.mockPkiValidator };
 
+		this.jndiTestUtils.bindComponent(
+				"SafeOnline/WSSecurityConfigurationBean/local",
+				this.mockWSSecurityConfigurationService);
 		this.jndiTestUtils.bindComponent(
 				"SafeOnline/ApplicationAuthenticationServiceBean/local",
 				this.mockApplicationAuthenticationService);
@@ -171,9 +178,6 @@ public class SecurityTokenServicePortImplTest {
 				this.mockNodeAuthenticationService);
 		this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local",
 				this.mockPkiValidator);
-		this.jndiTestUtils.bindComponent(
-				"SafeOnline/ConfigurationManagerBean/local",
-				this.mockConfigurationManager);
 
 		this.webServiceTestUtils = new WebServiceTestUtils();
 
@@ -182,7 +186,7 @@ public class SecurityTokenServicePortImplTest {
 
 		String testApplicationName = "test-application-name";
 		expect(
-				this.mockConfigurationManager
+				this.mockWSSecurityConfigurationService
 						.getMaximumWsSecurityTimestampOffset()).andStubReturn(
 				Long.MAX_VALUE);
 		expect(
@@ -193,8 +197,8 @@ public class SecurityTokenServicePortImplTest {
 						.authenticate(this.certificate)).andStubReturn(
 				testApplicationName);
 		expect(
-				this.mockApplicationAuthenticationService
-						.skipMessageIntegrityCheck(testApplicationName))
+				this.mockWSSecurityConfigurationService
+						.skipMessageIntegrityCheck(this.certificate))
 				.andReturn(false);
 
 		JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
@@ -386,8 +390,7 @@ public class SecurityTokenServicePortImplTest {
 
 	@SuppressWarnings("unchecked")
 	private static <Type extends XMLObject> Type buildXMLObject(
-			@SuppressWarnings("unused")
-			Class<Type> clazz, QName objectQName) {
+			@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
 		XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory()
 				.getBuilder(objectQName);
 		if (builder == null) {

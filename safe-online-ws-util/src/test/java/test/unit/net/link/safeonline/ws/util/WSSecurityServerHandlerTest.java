@@ -36,12 +36,12 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.config.model.ConfigurationManager;
+import net.link.safeonline.sdk.ws.ServerCrypto;
+import net.link.safeonline.sdk.ws.WSSecurityServerHandler;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.TestSOAPMessageContext;
-import net.link.safeonline.ws.util.ServerCrypto;
-import net.link.safeonline.ws.util.WSSecurityServerHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

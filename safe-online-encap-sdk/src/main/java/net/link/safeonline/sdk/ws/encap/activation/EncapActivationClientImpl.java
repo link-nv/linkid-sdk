@@ -44,6 +44,7 @@ public class EncapActivationClientImpl implements EncapActivationClient {
 
 		ActivationInitResponse response = this.activationStub.activate(mobile,
 				orgId, userId);
+
 		LOG.debug("activation result: " + response.getStatus());
 		LOG.debug("activation info: " + response.getAdditionalInfo());
 		LOG.debug("activation app id: " + response.getAppId());
@@ -51,8 +52,9 @@ public class EncapActivationClientImpl implements EncapActivationClient {
 		LOG.debug("activation so: " + response.getSecureObject());
 		LOG.debug("activation sp id: " + response.getServiceProviderId());
 		LOG.debug("activation session id: " + response.getSessionId());
+		LOG.debug("activation code: " + response.getActivationCode());
 		if (EncapConstants.ENCAP_SUCCES == response.getStatus())
-			return response.getSessionId();
+			return response.getActivationCode();
 		return null;
 	}
 

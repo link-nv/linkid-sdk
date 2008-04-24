@@ -196,7 +196,6 @@ public class DemoStartableBean extends AbstractInitBean {
 		this.subscriptions.add(new Subscription(
 				SubscriptionOwnerType.APPLICATION, mandateAdmin,
 				SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
-
 	}
 
 	private void configTicketDemo() {
@@ -655,8 +654,7 @@ public class DemoStartableBean extends AbstractInitBean {
 		IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 
 		this.node = new Node(nodeName, protocol, hostname, hostport,
-				hostportssl,
-				authIdentityServiceClient.getCertificate(),
+				hostportssl, authIdentityServiceClient.getCertificate(),
 				identityServiceClient.getCertificate());
 		this.trustedCertificates.put(
 				authIdentityServiceClient.getCertificate(),

@@ -43,6 +43,7 @@ public class EncapActivationSoapBindingImpl implements BankIdActivation {
 			Random generator = new Random();
 			Long activationCode = Math.abs(generator.nextLong()) % 999999L;
 			response.setSessionId(activationCode.toString());
+			response.setActivationCode(activationCode.toString());
 		} else {
 			response.setStatus(ENCAP_FAILURE);
 			response.setAdditionalInfo("Failed to activate mobile: " + msisdn);

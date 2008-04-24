@@ -8,27 +8,27 @@
 		</jws:handler>
 		<jws:handler>
 			<jws:handler-class>
-				net.link.safeonline.ws.util.ApplicationLoginHandler
+				net.link.safeonline.ws.util.LoginHandler
 			</jws:handler-class>
 		</jws:handler>
 		<jws:handler>
 			<jws:handler-class>
-				net.link.safeonline.ws.util.WSSecurityBodyHandler
+				net.link.safeonline.sdk.ws.WSSecurityBodyHandler
 			</jws:handler-class>
 		</jws:handler>
 		<jws:handler>
 			<jws:handler-class>
-				net.link.safeonline.ws.util.ApplicationCertificateMapperHandler
+				net.link.safeonline.ws.util.CertificateMapperHandler
 			</jws:handler-class>
 		</jws:handler>
 		<jws:handler>
 			<jws:handler-class>
-				net.link.safeonline.ws.util.ApplicationCertificateValidatorHandler
+				net.link.safeonline.ws.util.CertificateValidatorHandler
 			</jws:handler-class>
 		</jws:handler>
 		<jws:handler>
 			<jws:handler-class>
-				net.link.safeonline.ws.util.WSSecurityServerHandler
+				net.link.safeonline.sdk.ws.WSSecurityServerHandler
 			</jws:handler-class>
 		</jws:handler>
 	</jws:handler-chain>

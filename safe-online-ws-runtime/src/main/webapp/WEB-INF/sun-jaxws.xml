@@ -1,39 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <endpoints xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
 	version="2.0">
-
 	<endpoint name="SafeOnline-Attribute-WS"
 		implementation="net.link.safeonline.attrib.ws.SAMLAttributePortImpl"
-		url-pattern="/attrib"
-		interface="oasis.names.tc.saml._2_0.protocol.SAMLAttributePort"
+		url-pattern="/attrib" interface="oasis.names.tc.saml._2_0.protocol.SAMLAttributePort"
 		service="{urn:oasis:names:tc:SAML:2.0:protocol}SAMLAttributeService"
 		port="{urn:oasis:names:tc:SAML:2.0:protocol}SAMLAttributePort" />
-
 	<endpoint name="SafeOnline-Data-WS"
 		implementation="net.link.safeonline.data.ws.DataServicePortImpl"
-		url-pattern="/data"
-		interface="liberty.dst._2006_08.ref.safe_online.DataServicePort"
-		service="{urn:liberty:dst:2006-08:ref:safe-online}DataService"
-		port="{urn:liberty:dst:2006-08:ref:safe-online}DataServicePort" />
-
+		url-pattern="/data" interface="liberty.dst._2006_08.ref.safe_online.DataServicePort"
+		service="{urn:liberty:dst:2006-08:ref:safe-online}DataService" port="{urn:liberty:dst:2006-08:ref:safe-online}DataServicePort" />
 	<endpoint name="SafeOnline-Identifier-Mapping-WS"
 		implementation="net.link.safeonline.idmapping.ws.NameIdentifierMappingPortImpl"
 		url-pattern="/idmapping"
 		interface="oasis.names.tc.saml._2_0.protocol.NameIdentifierMappingPort"
 		service="{urn:oasis:names:tc:SAML:2.0:protocol}NameIdentifierMappingService"
 		port="{urn:oasis:names:tc:SAML:2.0:protocol}NameIdentifierMappingPort" />
-
 	<endpoint name="SafeOnline-Security-Token-Service"
 		implementation="net.link.safeonline.sts.ws.SecurityTokenServicePortImpl"
 		url-pattern="/sts"
 		interface="org.oasis_open.docs.ws_sx.ws_trust._200512.SecurityTokenServicePort"
 		service="{http://docs.oasis-open.org/ws-sx/ws-trust/200512/}SecurityTokenService"
 		port="{http://docs.oasis-open.org/ws-sx/ws-trust/200512/}SecurityTokenServicePort" />
-
-	<endpoint name="SafeOnline-Ping-Service"
-		implementation="net.link.safeonline.ping.ws.PingPortImpl"
+	<endpoint name="SafeOnline-Ping-Service" implementation="net.link.safeonline.ping.ws.PingPortImpl"
 		url-pattern="/ping" interface="net.lin_k.safe_online.ping.PingPort"
-		service="{urn:net:lin-k:safe-online:ping}PingService"
-		port="{urn:net:lin-k:safe-online:ping}PingPort" />
-
+		service="{urn:net:lin-k:safe-online:ping}PingService" port="{urn:net:lin-k:safe-online:ping}PingPort" />
+	<endpoint name="SafeOnline-Notification-Consumer-WS"
+		implementation="net.link.safeonline.notification.consumer.ws.NotificationConsumerPortImpl"
+		url-pattern="/consumer"
+		interface="net.lin_k.safe_online.notification.consumer.NotificationConsumerPort"
+		service="{urn:net:lin-k:safe-online:notification:consumer}NotificationConsumerService"
+		port="{urn:net:lin-k:safe-online:notification:consumer}NotificationConsumerPort" />
+	<endpoint name="SafeOnline-Notification-Producer-WS"
+		implementation="net.link.safeonline.notification.producer.ws.NotificationProducerPortImpl"
+		url-pattern="/producer"
+		interface="net.lin_k.safe_online.notification.producer.NotificationProducerPort"
+		service="{urn:net:lin-k:safe-online:notification:producer}NotificationProducerService"
+		port="{urn:net:lin-k:safe-online:notification:producer}NotificationProducerPort" />
+	<endpoint name="SafeOnline-Notification-Subscription-Manager-WS"
+		implementation="net.link.safeonline.notification.subscription.manager.ws.NotificationSubscriptionManagerPortImpl"
+		url-pattern="/subscription"
+		interface="net.lin_k.safe_online.notification.subscription.manager.NotificationSubscriptionManagerort"
+		service="{urn:net:lin-k:safe-online:notification:subscription:manager}NotificationSubscriptionManagerService"
+		port="{urn:net:lin-k:safe-online:notification:subscription:manager}NotificationSubscriptionManagerPort" />
 </endpoints>

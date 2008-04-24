@@ -18,6 +18,12 @@
 		</listener-class>
 	</listener>
 
+	<listener>
+		<listener-class>
+			net.link.safeonline.demo.ticket.listener.StartupServletContextListener
+		</listener-class>
+	</listener>
+
 	<context-param>
 		<param-name>SafeOnlineAuthenticationServiceUrl</param-name>
 		<param-value>
