@@ -281,7 +281,7 @@ public class EntityTest {
 		assertEquals(1, (long) count);
 
 		resultSubscription = subscriptionQueryObject
-				.getSubscription(userApplicationId);
+				.findSubscription(userApplicationId);
 		assertNotNull(resultSubscription);
 
 		// operate: remove subscription
