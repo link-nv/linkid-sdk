@@ -250,7 +250,6 @@
 			</activation>
 			<properties>
 				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
-				<safe-online.host.name>localhost</safe-online.host.name>
 			</properties>
 			<modules>
 				<module>safe-online-model-demo</module>
