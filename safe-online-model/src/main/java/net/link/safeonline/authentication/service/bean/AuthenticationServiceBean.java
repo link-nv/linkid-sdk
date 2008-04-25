@@ -131,9 +131,8 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	@EJB
 	private PasswordDeviceService passwordDeviceService;
 
-	public boolean authenticate(@NonEmptyString
-	String userId, @NotNull
-	DeviceEntity device) throws SubjectNotFoundException {
+	public boolean authenticate(@NonEmptyString String userId,
+			@NotNull DeviceEntity device) throws SubjectNotFoundException {
 		LOG.debug("authenticate: " + userId + " device=" + device.getName());
 		SubjectEntity subject = this.subjectService.getSubject(userId);
 
@@ -144,9 +143,9 @@ public class AuthenticationServiceBean implements AuthenticationService,
 		return true;
 	}
 
-	public boolean authenticate(@NonEmptyString
-	String login, @NonEmptyString
-	String password) throws SubjectNotFoundException, DeviceNotFoundException {
+	public boolean authenticate(@NonEmptyString String login,
+			@NonEmptyString String password) throws SubjectNotFoundException,
+			DeviceNotFoundException {
 		SubjectEntity subject = this.passwordDeviceService.authenticate(login,
 				password);
 		if (null == subject)
@@ -214,8 +213,7 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	private void checkRequiredMissingAttributes(String applicationId)
 			throws ApplicationNotFoundException,
 			ApplicationIdentityNotFoundException, MissingAttributeException,
-			SubjectNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException {
+			PermissionDeniedException, AttributeTypeNotFoundException {
 		boolean hasMissingAttributes = this.identityService
 				.hasMissingAttributes(applicationId);
 		if (true == hasMissingAttributes) {
@@ -262,15 +260,14 @@ public class AuthenticationServiceBean implements AuthenticationService,
 	}
 
 	@Remove
-	public void commitAuthentication(@NonEmptyString
-	String applicationId, Set<DeviceEntity> requiredDevicePolicy)
+	public void commitAuthentication(@NonEmptyString String applicationId,
+			Set<DeviceEntity> requiredDevicePolicy)
 			throws ApplicationNotFoundException, SubscriptionNotFoundException,
 			ApplicationIdentityNotFoundException,
 			IdentityConfirmationRequiredException, MissingAttributeException,
 			EmptyDevicePolicyException, DevicePolicyException,
 			UsageAgreementAcceptationRequiredException,
-			SubjectNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException {
+			PermissionDeniedException, AttributeTypeNotFoundException {
 		LOG.debug("commitAuthentication for application: " + applicationId);
 
 		checkStateBeforeCommit();

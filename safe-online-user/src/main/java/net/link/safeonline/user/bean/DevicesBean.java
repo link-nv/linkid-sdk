@@ -275,14 +275,12 @@ public class DevicesBean implements Devices {
 		try {
 			if (null == registeredDevice.getDevice().getUserAttributeType())
 				return new LinkedList<AttributeDO>();
+			LOG.debug("get registered device attribute: "
+					+ registeredDevice.getDevice().getUserAttributeType()
+							.getName());
 			registeredDeviceAttributes = this.identityService.listAttributes(
 					registeredDevice.getId(), registeredDevice.getDevice()
 							.getUserAttributeType(), locale);
-		} catch (SubjectNotFoundException e) {
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
-			LOG.error("subject not found");
-			return new LinkedList<AttributeDO>();
 		} catch (PermissionDeniedException e) {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
@@ -301,16 +299,21 @@ public class DevicesBean implements Devices {
 	@Factory(DEVICE_REGISTRATIONS_LIST_NAME)
 	public List<DeviceRegistrationEntry> deviceRegistrationsFactory() {
 		Locale locale = getViewLocale();
+		LOG.debug("device registrations factory");
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
+		LOG.debug("subject: " + subject.getUserId());
 
 		this.deviceRegistrations = new LinkedList<DeviceRegistrationEntry>();
 		List<DeviceEntity> deviceList = this.devicePolicyService.getDevices();
 		for (DeviceEntity device : deviceList) {
+			LOG.debug("device: " + device.getName());
 			String deviceDescription = this.devicePolicyService
 					.getDeviceDescription(device.getName(), locale);
+			LOG.debug("device description: " + deviceDescription);
 			List<DeviceRegistrationEntity> registeredDevices = this.deviceRegistrationService
 					.listDeviceRegistrations(subject, device);
 			for (DeviceRegistrationEntity registeredDevice : registeredDevices) {
+				LOG.debug("add registered device: " + deviceDescription);
 				this.deviceRegistrations.add(new DeviceRegistrationEntry(
 						registeredDevice, deviceDescription,
 						listRegisteredDeviceAttributes(registeredDevice)));

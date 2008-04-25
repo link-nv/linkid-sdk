@@ -50,12 +50,12 @@ public interface AttributeService {
 	 * @param attributeName
 	 * @throws AttributeNotFoundException
 	 * @throws PermissionDeniedException
-	 * @throws SubjectNotFoundException
 	 * @throws AttributeTypeNotFoundException
+	 * @throws SubjectNotFoundException
 	 */
 	Object getConfirmedAttributeValue(String subjectLogin, String attributeName)
 			throws AttributeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException, AttributeTypeNotFoundException;
+			AttributeTypeNotFoundException, SubjectNotFoundException;
 
 	/**
 	 * Returns a map of attributes with values of the given subject. Of course
@@ -76,11 +76,11 @@ public interface AttributeService {
 	 * </p>
 	 * 
 	 * @param subjectLogin
-	 * @throws SubjectNotFoundException
 	 * @throws PermissionDeniedException
 	 * @throws AttributeTypeNotFoundException
+	 * @throws SubjectNotFoundException
 	 */
 	Map<String, Object> getConfirmedAttributeValues(String subjectLogin)
-			throws SubjectNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException;
+			throws PermissionDeniedException, AttributeTypeNotFoundException,
+			SubjectNotFoundException;
 }

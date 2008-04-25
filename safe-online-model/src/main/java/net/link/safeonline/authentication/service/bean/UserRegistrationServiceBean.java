@@ -15,7 +15,6 @@ import javax.ejb.Stateless;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
@@ -51,7 +50,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService,
 
 	public SubjectEntity registerUser(String login)
 			throws ExistingUserException, AttributeTypeNotFoundException,
-			SubjectNotFoundException, PermissionDeniedException {
+			PermissionDeniedException {
 		SubjectEntity subject = this.subjectService
 				.findSubjectFromUserName(login);
 		if (null == subject)

@@ -59,7 +59,6 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 
 	private String deviceErrorUrl;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -133,9 +132,6 @@ public class DeviceRegistrationExitServlet extends HttpServlet {
 		} catch (AttributeTypeNotFoundException e) {
 			redirectToDeviceErrorPage(request, response,
 					"errorAttributeTypeNotFound");
-			return;
-		} catch (SubjectNotFoundException e) {
-			redirectToDeviceErrorPage(request, response, "errorSubjectNotFound");
 			return;
 		}
 		if (null == deviceAttribute) {

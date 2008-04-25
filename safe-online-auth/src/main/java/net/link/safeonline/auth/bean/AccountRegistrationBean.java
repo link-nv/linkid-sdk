@@ -28,7 +28,6 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
@@ -129,10 +128,6 @@ public class AccountRegistrationBean extends AbstractLoginBean implements
 		try {
 			subject = this.userRegistrationService.registerUser(this.login);
 		} catch (ExistingUserException e) {
-			this.facesMessages.addToControlFromResourceBundle("login",
-					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
-			return null;
-		} catch (SubjectNotFoundException e) {
 			this.facesMessages.addToControlFromResourceBundle("login",
 					FacesMessage.SEVERITY_ERROR, "errorLoginTaken");
 			return null;

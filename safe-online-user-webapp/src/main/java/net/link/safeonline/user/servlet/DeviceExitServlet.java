@@ -29,6 +29,9 @@ import net.link.safeonline.entity.DeviceRegistrationEntity;
 import net.link.safeonline.service.DeviceRegistrationService;
 import net.link.safeonline.util.ee.EjbUtils;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Device registration exit page.
  * 
@@ -44,6 +47,8 @@ public class DeviceExitServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final Log LOG = LogFactory.getLog(DeviceExitServlet.class);
+
 	public static final String RESOURCE_BASE = "messages.webapp";
 
 	public static final String DEVICE_ERROR_URL = "DeviceErrorUrl";
@@ -56,7 +61,6 @@ public class DeviceExitServlet extends HttpServlet {
 
 	private ProxyAttributeService proxyAttributeService;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -95,9 +99,8 @@ public class DeviceExitServlet extends HttpServlet {
 		handleLanding(request, response);
 	}
 
-	private void handleLanding(@SuppressWarnings("unused")
-	HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
+	private void handleLanding(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
 		try {
 			updateRegisteredDevices(request);
 		} catch (SubjectNotFoundException e) {
@@ -131,6 +134,7 @@ public class DeviceExitServlet extends HttpServlet {
 	private void updateRegisteredDevices(HttpServletRequest request)
 			throws AttributeTypeNotFoundException, PermissionDeniedException,
 			SubjectNotFoundException, DeviceNotFoundException {
+		LOG.debug("update registered devices");
 		ProtocolContext protocolContext = ProtocolContext
 				.getProtocolContext(request.getSession());
 		String deviceName = protocolContext.getDeviceName();
@@ -159,8 +163,9 @@ public class DeviceExitServlet extends HttpServlet {
 
 	private Object pollDeviceRegistration(
 			DeviceRegistrationEntity deviceRegistration)
-			throws AttributeTypeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException {
+			throws AttributeTypeNotFoundException, PermissionDeniedException {
+		LOG.debug("poll device registration: " + deviceRegistration.getId()
+				+ " (device=" + deviceRegistration.getDevice().getName() + ")");
 		return this.proxyAttributeService.findDeviceAttributeValue(
 				deviceRegistration.getId(), deviceRegistration.getDevice()
 						.getAttributeType().getName());

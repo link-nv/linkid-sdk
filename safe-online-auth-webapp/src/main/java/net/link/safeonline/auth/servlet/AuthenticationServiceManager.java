@@ -142,8 +142,7 @@ public class AuthenticationServiceManager implements HttpSessionListener {
 			IdentityConfirmationRequiredException, MissingAttributeException,
 			EmptyDevicePolicyException, DevicePolicyException,
 			UsageAgreementAcceptationRequiredException,
-			SubjectNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException {
+			PermissionDeniedException, AttributeTypeNotFoundException {
 
 		Set<DeviceEntity> requiredDevices = LoginManager
 				.getRequiredDevices(session);

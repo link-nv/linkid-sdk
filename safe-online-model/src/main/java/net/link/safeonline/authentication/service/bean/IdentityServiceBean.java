@@ -33,7 +33,6 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.IdentityServiceRemote;
@@ -605,26 +604,26 @@ public class IdentityServiceBean implements IdentityService,
 		 * Be careful here not to edit the currentIdentityAttributeTypes list
 		 * itself.
 		 */
-                for (ApplicationIdentityAttributeEntity target: confirmedAttributeTypes) {
-                    for (ApplicationIdentityAttributeEntity current: toConfirmAttributes) {
-                        if (target.equivalent(current)) {
-                            toConfirmAttributes.remove(current);
-                            break;
-                        }
-                    }
-                }
-                
+		for (ApplicationIdentityAttributeEntity target : confirmedAttributeTypes) {
+			for (ApplicationIdentityAttributeEntity current : toConfirmAttributes) {
+				if (target.equivalent(current)) {
+					toConfirmAttributes.remove(current);
+					break;
+				}
+			}
+		}
+
 		List<AttributeDO> resultAttributes = this.attributeTypeDescriptionDecorator
 				.addDescriptionFromIdentityAttributes(toConfirmAttributes,
 						locale);
 		return resultAttributes;
 	}
-        
+
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public boolean hasMissingAttributes(@NonEmptyString String applicationName)
 			throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, SubjectNotFoundException,
-			PermissionDeniedException, AttributeTypeNotFoundException {
+			ApplicationIdentityNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
 		LOG.debug("hasMissingAttributes for application: " + applicationName);
 		List<AttributeDO> missingAttributes = listMissingAttributes(
 				applicationName, null);
@@ -715,8 +714,8 @@ public class IdentityServiceBean implements IdentityService,
 	public List<AttributeDO> listMissingAttributes(
 			@NonEmptyString String applicationName, Locale locale)
 			throws ApplicationNotFoundException,
-			ApplicationIdentityNotFoundException, SubjectNotFoundException,
-			PermissionDeniedException, AttributeTypeNotFoundException {
+			ApplicationIdentityNotFoundException, PermissionDeniedException,
+			AttributeTypeNotFoundException {
 		LOG.debug("get missing attribute for application: " + applicationName);
 		SubjectEntity subject = this.subjectManager.getCallerSubject();
 
@@ -968,8 +967,7 @@ public class IdentityServiceBean implements IdentityService,
 	@RolesAllowed(SafeOnlineRoles.USER_ROLE)
 	public List<AttributeDO> listAttributes(@NonEmptyString String deviceId,
 			@NotNull AttributeTypeEntity attributeType, Locale locale)
-			throws SubjectNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException {
+			throws PermissionDeniedException, AttributeTypeNotFoundException {
 		LOG.debug("list attributes for device: " + deviceId);
 		Object value = this.proxyAttributeService.findDeviceAttributeValue(
 				deviceId, attributeType.getName());

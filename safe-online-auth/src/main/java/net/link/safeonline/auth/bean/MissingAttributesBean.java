@@ -24,7 +24,6 @@ import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundE
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.data.AttributeDO;
 
@@ -82,11 +81,6 @@ public class MissingAttributesBean implements MissingAttributes {
 			this.facesMessages.addFromResourceBundle(
 					FacesMessage.SEVERITY_ERROR,
 					"errorApplicationIdentityNotFound");
-			return;
-		} catch (SubjectNotFoundException e) {
-			LOG.debug("subject not found.");
-			this.facesMessages.addFromResourceBundle(
-					FacesMessage.SEVERITY_ERROR, "errorSubjectNotFound");
 			return;
 		} catch (PermissionDeniedException e) {
 			LOG.debug("permission denied: " + e.getMessage());

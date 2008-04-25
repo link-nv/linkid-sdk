@@ -90,7 +90,6 @@ public interface AuthenticationService {
 	 * @throws UsageAgreementAcceptationRequiredException
 	 * @throws AttributeTypeNotFoundException
 	 * @throws PermissionDeniedException
-	 * @throws SubjectNotFoundException
 	 */
 	void commitAuthentication(String applicationId,
 			Set<DeviceEntity> requiredDevicePolicy)
@@ -99,8 +98,7 @@ public interface AuthenticationService {
 			IdentityConfirmationRequiredException, MissingAttributeException,
 			EmptyDevicePolicyException, DevicePolicyException,
 			UsageAgreementAcceptationRequiredException,
-			SubjectNotFoundException, PermissionDeniedException,
-			AttributeTypeNotFoundException;
+			PermissionDeniedException, AttributeTypeNotFoundException;
 
 	/**
 	 * Sets the password of a user. This method should be used in case the user

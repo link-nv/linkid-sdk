@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -53,39 +52,40 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 
 	public Object findDeviceAttributeValue(String deviceUserId,
 			String attributeName) throws AttributeTypeNotFoundException,
-			PermissionDeniedException, SubjectNotFoundException {
+			PermissionDeniedException {
 
-		LOG.debug("get device attribute " + attributeName + " for "
+		LOG.debug("find device attribute " + attributeName + " for "
 				+ deviceUserId);
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.getAttributeType(attributeName);
 
 		if (isLocalAttribute(attributeType))
-			return getLocalAttribute(deviceUserId, attributeType);
+			return findLocalAttribute(deviceUserId, attributeType);
 
-		return getRemoteAttribute(deviceUserId, attributeType);
+		return findRemoteAttribute(deviceUserId, attributeType);
 
 	}
 
 	public Object findAttributeValue(String userId, String attributeName)
-			throws PermissionDeniedException, SubjectNotFoundException,
-			AttributeTypeNotFoundException {
+			throws PermissionDeniedException, AttributeTypeNotFoundException {
 
-		LOG.debug("get attribute " + attributeName + " for " + userId);
+		LOG.debug("find attribute " + attributeName + " for " + userId);
 
 		AttributeTypeEntity attributeType = this.attributeTypeDAO
 				.getAttributeType(attributeName);
 
-		SubjectEntity subject = this.subjectService.getSubject(userId);
+		SubjectEntity subject = this.subjectService.findSubject(userId);
+		if (null == subject)
+			return null;
 
 		String subjectId = userId;
 		if (attributeType.isDeviceAttribute())
 			subjectId = getDeviceId(subject, attributeType);
 
 		if (attributeType.isLocal())
-			return getLocalAttribute(subjectId, attributeType);
+			return findLocalAttribute(subjectId, attributeType);
 
-		return getRemoteAttribute(subjectId, attributeType);
+		return findRemoteAttribute(subjectId, attributeType);
 	}
 
 	private String getDeviceId(SubjectEntity subject,
@@ -128,13 +128,15 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 		return false;
 	}
 
-	private Object getLocalAttribute(String subjectId,
-			AttributeTypeEntity attributeType) throws SubjectNotFoundException {
+	private Object findLocalAttribute(String subjectId,
+			AttributeTypeEntity attributeType) {
 
-		LOG.debug("get local attribute " + attributeType.getName() + " for "
+		LOG.debug("find local attribute " + attributeType.getName() + " for "
 				+ subjectId);
 
-		SubjectEntity subject = this.subjectService.getSubject(subjectId);
+		SubjectEntity subject = this.subjectService.findSubject(subjectId);
+		if (null == subject)
+			return null;
 
 		// filter out the empty attributes
 		List<AttributeEntity> attributes = this.attributeDAO.listAttributes(
@@ -154,10 +156,10 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService {
 		return getValue(nonEmptyAttributes, attributeType, subject);
 	}
 
-	private Object getRemoteAttribute(String subjectId,
+	private Object findRemoteAttribute(String subjectId,
 			AttributeTypeEntity attributeType) throws PermissionDeniedException {
 
-		LOG.debug("get remote attribute " + attributeType.getName() + " for "
+		LOG.debug("find remote attribute " + attributeType.getName() + " for "
 				+ subjectId);
 
 		AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();

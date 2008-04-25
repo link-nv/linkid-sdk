@@ -12,7 +12,6 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.SubjectEntity;
 
 /**
@@ -42,9 +41,7 @@ public interface UserRegistrationService {
 	 * @throws AttributeTypeNotFoundException
 	 * @throws ExistingUserException
 	 * @throws PermissionDeniedException
-	 * @throws SubjectNotFoundException
 	 */
 	SubjectEntity registerUser(String login) throws ExistingUserException,
-			AttributeTypeNotFoundException, SubjectNotFoundException,
-			PermissionDeniedException;
+			AttributeTypeNotFoundException, PermissionDeniedException;
 }

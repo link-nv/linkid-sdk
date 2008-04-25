@@ -19,7 +19,6 @@ import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.authentication.service.NodeAttributeServiceRemote;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
@@ -49,7 +48,7 @@ public class NodeAttributeServiceBean implements NodeAttributeService,
 	@RolesAllowed(SafeOnlineNodeRoles.NODE_ROLE)
 	public Object getAttributeValue(String subjectLogin, String attributeName)
 			throws AttributeNotFoundException, PermissionDeniedException,
-			SubjectNotFoundException, AttributeTypeNotFoundException {
+			AttributeTypeNotFoundException {
 		LOG.debug("get attribute " + attributeName + " for login "
 				+ subjectLogin);
 		return this.proxyAttributeService.findAttributeValue(subjectLogin,
